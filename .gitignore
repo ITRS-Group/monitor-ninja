@@ -1,0 +1,8 @@
+*.spec
+*.tar.gz
+.htaccess
+generated/*
+.cache
+.project
+.settings
+*~
