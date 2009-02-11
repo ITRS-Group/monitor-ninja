@@ -1,3 +1,10 @@
 a default config that tries to show all different host & service states
 
 useful to get a feeling for how Tactical Overview can look like
+
+to use it do following
+
+service monitor stop
+cp etc/* to /opt/monitor/etc/
+cp var/nagios.sav /opt/monitor/var/
+service monitor start
