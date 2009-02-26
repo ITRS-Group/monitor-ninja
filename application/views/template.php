@@ -22,9 +22,9 @@
 	.box { padding: 2em; background: #CA7D17; border: 1px solid #7A4B0D; }
 	.copyright { font-size: 0.9em; text-transform: uppercase; color: #7A4B0D; }
 	</style>
-	<?php echo html::script(Kohana::config('core.media_path').'/js/jquery.min.js') ?>
-	<?php echo html::script(Kohana::config('core.media_path').'/js/jquery.form.js') ?>
-	<?php echo html::script(Kohana::config('core.media_path').'/js/ajax_test.js') ?>
+	<?php echo html::script('application/media/js/jquery.min.js') ?>
+	<?php echo html::script('application/media/js/jquery.form.js') ?>
+	<?php echo html::script('application/media/js/ajax_test.js') ?>
 
 </head>
 <body>

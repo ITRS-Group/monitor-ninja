@@ -33,18 +33,6 @@ $config['url_suffix'] = '';
 $config['internal_cache'] = FALSE;
 
 /**
- * We need to know where we keep our global static files
- * such as javascript, css, and images that all templates
- * may use.
- */
-# make sure document root always ends in a '/'
-$doc_root = !preg_match('/\/$/', $_SERVER['DOCUMENT_ROOT'])
-	? $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR
-	: $_SERVER['DOCUMENT_ROOT'];
-$media_path = DIRECTORY_SEPARATOR.str_replace($doc_root, '', DOCROOT)."application/media";
-$config['media_path'] = "application/media";
-
-/**
  * Enable or disable gzip output compression. This can dramatically decrease
  * server bandwidth usage, at the cost of slightly higher CPU usage. Set to
  * the compression level (1-9) that you want to use, or FALSE to disable.
