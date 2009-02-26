@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ninja\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-25 17:31+0100\n"
+"PO-Revision-Date: 2009-02-25 17:31+0100\n"
+"Last-Translator: Per Åsberg <per@op5.com>\n"
+"Language-Team: op5\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-Basepath: /var/www/ninja/application/\n"
+"X-Poedit-SearchPath-0: controllers\n"
+
+#: controllers/default.php:31
+msgid "NINJA::start page"
+msgstr "NINJA::startsida"
+
+#: controllers/default.php:37
+#, php-format
+msgid "This is the default Ninja index page.%sYou may also access this page as %s.%sThis page does not require authentication."
+msgstr "Detta är Ninjas startsida.%sDu kan också nå denna sida som %s.%sDenna sida kräver inte autentisering."
+
+#: controllers/default.php:45
+msgid "Login form"
+msgstr "Loginformulär"
+
+#: controllers/default.php:46
+#: controllers/admin.php:47
+#: controllers/admin.php:97
+msgid "Username"
+msgstr "Användarnamn"
+
+#: controllers/default.php:47
+#: controllers/admin.php:48
+msgid "Password"
+msgstr "Lösenord"
+
+#: controllers/default.php:48
+msgid "Login!"
+msgstr "Logga in!"
+
+#: controllers/default.php:49
+msgid "NINJA::login"
+msgstr "NINJA::Logga in"
+
+#: controllers/default.php:83
+msgid "Please supply both username and password"
+msgstr "Vänligen ange både användarnamn och lösenord"
+
+#: controllers/default.php:92
+#: controllers/admin.php:63
+msgid "Request forgery attack detected"
+msgstr "CSRF attack detekterad"
+
+#: controllers/default.php:111
+#, php-format
+msgid "You have been locked out due to %s failed login attempts"
+msgstr "Du har blivit utslängd pga %s felaktiga inloggninsgförsök"
+
+#: controllers/admin.php:26
+msgid "Admin::index"
+msgstr "Admin::start"
+
+#: controllers/admin.php:28
+msgid "Admin startpage"
+msgstr "Admin::startsida"
+
+#: controllers/admin.php:31
+#: controllers/tac.php:34
+msgid "logout"
+msgstr "Logga ut"
+
+#: controllers/admin.php:43
+msgid "Add new user"
+msgstr "Lägg till ny användare"
+
+#: controllers/admin.php:44
+msgid "Add user"
+msgstr "Lägg till användare"
+
+#: controllers/admin.php:45
+#: controllers/admin.php:98
+msgid "Name"
+msgstr "Namn"
+
+#: controllers/admin.php:46
+#: controllers/admin.php:99
+msgid "Email"
+msgstr "Email"
+
+#: controllers/admin.php:49
+msgid "Confirm password"
+msgstr "Bekräfta lösenord"
+
+#: controllers/admin.php:50
+msgid "Create"
+msgstr "Skapa"
+
+#: controllers/admin.php:80
+#, php-format
+msgid "User %s was successfully added"
+msgstr "Användaren %s skapades"
+
+#: controllers/admin.php:82
+#, php-format
+msgid "An error occurred when trying to add user %s."
+msgstr "Ett fel uppstod när användaren %s skulle läggas till"
+
+#: controllers/admin.php:100
+msgid "Access"
+msgstr "Access"
+
+#: controllers/tac.php:26
+msgid "TAC::index"
+msgstr "TAC::start"
+
+#: controllers/tac.php:29
+#, php-format
+msgid "Database error: %s"
+msgstr "Databasfel: %s"
+
+#: controllers/tac.php:30
+#, php-format
+msgid "Bogus message (not translated): %s"
+msgstr "Knasmeddelande (översatt): %s"
+
