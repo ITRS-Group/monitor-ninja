@@ -16,15 +16,10 @@ class Authenticated_Controller extends Ninja_Controller {
 	{
 		parent::__construct();
 		# make sure user is authenticated
-		#if (!$this->is_authenticated()) {
 		$authentic = new Auth;
 		if (!$authentic->logged_in()) {
-			#$this->session->destroy();
 			# store requested uri in session for later redirect
 			$this->session->set('requested_uri', url::current());
-			#$_COOKIE['requested_uri'] = url::current();
-			#Session::instance()->set('requested_uri', url::current());
-			#echo Kohana::debug($_COOKIE);
 			url::redirect('default/show_login');
 		} else {
 			$this->user = Auth::instance()->get_user();
