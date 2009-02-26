@@ -30,11 +30,13 @@ class Auth_User_Model extends ORM {
 	 */
 	public function validate(array & $array, $save = FALSE)
 	{
+		$min_username_chars = Kohana::config('auth.min_username_chars');
+		$min_username_chars !=0 ? $min_username_chars : 2; # use minimum 2 chars if not set
 		$array = Validation::factory($array)
 			->pre_filter('trim')
 			->add_rules('realname', 'required', 'length[3,50]')
 			->add_rules('email', 'required', 'length[4,127]', 'valid::email')
-			->add_rules('username', 'required', 'length[4,32]', 'chars[a-zA-Z0-9_.]', array($this, 'username_available'))
+			->add_rules('username', 'required', 'length['.$min_username_chars.',32]', 'chars[a-zA-Z0-9_.]', array($this, 'username_available'))
 			->add_rules('password', 'required', 'length[5,42]')
 			->add_rules('password_confirm', 'matches[password]');
 

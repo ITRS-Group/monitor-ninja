@@ -46,3 +46,5 @@ $config['users'] = array
 (
 	'admin' => 'd0bcecba632cad83350fce159fe23cd8ed4fa897b910ac6bd6'
 );
+
+$config['min_username_chars'] = 2;
