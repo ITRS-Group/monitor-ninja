@@ -30,7 +30,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 		} ?>
 	</table>
 	<?php
-	if ($user_details->id) {
+	if (isset($user_details->id) && $user_details->id) {
 		echo form::hidden('user_id', $user_details->id);
 	}
 	echo csrf::form_field();
