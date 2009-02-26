@@ -19,7 +19,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 	<table cellpadding="0" cellspacing="0">
 	<?php
 		foreach ($fields as $label => $field) {
-			if (isset($user_details) && stristr($label, 'password')) {
+			if (is_object($user_details) && stristr($label, 'password')) {
 				continue;
 			}
 			echo '
