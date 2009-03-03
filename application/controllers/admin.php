@@ -49,7 +49,6 @@ class Admin_Controller extends Authenticated_Controller {
 		$this->template->title = !empty($user->id) ? $this->translate->_('Edit user') : $this->translate->_('Add new user');
 		$this->template->content->form_title = !empty($user->id) ? $this->translate->_('Edit user') : $this->translate->_('Add user');
 		$this->template->content->realname = $this->translate->_('Name');
-		$this->template->content->email = $this->translate->_('Email');
 		$this->template->content->username = $this->translate->_('Username');
 		$this->template->content->password = $this->translate->_('Password');
 		$this->template->content->confirm_password = $this->translate->_('Confirm password');
@@ -131,7 +130,6 @@ class Admin_Controller extends Authenticated_Controller {
 		$this->template->content = new View('admin/user_list');
 		$this->template->content->username = $this->translate->_('Username');
 		$this->template->content->realname = $this->translate->_('Name');
-		$this->template->content->email = $this->translate->_('Email');
 		$this->template->content->access = $this->translate->_('Access');
 		$this->template->content->user_list = $user_list;
 	}

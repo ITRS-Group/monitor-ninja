@@ -11,7 +11,6 @@ if (isset($error_msg)) echo $error_msg; ?>
 
 	$fields = array(
 		$realname => form::input('realname', isset($user_details->realname) ? $user_details->realname : ''),
-		$email => form::input('email', isset($user_details->email) ? $user_details->email : ''),
 		$username => isset($user_details->username) ? $user_details->username : form::input('username'),
 		$password => form::password('password'),
 		$confirm_password => form::password('password_confirm'),

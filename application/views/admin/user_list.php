@@ -5,7 +5,6 @@
 <thead>
 	<tr>
 		<th><?php echo $realname ?></th>
-		<th><?php echo $email ?></th>
 		<th><?php echo $username ?></th>
 		<th><?php echo $access ?></th>
 	</tr>
@@ -14,7 +13,6 @@
 <?php	foreach ($user_list as $user) {	?>
 	<tr>
 		<td><?php echo $user->realname ?></td>
-		<td><?php echo $user->email ?></td>
 		<td><?php echo $user->username ?></td>
 		<td><?php
 		# this is ugly as it shouldn't need another query

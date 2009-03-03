@@ -65,7 +65,6 @@ class User_Model extends Auth_User_Model {
 		$array = Validation::factory($array)
 			->pre_filter('trim')
 			->add_rules('realname', 'required', 'length[3,50]')
-			->add_rules('email', 'required', 'length[4,127]', 'valid::email')
 			#->add_rules('password', 'required', 'length[5,42]')
 			#->add_rules('password_confirm', 'matches[password]')
 			;
