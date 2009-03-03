@@ -1,8 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php echo $testmsg ?><br />
-<?php echo $bogus ?><br /><br />
-
 <?php
 	# Testform to try ajax calls
 	# not translated
@@ -19,3 +16,11 @@
 	<li><?php echo html::anchor($url, html::specialchars($title)) ?></li>
 <?php endforeach ?>
 </ul>
+
+	<?php
+	if (!empty($widgets)) {
+		foreach ($widgets as $widget) {
+			echo $widget;
+		}
+	}
+	?>
