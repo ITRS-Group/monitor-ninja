@@ -2,11 +2,9 @@
 /**
  * CSRF helper class.
  *
- *
- * @package    Core
- * @author     Kohana Team
- * @copyright  (c) 2009 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * @package    NINJA
+ * @author     op5 AB
+ * @license    GPL
  */
 
 class csrf_Core {
