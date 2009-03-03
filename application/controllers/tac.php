@@ -17,22 +17,32 @@ class Tac_Controller extends Authenticated_Controller {
 
 	public function index()
 	{
-		#echo 'username: '.user::session('username')."<br />";
-		#echo 'ID: '.user::session('id')."<br />";
-		#echo 'ACCESS: '.user::session('access')."<br />";
-		#echo 'realname: '.user::session('realname')."<br />";
-		#echo Kohana::debug($_SESSION);
 		$this->template->content = new View('tac/index');
 		$this->template->title = $this->translate->_('TAC::index');
 
-		if (is_object($this->translate)) {
-			$this->template->content->testmsg = sprintf($this->translate->_('Database error: %s'), 'tjobba');
-			$this->template->content->bogus = sprintf($this->translate->_('Bogus message (not translated): %s'), 'TESTING');
-		}
+		$this->template->header = new View('header');
+
 		$this->template->content->links = array
 		(
 			$this->translate->_('logout')     => 'default/logout'
 		);
+		$widget = widget::add('netw_health', array('index'));
+		$widget_content = false;
+		$header_js = false;
+
+		if (is_array($widget) && !empty($widget)) {
+			$widget_content[] = $widget['content'];
+			if (is_array($widget['js']) && !empty($widget['js'])) {
+				foreach ($widget['js'] as $js_file) {
+					$header_js[] = $js_file;
+				}
+			} else {
+				$header_js[] = $widget['js'];
+			}
+
+		}
+		$this->template->content->widgets = $widget_content;
+		$this->template->header->js = $header_js;
 
 		#$this->model->test(); # try to load a model method
 	}
