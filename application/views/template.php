@@ -25,6 +25,11 @@
 	<?php echo html::script('application/media/js/jquery.min.js') ?>
 	<?php echo html::script('application/media/js/jquery.form.js') ?>
 	<?php echo html::script('application/media/js/ajax_test.js') ?>
+	<?php
+		if (!empty($header)) {
+			echo $header;
+		}
+	?>
 
 </head>
 <body>
@@ -35,6 +40,5 @@
 	<p class="copyright">
 		Rendered in {execution_time} seconds, using {memory_usage} of memory
 	</p>
-
 </body>
 </html>
