@@ -2,6 +2,10 @@
 class Fire_Profiler extends FirePHP{
 	public function __construct(){
 		self::init();
+		$this->options['maxObjectDepth'] = 10;
+		$this->options['maxArrayDepth'] = 20;
+		$this->options['useNativeJsonEncode'] = true;
+		$this->options['includeLineNumbers'] = true;
 
 		// Add all built in profiles to event
 		Event::add('fire-profiler.run', array($this, 'benchmarks'));
