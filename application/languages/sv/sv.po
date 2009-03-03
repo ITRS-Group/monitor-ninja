@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ninja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-25 17:31+0100\n"
-"PO-Revision-Date: 2009-02-25 17:31+0100\n"
+"POT-Creation-Date: 2009-03-02 16:00+0100\n"
+"PO-Revision-Date: 2009-03-02 16:00+0100\n"
 "Last-Translator: Per Åsberg <per@op5.com>\n"
 "Language-Team: op5\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,98 @@ msgstr ""
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: /var/www/ninja/application/\n"
 "X-Poedit-SearchPath-0: controllers\n"
+
+#: controllers/admin.php:26
+msgid "Admin::index"
+msgstr "Admin::start"
+
+#: controllers/admin.php:28
+msgid "Admin startpage"
+msgstr "Admin::startsida"
+
+#: controllers/admin.php:31
+#: controllers/tac.php:27
+msgid "logout"
+msgstr "Logga ut"
+
+#: controllers/admin.php:49
+#: controllers/admin.php:50
+msgid "Edit user"
+msgstr "Editera användare"
+
+#: controllers/admin.php:49
+msgid "Add new user"
+msgstr "Lägg till ny användare"
+
+#: controllers/admin.php:50
+msgid "Add user"
+msgstr "Lägg till användare"
+
+#: controllers/admin.php:51
+#: controllers/admin.php:133
+msgid "Name"
+msgstr "Namn"
+
+#: controllers/admin.php:52
+#: controllers/admin.php:134
+msgid "Email"
+msgstr "Email"
+
+#: controllers/admin.php:53
+#: controllers/admin.php:132
+#: controllers/default.php:46
+msgid "Username"
+msgstr "Användarnamn"
+
+#: controllers/admin.php:54
+#: controllers/default.php:47
+msgid "Password"
+msgstr "Lösenord"
+
+#: controllers/admin.php:55
+msgid "Confirm password"
+msgstr "Bekräfta lösenord"
+
+#: controllers/admin.php:56
+msgid "Save"
+msgstr "Spara"
+
+#: controllers/admin.php:56
+msgid "Create"
+msgstr "Skapa"
+
+#: controllers/admin.php:81
+#: controllers/default.php:92
+msgid "Request forgery attack detected"
+msgstr "CSRF attack detekterad"
+
+#: controllers/admin.php:99
+#, php-format
+msgid "User %s was successfully updated"
+msgstr "Kontouppgifterna för %s uppdaterades"
+
+#: controllers/admin.php:101
+#, php-format
+msgid "An error occurred when trying to update user details for %s."
+msgstr "Ett fel uppstod vid uppdatering av kontouppgifterna för %s"
+
+#: controllers/admin.php:114
+#, php-format
+msgid "User %s was successfully added"
+msgstr "Användaren %s skapades"
+
+#: controllers/admin.php:116
+#, php-format
+msgid "An error occurred when trying to add user %s."
+msgstr "Ett fel uppstod när användaren %s skulle läggas till"
+
+#: controllers/admin.php:135
+msgid "Access"
+msgstr "Access"
+
+#: controllers/tac.php:21
+msgid "TAC::index"
+msgstr "TAC::start"
 
 #: controllers/default.php:31
 msgid "NINJA::start page"
@@ -29,17 +121,6 @@ msgstr "Detta är Ninjas startsida.%sDu kan också nå denna sida som %s.%sDenna
 msgid "Login form"
 msgstr "Loginformulär"
 
-#: controllers/default.php:46
-#: controllers/admin.php:47
-#: controllers/admin.php:97
-msgid "Username"
-msgstr "Användarnamn"
-
-#: controllers/default.php:47
-#: controllers/admin.php:48
-msgid "Password"
-msgstr "Lösenord"
-
 #: controllers/default.php:48
 msgid "Login!"
 msgstr "Logga in!"
@@ -52,80 +133,13 @@ msgstr "NINJA::Logga in"
 msgid "Please supply both username and password"
 msgstr "Vänligen ange både användarnamn och lösenord"
 
-#: controllers/default.php:92
-#: controllers/admin.php:63
-msgid "Request forgery attack detected"
-msgstr "CSRF attack detekterad"
-
 #: controllers/default.php:111
 #, php-format
 msgid "You have been locked out due to %s failed login attempts"
 msgstr "Du har blivit utslängd pga %s felaktiga inloggninsgförsök"
 
-#: controllers/admin.php:26
-msgid "Admin::index"
-msgstr "Admin::start"
-
-#: controllers/admin.php:28
-msgid "Admin startpage"
-msgstr "Admin::startsida"
-
-#: controllers/admin.php:31
-#: controllers/tac.php:34
-msgid "logout"
-msgstr "Logga ut"
-
-#: controllers/admin.php:43
-msgid "Add new user"
-msgstr "Lägg till ny användare"
-
-#: controllers/admin.php:44
-msgid "Add user"
-msgstr "Lägg till användare"
-
-#: controllers/admin.php:45
-#: controllers/admin.php:98
-msgid "Name"
-msgstr "Namn"
-
-#: controllers/admin.php:46
-#: controllers/admin.php:99
-msgid "Email"
-msgstr "Email"
-
-#: controllers/admin.php:49
-msgid "Confirm password"
-msgstr "Bekräfta lösenord"
-
-#: controllers/admin.php:50
-msgid "Create"
-msgstr "Skapa"
-
-#: controllers/admin.php:80
-#, php-format
-msgid "User %s was successfully added"
-msgstr "Användaren %s skapades"
-
-#: controllers/admin.php:82
-#, php-format
-msgid "An error occurred when trying to add user %s."
-msgstr "Ett fel uppstod när användaren %s skulle läggas till"
-
-#: controllers/admin.php:100
-msgid "Access"
-msgstr "Access"
-
-#: controllers/tac.php:26
-msgid "TAC::index"
-msgstr "TAC::start"
-
-#: controllers/tac.php:29
-#, php-format
-msgid "Database error: %s"
-msgstr "Databasfel: %s"
-
-#: controllers/tac.php:30
-#, php-format
-msgid "Bogus message (not translated): %s"
-msgstr "Knasmeddelande (översatt): %s"
+#~ msgid "Database error: %s"
+#~ msgstr "Databasfel: %s"
+#~ msgid "Bogus message (not translated): %s"
+#~ msgstr "Knasmeddelande (översatt): %s"
 

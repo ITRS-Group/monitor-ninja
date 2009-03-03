@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ninja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-25 17:31+0100\n"
-"PO-Revision-Date: 2009-02-25 17:31+0100\n"
+"POT-Creation-Date: 2009-03-02 16:00+0100\n"
+"PO-Revision-Date: 2009-03-02 16:00+0100\n"
 "Last-Translator: Per Åsberg <per@op5.com>\n"
 "Language-Team: op5\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,98 @@ msgstr ""
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: /var/www/ninja/\n"
 "X-Poedit-SearchPath-0: application/controllers\n"
+
+#: application/controllers/admin.php:26
+msgid "Admin::index"
+msgstr ""
+
+#: application/controllers/admin.php:28
+msgid "Admin startpage"
+msgstr ""
+
+#: application/controllers/admin.php:31
+#: application/controllers/tac.php:27
+msgid "logout"
+msgstr ""
+
+#: application/controllers/admin.php:49
+#: application/controllers/admin.php:50
+msgid "Edit user"
+msgstr ""
+
+#: application/controllers/admin.php:49
+msgid "Add new user"
+msgstr ""
+
+#: application/controllers/admin.php:50
+msgid "Add user"
+msgstr ""
+
+#: application/controllers/admin.php:51
+#: application/controllers/admin.php:133
+msgid "Name"
+msgstr ""
+
+#: application/controllers/admin.php:52
+#: application/controllers/admin.php:134
+msgid "Email"
+msgstr ""
+
+#: application/controllers/admin.php:53
+#: application/controllers/admin.php:132
+#: application/controllers/default.php:46
+msgid "Username"
+msgstr ""
+
+#: application/controllers/admin.php:54
+#: application/controllers/default.php:47
+msgid "Password"
+msgstr ""
+
+#: application/controllers/admin.php:55
+msgid "Confirm password"
+msgstr ""
+
+#: application/controllers/admin.php:56
+msgid "Save"
+msgstr ""
+
+#: application/controllers/admin.php:56
+msgid "Create"
+msgstr ""
+
+#: application/controllers/admin.php:81
+#: application/controllers/default.php:92
+msgid "Request forgery attack detected"
+msgstr ""
+
+#: application/controllers/admin.php:99
+#, php-format
+msgid "User %s was successfully updated"
+msgstr ""
+
+#: application/controllers/admin.php:101
+#, php-format
+msgid "An error occurred when trying to update user details for %s."
+msgstr ""
+
+#: application/controllers/admin.php:114
+#, php-format
+msgid "User %s was successfully added"
+msgstr ""
+
+#: application/controllers/admin.php:116
+#, php-format
+msgid "An error occurred when trying to add user %s."
+msgstr ""
+
+#: application/controllers/admin.php:135
+msgid "Access"
+msgstr ""
+
+#: application/controllers/tac.php:21
+msgid "TAC::index"
+msgstr ""
 
 #: application/controllers/default.php:31
 msgid "NINJA::start page"
@@ -29,17 +121,6 @@ msgstr ""
 msgid "Login form"
 msgstr ""
 
-#: application/controllers/default.php:46
-#: application/controllers/admin.php:47
-#: application/controllers/admin.php:97
-msgid "Username"
-msgstr ""
-
-#: application/controllers/default.php:47
-#: application/controllers/admin.php:48
-msgid "Password"
-msgstr ""
-
 #: application/controllers/default.php:48
 msgid "Login!"
 msgstr ""
@@ -52,80 +133,13 @@ msgstr ""
 msgid "Please supply both username and password"
 msgstr ""
 
-#: application/controllers/default.php:92
-#: application/controllers/admin.php:63
-msgid "Request forgery attack detected"
-msgstr ""
-
 #: application/controllers/default.php:111
 #, php-format
 msgid "You have been locked out due to %s failed login attempts"
 msgstr ""
 
-#: application/controllers/admin.php:26
-msgid "Admin::index"
-msgstr ""
-
-#: application/controllers/admin.php:28
-msgid "Admin startpage"
-msgstr ""
-
-#: application/controllers/admin.php:31
-#: application/controllers/tac.php:34
-msgid "logout"
-msgstr ""
-
-#: application/controllers/admin.php:43
-msgid "Add new user"
-msgstr ""
-
-#: application/controllers/admin.php:44
-msgid "Add user"
-msgstr ""
-
-#: application/controllers/admin.php:45
-#: application/controllers/admin.php:98
-msgid "Name"
-msgstr ""
-
-#: application/controllers/admin.php:46
-#: application/controllers/admin.php:99
-msgid "Email"
-msgstr ""
-
-#: application/controllers/admin.php:49
-msgid "Confirm password"
-msgstr ""
-
-#: application/controllers/admin.php:50
-msgid "Create"
-msgstr ""
-
-#: application/controllers/admin.php:80
-#, php-format
-msgid "User %s was successfully added"
-msgstr ""
-
-#: application/controllers/admin.php:82
-#, php-format
-msgid "An error occurred when trying to add user %s."
-msgstr ""
-
-#: application/controllers/admin.php:100
-msgid "Access"
-msgstr ""
-
-#: application/controllers/tac.php:26
-msgid "TAC::index"
-msgstr ""
-
-#: application/controllers/tac.php:29
-#, php-format
-msgid "Database error: %s"
-msgstr "Database error: %s"
-
-#: application/controllers/tac.php:30
-#, php-format
-msgid "Bogus message (not translated): %s"
-msgstr "Bogus message (translated): %s"
+#~ msgid "Database error: %s"
+#~ msgstr "Database error: %s"
+#~ msgid "Bogus message (not translated): %s"
+#~ msgstr "Bogus message (translated): %s"
 
