@@ -32,6 +32,11 @@ class User_Model extends Auth_User_Model {
 
 		$requested_uri = Session::instance()->get('requested_uri', false);
 
+		# fetch nagios access rights for user
+		$system = new System_Model();
+		$access = $system->nagios_access(Auth::instance()->get_user()->username);
+		Session::instance()->set('nagios_access', $access);
+
 		# make sure we don't end up in infinite loop
 		# if user managed to request show_login
 		if ($requested_uri == Kohana::config('routes.log_in_form')) {
