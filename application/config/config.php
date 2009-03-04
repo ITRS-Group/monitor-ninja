@@ -109,3 +109,17 @@ $config['modules'] = array
 	// MODPATH.'unit_test', // Unit testing
 	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
+
+/**
+ * 	Base path to the location of Nagios.
+ * 	This is used if we need to read some
+ * 	configuration from the config files.
+ * 	This path sare assumed to contain the
+ * 	following subdirectories:
+ * 		/bin
+ * 		/etc
+ * 		/var
+ *
+ * 	No trailing slash.
+ */
+$config['nagios_base_path'] = '/opt/monitor';
