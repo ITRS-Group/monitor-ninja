@@ -30,6 +30,7 @@ class Ninja_Controller extends Template_Controller {
 	{
 		parent::__construct();
 		#$this->profiler = new Profiler;
+		#$this->profiler = new Fire_Profiler;
 		# Load session library
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
