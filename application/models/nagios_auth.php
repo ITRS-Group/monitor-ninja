@@ -4,7 +4,6 @@ class Nagios_auth_Model extends Model
 {
     public $db = false;
     public $session = false;
-    public $gui_db = false;
     public $id = false;
     public $user;
     public $hosts = array();
