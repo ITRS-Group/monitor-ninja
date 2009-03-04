@@ -5,4 +5,5 @@ generated/*
 .cache
 .project
 .settings
+*.kpf
 *~
