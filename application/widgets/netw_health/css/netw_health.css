@@ -1,0 +1,15 @@
+#netw_health{
+	width:150px;
+}
+
+#host_health{
+	width: 100px;
+}
+
+#service_health{
+	width: 100px;
+}
+
+.netw_health_label{
+	font-size:10px;
+}
