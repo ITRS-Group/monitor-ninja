@@ -20,29 +20,22 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->template->content = new View('tac/index');
 		$this->template->title = $this->translate->_('TAC::index');
 
-		$this->template->header = new View('header');
+		$this->template->js_header = new View('js_header');
+		$this->template->css_header = new View('css_header');
 
 		$this->template->content->links = array
 		(
 			$this->translate->_('logout')     => 'default/logout'
 		);
-		$widget = widget::add('netw_health', array('index'));
+		$widget = widget::add('netw_health', array('index'), $this);
 		$widget_content = false;
-		$header_js = false;
 
 		if (is_array($widget) && !empty($widget)) {
 			$widget_content[] = $widget['content'];
-			if (is_array($widget['js']) && !empty($widget['js'])) {
-				foreach ($widget['js'] as $js_file) {
-					$header_js[] = $js_file;
-				}
-			} else {
-				$header_js[] = $widget['js'];
-			}
-
 		}
-		$this->template->content->widgets = $widget_content;
-		$this->template->header->js = $header_js;
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
 
 		#$this->model->test(); # try to load a model method
 	}
