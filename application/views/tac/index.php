@@ -10,13 +10,6 @@
 	echo form::close();
 ?>
 <div id="response"></div>
-
-<ul>
-<?php foreach ($links as $title => $url): ?>
-	<li><?php echo html::anchor($url, html::specialchars($title)) ?></li>
-<?php endforeach ?>
-</ul>
-
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -24,3 +17,9 @@
 		}
 	}
 	?>
+
+<ul>
+<?php foreach ($links as $title => $url): ?>
+	<li><?php echo html::anchor($url, html::specialchars($title)) ?></li>
+<?php endforeach ?>
+</ul>
