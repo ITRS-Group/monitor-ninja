@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ninja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-02 16:00+0100\n"
-"PO-Revision-Date: 2009-03-02 16:00+0100\n"
+"POT-Creation-Date: 2009-03-05 13:41+0100\n"
+"PO-Revision-Date: 2009-03-05 13:41+0100\n"
 "Last-Translator: Per Åsberg <per@op5.com>\n"
 "Language-Team: op5\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgid "Admin startpage"
 msgstr ""
 
 #: application/controllers/admin.php:31
-#: application/controllers/tac.php:27
+#: application/controllers/tac.php:29
 msgid "logout"
 msgstr ""
 
@@ -43,68 +43,63 @@ msgid "Add user"
 msgstr ""
 
 #: application/controllers/admin.php:51
-#: application/controllers/admin.php:133
+#: application/controllers/admin.php:132
 msgid "Name"
 msgstr ""
 
 #: application/controllers/admin.php:52
-#: application/controllers/admin.php:134
-msgid "Email"
-msgstr ""
-
-#: application/controllers/admin.php:53
-#: application/controllers/admin.php:132
+#: application/controllers/admin.php:131
 #: application/controllers/default.php:46
 msgid "Username"
 msgstr ""
 
-#: application/controllers/admin.php:54
+#: application/controllers/admin.php:53
 #: application/controllers/default.php:47
 msgid "Password"
 msgstr ""
 
-#: application/controllers/admin.php:55
+#: application/controllers/admin.php:54
 msgid "Confirm password"
 msgstr ""
 
-#: application/controllers/admin.php:56
+#: application/controllers/admin.php:55
 msgid "Save"
 msgstr ""
 
-#: application/controllers/admin.php:56
+#: application/controllers/admin.php:55
 msgid "Create"
 msgstr ""
 
-#: application/controllers/admin.php:81
+#: application/controllers/admin.php:80
 #: application/controllers/default.php:92
 msgid "Request forgery attack detected"
 msgstr ""
 
-#: application/controllers/admin.php:99
+#: application/controllers/admin.php:98
 #, php-format
 msgid "User %s was successfully updated"
 msgstr ""
 
-#: application/controllers/admin.php:101
+#: application/controllers/admin.php:100
 #, php-format
 msgid "An error occurred when trying to update user details for %s."
 msgstr ""
 
-#: application/controllers/admin.php:114
+#: application/controllers/admin.php:113
 #, php-format
 msgid "User %s was successfully added"
 msgstr ""
 
-#: application/controllers/admin.php:116
+#: application/controllers/admin.php:115
 #, php-format
 msgid "An error occurred when trying to add user %s."
 msgstr ""
 
-#: application/controllers/admin.php:135
+#: application/controllers/admin.php:133
 msgid "Access"
 msgstr ""
 
-#: application/controllers/tac.php:21
+#: application/controllers/tac.php:22
 msgid "TAC::index"
 msgstr ""
 
