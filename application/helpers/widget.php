@@ -15,7 +15,7 @@ class widget_Core {
 	* 	@param  string $name
 	*
 	*/
-	public function add($name=false, $arguments=false)
+	public function add($name=false, $arguments=false, &$master=false)
 	{
 		$path = Kohana::find_file('widgets/'.$name, $name, true);
 		require_once($path);
@@ -26,7 +26,7 @@ class widget_Core {
 			$widget_method = $arguments[0];
 			if (method_exists($obj, $widget_method)) {
 				array_shift($arguments);
-				return $obj->$widget_method($arguments);
+				return $obj->$widget_method($arguments, $master);
 			}
 		}
 
