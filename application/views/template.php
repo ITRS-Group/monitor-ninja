@@ -22,12 +22,18 @@
 	.box { padding: 2em; background: #CA7D17; border: 1px solid #7A4B0D; }
 	.copyright { font-size: 0.9em; text-transform: uppercase; color: #7A4B0D; }
 	</style>
+	<?php
+		if (!empty($css_header)) {
+			echo $css_header;
+		}
+	?>
+
 	<?php echo html::script('application/media/js/jquery.min.js') ?>
 	<?php echo html::script('application/media/js/jquery.form.js') ?>
 	<?php echo html::script('application/media/js/ajax_test.js') ?>
 	<?php
-		if (!empty($header)) {
-			echo $header;
+		if (!empty($js_header)) {
+			echo $js_header;
 		}
 	?>
 
