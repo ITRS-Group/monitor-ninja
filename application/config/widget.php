@@ -3,16 +3,16 @@
 /**
  * Name of widgets directory
  */
-$config['widget_dirname'] = 'widgets/';
+$config['dirname'] = 'widgets/';
 
 /**
  * define base path for widgets
  */
-$config['widget_path'] = 'application/';
+$config['path'] = 'application/';
 
 /**
  * Name of custom widgets directory
  */
-$config['widget_custom_dirname'] = 'custom_widgets/';
+$config['custom_dirname'] = 'custom_widgets/';
 
 
