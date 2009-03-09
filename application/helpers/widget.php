@@ -34,7 +34,13 @@ class widget_Core {
 	*/
 	public function add($name=false, $arguments=false, &$master=false)
 	{
-		$path = Kohana::find_file('widgets/'.$name, $name, true);
+		# first try custom path
+		$path = Kohana::find_file(Kohana::config('widget.widget_custom_dirname').$name, $name, false);
+		if ($path === false) {
+			# try core path if not found in custom
+			$path = Kohana::find_file(Kohana::config('widget.widget_dirname').$name, $name, true);
+		}
+
 		require_once($path);
 		$classname = $name.'_Widget';
 		$obj = new $classname;
@@ -56,11 +62,24 @@ class widget_Core {
 	*	@desc	Find name of input class and set wiidget_full path for later use
 	*
 	*/
-	public function set_widget_name($input=false)
+	public function set_widget_name($input=false, $dirname=false)
 	{
 		if (empty($input))
 			return false;
+
 		$this->widgetname = strtolower(str_replace('_Widget', '',$input));
+
+		$path = Kohana::find_file(Kohana::config('widget.widget_custom_dirname').$this->widgetname, $this->widgetname, false);
+		if ($path === false) {
+			# try core path if not found in custom
+			$path = Kohana::find_file(Kohana::config('widget.widget_dirname').$this->widgetname, $this->widgetname, false);
+		}
+
+		if (strstr($path, Kohana::config('widget.widget_custom_dirname'))) {
+			# we have a custom_widget
+			$this->widget_base_path = Kohana::config('widget.widget_path').Kohana::config('widget.widget_custom_dirname');
+		}
+
 		$this->widget_full_path = $this->widget_base_path.$this->widgetname;
 	}
 
@@ -75,7 +94,14 @@ class widget_Core {
 		if (empty($view))
 			return false;
 
-		return Kohana::find_file(Kohana::config('widget.widget_dirname').$this->widgetname, $view, true);
+		# first try custom path
+		$path = Kohana::find_file(Kohana::config('widget.widget_custom_dirname').$this->widgetname, $view, false);
+		if ($path === false) {
+			# try core path if not found in custom
+			$path = Kohana::find_file(Kohana::config('widget.widget_dirname').$this->widgetname, $view, true);
+		}
+
+		return $path;
 	}
 
 	/**

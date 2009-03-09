@@ -22,7 +22,9 @@ class Netw_health_Widget extends widget_Core {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->set_widget_name(__CLASS__);
+
+		# needed to figure out path to widget
+		$this->set_widget_name(__CLASS__, basename(__FILE__));
 	}
 
 	public function index($arguments=false, $master=false)
