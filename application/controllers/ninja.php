@@ -14,7 +14,6 @@ class Ninja_Controller extends Template_Controller {
 	const ADMIN = 'admin'; # how do we define the admin role in database
 
 	public $session = false;
-	public $db = false;
 	public $output = array(); # page content to be passed to template
 	public $table_prefix = false;
 	public $max_attempts = false;
@@ -36,10 +35,7 @@ class Ninja_Controller extends Template_Controller {
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
 
-		# connect to databse
-		$this->db = new Database;
 		$this->max_attempts =  Kohana::config('auth.max_attempts');
-		#$this->table_prefix = Kohana::config('database');
 
 		$this->locale = zend::instance('locale');
 
