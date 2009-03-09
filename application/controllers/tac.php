@@ -28,11 +28,8 @@ class Tac_Controller extends Authenticated_Controller {
 			$this->translate->_('logout')     => 'default/logout'
 		);
 		$widget = widget::add('netw_health', array('index'), $this);
-		$widget_content = false;
+		$widget = widget::add('netw_outages', array('index'), $this);
 
-		if (is_array($widget) && !empty($widget)) {
-			$widget_content[] = $widget['content'];
-		}
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
