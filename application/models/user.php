@@ -76,4 +76,25 @@ class User_Model extends Auth_User_Model {
 
 		return ORM::validate($array, $save);
 	}
+
+	/**
+	*	@name logout_user
+	*	@desc Takes care of setting a user as logged out
+	* 			and destroying the session
+	*
+	*/
+	public function logout_user()
+	{
+		$auth_type = Kohana::config('auth.driver');
+		if ($auth_type == 'db') {
+			$this->db->query('UPDATE user SET logged_in = 0 WHERE id='.(int)user::session('id'));
+
+			# reset users logged_in value when they have been logged in
+			# more than sesssion.expiration (default 7200 sec)
+			$session_length = Kohana::config('session.expiration');
+			$this->db->query('UPDATE user SET logged_in = 0 WHERE logged_in!=0 AND logged_in < '.(time()-$session_length));
+		}
+		$this->session->destroy();
+		return true;
+	}
 }
