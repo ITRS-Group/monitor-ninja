@@ -1,12 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Network health widget controller
+ * Network health widget
  *
  * @package    NINJA
  * @author     op5 AB
  * @license    GPL
  */
-class Netw_health_Controller extends Widget_Controller {
+class Netw_health_Widget extends widget_Core {
 	# define warning/critical limit
 	private $health_warning_percentage = 90;
 	private $health_critical_percentage = 75;
