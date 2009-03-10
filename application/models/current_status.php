@@ -398,11 +398,11 @@ class Current_status_Model extends Model {
 				$this->event_handler_disabled_hosts++;
 
 			/* active check execution */
-			if(!$host->checks_enabled)
+			if(!$host->active_checks_enabled)
 				$this->active_checks_disabled_hostss++;
 
 			/* passive check acceptance */
-			if(!$host->accept_passive_host_checks)
+			if(!$host->passive_checks_enabled)
 				$this->passive_checks_disabled_hosts++;
 
 
