@@ -32,6 +32,10 @@ class Netw_outages_Widget extends widget_Core {
 		$current_status->find_hosts_causing_outages();
 
 		# assign variables for our view
+		$title = $this->translate->_('Network Outages');
+		$label = $this->translate->_('Outages');
+		$no_access_msg = $this->translate->_('N/A');
+
 		$total_blocking_outages = $current_status->total_blocking_outages;
 
 		$user_has_access = $auth->view_hosts_root ? true : false;

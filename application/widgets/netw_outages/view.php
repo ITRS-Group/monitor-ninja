@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm" id="widget-netw_outages">
 	<div class="widget-header">
-		<strong>Network Outages</strong>
+		<strong><?php echo $title ?></strong>
 	</div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
@@ -10,13 +10,13 @@
 		<!--This is widget content:<br /><br />-->
 	<?php if (!$user_has_access) { ?>
 
-		N/A
+		<?php echo $no_access_msg ?>
 
 		<?php } else { ?>
 
 		<?php	# @@@FIXME this (below) should be a link to outages controller (when there is one)	?>
 
-		<?php echo $total_blocking_outages; ?> Outages
+		<?php echo $total_blocking_outages; ?> <?php echo $label ?>
 
 		<?php
 

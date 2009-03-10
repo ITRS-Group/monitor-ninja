@@ -56,35 +56,37 @@ class Tac_services_Widget extends widget_Core {
 		}
 
 		# assign variables for our view
+		$title = $this->translate->_('Services');
+
 		$header_links = array(
-			'status/index/all/detail/'.self::SERVICE_CRITICAL => $current_status->services_critical.' Critical',
-			'status/index/all/detail/'.self::SERVICE_WARNING  => $current_status->services_warning.' Warning',
-			'status/index/all/detail/'.self::SERVICE_UNKNOWN  => $current_status->services_unknown.' Unknown',
-			'status/index/all/detail/'.self::SERVICE_OK  => $current_status->services_ok.' Ok',
-			'status/index/all/detail/'.self::SERVICE_PENDING   => $current_status->services_pending.' Pending'
+			'status/index/all/detail/'.self::SERVICE_CRITICAL => $current_status->services_critical.' '.$this->translate->_('Critical'),
+			'status/index/all/detail/'.self::SERVICE_WARNING  => $current_status->services_warning.' '.$this->translate->_('Warning'),
+			'status/index/all/detail/'.self::SERVICE_UNKNOWN  => $current_status->services_unknown.' '.$this->translate->_('Unknown'),
+			'status/index/all/detail/'.self::SERVICE_OK  => $current_status->services_ok.' '.$this->translate->_('Ok'),
+			'status/index/all/detail/'.self::SERVICE_PENDING   => $current_status->services_pending.' '.$this->translate->_('Pending')
 		);
 
 		# SERVICES CRITICAL
 		$services_critical = array();
 		if ($current_status->services_critical_unacknowledged) {
 			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.(self::HOST_UP|self::HOST_PENDING).'/'.(self::SERVICE_NO_SCHEDULED_DOWNTIME|self::SERVICE_STATE_UNACKNOWLEDGED|self::SERVICE_CHECKS_ENABLED)] =
-				$current_status->services_critical_unacknowledged.' Unhandled Problems';
+				$current_status->services_critical_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_critical_host_problem) {
-			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_critical_host_problem.' on Problem Hosts';
+			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_critical_host_problem.' '.$this->translate->_('on Problem Hosts');
 		}
 
 		if ($current_status->services_critical_scheduled) {
-			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_critical_scheduled.' Scheduled';
+			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_critical_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->services_critical_acknowledged) {
-			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_critical_acknowledged.' Acknowledged';
+			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_critical_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->services_critical_disabled) {
-			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_critical_disabled.' Disabled';
+			$services_critical['status/index/all/detail/'.self::SERVICE_CRITICAL.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_critical_disabled.' '.$this->translate->_('Disabled');
 		}
 
 
@@ -94,23 +96,23 @@ class Tac_services_Widget extends widget_Core {
 		# SERVICE_NO_SCHEDULED_DOWNTIME|SERVICE_STATE_UNACKNOWLEDGED|SERVICE_CHECKS_ENABLED
 		if ($current_status->services_warning_unacknowledged) {
 			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.(self::HOST_UP|self::HOST_PENDING).'/'.(self::SERVICE_NO_SCHEDULED_DOWNTIME|self::SERVICE_STATE_UNACKNOWLEDGED|self::SERVICE_CHECKS_ENABLED)] =
-				$current_status->services_warning_unacknowledged.' Unhandled Problems';
+				$current_status->services_warning_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_warning_host_problem) {
-			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_warning_host_problem.' on Problem Hosts';
+			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_warning_host_problem.' '.$this->translate->_('on Problem Hosts');
 		}
 
 		if ($current_status->services_warning_scheduled) {
-			$services_critical['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_warning_scheduled.' Scheduled';
+			$services_critical['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_warning_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->services_warning_acknowledged) {
-			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_warning_acknowledged.' Acknowledged';
+			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_warning_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->services_warning_disabled) {
-			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_warning_disabled.' Disabled';
+			$services_warning['status/index/all/detail/'.self::SERVICE_WARNING.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_warning_disabled.' '.$this->translate->_('Disabled');
 		}
 
 
@@ -118,36 +120,36 @@ class Tac_services_Widget extends widget_Core {
 		$services_unknown = array();
 		if ($current_status->services_unknown_unacknowledged) {
 			$services_unknown['status/index/all/hostdetail/'.self::SERVICE_UNKNOWN.'/'.(self::HOST_UP|self::HOST_PENDING).'/'.(self::SERVICE_NO_SCHEDULED_DOWNTIME|self::SERVICE_STATE_UNACKNOWLEDGED|self::SERVICE_CHECKS_ENABLED)] =
-				$current_status->services_unknown_unacknowledged.' Unhandled Problems';
+				$current_status->services_unknown_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_unknown_host_problem) {
-			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_unknown_host_problem.' on Problem Hosts';
+			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.(self::HOST_DOWN|self::HOST_UNREACHABLE)] = $current_status->services_unknown_host_problem.' '.$this->translate->_('on Problem Hosts');
 		}
 
 		if ($current_status->services_unknown_scheduled) {
-			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_unknown_scheduled.' Scheduled';
+			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_unknown_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->services_unknown_acknowledged) {
-			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_unknown_acknowledged.' Acknowledged';
+			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_STATE_ACKNOWLEDGED] = $current_status->services_unknown_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->services_unknown_disabled) {
-			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_unknown_disabled.' Disabled';
+			$services_unknown['status/index/all/detail/'.self::SERVICE_UNKNOWN.'/'.self::SERVICE_CHECKS_DISABLED ] = $current_status->services_unknown_disabled.' '.$this->translate->_('Disabled');
 		}
 
 
 		# SERVICES OK DISABLED
 		$services_ok_disabled = array();
 		if ($current_status->services_ok_disabled) {
-			$services_ok_disabled['status/index/all/detail/'.self::SERVICE_OK.'/'.self::SERVICE_CHECKS_DISABLED] = $current_status->services_ok_disabled.' Disabled';
+			$services_ok_disabled['status/index/all/detail/'.self::SERVICE_OK.'/'.self::SERVICE_CHECKS_DISABLED] = $current_status->services_ok_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# SERVICES PENDING DISABLED
 		$services_pending_disabled = array();
 		if ($current_status->services_pending_disabled) {
-			$services_pending_disabled['status/index/all/detail/'.self::SERVICE_PENDING .'/'.self::SERVICE_CHECKS_DISABLED] = $current_status->services_pending_disabled.' Disabled';
+			$services_pending_disabled['status/index/all/detail/'.self::SERVICE_PENDING .'/'.self::SERVICE_CHECKS_DISABLED] = $current_status->services_pending_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# fetch widget content

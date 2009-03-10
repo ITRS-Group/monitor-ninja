@@ -53,6 +53,9 @@ class Netw_health_Widget extends widget_Core {
 		$this->format_health_data();
 
 		# assign variables to widget
+		$title = $this->translate->_('Network health');
+		$host_label = $this->translate->_('HOSTS');
+		$service_label = $this->translate->_('SERVICES');
 		$host_value 	= $this->host_val;
 		$service_value 	= $this->service_val;
 		$host_image 	= $this->widget_full_path.$this->host_img;

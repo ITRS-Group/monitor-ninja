@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm" id="widget-tac_services">
 	<div class="widget-header">
-		<strong>Services</strong>
+		<strong><?php echo $title ?></strong>
 	</div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
