@@ -511,7 +511,7 @@ class Current_status_Model extends Model {
 		$sql = "
 			SELECT
 				s.*,
-				h.current_state AS host_state
+				h.current_state AS host_status
 			FROM
 				service s,
 				host h
