@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="widget movable collapsable removable closeconfirm" id="widget-network_health">
+<div class="widget movable collapsable removable closeconfirm" id="widget-tac_hosts">
 	<div class="widget-header">
 		<strong>Hosts</strong>
 	</div>
