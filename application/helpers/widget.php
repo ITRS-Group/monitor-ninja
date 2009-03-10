@@ -15,11 +15,15 @@ class widget_Core {
 	public $widget_full_path = false;
 	public $master_obj = false;
 	public $widgetname = false;
+	public $translate = false;
 
 	public function __construct()
 	{
 		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
 		$this->auto_render = FALSE;
+
+		# fetch our translation instance
+		$this->translate = zend::instance('Registry')->get('Zend_Translate');
 
 		# suppress output until widget is done
 		ob_implicit_flush(0);
