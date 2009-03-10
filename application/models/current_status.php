@@ -490,6 +490,7 @@ class Current_status_Model extends Model {
 
 			$this->total_hosts++;
 		}
+		$this->host_data_present = true;
 		return true;
 	}
 
@@ -666,6 +667,7 @@ class Current_status_Model extends Model {
 				$this->total_passive_service_checks++;
 			$this->total_services++;
 		}
+		$this->service_data_present = true;
 		return true;
 	}
 
