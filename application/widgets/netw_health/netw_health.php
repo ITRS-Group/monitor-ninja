@@ -17,7 +17,6 @@ class Netw_health_Widget extends widget_Core {
 	private $ok_img = '/images/thermok.png';
 	private $host_val = false;
 	private $service_val = false;
-	private $data = false;
 
 	public function __construct()
 	{
@@ -34,11 +33,21 @@ class Netw_health_Widget extends widget_Core {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		# create new model instance
-		$current_status = new Current_status_Model();
+		# use first argument as reference to current_status object
+		# this to prevent all widgets to fetch their own data
+		# as this would slow down things drastically
+		if (is_object($arguments[0])) {
+			$current_status = $arguments[0];
+			array_shift($arguments);
+		} else {
+			# don't accept widget to call current_status
+			# and re-generate all status data
+			return false;
+		}
 
 		# fetch network health data
-		$this->data = $current_status->get_network_health();
+		$this->host_val = $current_status->percent_host_health;
+		$this->service_val = $current_status->percent_service_health;
 
 		# format data according to current values
 		$this->format_health_data();
@@ -68,14 +77,6 @@ class Netw_health_Widget extends widget_Core {
 	*/
 	private function format_health_data()
 	{
-		$data = $this->data;
-		if (empty($data)) {
-			return false;
-		}
-
-		$this->host_val = $data['host_status'];
-		$this->service_val = $data['service_status'];
-
 		# host bar color
 		if ($this->host_val < $this->health_critical_percentage)
 			$this->host_img = $this->crit_img;
