@@ -9,6 +9,8 @@
  */
 class Tac_Controller extends Authenticated_Controller {
 
+	public $model = false;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -27,8 +29,14 @@ class Tac_Controller extends Authenticated_Controller {
 		(
 			$this->translate->_('logout')     => 'default/logout'
 		);
+
+		# run through all checks so we can cache status
+		# data for widgets
+		$this->model->analyze_status_data();
+
 		$widget = widget::add('netw_health', array('index'), $this);
 		$widget = widget::add('netw_outages', array('index'), $this);
+		$widget = widget::add('tac_hosts', array('index', $this->model), $this);
 
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
