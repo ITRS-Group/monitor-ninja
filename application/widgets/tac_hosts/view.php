@@ -1,16 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm" id="widget-network_health">
 	<div class="widget-header">
-		<strong>Network Outages</strong>
+		<strong>Hosts</strong>
 	</div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
 	</div>
 	<div class="widget-content">
 		<table class='tac' width=516 cellspacing=0 cellpadding=0 border=1>
-			<tr>
-				<td colspan=4 height=20 class='hostTitle'>&nbsp;Hosts</td>
-			</tr>
 			<tr>
 			<?php	foreach ($header_links as $url => $title) { ?>
 				<td class='hostHeader' width=125><?php echo html::anchor($url, html::specialchars($title)) ?></td>
