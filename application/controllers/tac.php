@@ -19,11 +19,11 @@ class Tac_Controller extends Authenticated_Controller {
 
 	public function index()
 	{
-		$this->template->content = new View('tac/index');
+		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = $this->translate->_('TAC::index');
 
-		$this->template->js_header = new View('js_header');
-		$this->template->css_header = new View('css_header');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
 
 		$this->template->content->links = array
 		(

@@ -22,7 +22,7 @@ class Admin_Controller extends Authenticated_Controller {
 	public function index()
 	{
 		# this should probably contain some information or menu...
-		$this->template->content = new View('admin/index');
+		$this->template->content = $this->add_view('admin/index');
 		$this->template->title = $this->translate->_('Admin::index');
 
 		$this->template->content->info = $this->translate->_('Admin startpage');
@@ -45,7 +45,7 @@ class Admin_Controller extends Authenticated_Controller {
 			$user = ORM::factory('user', (int)$id);
 		}
 		$roles = ORM::factory('role')->find_all();
-		$this->template->content = new View('admin/user_form');
+		$this->template->content = $this->add_view('admin/user_form');
 		$this->template->title = !empty($user->id) ? $this->translate->_('Edit user') : $this->translate->_('Add new user');
 		$this->template->content->form_title = !empty($user->id) ? $this->translate->_('Edit user') : $this->translate->_('Add user');
 		$this->template->content->realname = $this->translate->_('Name');
@@ -127,7 +127,7 @@ class Admin_Controller extends Authenticated_Controller {
 	{
 		$user = ORM::factory('user');
 		$user_list = $user->find_all(); # with('roles')->
-		$this->template->content = new View('admin/user_list');
+		$this->template->content = $this->add_view('admin/user_list');
 		$this->template->content->username = $this->translate->_('Username');
 		$this->template->content->realname = $this->translate->_('Name');
 		$this->template->content->access = $this->translate->_('Access');

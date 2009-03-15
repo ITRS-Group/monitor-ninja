@@ -24,10 +24,16 @@ class Ninja_Controller extends Template_Controller {
 	public $template = "template";
 	public $user = false;
 	public $profiler = false;
+	public $theme_path = false;
 
 	public function __construct()
 	{
 		parent::__construct();
+		$this->theme_path = Kohana::config('config.theme_path').Kohana::config('config.current_theme');
+
+		# set base template file to current theme
+		$this->template = $this->add_view('template');
+
 		#$this->profiler = new Profiler;
 		#$this->profiler = new Fire_Profiler;
 		# Load session library
@@ -39,7 +45,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->locale = zend::instance('locale');
 
-		# @@@FIXME: Zend_Registry - do we need this?
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
 
@@ -64,4 +69,45 @@ class Ninja_Controller extends Template_Controller {
 		echo 'The requested page ('.$method.') doesn\' exist';
 	}
 
+	/**
+	*	@name	add_view
+	*	@desc	Handle paths to current theme etc
+	*
+	*/
+	public function add_view($view=false)
+	{
+		$view = trim($view);
+		if (empty($view)) {
+			return false;
+		}
+		return new View($this->theme_path.$view);
+	}
+
+	/**
+	 *	Set correct image path considering
+	 *	the path to current theme.
+	 */
+	public function img_path($rel_path='')
+	{
+		return $this->add_path($rel_path);
+	}
+
+	/**
+	 *	Set correct image path considering
+	 *	the path to current theme.
+	 */
+	public function add_path($rel_path)
+	{
+		$rel_path = trim($rel_path);
+		if (empty($rel_path)) {
+			return false;
+		}
+
+		$path = false;
+		# assume rel_path is relative from current theme
+		$path = 'application/views/'.$this->theme_path.$rel_path;
+		# make sure we didn't mix up start/end slashes
+		$path = str_replace('//', '/', $path);
+		return $path;
+	}
 }
