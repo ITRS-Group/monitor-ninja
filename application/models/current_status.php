@@ -925,4 +925,54 @@ class Current_status_Model extends Model {
 		return ${$what.'_states'};
 	}
 
+	/**
+	 * Fetch "status_totals" for host or service
+	 */
+	public function status_totals($what='host')
+	{
+		$hosts = false;
+		$services = false;
+		$sql = false;
+		switch (strtolower($what)) {
+			case 'host':
+				$hosts = $this->auth->get_authorized_hosts();
+				if (empty($hosts)) {
+					return false;
+				}
+				$host_str = implode(', ', array_keys($hosts));
+				$sql = "
+					SELECT
+						COUNT(current_state) AS cnt,
+						current_state
+					FROM
+						host
+					WHERE
+						id IN(".$host_str.")
+					GROUP BY
+						current_state;";
+				break;
+			case 'service':
+				$services = $this->auth->get_authorized_services();
+				if (empty($services)) {
+					return false;
+				}
+				$service_str = implode(', ', array_keys($services));
+				$sql = "
+					SELECT
+						COUNT(current_state) AS cnt,
+						current_state
+					FROM
+						service
+					WHERE
+						id IN(".$service_str.")
+					GROUP BY
+						current_state;";
+				break;
+		}
+		if (!empty($sql)) {
+			$result = $this->db->query($sql);
+			return $result;
+		}
+		return false;
+	}
 }
