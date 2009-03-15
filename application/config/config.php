@@ -123,3 +123,23 @@ $config['modules'] = array
  * 	No trailing slash.
  */
 $config['nagios_base_path'] = '/opt/monitor';
+
+/**
+ *	Path to where host logos as stored.
+ *	Should be relative to webroot
+ */
+$config['logos_path'] = '/monitor/images/logos/';
+
+/**
+ * Theme config
+ *
+ * theme_path points to the views subdirectory where ALL
+ * available themes are stored
+ */
+$config['theme_path'] = 'themes/';
+
+/**
+ * current_theme is the subdirectory to 'theme_path' above
+ * that holds the currently active theme.
+ */
+$config['current_theme'] = 'default/';
