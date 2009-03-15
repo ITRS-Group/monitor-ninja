@@ -106,7 +106,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 			$this->complete_login($user);
 
 			return TRUE;
-		} else echo "BAD";
+		}
 
 		// Login failed
 		return FALSE;
