@@ -903,4 +903,26 @@ class Current_status_Model extends Model {
 		return $retval;
 	}
 
+	/**
+	 * List available states for host or service
+	 */
+	public function available_states($what='host')
+	{
+		$host_states = array(
+			self::HOST_UP,
+			self::HOST_DOWN,
+			self::HOST_UNREACHABLE,
+			self::HOST_PENDING
+		);
+
+		$service_states = array(
+			self::SERVICE_OK,
+			self::SERVICE_WARNING,
+			self::SERVICE_CRITICAL,
+			self::SERVICE_PENDING,
+			self::SERVICE_UNKNOWN
+		);
+		return ${$what.'_states'};
+	}
+
 }
