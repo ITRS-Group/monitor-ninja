@@ -110,19 +110,29 @@ class widget_Core {
 
 	/**
 	*	@name	fetch
-	*	@desc	Fetch content from output buffer for widget
-	* 			and clean up output buffer.
+	*	@desc	Fetch content from output buffer for widget.
 	* 			Assign required external files (js, css) on to master controller variables.
 	*
 	*/
 	public function fetch()
 	{
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = $this->output();
 		$this->resources($this->js, 'js');
 		$this->resources($this->css, 'css');
 		$this->master_obj->widgets = array_merge($this->master_obj->widgets, array($content));
 		#return array('content' => $content, 'js' => $this->js, 'css' => $this->css);
+	}
+
+	/**
+	*	@name	output
+	*	@desc	Fetch content from output buffer for widget ajax call
+	* 			and clean up output buffer.
+	*/
+	public function output()
+	{
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
 	}
 
 	/**
