@@ -866,4 +866,41 @@ class Current_status_Model extends Model {
 		$result = $this->db->query($sql);
 		return $result;
 	}
+
+	/**
+	 *	Translates a given status from db to a readable string
+	 */
+	public function translate_status($db_status=false, $type='host')
+	{
+		$host_states = array(
+			self::HOST_UP => 'UP',
+			self::HOST_DOWN => 'DOWN',
+			self::HOST_UNREACHABLE => 'UNREACHABLE',
+			self::HOST_PENDING => 'PENDING'
+		);
+
+		$service_states = array(
+			self::SERVICE_OK => 'OK',
+			self::SERVICE_WARNING => 'WARNING',
+			self::SERVICE_CRITICAL => 'CRITICAL',
+			self::SERVICE_PENDING => 'PENDING',
+			self::SERVICE_UNKNOWN => 'UNKNOWN'
+		);
+
+		$retval = false;
+		switch ($type) {
+			case 'host':
+				if (array_key_exists($db_status, $host_states)) {
+					$retval = $host_states[$db_status];
+				}
+				break;
+			case 'service':
+				if (array_key_exists($db_status, $service_states)) {
+					$retval = $service_states[$db_status];
+				}
+				break;
+		}
+		return $retval;
+	}
+
 }
