@@ -647,44 +647,223 @@ class Current_status_Model extends Model {
 		return true;
 	}
 
-		/**
-		*	@name 	get_child_hosts
-		*	@desc 	Fetch child hosts for a host
-		* 	@param 	int $host_id
-		* 	@param 	array $children
-		*
-		*/
-		public function get_child_hosts($host_id=false, &$children=false)
-		{
-			$host_id = trim($host_id);
-			if (empty($host_id)) {
-				return false;
-			}
-			$host_id = (int)$host_id;
+	/**
+	*	@name 	get_child_hosts
+	*	@desc 	Fetch child hosts for a host
+	* 	@param 	int $host_id
+	* 	@param 	array $children
+	*
+	*/
+	public function get_child_hosts($host_id=false, &$children=false)
+	{
+		$host_id = trim($host_id);
+		if (empty($host_id)) {
+			return false;
+		}
+		$host_id = (int)$host_id;
 
-			$user_hosts = $this->auth->get_authorized_hosts();
-			if (!array_key_exists($host_id, $user_hosts)) {
-				return false;
-			}
+		$user_hosts = $this->auth->get_authorized_hosts();
+		if (!array_key_exists($host_id, $user_hosts)) {
+			return false;
+		}
 
-			$query = "
+		$query = "
+			SELECT
+				h.id,
+				h.host_name
+			FROM
+				host h,
+				host_parents hp
+			WHERE
+				hp.parents=".$host_id." AND
+				h.id=hp.host";
+		$result = $this->db->query($query);
+		if ($result->count()==0) {
+			return false;
+		}
+		foreach ($result as $host) {
+			$children[$host->id] = $host->host_name;
+			$this->get_child_hosts($host->id, $children); # RECURSIVE
+		}
+		return sizeof($children);
+	}
+
+	/**
+	*	@name 	host_status_subgroup
+	*	@desc 	Verify input host ID(s) and redirect to
+	* 			get_host_status()
+	*	@param	mixed (array/int) host_id(s) to check
+	*	@param	bool
+	* 	@param 	str $sort_field field to sort on
+	* 	@param 	str $sort_order ASC/DESC
+	*/
+	public function host_status_subgroup($host_ids = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC')
+	{
+		if (!is_array($host_ids)) {
+			$host_ids = trim($host_ids);
+		}
+		if (empty($host_ids)) {
+			return false;
+		}
+		$hosts = $this->auth->get_authorized_hosts();
+		$auth_host_ids = false;
+		if (is_array($host_ids)) {
+			foreach ($host_ids as $id) {
+				if (array_key_exists($id, $hosts)) {
+					$auth_host_ids[] = $id;
+				}
+			}
+		} else {
+			if (strtolower($host_ids ) === 'all') {
+				# return all authenticated host IDs
+				$auth_host_ids = array_keys($hosts);
+			} elseif (array_key_exists($host_ids, $hosts)) {
+				$auth_host_ids[] = $host_ids;
+			}
+		}
+		return $this->get_host_status($auth_host_ids, $show_services, $state_filter, $sort_field, $sort_order);
+	}
+
+	/**
+	*	@name	host_status_subgroup_names
+	*	@desc 	Verify input host_name(s) and redirect to
+	* 			get_host_status()
+	*	@param	mixed (array/string) host_name(s) to check
+	* 			Accepts 'all' as input, which will return
+	* 			all hosts the user has been granted access to.
+	*	@param	bool
+	* 	@param 	str $sort_field field to sort on
+	* 	@param 	str $sort_order ASC/DESC
+	*/
+	public function host_status_subgroup_names($host_names=false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC')
+	{
+		if (!is_array($host_names)) {
+			$host_names = trim($host_names);
+		}
+		if (empty($host_names)) {
+			return false;
+		}
+		# fetch available hosts for user
+		$hosts = $this->auth->get_authorized_hosts();
+		$host_r = $this->auth->hosts_r; # flipped array => host_names are keys, ID is value
+		$retval = false;
+		if (is_array($host_names)) {
+			foreach ($host_names as $temp_host) {
+				if (array_key_exists($temp_host, $host_r)) {
+					$retval[] = $host_r[$temp_host];
+				}
+			}
+		} else {
+			if (strtolower($host_names) === 'all') {
+				# return all authenticated host IDs
+				$retval = array_keys($hosts);
+			} elseif (array_key_exists($host_names, $host_r)) {
+				$retval[] = $host_r[$host_names];
+			}
+		}
+		return $this->get_host_status($retval, $show_services, $state_filter, $sort_field, $sort_order);
+	}
+
+	/**
+	*	@name 	get_host_status
+	*	@desc 	Fetch status data for a subset of hosts
+	* 			(and their related services if show_services is set to true).
+	* 	@param	array host_list
+	* 	@param	bool show_services, will only show services
+	* 			for each host if this is set to true
+	* 			Accepts 'all' as input, which will return
+	* 			all hosts the user has been granted access to.
+	* 	@param	int $state_filter value of current_state to filter for
+	* 	@param 	str $sort_field field to sort on
+	* 	@param 	str $sort_order ASC/DESC
+	*/
+	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC')
+	{
+		if (empty($host_list)) {
+			return false;
+		}
+
+		$host_str = implode(', ', $host_list);
+		$sort_field = trim($sort_field);
+		$state_filter = trim($state_filter);
+		if ($state_filter!='') {
+			$state_filter = $this->db->escape($state_filter);
+			# all problems =>
+			#		host: 		check for current_state > 0
+			#		service:  	check for current_state > 2
+			$filter_sql = $show_services ? ' AND s.current_state='.$state_filter : ' AND current_state='.$state_filter;
+			$filter_sql .= ' ';
+		}
+		if (!$show_services) {
+			$sort_field = empty($sort_field) ? 'host_name' : $sort_field;
+			# only host listing
+			$sql = "
 				SELECT
-					h.id,
-					h.host_name
+					id AS host_id,
+					host_name,
+					address,
+					alias,
+					current_state,
+					last_check,
+					notes_url,
+					notifications_enabled,
+					active_checks_enabled,
+					icon_image,
+					icon_image_alt,
+					is_flapping,
+					action_url,
+					(UNIX_TIMESTAMP() - last_state_change) AS duration,
+					current_attempt,
+					problem_has_been_acknowledged,
+					scheduled_downtime_depth,
+					plugin_output
+				FROM host
+				WHERE
+					id IN (".$host_str.")
+					".$filter_sql."
+				ORDER BY
+					".$sort_field." ".$sort_order;
+
+		} else {
+			$sort_field = empty($sort_field) ? 'h.host_name, s.service_description' : $sort_field;
+			$sql = "
+				SELECT
+					h.id AS host_id,
+					h.host_name,
+					h.address,
+					h.alias,
+					h.notifications_enabled AS host_notifications_enabled,
+					h.action_url AS host_action_url,
+					h.icon_image AS host_icon_image,
+					h.icon_image_alt AS host_icon_image_alt,
+					h.is_flapping AS host_is_flapping,
+					s.id AS service_id,
+					s.service_description,
+					s.current_state,
+					s.last_check,
+					s.notifications_enabled,
+					s.active_checks_enabled,
+					s.action_url,
+					s.icon_image,
+					s.icon_image_alt,
+					s.passive_checks_enabled,
+					s.problem_has_been_acknowledged,
+					s.scheduled_downtime_depth,
+					s.is_flapping as service_is_flapping,
+					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
+					s.current_attempt,
+					s.plugin_output
 				FROM
 					host h,
-					host_parents hp
+					service s
 				WHERE
-					hp.parents=".$host_id." AND
-					h.id=hp.host";
-			$result = $this->db->query($query);
-			if ($result->count()==0) {
-				return false;
-			}
-			foreach ($result as $host) {
-				$children[$host->id] = $host->host_name;
-				$this->get_child_hosts($host->id, $children); # RECURSIVE
-			}
-			return sizeof($children);
+					h.id IN (".$host_str.") AND
+					s.host_name = h.id
+					".$filter_sql."
+				ORDER BY
+					".$sort_field." ".$sort_order;
 		}
+		$result = $this->db->query($sql);
+		return $result;
+	}
 }
