@@ -7,17 +7,6 @@
  * @license    GPL
  */
 class Tac_hosts_Widget extends widget_Core {
-	const HOST_PENDING = 1;
-	const HOST_UP = 2;
-	const HOST_DOWN	= 4;
-	const HOST_UNREACHABLE = 8;
-	const HOST_STATE_ACKNOWLEDGED = 4;
-	const HOST_STATE_UNACKNOWLEDGED = 8;
-	const HOST_SCHEDULED_DOWNTIME = 1;
-	const HOST_NO_SCHEDULED_DOWNTIME = 2;
-	const HOST_CHECKS_DISABLED = 16;
-	const HOST_CHECKS_ENABLED = 32;
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -47,62 +36,62 @@ class Tac_hosts_Widget extends widget_Core {
 		# assign variables for our view
 		$title = $this->translate->_('Hosts');
 		$header_links = array(
-			'status/index/all/hostdetail/'.self::HOST_DOWN => $current_status->hosts_down.' '.$this->translate->_('Down'),
-			'status/index/all/hostdetail/'.self::HOST_UNREACHABLE => $current_status->hosts_unreachable.' '.$this->translate->_('Unreachable'),
-			'status/index/all/hostdetail/'.self::HOST_UP => $current_status->hosts_up.' '.$this->translate->_('Up'),
-			'status/index/all/hostdetail/'.self::HOST_PENDING => $current_status->hosts_pending.' '.$this->translate->_('Pending')
+			'status/host/all/'.nagstat::HOST_DOWN => $current_status->hosts_down.' '.$this->translate->_('Down'),
+			'status/host/all/'.nagstat::HOST_UNREACHABLE => $current_status->hosts_unreachable.' '.$this->translate->_('Unreachable'),
+			'status/host/all/'.nagstat::HOST_UP => $current_status->hosts_up.' '.$this->translate->_('Up'),
+			'status/host/all/'.nagstat::HOST_PENDING => $current_status->hosts_pending.' '.$this->translate->_('Pending')
 		);
 
 		# HOSTS DOWN
 		$hosts_down = array();
 		if ($current_status->hosts_down_unacknowledged) {
-			$hosts_down['status/index/all/hostdetail/'.self::HOST_DOWN.'/'.(self::HOST_NO_SCHEDULED_DOWNTIME|self::HOST_STATE_UNACKNOWLEDGED|self::HOST_CHECKS_ENABLED)] =
+			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
 				$current_status->hosts_down_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->hosts_down_scheduled) {
-			$hosts_down['status/index/all/hostdetail/'.self::HOST_DOWN.'/'.self::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_down_scheduled.' '.$this->translate->_('Scheduled');
+			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_down_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->hosts_down_acknowledged) {
-			$hosts_down['status/index/all/hostdetail/'.self::HOST_DOWN.'/'.self::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_down_acknowledged.' '.$this->translate->_('Acknowledged');
+			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_down_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->hosts_down_disabled) {
-			$hosts_down['status/index/all/hostdetail/'.self::HOST_DOWN.'/'.self::HOST_CHECKS_DISABLED] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled');
+			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# HOSTS UNREACHABLE
 		$hosts_unreachable = array();
 
 		if ($current_status->hosts_unreachable_unacknowledged) {
-			$hosts_unreachable['status/index/all/hostdetail/'.self::HOST_UNREACHABLE.'/'.(self::HOST_NO_SCHEDULED_DOWNTIME|self::HOST_STATE_UNACKNOWLEDGED|self::HOST_CHECKS_ENABLED)] =
+			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
 				$current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->hosts_unreachable_scheduled) {
-			$hosts_unreachable['status/index/all/hostdetail/'.self::HOST_UNREACHABLE.'/'.self::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_unreachable_scheduled.' '.$this->translate->_('Scheduled');
+			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_unreachable_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->hosts_unreachable_acknowledged) {
-			$hosts_unreachable['status/index/all/hostdetail/'.self::HOST_UNREACHABLE.'/'.self::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_unreachable_acknowledged.' '.$this->translate->_('Acknowledged');
+			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_unreachable_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->hosts_unreachable_disabled) {
-			$hosts_unreachable['status/index/all/hostdetail/'.self::HOST_UNREACHABLE.'/'.self::HOST_CHECKS_DISABLED] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled');
+			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled');
 		}
 
 
 		# HOSTS UP DISABLED
 		$hosts_up_disabled = array();
 		if ($current_status->hosts_up_disabled) {
-			$hosts_up_disabled['status/index/all/hostdetail/'.self::HOST_UP .'/'.self::HOST_CHECKS_DISABLED] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled');
+			$hosts_up_disabled['status/host/all/'.nagstat::HOST_UP .'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# HOSTS PENDING DISABLED
 		$hosts_pending_disabled = array();
 		if ($current_status->hosts_pending_disabled) {
-			$hosts_pending_disabled['status/index/all/hostdetail/'.self::HOST_PENDING  .'/'.self::HOST_CHECKS_DISABLED] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled');
+			$hosts_pending_disabled['status/host/all/'.nagstat::HOST_PENDING  .'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# fetch widget content
