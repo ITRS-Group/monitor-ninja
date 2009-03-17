@@ -187,13 +187,18 @@ class Status_Controller extends Authenticated_Controller {
 		return $conv_status;
 	}
 
+	/**
+	 * Create header links for status listing
+	 */
 	private function header_links(
 			$type='host',
 			$filter_object='all',
 			$title=false,
 			$method=false,
 			$sort_field_db=false,
-			$sort_field_str=false)
+			$sort_field_str=false,
+			$host_status=false,
+			$service_status=false)
 	{
 
 		$type = trim($type);
@@ -207,12 +212,12 @@ class Status_Controller extends Authenticated_Controller {
 			case 'host':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
-					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.nagstat::HOST_UP.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
 					$header['img_asc'] = $this->img_sort_up;
 					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
 					$header['img_asc'] = $this->img_sort_up;
 					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
-					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.nagstat::HOST_UP.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
 					$header['alt_desc'] = 'Sort by '.$sort_field_str.' (descending)';
 				}
