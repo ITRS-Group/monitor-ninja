@@ -40,7 +40,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current), $this);
+		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
