@@ -1101,4 +1101,56 @@ class Current_status_Model extends Model {
 		#echo $sql;
 		return $result;
 	}
+
+	/**
+	*	@name 	get_groups_for_object
+	*	@desc	Fetch host/service group for host/service
+	* 			Accepts either object ID or object name.
+	* 	@param 	st $type
+	* 	@param 	int $id
+	* 	@param 	str $name
+	*
+	*/
+	public function get_groups_for_object($type='host', $id=false, $name=false)
+	{
+		$name = trim($name);
+		switch (strtolower($type)) {
+			case 'host':
+				$host_list = $this->auth->get_authorized_hosts();
+				break;
+			case 'service':
+				$service_list = $this->auth->get_authorized_services();
+				break;
+			default:
+				return false;
+		}
+
+		# check for authentication
+		if ($id !== false) {
+			# we have an ID
+			# check that user is allowed to see this
+			if (!array_key_exists($id, ${$type.'_list'})) {
+				return false;
+			}
+			$sql = "
+				SELECT
+					gr.*
+				FROM
+					".$type."_".$type."group g,
+					".$type."group gr
+				WHERE
+					g.".$type."=".$id." AND
+					gr.id=g.".$type."group;";
+		} elseif (!empty($name)) {
+			if (!in_array($name, ${$type.'_list'})) {
+				return false;
+			}
+		} else {
+			# abort if both id and name are empty
+			return false;
+		}
+
+		$result = $this->db->query($sql);
+		return $result;
+	}
 }
