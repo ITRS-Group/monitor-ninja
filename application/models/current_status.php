@@ -841,6 +841,9 @@ class Current_status_Model extends Model {
 					".$sort_field." ".$sort_order;
 
 		} else {
+			$service_list = $this->auth->get_authorized_services();
+			ksort($service_list); # not required but could (possibly) speed up the query
+			$service_str = implode(',', array_keys($service_list));
 			$sort_field = empty($sort_field) ? 'h.host_name, s.service_description' : $sort_field;
 			$sql = "
 				SELECT
