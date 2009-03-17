@@ -697,7 +697,7 @@ class Current_status_Model extends Model {
 	* 	@param 	str $sort_field field to sort on
 	* 	@param 	str $sort_order ASC/DESC
 	*/
-	public function host_status_subgroup($host_ids = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC')
+	public function host_status_subgroup($host_ids = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC', $service_filter=false)
 	{
 		if (!is_array($host_ids)) {
 			$host_ids = trim($host_ids);
@@ -721,7 +721,7 @@ class Current_status_Model extends Model {
 				$auth_host_ids[] = $host_ids;
 			}
 		}
-		return $this->get_host_status($auth_host_ids, $show_services, $state_filter, $sort_field, $sort_order);
+		return $this->get_host_status($auth_host_ids, $show_services, $state_filter, $sort_field, $sort_order, $service_filter);
 	}
 
 	/**
@@ -735,7 +735,7 @@ class Current_status_Model extends Model {
 	* 	@param 	str $sort_field field to sort on
 	* 	@param 	str $sort_order ASC/DESC
 	*/
-	public function host_status_subgroup_names($host_names=false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC')
+	public function host_status_subgroup_names($host_names=false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC', $service_filter=false)
 	{
 		if (!is_array($host_names)) {
 			$host_names = trim($host_names);
@@ -761,7 +761,7 @@ class Current_status_Model extends Model {
 				$retval[] = $host_r[$host_names];
 			}
 		}
-		return $this->get_host_status($retval, $show_services, $state_filter, $sort_field, $sort_order);
+		return $this->get_host_status($retval, $show_services, $state_filter, $sort_field, $sort_order, $service_filter);
 	}
 
 	/**
