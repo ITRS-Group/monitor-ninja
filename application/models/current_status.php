@@ -777,7 +777,7 @@ class Current_status_Model extends Model {
 	* 	@param 	str $sort_field field to sort on
 	* 	@param 	str $sort_order ASC/DESC
 	*/
-	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC')
+	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC', $service_filter=false)
 	{
 		if (empty($host_list)) {
 			return false;
@@ -786,12 +786,28 @@ class Current_status_Model extends Model {
 		$host_str = implode(', ', $host_list);
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
+		$filter_sql = '';
 		if ($state_filter!='') {
-			$state_filter = $this->db->escape($state_filter);
+			#$state_filter = $this->db->escape($state_filter);
 			# all problems =>
-			#		host: 		check for current_state > 0
-			#		service:  	check for current_state > 2
-			$filter_sql = $show_services ? ' AND s.current_state='.$state_filter : ' AND current_state='.$state_filter;
+
+			if ($state_filter>2) {
+				$state_filter = '>0';
+			} else {
+				$state_filter = '='.$state_filter;
+			}
+			$filter_sql .= $show_services ? ' AND h.current_state'.$state_filter : ' AND current_state'.$state_filter;
+			$filter_sql .= ' ';
+		}
+		if ($service_filter!==false) {
+			#$service_filter = $this->db->escape($service_filter);
+
+			if ($service_filter>3) {
+				$service_filter = '>0';
+			} else {
+				$service_filter = '='.$service_filter;
+			}
+			$filter_sql .= ' AND s.current_state'.$service_filter;
 			$filter_sql .= ' ';
 		}
 		if (!$show_services) {
