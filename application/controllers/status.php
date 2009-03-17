@@ -81,12 +81,77 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->logos_path = $this->logos_path;
 	}
 
-	public function service($host='all', $servicestatustypes=false, $hoststatustypes=false, $serviceprops=false)
+	/**
+	 * List status for hosts and services
+	 *
+	 * @param str $host
+	 * @param int $servicestatustypes
+	 * @param int $hoststatustypes
+	 * @param int $serviceprops
+	 */
+	public function service($host='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $serviceprops=false, $sort_order='ASC', $sort_field='host_name')
 	{
+		$host = trim($host);
+
+		$this->template->content = $this->add_view('status/service');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+
+		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, $servicestatustypes), $this);
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+
+		$conv_svc_status = $this->convert_status_value($servicestatustypes, 'service');
+		$conv_host_status = $this->convert_status_value($hoststatustypes, 'host');
+
+		# set sort images, used in header_links() below
+		$this->img_sort_up = $this->img_path('images/up.gif');
+		$this->img_sort_down = $this->img_path('images/down.gif');
+
 		$host = link::decode($host);
-		echo "servicestatustypes: ".$servicestatustypes."<br />";
-		$conv_status = $this->convert_status_value($servicestatustypes, 'service');
-		echo 'Conv status:'.$conv_status."<br />";
+
+		# assign specific header fields and values for current method
+		$header_link_fields = array(
+			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'h.host_name', 'sort_field_str' => 'host name'),
+			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
+			array('title' => $this->translate->_('Status'), 'sort_field_db' => 's.current_state', 'sort_field_str' => 'service status'),
+			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
+			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
+			array('title' => $this->translate->_('Status Information'))
+		);
+
+		# build header links array
+		foreach ($header_link_fields as $fields) {
+			if (sizeof($fields) > 1) {
+				$header_links[] = $this->header_links(Router::$method, $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes);
+			} else {
+				$header_links[] = $this->header_links(Router::$method, $host, $fields['title']);
+			}
+		}
+
+		$this->template->content->header_links = $header_links;
+
+		$shown = $host == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
+		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
+		$this->template->content->sub_title = $sub_title;
+
+		$result = $this->current->host_status_subgroup_names($host, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
+
+		$this->template->content->result = $result;
+		$this->template->content->logos_path = $this->logos_path;
+	}
+
+	/**
+	*	@name servicegroup
+	*	@desc
+	*
+	*/
+	public function servicegroup($group=false)
+	{
+		$group = link::decode($group);
+		echo "Not fixed yet (group = $group)";
 	}
 
 	/**
