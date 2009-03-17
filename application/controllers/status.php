@@ -105,11 +105,14 @@ class Status_Controller extends Authenticated_Controller {
 		$conv_status = false;
 		if ($type == 'host') {
 			if ($value > 8) {
-				return false;
+				return $value;
 			}
 			$conv_status = $value == 1 ? -1 : ($value >> 2);
 		} elseif ($type == 'service') {
 			$service_states = array(2 => 0, 4 => 1, 8 => 3, 16 => 2, 1 => -1);
+			if ($value>16) {
+				return $value;
+			}
 			if (array_key_exists($value, $service_states)) {
 				$conv_status = $service_states[$value];
 			}
