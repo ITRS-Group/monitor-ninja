@@ -69,6 +69,7 @@ class Current_status_Model extends Model {
 	public $total_services = 0;
 
 	public $flap_disabled_hosts = 0;
+	public $flap_disabled_services = 0;
 	public $flapping_hosts = 0;
 	public $notification_disabled_hosts = 0;
 	public $event_handler_disabled_hosts = 0;
