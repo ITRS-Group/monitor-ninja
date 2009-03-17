@@ -28,11 +28,13 @@ class Status_Controller extends Authenticated_Controller {
 	 *
 	 * @param string $host
 	 * @param int $hoststatustypes
+	 * @param str $sort_order
+	 * @param str $sort_field
+	 * @param bool $show_services
 	 */
-	public function host($host='all', $hoststatustypes=2, $sort_order='ASC', $sort_field='host_name', $show_services=false)
+	public function host($host='all', $hoststatustypes=nagstat::HOST_UP, $sort_order='ASC', $sort_field='host_name', $show_services=false)
 	{
 		$this->template->content = $this->add_view('status/host');
-		#$this->template->title = $this->translate->_('Status');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
