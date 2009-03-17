@@ -34,6 +34,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function host($host='all', $hoststatustypes=nagstat::HOST_UP, $sort_order='ASC', $sort_field='host_name', $show_services=false)
 	{
+		$host = link::decode($host);
 		$this->template->content = $this->add_view('status/host');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -82,6 +83,7 @@ class Status_Controller extends Authenticated_Controller {
 
 	public function service($host='all', $servicestatustypes=false, $hoststatustypes=false, $serviceprops=false)
 	{
+		$host = link::decode($host);
 		echo "servicestatustypes: ".$servicestatustypes."<br />";
 		$conv_status = $this->convert_status_value($servicestatustypes, 'service');
 		echo 'Conv status:'.$conv_status."<br />";

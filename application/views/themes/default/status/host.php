@@ -65,7 +65,7 @@ if (!empty($widgets)) {
 						<table border=0 cellpadding=0 cellspacing=0>
 							<tr>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars($row->host_name)) ?>
 								</td>
 							</tr>
 						</table>
@@ -75,27 +75,27 @@ if (!empty($widgets)) {
 							<tr>
 						<?php	if ($row->problem_has_been_acknowledged) { ?>
 								<td align="center" class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars('ACK')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('ACK')) ?>
 								</td>
 						<?php	}
 								if (empty($row->notifications_enabled)) { ?>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars('nDIS')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('nDIS')) ?>
 								</td>
 						<?php	}
-								if (!empty($row->checks_enabled)) { ?>
+								if (!$row->active_checks_enabled) { ?>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars('DIS')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('DIS')) ?>
 								</td>
 						<?php	}
 								if (isset($row->is_flapping) && $row->is_flapping) { ?>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars('FPL')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('FPL')) ?>
 								</td>
 						<?php	}
 								if ($row->scheduled_downtime_depth > 0) { ?>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name, html::specialchars('SDT')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('SDT')) ?>
 								</td>
 						<?php	}
 								if (!empty($row->notes_url)) { ?>
@@ -118,7 +118,7 @@ if (!empty($widgets)) {
 								</td>
 						<?php	} ?>
 								<td class="statusEven">
-									<?php echo html::anchor('status/host/'.$row->host_name.'/0/0/0/1','<img src="/monitor/images/status2.gif" border=0alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
+									<?php echo html::anchor('status/service/'.link::encode($row->host_name),'<img src="/monitor/images/status2.gif" border=0 alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
 								</td>
 								<td class="statusEven">
 									<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&host=<?php echo $row->host_name ?>">
