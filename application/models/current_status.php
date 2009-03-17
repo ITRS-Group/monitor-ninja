@@ -881,6 +881,7 @@ class Current_status_Model extends Model {
 					service s
 				WHERE
 					h.id IN (".$host_str.") AND
+					s.id IN (".$service_str.") AND
 					s.host_name = h.id
 					".$filter_sql."
 				ORDER BY
