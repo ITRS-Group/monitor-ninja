@@ -64,9 +64,9 @@ class Status_Controller extends Authenticated_Controller {
 		# build header links array
 		foreach ($header_link_fields as $fields) {
 			if (sizeof($fields) > 1) {
-				$header_links[] = $this->header_links('host', $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str']);
+				$header_links[] = $this->header_links(Router::$method, $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, false);
 			} else {
-				$header_links[] = $this->header_links('host', $host, $fields['title']);
+				$header_links[] = $this->header_links(Router::$method, $host, $fields['title']);
 			}
 		}
 
