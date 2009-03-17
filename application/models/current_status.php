@@ -1154,4 +1154,47 @@ class Current_status_Model extends Model {
 		$result = $this->db->query($sql);
 		return $result;
 	}
+
+	/**
+	* Reads a configuration file in the format variable=value
+	* and returns it in an array.
+	* lines beginning with # are considered to be comments
+	*
+	* @param 	str $config_file
+	* @return	array
+	*/
+	function parse_config_file($config_file) {
+		$config_file = trim($config_file);
+		if (empty($config_file)) {
+			return false;
+		}
+		$config_file = $this->base_path.'/etc/'.$config_file;
+		$buf = file_get_contents($config_file);
+		if($buf === false) return(false);
+
+		$lines = explode("\n", $buf);
+		$buf = '';
+
+		$tmp = false;
+		foreach($lines as $line) {
+			// skip empty lines and non-variables
+			$line = trim($line);
+			if(!strlen($line) || $line{0} === '#') continue;
+			$str = explode('=', $line);
+			if(!isset($str[1])) continue;
+
+			// preserve all values if a variable can be specified multiple times
+			if(isset($options[$str[0]]) && $options[$str[0]] !== $str[1]) {
+				if(!is_array($options[$str[0]])) {
+					$tmp = $options[$str[0]];
+					$options[$str[0]] = array($tmp);
+				}
+				$options[$str[0]][] = $str[1];
+				continue;
+			}
+			$options[$str[0]] = $str[1];
+		}
+
+		return($options);
+	}
 }
