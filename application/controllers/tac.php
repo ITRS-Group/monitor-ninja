@@ -38,6 +38,7 @@ class Tac_Controller extends Authenticated_Controller {
 		widget::add('netw_outages', array('index'), $this);
 		widget::add('tac_hosts', array('index', $this->model), $this);
 		widget::add('tac_services', array('index', $this->model), $this);
+		widget::add('tac_monfeat', array('index', $this->model), $this);
 
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
