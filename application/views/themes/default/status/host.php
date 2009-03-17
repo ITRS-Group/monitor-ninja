@@ -33,7 +33,7 @@ if (!empty($widgets)) {
 			case Current_status_Model::HOST_UP:
 				$status_class .= 'HOSTUP';
 				break;
-			case Current_status_Modelt::HOST_DOWN:
+			case Current_status_Model::HOST_DOWN:
 				$status_class .= 'HOSTDOWN';
 				if ($row->problem_has_been_acknowledged) {
 					# using Nagios default here
