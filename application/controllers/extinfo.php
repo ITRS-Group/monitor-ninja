@@ -14,10 +14,17 @@ class Extinfo_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 
-		# load current status for host/service status totals
-		$this->current = new Current_status_Model();
-
 		$this->logos_path = Kohana::config('config.logos_path');
+	}
+
+	/**
+	*	Default controller method
+	*	Redirects to show_process_info() which
+	*	is the equivalent of calling extinfo.cgi?type=0
+	*/
+	public function index()
+	{
+		url::redirect(Router::$controller.'/show_process_info');
 	}
 
 	/**
