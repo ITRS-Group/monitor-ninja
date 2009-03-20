@@ -34,6 +34,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function details($type='host', $host=false, $service=false)
 	{
+		# load current status for host/service status totals
+		$this->current = new Current_status_Model();
+
 		$host =link::decode($host);
 		$service = link::decode($service);
 		if (empty($host)) {
