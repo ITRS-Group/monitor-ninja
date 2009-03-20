@@ -1,0 +1,1 @@
+epm -f rpm -nm  ninja op5build/spec.list  -a noarch --output-dir op5build -v
