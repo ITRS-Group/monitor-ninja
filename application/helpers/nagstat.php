@@ -65,4 +65,32 @@ class nagstat_Core {
 		}
 	}
 
+	/**
+	*	Format a Nagios date format string to the
+	*	PHP equivalent.
+	*/
+	public function date_format($nagios_format_name='iso8601')
+	{
+		$nagios_format_name = trim($nagios_format_name);
+		if (empty($nagios_format_name)) {
+			return false;
+		}
+		$date_format = false;
+		switch (strtolower($nagios_format_name)) {
+			case 'us': # MM-DD-YYYY HH:MM:SS
+				$date_format = 'm-d-Y H:i:s';
+				break;
+			case 'euro': # DD-MM-YYYY HH:MM:SS
+				$date_format = 'd-m-Y H:i:s';
+				break;
+			case 'iso8601': # YYYY-MM-DD HH:MM:SS
+				$date_format = 'Y-m-d H:i:s';
+				break;
+			case 'strict-iso8601': # YYYY-MM-DDTHH:MM:SS
+				$date_format = 'Y-m-dTH:i:s';
+				break;
+		}
+		return $date_format;
+	}
+
 }
