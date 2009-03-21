@@ -1,0 +1,55 @@
+.featureDisabled,
+.featureDisabledFlapDetection,
+.featureDisabledNotifications,
+.featureDisabledHandlers,
+.featureDisabledActiveChecks,
+.featureDisabledPassiveChecks {
+	/*background-color: #ffcccc;*/
+	background: url(/monitor/images/bg/table/tac-disabled.png) repeat-y;
+	background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x;
+	font-weight: bold;
+	display: block;
+	height: 73px;
+	width: 130px;
+	margin-left: -2px;
+	padding: 2px;
+}
+
+.hostUnimportantProblem,
+.outageUnimportantProblem,
+.serviceUnimportantProblem {
+	background: url(/monitor/images/bg/table/bg.png) repeat-x;
+	background: #fcb6a7;
+	display: block;
+	margin-left: -12px;
+	margin-left: 0px;
+	width: 129px;
+	padding: 1px 7px;
+	text-align: center;
+}
+
+/* red */
+.hostImportantProblem,
+.outageImportantProblem,
+.serviceImportantProblem {
+	background: url(/monitor/images/bg/table/nagios-red.png) repeat-x;
+	display: block;
+	margin-left: -12px;
+	margin-left: 0px;
+	width: 129px;
+	font-weight: bold;
+	padding: 4px 7px;
+	color: #ffffff;
+	text-align: center;
+}
+
+.hostImportantProblem a,
+.outageImportantProblem a,
+.serviceImportantProblem a { color :#ffffff; }
+
+td.featureHeader,
+td.hostHeader,
+td.outageHeader,
+td.serviceHeader { width: 140px; }
+
+table.tac { width: auto; }
