@@ -162,7 +162,124 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content->notifications_enabled = $result->current()->notifications_enabled ? $str_enabled : $str_disabled;
 		$this->template->content->event_handler_enabled = $result->current()->event_handler_enabled ? $str_enabled : $str_disabled;
 		$this->template->content->flap_detection_enabled = $result->current()->flap_detection_enabled ? $str_enabled : $str_disabled;
-
 	}
 
+	/**
+	*	@name show_process_info
+	*	@desc
+	*
+	*/
+	public function show_process_info()
+	{
+		$this->template->content = $this->add_view('extinfo/process_info');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+
+		# instance_name = NULL
+		# instance_id = NULL
+
+		# Lables to translate
+		$na_str = $this->translate->_('N/A');
+		$yes = $this->translate->_('YES');
+		$no = $this->translate->_('NO');
+		$this->template->content->lable_program_version = $this->translate->_('Program Version');
+		$this->template->content->lable_program_start_time = $this->translate->_('Program Start Time');
+		$this->template->content->lable_total_run_time = $this->translate->_('Total Running Time');
+		$this->template->content->lable_last_external_cmd_check = $this->translate->_('Last External Command Check');
+		$this->template->content->lable_last_logfile_rotation = $this->translate->_('Last Log File Rotation');
+		$this->template->content->lable_pid = strstr(__FILE__, 'op5') ? $this->translate->_('Monitor PID') : $this->translate->_('Nagios PID');
+		$this->template->content->lable_notifications_enabled = $this->translate->_('Notifications Enabled?');
+		$this->template->content->lable_service_checks = $this->translate->_('Service Checks Being Executed?');
+		$this->template->content->lable_service_checks_passive = $this->translate->_('Passive Service Checks Being Accepted?');
+		$this->template->content->lable_host_checks = $this->translate->_('Host Checks Being Executed?');
+		$this->template->content->lable_host_checks_passive = $this->translate->_('Passive Host Checks Being Accepted?');
+		$this->template->content->lable_event_handlers = $this->translate->_('Event Handlers Enabled?');
+		$this->template->content->lable_obsess_services = $this->translate->_('Obsessing Over Services?');
+		$this->template->content->lable_obsess_hosts = $this->translate->_('Obsessing Over Hosts?');
+		$this->template->content->lable_flap_enabled = $this->translate->_('Flap Detection Enabled?');
+		$this->template->content->lable_performance_data = $this->translate->_('Performance Data Being Processed?');
+
+		# parse nagios.cfg to figure out date format
+		$current_status = new Current_status_Model;
+		$nagios_config = $current_status->parse_config_file('nagios.cfg');
+
+		# @@@FIXME setting date format should be done somewhere global
+		# DATE FORMAT OPTION
+		#       us              (MM-DD-YYYY HH:MM:SS)
+		#       euro            (DD-MM-YYYY HH:MM:SS)
+		#       iso8601         (YYYY-MM-DD HH:MM:SS)
+		#       strict-iso8601  (YYYY-MM-DDTHH:MM:SS)
+
+		$date_format_str = nagstat::date_format($nagios_config['date_format']);
+
+		# fetch program status from program_status_model
+		# uses ORM
+		$status = ORM::factory('program_status')->find_all();
+
+		# @@@FIXME how do we figure the program version out?
+		$this->template->content->program_version = $na_str;
+
+		if ($status->count() > 0) {
+			$this->template->content->program_start = date($date_format_str, $status->program_start);
+			$this->template->content->run_time = date::timespan(time(), $result->current()->$status->program_start, 'days,hours,minutes,seconds');
+			$this->template->content->last_command_check = $status->last_command_check;
+			$this->template->content->last_log_rotation = $status->last_log_rotation;
+			$this->template->content->nagios_pid = $status->pid;
+			$this->template->content->notifications_enabled = $status->notifications_enabled;
+			$this->template->content->execute_service_checks = $status->active_service_checks_enabled;
+			$this->template->content->accept_passive_service_checks = $status->passive_service_checks_enabled;
+			$this->template->content->execute_host_checks = $status->active_host_checks_enabled;
+			$this->template->content->accept_passive_host_checks = $status->passive_service_checks_enabled;
+			$this->template->content->enable_event_handlers = $status->event_handlers_enabled;
+			$this->template->content->obsess_over_services = $status->obsess_over_services;
+			$this->template->content->obsess_over_hosts = $status->obsess_over_hosts;
+			$this->template->content->flap_detection_enabled = $status->flap_detection_enabled;
+			$this->template->content->enable_failure_prediction = $status->failure_prediction_enabled;
+			$this->template->content->process_performance_data = $status->process_performance_data;
+		} else {
+			# nothing found in program_status
+			# @@@FIXME probably an error - handle this someway
+			# fetch what we can find from nagios.cfg for now
+
+			$this->template->content->notifications_enabled = isset($nagios_config['enable_notifications']) ? $nagios_config['enable_notifications'] : false;
+			$this->template->content->flap_detection_enabled = isset($nagios_config['enable_flap_detection']) ? $nagios_config['enable_flap_detection'] : false;
+			$this->template->content->enable_event_handlers = isset($nagios_config['enable_event_handlers']) ? $nagios_config['enable_event_handlers'] : false;
+			$this->template->content->execute_service_checks = isset($nagios_config['execute_service_checks']) ? $nagios_config['execute_service_checks'] : false;
+			$this->template->content->accept_passive_service_checks = isset($nagios_config['accept_passive_service_checks']) ? $nagios_config['accept_passive_service_checks'] : false;
+			$this->template->content->obsess_over_services = isset($nagios_config['obsess_over_services']) ? $nagios_config['obsess_over_services'] : false;
+			$this->template->content->execute_host_checks = isset($nagios_config['execute_host_checks']) ? $nagios_config['execute_host_checks'] : false;
+			$this->template->content->accept_passive_host_checks = isset($nagios_config['accept_passive_host_checks']) ? $nagios_config['accept_passive_host_checks'] : false;
+			$this->template->content->obsess_over_hosts = isset($nagios_config['obsess_over_hosts']) ? $nagios_config['obsess_over_hosts'] : false;
+			$this->template->content->process_performance_data = isset($nagios_config['process_performance_data']) ? $nagios_config['process_performance_data'] : false;
+
+			# set the following values to some default since we can't seem to determine
+			# the correct value at the moment
+			$this->template->content->enable_failure_prediction = false;
+			$this->template->content->program_start = $na_str;
+			$this->template->content->run_time = $na_str;
+			$run_time = false;
+			$this->template->content->last_command_check = $na_str;
+			$this->template->content->last_log_rotation = $na_str;
+
+			# are we runnig monitor or nagios?
+			$process_name = strstr(__FILE__, 'op5') ? 'monitor' : 'nagios';
+			$this->template->content->nagios_pid = exec("pidof ".$process_name."|awk {'print $1'}");
+		}
+
+		$this->template->content->notifications_class = $this->template->content->notifications_enabled ? 'notificationsENABLED' : 'notificationsDISABLED';
+		$this->template->content->notifications_str = $this->template->content->notifications_enabled ? $yes : $no;
+		$this->template->content->servicechecks_class = $this->template->content->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$this->template->content->servicechecks_str = $this->template->content->execute_service_checks ? $yes : $no;
+		$this->template->content->passive_servicechecks_class = $this->template->content->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$this->template->content->passive_servicechecks_str = $this->template->content->accept_passive_service_checks ? $yes : $no;
+		$this->template->content->hostchecks_class = $this->template->content->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$this->template->content->hostchecks_str = $this->template->content->execute_host_checks ? $yes : $no;
+		$this->template->content->passive_hostchecks_class = $this->template->content->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$this->template->content->passive_hostchecks_str = $this->template->content->accept_passive_host_checks ? $yes : $no;
+		$this->template->content->eventhandler_str = $this->template->content->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$this->template->content->obsess_services_str = $this->template->content->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$this->template->content->obsess_hosts_str = $this->template->content->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$this->template->content->flap_detection_str = $this->template->content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$this->template->content->performance_data_str = $this->template->content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+	}
 }
