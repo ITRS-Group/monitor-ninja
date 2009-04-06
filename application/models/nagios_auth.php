@@ -186,7 +186,7 @@ class Nagios_auth_Model extends Model
 			$ok = true;
 			if (!$this->view_hosts_root) {
 				foreach ($res as $row) {
-					if (!isset($this->hosts_r[$row->host])) {
+					if (!isset($this->hosts[$row->host])) {
 						$ok = false;
 						break;
 					}
@@ -225,7 +225,7 @@ class Nagios_auth_Model extends Model
 			$ok = true;
 			if (!$this->view_services_root) {
 				foreach ($res as $row) {
-					if (!isset($this->services_r[$row->service])) {
+					if (!isset($this->services[$row->service])) {
 						$ok = false;
 						break;
 					}
@@ -271,7 +271,7 @@ class Nagios_auth_Model extends Model
 			if (isset($this->services[$service]))
 			return true;
 		}
-		if (isset($this->services[$service]))
+		if (isset($this->services_r[$service]))
 			return true;
 
 		return false;
@@ -289,7 +289,7 @@ class Nagios_auth_Model extends Model
 			if (isset($this->hostgroups[$hostgroup]))
 			return true;
 		}
-		if (isset($this->hostgroups[$hostgroup]))
+		if (isset($this->hostgroups_r[$hostgroup]))
 			return true;
 
 		return false;
