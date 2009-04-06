@@ -4,8 +4,6 @@
  * Requires authentication
  * Test with retreiving system data
  *
- * Unable to fetch data since rpm data isn't available to apache
- *
  * @package    NINJA
  * @author     op5 AB
  * @license    GPL
