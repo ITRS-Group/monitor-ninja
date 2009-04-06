@@ -111,4 +111,28 @@ class System_Model extends Model {
 		return $user_access;
 	}
 
+	/**
+	 * Fetch info on installed rpm packages
+	 *
+	 * @param	str $filter
+	 * @return	array or false
+	 */
+	public function rpm_info($filter = 'op5')
+	{
+		$filter = escapeshellarg(trim($filter));
+		$rpm_info = false;
+		$exec_str = '/bin/rpm -qa';
+		$exec_str .= !empty($filter) ? '|grep '.$filter.'|sort' : '|sort';
+		exec($exec_str, $output, $retval);
+		if ($retval==0 && !empty($output)) {
+			foreach ($output as $rpm) {
+				$rpm_info .= $rpm."<br />";
+			}
+			if (!empty($rpm_info)) {
+				return $rpm_info;
+			}
+		}
+		return false;
+	}
+
 }
