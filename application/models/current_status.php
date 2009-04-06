@@ -788,7 +788,7 @@ class Current_status_Model extends Model {
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
-		if ($state_filter!='') {
+		if (!empty($state_filter)) {
 			#$state_filter = $this->db->escape($state_filter);
 			# all problems =>
 
