@@ -222,7 +222,17 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				break;
 			case 'service':
-
+				$header['title'] = $title;
+				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['img_asc'] = $this->img_sort_up;
+					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
+					$header['img_asc'] = $this->img_sort_up;
+					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
+					$header['img_desc'] = $this->img_sort_down;
+					$header['alt_desc'] = 'Sort by '.$sort_field_str.' (descending)';
+				}
 				break;
 		}
 		return $header;
