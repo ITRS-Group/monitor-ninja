@@ -14,9 +14,7 @@
 
 		<?php } else { ?>
 
-		<?php	# @@@FIXME this (below) should be a link to outages controller (when there is one)	?>
-
-		<?php echo $total_blocking_outages; ?> <?php echo $label ?>
+		<?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?>
 
 		<?php
 
