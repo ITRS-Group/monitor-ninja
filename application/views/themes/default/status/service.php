@@ -103,7 +103,7 @@ if (!empty($widgets)) {
 						<table border=0 cellpadding=0 cellspacing=0>
 							<tr>
 								<td nowrap='nowrap' class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars($row->host_name)) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
 								</td>
 							</tr>
 						</table>
@@ -113,27 +113,27 @@ if (!empty($widgets)) {
 							<tr>
 						<?php	if ($row->problem_has_been_acknowledged) { ?>
 								<td align="center" class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('ACK')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK')) ?>
 								</td>
 						<?php	}
 								if (empty($row->notifications_enabled)) { ?>
 								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('nDIS')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS')) ?>
 								</td>
 						<?php	}
 								if (!$row->active_checks_enabled) { ?>
 								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('DIS')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS')) ?>
 								</td>
 						<?php	}
 								if (isset($row->is_flapping) && $row->is_flapping) { ?>
 								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('FPL')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL')) ?>
 								</td>
 						<?php	}
 								if ($row->scheduled_downtime_depth > 0) { ?>
 								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('SDT')) ?>
+									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT')) ?>
 								</td>
 						<?php	}
 								if (!empty($row->notes_url)) { ?>
@@ -164,7 +164,7 @@ if (!empty($widgets)) {
 			} ?>
 		</td>
 		<td class="statusEven">
-			<?php echo html::anchor('extinfo/details/service/'.link::encode($row->host_name).'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
+			<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
 			<div align="right" style="display:inline">
 			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&host=<?php echo $row->host_name ?>&service=<?php echo $row->service_description ?>">
 				<img src='/monitor/images/op5tools/webconfig.png' border=0>
