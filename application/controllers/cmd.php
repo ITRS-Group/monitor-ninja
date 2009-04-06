@@ -276,9 +276,36 @@ class Cmd_Controller extends Authenticated_Controller {
 	*	@desc
 	*
 	*/
-	public function command($cmd_typ=false)
+	public function command($cmd_typ=false, $host_name=false, $force=false)
 	{
 		$cmd_typ = (int)$cmd_typ;
-		echo $cmd_typ;
+		$host_name = trim($host_name);
+		echo $cmd_typ.', '.$host_name;
+	}
+
+	/**
+	*	@name 	unauthorized
+	*	@desc	Display message to user when they lack proper
+	* 			credentials to issue a command
+	*/
+	public function unauthorized()
+	{
+		$this->template->content = $this->add_view('cmd/unauthorized');
+		$this->template->content->error_message = $this->translate->_('Sorry, but you are not authorized to commit the specified command.');
+		$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
+		$this->template->content->return_link_lable = $this->translate->_('Return from whence you came');
+	}
+
+	/**
+	*	@name	use_authentication_off
+	*	@desc	Show info to user when use_authentication
+	* 			is disabled in cgi.cfg.
+	*
+	*/
+	public function use_authentication_off()
+	{
+		$this->template->content = $this->add_view('cmd/use_authentication_off');
+		$this->template->content->error_msg = $this->translate->_('Error: Authentication is not enabled!');
+		$this->template->content->error_description = $this->translate->_("As a safety precaution, commands aren't allowed when authentication is turned off.");
 	}
 }
