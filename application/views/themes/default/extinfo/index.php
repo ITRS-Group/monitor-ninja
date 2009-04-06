@@ -119,3 +119,8 @@ if (!empty($widgets)) {
 		<td class='dataVal'><div class='flapdetection<?php echo $flap_detection_enabled ?>'>&nbsp;&nbsp;<?php echo $flap_detection_enabled ?>&nbsp;&nbsp;</div></td>
 	</tr>
 </table>
+
+
+<?php
+if (!empty($commands))
+	echo $commands;
