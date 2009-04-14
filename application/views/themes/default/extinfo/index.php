@@ -32,8 +32,8 @@ if (!empty($widgets)) {
 	<tr>
 		<td class='dataVar'><?php echo $lable_current_status ?>:</td>
 		<td class='dataVal'>
-			<div class='service<?php echo $current_status_str ?>'><?php echo $current_status_str ?></DIV>
-			(<?php echo $lable_for ?> <?php echo $duration ? $duration : $na_str ?>)
+			<div class='service<?php echo $current_status_str ?>'><?php echo $current_status_str ?></div>
+			<?php echo $duration ? '('.$lable_for.' '.$duration.')' : '' ?>
 		</td>
 	</tr>
 
