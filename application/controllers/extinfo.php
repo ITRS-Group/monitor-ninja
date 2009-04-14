@@ -362,6 +362,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function show_process_info()
 	{
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_system_information) {
+			url::redirect('extinfo/unauthorized/0');
+		}
 		$this->template->content = $this->add_view('extinfo/process_info');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
