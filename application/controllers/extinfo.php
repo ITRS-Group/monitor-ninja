@@ -212,126 +212,156 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->lable_host_map = $t->_('Locate Host On Map');
 		$commands->type = $type;
 		$commands->host = $host;
+
 		if ($result->active_checks_enabled ) {
-			$commands->lable_active_checks = $t->_('Disable Active Checks Of This Host');
-			$commands->link_active_checks = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_CHECK,
-				$host, $commands->lable_active_checks);
+			$commands->lable_active_checks = $type == 'host' ? $t->_('Disable Active Checks Of This Host') : $t->_('Disable Active Checks Of This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_HOST_CHECK : Cmd_Controller::CMD_DISABLE_SVC_CHECK;
+			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'true';
 		} else {
-			$commands->lable_active_checks = $t->_('Enable Active Checks Of This Host');
-			$commands->link_active_checks = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_CHECK,
-				$host, $commands->lable_active_checks);
+			$commands->lable_active_checks = $type == 'host' ? $t->_('Enable Active Checks Of This Host') : $t->_('Enable Active Checks Of This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_ENABLE_HOST_CHECK : Cmd_Controller::CMD_ENABLE_SVC_CHECK;
+			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'false';
 		}
 
-		$commands->lable_reschedule_check = $t->_('Re-schedule Next Host Check');
-		$commands->lable_link_reschedule_check = $t->_('Re-schedule the next check of this host');
-		$commands->link_reschedule_check = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_CHECK,
-			$host, $commands->lable_link_reschedule_check);
+		$commands->lable_reschedule_check = $type == 'host' ? $t->_('Re-schedule Next Host Check') : $t->_('Re-schedule Next Service Check');
+		$commands->lable_link_reschedule_check = $type == 'host' ? $t->_('Re-schedule the next check of this host') : $t->_('Re-schedule the next check of this service');
+		$cmd = $type == 'host' ? Cmd_Controller::CMD_SCHEDULE_HOST_CHECK : Cmd_Controller::CMD_SCHEDULE_SVC_CHECK;
+		$commands->link_reschedule_check = $this->command_link($cmd, $host, $service, $commands->lable_link_reschedule_check);
 
 		if ($result->passive_checks_enabled) {
-			$commands->lable_submit_passive_checks = $t->_('Submit Passive Check Result For This Host');
-			$commands->link_submit_passive_check = $this->command_link(Cmd_Controller::CMD_PROCESS_HOST_CHECK_RESULT,
-				$host, $commands->lable_submit_passive_checks);
-			$commands->lable_stop_start_passive_checks = $t->_('Stop Accepting Passive Checks For This Host');
-			$commands->link_stop_start_passive_check = $this->command_link(Cmd_Controller::CMD_DISABLE_PASSIVE_HOST_CHECKS,
-				$host, $commands->lable_stop_start_passive_checks);
+			$commands->lable_submit_passive_checks = $type == 'host' ? $t->_('Submit Passive Check Result For This Host') : $t->_('Submit Passive Check Result For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_PROCESS_HOST_CHECK_RESULT : Cmd_Controller::CMD_PROCESS_SERVICE_CHECK_RESULT;
+			$commands->link_submit_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_submit_passive_checks);
+
+			$commands->lable_stop_start_passive_checks = $type == 'host' ? $t->_('Stop Accepting Passive Checks For This Host') : $t->_('Stop Accepting Passive Checks For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_PASSIVE_HOST_CHECKS : Cmd_Controller::CMD_DISABLE_PASSIVE_SVC_CHECKS;
+			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		} else {
-			$commands->lable_stop_start_passive_checks = $t->_('Start Accepting Passive Checks For This Host');
-			$commands->link_stop_start_passive_check = $this->command_link(CMD_ENABLE_PASSIVE_HOST_CHECKS,
-				$host, $commands->lable_stop_start_passive_checks);
+			$commands->lable_stop_start_passive_checks = $type == 'host' ? $t->_('Start Accepting Passive Checks For This Host') : $t->_('Start Accepting Passive Checks For This Host');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_ENABLE_PASSIVE_HOST_CHECKS : Cmd_Controller::CMD_ENABLE_PASSIVE_SVC_CHECKS;
+			$commands->link_stop_start_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_stop_start_passive_checks);
 		}
 		if ($obsessing) {
-			$commands->lable_obsessing = $t->_('Stop Obsessing Over This Host');
-			$commands->link_obsessing = $this->command_link(Cmd_Controller::CMD_STOP_OBSESSING_OVER_HOST,
-				$host, $commands->lable_obsessing);
+			$commands->lable_obsessing = $type == 'host' ? $t->_('Stop Obsessing Over This Host') : $t->_('Stop Obsessing Over This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_STOP_OBSESSING_OVER_HOST : Cmd_Controller::CMD_STOP_OBSESSING_OVER_SVC;
+			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		} else {
-			$commands->lable_obsessing = $t->_('Start Obsessing Over This Host');
-			$commands->link_obsessing = $this->command_link(Cmd_Controller::CMD_START_OBSESSING_OVER_HOST,
-				$host, $commands->lable_obsessing);
+			$commands->lable_obsessing = $type == 'host' ? $t->_('Start Obsessing Over This Host') : $t->_('Start Obsessing Over This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_START_OBSESSING_OVER_HOST : Cmd_Controller::CMD_START_OBSESSING_OVER_SVC;
+			$commands->link_obsessing = $this->command_link($cmd, $host, $service, $commands->lable_obsessing);
 		}
 
 		# acknowledgements
 		$commands->show_ackinfo = false;
-		if($result->current_state == nagstat::HOST_DOWN || $result->current_state == nagstat::HOST_UNREACHABLE) {
-			$commands->show_ackinfo = true;
-			# show acknowledge info
-			if (!$result->problem_has_been_acknowledged) {
-				$commands->lable_acknowledge_problem = $t->_('Acknowledge This Host Problem');
-				$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_ACKNOWLEDGE_HOST_PROBLEM,
-					$host, $commands->lable_acknowledge_problem);
-			} else {
-				$commands->lable_acknowledge_problem = $t->_('Remove Problem Acknowledgement');
-				$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_REMOVE_HOST_ACKNOWLEDGEMENT,
-					$host, $commands->lable_acknowledge_problem);
+		if ($type == 'host') {
+			if ($result->current_state == nagstat::HOST_DOWN || $result->current_state == nagstat::HOST_UNREACHABLE) {
+				$commands->show_ackinfo = true;
+				# show acknowledge info
+				if (!$result->problem_has_been_acknowledged) {
+					$commands->lable_acknowledge_problem = $t->_('Acknowledge This Host Problem');
+					$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_ACKNOWLEDGE_HOST_PROBLEM,
+						$host, false, $commands->lable_acknowledge_problem);
+				} else {
+					$commands->lable_acknowledge_problem = $t->_('Remove Problem Acknowledgement');
+					$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_REMOVE_HOST_ACKNOWLEDGEMENT,
+						$host, false, $commands->lable_acknowledge_problem);
+				}
 			}
+		} else {
+			if (($result->current_state == nagstat::SERVICE_WARNING || $result->current_state == nagstat::SERVICE_UNKNOWN || $result->current_state == nagstat::SERVICE_CRITICAL) && $result->state_type) {
+				$commands->show_ackinfo = true;
+				# show acknowledge info
+				if (!$result->problem_has_been_acknowledged) {
+					$commands->lable_acknowledge_problem = $t->_('Acknowledge This Service Problem');
+					$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_ACKNOWLEDGE_SVC_PROBLEM,
+						$host, $service, $commands->lable_acknowledge_problem);
+				} else {
+					$commands->lable_acknowledge_problem = $t->_('Remove Problem Acknowledgement');
+					$commands->link_acknowledge_problem = $this->command_link(Cmd_Controller::CMD_REMOVE_SVC_ACKNOWLEDGEMENT,
+						$host, $service, $commands->lable_acknowledge_problem);
+				}
+			}
+
 		}
 
 		# notifications
 		if ($result->notifications_enabled) {
-			$commands->lable_notifications = $t->_('Disable Notifications For This Host');
-			$commands->link_notifications =
-				html::anchor('cmd/command/'.Cmd_Controller::CMD_DISABLE_HOST_NOTIFICATIONS.'/'.$host,
-				html::specialchars($commands->lable_notifications));
+			$commands->lable_notifications = $type == 'host' ? $t->_('Disable Notifications For This Host') : $t->_('Disable Notifications For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_HOST_NOTIFICATIONS : Cmd_Controller::CMD_DISABLE_SVC_NOTIFICATIONS;
+			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		} else {
-			$commands->lable_notifications = $t->_('Enable Notifications For This Host');
-			$commands->link_notifications = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_NOTIFICATIONS,
-				$host, $commands->lable_notifications);
+			$commands->lable_notifications = $type == 'host' ? $t->_('Enable Notifications For This Host') : $t->_('Enable Notifications For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_ENABLE_HOST_NOTIFICATIONS : Cmd_Controller::CMD_ENABLE_SVC_NOTIFICATIONS;
+			$commands->link_notifications = $this->command_link($cmd, $host, $service, $commands->lable_notifications);
 		}
 		$commands->lable_custom_notifications = $t->_('Send Custom Notification');
-		$commands->lable_link_custom_notifications = $t->_('Send custom host notification');
-		$commands->link_custom_notifications = $this->command_link(Cmd_Controller::CMD_SEND_CUSTOM_HOST_NOTIFICATION,
-			$host, $commands->lable_link_custom_notifications);
+		$commands->lable_link_custom_notifications = $type == 'host' ? $t->_('Send custom host notification') : $t->_('Send custom service notification');
+		$cmd = $type == 'host' ? Cmd_Controller::CMD_SEND_CUSTOM_HOST_NOTIFICATION : Cmd_Controller::CMD_SEND_CUSTOM_SVC_NOTIFICATION;
+		$commands->link_custom_notifications = $this->command_link($cmd, $host, $service, $commands->lable_link_custom_notifications);
 
 		$commands->show_delay = false;
-		if ($result->current_state == nagstat::HOST_UP) {
-			$commands->show_delay = true;
-			$commands->lable_delay_notification = $t->_('Delay Next Host Notification');
-			$commands->link_delay_notifications = $this->command_link(Cmd_Controller::CMD_DELAY_HOST_NOTIFICATION,
-			$host, $commands->lable_delay_notification);
+		if ($type == 'host') {
+			if ($result->current_state == nagstat::HOST_UP) {
+				$commands->show_delay = true;
+				$commands->lable_delay_notification = $t->_('Delay Next Host Notification');
+				$commands->link_delay_notifications = $this->command_link(Cmd_Controller::CMD_DELAY_HOST_NOTIFICATION,
+				$host, false, $commands->lable_delay_notification);
+			}
+		} else {
+			if ($result->current_state == nagstat::SERVICE_OK) {
+				$commands->show_delay = true;
+				$commands->lable_delay_notification = $t->_('Delay Next Service Notification');
+				$commands->link_delay_notifications = $this->command_link(Cmd_Controller::CMD_DELAY_SVC_NOTIFICATION,
+				$host, $service, $commands->lable_delay_notification);
+			}
 		}
-		$commands->lable_schedule_dt = $t->_('Schedule Downtime For This Host');
-		$commands->link_schedule_dt = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_DOWNTIME,
-			$host, $commands->lable_schedule_dt);
+		$commands->lable_schedule_dt = $type == 'host' ? $t->_('Schedule Downtime For This Host') : $t->_('Schedule Downtime For This Service');
+		$cmd = $type == 'host' ?  Cmd_Controller::CMD_SCHEDULE_HOST_DOWNTIME : Cmd_Controller::CMD_SCHEDULE_SVC_DOWNTIME;
+		$commands->link_schedule_dt = $this->command_link($cmd, $host, $service, $commands->lable_schedule_dt);
 
-		$commands->lable_disable_service_notifications_on_host = $t->_('Disable Notifications For All Services On This Host');
-		$commands->link_disable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_NOTIFICATIONS,
-			$host, $commands->lable_disable_service_notifications_on_host);
+		if ($type == 'host') {
+			$commands->lable_disable_service_notifications_on_host = $t->_('Disable Notifications For All Services On This Host');
+			$commands->link_disable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_NOTIFICATIONS,
+				$host, $service, $commands->lable_disable_service_notifications_on_host);
 
-		$commands->lable_enable_service_notifications_on_host = $t->_('Enable Notifications For All Services On This Host');
-		$commands->link_enable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_NOTIFICATIONS,
-			$host, $commands->lable_enable_service_notifications_on_host);
+			$commands->lable_enable_service_notifications_on_host = $t->_('Enable Notifications For All Services On This Host');
+			$commands->link_enable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_NOTIFICATIONS,
+				$host, $service, $commands->lable_enable_service_notifications_on_host);
 
-		$commands->lable_check_all_services = $t->_('Schedule A Check Of All Services On This Host');
-		$commands->link_check_all_services = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_SVC_CHECKS,
-			$host, $commands->lable_check_all_services);
+			$commands->lable_check_all_services = $t->_('Schedule A Check Of All Services On This Host');
+			$commands->link_check_all_services = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_SVC_CHECKS,
+				$host, $service, $commands->lable_check_all_services);
 
-		$commands->lable_disable_servicechecks = $t->_('Disable Checks Of All Services On This Host');
-		$commands->link_disable_servicechecks = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_CHECKS,
-			$host, $commands->lable_disable_servicechecks);
+			$commands->lable_disable_servicechecks = $t->_('Disable Checks Of All Services On This Host');
+			$commands->link_disable_servicechecks = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_CHECKS,
+				$host, $service, $commands->lable_disable_servicechecks);
 
-		$commands->lable_enable_servicechecks = $t->_('Enable Checks Of All Services On This Host');
-		$commands->link_enable_servicechecks = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_CHECKS,
-			$host, $commands->lable_enable_servicechecks);
+			$commands->lable_enable_servicechecks = $t->_('Enable Checks Of All Services On This Host');
+			$commands->link_enable_servicechecks = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_CHECKS,
+				$host, $service, $commands->lable_enable_servicechecks);
+		}
+
 
 		if ($result->event_handler_enabled) {
-			$commands->lable_enable_disable_event_handler = $t->_('Disable Event Handler For This Host');
-			$commands->link_enable_disable_event_handler = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_EVENT_HANDLER,
-				$host, $commands->lable_enable_disable_event_handler);
+			$commands->lable_enable_disable_event_handler = $type == 'host' ? $t->_('Disable Event Handler For This Host') : $t->_('Disable Event Handler For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_HOST_EVENT_HANDLER : Cmd_Controller::CMD_DISABLE_SVC_EVENT_HANDLER;
+			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		} else {
-			$commands->lable_enable_disable_event_handler = $t->_('Enable Event Handler For This Host');
-			$commands->link_enable_disable_event_handler = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_EVENT_HANDLER,
-				$host, $commands->lable_enable_disable_event_handler);
+			$commands->lable_enable_disable_event_handler = $type == 'host' ? $t->_('Enable Event Handler For This Host') : $t->_('Enable Event Handler For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_ENABLE_HOST_EVENT_HANDLER : Cmd_Controller::CMD_DISABLE_SVC_EVENT_HANDLER;
+			$commands->link_enable_disable_event_handler = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_event_handler);
 		}
 
 		if ($result->flap_detection_enabled) {
-			$commands->lable_enable_disable_flapdetection = $t->_('Disable Flap Detection For This Host');
-			$commands->link_enable_disable_flapdetection = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_FLAP_DETECTION,
-				$host, $commands->lable_enable_disable_flapdetection);
+			$commands->lable_enable_disable_flapdetection = $type == 'host' ? $t->_('Disable Flap Detection For This Host') : $t->_('Disable Flap Detection For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_HOST_FLAP_DETECTION : Cmd_Controller::CMD_DISABLE_SVC_FLAP_DETECTION;
+			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		} else {
-			$commands->lable_enable_disable_flapdetection = $t->_('Enable Flap Detection For This Host');
-			$commands->link_enable_disable_flapdetection = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_FLAP_DETECTION,
-				$host, $commands->lable_enable_disable_flapdetection);
+			$commands->lable_enable_disable_flapdetection = $type == 'host' ? $t->_('Enable Flap Detection For This Host') : $t->_('Enable Flap Detection For This Service');
+			$cmd = $type == 'host' ? Cmd_Controller::CMD_ENABLE_HOST_FLAP_DETECTION : Cmd_Controller::CMD_ENABLE_SVC_FLAP_DETECTION;
+			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
 
 	}
@@ -342,15 +372,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 	* 			the links to the cmd controller
 	*
 	*/
-	private function command_link($command_type=false, $host=false, $lable='', $method='command')
+	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='command')
 	{
 		$host = trim($host);
+
+		# encode service string if set
+		$service = $service!==false ? link::encode($service) : false;
+
 		$lable = trim($lable);
 		$method = trim($method);
 		if ($command_type===false || empty($host) || empty($lable) || empty($method)) {
 			return false;
 		}
-		$link =	html::anchor('cmd/'.$method.'/'.$command_type.'/'.$host,
+		$link =	html::anchor('cmd/'.$method.'/'.$command_type.'/'.$host.'/'.$service,
 			html::specialchars($lable));
 		return $link;
 	}
