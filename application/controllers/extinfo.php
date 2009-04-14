@@ -357,14 +357,23 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status = ORM::factory('program_status')->find_all();
+		$status_res = ORM::factory('program_status')->find_all();
 
 		# @@@FIXME how do we figure the program version out?
 		$this->template->content->program_version = $na_str;
 
-		if ($status->count() > 0) {
+		if ($status_res->count() > 0) {
+			$status = $status_res->current();
 			$content->program_start = date($date_format_str, $status->program_start);
-			$content->run_time = date::timespan(time(), $status->program_start, 'days,hours,minutes,seconds');
+			$run_time_arr = date::timespan(time(), $status->program_start, 'days,hours,minutes,seconds');
+			if (is_array($run_time_arr) && !empty($run_time_arr)) {
+				foreach ($run_time_arr as $key => $val) {
+					$run_time[] = $val.substr($key, 0, 1);
+				}
+				$run_time_str = implode(' ', $run_time);
+			}
+			$content->run_time = $run_time_str; # @@@FIXME - NOT translated (d, h, m, s)
+
 			$content->last_command_check = $status->last_command_check;
 			$content->last_log_rotation = $status->last_log_rotation;
 			$content->nagios_pid = $status->pid;
