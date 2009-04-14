@@ -279,8 +279,60 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$host, $commands->lable_notifications);
 		}
 		$commands->lable_custom_notifications = $t->_('Send Custom Notification');
+		$commands->lable_link_custom_notifications = $t->_('Send custom host notification');
 		$commands->link_custom_notifications = $this->command_link(Cmd_Controller::CMD_SEND_CUSTOM_HOST_NOTIFICATION,
-			$host, $commands->lable_custom_notifications);
+			$host, $commands->lable_link_custom_notifications);
+
+		$commands->show_delay = false;
+		if ($result->current_state == nagstat::HOST_UP) {
+			$commands->show_delay = true;
+			$commands->lable_delay_notification = $t->_('Delay Next Host Notification');
+			$commands->link_delay_notifications = $this->command_link(Cmd_Controller::CMD_DELAY_HOST_NOTIFICATION,
+			$host, $commands->lable_delay_notification);
+		}
+		$commands->lable_schedule_dt = $t->_('Schedule Downtime For This Host');
+		$commands->link_schedule_dt = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_DOWNTIME,
+			$host, $commands->lable_schedule_dt);
+
+		$commands->lable_disable_service_notifications_on_host = $t->_('Disable Notifications For All Services On This Host');
+		$commands->link_disable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_NOTIFICATIONS,
+			$host, $commands->lable_disable_service_notifications_on_host);
+
+		$commands->lable_enable_service_notifications_on_host = $t->_('Enable Notifications For All Services On This Host');
+		$commands->link_enable_service_notifications_on_host = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_NOTIFICATIONS,
+			$host, $commands->lable_enable_service_notifications_on_host);
+
+		$commands->lable_check_all_services = $t->_('Schedule A Check Of All Services On This Host');
+		$commands->link_check_all_services = $this->command_link(Cmd_Controller::CMD_SCHEDULE_HOST_SVC_CHECKS,
+			$host, $commands->lable_check_all_services);
+
+		$commands->lable_disable_servicechecks = $t->_('Disable Checks Of All Services On This Host');
+		$commands->link_disable_servicechecks = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_SVC_CHECKS,
+			$host, $commands->lable_disable_servicechecks);
+
+		$commands->lable_enable_servicechecks = $t->_('Enable Checks Of All Services On This Host');
+		$commands->link_enable_servicechecks = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_SVC_CHECKS,
+			$host, $commands->lable_enable_servicechecks);
+
+		if ($result->event_handler_enabled) {
+			$commands->lable_enable_disable_event_handler = $t->_('Disable Event Handler For This Host');
+			$commands->link_enable_disable_event_handler = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_EVENT_HANDLER,
+				$host, $commands->lable_enable_disable_event_handler);
+		} else {
+			$commands->lable_enable_disable_event_handler = $t->_('Enable Event Handler For This Host');
+			$commands->link_enable_disable_event_handler = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_EVENT_HANDLER,
+				$host, $commands->lable_enable_disable_event_handler);
+		}
+
+		if ($result->flap_detection_enabled) {
+			$commands->lable_enable_disable_flapdetection = $t->_('Disable Flap Detection For This Host');
+			$commands->link_enable_disable_flapdetection = $this->command_link(Cmd_Controller::CMD_DISABLE_HOST_FLAP_DETECTION,
+				$host, $commands->lable_enable_disable_flapdetection);
+		} else {
+			$commands->lable_enable_disable_flapdetection = $t->_('Enable Flap Detection For This Host');
+			$commands->link_enable_disable_flapdetection = $this->command_link(Cmd_Controller::CMD_ENABLE_HOST_FLAP_DETECTION,
+				$host, $commands->lable_enable_disable_flapdetection);
+		}
 
 	}
 
