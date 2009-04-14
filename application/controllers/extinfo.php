@@ -38,22 +38,40 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->current = new Current_status_Model();
 
 		$host = trim($host);
+		$type = strtolower($type);
 		$service = link::decode($service);
 		if (empty($host)) {
 			return false;
 		}
 
+		# is user authenticated to view details on current object?
+		$auth = new Nagios_auth_Model();
+		$is_authenticated = true;
+		if ($type == 'host') {
+			$auth_hosts = $auth->get_authorized_hosts();
+			if (!array_key_exists($host, $auth->hosts_r)) {
+				# user not allowed to view info on selected host
+				$is_authenticated = false;
+			}
+		} else {
+			$auth_services = $auth->get_authorized_services();
+			if (!array_key_exists($host.';'.$service, $auth->services_r)) {
+				# user not allowed to view info on selected service
+				$is_authenticated = false;
+			}
+		}
+		if ($is_authenticated === false) {
+			url::redirect('extinfo/unauthorized/'.$type);
+		}
+
 		$this->template->content = $this->add_view('extinfo/index');
-		$this->template->content->commands = $this->add_view('extinfo/commands');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
 		# save us some typing
 		$content = $this->template->content;
-		$commands = $this->template->content->commands;
 		$t = $this->translate;
 
-		# @@@FIXME Pass host and service objects as IDs intead of names?
 		$result_data = $this->current->object_status($host, $service);
 		$result = $result_data->current();
 		$host_link = false;
@@ -390,4 +408,24 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->flap_detection_str = $content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 		$content->performance_data_str = $content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 	}
+
+	/**
+	*	@name 	unauthorized
+	*	@desc	Display message to user when they lack proper
+	* 			credentials to view info on an object
+	*/
+	public function unauthorized($type='host')
+	{
+		$type = trim(strtolower($type));
+		$this->template->content = $this->add_view('extinfo/unauthorized');
+
+		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page
+			and check the authorization options in your CGI configuration file.');
+		if ($type == 'host') {
+			$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host...');
+		} else {
+			$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service...');
+		}
+	}
+
 }
