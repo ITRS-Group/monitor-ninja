@@ -276,11 +276,14 @@ class Cmd_Controller extends Authenticated_Controller {
 	*	@desc
 	*
 	*/
-	public function command($cmd_typ=false, $host_name=false, $force=false)
+	public function command($cmd_typ=false, $host_name=false, $service=false, $force=false)
 	{
 		$cmd_typ = (int)$cmd_typ;
 		$host_name = trim($host_name);
-		echo $cmd_typ.', '.$host_name;
+
+		# decode service description if set
+		$service = !empty($service) ? link::decode($service) : false;
+		echo $cmd_typ.', '.$host_name.'; '.$service;
 	}
 
 	/**
