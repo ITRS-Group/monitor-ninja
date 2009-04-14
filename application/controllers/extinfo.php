@@ -537,10 +537,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page
 			and check the authorization options in your CGI configuration file.');
-		if ($type == 'host') {
-			$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host...');
-		} else {
-			$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service...');
+		switch ($type) {
+			case 'host':
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host...');
+				break;
+			case 'service':
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service...');
+				break;
+			default:
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view process information...');
 		}
 	}
 
