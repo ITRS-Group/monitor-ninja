@@ -1,10 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<!--
-	The following 2 tables (host/service) probably needs to be
-	merged (or atleast split into 2 separate templates)
--->
-
-<!--HOST COMMANDS TABLE -->
 <table border="0" cellpadding="0" cellspacing="0">
     <tr>
         <td align="center" valign="top" class='commandPanel'>
@@ -122,6 +116,7 @@
 									<?php echo $link_schedule_dt ?>
 								</td>
 							</tr>
+					<?php 	if ($type == 'host') {?>
 							<tr class='command'>
 								<td>
 									<img src='/monitor/images/disabled.gif' border="0" alt='<?php echo $lable_disable_service_notifications_on_host ?>'
@@ -167,7 +162,8 @@
 									<?php echo $link_enable_servicechecks ?>
 								</td>
 							</tr>
-								<tr class='command'>
+							<?php } ?>
+							<tr class='command'>
 								<td>
 									<img src='/monitor/images/disabled.gif' border="0" alt='<?php echo $lable_enable_disable_event_handler ?>'
 										title='<?php echo $lable_enable_disable_event_handler ?>' />
@@ -192,133 +188,3 @@
         </td>
     </tr>
 </table>
-
-<!-- SERVICE COMMANDS TABLE
-<table border='0' cellpadding="0" cellspacing="0">
-	<tr>
-		<td align="center" valign="top" class='commandPanel'>
-			<div class='dataTitle'>
-				Service Commands
-			</div>
-			<table border='1' cellspacing="0" cellpadding="0">
-				<tr>
-					<td>
-						<table border="0" cellspacing="0" cellpadding="0" class='command'>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Disable Active Checks Of This Service'
-										title='Disable Active Checks Of This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=6&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Disable active checks of this service
-									</a>
-								</td>
-							</tr>
-							<tr class='data'>
-								<td>
-									<img src='/monitor/images/delay.gif' border="0" alt='Re-schedule Next Service Check'
-										title='Re-schedule Next Service Check' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=7&amp;host=linux-server1&amp;service=Disk+usage+%2F&amp;force_check'>
-										Re-schedule the next check of this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/passiveonly.gif' border="0" alt='Submit Passive Check Result For This Service'
-										title='Submit Passive Check Result For This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=30&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Submit passive check result for this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Stop Accepting Passive Checks For This Service'
-										title='Stop Accepting Passive Checks For This Service' />
-								</td>
-								<td class='command' nowrap="nowrap">
-									<a href='cmd.cgi?cmd_typ=40&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Stop accepting passive checks for this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Stop Obsessing Over This Service'
-										title='Stop Obsessing Over This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=100&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Stop obsessing over this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Disable Notifications For This Service'
-										title='Disable Notifications For This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=23&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Disable notifications for this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/notify.gif' border="0" alt='Send Custom Notification'
-										title='Send Custom Notification' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=160&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Send custom service notification
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/downtime.gif' border="0" alt='Schedule Downtime For This Service'
-										title='Schedule Downtime For This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=56&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Schedule downtime for this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Disable Event Handler For This Service'
-										title='Disable Event Handler For This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=46&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Disable event handler for this service
-									</a>
-								</td>
-							</tr>
-							<tr class='command'>
-								<td>
-									<img src='/monitor/images/disabled.gif' border="0" alt='Disable Flap Detection For This Service'
-										title='Disable Flap Detection For This Service' />
-								</td>
-								<td class='command'>
-									<a href='cmd.cgi?cmd_typ=60&amp;host=linux-server1&amp;service=Disk+usage+%2F'>
-										Disable flap detection for this service
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
--->
