@@ -50,7 +50,7 @@ class Status_totals_Widget extends widget_Core {
 		$total_pending = $current_status->hosts_pending;
 		$total_hosts = $current_status->total_hosts;
 		$total_problems = $current_status->hosts_down + $current_status->hosts_unreachable;
-		$host = isset($arguments[0]) ? link::decode($arguments[0]) : 'all';
+		$host = isset($arguments[0]) ? trim($arguments[0]) : 'all';
 		$host_state = isset($arguments[1]) ? $arguments[1] : nagstat::HOST_UP;
 		$service_state = isset($arguments[2]) ? $arguments[2] : false;
 		$target_method = $service_state === false ? 'host' : 'service';

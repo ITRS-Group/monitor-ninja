@@ -34,7 +34,7 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function host($host='all', $hoststatustypes=nagstat::HOST_UP, $sort_order='ASC', $sort_field='host_name', $show_services=false)
 	{
-		$host = link::decode($host);
+		$host = trim($host);
 		$this->template->content = $this->add_view('status/host');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -108,8 +108,6 @@ class Status_Controller extends Authenticated_Controller {
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('images/up.gif');
 		$this->img_sort_down = $this->img_path('images/down.gif');
-
-		$host = link::decode($host);
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
