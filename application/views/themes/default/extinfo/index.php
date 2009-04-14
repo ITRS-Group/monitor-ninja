@@ -76,7 +76,7 @@ if (!empty($widgets)) {
 	<tr>
 		<td class='dataVar'><?php echo $lable_flapping ?></td>
 		<td class='dataVal'>
-			<div class='notflapping'>&nbsp;&nbsp;NO&nbsp;&nbsp;</div>&nbsp;<?php echo $percent_state_change_str ?>
+			<div class='notflapping'>&nbsp;&nbsp;<?php echo $flap_value ?>&nbsp;&nbsp;</div>&nbsp;<?php echo $percent_state_change_str ?>
 		</td>
 	</tr>
 	<tr>
