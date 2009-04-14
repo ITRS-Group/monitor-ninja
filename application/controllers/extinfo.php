@@ -86,7 +86,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Active Check');
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
-			$content->commands->lable_command_title = $t->_('Host Commands');
 		} else {
 			$group_info = $this->current->get_groups_for_object($type, $result->service_id);
 			$content->no_group_lable = $t->_('No servicegroups');
@@ -96,7 +95,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
 			$obsessing = $result->obsess_over_service;
-			$content->commands->lable_command_title = $t->_('Service Commands');
 		}
 
 		$groups = false;
@@ -191,7 +189,26 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
 		# @@@FIXME Add commands and translations for servcies, below only hosts
-		# @@@FIXME Add differennt icons depending on values below
+		# @@@FIXME Add different icons depending on values below
+
+		# check if nagios is running, will affect wich template to use
+		$status = ORM::factory('program_status')->find_all();
+		if (!$status->current()->is_running) {
+			$this->template->content->commands = $this->add_view('extinfo/not_running');
+			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
+			$this->template->content->commands->info_message_link = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
+			return;
+		} else {
+			$this->template->content->commands = $this->add_view('extinfo/commands');
+		}
+
+		$commands = $this->template->content->commands;
+		if ($type == 'host') {
+			$commands->lable_command_title = $t->_('Host Commands');
+		} else {
+			$commands->lable_command_title = $t->_('Service Commands');
+		}
+
 		$commands->lable_host_map = $t->_('Locate Host On Map');
 		$commands->type = $type;
 		$commands->host = $host;
