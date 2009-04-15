@@ -541,6 +541,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 			case 'host':
 				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host...');
 				break;
+			case 'hostgroup':
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this hostgroup...');
+				break;
+			case 'servicegroup':
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this servicegroup...');
+				break;
 			case 'service':
 				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service...');
 				break;
