@@ -690,6 +690,68 @@ class Current_status_Model extends Model {
 	}
 
 	/**
+	*	@name	get_servicegroup_hoststatus
+	*	@desc	find all hosts that have services that
+	* 			are members of a specific servicegroup and that
+	* 			are in the specified state.
+	*
+	*/
+	public function get_servicegroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
+	{
+		$servicegroup = trim($servicegroup);
+		if (empty($servicegroup)) {
+			return false;
+		}
+
+		$hostlist = $this->get_hostlist();
+		if (empty($hostlist)) {
+			return;
+		}
+		$filter_sql = '';
+		$state_filter = false;
+		if (!empty($hoststatus)) {
+			if ($hoststatus > 2) {
+				$state_filter = '>0';
+			} else {
+				$state_filter = '='.$hoststatus;
+			}
+			$filter_sql .= ' AND h.current_state'.$state_filter.' ';
+		}
+		$service_filter = false;
+		if ($servicestatus!==false) {
+			if ($servicestatus>3) {
+				$service_filter = '>0';
+			} else {
+				$service_filter = '='.$servicestatus;
+			}
+			$filter_sql .= ' AND s.current_state'.$service_filter.' ';
+		}
+
+		$hostlist_str = implode(',', $hostlist);
+
+		$sql = "
+			SELECT
+				h.*
+			FROM
+				service s,
+				host h,
+				servicegroup sg,
+				service_servicegroup ssg
+			WHERE
+				sg.servicegroup_name=".$this->db->escape($servicegroup)." AND
+				ssg.servicegroup = sg.id AND
+				s.id=ssg.service AND
+				h.id=s.host_name AND
+				h.id IN (".$hostlist_str.") ".$filter_sql."
+			GROUP BY
+				h.id
+			ORDER BY
+				h.host_name;";
+		$result = $this->db->query($sql);
+		return $result;
+	}
+
+	/**
 	*	@name 	host_status_subgroup
 	*	@desc 	Verify input host ID(s) and redirect to
 	* 			get_host_status()
