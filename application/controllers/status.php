@@ -141,14 +141,19 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name servicegroup
-	*	@desc
+	*	@name	servicegroup
+	*	@desc	Show servicegroup status
 	*
 	*/
-	public function servicegroup($group=false)
+	public function servicegroup($group=false, $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
 	{
-		$group = link::decode($group);
-		echo "Not fixed yet (group = $group)";
+		$group = trim($group);
+		$hostlist = $this->current->get_servicegroup_hoststatus($group, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
+		if ($hostlist->count() > 0) {
+			foreach ($hostlist as $host) {
+				echo $host->host_name."<br />";
+			}
+		}
 	}
 
 	/**
