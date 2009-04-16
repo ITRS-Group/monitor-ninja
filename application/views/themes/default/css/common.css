@@ -1,603 +1,364 @@
-/***************************************************************************************************
-* base
-***************************************************************************************************/
 html, body {
-	font-size: 100.1%;
+	height: 100%;
 }
 
 * {
-	font: 11px 'trebuchet ms',arial,sans-serif;
-	color: #413f38;
+	color: #414141;
 }
 
 body {
-	margin: 0px 7px;
+	margin: 0px;
+	font: 11px 'trebuchet ms',arial,sans-serif;
+	background-color: #fdfdfb;
+	background-color: #ffffff;
 }
 
-em {
-	font-style: normal;
-	color: #cc0000;
+form {
+	margin: 0px;
+	padding:  0px;
 }
 
-table {
-	border-spacing: 1px;
-	border: 0px;
-}
-
-table tr td, table tr th {
-	border: 0px;
-}
-
-a i { color: #413f38; font-weight: bold; }
-i { color: #cc0000; font-style: normal; }
-
-a,
-a:link,
-a:hover	{
-	color: #413f38;
-}
-
-a:hover {
-	text-decoration: none;
-}
-
-hr {
-	border: 0px;
-	color: #cccccc;
-	background-color: #cccccc;
-	height: 1px;
-}
 img {
 	border: 0px;
 }
 
-img[width='20'] {
-	width: 16px;
-	height: 16px;
+em {
+
 }
 
-input, select, textarea {
-	font: 11px 'trebuchet ms', arial, helvetica, sans-serif;
-	border: 1px solid #cccccc;
+/* content ****************************************************************************************/
+
+#top-bar {
+	position: relative;
+	left: 0px;
+	height: 32px;
+	background: #ffffff url(../images/menu-top.gif) repeat-x;
+	z-index: 1;
+	border-left: 1px solid #e9e9e0;
+	border-right: 1px solid #e9e9e0;
 }
 
-input[type=submit],
-input[type=button],
-input[type=reset] {
-	border: 1px outset #cccccc;
-	background-color: #413f38;
-	background: transparent url(/monitor/images/buttons/23/bg.png) repeat-x;
-	border: 0px;
-	height: 23px;
+#top-bar img {
+	margin-top: 9px;
+	margin-left: 11px;
+}
+
+#navigation {
+	margin-top: -20px;
+	margin-left: 80px;
 	font-weight: bold;
-	color: #ffffff;
 }
 
-/***************************************************************************************************
-* links
-***************************************************************************************************/
-a[class^=status],
-td.featureItemEnabledHostFlapDetection a,
-td.featureItemEnabledServiceFlapDetection a,
-td.featureItemDisabledServiceFlapDetection a,
-td.featureItemDisabledHostFlapDetection a,
-td.featureItemServicesNotFlapping a,
-td.featureItemServicesFlapping a,
-td.featureItemHostsNotFlapping a,
-td.featureItemHostsFlapping a,
-a.statusCRITICAL,
-a.statusHOSTDOWN,
-a.statusHOSTDOWNACK,
-a.statusHOSTDOWNSCHED,
-a.statusHOSTUNREACHABLE,
-a.statusHOSTUNREACHABLEACK,
-a.statusHOSTUNREACHABLESCHED,
-a.statusOK,
-a.statusRECOVERY,
-a.statusHOSTUP,
-a.statusUNKNOWN,
-a.statusWARNING,
-a.statusPENDING,
-td.miniStatusCRITICAL a,
-td.miniStatusDOWN a,
-td.miniStatusOK a,
-td.miniStatusPENDING a,
-td.miniStatusUNREACHABLE a,
-td.miniStatusUNKNOWN a,
-td.miniStatusUP a,
-td.miniStatusWARNING a,
-.hostImportantProblem a,
-.outageImportantProblem a,
-.serviceImportantProblem a	{ color: #ffffff; font-weight: bold; }
-
-.perfTitle a,
-.serviceTotals a,
-.hostTotals a,
-.serviceTotals a { font-weight: bold; text-decoration: none; }
-
-
-.linkBox a	{
-	/*background: url(/monitor/images/link_arrow_black.gif) no-repeat 0px 5px;*/
-	background: url(/monitor/images/icons/arrows/grey.png) no-repeat 0px 5px;
-	padding: 0px 0px 0px 8px;
-	color: #413f38;
-	line-height: 16px;
+#navigation a {
+	margin-left: 10px;
+	color: #000000;
+	text-decoration: none;
+	font-weight: bold;
+	float: left;
+	margin-top: 3px;
+	text-transform: capitalize;
 }
-/***************************************************************************************************
-* text
-***************************************************************************************************/
 
-.itemTotalsTitle 	{ text-align: center; }
+#navigation p {
+	margin: 0px;
+	font-weight: normal;
+	float: right;
+	margin-top: 2px;
+	color: #555555;
+	margin-right: 10px;
+}
 
-.perfTypeTitle 	{ font-weight: bold; }
+#navigation p a {
+	float: none;
+	font-weight: normal;
+	font-size: 11px;
+	margin: 0px;
+	color: #414141;
+	border-bottom: 1px dotted #777777;
+}
 
-.pwd_subtitle,
-.filterTitle,
-.infoBoxTitle		{ font-weight: bold; font-size: 12px; }
+#navigation img {
+	margin-top: -8px;
+	float: left;
+}
 
-.optionBoxTitle,
-.descriptionTitle { font-weight: bold; font-size: 12px; text-align: center; }
+#navigation img:first-child {
+	margin-left: 5px;
+}
 
-.queueTitle,
-.statusTitle,
-.optBoxTitle,
-.commandTitle,
-.navBoxTitle,
-.dataTitle,
-.zoomTitle 			{ font-weight: bold; font-size: 14px; text-align: center; }
+#navigation input {
+	float: right;
+	border: 0px;
+	margin-top: -1px;
+	margin-right: 4px;
+	font: 11px 'trebuchet ms';
+	background: transparent url(../images/forms/input-170.png) no-repeat;
+	width: 138px;
+	padding: 3px 5px 3px 27px;
+	color: #999999;
+}
 
-.pwd_title,
-.reportSelectTitle,
-.commentTitle,
-.downtimeTitle 	{ font-weight: bold; font-size: 14px; text-align: left; }
+#quickbar {
+	position: relative;
+	margin: 0px auto;
+	/*padding: 9px 0px;*/
+	height: 34px;
+	background: #ffffff url(../images/menu-top-two.gif) repeat-x;
+	z-index: 1;
+	border-left: 1px solid #e9e9e0;
+	border-right: 1px solid #e9e9e0;
+}
 
-.commandTitle		{ font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+#quicklinks ul {
+	padding: 9px 10px;
+	margin: 0px;
+	float: left;
+}
 
-/* sub titles *************************************************************************************/
+#quicklinks ul li {
+	display: inline;
+	padding: 0px 10px 0px 5px;
+	background: url(../images/menu-left-divider.gif) top right no-repeat;
+	font-weight: bold;
+}
 
+#icons ul {
+	float: right;
+	padding: 0px;
+	margin: 0px;
+	height: 32px;
+}
 
-.dateSelectSubTitle 		{ font-weight: bold; font-size: 12px; text-align: left; }
-.dataSubTitle 				{ font-weight: bold; font-size: 12px; text-align: center; }
+#icons ul li {
+	display: inline;
+	margin-left: 0px;
+	float: right;
+	background: url(../images/menu-left-divider.gif) 0px 0px no-repeat;
+	padding: 8px 12px;
+}
 
-div.reportSelectSubTitle,
-div.dateSelectTitle 		{ font-weight: bold; font-size: 12px; text-align: left; margin-top: 15px; }
+#status {
+	float: right;
+	margin-top: 9px;
+	margin-right: 10px;
+	font-style: italic;
+	color: #555555;
+}
 
-td.reportSelectItem,
-td.reportSelectSubTitle { font-weight: normal; font-size: 11px; padding: 3px 0px; width: 180px; text-align: left}
+#menu {
+	position: absolute;
+	width: 159px;
+	top: 0px;
+	left: 0px;
+	z-index: 0;
+	height: 100%;
+	background-color: #f5f5ef;
+	border-left: 1px solid #e9e9e0;
+}
 
-/* messages ***************************************************************************************/
+#menu ul {
+	margin: 0px;
+	padding: 0px;
+	margin-top: 66px;
+	border-right: 1px solid #e9e9e0;
+}
 
-.errorDescription,
-.errorMessage,
-.warningMessage { text-align: center; font-weight: bold; }
+#menu ul li {
+	list-style: none;
+	padding: 3px 0px 2px 10px;
+	margin: 0px;
+	background: #ffffff url(./images/menu-top-two.gif) 0px -1px repeat-x;
+	border-bottom: 1px solid #e9e9e0;
+}
 
-.infoBoxBadProcStatus,
-.errorMessage,
-.warningMessage,
-.infoMessage { color: #cc0000; }
+#menu ul li.selected {
+	font-weight: bold;
+}
 
-/* boxes ******************************************************************************************/
+#menu ul li img {
+	width: 12px;
+	height: 12px;
+	margin-top: 1px;
+	float: left;
+	margin-right: 10px;
+}
 
-td.infoBox { margin-top: 0px; }
-.linkBox { margin-top: 14px; }
+#menu ul li a {
+	text-decoration: none;
+}
 
-.optBox,
-.healthBox,
-.perfBox,
-.optionBox { background-color: #e9e9e9; padding: 3px; }
+#menu ul li.header {
+	font-weight: bold;
+	padding-top: 15px;
+	padding-left: 15px;
+}
 
-table.command { border: 1px solid #cccccc; padding: 10px; }
-table.command table.command { border: 0px solid #cccccc; padding: 0px; }
-table.command tr td { padding: 0px; }
-table.command tr td img { margin-right: 10px; }
+#close-menu {
+	position: absolute;
+	top: 70px;
+	left: 142px;
+	background: transparent url(../images/close.png) no-repeat;
+	width: 14px;
+	height: 14px;
+	z-index: 2;
+	cursor: pointer;
+}
 
-.stateInfoTable1,
-.stateInfoTable2 { padding: 10px; border: 1px solid #cccccc; }
+#content {
+	position: relative;
+	margin: 0px 0px 0px 161px;
+	padding-top: 11px;
+}
 
+/* generic classes ********************************************************************************/
 
-table.command img 	{ margin-right: 5px; }
+table {
+	border-spacing: 0px;
+	margin: 0px;
+	width: 100%;
+	/*border: 1px solid #e9e9e0;
+	border-top: 0px;*/
+}
 
+caption {
+	font-size: 11px;
+	color: #333333;
+	font-weight: bold;
+	text-align: left;
+	border-bottom: 1px solid #e9e9e0;
+	margin-bottom: 1px;
+	padding: 10px 0px 2px 16px;
+	background: url(../images/icons/arrows/down-sml.gif) 5px 16px no-repeat;
+}
 
-table.commandDescription { }
+th {
+	text-align: left;
+	padding: 5px 7px;
+	border: 0px;
 
-/* items ******************************************************************************************/
+	font-weight: bold;
+	border: 0px;
+	padding: 3px 7px;
+	background: #ffffff url(../images/bg/light.gif) repeat-x;
+	text-transform: uppercase;
+}
 
-.titleItem,
-.optBoxItem,
-.navBoxItem,
-.Item,
-.healthItem,
-.Item,
-.perfItem { font-weight: bold; text-decoration: none; }
+tr td {
+	background: #f5f5ef url(../images/bg/light.gif) repeat-x;
+	padding: 5px;
+	border: 0px;
+	/*border-bottom: 1px solid #e9e9e0;
+	border-bottom: 1px solid #ffffff;*/
+	text-align:left;
+	white-space: nowrap;
+}
 
-.optBoxRequiredItem,
-.navBoxItem { color: #cc0000; }
+tr td.dark  {
+	width: 44px;
+	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
+	text-align: center;
+	padding: 5.50px 0px;
+}
 
-.optBoxItem,
-.optBoxRequiredItem { font-weight: bold; padding-right: 10px}
+tr td.white {
+	padding: 0px;
+	background: #ffffff;
+	vertical-align: top;
+}
 
-.titleItem { background-color: #000000; color: #ffffff; }
-.title 	  { background-color: black; color: white; font-weight: bold; }
+/* health css *************************************************************************************/
 
-/* values *****************************************************************************************/
+table.healt tr td {
+	background: none;
+	border: 0px;
+	text-align: left;
+	padding: 0px;
+	width: 50%;
+}
 
-.Value,
-.optBoxValue,
-.filterValue,
-.perfTitle,
-.perfValue { text-decoration: none; }
+table.healt tr td div.border {
+	height: 100px;
+}
+
+table.healt tr td:first-child div.border {
+	margin-right: 0px;
+}
+
+table.healt tr td div.border img {
+	height: 100px;
+}
+
+table.healt tr td div.border {
+	padding: 1px;
+	background: url(../images/bg/light.gif) repeat-x;
+}
+
+table.healt tr td div.border img {
+	display: block;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	height: 30px;
+}
+
+/* widgdet style **********************************************************************************/
+
+.widget-header {
+	font-size: 11px;
+	color: #333333;
+	font-weight: bold;
+	text-align: left;
+	padding: 3px 5px 3px 5px;
+	border-bottom: 1px solid #e9e9e0;
+	margin-bottom: 1px;
+}
+
+.widget {
+	margin-left: 1%;
+}
+
+.widget-place {
+	clear: both;
+}
+
+.widget-place.col {
+	clear: none;
+}
+
+/*.widget-place.col {
+	border: 1px solid red;
+	width: 32%;
+	float: left;
+	margin-left: 1%;
+}
+
+.widget-place.col .w33,
+.widget-place.col .w32 {
+	width: 100%;
+}*/
+
+.widget-placeholder {
+  border: 1px dashed #cdcdbc;
+}
 
 /**************************************************************************************************/
 
-.filter {}
-.filterName { }
-.stateInfoTable2 td { }
-.statusSort { }
-
-.healthBar 	{ background-color: #d7dad6; border: 1px solid #ffffff; height: 20px; }
-
-.imageInfo 	{ font-weight: bold; text-align: center; }
-.navBoxFile { font-weight: bold;	text-align: center; }
-.navBoxDate { font-weight: bold; }
-.popupText 	{ font-weight: bold; }
-
-.helpfulHint  				{ text-align: center; font-style: italic; }
-.helpfulHints 				{ text-align: center; font-size: 12px; }
-.reportRange 				{ text-align: center; font-size: 12px; font-weight: bold;}
-.reportDuration 			{ text-align: center; }
-.reportTime 				{ text-align: center; }
-.reportSelectTip 			{ font-style: italic; }
-.reportSelectItem 		{ }
-.dateSelectItem 			{ }
-
-.dateTimeBreak { font-size: 12px; font-weight: bold; color: #cc0000; }
-.cmdType 		{ font-size: 14px; font-weight: bold; text-align: left;}
-
-.DynamicData,
-.StaticData 	{ font-size: 12px; background-color: #ffffff; padding: 2px; }
-
-.DataSource,
-.Number { background-color: #e9e9e9; }
-
-.dataVar,
-.dataVal { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px;}
-
-.commentPanel,
-.stateInfoPanel,
-.stateStatisticsPanel { background-color: white; }
-
-div.data,
-div.hostTotals,
-div.serviceTotals,
-div.status {font-size: 12px; text-align: center; font-weight: bold; }
-
-.comment img { margin-bottom: -3px }
-
-a.commentNav,
-div.comment,
-a.downtimeNav {font-size: 12px; font-weight: bold; text-align: left;}
-
-div.commentNav,
-div.downtimeNav { display: none; }
-
-/***************************************************************************************************
-* colours
-***************************************************************************************************/
-
-table.data,
-table.logEntries,
-table.notifications,
-table.comment,
-table.downtime,
-table.status,
-table.serviceTotals,
-table.hostTotals,
-table.queue,
-table.data { width: 100%; }
-
-/* table headers **********************************************************************************/
-
-.TableHeader,
-th.notifications,
-th.logEntries,
-th.comment,
-th.downtime,
-th.data,
-th.hostTotals,
-th.serviceTotals,
-th.status,
-th.data,
-th.queue,
-td.serviceTitle,
-td.outageTitle,
-td.hostTitle,
-td.healthTitle,
-td.perfTitle,
-td.featureTitle {
-	/*background-color: #413f38;*/
-	border-bottom: 2px solid #413f38;
-	/*background: url(/monitor/images/icons/arrows/grey-down.gif) 7px 7px no-repeat;*/
-	padding: 2px 7px 1px 7px;
-	/*color: #ffffff;*/
-	font-size: 11px;
-	text-align: left;
-	font-weight: bold;
+div.left {
+	float: left;
+	margin-bottom: 10px;
 }
 
-td.featureHeader,
-td.hostHeader,
-td.outageHeader,
-td.serviceHeader,
-body.status td.hostTotals,
-body.status td.serviceTotals,
-body.tac td.hostTotals,
-body.tac td.serviceTotals 	{ background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; text-align: center; }
+div.right {
+	float: right;
+	margin-bottom: 10px;
+}
 
-body.tac td.hostTotals,
-body.tac td.serviceTotals 	{ text-align: left; }
-
-/* odd/even ***************************************************************************************/
-
-.notificationsOdd,
-.statusOdd,
-.reportDataOdd,
-.commentOdd,
-.queueOdd,
-.dataOdd,
-.logEntriesOdd,
-.downtimeOdd,
-.notificationsEven,
-.statusEven,
-.reportDataEven,
-.commentEven,
-.queueEven,
-.dataEven,
-.logEntriesEven,
-.downtimeEven { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; }
-
-/* up, ok, enabled etc. (green) *******************************************************************/
-
-.queueENABLED,
-.hostTotalsUP,
-.serviceTotalsOK,
-.checksENABLED,
-.downtimeINACTIVE,
-.eventhandlersENABLED,
-.flapdetectionENABLED,
-.hostTotalsUP,
-.hostUP,
-.logEntriesOK,
-.logEntriesUP,
-.miniStatusOK,
-.miniStatusUP,
-.modeACTIVE,
-.notflapping,
-.notificationsOK,
-.notificationsHOSTUP,
-.notificationsENABLED,
-.processOK,
-.serviceOK,
-.serviceTotalsOK,
-.statusOK,
-.statusRECOVERY,
-.statusHOSTUP,
-.ValueOk { font-weight: bold; padding: 1px 7px; color: #ffffff; background: #96d52a url(/monitor/images/bg/table/nagios-green.png) repeat-x; }
-
-td.miniStatusOK table  	{ font-weight: bold; padding: 0px; color: #ffffff; background: #96d52a url(/monitor/images/bg/table/nagios-green.png) repeat-x;}
-td.miniStatusUP table  	{ font-weight: bold; padding: 0px; color: #ffffff; background: #96d52a url(/monitor/images/bg/table/nagios-green.png) repeat-x;}
-
-/* down, critical, unreachable etc (red) **********************************************************/
-
-.flapping,
-.downtimeACTIVE,
-.checksDISABLED,
-.eventhandlersDISABLED,
-.flapdetectionDISABLED,
-.hostDOWN,
-.hostTotalsDOWN,
-.hostTotalsUNREACHABLE,
-.hostUNREACHABLE,
-.logEntriesCRITICAL,
-.logEntriesDOWN,
-.logEntriesUNREACHABLE,
-.miniStatusCRITICAL,
-.miniStatusDOWN,
-.miniStatusUNREACHABLE,
-.notificationsCRITICAL,
-.notificationsDISABLED,
-.notificationsHOSTDOWN,
-.notificationsHOSTUNREACHABLE,
-.processCRITICAL,
-.queueDISABLED,
-.serviceCRITICAL,
-.serviceTotalsCRITICAL,
-.statusCRITICAL,
-.statusHOSTDOWN,
-.statusHOSTDOWNACK,
-.statusHOSTDOWNSCHED,
-.statusHOSTUNREACHABLE,
-.statusHOSTUNREACHABLEACK,
-.statusHOSTUNREACHABLESCHED,
-.ValueError { font-weight: bold; padding: 1px 7px; color: #ffffff; background: #ff341a url(/monitor/images/bg/table/nagios-red.png) repeat-x; }
-
-tr.statusOdd > td.statusHOSTUNREACHABLE 	{ background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-tr.statusEven > td.statusHOSTUNREACHABLE  { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-tr.statusEven > td.statusHOSTDOWN  			{ background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-tr.statusOdd > td.statusHOSTDOWN 			{ background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-
-/* works in opera only - unfortionately */
-td.statusHOSTDOWN:not(:nth-of-type(2)),
-td.statusHOSTUNREACHABLE:not(:nth-of-type(2)) { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-
-td.miniStatusDOWN table   			{ font-weight: bold; padding: 0px; color: #ffffff; background: #ff341a url(/monitor/images/bg/table/nagios-red.png) repeat-x;}
-td.miniStatusUNREACHABLE table 	{ font-weight: bold; padding: 0px; color: #ffffff; background: #ff341a url(/monitor/images/bg/table/nagios-red.png) repeat-x;}
-td.miniStatusCRITICAL table  		{ font-weight: bold; padding: 0px; color: #ffffff; background: #ff341a url(/monitor/images/bg/table/nagios-red.png) repeat-x;}
-
-/* unknown (orange) *******************************************************************************/
-
-.serviceTotalsPROBLEMS,
-.hostTotalsPROBLEMS,
-.logEntriesUNKNOWN,
-.miniStatusUNKNOWN,
-.notificationsUNKNOWN,
-.processUNKNOWN,
-.serviceUNKNOWN,
-.serviceTotalsUNKNOWN,
-.statusUNKNOWN { font-weight: bold; padding: 1px 7px; color: #ffffff; background: #ffa01d url(/monitor/images/bg/table/nagios-orange.png) repeat-x; }
-
-td.miniStatusUNKNOWN table  { font-weight: bold; padding: 0px; color: #ffffff; background: #ffa01d url(/monitor/images/bg/table/nagios-orange.png) repeat-x;}
-
-/* warning etc (yellow) ***************************************************************************/
-
-.logEntriesWARNING,
-.miniStatusWARNING,
-.modeSTANDBY,
-.notificationsWARNING,
-.processWARNING,
-.serviceTotalsWARNING,
-.serviceWARNING,
-.statusWARNING { font-weight: bold; padding: 1px 7px; color: #ffffff; background: #ffdf24 url(/monitor/images/bg/table/nagios-yellow.png) repeat-x; }
-
-td.miniStatusWARNING table { font-weight: bold; padding: 0px; color: #ffffff; background: #ffdf24 url(/monitor/images/bg/table/nagios-yellow.png) repeat-x;}
-
-/* indeterminate & pending (grey) *****************************************************************/
-
-.notificationsACKNOWLEDGEMENT,
-.notificationsHOSTACKNOWLEDGEMENT,
-.hostTotalsPENDING,
-.logEntriesINDETERMINATE,
-.miniStatusPENDING,
-.serviceTotalsPENDING,
-.statusHOSTPENDING,
-.statusPENDING { font-weight: bold; padding: 1px 7px; color: #ffffff; background: #a7a78a url(/monitor/images/bg/table/nagios-grey.png) repeat-x; }
-
-td.miniStatusPENDING table { font-weight: bold; padding: 0px; color: #ffffff; background: #a7a78a url(/monitor/images/bg/table/nagios-grey.png) repeat-x;}
-
-/* centered statuses ******************************************************************************/
-
-.hostTotalsDOWN,
-.hostTotalsPENDING,
-.hostTotalsPROBLEMS,
-.hostTotalsUNREACHABLE,
-.hostTotalsUP,
-.serviceTotalsCRITICAL,
-.serviceTotalsOK,
-.serviceTotalsPENDING,
-.serviceTotalsPROBLEMS,
-.serviceTotalsUNKNOWN,
-.serviceTotalsWARNING { text-align: center; }
-
-.miniStatusCRITICAL,
-.miniStatusDOWN,
-.miniStatusOK,
-.miniStatusPENDING,
-.miniStatusUNREACHABLE,
-.miniStatusUNKNOWN,
-.miniStatusUP,
-.miniStatusWARNING { padding: 0px; }
-
-
-
-/* background colours *****************************************************************************/
-
-.statusBGUNKNOWN,
-.statusBGUNKNOWNACK,
-.statusBGUNKNOWNSCHED 		{ background-color: #fbd8bd; background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; }
-
-.statusBGWARNING,
-.statusBGWARNINGACK,
-.statusBGWARNINGSCHED 		{ background-color: #ff9ff9; background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; }
-
-.statusBGCRITICAL,
-.statusBGCRITICALACK,
-.statusBGCRITICALSCHED,
-.statusBGDOWN 					{ background-color: #fccfcc; background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; }
-
-.statusBGDOWNACK,
-.statusBGDOWNSCHED,
-.statusBGUNREACHABLE,
-.statusBGUNREACHABLEACK,
-.statusBGUNREACHABLESCHED 	{ background-color: #ffbbbb; background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; padding: 1px 7px; }
-
-/* some tables in tables in tables etc fixes :P ***************************************************/
-
-td.statusWARNING table tr td.statusWARNING,
-td.statusCRITICAL table tr td.statusCRITICAL,
-td.statusHOSTDOWN table tr td.statusHOSTDOWN,
-td.statusHOSTUP table tr td.statusHOSTUP,
-td.statusHOSTPENDING table tr td.statusHOSTPENDING,
-td.statusHOSTUNREACHABLE table tr td.statusHOSTUNREACHABLE,
-table tr td.statusEven table tr td,
-table tr td.statusOdd table tr td,
-table tr td.statusBGUNKNOWN table tr td,
-table tr td.statusBGUNKNOWNACK table tr td,
-table tr td.statusBGUNKNOWNSCHED table tr td,
-table tr td.statusBGWARNING table tr td,
-table tr td.statusBGWARNINGACK table tr td,
-table tr td.statusBGWARNINGSCHED table tr td,
-table tr td.statusBGCRITICAL table tr td,
-table tr td.statusBGCRITICALACK table tr td,
-table tr td.statusBGCRITICALSCHED table tr td,
-table tr td.statusBGDOWN table tr td,
-table tr td.statusBGDOWNACK table tr td,
-table tr td.statusBGDOWNSCHED table tr td,
-table tr td.statusBGUNREACHABLE table tr td,
-table tr td.statusBGUNREACHABLEACK table tr td,
-table tr td.statusBGUNREACHABLESCHED table tr td { padding: 0px; background-color: transparent; }
-
-/***************************************************************************************************
-* css3 and alikes
-***************************************************************************************************/
-
-table.status tr td[class*=status]:first-child { width: 140px;}
-
-td[class*=status] table td[align=left]	 { width: 100%; }
-td[class*=status] table td[align=right] { width: 100%; }
-
-/* cmd ********************************************************************************************/
-
-body.cmd .optBox { text-align: left; background-color: transparent; padding: 0px; margin-bottom: 10px }
-body.cmd .optBoxTitle { font-size: 12px; background-color: transparent;  }
-body.cmd .cmdType { margin-bottom: 25px }
-
-body.cmd div[align=center] { text-align: left; }
-body.cmd td[align=center] { text-align: left; }
-body.cmd table[width='90%'] { width: 860px }
-
-/* status *****************************************************************************************/
-
-body.status td[width='33%'] table {  }
-body.status table[cellspacing='0'] td[width='33%']:first-child { width: 90%; }
-body.status table[cellspacing='2'] { margin-left: -2px; margin-bottom: 14px; }
-body.status.statusTitle { display: block; float: left; }
-body.status p td[valign=top] { display: block; float: left; }
-body.status td[align=center] { text-align: right; }
-
-body.status table[cellpadding='10'] { width: 100%; padding: 0px; border-spacing: 0px;}
-
-body.status td[valign=center] { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x;}
-
-body.status td[class*=status]:first-child,
-body.status td[class*=status]:first-child table tr td { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-
-body.status td[class*=status]:last-child { background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x; }
-
-/* extinfo ****************************************************************************************/
-
-body.extinfo div[align=center] { text-align: left; }
-body.extinfo table[cellpadding='20'] { border-spacing: 0px; margin-left: -20px; margin-top: -20px; padding: 0px; }
-body.extinfo table[cellpadding='10'] { border-spacing: 0px; margin-left: -10px; margin-top: 0px; padding: 0px; }
-
-body.extinfo div.dataTitle { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-
-/* config *****************************************************************************************/
-
-body.trends div[align=center],
-body.summary div[align=center],
-body.config div[align=center] { text-align: left; }
-
-body.trends div[align=center].reportRange,
-body.trends div[align=center].reportDuration,
-body.trends div[align=center].dataTitle { text-align: center; }
-
-div[align=center] img[name=trendsimage] { margin: auto; display: block; }
+.max { width: 100%; }
+.w99 { width: 99%; }
+.w98 { width: 98%; }
+.w66 { width: 65%; }
+.w49 { width: 49%; }
+.w48 { width: 48%; }
+.w33 { width: 32%; }
+.w32 { width: 32%; }
+.w18 { width: 18%; }
+.w19 { width: 19%; }
