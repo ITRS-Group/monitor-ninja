@@ -1,10 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="widget movable collapsable removable closeconfirm" id="widget-status_host_totals">
+<div class="widget movable collapsable removable closeconfirm right" id="widget-host_totals" style="margin-right: 1%">
 	<div class="widget-header">
 		<strong><?php echo $host_title ?></strong>
 	</div>
-	<div class="widget-editbox">
-		<!--Edit the widget here-->
+	<div class="widget-content">
+		<table class="max" style="border-spacing: 1px">
+			<tr>
+			<?php foreach ($host_header as $row) { ?>
+				<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/16x16/shield-'.strtolower($row['status']).'.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))) ?></td>
+				<td class="icon"><?php echo html::anchor($row['url'], html::specialchars($row['lable'])) ?></td>
+			<?php	} ?>
+			</tr>
+			<tr>
+				<td class="status icon"><?php echo $total_problems ?></td>
+				<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/12', html::specialchars($label_all_host_problems)) ?></td>
+				<td class="status icon"><?php echo $total_hosts ?></td>
+				<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/', html::specialchars($label_all_host_types)) ?></td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div class="widget movable collapsable removable closeconfirm right" id="widget-status_totals">
+	<div class="widget-header">
+		<strong><?php echo $service_title ?></strong>
 	</div>
 	<div class="widget-content">
 		<div id="widget_status_totals_left">
@@ -47,42 +66,18 @@
 			</table>
 		</div>
 		<div id="widget_status_totals_right">
-			<table border=0 cellspacing=0 cellpadding=0>
+			<table style="border-spacing: 1px">
 				<tr>
-					<td>
-						<table border=1 class='serviceTotals'>
-							<tr>
-							<?php 	foreach ($service_header as $row) { ?>
-										<th class="<?php echo $row['th_class'] ?>"><?php echo html::anchor($row['url'], html::specialchars($row['lable']), array('class' => $row['link_class'])) ?></th><?php
-									} ?>
-							</tr>
-							<tr>
-								<td id="serviceTotalsOK" class='serviceTotals<?php echo $svc_total_ok ? 'OK' : '' ?>'><?php echo $svc_total_ok ?></td>
-								<td id="serviceTotalsWARNING" class='serviceTotals<?php echo $svc_total_warning ? 'WARNING' : '' ?>'><?php echo $svc_total_warning ?></td>
-								<td id="serviceTotalsUNKNOWN" class='serviceTotals<?php echo $svc_total_unknown ? 'UNKNOWN' : '' ?>'><?php echo $svc_total_unknown ?></td>
-								<td id="serviceTotalsCRITICAL" class='serviceTotals<?php echo $svc_total_critical ? 'CRITICAL' : '' ?>'><?php echo $svc_total_critical ?></td>
-								<td id="serviceTotalsPENDING" class='serviceTotals<?php echo $svc_total_pending ? 'PENDING' : '' ?>'><?php echo $svc_total_pending ?></td>
-							</tr>
-						</table>
-					</td>
+					<?php foreach ($service_header as $row) { ?>
+						<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/16x16/shield-'.strtolower($row['status']).'.png',$this->translate->_($row['status'])) ?></td>
+						<td class="icon"><?php echo html::anchor($row['url'], html::specialchars($row['lable'])) ?></td>
+					<?php } ?>
 				</tr>
 				<tr>
-					<td align=center>
-						<table border=1 class='serviceTotals'>
-							<tr>
-								<th class='serviceTotals'>
-									<?php echo html::anchor('status/service/'.$host.'/'.$host_state.'/28', html::specialchars($label_all_problems)) ?>
-								</th>
-								<th class='serviceTotals'>
-									<?php echo html::anchor('status/service/'.$host.'/'.$host_state.'/all', html::specialchars($label_all_types)) ?>
-								</th>
-							</tr>
-							<tr>
-								<td id="serviceTotalsPROBLEMS" class='serviceTotals<?php echo $svc_total_problems ? 'PROBLEMS' : '' ?>'><?php echo $svc_total_problems ?></td>
-								<td id="serviceTotalsTOTAL" class='serviceTotals'><?php echo $svc_total_services ?></td>
-							</tr>
-						</table>
-					</td>
+					<td class="status icon"><?php echo $svc_total_problems ?></td>
+					<td colspan="5"><?php echo html::anchor('status/host/'.$host.'/12', html::specialchars($label_all_service_problems)) ?></td>
+					<td class="status icon"><?php echo $svc_total_services ?></td>
+					<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/', html::specialchars($label_all_service_types)) ?></td>
 				</tr>
 			</table>
 		</div>
