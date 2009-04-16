@@ -1,106 +1,34 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="widget movable collapsable removable closeconfirm" id="widget-tac_services">
-	<div class="widget-header">
-		<strong><?php echo $title ?></strong>
-	</div>
+<div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_services">
+	<div class="widget-header"><?php echo $title ?></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
 	</div>
 	<div class="widget-content">
-		<table class='tac' width=641 cellspacing=0 cellpadding=0 border=1>
+		<table summary="<?php echo $title; ?>">
 			<tr>
 			<?php	foreach ($header_links as $url => $title) { ?>
-				<td class='hostHeader' width=125><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<td colspan="2"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 			<?php	} ?>
 			</tr>
 			<tr>
-				<td valign=top>
-					<table border=0 width=125 cellspacing=0 cellpadding=0>
-						<tr>
-							<td valign=bottom width=25>&nbsp;&nbsp;&nbsp;</td>
-							<Td width=10>&nbsp;</td>
-							<Td valign=top width=100%>
-								<table border=0 width=100%>
-									<tr>
-									<?php 	foreach ($services_critical as $url => $title) { ?>
-										<td width=100% class='serviceImportantProblem'><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-									<?php	} ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td valign=top>
-					<table border=0 width=125 cellspacing=0 cellpadding=0>
-						<tr>
-							<td valign=bottom width=25>&nbsp;</td>
-							<Td width=10>&nbsp;</td>
-							<Td valign=top width=100%>
-								<table border=0 width=100%>
-									<tr>
-									<?php 	foreach ($services_warning as $url => $title) { ?>
-										<td width=100% class='serviceImportantProblem'><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-									<?php	} ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td valign=top>
-					<table border=0 width=125 cellspacing=0 cellpadding=0>
-						<tr>
-							<td valign=bottom width=25>&nbsp;</td>
-							<Td width=10>&nbsp;</td>
-							<Td valign=top width=100%>
-								<table border=0 width=100%>
-									<tr>
-									<?php 	foreach ($services_unknown as $url => $title) { ?>
-										<td width=100% class='serviceImportantProblem'><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-									<?php	} ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td valign=top>
-					<table border=0 width=125 cellspacing=0 cellpadding=0>
-						<tr>
-							<td valign=bottom width=25>&nbsp;</td>
-							<Td width=10>&nbsp;</td>
-							<Td valign=top width=100%>
-								<table border=0 width=100%>
-									<tr>
-									<?php 	foreach ($services_ok_disabled as $url => $title) { ?>
-										<td width=100% class='serviceUnimportantProblem'><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-									<?php	} ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td valign=top>
-					<table border=0 width=125 cellspacing=0 cellpadding=0>
-						<tr>
-							<td valign=bottom width=25>&nbsp;</td>
-							<Td width=10>&nbsp;</td>
-							<td valign=top width=100%>
-								<table border=0 width=100%>
-									<tr>
-									<?php 	foreach ($services_pending_disabled as $url => $title) { ?>
-										<td width=100% class='serviceUnimportantProblem'><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-									<?php	} ?>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</td>
+				<?php foreach ($services_critical as $url => $title) { ?>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/32x32/shield_critical.png',$this->translate->_('Critical')) ?></td>
+					<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<?php	} foreach ($services_warning as $url => $title) { ?>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/32x32/shield_warning.png',$this->translate->_('Warning')) ?></td>
+					<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<?php	} foreach ($services_unknown as $url => $title) { ?>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield_unknown.png',$this->translate->_('Unknown')) ?></td>
+					<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<?php	} foreach ($services_ok_disabled as $url => $title) { ?>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+					<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<?php	} foreach ($services_pending_disabled as $url => $title) { ?>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield_pending.png',$this->translate->_('Pending')) ?></td>
+					<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+				<?php	} ?>
 			</tr>
 		</table>
 	</div>
 </div>
-

@@ -1,10 +1,9 @@
-.featureDisabled,
+/*.featureDisabled,
 .featureDisabledFlapDetection,
 .featureDisabledNotifications,
 .featureDisabledHandlers,
 .featureDisabledActiveChecks,
 .featureDisabledPassiveChecks {
-	/*background-color: #ffcccc;*/
 	background: url(/monitor/images/bg/table/tac-disabled.png) repeat-y;
 	background: #f4f4ee url(/monitor/images/bg/table/bg.gif) repeat-x;
 	font-weight: bold;
@@ -28,7 +27,7 @@
 	text-align: center;
 }
 
-/* red */
+
 .hostImportantProblem,
 .outageImportantProblem,
 .serviceImportantProblem {
@@ -53,3 +52,14 @@ td.outageHeader,
 td.serviceHeader { width: 140px; }
 
 table.tac { width: auto; }
+*/
+
+
+/* generic classes ********************************************************************************/
+
+th {
+	font-weight: bold;
+	border: 0px;
+	padding: 3px 7px;
+	background: #ffffff url(../images/bg/light.gif) repeat-x;
+}
