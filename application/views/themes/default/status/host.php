@@ -7,21 +7,25 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="statusTitle" id="status_msg"><?php echo $sub_title ?></div>
+<div class="widget collapsable left w98" id="status_host">
+<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
 
-<table border=0 class='status' width=100%>
+<table style="border-spacing: 1px">
 	<tr>
-<?php	foreach ($header_links as $row) { ?>
-			<th>
-				<?php echo $row['title'] ?>&nbsp;
-				<?php echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc'], 'border' => 0))) : '' ?>
-				<?php echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc'], 'border' => 0))) : '' ?>
-			</th>
-<?php	}
-		?>
-	</tr>
-<?php	foreach ($result as $row) {
+		<th>&nbsp;</th>
 
+		<?php	foreach ($header_links as $row) { ?>
+			<th>
+				<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
+				<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
+				<?php echo $row['title'] ?>
+			</th>
+		<?php	} ?>
+		<th colspan="4">&nbsp;</th>
+		<th>&nbsp;</th>
+	</tr>
+<?php	$a = 0;foreach ($result as $row) {
+		$a++;
 		# set status classes
 		# row "striping" done by JQuery?
 		$status_class = 'status';
@@ -57,87 +61,66 @@ if (!empty($widgets)) {
 		}
 
 	?>
-	<tr>
-		<td class="statusEven">
-			<table border=0 width=100% cellpadding=0 cellspacing=0>
-				<tr>
-					<td class="statusEven">
-						<table border=0 cellpadding=0 cellspacing=0>
-							<tr>
-								<td class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td align=right class="statusEven">
-						<table border=0 cellpadding=0 cellspacing=0>
-							<tr>
-						<?php	if ($row->problem_has_been_acknowledged) { ?>
-								<td align="center" class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK')) ?>
-								</td>
-						<?php	}
-								if (empty($row->notifications_enabled)) { ?>
-								<td class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS')) ?>
-								</td>
-						<?php	}
-								if (!$row->active_checks_enabled) { ?>
-								<td class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS')) ?>
-								</td>
-						<?php	}
-								if (isset($row->is_flapping) && $row->is_flapping) { ?>
-								<td class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL')) ?>
-								</td>
-						<?php	}
-								if ($row->scheduled_downtime_depth > 0) { ?>
-								<td class="statusEven">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT')) ?>
-								</td>
-						<?php	}
-								if (!empty($row->notes_url)) { ?>
-								<td class="statusEven">
-									<a href="<?php echo $row->notes_url ?>" target="_blank" title="View Extra Host Notes">
-										<img src="/monitor/images/notes.gif" border=0 alt="View Extra Host Notes" />
-									</a>
-								</td>
-						<?php	}
-								if (!empty($row->action_url)) { ?>
-								<td class="statusEven">
-									<a href="<?php echo $row->action_url ?>" title="Perform Extra Host Actions">
-										<img src="/monitor/images/action.gif" border=0 title="Perform Extra Host Actions" />
-									</a>
-								</td>
-						<?php	}
-								if (!empty($row->icon_image)) { ?>
-								<td class="statusEven">
-									<img src="<?php echo $logos_path.$row->icon_image ?>" WIDTH=20 HEIGHT=20 border=0 alt="View Extra Host Notes" />
-								</td>
-						<?php	} ?>
-								<td class="statusEven">
-									<?php echo html::anchor('status/service/'.$row->host_name,'<img src="/monitor/images/status2.gif" border=0 alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
-								</td>
-								<td class="statusEven">
-									<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&host=<?php echo $row->host_name ?>">
-										<img src='/monitor/images/op5tools/webconfig.png' border=0>
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
+	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
+		<td class="status icon">
+			<?php echo Current_status_Model::translate_status($row->current_state, Router::$method) ?>
 		</td>
-		<td class="<?php echo $status_class ?>"><?php echo Current_status_Model::translate_status($row->current_state, Router::$method) ?></td>
+		<td>
+			<?php
+				echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name));
+
+				if ($row->problem_has_been_acknowledged) {
+					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
+				}
+				if (empty($row->notifications_enabled)) {
+					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
+				}
+				if (!$row->active_checks_enabled) {
+					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
+				}
+				if (isset($row->is_flapping) && $row->is_flapping) {
+					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
+				}
+				if ($row->scheduled_downtime_depth > 0) {
+					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
+				}
+			?>
+		</td>
 		<td class="statusEven"><?php echo $row->last_check ?></td>
 		<td class="statusEven"><?php echo $row->duration ?></td>
 		<td class="statusEven"><?php echo $row->plugin_output ?></td>
+		<td class="icon">
+			<?php if (!empty($row->notes_url)) { ?>
+				<a href="<?php echo $row->notes_url ?>">
+					<img src="/monitor/images/notes.gif" alt="<?php echo $this->translate->_('View extra host notes') ?>" title="<?php echo $this->translate->_('View extra host notes') ?>" />
+				</a>
+			<?php	} ?>
+		</td>
+		<td class="icon">
+			<?php if (!empty($row->action_url)) { ?>
+				<a href="<?php echo $row->action_url ?>">
+					<img src="/monitor/images/action.gif" title="<?php echo $this->translate->_('Perform extra host actions') ?>" alt="<?php echo $this->translate->_('Perform extra host actions') ?>" />
+				</a>
+			<?php	} ?>
+			</td>
+
+			<td class="icon">
+				<?php echo html::anchor('status/service/'.link::encode($row->host_name),'<img src="/monitor/images/status2.gif" alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
+			</td>
+			<td class="icon">
+				<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>">
+					<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this host') ?>" title="<?php echo $this->translate->_('Configure this host') ?>" />
+				</a>
+		</td>
+		<td class="status icon">
+			<?php if (!empty($row->icon_image)) { ?>
+				<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
+			<?php	} ?>
+			</td>
 	</tr>
 
 <?php	} ?>
 </table>
 
 <div id="status_count_summary"><?php echo sizeof($result) ?> Matching Host Entries Displayed</div>
+</div>
