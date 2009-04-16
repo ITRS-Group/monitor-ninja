@@ -40,11 +40,19 @@ class Status_totals_Widget extends widget_Core {
 		$label_down = $this->translate->_('Down');
 		$label_unreachable = $this->translate->_('Unreachable');
 		$label_pending = $this->translate->_('Pending');
-		$label_all_problems = $this->translate->_('All Problems');
-		$label_all_types = $this->translate->_('All Types');
+		$label_all_host_problems = $this->translate->_('Problems in total');
+		$label_all_host_types = $this->translate->_('Types in total');
+		$label_all_service_problems = $this->translate->_('Problems in total');
+		$label_all_service_types = $this->translate->_('Types in total');
 
 		$host_title = $this->translate->_('Host Status Totals');
-
+		$service_title = $this->translate->_('Service status totals');
+		$total_up = $current_status->hosts_up;
+		$total_down = $current_status->hosts_down;
+		$total_unreachable = $current_status->hosts_unreachable;
+		$total_pending = $current_status->hosts_pending;
+		$total_hosts = $current_status->total_hosts;
+		$total_problems = $current_status->hosts_down + $current_status->hosts_unreachable;
 		$host = isset($arguments[0]) ? trim($arguments[0]) : 'all';
 		$host_state = isset($arguments[1]) ? $arguments[1] : nagstat::HOST_UP;
 		$service_state = isset($arguments[2]) ? $arguments[2] : false;
@@ -174,24 +182,24 @@ class Status_totals_Widget extends widget_Core {
 		}
 
 		$host_header = array(
-			array('th_class' =>'hostTotals', 'link_class' => 'hostTotals',  'url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_UP, 'lable' => $label_up),
-			array('th_class' =>'hostTotals', 'link_class' => 'hostTotals',  'url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_DOWN, 'lable' => $label_down),
-			array('th_class' =>'hostTotals', 'link_class' => 'hostTotals',  'url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_UNREACHABLE, 'lable' => $label_unreachable),
-			array('th_class' =>'hostTotals', 'link_class' => 'hostTotals',  'url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_PENDING, 'lable' => $label_pending)
+			array('url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_UP, 'lable' => $total_up, 'status' => $label_up),
+			array('url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_DOWN, 'lable' => $total_down, 'status' => $label_down),
+			array('url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_UNREACHABLE, 'lable' => $total_unreachable, 'status' => $label_unreachable),
+			array('url' => 'status/'.$target_method.'/'.$host.'/'.nagstat::HOST_PENDING, 'lable' => $total_pending, 'status' => $label_pending)
 		);
 
 		$svc_label_ok = $this->translate->_('Ok');
 		$svc_label_warning = $this->translate->_('Warning');
 		$svc_label_unknown = $this->translate->_('Unknown');
-		$svc_label_critical = $this->translate->_('Critical');
+		$svc_label_critical	= $this->translate->_('Critical');
 		$svc_label_pending = $this->translate->_('Pending');
 
 		$service_header = array(
-			array('th_class' =>'serviceTotals', 'link_class' => 'serviceTotals',  'url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_OK, 'lable' => $svc_label_ok),
-			array('th_class' =>'serviceTotals', 'link_class' => 'serviceTotals',  'url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_WARNING, 'lable' => $svc_label_warning),
-			array('th_class' =>'serviceTotals', 'link_class' => 'serviceTotals',  'url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_UNKNOWN, 'lable' => $svc_label_unknown),
-			array('th_class' =>'serviceTotals', 'link_class' => 'serviceTotals',  'url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_CRITICAL, 'lable' => $svc_label_critical),
-			array('th_class' =>'serviceTotals', 'link_class' => 'serviceTotals',  'url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_PENDING, 'lable' => $svc_label_pending)
+			array('url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_OK, 'lable' => $svc_total_ok, 'status' => $svc_label_ok),
+			array('url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_WARNING, 'lable' => $svc_total_warning, 'status' => $svc_label_warning),
+			array('url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_UNKNOWN, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown),
+			array('url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_CRITICAL, 'lable' => $svc_total_critical, 'status' => $svc_label_critical),
+			array('url' => 'status/service/'.$host.'/'.$host_state.'/'.nagstat::SERVICE_PENDING, 'lable' => $svc_total_pending, 'status' => $svc_label_pending)
 		);
 
 		$this->css = array('/css/status_totals');
