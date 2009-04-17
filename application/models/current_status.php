@@ -729,6 +729,8 @@ class Current_status_Model extends Model {
 
 		$hostlist_str = implode(',', $hostlist);
 
+		$servicegroup_all_sql = $servicegroup != 'all' ? "sg.servicegroup_name=".$this->db->escape($servicegroup)." AND" : '';
+
 		$sql = "
 			SELECT
 				h.*,
@@ -743,7 +745,7 @@ class Current_status_Model extends Model {
 				servicegroup sg,
 				service_servicegroup ssg
 			WHERE
-				sg.servicegroup_name=".$this->db->escape($servicegroup)." AND
+				".$servicegroup_all_sql."
 				ssg.servicegroup = sg.id AND
 				s.id=ssg.service AND
 				h.id=s.host_name AND
