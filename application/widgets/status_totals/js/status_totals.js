@@ -4,8 +4,28 @@ $(document).ready(function() {
 	setInterval("status_update()", interval);
 });
 
+/**
+*	Update status_totals widget by using ajax call.
+*	NOTE: If the classnames in the widget view is changed,
+*	this script will nedd to be updated to reflect those changes.
+*/
 function status_update()
 {
+	/**
+	*	First we need to figure out what data to fetch.
+	*	We do this by checking the href of the first link and remove
+	*	the _site_domain, _index_page and /status/ and then split the rest
+	*	on '/' and then finally joining it with '|' for the receiving script
+	*	to handle.
+	*/
+	var pathname = $(".hostTotals a").attr('pathname');
+
+	var replace_str = _site_domain + _index_page + '/status/';
+	var r = new RegExp(replace_str, 'g');
+	var args = pathname.replace(r, '');
+	var arguments_arr = args.split('/');
+	var arguments = arguments_arr.join('|');
+
 	$.ajax({
 		/* use the _site_domain and _index_page from master
 		* controller to allow javascript to know where
@@ -16,7 +36,7 @@ function status_update()
 		* method (status_totals/ajax_test in this case) with whatever arguments needed,
 		* we can add our ajax methods to our widget class just as any other methods
 		*/
-		url: _site_domain + _index_page + "/widget_callback/ajax/status_totals/status/",
+		url: _site_domain + _index_page + "/widget_callback/ajax/status_totals/status/" + arguments,
 		dataType:'json',
 		success: function(data) {
 
