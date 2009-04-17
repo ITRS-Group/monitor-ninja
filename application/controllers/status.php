@@ -180,6 +180,7 @@ class Status_Controller extends Authenticated_Controller {
 		# @@@FIXME: handle macros
 
 		$content->group_alias = $group_info_res->alias;
+		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
 			$content->lable_header = $t->_("Service Overview For Service Group");
 			$content->lable_header .= " '".$group."'";
