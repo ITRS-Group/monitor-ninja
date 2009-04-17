@@ -34,7 +34,7 @@ if (!empty($widgets)) {
 		$status_bg_class = '';
 		switch ($row->current_state) {
 			case Current_status_Model::SERVICE_PENDING :
-				$status_class .= ' pedning';
+				$status_class .= ' pending';
 				break;
 			case Current_status_Model::SERVICE_OK :
 				$status_class .= ' ok';
