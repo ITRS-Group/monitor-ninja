@@ -34,7 +34,7 @@ class Host_Model extends Model {
 				$host_info = $this->db->getwhere('host', array('id' => $id));
 			}
 		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $auth->hosts_r)) {
+			if (!array_key_exists($name, $this->auth->hosts_r)) {
 				return false;
 			} else {
 				$host_info = $this->db->getwhere('host', array('host_name' => $name));
