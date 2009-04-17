@@ -105,7 +105,7 @@ if (!empty($widgets)) {
 			</td>
 
 			<td class="icon">
-				<?php echo html::anchor('status/service/'.link::encode($row->host_name),'<img src="/monitor/images/status2.gif" alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
+				<?php echo html::anchor('status/service/'.$row->host_name,'<img src="/monitor/images/status2.gif" alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
 			</td>
 			<td class="icon">
 				<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>">
