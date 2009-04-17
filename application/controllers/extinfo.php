@@ -381,18 +381,22 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$lable = trim($lable);
 		$method = trim($method);
-		if ($command_type===false || empty($host) || empty($lable) || empty($method)) {
+		if ($command_type===false || empty($lable) || empty($method)) {
 			return false;
 		}
-		$link =	html::anchor('cmd/'.$method.'/'.$command_type.'/'.$host.'/'.$service,
+		$link_params = false;
+		if (!empty($host) && !empty($service)) {
+			# only print extra params when present
+			$link_params = '/'.$host.'/'.$service;
+		}
+		$link =	html::anchor('cmd/'.$method.'/'.$command_type.$link_params,
 			html::specialchars($lable));
 		return $link;
 	}
 
 	/**
-	*	@name show_process_info
-	*	@desc
-	*
+	*	@name	show_process_info
+	*	@desc	Show Nagios process info
 	*/
 	public function show_process_info()
 	{
@@ -401,6 +405,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			url::redirect('extinfo/unauthorized/0');
 		}
 		$this->template->content = $this->add_view('extinfo/process_info');
+		$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -409,6 +414,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# save us some typing
 		$content = $this->template->content;
+		$commands = $this->template->content->commands;
 		$t = $this->translate;
 
 		# Lables to translate
