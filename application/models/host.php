@@ -76,4 +76,49 @@ class Host_Model extends Model {
 		}
 		return true;
 	}
+
+	/**
+	*	@name service_states
+	*	@desc Fetch breakdown of current service states
+	* 			for a host
+	*
+	*/
+	public function service_states($host_name=false, $host_id=false)
+	{
+		$services = $this->auth->get_authorized_services();
+		if (empty($services)) {
+			return false;
+		}
+		ksort($services);
+		$service_str = implode(', ', array_keys($services));
+		if (!empty($host_id)) {
+			$sql = "
+				SELECT
+					COUNT(current_state) AS cnt,
+					current_state
+				FROM
+					service
+				WHERE
+					host_name=".(int)$host_id." AND
+					id IN(".$service_str.")
+				GROUP BY
+					current_state;";
+		} else {
+			$sql = "
+				SELECT
+					COUNT(s.current_state) AS cnt,
+					s.current_state
+				FROM
+					service s,
+					host h
+				WHERE
+					h.host_name=".$this->db->escape($host_name)." AND
+					s.host_name=h.id AND
+					s.id IN(".$service_str.")
+				GROUP BY
+					s.current_state;";
+		}
+		$res = $this->db->query($sql);
+		return $res;
+	}
 }
