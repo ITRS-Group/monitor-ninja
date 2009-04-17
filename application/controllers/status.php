@@ -149,7 +149,7 @@ class Status_Controller extends Authenticated_Controller {
 	* 	@param 	str $style
 	*
 	*/
-	public function servicegroup($group=false, $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
+	public function servicegroup($group='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
 	{
 		$group = trim($group);
 		if ($style == 'overview') {
@@ -158,7 +158,6 @@ class Status_Controller extends Authenticated_Controller {
 			# add other template for details or possible redirect to separate method?
 			die('detail view not implemented');
 		}
-		$hostlist = $this->current->get_servicegroup_hoststatus($group, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
 		$group_info_res = ORM::factory('servicegroup')->where('servicegroup_name', $group)->find();
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -172,17 +171,17 @@ class Status_Controller extends Authenticated_Controller {
 
 		$content = $this->template->content;
 		$t = $this->translate;
+		$content->lable_header = $t->_("Service Overview For Service Group");
 		$content->lable_host = $t->_('Host');
 		$content->lable_status = $t->_('Status');
 		$content->lable_services = $t->_('Services');
 		$content->lable_actions = $t->_('Actions');
 
 		# @@@FIXME: handle macros
-
+		$hostlist = $this->current->get_servicegroup_hoststatus($group, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
-			$content->lable_header = $t->_("Service Overview For Service Group");
 			$content->lable_header .= " '".$group."'";
 			$service_states = false;
 			$hostinfo = false;
