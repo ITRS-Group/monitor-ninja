@@ -143,3 +143,21 @@ $config['theme_path'] = 'themes/';
  * that holds the currently active theme.
  */
 $config['current_theme'] = 'default/';
+
+/**
+ * Do we use NACOMA (Nagios Configuration Manager)?
+ * If path differs from the one below but still installed
+ * you could simply change it.
+ */
+$nacoma_real_path = '/opt/monitor/op5/webconfig/';
+if (is_dir($nacoma_real_path)) {
+	$config['nacoma_path'] = '/monitor/op5/webconfig/';
+} else {
+	$config['nacoma_path'] = false;
+}
+
+/**
+ * Path to Pnp4nagios
+ * If installed, change path below or set to false if not
+ */
+$config['pnp4nagios_path'] = '/monitor/op5/pnp/';
