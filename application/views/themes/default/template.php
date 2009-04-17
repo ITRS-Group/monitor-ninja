@@ -19,6 +19,7 @@
 	ul li a { padding: 0.5em 1em; background: #CA7D17; border: 1px solid #7A4B0D; color: #fff; text-decoration: none; }
 	ul li a:hover { background: #c0c0c0; }
 	.box { padding: 2em; background: #CA7D17; border: 1px solid #7A4B0D; }
+	img{border:0}
 	.copyright { font-size: 0.9em; text-transform: uppercase; color: #7A4B0D; }
 	</style>
 	<?php
