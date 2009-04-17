@@ -529,6 +529,94 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->obsess_hosts_str = $content->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 		$content->flap_detection_str = $content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 		$content->performance_data_str = $content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+
+		# Assign commands variables
+		$commands->title = $t->_('Process Commands');
+		$commands->label_shutdown_nagios = $t->_('Shutdown the Nagios Process');
+		$commands->link_shutdown_nagios = $this->command_link(Cmd_Controller::CMD_SHUTDOWN_PROCESS, false, false, $commands->label_shutdown_nagios);
+		$commands->label_restart_nagios = $t->_('Restart the Nagios Process');
+		$commands->link_shutdown_nagios = $this->command_link(Cmd_Controller::CMD_RESTART_PROCESS, false, false, $commands->label_restart_nagios);
+
+		if ($content->notifications_enabled) {
+			$commands->label_notifications = $t->_('Disable Notifications');
+			$commands->link_notifications = $this->command_link(Cmd_Controller::CMD_DISABLE_NOTIFICATIONS, false, false, $commands->label_notifications);
+		} else {
+			$commands->label_notifications = $t->_('Enable Notifications');
+			$commands->link_notifications = $this->command_link(Cmd_Controller::CMD_ENABLE_NOTIFICATIONS, false, false, $commands->label_notifications);
+		}
+
+		if ($content->execute_service_checks) {
+			$commands->label_execute_service_checks = $t->_('Stop Executing Service Checks');
+			$commands->link_execute_service_checks = $this->command_link(Cmd_Controller::CMD_STOP_EXECUTING_SVC_CHECKS, false, false, $commands->label_execute_service_checks);
+		} else {
+			$commands->label_execute_service_checks = $t->_('Start Executing Service Checks');
+			$commands->link_execute_service_checks = $this->command_link(Cmd_Controller::CMD_START_EXECUTING_SVC_CHECKS, false, false, $commands->label_execute_service_checks);
+		}
+
+		if ($content->accept_passive_service_checks) {
+			$commands->label_passive_service_checks = $t->_('Stop Accepting Passive Service Checks');
+			$commands->link_passive_service_checks = $this->command_link(Cmd_Controller::CMD_STOP_ACCEPTING_PASSIVE_SVC_CHECKS, false, false, $commands->label_passive_service_checks);
+		} else {
+			$commands->label_passive_service_checks = $t->_('Start Accepting Passive Service Checks');
+			$commands->link_passive_service_checks = $this->command_link(Cmd_Controller::CMD_START_ACCEPTING_PASSIVE_SVC_CHECKS, false, false, $commands->label_passive_service_checks);
+		}
+
+		if ($content->execute_host_checks) {
+			$commands->label_execute_host_checks = $t->_('Stop Executing Host Checks');
+			$commands->link_execute_host_checks = $this->command_link(Cmd_Controller::CMD_STOP_EXECUTING_HOST_CHECKS, false, false, $commands->label_execute_host_checks);
+		} else {
+			$commands->label_execute_host_checks = $t->_('Start Executing Host Checks');
+			$commands->link_execute_host_checks = $this->command_link(Cmd_Controller::CMD_START_EXECUTING_HOST_CHECKS, false, false, $commands->label_execute_host_checks);
+		}
+
+		if ($content->accept_passive_host_checks) {
+			$commands->label_accept_passive_host_checks = $t->_('Stop Accepting Passive Host Checks');
+			$commands->link_accept_passive_host_checks = $this->command_link(Cmd_Controller::CMD_STOP_ACCEPTING_PASSIVE_HOST_CHECKS, false, false, $commands->label_accept_passive_host_checks);
+		} else {
+			$commands->label_accept_passive_host_checks = $t->_('Start Accepting Passive Host Checks');
+			$commands->link_accept_passive_host_checks = $this->command_link(Cmd_Controller::CMD_START_ACCEPTING_PASSIVE_HOST_CHECKS, false, false, $commands->label_accept_passive_host_checks);
+		}
+
+		if ($content->enable_event_handlers) {
+			$commands->label_enable_event_handlers = $t->_('Disable Event Handlers');
+			$commands->link_enable_event_handlers = $this->command_link(Cmd_Controller::CMD_DISABLE_EVENT_HANDLERS, false, false, $commands->label_enable_event_handlers);
+		} else {
+			$commands->label_enable_event_handlers = $t->_('Enable Event Handlers');
+			$commands->link_enable_event_handlers = $this->command_link(Cmd_Controller::CMD_ENABLE_EVENT_HANDLERS, false, false, $commands->label_enable_event_handlers);
+		}
+
+		if ($content->obsess_over_services) {
+			$commands->label_obsess_over_services = $t->_('Stop Obsessing Over Services');
+			$commands->link_obsess_over_services = $this->command_link(Cmd_Controller::CMD_STOP_OBSESSING_OVER_SVC_CHECKS, false, false, $commands->label_obsess_over_services);
+		} else {
+			$commands->label_obsess_over_services = $t->_('Start Obsessing Over Services');
+			$commands->link_obsess_over_services = $this->command_link(Cmd_Controller::CMD_START_OBSESSING_OVER_SVC_CHECKS, false, false, $commands->label_obsess_over_services);
+		}
+
+		if ($content->obsess_over_hosts) {
+			$commands->label_obsess_over_hosts = $t->_('Stop Obsessing Over Hosts');
+			$commands->link_obsess_over_hosts = $this->command_link(Cmd_Controller::CMD_STOP_OBSESSING_OVER_HOST_CHECKS, false, false, $commands->label_obsess_over_hosts);
+		} else {
+			$commands->label_obsess_over_hosts = $t->_('Start Obsessing Over Hosts');
+			$commands->link_obsess_over_hosts = $this->command_link(Cmd_Controller::CMD_START_OBSESSING_OVER_HOST_CHECKS, false, false, $commands->label_obsess_over_hosts);
+		}
+
+		if ($content->flap_detection_enabled) {
+			$commands->label_flap_detection_enabled = $t->_('Disable Flap Detection');
+			$commands->link_flap_detection_enabled = $this->command_link(Cmd_Controller::CMD_DISABLE_FLAP_DETECTION, false, false, $commands->label_flap_detection_enabled);
+		} else {
+			$commands->label_flap_detection_enabled = $t->_('Enable Flap Detection');
+			$commands->link_flap_detection_enabled = $this->command_link(Cmd_Controller::CMD_ENABLE_FLAP_DETECTION, false, false, $commands->label_flap_detection_enabled);
+		}
+
+		if ($content->process_performance_data) {
+			$commands->label_process_performance_data = $t->_('Disable Performance Data');
+			$commands->link_process_performance_data = $this->command_link(Cmd_Controller::CMD_DISABLE_PERFORMANCE_DATA, false, false, $commands->label_process_performance_data);
+		} else {
+			$commands->label_process_performance_data = $t->_('Enable Performance Data');
+			$commands->link_process_performance_data = $this->command_link(Cmd_Controller::CMD_ENABLE_PERFORMANCE_DATA, false, false, $commands->label_process_performance_data);
+		}
+
 	}
 
 	/**

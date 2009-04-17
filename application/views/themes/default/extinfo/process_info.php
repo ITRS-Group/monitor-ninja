@@ -66,3 +66,6 @@
 		<td><?php echo $performance_data_str ?></td>
 	</tr>
 </table>
+
+<?php if (isset($commands))
+	echo $commands;
