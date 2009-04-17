@@ -33,7 +33,7 @@
 						<table border=0 class='hostTotals' cellpadding="1" cellspacing="1">
 							<tr>
 							<?php 	foreach ($host_header as $row) { ?>
-										<th class="<?php echo $row['th_class'] ?>"><?php echo html::anchor($row['url'], html::specialchars($row['lable']), array('class' => $row['link_class'])) ?></th><?php
+										<th class=""><?php echo html::anchor($row['url'], html::specialchars($row['lable'])) ?></th><?php
 									} ?>
 							</tr>
 							<tr>

@@ -26,16 +26,11 @@
 			if (!empty($js_header)) {
 				echo $js_header;
 			}
-		?>
+	?>
+
 	</head>
 
 	<body>
-
-	<?php
-		if (!empty($css_header)) {
-			echo $css_header;
-		}
-	?>
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios') ?>
 			<form action="">

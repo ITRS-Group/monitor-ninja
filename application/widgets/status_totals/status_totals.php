@@ -40,6 +40,8 @@ class Status_totals_Widget extends widget_Core {
 		$label_down = $this->translate->_('Down');
 		$label_unreachable = $this->translate->_('Unreachable');
 		$label_pending = $this->translate->_('Pending');
+		$label_all_problems = $this->translate->_('All Problems');
+		$label_all_types = $this->translate->_('All Types');
 		$label_all_host_problems = $this->translate->_('Problems in total');
 		$label_all_host_types = $this->translate->_('Types in total');
 		$label_all_service_problems = $this->translate->_('Problems in total');
@@ -117,6 +119,7 @@ class Status_totals_Widget extends widget_Core {
 			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
 
 		} elseif (!empty($groupname)) {
+			$service_states = false;
 			foreach ($group_info as $info) {
 				$service_states[$info->host_name][$info->service_state] = $info->service_state;
 				if ($info->id != $prev_host) {
