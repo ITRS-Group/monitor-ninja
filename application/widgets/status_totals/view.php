@@ -31,7 +31,7 @@
 						<table border=0 class='hostTotals' width="100%" cellpadding="0" cellspacing="1">
 							<tr>
 								<th class='hostTotals'>
-									<?php echo html::anchor('status/host/'.$host.'/12', html::specialchars($label_all_problems)) ?>
+									<?php echo html::anchor('status/host/'.$host.'/'.nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE, html::specialchars($label_all_problems)) ?>
 								</th>
 								<th class='hostTotals'>
 									<?php echo html::anchor('status/host/'.$host.'/', html::specialchars($label_all_types)) ?>
