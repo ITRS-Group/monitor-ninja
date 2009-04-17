@@ -330,18 +330,20 @@ class Status_Controller extends Authenticated_Controller {
 			return false;
 		}
 		$header = false;
+		$lable_ascending = $this->translate->_('ascending');
+		$lable_descending = $this->translate->_('descending');
+		$lable_sort_by = $this->translate->_('Sort by');
+		$lable_last = $this->translate->_('last');
 		switch ($type) {
 			case 'host':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
 					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
 					$header['img_asc'] = $this->img_sort_up;
-					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
-					$header['img_asc'] = $this->img_sort_up;
-					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
 					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
-					$header['alt_desc'] = 'Sort by '.$sort_field_str.' (descending)';
+					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}
 				break;
 			case 'service':
@@ -349,12 +351,10 @@ class Status_Controller extends Authenticated_Controller {
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
 					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
 					$header['img_asc'] = $this->img_sort_up;
-					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
-					$header['img_asc'] = $this->img_sort_up;
-					$header['alt_asc'] = 'Sort by last '.$sort_field_str.' (ascending)';
+					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
 					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
-					$header['alt_desc'] = 'Sort by '.$sort_field_str.' (descending)';
+					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}
 				break;
 		}
