@@ -731,7 +731,12 @@ class Current_status_Model extends Model {
 
 		$sql = "
 			SELECT
-				h.*
+				h.*,
+				s.current_state AS service_state,
+				COUNT(s.current_state) AS state_count,
+				SUM(s.problem_has_been_acknowledged) AS service_ack_cnt,
+				SUM(s.scheduled_downtime_depth) AS service_dt_depth_cnt,
+				SUM(s.active_checks_enabled) AS service_checks_enabled_cnt
 			FROM
 				service s,
 				host h,
@@ -744,9 +749,10 @@ class Current_status_Model extends Model {
 				h.id=s.host_name AND
 				h.id IN (".$hostlist_str.") ".$filter_sql."
 			GROUP BY
-				h.id
+				h.id, s.current_state
 			ORDER BY
-				h.host_name;";
+				h.host_name,
+				s.current_state;";
 		$result = $this->db->query($sql);
 		return $result;
 	}
