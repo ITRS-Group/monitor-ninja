@@ -102,7 +102,7 @@ class Default_Controller extends Ninja_Controller  {
 				$this->session->set('login_attempts', $this->session->get('login_attempts')+1);
 
 				# set login error to user
-				$error_msg = "Login failed - please try again";
+				$error_msg = $this->translate->_("Login failed - please try again");
 				if ($this->max_attempts) {
 					$error_msg .= " (".($this->max_attempts - $this->session->get('login_attempts'))." left)";
 				}
