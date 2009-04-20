@@ -34,7 +34,7 @@ if (!empty($widgets)) {
 		$status_bg_class = '';
 		switch ($row->current_state) {
 			case Current_status_Model::SERVICE_PENDING :
-				$status_class .= ' pending';
+				$status_class .= ' pedning';
 				break;
 			case Current_status_Model::SERVICE_OK :
 				$status_class .= ' ok';
@@ -105,91 +105,27 @@ if (!empty($widgets)) {
 					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',Current_status_Model::status_text($row->host_state, Router::$method));
 				}
 			?>
-			if ($curr_host != $row->host_name) { ?>
-			<table border=0 width=100% cellpadding=0 cellspacing=0>
-				<tr>
-					<td class="<?php echo $host_status_bg_class ?>">
-						<table border=0 cellpadding=0 cellspacing=0>
-							<tr>
-								<td nowrap='nowrap' class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td align="right" class="<?php echo $host_status_bg_class ?>">
-						<table border=0 cellpadding=0 cellspacing=0>
-							<tr>
-						<?php	if ($row->problem_has_been_acknowledged) { ?>
-								<td align="center" class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK')) ?>
-								</td>
-						<?php	}
-								if (empty($row->notifications_enabled)) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS')) ?>
-								</td>
-						<?php	}
-								if (!$row->active_checks_enabled) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS')) ?>
-								</td>
-						<?php	}
-								if (isset($row->is_flapping) && $row->is_flapping) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL')) ?>
-								</td>
-						<?php	}
-								if ($row->scheduled_downtime_depth > 0) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT')) ?>
-								</td>
-						<?php	}
-								if (!empty($row->notes_url)) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<a href="<?php echo $row->notes_url ?>" target="_blank" title="View Extra Host Notes">
-										<img src="/monitor/images/notes.gif" border=0 alt="View Extra Host Notes" />
-									</a>
-								</td>
-						<?php	}
-								if (!empty($row->action_url)) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<a href="<?php echo $row->action_url ?>" title="Perform Extra Host Actions">
-										<img src="/monitor/images/action.gif" border=0 title="Perform Extra Host Actions" />
-									</a>
-								</td>
-						<?php	}
-								if (!empty($row->icon_image)) { ?>
-								<td class="<?php echo $host_status_bg_class ?>">
-									<img src="<?php echo $logos_path.$row->icon_image ?>" WIDTH=20 HEIGHT=20 border=0 alt="View Extra Host Notes" />
-								</td>
-						<?php	} ?>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
 		</td>
 		<td class="<?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>">
 			<?php
 			if ($curr_host != $row->host_name) { ?>
-					<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
+					<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars($row->host_name)) ?>
 					<div style="float: right">
 						<?php
 							if ($row->problem_has_been_acknowledged) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
+								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('ACK'));
 							}
 							if (empty($row->notifications_enabled)) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
+								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('nDIS'));
 							}
 							if (!$row->active_checks_enabled) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
+								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('DIS'));
 							}
 							if (isset($row->is_flapping) && $row->is_flapping) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
+								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('FPL'));
 							}
 							if ($row->scheduled_downtime_depth > 0) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
+								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('SDT'));
 							}
 						?>
 					</div>
@@ -226,8 +162,7 @@ if (!empty($widgets)) {
 
 <?php
 		$curr_host = $row->host_name;
-	}
-} ?>
+	} ?>
 </table>
 
 <div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
