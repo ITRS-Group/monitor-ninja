@@ -420,17 +420,17 @@ class Status_totals_Widget extends widget_Core {
 
 		foreach ($host_states as $state) {
 			if (!array_key_exists($state, $host)) {
-				$var['host'][] = array('state' => $status->translate_status($state, 'host'), 'cnt' => 0);
+				$var['host'][] = array('state' => $status->status_text($state, 'host'), 'cnt' => 0);
 			} else {
-				$var['host'][] = array('state' => $status->translate_status($state, 'host'), 'cnt' => $host[$state]);
+				$var['host'][] = array('state' => $status->status_text($state, 'host'), 'cnt' => $host[$state]);
 			}
 		}
 
 		foreach ($service_states as $state) {
 			if (!array_key_exists($state, $service)) {
-				$var['service'][] = array('state' => $status->translate_status($state, 'service'), 'cnt' => 0);
+				$var['service'][] = array('state' => $status->status_text($state, 'service'), 'cnt' => 0);
 			} else {
-				$var['service'][] = array('state' => $status->translate_status($state, 'service'), 'cnt' => $service[$state]);
+				$var['service'][] = array('state' => $status->status_text($state, 'service'), 'cnt' => $service[$state]);
 			}
 		}
 

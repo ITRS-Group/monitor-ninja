@@ -101,6 +101,10 @@ if (!empty($widgets)) {
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 		<td class="<?php echo ($curr_host != $row->host_name) ? $host_status_bg_class : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
 			<?php
+				if ($curr_host != $row->host_name) {
+					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',Current_status_Model::status_text($row->host_state, Router::$method));
+				}
+			?>
 			if ($curr_host != $row->host_name) { ?>
 			<table border=0 width=100% cellpadding=0 cellspacing=0>
 				<tr>
@@ -204,11 +208,11 @@ if (!empty($widgets)) {
 				<?php } ?>
 		</td>
 		<td class="<?php echo $status_class ?>">
-			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::translate_status($row->current_state, Router::$method)).'.png',Current_status_Model::translate_status($row->current_state, Router::$method)) ?>
-			<?php //echo Current_status_Model::translate_status($row->current_state, Router::$method) ?>
+			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',Current_status_Model::status_text($row->current_state, Router::$method)) ?>
+			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
 		<td style="width: 80px">
-			<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
+			<?php echo html::anchor('extinfo/details/service/'.link::encode($row->host_name).'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
 		</td>
 		<td><?php echo $row->last_check ?></td>
 		<td><?php echo $row->duration ?></td>

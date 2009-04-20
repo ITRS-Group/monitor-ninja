@@ -233,8 +233,8 @@ class Status_Controller extends Authenticated_Controller {
 						break;
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
-					'class_name' => 'miniStatus' . $this->current->translate_status($host->service_state, 'service'),
-					'status_link' => html::anchor('status/servicegroup/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail', html::specialchars($host->state_count.' '.$this->current->translate_status($host->service_state, 'service')) ),
+					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
+					'status_link' => html::anchor('status/servicegroup/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
 					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
@@ -259,8 +259,8 @@ class Status_Controller extends Authenticated_Controller {
 					$host_icon = '<img src="'.$this->logos_path.$host->icon_image.'" WIDTH=20 HEIGHT=20 border=0 alt="'.$host->icon_image_alt.'" title="'.$host->icon_image_alt.'" />';
 				}
 				$hostinfo[$host->host_name] = array(
-					'state_str' => $this->current->translate_status($host->current_state, 'host'),
-					'class_name' => 'statusHOST' . $this->current->translate_status($host->current_state, 'host'),
+					'state_str' => $this->current->status_text($host->current_state, 'host'),
+					'class_name' => 'statusHOST' . $this->current->status_text($host->current_state, 'host'),
 					'status_link' => html::anchor('status/service/'.$host->host_name.'/'.$hoststatustypes.'/'.(int)$servicestatustypes, html::specialchars($host->host_name), array('title' => $host->address)),
 					'action_link' => $action_link,
 					'notes_link' => $notes_link,

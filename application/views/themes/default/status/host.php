@@ -63,7 +63,7 @@ if (!empty($widgets)) {
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 		<td class="status icon">
-			<?php echo Current_status_Model::translate_status($row->current_state, Router::$method) ?>
+			<?php echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
 		<td>
 			<?php
