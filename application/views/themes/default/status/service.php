@@ -142,13 +142,14 @@ if (!empty($widgets)) {
 					<img src="<?php echo $logos_path.$row->icon_image ?>" alt="View Extra Host Notes" />
 				<?php	} ?>
 				<?php } ?>
+				<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
 		</td>
 		<td class="<?php echo $status_class ?>">
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',Current_status_Model::status_text($row->current_state, Router::$method)) ?>
 			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
 		<td style="width: 80px">
-			<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
+
 		</td>
 		<td><?php echo $row->last_check ?></td>
 		<td><?php echo $row->duration ?></td>
