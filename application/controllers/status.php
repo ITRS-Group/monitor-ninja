@@ -122,7 +122,7 @@ class Status_Controller extends Authenticated_Controller {
 		# build header links array
 		foreach ($header_link_fields as $fields) {
 			if (sizeof($fields) > 1) {
-				$header_links[] = $this->header_links(Router::$method, $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes);
+				$header_links[] = $this->header_links(Router::$method, $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
 			} else {
 				$header_links[] = $this->header_links(Router::$method, $host, $fields['title']);
 			}
@@ -320,7 +320,8 @@ class Status_Controller extends Authenticated_Controller {
 			$sort_field_db=false,
 			$sort_field_str=false,
 			$host_status=false,
-			$service_status=false)
+			$service_status=false,
+			$service_props=false)
 	{
 
 		$type = trim($type);
@@ -349,10 +350,10 @@ class Status_Controller extends Authenticated_Controller {
 			case 'service':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
-					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.(int)$service_props.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
 					$header['img_asc'] = $this->img_sort_up;
 					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
-					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.(int)$service_props.'/'.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
 					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}
