@@ -48,12 +48,12 @@ class Tac_services_Widget extends widget_Core {
 		# SERVICES CRITICAL
 		$services_critical = array();
 		if ($current_status->services_critical_unacknowledged) {
-			$services_critical['status/service/all/0/'.nagstat::SERVICE_CRITICAL.'/'.(nagstat::HOST_UP|nagstat::HOST_PENDING).'/'.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
+			$services_critical['status/service/all/'.(nagstat::HOST_UP|nagstat::HOST_PENDING).'/'.nagstat::SERVICE_CRITICAL.'/'.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
 				$current_status->services_critical_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_critical_host_problem) {
-			$services_critical['status/service/all/0/'.nagstat::SERVICE_CRITICAL.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)] = $current_status->services_critical_host_problem.' '.$this->translate->_('on Problem Hosts');
+			$services_critical['status/service/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'/'.nagstat::SERVICE_CRITICAL] = $current_status->services_critical_host_problem.' '.$this->translate->_('on Problem Hosts');
 		}
 
 		if ($current_status->services_critical_scheduled) {
@@ -74,12 +74,12 @@ class Tac_services_Widget extends widget_Core {
 		# HOST_UP|HOST_PENDING
 		# SERVICE_NO_SCHEDULED_DOWNTIME|SERVICE_STATE_UNACKNOWLEDGED|SERVICE_CHECKS_ENABLED
 		if ($current_status->services_warning_unacknowledged) {
-			$services_warning['status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.(nagstat::HOST_UP|nagstat::HOST_PENDING).'/'.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
+			$services_warning['status/service/all/'.(nagstat::HOST_UP|nagstat::HOST_PENDING).'/'.nagstat::SERVICE_WARNING.'/'.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
 				$current_status->services_warning_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_warning_host_problem) {
-			$services_warning['status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)] = $current_status->services_warning_host_problem.' '.$this->translate->_('on Problem Hosts');
+			$services_warning['status/service/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'/'.nagstat::SERVICE_WARNING] = $current_status->services_warning_host_problem.' '.$this->translate->_('on Problem Hosts');
 		}
 
 		if ($current_status->services_warning_scheduled) {
