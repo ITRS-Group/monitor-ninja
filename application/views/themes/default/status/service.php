@@ -109,23 +109,23 @@ if (!empty($widgets)) {
 		<td class="<?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>">
 			<?php
 			if ($curr_host != $row->host_name) { ?>
-					<?php echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars($row->host_name)) ?>
+					<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
 					<div style="float: right">
 						<?php
 							if ($row->problem_has_been_acknowledged) {
-								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('ACK'));
+								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
 							}
 							if (empty($row->notifications_enabled)) {
-								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('nDIS'));
+								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
 							}
 							if (!$row->active_checks_enabled) {
-								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('DIS'));
+								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
 							}
 							if (isset($row->is_flapping) && $row->is_flapping) {
-								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('FPL'));
+								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
 							}
 							if ($row->scheduled_downtime_depth > 0) {
-								echo html::anchor('extinfo/details/host/'.link::encode($row->host_name), html::specialchars('SDT'));
+								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
 							}
 						?>
 					</div>
@@ -148,7 +148,7 @@ if (!empty($widgets)) {
 			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
 		<td style="width: 80px">
-			<?php echo html::anchor('extinfo/details/service/'.link::encode($row->host_name).'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
+			<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?>
 		</td>
 		<td><?php echo $row->last_check ?></td>
 		<td><?php echo $row->duration ?></td>
