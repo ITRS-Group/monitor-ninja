@@ -88,7 +88,7 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param int $servicestatustypes
 	 * @param int $hoststatustypes
 	 */
-	public function service($host='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $sort_order='ASC', $sort_field='host_name')
+	public function service($host='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $service_props=false, $sort_order='ASC', $sort_field='host_name')
 	{
 		$host = trim($host);
 
