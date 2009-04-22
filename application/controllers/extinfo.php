@@ -404,18 +404,41 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}
+
 		$this->template->content = $this->add_view('extinfo/process_info');
-		$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		# save us some typing
+		$content = $this->template->content;
+		$t = $this->translate;
+
+		# check if nagios is running, will affect wich template to use
+		$status = Program_status_Model::get_all();
+		if (!$status->current()->is_running) {
+			$this->template->content->commands = $this->add_view('extinfo/not_running');
+			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
+
+			# check if nagios_check_command is defined in cgi.cfg
+			$cgi_config = System_Model::parse_config_file(Kohana::config('config.nagios_base_path').'/etc/cgi.cfg');
+			$nagios_check_command = false;
+			if (!empty($cgi_config)) {
+				$nagios_check_command = isset($cgi_config['nagios_check_command']) ? $cgi_config['nagios_check_command'] : false;
+			}
+			$info_message = '';
+			if (empty($nagios_check_command)) {
+				$info_message = $t->_('Hint: It looks as though you have not defined a command for checking the process state by supplying a value for the <b>nagios_check_command</b> option in the CGI configuration file');
+			}
+			$this->template->content->commands->info_message_extra = $info_message;
+		} else {
+			$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
+		}
 
 		# instance_name = NULL
 		# instance_id = NULL
 
-		# save us some typing
-		$content = $this->template->content;
 		$commands = $this->template->content->commands;
-		$t = $this->translate;
+
 
 		# Lables to translate
 		$na_str = $t->_('N/A');
