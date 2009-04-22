@@ -12,12 +12,14 @@ if (!empty($widgets)) {
 </div>
 
 <div align="center">
+<?php
+	foreach ($group_details as $group) { ?>
 	<table border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td align="center">
 				<div class='status'>
-					<a href='status.cgi?servicegroup=<?php echo $groupname ?>&amp;style=detail'><?php echo $group_alias ?></a>
-					(<a href='extinfo.cgi?type=8&amp;servicegroup=<?php echo $groupname ?>'><?php echo $groupname ?></a>)
+					<a href='status.cgi?servicegroup=<?php echo $group->groupname ?>&amp;style=detail'><?php echo $group->group_alias ?></a>
+					(<a href='extinfo.cgi?type=8&amp;servicegroup=<?php echo $group->groupname ?>'><?php echo $group->groupname ?></a>)
 				</div>
 
 				<div class='status'>
@@ -36,8 +38,8 @@ if (!empty($widgets)) {
 								<?php echo $lable_actions ?>
 							</th>
 						</tr>
-				<?php if (!empty($hostinfo))
-						foreach ($hostinfo as $host => $details) { ?>
+				<?php if (!empty($group->hostinfo))
+						foreach ($group->hostinfo as $host => $details) { ?>
 						<tr class='statusEven'>
 							<td class='statusEven'>
 								<table border="0" width="100%" cellpadding="0" cellspacing="0">
@@ -54,8 +56,8 @@ if (!empty($widgets)) {
 							</td>
 							<td class='statusEven'>
 								<table border="0" width="100%">
-							<?php if (!empty($service_states[$host]))
-									foreach ($service_states[$host] as $svc_state) {	?>
+							<?php if (!empty($group->service_states[$host]))
+									foreach ($group->service_states[$host] as $svc_state) {	?>
 									<tr>
 										<td class='<?php echo $svc_state['class_name'] ?>'>
 											<?php echo $svc_state['status_link'] ?>
@@ -81,4 +83,5 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 	</table>
+	<?php } ?>
 </div>

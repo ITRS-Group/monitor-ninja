@@ -181,13 +181,31 @@ class Status_Controller extends Authenticated_Controller {
 
 		$content = $this->template->content;
 		$t = $this->translate;
-		$content->lable_header = $t->_("Service Overview For Service Group");
+
+		$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
 		$content->lable_host = $t->_('Host');
 		$content->lable_status = $t->_('Status');
 		$content->lable_services = $t->_('Services');
 		$content->lable_actions = $t->_('Actions');
 
 		# @@@FIXME: handle macros
+	}
+
+	/**
+	*	@name	show_servicegroup
+	*	@desc	Fetch info on single servicegroup and assign to
+	* 			returned content object for later use in template
+	* 	@param 	str $group
+	* 	@param 	int $hoststatustypes
+	* 	@param 	int $servicestatustypes
+	* 	@param 	str $style
+	* 	@return obj
+	*/
+	public function show_servicegroup($group=false, $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
+	{
+		$content = false;
+		$t = $this->translate;
+		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
 		$hostlist = $this->current->get_servicegroup_hoststatus($group, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
@@ -284,6 +302,7 @@ class Status_Controller extends Authenticated_Controller {
 		} else {
 			# nothing found
 		}
+		return $content;
 	}
 
 	/**
