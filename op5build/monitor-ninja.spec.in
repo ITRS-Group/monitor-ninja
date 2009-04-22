@@ -1,0 +1,27 @@
+Name: monitor-ninja
+Version: @@VERSION@@
+Release: @@RELEASE@@
+License: op5 Software License
+Packager: build@op5
+Vendor: op5 AB
+BuildRoot: /tmp/%name-%version
+Summary: op5 monitor ninja
+Group: op5/Monitor
+Prefix: /opt/monitor/
+%description 
+Webgui for Nagios 3
+
+%prep
+%setup -q
+
+%install
+mkdir -p -m 755 %buildroot%prefix/op5/ninja
+mv * %buildroot%prefix/op5/ninja
+
+%post
+ln -s %prefix/op5/ninja /var/www/html/ninja
+
+%files
+%defattr(0775,monitor,apache,664)
+/opt/monitor/op5/ninja
+
