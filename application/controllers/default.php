@@ -16,14 +16,6 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function index()
 	{
-		# test with ORM
-#		$users = ORM::factory('user')->find_all();
-		#echo kohana::debug($users);
-#		foreach ($users as $user) {
-#			echo $user->email."<br>";
-#		}
-#		echo "<hr>";
-
 		if ($this->is_locked_out()) {
 			url::redirect('default/locked_out');
 		}
@@ -39,7 +31,6 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
-		#$this->session = Session::instance();
 		$this->template->content = $this->add_view('login');
 		$this->template->content->error_msg = $this->session->get('error_msg', false);
 		$this->template->content->form_title =$this->translate->_('Login form');
