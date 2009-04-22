@@ -196,7 +196,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (!$status->current()->is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
-			$this->template->content->commands->info_message_link = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
+			$this->template->content->commands->info_message_extra = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
 			return;
 		} else {
 			$this->template->content->commands = $this->add_view('extinfo/commands');

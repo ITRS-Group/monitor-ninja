@@ -2,5 +2,5 @@
 
 <div align=center class='infoMessage'>
 	<?php echo $info_message ?><br />
-	<?php echo $info_message_link ?>
+	<?php echo isset($info_message_extra) ? $info_message_extra : '' ?>
 </div>
