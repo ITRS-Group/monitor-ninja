@@ -11,7 +11,7 @@ Prefix: /opt/monitor
 Source: %name-%version.tar.gz
 BuildArch: noarch
 %description 
-Webgui for Nagios 3
+Webgui for Nagios 3.
 
 %prep
 %setup -q
