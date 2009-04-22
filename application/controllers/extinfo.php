@@ -192,7 +192,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# @@@FIXME Add different icons depending on values below
 
 		# check if nagios is running, will affect wich template to use
-		$status = ORM::factory('program_status')->find_all();
+		$status = Program_status_Model::get_all();
 		if (!$status->current()->is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
@@ -453,7 +453,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status_res = ORM::factory('program_status')->find_all();
+		$status_res = Program_status_Model::get_all();
 
 		# @@@FIXME how do we figure the program version out?
 		$this->template->content->program_version = $na_str;

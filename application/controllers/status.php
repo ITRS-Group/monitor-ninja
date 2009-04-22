@@ -158,7 +158,7 @@ class Status_Controller extends Authenticated_Controller {
 			# add other template for details or possible redirect to separate method?
 			die('detail view not implemented');
 		}
-		$group_info_res = ORM::factory('servicegroup')->where('servicegroup_name', $group)->find();
+		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');

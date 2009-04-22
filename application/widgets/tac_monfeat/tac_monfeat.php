@@ -58,7 +58,7 @@ class Tac_monfeat_Widget extends widget_Core {
 
 		# fetch global nagios config data
 		# try with the database first but we may use the nagios.cfg file as fallback
-		$status_res = ORM::factory('program_status')->find_all();
+		$status_res = Program_status_Model::get_all();
 		if ($status_res->count() > 0) {
 			$status = $status_res->current();
 			$enable_notifications = $status->notifications_enabled;
