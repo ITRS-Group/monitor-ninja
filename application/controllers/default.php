@@ -46,6 +46,11 @@ class Default_Controller extends Ninja_Controller  {
 
 	}
 
+	/**
+	 * Show message (stored in session and set by do_login() below)
+	 * to inform that user has been locked out due to too many failed
+	 * login attempts
+	 */
 	public function locked_out()
 	{
 		echo $this->session->get('error_msg');
