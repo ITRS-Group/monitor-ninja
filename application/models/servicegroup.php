@@ -19,4 +19,14 @@ class Servicegroup_Model extends ORM {
 		}
 		return ORM::factory('servicegroup')->where($field, $value)->find();
 	}
+
+	/**
+	*	@name	get_all
+	*	@desc	Fetch info on all defined servicegroups
+	*
+	*/
+	public function get_all()
+	{
+		return ORM::factory('servicegroup')->find_all();
+	}
 }

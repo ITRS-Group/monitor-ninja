@@ -158,7 +158,17 @@ class Status_Controller extends Authenticated_Controller {
 			# add other template for details or possible redirect to separate method?
 			die('detail view not implemented');
 		}
-		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+
+		if ($group == 'all') {
+			$group_info_res = Servicegroup_Model::get_all();
+			foreach ($group_info_res as $group_res) {
+				$group_details[] = $this->show_servicegroup($group_res->servicegroup_name, $hoststatustypes, $servicestatustypes, $style);
+			}
+		} else {
+			$group_details[] = $this->show_servicegroup($group, $hoststatustypes, $servicestatustypes, $style);
+		}
+
+		$this->template->content->group_details = $group_details;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
