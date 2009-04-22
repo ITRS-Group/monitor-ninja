@@ -9,6 +9,7 @@ Summary: op5 monitor ninja
 Group: op5/Monitor
 Prefix: /opt/monitor
 Source: %name-%version.tar.gz
+BuildArch: noarch
 %description 
 Webgui for Nagios 3
 
@@ -17,7 +18,7 @@ Webgui for Nagios 3
 
 %install
 mkdir -p -m 755 %buildroot%prefix/op5/ninja
-mv * %buildroot%prefix/op5/ninja
+cp -r * %buildroot%prefix/op5/ninja
 
 %post
 ln -s %prefix/op5/ninja /var/www/html/ninja
