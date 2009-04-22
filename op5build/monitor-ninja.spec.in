@@ -27,3 +27,6 @@ ln -s %prefix/op5/ninja /var/www/html/ninja
 %defattr(0775,monitor,apache,664)
 /opt/monitor/op5/ninja
 
+
+%clean
+rm -rf %buildroot
