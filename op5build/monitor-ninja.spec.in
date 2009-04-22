@@ -21,7 +21,7 @@ mkdir -p -m 755 %buildroot%prefix/op5/ninja
 cp -r * %buildroot%prefix/op5/ninja
 
 %post
-ln -s %prefix/op5/ninja /var/www/html/ninja
+ln -s /opt/monitor/op5/ninja /var/www/html/ninja
 
 %files
 %defattr(0775,monitor,apache,664)
