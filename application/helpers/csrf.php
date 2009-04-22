@@ -60,7 +60,7 @@ class csrf_Core {
 	}
 
 	public static function form_field($name='') {
-		if (Kohana::config('csrf.csrf_token')=='') {
+		if (Kohana::config('csrf.csrf_token')=='' || Kohana::config('csrf.active') === false) {
 			return;
 		}
 
