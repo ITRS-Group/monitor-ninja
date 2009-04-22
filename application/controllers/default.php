@@ -9,9 +9,14 @@
  */
 class Default_Controller extends Ninja_Controller  {
 
+	public $csrf_config = false;
+	public $route_config = false;
+
 	public function __construct()
 	{
 		parent::__construct();
+		$this->csrf_config = Kohana::config('csrf');
+		$this->route_config = Kohana::config('routes');
 	}
 
 	public function index()
@@ -79,7 +84,7 @@ class Default_Controller extends Ninja_Controller  {
 			foreach ($_POST as $key => $val) {
 				$user->$key = $val;
 			}
-			if (!csrf::valid($user->{Kohana::config('csrf.csrf_token')})) {
+			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($user->{$this->csrf_config['csrf_token']})) {
 				$error_msg = $this->translate->_("Request forgery attack detected");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
@@ -117,9 +122,9 @@ class Default_Controller extends Ninja_Controller  {
 		# trying to login without $_POST is not allowed and shouldn't
 		# even happen - redirecting to default routes
 		if (!Auth::instance()->logged_in()) {
-			url::redirect(Kohana::config('routes._default'));
+			url::redirect($this->route_config['_default']);
 		} else {
-			url::redirect(Kohana::config('routes.logged_in_default'));
+			url::redirect($this->route_config['logged_in_default']);
 		}
 	}
 
