@@ -24,7 +24,7 @@ cp -r * %buildroot%prefix/op5/ninja
 ln -s /opt/monitor/op5/ninja /var/www/html/ninja
 
 %files
-%defattr(0775,monitor,apache,664)
+%defattr(0664,monitor,apache,0755)
 /opt/monitor/op5/ninja
 
 
