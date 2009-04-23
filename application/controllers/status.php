@@ -82,21 +82,26 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * List status for hosts and services
+	 * List status details for hosts and services
 	 *
-	 * @param str $host
+	 * @param str $name
 	 * @param int $servicestatustypes
 	 * @param int $hoststatustypes
+	 * @param str $sort_order
+	 * @param str $sort_field
+	 * @param str $group_type
 	 */
-	public function service($host='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $service_props=false, $sort_order='ASC', $sort_field='host_name')
+	public function service($name='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
 	{
-		$host = trim($host);
+		$name = trim($name);
+		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
+		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
 
 		$this->template->content = $this->add_view('status/service');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, $servicestatustypes), $this);
+		widget::add('status_totals', array('index', $this->current, $name, $hoststatustypes, $servicestatustypes, $group_type), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
@@ -122,19 +127,37 @@ class Status_Controller extends Authenticated_Controller {
 		# build header links array
 		foreach ($header_link_fields as $fields) {
 			if (sizeof($fields) > 1) {
-				$header_links[] = $this->header_links(Router::$method, $host, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
+				$header_links[] = $this->header_links(Router::$method, $name, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
 			} else {
-				$header_links[] = $this->header_links(Router::$method, $host, $fields['title']);
+				$header_links[] = $this->header_links(Router::$method, $name, $fields['title']);
 			}
 		}
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = $host == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
+		$shown = $name == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$name."'";
+
+		# handle host- or servicegroup details
+		if (!empty($group_type)) {
+			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
+			$shown .= " '".$name."'";
+			$hostlist = $this->current->get_servicegroup_hoststatus($name, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
+			$group_hosts = false;
+			foreach ($hostlist as $host_info) {
+				#$group_hosts[] = $host_info->host_name;
+				echo Kohana::debug($host_info);
+			}
+			# @@@FIXME: This does NOT work!
+			# we need to handle hoststatustypes differently
+			# convert_status_value() is wacko - and also current_status::get_servicegroup_hoststatus()
+			# FIXIT!
+			die();
+			$result = $this->current->host_status_subgroup_names($group_hosts, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
+		} else {
+			$result = $this->current->host_status_subgroup_names($name, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
+		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
-
-		$result = $this->current->host_status_subgroup_names($host, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
 
 		$this->template->content->result = $result;
 		$this->template->content->logos_path = $this->logos_path;
@@ -262,7 +285,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/servicegroup/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
+					'status_link' => html::anchor('status/service/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail/false/false/servicegroup', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
 					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
