@@ -701,7 +701,7 @@ class Current_status_Model extends Model
 		}
 		$service_filter = false;
 		if ($servicestatus!==false) {
-			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
+			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
 		}
 
 		$hostlist_str = implode(',', $hostlist);
