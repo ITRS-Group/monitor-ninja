@@ -13,16 +13,14 @@ if (!empty($widgets)) {
 <table style="border-spacing: 1px">
 	<tr>
 		<th>&nbsp;</th>
+		<th class="header headerSortUp"><?php echo $this->translate->_('Host') ?></th>
+		<th><?php echo $this->translate->_('Last check') ?></th>
+		<th><?php echo $this->translate->_('Duration') ?></th>
+		<th><?php echo $this->translate->_('Status information') ?></th>
+		<th colspan="5"><?php echo $this->translate->_('Actions') ?></th>
 
-		<?php	foreach ($header_links as $row) { ?>
-			<th>
 				<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
 				<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
-				<?php echo $row['title'] ?>
-			</th>
-		<?php	} ?>
-		<th colspan="4">&nbsp;</th>
-		<th>&nbsp;</th>
 	</tr>
 <?php	$a = 0;foreach ($result as $row) {
 		$a++;
@@ -63,7 +61,9 @@ if (!empty($widgets)) {
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 		<td class="status icon">
-			<?php echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
+			<?php
+				echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method)));
+				//echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
 		<td>
 			<?php
@@ -91,36 +91,35 @@ if (!empty($widgets)) {
 		<td class="statusEven"><?php echo $row->plugin_output ?></td>
 		<td class="icon">
 			<?php if (!empty($row->notes_url)) { ?>
-				<a href="<?php echo $row->notes_url ?>">
+				<a href="<?php echo $row->notes_url ?>" style="border: 0px">
 					<img src="/monitor/images/notes.gif" alt="<?php echo $this->translate->_('View extra host notes') ?>" title="<?php echo $this->translate->_('View extra host notes') ?>" />
 				</a>
 			<?php	} ?>
 		</td>
 		<td class="icon">
-			<?php if (!empty($row->action_url)) { ?>
-				<a href="<?php echo $row->action_url ?>">
-					<img src="/monitor/images/action.gif" title="<?php echo $this->translate->_('Perform extra host actions') ?>" alt="<?php echo $this->translate->_('Perform extra host actions') ?>" />
-				</a>
-			<?php	} ?>
-			</td>
-
-			<td class="icon">
-				<?php echo html::anchor('status/service/'.$row->host_name,'<img src="/monitor/images/status2.gif" alt="View Service Details For This Host"title="View Service Details For This Host" />') ?>
-			</td>
-			<td class="icon">
-				<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>">
-					<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this host') ?>" title="<?php echo $this->translate->_('Configure this host') ?>" />
-				</a>
+		<?php if (!empty($row->action_url)) { ?>
+			<a href="<?php echo $row->action_url ?>" style="border: 0px">
+				<img src="/monitor/images/action.gif" title="<?php echo $this->translate->_('Perform extra host actions') ?>" alt="<?php echo $this->translate->_('Perform extra host actions') ?>" />
+			</a>
+		<?php	} ?>
+		</td>
+		<td class="icon">
+			<?php echo html::anchor('status/service/'.$row->host_name,'<img src="/monitor/images/status2.gif" alt="View service details for this host" title="View service details for this host" />') ?>
+		</td>
+		<td class="icon">
+			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>" style="border: 0px">
+				<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this host') ?>" title="<?php echo $this->translate->_('Configure this host') ?>" />
+			</a>
 		</td>
 		<td class="status icon">
-			<?php if (!empty($row->icon_image)) { ?>
-				<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
-			<?php	} ?>
-			</td>
+		<?php if (!empty($row->icon_image)) { ?>
+			<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
+		<?php	} ?>
+		</td>
 	</tr>
 
 <?php	} ?>
 </table>
 
-<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Host Entries Displayed</div>
+<div id="status_count_summary"><?php echo sizeof($result).' '.$this->translate->_('Matching Host Entries Displayed'); ?></div>
 </div>
