@@ -2,16 +2,12 @@
 
 /**
  * Base NINJA model.
- *
  * Sets necessary objects like session and database
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
  */
-
-class Ninja_Model extends ORM {
-
+class Ninja_Model extends ORM
+{
 	public $db = false;
 	public $session = false;
 	public $profiler = false;
@@ -24,5 +20,4 @@ class Ninja_Model extends ORM {
 		$this->db = new Database;
 		$this->session = Session::instance();
 	}
-
 }

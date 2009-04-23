@@ -1,15 +1,18 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Servicegroup_Model extends ORM {
+/**
+ * Retrieve and manipulate information regarding servicegroups
+ */
+class Servicegroup_Model extends ORM
+{
 	protected $table_names_plural = false;
 
 	/**
-	*	@name 	get_by_field_value
-	*	@desc 	Fetch servicegroup where field matches value
-	* 	@param	str $field
-	* 	@param	mixed $value
-	*
-	*/
+	 * Fetch servicegroup where field matches value
+	 * @param $field The field to fetch
+	 * @param $value The value to search for
+	 * @return false on errors, array(?) on success
+	 */
 	public function get_by_field_value($field=false, $value=false)
 	{
 		$value = trim($value);
@@ -21,10 +24,8 @@ class Servicegroup_Model extends ORM {
 	}
 
 	/**
-	*	@name	get_all
-	*	@desc	Fetch info on all defined servicegroups
-	*
-	*/
+	 * Fetch info on all defined servicegroups
+	 */
 	public function get_all()
 	{
 		return ORM::factory('servicegroup')->find_all();

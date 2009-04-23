@@ -82,8 +82,7 @@ class Nagios_auth_Model extends Model
     }
 
     /**
-     * @name get_contact_id
-     * @desc Fetch contact id for current user
+     * Fetch contact id for current user
      */
     public function get_contact_id()
     {
@@ -102,9 +101,8 @@ class Nagios_auth_Model extends Model
     }
 
     /**
-     * @name get_authorized_hosts
-     * @desc Fetch authorized hosts from db
-     * 	for current user
+     * Fetch authorized hosts from db
+     * for current user
      */
     public function get_authorized_hosts()
     {
@@ -133,9 +131,8 @@ class Nagios_auth_Model extends Model
     }
 
     /**
-     * @name get_authorized_services
-     * @desc Fetch authorized services from db
-     * 	for current user
+     * Fetch authorized services from db
+     * for current user
      */
     public function get_authorized_services()
     {
@@ -169,9 +166,8 @@ class Nagios_auth_Model extends Model
     }
 
     /**
-     * @name get_authorized_hostgroups
-     * @desc Fetch authorized hostgroups from db
-     * 	for current user
+     * Fetch authorized hostgroups from db
+     * for current user
      */
     public function get_authorized_hostgroups()
     {
@@ -208,9 +204,8 @@ class Nagios_auth_Model extends Model
     }
 
     /**
-     * @name get_authorized_servicegroups
-     * @desc Fetch authorized servicegroups from db
-     * 	for current user
+     * Fetch authorized servicegroups from db
+     * for current user
      */
     public function get_authorized_servicegroups()
     {

@@ -1,0 +1,17 @@
+PROJECT_NAME = ninja
+
+INPUT            = application/models
+QUIET            = YES
+RECURSIVE        = YES
+FILE_PATTERNS    = *.php
+OUTPUT_DIRECTORY = apidocs
+GENERATE_TAGFILE = apidocs/api.tags
+
+JAVADOC_AUTOBRIEF     = YES
+MACRO_EXPANSION       = YES
+EXPAND_ONLY_PREDEF    = YES
+OPTIMIZE_OUTPUT_FOR_C = YES
+STRIP_CODE_COMMENTS   = NO
+FULL_PATH_NAMES       = NO
+CASE_SENSE_NAMES      = YES
+EXTRACT_ALL           = YES

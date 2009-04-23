@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Current_status_Model extends Model {
+/**
+ * Retrieves and manipulates current status of hosts (and services?)
+ */
+class Current_status_Model extends Model
+{
 	const HOST_UP =  0;
 	const HOST_DOWN = 1;
 	const HOST_UNREACHABLE = 2;
@@ -139,13 +143,11 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	data_present
-	*	@desc 	Check if we have current data in object
-	* 			Used to check if the host/service_data
-	* 			methods has been run. If not, all class
-	* 			variables will be in default state.
-	*
-	*/
+	 * Check if we have current data in object
+	 * Used to check if the host/service_data
+	 * methods has been run. If not, all class
+	 * variables will be in default state.
+	 */
 	public function data_present()
 	{
 		if (!$this->host_data_present || !$this->service_data_present) {
@@ -155,13 +157,11 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	calculate_health
-	*	@desc	Calculate host and service health
-	* 			Requires that host_status and service_status
-	* 			has been run before this.
-	* 	@return bool
-	*
-	*/
+	 * Calculate host and service health
+	 * Requires that host_status and service_status
+	 * has been run before this.
+	 * @return true on success, false on errors
+	 */
 	public function calculate_health()
 	{
 		if (!$this->data_present()) {
@@ -210,12 +210,10 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	get_hostlist
-	*	@desc	Fetch hosts for current user and return
-	* 			an array of host IDs
-	*	@return array host IDs or false
-	*
-	*/
+	 * Fetch hosts for current user and return
+	 * array of host IDs
+	 * @return array host IDs or false
+	 */
 	public function get_hostlist()
 	{
 		# fetch hosts for current user
@@ -229,12 +227,10 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	get_servicelist
-	*	@desc	Fetch services for current user and return
-	* 			an array of service IDs
-	*	@return array service IDs or false
-	*
-	*/
+	 * Fetch services for current user and return
+	 * an array of service IDs
+	 * @return array service IDs or false
+	 */
 	public function get_servicelist()
 	{
 		# fetch services for current user
@@ -250,10 +246,9 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	host_status
-	*	@desc	fetch current host status from db for current user
-	* 	@return	bool
-	*/
+	 * Fetch current host status from db for current user
+	 * return bool
+	 */
 	public function host_status()
 	{
 		$hostlist = $this->get_hostlist();
@@ -382,11 +377,9 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	service_status
-	*	@desc	Fetch and calculate status for all services for current user
-	* 	@return bool
-	*
-	*/
+	 * Fetch and calculate status for all services for current user
+	 * @return bool
+	 */
 	public function service_status()
 	{
 		$servicelist = $this->get_servicelist();
@@ -559,15 +552,13 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	analyze_status_data
-	*	@desc 	Analyze all status data for hosts and services
-	* 			Calls
-	* 				* host_status()
-	* 				* service_status()
-	* 				* calculate_health()
-	*	@return bool
-	*
-	*/
+	 * Analyze all status data for hosts and services
+	 * Calls
+	 * - host_status()
+	 * - service_status()
+	 * - calculate_health()
+	 * @return bool
+	 */
 	public function analyze_status_data()
 	{
 		$errors = false;
@@ -587,14 +578,11 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name find_hosts_causing_outages
-	*	@desc
-	*
-	* 	@@@FIXME This method is all but clear and should be checked
-	* 			thouroughly before relying on it.
-	* 			For one, the calling of the recursive get_child_hosts()
-	* 			could be a problem and also the SQL statements.
-	*/
+	 * FIXME: This method is all but clear and should be checked
+	 * thouroughly before relying on it.
+	 * For one, the calling of the recursive get_child_hosts()
+	 * could be a problem and also the SQL statements.
+	 */
 	public function find_hosts_causing_outages()
 	{
 		/* determine what hosts are causing network outages */
@@ -651,12 +639,11 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	get_child_hosts
-	*	@desc 	Fetch child hosts for a host
-	* 	@param 	int $host_id
-	* 	@param 	array $children
-	*
-	*/
+	 * Fetch child hosts for a host
+	 * @param $host_id Id of the host to fetch children for
+	 * @param $children Out variable
+	 * @return True on success, false on errors
+	 */
 	public function get_child_hosts($host_id=false, &$children=false)
 	{
 		$host_id = trim($host_id);
@@ -692,12 +679,10 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	get_servicegroup_hoststatus
-	*	@desc	find all hosts that have services that
-	* 			are members of a specific servicegroup and that
-	* 			are in the specified state.
-	*
-	*/
+	 * find all hosts that have services that
+	 * are members of a specific servicegroup and that
+	 * are in the specified state.
+	 */
 	public function get_servicegroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
 	{
 		$servicegroup = trim($servicegroup);
@@ -762,15 +747,17 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	host_status_subgroup
-	*	@desc 	Verify input host ID(s) and redirect to
-	* 			get_host_status()
-	*	@param	mixed (array/int) host_id(s) to check
-	*	@param	bool
-	* 	@param 	str $sort_field field to sort on
-	* 	@param 	str $sort_order ASC/DESC
-	*/
-	public function host_status_subgroup($host_ids = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC', $service_filter=false)
+	 * Verify input host ID(s) and redirect to get_host_status()
+	 * @param $host_ids Array of host id's to search for
+	 * @param $show_services Show services if true, otherwise ignore them.
+	 * @param $state_filter Bitmask filter of host statuses
+	 * @param $sort_field field to sort on
+	 * @param $sort_order ASC/DESC
+	 * @param $service_filter Bitmask filter of service statuses
+	 */
+	public function host_status_subgroup
+		($host_ids = false, $show_services = false, $state_filter=false,
+		 $sort_field='', $sort_order='DESC', $service_filter=false)
 	{
 		if (!is_array($host_ids)) {
 			$host_ids = trim($host_ids);
@@ -798,17 +785,19 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name	host_status_subgroup_names
-	*	@desc 	Verify input host_name(s) and redirect to
-	* 			get_host_status()
-	*	@param	mixed (array/string) host_name(s) to check
-	* 			Accepts 'all' as input, which will return
-	* 			all hosts the user has been granted access to.
-	*	@param	bool
-	* 	@param 	str $sort_field field to sort on
-	* 	@param 	str $sort_order ASC/DESC
-	*/
-	public function host_status_subgroup_names($host_names=false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='DESC', $service_filter=false)
+	 * Verify input host_name(s) and redirect to get_host_status()
+	 * @param $host_names (array/string) host_name(s) to check
+	 *      Also accepts 'all' as input, which will return
+	 *      all hosts the user has been granted access to.
+	 * @param $show_services Show services if true, otherwise ignore them.
+	 * @param $state_filter Bitmask filter of host statuses
+	 * @param $sort_field field to sort on
+	 * @param $sort_order ASC/DESC
+	 * @param $service_filter Bitmask filter of service statuses
+	 */
+	public function host_status_subgroup_names
+		($host_names=false, $show_services = false, $state_filter=false,
+		 $sort_field='', $sort_order='DESC', $service_filter=false)
 	{
 		if (!is_array($host_names)) {
 			$host_names = trim($host_names);
@@ -838,18 +827,17 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	get_host_status
-	*	@desc 	Fetch status data for a subset of hosts
-	* 			(and their related services if show_services is set to true).
-	* 	@param	array host_list
-	* 	@param	bool show_services, will only show services
-	* 			for each host if this is set to true
-	* 			Accepts 'all' as input, which will return
-	* 			all hosts the user has been granted access to.
-	* 	@param	int $state_filter value of current_state to filter for
-	* 	@param 	str $sort_field field to sort on
-	* 	@param 	str $sort_order ASC/DESC
-	*/
+	 * Fetch status data for a subset of hosts
+	 * (and their related services if show_services is set to true).
+	 * @param array host_list
+	 * @param bool show_services, will only show services
+	 * for each host if this is set to true
+	 * Accepts 'all' as input, which will return
+	 * all hosts the user has been granted access to.
+	 * @param int $state_filter value of current_state to filter for
+	 * @param str $sort_field field to sort on
+	 * @param str $sort_order ASC/DESC
+	 */
 	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC', $service_filter=false)
 	{
 		if (empty($host_list)) {
@@ -965,7 +953,7 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	 *	Translates a given status from db to a readable string
+	 * Translates a given status from db to a readable string
 	 */
 	public function status_text($db_status=false, $type='host')
 	{
@@ -1074,12 +1062,10 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	object_status
-	*	@desc 	Fetch status for single object (host/service)
-	* 			Will fetch status for both host and service if
-	* 			both params are present.
-	*
-	*/
+	 * Fetch status for single object (host/service)
+	 * Will fetch status for both host and service if
+	 * both params are present.
+	 */
 	public function object_status($host_name=false, $service_description=false)
 	{
 		$host_name = trim($host_name);
@@ -1176,14 +1162,13 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	*	@name 	get_groups_for_object
-	*	@desc	Fetch host/service group for host/service
-	* 			Accepts either object ID or object name.
-	* 	@param 	st $type
-	* 	@param 	int $id
-	* 	@param 	str $name
-	*
-	*/
+	 * Fetch host/service groups for host/service
+	 * Accepts either object ID or object name.
+	 * @param $type Host or service
+	 * @param $id The id of the object
+	 * @param $name The name of the object (host;service for services)
+	 * @return Array of group objects the requested object is a member of
+	 */
 	public function get_groups_for_object($type='host', $id=false, $name=false)
 	{
 		$name = trim($name);
@@ -1228,13 +1213,12 @@ class Current_status_Model extends Model {
 	}
 
 	/**
-	* Reads a configuration file in the format variable=value
-	* and returns it in an array.
-	* lines beginning with # are considered to be comments
-	*
-	* @param 	str $config_file
-	* @return	array
-	*/
+	 * Reads a configuration file in the format variable=value
+	 * and returns it in an array.
+	 * lines beginning with # are considered to be comments
+	 * @param $config_file The configuration file to parse
+	 * @return Array of key => value type on success, false on errors
+	 */
 	function parse_config_file($config_file) {
 		$config_file = trim($config_file);
 		if (empty($config_file)) {

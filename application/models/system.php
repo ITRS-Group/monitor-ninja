@@ -1,8 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class System_Model extends Model {
-
-	public $base_path = '';
+/**
+ * Reads various nagios-related configuration files
+ */
+class System_Model extends Model
+{
+	public $base_path = ''; /** the base path where nagios is installed */
 	public function __construct()
 	{
 		parent::__construct();
@@ -10,12 +13,11 @@ class System_Model extends Model {
 	}
 
 	/**
-	 * 	@name 	parse_config_file
-	* 	@desc 	Reads a configuration file in the format variable=value
-	*			and returns it in an array.
-	*			Lines beginning with # are considered to be comments
-	* 	@param  string $config_file path to file to parse
-	*/
+	 * Reads a configuration file in the format variable=value
+	 * and returns it in an array.
+	 * Lines beginning with # are considered to be comments
+	 * @param $config_file path to file to parse
+	 */
 	public function parse_config_file($config_file)
 	{
 		$options = false;
@@ -49,11 +51,9 @@ class System_Model extends Model {
 	}
 
 	/**
-	*	@name	fetch_nagios_users
-	*	@desc	Call parse_config_file() with cgi.cfg
-	* 			and fetch user configuration options (authorized_for)
-	*
-	*/
+	 * Call parse_config_file() with cgi.cfg
+	 * and fetch user configuration options (authorized_for)
+	 */
 	public function fetch_nagios_users()
 	{
 		$cgi_config = false;
@@ -89,10 +89,9 @@ class System_Model extends Model {
 	}
 
 	/**
-	*	@name 	nagios_access
-	*	@desc	Fetch authentication information
-	* 			for a named user
-	*/
+	 * Fetch authentication information
+	 * for a named user
+	 */
 	public function nagios_access($username=false)
 	{
 		if (empty($username)) {
@@ -113,9 +112,8 @@ class System_Model extends Model {
 
 	/**
 	 * Fetch info on installed rpm packages
-	 *
-	 * @param	str $filter
-	 * @return	array or false
+	 * @param $filter A regular expression passed to 'grep'
+	 * @return array or false
 	 */
 	public function rpm_info($filter = 'op5')
 	{
@@ -134,5 +132,4 @@ class System_Model extends Model {
 		}
 		return false;
 	}
-
 }

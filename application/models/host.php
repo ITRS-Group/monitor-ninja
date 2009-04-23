@@ -10,14 +10,12 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	@name 	get_host_with_services
-	*	@desc	Fetch all onfo on a host. The returned object
-	* 			will contain all database fields for the host object.
-	* 	@param	str $name
-	* 	@param  int $id
-	* 	@return object
-	*
-	*/
+	 * Fetch all onfo on a host. The returned object
+	 * will contain all database fields for the host object.
+	 * @param $name The host_name of the host
+	 * @param $id The id of the host
+	 * @return Host object on success, false on errors
+	 */
 	public function get_hostinfo($name=false, $id=false)
 	{
 
@@ -46,15 +44,13 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	@name 	authorized_for
-	*	@desc 	Determine if user is authorized to view info
-	* 			on a specific host.
-	* 			Accepts either hostID or host_name as input
-	* 	@param	str $name
-	* 	@param  int $id
-	* 	@return bool
-	*
-	*/
+	 * Determine if user is authorized to view info on a specific host.
+	 * Accepts either hostID or host_name as input
+	 *
+	 * @param $name The host_name of the host.
+	 * @param $id The id of the host
+	 * @return True if authorized, false if not.
+	 */
 	public function authorized_for($name=false, $id=false)
 	{
 		$id = (int)$id;
@@ -78,11 +74,11 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	@name service_states
-	*	@desc Fetch breakdown of current service states
-	* 			for a host
-	*
-	*/
+	 * Fetch breakdown of current service states for a host
+	 * @param $host_name The host_name of the host
+	 * @param $host_id The id of the host object
+	 * @return false on errors, array of services on success
+	 */
 	public function service_states($host_name=false, $host_id=false)
 	{
 		$services = $this->auth->get_authorized_services();

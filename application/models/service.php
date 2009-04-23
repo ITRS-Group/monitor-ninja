@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Service_Model extends Model {
+/**
+ * Retrieve and manipulate service status data
+ */
+class Service_Model extends Model
+{
 	private $auth = false;
 
 	public function __construct()
@@ -10,15 +14,12 @@ class Service_Model extends Model {
 	}
 
 	/**
-	*	@name	get_service
-	*	@desc	Fetch info on a specific service
-	* 			by either id or name
-	* 	@param  int $id
-	* 	@param	str $name Should be in the form
-	* 				hostname;service_description
-	* 	@return object
-	*
-	*/
+	 * Fetch info on a specific service by either id or name
+	 * @param $id Id of the service
+	 * @param $name Name of the service. This must be in the form
+	 *              hostname;service_description
+	 * @return Service object on success, false on errors
+	 */
 	public function get_serviceinfo($id=false, $name=false)
 	{
 		$id = (int)$id;

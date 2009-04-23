@@ -1,13 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * User Model
  * This model uses ORM and regular db->query()
- *
  */
 class User_Model extends Auth_User_Model {
 
 	/**
-	 * takes care of setting session variables etc
+	 * Takes care of setting session variables etc
 	 */
 	public function complete_login($user_data)
 	{
@@ -59,10 +57,8 @@ class User_Model extends Auth_User_Model {
 	}
 
 	/**
-	*	@name	user_validate_edit
-	*	@desc 	Validate input when editing user
-	*
-	*/
+	 * Validate input when editing user
+	 */
 	public function user_validate_edit(array & $array, $save = FALSE)
 	{
 #		echo Kohana::debug($array);
@@ -78,11 +74,9 @@ class User_Model extends Auth_User_Model {
 	}
 
 	/**
-	*	@name logout_user
-	*	@desc Takes care of setting a user as logged out
-	* 			and destroying the session
-	*
-	*/
+	 * Takes care of setting a user as logged out
+	 * and destroying the session
+	 */
 	public function logout_user()
 	{
 		$auth_type = Kohana::config('auth.driver');
