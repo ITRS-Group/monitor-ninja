@@ -176,8 +176,7 @@ class Status_Controller extends Authenticated_Controller {
 		if ($style == 'overview') {
 			$this->template->content = $this->add_view('status/group_overview');
 		} else {
-			# add other template for details or possible redirect to separate method?
-			die('detail view not implemented');
+			url::redirect(Router::$controller.'/service/'. $group. '/' . $hoststatustypes . '/' . $servicestatustypes . '/false/false/false/servicegroup');
 		}
 
 		if ($group == 'all') {
@@ -283,7 +282,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/service/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail/false/false/servicegroup', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
+					'status_link' => html::anchor('status/servicegroup/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
 					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
