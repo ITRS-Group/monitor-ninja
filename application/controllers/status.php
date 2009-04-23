@@ -32,9 +32,11 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param str $sort_field
 	 * @param bool $show_services
 	 */
-	public function host($host='all', $hoststatustypes=nagstat::HOST_UP, $sort_order='ASC', $sort_field='host_name', $show_services=false)
+	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false)
 	{
 		$host = trim($host);
+		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+
 		$this->template->content = $this->add_view('status/host');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -89,9 +91,12 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param str $sort_field
 	 * @param str $group_type
 	 */
-	public function service($name='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=nagstat::SERVICE_OK, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
+	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
 	{
 		$name = trim($name);
+		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+		$servicestatustypes = strtolower($servicestatustypes)==='false' ? false : $servicestatustypes;
+
 		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
 		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
 
@@ -162,9 +167,11 @@ class Status_Controller extends Authenticated_Controller {
 	* 	@param 	str $style
 	*
 	*/
-	public function servicegroup($group='all', $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
+	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
 		$group = trim($group);
+		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+
 		if ($style == 'overview') {
 			$this->template->content = $this->add_view('status/group_overview');
 		} else {
@@ -213,9 +220,11 @@ class Status_Controller extends Authenticated_Controller {
 	* 	@param 	str $style
 	* 	@return obj
 	*/
-	public function show_servicegroup($group=false, $hoststatustypes=nagstat::HOST_UP, $servicestatustypes=false, $style='overview')
+	public function show_servicegroup($group=false, $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
 		$content = false;
+		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+
 		$t = $this->translate;
 		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
 		$hostlist = $this->current->get_servicegroup_hoststatus($group, $hoststatustypes, $servicestatustypes);
