@@ -713,7 +713,7 @@ class Current_status_Model extends Model {
 		$state_filter = false;
 		if (!empty($hoststatus)) {
 			if ($hoststatus > 2) {
-				$state_filter = '>0';
+				$state_filter = '>=0';
 			} else {
 				$state_filter = '='.$hoststatus;
 			}
@@ -865,7 +865,7 @@ class Current_status_Model extends Model {
 			# all problems =>
 
 			if ($state_filter>2) {
-				$state_filter = '>0';
+				$state_filter = '>=0';
 			} else {
 				$state_filter = '='.$state_filter;
 			}
