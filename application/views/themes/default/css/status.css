@@ -54,17 +54,27 @@ tr:hover td {
 }
 
 th.header {
-	background: url(../images/icons/arrows/sort-none.png) no-repeat center left;
+	background: #f5f5ef url(../images/icons/arrows/sort-none.png) no-repeat center left;
 	cursor: pointer;
 	font-weight: bold;
-	border-right: 1px solid #cdcdbc;
-	margin-left: -1px;
 }
 
 th.headerSortDown {
-	background: #cdcdbc url(../images/icons/arrows/sort-down.png);
+	background: #cdcdbc url(../images/icons/arrows/sort-down.png) center right no-repeat;
+	color: #ffffff;
+}
+
+th.headerSortDown:first-child {
+	background: #cdcdbc url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
+	color: #ffffff;
 }
 
 th.headerSortUp {
-	background: #cdcdbc url(../images/icons/arrows/sort-up.png);
+	background: #cdcdbc url(../images/icons/arrows/sort-up.png) center right no-repeat;
+	color: #ffffff;
+}
+
+th.headerSortUp:first-child {
+	background: #cdcdbc url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
+	color: #ffffff;
 }
