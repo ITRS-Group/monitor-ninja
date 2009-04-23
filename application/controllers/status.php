@@ -237,8 +237,8 @@ class Status_Controller extends Authenticated_Controller {
 				 */
 				if (Kohana::config('config.nacoma_path')!==false) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-					$nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=host&amp;host='.$host->host_name.'"
-						title="'.$lable_nacoma.'">'.html::image($this->img_path('images/nacoma.png')).'</a>';
+					$nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=host&amp;host='.$host->host_name.
+						'"title="'.$lable_nacoma.'">'.html::image($this->img_path('images/nacoma.png')).'</a>';
 				}
 
 				/**
@@ -248,8 +248,8 @@ class Status_Controller extends Authenticated_Controller {
 				$pnp_link = false;
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					$lable_pnp = $t->_('Show performance graph');
-					$pnp_link = '<a href="'.Kohana::config('config.pnp4nagios_path').'index.php?host='.$host->host_name.'"
-						title="'.$lable_pnp.'">'.html::image($this->img_path('images/graphlight.png')).'</a>';
+					$pnp_link = '<a href="'.Kohana::config('config.pnp4nagios_path').'index.php?host='.$host->host_name.
+						'"title="'.$lable_pnp.'">'.html::image($this->img_path('images/graphlight.png')).'</a>';
 				}
 
 				# decide status_link host- and servicestate parameters
