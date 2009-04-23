@@ -5,9 +5,13 @@
 
 .ok,
 .icon {
-	width: 10px;
+	width: 16px;
 	padding: 5px 7px;
 	text-align: center;
+}
+
+td.icon a {
+	border: 0px;
 }
 
 .white {
@@ -47,4 +51,21 @@ tr.even td.status {
 
 tr:hover td {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
+}
+
+th.header {
+  background: url('../images/bg/table/header-selected.png') repeat-x;
+  cursor: pointer;
+  /*font-weight: bold;
+  border-right: 1px solid #dad9c7;
+  margin-left: -1px; */
+}
+
+th.headerSortUp {
+  background: #aaaaaa url('../images/icons/arrows/sort-down.png') no-repeat center right;
+	color: #ffffff;
+}
+
+th.headerSortDown {
+  background: url('/logserver/images/icons/sort-desc.png') no-repeat 2px 11px;
 }
