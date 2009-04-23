@@ -46,8 +46,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 
-		$conv_status = $this->convert_status_value($hoststatustypes);
-
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('images/up.gif');
 		$this->img_sort_down = $this->img_path('images/down.gif');
@@ -76,7 +74,7 @@ class Status_Controller extends Authenticated_Controller {
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
-		$result = $this->current->host_status_subgroup_names($host, $show_services, $conv_status, $sort_field, $sort_order);
+		$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order);
 		$this->template->content->result = $result;
 		$this->template->content->logos_path = $this->logos_path;
 	}
@@ -106,9 +104,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
-
-		$conv_svc_status = $this->convert_status_value($servicestatustypes, 'service');
-		$conv_host_status = $this->convert_status_value($hoststatustypes, 'host');
 
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('images/up.gif');
@@ -141,18 +136,15 @@ class Status_Controller extends Authenticated_Controller {
 		if (!empty($group_type)) {
 			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
 			$shown .= " '".$name."'";
-			$hostlist = $this->current->get_servicegroup_hoststatus($name, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
+			$hostlist = $this->current->get_servicegroup_hoststatus($name, $hoststatustypes, $servicestatustypes);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
 			}
-			# @@@FIXME: This does NOT work!
-			# we need to handle hoststatustypes differently
-			# convert_status_value() is wacko - and also current_status::get_servicegroup_hoststatus()
 
-			$result = $this->current->host_status_subgroup_names($group_hosts, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
+			$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes);
 		} else {
-			$result = $this->current->host_status_subgroup_names($name, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
+			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes);
 		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
@@ -226,7 +218,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content = false;
 		$t = $this->translate;
 		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
-		$hostlist = $this->current->get_servicegroup_hoststatus($group, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
+		$hostlist = $this->current->get_servicegroup_hoststatus($group, $hoststatustypes, $servicestatustypes);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
@@ -323,39 +315,6 @@ class Status_Controller extends Authenticated_Controller {
 			# nothing found
 		}
 		return $content;
-	}
-
-	/**
-	 * Convert Nagios status level to current_state
-	 * stored in database.
-	 *
-	 * @param	int $value
-	 * @param	str $type host/service
-	 * @return	int
-	 */
-	private function convert_status_value($value=false,$type='host')
-	{
-		if ($value === false) {
-			return false;
-		}
-		$conv_status = false;
-		if ($type == 'host') {
-			if ($value > 8) {
-				return $value;
-			}
-			$conv_status = $value == 1 ? -1 : ($value >> 2);
-		} elseif ($type == 'service') {
-			$service_states = array(2 => 0, 4 => 1, 8 => 3, 16 => 2, 1 => -1);
-			if ($value>16) {
-				return $value;
-			}
-			if (array_key_exists($value, $service_states)) {
-				$conv_status = $service_states[$value];
-			}
-		} else {
-			return false;
-		}
-		return $conv_status;
 	}
 
 	/**

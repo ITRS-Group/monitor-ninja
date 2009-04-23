@@ -697,21 +697,11 @@ class Current_status_Model extends Model
 		$filter_sql = '';
 		$state_filter = false;
 		if (!empty($hoststatus)) {
-			if ($hoststatus > 2) {
-				$state_filter = '>=0';
-			} else {
-				$state_filter = '='.$hoststatus;
-			}
-			$filter_sql .= ' AND h.current_state'.$state_filter.' ';
+			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
 		}
 		$service_filter = false;
 		if ($servicestatus!==false) {
-			if ($servicestatus>3) {
-				$service_filter = '>0';
-			} else {
-				$service_filter = '='.$servicestatus;
-			}
-			$filter_sql .= ' AND s.current_state'.$service_filter.' ';
+			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
 		}
 
 		$hostlist_str = implode(',', $hostlist);
@@ -849,27 +839,11 @@ class Current_status_Model extends Model
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
 		if (!empty($state_filter)) {
-			#$state_filter = $this->db->escape($state_filter);
-			# all problems =>
-
-			if ($state_filter>2) {
-				$state_filter = '>=0';
-			} else {
-				$state_filter = '='.$state_filter;
-			}
-			$filter_sql .= $show_services ? ' AND h.current_state'.$state_filter : ' AND current_state'.$state_filter;
-			$filter_sql .= ' ';
+			$h = $show_services ? 'h.' : '';
+			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
 		}
 		if ($service_filter!==false) {
-			#$service_filter = $this->db->escape($service_filter);
-
-			if ($service_filter>3) {
-				$service_filter = '>0';
-			} else {
-				$service_filter = '='.$service_filter;
-			}
-			$filter_sql .= ' AND s.current_state'.$service_filter;
-			$filter_sql .= ' ';
+			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
 		}
 		if (!$show_services) {
 			$sort_field = empty($sort_field) ? 'host_name' : $sort_field;
