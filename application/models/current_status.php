@@ -605,7 +605,9 @@ class Current_status_Model extends Model {
 
 		# fetch hosts for current user
 		$hostlist = $this->get_hostlist();
-		sort($hostlist);
+		if (empty($hostlist)) {
+			return false;
+		}
 		$str_hostlist = implode(', ', $hostlist);
 
 		$sql = "
