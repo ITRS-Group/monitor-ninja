@@ -15,10 +15,16 @@
 		?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.form.js') ?>
+		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
+
+				$(document).ready(function() {
+					$("#sort-table").tablesorter();
+				}
+);
 			//-->
 		</script>
 		<?php echo html::script('application/media/js/ajax_test.js') ?>
