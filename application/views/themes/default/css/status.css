@@ -54,18 +54,17 @@ tr:hover td {
 }
 
 th.header {
-  background: url('../images/bg/table/header-selected.png') repeat-x;
-  cursor: pointer;
-  /*font-weight: bold;
-  border-right: 1px solid #dad9c7;
-  margin-left: -1px; */
-}
-
-th.headerSortUp {
-  background: #aaaaaa url('../images/icons/arrows/sort-down.png') no-repeat center right;
-	color: #ffffff;
+	background: url(../images/icons/arrows/sort-none.png) no-repeat center left;
+	cursor: pointer;
+	font-weight: bold;
+	border-right: 1px solid #cdcdbc;
+	margin-left: -1px;
 }
 
 th.headerSortDown {
-  background: url('/logserver/images/icons/sort-desc.png') no-repeat 2px 11px;
+	background: #cdcdbc url(../images/icons/arrows/sort-down.png);
+}
+
+th.headerSortUp {
+	background: #cdcdbc url(../images/icons/arrows/sort-up.png);
 }
