@@ -144,14 +144,12 @@ class Status_Controller extends Authenticated_Controller {
 			$hostlist = $this->current->get_servicegroup_hoststatus($name, $this->convert_status_value($hoststatustypes), $this->convert_status_value($servicestatustypes, 'service'));
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
-				#$group_hosts[] = $host_info->host_name;
-				echo Kohana::debug($host_info);
+				$group_hosts[] = $host_info->host_name;
 			}
 			# @@@FIXME: This does NOT work!
 			# we need to handle hoststatustypes differently
 			# convert_status_value() is wacko - and also current_status::get_servicegroup_hoststatus()
-			# FIXIT!
-			die();
+
 			$result = $this->current->host_status_subgroup_names($group_hosts, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
 		} else {
 			$result = $this->current->host_status_subgroup_names($name, true, $conv_host_status, $sort_field, $sort_order, $conv_svc_status);
