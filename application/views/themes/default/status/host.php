@@ -23,6 +23,7 @@ if (!empty($widgets)) {
 		<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
 	</tr>
 	</thead>
+	<tbody>
 <?php	$a = 0;foreach ($result as $row) {
 		$a++;
 		# set status classes
@@ -60,7 +61,7 @@ if (!empty($widgets)) {
 		}
 
 	?>
-	<tbody>
+
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 		<td class="status icon">
 			<?php
