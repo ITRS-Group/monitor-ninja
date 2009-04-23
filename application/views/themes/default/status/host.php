@@ -13,7 +13,7 @@ if (!empty($widgets)) {
 <table style="border-spacing: 1px">
 	<tr>
 		<th>&nbsp;</th>
-		<th class="header headerSortUp"><?php echo $this->translate->_('Host') ?></th>
+		<th><?php echo $this->translate->_('Host') ?></th>
 		<th><?php echo $this->translate->_('Last check') ?></th>
 		<th><?php echo $this->translate->_('Duration') ?></th>
 		<th><?php echo $this->translate->_('Status information') ?></th>
