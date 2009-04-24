@@ -13,9 +13,9 @@
 			</tr>
 			<tr>
 				<td class="status icon"><?php echo $total_problems ?></td>
-				<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/'.nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE, html::specialchars($label_all_host_problems)) ?></td>
+				<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), html::specialchars($label_all_host_problems)) ?></td>
 				<td class="status icon"><?php echo $total_hosts ?></td>
-				<td colspan="3"<?php echo html::anchor('status/host/'.$host.'/', html::specialchars($label_all_host_types)) ?></td>
+				<td colspan="3"><?php echo html::anchor('status/service/'.$host.'/false/'.$service_state, html::specialchars($label_all_host_types)) ?></td>
 			</tr>
 		</table>
 	</div>
@@ -36,9 +36,9 @@
 				</tr>
 				<tr>
 					<td class="status icon"><?php echo $svc_total_problems ?></td>
-					<td colspan="5"><?php echo html::anchor('status/host/'.$host.'/12', html::specialchars($label_all_service_problems)) ?></td>
+					<td colspan="5"><?php echo html::anchor('status/service/'.$host.'/'.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'/'.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL), html::specialchars($label_all_service_problems)) ?></td>
 					<td class="status icon"><?php echo $svc_total_services ?></td>
-					<td colspan="3"><?php echo html::anchor('status/host/'.$host.'/', html::specialchars($label_all_service_types)) ?></td>
+					<td colspan="3"><?php echo html::anchor('status/service/'.$host.'/', html::specialchars($label_all_service_types)) ?></td>
 				</tr>
 			</table>
 		</div>
