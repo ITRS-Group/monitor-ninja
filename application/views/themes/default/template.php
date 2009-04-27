@@ -23,14 +23,13 @@
 
 				$(document).ready(function() {
 					$("#sort-table").tablesorter({
-						//sortList: [[1,0]],
+						sortList: [[1,0]],
 						headers: {
-							0: { sorter: false },
+						  0: { sorter: false },
 							6: { sorter: false }
 						}
 					});
-				}
-);
+				});
 			//-->
 		</script>
 		<?php echo html::script('application/media/js/ajax_test.js') ?>
@@ -44,7 +43,7 @@
 
 	<body>
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios') ?>
+			<?php echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios'); ///ninja/index.php/tac ?>
 			<form action="">
 				<div id="navigation">
 					<?php //print_r( html::breadcrumb()); ?>
@@ -84,9 +83,9 @@
 			<div id="close-menu" title="Hide menu" onclick="collapse_menu()"></div>
 			<ul>
 				<li class="header"><?php echo $this->translate->_('Monitoring') ?></li>
-				<li class="selected"><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Tactical Overview</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Host Detail</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Service Detail</a></li>
+				<li class="selected"><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/tac">Tactical Overview</a></li>
+				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/status/host">Host Detail</a></li>
+				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/status/service">Service Detail</a></li>
 				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Summary</a></li>
 				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Overview</a></li>
 				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Grid</a></li>
