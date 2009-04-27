@@ -75,7 +75,7 @@ tr.even td.status {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 }
 
-tr:hover td {
+#sort-table tr:hover td {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 }
 
