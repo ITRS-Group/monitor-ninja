@@ -66,7 +66,7 @@ class Ninja_Controller extends Template_Controller {
 		// By defining a __call method, all pages routed to this controller
 		// that result in 404 errors will be handled by this method, instead of
 		// being displayed as "Page Not Found" errors.
-		echo 'The requested page ('.$method.') doesn\' exist';
+		echo $this->translate->_("The requested page doesn't exist") . " ($method)";
 	}
 
 	/**
