@@ -34,12 +34,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function details($type='host', $host=false, $service=false)
 	{
+		$type = $this->input->get('type', $type);
+		$host = $this->input->get('host', $host);
+		$service = $this->input->get('service', $service);
+
 		# load current status for host/service status totals
 		$this->current = new Current_status_Model();
 
 		$host = trim($host);
 		$type = strtolower($type);
-		$service = link::decode($service);
 		if (empty($host)) {
 			return false;
 		}
@@ -216,7 +219,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if ($result->active_checks_enabled ) {
 			$commands->lable_active_checks = $type == 'host' ? $t->_('Disable Active Checks Of This Host') : $t->_('Disable Active Checks Of This Service');
 			$cmd = $type == 'host' ? Cmd_Controller::CMD_DISABLE_HOST_CHECK : Cmd_Controller::CMD_DISABLE_SVC_CHECK;
-			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
+			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks, 'command', true);
 			$force_reschedule = 'true';
 		} else {
 			$commands->lable_active_checks = $type == 'host' ? $t->_('Enable Active Checks Of This Host') : $t->_('Enable Active Checks Of This Service');
@@ -372,12 +375,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 	* 			the links to the cmd controller
 	*
 	*/
-	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='command')
+	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='command', $force=false)
 	{
 		$host = trim($host);
-
-		# encode service string if set
-		$service = $service!==false ? link::encode($service) : false;
 
 		$lable = trim($lable);
 		$method = trim($method);
@@ -387,9 +387,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$link_params = false;
 		if (!empty($host) && !empty($service)) {
 			# only print extra params when present
-			$link_params = '/'.$host.'/'.$service;
+			$link_params = '&host_name='.$host.'&service='.$service;
+			if ($force === true)
+				$link_params .= '&force=true';
 		}
-		$link =	html::anchor('cmd/'.$method.'/'.$command_type.$link_params,
+		$link =	html::anchor('cmd/'.$method.'?cmd_typ='.$command_type.$link_params,
 			html::specialchars($lable));
 		return $link;
 	}

@@ -34,6 +34,12 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false)
 	{
+		$host = $this->input->get('host', $host);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$sort_order = $this->input->get('sort_order', $sort_order);
+		$sort_field = $this->input->get('sort_field', $sort_field);
+		$show_services = $this->input->get('show_services', $show_services);
+
 		$host = trim($host);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -93,6 +99,14 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
 	{
+		$name = $this->input->get('name', $name);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$service_props = $this->input->get('service_props', $service_props);
+		$sort_order = $this->input->get('sort_order', $sort_order);
+		$sort_field = $this->input->get('sort_field', $sort_field);
+		$group_type = $this->input->get('group_type', $group_type);
+
 		$name = trim($name);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 		$servicestatustypes = strtolower($servicestatustypes)==='false' ? false : $servicestatustypes;
@@ -169,15 +183,25 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$style = $this->input->get('style', $style);
+
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
-		if ($style == 'overview') {
-			$this->template->content = $this->add_view('status/group_overview');
-		} else {
-			url::redirect(Router::$controller.'/service/'. $group. '/' . $hoststatustypes . '/' . $servicestatustypes . '/false/false/false/servicegroup');
+		switch ($style) {
+			case 'overview':
+				$this->template->content = $this->add_view('status/group_overview');
+				break;
+			case 'detail': case 'details':
+				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type=servicegroup');
+				break;
+			case 'summary':
+				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type=servicegroup');
+				break;
 		}
-
 		if ($group == 'all') {
 			$group_info_res = Servicegroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
@@ -222,6 +246,11 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function show_servicegroup($group=false, $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$style = $this->input->get('style', $style);
+
 		$content = false;
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -283,7 +312,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/servicegroup/'.$group.'/'.$hst_status_type.'/'.$svc_status_type.'/detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
+					'status_link' => html::anchor('status/servicegroup/'.$group.'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
 					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
@@ -310,7 +339,7 @@ class Status_Controller extends Authenticated_Controller {
 				$hostinfo[$host->host_name] = array(
 					'state_str' => $this->current->status_text($host->current_state, 'host'),
 					'class_name' => 'statusHOST' . $this->current->status_text($host->current_state, 'host'),
-					'status_link' => html::anchor('status/service/'.$host->host_name.'/'.$hoststatustypes.'/'.(int)$servicestatustypes, html::specialchars($host->host_name), array('title' => $host->address)),
+					'status_link' => html::anchor('status/service/'.$host->host_name.'?hoststatustypes='.$hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($host->host_name), array('title' => $host->address)),
 					'action_link' => $action_link,
 					'notes_link' => $notes_link,
 					'host_icon' => $host_icon
@@ -356,10 +385,10 @@ class Status_Controller extends Authenticated_Controller {
 			case 'host':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
-					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$sort_field_db;
 					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
 					$header['img_asc'] = $this->img_sort_up;
-					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
 					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}
@@ -367,10 +396,10 @@ class Status_Controller extends Authenticated_Controller {
 			case 'service':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
-					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.(int)$service_props.'/'.nagstat::SORT_ASC.'/'.$sort_field_db;
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$sort_field_db;
 					$header['img_asc'] = $this->img_sort_up;
 					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
-					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'/'.$host_status.'/'.$service_status.'/'.(int)$service_props.'/'.'/'.nagstat::SORT_DESC.'/'.$sort_field_db;
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
 					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}

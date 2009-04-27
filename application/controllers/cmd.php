@@ -278,11 +278,14 @@ class Cmd_Controller extends Authenticated_Controller {
 	*/
 	public function command($cmd_typ=false, $host_name=false, $service=false, $force=false)
 	{
+		$cmd_typ = $this->input->get('cmd_typ', $cmd_typ);
+		$host_name = $this->input->get('host_name', $host_name);
+		$service = $this->input->get('service', $service);
+		$force = $this->input->get('force', $force);
+
 		$cmd_typ = (int)$cmd_typ;
 		$host_name = trim($host_name);
 
-		# decode service description if set
-		$service = !empty($service) ? link::decode($service) : false;
 		echo $cmd_typ.', '.$host_name.'; '.$service;
 	}
 
