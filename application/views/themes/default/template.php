@@ -22,7 +22,13 @@
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 
 				$(document).ready(function() {
-					$("#sort-table").tablesorter({sortList: [[1,0], [0,0]]});
+					$("#sort-table").tablesorter({
+						//sortList: [[1,0]],
+						headers: {
+							0: { sorter: false },
+							6: { sorter: false }
+						}
+					});
 				}
 );
 			//-->
