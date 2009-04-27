@@ -139,7 +139,7 @@ if (!empty($widgets)) {
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
-		<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/'.link::encode($row->service_description), html::specialchars($row->service_description)) ?></td>
+		<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
 		<td><?php echo $row->last_check ?></td>
 		<td><?php echo $row->duration ?></td>
 		<td><?php echo $row->plugin_output ?></td>
