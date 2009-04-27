@@ -10,15 +10,27 @@
 	text-align: center;
 }
 
+tr.odd td.bl,
+tr.even td.bl { border-left: 1px solid #dcdccd; }
+
+tr.odd td.bt,
+tr.even td.bt { border-top: 1px solid #dcdccd; }
+
+tr.odd td.bt img,
+tr.even td.bt img { float: left }
+
 td.icon a {
 	border: 0px;
 }
 
-.white {
+tr.even td.white,
+tr.odd td.white {
 	background: #ffffff;
+	border: 1px solid #ffffff;
 }
 
-.w80 { width: 80px }
+tr.even td.w80,
+tr.odd td.w80 { width: 80px; border-right: 0px; border-top: 1px solid #dcdcbc }
 
 #content a {
 	text-decoration: none;
@@ -42,39 +54,68 @@ a > img {
 }
 
 tr.even td {
+	border: 1px solid #dcdccd;
+	border-left: 0px;
+	border-top: 0px;
 	background: #f3f2ef;
+	background: #fdfdfd;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+tr.odd td {
+	border: 1px solid #dcdccd;
+	border-left: 0px;
+	border-top: 0px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
 tr.even td.status {
-	/*background: #f5f5ef url(../images/bg/light.gif) repeat-x;*/
+	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 }
 
 tr:hover td {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 }
 
+th.no-sort,
 th.header {
-	background: #f5f5ef url(../images/icons/arrows/sort-none.png) no-repeat center left;
+	background: #414140 url(../images/icons/arrows/sort-none.png) no-repeat center right;
 	cursor: pointer;
 	font-weight: bold;
+	color: #ffffff;
+	text-transform: capitalize;
+}
+
+th.no-sort {
+	background:#f5f5ef;
+	background:#414140;
+	cursor: arrow;
+}
+
+th.header:first-child {
+	background: #999990 url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
+	cursor: pointer;
+	color: #ffffff;
 }
 
 th.headerSortDown {
-	background: #cdcdbc url(../images/icons/arrows/sort-down.png) center right no-repeat;
+	background: #999990 url(../images/icons/arrows/sort-down.png) center right no-repeat;
 	color: #ffffff;
 }
 
 th.headerSortDown:first-child {
-	background: #cdcdbc url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
+	background: #999990 url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
 	color: #ffffff;
 }
 
 th.headerSortUp {
-	background: #cdcdbc url(../images/icons/arrows/sort-up.png) center right no-repeat;
+	background: #999990 url(../images/icons/arrows/sort-up.png) center right no-repeat;
 	color: #ffffff;
 }
 
 th.headerSortUp:first-child {
-	background: #cdcdbc url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
+	background: #999990 url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
 	color: #ffffff;
 }
