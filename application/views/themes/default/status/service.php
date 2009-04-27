@@ -10,19 +10,22 @@ if (!empty($widgets)) {
 <div class="widget collapsable left w98" id="status_service">
 <div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
 
-<table style="border-spacing: 1px">
+<table style="border-spacing: 0px; background-color: #dcdccd" id="sort-table">
+	<thead>
 	<tr>
-		<th>&nbsp;</th>
+		<th class="no-sort">&nbsp;</th>
 		<th><?php echo $this->translate->_('Host') ?></th>
 		<th><?php echo $this->translate->_('') ?></th>
 		<th><?php echo $this->translate->_('Service') ?></th>
 		<th><?php echo $this->translate->_('Last check') ?></th>
 		<th><?php echo $this->translate->_('Duration') ?></th>
-		<th><?php echo $this->translate->_('Status information') ?></th>
+		<th class="no-sort"><?php echo $this->translate->_('Status information') ?></th>
 		<th colspan="4"><?php echo $this->translate->_('Actions') ?></th>
 		<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
 		<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
 	</tr>
+	</thead>
+	<tbody>
 <?php
 	$curr_host = false;
 	$a = 0;
@@ -31,7 +34,7 @@ if (!empty($widgets)) {
 
 			# set status classes
 			# row "striping" done by JQuery?
-			$status_class = 'status';
+			$status_class = ''; // status
 			$status_bg_class = '';
 			switch ($row->current_state) {
 				case Current_status_Model::SERVICE_PENDING :
@@ -100,7 +103,7 @@ if (!empty($widgets)) {
 		$a++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="<?php echo ($curr_host != $row->host_name) ? $host_status_bg_class : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
+		<td class="bl <?php echo ($curr_host != $row->host_name) ? 'bt '.$host_status_bg_class : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
 			<?php
 				if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
@@ -132,7 +135,7 @@ if (!empty($widgets)) {
 					</div>
 				</td>
 			<?php } ?>
-		<td class="<?php echo $status_class ?>">
+		<td class="bl <?php echo $status_class ?>">
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
 		</td>
@@ -165,6 +168,7 @@ if (!empty($widgets)) {
 	<?php
 			$curr_host = $row->host_name;
 		} ?>
+		</tbody>
 	</table>
 
 	<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>

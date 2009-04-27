@@ -10,18 +10,17 @@ if (!empty($widgets)) {
 <div class="widget collapsable left w98" id="status_host">
 <div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
 
-<table style="border-spacing: 1px" id="sort-table">
+<table id="sort-table">
 	<thead>
-	<tr>
-		<th>&nbsp;</th>
-		<th><?php echo $this->translate->_('Host') ?></th>
-		<th><?php echo $this->translate->_('Last check') ?></th>
-		<th><?php echo $this->translate->_('Duration') ?></th>
-		<th><?php echo $this->translate->_('Status information') ?></th>
-		<th colspan="5"><?php echo $this->translate->_('Actions') ?></th>
-		<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
-		<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
-	</tr>
+		<tr>
+			<th class="no-sort"><?php echo $this->translate->_('') ?></th>
+			<th colspan="2"><?php echo $this->translate->_('Host') ?></th>
+
+			<th><?php echo $this->translate->_('Last check') ?></th>
+			<th><?php echo $this->translate->_('Duration') ?></th>
+			<th><?php echo $this->translate->_('Status information') ?></th>
+			<th class="{sorter: false} no-sort" colspan="5"><?php echo $this->translate->_('Actions') ?></th>
+		</tr>
 	</thead>
 	<tbody>
 <?php	$a = 0;foreach ($result as $row) {
@@ -63,11 +62,12 @@ if (!empty($widgets)) {
 	?>
 
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="status icon">
+		<td class="icon bl">
 			<?php
 				echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method)));
-				//echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
+			  //echo ucfirst(strtolower(Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
+
 		<td>
 			<?php
 				echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name));
@@ -88,6 +88,11 @@ if (!empty($widgets)) {
 					echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
 				}
 			?>
+		</td>
+<td class="icon">
+		<?php if (!empty($row->icon_image)) { ?>
+			<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
+		<?php	} ?>
 		</td>
 		<td class="statusEven"><?php echo $row->last_check ?></td>
 		<td class="statusEven"><?php echo $row->duration ?></td>
@@ -114,11 +119,7 @@ if (!empty($widgets)) {
 				<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this host') ?>" title="<?php echo $this->translate->_('Configure this host') ?>" />
 			</a>
 		</td>
-		<td class="status icon">
-		<?php if (!empty($row->icon_image)) { ?>
-			<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
-		<?php	} ?>
-		</td>
+
 	</tr>
 
 <?php	} ?>
