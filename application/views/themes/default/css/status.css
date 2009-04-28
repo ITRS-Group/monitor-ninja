@@ -98,10 +98,15 @@ th.no-sort {
 	cursor: arrow;
 }
 
+th.no-sort:first-child {
+border-left: 1px solid #dcdccd;
+}
+
 th.header:first-child {
 	/* #999990 */
 	background: #dcdccd url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
 	cursor: pointer;
+	border-left: 1px solid #dcdccd;
 }
 
 th.headerSortDown {
@@ -110,6 +115,7 @@ th.headerSortDown {
 
 th.headerSortDown:first-child {
 	background: #dcdccd url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
+	border-left: 1px solid #dcdccd;
 }
 
 th.headerSortUp {
@@ -118,4 +124,5 @@ th.headerSortUp {
 
 th.headerSortUp:first-child {
 	background: #dcdccd url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
+	border-left: 1px solid #dcdccd;
 }
