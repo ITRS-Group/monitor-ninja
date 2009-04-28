@@ -36,34 +36,6 @@ class Tac_problems_Widget extends widget_Core {
 		# HOSTS DOWN / problems
 		$problem = array();
 		$i = 0;
-				$current_status->hosts_down_unacknowledged =  4;
-		$current_status->hosts_down_scheduled = 2;
-		$current_status->hosts_down_acknowledged = 4;
-		$current_status->hosts_down_disabled = 1;
-		$current_status->hosts_unreachable_unacknowledged = 2;
-		$current_status->hosts_unreachable_scheduled = 1;
-		$current_status->hosts_unreachable_acknowledged = 1;
-		$current_status->hosts_unreachable_disabled = 1;
-		$current_status->hosts_up_disabled = 2;
-		$current_status->hosts_pending_disabled = 12;
-
-		$current_status->services_critical_unacknowledged = 1;
-		$current_status->services_warning_unacknowledged = 4;
-		$current_status->services_unknown_unacknowledged = 3;
-		$current_status->services_critical_host_problem = 1;
-		$current_status->services_warning_host_problem = 1;
-		$current_status->services_unknown_host_problem = 1;
-
-		$current_status->services_critical_scheduled = 1;
-		$current_status->services_critical_acknowledged = 1;
-		$current_status->services_critical_disabled = 1;
-		$current_status->services_warning_scheduled = 1;
-		$current_status->services_warning_acknowledged = 1;
-		$current_status->services_warning_disabled = 1;
-		$current_status->services_unknown_scheduled = 1;
-		$current_status->services_unknown_acknowledged = 1;
-		$current_status->services_unknown_disabled = 1;
-		$current_status->services_ok_disabled = 1;
 
 		if ($current_status->hosts_down_unacknowledged) {
 			$problem[$i]['type'] = $this->translate->_('Host');
