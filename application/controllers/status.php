@@ -321,9 +321,9 @@ class Status_Controller extends Authenticated_Controller {
 			$hosts_unreachable_acknowledged = 0;
 			$hosts_unreachable_disabled = 0;
 			$hosts_unreachable_unacknowledged = 0;
-			$host_problem = false;
 			$seen_hosts = array();
 			foreach ($hostlist as $host) {
+				$host_problem = true;
 				if (in_array($host->host_name, $seen_hosts))
 					continue;
 				switch ($host->current_state) {
