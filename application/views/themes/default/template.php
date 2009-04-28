@@ -7,6 +7,7 @@
 		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
 		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
 		<?php echo html::link('application/views/themes/default/images/favicon.ico','icon','image/ico') ?>
 		<?php
 			if (!empty($css_header)) {
@@ -16,6 +17,7 @@
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.form.js') ?>
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
+		<?php echo html::script('application/media/js/btn.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
