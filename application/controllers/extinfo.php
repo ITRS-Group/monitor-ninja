@@ -50,18 +50,25 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# is user authenticated to view details on current object?
 		$auth = new Nagios_auth_Model();
 		$is_authenticated = true;
-		if ($type == 'host') {
-			$auth_hosts = $auth->get_authorized_hosts();
-			if (!array_key_exists($host, $auth->hosts_r)) {
-				# user not allowed to view info on selected host
-				$is_authenticated = false;
-			}
-		} else {
-			$auth_services = $auth->get_authorized_services();
-			if (!array_key_exists($host.';'.$service, $auth->services_r)) {
-				# user not allowed to view info on selected service
-				$is_authenticated = false;
-			}
+		switch ($type) {
+			case 'host':
+				$auth_hosts = $auth->get_authorized_hosts();
+				if (!array_key_exists($host, $auth->hosts_r)) {
+					# user not allowed to view info on selected host
+					$is_authenticated = false;
+				}
+				break;
+			case 'service':
+				$auth_services = $auth->get_authorized_services();
+				if (!array_key_exists($host.';'.$service, $auth->services_r)) {
+					# user not allowed to view info on selected service
+					$is_authenticated = false;
+				}
+				break;
+			case 'servicegroup': case 'hostgroup':
+				echo "Not implemented";
+				die();
+				break;
 		}
 		if ($is_authenticated === false) {
 			url::redirect('extinfo/unauthorized/'.$type);
