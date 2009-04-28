@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <?php if (count($problem) > 0) { ?>
-<div class="widget movable collapsable removable closeconfirm w32 left" id="widget-tac_hosts">
+<div class="widget movable collapsable removable closeconfirm w32 left" id="widget-tac_acknowledged">
 	<div class="widget-header"><?php echo $this->translate->_('Acknowledged problems') ?></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->

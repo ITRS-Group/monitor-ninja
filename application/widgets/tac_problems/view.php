@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <?php if (count($problem) > 0) { ?>
-<div class="widget movable collapsable removable closeconfirm w66 left" id="widget-tac_hosts">
+<div class="widget movable collapsable removable closeconfirm w66 left" id="widget-tac_problems">
 	<div class="widget-header"><?php echo $this->translate->_('Unhandled problems') ?></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->

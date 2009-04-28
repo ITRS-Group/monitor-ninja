@@ -41,7 +41,7 @@ class Tac_disabled_Widget extends widget_Core {
 			$problem[$i]['type'] = $this->translate->_('Host');
 			$problem[$i]['status'] = $this->translate->_('Down');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_down_disabled.' '.$this->translate->_('acknowledged').' '.$this->translate->_('Hosts');
+			$problem[$i]['title'] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled hosts');
 			$i++;
 		}
 
@@ -49,7 +49,7 @@ class Tac_disabled_Widget extends widget_Core {
 			$problem[$i]['type'] = $this->translate->_('Host');
 			$problem[$i]['status'] = $this->translate->_('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('acknowledged').' '.$this->translate->_('Hosts');
+			$problem[$i]['title'] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled hosts');
 			$i++;
 		}
 
@@ -57,7 +57,7 @@ class Tac_disabled_Widget extends widget_Core {
 			$problem[$i]['type'] = $this->translate->_('Service');
 			$problem[$i]['status'] = $this->translate->_('Critical');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_CRITICAL.'/'.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_critical_disabled.' '.$this->translate->_('acknowledged').' '.$this->translate->_('Services');
+			$problem[$i]['title'] = $current_status->services_critical_disabled.' '.$this->translate->_('Disabled services');
 			$i++;
 		}
 
@@ -65,7 +65,7 @@ class Tac_disabled_Widget extends widget_Core {
 			$problem[$i]['type'] = $this->translate->_('Service');
 			$problem[$i]['status'] = $this->translate->_('Warning');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_warning_disabled.' '.$this->translate->_('acknowledged').' '.$this->translate->_('Services');
+			$problem[$i]['title'] = $current_status->services_warning_disabled.' '.$this->translate->_('Disabled services');
 			$i++;
 		}
 
@@ -73,7 +73,7 @@ class Tac_disabled_Widget extends widget_Core {
 			$problem[$i]['type'] = $this->translate->_('Service');
 			$problem[$i]['status'] = $this->translate->_('Unknown');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_UNKNOWN.'/'.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_unknown_disabled.' '.$this->translate->_('acknowledged').' '.$this->translate->_('Services');
+			$problem[$i]['title'] = $current_status->services_unknown_disabled.' '.$this->translate->_('Disabled services');
 			$i++;
 		}
 
