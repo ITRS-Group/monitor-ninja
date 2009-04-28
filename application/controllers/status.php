@@ -235,6 +235,155 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	*	Display servicegroup summary
+	*/
+	public function servicegroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+
+		$group = trim($group);
+		$this->template->content = $this->add_view('status/group_summary');
+		$content = $this->template->content;
+		$t = $this->translate;
+
+		if ($group == 'all') {
+			$content->lable_header = $t->_('Status Summary For All Service Groups');
+			$group_info_res = Servicegroup_Model::get_all();
+			foreach ($group_info_res as $group_res) {
+				$group_details[] = $this->show_servicegroup_totals_summary($group_res->servicegroup_name);
+			}
+		} else {
+			$content->lable_header = $t->_('Status Summary For Service Group ')."'".$group."'";
+			$group_details[] = $this->show_servicegroup_totals_summary($group);
+		}
+		$content->label_group_name = $t->_('Service Group');
+		$content->label_host_summary = $t->_('Host Status Summary');
+		$content->label_service_summary = $t->_('Service Status Summary');
+		$content->label_no_data = $t->_('No matching hosts');
+		$content->label_up = $t->_('UP');
+		$content->label_down = $t->_('DOWN');
+		$content->label_unhandled = $t->_('Unhandled');
+		$content->label_scheduled = $t->_('Scheduled');
+		$content->label_acknowledged = $t->_('Acknowledged');
+		$content->label_disabled = $t->_('Disabled');
+		$content->label_unreachable = $t->_('UNREACHABLE');
+		$content->label_pending = $t->_('PENDING');
+
+		$content->group_details = $group_details;
+		#echo Kohana::debug($group_details);
+	}
+
+	/**
+	*	shows host total summary information for a specific servicegroup
+	*
+	* 	@return obj
+	*/
+	public function show_servicegroup_totals_summary($group=false)
+	{
+		$group = $this->input->get('group', $group);
+		$content = false;
+		#$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+
+		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+		$hostlist = $this->current->get_servicegroup_hoststatus($group);
+		$content->group_alias = $group_info_res->alias;
+		$content->groupname = $group;
+		if ($hostlist->count() > 0) {
+			$service_states = false;
+			$hostinfo = false;
+			$hosts_up = 0;
+			$hosts_down = 0;
+			$hosts_unreachable = 0;
+			$hosts_pending = 0;
+			$hosts_down_scheduled = 0;
+			$hosts_down_acknowledged = 0;
+			$hosts_down_disabled = 0;
+			$hosts_down_unacknowledged = 0;
+			$hosts_unreachable_scheduled = 0;
+			$hosts_unreachable_acknowledged = 0;
+			$hosts_unreachable_disabled = 0;
+			$hosts_unreachable_unacknowledged = 0;
+			$host_problem = false;
+			$seen_hosts = array();
+			foreach ($hostlist as $host) {
+				if (in_array($host->host_name, $seen_hosts))
+					continue;
+				switch ($host->current_state) {
+					case Current_status_Model::HOST_UP:
+						$hosts_up++;
+						break;
+					case Current_status_Model::HOST_DOWN:
+						if ($host->scheduled_downtime_depth) {
+							$hosts_down_scheduled++;
+							$host_problem = false;
+						}
+						if ($host->problem_has_been_acknowledged) {
+							$hosts_down_acknowledged++;
+							$host_problem = false;
+						}
+						if ($host->active_checks_enabled) {
+							$hosts_down_disabled++;
+							$host_problem = false;
+						}
+						if ($host_problem) {
+							$hosts_down_unacknowledged++;
+						}
+						$hosts_down++;
+						break;
+					case Current_status_Model::HOST_UNREACHABLE:
+						if ($host->scheduled_downtime_depth) {
+							$hosts_unreachable_scheduled++;
+							$host_problem = false;
+						}
+						if ($host->problem_has_been_acknowledged) {
+							$hosts_unreachable_acknowledged++;
+							$host_problem = false;
+						}
+						if ($host->active_checks_enabled) {
+							$hosts_unreachable_disabled++;
+							$host_problem = false;
+						}
+						if ($host_problem) {
+							$hosts_unreachable_unacknowledged++;
+						}
+						$hosts_unreachable++;
+						break;
+					default:
+						$hosts_pending++;
+				}
+				$seen_hosts[] = $host->host_name;
+				echo $host->service_state." - ".$host->state_count."<br />";
+			}
+
+			$content->hosts_up = $hosts_up;
+			$content->groupname = $group;
+			$content->hosts_down = $hosts_down;
+			$content->hosts_down_unacknowledged = $hosts_down_unacknowledged;
+			$content->hosts_down_scheduled = $hosts_down_scheduled;
+			$content->hosts_down_acknowledged = $hosts_down_acknowledged;
+			$content->hosts_down_disabled = $hosts_down_disabled;
+			$content->hosts_unreachable = $hosts_unreachable;
+			$content->hosts_unreachable_unacknowledged = $hosts_unreachable_unacknowledged;
+			$content->hosts_unreachable_scheduled = $hosts_unreachable_scheduled;
+			$content->hosts_unreachable_acknowledged = $hosts_unreachable_acknowledged;
+			$content->hosts_unreachable_disabled = $hosts_unreachable_disabled;
+			$content->hosts_pending = $hosts_pending;
+
+			$service_data = $this->current->get_servicegroup_service_totals_summary($group);
+			foreach ($service_data as $row) {
+				$service_states[$row->current_state] = $row->cnt;
+			}
+			$content->service_states = $service_states;
+		} else {
+			# nothing found
+		}
+die();
+		return $content;
+	}
+
+	/**
 	*	@name	show_servicegroup
 	*	@desc	Fetch info on single servicegroup and assign to
 	* 			returned content object for later use in template
