@@ -700,7 +700,8 @@ class Current_status_Model extends Model
 			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
 		}
 		$service_filter = false;
-		if ($servicestatus!==false) {
+		$servicestatus = trim($servicestatus);
+		if ($servicestatus!==false && !empty($servicestatus)) {
 			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
 		}
 
@@ -842,7 +843,7 @@ class Current_status_Model extends Model
 			$h = $show_services ? 'h.' : '';
 			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
 		}
-		if ($service_filter!==false) {
+		if ($service_filter!==false && !empty($service_filter)) {
 			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
 		}
 		if (!$show_services) {
