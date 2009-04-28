@@ -21,69 +21,79 @@
 				<th><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
-				<td style="padding:0px;">
+				<td style="padding:0px;" class="white">
 					<table>
-						<tr>
 							<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/32x32/shield_critical.png',$this->translate->_('Critical')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-critical.png',$this->translate->_('Critical')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+							</tr>
 							<?php } } else { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
 								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</table>
 				</td>
-				<td style="padding:0px;">
+				<td style="padding:0px;" class="white">
 					<table>
-						<tr>
 							<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/32x32/shield_warning.png',$this->translate->_('Warning')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-warning.png',$this->translate->_('Warning')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+							</tr>
 							<?php } } else { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-warning.png',$this->translate->_('Critical')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-warning.png',$this->translate->_('Critical')) ?></td>
 								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</table>
 				</td>
-				<td style="padding:0px;">
+				<td style="padding:0px;" class="white">
 					<table>
-						<tr>
 							<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield_unknown.png',$this->translate->_('Unknown')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-unknown.png',$this->translate->_('Unknown')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+							</tr>
 							<?php } } else { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-unknown.png',$this->translate->_('Critical')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-unknown.png',$this->translate->_('Critical')) ?></td>
 								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</table>
 				</td>
-				<td style="padding:0px;">
+				<td style="padding:0px;" class="white">
 					<table>
-						<tr>
 							<?php	if ($current_status->services_ok > 0) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-ok.png',$this->translate->_('OK')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-ok.png',$this->translate->_('OK')) ?></td>
 								<td><?php echo html::anchor('status/service/all/0/', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
+							</tr>
 							<?php }	if (count($services_ok_disabled) > 0) { foreach ($services_ok_disabled as $url => $title) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+							</tr>
 							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { echo '<td>'.$this->translate->_('N/A').'</td>'; } ?>
-						</tr>
 					</table>
 				</td>
-				<td style="padding:0px;">
+				<td style="padding:0px;" class="white">
 					<table>
-						<tr>
 							<?php	if (count($services_pending_disabled) > 0) {	foreach ($services_pending_disabled as $url => $title) { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield_pending.png',$this->translate->_('Pending')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-pending.png',$this->translate->_('Pending')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+							</tr>
 							<?php } } else { ?>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-pending.png',$this->translate->_('Critical')) ?></td>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-pending.png',$this->translate->_('Not pending')) ?></td>
 								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
 							<?php } ?>
-						</tr>
 					</table>
 				</td>
 			</tr>
