@@ -713,10 +713,7 @@ class Current_status_Model extends Model
 			SELECT
 				h.*,
 				s.current_state AS service_state,
-				COUNT(s.current_state) AS state_count,
-				SUM(s.problem_has_been_acknowledged) AS service_ack_cnt,
-				SUM(s.scheduled_downtime_depth) AS service_dt_depth_cnt,
-				SUM(s.active_checks_enabled) AS service_checks_enabled_cnt
+				COUNT(s.current_state) AS state_count
 			FROM
 				service s,
 				host h,
