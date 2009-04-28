@@ -29,7 +29,7 @@
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							<?php } } else { ?>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
-								<td>N/A</td>
+								<td><?php echo $this->translate->_('N/A') ?></td>
 							<?php } ?>
 						</tr>
 					</table>
@@ -42,7 +42,7 @@
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							<?php } } else { ?>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-unreachable.png',$this->translate->_('Critical')) ?></td>
-								<td>N/A</td>
+								<td><?php echo $this->translate->_('N/A') ?></td>
 							<?php } ?>
 						</tr>
 					</table>
@@ -56,7 +56,7 @@
 							<?php } if (count($hosts_up_disabled) > 0) { foreach ($hosts_up_disabled as $url => $title) { ?>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
-							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { echo '<td>N/A</td>'; } ?>
+							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { echo '<td>'.$this->translate->_('N/A').'</td>'; } ?>
 						</tr>
 					</table>
 				</td>
@@ -68,7 +68,7 @@
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							<?php } } else { ?>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-not-pending.png',$this->translate->_('Critical')) ?></td>
-								<td>N/A</td>
+								<td><?php echo $this->translate->_('N/A') ?></td>
 							<?php } ?>
 						</tr>
 					</table>
