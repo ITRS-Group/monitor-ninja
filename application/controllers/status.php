@@ -202,6 +202,7 @@ class Status_Controller extends Authenticated_Controller {
 				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type=servicegroup');
 				break;
 		}
+		$group_details = false;
 		if ($group == 'all') {
 			$group_info_res = Servicegroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
