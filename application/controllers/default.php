@@ -33,11 +33,11 @@ class Default_Controller extends Ninja_Controller  {
 	{
 		$this->template->content = $this->add_view('login');
 		$this->template->content->error_msg = $this->session->get('error_msg', false);
-		$this->template->content->form_title =$this->translate->_('Login form');
+		$this->template->content->form_title =$this->translate->_('Login');
 		$this->template->content->username =$this->translate->_('Username');
 		$this->template->content->password =$this->translate->_('Password');
-		$this->template->content->login_btn_txt =$this->translate->_('Login!');
-		$this->template->title = $this->translate->_('NINJA::login');
+		$this->template->content->login_btn_txt =$this->translate->_('Login');
+		$this->template->title = $this->translate->_('Ninja > Login');
 
 	}
 
