@@ -1,10 +1,11 @@
 html, body {
 	height: 100%;
-}
-
-* {
 	color: #414141;
 }
+
+/* {
+	color: #414141;
+}*/
 
 body {
 	margin: 0px;
@@ -24,6 +25,15 @@ img {
 
 em {
 
+}
+
+h3 {
+	margin: 0px;
+}
+
+
+a {
+	color: #414141;
 }
 
 /* content ****************************************************************************************/
@@ -362,3 +372,13 @@ div.right {
 .w32 { width: 32%; }
 .w18 { width: 18%; }
 .w19 { width: 19%; }
+
+#login-table tr td {
+	background: #ffffff;
+	padding: 5px;
+}
+
+#login-table {
+	width: auto;
+	margin-left: 10px;
+}

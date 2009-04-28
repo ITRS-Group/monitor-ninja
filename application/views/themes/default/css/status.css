@@ -82,41 +82,40 @@ tr.even td.status {
 
 th.no-sort,
 th.header {
-	background: #414140 url(../images/icons/arrows/sort-none.png) no-repeat center right;
+	background: #f5f5ef url(../images/icons/arrows/sort-none.png) no-repeat center right;
 	cursor: pointer;
 	font-weight: bold;
-	color: #ffffff;
+	border-bottom: 1px solid #dcdccd;
+	border-right: 1px solid #dcdccd;
 	text-transform: capitalize;
 }
 
 th.no-sort {
 	background:#f5f5ef;
 	background:#414140;
+	background: #ffffff;
+	background: #f5f5ef;
 	cursor: arrow;
 }
 
 th.header:first-child {
-	background: #999990 url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
+	/* #999990 */
+	background: #dcdccd url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
 	cursor: pointer;
-	color: #ffffff;
 }
 
 th.headerSortDown {
-	background: #999990 url(../images/icons/arrows/sort-down.png) center right no-repeat;
-	color: #ffffff;
+	background: #dcdccd url(../images/icons/arrows/sort-down.png) center right no-repeat;
 }
 
 th.headerSortDown:first-child {
-	background: #999990 url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
-	color: #ffffff;
+	background: #dcdccd url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
 }
 
 th.headerSortUp {
-	background: #999990 url(../images/icons/arrows/sort-up.png) center right no-repeat;
-	color: #ffffff;
+	background: #dcdccd url(../images/icons/arrows/sort-up.png) center right no-repeat;
 }
 
 th.headerSortUp:first-child {
-	background: #999990 url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
-	color: #ffffff;
+	background: #dcdccd url(../images/icons/arrows/sort-up.png) 11px center no-repeat;
 }
