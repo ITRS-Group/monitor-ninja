@@ -354,7 +354,6 @@ class Status_Controller extends Authenticated_Controller {
 						$hosts_pending++;
 				}
 				$seen_hosts[] = $host->host_name;
-				echo $host->service_state." - ".$host->state_count."<br />";
 			}
 
 			$content->hosts_up = $hosts_up;
@@ -379,7 +378,6 @@ class Status_Controller extends Authenticated_Controller {
 		} else {
 			# nothing found
 		}
-die();
 		return $content;
 	}
 
