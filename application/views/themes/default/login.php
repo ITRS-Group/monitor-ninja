@@ -20,7 +20,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 	<td>
 		<?php
 			echo csrf::form_field();
-			echo form::submit('login', $login_btn_txt, 'class="btn"');
+			echo form::submit('login', $login_btn_txt, 'class="bn"');
 		?>
 	</td>
 	</tr>
