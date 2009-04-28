@@ -25,7 +25,12 @@
 					<table>
 							<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-critical.png',$this->translate->_('Critical')) ?></td>
+								<td class="dark">
+									<?php
+										$icon = explode(' ',$title);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-critical' : strtolower($icon[1])).'.png',$icon[1]);
+									?>
+								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
@@ -40,7 +45,12 @@
 					<table>
 							<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-warning.png',$this->translate->_('Warning')) ?></td>
+								<td class="dark">
+									<?php
+										$icon = explode(' ',$title);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-warning' : strtolower($icon[1])).'.png',$icon[1]);
+									?>
+								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
@@ -55,7 +65,12 @@
 					<table>
 							<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-unknown.png',$this->translate->_('Unknown')) ?></td>
+								<td class="dark">
+									<?php
+										$icon = explode(' ',$title);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-unknown' : strtolower($icon[1])).'.png',$icon[1]);
+									?>
+								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>

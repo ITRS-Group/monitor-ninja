@@ -83,7 +83,7 @@ class Tac_services_Widget extends widget_Core {
 		}
 
 		if ($current_status->services_warning_scheduled) {
-			$services_critical['status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.nagstat::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_warning_scheduled.' '.$this->translate->_('Scheduled');
+			$services_warning['status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.nagstat::SERVICE_SCHEDULED_DOWNTIME] = $current_status->services_warning_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->services_warning_acknowledged) {
