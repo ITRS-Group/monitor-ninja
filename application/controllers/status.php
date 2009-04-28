@@ -253,11 +253,11 @@ class Status_Controller extends Authenticated_Controller {
 			$content->lable_header = $t->_('Status Summary For All Service Groups');
 			$group_info_res = Servicegroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
-				$group_details[] = $this->show_servicegroup_totals_summary($group_res->servicegroup_name);
+				$group_details[] = $this->_show_servicegroup_totals_summary($group_res->servicegroup_name);
 			}
 		} else {
 			$content->lable_header = $t->_('Status Summary For Service Group ')."'".$group."'";
-			$group_details[] = $this->show_servicegroup_totals_summary($group);
+			$group_details[] = $this->_show_servicegroup_totals_summary($group);
 		}
 		$content->label_group_name = $t->_('Service Group');
 		$content->label_host_summary = $t->_('Host Status Summary');
@@ -281,7 +281,7 @@ class Status_Controller extends Authenticated_Controller {
 	*
 	* 	@return obj
 	*/
-	public function show_servicegroup_totals_summary($group=false)
+	public function _show_servicegroup_totals_summary($group=false)
 	{
 		$group = $this->input->get('group', $group);
 		$content = false;
