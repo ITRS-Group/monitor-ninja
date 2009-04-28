@@ -6,6 +6,13 @@
 	</div>
 	<div class="widget-content">
 		<table>
+			<colgroup>
+				<col style="width: 20%" />
+				<col style="width: 20%" />
+				<col style="width: 20%" />
+				<col style="width: 20%" />
+				<col style="width: 20%" />
+			</colgroup>
 			<tr>
 				<th><?php echo $flap_detect_header_label ?></th>
 				<th><?php echo $notifications_header_label ?></th>
