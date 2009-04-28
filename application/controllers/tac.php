@@ -34,9 +34,12 @@ class Tac_Controller extends Authenticated_Controller {
 		# data for widgets
 		$this->model->analyze_status_data();
 
-		widget::add('netw_health', array('index', $this->model), $this);
-		widget::add('netw_outages', array('index'), $this);
 		widget::add('tac_problems', array('index', $this->model), $this);
+		widget::add('netw_health', array('index', $this->model), $this);
+		widget::add('tac_scheduled', array('index', $this->model), $this);
+		widget::add('tac_acknowledged', array('index', $this->model), $this);
+		widget::add('tac_disabled', array('index', $this->model), $this);
+		//widget::add('netw_outages', array('index'), $this);
 		widget::add('tac_hosts', array('index', $this->model), $this);
 		widget::add('tac_services', array('index', $this->model), $this);
 		widget::add('tac_monfeat', array('index', $this->model), $this);
