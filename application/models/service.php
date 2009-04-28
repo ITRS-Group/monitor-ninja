@@ -51,4 +51,78 @@ class Service_Model extends Model
 		}
 		return $service_info !== false ? $service_info->current() : false;
 	}
+
+	/**
+	*	Fetch services that belongs to a specific service- or hostgroup
+	*/
+	public function get_services_for_group($group=false, $type='servicegroup')
+	{
+		$type = trim($type);
+		if (empty($group) || empty($type)) {
+			return false;
+		}
+		$auth_services = $this->auth->get_authorized_services();
+		$service_str = implode(', ', array_keys($auth_services));
+		switch ($type) {
+			case 'servicegroup':
+				$sql = "SELECT
+					s.*
+				FROM
+					service s,
+					servicegroup sg,
+					service_servicegroup ssg
+				WHERE
+					sg.servicegroup_name=".$this->db->escape($group)." AND
+					ssg.servicegroup = sg.id AND
+					s.id=ssg.service AND
+					s.id IN(".$service_str.")
+				ORDER BY
+					s.service_description";
+				case 'hostgroup':
+				break;
+		}
+		if (!empty($sql)) {
+			$result = $this->db->query($sql);
+			return $result;
+		}
+		return false;
+	}
+
+	/**
+	*	Fetch services that belongs to a specific service- or hostgroup
+	*/
+	public function get_hosts_for_group($group=false, $type='servicegroup')
+	{
+		$type = trim($type);
+		if (empty($group) || empty($type)) {
+			return false;
+		}
+		$auth_hosts = $this->auth->get_authorized_hosts();
+		$host_str = implode(', ', array_keys($auth_hosts));
+		switch ($type) {
+			case 'servicegroup':
+				$sql = "SELECT
+					DISTINCT h.*
+				FROM
+					service s,
+					host h,
+					servicegroup sg,
+					service_servicegroup ssg
+				WHERE
+					sg.servicegroup_name=".$this->db->escape($group)." AND
+					ssg.servicegroup = sg.id AND
+					s.id=ssg.service AND
+					h.id)s.host_name AND
+					h.id IN(".$host_str.")
+				ORDER BY
+					h.host_name";
+				case 'hostgroup':
+				break;
+		}
+		if (!empty($sql)) {
+			$result = $this->db->query($sql);
+			return $result;
+		}
+		return false;
+	}
 }
