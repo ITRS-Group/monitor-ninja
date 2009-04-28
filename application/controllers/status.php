@@ -259,6 +259,15 @@ class Status_Controller extends Authenticated_Controller {
 			$content->lable_header = $t->_('Status Summary For Service Group ')."'".$group."'";
 			$group_details[] = $this->_show_servicegroup_totals_summary($group);
 		}
+
+		# since we don't use these values yet we define a default value
+		$hostproperties = false;
+		$serviceproperties = false;
+
+		$content->hoststatustypes = $hoststatustypes;
+		$content->hostproperties = $hostproperties;
+		$content->servicestatustypes = $servicestatustypes;
+		$content->serviceproperties = $serviceproperties;
 		$content->label_group_name = $t->_('Service Group');
 		$content->label_host_summary = $t->_('Host Status Summary');
 		$content->label_service_summary = $t->_('Service Status Summary');
@@ -271,6 +280,12 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_disabled = $t->_('Disabled');
 		$content->label_unreachable = $t->_('UNREACHABLE');
 		$content->label_pending = $t->_('PENDING');
+		$content->label_ok = $t->_('OK');
+		$content->label_warning = $t->_('WARNING');
+		$content->label_on_problem_hosts = $t->_('on Problem Hosts');
+		$content->label_unknown = $t->_('UNKNOWN');
+		$content->label_critical = $t->_('CRITICAL');
+		$content->label_no_servicedata = $t->_('No matching services');
 
 		$content->group_details = $group_details;
 		#echo Kohana::debug($group_details);
