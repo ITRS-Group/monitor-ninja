@@ -386,15 +386,155 @@ class Status_Controller extends Authenticated_Controller {
 			$content->hosts_unreachable_disabled = $hosts_unreachable_disabled;
 			$content->hosts_pending = $hosts_pending;
 
-			$service_data = $this->current->get_servicegroup_service_totals_summary($group);
-			foreach ($service_data as $row) {
-				$service_states[$row->current_state] = $row->cnt;
-			}
-			$content->service_states = $service_states;
+			# fetch servicedata
+			$content->service_data = $this->_show_servicegroup_service_summary($seen_hosts, $group);
 		} else {
 			# nothing found
 		}
 		return $content;
+	}
+
+	/**
+	*
+	*
+	*/
+	public function _show_servicegroup_service_summary($hostlist=false, $group=false)
+	{
+		$hostlist = $this->input->get('hostlist', $hostlist);
+		$group = $this->input->get('group', $group);
+		if (empty($hostlist)) {
+			return false;
+		}
+		$service_info = false;
+		$result = $this->current->host_status_subgroup_names($hostlist, true);
+		$service_model = new Service_Model();
+		$service_data = $service_model->get_services_for_group($group);
+		$service_list = false;
+		if ($service_data) {
+			foreach ($service_data as $row) {
+				$service_list[] = $row->id;
+			}
+		}
+		$services_ok = 0;
+		$services_warning_host_problem = 0;
+		$services_warning_scheduled = 0;
+		$services_warning_acknowledged = 0;
+		$services_warning_disabled = 0;
+		$services_warning_unacknowledged = 0;
+		$services_warning = 0;
+		$services_unknown_host_problem = 0;
+		$services_unknown_scheduled = 0;
+		$services_unknown_acknowledged = 0;
+		$services_unknown_disabled = 0;
+		$services_unknown_unacknowledged = 0;
+		$services_unknown = 0;
+		$services_critical_host_problem = 0;
+		$services_critical_scheduled = 0;
+		$services_critical_acknowledged = 0;
+		$services_critical_disabled = 0;
+		$services_critical_unacknowledged = 0;
+		$services_critical = 0;
+		$services_pending = 0;
+
+		foreach ($result as $row) {
+			if (!in_array($row->service_id, $service_list))
+				continue;
+			$problem = true;
+			switch ($row->current_state) {
+				case Current_status_Model::SERVICE_OK:
+					$services_ok++;
+					break;
+				case Current_status_Model::SERVICE_WARNING:
+					if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
+						$services_warning_host_problem++;
+						$problem = false;
+					}
+					if ($row->scheduled_downtime_depth > 0) {
+						$services_warning_scheduled++;
+						$problem = false;
+					}
+					if ($row->problem_has_been_acknowledged) {
+						$services_warning_acknowledged++;
+						$problem = false;
+					}
+					if (!$row->active_checks_enabled) {
+						$services_warning_disabled++;
+						$problem = false;
+					}
+					if ($problem == true)
+						$services_warning_unacknowledged++;
+					$services_warning++;
+					break;
+				case Current_status_Model::SERVICE_UNKNOWN:
+					if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
+						$services_unknown_host_problem++;
+						$problem = false;
+					}
+					if ($row->scheduled_downtime_depth > 0) {
+						$services_unknown_scheduled++;
+						$problem = false;
+					}
+					if ($row->problem_has_been_acknowledged) {
+						$services_unknown_acknowledged++;
+						$problem = false;
+					}
+					if (!$row->checks_enabled){
+						$services_unknown_disabled++;
+						$problem = false;
+					}
+					if ($problem == true)
+						$services_unknown_unacknowledged++;
+					$services_unknown++;
+					break;
+				case Current_status_Model::SERVICE_CRITICAL:
+					if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
+						$services_critical_host_problem++;
+						$problem = false;
+					}
+					if ($row->scheduled_downtime_depth > 0) {
+						$services_critical_scheduled++;
+						$problem = false;
+					}
+					if ($row->problem_has_been_acknowledged) {
+						$services_critical_acknowledged++;
+						$problem = false;
+					}
+					if (!$row->active_checks_enabled) {
+						$services_critical_disabled++;
+						$problem = false;
+					}
+					if ($problem == true)
+						$services_critical_unacknowledged++;
+					$services_critical++;
+					break;
+				case Current_status_Model::SERVICE_PENDING:
+					$services_pending++;
+					break;
+				} # end switch
+			} # end foreach
+
+		$service_info->services_ok = $services_ok;
+		$service_info->services_warning_host_problem = $services_warning_host_problem;
+		$service_info->services_warning_scheduled = $services_warning_scheduled ;
+		$service_info->services_warning_acknowledged = $services_warning_acknowledged;
+		$service_info->services_warning_disabled = $services_warning_disabled;
+		$service_info->services_warning_unacknowledged = $services_warning_unacknowledged;
+		$service_info->services_warning = $services_warning;
+		$service_info->services_unknown_host_problem = $services_unknown_host_problem;
+		$service_info->services_unknown_scheduled = $services_unknown_scheduled;
+		$service_info->services_unknown_acknowledged = $services_unknown_acknowledged;
+		$service_info->services_unknown_disabled = $services_unknown_disabled;
+		$service_info->services_unknown_unacknowledged = $services_unknown_unacknowledged;
+		$service_info->services_unknown = $services_unknown;
+		$service_info->services_critical_host_problem = $services_critical_host_problem;
+		$service_info->services_critical_scheduled = $services_critical_scheduled;
+		$service_info->services_critical_acknowledged = $services_critical_acknowledged;
+		$service_info->services_critical_disabled = $services_critical_disabled;
+		$service_info->services_critical_unacknowledged = $services_critical_unacknowledged;
+		$service_info->services_critical = $services_critical;
+		$service_info->services_pending = $services_pending;
+
+		return $service_info;
 	}
 
 	/**
