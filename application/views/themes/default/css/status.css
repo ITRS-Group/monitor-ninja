@@ -23,6 +23,7 @@ td.icon a {
 	border: 0px;
 }
 
+th.white,
 tr.even td.white,
 tr.odd td.white {
 	background: #ffffff;
