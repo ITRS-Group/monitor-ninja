@@ -82,37 +82,14 @@
 		<div id="menu">
 			<div id="close-menu" title="Hide menu" onclick="collapse_menu()"></div>
 			<ul>
-				<li class="header"><?php echo $this->translate->_('Monitoring') ?></li>
-				<li class="selected"><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/tac">Tactical Overview</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/status/host">Host Detail</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="/ninja/index.php/status/service">Service Detail</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Summary</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Overview</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hostgroup Grid</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Servicegroup Summary</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Servicegroup Overview</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Servicegroup Grid</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Status Map</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Network Map</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Hyper Map</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Network Outages</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Host Problems</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Service Problems</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Unhandled problems</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Comments</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Schedule Downtime</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Process Info</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Performance Info</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Scheduling Queue</a></li>
-				<li class="header"><?php echo $this->translate->_('Reporting') ?></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Trends</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Availability</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">SLA Reporting</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Schedule Reports</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Alert History</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Alert Summary</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Notifications</a></li>
-				<li><?php echo html::image('application/views/themes/default/images/star.png','tmp') ?> <a href="#">Event Log</a></li>
+			<?php
+				foreach ($links as $header => $link):
+						echo '<li class="header">'.html::specialchars($header).'</li>';
+						foreach ($link as $title => $url):
+							echo '<li>'.html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' '.html::anchor($url, html::specialchars($title)).'</li>';
+						endforeach;
+					endforeach;
+				?>
 			</ul>
 		</div>
 

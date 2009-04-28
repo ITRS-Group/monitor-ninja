@@ -24,17 +24,9 @@ class Default_Controller extends Ninja_Controller  {
 		if ($this->is_locked_out()) {
 			url::redirect('default/locked_out');
 		}
-		$this->template->menu = $this->add_view('menu');
+		//$this->template-> = $this->add_view('menu');
 		$this->template->title = $this->translate->_('Ninja');
 
-		$this->template->menu->links = array(
-			$this->translate->_('Monitoring') => array(
-				$this->translate->_('Tactical overview') 	=> 'tac/index',
-				$this->translate->_('Host detail') 	=> 'status/host',
-				$this->translate->_('Host service') 	=> 'status/service',
-			),
-			$this->translate->_('Reporting') => array()
-		);
 	}
 
 	public function show_login()

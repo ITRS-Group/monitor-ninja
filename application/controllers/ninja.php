@@ -55,6 +55,17 @@ class Ninja_Controller extends Template_Controller {
 			# use default language set above
 			$this->translate = zend::translate('gettext', $this->defaultlanguage, $this->defaultlanguage);
 		}
+
+
+		$this->template->links = array(
+			$this->translate->_('Monitoring') => array(
+				$this->translate->_('Tactical overview') 	=> 'tac/index',
+				$this->translate->_('Host detail') 	=> 'status/host',
+				$this->translate->_('Host service') 	=> 'status/service',
+			),
+			$this->translate->_('Reporting') => array()
+		);
+
 		$this->registry->set('Zend_Translate', $this->translate);
 	}
 
