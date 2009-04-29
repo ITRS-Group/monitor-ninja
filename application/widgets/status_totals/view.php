@@ -22,7 +22,7 @@
 				</td>
 				<td style="padding-right: 10px"><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), html::specialchars($total_problems.' '.$label_all_host_problems)) ?></td>
 				<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-info.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
-				<td style="padding-right: 10px"><?php echo html::anchor('status/host/'.$host, html::specialchars($total_hosts.' Hosts in total')) ?></td>
+				<td style="padding-right: 10px"><?php echo html::anchor('status/'.$target_method.'/'.$host, html::specialchars($total_hosts.' Hosts in total')) ?></td>
 			</tr>
 		</table>
 	</div>
@@ -48,9 +48,9 @@
 							<td style="padding-right: 10px"><?php echo html::anchor($row['url'], html::specialchars($row['lable'].' '.$this->translate->_($row['status']))) ?></td>
 					<?php } ?>
 					<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-not-warning.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
-					<td style="padding-right: 10px"><?php echo html::anchor('status/service/'.$host.'/'.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'/'.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL), html::specialchars($svc_total_problems.' '.$label_all_service_problems)) ?></td>
+					<td style="padding-right: 10px"><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL).'&group_type='.$grouptype, html::specialchars($svc_total_problems.' '.$label_all_service_problems)) ?></td>
 					<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-info.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
-					<td style="padding-right: 10px"><?php echo html::anchor('status/service/'.$host.'/', html::specialchars($svc_total_services.' Services in total')) ?></td>
+					<td style="padding-right: 10px"><?php echo html::anchor('status/'.$svc_target_method.'/'.$host.'/', html::specialchars($svc_total_services.' Services in total')) ?></td>
 				</tr>
 			</table>
 		</div>
