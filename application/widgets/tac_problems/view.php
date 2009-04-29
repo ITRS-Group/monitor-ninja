@@ -10,7 +10,7 @@
 		<table>
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
-					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/32x32/shield-'.strtolower($problem[$i]['status']).'.png', array('alt' => $problem[$i]['status'],'style' => 'height:24px')) ?></td>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/24x24/shield-'.strtolower($problem[$i]['status']).'.png', array('alt' => $problem[$i]['status'])) ?></td>
 					<td>
 						<strong><?php echo strtoupper($problem[$i]['type']).' '.strtoupper($problem[$i]['status']) ?></strong><br />
 						<?php
