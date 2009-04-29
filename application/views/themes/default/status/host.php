@@ -100,23 +100,23 @@ if (!empty($widgets)) {
 		<td class="icon">
 			<?php if (!empty($row->notes_url)) { ?>
 				<a href="<?php echo $row->notes_url ?>" style="border: 0px">
-					<img src="/monitor/images/notes.gif" alt="<?php echo $this->translate->_('View extra host notes') ?>" title="<?php echo $this->translate->_('View extra host notes') ?>" />
+					<?php echo html::image('application/views/themes/default/images/icons/16x16/notes.png', $this->translate->_('View extra host notes')) ?>
 				</a>
 			<?php	} ?>
 		</td>
 		<td class="icon">
 		<?php if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
-				<img src="/monitor/images/action.gif" title="<?php echo $this->translate->_('Perform extra host actions') ?>" alt="<?php echo $this->translate->_('Perform extra host actions') ?>" />
+				<?php echo html::image('/application/views/themes/default/images/icons/16x16/action.png', $this->translate->_('Perform extra host actions')) ?>
 			</a>
 		<?php	} ?>
 		</td>
 		<td class="icon">
-			<?php echo html::anchor('status/service/'.$row->host_name,'<img src="/monitor/images/status2.gif" alt="View service details for this host" title="View service details for this host" />') ?>
+			<?php echo html::anchor('status/service/'.$row->host_name,html::image('/application/views/themes/default/images/icons/16x16/status.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
 		</td>
 		<td class="icon">
 			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>" style="border: 0px">
-				<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this host') ?>" title="<?php echo $this->translate->_('Configure this host') ?>" />
+				<?php echo html::image('/application/views/themes/default/images/icons/16x16/webconfig.png',$this->translate->_('Configure this host') )?>
 			</a>
 		</td>
 
