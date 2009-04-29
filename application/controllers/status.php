@@ -251,10 +251,13 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
 		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, 'servicegroup'), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+
+		$group_details = false;
 		if ($group == 'all') {
 			$content->lable_header = $t->_('Status Summary For All Service Groups');
 			$group_info_res = Servicegroup_Model::get_all();
@@ -262,6 +265,16 @@ class Status_Controller extends Authenticated_Controller {
 				$group_details[] = $this->_show_servicegroup_totals_summary($group_res->servicegroup_name);
 			}
 		} else {
+			# make sure we have the correct servicegroup
+			$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+			if ($group_info_res) {
+				$group = $group_info_res->servicegroup_name;
+			} else {
+				# overwrite previous view with the error view, add some text and bail out
+				$this->template->content = $this->add_view('error');
+				$this->template->content->error_message = sprintf($t->_("The requested servicegroup ('%s') wasn't found"), $group);
+				return;
+			}
 			$content->lable_header = $t->_('Status Summary For Service Group ')."'".$group."'";
 			$group_details[] = $this->_show_servicegroup_totals_summary($group);
 		}
@@ -309,6 +322,9 @@ class Status_Controller extends Authenticated_Controller {
 		#$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
 		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+		if ($group_info_res === false) {
+			return;
+		}
 		$hostlist = $this->current->get_servicegroup_hoststatus($group);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
