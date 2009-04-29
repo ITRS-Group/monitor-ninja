@@ -38,6 +38,8 @@ class Default_Controller extends Ninja_Controller  {
 		$this->template->content->password =$this->translate->_('Password');
 		$this->template->content->login_btn_txt =$this->translate->_('Login');
 		$this->template->title = $this->translate->_('Ninja > Login');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->js_header->js = array($this->add_path('/js/login.js'));
 
 	}
 
