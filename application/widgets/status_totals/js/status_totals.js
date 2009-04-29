@@ -18,7 +18,7 @@ function status_update()
 	*	on '/' and then finally joining it with '|' for the receiving script
 	*	to handle.
 	*/
-	var pathname = $(".icon a").attr('pathname');
+	var pathname = $("#widget-host_totals a:first").attr('pathname');
 
 	var replace_str = _site_domain + _index_page + '/status/';
 	var r = new RegExp(replace_str, 'g');
