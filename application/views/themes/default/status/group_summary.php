@@ -1,3 +1,12 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php
+if (!empty($widgets)) {
+	foreach ($widgets as $widget) {
+		echo $widget;
+	}
+}
+?>
+
 <div align=center class='statusTitle'><?php echo $lable_header ?></div>
 
 <div align=center>
