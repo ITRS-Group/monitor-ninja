@@ -249,6 +249,12 @@ class Status_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$t = $this->translate;
 
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, 'servicegroup'), $this);
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		if ($group == 'all') {
 			$content->lable_header = $t->_('Status Summary For All Service Groups');
 			$group_info_res = Servicegroup_Model::get_all();
