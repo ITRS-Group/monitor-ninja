@@ -95,7 +95,7 @@ th.no-sort {
 	background:#414140;
 	background: #ffffff;
 	background: #f5f5ef;
-	cursor: arrow;
+	cursor: default;
 }
 
 th.no-sort:first-child {
