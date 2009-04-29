@@ -28,7 +28,7 @@
 								<td class="dark">
 									<?php
 										$icon = explode(' ',$title);
-										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-critical' : strtolower($icon[1])).'.png',$icon[1]);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-critical' : strtolower($icon[1])).'.png',$icon[1]);
 									?>
 								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
@@ -48,7 +48,7 @@
 								<td class="dark">
 									<?php
 										$icon = explode(' ',$title);
-										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-warning' : strtolower($icon[1])).'.png',$icon[1]);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-warning' : strtolower($icon[1])).'.png',$icon[1]);
 									?>
 								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
@@ -68,7 +68,7 @@
 								<td class="dark">
 									<?php
 										$icon = explode(' ',$title);
-										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-unknown' : strtolower($icon[1])).'.png',$icon[1]);
+										echo html::image('/application/views/themes/default/images/icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-unknown' : strtolower($icon[1])).'.png',$icon[1]);
 									?>
 								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
