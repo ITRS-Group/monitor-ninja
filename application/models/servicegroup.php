@@ -20,7 +20,8 @@ class Servicegroup_Model extends ORM
 		if (empty($value) || empty($field)) {
 			return false;
 		}
-		return ORM::factory('servicegroup')->where($field, $value)->find();
+		$data = ORM::factory('servicegroup')->where($field, $value)->find();
+		return $data->loaded ? $data : false;
 	}
 
 	/**
