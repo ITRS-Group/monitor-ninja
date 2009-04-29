@@ -50,7 +50,7 @@
 					<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-not-warning.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
 					<td style="padding-right: 10px"><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL).'&group_type='.$grouptype, html::specialchars($svc_total_problems.' '.$label_all_service_problems)) ?></td>
 					<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-info.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
-					<td style="padding-right: 10px"><?php echo html::anchor('status/'.$svc_target_method.'/'.$host.'/', html::specialchars($svc_total_services.' Services in total')) ?></td>
+					<td style="padding-right: 10px"><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state.'&group_type='.$grouptype, html::specialchars($svc_total_services.' Services in total')) ?></td>
 				</tr>
 			</table>
 		</div>

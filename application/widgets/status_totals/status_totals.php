@@ -59,7 +59,6 @@ class Status_totals_Widget extends widget_Core {
 		$host_state = isset($arguments[1]) && !empty($arguments[1]) ? $arguments[1] : (nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING);
 		$service_state = isset($arguments[2]) ? $arguments[2] : false;
 		$target_method = $service_state === false ? 'host' : 'service';
-		$svc_target_method = 'service';
 
 		# Check if we are dealing with host or servicegroup
 		$grouptype = false;
@@ -68,7 +67,6 @@ class Status_totals_Widget extends widget_Core {
 			$groupname = $host; # groupname is passed at same position in arguments as host
 			$grouptype = trim($arguments[3]);
 			$target_method = $grouptype;
-			$svc_target_method = $grouptype;
 			$group_info = $current_status->get_servicegroup_hoststatus($groupname);
 		}
 
