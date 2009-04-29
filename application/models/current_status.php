@@ -681,12 +681,40 @@ class Current_status_Model extends Model
 	/**
 	 * find all hosts that have services that
 	 * are members of a specific servicegroup and that
-	 * are in the specified state.
+	 * are in the specified state. Shortcut to get_group_hoststatus('service'...)
 	 */
 	public function get_servicegroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
 	{
-		$servicegroup = trim($servicegroup);
-		if (empty($servicegroup)) {
+		$grouptype = 'service';
+		return $this->get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
+	}
+
+	/**
+	 * find all hosts that have services that
+	 * are members of a specific hostgroup and that
+	 * are in the specified state. Shortcut to get_group_hoststatus('host'...)
+	 */
+	public function get_hostgroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
+	{
+		$grouptype = 'host';
+		return $this->get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
+	}
+
+	/**
+	 * Finds all hosts that have services that are members of a specific host- or servicegroup
+	 * and that are in the specified state.
+	 * Called from get_servicegroup_hoststatus() and get_servicegroup_hoststatus()
+	 *
+	 * @param str $grouptype [host|service]
+	 * @param str $groupname
+	 * @param int $hoststatus
+	 * @param int $servicestatus
+	 * @return db result
+	 */
+	public function get_group_hoststatus($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false)
+	{
+		$groupname = trim($groupname);
+		if (empty($groupname)) {
 			return false;
 		}
 
@@ -707,7 +735,8 @@ class Current_status_Model extends Model
 
 		$hostlist_str = implode(',', $hostlist);
 
-		$servicegroup_all_sql = $servicegroup != 'all' ? "sg.servicegroup_name=".$this->db->escape($servicegroup)." AND" : '';
+		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$this->db->escape($groupname)." AND" : '';
+		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
 
 		$sql = "
 			SELECT
@@ -717,12 +746,12 @@ class Current_status_Model extends Model
 			FROM
 				service s,
 				host h,
-				servicegroup sg,
-				service_servicegroup ssg
+				".$grouptype."group sg,
+				".$grouptype."_".$grouptype."group ssg
 			WHERE
-				".$servicegroup_all_sql."
-				ssg.servicegroup = sg.id AND
-				s.id=ssg.service AND
+				".$all_sql."
+				ssg.".$grouptype."group = sg.id AND
+				".$member_match."
 				h.id=s.host_name AND
 				h.id IN (".$hostlist_str.") ".$filter_sql."
 			GROUP BY
