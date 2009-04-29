@@ -173,8 +173,7 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name	servicegroup
-	*	@desc	Show servicegroup status
+	*	Show servicegroup status, wrapper for group('service', ...)
 	* 	@param 	str $group
 	* 	@param 	int $hoststatustypes
 	* 	@param 	int $servicestatustypes
@@ -183,11 +182,41 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$grouptype = 'service';
+		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
+	}
+
+	/**
+	*	Show hostgroup status, wrapper for group('host', ...)
+	* 	@param 	str $group
+	* 	@param 	int $hoststatustypes
+	* 	@param 	int $servicestatustypes
+	* 	@param 	str $style
+	*
+	*/
+	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	{
+		$grouptype = 'host';
+		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
+	}
+
+	/**
+	 * Show status for host- or servicegroups
+	 *
+	 * @param str $grouptype
+	 * @param str $group
+	 * @param int $hoststatustypes
+	 * @param int $servicestatustypes
+	 * @param str $style
+	 */
+
+	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
 		$group = $this->input->get('group', $group);
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
 		$style = $this->input->get('style', $style);
-
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -196,20 +225,22 @@ class Status_Controller extends Authenticated_Controller {
 				$this->template->content = $this->add_view('status/group_overview');
 				break;
 			case 'detail': case 'details':
-				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type=servicegroup');
+				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type='.$grouptype.'group');
 				break;
 			case 'summary':
-				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type=servicegroup');
+				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type='.$grouptype.'group');
 				break;
 		}
 		$group_details = false;
+		$groupname_tmp = false;
 		if ($group == 'all') {
-			$group_info_res = Servicegroup_Model::get_all();
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
-				$group_details[] = $this->show_servicegroup($group_res->servicegroup_name, $hoststatustypes, $servicestatustypes, $style);
+				$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
+				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $hoststatustypes, $servicestatustypes, $style);
 			}
 		} else {
-			$group_details[] = $this->show_servicegroup($group, $hoststatustypes, $servicestatustypes, $style);
+			$group_details[] = $this->_show_group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -217,7 +248,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, 'servicegroup'), $this);
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
@@ -226,7 +257,11 @@ class Status_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$t = $this->translate;
 
-		$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
+		if ($grouptype == 'service') {
+			$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
+		} else {
+			$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Host Groups") : $t->_("Service Overview For Host Group");
+		}
 		$content->lable_host = $t->_('Host');
 		$content->lable_status = $t->_('Status');
 		$content->lable_services = $t->_('Services');
@@ -560,17 +595,18 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name	show_servicegroup
-	*	@desc	Fetch info on single servicegroup and assign to
-	* 			returned content object for later use in template
-	* 	@param 	str $group
+	*	Fetch info on single service- or hostgroup and assign to returned content object for later use in template
+	*
+	* 	@param 	str $grouptype [host|service]
+	* 	@param 	str $group name of group
 	* 	@param 	int $hoststatustypes
 	* 	@param 	int $servicestatustypes
 	* 	@param 	str $style
 	* 	@return obj
 	*/
-	public function show_servicegroup($group=false, $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	public function _show_group($grouptype='service', $group=false, $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
 		$group = $this->input->get('group', $group);
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
@@ -580,8 +616,8 @@ class Status_Controller extends Authenticated_Controller {
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
 		$t = $this->translate;
-		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
-		$hostlist = $this->current->get_servicegroup_hoststatus($group, $hoststatustypes, $servicestatustypes);
+		$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_by_field_value('servicegroup_name', $group) : Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+		$hostlist = $this->current->get_group_hoststatus($grouptype, $group, $hoststatustypes, $servicestatustypes);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
@@ -637,7 +673,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/servicegroup/'.$group.'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
+					'status_link' => html::anchor('status/'.$grouptype.'group/'.$group.'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
 					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
