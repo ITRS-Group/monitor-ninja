@@ -80,7 +80,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = $host == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
+		$shown = strtolower($host) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
@@ -108,6 +108,7 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_order = $this->input->get('sort_order', $sort_order);
 		$sort_field = $this->input->get('sort_field', $sort_field);
 		$group_type = $this->input->get('group_type', $group_type);
+		$group_type = strtolower($group_type);
 
 		$name = trim($name);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
@@ -151,7 +152,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = $name == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$name."'";
+		$shown = strtolower($name) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$name."'";
 
 		# handle host- or servicegroup details
 		if (!empty($group_type)) {
@@ -260,9 +261,9 @@ class Status_Controller extends Authenticated_Controller {
 		$t = $this->translate;
 
 		if ($grouptype == 'service') {
-			$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
+			$content->lable_header = strtolower($group) == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
 		} else {
-			$content->lable_header = $group == 'all' ? $t->_("Service Overview For All Host Groups") : $t->_("Service Overview For Host Group");
+			$content->lable_header = strtolower($group) == 'all' ? $t->_("Service Overview For All Host Groups") : $t->_("Service Overview For Host Group");
 		}
 		$content->lable_host = $t->_('Host');
 		$content->lable_status = $t->_('Status');
@@ -295,7 +296,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 
 		$group_details = false;
-		if ($group == 'all') {
+		if (strtolower($group) == 'all') {
 			$content->lable_header = $t->_('Status Summary For All Service Groups');
 			$group_info_res = Servicegroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
