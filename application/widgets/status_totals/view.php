@@ -20,9 +20,9 @@
 				<td class="status icon">
 					<?php echo html::image('application/views/themes/default/images/icons/12x12/shield-not-warning.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?>
 				</td>
-				<td style="padding-right: 10px"><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), html::specialchars($total_problems.' '.$label_all_host_problems)) ?></td>
+				<td style="padding-right: 10px"><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'?group_type='.$grouptype, html::specialchars($total_problems.' '.$label_all_host_problems)) ?></td>
 				<td class="status icon"><?php echo html::image('application/views/themes/default/images/icons/12x12/shield-info.png',array('title' => $this->translate->_($row['status']), 'alt' => $this->translate->_($row['status']))); ?></td>
-				<td style="padding-right: 10px"><?php echo html::anchor('status/'.$target_method.'/'.$host, html::specialchars($total_hosts.' Hosts in total')) ?></td>
+				<td style="padding-right: 10px"><?php echo html::anchor('status/'.$target_method.'/'.$host.'?group_type='.$grouptype, html::specialchars($total_hosts.' Hosts in total')) ?></td>
 			</tr>
 		</table>
 	</div>
