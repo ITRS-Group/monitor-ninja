@@ -736,6 +736,8 @@ class Current_status_Model extends Model
 		$hostlist_str = implode(',', $hostlist);
 
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$this->db->escape($groupname)." AND" : '';
+
+		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
 
 		$sql = "
