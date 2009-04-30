@@ -2,26 +2,26 @@
 
 class Nagios_auth_Model extends Model
 {
-    public $db = false;
-    public $session = false;
-    public $id = false;
-    public $user;
-    public $hosts = array();
-    public $hosts_r = array();
-    public $services = array();
-    public $services_r = array();
-    public $hostgroups = array();
-    public $hostgroups_r = array();
-    public $servicegroups = array();
-    public $servicegroups_r = array();
-    public $view_hosts_root = false;
-    public $view_services_root = false;
-    public $command_hosts_root = false;
-    public $command_services_root = false;
-    public $authorized_for_system_information = false;
+	public $db = false;
+	public $session = false;
+	public $id = false;
+	public $user;
+	public $hosts = array();
+	public $hosts_r = array();
+	public $services = array();
+	public $services_r = array();
+	public $hostgroups = array();
+	public $hostgroups_r = array();
+	public $servicegroups = array();
+	public $servicegroups_r = array();
+	public $view_hosts_root = false;
+	public $view_services_root = false;
+	public $command_hosts_root = false;
+	public $command_services_root = false;
+	public $authorized_for_system_information = false;
 
-    public function __construct()
-    {
+	public function __construct()
+	{
 		parent::__construct();
 		#$this->profiler = new Profiler;
 		# we will always need database and session
@@ -35,20 +35,20 @@ class Nagios_auth_Model extends Model
 			return false;
 
 		$this->get_contact_id();
-    }
+	}
 
-    # This is required for testing purposes.
-    # The backdoor side of it can safely be ignored, since the
-    # reports library has zero authentication anyway, and
-    # return-into-libzend or similar exploits are impossible from php
-    public function i_can_has_root_plx()
-    {
-	    $this->view_hosts_root = true;
-	    $this->view_services_root = true;
-    }
+	# This is required for testing purposes.
+	# The backdoor side of it can safely be ignored, since the
+	# reports library has zero authentication anyway, and
+	# return-into-libzend or similar exploits are impossible from php
+	public function i_can_has_root_plx()
+	{
+		$this->view_hosts_root = true;
+		$this->view_services_root = true;
+	}
 
-    public function check_rootness()
-    {
+	public function check_rootness()
+	{
 		$system = new System_Model;
 		$access = $system->nagios_access($this->user);
 		if (is_array($access) && !empty($access)) {
@@ -79,13 +79,13 @@ class Nagios_auth_Model extends Model
 				$this->view_services_root = true;
 			}
 		}
-    }
+	}
 
-    /**
-     * Fetch contact id for current user
-     */
-    public function get_contact_id()
-    {
+	/**
+	 * Fetch contact id for current user
+	 */
+	public function get_contact_id()
+	{
 		$query = "SELECT
 				id
 			FROM
@@ -98,14 +98,14 @@ class Nagios_auth_Model extends Model
 			return false;
 		}
 		return $result->current()->id;
-    }
+	}
 
-    /**
-     * Fetch authorized hosts from db
-     * for current user
-     */
-    public function get_authorized_hosts()
-    {
+	/**
+	 * Fetch authorized hosts from db
+	 * for current user
+	 */
+	public function get_authorized_hosts()
+	{
 		if (!empty($this->hosts))
 			return $this->hosts;
 
@@ -128,14 +128,14 @@ class Nagios_auth_Model extends Model
 		}
 
 		return $this->hosts;
-    }
+	}
 
-    /**
-     * Fetch authorized services from db
-     * for current user
-     */
-    public function get_authorized_services()
-    {
+	/**
+	 * Fetch authorized services from db
+	 * for current user
+	 */
+	public function get_authorized_services()
+	{
 		if (!empty($this->services))
 			return $this->services;
 
@@ -163,14 +163,14 @@ class Nagios_auth_Model extends Model
 		}
 
 		return $this->services;
-    }
+	}
 
-    /**
-     * Fetch authorized hostgroups from db
-     * for current user
-     */
-    public function get_authorized_hostgroups()
-    {
+	/**
+	 * Fetch authorized hostgroups from db
+	 * for current user
+	 */
+	public function get_authorized_hostgroups()
+	{
 		if (!empty($this->hostgroups))
 			return $this->hostgroups;
 
@@ -201,14 +201,14 @@ class Nagios_auth_Model extends Model
 		}
 
 		return $this->hostgroups;
-    }
+	}
 
-    /**
-     * Fetch authorized servicegroups from db
-     * for current user
-     */
-    public function get_authorized_servicegroups()
-    {
+	/**
+	 * Fetch authorized servicegroups from db
+	 * for current user
+	 */
+	public function get_authorized_servicegroups()
+	{
 		if (!empty($this->servicegroups))
 			return $this->servicegroups;
 
@@ -239,10 +239,10 @@ class Nagios_auth_Model extends Model
 		}
 
 		return $this->servicegroups;
-    }
+	}
 
-    public function is_authorized_for_host($host)
-    {
+	public function is_authorized_for_host($host)
+	{
 		if ($this->view_hosts_root === true)
 			return true;
 
@@ -257,10 +257,10 @@ class Nagios_auth_Model extends Model
 			return true;
 
 		return false;
-    }
+	}
 
-    public function is_authorized_for_service($service)
-    {
+	public function is_authorized_for_service($service)
+	{
 		if ($this->view_services_root === true)
 			return true;
 
@@ -275,10 +275,10 @@ class Nagios_auth_Model extends Model
 			return true;
 
 		return false;
-    }
+	}
 
-    public function is_authorized_for_hostgroup($hostgroup)
-    {
+	public function is_authorized_for_hostgroup($hostgroup)
+	{
 		if ($this->view_hosts_root === true)
 			return true;
 
@@ -293,10 +293,10 @@ class Nagios_auth_Model extends Model
 			return true;
 
 		return false;
-    }
+	}
 
-    public function is_authorized_for_servicegroup($servicegroup)
-    {
+	public function is_authorized_for_servicegroup($servicegroup)
+	{
 		if ($this->view_services_root === true)
 			return true;
 
@@ -311,7 +311,5 @@ class Nagios_auth_Model extends Model
 			return true;
 
 		return false;
-    }
+	}
 }
-
-?>
