@@ -30,12 +30,12 @@ $config['default'] = array
 	'connection'    => array
 	(
 		'type'     => 'mysql',
-		'user'     => 'root',
-		'pass'     => '',
+		'user'     => 'merlin',
+		'pass'     => 'merlin',
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
-		'database' => 'monitor_gui'
+		'database' => 'merlin'
 	),
 	'character_set' => 'utf8',
 	'table_prefix'  => '',
