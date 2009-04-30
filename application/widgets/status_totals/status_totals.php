@@ -88,6 +88,11 @@ class Status_totals_Widget extends widget_Core {
 			# fetch info on selected host
 			$host_model = new Host_Model();
 			$host_info = $host_model->get_hostinfo($host);
+			if ($host_info === false) {
+				# don't mess up the master page just because
+				# we're unable to find the requested object
+				return;
+			}
 			$total_up = $host_info->current_state == Current_status_Model::HOST_UP ? 1:0;
 			$total_down = $host_info->current_state == Current_status_Model::HOST_DOWN ? 1:0;
 			$total_unreachable = $host_info->current_state == Current_status_Model::HOST_UNREACHABLE ? 1:0;
