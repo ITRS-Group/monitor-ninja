@@ -5,7 +5,7 @@
  * Today only 'file' and 'db' but future version could include
  * LDAP, OpenID and others
  */
-$config['driver'] = 'ORM'; // db
+$config['driver'] = 'Ninja'; // db
 
 /**
  * Type of hash to use for passwords. Any algorithm supported by the hash function

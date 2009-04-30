@@ -83,16 +83,26 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			foreach ($_POST as $key => $val) {
-				$user->$key = $val;
-			}
 			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($user->{$this->csrf_config['csrf_token']})) {
 				$error_msg = $this->translate->_("Request forgery attack detected");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
-			if (!Auth::instance()->login($user->username, $user->password)) {
 
+			$username = $this->input->post('username', false);
+			$password = $this->input->post('password', false);
+			# Kohana is stupid (well, it's Auth module is anyways) and
+			# refuses to *not* hash the password it passes on to the
+			# driver. However, that doesn't fly well with our need to
+			# support multiple password hash algorithms, so if we're
+			# using the Ninja authenticator we must call the driver
+			# explicitly
+			if (Kohana::config('auth.driver') === 'Ninja') {
+				$result = Auth::instance()->driver->login($username, $password, false);
+			} else {
+				$result = Auth::instance()->login($username, $password);
+			}
+			if (!$result) {
 				# increase login attempts counter
 				# this could be used to restrict access after
 				#  a certain nr of failed login attempts by setting

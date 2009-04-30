@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) unsigned NOT NULL auto_increment,
-  `name` varchar(32) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_name` (`name`)
@@ -70,8 +70,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) unsigned NOT NULL auto_increment,
   `realname` varchar(100) NOT NULL,
   `email` varchar(127) NOT NULL,
-  `username` varchar(32) NOT NULL default '',
-  `password` char(50) NOT NULL,
+  `username` varchar(100) NOT NULL default '',
+  `password_algo` varchar(20) NOT NULL default 'b64_sha1',
+  `password` varchar(50) NOT NULL,
   `logins` int(10) unsigned NOT NULL default '0',
   `last_login` int(10) unsigned default NULL,
   PRIMARY KEY  (`id`),
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`, `last_login`) VALUES
-(1, 'Ninja Admin', 'per@op5.com', 'admin', 'd0bcecba632cad83350fce159fe23cd8ed4fa897b910ac6bd6', 0, 0);
+(1, 'Ninja Admin', 'admin@example.com', 'admin', '0DPiKuNIrrVmD8IUCuw1hQxNqZc=', 0, 0);
 
 -- --------------------------------------------------------
 

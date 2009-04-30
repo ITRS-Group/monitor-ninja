@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * This model uses ORM and regular db->query()
+ *
+ * This model controls variables (and a few methods) for the
+ * users objects (and thus also database tables).
+ * Authentication stuff should *not* end up here.
  */
 class User_Model extends Auth_User_Model {
 
