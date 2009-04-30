@@ -106,6 +106,9 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->hosts))
 			return $this->hosts;
 
+		if (empty($this->id) && !$this->view_hosts_root)
+			return array();
+
 		$query =
 			'SELECT DISTINCT host.id, host.host_name from host, ' .
 			'contact_contactgroup, contact, host_contactgroup ' .
@@ -135,6 +138,9 @@ class Nagios_auth_Model extends Model
 	{
 		if (!empty($this->services))
 			return $this->services;
+
+		if (empty($this->id) && !$this->view_services_root)
+			return array();
 
 		$query =
 			'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
