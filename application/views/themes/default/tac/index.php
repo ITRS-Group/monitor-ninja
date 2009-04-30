@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div id="response"></div>
+<div class="widget-place col">
 <?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -8,6 +9,7 @@
 		}
 	}
 ?>
+</div>
 
 <!--<ul>
 <?php foreach ($links as $title => $url): ?>
