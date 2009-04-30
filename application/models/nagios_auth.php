@@ -31,7 +31,7 @@ class Nagios_auth_Model extends Model
 		$this->user = Auth::instance()->get_user()->username;
 		$this->check_rootness();
 
-		if (empty($user))
+		if (empty($this->user))
 			return false;
 
 		$this->get_contact_id();
