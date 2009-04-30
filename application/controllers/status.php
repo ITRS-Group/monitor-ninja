@@ -158,7 +158,9 @@ class Status_Controller extends Authenticated_Controller {
 		if (!empty($group_type)) {
 			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
 			$shown .= " '".$name."'";
-			$hostlist = $this->current->get_servicegroup_hoststatus($name, $hoststatustypes, $servicestatustypes);
+			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
+			$grouptype = str_replace('group', '', $group_type);
+			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
