@@ -5,7 +5,7 @@ class Nagios_auth_Model extends Model
 	public $db = false;
 	public $session = false;
 	public $id = false;
-	public $user;
+	public $user = '';
 	public $hosts = array();
 	public $hosts_r = array();
 	public $services = array();
@@ -91,7 +91,7 @@ class Nagios_auth_Model extends Model
 			FROM
 				contact
 			WHERE
-				contact_name = ".$this->db->escape('monitor');
+				contact_name = ".$this->db->escape($this->user);
 
 		$result = $this->db->query($query);
 		if (!$result->current()) {
