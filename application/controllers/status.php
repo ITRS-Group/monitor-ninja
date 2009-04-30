@@ -187,6 +187,10 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$style = $this->input->get('style', $style);
 		$grouptype = 'service';
 		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
 	}
@@ -201,6 +205,10 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$style = $this->input->get('style', $style);
 		$grouptype = 'host';
 		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
 	}
