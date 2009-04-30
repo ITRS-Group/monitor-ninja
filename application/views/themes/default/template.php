@@ -18,7 +18,7 @@
 		<?php echo html::script('application/media/js/jquery.form.js') ?>
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.ui.min.js') ?>
+		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
 		<?php echo html::script('application/media/js/btn.js') ?>
 		<script type="text/javascript">
 			//<!--
