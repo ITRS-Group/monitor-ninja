@@ -51,6 +51,9 @@ class Nagios_auth_Model extends Model
 	{
 		$system = new System_Model;
 		$access = $system->nagios_access($this->user);
+		if (empty($access))
+			return;
+
 		if (is_array($access) && !empty($access)) {
 			$user_access = array_values($access);
 		}
