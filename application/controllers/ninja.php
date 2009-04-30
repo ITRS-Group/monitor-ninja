@@ -61,7 +61,7 @@ class Ninja_Controller extends Template_Controller {
 			$this->translate->_('Monitoring') => array(
 				$this->translate->_('Tactical overview') 	=> 'tac/index',
 				$this->translate->_('Host detail') 	=> 'status/host',
-				$this->translate->_('Host service') 	=> 'status/service',
+				$this->translate->_('Service detail') 	=> 'status/service',
 			),
 			$this->translate->_('Reporting') => array()
 		);
