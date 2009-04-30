@@ -32,13 +32,15 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param str $sort_field
 	 * @param bool $show_services
 	 */
-	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false)
+	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false)
 	{
 		$host = $this->input->get('host', $host);
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$sort_order = $this->input->get('sort_order', $sort_order);
 		$sort_field = $this->input->get('sort_field', $sort_field);
 		$show_services = $this->input->get('show_services', $show_services);
+		$group_type = $this->input->get('group_type', $group_type);
+		$group_type = strtolower($group_type);
 
 		$host = trim($host);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
@@ -48,7 +50,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes), $this);
+		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, false, $group_type), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
