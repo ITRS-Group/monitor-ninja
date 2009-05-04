@@ -295,6 +295,25 @@ class Status_Controller extends Authenticated_Controller {
 		$group = $this->input->get('group', $group);
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$grouptype = 'service';
+		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
+	}
+
+	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$grouptype = 'host';
+		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
+	}
+
+	public function group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
 
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_summary');
@@ -304,31 +323,35 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, 'servicegroup'), $this);
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
-			$content->lable_header = $t->_('Status Summary For All Service Groups');
-			$group_info_res = Servicegroup_Model::get_all();
+			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
-				$group_details[] = $this->_show_servicegroup_totals_summary($group_res->servicegroup_name);
+				$groupname_tmp = $group_res->{$grouptype.'group_name'};
+				$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
 			}
 		} else {
 			# make sure we have the correct servicegroup
-			$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+			$group_info_res = $grouptype == 'service' ?
+				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
+				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 			if ($group_info_res) {
-				$group = $group_info_res->servicegroup_name;
+				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
 			} else {
 				# overwrite previous view with the error view, add some text and bail out
 				$this->template->content = $this->add_view('error');
-				$this->template->content->error_message = sprintf($t->_("The requested servicegroup ('%s') wasn't found"), $group);
+				$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
 				return;
 			}
-			$content->lable_header = $t->_('Status Summary For Service Group ')."'".$group."'";
-			$group_details[] = $this->_show_servicegroup_totals_summary($group);
+			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
+			$content->lable_header = $label_header."'".$group."'";
+			$group_details[] = $this->_show_group_totals_summary($grouptype, $group);
 		}
 
 		# since we don't use these values yet we define a default value
@@ -363,21 +386,23 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	shows host total summary information for a specific servicegroup
+	*	shows host total summary information for a specific host- or servicegroup
 	*
 	* 	@return obj
 	*/
-	public function _show_servicegroup_totals_summary($group=false)
+	public function _show_group_totals_summary($grouptype='service', $group=false)
 	{
 		$group = $this->input->get('group', $group);
 		$content = false;
 		#$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
-		$group_info_res = Servicegroup_Model::get_by_field_value('servicegroup_name', $group);
+		$group_info_res = $grouptype == 'service' ?
+			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
+			Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 		if ($group_info_res === false) {
 			return;
 		}
-		$hostlist = $this->current->get_servicegroup_hoststatus($group);
+		$hostlist = $this->current->get_group_hoststatus($grouptype, $group);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
@@ -461,10 +486,11 @@ class Status_Controller extends Authenticated_Controller {
 			$content->hosts_pending = $hosts_pending;
 
 			# fetch servicedata
-			$content->service_data = $this->_show_servicegroup_service_summary($seen_hosts, $group);
+			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group);
 		} else {
 			# nothing found
 		}
+
 		return $content;
 	}
 
@@ -472,7 +498,7 @@ class Status_Controller extends Authenticated_Controller {
 	*
 	*
 	*/
-	public function _show_servicegroup_service_summary($hostlist=false, $group=false)
+	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false)
 	{
 		$hostlist = $this->input->get('hostlist', $hostlist);
 		$group = $this->input->get('group', $group);
@@ -482,7 +508,7 @@ class Status_Controller extends Authenticated_Controller {
 		$service_info = false;
 		$result = $this->current->host_status_subgroup_names($hostlist, true);
 		$service_model = new Service_Model();
-		$service_data = $service_model->get_services_for_group($group);
+		$service_data = $service_model->get_services_for_group($group, $grouptype);
 		$service_list = false;
 		if ($service_data) {
 			foreach ($service_data as $row) {
