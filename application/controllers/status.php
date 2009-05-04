@@ -279,7 +279,11 @@ class Status_Controller extends Authenticated_Controller {
 		$content->lable_status = $t->_('Status');
 		$content->lable_services = $t->_('Services');
 		$content->lable_actions = $t->_('Actions');
-
+		if (empty($group_details)) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = $t->_("No data found");
+			return;
+		}
 		# @@@FIXME: handle macros
 	}
 
@@ -630,6 +634,11 @@ class Status_Controller extends Authenticated_Controller {
 
 		$t = $this->translate;
 		$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_by_field_value('servicegroup_name', $group) : Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+		if (empty($group_info_res)) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
+			return;
+		}
 		$hostlist = $this->current->get_group_hoststatus($grouptype, $group, $hoststatustypes, $servicestatustypes);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
