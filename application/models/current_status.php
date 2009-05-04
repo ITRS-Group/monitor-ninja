@@ -309,7 +309,7 @@ class Current_status_Model extends Model
 						$this->hosts_down_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$host->checks_enabled) {
+					if (!$host->active_checks_enabled && !$host->passive_checks_enabled) {
 						$this->hosts_down_disabled++;
 						$this->problem = false;
 					}
