@@ -318,8 +318,8 @@ table.healt tr td div.border img {
 	font-weight: bold;
 	text-align: left;
 	padding: 3px 5px 3px 5px;
-	border-bottom: 1px solid #e9e9e0;
-	margin-bottom: 1px;
+	border: 1px solid #e9e9e0;
+	/*margin-bottom: 1px;*/
 }
 
 .widget {
