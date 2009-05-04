@@ -133,8 +133,8 @@ if (!empty($widgets)) {
 							}
 						?>
 					</div>
-				</td>
 			<?php } ?>
+		</td>
 		<td class="bl <?php echo $status_class ?>">
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 			<?php //echo Current_status_Model::status_text($row->current_state, Router::$method) ?>
@@ -145,22 +145,26 @@ if (!empty($widgets)) {
 		<td><?php echo $row->plugin_output ?></td>
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
-			<a href="<?php echo $row->action_url ?>" style="border: 0px"><img src="/monitor/images/action.gif" alt="<?php echo $this->translate->_('Perform extra host actions');?>" title="<?php echo $this->translate->_('Perform extra host actions');?>" /></a>
+			<a href="<?php echo $row->action_url ?>" style="border: 0px">
+			<?php echo html::image('application/views/themes/default/images/icons/16x16/action.png',array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')))?></a>
 		<?php	} ?>
 		</td>
 		<td class="icon">
 		<?php	if (!empty($row->icon_image)) { ?>
+			<?php //echo html::image('application/views/themes/default/images/icons/16x16/action.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?></a>
 			<img src="<?php echo $logos_path.$row->icon_image ?>" alt="<?php echo $this->translate->_('View extra host notes');?>" title="<?php echo $this->translate->_('View extra host notes');?>" />
 		<?php	} ?>
 		</td>
 		<td class="icon">
 			<?php if (!empty($row->notes_url)) { ?>
-			<a href="<?php echo $row->notes_url ?>" style="border: 0px"><img src="/monitor/images/notes.gif" alt="<?php echo $this->translate->_('View extra host notes');?>" title="<?php echo $this->translate->_('View extra host notes');?>" /></a>
+			<a href="<?php echo $row->notes_url ?>" style="border: 0px">
+				<?php echo html::image('/application/views/themes/default/images/icons/16x16/notes.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?>
+			</a>
 			<?php } ?>
 		</td>
 		<td class="icon">
 			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>&amp;service=<?php echo str_replace(' ','%20',$row->service_description) ?>" style="border: 0px">
-				<img src='/monitor/images/op5tools/webconfig.png' alt="<?php echo $this->translate->_('Configure this service') ?>" title="<?php echo $this->translate->_('Configure this service') ?>" />
+				<?php echo html::image('/application/views/themes/default/images/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))?>
 			</a>
 		</td>
 	</tr>
