@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`, `last_login`) VALUES
-(1, 'Ninja Admin', 'admin@example.com', 'admin', '0DPiKuNIrrVmD8IUCuw1hQxNqZc=', 0, 0);
+(1, 'Monitor Admin', 'monitor@example.com', 'monitor', 'l5aAn32uSC0xI8FlhfK2D5dAd5Y=', 0, 0);
 
 -- --------------------------------------------------------
 
