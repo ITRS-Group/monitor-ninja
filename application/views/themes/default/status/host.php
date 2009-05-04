@@ -34,7 +34,10 @@ if (!empty($widgets)) {
 		</tr>
 	</thead>
 	<tbody>
-<?php	$a = 0;foreach ($result as $row) {
+<?php
+		if (empty($result))
+			$result = array();
+		$a = 0;foreach ($result as $row) {
 		$a++;
 		# set status classes
 		# row "striping" done by JQuery?
