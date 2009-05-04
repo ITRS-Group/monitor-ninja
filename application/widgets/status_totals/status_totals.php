@@ -126,6 +126,9 @@ class Status_totals_Widget extends widget_Core {
 
 		} elseif (!empty($groupname)) {
 			$service_states = false;
+			if (empty($group_info)) {
+				return;
+			}
 			foreach ($group_info as $info) {
 				$service_states[$info->host_name][$info->service_state] = $info->service_state;
 				if ($info->id != $prev_host) {
