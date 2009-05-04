@@ -55,7 +55,7 @@ class Service_Model extends Model
 	/**
 	*	Fetch services that belongs to a specific service- or hostgroup
 	*/
-	public function get_services_for_group($group=false, $type='servicegroup')
+	public function get_services_for_group($group=false, $type='service')
 	{
 		$type = trim($type);
 		if (empty($group) || empty($type)) {
@@ -64,7 +64,7 @@ class Service_Model extends Model
 		$auth_services = $this->auth->get_authorized_services();
 		$service_str = implode(', ', array_keys($auth_services));
 		switch ($type) {
-			case 'servicegroup':
+			case 'service':
 				$sql = "SELECT
 					s.*
 				FROM
@@ -78,7 +78,23 @@ class Service_Model extends Model
 					s.id IN(".$service_str.")
 				ORDER BY
 					s.service_description";
-				case 'hostgroup':
+					break;
+			case 'host':
+				$sql = "SELECT
+					s.*
+				FROM
+					service s,
+					host h,
+					hostgroup hg,
+					host_hostgroup hhg
+				WHERE
+					hg.hostgroup_name=".$this->db->escape($group)." AND
+					hhg.hostgroup = hg.id AND
+					h.id=s.host_name AND
+					s.host_name=h.id AND
+					s.id IN(".$service_str.")
+				ORDER BY
+					s.service_description";
 				break;
 		}
 		if (!empty($sql)) {
