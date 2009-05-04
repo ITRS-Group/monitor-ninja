@@ -32,8 +32,18 @@ if (!empty($widgets)) {
 			</tr>
 		</thead>
 		<tbody>
-		<?php	$a = 0;foreach ($result as $row) {
-			$a++;
+		<?php
+
+# Do not, under ANY circumstances, remove the if-clause below.
+# Doing so results in a Kohana error if no hosts are found. That
+# is a VERY, VERY BAD THING, so please pretty please leave it where
+# it is (yes, I'm talking to you, My).
+if (!is_array($result)) {
+	$result = array();
+}
+$a = 0;
+foreach ($result as $row) {
+	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 				<td class="icon bl">
