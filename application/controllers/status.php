@@ -192,7 +192,7 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
 		$style = $this->input->get('style', $style);
 		$grouptype = 'service';
-		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
 	}
 
 	/**
@@ -210,7 +210,7 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
 		$style = $this->input->get('style', $style);
 		$grouptype = 'host';
-		url::redirect(Router::$controller.'/group/'.$grouptype.'/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&style='.$style);
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
 	}
 
 	/**
