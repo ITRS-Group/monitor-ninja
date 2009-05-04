@@ -59,11 +59,21 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->template->links = array(
 			$this->translate->_('Monitoring') => array(
-				$this->translate->_('Tactical overview') 	=> 'tac/index',
-				$this->translate->_('Host detail') 	=> 'status/host',
-				$this->translate->_('Service detail') 	=> 'status/service',
+				$this->translate->_('Tactical overview') 			=> 'tac/index',
+				$this->translate->_('Host detail') 						=> 'status/host',
+				$this->translate->_('Service detail') 				=> 'status/service',
+				$this->translate->_('Hostgroup summary') 			=> 'status/host/hostgroup',
+				$this->translate->_('Hostgroup overview') 		=> 'status/host/hostgroup/overview',
+				$this->translate->_('Hostgroup grid') 				=> 'status/host/hostgroup/grid',
+				$this->translate->_('Servicegroup summary') 	=> 'status/service/servicegroup',
+				$this->translate->_('Servicegroup overview') 	=> 'status/service/servicegroup/overview',
+				$this->translate->_('Servicegroup grid') 			=> 'status/service/servicegroup/grid',
+				$this->translate->_('Host problems') 					=> 'status/host/all/6?group_type=',
+				$this->translate->_('Service problems') 			=> 'status/service/all?servicestatustypes=14&group_type=',
+				$this->translate->_('Unhandled problems') 		=> 'status/host/all/6?group_type=',
 			),
-			$this->translate->_('Reporting') => array()
+			//$this->translate->_('Reporting') => array(),
+			//$this->translate->_('Configuration') => array()
 		);
 
 		$this->registry->set('Zend_Translate', $this->translate);
