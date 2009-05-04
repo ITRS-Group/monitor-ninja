@@ -1,24 +1,22 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_hosts">
-	<div class="widget-header" style="width: 79%"><?php echo $this->translate->_('Host overview') ?></div>
+	<div class="widget-header"><?php echo $this->translate->_('Host overview') ?></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
 	</div>
 	<div class="widget-content">
 		<table style="border-spacing: 1px">
 			<colgroup>
-				<col style="width: 20%" />
-				<col style="width: 20%" />
-				<col style="width: 20%" />
-				<col style="width: 20%" />
-				<col style="width: 20%" />
+				<col style="width: 25%" />
+				<col style="width: 25%" />
+				<col style="width: 25%" />
+				<col style="width: 25%" />
 			</colgroup>
 			<tr>
 				<th><?php echo $this->translate->_('Down') ?></th>
 				<th><?php echo $this->translate->_('Unreachable') ?></th>
 				<th><?php echo $this->translate->_('Up') ?></th>
 				<th><?php echo $this->translate->_('Pending') ?></th>
-				<th class="white">&nbsp;</th>
 			</tr>
 			<tr>
 				<td style="padding: 0px" class="white">
@@ -91,7 +89,6 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td class="white">&nbsp;</td>
 			</tr>
 		</table>
 	</div>
