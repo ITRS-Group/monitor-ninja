@@ -7,26 +7,34 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget collapsable left w98" id="status_host">
+<div class="widget left w98" id="status_host">
 <div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
 
-<table id="sort-table">
+<table id="sort-table" style="table-layout: fixed">
+	<colgroup>
+		<col style="width: 30px" />
+		<col style="width: 200px" />
+		<col style="width: 30px" />
+		<col style="width: 122px" />
+		<col style="width: 65px" />
+		<col style="width: 100%" />
+		<col style="width: 30px" />
+		<col style="width: 30px" />
+		<col style="width: 30px" />
+		<col style="width: 30px" />
+	</colgroup>
 	<thead>
 		<tr>
 			<th class="no-sort"><?php echo $this->translate->_('') ?></th>
 			<th colspan="2"><?php echo $this->translate->_('Host') ?></th>
-
-			<th><?php echo $this->translate->_('Last check') ?></th>
+			<th style="width: 100px"><?php echo $this->translate->_('Last check') ?></th>
 			<th><?php echo $this->translate->_('Duration') ?></th>
 			<th><?php echo $this->translate->_('Status information') ?></th>
 			<th class="{sorter: false} no-sort" colspan="5"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
-<?php
-		if (empty($result))
-			$result = array();
-		$a = 0;foreach ($result as $row) {
+<?php	$a = 0;foreach ($result as $row) {
 		$a++;
 		# set status classes
 		# row "striping" done by JQuery?
@@ -92,27 +100,27 @@ if (!empty($widgets)) {
 				}
 			?>
 		</td>
-<td class="icon">
+		<td class="icon" style="width: 10px">
 		<?php if (!empty($row->icon_image)) { ?>
 			<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
 		<?php	} ?>
 		</td>
-		<td class="statusEven"><?php echo $row->last_check ?></td>
+		<td class="statusEven"><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 		<td class="statusEven"><?php echo $row->duration ?></td>
-		<td class="statusEven"><?php echo $row->plugin_output ?></td>
-		<td class="icon">
-			<?php if (!empty($row->notes_url)) { ?>
-				<a href="<?php echo $row->notes_url ?>" style="border: 0px">
-					<?php echo html::image('application/views/themes/default/images/icons/16x16/notes.png', $this->translate->_('View extra host notes')) ?>
-				</a>
-			<?php	} ?>
-		</td>
+		<td class="statusEven" style="white-space: normal"><?php echo str_replace('','',$row->plugin_output) ?></td>
 		<td class="icon">
 		<?php if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
 				<?php echo html::image('/application/views/themes/default/images/icons/16x16/action.png', $this->translate->_('Perform extra host actions')) ?>
 			</a>
 		<?php	} ?>
+		</td>
+		<td class="icon">
+			<?php if (!empty($row->notes_url)) { ?>
+				<a href="<?php echo $row->notes_url ?>" style="border: 0px">
+					<?php echo html::image('application/views/themes/default/images/icons/16x16/notes.png', $this->translate->_('View extra host notes')) ?>
+				</a>
+			<?php	} ?>
 		</td>
 		<td class="icon">
 			<?php echo html::anchor('status/service/'.$row->host_name,html::image('/application/views/themes/default/images/icons/16x16/status.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
