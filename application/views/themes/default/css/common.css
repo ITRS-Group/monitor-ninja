@@ -157,6 +157,7 @@ a {
 
 #menu {
 	position: absolute;
+	position: fixed;
 	width: 159px;
 	top: 0px;
 	left: 0px;
@@ -254,7 +255,7 @@ th {
 }
 
 tr td {
-	background: #f5f5ef url(../images/bg/light.gif) repeat-x;
+	background: transparent url(../images/bg/light.gif) repeat-x;
 	padding: 0px 5px;
 	border: 0px;
 	/*border-bottom: 1px solid #e9e9e0;
