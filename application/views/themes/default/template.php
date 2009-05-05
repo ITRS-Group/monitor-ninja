@@ -102,7 +102,7 @@
 				</ul>
 			</div>
 			<div id="status">
-				<?php echo $this->translate->_('Updated') ?>: DD Month Year HH:MM:SS CET &nbsp;
+				<?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?>
 			</div>
 		</div>
 
