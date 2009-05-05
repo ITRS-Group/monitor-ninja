@@ -6,82 +6,50 @@ if (!empty($widgets)) {
 	}
 }
 ?>
+<!--<div class="widget collapsable left w98" id="status_service">
+<div class="widget-header"><?php echo $lable_header ?></div>-->
 
-<div align="center" class='statusTitle'>
-	<?php echo $lable_header ?>
-</div>
 
-<div align="center">
 <?php
 	foreach ($group_details as $group) { ?>
-	<table border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td align="center">
-				<div class='status'>
-					<a href='status.cgi?servicegroup=<?php echo $group->groupname ?>&amp;style=detail'><?php echo $group->group_alias ?></a>
-					(<a href='extinfo.cgi?type=8&amp;servicegroup=<?php echo $group->groupname ?>'><?php echo $group->groupname ?></a>)
-				</div>
+	<div class="widget left w98" id="status_<?php echo $group->groupname; ?>">
+		<div class="widget-header">
+			<a href='status.cgi?servicegroup=<?php echo $group->groupname ?>&amp;style=detail'><?php echo $group->group_alias ?></a>
+			(<a href='extinfo.cgi?type=8&amp;servicegroup=<?php echo $group->groupname ?>'><?php echo $group->groupname ?></a>)
+		</div>
+		<table>
+			<tr>
+				<th class="no-sort">&nbsp;</th>
+				<th class="headerSortDown" colspan="2" style="width: 200px"><?php echo $lable_host ?></th>
+				<th class="header"><?php echo $lable_services ?></th>
+				<th class="header" style="width: 100px"><?php echo $lable_actions ?></th>
+			</tr>
+			<?php $i=0; if (!empty($group->hostinfo))
+				foreach ($group->hostinfo as $host => $details) { ?>
+			<tr class="<?php echo ($i % 2 == 0) ? 'odd' : 'even' ?>">
+				<td class="icon bl"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower($details['state_str']).'.png', array('alt' => $details['state_str'], 'title' => $details['state_str'])); ?></td>
+				<td><?php echo $details['status_link'] ?></td>
+				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
+				<td>
+					<?php if (!empty($group->service_states[$host]))
+							foreach ($group->service_states[$host] as $svc_state) {
+								echo $svc_state['status_link'].'<br />';
+							}
+					?>
+				</td>
+				<td>
+					<?php echo $svc_state['extinfo_link'] ?>
+					<?php echo $svc_state['svc_status_link'] ?>
+					<?php echo $svc_state['statusmap_link'] ?>
+					<?php echo !empty($details['notes_link']) ? $details['notes_link'] : '' ?>
+					<?php echo !empty($details['action_link']) ? $details['action_link'] : '' ?>
 
-				<div class='status'>
-					<table border="1" cellpadding="2" cellspacing="0" class='status'>
-						<tr>
-							<th class='status'>
-								<?php echo $lable_host ?>
-							</th>
-							<th class='status'>
-								<?php echo $lable_status ?>
-							</th>
-							<th class='status'>
-								<?php echo $lable_services ?>
-							</th>
-							<th class='status'>
-								<?php echo $lable_actions ?>
-							</th>
-						</tr>
-				<?php if (!empty($group->hostinfo))
-						foreach ($group->hostinfo as $host => $details) { ?>
-						<tr class='statusEven'>
-							<td class='statusEven'>
-								<table border="0" width="100%" cellpadding="0" cellspacing="0">
-									<tr class='statusEven'>
-										<td class='statusEven'>
-											<?php echo $details['status_link'] ?>
-											<?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?>
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td class='<?php echo $details['class_name'] ?>'>
-								<?php echo $details['state_str'] ?>
-							</td>
-							<td class='statusEven'>
-								<table border="0" width="100%">
-							<?php if (!empty($group->service_states[$host]))
-									foreach ($group->service_states[$host] as $svc_state) {	?>
-									<tr>
-										<td class='<?php echo $svc_state['class_name'] ?>'>
-											<?php echo $svc_state['status_link'] ?>
-										</td>
-									</tr>
-								<?php } ?>
-								</table>
-							</td>
-							<td valign="center" class='statusEven'>
-								<?php echo $svc_state['extinfo_link'] ?>
-								<?php echo !empty($details['notes_link']) ? $details['notes_link'] : '' ?>
-								<?php echo !empty($details['action_link']) ? $details['action_link'] : '' ?>
-								<?php echo $svc_state['svc_status_link'] ?>
-								<?php echo $svc_state['statusmap_link'] ?>
-								<?php echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'] : '' ?>
-								<?php echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'] : '' ?>
-								</a>
-							</td>
-						</tr>
-				<?php 	} ?>
-					</table>
-				</div>
-			</td>
-		</tr>
-	</table>
+					<?php echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'] : '' ?>
+					<?php echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'] : '' ?>
+				</td>
+			</tr>
+				<?php $i++; 	} ?>
+		</table>
+	</div>
 	<?php } ?>
-</div>
+<!--</div>-->
