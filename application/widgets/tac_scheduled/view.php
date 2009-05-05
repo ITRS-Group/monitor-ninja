@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php if (count($problem) > 0) { ?>
 <div class="widget movable collapsable removable closeconfirm w32 left" id="widget-tac_schedduled">
 	<div class="widget-header"><?php echo $this->translate->_('Scheduled downtime') ?></div>
 	<div class="widget-editbox">
@@ -18,8 +17,12 @@
 						?>
 					</td>
 				</tr>
+			<?php } if (count($problem) == 0) { ?>
+				<tr>
+					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/scheduled-not.png', array('alt' => $this->translate->_('N/A'))) ?></td>
+					<td>N/A</td>
+				</tr>
 			<?php } ?>
 		</table>
 	</div>
 </div>
-<?php } ?>
