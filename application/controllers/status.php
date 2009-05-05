@@ -57,8 +57,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 
 		# set sort images, used in header_links() below
-		$this->img_sort_up = $this->img_path('images/up.gif');
-		$this->img_sort_down = $this->img_path('images/down.gif');
+		$this->img_sort_up = $this->img_path('images/icons/16x16/up.gif');
+		$this->img_sort_down = $this->img_path('images/icons/16x16/down.gif');
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
@@ -128,8 +128,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 
 		# set sort images, used in header_links() below
-		$this->img_sort_up = $this->img_path('images/up.gif');
-		$this->img_sort_down = $this->img_path('images/down.gif');
+		$this->img_sort_up = $this->img_path('images/icons/16x16/up.gif');
+		$this->img_sort_down = $this->img_path('images/icons/16x16/down.gif');
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
@@ -684,8 +684,7 @@ class Status_Controller extends Authenticated_Controller {
 				 */
 				if (Kohana::config('config.nacoma_path')!==false) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-					$nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=host&amp;host='.$host->host_name.
-						'"title="'.$lable_nacoma.'">'.html::image($this->img_path('images/nacoma.png')).'</a>';
+					$nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=host&amp;host='.$host->host_name.'">'.html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)).'</a>';
 				}
 
 				/**
@@ -695,8 +694,7 @@ class Status_Controller extends Authenticated_Controller {
 				$pnp_link = false;
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					$lable_pnp = $t->_('Show performance graph');
-					$pnp_link = '<a href="'.Kohana::config('config.pnp4nagios_path').'index.php?host='.$host->host_name.
-						'"title="'.$lable_pnp.'">'.html::image($this->img_path('images/graphlight.png')).'</a>';
+					$pnp_link = '<a href="'.Kohana::config('config.pnp4nagios_path').'index.php?host='.$host->host_name.'">'.html::image($this->img_path('images/icons/16x16/graphlight.png'), array('alt' => $lable_pnp, 'title' => $lable_pnp)).'</a>';
 				}
 
 				# decide status_link host- and servicestate parameters
@@ -722,9 +720,9 @@ class Status_Controller extends Authenticated_Controller {
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
 					'status_link' => html::anchor('status/'.$grouptype.'group/'.$group.'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
-					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
-					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
-					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
+					'extinfo_link' => html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->img_path('images/icons/16x16/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
+					'svc_status_link' => html::anchor('status/service/'.$host->host_name, html::image($this->img_path('images/icons/16x16/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
+					'statusmap_link' => html::anchor('statusmap/host/'.$host->host_name, html::image($this->img_path('images/icons/16x16/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
 					'nacoma_link' => $nacoma_link,
 					'pnp_link' => $pnp_link
 					);
@@ -732,18 +730,18 @@ class Status_Controller extends Authenticated_Controller {
 				$action_link = false;
 				if (!is_null($host->action_url)) {
 					$lable_host_action = $t->_('Perform Extra Host Actions');
-					$action_link = '<a href="'.$host->action_url.'" target="_blank">'.html::image($this->img_path('images/action.gif'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+					$action_link = '<a href="'.$host->action_url.'">'.html::image($this->img_path('images/icons/16x16/action.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
 				}
 				$notes_link = false;
 				if (!is_null($host->notes_url)) {
 					$lable_host_notes = $t->_('View Extra Host Notes');
-					$notes_link = '<a href="'.$host->notes_url.'" target="_blank">'.html::image($this->img_path('images/notes.gif'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+					$notes_link = '<a href="'.$host->notes_url.'">'.html::image($this->img_path('images/icons/16x16/notes.gif'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
 				}
 
 				$host_icon = false;
 				# logos_path
 				if (!empty($host->icon_image)) {
-					$host_icon = '<img src="'.$this->logos_path.$host->icon_image.'" WIDTH=20 HEIGHT=20 border=0 alt="'.$host->icon_image_alt.'" title="'.$host->icon_image_alt.'" />';
+					$host_icon = '<img src="'.$this->logos_path.$host->icon_image.'" style="height: 16px" alt="'.$host->icon_image_alt.'" title="'.$host->icon_image_alt.'" />';
 				}
 				$hostinfo[$host->host_name] = array(
 					'state_str' => $this->current->status_text($host->current_state, 'host'),
