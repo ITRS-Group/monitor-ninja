@@ -3,9 +3,9 @@
  * Tactical overview controller
  * Requires authentication
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 class Admin_Controller extends Authenticated_Controller {
 
@@ -33,10 +33,9 @@ class Admin_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name 	add_user_form
-	*	@desc	Print form to add user
-	*
-	*/
+	 * Print form to add user
+	 *
+	 */
 	public function edit_user($id=false)
 	{
 		$user = false;
@@ -59,20 +58,18 @@ class Admin_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name 	add_user
-	*	@desc 	Wrapper for edit_user without ID
-	*
-	*/
+	 * Wrapper for edit_user without ID
+	 *
+	 */
 	public function add_user()
 	{
 		$this->edit_user(false);
 	}
 
 	/**
-	*	@name 	add_user
-	*	@desc 	Handle add user request. Validation and save is done by Auth
-	*
-	*/
+	 * Handle add user request. Validation and save is done by Auth
+	 *
+	 */
 	public function user_validate()
 	{
 		if (Kohana::config('csrf.active') & strlen(Kohana::config('csrf.csrf_token'))
@@ -119,10 +116,9 @@ class Admin_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name 	list_users
-	*	@desc 	Show list of all users
-	*
-	*/
+	 * Show list of all users
+	 *
+	 */
 	public function list_users()
 	{
 		$user = ORM::factory('user');

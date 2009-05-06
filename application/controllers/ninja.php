@@ -5,9 +5,9 @@
  *
  * Sets necessary objects like session and database
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 class Ninja_Controller extends Template_Controller {
 
@@ -91,10 +91,9 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	*	@name	add_view
-	*	@desc	Handle paths to current theme etc
-	*
-	*/
+	 * Handle paths to current theme etc
+	 *
+	 */
 	public function add_view($view=false)
 	{
 		$view = trim($view);
@@ -105,8 +104,8 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	 *	Set correct image path considering
-	 *	the path to current theme.
+	 * Set correct image path considering
+	 * the path to current theme.
 	 */
 	public function img_path($rel_path='')
 	{
@@ -114,8 +113,8 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	 *	Set correct image path considering
-	 *	the path to current theme.
+	 * Set correct image path considering
+	 * the path to current theme.
 	 */
 	public function add_path($rel_path)
 	{

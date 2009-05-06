@@ -3,20 +3,20 @@
  * Help class for handling links that could contain
  * chars that would break Kohanas routing ('/')
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
-class link_Core {
+class link_Core
+{
 	/**
-	*	@name	encode
-	*	@desc	Encode a string so that it is possible to
-	* 			use it without risk in Kohana.
-	* 			The 'all' string has been given a special meaning
-	* 			and is therefore not encoded.
-	*	@param  str $str
-	* 	@return str encoded string
-	*/
+	 * Encode a string so that it is possible to
+	 * use it without risk in Kohana.
+	 * The 'all' string has been given a special meaning
+	 * and is therefore not encoded.
+	 * @param $str
+	 * @return str encoded string
+	 */
 	public function encode($str)
 	{
 		$str = trim($str);
@@ -27,14 +27,13 @@ class link_Core {
 	}
 
 	/**
-	*	@name	decode
-	*	@desc 	Decode a string that has been encoded
-	*			using the encode method.
-	* 			The 'all' string has been given a special meaning
-	* 			and is therefore not decoded.
-	*	@param  str $str
-	* 	@return decoded string
-	*/
+	 * Decode a string that has been encoded
+	 * using the encode method.
+	 * The 'all' string has been given a special meaning
+	 * and is therefore not decoded.
+	 * @param $str
+	 * @return decoded string
+	 */
 	public function decode($str)
 	{
 		$str = trim($str);

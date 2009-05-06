@@ -2,12 +2,13 @@
 /**
  * widget helper class.
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 
-class widget_Core {
+class widget_Core
+{
 	public $result = false; 	# widget content result
 	public $js = false;			# required js resources?
 	public $css = false;		# additional css?
@@ -31,11 +32,10 @@ class widget_Core {
 	}
 
 	/**
-	*	@name	add
-	*	@desc	Add a new widget
-	* 	@param  string $name
-	*
-	*/
+	 * Add a new widget
+	 * @param $name
+	 *
+	 */
 	public function add($name=false, $arguments=false, &$master=false)
 	{
 		# first try custom path
@@ -62,10 +62,9 @@ class widget_Core {
 	}
 
 	/**
-	*	@name	widget_name
-	*	@desc	Find name of input class and set wiidget_full path for later use
-	*
-	*/
+	 * Find name of input class and set wiidget_full path for later use
+	 *
+	 */
 	public function set_widget_name($input=false, $dirname=false)
 	{
 		if (empty($input))
@@ -88,11 +87,10 @@ class widget_Core {
 	}
 
 	/**
-	*	@name 	view_path
-	*	@desc	Find path of widget viewer
-	* 	@return str path to viewer
-	*
-	*/
+	 * Find path of widget viewer
+	 * @return str path to viewer
+	 *
+	 */
 	public function view_path($view=false)
 	{
 		if (empty($view))
@@ -109,11 +107,10 @@ class widget_Core {
 	}
 
 	/**
-	*	@name	fetch
-	*	@desc	Fetch content from output buffer for widget.
-	* 			Assign required external files (js, css) on to master controller variables.
-	*
-	*/
+	 * Fetch content from output buffer for widget.
+	 * Assign required external files (js, css) on to master controller variables.
+	 *
+	 */
 	public function fetch()
 	{
 		$content = $this->output();
@@ -124,10 +121,9 @@ class widget_Core {
 	}
 
 	/**
-	*	@name	output
-	*	@desc	Fetch content from output buffer for widget ajax call
-	* 			and clean up output buffer.
-	*/
+	 * Fetch content from output buffer for widget ajax call
+	 * and clean up output buffer.
+	 */
 	public function output()
 	{
 		$content = ob_get_contents();
@@ -139,7 +135,7 @@ class widget_Core {
 	 * Merge current widgets resource files with other
 	 * widgets to be printed to HTML head
 	 *
-	 * @param 	array $in_files
+	 * @param $in_files
 	 */
 	public function resources($in_files=false, $type='js')
 	{

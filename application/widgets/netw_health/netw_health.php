@@ -2,9 +2,9 @@
 /**
  * Network health widget
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 class Netw_health_Widget extends widget_Core {
 	# define warning/critical limit
@@ -74,10 +74,9 @@ class Netw_health_Widget extends widget_Core {
 	}
 
 	/**
-	*	@name format_health_data
-	*	@desc Decide how to present network health
-	*
-	*/
+	 * Decide how to present network health
+	 *
+	 */
 	private function format_health_data()
 	{
 		# host bar color

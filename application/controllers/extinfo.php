@@ -2,9 +2,9 @@
 /**
  * Extinfo controller
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 class Extinfo_Controller extends Authenticated_Controller {
 	public $current = false;
@@ -18,20 +18,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Default controller method
-	*	Redirects to show_process_info() which
-	*	is the equivalent of calling extinfo.cgi?type=0
-	*/
+	 * Default controller method
+	 * Redirects to show_process_info() which
+	 * is the equivalent of calling extinfo.cgi?type=0
+	 */
 	public function index()
 	{
 		url::redirect(Router::$controller.'/show_process_info');
 	}
 
 	/**
-	*	@name details
-	*	@desc
-	*
-	*/
+	 *
+	 *
+	 */
 	public function details($type='host', $host=false, $service=false)
 	{
 		$type = $this->input->get('type', $type);
@@ -377,11 +376,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name	command_link
-	*	@desc	Private helper function to save us from typing
-	* 			the links to the cmd controller
-	*
-	*/
+	 * Private helper function to save us from typing
+	 * the links to the cmd controller
+	 *
+	 */
 	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='command', $force=false)
 	{
 		$host = trim($host);
@@ -404,9 +402,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name	show_process_info
-	*	@desc	Show Nagios process info
-	*/
+	 * Show Nagios process info
+	 */
 	public function show_process_info()
 	{
 		$auth = new Nagios_auth_Model();
@@ -652,10 +649,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	@name 	unauthorized
-	*	@desc	Display message to user when they lack proper
-	* 			credentials to view info on an object
-	*/
+	 * Display message to user when they lack proper
+	 * credentials to view info on an object
+	 */
 	public function unauthorized($type='host')
 	{
 		$type = trim(strtolower($type));
