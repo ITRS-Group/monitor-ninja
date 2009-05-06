@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if ! test "$@"; then
+if test "$#" -eq 0; then
 	echo "phpdoc to doxygen conversion"
 	echo
 	echo "Usage: $0 [-i] [-e sed-expression] file1 file2 file3 filen..."
