@@ -705,10 +705,10 @@ class Current_status_Model extends Model
 	 * and that are in the specified state.
 	 * Called from get_servicegroup_hoststatus() and get_servicegroup_hoststatus()
 	 *
-	 * @param str $grouptype [host|service]
-	 * @param str $groupname
-	 * @param int $hoststatus
-	 * @param int $servicestatus
+	 * @param $grouptype [host|service]
+	 * @param $groupname
+	 * @param $hoststatus
+	 * @param $servicestatus
 	 * @return db result
 	 */
 	public function get_group_hoststatus($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false)
@@ -806,8 +806,8 @@ class Current_status_Model extends Model
 	/**
 	 * Verify input host_name(s) and redirect to get_host_status()
 	 * @param $host_names (array/string) host_name(s) to check
-	 *      Also accepts 'all' as input, which will return
-	 *      all hosts the user has been granted access to.
+	 *	Also accepts 'all' as input, which will return
+	 *	all hosts the user has been granted access to.
 	 * @param $show_services Show services if true, otherwise ignore them.
 	 * @param $state_filter Bitmask filter of host statuses
 	 * @param $sort_field field to sort on
@@ -848,14 +848,14 @@ class Current_status_Model extends Model
 	/**
 	 * Fetch status data for a subset of hosts
 	 * (and their related services if show_services is set to true).
-	 * @param array host_list
-	 * @param bool show_services, will only show services
+	 * @param $host_list List of hosts to get status for
+	 * @param $show_services Only show services
 	 * for each host if this is set to true
 	 * Accepts 'all' as input, which will return
 	 * all hosts the user has been granted access to.
-	 * @param int $state_filter value of current_state to filter for
-	 * @param str $sort_field field to sort on
-	 * @param str $sort_order ASC/DESC
+	 * @param $state_filter value of current_state to filter for
+	 * @param $sort_field field to sort on
+	 * @param $sort_order ASC/DESC
 	 */
 	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC', $service_filter=false)
 	{

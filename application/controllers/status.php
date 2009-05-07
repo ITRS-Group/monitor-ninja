@@ -2,9 +2,9 @@
 /**
  * Status controller
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
+ * @package NINJA
+ * @author op5 AB
+ * @license GPL
  */
 class Status_Controller extends Authenticated_Controller {
 	public $current = false;
@@ -26,11 +26,11 @@ class Status_Controller extends Authenticated_Controller {
 	/**
 	 * Equivalent to style=hostdetail
 	 *
-	 * @param string $host
-	 * @param int $hoststatustypes
-	 * @param str $sort_order
-	 * @param str $sort_field
-	 * @param bool $show_services
+	 * @param $host
+	 * @param $hoststatustypes
+	 * @param $sort_order
+	 * @param $sort_field
+	 * @param $show_services
 	 */
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false)
 	{
@@ -92,12 +92,12 @@ class Status_Controller extends Authenticated_Controller {
 	/**
 	 * List status details for hosts and services
 	 *
-	 * @param str $name
-	 * @param int $servicestatustypes
-	 * @param int $hoststatustypes
-	 * @param str $sort_order
-	 * @param str $sort_field
-	 * @param str $group_type
+	 * @param $name
+	 * @param $servicestatustypes
+	 * @param $hoststatustypes
+	 * @param $sort_order
+	 * @param $sort_field
+	 * @param $group_type
 	 */
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
 	{
@@ -178,13 +178,13 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Show servicegroup status, wrapper for group('service', ...)
-	* 	@param 	str $group
-	* 	@param 	int $hoststatustypes
-	* 	@param 	int $servicestatustypes
-	* 	@param 	str $style
-	*
-	*/
+	 * Show servicegroup status, wrapper for group('service', ...)
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 *
+	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
 		$group = $this->input->get('group', $group);
@@ -196,13 +196,13 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Show hostgroup status, wrapper for group('host', ...)
-	* 	@param 	str $group
-	* 	@param 	int $hoststatustypes
-	* 	@param 	int $servicestatustypes
-	* 	@param 	str $style
-	*
-	*/
+	 * Show hostgroup status, wrapper for group('host', ...)
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 *
+	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
 		$group = $this->input->get('group', $group);
@@ -216,11 +216,11 @@ class Status_Controller extends Authenticated_Controller {
 	/**
 	 * Show status for host- or servicegroups
 	 *
-	 * @param str $grouptype
-	 * @param str $group
-	 * @param int $hoststatustypes
-	 * @param int $servicestatustypes
-	 * @param str $style
+	 * @param $grouptype
+	 * @param $group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
 	 */
 
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
@@ -288,8 +288,8 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Display servicegroup summary
-	*/
+	 * Display servicegroup summary
+	 */
 	public function servicegroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$group = $this->input->get('group', $group);
@@ -386,10 +386,10 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	shows host total summary information for a specific host- or servicegroup
-	*
-	* 	@return obj
-	*/
+	 * shows host total summary information for a specific host- or servicegroup
+	 *
+	 * @return obj
+	 */
 	public function _show_group_totals_summary($grouptype='service', $group=false)
 	{
 		$group = $this->input->get('group', $group);
@@ -495,9 +495,9 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*
-	*
-	*/
+	 *
+	 *
+	 */
 	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false)
 	{
 		$hostlist = $this->input->get('hostlist', $hostlist);
@@ -638,15 +638,15 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Fetch info on single service- or hostgroup and assign to returned content object for later use in template
-	*
-	* 	@param 	str $grouptype [host|service]
-	* 	@param 	str $group name of group
-	* 	@param 	int $hoststatustypes
-	* 	@param 	int $servicestatustypes
-	* 	@param 	str $style
-	* 	@return obj
-	*/
+	 * Fetch info on single service- or hostgroup and assign to returned content object for later use in template
+	 *
+	 * @param $grouptype [host|service]
+	 * @param $group name of group
+	 * @param $hoststatustypes
+	 * @param $servicestatustypes
+	 * @param $style
+	 * @return obj
+	 */
 	public function _show_group($grouptype='service', $group=false, $hoststatustypes=false, $servicestatustypes=false, $style='overview')
 	{
 		$grouptype = $this->input->get('grouptype', $grouptype);
