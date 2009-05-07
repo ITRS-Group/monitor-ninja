@@ -1,11 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_hosts">
 	<div class="widget-header"><?php echo $this->translate->_('Host overview') ?></div>
-	<div class="widget-editbox">
-		<!--Edit the widget here-->
-	</div>
+	<div class="widget-editbox"></div>
 	<div class="widget-content">
-		<table style="border-spacing: 1px">
+		<table>
 			<colgroup>
 				<col style="width: 25%" />
 				<col style="width: 25%" />
@@ -19,7 +17,7 @@
 				<th><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
-				<td style="padding: 0px" class="white">
+				<td class="white">
 					<table>
 							<?php if (count($hosts_down) > 0) { foreach ($hosts_down as $url => $title) { ?>
 							<tr>
@@ -39,7 +37,7 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding: 0px" class="white">
+				<td class="white">
 					<table>
 							<?php if (count($hosts_unreachable) > 0) { foreach ($hosts_unreachable as $url => $title) { ?>
 							<tr>
@@ -59,7 +57,7 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding: 0px" class="white">
+				<td class="white">
 					<table>
 							<?php	if ($current_status->hosts_up > 0) { ?>
 							<tr>
@@ -74,7 +72,7 @@
 							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { echo '<td>'.$this->translate->_('N/A').'</td>'; } ?>
 					</table>
 				</td>
-				<td style="padding: 0px" class="white">
+				<td class="white">
 					<table>
 							<?php if (count($hosts_pending_disabled) > 0) { foreach ($hosts_pending_disabled as $url => $title) { ?>
 							<tr>
