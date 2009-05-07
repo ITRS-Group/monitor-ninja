@@ -241,7 +241,7 @@ class Status_Controller extends Authenticated_Controller {
 				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type='.$grouptype.'group');
 				break;
 			case 'summary':
-				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type='.$grouptype.'group');
+				return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
 				break;
 		}
 		$group_details = false;
