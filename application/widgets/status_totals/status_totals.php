@@ -244,6 +244,11 @@ class Status_totals_Widget extends widget_Core {
 				$group_type = str_replace('group', '', $grouptype);
 				$group_info = $status->get_group_hoststatus($group_type, $groupname);
 				break;
+			 case 'group_summary':
+				$grouptype = isset($arguments[1]) ? $arguments[1] : false;
+				$groupname = isset($arguments[2]) ? $arguments[2] : false;
+				$group_info = $status->get_group_hoststatus($grouptype, $groupname);
+				break;
 		}
 
 		$host_state = isset($arguments[2]) ? $arguments[2] : false;
