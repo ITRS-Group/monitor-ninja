@@ -28,6 +28,7 @@ tr.even td.white,
 tr.odd td.white {
 	background: #ffffff;
 	border: 1px solid #ffffff;
+	padding: 0px;
 }
 
 tr.even td.w80,
@@ -84,17 +85,12 @@ th.no-sort,
 th.header {
 	background: #f5f5ef url(../images/icons/arrows/sort-none.png) no-repeat center right;
 	cursor: pointer;
-	font-weight: bold;
 	border-bottom: 1px solid #dcdccd;
 	border-right: 1px solid #dcdccd;
-	text-transform: capitalize;
 }
 
 th.no-sort {
 	background:#f5f5ef;
-	background:#414140;
-	background: #ffffff;
-	background: #f5f5ef;
 	cursor: default;
 }
 
@@ -103,7 +99,6 @@ border-left: 1px solid #dcdccd;
 }
 
 th.header:first-child {
-	/* #999990 */
 	background: #dcdccd url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
 	cursor: pointer;
 	border-left: 1px solid #dcdccd;
