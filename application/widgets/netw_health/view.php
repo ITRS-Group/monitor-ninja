@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w32 left " id="widget-network_health">
 	<div class="widget-header"><?php echo $title ?></div>
-	<div class="widget-editbox"><!--Edit the widget here--></div>
 	<div class="widget-content">
 		<table summary="Network healt" class="healt">
 				<tr>
@@ -21,13 +20,6 @@
 					</td>
 				</tr>
 			</table>
-		<?php
-			if (!empty($arguments)) {
-				foreach ($arguments as $arg) {
-					echo $arg.'<br />';
-				}
-			}
-		?>
 	</div>
 </div>
 <div style="clear:both"></div>
