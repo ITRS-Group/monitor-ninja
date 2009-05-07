@@ -42,13 +42,13 @@ class Status_totals_Widget extends widget_Core {
 		$label_pending = $this->translate->_('Pending');
 		$label_all_problems = $this->translate->_('All Problems');
 		$label_all_types = $this->translate->_('All Types');
-		$label_all_host_problems = $this->translate->_('Problems in total');
-		$label_all_host_types = $this->translate->_('Types in total');
-		$label_all_service_problems = $this->translate->_('Problems in total');
-		$label_all_service_types = $this->translate->_('Types in total');
+		$label_all_host_problems = $this->translate->_('Problems in Total');
+		$label_all_host_types = $this->translate->_('Types in Total');
+		$label_all_service_problems = $this->translate->_('Problems in Total');
+		$label_all_service_types = $this->translate->_('Types in Total');
 
 		$host_title = $this->translate->_('Host Status Totals');
-		$service_title = $this->translate->_('Service status totals');
+		$service_title = $this->translate->_('Service Status Totals');
 		$total_up = $current_status->hosts_up;
 		$total_down = $current_status->hosts_down;
 		$total_unreachable = $current_status->hosts_unreachable;
