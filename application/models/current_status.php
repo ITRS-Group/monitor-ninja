@@ -397,7 +397,7 @@ class Current_status_Model extends Model
 				service s,
 				host h
 			WHERE
-				s.host_name = h.id AND
+				s.host_name = h.host_name AND
 				s.id IN (".$str_servicelist.")";
 		$result = $this->db->query($sql);
 
@@ -754,7 +754,7 @@ class Current_status_Model extends Model
 				".$all_sql."
 				ssg.".$grouptype."group = sg.id AND
 				".$member_match."
-				h.id=s.host_name AND
+				h.host_name=s.host_name AND
 				h.id IN (".$hostlist_str.") ".$filter_sql."
 			GROUP BY
 				h.id, s.current_state
@@ -946,7 +946,7 @@ class Current_status_Model extends Model
 				WHERE
 					h.id IN (".$host_str.") AND
 					s.id IN (".$service_str.") AND
-					s.host_name = h.id
+					s.host_name = h.host_name
 					".$filter_sql."
 				ORDER BY
 					".$sort_field." ".$sort_order;
@@ -1156,7 +1156,7 @@ class Current_status_Model extends Model
 					service s
 				WHERE
 					h.host_name=".$this->db->escape($host_name)." AND
-					s.host_name=h.id AND
+					s.host_name=h.host_name AND
 					s.service_description=".$this->db->escape($service_description);
 		}
 		$result = $this->db->query($sql);

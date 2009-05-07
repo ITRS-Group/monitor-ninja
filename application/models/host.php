@@ -109,7 +109,7 @@ class Host_Model extends Model {
 					host h
 				WHERE
 					h.host_name=".$this->db->escape($host_name)." AND
-					s.host_name=h.id AND
+					s.host_name=h.host_name AND
 					s.id IN(".$service_str.")
 				GROUP BY
 					s.current_state;";

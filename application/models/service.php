@@ -38,17 +38,13 @@ class Service_Model extends Model
 			if (!array_key_exists($name, $this->auth->services_r)) {
 				return false;
 			} else {
-				$service_info = $this->db->query("
-					SELECT
-						s.* FROM service s,
-						host h
-					WHERE
-						CONCAT(h.host_name, ';', s.service_description)=".$this->db->escape($name)." AND
-						h.id=s.host_name");
+				$service_info = $this->db->query
+					("SELECT  * FROM service s" .
+					 "WHERE CONCAT(s.host_name, ';', s.service_description)=".
+					 $this->db->escape($name));
 			}
-		} else {
-			return false;
 		}
+
 		return $service_info !== false ? $service_info->current() : false;
 	}
 
@@ -90,8 +86,7 @@ class Service_Model extends Model
 				WHERE
 					hg.hostgroup_name=".$this->db->escape($group)." AND
 					hhg.hostgroup = hg.id AND
-					h.id=s.host_name AND
-					s.host_name=h.id AND
+					s.host_name=h.host_name AND
 					s.id IN(".$service_str.")
 				ORDER BY
 					s.service_description";
@@ -128,7 +123,7 @@ class Service_Model extends Model
 					sg.servicegroup_name=".$this->db->escape($group)." AND
 					ssg.servicegroup = sg.id AND
 					s.id=ssg.service AND
-					h.id)s.host_name AND
+					h.host_name=s.host_name AND
 					h.id IN(".$host_str.")
 				ORDER BY
 					h.host_name";
