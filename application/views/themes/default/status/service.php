@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+
 <?php
 if (!empty($widgets)) {
 	foreach ($widgets as $widget) {
@@ -8,7 +9,8 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_service">
-<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
+<div id="status_msg" class="widget-header"><?php //echo $sub_title ?></div>
+<h3><?php echo $sub_title ?></h3>
 
 <table style="table-layout: fixed" id="sorttable">
 	<colgroup>
@@ -24,18 +26,18 @@ if (!empty($widgets)) {
 		<col style="width: 30px" />
 	</colgroup>
 	<thead>
-	<tr>
-		<th class="no-sort">&nbsp;</th>
-		<th class="headerSortDown"><?php echo $this->translate->_('Host') ?></th>
-		<th class="header"><?php echo $this->translate->_('') ?></th>
-		<th class="header"><?php echo $this->translate->_('Service') ?></th>
-		<th class="header"><?php echo $this->translate->_('Last check') ?></th>
-		<th class="header"><?php echo $this->translate->_('Duration') ?></th>
-		<th class="no-sort"><?php echo $this->translate->_('Status information') ?></th>
-		<th class="header" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
-		<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
-		<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
-	</tr>
+		<tr>
+			<th class="no-sort">&nbsp;</th>
+			<th class="headerSortDown"><?php echo $this->translate->_('Host') ?></th>
+			<th class="header"><?php echo $this->translate->_('') ?></th>
+			<th class="header"><?php echo $this->translate->_('Service') ?></th>
+			<th class="header"><?php echo $this->translate->_('Last check') ?></th>
+			<th class="header"><?php echo $this->translate->_('Duration') ?></th>
+			<th class="no-sort"><?php echo $this->translate->_('Status information') ?></th>
+			<th class="header" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+			<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
+			<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
+		</tr>
 	</thead>
 	<tbody>
 <?php
@@ -46,7 +48,7 @@ if (!empty($widgets)) {
 		$a++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="bl <?php echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
+		<td class="icon bl <?php echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
 			<?php
 				if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
@@ -54,31 +56,30 @@ if (!empty($widgets)) {
 			?>
 		</td>
 		<td class="<?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
-			<?php
-			if ($curr_host != $row->host_name) { ?>
-					<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
-					<div style="float: right">
-						<?php
-							if ($row->problem_has_been_acknowledged) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
-							}
-							if (empty($row->notifications_enabled)) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
-							}
-							if (!$row->active_checks_enabled) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
-							}
-							if (isset($row->is_flapping) && $row->is_flapping) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
-							}
-							if ($row->scheduled_downtime_depth > 0) {
-								echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
-							}
-						?>
-					</div>
+			<?php if ($curr_host != $row->host_name) { ?>
+				<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
+				<div style="float: right">
+					<?php
+						if ($row->problem_has_been_acknowledged) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
+						}
+						if (empty($row->notifications_enabled)) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
+						}
+						if (!$row->active_checks_enabled) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
+						}
+						if (isset($row->is_flapping) && $row->is_flapping) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
+						}
+						if ($row->scheduled_downtime_depth > 0) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
+						}
+					?>
+				</div>
 			<?php } ?>
 		</td>
-		<td class="bl">
+		<td class="bl icon">
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
