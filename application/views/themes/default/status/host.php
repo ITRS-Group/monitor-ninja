@@ -38,7 +38,7 @@ if (!empty($widgets)) {
 # Doing so results in a Kohana error if no hosts are found. That
 # is a VERY, VERY BAD THING, so please pretty please leave it where
 # it is (yes, I'm talking to you, My).
-if (!is_array($result)) {
+if (empty($result)) {
 	$result = array();
 }
 $a = 0;
