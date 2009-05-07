@@ -20,7 +20,7 @@
 			<?php } if (count($problem) == 0) { ?>
 				<tr>
 					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/scheduled-not.png', array('alt' => $this->translate->_('N/A'))) ?></td>
-					<td>N/A</td>
+					<td><?php echo $this->translate->_('N/A')?></td>
 				</tr>
 			<?php } ?>
 		</table>
