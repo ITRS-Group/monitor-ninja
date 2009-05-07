@@ -763,6 +763,159 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	*	Show a grid of hostgroup(s)
+	* 	A wrapper for group_grid('host')
+	*
+	*/
+	public function hostgroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+
+		$grouptype = 'host';
+		return $this->group_grid($grouptype, $group, $hoststatustypes, $servicestatustypes);
+	}
+
+	/**
+	*	Show a grid of servicegroup(s)
+	* 	A wrapper for group_grid('services')
+	*
+	*/
+	public function servicegroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+
+		$grouptype = 'service';
+		return $this->group_grid($grouptype, $group, $hoststatustypes, $servicestatustypes);
+	}
+
+	/**
+	*	show a grid layout of host- or servicegroup(s)
+	*
+	*/
+	public function group_grid($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false)
+	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$group = trim($group);
+		$this->template->content = $this->add_view('status/group_grid');
+		$content = $this->template->content;
+		$t = $this->translate;
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+
+		$content->label_host = $t->_('Host');
+		$content->label_services = $t->_('Services');
+		$content->label_actions = $t->_('Actions');
+		if (strtolower($group) == 'all') {
+			$content->label_header = $grouptype == 'service' ? $t->_('Status Grid For All Service Groups') : $t->_('Status Grid For All Host Groups');
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
+			foreach ($group_info_res as $group_res) {
+				$groupname_tmp = $group_res->{$grouptype.'group_name'};
+				$group_details[] = $this->_show_grid($grouptype, $groupname_tmp);
+			}
+		} else {
+			# make sure we have the correct servicegroup
+			$group_info_res = $grouptype == 'service' ?
+				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
+				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+			if ($group_info_res) {
+				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
+			} else {
+				# overwrite previous view with the error view, add some text and bail out
+				$this->template->content = $this->add_view('error');
+				$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
+				return;
+			}
+			$label_header = $grouptype == 'service' ? $t->_('Status Grid For Service Group ') : $t->_('Status Grid For Host Group ');
+			$content->label_header = $label_header."'".$group."'";
+			$group_details[] = $this->_show_grid($grouptype, $group);
+		}
+		$content->group_details = $group_details;
+		$content->logos_path = $this->logos_path;
+		$content->icon_path	= $this->img_path('images/icons/16x16/');
+		$content->label_host_extinfo = $t->_('View Extended Information For This Host');
+		$content->label_service_status = $t->_('View Service Details For This Host');
+		$content->label_status_map = $t->_('Locate Host On Map');
+		$nacoma_link = false;
+		/**
+		 * Modify config/config.php to enable NACOMA
+		 * and set the correct path in config/config.php,
+		 * if installed, to use this
+		 */
+		if (Kohana::config('config.nacoma_path')!==false) {
+			$content->label_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
+			$content->nacoma_path = Kohana::config('config.nacoma_path');
+		}
+
+		/**
+		 * Enable PNP4Nagios integration
+		 * Set correct path in config/config.php
+		 */
+		$pnp_link = false;
+		if (Kohana::config('config.pnp4nagios_path')!==false) {
+			$content->label_pnp = $t->_('Show performance graph');
+			$content->pnp_path = Kohana::config('config.pnp4nagios_path');
+		}
+		#echo Kohana::debug($content->group_details);
+		#die();
+	}
+
+	/**
+	*	displays status grid for a specific host- or servicegroup
+	*
+	*/
+	public function _show_grid($grouptype='service', $group=false)
+	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+
+		$service_info = array();
+		$result = $this->current->get_group_info($grouptype, $group);
+		$content = false;
+		$hosts = array();
+		$seen_hosts = array();
+		if ($result->count() > 0) {
+			foreach ($result as $row) {
+				# loop over result and assign to return variable
+				if (!in_array($row->host_name, $seen_hosts)) {
+					$hosts[] = array(
+						'host_name' => $row->host_name,
+						'current_state' => $row->current_state,
+						'notes_url' => $row->notes_url,
+						'action_url' => $row->action_url,
+						'icon_image' => $row->icon_image,
+						'icon_image_alt' => $row->icon_image_alt
+					);
+					$seen_hosts[] = $row->host_name;
+				}
+				$service_info[$row->host_name][] = array(
+					'current_state' => $row->service_state,
+					'service_description' => $row->service_description
+				);
+			}
+		} else {
+			return false;
+		}
+		$content->hosts = $hosts;
+		$content->services = $service_info;
+		$content->group_name = $group;
+		$content->group_type = $grouptype;
+		return $content;
+	}
+
+	/**
 	 * Create header links for status listing
 	 */
 	private function header_links(
