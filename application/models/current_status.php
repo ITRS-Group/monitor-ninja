@@ -1256,4 +1256,55 @@ class Current_status_Model extends Model
 
 		return($options);
 	}
+
+	/**
+	 * Finds all hosts and services that are members of a specific host- or servicegroup
+	 * Will return all info on the hosts but only service_description and current_state for services
+	 *
+	 * @param str $grouptype [host|service]
+	 * @param str $groupname
+	 * @return db result
+	 */
+	public function get_group_info($grouptype='service', $groupname=false)
+	{
+		$groupname = trim($groupname);
+		if (empty($groupname)) {
+			return false;
+		}
+
+		$hostlist = $this->get_hostlist();
+		if (empty($hostlist)) {
+			return;
+		}
+
+		$hostlist_str = implode(',', $hostlist);
+
+		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$this->db->escape($groupname)." AND" : '';
+
+		# we need to match against different field depending on if host- or servicegroup
+		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+
+		$sql = "
+			SELECT
+				h.*,
+				s.current_state AS service_state,
+				s.service_description
+			FROM
+				service s,
+				host h,
+				".$grouptype."group sg,
+				".$grouptype."_".$grouptype."group ssg
+			WHERE
+				".$all_sql."
+				ssg.".$grouptype."group = sg.id AND
+				".$member_match."
+				h.id=s.host_name AND
+				h.id IN (".$hostlist_str.")
+			ORDER BY
+				h.host_name,
+				s.service_description,
+				s.current_state;";
+		$result = $this->db->query($sql);
+		return $result;
+	}
 }
