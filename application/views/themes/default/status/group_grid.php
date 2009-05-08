@@ -33,14 +33,6 @@ foreach ($group_details as $details) {
 		<?php
 		foreach ($details->hosts as $host) {
 			$i++;
-			$host_class = false;
-			switch ($host['current_state']) {
-				case Current_status_Model::HOST_DOWN: case Current_status_Model::HOST_UNREACHABLE:
-					$host_class = 'HOST'.Current_status_Model::status_text($host['current_state']);
-					break;
-				default:
-					$host_class = 'Odd';
-			}
 		?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<td class="icon bl">
@@ -52,7 +44,6 @@ foreach ($group_details as $details) {
 			<td style="white-space: normal"><?php echo html::anchor('extinfo/details/host/'.$host['host_name'], html::specialchars($host['host_name'])) ?></td>
 			<td style="white-space: normal">
 			<?php	foreach	($details->services[$host['host_name']] as $service) {
-						//print_r($service);
 						$search = array(0,1,2,3,4);
 						$replace = array('ok','warning','unknown','critical','pending'); // rätt ?? dubbelkolla
 						echo html::image('/application/views/themes/default/images/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;';
