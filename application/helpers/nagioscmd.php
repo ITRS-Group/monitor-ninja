@@ -262,7 +262,7 @@ class nagioscmd_Core
 		 "CHANGE_CONTACT_MODSATTR",
 
 		 /* custom command introduced in Nagios 3.x */
-		 "CUSTOM_COMMAND");
+		 999 => "CUSTOM_COMMAND");
 
 		if (!empty($id)) {
 			return $cmd_name[$id];
