@@ -977,12 +977,12 @@ class Current_status_Model extends Model
 
 		$retval = false;
 		switch ($type) {
-			case 'host':
+			case 'host': case 'hostgroup':
 				if (array_key_exists($db_status, $host_states)) {
 					$retval = $host_states[$db_status];
 				}
 				break;
-			case 'service':
+			case 'service': case 'servicegroup':
 				if (array_key_exists($db_status, $service_states)) {
 					$retval = $service_states[$db_status];
 				}
