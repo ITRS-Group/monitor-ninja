@@ -1150,7 +1150,7 @@ class Current_status_Model extends Model
 					s.execution_time,
 					s.next_check,
 					s.event_handler_enabled,
-					s.outout AS plugin_output
+					s.output AS plugin_output
 				FROM
 					host h,
 					service s
