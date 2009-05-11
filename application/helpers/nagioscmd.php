@@ -294,14 +294,14 @@ class nagioscmd_Core
 		if (empty($name))
 			return false;
 
-		$first = array_search($name, $this->cmd_name);
+		$first = self::cmd_name(false, $name);
 		if ($first !== false) {
 			return $first;
 		}
 
 		# handle a CMD_ prefixed name too
 		if (substr($name, 0, 4) === 'CMD_') {
-			return array_search(substr($name, 4), $this->cmd_name);
+			return self::cmd_name(false, substr($name, 4));
 		}
 		return false;
 	}
@@ -314,13 +314,13 @@ class nagioscmd_Core
 	public function nagios_name($id)
 	{
 		if (is_numeric($id)) {
-			$base_cmd = $this->command_name($id);
+			$base_cmd = self::command_name($id);
 			if (!$base_cmd) {
 				return false;
 			}
 			return "CMD_" . $base_cmd;
 		}
-		if ($this->command_id($name)) {
+		if (self::command_id($name)) {
 			return "CMD_" . $id;
 		}
 		return false;
