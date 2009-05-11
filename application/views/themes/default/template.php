@@ -59,7 +59,6 @@
 			});
 			//-->
 		</script>
-		<?php echo html::script('application/media/js/ajax_test.js') ?>
 		<?php
 			if (!empty($js_header)) {
 				echo $js_header;
