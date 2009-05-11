@@ -238,7 +238,7 @@ class Status_Controller extends Authenticated_Controller {
 				$this->template->content = $this->add_view('status/group_overview');
 				break;
 			case 'detail': case 'details':
-				url::redirect(Router::$controller.'/service/'. $group. '?hoststatustypes=' . $hoststatustypes . '&servicestatustypes=' . $servicestatustypes . '&group_type='.$grouptype.'group');
+				return $this->service($group, $hoststatustypes, $servicestatustypes, false, false, false, $grouptype.'group');
 				break;
 			case 'summary':
 				return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
