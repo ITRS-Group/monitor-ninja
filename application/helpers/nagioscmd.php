@@ -325,4 +325,18 @@ class nagioscmd_Core
 		}
 		return false;
 	}
+
+	public function submit_to_nagios($cmd, $pipe_path)
+	{
+		$fh = fopen($pipe_path, "w");
+		if ($fh === false)
+			return false;
+
+		$len = fprintf($fh, "[%d] %s\n", time(), $cmd);
+		fclose($fh);
+		if (!$len)
+			return false;
+
+		return true;
+	}
 }
