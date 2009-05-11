@@ -1298,7 +1298,7 @@ class Current_status_Model extends Model
 				".$all_sql."
 				ssg.".$grouptype."group = sg.id AND
 				".$member_match."
-				h.id=s.host_name AND
+				h.host_name=s.host_name AND
 				h.id IN (".$hostlist_str.")
 			ORDER BY
 				h.host_name,

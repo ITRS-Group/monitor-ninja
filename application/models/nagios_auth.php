@@ -154,7 +154,7 @@ class Nagios_auth_Model extends Model
 			'FROM host, service WHERE';
 		}
 
-		$query .= ' host.id = service.host_name';
+		$query .= ' host.host_name = service.host_name';
 
 		$result = $this->db->query($query);
 		$front = $back = array();
