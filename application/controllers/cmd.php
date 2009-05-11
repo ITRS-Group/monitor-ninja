@@ -28,6 +28,15 @@ class Cmd_Controller extends Authenticated_Controller
 	}
 
 	/**
+	*
+	*
+	*/
+	public function request_command()
+	{
+		return false;
+	}
+
+	/**
 	 * Display "You're not authorized" message
 	 */
 	public function unauthorized()
