@@ -9,6 +9,8 @@
 class nagioscmd_Core
 {
 	public function cmd_name($id = false, $name = false)
+	{
+		$cmd_name = array
 		("NONE",
 
 		 "ADD_HOST_COMMENT",
@@ -262,6 +264,14 @@ class nagioscmd_Core
 		 /* custom command introduced in Nagios 3.x */
 		 "CUSTOM_COMMAND");
 
+		if (!empty($id)) {
+			return $cmd_name[$id];
+		}
+		if (!empty($name)) {
+			return array_search($name, $cmd_name);
+		}
+	}
+
 	/**
 	 * Obtain the command name for a command id
 	 * @param $id The id of the command
@@ -271,9 +281,7 @@ class nagioscmd_Core
 	{
 		if ($id === false)
 			return false;
-		if (!isset($this->cmd_name[$id]))
-			return false;
-		return $this->cmd_name[$id];
+		return self::cmd_name($id);
 	}
 
 	/**
