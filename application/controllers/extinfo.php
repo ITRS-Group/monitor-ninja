@@ -127,7 +127,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->duration = $result->duration;
 		$content->groups = $groups;
 		$content->host_address = $result->address;
-		$content->status_info = $result->plugin_output;
+		$content->status_info = $result->output;
 		$content->lable_perf_data = $t->_('Performance Data');
 		$content->perf_data = $result->perf_data;
 		$content->lable_current_attempt = $t->_('Current Attempt');
