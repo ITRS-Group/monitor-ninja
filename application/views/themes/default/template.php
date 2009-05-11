@@ -36,27 +36,27 @@
 				});
 
 				$(function(){
-	$.fn.EasyWidgets({
-		i18n : {
-			editText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Settings" style="margin: -12px 30px 0px auto; display: block" />',
-			closeText : '<img src="/ninja/application/views/themes/default/images/icons/box-close.png" alt="Close widget"   style="margin: -12px 0px 0px auto; display: block" />',
-			collapseText : '<img src="/ninja/application/views/themes/default/images/icons/box-maximize.png" alt="Collapse"  style="margin: -12px 15px 0px auto; display: block" />',
-			cancelEditText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Cancel" style="margin: -12px 30px 0px auto; display: block" />',
-			extendText : '<img src="/ninja/application/views/themes/default/images/icons/box-mimimize.png" alt="Extend" style="margin: -12px 15px 0px auto; display: block" />'
-		},
-		effects : {
-			effectDuration : 150,
-			widgetShow : 'slide',
-			widgetHide : 'slide',
-			widgetClose : 'slide',
-			widgetExtend : 'slide',
-			widgetCollapse : 'slide',
-			widgetOpenEdit : 'slide',
-			widgetCloseEdit : 'slide',
-			widgetCancelEdit : 'slide'
-		}
-	});
-});
+				$.fn.EasyWidgets({
+					i18n : {
+						editText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Settings" style="margin: -12px 30px 0px auto; display: block" />',
+						closeText : '<img src="/ninja/application/views/themes/default/images/icons/box-close.png" alt="Close widget"   style="margin: -12px 0px 0px auto; display: block" />',
+						collapseText : '<img src="/ninja/application/views/themes/default/images/icons/box-maximize.png" alt="Collapse"  style="margin: -12px 15px 0px auto; display: block" />',
+						cancelEditText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Cancel" style="margin: -12px 30px 0px auto; display: block" />',
+						extendText : '<img src="/ninja/application/views/themes/default/images/icons/box-mimimize.png" alt="Extend" style="margin: -12px 15px 0px auto; display: block" />'
+					},
+					effects : {
+						effectDuration : 150,
+						widgetShow : 'slide',
+						widgetHide : 'slide',
+						widgetClose : 'slide',
+						widgetExtend : 'slide',
+						widgetCollapse : 'slide',
+						widgetOpenEdit : 'slide',
+						widgetCloseEdit : 'slide',
+						widgetCancelEdit : 'slide'
+					}
+				});
+			});
 			//-->
 		</script>
 		<?php echo html::script('application/media/js/ajax_test.js') ?>
@@ -64,13 +64,13 @@
 			if (!empty($js_header)) {
 				echo $js_header;
 			}
-	?>
-
+		?>
 	</head>
 
 	<body>
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios'); ///ninja/index.php/tac ?>
+			<?php //echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios'); ///ninja/index.php/tac ?>
+			<div style="font-size: 16px; margin: 7px 10px; float: left">NINJA</div>
 			<form action="">
 				<div id="navigation">
 					<?php //print_r( html::breadcrumb()); ?>
@@ -80,7 +80,6 @@
 						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
 					}
 					?>
-
 					<input type="text" name="show_host" value="Show host" onfocus="this.value=''" onblur="this.value='Show host'" />
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
@@ -119,7 +118,6 @@
 				?>
 			</ul>
 		</div>
-
 		<div id="content">
 			<?php if (isset($content)) echo $content ?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
