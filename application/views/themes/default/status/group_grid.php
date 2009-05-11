@@ -1,7 +1,7 @@
 
-			<div class='statusTitle'>
-				<?php echo $label_header ?>
-			</div>
+			<!--<div class='statusTitle'>
+				<?php //echo $label_header ?>
+			</div>-->
 
 <?php
 $i = 0;
