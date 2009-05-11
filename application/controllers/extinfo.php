@@ -677,4 +677,63 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 	}
 
+	/**
+	*	Display extinfo for host- and servicegroups
+	*
+	*/
+	public function group_details($grouptype='service', $group=false)
+	{
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+		$t = $this->translate;
+
+		if (empty($group)) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = $t->_("Error: No Group Name Specified");
+			return;
+		}
+
+		$group_info_res = $grouptype == 'service' ?
+			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
+			Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+
+		if ($group_info_res === false) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
+			return;
+		}
+
+		# check if nagios is running, will affect wich template to use
+		$status = Program_status_Model::get_all();
+		if (empty($status) || !$status->current()->is_running) {
+			$this->template->content = $this->add_view('extinfo/not_running');
+			$this->template->content->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
+			$this->template->content->info_message_extra = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
+			return;
+		} else {
+			$this->template->content = $this->add_view('extinfo/groups');
+		}
+
+		$content = $this->template->content;
+
+		$content->label_grouptype = $grouptype=='service' ? $t->_('Servicegroup') : $t->_('Hostgroup');
+		$content->group_alias = $group_info_res->alias;
+		$content->groupname = $group;
+		$content->label_commands = $t->_('Commands');
+		$content->label_schedule_downtime_hosts = $t->_('Schedule downtime for all hosts in this');
+		$content->cmd_schedule_downtime_hosts = nagioscmd::command_id('SCHEDULE_'.strtoupper($grouptype).'GROUP_HOST_DOWNTIME');
+		$content->label_schedule_downtime_services = $t->_('Schedule downtime for all services in this');
+		$content->cmd_schedule_downtime_services = nagioscmd::command_id('SCHEDULE_'.strtoupper($grouptype).'GROUP_SVC_DOWNTIME');
+		$content->label_enable = $t->_('Enable');
+		$content->label_disable = $t->_('Disable');
+		$content->label_notifications_hosts = $t->_('Notifications For All Hosts In This');
+		$content->cmd_enable_notifications_hosts = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'GROUP_HOST_NOTIFICATIONS');
+		$content->cmd_disable_notifications_hosts = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'GROUP_HOST_NOTIFICATIONS');
+		$content->label_notifications_services = $t->_('Notifications For All Services In This');
+		$content->cmd_disable_notifications_services = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'GROUP_SVC_NOTIFICATIONS');
+		$content->cmd_enable_notifications_services = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'GROUP_SVC_NOTIFICATIONS');
+		$content->label_active_checks = $t->_('Active Checks Of All Services');
+		$content->cmd_disable_active_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'GROUP_SVC_CHECKS');
+		$content->cmd_enable_active_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'GROUP_SVC_CHECKS');
+	}
 }
