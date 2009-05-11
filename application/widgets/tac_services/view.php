@@ -93,7 +93,12 @@
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
-							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { echo '<td>'.$this->translate->_('N/A').'</td>'; } ?>
+							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { ?>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-ok.png',$this->translate->_('OK')) ?></td>
+								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
+							<?php } ?>
 					</table>
 				</td>
 				<td style="padding:0px;" class="white">
