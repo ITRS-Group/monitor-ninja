@@ -8,7 +8,7 @@
  */
 class nagioscmd_Core
 {
-	private $cmd_name = array
+	public function cmd_name($id = false, $name = false)
 		("NONE",
 
 		 "ADD_HOST_COMMENT",
@@ -267,7 +267,7 @@ class nagioscmd_Core
 	 * @param $id The id of the command
 	 * @return False on errors, the command name as a string on success
 	 */
-	public command_name($id)
+	public function command_name($id)
 	{
 		if ($id === false)
 			return false;
@@ -281,7 +281,7 @@ class nagioscmd_Core
 	 * @param $name The name of the command
 	 * @return False on errors, the numeric id on success (may be 0)
 	 */
-	public command_id($name)
+	public function command_id($name)
 	{
 		if (empty($name))
 			return false;
@@ -303,7 +303,7 @@ class nagioscmd_Core
 	 * @param $id Numeric or string representation of command
 	 * @return False on errors, Nagios' macro name as string on
 	 */
-	public nagios_name($id)
+	public function nagios_name($id)
 	{
 		if (is_numeric($id)) {
 			$base_cmd = $this->command_name($id);
