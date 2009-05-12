@@ -741,15 +741,16 @@ class Extinfo_Controller extends Authenticated_Controller {
 	/**
 	*	Print comments for host or service
 	*/
-	public function _comments($host=false, $service=false, $type=false)
+	public function _comments($host=false, $service=false, $type=false, $all=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
 		$type = trim($type);
-		if (empty($host)) {
+		if (empty($all) && empty($host)) {
 			return false;
 		}
-		$comment_data = Comment_Model::fetch_comments($host, $service);
+
+		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service) :Comment_Model::fetch_comments($host, $service);
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
