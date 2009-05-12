@@ -702,7 +702,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		if ($group_info_res === false) {
 			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
+			$this->template->content->error_message = sprintf($t->_("The requested %s ('%s') wasn't found"), $grouptype, $group);
 			return;
 		}
 
