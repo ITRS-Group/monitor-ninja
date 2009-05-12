@@ -87,6 +87,7 @@ class Service_Model extends Model
 					hg.hostgroup_name=".$this->db->escape($group)." AND
 					hhg.hostgroup = hg.id AND
 					s.host_name=h.host_name AND
+					hhg.host = h.id AND
 					s.id IN(".$service_str.")
 				ORDER BY
 					s.service_description";
