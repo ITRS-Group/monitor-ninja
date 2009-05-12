@@ -359,6 +359,7 @@ class Status_Controller extends Authenticated_Controller {
 		$hostproperties = false;
 		$serviceproperties = false;
 
+		$content->grouptype = $grouptype;
 		$content->hoststatustypes = $hoststatustypes;
 		$content->hostproperties = $hostproperties;
 		$content->servicestatustypes = $servicestatustypes;
