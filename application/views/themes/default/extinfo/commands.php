@@ -53,7 +53,7 @@
 		<?php } ?>
 		<tr>
 			<td class="status icon">
-				<?php echo html::image('application/views/themes/default/images/icons/16x16/disabled.png', array('alt' => $lable_notifications, 'title' => $lable_notifications)); ?>
+				<?php echo html::image('application/views/themes/default/images/icons/16x16/nofity-disabled.png', array('alt' => $lable_notifications, 'title' => $lable_notifications)); ?>
 			</td>
 			<td><?php echo $link_notifications ?></td>
 		</tr>

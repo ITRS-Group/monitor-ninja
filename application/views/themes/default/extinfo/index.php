@@ -44,12 +44,12 @@ if (!empty($commands))
 		<tr>
 			<td><?php echo $lable_status_information ?></td>
 			<td class="status icon">&nbsp;</td>
-			<td><?php echo $status_info ?></td>
+			<td style="white-space: normal"><?php echo $status_info ?></td>
 		</tr>
 		<tr>
 			<td><?php echo $lable_perf_data ?></td>
 			<td class="status icon">&nbsp;</td>
-			<td><?php echo $perf_data ?></td>
+			<td style="white-space: normal"><?php echo $perf_data ?></td>
 		</tr>
 		<tr>
 			<td><?php echo $lable_current_attempt ?></td>
