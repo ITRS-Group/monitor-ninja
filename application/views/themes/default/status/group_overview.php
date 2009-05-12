@@ -11,8 +11,8 @@ if (!empty($widgets)) {
 	foreach ($group_details as $group) { ?>
 	<div class="widget left w98" id="status_<?php echo $group->groupname; ?>">
 		<div class="widget-header">
-			<a href='status.cgi?servicegroup=<?php echo $group->groupname ?>&amp;style=detail'><?php echo $group->group_alias ?></a>
-			(<a href='extinfo.cgi?type=8&amp;servicegroup=<?php echo $group->groupname ?>'><?php echo $group->groupname ?></a>)
+			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
+			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
 		</div>
 		<table style="table-layout: fixed">
 			<colgroup>

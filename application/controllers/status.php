@@ -279,6 +279,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content->lable_status = $t->_('Status');
 		$content->lable_services = $t->_('Services');
 		$content->lable_actions = $t->_('Actions');
+		$content->grouptype = $grouptype;
 		if (empty($group_details)) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = $t->_("No data found");
