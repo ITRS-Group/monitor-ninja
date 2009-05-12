@@ -139,3 +139,8 @@ if (!empty($commands))
 		</tr>
 	</table>
 </div>
+
+<?php
+if (isset($comments))
+	echo $comments;
+?>
