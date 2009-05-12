@@ -41,4 +41,28 @@ class Comment_Model extends ORM {
 			->find_all();
 		return $data;//->loaded ? $data : false;
 	}
+
+	/**
+	*
+	*
+	*/
+	public function fetch_all_comments($host=false, $service=false)
+	{
+		$host = trim($host);
+		$service = trim($service);
+
+		if (empty($service)) {
+			$data = ORM::factory('comment')
+				->where("host_name!='' AND service_description=''")
+				->orderby('host_name')
+				->find_all();
+		} else {
+			$data = ORM::factory('comment')
+				->where("host_name!='' AND service_description!=''")
+				->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
+				->find_all();
+		}
+		return $data;
+
+	}
 }
