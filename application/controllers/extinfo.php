@@ -791,6 +791,18 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# @@@FIXME setting date format should be done somewhere global
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
 		$comments->no_data = sprintf($t->_('This %s has no comments associated with it'), $type);
-		return $this->template->content->render();
+		return $this->template->content->comments->render();
+	}
+
+	/**
+	*	Show all comments for hosts and services
+	*/
+	public function show_comments()
+	{
+		$this->template->content = $this->add_view('extinfo/all_comments');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->template->content->host_comments = $this->_comments(true, false, 'host', true);
+		$this->template->content->service_comments = $this->_comments(true, true, 'service', true);
 	}
 }
