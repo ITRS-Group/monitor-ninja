@@ -6,7 +6,7 @@
 		<!--Edit the widget here-->
 	</div>
 	<div class="widget-content">
-		<table>
+		<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
 					<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-disabled.png', array('alt' => $problem[$i]['status'])) ?></td>
