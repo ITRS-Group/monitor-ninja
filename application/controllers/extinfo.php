@@ -373,6 +373,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
 
+		# show comments for hosts and services
+		if ($type == 'host' || $type == 'service')
+			$comments = $this->_comments($host, $service, $type);
 	}
 
 	/**
@@ -735,5 +738,59 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_active_checks = $t->_('Active Checks Of All Services');
 		$content->cmd_disable_active_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'GROUP_SVC_CHECKS');
 		$content->cmd_enable_active_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'GROUP_SVC_CHECKS');
+	}
+
+	/**
+	*	Print comments for host or service
+	*/
+	public function _comments($host=false, $service=false, $type=false)
+	{
+		$host = trim($host);
+		$service = trim($service);
+		$type = trim($type);
+		if (empty($host)) {
+			return false;
+		}
+		$comment_data = Comment_Model::fetch_comments($host, $service);
+		$this->template->content->comments = $this->add_view('extinfo/comments');
+		$t = $this->translate;
+		$comments = $this->template->content->comments;
+		$comments->label_add_comment = $t->_('Add a new comment');
+		$comments->cmd_add_comment =
+			$type=='host' ? nagioscmd::command_id('ADD_HOST_COMMENT')
+			: nagioscmd::command_id('ADD_SVC_COMMENT');
+		$comments->cmd_delete_all_comments =
+			$type=='host' ? nagioscmd::command_id('DEL_ALL_HOST_COMMENTS')
+			: nagioscmd::command_id('DEL_ALL_SVC_COMMENTS');
+		$comments->label_delete_all_comments = $t->_('Delete all comments');
+		$comments->host = $host;
+		$comments->service = $service;
+		$comments->label_entry_time = $t->_('Entry Time');
+		$comments->label_author = $t->_('Author');
+		$comments->label_comment = $t->_('Comment');
+		$comments->label_comment_id = $t->_('Comment ID');
+		$comments->label_persistent = $t->_('Persistent');
+		$comments->label_type = $t->_('Type');
+		$comments->label_expires = $t->_('Expires');
+		$comments->label_actions = $t->_('Actions');
+		$comments->data = $comment_data;
+		$current_status = new Current_status_Model;
+		$nagios_config = $current_status->parse_config_file('nagios.cfg');
+		$comments->label_yes = $t->_('YES');
+		$comments->label_no = $t->_('NO');
+		$comments->label_type_user = $t->_('User');
+		$comments->label_type_downtime = $t->_('Scheduled Downtime');
+		$comments->label_type_flapping = $t->_('Flap Detection');
+		$comments->label_type_acknowledgement = $t->_('Acknowledgement');
+		$comments->na_str = $t->_('N/A');
+		$comments->label_delete = $t->_('Delete This Comment');
+		$comments->cmd_delete_comment =
+			$type=='host' ? nagioscmd::command_id('DEL_HOST_COMMENT')
+			: nagioscmd::command_id('DEL_SVC_COMMENT');
+
+		# @@@FIXME setting date format should be done somewhere global
+		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
+		$comments->no_data = sprintf($t->_('This %s has no comments associated with it'), $type);
+		return $this->template->content->render();
 	}
 }
