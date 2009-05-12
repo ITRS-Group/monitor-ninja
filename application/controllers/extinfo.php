@@ -65,8 +65,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 				break;
 			case 'servicegroup': case 'hostgroup':
-				echo "Not implemented";
-				die();
+				return $this->group_details($type, $host);
 				break;
 		}
 		if ($is_authenticated === false) {
