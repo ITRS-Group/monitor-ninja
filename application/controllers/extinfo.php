@@ -33,9 +33,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
-		$type = $this->input->get('type', $type);
-		$host = $this->input->get('host', $host);
-		$service = $this->input->get('service', $service);
+		$type = urldecode($this->input->get('type', $type));
+		$host = urldecode($this->input->get('host', $host));
+		$service = urldecode($this->input->get('service', $service));
 
 		# load current status for host/service status totals
 		$this->current = new Current_status_Model();
@@ -98,7 +98,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$group_info = $this->current->get_groups_for_object($type, $result->service_id);
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Check');
-			$host_link = html::anchor('extinfo/details/host/'.$host, html::specialchars($host));
+			$host_link = html::anchor('extinfo/details/host/'.urlencode($host), html::specialchars($host));
 			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
@@ -107,7 +107,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$groups = false;
 		foreach ($group_info as $group_row) {
-			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, $group_row->{$type.'group_name'}),
+			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'}),
 				html::specialchars($group_row->{$type.'group_name'}));
 		}
 
@@ -394,7 +394,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$link_params = false;
 		if (!empty($host) && !empty($service)) {
 			# only print extra params when present
-			$link_params = '&host_name='.$host.'&service='.$service;
+			$link_params = '&host_name='.urlencode($host).'&service='.urlencode($service);
 			if ($force === true)
 				$link_params .= '&force=true';
 		}
@@ -685,8 +685,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function group_details($grouptype='servicegroup', $group=false)
 	{
-		$grouptype = $this->input->get('grouptype', $grouptype);
-		$group = $this->input->get('group', $group);
+		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
+		$group = urldecode($this->input->get('group', $group));
 		$t = $this->translate;
 		if (empty($group)) {
 			$this->template->content = $this->add_view('error');
