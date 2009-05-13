@@ -107,7 +107,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$groups = false;
 		foreach ($group_info as $group_row) {
-			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'}),
+			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
 				html::specialchars($group_row->{$type.'group_name'}));
 		}
 
