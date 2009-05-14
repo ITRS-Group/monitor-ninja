@@ -657,7 +657,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function unauthorized($type='host')
 	{
 		$type = trim(strtolower($type));
-		$this->template->content = $this->add_view('extinfo/unauthorized');
+		$this->template->content = $this->add_view('unauthorized');
 
 		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page
 			and check the authorization options in your CGI configuration file.');
