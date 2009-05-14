@@ -21,7 +21,7 @@ class Comment_Model extends ORM {
 	*	Fetch saved comments for host or service
 	*
 	*/
-	public function fetch_comments($host=false, $service=false)
+	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
@@ -38,7 +38,7 @@ class Comment_Model extends ORM {
 					'service_description' => $service
 				)
 			)
-			->find_all();
+			->find_all($num_per_page,$offset);
 		return $data;//->loaded ? $data : false;
 	}
 
@@ -46,23 +46,37 @@ class Comment_Model extends ORM {
 	*
 	*
 	*/
-	public function fetch_all_comments($host=false, $service=false)
+	public function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
 
-		if (empty($service)) {
-			$data = ORM::factory('comment')
-				->where("host_name!='' AND service_description=''")
-				->orderby('host_name')
-				->find_all();
+		if ($count === false) {
+			if (empty($service)) {
+				$data = ORM::factory('comment')
+					->where("host_name!='' AND service_description=''")
+					->orderby('host_name')
+					->find_all($num_per_page,$offset);
+			} else {
+				$data = ORM::factory('comment')
+					->where("host_name!='' AND service_description!=''")
+					->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
+					->find_all($num_per_page,$offset);
+			}
 		} else {
-			$data = ORM::factory('comment')
-				->where("host_name!='' AND service_description!=''")
-				->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
-				->find_all();
+			if (empty($service)) {
+				$data = ORM::factory('comment')
+					->where("host_name!='' AND service_description=''")
+					->orderby('host_name')
+					->find_all()->count();
+			} else {
+				$data = ORM::factory('comment')
+					->where("host_name!='' AND service_description!=''")
+					->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
+					->find_all()->count();
+			}
+			return $data;
 		}
 		return $data;
-
 	}
 }

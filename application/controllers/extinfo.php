@@ -750,7 +750,29 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service) :Comment_Model::fetch_comments($host, $service);
+		//Pagination configuration
+		$num_per_page = 10;
+
+		if ($all === true) {
+			$tot = Comment_Model::fetch_all_comments($host, $service, false, false, true);
+		} else {
+			$tot = 0;
+		}
+
+		//Setup pagination
+		$pagination = new Pagination(
+			array(
+				'uri_segment' => 3,
+				'total_items'=> $tot,
+				'style' => "digg",
+				'items_per_page' => $num_per_page,
+				'auto_hide' => true
+			)
+		);
+		$offset = $pagination->sql_offset;
+
+
+		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $num_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $num_per_page, $offset);
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
@@ -791,6 +813,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# @@@FIXME setting date format should be done somewhere global
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
+		$comments->pagination = $pagination;
 		return $this->template->content->comments->render();
 	}
 
