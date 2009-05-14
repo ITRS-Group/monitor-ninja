@@ -790,7 +790,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# @@@FIXME setting date format should be done somewhere global
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
-		$comments->no_data = sprintf($t->_('This %s has no comments associated with it'), $type);
+		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		return $this->template->content->comments->render();
 	}
 
