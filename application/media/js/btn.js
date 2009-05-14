@@ -73,4 +73,7 @@ var btn = {
     }
 }
 
-btn.addEvent(window,'load', function() { btn.init();} );
+//btn.addEvent(window,'load', function() { btn.init();} );
+$(document).ready(function() {
+	function() { btn.init();}
+});
