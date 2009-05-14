@@ -502,7 +502,6 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false)
 	{
-		$hostlist = urldecode($this->input->get('hostlist', $hostlist));
 		$group = urldecode($this->input->get('group', $group));
 		if (empty($hostlist)) {
 			return false;
