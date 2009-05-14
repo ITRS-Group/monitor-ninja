@@ -579,7 +579,7 @@ class Status_Controller extends Authenticated_Controller {
 						$services_unknown_acknowledged++;
 						$problem = false;
 					}
-					if (!$row->checks_enabled){
+					if (!$row->active_checks_enabled){
 						$services_unknown_disabled++;
 						$problem = false;
 					}
