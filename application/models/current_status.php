@@ -585,8 +585,35 @@ class Current_status_Model extends Model
 	 */
 	public function find_hosts_causing_outages()
 	{
-		/* determine what hosts are causing network outages */
+		$result = $this->fetch_hosts_causing_outages();
 
+		/* check all hosts */
+		$outages = false;
+		foreach ($result as $host){
+			$children = false; # reset children
+			$outages[] = $host->host_name;
+
+			# check if each host has any affected child hosts
+			if (!$this->get_child_hosts($host->id, $children)) {
+				$this->total_nonblocking_outages++;
+			} else {
+				$this->total_blocking_outages++;
+			}
+			$this->affected_hosts += sizeof($children);
+		}
+
+		if (!empty($outages)) {
+			$this->hostoutage_list = array_merge($this->hostoutage_list, $outages);
+		}
+
+		return true;
+	}
+
+	/**
+	*	determine what hosts are causing network outages
+	*/
+	public function fetch_hosts_causing_outages()
+	{
 		/* user must be authorized for all hosts in order to see outages */
 		if(!$this->auth->view_hosts_root)
 			return;
@@ -615,27 +642,7 @@ class Current_status_Model extends Model
 		# @@@FIXME Check and verify the above SQL statement
 
 		$result = $this->db->query($sql);
-
-		/* check all hosts */
-		$outages = false;
-		foreach ($result as $host){
-			$children = false; # reset children
-			$outages[] = $host->host_name;
-
-			# check if each host has any affected child hosts
-			if (!$this->get_child_hosts($host->id, $children)) {
-				$this->total_nonblocking_outages++;
-			} else {
-				$this->total_blocking_outages++;
-			}
-			$this->affected_hosts += sizeof($children);
-		}
-
-		if (!empty($outages)) {
-			$this->hostoutage_list = array_merge($this->hostoutage_list, $outages);
-		}
-
-		return true;
+		return $result;
 	}
 
 	/**
