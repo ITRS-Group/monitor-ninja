@@ -723,7 +723,7 @@ class Status_Controller extends Authenticated_Controller {
 					'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')) ),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.urlencode($host->host_name), html::image($this->img_path('images/icons/16x16/detail.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)) ),
 					'svc_status_link' => html::anchor('status/service/'.urlencode($host->host_name), html::image($this->img_path('images/icons/16x16/status2.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)) ),
-					'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('images/icons/16x16/status3.gif'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
+					'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('images/icons/16x16/status3.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)) ),
 					'nacoma_link' => $nacoma_link,
 					'pnp_link' => $pnp_link
 					);
@@ -736,7 +736,7 @@ class Status_Controller extends Authenticated_Controller {
 				$notes_link = false;
 				if (!is_null($host->notes_url)) {
 					$lable_host_notes = $t->_('View Extra Host Notes');
-					$notes_link = '<a href="'.$host->notes_url.'">'.html::image($this->img_path('images/icons/16x16/notes.gif'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+					$notes_link = '<a href="'.$host->notes_url.'">'.html::image($this->img_path('images/icons/16x16/notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
 				}
 
 				$host_icon = false;
