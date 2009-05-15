@@ -127,7 +127,9 @@ class Current_status_Model extends Model
 	public $hostoutage_list = array();
 	public $total_blocking_outages = 0;
 	public $total_nonblocking_outages = 0;
-	public $affected_hosts = 0;
+	public $affected_hosts = array();
+	public $unreachable_hosts = array(); # hosts being unreachable because of network outages
+	public $children_services = array(); # nr of services belonging to host affected by an outage
 
 	public $host_data_present = false;
 	public $service_data_present = false;
@@ -599,7 +601,15 @@ class Current_status_Model extends Model
 			} else {
 				$this->total_blocking_outages++;
 			}
-			$this->affected_hosts += sizeof($children);
+			if (!array_key_exists($host->host_name, $this->affected_hosts)) {
+				$this->affected_hosts[$host->host_name] = 0;
+			}
+			$this->affected_hosts[$host->host_name] += sizeof($children);
+			if (array_key_exists($host->host_name, $this->unreachable_hosts)) {
+				$this->unreachable_hosts[$host->host_name] = array_merge($this->unreachable_hosts[$host->host_name], $children);
+			} else {
+				$this->unreachable_hosts[$host->host_name] = $children;
+			}
 		}
 
 		if (!empty($outages)) {
@@ -680,6 +690,7 @@ class Current_status_Model extends Model
 		}
 		foreach ($result as $host) {
 			$children[$host->id] = $host->host_name;
+			$this->children_services[$host->id] = $host->service_cnt;
 			$this->get_child_hosts($host->id, $children); # RECURSIVE
 		}
 		return sizeof($children);
