@@ -102,7 +102,7 @@ th.header {
 th.no-sort {
 	background:#f5f5ef;
 	cursor: default;
-	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
+	background: #ffffff url(../images/bg/table/sort.png) top right;
 }
 
 th.no-sort:first-child {
