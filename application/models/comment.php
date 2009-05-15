@@ -21,7 +21,7 @@ class Comment_Model extends ORM {
 	*	Fetch saved comments for host or service
 	*
 	*/
-	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false)
+	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
@@ -31,20 +31,38 @@ class Comment_Model extends ORM {
 		if (empty($service)) {
 			$service = '';
 		}
-		$data = ORM::factory('comment')
-			->where(
-				array(
-					'host_name'=> $host,
-					'service_description' => $service
+		if ($count === false) {
+			$data = ORM::factory('comment')
+				->where(
+					array(
+						'host_name'=> $host,
+						'service_description' => $service
+					)
 				)
-			)
-			->find_all($num_per_page,$offset);
+				->find_all($num_per_page,$offset);
+		} else {
+			$data = ORM::factory('comment')
+				->where(
+					array(
+						'host_name'=> $host,
+						'service_description' => $service
+					)
+				)
+				->find_all();
+		}
 		return $data;//->loaded ? $data : false;
 	}
 
 	/**
-	*
-	*
+	*	Wrapper method to fetch nr of comments for host or service
+	*/
+	public function count_comments($host=false, $service=false)
+	{
+		return self::fetch_comments($host, $service, false, false, true);
+	}
+
+	/**
+	*	Fetch all host- or service comments
 	*/
 	public function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
@@ -78,5 +96,13 @@ class Comment_Model extends ORM {
 			return $data;
 		}
 		return $data;
+	}
+
+	/**
+	*	Wrapper method to fetch a count of all service- or host comments
+	*/
+	public function count_all_comments($host=false, $service=false)
+	{
+		return self::fetch_all_comments($host, $service, false, false, true);
 	}
 }
