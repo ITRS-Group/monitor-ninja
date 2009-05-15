@@ -71,6 +71,7 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Host problems') 					=> 'status/host/all/6?group_type=',
 				$this->translate->_('Service problems') 			=> 'status/service/all?servicestatustypes=14&group_type=',
 				$this->translate->_('Unhandled problems') 		=> 'status/host/all/6?group_type=',
+				$this->translate->_('Comments') 							=> 'extinfo/show_comments',
 			),
 			//$this->translate->_('Reporting') => array(),
 			//$this->translate->_('Configuration') => array()
