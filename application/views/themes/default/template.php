@@ -8,7 +8,7 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
-		<?php echo html::link('application/views/themes/default/images/favicon.ico','icon','image/ico') ?>
+		<?php //echo html::link('application/views/themes/default/images/favicon.ico','icon','image/ico') ?>
 		<?php
 			if (!empty($css_header)) {
 				echo $css_header;
@@ -29,8 +29,17 @@
 					$("#sort-table").tablesorter({
 						sortList: [[1,0]],
 						headers: {
-						  0: { sorter: false },
 							6: { sorter: false }
+						}
+					});
+				});
+
+				$(document).ready(function() {
+					$("#sort-group-grid").tablesorter({
+						//sortList: [[1,0]],
+						headers: {
+							1: { sorter: false },
+							2: { sorter: false }
 						}
 					});
 				});
