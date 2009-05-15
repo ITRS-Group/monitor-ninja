@@ -1,35 +1,27 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<img src='/monitor/images/comment.gif' alt="" />
+
+<div class="widget left w98" id="extinfo_comments">
+<div id="extinfo_comments_links" style="position: absolute; right: 0px; margin-top: 10px; margin-right: 1%">
+	<img src='/monitor/images/comment.gif' alt="" style="margin-bottom: -4px" />
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
-
-	<img src='/monitor/images/delete.gif' alt="" />
+	&nbsp; &nbsp;
+	<img src='/monitor/images/delete.gif' alt="" style="margin-bottom: -4px" />
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
-
-<div class="widget left w98" id="extinfo_info">
-	<div class="widget-header"><?php echo $this->translate->_('Comments'); ?></div>
-	<table id="sort-table" style="table-layout: fixed">
-		<colgroup>
-			<col style="width: 122px" />
-			<col style="width: 150px" />
-			<col style="width: 100%" />
-			<col style="width: 100px" />
-			<col style="width: 100px" />
-			<col style="width: 100px" />
-			<col style="width: 122px" />
-			<col style="width: 80px" />
-		</colgroup>
+</div>
+	<table id="sort-table">
+		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
-		<tr>
-			<th class="bl"><?php echo $label_entry_time ?></th>
-			<th><?php echo $label_author ?></th>
-			<th><?php echo $label_comment ?></th>
-			<th><?php echo $label_comment_id ?></th>
-			<th><?php echo $label_persistent ?></th>
-			<th><?php echo $label_type ?></th>
-			<th><?php echo $label_expires ?></th>
-			<th><?php echo $label_actions ?></th>
-		</tr>
+			<tr>
+				<th class="bl"><?php echo $label_entry_time ?></th>
+				<th><?php echo $label_author ?></th>
+				<th><?php echo $label_comment ?></th>
+				<th style="white-space: nowrap"><?php echo $label_comment_id ?></th>
+				<th><?php echo $label_persistent ?></th>
+				<th><?php echo $label_type ?></th>
+				<th><?php echo $label_expires ?></th>
+				<th><?php echo $label_actions ?></th>
+			</tr>
 		<thead>
 		<tbody>
 	<?php
@@ -60,9 +52,9 @@
 					} ?>
 				</td>
 				<td><?php echo $row->expires ? date($date_format_str, $row_>expire_time) : $na_str ?></td>
-				<td>
-					<?php echo html::anchor('cmd/request_command/?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->id,
-					'<img src="/monitor/images/delete.gif" alt="'.$label_delete.'" title="'.$label_delete.'" />') ?>
+				<td class="icon">
+					<?php echo html::anchor('cmd/request_command/?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->comment_id,
+					'<img src="/monitor/images/delete.gif" alt="'.$label_delete.'" title="'.$label_delete.'" />',array('style' => 'border: 0px')) ?>
 				</td>
 			</tr>
 			<?php	} } else { # print message - no comments available ?>
@@ -72,4 +64,5 @@
 		<?php } ?>
 		</tbody>
 	</table>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
