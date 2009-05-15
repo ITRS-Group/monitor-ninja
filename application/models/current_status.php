@@ -295,7 +295,6 @@ class Current_status_Model extends Model
 			$this->problem = true;
 			switch ($host->current_state) {
 				case self::HOST_UP:
-					# @@@FIXME assuming active_checks_enabled (was checks_enabled)
 					if (!$host->active_checks_enabled)
 						$this->hosts_up_disabled++;
 					else
@@ -328,7 +327,6 @@ class Current_status_Model extends Model
 						$this->hosts_unreachable_acknowledged++;
 						$this->problem = false;
 					}
-					# @@@FIXME assuming active_checks_enabled (was checks_enabled)
 					if (!$host->active_checks_enabled) {
 						$this->hosts_unreachable_disabled++;
 						$this->problem = false;
@@ -338,7 +336,6 @@ class Current_status_Model extends Model
 					$this->hosts_unreachable++;
 					break;
 				case self::HOST_PENDING:
-					# @@@FIXME assuming active_checks_enabled (was checks_enabled)
 					if(!$host->active_checks_enabled)
 						$this->hosts_pending_disabled++;
 					$this->hosts_pending++;
@@ -437,7 +434,6 @@ class Current_status_Model extends Model
 
 			switch ($service->current_state) {
 				case self::SERVICE_OK:
-					# @@@FIXME assuming active_checks_enabled (was checks_enabled)
 					if(!$service->active_checks_enabled)
 						$this->services_ok_disabled++;
 					else
@@ -457,7 +453,6 @@ class Current_status_Model extends Model
 						$this->services_warning_acknowledged++;
 						$this->problem = false;
 					}
-					# @@@FIXME assuming active_checks_enabled
 					if (!$service->active_checks_enabled) {
 						$this->services_warning_disabled++;
 						$this->problem = false;
@@ -479,7 +474,6 @@ class Current_status_Model extends Model
 						$this->services_unknown_acknowledged++;
 						$this->problem = false;
 					}
-					# @@@FIXME assuming active_checks_enabled
 					if (!$service->active_checks_enabled) {
 						$this->services_unknown_disabled++;
 						$this->problem = false;
@@ -501,7 +495,6 @@ class Current_status_Model extends Model
 						$this->services_critical_acknowledged++;
 						$this->problem = false;
 					}
-					# @@@FIXME assuming active_checks_enabled
 					if (!$service->active_checks_enabled) {
 						$this->services_critical_disabled++;
 						$this->problem = false;
@@ -511,7 +504,6 @@ class Current_status_Model extends Model
 					$this->services_critical++;
 					break;
 				case self::SERVICE_PENDING:
-					# @@@FIXME assuming active_checks_enabled
 					if(!$service->active_checks_enabled)
 						$this->services_pending_disabled++;
 					$this->services_pending++;
