@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 
+
 <div class="widget left w98">
+
 <div style="position: absolute; right: 0px; margin-top: 10px; margin-right: 1%">
 	<?php echo html::image('application/views/themes/default/images/icons/16x16/add-comment.png', array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
@@ -9,6 +11,7 @@
 	<?php echo html::image('application/views/themes/default/images/icons/16x16/delete-comments.png', array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
+<a name="comments" />
 	<table>
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 			<tr>
