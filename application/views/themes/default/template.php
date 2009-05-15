@@ -19,7 +19,7 @@
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
-		<?php echo html::script('application/media/js/btn.js') ?>
+		<?php //echo html::script('application/media/js/btn.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -66,6 +66,32 @@
 					}
 				});
 			});
+
+			function collapse_menu(action) {
+				if (action == 'hide') {
+					document.getElementById('menu').style.width = '35px';
+					document.getElementById('close-menu').style.display = 'none';
+					document.getElementById('show-menu').style.display = 'block';
+					var menu = document.getElementById('menu');
+					menu.getElementsByTagName('cite')[0].setAttribute('style','display: none');
+					for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
+						menu.getElementsByTagName('a')[i].setAttribute('style','display: none');
+					}
+					document.getElementById('content').style.marginLeft = '35px';
+				}
+				else {
+					document.getElementById('menu').style.width = '161px';
+					document.getElementById('close-menu').style.display = 'block';
+					document.getElementById('show-menu').style.display = 'none';
+					var menu = document.getElementById('menu');
+					menu.getElementsByTagName('cite')[0].setAttribute('style','display: inline');
+					for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
+						menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
+					}
+					document.getElementById('content').style.marginLeft = '161px';
+				}
+			}
+
 			//-->
 		</script>
 		<?php
@@ -114,13 +140,14 @@
 		</div>
 
 		<div id="menu">
-			<div id="close-menu" title="Hide menu" onclick="collapse_menu()"></div>
+			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
+			<div id="show-menu" title="<?php echo $this->translate->_('Show menu') ?>" onclick="collapse_menu()"></div>
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
-						echo '<li class="header">'.html::specialchars($header).'</li>';
+						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>';
 						foreach ($link as $title => $url):
-							echo '<li>'.html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' '.html::anchor($url, html::specialchars($title)).'</li>';
+							echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title)).'</li>';
 						endforeach;
 					endforeach;
 				?>
