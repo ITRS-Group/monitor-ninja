@@ -10,13 +10,15 @@
 <div class="widget left w98" id="status_group-summary">
 
 	<?php if (!empty($group_details)) { ?>
-	<table>
-	<!--<caption><?php echo $lable_header ?> oh i know this page looks all wacky now. wacky wacky wacky</caption>-->
+	<table id="group_summary_table">
+	<thead>
 		<tr>
-			<th class="header"><?php echo $label_group_name ?></th>
-			<th class="header"><?php echo $label_host_summary ?></th>
-			<th class="header"><?php echo $label_service_summary ?></th>
+			<th><?php echo $label_group_name ?></th>
+			<th class="no-sort"><?php echo $label_host_summary ?></th>
+			<th class="no-sort"><?php echo $label_service_summary ?></th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php $i=0; foreach ($group_details as $details) { $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'?>">
 			<td class="bl">
@@ -165,6 +167,7 @@
 			</td>
 		</tr>
 	<?php } ?>
+	</tbody>
 	</table>
 	<?php }
 		else {

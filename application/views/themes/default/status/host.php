@@ -9,7 +9,7 @@ if (!empty($widgets)) {
 
 <div class="widget left w98" id="status_host">
 	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
-	<table id="sort-table" style="table-layout: fixed">
+	<table id="host_table" style="table-layout: fixed">
 		<colgroup>
 			<col style="width: 30px" />
 			<col style="width: 200px" />

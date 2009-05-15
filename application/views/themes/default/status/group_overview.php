@@ -11,7 +11,7 @@ if (!empty($widgets)) {
 <?php
 	foreach ($group_details as $group) { ?>
 
-		<table style="table-layout: fixed">
+		<table style="table-layout: fixed" class="group_overview_table">
 			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
 			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
@@ -29,10 +29,10 @@ if (!empty($widgets)) {
 				<col style="width: 30px" />
 			</colgroup>
 			<tr>
-				<th class="no-sort">&nbsp;</th>
-				<th class="header" colspan="2"><?php echo $lable_host ?></th>
-				<th class="header"><?php echo $lable_services ?></th>
-				<th class="header" colspan="6"><?php echo $lable_actions ?></th>
+				<th>&nbsp;</th>
+				<th colspan="2"><?php echo $lable_host ?></th>
+				<th class="no-sort"><?php echo $lable_services ?></th>
+				<th class="no-sort" colspan="6"><?php echo $lable_actions ?></th>
 			</tr>
 			<?php $i=0; if (!empty($group->hostinfo))
 				foreach ($group->hostinfo as $host => $details) { ?>

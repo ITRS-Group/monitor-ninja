@@ -11,8 +11,7 @@ if (!empty($widgets)) {
 <div class="widget left w98" id="status_service">
 
 
-<table style="table-layout: fixed" id="sorttable">
-<!--<caption><?php echo $sub_title ?></caption>-->
+<table style="table-layout: fixed" id="service_table">
 	<colgroup>
 		<col style="width: 30px" />
 		<col style="width: 160px" />
@@ -27,14 +26,14 @@ if (!empty($widgets)) {
 	</colgroup>
 	<thead>
 		<tr>
-			<th class="no-sort">&nbsp;</th>
-			<th class="headerSortDown"><?php echo $this->translate->_('Host') ?></th>
-			<th class="header"><?php echo $this->translate->_('') ?></th>
-			<th class="header"><?php echo $this->translate->_('Service') ?></th>
-			<th class="header"><?php echo $this->translate->_('Last check') ?></th>
-			<th class="header"><?php echo $this->translate->_('Duration') ?></th>
-			<th class="no-sort"><?php echo $this->translate->_('Status information') ?></th>
-			<th class="header" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+			<th>&nbsp;</th>
+			<th><?php echo $this->translate->_('Host') ?></th>
+			<th><?php echo $this->translate->_('') ?></th>
+			<th><?php echo $this->translate->_('Service') ?></th>
+			<th><?php echo $this->translate->_('Last check') ?></th>
+			<th><?php echo $this->translate->_('Duration') ?></th>
+			<th><?php echo $this->translate->_('Status information') ?></th>
+			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 			<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
 			<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
 		</tr>
