@@ -12,6 +12,7 @@ body {
 	font: 11px 'trebuchet ms',arial,sans-serif;
 	background-color: #fdfdfb;
 	background-color: #ffffff;
+	/*background-color: #dcdccd;*/
 }
 
 form {
@@ -118,6 +119,7 @@ a {
 	height: 34px;
 	width: 100%;
 	top: 32px;
+	left: 0px;
 	background: #ffffff url(../images/menu-top-two.gif) repeat-x;
 	z-index: 1;
 	border-left: 1px solid #e9e9e0;
@@ -223,7 +225,7 @@ a {
 #content {
 	position: relative;
 	top: 64px;
-	margin: 0px 0px 0px 161px;
+	margin: 0px 0px 0px 160px;
 	padding-top: 11px;
 }
 
@@ -242,10 +244,9 @@ caption {
 	color: #333333;
 	font-weight: bold;
 	text-align: left;
-	border-bottom: 1px solid #e9e9e0;
-	margin-bottom: 1px;
-	padding: 10px 0px 2px 16px;
-	background: url(../images/icons/arrows/down-sml.gif) 5px 16px no-repeat;
+	/*border-bottom: 1px solid #cdcddc;*/
+	/*margin-bottom: 1px;*/
+	padding: 15px 0px 4px 4px;
 }
 
 th {
@@ -261,7 +262,7 @@ th {
 }
 
 tr td {
-	background: transparent url(../images/bg/light.gif) repeat-x;
+	background: #ffffff url(../images/bg/light.gif) repeat-x;
 	padding: 0px 5px;
 	border: 0px;
 	/*border-bottom: 1px solid #e9e9e0;
@@ -311,7 +312,7 @@ table.healt tr td:first-child div.border {
 
 table.healt tr td div.border img {
 	height: 187px;
-	height: 100	px;
+	height: 100px;
 }
 
 table.healt tr td div.border {
@@ -336,11 +337,6 @@ table.healt tr td div.border img {
 	padding: 3px 5px 3px 5px;
 	border: 1px solid #e9e9e0;
 	border: 1px solid #dcdccd;
-	/*border-top: 1px solid #999990;
-	border-bottom: 1px solid #999990;
-	margin-bottom: 1px;*/
-	/*background-color: #414140;
-	color: #ffffff;*/
 }
 
 .widget {
