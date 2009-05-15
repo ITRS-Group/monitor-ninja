@@ -36,6 +36,34 @@ a {
 	color: #414141;
 }
 
+/* login ****************************************************************************************/
+
+#login-table {
+	position: relative;
+	margin: 150px auto;
+	width: 220px;	
+}
+
+#login-table table {
+	width: auto;
+}
+
+#login-table table tr td {
+	background: #ffffff;
+	padding: 5px;
+}
+
+#login-table hr {
+	color: #dcdccd;
+	background-color: #dcdccd;
+	height: 1px;
+	border: 0px;
+}
+
+#login-table h3 {
+
+}
+
 /* content ****************************************************************************************/
 
 #top-bar {
@@ -402,13 +430,3 @@ div.right {
 .w32 { width: 32%; }
 .w18 { width: 18%; }
 .w19 { width: 19%; }
-
-#login-table tr td {
-	background: #ffffff;
-	padding: 5px;
-}
-
-#login-table {
-	width: auto;
-	margin-left: 10px;
-}
