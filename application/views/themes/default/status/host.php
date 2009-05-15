@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_host">
-	<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
+	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
 	<table id="sort-table" style="table-layout: fixed">
 		<colgroup>
 			<col style="width: 30px" />
@@ -23,7 +23,7 @@ if (!empty($widgets)) {
 		</colgroup>
 		<thead>
 			<tr>
-				<th class="no-sort"><?php echo $this->translate->_('') ?></th>
+				<th><?php echo $this->translate->_('') ?></th>
 				<th colspan="2"><?php echo $this->translate->_('Host') ?></th>
 				<th style="width: 100px"><?php echo $this->translate->_('Last check') ?></th>
 				<th><?php echo $this->translate->_('Duration') ?></th>
@@ -72,7 +72,7 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon" style="width: 10px">
 				<?php if (!empty($row->icon_image)) { ?>
-					<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
+					<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px; width: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
 				<?php	} ?>
 				</td>
 				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>

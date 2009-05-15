@@ -9,9 +9,10 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_service">
-<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>
+
 
 <table style="table-layout: fixed" id="sorttable">
+<!--<caption><?php echo $sub_title ?></caption>-->
 	<colgroup>
 		<col style="width: 30px" />
 		<col style="width: 160px" />
