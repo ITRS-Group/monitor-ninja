@@ -7,14 +7,15 @@ if (!empty($widgets)) {
 }
 ?>
 <?php //echo $lable_header ?>
+<div class="widget left w98" id="status_group-overview">
 <?php
 	foreach ($group_details as $group) { ?>
-	<div class="widget left w98" id="status_<?php echo $group->groupname; ?>">
-		<div class="widget-header">
+
+		<table style="table-layout: fixed">
+			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
 			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
-		</div>
-		<table style="table-layout: fixed">
+		</caption>
 			<colgroup>
 				<col style="width: 30px" />
 				<col style="width: 200px" />
@@ -60,5 +61,6 @@ if (!empty($widgets)) {
 			</tr>
 			<?php $i++; } ?>
 		</table>
-	</div>
+
 <?php } ?>
+</div>
