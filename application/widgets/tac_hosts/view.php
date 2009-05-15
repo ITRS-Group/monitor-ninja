@@ -11,14 +11,14 @@
 				<col style="width: 25%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $this->translate->_('Down') ?></th>
-				<th><?php echo $this->translate->_('Unreachable') ?></th>
-				<th><?php echo $this->translate->_('Up') ?></th>
-				<th><?php echo $this->translate->_('Pending') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Down') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Unreachable') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Up') ?></th>
+				<th style="border-left: 1px solid #e9e9e0; border-right: 1px solid #e9e9e0"><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php if (count($hosts_down) > 0) { foreach ($hosts_down as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -38,7 +38,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php if (count($hosts_unreachable) > 0) { foreach ($hosts_unreachable as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -58,7 +58,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php	if ($current_status->hosts_up > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-ok.png',$this->translate->_('Up')) ?></td>
@@ -69,11 +69,16 @@
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
-							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { echo '<td>'.$this->translate->_('N/A').'</td>'; } ?>
+							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { ?>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-not-up.png',$this->translate->_('Up')) ?></td>
+								<td><?php echo $this->translate->_('N/A') ?></td>
+							</tr>
+							<?php } ?>
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php if (count($hosts_pending_disabled) > 0) { foreach ($hosts_pending_disabled as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-pending.png',$this->translate->_('Pending')) ?></td>

@@ -14,15 +14,15 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $this->translate->_('Critical') ?></th>
-				<th><?php echo $this->translate->_('Warning') ?></th>
-				<th><?php echo $this->translate->_('Unknown') ?></th>
-				<th><?php echo $this->translate->_('OK') ?></th>
-				<th><?php echo $this->translate->_('Pending') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Critical') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Warning') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Unknown') ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('OK') ?></th>
+				<th style="border-left: 1px solid #e9e9e0; border-right: 1px solid #e9e9e0"><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
 				<td style="padding:0px;" class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -42,7 +42,7 @@
 					</table>
 				</td>
 				<td style="padding:0px;" class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -62,7 +62,7 @@
 					</table>
 				</td>
 				<td style="padding:0px;" class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -82,7 +82,7 @@
 					</table>
 				</td>
 				<td style="padding:0px;" class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php	if ($current_status->services_ok > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-ok.png',$this->translate->_('OK')) ?></td>
@@ -102,7 +102,7 @@
 					</table>
 				</td>
 				<td style="padding:0px;" class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 							<?php	if (count($services_pending_disabled) > 0) {	foreach ($services_pending_disabled as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-pending.png',$this->translate->_('Pending')) ?></td>

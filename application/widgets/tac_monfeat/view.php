@@ -14,15 +14,15 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $flap_detect_header_label ?></th>
-				<th><?php echo $notifications_header_label ?></th>
-				<th><?php echo $eventhandler_header_label ?></th>
-				<th><?php echo $activechecks_header_label ?></th>
-				<th><?php echo $passivechecks_header_label ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $flap_detect_header_label ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $notifications_header_label ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $eventhandler_header_label ?></th>
+				<th style="border-left: 1px solid #e9e9e0"><?php echo $activechecks_header_label ?></th>
+				<th style="border-left: 1px solid #e9e9e0; border-right: 1px solid #e9e9e0"><?php echo $passivechecks_header_label ?></th>
 			</tr>
 			<tr>
 				<td class="white">
-				<table>
+				<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 					<!--<tr>
 						<td rowspan="5" class="white"><?php echo $cmd_flap_link ?></td>
 					</tr>-->
@@ -42,7 +42,7 @@
 						<tr>
 							<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
 							<td><?php echo $flapping_services ?> <?php echo $flapping_services==1 ? $lable_service_singular : $lable_service_plural ?> <?php echo $lable_flapping ?></td>
-						</tr>s
+						</tr>
 						<?php } else { ?>
 						<tr>
 							<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
@@ -76,7 +76,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 						<!--<tr>
 							<td rowspan="5" class="white"><?php echo $cmd_notification_link ?></td>
 						</tr>-->
@@ -110,7 +110,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_event_link ?></td>
 						</tr>-->
@@ -144,7 +144,7 @@
 				</td>
 
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_activecheck_link ?></td>
 						</tr>-->
@@ -177,7 +177,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table>
+					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_passivecheck_link ?></td>
 						</tr>-->
