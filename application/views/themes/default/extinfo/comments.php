@@ -1,29 +1,26 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 
-<div class="widget left w98" id="extinfo_comments">
-<div id="extinfo_comments_links" style="position: absolute; right: 0px; margin-top: 10px; margin-right: 1%">
-	<img src='/monitor/images/comment.gif' alt="" style="margin-bottom: -4px" />
+<div class="widget left w98">
+<div style="position: absolute; right: 0px; margin-top: 10px; margin-right: 1%">
+	<?php echo html::image('application/views/themes/default/images/icons/16x16/add-comment.png', array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
 	&nbsp; &nbsp;
-	<img src='/monitor/images/delete.gif' alt="" style="margin-bottom: -4px" />
+	<?php echo html::image('application/views/themes/default/images/icons/16x16/delete-comments.png', array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
-	<table id="sort-table">
+	<table>
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
-		<thead>
 			<tr>
-				<th class="bl"><?php echo $label_entry_time ?></th>
-				<th><?php echo $label_author ?></th>
-				<th><?php echo $label_comment ?></th>
-				<th style="white-space: nowrap"><?php echo $label_comment_id ?></th>
-				<th><?php echo $label_persistent ?></th>
-				<th><?php echo $label_type ?></th>
-				<th><?php echo $label_expires ?></th>
-				<th><?php echo $label_actions ?></th>
+				<th class="no-sort bl"><?php echo $label_entry_time ?></th>
+				<th class="no-sort"><?php echo $label_author ?></th>
+				<th class="no-sort"><?php echo $label_comment ?></th>
+				<th class="no-sort" style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
+				<th class="no-sort"><?php echo $label_persistent ?></th>
+				<th class="no-sort"><?php echo $label_type ?></th>
+				<th class="no-sort"><?php echo $label_expires ?></th>
+				<th class="no-sort"><?php echo $label_actions ?></th>
 			</tr>
-		<thead>
-		<tbody>
 	<?php
 		if ($data->count()) {
 			$i=0;foreach ($data as $row) { $i++; ?>
@@ -54,7 +51,7 @@
 				<td><?php echo $row->expires ? date($date_format_str, $row_>expire_time) : $na_str ?></td>
 				<td class="icon">
 					<?php echo html::anchor('cmd/request_command/?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->comment_id,
-					'<img src="/monitor/images/delete.gif" alt="'.$label_delete.'" title="'.$label_delete.'" />',array('style' => 'border: 0px')) ?>
+					html::image('application/views/themes/default/images/icons/16x16/delete-comment.png', array('alt' => $label_delete, 'title' => $label_delete)),array('style' => 'border: 0px')) ?>
 				</td>
 			</tr>
 			<?php	} } else { # print message - no comments available ?>
@@ -62,7 +59,6 @@
 				<td colspan="8"><?php echo $no_data ?></td>
 			</tr>
 		<?php } ?>
-		</tbody>
 	</table>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
