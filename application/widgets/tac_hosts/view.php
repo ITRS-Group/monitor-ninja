@@ -11,14 +11,14 @@
 				<col style="width: 25%" />
 			</colgroup>
 			<tr>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Down') ?></th>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Unreachable') ?></th>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $this->translate->_('Up') ?></th>
-				<th style="border-left: 1px solid #e9e9e0; border-right: 1px solid #e9e9e0"><?php echo $this->translate->_('Pending') ?></th>
+				<th><?php echo $this->translate->_('Down') ?></th>
+				<th><?php echo $this->translate->_('Unreachable') ?></th>
+				<th><?php echo $this->translate->_('Up') ?></th>
+				<th><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 							<?php if (count($hosts_down) > 0) { foreach ($hosts_down as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -38,7 +38,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 							<?php if (count($hosts_unreachable) > 0) { foreach ($hosts_unreachable as $url => $title) { ?>
 							<tr>
 								<td class="dark">
@@ -58,7 +58,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 							<?php	if ($current_status->hosts_up > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-ok.png',$this->translate->_('Up')) ?></td>
@@ -78,7 +78,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 							<?php if (count($hosts_pending_disabled) > 0) { foreach ($hosts_pending_disabled as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-pending.png',$this->translate->_('Pending')) ?></td>

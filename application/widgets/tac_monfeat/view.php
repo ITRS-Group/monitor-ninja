@@ -14,15 +14,15 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $flap_detect_header_label ?></th>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $notifications_header_label ?></th>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $eventhandler_header_label ?></th>
-				<th style="border-left: 1px solid #e9e9e0"><?php echo $activechecks_header_label ?></th>
-				<th style="border-left: 1px solid #e9e9e0; border-right: 1px solid #e9e9e0"><?php echo $passivechecks_header_label ?></th>
+				<th><?php echo $flap_detect_header_label ?></th>
+				<th><?php echo $notifications_header_label ?></th>
+				<th><?php echo $eventhandler_header_label ?></th>
+				<th><?php echo $activechecks_header_label ?></th>
+				<th><?php echo $passivechecks_header_label ?></th>
 			</tr>
 			<tr>
 				<td class="white">
-				<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+				<table>
 					<!--<tr>
 						<td rowspan="5" class="white"><?php echo $cmd_flap_link ?></td>
 					</tr>-->
@@ -76,7 +76,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 						<!--<tr>
 							<td rowspan="5" class="white"><?php echo $cmd_notification_link ?></td>
 						</tr>-->
@@ -110,7 +110,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_event_link ?></td>
 						</tr>-->
@@ -144,7 +144,7 @@
 				</td>
 
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_activecheck_link ?></td>
 						</tr>-->
@@ -177,7 +177,7 @@
 					</table>
 				</td>
 				<td class="white">
-					<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+					<table>
 						<!--<tr>
 							<td class="white" rowspan="3"><?php echo $cmd_passivecheck_link ?></td>
 						</tr>-->
