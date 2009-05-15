@@ -8,17 +8,20 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left" id="extinfo_host-info">
-	<div class="widget-header"><?php echo $this->translate->_('Host Information'); ?></div>
-	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px; width: 300px">
+<div class="widget left w98" id="extinfo_host-info">
+	<table>
+		<colgroup>
+			<col style="width: 80px" />
+			<col style="width: auto" />
+		</colgroup>
 		<tr>
-			<td style="padding: 5px"><?php echo ucfirst($lable_type) ?></td>
-			<td><?php echo $main_object ?></td>
+			<td class="white"><strong><?php echo ucfirst($lable_type) ?></strong></td>
+			<td class="white"><?php echo $main_object ?></td>
 		</tr>
-		<?php echo !empty($main_object_alias) ? '<tr><td style="padding: 5px">'.$this->translate->_('Alias').'</td><td>'.$main_object_alias.'</td></tr>' : '' ?>
+		<?php echo !empty($main_object_alias) ? '<tr><td class="white"><strong>'.$this->translate->_('Alias').'</strong></td><td class="white">'.$main_object_alias.'</td></tr>' : '' ?>
 		<tr>
-			<td style="padding: 5px"><?php echo $this->translate->_('IP address');?></td>
-			<td>
+			<td class="white"><strong><?php echo $this->translate->_('IP address');?></strong></td>
+			<td class="white">
 				<?php echo isset($host_address) ? $host_address : ''; ?>
 				<?php
 					if ($type == 'service') {
@@ -31,8 +34,8 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<tr>
-			<td style="padding: 5px"><?php echo $lable_member_of ?></td>
-			<td><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
+			<td class="white"><strong><?php echo $lable_member_of ?></strong></td>
+			<td class="white"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
 		</tr>
 	</table>
 </div>
@@ -41,7 +44,7 @@ if (!empty($widgets)) {
 if (!empty($commands))
 	echo $commands;
 ?>
-<div class="widget left" id="extinfo_current" style="width: 510px">
+<div class="widget left w66" id="extinfo_current">
 	<div class="widget-header"><?php echo $this->translate->_('Host State Information'); ?></div>
 	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
 		<tr>
@@ -112,10 +115,10 @@ if (!empty($commands))
 			<td><?php echo $last_update ? date($date_format_str, $last_update) : $na_str ?> <?php echo $last_update_ago ?></td>
 		</tr>
 	</table>
-</div>
+<!--</div>
 
-<div class="widget left" id="extinfo_checks" style="width: 510px">
-<div class="widget-header"><?php echo $this->translate->_('Information'); ?></div>
+<div class="widget left" id="extinfo_checks" style="width: 510px">-->
+<!--<div class="widget-header"><?php echo $this->translate->_('Information'); ?></div>-->
 	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
 		<tr>
 			<td style="width: 170px"><?php echo $lable_active_checks ?></td>
