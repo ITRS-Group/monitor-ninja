@@ -6,7 +6,7 @@
 
 <div class="widget left w98" id="status_group-grid" style="margin-top: -11px">
 <?php
-$i = 0;
+
 foreach ($group_details as $details) {
 
 ?>
@@ -40,6 +40,7 @@ foreach ($group_details as $details) {
 		</thead>
 		<tbody>
 		<?php
+		$i = 0;
 		foreach ($details->hosts as $host) {
 			$i++;
 		?>
