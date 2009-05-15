@@ -572,10 +572,8 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	 * FIXME: This method is all but clear and should be checked
-	 * thouroughly before relying on it.
-	 * For one, the calling of the recursive get_child_hosts()
-	 * could be a problem and also the SQL statements.
+	 * 	determine what hosts are causing network outages
+	 * 	and the severity for each one found
 	 */
 	public function find_hosts_causing_outages()
 	{
