@@ -30,7 +30,7 @@
 						sortList: [[1,0]],
 						headers: {
 							6: { sorter: false }
-						}
+						},
 					});
 				});
 
@@ -44,8 +44,12 @@
 					});
 				});
 
-				$(function(){
+			/* widget functionality - for tac */
+			$(function(){
 				$.fn.EasyWidgets({
+					behaviour : {
+      			useCookies : true
+    			},
 					i18n : {
 						editText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Settings" style="margin: -12px 30px 0px auto; display: block" />',
 						closeText : '<img src="/ninja/application/views/themes/default/images/icons/box-close.png" alt="Close widget"   style="margin: -12px 0px 0px auto; display: block" />',
@@ -63,14 +67,13 @@
 						widgetOpenEdit : 'slide',
 						widgetCloseEdit : 'slide',
 						widgetCancelEdit : 'slide'
-					}
+					},
 				});
 			});
 
 			function collapse_menu(action) {
 
 				if (action == '') {
-					//alert('kolla kaka');
 					kakor = document.cookie;
 					kakor_delar = kakor.split('; ');
 					for (j = 0; j < kakor_delar.length; j++) {
@@ -82,7 +85,6 @@
 				}
 
 				if (action == 'hide') {
-					//alert('göm mig');
 					document.getElementById('menu').style.width = '35px';
 					document.getElementById('close-menu').style.display = 'none';
 					document.getElementById('show-menu').style.display = 'block';
@@ -95,7 +97,6 @@
 					document.cookie = 'ninja_menu=hide';
 				}
 				if (action == 'show') {
-					//alert('visa mig');
 					document.getElementById('menu').style.width = '161px';
 					document.getElementById('close-menu').style.display = 'block';
 					document.getElementById('show-menu').style.display = 'none';
