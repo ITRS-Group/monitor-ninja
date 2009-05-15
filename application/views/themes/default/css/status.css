@@ -17,6 +17,12 @@
 	display: block;
 }
 
+#widget-status_totals .icon,
+#widget-host_totals .icon {
+	width: 11px;
+}
+
+
 tr.odd td.bl,
 tr.even td.bl { border-left: 1px solid #dcdccd; }
 
