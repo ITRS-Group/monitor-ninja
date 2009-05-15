@@ -6,6 +6,7 @@ $(document).ready(function() {
 		},
 	}),
 	$("#service_table").tablesorter({
+		sortList: [[1,0]],
 		headers: {
 			7: { sorter: false }
 		},

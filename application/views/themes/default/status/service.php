@@ -33,9 +33,17 @@ if (!empty($widgets)) {
 			<th><?php echo $this->translate->_('Last check') ?></th>
 			<th><?php echo $this->translate->_('Duration') ?></th>
 			<th><?php echo $this->translate->_('Status information') ?></th>
-			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 			<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
 			<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
+			<?php
+				/*foreach($header_links as $row) {
+					echo '<th '.
+						//((isset($row['url_asc']) && (str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']) == $row['url_asc'])) ? 'onclick="location.href=\'/ninja/index.php/'.str_replace('&','&amp;',$row['url_desc']).'\'" class="headerSortUp"' : 'class="header"').
+						//(isset($row['url_asc']) ? 'onclick="location.href=\'/ninja/index.php/'.str_replace('&','&amp;',$row['url_asc']).'\'" class="headerSortDown"' : 'class="header"').
+						'>'.$row['title'].'</th>';
+				}*/
+			?>
+			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -47,15 +55,15 @@ if (!empty($widgets)) {
 		$a++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon bl <?php echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
+		<td class="icon bl<?php //echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
 			<?php
-				if ($curr_host != $row->host_name) {
+				//if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
-				}
+				//}
 			?>
 		</td>
-		<td class="<?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
-			<?php if ($curr_host != $row->host_name) { ?>
+		<td class="<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
+			<?php //if ($curr_host != $row->host_name) { ?>
 				<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
 				<div style="float: right">
 					<?php
@@ -76,9 +84,9 @@ if (!empty($widgets)) {
 						}
 					?>
 				</div>
-			<?php } ?>
+			<?php //} ?>
 		</td>
-		<td class="bl icon">
+		<td class="icon">
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
