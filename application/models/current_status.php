@@ -634,12 +634,9 @@ class Current_status_Model extends Model
 				host hh
 			WHERE
 				hh.id IN (".$str_hostlist.") AND
-				(h.current_state!=".self::HOST_UP." AND h.current_state!=".self::HOST_PENDING.") AND
 				(hh.current_state!=".self::HOST_UP." AND hh.current_state!=".self::HOST_PENDING.") AND
 				h.id=hp.parents AND
 				hh.id=hp.host";
-
-		# @@@FIXME Check and verify the above SQL statement
 
 		$result = $this->db->query($sql);
 		return $result;
