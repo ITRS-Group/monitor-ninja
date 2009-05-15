@@ -8,32 +8,42 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left w98" id="extinfo_info">
-	<div id="extinfo_object_main_info">
-		<strong><?php echo ucfirst($lable_type) ?></strong>:
-		<?php echo $main_object ?><br />
-		<?php echo !empty($main_object_alias) ? '<strong>Alias</strong>: '.$main_object_alias : '' ?><br />
-		<strong><?php echo $this->translate->_('IP address');?></strong> <?php echo isset($host_address) ? $host_address : ''; ?><br />
-		<?php
-			if ($type == 'service') {
-				echo $lable_on_host.'<br />';
-				echo (isset($host) ? ucfirst($host) : '').'<br />';
-				echo isset($host_alias) ? '('.$host_alias.')' : '';
-				echo !empty($host_link) ? '('.$host_link.')' : '';
-			}
-		?>
-		<strong><?php echo $lable_member_of ?></strong>:
-		<?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?><br />
-	</div>
+<div class="widget left" id="extinfo_host-info">
+	<div class="widget-header"><?php echo $this->translate->_('Host Information'); ?></div>
+	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px; width: 300px">
+		<tr>
+			<td style="padding: 5px"><?php echo ucfirst($lable_type) ?></td>
+			<td><?php echo $main_object ?></td>
+		</tr>
+		<?php echo !empty($main_object_alias) ? '<tr><td style="padding: 5px">'.$this->translate->_('Alias').'</td><td>'.$main_object_alias.'</td></tr>' : '' ?>
+		<tr>
+			<td style="padding: 5px"><?php echo $this->translate->_('IP address');?></td>
+			<td>
+				<?php echo isset($host_address) ? $host_address : ''; ?>
+				<?php
+					if ($type == 'service') {
+						echo $lable_on_host.'<br />';
+						echo (isset($host) ? ucfirst($host) : '').'<br />';
+						echo isset($host_alias) ? '('.$host_alias.')' : '';
+						echo !empty($host_link) ? '('.$host_link.')' : '';
+					}
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding: 5px"><?php echo $lable_member_of ?></td>
+			<td><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
+		</tr>
+	</table>
 </div>
 
 <?php
 if (!empty($commands))
 	echo $commands;
 ?>
-<div class="widget collapsable left" id="extinfo_current" style="width: 370px">
+<div class="widget left" id="extinfo_current" style="width: 510px">
 	<div class="widget-header"><?php echo $this->translate->_('Host State Information'); ?></div>
-	<table style="border-spacing: 1px">
+	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
 		<tr>
 			<td style="width: 170px"><?php echo $lable_current_status ?></td>
 			<td class="status icon"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower($current_status_str).'.png',$current_status_str);?></td>
@@ -104,9 +114,9 @@ if (!empty($commands))
 	</table>
 </div>
 
-<div class="widget collapsable left" id="extinfo_checks" style="width: 370px">
+<div class="widget left" id="extinfo_checks" style="width: 510px">
 <div class="widget-header"><?php echo $this->translate->_('Information'); ?></div>
-	<table style="border-spacing: 1px">
+	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
 		<tr>
 			<td style="width: 170px"><?php echo $lable_active_checks ?></td>
 			<td class="status icon"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?></td>
