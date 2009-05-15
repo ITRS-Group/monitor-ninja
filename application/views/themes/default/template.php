@@ -8,7 +8,6 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
-		<?php //echo html::link('application/views/themes/default/images/favicon.ico','icon','image/ico') ?>
 		<?php
 			if (!empty($css_header)) {
 				echo $css_header;
@@ -19,96 +18,11 @@
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
-		<?php //echo html::script('application/media/js/btn.js') ?>
+		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
-
-				$(document).ready(function() {
-					$("#sort-table").tablesorter({
-						sortList: [[1,0]],
-						headers: {
-							6: { sorter: false }
-						},
-					});
-				});
-
-				$(document).ready(function() {
-					$("#sort-group-grid").tablesorter({
-						//sortList: [[1,0]],
-						headers: {
-							1: { sorter: false },
-							2: { sorter: false }
-						}
-					});
-				});
-
-			/* widget functionality - for tac */
-			$(function(){
-				$.fn.EasyWidgets({
-					behaviour : {
-      			useCookies : true
-    			},
-					i18n : {
-						editText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Settings" style="margin: -12px 30px 0px auto; display: block" />',
-						closeText : '<img src="/ninja/application/views/themes/default/images/icons/box-close.png" alt="Close widget"   style="margin: -12px 0px 0px auto; display: block" />',
-						collapseText : '<img src="/ninja/application/views/themes/default/images/icons/box-maximize.png" alt="Collapse"  style="margin: -12px 15px 0px auto; display: block" />',
-						cancelEditText : '<img src="/ninja/application/views/themes/default/images/icons/box-config.png" alt="Cancel" style="margin: -12px 30px 0px auto; display: block" />',
-						extendText : '<img src="/ninja/application/views/themes/default/images/icons/box-mimimize.png" alt="Extend" style="margin: -12px 15px 0px auto; display: block" />'
-					},
-					effects : {
-						effectDuration : 150,
-						widgetShow : 'slide',
-						widgetHide : 'slide',
-						widgetClose : 'slide',
-						widgetExtend : 'slide',
-						widgetCollapse : 'slide',
-						widgetOpenEdit : 'slide',
-						widgetCloseEdit : 'slide',
-						widgetCancelEdit : 'slide'
-					},
-				});
-			});
-
-			function collapse_menu(action) {
-
-				if (action == '') {
-					kakor = document.cookie;
-					kakor_delar = kakor.split('; ');
-					for (j = 0; j < kakor_delar.length; j++) {
-						tva_delar = kakor_delar[j].split('=');
-						if (tva_delar[0] == 'ninja_menu') {
-							action = tva_delar[1];
-						}
-					}
-				}
-
-				if (action == 'hide') {
-					document.getElementById('menu').style.width = '35px';
-					document.getElementById('close-menu').style.display = 'none';
-					document.getElementById('show-menu').style.display = 'block';
-					var menu = document.getElementById('menu');
-					menu.getElementsByTagName('cite')[0].setAttribute('style','display: none');
-					for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
-						menu.getElementsByTagName('a')[i].setAttribute('style','display: none');
-					}
-					document.getElementById('content').style.marginLeft = '35px';
-					document.cookie = 'ninja_menu=hide';
-				}
-				if (action == 'show') {
-					document.getElementById('menu').style.width = '161px';
-					document.getElementById('close-menu').style.display = 'block';
-					document.getElementById('show-menu').style.display = 'none';
-					var menu = document.getElementById('menu');
-					menu.getElementsByTagName('cite')[0].setAttribute('style','display: inline');
-					for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
-						menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
-					}
-					document.getElementById('content').style.marginLeft = '161px';
-					document.cookie = 'ninja_menu=show';
-				}
-			}
 			//-->
 		</script>
 		<?php
@@ -164,7 +78,10 @@
 				foreach ($links as $header => $link):
 						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>';
 						foreach ($link as $title => $url):
-							echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title)).'</li>';
+							if($url == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
+								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title),array('style' => 'font-weight: bold')).'</li>';
+							else
+								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title)).'</li>';
 						endforeach;
 					endforeach;
 				?>
