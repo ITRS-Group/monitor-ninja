@@ -59,7 +59,6 @@ tr.even td {
 	border: 1px solid #dcdccd;
 	border-left: 0px;
 	border-top: 0px;
-	background: #f3f2ef;
 	background: #fdfdfd;
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -68,6 +67,7 @@ tr.even td {
 tr.odd td {
 	border: 1px solid #dcdccd;
 	border-left: 0px;
+	background: #f8f8f3;
 	border-top: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -79,19 +79,25 @@ tr.even td.status {
 
 #sort-table tr:hover td {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
+	background: #f5f5ef;
 }
 
 th.no-sort,
 th.header {
 	background: #f5f5ef url(../images/icons/arrows/sort-none.png) no-repeat center right;
+	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
+	background: #ffffff url(../images/bg/table/sort-none.png) top right;
 	cursor: pointer;
 	border-bottom: 1px solid #dcdccd;
 	border-right: 1px solid #dcdccd;
+	border-top: 1px solid #dcdccd;
+	padding-top: 14px;
 }
 
 th.no-sort {
 	background:#f5f5ef;
 	cursor: default;
+	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
 }
 
 th.no-sort:first-child {
@@ -100,21 +106,25 @@ border-left: 1px solid #dcdccd;
 
 th.header:first-child {
 	background: #dcdccd url(../images/icons/arrows/sort-none.png) no-repeat 11px center;
+	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
 	cursor: pointer;
 	border-left: 1px solid #dcdccd;
 }
 
 th.headerSortDown {
 	background: #dcdccd url(../images/icons/arrows/sort-down.png) center right no-repeat;
+	background: #ffffff url(../images/bg/table/sort-down.png) top right;
 }
 
 th.headerSortDown:first-child {
 	background: #dcdccd url(../images/icons/arrows/sort-down.png) 11px center no-repeat;
+	background: #ffffff url(../images/bg/table/sort-down.png) top right;
 	border-left: 1px solid #dcdccd;
 }
 
 th.headerSortUp {
 	background: #dcdccd url(../images/icons/arrows/sort-up.png) center right no-repeat;
+	background: #ffffff url(../images/bg/table/sort-up.png) top right;
 }
 
 th.headerSortUp:first-child {
