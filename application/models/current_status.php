@@ -664,13 +664,18 @@ class Current_status_Model extends Model
 		$query = "
 			SELECT
 				h.id,
-				h.host_name
+				h.host_name,
+				count(s.id) as service_cnt
 			FROM
 				host h,
-				host_parents hp
+				host_parents hp,
+				service s
 			WHERE
 				hp.parents=".$host_id." AND
-				h.id=hp.host";
+				h.id=hp.host AND
+				s.host_name=h.host_name
+			GROUP BY
+				h.id";
 		$result = $this->db->query($query);
 		if ($result->count()==0) {
 			return false;
