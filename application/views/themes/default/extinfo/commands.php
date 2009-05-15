@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left" id="extinfo_info" style="width: 310px">
+<div class="widget right" id="extinfo_info" style="width: 310px; margin-right: 1%">
 <div class='widget-header'><?php echo $lable_command_title ?></div>
-	<table style="border-spacing: 1px;">
+	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
 		<?php # only for hosts!
 			if ($type == 'host') { # @@@FIXME check if we are using statusmap? USE_STATUSMAP
 		?>
