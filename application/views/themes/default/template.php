@@ -68,7 +68,21 @@
 			});
 
 			function collapse_menu(action) {
+
+				if (action == '') {
+					//alert('kolla kaka');
+					kakor = document.cookie;
+					kakor_delar = kakor.split('; ');
+					for (j = 0; j < kakor_delar.length; j++) {
+						tva_delar = kakor_delar[j].split('=');
+						if (tva_delar[0] == 'ninja_menu') {
+							action = tva_delar[1];
+						}
+					}
+				}
+
 				if (action == 'hide') {
+					//alert('göm mig');
 					document.getElementById('menu').style.width = '35px';
 					document.getElementById('close-menu').style.display = 'none';
 					document.getElementById('show-menu').style.display = 'block';
@@ -78,8 +92,10 @@
 						menu.getElementsByTagName('a')[i].setAttribute('style','display: none');
 					}
 					document.getElementById('content').style.marginLeft = '35px';
+					document.cookie = 'ninja_menu=hide';
 				}
-				else {
+				if (action == 'show') {
+					//alert('visa mig');
 					document.getElementById('menu').style.width = '161px';
 					document.getElementById('close-menu').style.display = 'block';
 					document.getElementById('show-menu').style.display = 'none';
@@ -89,9 +105,9 @@
 						menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
 					}
 					document.getElementById('content').style.marginLeft = '161px';
+					document.cookie = 'ninja_menu=show';
 				}
 			}
-
 			//-->
 		</script>
 		<?php
@@ -101,7 +117,7 @@
 		?>
 	</head>
 
-	<body>
+	<body onload="collapse_menu('')">
 		<div id="top-bar">
 			<?php //echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios'); ///ninja/index.php/tac ?>
 			<div style="font-size: 16px; margin: 7px 10px; float: left">NINJA</div>
@@ -141,7 +157,7 @@
 
 		<div id="menu">
 			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
-			<div id="show-menu" title="<?php echo $this->translate->_('Show menu') ?>" onclick="collapse_menu()"></div>
+			<div id="show-menu" title="<?php echo $this->translate->_('Show menu') ?>" onclick="collapse_menu('show')"></div>
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
