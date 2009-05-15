@@ -16,7 +16,7 @@ foreach ($group_details as $details) {
 		(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
 		</div>-->
 
-	<table style="table-layout: fixed" id="group_grid_table">
+	<table style="table-layout: fixed" class="group_grid_table">
 		<caption>
 			<?php echo html::anchor('status/servicegroup/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
 			(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)

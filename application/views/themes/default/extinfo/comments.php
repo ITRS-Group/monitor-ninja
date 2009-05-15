@@ -12,7 +12,7 @@
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
 <a name="comments" />
-	<table id="comments_table">
+	<table class="comments_table">
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
 			<tr>

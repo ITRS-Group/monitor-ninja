@@ -17,8 +17,8 @@ $(document).ready(function() {
 			2: { sorter: false },
 			3: { sorter: false }
 		},
-	}),
-	$("#group_grid_table").tablesorter({
+	}),	
+	$(".group_grid_table").tablesorter({
 		sortList: [[0,0]],
 		headers: {
 			1: { sorter: false },
@@ -32,7 +32,7 @@ $(document).ready(function() {
 			2: { sorter: false }
 		},
 	}),
-	$("#comments_table").tablesorter({
+	$(".comments_table").tablesorter({
 		sortList: [[0,0]],
 		headers: {
 			7: { sorter: false }
