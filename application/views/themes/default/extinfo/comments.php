@@ -12,18 +12,21 @@
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
 <a name="comments" />
-	<table>
+	<table id="comments_table">
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
+		<thead>
 			<tr>
-				<th class="no-sort bl"><?php echo $label_entry_time ?></th>
-				<th class="no-sort"><?php echo $label_author ?></th>
-				<th class="no-sort"><?php echo $label_comment ?></th>
-				<th class="no-sort" style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
-				<th class="no-sort"><?php echo $label_persistent ?></th>
-				<th class="no-sort"><?php echo $label_type ?></th>
-				<th class="no-sort"><?php echo $label_expires ?></th>
+				<th><?php echo $label_entry_time ?></th>
+				<th><?php echo $label_author ?></th>
+				<th><?php echo $label_comment ?></th>
+				<th style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
+				<th><?php echo $label_persistent ?></th>
+				<th><?php echo $label_type ?></th>
+				<th><?php echo $label_expires ?></th>
 				<th class="no-sort"><?php echo $label_actions ?></th>
 			</tr>
+			</thead>
+			<tbody>
 	<?php
 		if ($data->count()) {
 			$i=0;foreach ($data as $row) { $i++; ?>
@@ -62,6 +65,7 @@
 				<td colspan="8"><?php echo $no_data ?></td>
 			</tr>
 		<?php } ?>
+		</tbody>
 	</table>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
