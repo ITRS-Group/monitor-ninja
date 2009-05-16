@@ -68,6 +68,7 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Servicegroup overview') 	=> 'status/servicegroup',
 				$this->translate->_('Servicegroup grid') 			=> 'status/servicegroup_grid',
 				$this->translate->_('Servicegroup summary') 	=> 'status/servicegroup_summary',
+				$this->translate->_('Network outages') 				=> 'outages',
 				$this->translate->_('Host problems') 					=> 'status/host/all/6?group_type=',
 				$this->translate->_('Service problems') 			=> 'status/service/all?servicestatustypes=14&group_type=',
 				$this->translate->_('Unhandled problems') 		=> 'status/host/all/6?group_type=',
