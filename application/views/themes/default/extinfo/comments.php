@@ -20,9 +20,9 @@
 				<th><?php echo $label_author ?></th>
 				<th><?php echo $label_comment ?></th>
 				<th style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
-				<th><?php echo $label_persistent ?></th>
+				<th style="width: 80px"><?php echo $label_persistent ?></th>
 				<th><?php echo $label_type ?></th>
-				<th><?php echo $label_expires ?></th>
+				<th style="width: 65px"><?php echo $label_expires ?></th>
 				<th class="no-sort"><?php echo $label_actions ?></th>
 			</tr>
 			</thead>
