@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-	<div class='errorMessage'>
+	<div class="error_message">
 		<?php echo $error_message ?>
 	</div>
 
-	<div class='errorDescription'>
+	<div class="error_description">
 		<?php echo $error_description ?>
 	</div>
