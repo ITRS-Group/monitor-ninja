@@ -1,20 +1,9 @@
-
-
-			<!--<div class='statusTitle'>
-				<?php //echo $label_header ?>
-			</div>-->
+<?php defined('SYSPATH') OR die('No direct access allowed.');?>
 
 <div class="widget left w98" id="status_group-grid" style="margin-top: -11px">
 <?php
-
 foreach ($group_details as $details) {
-
 ?>
-
-		<!--<div class="widget-header">
-		<?php echo html::anchor('status/servicegroup/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
-		(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
-		</div>-->
 
 	<table style="table-layout: fixed" class="group_grid_table">
 		<caption>
@@ -48,7 +37,7 @@ foreach ($group_details as $details) {
 			<td class="icon bl">
 				<?php
 					if (!empty($host['icon_image'])) {
-						echo html::anchor('extinfo/details/host/'.$host['host_name'], '<img src="'.$logos_path.$host['icon_image'].'" alt="'.$host['icon_image_alt'].'" title="'.$host['icon_image_alt'].'" style="width: 16px;" />',array('style' => 'border: 0px'));
+						echo html::anchor('extinfo/details/host/'.$host['host_name'], html::image('application/media/images/logos/'.$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
 					} ?>
 			</td>
 			<td style="white-space: normal"><?php echo html::anchor('extinfo/details/host/'.$host['host_name'], html::specialchars($host['host_name'])) ?></td>

@@ -71,9 +71,9 @@ foreach ($result as $row) {
 					?>
 				</td>
 				<td class="icon" style="width: 10px">
-				<?php if (!empty($row->icon_image)) { ?>
-					<img src="<?php echo $logos_path.$row->icon_image ?>" style="height: 16px; width: 16px"  title="<?php echo $this->translate->_('View extra host notes') ?>"  alt="<?php echo $this->translate->_('View extra host notes') ?>" />
-				<?php	} ?>
+				<?php if (!empty($row->icon_image)) { 
+					echo html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt));
+				} ?>
 				</td>
 				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 				<td><?php echo $row->duration ?></td>
