@@ -743,7 +743,7 @@ class Status_Controller extends Authenticated_Controller {
 				$host_icon = false;
 				# logos_path
 				if (!empty($host->icon_image)) {
-					$host_icon = '<img src="'.$this->logos_path.$host->icon_image.'" style="height: 16px" alt="'.$host->icon_image_alt.'" title="'.$host->icon_image_alt.'" />';
+					$host_icon = html::image('application/media/images/logos/'.$host->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->icon_image_alt, 'title' => $host->icon_image_alt));
 				}
 				$hostinfo[$host->host_name] = array(
 					'state_str' => $this->current->status_text($host->current_state, 'host'),
