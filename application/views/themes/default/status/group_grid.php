@@ -59,7 +59,7 @@ foreach ($group_details as $details) {
 				sort($details->services[$host['host_name']]);
 				foreach	($details->services[$host['host_name']] as $service) {
 						$search = array(0,1,2,3,4);
-						$replace = array('ok','warning','unknown','critical','pending'); // rätt ?? dubbelkolla
+						$replace = array('ok','warning','critical','unknown','pending'); // rätt ?? dubbelkolla
 						echo (($service['current_state'] != $tmp && $j != 0) ? '<br />' : '');
 						echo (($service['current_state'] != $tmp || ($service['current_state'] == 0 && $j == 0)) ? html::image('/application/views/themes/default/images/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;' : '');
 						$service_class = 'status'.Current_status_Model::status_text($service['current_state'], 'service');
