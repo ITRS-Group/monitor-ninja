@@ -88,7 +88,7 @@
 			</ul>
 		</div>
 		<div id="content">
-			<?php if (isset($content)) { echo $content; } else { url::redirect('tac/index'); } ?>
+			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 	</body>
