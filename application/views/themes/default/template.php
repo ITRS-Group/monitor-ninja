@@ -8,6 +8,7 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
+		<?php echo html::link('application/views/themes/default/images/favicon_ninja.ico','icon','image/icon') ?>
 		<?php
 			if (!empty($css_header)) {
 				echo $css_header;
@@ -34,8 +35,7 @@
 
 	<body onload="collapse_menu('')">
 		<div id="top-bar">
-			<?php //echo html::image('application/views/themes/default/images/nagios-sml.gif','Nagios'); ///ninja/index.php/tac ?>
-			<div style="font-size: 16px; margin: 7px 10px; float: left">NINJA</div>
+			<?php echo html::image('application/views/themes/default/images/ninja_19x19.png','NINJA'); ?>
 			<form action="">
 				<div id="navigation">
 					<?php //print_r( html::breadcrumb()); ?>
@@ -62,7 +62,7 @@
 			<div id="icons">
 				<ul>
 					<li><?php echo html::image('application/views/themes/default/images/star.png','Bookmark') ?></li>
-					<li><?php echo html::image('application/views/themes/default/images/nyckel.png','Settings') ?></li>
+					<li><?php echo html::image('application/views/themes/default/images/nyckel.png',$this->translate->_('Settings')) ?></li>
 				</ul>
 			</div>
 			<div id="status">
