@@ -143,7 +143,7 @@ th.header {
 }
 
 .group_grid_table th.header:first-child,
-.group_overview_table th:header.first-child,
+.group_overview_table th.header:first-child,
 .comments_table th.header:first-child,
 #group_summary_table th.header:first-child,
 #service_table th.header:first-child,
@@ -216,7 +216,7 @@ th.headerSortUp {
 .comments_table th.headerSortUp:first-child,
 #group_summary_table th.headerSortUp:first-child,
 #service_table th.headerSortUp:first-child,
-#host_table th.headerSortUp:firt-child,
+#host_table th.headerSortUp:first-child,
 th.headerSortUp:first-child {
 	background: #ffffff url(../images/bg/table/sort-up.png) top right;
 	border-left: 1px solid #dcdccd;
