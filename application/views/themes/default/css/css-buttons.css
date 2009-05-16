@@ -120,3 +120,7 @@ cite em:first-child {
 cite em:first-child {
 	background: #ffffff url(../images/field-bg-left.png) no-repeat;
 }
+
+input[type=submit] {
+	font: 11px 'trebuchet ms',arial,sans-serif;
+}
