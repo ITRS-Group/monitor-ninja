@@ -120,7 +120,12 @@ td.white:first-child table tr td:first-child {
 	background: #f5f5ef;
 }
 
-th.no-sort,
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
 th.header {
 	background: #ffffff url(../images/bg/table/sort-none.png) top right;
 	cursor: pointer;
@@ -130,35 +135,81 @@ th.header {
 	padding-top: 14px;
 }
 
-th.no-sort {
-	background:#f5f5ef;
-	cursor: default;
-	background: #ffffff url(../images/bg/table/sort.png) top right;
-}
-
-th.no-sort:first-child {
-	border-left: 1px solid #dcdccd;
-}
-
+.group_grid_table th.header:first-child,
+.group_overview_table th:header.first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
 th.header:first-child {
 	background: #ffffff url(../images/bg/table/sort-none.png) top right;
 	cursor: pointer;
 	border-left: 1px solid #dcdccd;
 }
 
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#host_table th,
+#host_table th.no-sort {
+	background:#f5f5ef;
+	cursor: default;
+	border-bottom: 1px solid #dcdccd;
+	border-right: 1px solid #dcdccd;
+	border-top: 1px solid #dcdccd;
+	padding-top: 14px;
+	background: #ffffff url(../images/bg/table/sort.png) top right;
+}
+
+.group_grid_table th:first-child,
+.group_overview_table th:first-child,
+.comments_table th:first-child,
+#group_summary_table th:first-child,
+#service_table th:first-child,
+#host_table th:first-child,
+#host_table th.no-sort:first-child {
+	border-left: 1px solid #dcdccd;
+}
+
+.group_grid_table th.headerSortDown,
+.group_overview_table th.headerSortDown,
+.comments_table th.headerSortDown,
+#group_summary_table th.headerSortDown,
+#service_table th.headerSortDown,
+#host_table th.headerSortDown, 
 th.headerSortDown {
 	background: #ffffff url(../images/bg/table/sort-down.png) top right;
 }
 
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
 th.headerSortDown:first-child {
 	background: #ffffff url(../images/bg/table/sort-down.png) top right;
 	border-left: 1px solid #dcdccd;
 }
 
+.group_grid_table th.headerSortUp,
+.group_overview_table th.headerSortUp,
+.comments_table th.headerSortUp,
+#group_summary_table th.headerSortUp,
+#service_table th.headerSortUp,
+#host_table th.headerSortUp,
 th.headerSortUp {
 	background: #ffffff url(../images/bg/table/sort-up.png) top right;
 }
 
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:firt-child,
 th.headerSortUp:first-child {
 	background: #ffffff url(../images/bg/table/sort-up.png) top right;
 	border-left: 1px solid #dcdccd;
