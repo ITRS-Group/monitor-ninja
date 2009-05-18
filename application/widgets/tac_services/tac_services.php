@@ -98,7 +98,7 @@ class Tac_services_Widget extends widget_Core {
 		# SERVICES UNKNOWN
 		$services_unknown = array();
 		if ($current_status->services_unknown_unacknowledged) {
-			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&service_props'.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
+			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED)] =
 				$current_status->services_unknown_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
