@@ -87,7 +87,7 @@ class Status_Controller extends Authenticated_Controller {
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
-		$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order);
+		$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
 		$this->template->content->result = $result;
 		$this->template->content->logos_path = $this->logos_path;
 	}
@@ -164,15 +164,15 @@ class Status_Controller extends Authenticated_Controller {
 			$shown .= " '".$name."'";
 			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
 			$grouptype = str_replace('group', '', $group_type);
-			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes);
+			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
 			}
 
-			$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes);
+			$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
 		} else {
-			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes);
+			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
 		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
@@ -352,7 +352,7 @@ class Status_Controller extends Authenticated_Controller {
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
 				$groupname_tmp = $group_res->{$grouptype.'group_name'};
-				$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
+				$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp, $serviceprops, $hostprops);
 			}
 		} else {
 			# make sure we have the correct servicegroup
@@ -369,7 +369,7 @@ class Status_Controller extends Authenticated_Controller {
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
 			$content->lable_header = $label_header."'".$group."'";
-			$group_details[] = $this->_show_group_totals_summary($grouptype, $group);
+			$group_details[] = $this->_show_group_totals_summary($grouptype, $group, $serviceprops, $hostprops);
 		}
 
 		# since we don't use these values yet we define a default value
@@ -409,7 +409,7 @@ class Status_Controller extends Authenticated_Controller {
 	 *
 	 * @return obj
 	 */
-	public function _show_group_totals_summary($grouptype='service', $group=false)
+	public function _show_group_totals_summary($grouptype='service', $group=false, $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$content = false;
@@ -505,7 +505,7 @@ class Status_Controller extends Authenticated_Controller {
 			$content->hosts_pending = $hosts_pending;
 
 			# fetch servicedata
-			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group);
+			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group, $serviceprops, $hostprops);
 		} else {
 			# nothing found
 		}
@@ -517,14 +517,14 @@ class Status_Controller extends Authenticated_Controller {
 	 *
 	 *
 	 */
-	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false)
+	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false, $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		if (empty($hostlist)) {
 			return false;
 		}
 		$service_info = false;
-		$result = $this->current->host_status_subgroup_names($hostlist, true);
+		$result = $this->current->host_status_subgroup_names($hostlist, true, false, false, false, false, $serviceprops, $hostprops);
 		$service_model = new Service_Model();
 		$service_data = $service_model->get_services_for_group($group, $grouptype);
 		$service_list = false;
