@@ -41,11 +41,12 @@ a {
 #login-table {
 	position: relative;
 	margin: 150px auto;
-	width: 220px;	
+	width: 240px;
+	text-align: center;
 }
 
 #login-table table {
-	width: auto;
+	width: 100%;
 }
 
 #login-table table tr td {
@@ -167,10 +168,14 @@ a {
 	font-weight: bold;
 }
 
+#icons {
+	position: absolute;
+	right: 0px;
+	top: -42px;
+	z-index: 9999;
+}
+
 #icons ul {
-	float: right;
-	padding: 0px;
-	margin: 0px;
 	height: 32px;
 }
 
@@ -180,6 +185,7 @@ a {
 	float: right;
 	background: url(../images/menu-left-divider.gif) 0px 0px no-repeat;
 	padding: 8px 12px;
+	cursor: pointer;
 }
 
 #status {
@@ -268,6 +274,39 @@ a {
 	top: 64px;
 	margin: 0px 0px 0px 160px;
 	padding-top: 11px;
+}
+
+#page_settings {
+	position: absolute;
+	top: 65px;
+	right: 37px;
+	padding: 0px;
+	border: 1px solid #e9e9e0;
+	background-color: #f5f5ef;
+	display: none;
+	z-index: 9999;
+}
+
+#page_settings ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+#page_settings ul li {
+	list-style: none;
+	border-bottom: 1px solid #e9e9e0;
+	padding: 3px 10px;
+	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
+}
+
+#page_settings ul li.header {
+	font-weight: bold;
+	padding-top: 15px;
+}
+
+#page_settings ul li a {
+	text-decoration: none;
+	border-bottom: 1px dotted #777777;
 }
 
 /**************************************************************************************************/
