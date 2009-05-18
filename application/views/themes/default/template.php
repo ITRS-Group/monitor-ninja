@@ -9,11 +9,7 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
 		<?php echo html::link('application/views/themes/default/images/favicon_ninja.ico','icon','image/icon') ?>
-		<?php
-			if (!empty($css_header)) {
-				echo $css_header;
-			}
-		?>
+		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.form.js') ?>
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
@@ -26,21 +22,32 @@
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 			//-->
 		</script>
-		<?php
-			if (!empty($js_header)) {
-				echo $js_header;
-			}
-		?>
+		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 	</head>
 
-	<body onload="collapse_menu('')">
+	<?php
+		$navigation = array(
+			'Tac' => array('Monitoring','Tactical overview'),
+			'Host' => array('Monitoring','Host details'),
+			'Service' => array('Montioring','Service details'),
+			'Hostgroup' => array('Montioring','Hostgroup overview'),
+			'Hostgroup_grid' => array('Montioring','Hostgroup grid'),
+			'Hostgroup_summary' => array('Montioring','Hostgroup summary'),
+			'Servicegroup' => array('Montioring','Servicegroup overview'),
+			'Servicegroup_grid' => array('Montioring','Servicegroup grid'),
+			'Servicegroup_summary' => array('Montioring','Servicegroup summary'),
+			'Outages' => array('Montioring','Network outages'),
+			'Show_comments' => array('Montioring','Comments')
+		);
+	?>
+
+	<body onload="collapse_menu(''); widget_status()">
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/images/ninja_19x19.png','NINJA'); ?>
 			<form action="">
 				<div id="navigation">
-					<?php //print_r( html::breadcrumb()); ?>
 					<?php echo html::image('application/views/themes/default/images/menu-arrow.gif','>') ?>
-					<?php $link = html::breadcrumb();
+					<?php	$link = html::breadcrumb();
 					for($i = 0; $i < count($link); $i++) {
 						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
 					}
@@ -61,12 +68,13 @@
 			</div>
 			<div id="icons">
 				<ul>
-					<li><?php echo html::image('application/views/themes/default/images/star.png','Bookmark') ?></li>
-					<li><?php echo html::image('application/views/themes/default/images/nyckel.png',$this->translate->_('Settings')) ?></li>
+					<?php
+						$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
+						if (is_array($settings_widgets))
+							echo '<li onclick="settings()">'.html::image('application/views/themes/default/images/nyckel.png',$this->translate->_('Settings')).'</li>';
+					?>
+					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
-			</div>
-			<div id="status">
-				<?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?>
 			</div>
 		</div>
 
@@ -85,6 +93,20 @@
 						endforeach;
 					endforeach;
 				?>
+			</ul>
+		</div>
+
+		<div id="page_settings">
+			<ul>
+				<li class="header">Availiable Widgets</li>
+				<?php
+					if (is_array($settings_widgets)) {
+						foreach($settings_widgets as $id => $widget) {
+							echo '<li id="li_'.$id.'" class="selected" onclick="control_widgets(\''.$id.'\',this)" class="">'.$widget.'</li>';
+						}
+					}
+				?>
+				<li onclick="control_widgets(); return false">Restore to factory settings</li>
 			</ul>
 		</div>
 		<div id="content">
