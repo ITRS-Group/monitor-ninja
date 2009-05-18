@@ -81,12 +81,17 @@ class Host_Model extends Model {
 	 */
 	public function service_states($host_name=false, $host_id=false)
 	{
-		$services = $this->auth->get_authorized_services();
-		if (empty($services)) {
-			return false;
+		$service_sql = '';
+		if (!$this->auth->view_services_root) {
+			$services = $this->auth->get_authorized_services();
+			if (empty($services)) {
+				return false;
+			}
+			ksort($services);
+			$s = !empty($host_id) ? '' : 's.';
+			$service_str = implode(', ', array_keys($services));
+			$service_sql = ' AND '.$s.'id IN(' . $service_str . ') ';
 		}
-		ksort($services);
-		$service_str = implode(', ', array_keys($services));
 		if (!empty($host_id)) {
 			$sql = "
 				SELECT
@@ -95,8 +100,7 @@ class Host_Model extends Model {
 				FROM
 					service
 				WHERE
-					host_name=".(int)$host_id." AND
-					id IN(".$service_str.")
+					host_name=".(int)$host_id." ".$service_sql."
 				GROUP BY
 					current_state;";
 		} else {
@@ -109,8 +113,7 @@ class Host_Model extends Model {
 					host h
 				WHERE
 					h.host_name=".$this->db->escape($host_name)." AND
-					s.host_name=h.host_name AND
-					s.id IN(".$service_str.")
+					s.host_name=h.host_name ".$service_sql."
 				GROUP BY
 					s.current_state;";
 		}
