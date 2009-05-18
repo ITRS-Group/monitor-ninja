@@ -22,10 +22,10 @@
 	</head>
 
 	<body>
-		
-		
+
+
 			<div id="login-table">
-			<?php echo html::image('/application/views/themes/default/images/ninja_login.png', array('alt' => 'Ninja', 'title' => 'Ninja', 'style' => 'margin-left: 7px')) ?>
+			<?php echo html::image('/application/views/themes/default/images/ninja_login.png', array('alt' => 'Ninja', 'title' => 'Ninja')) ?>
 			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open('default/do_login'); ?>
 			<table>
@@ -51,6 +51,6 @@
 			</table>
 		<?php echo form::close() ?>
 			</div>
-		
+
 	</body>
 </html>
