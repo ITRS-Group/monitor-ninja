@@ -23,3 +23,14 @@ $(function(){
 		},
 	});
 });
+
+function control_widgets(id,item) {
+	if (item.className == 'selected') {
+		$.fn.HideEasyWidget(id);
+		item.className = 'unselected';
+	}
+	else {
+		$.fn.ShowEasyWidget(id);
+		item.className = 'selected';
+	}
+}
