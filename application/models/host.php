@@ -120,4 +120,24 @@ class Host_Model extends Model {
 		$res = $this->db->query($sql);
 		return $res;
 	}
+
+	/**
+	*
+	*	Fetch host info filtered on specific field and value
+	*/
+	public function get_where($field=false, $value=false, $limit=false)
+	{
+		if (empty($field) || empty($value)) {
+			return false;
+		}
+		$auth_hosts = $this->auth->get_authorized_hosts();
+		$host_ids = array_keys($auth_hosts);
+		$host_info = $this->db
+			->from('host')
+			->like($field, $value)
+			->in('id', $host_ids)
+			->limit($limit)
+			->get();
+		return $host_info;
+	}
 }
