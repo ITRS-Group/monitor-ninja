@@ -102,26 +102,29 @@ class Status_totals_Widget extends widget_Core {
 
 			# service data
 			$service_info = $host_model->service_states($host);
-			foreach ($service_info as $service) {
-				switch ($service->current_state) {
-					case Current_status_Model::SERVICE_OK :
-						$svc_total_ok += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_WARNING:
-						$svc_total_warning += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_CRITICAL:
-						$svc_total_critical += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_UNKNOWN:
-						$svc_total_unknown += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_PENDING :
-						$svc_total_pending += $service->cnt;
-						break;
+			if (count($service_info)) {
+				foreach ($service_info as $service) {
+					switch ($service->current_state) {
+						case Current_status_Model::SERVICE_OK :
+							$svc_total_ok += $service->cnt;
+							break;
+						case Current_status_Model::SERVICE_WARNING:
+							$svc_total_warning += $service->cnt;
+							break;
+						case Current_status_Model::SERVICE_CRITICAL:
+							$svc_total_critical += $service->cnt;
+							break;
+						case Current_status_Model::SERVICE_UNKNOWN:
+							$svc_total_unknown += $service->cnt;
+							break;
+						case Current_status_Model::SERVICE_PENDING :
+							$svc_total_pending += $service->cnt;
+							break;
+					}
+					$svc_total_services += $service->cnt;
 				}
 			}
-			$svc_total_services += $service->cnt;
+
 			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
 
 		} elseif (!empty($groupname)) {
