@@ -80,6 +80,14 @@ class nagstat_Core {
 	const STYLE_SUMMARY = 2;
 	const STYLE_GRID = 3;
 	const STYLE_HOST_DETAIL = 4;
+	/********* HOST CHECK TYPES ***********/
+
+	const HOST_CHECK_ACTIVE = 0;	/* Nagios performed the host check */
+	const HOST_CHECK_PASSIVE = 1;	/* the host check result was submitted by an external source */
+
+	/******** SERVICE STATE TYPES ********/
+	const SOFT_STATE = 0;
+	const HARD_STATE = 1;
 
 	const SORT_ASC = 'ASC';
 	const SORT_DESC = 'DESC';
