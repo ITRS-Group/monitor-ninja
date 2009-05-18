@@ -45,53 +45,53 @@ class Tac_hosts_Widget extends widget_Core {
 		# HOSTS DOWN
 		$hosts_down = array();
 		if ($current_status->hosts_down_unacknowledged) {
-			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
 				$current_status->hosts_down_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->hosts_down_scheduled) {
-			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_down_scheduled.' '.$this->translate->_('Scheduled');
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_down_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->hosts_down_acknowledged) {
-			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_down_acknowledged.' '.$this->translate->_('Acknowledged');
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_down_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->hosts_down_disabled) {
-			$hosts_down['status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled');
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# HOSTS UNREACHABLE
 		$hosts_unreachable = array();
 
 		if ($current_status->hosts_unreachable_unacknowledged) {
-			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
 				$current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->hosts_unreachable_scheduled) {
-			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_unreachable_scheduled.' '.$this->translate->_('Scheduled');
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME] = $current_status->hosts_unreachable_scheduled.' '.$this->translate->_('Scheduled');
 		}
 
 		if ($current_status->hosts_unreachable_acknowledged) {
-			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_unreachable_acknowledged.' '.$this->translate->_('Acknowledged');
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED] = $current_status->hosts_unreachable_acknowledged.' '.$this->translate->_('Acknowledged');
 		}
 
 		if ($current_status->hosts_unreachable_disabled) {
-			$hosts_unreachable['status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled');
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled');
 		}
 
 
 		# HOSTS UP DISABLED
 		$hosts_up_disabled = array();
 		if ($current_status->hosts_up_disabled) {
-			$hosts_up_disabled['status/host/all/'.nagstat::HOST_UP .'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled');
+			$hosts_up_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_UP .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# HOSTS PENDING DISABLED
 		$hosts_pending_disabled = array();
 		if ($current_status->hosts_pending_disabled) {
-			$hosts_pending_disabled['status/host/all/'.nagstat::HOST_PENDING  .'/'.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled');
+			$hosts_pending_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_PENDING  .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled');
 		}
 
 		# fetch widget content
