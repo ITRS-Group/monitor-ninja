@@ -979,51 +979,51 @@ class Current_status_Model extends Model
 	*
 	*
 	*/
-	public function build_service_props_query($serviceprops=false)
+	public function build_service_props_query($serviceprops=false, $table_alias='')
 	{
 		if (empty($serviceprops))
 			return false;
 		$ret_str = false;
 		if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND %sscheduled_downtime_depth<=0 ';
+			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth>0 ';
 		if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND %sscheduled_downtime_depth>0 ';
+			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth<=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED)
-			$ret_str .= ' AND %sproblem_has_been_acknowledged!=0 ';
+			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged!=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
-			$ret_str .= ' AND %sproblem_has_been_acknowledged=0 ';
+			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
 		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED)
-			$ret_str .= ' AND %sactive_checks_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED)
-			$ret_str .= ' AND %sactive_checks_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED)
-			$ret_str .= ' AND %sevent_handler_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED)
-			$ret_str .= ' AND %sevent_handler_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED)
-			$ret_str .= ' AND %sflap_detection_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'flap_detection_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED)
-			$ret_str .= ' AND %sflap_detection_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'flap_detection_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_IS_FLAPPING)
-			$ret_str .= ' AND %sis_flapping=1 ';
+			$ret_str .= ' AND '.$table_alias.'is_flapping=1 ';
 		if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING)
-			$ret_str .= ' AND %sis_flapping=0 ';
+			$ret_str .= ' AND '.$table_alias.'is_flapping=0 ';
 		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED)
-			$ret_str .= ' AND %snotifications_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'notifications_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED)
-			$ret_str .= ' AND %snotifications_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'notifications_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED)
-			$ret_str .= ' AND %spassive_checks_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'passive_checks_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED)
-			$ret_str .= ' AND %spassive_checks_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'passive_checks_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK)
-			$ret_str .= ' AND %scheck_type='.self::SERVICE_CHECK_PASSIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.self::SERVICE_CHECK_PASSIVE.' ';
 		if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK)
-			$ret_str .= ' AND %scheck_type='.self::SERVICE_CHECK_ACTIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.self::SERVICE_CHECK_ACTIVE.' ';
 		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
-			$ret_str .= ' AND %scheck_type='.nagstat::HARD_STATE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::HARD_STATE.' ';
 		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
-			$ret_str .= ' AND %scheck_type='.nagstat::SOFT_STATE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::SOFT_STATE.' ';
 
 		return $ret_str;
 	}
@@ -1032,51 +1032,51 @@ class Current_status_Model extends Model
 	*
 	*
 	*/
-	public function build_host_props_query($hostprops=false)
+	public function build_host_props_query($hostprops=false, $table_alias='')
 	{
 		if (empty($hostprops))
 			return false;
 		$ret_str = false;
 		if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND %sscheduled_downtime_depth<=0 ';
+			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth>0 ';
 		if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND %sscheduled_downtime_depth>0 ';
+			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth<=0 ';
 		if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED)
-			$ret_str .= ' AND %sproblem_has_been_acknowledged=1 ';
+			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=1 ';
 		if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED)
-			$ret_str .= ' AND %sproblem_has_been_acknowledged=0 ';
+			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
 		if ($hostprops & nagstat::HOST_CHECKS_DISABLED)
-			$ret_str .= ' AND %sactive_checks_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
 		if ($hostprops & nagstat::HOST_CHECKS_ENABLED)
-			$ret_str .= ' AND %sactive_checks_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED)
-			$ret_str .= ' AND %sevent_handler_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED)
-			$ret_str .= ' AND %sevent_handler_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=1 ';
 		if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED)
-			$ret_str .= ' AND %sflap_detection_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'flap_detection_enabled=0 ';
 		if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED)
-			$ret_str .= ' AND %sflap_detection_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'flap_detection_enabled=1 ';
 		if ($hostprops & nagstat::HOST_IS_FLAPPING)
-			$ret_str .= ' AND %sis_flapping=1 ';
+			$ret_str .= ' AND '.$table_alias.'is_flapping=1 ';
 		if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING)
-			$ret_str .= ' AND %sis_flapping=0 ';
+			$ret_str .= ' AND '.$table_alias.'is_flapping=0 ';
 		if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED)
-			$ret_str .= ' AND %snotifications_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'notifications_enabled=0 ';
 		if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED)
-			$ret_str .= ' AND %snotifications_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'notifications_enabled=1 ';
 		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED)
-			$ret_str .= ' AND %spassive_checks_enabled=0 ';
+			$ret_str .= ' AND '.$table_alias.'passive_checks_enabled=0 ';
 		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED)
-			$ret_str .= ' AND %spassive_checks_enabled=1 ';
+			$ret_str .= ' AND '.$table_alias.'passive_checks_enabled=1 ';
 		if ($hostprops & nagstat::HOST_PASSIVE_CHECK)
-			$ret_str .= ' AND %scheck_type='.nagstat::HOST_CHECK_PASSIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::HOST_CHECK_PASSIVE.' ';
 		if ($hostprops & nagstat::HOST_ACTIVE_CHECK)
-			$ret_str .= ' AND %scheck_type='.nagstat::HOST_CHECK_ACTIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::HOST_CHECK_ACTIVE.' ';
 		if ($hostprops & nagstat::HOST_HARD_STATE)
-			$ret_str .= ' AND %sstate_type='.nagstat::HARD_STATE.' ';
+			$ret_str .= ' AND '.$table_alias.'state_type='.nagstat::HARD_STATE.' ';
 		if ($hostprops & nagstat::HOST_SOFT_STATE)
-			$ret_str .= ' AND %sstate_type='.nagstat::SOFT_STATE.' ';
+			$ret_str .= ' AND '.$table_alias.'state_type='.nagstat::SOFT_STATE.' ';
 
 		return $ret_str;
 	}
