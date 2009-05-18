@@ -119,8 +119,13 @@ cite em:first-child {
 
 cite em:first-child {
 	background: #ffffff url(../images/field-bg-left.png) no-repeat;
+	margin-left: -4px;
 }
 
 input[type=submit] {
 	font: 11px 'trebuchet ms',arial,sans-serif;
+	border: 1px solid #ffffff;
+	outline:  1px solid #cdcddc;;
+	background: transparent url(../images/btn-bg.png) repeat-x;
+	padding: 1px 5px;
 }
