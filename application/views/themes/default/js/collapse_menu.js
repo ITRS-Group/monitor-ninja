@@ -34,3 +34,15 @@ function collapse_menu(action) {
 		document.cookie = 'ninja_menu=show';
 	}
 }
+
+function settings(action) {
+	if (action == 'hide') {
+		document.getElementById('page_settings').style.display = 'none';
+	}
+	else {
+		if (document.getElementById('page_settings').style.display == 'block')
+			document.getElementById('page_settings').style.display = 'none';
+		else
+			document.getElementById('page_settings').style.display = 'block';
+	}
+}
