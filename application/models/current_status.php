@@ -879,6 +879,7 @@ class Current_status_Model extends Model
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
 		$h = '';
+		$s = !$show_services ? '' : 's.';
 		if (!empty($state_filter)) {
 			$h = $show_services ? 'h.' : '';
 			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
@@ -886,11 +887,8 @@ class Current_status_Model extends Model
 		if ($service_filter!==false && !empty($service_filter)) {
 			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
 		}
-		$serviceprops_sql = $this->build_service_props_query($serviceprops);
-		if (!empty($serviceprops_sql)) {
-			$serviceprops_sql = sprintf($serviceprops_sql, 's.');
-		}
-		$hostprops_sql = $this->build_host_props_query($hostprops);
+		$serviceprops_sql = $this->build_service_props_query($serviceprops, $s);
+		$hostprops_sql = $this->build_host_props_query($hostprops, $h);
 		if (!empty($hostprops_sql)) {
 			$hostprops_sql = sprintf($hostprops_sql, $h);
 		}
