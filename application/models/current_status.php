@@ -786,7 +786,7 @@ class Current_status_Model extends Model
 	 */
 	public function host_status_subgroup
 		($host_ids = false, $show_services = false, $state_filter=false,
-		 $sort_field='', $sort_order='DESC', $service_filter=false)
+		 $sort_field='', $sort_order='DESC', $service_filter=false, $serviceprops=false, $hostprops=false)
 	{
 		if (!is_array($host_ids)) {
 			$host_ids = trim($host_ids);
@@ -810,7 +810,7 @@ class Current_status_Model extends Model
 				$auth_host_ids[] = $host_ids;
 			}
 		}
-		return $this->get_host_status($auth_host_ids, $show_services, $state_filter, $sort_field, $sort_order, $service_filter);
+		return $this->get_host_status($auth_host_ids, $show_services, $state_filter, $sort_field, $sort_order, $service_filter, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -826,7 +826,7 @@ class Current_status_Model extends Model
 	 */
 	public function host_status_subgroup_names
 		($host_names=false, $show_services = false, $state_filter=false,
-		 $sort_field='', $sort_order='DESC', $service_filter=false)
+		 $sort_field='', $sort_order='DESC', $service_filter=false, $serviceprops=false, $hostprops=false)
 	{
 		if (!is_array($host_names)) {
 			$host_names = trim($host_names);
@@ -852,7 +852,7 @@ class Current_status_Model extends Model
 				$retval[] = $host_r[$host_names];
 			}
 		}
-		return $this->get_host_status($retval, $show_services, $state_filter, $sort_field, $sort_order, $service_filter);
+		return $this->get_host_status($retval, $show_services, $state_filter, $sort_field, $sort_order, $service_filter, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -867,7 +867,8 @@ class Current_status_Model extends Model
 	 * @param $sort_field field to sort on
 	 * @param $sort_order ASC/DESC
 	 */
-	private function get_host_status($host_list = false, $show_services = false, $state_filter=false, $sort_field='', $sort_order='ASC', $service_filter=false)
+	private function get_host_status($host_list = false, $show_services = false, $state_filter=false,
+		$sort_field='', $sort_order='ASC', $service_filter=false, $serviceprops=false, $hostprops=false)
 	{
 		if (empty($host_list)) {
 			return false;
@@ -877,12 +878,21 @@ class Current_status_Model extends Model
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
+		$h = '';
 		if (!empty($state_filter)) {
 			$h = $show_services ? 'h.' : '';
 			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
 		}
 		if ($service_filter!==false && !empty($service_filter)) {
 			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
+		}
+		$serviceprops_sql = $this->build_service_props_query($serviceprops);
+		if (!empty($serviceprops_sql)) {
+			$serviceprops_sql = sprintf($serviceprops_sql, 's.');
+		}
+		$hostprops_sql = $this->build_host_props_query($hostprops);
+		if (!empty($hostprops_sql)) {
+			$hostprops_sql = sprintf($hostprops_sql, $h);
 		}
 		if (!$show_services) {
 			$sort_field = empty($sort_field) ? 'host_name' : $sort_field;
@@ -910,7 +920,7 @@ class Current_status_Model extends Model
 				FROM host
 				WHERE
 					id IN (".$host_str.")
-					".$filter_sql."
+					".$filter_sql.$hostprops_sql.$serviceprops_sql."
 				ORDER BY
 					".$sort_field." ".$sort_order;
 
@@ -957,7 +967,7 @@ class Current_status_Model extends Model
 					h.id IN (".$host_str.") AND
 					s.id IN (".$service_str.") AND
 					s.host_name = h.host_name
-					".$filter_sql."
+					".$filter_sql.$hostprops_sql.$serviceprops_sql."
 				ORDER BY
 					".$sort_field." ".$sort_order;
 		}
