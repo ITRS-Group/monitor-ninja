@@ -36,6 +36,10 @@ a {
 	color: #414141;
 }
 
+cite {
+	font-style: normal;
+}
+
 /* login ****************************************************************************************/
 
 #login-table {
@@ -297,11 +301,23 @@ a {
 	border-bottom: 1px solid #e9e9e0;
 	padding: 3px 10px;
 	background: #ffffff url(../images/menu-top-two.gif) 0px -1px repeat-x;
+	cursor: pointer;
 }
 
 #page_settings ul li.header {
 	font-weight: bold;
 	padding-top: 15px;
+	cursor: default;
+}
+
+#page_settings ul li.selected {
+	list-style-image: url(../images/forms/checkbox_selected.png);
+	list-style-position: inside;
+}
+
+#page_settings ul li.unselected {
+	list-style-image: url(../images/forms/checkbox_.png);
+	list-style-position: inside;
 }
 
 #page_settings ul li a {
