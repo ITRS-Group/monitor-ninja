@@ -175,7 +175,7 @@ cite {
 #icons {
 	position: absolute;
 	right: 0px;
-	top: -42px;
+	top: -10px;
 	z-index: 9999;
 }
 
@@ -283,7 +283,7 @@ cite {
 #page_settings {
 	position: absolute;
 	top: 65px;
-	right: 37px;
+	right: 0px;
 	padding: 0px;
 	border: 1px solid #e9e9e0;
 	background-color: #f5f5ef;
