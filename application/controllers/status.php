@@ -33,7 +33,7 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $sort_field
 	 * @param $show_services
 	 */
-	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false)
+	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = urldecode($this->input->get('host', $host));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -41,6 +41,8 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
 		$show_services = urldecode($this->input->get('show_services', $show_services));
 		$group_type = urldecode($this->input->get('group_type', $group_type));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$group_type = urldecode(strtolower($group_type));
 
 		$host = trim($host);
@@ -51,7 +53,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, false, $group_type), $this);
+		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, false, $group_type, $serviceprops, $hostprops), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
@@ -100,12 +102,13 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $sort_field
 	 * @param $group_type
 	 */
-	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false)
+	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = urldecode($this->input->get('name', $name));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$service_props = urldecode($this->input->get('service_props', $service_props));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
 		$group_type = urldecode($this->input->get('group_type', $group_type));
@@ -186,14 +189,16 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $style
 	 *
 	 */
-	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
 		$grouptype = 'service';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -204,14 +209,16 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $style
 	 *
 	 */
-	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
 		$grouptype = 'host';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -224,12 +231,14 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $style
 	 */
 
-	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview')
+	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
@@ -239,10 +248,10 @@ class Status_Controller extends Authenticated_Controller {
 				$this->template->content = $this->add_view('status/group_overview');
 				break;
 			case 'detail': case 'details':
-				return $this->service($group, $hoststatustypes, $servicestatustypes, false, false, false, $grouptype.'group');
+				return $this->service($group, $hoststatustypes, $servicestatustypes, $serviceprops, false, false, $grouptype.'group', $hostprops);
 				break;
 			case 'summary':
-				return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
+				return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 				break;
 		}
 		$group_details = false;
@@ -251,10 +260,10 @@ class Status_Controller extends Authenticated_Controller {
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
 				$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
-				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $hoststatustypes, $servicestatustypes, $style);
+				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 			}
 		} else {
-			$group_details[] = $this->_show_group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style);
+			$group_details[] = $this->_show_group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -262,7 +271,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
 		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
@@ -292,30 +301,37 @@ class Status_Controller extends Authenticated_Controller {
 	/**
 	 * Display servicegroup summary
 	 */
-	public function servicegroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	public function servicegroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'service';
-		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
+		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
 
-	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false)
+	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'host';
-		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes);
+		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
 
-	public function group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false)
+	public function group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
+		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
+
 
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_summary');
@@ -325,7 +341,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
+		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
