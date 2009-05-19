@@ -8,6 +8,7 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/autocomplete_styles.css') ?>
 		<?php echo html::link('application/views/themes/default/images/favicon_ninja.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
@@ -15,7 +16,9 @@
 		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
+		<?php echo html::script('application/media/js/jquery.autocomplete.min') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
+		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -44,7 +47,7 @@
 	<body onload="collapse_menu(''); widget_status()">
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/images/ninja_19x19.png','NINJA'); ?>
-			<form action="">
+			<form action="status/host" id="global_search" method="get">
 				<div id="navigation">
 					<?php echo html::image('application/views/themes/default/images/menu-arrow.gif','>') ?>
 					<?php	$link = html::breadcrumb();
@@ -52,7 +55,7 @@
 						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
 					}
 					?>
-					<input type="text" name="show_host" value="Show host" onfocus="this.value=''" onblur="this.value='Show host'" />
+					<input type="text" name="show_host" id="query" class="textbox" value="Show host" onfocus="this.value=''" onblur="this.value='Show host'" />
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>
