@@ -138,9 +138,9 @@ class Nagios_auth_Model extends Model
 	*/
 	public function authorized_host_query()
 	{
-		#if ($this->view_hosts_root) {
-		#	return true;
-		#}
+		if ($this->view_hosts_root) {
+			return true;
+		}
 		$query_parts = array(
 			'from' => ' host AS auth_host, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, host_contactgroup AS auth_host_contactgroup',
 			'where' => " auth_host.id = auth_host_contactgroup.host
