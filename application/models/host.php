@@ -81,16 +81,15 @@ class Host_Model extends Model {
 	 */
 	public function service_states($host_name=false, $host_id=false)
 	{
-		$service_sql = '';
-		if (!$this->auth->view_services_root) {
-			$services = $this->auth->get_authorized_services();
-			if (empty($services)) {
-				return false;
-			}
-			ksort($services);
-			$s = !empty($host_id) ? '' : 's.';
-			$service_str = implode(', ', array_keys($services));
-			$service_sql = ' AND '.$s.'id IN(' . $service_str . ') ';
+		$s = !empty($host_id) ? '' : 's.';
+		$auth_query_parts = $this->auth->authorized_service_query();
+		$auth_from = '';
+		$auth_where = '';
+		if ($auth_query_parts !== true) {
+			$auth_from = ', '.$auth_query_parts['from'];
+
+			# match authorized services against service.host_name
+			$auth_where = ' AND '.sprintf($auth_query_parts['where'], $s.'host_name');
 		}
 		if (!empty($host_id)) {
 			$sql = "
@@ -98,9 +97,9 @@ class Host_Model extends Model {
 					COUNT(current_state) AS cnt,
 					current_state
 				FROM
-					service
+					service ".$auth_from."
 				WHERE
-					host_name=".(int)$host_id." ".$service_sql."
+					host_name=".(int)$host_id." ".$auth_where."
 				GROUP BY
 					current_state;";
 		} else {
@@ -110,10 +109,10 @@ class Host_Model extends Model {
 					s.current_state
 				FROM
 					service s,
-					host h
+					host h ".$auth_from."
 				WHERE
 					h.host_name=".$this->db->escape($host_name)." AND
-					s.host_name=h.host_name ".$service_sql."
+					s.host_name=h.host_name ".$auth_where."
 				GROUP BY
 					s.current_state;";
 		}
