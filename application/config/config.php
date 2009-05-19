@@ -122,7 +122,7 @@ $config['modules'] = array
  *
  * 	No trailing slash.
  */
-$config['nagios_base_path'] = '/opt/monitor';
+$config['nagios_base_path'] = '/opt/monitor/etc';
 
 /**
  *	Path to where host logos as stored.
