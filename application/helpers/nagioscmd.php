@@ -19,808 +19,1020 @@ class nagioscmd_Core
 	 * @return array with command information if a command was found, or
 	 *         false otherwise
 	 */
-	public function cmd_info($id = false, $name = false)
+	public function cmd_info($name = false)
 	{
-		if (empty($name) && empty($id)) {
+		if (empty($name)) {
 			return false;
 		}
 
-		# scripted in from Nagios' developer information portal
 		$command_info = array
-			('ACKNOWLEDGE_HOST_PROBLEM' => array
-			 ("template" => "ACKNOWLEDGE_HOST_PROBLEM;host_name;sticky;notify;persistent;author;comment",
-			  "description" => _("Allows you to acknowledge the current problem for the specified host.  By acknowledging the current problem, future notifications (for the same host state) are disabled.  If the &quot;sticky&quot; option is set to one (1), the acknowledgement will remain until the host returns to an UP state.  Otherwise the acknowledgement will automatically be removed when the host changes state.  If the &quot;notify&quot; option is set to one (1), a notification will be sent out to contacts indicating that the current host problem has been acknowledged.  If the &quot;persistent&quot; option is set to one (1), the comment associated with the acknowledgement will survive across restarts of the Nagios process.  If not, the comment will be deleted the next time Nagios restarts. "),
-			  "nagios_id" => 33,
-			  ),
-			 'ACKNOWLEDGE_SVC_PROBLEM' => array
-			 ("template" => "ACKNOWLEDGE_SVC_PROBLEM;host_name;service_description;sticky;notify;persistent;author;comment",
-			  "description" => _("Allows you to acknowledge the current problem for the specified service.  By acknowledging the current problem, future notifications (for the same servicestate) are disabled.  If the &quot;sticky&quot; option is set to one (1), the acknowledgement will remain until the service returns to an OK state.  Otherwise the acknowledgement will automatically be removed when the service changes state.  If the &quot;notify&quot; option is set to one (1), a notification will be sent out to contacts indicating that the current service problem has been acknowledged.  If the &quot;persistent&quot; option is set to one (1), the comment associated with the acknowledgement will survive across restarts of the Nagios process.  If not, the comment will be deleted the next time Nagios restarts. "),
-			  "nagios_id" => 34,
-			  ),
+			('NONE' => array
+			 ('nagios_id' => 0,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
 			 'ADD_HOST_COMMENT' => array
-			 ("template" => "ADD_HOST_COMMENT;host_name;persistent;author;comment",
-			  "description" => _("Adds a comment to a particular host.  If the &quot;persistent&quot; field is set to zero (0), the comment will be deleted the next time Nagios is restarted.  Otherwise, the comment will persist across program restarts until it is deleted manually."),
-			  "nagios_id" => 1,
-			  ),
-			 'ADD_SVC_COMMENT' => array
-			 ("template" => "ADD_SVC_COMMENT;host_name;service_description;persistent;author;comment",
-			  "description" => _("Adds a comment to a particular service.  If the &quot;persistent&quot; field is set to zero (0), the comment will be deleted the next time Nagios is restarted.  Otherwise, the comment will persist across program restarts until it is deleted manually."),
-			  "nagios_id" => 3,
-			  ),
-			 'CHANGE_CONTACT_HOST_NOTIFICATION_TIMEPERIOD' => array
-			 ("template" => "CHANGE_CONTACT_HOST_NOTIFICATION_TIMEPERIOD;contact_name;notification_timeperiod",
-			  "description" => _("Changes the host notification timeperiod for a particular contact to what is specified by the &quot;notification_timeperiod&quot; option.  The &quot;notification_timeperiod&quot; option should be the short name of the timeperiod that is to be used as the contact's host notification timeperiod.  The timeperiod must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 163,
-			  ),
-			 'CHANGE_CONTACT_MODATTR' => array
-			 ("template" => "CHANGE_CONTACT_MODATTR;contact_name;value",
-			  "description" => _("This command changes the modified attributes value for the specified contact.  Modified attributes values are used by Nagios to determine which object properties should be retained across program restarts.  Thus, modifying the value of the attributes can affect data retention.  This is an advanced option and should only be used by people who are intimately familiar with the data retention logic in Nagios."),
-			  "nagios_id" => 167,
-			  ),
-			 'CHANGE_CONTACT_MODHATTR' => array
-			 ("template" => "CHANGE_CONTACT_MODHATTR;contact_name;value",
-			  "description" => _("This command changes the modified host attributes value for the specified contact.  Modified attributes values are used by Nagios to determine which object properties should be retained across program restarts.  Thus, modifying the value of the attributes can affect data retention.  This is an advanced option and should only be used by people who are intimately familiar with the data retention logic in Nagios."),
-			  "nagios_id" => 168,
-			  ),
-			 'CHANGE_CONTACT_MODSATTR' => array
-			 ("template" => "CHANGE_CONTACT_MODSATTR;contact_name;value",
-			  "description" => _("This command changes the modified service attributes value for the specified contact.  Modified attributes values are used by Nagios to determine which object properties should be retained across program restarts.  Thus, modifying the value of the attributes can affect data retention.  This is an advanced option and should only be used by people who are intimately familiar with the data retention logic in Nagios."),
-			  "nagios_id" => 169,
-			  ),
-			 'CHANGE_CONTACT_SVC_NOTIFICATION_TIMEPERIOD' => array
-			 ("template" => "CHANGE_CONTACT_SVC_NOTIFICATION_TIMEPERIOD;contact_name;notification_timeperiod",
-			  "description" => _("Changes the service notification timeperiod for a particular contact to what is specified by the &quot;notification_timeperiod&quot; option.  The &quot;notification_timeperiod&quot; option should be the short name of the timeperiod that is to be used as the contact's service notification timeperiod.  The timeperiod must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 164,
-			  ),
-			 'CHANGE_CUSTOM_CONTACT_VAR' => array
-			 ("template" => "CHANGE_CUSTOM_CONTACT_VAR;contact_name;varname;varvalue",
-			  "description" => _("Changes the value of a custom contact variable."),
-			  "nagios_id" => 149,
-			  ),
-			 'CHANGE_CUSTOM_HOST_VAR' => array
-			 ("template" => "CHANGE_CUSTOM_HOST_VAR;host_name;varname;varvalue",
-			  "description" => _("Changes the value of a custom host variable."),
-			  "nagios_id" => 147,
-			  ),
-			 'CHANGE_CUSTOM_SVC_VAR' => array
-			 ("template" => "CHANGE_CUSTOM_SVC_VAR;host_name;service_description;varname;varvalue",
-			  "description" => _("Changes the value of a custom service variable."),
-			  "nagios_id" => 148,
-			  ),
-			 'CHANGE_GLOBAL_HOST_EVENT_HANDLER' => array
-			 ("template" => "CHANGE_GLOBAL_HOST_EVENT_HANDLER;event_handler_command",
-			  "description" => _("Changes the global host event handler command to be that specified by the &quot;event_handler_command&quot; option.  The &quot;event_handler_command&quot; option specifies the short name of the command that should be used as the new host event handler.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 123,
-			  ),
-			 'CHANGE_GLOBAL_SVC_EVENT_HANDLER' => array
-			 ("template" => "CHANGE_GLOBAL_SVC_EVENT_HANDLER;event_handler_command",
-			  "description" => _("Changes the global service event handler command to be that specified by the &quot;event_handler_command&quot; option.  The &quot;event_handler_command&quot; option specifies the short name of the command that should be used as the new service event handler.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 124,
-			  ),
-			 'CHANGE_HOST_CHECK_COMMAND' => array
-			 ("template" => "CHANGE_HOST_CHECK_COMMAND;host_name;check_command",
-			  "description" => _("Changes the check command for a particular host to be that specified by the &quot;check_command&quot; option.  The &quot;check_command&quot; option specifies the short name of the command that should be used as the new host check command.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 127,
-			  ),
-			 'CHANGE_HOST_CHECK_TIMEPERIOD' => array
-			 ("template" => "CHANGE_HOST_CHECK_TIMEPERIOD;host_name;timeperiod",
-			  "description" => _("Changes the valid check period for the specified host."),
-			  "nagios_id" => 144,
-			  ),
-			 'CHANGE_HOST_EVENT_HANDLER' => array
-			 ("template" => "CHANGE_HOST_EVENT_HANDLER;host_name;event_handler_command",
-			  "description" => _("Changes the event handler command for a particular host to be that specified by the &quot;event_handler_command&quot; option.  The &quot;event_handler_command&quot; option specifies the short name of the command that should be used as the new host event handler.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 125,
-			  ),
-			 'CHANGE_HOST_MODATTR' => array
-			 ("template" => "CHANGE_HOST_MODATTR;host_name;value",
-			  "description" => _("This command changes the modified attributes value for the specified host.  Modified attributes values are used by Nagios to determine which object properties should be retained across program restarts.  Thus, modifying the value of the attributes can affect data retention.  This is an advanced option and should only be used by people who are intimately familiar with the data retention logic in Nagios."),
-			  "nagios_id" => 165,
-			  ),
-			 'CHANGE_HOST_NOTIFICATION_TIMEPERIOD' => array
-			 ("template" => "CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod",
-			  "description" => _("Changes the notification timeperiod for a particular service to what is specified by the &quot;notification_timeperiod&quot; option.  The &quot;notification_timeperiod&quot; option should be the short name of the timeperiod that is to be used as the service notification timeperiod.  The timeperiod must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 161,
-			  ),
-			 'CHANGE_MAX_HOST_CHECK_ATTEMPTS' => array
-			 ("template" => "CHANGE_MAX_HOST_CHECK_ATTEMPTS;host_name;check_attempts",
-			  "description" => _("Changes the maximum number of check attempts (retries) for a particular host."),
-			  "nagios_id" => 132,
-			  ),
-			 'CHANGE_MAX_SVC_CHECK_ATTEMPTS' => array
-			 ("template" => "CHANGE_MAX_SVC_CHECK_ATTEMPTS;host_name;service_description;check_attempts",
-			  "description" => _("Changes the maximum number of check attempts (retries) for a particular service."),
-			  "nagios_id" => 133,
-			  ),
-			 'CHANGE_NORMAL_HOST_CHECK_INTERVAL' => array
-			 ("template" => "CHANGE_NORMAL_HOST_CHECK_INTERVAL;host_name;check_interval",
-			  "description" => _("Changes the normal (regularly scheduled) check interval for a particular host."),
-			  "nagios_id" => 129,
-			  ),
-			 'CHANGE_NORMAL_SVC_CHECK_INTERVAL' => array
-			 ("template" => "CHANGE_NORMAL_SVC_CHECK_INTERVAL;host_name;service_description;check_interval",
-			  "description" => _("Changes the normal (regularly scheduled) check interval for a particular service"),
-			  "nagios_id" => 130,
-			  ),
-			 'CHANGE_RETRY_HOST_CHECK_INTERVAL' => array
-			 ("template" => "CHANGE_RETRY_HOST_CHECK_INTERVAL;host_name;service_description;check_interval",
-			  "description" => _("Changes the retry check interval for a particular host."),
-			  "nagios_id" => 158,
-			  ),
-			 'CHANGE_RETRY_SVC_CHECK_INTERVAL' => array
-			 ("template" => "CHANGE_RETRY_SVC_CHECK_INTERVAL;host_name;service_description;check_interval",
-			  "description" => _("Changes the retry check interval for a particular service."),
-			  "nagios_id" => 131,
-			  ),
-			 'CHANGE_SVC_CHECK_COMMAND' => array
-			 ("template" => "CHANGE_SVC_CHECK_COMMAND;host_name;service_description;check_command",
-			  "description" => _("Changes the check command for a particular service to be that specified by the &quot;check_command&quot; option.  The &quot;check_command&quot; option specifies the short name of the command that should be used as the new service check command.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 128,
-			  ),
-			 'CHANGE_SVC_CHECK_TIMEPERIOD' => array
-			 ("template" => "CHANGE_SVC_CHECK_TIMEPERIOD;host_name;service_description;check_timeperiod",
-			  "description" => _("Changes the check timeperiod for a particular service to what is specified by the &quot;check_timeperiod&quot; option.  The &quot;check_timeperiod&quot; option should be the short name of the timeperod that is to be used as the service check timeperiod.  The timeperiod must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 145,
-			  ),
-			 'CHANGE_SVC_EVENT_HANDLER' => array
-			 ("template" => "CHANGE_SVC_EVENT_HANDLER;host_name;service_description;event_handler_command",
-			  "description" => _("Changes the event handler command for a particular service to be that specified by the &quot;event_handler_command&quot; option.  The &quot;event_handler_command&quot; option specifies the short name of the command that should be used as the new service event handler.  The command must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 126,
-			  ),
-			 'CHANGE_SVC_MODATTR' => array
-			 ("template" => "CHANGE_SVC_MODATTR;host_name;service_description;value",
-			  "description" => _("This command changes the modified attributes value for the specified service.  Modified attributes values are used by Nagios to determine which object properties should be retained across program restarts.  Thus, modifying the value of the attributes can affect data retention.  This is an advanced option and should only be used by people who are intimately familiar with the data retention logic in Nagios."),
-			  "nagios_id" => 166,
-			  ),
-			 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD' => array
-			 ("template" => "CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod",
-			  "description" => _("Changes the notification timeperiod for a particular service to what is specified by the &quot;notification_timeperiod&quot; option.  The &quot;notification_timeperiod&quot; option should be the short name of the timeperiod that is to be used as the service notification timeperiod.  The timeperiod must have been configured in Nagios before it was last (re)started."),
-			  "nagios_id" => 162,
-			  ),
-			 'DEL_ALL_HOST_COMMENTS' => array
-			 ("template" => "DEL_ALL_HOST_COMMENTS;host_name",
-			  "description" => _("Deletes all comments assocated with a particular host."),
-			  "nagios_id" => 20,
-			  ),
-			 'DEL_ALL_SVC_COMMENTS' => array
-			 ("template" => "DEL_ALL_SVC_COMMENTS;host_name;service_description",
-			  "description" => _("Deletes all comments associated with a particular service."),
-			  "nagios_id" => 21,
-			  ),
-			 'DELAY_HOST_NOTIFICATION' => array
-			 ("template" => "DELAY_HOST_NOTIFICATION;host_name;notification_time",
-			  "description" => _("Delays the next notification for a parciular host until &quot;notification_time&quot;.  Note that this will only have an affect if the host stays in the same problem state that it is currently in.  If the host changes to another state, a new notification may go out before the time you specify in the &quot;notification_time&quot; argument."),
-			  "nagios_id" => 10,
-			  ),
-			 'DELAY_HOST_SVC_NOTIFICATIONS' => array
-			 ("template" => "DELAY_HOST_NOTIFICATION;host_name;notification_time",
-			  "description" => _("Delays the next notification for all services associated with the selected host until &quot;notification_time&quot;.  Note that this will only have an affect if the host stays in the same problem state that it is currently in.  If the host changes to another state, a new notification may go out before the time you specify in the &quot;notification_time&quot; argument."),
-			  "nagios_id" => 19,
-			  ),
-			 'DELAY_SVC_NOTIFICATION' => array
-			 ("template" => "DELAY_SVC_NOTIFICATION;host_name;service_description;notification_time",
-			  "description" => _("Delays the next notification for a parciular service until &quot;notification_time&quot;.  Note that this will only have an affect if the service stays in the same problem state that it is currently in.  If the service changes to another state, a new notification may go out before the time you specify in the &quot;notification_time&quot; argument."),
-			  "nagios_id" => 9,
-			  ),
+			 ('nagios_id' => 1,
+			  'description' => _('This command is used to add a comment for the specified host.  If you work with other administrators, you may find it useful to share information about a host that is having problems if more than one of you may be working on it.  If you do not check the \'persistent\' option, the comment will be automatically be deleted the next time Nagios is restarted. '),
+			  'brief' => _('You are trying to add a host comment'),
+			  'template' => 'ADD_HOST_COMMENT;host_name;persistent;author;comment',
+			 ),
 			 'DEL_HOST_COMMENT' => array
-			 ("template" => "DEL_HOST_COMMENT;comment_id",
-			  "description" => _("Deletes a host comment.  The id number of the comment that is to be deleted must be specified."),
-			  "nagios_id" => 2,
-			  ),
-			 'DEL_HOST_DOWNTIME' => array
-			 ("template" => "DEL_HOST_DOWNTIME;downtime_id",
-			  "description" => _("Deletes the host downtime entry that has an ID number matching the &quot;downtime_id&quot; argument.  If the downtime is currently in effect, the host will come out of scheduled downtime (as long as there are no other overlapping active downtime entries)."),
-			  "nagios_id" => 78,
-			  ),
+			 ('nagios_id' => 2,
+			  'description' => _('This command is used to delete a specific host comment. '),
+			  'brief' => _('You are trying to delete a host comment'),
+			  'template' => 'DEL_HOST_COMMENT;comment_id',
+			 ),
+			 'ADD_SVC_COMMENT' => array
+			 ('nagios_id' => 3,
+			  'description' => _('This command is used to add a comment for the specified service.  If you work with other administrators, you may find it useful to share information about a host or service that is having problems if more than one of you may be working on it.  If you do not check the \'persistent\' option, the comment will automatically be deleted the next time Nagios is restarted. '),
+			  'brief' => _('You are trying to add a service comment'),
+			  'template' => 'ADD_SVC_COMMENT;host_name;service_description;persistent;author;comment',
+			 ),
 			 'DEL_SVC_COMMENT' => array
-			 ("template" => "DEL_SVC_COMMENT;comment_id",
-			  "description" => _("Deletes a service comment.  The id number of the comment that is to be deleted must be specified."),
-			  "nagios_id" => 4,
-			  ),
-			 'DEL_SVC_DOWNTIME' => array
-			 ("template" => "DEL_SVC_DOWNTIME;downtime_id",
-			  "description" => _("Deletes the service downtime entry that has an ID number matching the &quot;downtime_id&quot; argument.  If the downtime is currently in effect, the service will come out of scheduled downtime (as long as there are no other overlapping active downtime entries)."),
-			  "nagios_id" => 79,
-			  ),
-			 'DISABLE_ALL_NOTIFICATIONS_BEYOND_HOST' => array
-			 ("template" => "DISABLE_ALL_NOTIFICATIONS_BEYOND_HOST;host_name",
-			  "description" => _("Disables notifications for all hosts and services &quot;beyond&quot; (e.g. on all child hosts of) the specified host.  The current notification setting for the specified host is not affected."),
-			  "nagios_id" => 27,
-			  ),
-			 'DISABLE_CONTACTGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_CONTACTGROUP_HOST_NOTIFICATIONS;contactgroup_name",
-			  "description" => _("Disables host notifications for all contacts in a particular contactgroup."),
-			  "nagios_id" => 155,
-			  ),
-			 'DISABLE_CONTACTGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_CONTACTGROUP_SVC_NOTIFICATIONS;contactgroup_name",
-			  "description" => _("Disables service notifications for all contacts in a particular contactgroup."),
-			  "nagios_id" => 157,
-			  ),
-			 'DISABLE_CONTACT_HOST_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_CONTACT_HOST_NOTIFICATIONS;contact_name",
-			  "description" => _("Disables host notifications for a particular contact."),
-			  "nagios_id" => 151,
-			  ),
-			 'DISABLE_CONTACT_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_CONTACT_SVC_NOTIFICATIONS;contact_name",
-			  "description" => _("Disables service notifications for a particular contact."),
-			  "nagios_id" => 153,
-			  ),
-			 'DISABLE_EVENT_HANDLERS' => array
-			 ("template" => "DISABLE_EVENT_HANDLERS",
-			  "description" => _("Disables host and service event handlers on a program-wide basis."),
-			  "nagios_id" => 42,
-			  ),
-			 'DISABLE_FAILURE_PREDICTION' => array
-			 ("template" => "DISABLE_FAILURE_PREDICTION",
-			  "description" => _("Disables failure prediction on a program-wide basis.  This feature is not currently implemented in Nagios."),
-			  "nagios_id" => 81,
-			  ),
-			 'DISABLE_FLAP_DETECTION' => array
-			 ("template" => "DISABLE_FLAP_DETECTION",
-			  "description" => _("Disables host and service flap detection on a program-wide basis."),
-			  "nagios_id" => 62,
-			  ),
-			 'DISABLE_HOST_AND_CHILD_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_HOST_AND_CHILD_NOTIFICATIONS;host_name",
-			  "description" => _("Disables notifications for the specified host, as well as all hosts &quot;beyond&quot; (e.g. on all child hosts of) the specified host."),
-			  "nagios_id" => 136,
-			  ),
-			 'DISABLE_HOST_CHECK' => array
-			 ("template" => "DISABLE_HOST_CHECK;host_name",
-			  "description" => _("Disables (regularly scheduled and on-demand) active checks of the specified host."),
-			  "nagios_id" => 48,
-			  ),
-			 'DISABLE_HOST_EVENT_HANDLER' => array
-			 ("template" => "DISABLE_HOST_EVENT_HANDLER;host_name",
-			  "description" => _("Disables the event handler for the specified host."),
-			  "nagios_id" => 44,
-			  ),
-			 'DISABLE_HOST_FLAP_DETECTION' => array
-			 ("template" => "DISABLE_HOST_FLAP_DETECTION;host_name",
-			  "description" => _("Disables flap detection for the specified host."),
-			  "nagios_id" => 58,
-			  ),
-			 'DISABLE_HOST_FRESHNESS_CHECKS' => array
-			 ("template" => "DISABLE_HOST_FRESHNESS_CHECKS",
-			  "description" => _("Disables freshness checks of all hosts on a program-wide basis."),
-			  "nagios_id" => 141,
-			  ),
-			 'DISABLE_HOSTGROUP_HOST_CHECKS' => array
-			 ("template" => "DISABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name",
-			  "description" => _("Disables active checks for all hosts in a particular hostgroup."),
-			  "nagios_id" => 104,
-			  ),
-			 'DISABLE_HOSTGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_HOSTGROUP_HOST_NOTIFICATIONS;hostgroup_name",
-			  "description" => _("Disables notifications for all hosts in a particular hostgroup.  This does not disable notifications for the services associated with the hosts in the hostgroup - see the DISABLE_HOSTGROUP_SVC_NOTIFICATIONS command for that."),
-			  "nagios_id" => 66,
-			  ),
-			 'DISABLE_HOSTGROUP_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "DISABLE_HOSTGROUP_PASSIVE_HOST_CHECKS;hostgroup_name",
-			  "description" => _("Disables passive checks for all hosts in a particular hostgroup."),
-			  "nagios_id" => 108,
-			  ),
-			 'DISABLE_HOSTGROUP_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "DISABLE_HOSTGROUP_PASSIVE_SVC_CHECKS;hostgroup_name",
-			  "description" => _("Disables passive checks for all services associated with hosts in a particular hostgroup."),
-			  "nagios_id" => 106,
-			  ),
-			 'DISABLE_HOSTGROUP_SVC_CHECKS' => array
-			 ("template" => "DISABLE_HOSTGROUP_SVC_CHECKS;hostgroup_name",
-			  "description" => _("Disables active checks for all services associated with hosts in a particular hostgroup."),
-			  "nagios_id" => 68,
-			  ),
-			 'DISABLE_HOSTGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_HOSTGROUP_SVC_NOTIFICATIONS;hostgroup_name",
-			  "description" => _("Disables notifications for all services associated with hosts in a particular hostgroup.  This does not disable notifications for the hosts in the hostgroup - see the DISABLE_HOSTGROUP_HOST_NOTIFICATIONS command for that."),
-			  "nagios_id" => 64,
-			  ),
-			 'DISABLE_HOST_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_HOST_NOTIFICATIONS;host_name",
-			  "description" => _("Disables notifications for a particular host."),
-			  "nagios_id" => 25,
-			  ),
-			 'DISABLE_HOST_SVC_CHECKS' => array
-			 ("template" => "DISABLE_HOST_SVC_CHECKS;host_name",
-			  "description" => _("Enables active checks of all services on the specified host."),
-			  "nagios_id" => 16,
-			  ),
-			 'DISABLE_HOST_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_HOST_SVC_NOTIFICATIONS;host_name",
-			  "description" => _("Disables notifications for all services on the specified host."),
-			  "nagios_id" => 29,
-			  ),
-			 'DISABLE_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_NOTIFICATIONS",
-			  "description" => _("Disables host and service notifications on a program-wide basis."),
-			  "nagios_id" => 11,
-			  ),
-			 'DISABLE_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "DISABLE_PASSIVE_HOST_CHECKS;host_name",
-			  "description" => _("Disables acceptance and processing of passive host checks for the specified host."),
-			  "nagios_id" => 93,
-			  ),
-			 'DISABLE_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "DISABLE_PASSIVE_SVC_CHECKS;host_name;service_description",
-			  "description" => _("Disables passive checks for the specified service."),
-			  "nagios_id" => 40,
-			  ),
-			 'DISABLE_PERFORMANCE_DATA' => array
-			 ("template" => "DISABLE_PERFORMANCE_DATA",
-			  "description" => _("Disables the processing of host and service performance data on a program-wide basis."),
-			  "nagios_id" => 83,
-			  ),
-			 'DISABLE_SERVICE_FRESHNESS_CHECKS' => array
-			 ("template" => "DISABLE_SERVICE_FRESHNESS_CHECKS",
-			  "description" => _("Disables freshness checks of all services on a program-wide basis."),
-			  "nagios_id" => 139,
-			  ),
-			 'DISABLE_SERVICEGROUP_HOST_CHECKS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name",
-			  "description" => _("Disables active checks for all hosts that have services that are members of a particular hostgroup."),
-			  "nagios_id" => 116,
-			  ),
-			 'DISABLE_SERVICEGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_HOST_NOTIFICATIONS;servicegroup_name",
-			  "description" => _("Disables notifications for all hosts that have services that are members of a particular servicegroup."),
-			  "nagios_id" => 112,
-			  ),
-			 'DISABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS;servicegroup_name",
-			  "description" => _("Disables the acceptance and processing of passive checks for all hosts that have services that are members of a particular service group."),
-			  "nagios_id" => 120,
-			  ),
-			 'DISABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS;servicegroup_name",
-			  "description" => _("Disables the acceptance and processing of passive checks for all services in a particular servicegroup."),
-			  "nagios_id" => 118,
-			  ),
-			 'DISABLE_SERVICEGROUP_SVC_CHECKS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_SVC_CHECKS;servicegroup_name",
-			  "description" => _("Disables active checks for all services in a particular servicegroup."),
-			  "nagios_id" => 114,
-			  ),
-			 'DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS;servicegroup_name",
-			  "description" => _("Disables notifications for all services that are members of a particular servicegroup."),
-			  "nagios_id" => 110,
-			  ),
-			 'DISABLE_SVC_CHECK' => array
-			 ("template" => "DISABLE_SVC_CHECK;host_name;service_description",
-			  "description" => _("Disables active checks for a particular service."),
-			  "nagios_id" => 6,
-			  ),
-			 'DISABLE_SVC_EVENT_HANDLER' => array
-			 ("template" => "DISABLE_SVC_EVENT_HANDLER;host_name;service_description",
-			  "description" => _("Disables the event handler for the specified service."),
-			  "nagios_id" => 46,
-			  ),
-			 'DISABLE_SVC_FLAP_DETECTION' => array
-			 ("template" => "DISABLE_SVC_FLAP_DETECTION;host_name;service_description",
-			  "description" => _("Disables flap detection for the specified service."),
-			  "nagios_id" => 60,
-			  ),
-			 'DISABLE_SVC_NOTIFICATIONS' => array
-			 ("template" => "DISABLE_SVC_NOTIFICATIONS;host_name;service_description",
-			  "description" => _("Disables notifications for a particular service."),
-			  "nagios_id" => 23,
-			  ),
-			 'ENABLE_ALL_NOTIFICATIONS_BEYOND_HOST' => array
-			 ("template" => "ENABLE_ALL_NOTIFICATIONS_BEYOND_HOST;host_name",
-			  "description" => _("Enables notifications for all hosts and services &quot;beyond&quot; (e.g. on all child hosts of) the specified host.  The current notification setting for the specified host is not affected.  Notifications will only be sent out for these hosts and services if notifications are also enabled on a program-wide basis."),
-			  "nagios_id" => 26,
-			  ),
-			 'ENABLE_CONTACTGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_CONTACTGROUP_HOST_NOTIFICATIONS;contactgroup_name",
-			  "description" => _("Enables host notifications for all contacts in a particular contactgroup."),
-			  "nagios_id" => 154,
-			  ),
-			 'ENABLE_CONTACTGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_CONTACTGROUP_SVC_NOTIFICATIONS;contactgroup_name",
-			  "description" => _("Enables service notifications for all contacts in a particular contactgroup."),
-			  "nagios_id" => 156,
-			  ),
-			 'ENABLE_CONTACT_HOST_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_CONTACT_HOST_NOTIFICATIONS;contact_name",
-			  "description" => _("Enables host notifications for a particular contact."),
-			  "nagios_id" => 150,
-			  ),
-			 'ENABLE_CONTACT_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_CONTACT_SVC_NOTIFICATIONS;contact_name",
-			  "description" => _("Disables service notifications for a particular contact."),
-			  "nagios_id" => 152,
-			  ),
-			 'ENABLE_EVENT_HANDLERS' => array
-			 ("template" => "ENABLE_EVENT_HANDLERS",
-			  "description" => _("Enables host and service event handlers on a program-wide basis."),
-			  "nagios_id" => 41,
-			  ),
-			 'ENABLE_FAILURE_PREDICTION' => array
-			 ("template" => "ENABLE_FAILURE_PREDICTION",
-			  "description" => _("Enables failure prediction on a program-wide basis.  This feature is not currently implemented in Nagios."),
-			  "nagios_id" => 80,
-			  ),
-			 'ENABLE_FLAP_DETECTION' => array
-			 ("template" => "ENABLE_FLAP_DETECTION",
-			  "description" => _("Enables host and service flap detection on a program-wide basis."),
-			  "nagios_id" => 61,
-			  ),
-			 'ENABLE_HOST_AND_CHILD_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_HOST_AND_CHILD_NOTIFICATIONS;host_name",
-			  "description" => _("Enables notifications for the specified host, as well as all hosts &quot;beyond&quot; (e.g. on all child hosts of) the specified host.  Notifications will only be sent out for these hosts if notifications are also enabled on a program-wide basis."),
-			  "nagios_id" => 135,
-			  ),
-			 'ENABLE_HOST_CHECK' => array
-			 ("template" => "ENABLE_HOST_CHECK;host_name",
-			  "description" => _("Enables (regularly scheduled and on-demand) active checks of the specified host."),
-			  "nagios_id" => 47,
-			  ),
-			 'ENABLE_HOST_EVENT_HANDLER' => array
-			 ("template" => "ENABLE_HOST_EVENT_HANDLER;host_name",
-			  "description" => _("Enables the event handler for the specified host."),
-			  "nagios_id" => 43,
-			  ),
-			 'ENABLE_HOST_FLAP_DETECTION' => array
-			 ("template" => "ENABLE_HOST_FLAP_DETECTION;host_name",
-			  "description" => _("Enables flap detection for the specified host.  In order for the flap detection algorithms to be run for the host, flap detection must be enabled on a program-wide basis as well."),
-			  "nagios_id" => 57,
-			  ),
-			 'ENABLE_HOST_FRESHNESS_CHECKS' => array
-			 ("template" => "ENABLE_HOST_FRESHNESS_CHECKS",
-			  "description" => _("Enables freshness checks of all hosts on a program-wide basis.  Individual hosts that have freshness checks disabled will not be checked for freshness."),
-			  "nagios_id" => 140,
-			  ),
-			 'ENABLE_HOSTGROUP_HOST_CHECKS' => array
-			 ("template" => "ENABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name",
-			  "description" => _("Enables active checks for all hosts in a particular hostgroup."),
-			  "nagios_id" => 103,
-			  ),
-			 'ENABLE_HOSTGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_HOSTGROUP_HOST_NOTIFICATIONS;hostgroup_name",
-			  "description" => _("Enables notifications for all hosts in a particular hostgroup.  This does not enable notifications for the services associated with the hosts in the hostgroup - see the ENABLE_HOSTGROUP_SVC_NOTIFICATIONS command for that.  In order for notifications to be sent out for these hosts, notifications must be enabled on a program-wide basis as well."),
-			  "nagios_id" => 65,
-			  ),
-			 'ENABLE_HOSTGROUP_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "ENABLE_HOSTGROUP_PASSIVE_HOST_CHECKS;hostgroup_name",
-			  "description" => _("Enables passive checks for all hosts in a particular hostgroup."),
-			  "nagios_id" => 107,
-			  ),
-			 'ENABLE_HOSTGROUP_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "ENABLE_HOSTGROUP_PASSIVE_SVC_CHECKS;hostgroup_name",
-			  "description" => _("Enables passive checks for all services associated with hosts in a particular hostgroup."),
-			  "nagios_id" => 105,
-			  ),
-			 'ENABLE_HOSTGROUP_SVC_CHECKS' => array
-			 ("template" => "ENABLE_HOSTGROUP_SVC_CHECKS;hostgroup_name",
-			  "description" => _("Enables active checks for all services associated with hosts in a particular hostgroup."),
-			  "nagios_id" => 67,
-			  ),
-			 'ENABLE_HOSTGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_HOSTGROUP_SVC_NOTIFICATIONS;hostgroup_name",
-			  "description" => _("Enables notifications for all services that are associated with hosts in a particular hostgroup.  This does not enable notifications for the hosts in the hostgroup - see the ENABLE_HOSTGROUP_HOST_NOTIFICATIONS command for that.  In order for notifications to be sent out for these services, notifications must be enabled on a program-wide basis as well."),
-			  "nagios_id" => 63,
-			  ),
-			 'ENABLE_HOST_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_HOST_NOTIFICATIONS;host_name",
-			  "description" => _("Enables notifications for a particular host.  Notifications will be sent out for the host only if notifications are enabled on a program-wide basis as well."),
-			  "nagios_id" => 24,
-			  ),
-			 'ENABLE_HOST_SVC_CHECKS' => array
-			 ("template" => "ENABLE_HOST_SVC_CHECKS;host_name",
-			  "description" => _("Enables active checks of all services on the specified host."),
-			  "nagios_id" => 15,
-			  ),
-			 'ENABLE_HOST_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_HOST_SVC_NOTIFICATIONS;host_name",
-			  "description" => _("Enables notifications for all services on the specified host.  Note that notifications will not be sent out if notifications are disabled on a program-wide basis."),
-			  "nagios_id" => 28,
-			  ),
-			 'ENABLE_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_NOTIFICATIONS",
-			  "description" => _("Enables host and service notifications on a program-wide basis."),
-			  "nagios_id" => 12,
-			  ),
-			 'ENABLE_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "ENABLE_PASSIVE_HOST_CHECKS;host_name",
-			  "description" => _("Enables acceptance and processing of passive host checks for the specified host."),
-			  "nagios_id" => 92,
-			  ),
-			 'ENABLE_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "ENABLE_PASSIVE_SVC_CHECKS;host_name;service_description",
-			  "description" => _("Enables passive checks for the specified service."),
-			  "nagios_id" => 39,
-			  ),
-			 'ENABLE_PERFORMANCE_DATA' => array
-			 ("template" => "ENABLE_PERFORMANCE_DATA",
-			  "description" => _("Enables the processing of host and service performance data on a program-wide basis."),
-			  "nagios_id" => 82,
-			  ),
-			 'ENABLE_SERVICE_FRESHNESS_CHECKS' => array
-			 ("template" => "ENABLE_SERVICE_FRESHNESS_CHECKS",
-			  "description" => _("Enables freshness checks of all services on a program-wide basis.  Individual services that have freshness checks disabled will not be checked for freshness."),
-			  "nagios_id" => 138,
-			  ),
-			 'ENABLE_SERVICEGROUP_HOST_CHECKS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name",
-			  "description" => _("Enables active checks for all hosts that have services that are members of a particular hostgroup."),
-			  "nagios_id" => 115,
-			  ),
-			 'ENABLE_SERVICEGROUP_HOST_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_HOST_NOTIFICATIONS;servicegroup_name",
-			  "description" => _("Enables notifications for all hosts that have services that are members of a particular servicegroup.  In order for notifications to be sent out for these hosts, notifications must also be enabled on a program-wide basis."),
-			  "nagios_id" => 111,
-			  ),
-			 'ENABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS;servicegroup_name",
-			  "description" => _("Enables the acceptance and processing of passive checks for all hosts that have services that are members of a particular service group."),
-			  "nagios_id" => 119,
-			  ),
-			 'ENABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS;servicegroup_name",
-			  "description" => _("Enables the acceptance and processing of passive checks for all services in a particular servicegroup."),
-			  "nagios_id" => 117,
-			  ),
-			 'ENABLE_SERVICEGROUP_SVC_CHECKS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_SVC_CHECKS;servicegroup_name",
-			  "description" => _("Enables active checks for all services in a particular servicegroup."),
-			  "nagios_id" => 113,
-			  ),
-			 'ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS;servicegroup_name",
-			  "description" => _("Enables notifications for all services that are members of a particular servicegroup.  In order for notifications to be sent out for these services, notifications must also be enabled on a program-wide basis."),
-			  "nagios_id" => 109,
-			  ),
+			 ('nagios_id' => 4,
+			  'description' => _('This command is used to delete a specific service comment. '),
+			  'brief' => _('You are trying to delete a service comment'),
+			  'template' => 'DEL_SVC_COMMENT;comment_id',
+			 ),
 			 'ENABLE_SVC_CHECK' => array
-			 ("template" => "ENABLE_SVC_CHECK;host_name;service_description",
-			  "description" => _("Enables active checks for a particular service."),
-			  "nagios_id" => 5,
-			  ),
-			 'ENABLE_SVC_EVENT_HANDLER' => array
-			 ("template" => "ENABLE_SVC_EVENT_HANDLER;host_name;service_description",
-			  "description" => _("Enables the event handler for the specified service."),
-			  "nagios_id" => 45,
-			  ),
-			 'ENABLE_SVC_FLAP_DETECTION' => array
-			 ("template" => "ENABLE_SVC_FLAP_DETECTION;host_name;service_description",
-			  "description" => _("Enables flap detection for the specified service.  In order for the flap detection algorithms to be run for the service, flap detection must be enabled on a program-wide basis as well."),
-			  "nagios_id" => 59,
-			  ),
-			 'ENABLE_SVC_NOTIFICATIONS' => array
-			 ("template" => "ENABLE_SVC_NOTIFICATIONS;host_name;service_description",
-			  "description" => _("Enables notifications for a particular service.  Notifications will be sent out for the service only if notifications are enabled on a program-wide basis as well."),
-			  "nagios_id" => 22,
-			  ),
-			 'PROCESS_FILE' => array
-			 ("template" => "PROCESS_FILE;file_name;delete",
-			  "description" => _("Directs Nagios to process all external commands that are found in the file specified by the file_name argument.  If the delete option is non-zero, the file will be deleted once it has been processes.  If the delete option is set to zero, the file is left untouched."),
-			  "nagios_id" => 146,
-			  ),
-			 'PROCESS_HOST_CHECK_RESULT' => array
-			 ("template" => "PROCESS_HOST_CHECK_RESULT;host_name;status_code;plugin_output",
-			  "description" => _("This is used to submit a passive check result for a particular host.  The &quot;status_code&quot; indicates the state of the host check and should be one of the following: 0=UP, 1=DOWN, 2=UNREACHABLE.  The &quot;plugin_output&quot; argument contains the text returned from the host check, along with optional performance data."),
-			  "nagios_id" => 87,
-			  ),
-			 'PROCESS_SERVICE_CHECK_RESULT' => array
-			 ("template" => "PROCESS_SERVICE_CHECK_RESULT;host_name;service_description;return_code;plugin_output",
-			  "description" => _("This is used to submit a passive check result for a particular service.  The &quot;return_code&quot; field should be one of the following: 0=OK, 1=WARNING, 2=CRITICAL, 3=UNKNOWN.  The &quot;plugin_output&quot; field contains text output from the service check, along with optional performance data."),
-			  "nagios_id" => 30,
-			  ),
-			 'READ_STATE_INFORMATION' => array
-			 ("template" => "READ_STATE_INFORMATION",
-			  "description" => _("Causes Nagios to load all current monitoring status information from the state retention file.  Normally, state retention information is loaded when the Nagios process starts up and before it starts monitoring.  WARNING: This command will cause Nagios to discard all current monitoring status information and use the information stored in state retention file!  Use with care."),
-			  "nagios_id" => 32,
-			  ),
-			 'REMOVE_HOST_ACKNOWLEDGEMENT' => array
-			 ("template" => "REMOVE_HOST_ACKNOWLEDGEMENT;host_name",
-			  "description" => _("This removes the problem acknowledgement for a particular host.  Once the acknowledgement has been removed, notifications can once again be sent out for the given host."),
-			  "nagios_id" => 51,
-			  ),
-			 'REMOVE_SVC_ACKNOWLEDGEMENT' => array
-			 ("template" => "REMOVE_SVC_ACKNOWLEDGEMENT;host_name;service_description",
-			  "description" => _("This removes the problem acknowledgement for a particular service.  Once the acknowledgement has been removed, notifications can once again be sent out for the given service."),
-			  "nagios_id" => 52,
-			  ),
-			 'RESTART_PROCESS' => array
-			 ("template" => "RESTART_PROGRAM",
-			  "description" => _("Restarts the Nagios process."),
-			  "nagios_id" => 13,
-			  ),
-			 'SAVE_STATE_INFORMATION' => array
-			 ("template" => "SAVE_STATE_INFORMATION",
-			  "description" => _("Causes Nagios to save all current monitoring status information to the state retention file.  Normally, state retention information is saved before the Nagios process shuts down and (potentially) at regularly scheduled intervals.  This command allows you to force Nagios to save this information to the state retention file immediately.  This does not affect the current status information in the Nagios process."),
-			  "nagios_id" => 31,
-			  ),
-			 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME' => array
-			 ("template" => "SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for a specified host and all of its children (hosts).  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The specified (parent) host downtime can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the specified (parent) host should not be triggered by another downtime entry."),
-			  "nagios_id" => 137,
-			  ),
-			 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME' => array
-			 ("template" => "SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for a specified host and all of its children (hosts).  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  Downtime for child hosts are all set to be triggered by the downtime for the specified (parent) host.  The specified (parent) host downtime can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the specified (parent) host should not be triggered by another downtime entry."),
-			  "nagios_id" => 134,
-			  ),
-			 'SCHEDULE_FORCED_HOST_CHECK' => array
-			 ("template" => "SCHEDULE_FORCED_HOST_CHECK;host_name;check_time",
-			  "description" => _("Schedules a forced active check of a particular host at &quot;check_time&quot;.  Forced checks are performed regardless of what time it is (e.g. timeperiod restrictions are ignored) and whether or not active checks are enabled on a host-specific or program-wide basis."),
-			  "nagios_id" => 98,
-			  ),
-			 'SCHEDULE_FORCED_HOST_SVC_CHECKS' => array
-			 ("template" => "SCHEDULE_FORCED_HOST_SVC_CHECKS;host_name;check_time",
-			  "description" => _("Schedules a forced active check of all services associated with a particular host at &quot;check_time&quot;.  Forced checks are performed regardless of what time it is (e.g. timeperiod restrictions are ignored) and whether or not active checks are enabled on a service-specific or program-wide basis."),
-			  "nagios_id" => 53,
-			  ),
-			 'SCHEDULE_FORCED_SVC_CHECK' => array
-			 ("template" => "SCHEDULE_FORCED_SVC_CHECK;host_name;service_description;check_time",
-			  "description" => _("Schedules a forced active check of a particular service at &quot;check_time&quot;.  Forced checks are performed regardless of what time it is (e.g. timeperiod restrictions are ignored) and whether or not active checks are enabled on a service-specific or program-wide basis."),
-			  "nagios_id" => 54,
-			  ),
-			 'SCHEDULE_HOST_CHECK' => array
-			 ("template" => "SCHEDULE_HOST_CHECK;host_name;check_time",
-			  "description" => _("Schedules the next active check of a particular host at &quot;check_time&quot;.  Note that the host may not actually be checked at the time you specify.  This could occur for a number of reasons: active checks are disabled on a program-wide or service-specific basis, the host is already scheduled to be checked at an earlier time, etc.  If you want to force the host check to occur at the time you specify, look at the SCHEDULE_FORCED_HOST_CHECK command."),
-			  "nagios_id" => 96,
-			  ),
-			 'SCHEDULE_HOST_DOWNTIME' => array
-			 ("template" => "SCHEDULE_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for a specified host.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The specified host downtime can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the specified host should not be triggered by another downtime entry."),
-			  "nagios_id" => 55,
-			  ),
-			 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME' => array
-			 ("template" => "SCHEDULE_HOSTGROUP_HOST_DOWNTIME;hostgroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for all hosts in a specified hostgroup.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The host downtime entries can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the hosts should not be triggered by another downtime entry."),
-			  "nagios_id" => 84,
-			  ),
-			 'SCHEDULE_HOSTGROUP_SVC_DOWNTIME' => array
-			 ("template" => "SCHEDULE_HOSTGROUP_SVC_DOWNTIME;hostgroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for all services associated with hosts in a specified servicegroup.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The service downtime entries can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the services should not be triggered by another downtime entry."),
-			  "nagios_id" => 85,
-			  ),
-			 'SCHEDULE_HOST_SVC_CHECKS' => array
-			 ("template" => "SCHEDULE_HOST_SVC_CHECKS;host_name;check_time",
-			  "description" => _("Schedules the next active check of all services on a particular host at &quot;check_time&quot;.  Note that the services may not actually be checked at the time you specify.  This could occur for a number of reasons: active checks are disabled on a program-wide or service-specific basis, the services are already scheduled to be checked at an earlier time, etc.  If you want to force the service checks to occur at the time you specify, look at the SCHEDULE_FORCED_HOST_SVC_CHECKS command."),
-			  "nagios_id" => 17,
-			  ),
-			 'SCHEDULE_HOST_SVC_DOWNTIME' => array
-			 ("template" => "SCHEDULE_HOST_SVC_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for all services associated with a particular host.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The service downtime entries can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the services should not be triggered by another downtime entry."),
-			  "nagios_id" => 86,
-			  ),
-			 'SCHEDULE_SERVICEGROUP_HOST_DOWNTIME' => array
-			 ("template" => "SCHEDULE_SERVICEGROUP_HOST_DOWNTIME;servicegroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for all hosts that have services in a specified servicegroup.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The host downtime entries can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the hosts should not be triggered by another downtime entry."),
-			  "nagios_id" => 121,
-			  ),
-			 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME' => array
-			 ("template" => "SCHEDULE_SERVICEGROUP_SVC_DOWNTIME;servicegroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for all services in a specified servicegroup.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The service downtime entries can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the services should not be triggered by another downtime entry."),
-			  "nagios_id" => 122,
-			  ),
+			 ('nagios_id' => 5,
+			  'description' => _('This command is used to enable active checks of a service. '),
+			  'brief' => _('You are trying to enable actice checks of a particular service'),
+			  'template' => 'ENABLE_SVC_CHECK;host_name;service_description',
+			 ),
+			 'DISABLE_SVC_CHECK' => array
+			 ('nagios_id' => 6,
+			  'description' => _('This command is used to disable active checks of a service. '),
+			  'brief' => _('You are trying to disable actice checks of a particular service'),
+			  'template' => 'DISABLE_SVC_CHECK;host_name;service_description',
+			 ),
 			 'SCHEDULE_SVC_CHECK' => array
-			 ("template" => "SCHEDULE_SVC_CHECK;host_name;service_description;check_time",
-			  "description" => _("Schedules the next active check of a specified service at &quot;check_time&quot;.  Note that the service may not actually be checked at the time you specify.  This could occur for a number of reasons: active checks are disabled on a program-wide or service-specific basis, the service is already scheduled to be checked at an earlier time, etc.  If you want to force the service check to occur at the time you specify, look at the SCHEDULE_FORCED_SVC_CHECK command."),
-			  "nagios_id" => 7,
-			  ),
-			 'SCHEDULE_SVC_DOWNTIME' => array
-			 ("template" => "SCHEDULE_SVC_DOWNTIME;host_name;service_desriptionstart_time;end_time;fixed;trigger_id;duration;author;comment",
-			  "description" => _("Schedules downtime for a specified service.  If the &quot;fixed&quot; argument is set to one (1), downtime will start and end at the times specified by the &quot;start&quot; and &quot;end&quot; arguments.  Otherwise, downtime will begin between the &quot;start&quot; and &quot;end&quot; times and last for &quot;duration&quot; seconds.  The &quot;start&quot; and &quot;end&quot; arguments are specified in time_t format (seconds since the UNIX epoch).  The specified service downtime can be triggered by another downtime entry if the &quot;trigger_id&quot; is set to the ID of another scheduled downtime entry.  Set the &quot;trigger_id&quot; argument to zero (0) if the downtime for the specified service should not be triggered by another downtime entry."),
-			  "nagios_id" => 56,
-			  ),
-			 'SEND_CUSTOM_HOST_NOTIFICATION' => array
-			 ("template" => "SEND_CUSTOM_HOST_NOTIFICATION;host_name;options;author;comment",
-			  "description" => _("Allows you to send a custom host notification.  Very useful in dire situations, emergencies or to communicate with all admins that are responsible for a particular host.  When the host notification is sent out, the \$NOTIFICATIONTYPE\$ macro will be set to &quot;CUSTOM&quot;.  The options field is a logical OR of the following integer values that affect aspects of the notification that are sent out: 0 = No option (default), 1 = Broadcast (send notification to all normal and all escalated contacts for the host), 2 = Forced (notification is sent out regardless of current time, whether or not notifications are enabled, etc.), 4 = Increment current notification # for the host (this is not done by default for custom notifications).  The comment field can be used with the \$NOTIFICATIONCOMMENT\$ macro in notification commands."),
-			  "nagios_id" => 159,
-			  ),
-			 'SEND_CUSTOM_SVC_NOTIFICATION' => array
-			 ("template" => "SEND_CUSTOM_SVC_NOTIFICATION;host_name;service_description;options;author;comment",
-			  "description" => _("Allows you to send a custom service notification.  Very useful in dire situations, emergencies or to communicate with all admins that are responsible for a particular service.  When the service notification is sent out, the \$NOTIFICATIONTYPE\$ macro will be set to &quot;CUSTOM&quot;.  The options field is a logical OR of the following integer values that affect aspects of the notification that are sent out: 0 = No option (default), 1 = Broadcast (send notification to all normal and all escalated contacts for the service), 2 = Forced (notification is sent out regardless of current time, whether or not notifications are enabled, etc.), 4 = Increment current notification # for the service(this is not done by default for custom notifications).  The comment field can be used with the \$NOTIFICATIONCOMMENT\$ macro in notification commands."),
-			  "nagios_id" => 160,
-			  ),
-			 'SET_HOST_NOTIFICATION_NUMBER' => array
-			 ("template" => "SET_HOST_NOTIFICATION_NUMBER;host_name;notification_number",
-			  "description" => _("Sets the current notification number for a particular host.  A value of 0 indicates that no notification has yet been sent for the current host problem.  Useful for forcing an escalation (based on notification number) or replicating notification information in redundant monitoring environments. Notification numbers greater than zero have no noticeable affect on the notification process if the host is currently in an UP state."),
-			  "nagios_id" => 142,
-			  ),
-			 'SET_SVC_NOTIFICATION_NUMBER' => array
-			 ("template" => "SET_SVC_NOTIFICATION_NUMBER;host_name;service_description;notification_number",
-			  "description" => _("Sets the current notification number for a particular service.  A value of 0 indicates that no notification has yet been sent for the current service problem.  Useful for forcing an escalation (based on notification number) or replicating notification information in redundant monitoring environments. Notification numbers greater than zero have no noticeable affect on the notification process if the service is currently in an OK state."),
-			  "nagios_id" => 143,
-			  ),
+			 ('nagios_id' => 7,
+			  'description' => _('This command is used to schedule the next check of a particular service.  Nagios will re-queue the service to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service. '),
+			  'brief' => _('You are trying to schedule a service check'),
+			  'template' => 'SCHEDULE_SVC_CHECK;host_name;service_description;check_time',
+			 ),
+			 'DELAY_SVC_NOTIFICATION' => array
+			 ('nagios_id' => 9,
+			  'description' => _('This command is used to delay the next problem notification that is sent out for the specified service.  The notification delay will be disregarded if the service changes state before the next notification is scheduled to be sent out.  This command has no effect if the service is currently in an OK state. '),
+			  'brief' => _('You are trying to delay a service notification'),
+			  'template' => 'DELAY_SVC_NOTIFICATION;host_name;service_description;notification_time',
+			 ),
+			 'DELAY_HOST_NOTIFICATION' => array
+			 ('nagios_id' => 10,
+			  'description' => _('This command is used to delay the next problem notification that is sent out for the specified host.  The notification delay will be disregarded if the host changes state before the next notification is scheduled to be sent out.  This command has no effect if the host is currently UP. '),
+			  'brief' => _('You are trying to delay a host notification'),
+			  'template' => 'DELAY_HOST_NOTIFICATION;host_name;notification_time',
+			 ),
+			 'DISABLE_NOTIFICATIONS' => array
+			 ('nagios_id' => 11,
+			  'description' => _('This command is used to disable host and service notifications on a program-wide basis. '),
+			  'brief' => _('You are trying to disable notifications'),
+			  'template' => 'DISABLE_NOTIFICATIONS',
+			 ),
+			 'ENABLE_NOTIFICATIONS' => array
+			 ('nagios_id' => 12,
+			  'description' => _('This command is used to enable host and service notifications on a program-wide basis. '),
+			  'brief' => _('You are trying to enable notifications'),
+			  'template' => 'ENABLE_NOTIFICATIONS',
+			 ),
+			 'RESTART_PROCESS' => array
+			 ('nagios_id' => 13,
+			  'description' => _('This command is used to restart the Nagios process.   Executing a restart command is equivalent to sending the process a HUP signal. All information will be flushed from memory, the configuration files will be re-read, and Nagios will start monitoring with the new configuration information. '),
+			  'brief' => _('You are trying to restart the Nagios process'),
+			  'template' => 'RESTART_PROGRAM',
+			 ),
 			 'SHUTDOWN_PROCESS' => array
-			 ("template" => "SHUTDOWN_PROGRAM",
-			  "description" => _("Shuts down the Nagios process."),
-			  "nagios_id" => 14,
-			  ),
-			 'START_ACCEPTING_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "START_ACCEPTING_PASSIVE_HOST_CHECKS",
-			  "description" => _("Enables acceptance and processing of passive host checks on a program-wide basis."),
-			  "nagios_id" => 90,
-			  ),
-			 'START_ACCEPTING_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "START_ACCEPTING_PASSIVE_SVC_CHECKS",
-			  "description" => _("Enables passive service checks on a program-wide basis."),
-			  "nagios_id" => 37,
-			  ),
-			 'START_EXECUTING_HOST_CHECKS' => array
-			 ("template" => "START_EXECUTING_HOST_CHECKS",
-			  "description" => _("Enables active host checks on a program-wide basis."),
-			  "nagios_id" => 88,
-			  ),
+			 ('nagios_id' => 14,
+			  'description' => _('This command is used to shutdown the Nagios process. Note: Once the Nagios has been shutdown, it cannot be restarted via the web interface! '),
+			  'brief' => _('You are trying to shutdown the Nagios process'),
+			  'template' => 'SHUTDOWN_PROGRAM',
+			 ),
+			 'ENABLE_HOST_SVC_CHECKS' => array
+			 ('nagios_id' => 15,
+			  'description' => _('This command is used to enable active checks of all services associated with the specified host.  This <i>does not</i> enable checks of the host unless you check the \'Enable for host too\' option. '),
+			  'brief' => _('You are trying to enable active checks of all services on a host'),
+			  'template' => 'ENABLE_HOST_SVC_CHECKS;host_name',
+			 ),
+			 'DISABLE_HOST_SVC_CHECKS' => array
+			 ('nagios_id' => 16,
+			  'description' => _('This command is used to disable active checks of all services associated with the specified host.  When a service is disabled Nagios will not monitor the service.  Doing this will prevent any notifications being sent out for the specified service while it is disabled.  In order to have Nagios check the service in the future you will have to re-enable the service. Note that disabling service checks may not necessarily prevent notifications from being sent out about the host which those services are associated with.  This <i>does not</i> disable checks of the host unless you check the \'Disable for host too\' option. '),
+			  'brief' => _('You are trying to disable active checks of all services on a host'),
+			  'template' => 'DISABLE_HOST_SVC_CHECKS;host_name',
+			 ),
+			 'SCHEDULE_HOST_SVC_CHECKS' => array
+			 ('nagios_id' => 17,
+			  'description' => _('This command is used to scheduled the next check of all services on the specified host.  If you select the <i>force check</i> option, Nagios will force a check of all services on the host regardless of both what time the scheduled checks occur and whether or not checks are enabled for those services. '),
+			  'brief' => _('You are trying to schedule a check of all services for a host'),
+			  'template' => 'SCHEDULE_HOST_SVC_CHECKS;host_name;check_time',
+			 ),
+			 'DELAY_HOST_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 19,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DELAY_HOST_NOTIFICATION;host_name;notification_time',
+			 ),
+			 'DEL_ALL_HOST_COMMENTS' => array
+			 ('nagios_id' => 20,
+			  'description' => _('This command is used to delete all comments associated with the specified host. '),
+			  'brief' => _('You are trying to delete all comments for a host'),
+			  'template' => 'DEL_ALL_HOST_COMMENTS;host_name',
+			 ),
+			 'DEL_ALL_SVC_COMMENTS' => array
+			 ('nagios_id' => 21,
+			  'description' => _('This command is used to delete all comments associated with the specified service. '),
+			  'brief' => _('You are trying to delete all comments for a service'),
+			  'template' => 'DEL_ALL_SVC_COMMENTS;host_name;service_description',
+			 ),
+			 'ENABLE_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 22,
+			  'description' => _('This command is used to enable notifications for the specified service.  Notifications will only be sent out for the service state types you defined in your service definition. '),
+			  'brief' => _('You are trying to enable notifications for a service'),
+			  'template' => 'ENABLE_SVC_NOTIFICATIONS;host_name;service_description',
+			 ),
+			 'DISABLE_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 23,
+			  'description' => _('This command is used to prevent notifications from being sent out for the specified service.  You will have to re-enable notifications for this service before any alerts can be sent out in the future. '),
+			  'brief' => _('You are trying to disable notifications for a service'),
+			  'template' => 'DISABLE_SVC_NOTIFICATIONS;host_name;service_description',
+			 ),
+			 'ENABLE_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 24,
+			  'description' => _('This command is used to enable notifications for the specified host.  Notifications will only be sent out for the host state types you defined in your host definition.  Note that this command <i>does not</i> enable notifications for services associated with this host. '),
+			  'brief' => _('You are trying to enable notifications for a host'),
+			  'template' => 'ENABLE_HOST_NOTIFICATIONS;host_name',
+			 ),
+			 'DISABLE_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 25,
+			  'description' => _('This command is used to prevent notifications from being sent out for the specified host.  You will have to re-enable notifications for this host before any alerts can be sent out in the future.  Note that this command <i>does not</i> disable notifications for services associated with this host. '),
+			  'brief' => _('You are trying to disable notifications for a host'),
+			  'template' => 'DISABLE_HOST_NOTIFICATIONS;host_name',
+			 ),
+			 'ENABLE_ALL_NOTIFICATIONS_BEYOND_HOST' => array
+			 ('nagios_id' => 26,
+			  'description' => _('This command is used to enable notifications for all hosts and services that lie "beyond" the specified host (from the view of Nagios). '),
+			  'brief' => _('You are trying to enable notifications for all hosts and services beyond a host'),
+			  'template' => 'ENABLE_ALL_NOTIFICATIONS_BEYOND_HOST;host_name',
+			 ),
+			 'DISABLE_ALL_NOTIFICATIONS_BEYOND_HOST' => array
+			 ('nagios_id' => 27,
+			  'description' => _('This command is used to temporarily prevent notifications from being sent out for all hosts and services that lie "beyone" the specified host (from the view of Nagios). '),
+			  'brief' => _('You are trying to disable notifications for all hosts and services beyond a host'),
+			  'template' => 'DISABLE_ALL_NOTIFICATIONS_BEYOND_HOST;host_name',
+			 ),
+			 'ENABLE_HOST_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 28,
+			  'description' => _('This command is used to enable notifications for all services on the specified host.  Notifications will only be sent out for the service state types you defined in your service definition.  This <i>does not</i> enable notifications for the host unless you check the \'Enable for host too\' option. '),
+			  'brief' => _('You are trying to enable notifications for all services on a host'),
+			  'template' => 'ENABLE_HOST_SVC_NOTIFICATIONS;host_name',
+			 ),
+			 'DISABLE_HOST_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 29,
+			  'description' => _('This command is used to prevent notifications from being sent out for all services on the specified host.  You will have to re-enable notifications for all services associated with this host before any alerts can be sent out in the future.  This <i>does not</i> prevent notifications from being sent out about the host unless you check the \'Disable for host too\' option. '),
+			  'brief' => _('You are trying to disable notifications for all services on a host'),
+			  'template' => 'DISABLE_HOST_SVC_NOTIFICATIONS;host_name',
+			 ),
+			 'PROCESS_SERVICE_CHECK_RESULT' => array
+			 ('nagios_id' => 30,
+			  'description' => _('This command is used to submit a passive check result for a particular service.  It is particularly useful for resetting security-related services to OK states once they have been dealt with. '),
+			  'brief' => _('You are trying to submit a passive check result for a particular service'),
+			  'template' => 'PROCESS_SERVICE_CHECK_RESULT;host_name;service_description;return_code;plugin_output',
+			 ),
+			 'SAVE_STATE_INFORMATION' => array
+			 ('nagios_id' => 31,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SAVE_STATE_INFORMATION',
+			 ),
+			 'READ_STATE_INFORMATION' => array
+			 ('nagios_id' => 32,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'READ_STATE_INFORMATION',
+			 ),
+			 'ACKNOWLEDGE_HOST_PROBLEM' => array
+			 ('nagios_id' => 33,
+			  'description' => _('This command is used to acknowledge a host problem.  When a host problem is acknowledged, future notifications about problems are temporarily disabled until the host changes from its current state. If you want acknowledgement to disable notifications until the host recovers, check the \'Sticky Acknowledgement\' checkbox. Contacts for this host will receive a notification about the acknowledgement, so they are aware that someone is working on the problem.  Additionally, a comment will also be added to the host. Make sure to enter your name and fill in a brief description of what you are doing in the comment field.  If you would like the host comment to remain once the acknowledgement is removed, check the \'Persistent Comment\' checkbox.  If you do not want an acknowledgement notification sent out to the appropriate contacts, uncheck the \'Send Notification\' checkbox. '),
+			  'brief' => _('You are trying to acknowledge a host problem'),
+			  'template' => 'ACKNOWLEDGE_HOST_PROBLEM;host_name;sticky;notify;persistent;author;comment',
+			 ),
+			 'ACKNOWLEDGE_SVC_PROBLEM' => array
+			 ('nagios_id' => 34,
+			  'description' => _('This command is used to acknowledge a service problem.  When a service problem is acknowledged, future notifications about problems are temporarily disabled until the service changes from its current state. If you want acknowledgement to disable notifications until the service recovers, check the \'Sticky Acknowledgement\' checkbox. Contacts for this service will receive a notification about the acknowledgement, so they are aware that someone is working on the problem.  Additionally, a comment will also be added to the service. Make sure to enter your name and fill in a brief description of what you are doing in the comment field.  If you would like the service comment to remain once the acknowledgement is removed, check the \'Persistent Comment\' checkbox.  If you do not want an acknowledgement notification sent out to the appropriate contacts, uncheck the \'Send Notification\' checkbox. '),
+			  'brief' => _('You are trying to acknowledge a service problem'),
+			  'template' => 'ACKNOWLEDGE_SVC_PROBLEM;host_name;service_description;sticky;notify;persistent;author;comment',
+			 ),
 			 'START_EXECUTING_SVC_CHECKS' => array
-			 ("template" => "START_EXECUTING_SVC_CHECKS",
-			  "description" => _("Enables active checks of services on a program-wide basis."),
-			  "nagios_id" => 35,
-			  ),
-			 'START_OBSESSING_OVER_HOST' => array
-			 ("template" => "START_OBSESSING_OVER_HOST;host_name",
-			  "description" => _("Enables processing of host checks via the OCHP command for the specified host."),
-			  "nagios_id" => 101,
-			  ),
-			 'START_OBSESSING_OVER_HOST_CHECKS' => array
-			 ("template" => "START_OBSESSING_OVER_HOST_CHECKS",
-			  "description" => _("Enables processing of host checks via the OCHP command on a program-wide basis."),
-			  "nagios_id" => 94,
-			  ),
-			 'START_OBSESSING_OVER_SVC' => array
-			 ("template" => "START_OBSESSING_OVER_SVC;host_name;service_description",
-			  "description" => _("Enables processing of service checks via the OCSP command for the specified service."),
-			  "nagios_id" => 99,
-			  ),
-			 'START_OBSESSING_OVER_SVC_CHECKS' => array
-			 ("template" => "START_OBSESSING_OVER_SVC_CHECKS",
-			  "description" => _("Enables processing of service checks via the OCSP command on a program-wide basis."),
-			  "nagios_id" => 49,
-			  ),
-			 'STOP_ACCEPTING_PASSIVE_HOST_CHECKS' => array
-			 ("template" => "STOP_ACCEPTING_PASSIVE_HOST_CHECKS",
-			  "description" => _("Disables acceptance and processing of passive host checks on a program-wide basis."),
-			  "nagios_id" => 91,
-			  ),
-			 'STOP_ACCEPTING_PASSIVE_SVC_CHECKS' => array
-			 ("template" => "STOP_ACCEPTING_PASSIVE_SVC_CHECKS",
-			  "description" => _("Disables passive service checks on a program-wide basis."),
-			  "nagios_id" => 38,
-			  ),
-			 'STOP_EXECUTING_HOST_CHECKS' => array
-			 ("template" => "STOP_EXECUTING_HOST_CHECKS",
-			  "description" => _("Disables active host checks on a program-wide basis."),
-			  "nagios_id" => 89,
-			  ),
+			 ('nagios_id' => 35,
+			  'description' => _('This command is used to resume execution of active service checks on a program-wide basis.  Individual services which are disabled will still not be checked. '),
+			  'brief' => _('You are trying to start executing active service checks'),
+			  'template' => 'START_EXECUTING_SVC_CHECKS',
+			 ),
 			 'STOP_EXECUTING_SVC_CHECKS' => array
-			 ("template" => "STOP_EXECUTING_SVC_CHECKS",
-			  "description" => _("Disables active checks of services on a program-wide basis."),
-			  "nagios_id" => 36,
-			  ),
-			 'STOP_OBSESSING_OVER_HOST' => array
-			 ("template" => "STOP_OBSESSING_OVER_HOST;host_name",
-			  "description" => _("Disables processing of host checks via the OCHP command for the specified host."),
-			  "nagios_id" => 102,
-			  ),
-			 'STOP_OBSESSING_OVER_HOST_CHECKS' => array
-			 ("template" => "STOP_OBSESSING_OVER_HOST_CHECKS",
-			  "description" => _("Disables processing of host checks via the OCHP command on a program-wide basis."),
-			  "nagios_id" => 95,
-			  ),
-			 'STOP_OBSESSING_OVER_SVC' => array
-			 ("template" => "STOP_OBSESSING_OVER_SVC;host_name;service_description",
-			  "description" => _("Disables processing of service checks via the OCSP command for the specified service."),
-			  "nagios_id" => 100,
-			  ),
+			 ('nagios_id' => 36,
+			  'description' => _('This command is used to temporarily stop Nagios from actively executing any service checks.  This will have the side effect of preventing any notifications from being sent out (for any and all services and hosts). Service checks will not be executed again until you issue a command to resume service check execution. '),
+			  'brief' => _('You are trying to stop executing active service checks'),
+			  'template' => 'STOP_EXECUTING_SVC_CHECKS',
+			 ),
+			 'START_ACCEPTING_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 37,
+			  'description' => _('This command is used to make Nagios start accepting passive service check results that it finds in the external command file '),
+			  'brief' => _('You are trying to start accepting passive service checks'),
+			  'template' => 'START_ACCEPTING_PASSIVE_SVC_CHECKS',
+			 ),
+			 'STOP_ACCEPTING_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 38,
+			  'description' => _('This command is use to make Nagios stop accepting passive service check results that it finds in the external command file.  All passive check results that are found will be ignored. '),
+			  'brief' => _('You are trying to stop accepting passive service checks'),
+			  'template' => 'STOP_ACCEPTING_PASSIVE_SVC_CHECKS',
+			 ),
+			 'ENABLE_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 39,
+			  'description' => _('This command is used to allow Nagios to accept passive service check results that it finds in the external command file for this particular service. '),
+			  'brief' => _('You are trying to start accepting passive service checks for a particular service'),
+			  'template' => 'ENABLE_PASSIVE_SVC_CHECKS;host_name;service_description',
+			 ),
+			 'DISABLE_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 40,
+			  'description' => _('This command is used to stop Nagios accepting passive service check results that it finds in the external command file for this particular service.  All passive check results that are found for this service will be ignored. '),
+			  'brief' => _('You are trying to stop accepting passive service checks for a particular service'),
+			  'template' => 'DISABLE_PASSIVE_SVC_CHECKS;host_name;service_description',
+			 ),
+			 'ENABLE_EVENT_HANDLERS' => array
+			 ('nagios_id' => 41,
+			  'description' => _('This command is used to allow Nagios to run host and service event handlers. '),
+			  'brief' => _('You are trying to enable event handlers'),
+			  'template' => 'ENABLE_EVENT_HANDLERS',
+			 ),
+			 'DISABLE_EVENT_HANDLERS' => array
+			 ('nagios_id' => 42,
+			  'description' => _('This command is used to temporarily prevent Nagios from running any host or service event handlers. '),
+			  'brief' => _('You are trying to disable event handlers'),
+			  'template' => 'DISABLE_EVENT_HANDLERS',
+			 ),
+			 'ENABLE_HOST_EVENT_HANDLER' => array
+			 ('nagios_id' => 43,
+			  'description' => _('This command is used to allow Nagios to run the host event handler for a particular service when necessary (if one is defined). '),
+			  'brief' => _('You are trying to enable the event handler for a particular host'),
+			  'template' => 'ENABLE_HOST_EVENT_HANDLER;host_name',
+			 ),
+			 'DISABLE_HOST_EVENT_HANDLER' => array
+			 ('nagios_id' => 44,
+			  'description' => _('This command is used to temporarily prevent Nagios from running the host event handler for a particular host. '),
+			  'brief' => _('You are trying to disable the event handler for a particular host'),
+			  'template' => 'DISABLE_HOST_EVENT_HANDLER;host_name',
+			 ),
+			 'ENABLE_SVC_EVENT_HANDLER' => array
+			 ('nagios_id' => 45,
+			  'description' => _('This command is used to allow Nagios to run the service event handler for a particular service when necessary (if one is defined). '),
+			  'brief' => _('You are trying to enable the event handler for a particular service'),
+			  'template' => 'ENABLE_SVC_EVENT_HANDLER;host_name;service_description',
+			 ),
+			 'DISABLE_SVC_EVENT_HANDLER' => array
+			 ('nagios_id' => 46,
+			  'description' => _('This command is used to temporarily prevent Nagios from running the service event handler for a particular service. '),
+			  'brief' => _('You are trying to disable the event handler for a particular service'),
+			  'template' => 'DISABLE_SVC_EVENT_HANDLER;host_name;service_description',
+			 ),
+			 'ENABLE_HOST_CHECK' => array
+			 ('nagios_id' => 47,
+			  'description' => _('This command is used to enable active checks of this host. '),
+			  'brief' => _('You are trying to enable active checks of a particular host'),
+			  'template' => 'ENABLE_HOST_CHECK;host_name',
+			 ),
+			 'DISABLE_HOST_CHECK' => array
+			 ('nagios_id' => 48,
+			  'description' => _('This command is used to temporarily prevent Nagios from actively checking the status of a particular host.  If Nagios needs to check the status of this host, it will assume that it is in the same state that it was in before checks were disabled. '),
+			  'brief' => _('You are trying to disable active checks of a particular host'),
+			  'template' => 'DISABLE_HOST_CHECK;host_name',
+			 ),
+			 'START_OBSESSING_OVER_SVC_CHECKS' => array
+			 ('nagios_id' => 49,
+			  'description' => _('This command is used to have Nagios start obsessing over service checks.  Read the documentation on distributed monitoring for more information on this. '),
+			  'brief' => _('You are trying to start obsessing over service checks'),
+			  'template' => 'START_OBSESSING_OVER_SVC_CHECKS',
+			 ),
 			 'STOP_OBSESSING_OVER_SVC_CHECKS' => array
-			 ("template" => "STOP_OBSESSING_OVER_SVC_CHECKS",
-			  "description" => _("Disables processing of service checks via the OCSP command on a program-wide basis."),
-			  "nagios_id" => 50,
-			  ),
-			 );
+			 ('nagios_id' => 50,
+			  'description' => _('This command is used stop Nagios from obsessing over service checks. '),
+			  'brief' => _('You are trying to stop obsessing over service checks'),
+			  'template' => 'STOP_OBSESSING_OVER_SVC_CHECKS',
+			 ),
+			 'REMOVE_HOST_ACKNOWLEDGEMENT' => array
+			 ('nagios_id' => 51,
+			  'description' => _('This command is used to remove an acknowledgement for a particular host problem.  Once the acknowledgement is removed, notifications may start being sent out about the host problem.  '),
+			  'brief' => _('You are trying to remove a host acknowledgement'),
+			  'template' => 'REMOVE_HOST_ACKNOWLEDGEMENT;host_name',
+			 ),
+			 'REMOVE_SVC_ACKNOWLEDGEMENT' => array
+			 ('nagios_id' => 52,
+			  'description' => _('This command is used to remove an acknowledgement for a particular service problem.  Once the acknowledgement is removed, notifications may start being sent out about the service problem. '),
+			  'brief' => _('You are trying to remove a service acknowledgement'),
+			  'template' => 'REMOVE_SVC_ACKNOWLEDGEMENT;host_name;service_description',
+			 ),
+			 'SCHEDULE_FORCED_HOST_SVC_CHECKS' => array
+			 ('nagios_id' => 53,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_FORCED_HOST_SVC_CHECKS;host_name;check_time',
+			 ),
+			 'SCHEDULE_FORCED_SVC_CHECK' => array
+			 ('nagios_id' => 54,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_FORCED_SVC_CHECK;host_name;service_description;check_time',
+			 ),
+			 'SCHEDULE_HOST_DOWNTIME' => array
+			 ('nagios_id' => 55,
+			  'description' => _('This command is used to schedule downtime for a particular host.  During the specified downtime, Nagios will not send notifications out about the host. When the scheduled downtime expires, Nagios will send out notifications for this host as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the host goes down or becomes unreachable (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. '),
+			  'brief' => _('You are trying to schedule downtime for a particular host'),
+			  'template' => 'SCHEDULE_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'SCHEDULE_SVC_DOWNTIME' => array
+			 ('nagios_id' => 56,
+			  'description' => _('This command is used to schedule downtime for a particular service.  During the specified downtime, Nagios will not send notifications out about the service. When the scheduled downtime expires, Nagios will send out notifications for this service as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. '),
+			  'brief' => _('You are trying to schedule downtime for a particular service'),
+			  'template' => 'SCHEDULE_SVC_DOWNTIME;host_name;service_description;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'ENABLE_HOST_FLAP_DETECTION' => array
+			 ('nagios_id' => 57,
+			  'description' => _('This command is used to enable flap detection for a specific host.  If flap detection is disabled on a program-wide basis, this will have no effect, '),
+			  'brief' => _('You are trying to enable flap detection for a particular host'),
+			  'template' => 'ENABLE_HOST_FLAP_DETECTION;host_name',
+			 ),
+			 'DISABLE_HOST_FLAP_DETECTION' => array
+			 ('nagios_id' => 58,
+			  'description' => _('This command is used to disable flap detection for a specific host. '),
+			  'brief' => _('You are trying to disable flap detection for a particular host'),
+			  'template' => 'DISABLE_HOST_FLAP_DETECTION;host_name',
+			 ),
+			 'ENABLE_SVC_FLAP_DETECTION' => array
+			 ('nagios_id' => 59,
+			  'description' => _('This command is used to enable flap detection for a specific service.  If flap detection is disabled on a program-wide basis, this will have no effect, '),
+			  'brief' => _('You are trying to enable flap detection for a particular service'),
+			  'template' => 'ENABLE_SVC_FLAP_DETECTION;host_name;service_description',
+			 ),
+			 'DISABLE_SVC_FLAP_DETECTION' => array
+			 ('nagios_id' => 60,
+			  'description' => _('This command is used to disable flap detection for a specific service. '),
+			  'brief' => _('You are trying to disable flap detection for a particular service'),
+			  'template' => 'DISABLE_SVC_FLAP_DETECTION;host_name;service_description',
+			 ),
+			 'ENABLE_FLAP_DETECTION' => array
+			 ('nagios_id' => 61,
+			  'description' => _('This command is used to enable flap detection for hosts and services on a program-wide basis.  Individual hosts and services may have flap detection disabled. '),
+			  'brief' => _('You are trying to enable flap detection for hosts and services'),
+			  'template' => 'ENABLE_FLAP_DETECTION',
+			 ),
+			 'DISABLE_FLAP_DETECTION' => array
+			 ('nagios_id' => 62,
+			  'description' => _('This command is used to disable flap detection for hosts and services on a program-wide basis. '),
+			  'brief' => _('You are trying to disable flap detection for hosts and services'),
+			  'template' => 'DISABLE_FLAP_DETECTION',
+			 ),
+			 'ENABLE_HOSTGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 63,
+			  'description' => _('This command is used to enable notifications for all services in the specified hostgroup.  Notifications will only be sent out for the service state types you defined in your service definitions.  This <i>does not</i> enable notifications for the hosts in this hostgroup unless you check the \'Enable for hosts too\' option. '),
+			  'brief' => _('You are trying to enable notifications for all services in a particular hostgroup'),
+			  'template' => 'ENABLE_HOSTGROUP_SVC_NOTIFICATIONS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 64,
+			  'description' => _('This command is used to prevent notifications from being sent out for all services in the specified hostgroup.  You will have to re-enable notifications for all services in this hostgroup before any alerts can be sent out in the future.  This <i>does not</i> prevent notifications from being sent out about the hosts in this hostgroup unless you check the \'Disable for hosts too\' option. '),
+			  'brief' => _('You are trying to disable notifications for all services in a particular hostgroup'),
+			  'template' => 'DISABLE_HOSTGROUP_SVC_NOTIFICATIONS;hostgroup_name',
+			 ),
+			 'ENABLE_HOSTGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 65,
+			  'description' => _('This command is used to enable notifications for all hosts in the specified hostgroup.  Notifications will only be sent out for the host state types you defined in your host definitions. '),
+			  'brief' => _('You are trying to enable notifications for all hosts in a particular hostgroup'),
+			  'template' => 'ENABLE_HOSTGROUP_HOST_NOTIFICATIONS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 66,
+			  'description' => _('This command is used to prevent notifications from being sent out for all hosts in the specified hostgroup.  You will have to re-enable notifications for all hosts in this hostgroup before any alerts can be sent out in the future. '),
+			  'brief' => _('You are trying to disable notifications for all hosts in a particular hostgroup'),
+			  'template' => 'DISABLE_HOSTGROUP_HOST_NOTIFICATIONS;hostgroup_name',
+			 ),
+			 'ENABLE_HOSTGROUP_SVC_CHECKS' => array
+			 ('nagios_id' => 67,
+			  'description' => _('This command is used to enable active checks of all services in the specified hostgroup.  This <i>does not</i> enable active checks of the hosts in the hostgroup unless you check the \'Enable for hosts too\' option. '),
+			  'brief' => _('You are trying to enable active checks of all services in a particular hostgroup'),
+			  'template' => 'ENABLE_HOSTGROUP_SVC_CHECKS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_SVC_CHECKS' => array
+			 ('nagios_id' => 68,
+			  'description' => _('This command is used to disable active checks of all services in the specified hostgroup.  This <i>does not</i> disable checks of the hosts in the hostgroup unless you check the \'Disable for hosts too\' option. '),
+			  'brief' => _('You are trying to disable active checks of all services in a particular hostgroup'),
+			  'template' => 'DISABLE_HOSTGROUP_SVC_CHECKS;hostgroup_name',
+			 ),
+			 'CANCEL_HOST_DOWNTIME' => array
+			 ('nagios_id' => 69,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_SVC_DOWNTIME' => array
+			 ('nagios_id' => 70,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_ACTIVE_HOST_DOWNTIME' => array
+			 ('nagios_id' => 71,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_PENDING_HOST_DOWNTIME' => array
+			 ('nagios_id' => 72,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_ACTIVE_SVC_DOWNTIME' => array
+			 ('nagios_id' => 73,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_PENDING_SVC_DOWNTIME' => array
+			 ('nagios_id' => 74,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_ACTIVE_HOST_SVC_DOWNTIME' => array
+			 ('nagios_id' => 75,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'CANCEL_PENDING_HOST_SVC_DOWNTIME' => array
+			 ('nagios_id' => 76,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'FLUSH_PENDING_COMMANDS' => array
+			 ('nagios_id' => 77,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			 ),
+			 'DEL_HOST_DOWNTIME' => array
+			 ('nagios_id' => 78,
+			  'description' => _('This command is used to cancel active or pending scheduled downtime for the specified host. '),
+			  'brief' => _('You are trying to cancel scheduled downtime for a particular host'),
+			  'template' => 'DEL_HOST_DOWNTIME;downtime_id',
+			 ),
+			 'DEL_SVC_DOWNTIME' => array
+			 ('nagios_id' => 79,
+			  'description' => _('This command is used to cancel active or pending scheduled downtime for the specified service. '),
+			  'brief' => _('You are trying to cancel scheduled downtime for a particular service'),
+			  'template' => 'DEL_SVC_DOWNTIME;downtime_id',
+			 ),
+			 'ENABLE_FAILURE_PREDICTION' => array
+			 ('nagios_id' => 80,
+			  'description' => _('This command is used to enable failure prediction for hosts and services on a program-wide basis.  Individual hosts and services may have failure prediction disabled. '),
+			  'brief' => _('You are trying to enable failure prediction for hosts and service'),
+			  'template' => 'ENABLE_FAILURE_PREDICTION',
+			 ),
+			 'DISABLE_FAILURE_PREDICTION' => array
+			 ('nagios_id' => 81,
+			  'description' => _('This command is used to disable failure prediction for hosts and services on a program-wide basis. '),
+			  'brief' => _('You are trying to disable failure prediction for hosts and service'),
+			  'template' => 'DISABLE_FAILURE_PREDICTION',
+			 ),
+			 'ENABLE_PERFORMANCE_DATA' => array
+			 ('nagios_id' => 82,
+			  'description' => _('This command is used to enable the processing of performance data for hosts and services on a program-wide basis.  Individual hosts and services may have performance data processing disabled. '),
+			  'brief' => _('You are trying to enable performance data processing for hosts and services'),
+			  'template' => 'ENABLE_PERFORMANCE_DATA',
+			 ),
+			 'DISABLE_PERFORMANCE_DATA' => array
+			 ('nagios_id' => 83,
+			  'description' => _('This command is used to disable the processing of performance data for hosts and services on a program-wide basis. '),
+			  'brief' => _('You are trying to disable performance data processing for hosts and services'),
+			  'template' => 'DISABLE_PERFORMANCE_DATA',
+			 ),
+			 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME' => array
+			 ('nagios_id' => 84,
+			  'description' => _('This command is used to schedule downtime for all hosts in a particular hostgroup.  During the specified downtime, Nagios will not send notifications out about the hosts. When the scheduled downtime expires, Nagios will send out notifications for the hosts as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a host goes down or becomes unreachable (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. '),
+			  'brief' => _('You are trying to schedule downtime for all hosts in a particular hostgroup'),
+			  'template' => 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME;hostgroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'SCHEDULE_HOSTGROUP_SVC_DOWNTIME' => array
+			 ('nagios_id' => 85,
+			  'description' => _('This command is used to schedule downtime for all services in a particular hostgroup.  During the specified downtime, Nagios will not send notifications out about the services. When the scheduled downtime expires, Nagios will send out notifications for the services as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. Note that scheduling downtime for services does not automatically schedule downtime for the hosts those services are associated with.  If you want to also schedule downtime for all hosts in the hostgroup, check the \'Schedule downtime for hosts too\' option. '),
+			  'brief' => _('You are trying to schedule downtime for all services in a particular hostgroup'),
+			  'template' => 'SCHEDULE_HOSTGROUP_SVC_DOWNTIME;hostgroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'SCHEDULE_HOST_SVC_DOWNTIME' => array
+			 ('nagios_id' => 86,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_HOST_SVC_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'PROCESS_HOST_CHECK_RESULT' => array
+			 ('nagios_id' => 87,
+			  'description' => _('This command is used to submit a passive check result for a particular host. '),
+			  'brief' => _('You are trying to submit a passive check result for a particular host'),
+			  'template' => 'PROCESS_HOST_CHECK_RESULT;host_name;status_code;plugin_output',
+			 ),
+			 'START_EXECUTING_HOST_CHECKS' => array
+			 ('nagios_id' => 88,
+			  'description' => _('This command is used to enable active host checks on a program-wide basis. '),
+			  'brief' => _('You are trying to start executing host checks'),
+			  'template' => 'START_EXECUTING_HOST_CHECKS',
+			 ),
+			 'STOP_EXECUTING_HOST_CHECKS' => array
+			 ('nagios_id' => 89,
+			  'description' => _('This command is used to disable active host checks on a program-wide basis. '),
+			  'brief' => _('You are trying to stop executing host checks'),
+			  'template' => 'STOP_EXECUTING_HOST_CHECKS',
+			 ),
+			 'START_ACCEPTING_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 90,
+			  'description' => _('This command is used to have Nagios start obsessing over host checks.  Read the documentation on distributed monitoring for more information on this. '),
+			  'brief' => _('You are trying to start accepting passive host checks'),
+			  'template' => 'START_ACCEPTING_PASSIVE_HOST_CHECKS',
+			 ),
+			 'STOP_ACCEPTING_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 91,
+			  'description' => _('This command is used to stop Nagios from obsessing over host checks. '),
+			  'brief' => _('You are trying to stop accepting passive host checks'),
+			  'template' => 'STOP_ACCEPTING_PASSIVE_HOST_CHECKS',
+			 ),
+			 'ENABLE_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 92,
+			  'description' => _('This command is used to allow Nagios to accept passive host check results that it finds in the external command file for a particular host. '),
+			  'brief' => _('You are trying to start accepting passive checks for a particular host'),
+			  'template' => 'ENABLE_PASSIVE_HOST_CHECKS;host_name',
+			 ),
+			 'DISABLE_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 93,
+			  'description' => _('This command is used to stop Nagios from accepting passive host check results that it finds in the external command file for a particular host.  All passive check results that are found for this host will be ignored. '),
+			  'brief' => _('You are trying to stop accepting passive checks for a particular host'),
+			  'template' => 'DISABLE_PASSIVE_HOST_CHECKS;host_name',
+			 ),
+			 'START_OBSESSING_OVER_HOST_CHECKS' => array
+			 ('nagios_id' => 94,
+			  'description' => _('This command is used to have Nagios start obsessing over host checks.  Read the documentation on distributed monitoring for more information on this. '),
+			  'brief' => _('You are trying to start obsessing over host checks'),
+			  'template' => 'START_OBSESSING_OVER_HOST_CHECKS',
+			 ),
+			 'STOP_OBSESSING_OVER_HOST_CHECKS' => array
+			 ('nagios_id' => 95,
+			  'description' => _('This command is used to stop Nagios from obsessing over host checks. '),
+			  'brief' => _('You are trying to stop obsessing over host checks'),
+			  'template' => 'STOP_OBSESSING_OVER_HOST_CHECKS',
+			 ),
+			 'SCHEDULE_HOST_CHECK' => array
+			 ('nagios_id' => 96,
+			  'description' => _('This command is used to schedule the next check of a particular host.  Nagios will re-queue the host to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the host regardless of both what time the scheduled check occurs and whether or not checks are enabled for the host. '),
+			  'brief' => _('You are trying to schedule a host check'),
+			  'template' => 'SCHEDULE_HOST_CHECK;host_name;check_time',
+			 ),
+			 'SCHEDULE_FORCED_HOST_CHECK' => array
+			 ('nagios_id' => 98,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_FORCED_HOST_CHECK;host_name;check_time',
+			 ),
+			 'START_OBSESSING_OVER_SVC' => array
+			 ('nagios_id' => 99,
+			  'description' => _('This command is used to have Nagios start obsessing over a particular service. '),
+			  'brief' => _('You are trying to start obsessing over a particular service'),
+			  'template' => 'START_OBSESSING_OVER_SVC;host_name;service_description',
+			 ),
+			 'STOP_OBSESSING_OVER_SVC' => array
+			 ('nagios_id' => 100,
+			  'description' => _('This command is used to stop Nagios from obsessing over a particular service. '),
+			  'brief' => _('You are trying to stop obsessing over a particular service'),
+			  'template' => 'STOP_OBSESSING_OVER_SVC;host_name;service_description',
+			 ),
+			 'START_OBSESSING_OVER_HOST' => array
+			 ('nagios_id' => 101,
+			  'description' => _('This command is used to have Nagios start obsessing over a particular host. '),
+			  'brief' => _('You are trying to start obsessing over a particular host'),
+			  'template' => 'START_OBSESSING_OVER_HOST;host_name',
+			 ),
+			 'STOP_OBSESSING_OVER_HOST' => array
+			 ('nagios_id' => 102,
+			  'description' => _('This command is used to stop Nagios from obsessing over a particular host. '),
+			  'brief' => _('You are trying to stop obsessing over a particular host'),
+			  'template' => 'STOP_OBSESSING_OVER_HOST;host_name',
+			 ),
+			 'ENABLE_HOSTGROUP_HOST_CHECKS' => array
+			 ('nagios_id' => 103,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_HOST_CHECKS' => array
+			 ('nagios_id' => 104,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name',
+			 ),
+			 'ENABLE_HOSTGROUP_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 105,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_HOSTGROUP_PASSIVE_SVC_CHECKS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 106,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_HOSTGROUP_PASSIVE_SVC_CHECKS;hostgroup_name',
+			 ),
+			 'ENABLE_HOSTGROUP_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 107,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_HOSTGROUP_PASSIVE_HOST_CHECKS;hostgroup_name',
+			 ),
+			 'DISABLE_HOSTGROUP_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 108,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_HOSTGROUP_PASSIVE_HOST_CHECKS;hostgroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 109,
+			  'description' => _('This command is used to enable notifications for all services in the specified servicegroup.  Notifications will only be sent out for the service state types you defined in your service definitions.  This <i>does not</i> enable notifications for the hosts in this servicegroup unless you check the \'Enable for hosts too\' option. '),
+			  'brief' => _('You are trying to enable notifications for all services in a particular servicegroup'),
+			  'template' => 'ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 110,
+			  'description' => _('This command is used to prevent notifications from being sent out for all services in the specified servicegroup.  You will have to re-enable notifications for all services in this servicegroup before any alerts can be sent out in the future.  This <i>does not</i> prevent notifications from being sent out about the hosts in this servicegroup unless you check the \'Disable for hosts too\' option. '),
+			  'brief' => _('You are trying to disable notifications for all services in a particular servicegroup'),
+			  'template' => 'DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS;servicegroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 111,
+			  'description' => _('This command is used to enable notifications for all hosts in the specified servicegroup.  Notifications will only be sent out for the host state types you defined in your host definitions. '),
+			  'brief' => _('You are trying to enable notifications for all hosts in a particular servicegroup'),
+			  'template' => 'ENABLE_SERVICEGROUP_HOST_NOTIFICATIONS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 112,
+			  'description' => _('This command is used to prevent notifications from being sent out for all hosts in the specified servicegroup.  You will have to re-enable notifications for all hosts in this servicegroup before any alerts can be sent out in the future. '),
+			  'brief' => _('You are trying to disable notifications for all hosts in a particular servicegroup'),
+			  'template' => 'DISABLE_SERVICEGROUP_HOST_NOTIFICATIONS;servicegroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_SVC_CHECKS' => array
+			 ('nagios_id' => 113,
+			  'description' => _('This command is used to enable active checks of all services in the specified servicegroup.  This <i>does not</i> enable active checks of the hosts in the servicegroup unless you check the \'Enable for hosts too\' option. '),
+			  'brief' => _('You are trying to enable active checks of all services in a particular servicegroup'),
+			  'template' => 'ENABLE_SERVICEGROUP_SVC_CHECKS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_SVC_CHECKS' => array
+			 ('nagios_id' => 114,
+			  'description' => _('This command is used to disable active checks of all services in the specified servicegroup.  This <i>does not</i> disable checks of the hosts in the servicegroup unless you check the \'Disable for hosts too\' option. '),
+			  'brief' => _('You are trying to disable active checks of all services in a particular servicegroup'),
+			  'template' => 'DISABLE_SERVICEGROUP_SVC_CHECKS;servicegroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_HOST_CHECKS' => array
+			 ('nagios_id' => 115,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_HOST_CHECKS' => array
+			 ('nagios_id' => 116,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 117,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS' => array
+			 ('nagios_id' => 118,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS;servicegroup_name',
+			 ),
+			 'ENABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 119,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS;servicegroup_name',
+			 ),
+			 'DISABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS' => array
+			 ('nagios_id' => 120,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_SERVICEGROUP_PASSIVE_HOST_CHECKS;servicegroup_name',
+			 ),
+			 'SCHEDULE_SERVICEGROUP_HOST_DOWNTIME' => array
+			 ('nagios_id' => 121,
+			  'description' => _('This command is used to schedule downtime for all hosts in a particular servicegroup.  During the specified downtime, Nagios will not send notifications out about the hosts. When the scheduled downtime expires, Nagios will send out notifications for the hosts as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a host goes down or becomes unreachable (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. '),
+			  'brief' => _('You are trying to schedule downtime for all hosts in a particular servicegroup'),
+			  'template' => 'SCHEDULE_SERVICEGROUP_HOST_DOWNTIME;servicegroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME' => array
+			 ('nagios_id' => 122,
+			  'description' => _('This command is used to schedule downtime for all services in a particular servicegroup.  During the specified downtime, Nagios will not send notifications out about the services. When the scheduled downtime expires, Nagios will send out notifications for the services as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. If you select the <i>fixed</i> option, the downtime will be in effect between the start and end times you specify.  If you do not select the <i>fixed</i> option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when a service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed dowtime. Note that scheduling downtime for services does not automatically schedule downtime for the hosts those services are associated with.  If you want to also schedule downtime for all hosts in the servicegroup, check the \'Schedule downtime for hosts too\' option. '),
+			  'brief' => _('You are trying to schedule downtime for all services in a particular servicegroup'),
+			  'template' => 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME;servicegroup_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'CHANGE_GLOBAL_HOST_EVENT_HANDLER' => array
+			 ('nagios_id' => 123,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_GLOBAL_HOST_EVENT_HANDLER;event_handler_command',
+			 ),
+			 'CHANGE_GLOBAL_SVC_EVENT_HANDLER' => array
+			 ('nagios_id' => 124,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_GLOBAL_SVC_EVENT_HANDLER;event_handler_command',
+			 ),
+			 'CHANGE_HOST_EVENT_HANDLER' => array
+			 ('nagios_id' => 125,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_HOST_EVENT_HANDLER;host_name;event_handler_command',
+			 ),
+			 'CHANGE_SVC_EVENT_HANDLER' => array
+			 ('nagios_id' => 126,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_EVENT_HANDLER;host_name;service_description;event_handler_command',
+			 ),
+			 'CHANGE_HOST_CHECK_COMMAND' => array
+			 ('nagios_id' => 127,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_HOST_CHECK_COMMAND;host_name;check_command',
+			 ),
+			 'CHANGE_SVC_CHECK_COMMAND' => array
+			 ('nagios_id' => 128,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_CHECK_COMMAND;host_name;service_description;check_command',
+			 ),
+			 'CHANGE_NORMAL_HOST_CHECK_INTERVAL' => array
+			 ('nagios_id' => 129,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_NORMAL_HOST_CHECK_INTERVAL;host_name;check_interval',
+			 ),
+			 'CHANGE_NORMAL_SVC_CHECK_INTERVAL' => array
+			 ('nagios_id' => 130,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_NORMAL_SVC_CHECK_INTERVAL;host_name;service_description;check_interval',
+			 ),
+			 'CHANGE_RETRY_SVC_CHECK_INTERVAL' => array
+			 ('nagios_id' => 131,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_RETRY_SVC_CHECK_INTERVAL;host_name;service_description;check_interval',
+			 ),
+			 'CHANGE_MAX_HOST_CHECK_ATTEMPTS' => array
+			 ('nagios_id' => 132,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_MAX_HOST_CHECK_ATTEMPTS;host_name;check_attempts',
+			 ),
+			 'CHANGE_MAX_SVC_CHECK_ATTEMPTS' => array
+			 ('nagios_id' => 133,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_MAX_SVC_CHECK_ATTEMPTS;host_name;service_description;check_attempts',
+			 ),
+			 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME' => array
+			 ('nagios_id' => 134,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'ENABLE_HOST_AND_CHILD_NOTIFICATIONS' => array
+			 ('nagios_id' => 135,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_HOST_AND_CHILD_NOTIFICATIONS;host_name',
+			 ),
+			 'DISABLE_HOST_AND_CHILD_NOTIFICATIONS' => array
+			 ('nagios_id' => 136,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_HOST_AND_CHILD_NOTIFICATIONS;host_name',
+			 ),
+			 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME' => array
+			 ('nagios_id' => 137,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME;host_name;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			 ),
+			 'ENABLE_SERVICE_FRESHNESS_CHECKS' => array
+			 ('nagios_id' => 138,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_SERVICE_FRESHNESS_CHECKS',
+			 ),
+			 'DISABLE_SERVICE_FRESHNESS_CHECKS' => array
+			 ('nagios_id' => 139,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_SERVICE_FRESHNESS_CHECKS',
+			 ),
+			 'ENABLE_HOST_FRESHNESS_CHECKS' => array
+			 ('nagios_id' => 140,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_HOST_FRESHNESS_CHECKS',
+			 ),
+			 'DISABLE_HOST_FRESHNESS_CHECKS' => array
+			 ('nagios_id' => 141,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_HOST_FRESHNESS_CHECKS',
+			 ),
+			 'SET_HOST_NOTIFICATION_NUMBER' => array
+			 ('nagios_id' => 142,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SET_HOST_NOTIFICATION_NUMBER;host_name;notification_number',
+			 ),
+			 'SET_SVC_NOTIFICATION_NUMBER' => array
+			 ('nagios_id' => 143,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'SET_SVC_NOTIFICATION_NUMBER;host_name;service_description;notification_number',
+			 ),
+			 'CHANGE_HOST_CHECK_TIMEPERIOD' => array
+			 ('nagios_id' => 144,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_HOST_CHECK_TIMEPERIOD;host_name;timeperiod',
+			 ),
+			 'CHANGE_SVC_CHECK_TIMEPERIOD' => array
+			 ('nagios_id' => 145,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_CHECK_TIMEPERIOD;host_name;service_description;check_timeperiod',
+			 ),
+			 'PROCESS_FILE' => array
+			 ('nagios_id' => 146,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'PROCESS_FILE;file_name;delete',
+			 ),
+			 'CHANGE_CUSTOM_HOST_VAR' => array
+			 ('nagios_id' => 147,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CUSTOM_HOST_VAR;host_name;varname;varvalue',
+			 ),
+			 'CHANGE_CUSTOM_SVC_VAR' => array
+			 ('nagios_id' => 148,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CUSTOM_SVC_VAR;host_name;service_description;varname;varvalue',
+			 ),
+			 'CHANGE_CUSTOM_CONTACT_VAR' => array
+			 ('nagios_id' => 149,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CUSTOM_CONTACT_VAR;contact_name;varname;varvalue',
+			 ),
+			 'ENABLE_CONTACT_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 150,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_CONTACT_HOST_NOTIFICATIONS;contact_name',
+			 ),
+			 'DISABLE_CONTACT_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 151,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_CONTACT_HOST_NOTIFICATIONS;contact_name',
+			 ),
+			 'ENABLE_CONTACT_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 152,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_CONTACT_SVC_NOTIFICATIONS;contact_name',
+			 ),
+			 'DISABLE_CONTACT_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 153,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_CONTACT_SVC_NOTIFICATIONS;contact_name',
+			 ),
+			 'ENABLE_CONTACTGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 154,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_CONTACTGROUP_HOST_NOTIFICATIONS;contactgroup_name',
+			 ),
+			 'DISABLE_CONTACTGROUP_HOST_NOTIFICATIONS' => array
+			 ('nagios_id' => 155,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_CONTACTGROUP_HOST_NOTIFICATIONS;contactgroup_name',
+			 ),
+			 'ENABLE_CONTACTGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 156,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'ENABLE_CONTACTGROUP_SVC_NOTIFICATIONS;contactgroup_name',
+			 ),
+			 'DISABLE_CONTACTGROUP_SVC_NOTIFICATIONS' => array
+			 ('nagios_id' => 157,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'DISABLE_CONTACTGROUP_SVC_NOTIFICATIONS;contactgroup_name',
+			 ),
+			 'CHANGE_RETRY_HOST_CHECK_INTERVAL' => array
+			 ('nagios_id' => 158,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_RETRY_HOST_CHECK_INTERVAL;host_name;service_description;check_interval',
+			 ),
+			 'SEND_CUSTOM_HOST_NOTIFICATION' => array
+			 ('nagios_id' => 159,
+			  'description' => _('This command is used to send a custom notification about the specified host.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. '),
+			  'brief' => _('You are trying to send a custom host notification'),
+			  'template' => 'SEND_CUSTOM_HOST_NOTIFICATION;host_name;options;author;comment',
+			 ),
+			 'SEND_CUSTOM_SVC_NOTIFICATION' => array
+			 ('nagios_id' => 160,
+			  'description' => _('This command is used to send a custom notification about the specified service.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. '),
+			  'brief' => _('You are trying to send a custom service notification'),
+			  'template' => 'SEND_CUSTOM_SVC_NOTIFICATION;host_name;service_description;options;author;comment',
+			 ),
+			 'CHANGE_HOST_NOTIFICATION_TIMEPERIOD' => array
+			 ('nagios_id' => 161,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod',
+			 ),
+			 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD' => array
+			 ('nagios_id' => 162,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod',
+			 ),
+			 'CHANGE_CONTACT_HOST_NOTIFICATION_TIMEPERIOD' => array
+			 ('nagios_id' => 163,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CONTACT_HOST_NOTIFICATION_TIMEPERIOD;contact_name;notification_timeperiod',
+			 ),
+			 'CHANGE_CONTACT_SVC_NOTIFICATION_TIMEPERIOD' => array
+			 ('nagios_id' => 164,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CONTACT_SVC_NOTIFICATION_TIMEPERIOD;contact_name;notification_timeperiod',
+			 ),
+			 'CHANGE_HOST_MODATTR' => array
+			 ('nagios_id' => 165,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_HOST_MODATTR;host_name;value',
+			 ),
+			 'CHANGE_SVC_MODATTR' => array
+			 ('nagios_id' => 166,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_SVC_MODATTR;host_name;service_description;value',
+			 ),
+			 'CHANGE_CONTACT_MODATTR' => array
+			 ('nagios_id' => 167,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CONTACT_MODATTR;contact_name;value',
+			 ),
+			 'CHANGE_CONTACT_MODHATTR' => array
+			 ('nagios_id' => 168,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CONTACT_MODHATTR;contact_name;value',
+			 ),
+			 'CHANGE_CONTACT_MODSATTR' => array
+			 ('nagios_id' => 169,
+			  'description' => _('This command is not implemented in Nagios.'),
+			  'brief' => _('You are trying to execute an unsupported command.'),
+			  'template' => 'CHANGE_CONTACT_MODSATTR;contact_name;value',
+			 ),
+		);
 
-		if (!empty($name) && isset($command_info[$name])) {
+		if (isset($command_info[$name])) {
 			$command_info[$name]['name'] = $name;
 			return $command_info[$name];
 		}
-		# we weren't given a name, so loop it and look for the id
-		foreach ($command_info as $name => $info) {
-			if ($info['nagios_id'] == $id) {
+
+		if (!is_numeric($name)) {
+			return false;
+		}
+
+		# we weren't given a name, but $name is numeric so we loop
+		# loop the command_info array and look for a matching id
+		foreach ($command_info as $cmd_name => $info) {
+			if ($info['nagios_id'] == $name) {
 				$info['name'] = $name;
 				return $info;
 			}
@@ -829,23 +1041,13 @@ class nagioscmd_Core
 		return false;
 	}
 
-	function cmd_name($id = false, $name = false)
+	function cmd_name($name = false)
 	{
-		$info = self::cmd_info($id, $name);
-		if (isset($info['name'])) {
+		$info = self::cmd_info($name);
+		if (empty($info) || isset($info['name'])) {
 			return $info['name'];
 		}
 		return false;
-	}
-
-	/**
-	 * Obtain the command name for a command id
-	 * @param $id The id of the command
-	 * @return False on errors, the command name as a string on success
-	 */
-	public function command_name($id)
-	{
-		return self::cmd_name($id);
 	}
 
 	/**
@@ -858,14 +1060,14 @@ class nagioscmd_Core
 		if (empty($name))
 			return false;
 
-		$first = self::cmd_name(false, $name);
+		$first = self::cmd_name($name);
 		if ($first !== false) {
 			return $first;
 		}
 
 		# handle a CMD_ prefixed name too
 		if (substr($name, 0, 4) === 'CMD_') {
-			return self::cmd_name(false, substr($name, 4));
+			return self::cmd_name(substr($name, 4));
 		}
 		return false;
 	}
@@ -878,7 +1080,7 @@ class nagioscmd_Core
 	public function nagios_name($id)
 	{
 		if (is_numeric($id)) {
-			$base_cmd = self::command_name($id);
+			$base_cmd = self::cmd_name($id);
 			if (!$base_cmd) {
 				return false;
 			}
