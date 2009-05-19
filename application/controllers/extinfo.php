@@ -428,7 +428,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
 
 			# check if nagios_check_command is defined in cgi.cfg
-			$cgi_config = System_Model::parse_config_file(Kohana::config('config.nagios_base_path').'/etc/cgi.cfg');
+			$cgi_config = System_Model::parse_config_file(Kohana::config('config.nagios_base_path').'/cgi.cfg');
 			$nagios_check_command = false;
 			if (!empty($cgi_config)) {
 				$nagios_check_command = isset($cgi_config['nagios_check_command']) ? $cgi_config['nagios_check_command'] : false;

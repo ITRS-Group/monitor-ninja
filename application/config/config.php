@@ -161,3 +161,15 @@ if (is_dir($nacoma_real_path)) {
  * If installed, change path below or set to false if not
  */
 $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
+
+/**
+ * Do we use NagVis?
+ * If path differs from the one below but still installed
+ * you could simply change it.
+ */
+$nagvis_real_path = '/opt/monitor/op5/nagvis/';
+if (is_dir($nagvis_real_path)) {
+	$config['nagvis_path'] = '/monitor/op5/nagvis/';
+} else {
+	$config['nagvis_path'] = false;
+}

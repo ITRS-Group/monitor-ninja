@@ -77,6 +77,9 @@ class Ninja_Controller extends Template_Controller {
 			//$this->translate->_('Reporting') => array(),
 			//$this->translate->_('Configuration') => array()
 		);
+		if (Kohana::config('config.nagvis_path') !== false) {
+			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = 'nagvis/index';
+		}
 
 		$this->registry->set('Zend_Translate', $this->translate);
 	}
