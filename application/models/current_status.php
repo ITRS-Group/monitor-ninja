@@ -926,9 +926,18 @@ class Current_status_Model extends Model
 					".$sort_field." ".$sort_order;
 
 		} else {
-			$service_list = $this->auth->get_authorized_services();
-			ksort($service_list); # not required but could (possibly) speed up the query
-			$service_str = implode(',', array_keys($service_list));
+			$auth_query_parts = $this->auth->authorized_service_query();
+			$auth_from = '';
+			$auth_where = '';
+			$service_in_query = '';
+			if ($auth_query_parts !== true) {
+				$auth_from = ', '.$auth_query_parts['from'];
+
+				# match authorized services against service.host_name
+				$auth_where = sprintf($auth_query_parts['where'], 'tmp.host_name');
+				$service_in_query = " s.id IN(SELECT tmp.id FROM service tmp ".$auth_from." WHERE ".$auth_where.") AND ";
+			}
+
 			$sort_field = empty($sort_field) ? 'h.host_name, s.service_description' : $sort_field;
 			$sql = "
 				SELECT
@@ -966,7 +975,7 @@ class Current_status_Model extends Model
 					service s
 				WHERE
 					h.id IN (".$host_str.") AND
-					s.id IN (".$service_str.") AND
+					".$service_in_query."
 					s.host_name = h.host_name
 					".$filter_sql.$hostprops_sql.$serviceprops_sql."
 				ORDER BY
