@@ -29,13 +29,17 @@ class Host_Model extends Model {
 			if (!array_key_exists($id, $auth_hosts)) {
 				return false;
 			} else {
-				$host_info = $this->db->getwhere('host', array('id' => $id));
+				$host_info = $this->db
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, output AS plugin_output')
+					->where('host', array('id' => $id));
 			}
 		} elseif (!empty($name)) {
 			if (!array_key_exists($name, $this->auth->hosts_r)) {
 				return false;
 			} else {
-				$host_info = $this->db->getwhere('host', array('host_name' => $name));
+				$host_info = $this->db
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, output AS plugin_output')
+					->getwhere('host', array('host_name' => $name));
 			}
 		} else {
 			return false;
