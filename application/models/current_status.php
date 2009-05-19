@@ -579,6 +579,9 @@ class Current_status_Model extends Model
 	{
 		$result = $this->fetch_hosts_causing_outages();
 
+		if (empty($result)) {
+			return false;
+		}
 		/* check all hosts */
 		$outages = false;
 		foreach ($result as $host){
@@ -616,7 +619,7 @@ class Current_status_Model extends Model
 	{
 		/* user must be authorized for all hosts in order to see outages */
 		if(!$this->auth->view_hosts_root)
-			return;
+			return false;
 
 		# fetch hosts for current user
 		$hostlist = $this->get_hostlist();
