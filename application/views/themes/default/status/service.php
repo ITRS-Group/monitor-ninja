@@ -22,7 +22,7 @@ if (!empty($widgets)) {
 		<col style="width: 100%" />
 		<col style="width: 30px" />
 		<col style="width: 30px" />
-		<col style="width: 30px" />
+		<!--<col style="width: 30px" />-->
 	</colgroup>
 	<thead>
 		<tr>
@@ -43,7 +43,7 @@ if (!empty($widgets)) {
 						'>'.$row['title'].'</th>';
 				}*/
 			?>
-			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+			<th class="no-sort" colspan="2"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -93,12 +93,11 @@ if (!empty($widgets)) {
 		<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 		<td><?php echo $row->duration ?></td>
 		<td style="white-space: normal"><?php echo str_replace('','',$row->plugin_output) ?></td>
-		<td class="icon">
-		<?php	if (!empty($row->icon_image)) { ?>
-			<?php //echo html::image('application/views/themes/default/images/icons/16x16/action.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?>
-			<img src="<?php echo $logos_path.$row->icon_image ?>" alt="<?php echo $this->translate->_('View extra host notes');?>" title="<?php echo $this->translate->_('View extra host notes');?>" />
-		<?php	} ?>
-		</td>
+		<!--<td class="icon">
+		<?php	//if (!empty($row->icon_image)) { ?>
+			<?php //echo html::image('application/media/images/logos/'.$row->icon_image,array('alt' => $row->icon_image_alt,'title' => $row->icon_image_alt));?>
+		<?php	//} ?>
+		</td>-->
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
