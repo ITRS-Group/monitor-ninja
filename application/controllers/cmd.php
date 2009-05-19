@@ -10,30 +10,49 @@
  */
 class Cmd_Controller extends Authenticated_Controller
 {
+	private $command_id = false;
+	private $cmd_params = array();
+	private $csrf_token = false;
+
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
 	/**
-	 * Write a raw, pre-formatted, command to Nagios' FIFO
-	 * This is a stub for now.
-	 *
-	 * @param $command The command to write
-	 * @return true on success, false on errors
+	 * Initializes a page with the correct view, java-scripts and css
+	 * @param $view The name of the theme-page we want to print
 	 */
-	private function submit_command($command)
+	protected function init_page($view)
 	{
-		return false;
+		$this->template->content = $this->add_view($view);
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
 	}
 
 	/**
-	*
-	*
-	*/
-	public function request_command()
+	 * Request a command to be submitted
+	 * This method prints input fields to be selected for the
+	 * named command.
+	 * @param $name The requested command to run
+	 * @param $parameters The parameters (host_name etc) for the command
+	 */
+	public function submit($name = false)
 	{
-		return false;
+		$this->init_page('cmd/request');
+		$this->template->content->cmd = $name;
+
+		$command = new Command_Model;
+		$info = $command->get_command_info($name);
+		if (!$info) {
+			return;
+		}
+
+		$this->template->content->info = $info;
+
+		foreach ($info as $k => $v) {
+			$this->template->content->$k = $v;
+		}
 	}
 
 	/**
