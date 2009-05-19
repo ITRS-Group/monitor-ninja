@@ -137,4 +137,24 @@ class Service_Model extends Model
 		}
 		return false;
 	}
+
+	/**
+	*
+	*	Fetch service info filtered on specific field and value
+	*/
+	public function get_where($field=false, $value=false, $limit=false)
+	{
+		if (empty($field) || empty($value)) {
+			return false;
+		}
+		$auth_objects = $this->auth->get_authorized_services();
+		$obj_ids = array_keys($auth_objects);
+		$obj_info = $this->db
+			->from('service')
+			->like($field, $value)
+			->in('id', $obj_ids)
+			->limit($limit)
+			->get();
+		return $obj_info;
+	}
 }
