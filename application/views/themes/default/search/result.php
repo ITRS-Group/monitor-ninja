@@ -13,9 +13,9 @@ if (isset($host_result) ) { ?>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
-		<th class="header"><?php echo $this->translate->_('Address'); ?></th>
+		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
-		<th class="header" style="white-space: nowrap"><?php echo $this->translate->_('Display name'); ?></th>
+		<th class="header" style="width: 95px"><?php echo $this->translate->_('Display name'); ?></th>
 		<?php if (isset ($nacoma_link)) { ?>
 		<th class="header">&nbsp;</th>
 		<?php } ?>
@@ -26,7 +26,7 @@ if (isset($host_result) ) { ?>
 			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($host->current_state)).'.png',array('alt' => Current_status_Model::status_text($host->current_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($host->current_state))); ?>
 		</td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></td>
-		<td><?php echo $host->alias ?></td>
+		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
 		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
 		<td><?php echo $host->display_name ?></td>
