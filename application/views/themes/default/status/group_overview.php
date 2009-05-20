@@ -8,6 +8,17 @@ if (!empty($widgets)) {
 ?>
 <?php //echo $lable_header ?>
 <div class="widget left w98" id="status_group-overview">
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 <?php
 	$j = 0;
 	foreach ($group_details as $group) { ?>

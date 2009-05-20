@@ -1,6 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
 
 <div class="widget left w98" id="status_group-grid" style="margin-top: 0px">
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 <?php
 foreach ($group_details as $details) {
 ?>

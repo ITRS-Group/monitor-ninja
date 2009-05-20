@@ -9,7 +9,17 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_service">
-
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 
 <table style="table-layout: fixed" id="service_table">
 	<colgroup>

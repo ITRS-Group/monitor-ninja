@@ -8,7 +8,17 @@
 ?>
 
 <div class="widget left w98" id="status_group-summary">
-
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 	<?php if (!empty($group_details)) { ?>
 	<table id="group_summary_table">
 	<thead>
