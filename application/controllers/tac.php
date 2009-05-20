@@ -40,6 +40,7 @@ class Tac_Controller extends Authenticated_Controller {
 			'widget-tac_schedduled' => 'Scheduled problems',
 			'widget-tac_acknowledged' => 'Acknowledged problems',
 			'widget-tac_disabled' => 'Disabled cheks',
+			'widget-netw_outages' => 'Network outages',
 			'widget-tac_hosts' => 'Host problems',
 			'widget-tac_services' => 'Service problems',
 			'widget-tac_monfeat' => 'Monitoring features',
