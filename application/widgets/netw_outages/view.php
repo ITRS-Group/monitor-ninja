@@ -3,22 +3,20 @@
 	<div class="widget-header">
 		<strong><?php echo $title ?></strong>
 	</div>
-	<div class="widget-editbox">
-		<!--Edit the widget here-->
-	</div>
 	<div class="widget-content">
-		<!--This is widget content:<br /><br />-->
-	<?php if (!$user_has_access) { ?>
-
-		<?php echo $no_access_msg ?>
-
-		<?php } else { ?>
-
-		<?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?>
-
+	<?php
+		if (!$user_has_access) {
+			echo $no_access_msg;
+	 	} else { ?>
+		<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
+			<tr>
+				<td class="dark"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-critical.png', array('alt' => $label)) ?></td>
+				<td><?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?></td>
+			</tr>
+		</table>
 		<?php
 
-			if (!empty($arguments)) {
+		 if (!empty($arguments)) {
 				foreach ($arguments as $arg) {
 					echo $arg."<br />";
 				}
