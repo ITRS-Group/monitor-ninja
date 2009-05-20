@@ -1363,7 +1363,15 @@ class Current_status_Model extends Model
 		if (empty($config_file)) {
 			return false;
 		}
-		$config_file = $this->base_path.'/etc/'.$config_file;
+		$etc = strstr($this->base_path, '/etc') ? '' : '/etc/';
+		# check that we have a trailing slash in path
+		if (substr($this->base_path.$etc, -1, 1) != '/') {
+			$etc .= '/';
+		}
+		$config_file = $this->base_path.$etc.$config_file;
+		if (!file_exists($config_file)) {
+			return false;
+		}
 		$buf = file_get_contents($config_file);
 		if($buf === false) return(false);
 
