@@ -100,7 +100,7 @@ class Ajax_Controller extends Authenticated_Controller {
 						$host_data[] = array('/status/service/%s', $row->host_name);
 					}
 				} else {
-					$host_info = 'Nothing found';
+					$host_info = $this->translate->_('Nothing found');
 				}
 				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
 				$json_str = $json->encode($var);
