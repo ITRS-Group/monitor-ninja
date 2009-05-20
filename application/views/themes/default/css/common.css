@@ -436,11 +436,12 @@ table.healt tr td div.border img {
 table.extinfo {
 	border-spacing: 1px;
 	background-color: #dcdccd;
-	margin-top: -1px
+	margin-top: -1px;
 }
 
 table.extinfo tr td {
 	padding: 2px 5px;
+	/*background: #ffffff;*/
 }
 
 table.extinfo tr td.status.icon {

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w32" id="nagios_commands">
+<div class="widget left w32" id="nagios_commands" style="width: 250px;">
 	<div class='widget-header'><?php echo $title ?></div>
 	<table class="extinfo">
 		<tr>

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w66" id="extinfo_current">
+<div class="widget left w66" id="extinfo_current" style="width: 350px">
 	<div class="widget-header"><?php echo $this->translate->_('Process Information'); ?></div>
 <table class="extinfo">
 	<tr>
