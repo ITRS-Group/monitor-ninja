@@ -31,4 +31,50 @@ class Hostgroup_Model extends ORM
 	{
 		return ORM::factory('hostgroup')->find_all();
 	}
+
+	/**
+	*	Fetch service info filtered on specific field and value
+	*/
+	public function get_where($field=false, $value=false, $limit=false)
+	{
+		if (empty($field) || empty($value)) {
+			return false;
+		}
+		$auth = new Nagios_auth_Model();
+		$auth_objects = $auth->get_authorized_hostgroups();
+		$obj_ids = array_keys($auth_objects);
+		$obj_info = $this->db
+			->from('hostgroup')
+			->like($field, $value)
+			->in('id', $obj_ids)
+			->limit($limit)
+			->get();
+		return $obj_info;
+	}
+
+	/**
+	*	Search through several fields for a specific value
+	*/
+	public function search($value=false, $limit=false)
+	{
+		if (empty($value)) return false;
+
+		$auth = new Nagios_auth_Model();
+		$auth_objects = $auth->get_authorized_hostgroups();
+		$obj_ids = array_keys($auth_objects);
+		$obj_info = $this->db
+			->select('DISTINCT *')
+			->from('hostgroup')
+			->orlike(
+				array(
+					'hostgroup_name' => $value,
+					'alias' => $value
+				)
+			)
+			->in('id', $obj_ids)
+			->limit($limit)
+			->get();
+		return $obj_info;
+	}
+
 }

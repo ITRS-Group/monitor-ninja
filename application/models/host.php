@@ -143,4 +143,30 @@ class Host_Model extends Model {
 			->get();
 		return $host_info;
 	}
+
+	/**
+	*	Search through several fields for a specific value
+	*/
+	public function search($value=false, $limit=false)
+	{
+		if (empty($value)) return false;
+		$auth_hosts = $this->auth->get_authorized_hosts();
+		$host_ids = array_keys($auth_hosts);
+		$host_info = $this->db
+			->select('DISTINCT *')
+			->from('host')
+			->orlike(
+				array(
+					'host_name' => $value,
+					'alias' => $value,
+					'display_name' => $value,
+					'address' => $value
+				)
+			)
+			->in('id', $host_ids)
+			->limit($limit)
+			->get();
+		return $host_info;
+	}
+
 }
