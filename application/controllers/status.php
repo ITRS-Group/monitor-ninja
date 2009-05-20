@@ -164,7 +164,7 @@ class Status_Controller extends Authenticated_Controller {
 			$shown .= " '".$name."'";
 			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
 			$grouptype = str_replace('group', '', $group_type);
-			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
+			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
