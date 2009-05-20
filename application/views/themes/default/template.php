@@ -55,7 +55,7 @@
 						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
 					}
 					?>
-					<input type="text" name="query" id="query" class="textbox" value="Show host" onfocus="this.value=''" onblur="this.value='Show host'" />
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>
