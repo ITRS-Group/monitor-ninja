@@ -62,7 +62,7 @@ if (!empty($widgets)) {
 				//}
 			?>
 		</td>
-		<td class="<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
+		<td class="service_hostname<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
 			<?php //if ($curr_host != $row->host_name) { ?>
 				<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
 				<div style="float: right">
