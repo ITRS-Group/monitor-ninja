@@ -41,12 +41,10 @@ function widget_status(){
 		content = cookie_parts[j].split('=');
 		if (content[0] == 'ew-close') {
 			widgets = content[1];
+			closed_widgets = widgets.split('%2C');
+			for(i =0; i < closed_widgets.length; i++) {
+				document.getElementById('li_'+closed_widgets[i]).className = 'unselected';
+			}
 		}
-	}
-
-	closed_widgets = widgets.split('%2C');
-
-	for(i =0; i < closed_widgets.length; i++) {
-		document.getElementById('li_'+closed_widgets[i]).className = 'unselected';
 	}
 }
