@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
 
-<div class="widget left w98" id="status_group-grid" style="margin-top: -11px">
+<div class="widget left w98" id="status_group-grid" style="margin-top: 0px">
 <?php
 foreach ($group_details as $details) {
 ?>
@@ -52,7 +52,7 @@ foreach ($group_details as $details) {
 						echo (($service['current_state'] != $tmp && $j != 0) ? '<br />' : '');
 						echo (($service['current_state'] != $tmp || ($service['current_state'] == 0 && $j == 0)) ? html::image('/application/views/themes/default/images/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;' : '');
 						$service_class = 'status'.Current_status_Model::status_text($service['current_state'], 'service');
-						echo (($service['current_state'] != $tmp || $j == 0) ? '' : ', ').html::anchor('extinfo/details/service/'.$host['host_name'].'/?service='.$service['service_description'], $service['service_description'], array('class' => $service_class)).' ';
+						echo (($service['current_state'] != $tmp || $j == 0) ? '' : ', ').html::anchor('extinfo/details/service/'.$host['host_name'].'/?service='.$service['service_description'], $service['service_description'], array('class' => $service_class));
 						if ($service['current_state'] != $tmp)
 							$tmp = $service['current_state'];
 						$j++;
