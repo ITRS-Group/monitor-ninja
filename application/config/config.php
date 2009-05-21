@@ -167,8 +167,8 @@ $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
  * If path differs from the one below but still installed
  * you could simply change it.
  */
-$nagvis_real_path = '/opt/monitor/op5/nagvis/';
-if (is_dir($nagvis_real_path)) {
+$config['nagvis_real_path'] = '/opt/monitor/op5/nagvis/';
+if (is_dir($config['nagvis_real_path'])) {
 	$config['nagvis_path'] = '/monitor/op5/nagvis/';
 } else {
 	$config['nagvis_path'] = false;
