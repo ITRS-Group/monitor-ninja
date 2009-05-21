@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	console.log('ready');
    $('#query').autocomplete({
     serviceUrl:_site_domain + _index_page + '/ajax/global_search/',
     minChars:2,

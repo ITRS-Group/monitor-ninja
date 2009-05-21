@@ -2,7 +2,7 @@
 
 <div class="widget right w32" id="extinfo_info" style="margin-right: 1%">
 <div class='widget-header'><?php echo $lable_command_title ?></div>
-	<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
+	<table class="extinfo">
 		<?php # only for hosts!
 			if ($type == 'host') { # @@@FIXME check if we are using statusmap? USE_STATUSMAP
 		?>

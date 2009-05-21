@@ -8,6 +8,17 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_host">
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
 	<table id="host_table" style="table-layout: fixed">
 		<colgroup>
@@ -71,7 +82,7 @@ foreach ($result as $row) {
 					?>
 				</td>
 				<td class="icon" style="width: 10px">
-				<?php if (!empty($row->icon_image)) { 
+				<?php if (!empty($row->icon_image)) {
 					echo html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt));
 				} ?>
 				</td>

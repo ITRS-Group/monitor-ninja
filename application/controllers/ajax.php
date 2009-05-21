@@ -30,56 +30,75 @@ class Ajax_Controller extends Authenticated_Controller {
 			die($msg);
 		} else {
 			# we handle queries by trying to locate wanted filtering options separated by colon (:)
-			# supporting both GET and POST here
 			$q = $this->input->get('query', $q);
 			$q = urldecode($q);
 			$json = zend::instance('json');
 			if (strstr($q, self::FILTER_CHAR)) {
 				# some extra filtering option detected
 				$options = explode(self::FILTER_CHAR, $q);
-				$valid_objects = array(
-					'host' => array(
-						'class' => 'Host_Model',
-						'name_field' => 'host_name',
-						'data' => 'host_name',
-						'path' => '/status/service/%s'
-						),
-					'service' => array(
-						'class' => 'Service_Model',
-						'name_field' => 'service_description',
-						'data' => 'host_name',
-						'path' => '/extinfo/details/service/%s/?service=%s'
-					),
-					'hostgroup' => 'Hostgroup_Model',
-					'servicegroup' => 'Servicegroup_Model'
-					);
 				$obj_type = false;
 				$obj_class_name = false;
 				$obj_class = false;
 				$obj_name = false;
 				$obj_data = false;
 				$obj_info = false;
-				if (is_array($options)) {
+				if (is_array($options) && !empty($options[0])) {
 					$obj_type = trim($options[0]);
-					if (!array_key_exists($obj_type, $valid_objects)) {
-						return false;
-					}
-					$obj_class_name = $valid_objects[$obj_type]['class'];
-					$obj_class = new $obj_class_name();
-					# find requested object
 					if (isset($options[1])) {
 						$obj_name = $options[1];
+					} else {
+						return false;
 					}
-					$limit = 10; # limit search result to max items returned
-					$data = $obj_class->get_where($valid_objects[$obj_type]['name_field'], $obj_name, $limit);
+					switch ($obj_type) {
+						case 'host': case 'h':
+							$settings = array(
+								'class' => 'Host_Model',
+								'name_field' => 'host_name',
+								'data' => 'host_name',
+								'path' => '/status/service/%s'
+								);
+							break;
+						case 'service': case 's':
+							$obj_type = 'service';
+							$settings = array(
+								'class' => 'Service_Model',
+								'name_field' => 'service_description',
+								'data' => 'host_name',
+								'path' => '/extinfo/details/service/%s/?service=%s'
+							);
+							break;
+						case 'hostgroup': case 'hg':
+							$settings = array(
+								'class' => 'Hostgroup_Model',
+								'name_field' => 'hostgroup_name',
+								'data' => 'hostgroup_name',
+								'path' => '/status/hostgroup/%s'
+							);
+							break;
+						case 'servicegroup': case 'sg':
+							$settings = array(
+								'class' => 'Servicegroup_Model',
+								'name_field' => 'servicegroup_name',
+								'data' => 'servicegroup_name',
+								'path' => '/status/servicegroup/%s'
+							);
+							break;
+						default:
+							return false;
+					}
+					$obj_class_name = $settings['class'];
+					$obj_class = new $obj_class_name();
+					# find requested object
+					$limit = 10; # limit search result to max items returned @@@FIXME should be configurable?
+					$data = $obj_class->get_where($settings['name_field'], $obj_name, $limit);
 					$obj_info = false;
 					if ($data!==false) {
 						foreach ($data as $row) {
-							$obj_info[] = $obj_type == 'service' ? $row->{$valid_objects[$obj_type]['data']} . ';' . $row->{$valid_objects[$obj_type]['name_field']} : $row->{$valid_objects[$obj_type]['name_field']};
-							$obj_data[] = array($valid_objects[$obj_type]['path'], $row->{$valid_objects[$obj_type]['data']});
+							$obj_info[] = $obj_type == 'service' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
+							$obj_data[] = array($settings['path'], $row->{$settings['data']});
 						}
 					} else {
-						$host_info = 'Nothing found';
+						$host_info = $this->translate->_('Nothing found');
 					}
 					$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
 					$json_str = $json->encode($var);
@@ -100,7 +119,7 @@ class Ajax_Controller extends Authenticated_Controller {
 						$host_data[] = array('/status/service/%s', $row->host_name);
 					}
 				} else {
-					$host_info = 'Nothing found';
+					$host_info = $this->translate->_('Nothing found');
 				}
 				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
 				$json_str = $json->encode($var);

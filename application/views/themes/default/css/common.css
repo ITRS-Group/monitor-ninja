@@ -3,16 +3,10 @@ html, body {
 	color: #414141;
 }
 
-/* {
-	color: #414141;
-}*/
-
 body {
 	margin: 0px;
 	font: 11px 'trebuchet ms',arial,sans-serif;
-	background-color: #fdfdfb;
 	background-color: #ffffff;
-	/*background-color: #dcdccd;*/
 }
 
 form {
@@ -278,6 +272,7 @@ cite {
 	top: 64px;
 	margin: 0px 0px 0px 160px;
 	padding-top: 11px;
+	padding-top: 0px;
 }
 
 #page_settings {
@@ -354,7 +349,7 @@ caption {
 	color: #333333;
 	font-weight: bold;
 	text-align: left;
-	/*border-bottom: 1px solid #cdcddc;*/
+	/*border-bottom: 1px solid #cdcddc; */
 	/*margin-bottom: 1px;*/
 	padding: 15px 0px 4px 4px;
 }
@@ -363,7 +358,6 @@ th {
 	text-align: left;
 	padding: 5px 7px;
 	border: 0px;
-
 	font-weight: bold;
 	border: 0px;
 	padding: 3px 7px;
@@ -382,7 +376,7 @@ tr td {
 }
 
 tr td.dark  {
-	width: 40px;
+	width: 40px; /* */
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 	text-align: center;
 	padding: 5.50px 0px;
@@ -437,6 +431,33 @@ table.healt tr td div.border img {
 	height: 30px;
 }
 
+/* extinfo table **********************************************************************************/
+
+table.extinfo {
+	border-spacing: 1px;
+	background-color: #dcdccd;
+	margin-top: -1px;
+}
+
+table.extinfo tr td {
+	padding: 2px 5px;
+	/*background: #ffffff;*/
+}
+
+table.extinfo tr td.status.icon {
+	width: 11px;
+}
+
+table.extinfo tr td img {
+	margin-bottom: -2px;
+	margin-right: 2px;
+}
+
+table.extinfo tr td.status.icon img {
+	margin: 1px;
+	height: 14px;
+}
+
 /* widgdet style **********************************************************************************/
 
 .widget-header {
@@ -481,12 +502,12 @@ table.healt tr td div.border img {
 
 div.left {
 	float: left;
-	margin-bottom: 15px;
+	margin-top: 11px;
 }
 
 div.right {
 	float: right;
-	margin-bottom: 15px;
+	margin-top: 11px;
 }
 
 .max { width: 100%; }

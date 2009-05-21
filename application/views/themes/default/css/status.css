@@ -90,7 +90,6 @@ tr.even td.status {
 	background: #f5f5ef url(../images/bg/table/bg.gif) repeat-x;
 }
 
-
 td.white table tr td {
 	border: 1px solid #e9e9e0;
 	border-left: 0px;
@@ -100,6 +99,7 @@ td.white table tr td {
 td.white:first-child table tr td:first-child {
 	border-left: 1px solid #e9e9e0;
 }
+
 /* widget thihngys  *******************************************************************************/
 
 #widget-tac_hosts table tr th,
@@ -185,7 +185,7 @@ th.header:first-child {
 .comments_table th.headerSortDown,
 #group_summary_table th.headerSortDown,
 #service_table th.headerSortDown,
-#host_table th.headerSortDown, 
+#host_table th.headerSortDown,
 th.headerSortDown {
 	background: #ffffff url(../images/bg/table/sort-down.png) top right;
 }

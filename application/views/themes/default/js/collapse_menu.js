@@ -15,11 +15,15 @@ function collapse_menu(action) {
 		document.getElementById('show-menu').style.display = 'block';
 		var menu = document.getElementById('menu');
 		menu.getElementsByTagName('cite')[0].setAttribute('style','display: none');
+		menu.getElementsByTagName('cite')[1].setAttribute('style','display: none');
+		menu.getElementsByTagName('cite')[2].setAttribute('style','display: none');
 		for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
 			menu.getElementsByTagName('a')[i].setAttribute('style','display: none');
 		}
 		document.getElementById('content').style.marginLeft = '35px';
-		document.cookie = 'ninja_menu=hide';
+		var date = new Date();
+		date.setTime(date.getTime()+(365*24*60*60*1000));
+		document.cookie = 'ninja_menu=hide;path=/;expires='+date.toGMTString();
 	}
 	if (action == 'show') {
 		document.getElementById('menu').style.width = '161px';
@@ -27,12 +31,17 @@ function collapse_menu(action) {
 		document.getElementById('show-menu').style.display = 'none';
 		var menu = document.getElementById('menu');
 		menu.getElementsByTagName('cite')[0].setAttribute('style','display: inline');
+		menu.getElementsByTagName('cite')[1].setAttribute('style','display: inline');
+		menu.getElementsByTagName('cite')[2].setAttribute('style','display: inline');
 		for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
 			menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
 		}
 		document.getElementById('content').style.marginLeft = '161px';
-		document.cookie = 'ninja_menu=show';
+		var date = new Date();
+		date.setTime(date.getTime()+(365*24*60*60*1000));
+		document.cookie = 'ninja_menu=show;path=/;expires='+date.toGMTString();
 	}
+
 }
 
 function settings(action) {

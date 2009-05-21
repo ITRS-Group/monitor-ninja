@@ -9,7 +9,17 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget left w98" id="status_service">
-
+<div id="page_links">
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+</div>
 
 <table style="table-layout: fixed" id="service_table">
 	<colgroup>
@@ -62,7 +72,7 @@ if (!empty($widgets)) {
 				//}
 			?>
 		</td>
-		<td class="<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
+		<td class="service_hostname<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
 			<?php //if ($curr_host != $row->host_name) { ?>
 				<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
 				<div style="float: right">

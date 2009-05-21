@@ -47,7 +47,7 @@
 	<body onload="collapse_menu(''); widget_status()">
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/images/ninja_19x19.png','NINJA'); ?>
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/status/host" id="global_search" method="get">
+			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<?php echo html::image('application/views/themes/default/images/menu-arrow.gif','>') ?>
 					<?php	$link = html::breadcrumb();
@@ -55,7 +55,7 @@
 						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
 					}
 					?>
-					<input type="text" name="host" id="query" class="textbox" value="Show host" onfocus="this.value=''" onblur="this.value='Show host'" />
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>

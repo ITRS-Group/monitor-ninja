@@ -93,6 +93,6 @@ function status_update()
 				$("#" + service_base_str + 'PROBLEMS').removeClass().addClass(service_base_str);
 			}
 		},
-		error: function(obj, msg){alert(msg)}
+		error: function(obj, msg){/*alert(msg)*/}
 	});
 }
