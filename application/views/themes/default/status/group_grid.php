@@ -1,6 +1,13 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
-<div class="widget left w98" id="status_group-grid" style="margin-top: 0px">
+if (!empty($widgets)) {
+	foreach ($widgets as $widget) {
+		echo $widget;
+	}
+}
+?>
+
+<div class="widget left w98" id="status_group-grid">
 <div id="page_links">
 	<?php
 	if (isset($page_links)) {
