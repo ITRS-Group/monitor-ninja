@@ -1445,7 +1445,7 @@ class Current_status_Model extends Model
 
 		$hostlist = $this->get_hostlist();
 		if (empty($hostlist)) {
-			return;
+			return false;
 		}
 
 		$hostlist_str = implode(',', $hostlist);
