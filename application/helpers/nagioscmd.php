@@ -58,13 +58,13 @@ class nagioscmd_Core
 			 'ENABLE_SVC_CHECK' => array
 			 ('nagios_id' => 5,
 			  'description' => _('This command is used to enable active checks of a service. '),
-			  'brief' => _('You are trying to enable actice checks of a particular service'),
+			  'brief' => _('You are trying to enable active checks of a particular service'),
 			  'template' => 'ENABLE_SVC_CHECK;host_name;service_description',
 			 ),
 			 'DISABLE_SVC_CHECK' => array
 			 ('nagios_id' => 6,
 			  'description' => _('This command is used to disable active checks of a service. '),
-			  'brief' => _('You are trying to disable actice checks of a particular service'),
+			  'brief' => _('You are trying to disable active checks of a particular service'),
 			  'template' => 'DISABLE_SVC_CHECK;host_name;service_description',
 			 ),
 			 'SCHEDULE_SVC_CHECK' => array
