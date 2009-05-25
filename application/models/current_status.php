@@ -872,7 +872,8 @@ class Current_status_Model extends Model
 	 * @param $sort_order ASC/DESC
 	 */
 	private function get_host_status($host_list = false, $show_services = false, $state_filter=false,
-		$sort_field='', $sort_order='ASC', $service_filter=false, $serviceprops=false, $hostprops=false)
+		$sort_field='', $sort_order='ASC', $service_filter=false, $serviceprops=false, $hostprops=false,
+		$num_per_page=false, $offset=false, $count=false)
 	{
 		if (empty($host_list)) {
 			return false;
@@ -899,33 +900,42 @@ class Current_status_Model extends Model
 		if (!$show_services) {
 			$sort_field = empty($sort_field) ? 'host_name' : $sort_field;
 			# only host listing
+			if ($count === true) {
 			$sql = "
-				SELECT
-					id AS host_id,
-					host_name,
-					address,
-					alias,
-					current_state,
-					last_check,
-					notes_url,
-					notifications_enabled,
-					active_checks_enabled,
-					icon_image,
-					icon_image_alt,
-					is_flapping,
-					action_url,
-					(UNIX_TIMESTAMP() - last_state_change) AS duration,
-					current_attempt,
-					problem_has_been_acknowledged,
-					scheduled_downtime_depth,
-					output AS plugin_output
-				FROM host
-				WHERE
-					id IN (".$host_str.")
-					".$filter_sql.$hostprops_sql.$serviceprops_sql."
-				ORDER BY
-					".$sort_field." ".$sort_order;
-
+					SELECT
+						COUNT(*) AS cnt
+					FROM host
+					WHERE
+						id IN (".$host_str.")
+						".$filter_sql.$hostprops_sql.$serviceprops_sql;
+			} else {
+				$sql = "
+					SELECT
+						id AS host_id,
+						host_name,
+						address,
+						alias,
+						current_state,
+						last_check,
+						notes_url,
+						notifications_enabled,
+						active_checks_enabled,
+						icon_image,
+						icon_image_alt,
+						is_flapping,
+						action_url,
+						(UNIX_TIMESTAMP() - last_state_change) AS duration,
+						current_attempt,
+						problem_has_been_acknowledged,
+						scheduled_downtime_depth,
+						output AS plugin_output
+					FROM host
+					WHERE
+						id IN (".$host_str.")
+						".$filter_sql.$hostprops_sql.$serviceprops_sql."
+					ORDER BY
+						".$sort_field." ".$sort_order;
+			}
 		} else {
 			$auth_query_parts = $this->auth->authorized_service_query();
 			$auth_from = '';
@@ -940,47 +950,65 @@ class Current_status_Model extends Model
 			}
 
 			$sort_field = empty($sort_field) ? 'h.host_name, s.service_description' : $sort_field;
+			if ($count === true) {
 			$sql = "
-				SELECT
-					h.id AS host_id,
-					h.host_name,
-					h.address,
-					h.alias,
-					h.current_state AS host_state,
-					h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
-					h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
-					h.notifications_enabled AS host_notifications_enabled,
-					h.action_url AS host_action_url,
-					h.icon_image AS host_icon_image,
-					h.icon_image_alt AS host_icon_image_alt,
-					h.is_flapping AS host_is_flapping,
-					h.notes_url,
-					s.id AS service_id,
-					s.service_description,
-					s.current_state,
-					s.last_check,
-					s.notifications_enabled,
-					s.active_checks_enabled,
-					s.action_url,
-					s.icon_image,
-					s.icon_image_alt,
-					s.passive_checks_enabled,
-					s.problem_has_been_acknowledged,
-					s.scheduled_downtime_depth,
-					s.is_flapping as service_is_flapping,
-					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
-					s.current_attempt,
-					s.output AS plugin_output
-				FROM
-					host h,
-					service s
-				WHERE
-					h.id IN (".$host_str.") AND
-					".$service_in_query."
-					s.host_name = h.host_name
-					".$filter_sql.$hostprops_sql.$serviceprops_sql."
-				ORDER BY
-					".$sort_field." ".$sort_order;
+					SELECT
+						COUNT(*) AS cnt
+					FROM
+						host h,
+						service s
+					WHERE
+						h.id IN (".$host_str.") AND
+						".$service_in_query."
+						s.host_name = h.host_name
+						".$filter_sql.$hostprops_sql.$serviceprops_sql;
+
+			} else {
+				$sql = "
+					SELECT
+						h.id AS host_id,
+						h.host_name,
+						h.address,
+						h.alias,
+						h.current_state AS host_state,
+						h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
+						h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
+						h.notifications_enabled AS host_notifications_enabled,
+						h.action_url AS host_action_url,
+						h.icon_image AS host_icon_image,
+						h.icon_image_alt AS host_icon_image_alt,
+						h.is_flapping AS host_is_flapping,
+						h.notes_url,
+						s.id AS service_id,
+						s.service_description,
+						s.current_state,
+						s.last_check,
+						s.notifications_enabled,
+						s.active_checks_enabled,
+						s.action_url,
+						s.icon_image,
+						s.icon_image_alt,
+						s.passive_checks_enabled,
+						s.problem_has_been_acknowledged,
+						s.scheduled_downtime_depth,
+						s.is_flapping as service_is_flapping,
+						(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
+						s.current_attempt,
+						s.output AS plugin_output
+					FROM
+						host h,
+						service s
+					WHERE
+						h.id IN (".$host_str.") AND
+						".$service_in_query."
+						s.host_name = h.host_name
+						".$filter_sql.$hostprops_sql.$serviceprops_sql."
+					ORDER BY
+						".$sort_field." ".$sort_order;
+			}
+		}
+		if ($count == false && $num_per_page !== false && $offset !== false) {
+			$sql .= ' LIMIT '.$offset.', '.$num_per_page;
 		}
 		$result = $this->db->query($sql);
 		return $result;
