@@ -1015,8 +1015,7 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	*
-	*
+	*	Build a string to be used in a sql query to filter on different service properties
 	*/
 	public function build_service_props_query($serviceprops=false, $table_alias='')
 	{
@@ -1068,8 +1067,7 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	*
-	*
+	*	Build a string to be used in a sql query to filter on different host properties
 	*/
 	public function build_host_props_query($hostprops=false, $table_alias='')
 	{
