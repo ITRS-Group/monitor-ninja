@@ -101,7 +101,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 			}
 			$result_cnt = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
-			$tot = $result_cnt->current()->cnt;
+			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
@@ -114,7 +114,7 @@ class Status_Controller extends Authenticated_Controller {
 		} else {
 			$result_cnt = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
 
-			$tot = $result_cnt->current()->cnt;
+			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
@@ -274,7 +274,7 @@ class Status_Controller extends Authenticated_Controller {
 			}
 		} else {
 			$result_cnt = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, false, false, true);
-			$tot = $result_cnt->current()->cnt;
+			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
