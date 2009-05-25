@@ -105,12 +105,12 @@ class Status_Controller extends Authenticated_Controller {
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
-					'items_per_page' => $num_per_page
+					'items_per_page' => $items_per_page
 				)
 			);
 			$offset = $pagination->sql_offset;
 
-			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $num_per_page, $offset);
+			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $items_per_page, $offset);
 		} else {
 			$result_cnt = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
 
@@ -118,12 +118,12 @@ class Status_Controller extends Authenticated_Controller {
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
-					'items_per_page' => $num_per_page
+					'items_per_page' => $items_per_page
 				)
 			);
 			$offset = $pagination->sql_offset;
 
-			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $num_per_page, $offset);
+			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $items_per_page, $offset);
 		}
 
 		$this->template->content->result = $result;
@@ -278,12 +278,12 @@ class Status_Controller extends Authenticated_Controller {
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
-					'items_per_page' => $num_per_page
+					'items_per_page' => $items_per_page
 				)
 			);
 			$offset = $pagination->sql_offset;
 
-			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, $num_per_page, $offset);
+			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, $items_per_page, $offset);
 		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
