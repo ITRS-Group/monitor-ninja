@@ -372,24 +372,74 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
 
-		$label_host_status_details = $t->_('View Status Detail For This Host');
-		$label_host_alert_history = $t->_('View Alert History For This Host');
-		$label_host_trends = $t->_('View Trends For This Host');
-		$label_host_histogram = $t->_('View Alert Histogram For This Host');
-		$label_host_avail = $t->_('View Availability Report For This Host');
-		$label_host_notifications = $t->_('View Notifications This Host');
-		if ($type == 'host') {
-			$page_links = array(
-				 $label_host_status_details => 'status/host/'.$host,
-				 $label_host_alert_history => 'history/host/'.$host,
-				 $label_host_trends => 'trends/host/'.$host,
-				 $label_host_histogram => 'histogram/host/'.$host,
-				 $label_host_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&show_log_entries',
-				 $label_host_notifications => '/notifications/host/'.$host
-			);
-		} else {
+		# create page links
+		switch ($type) {
+			case 'host':
+				$label_host_status_details = $t->_('View Status Detail For This Host');
+				$label_host_alert_history = $t->_('View Alert History For This Host');
+				$label_host_trends = $t->_('View Trends For This Host');
+				$label_host_histogram = $t->_('View Alert Histogram For This Host');
+				$label_host_avail = $t->_('View Availability Report For This Host');
+				$label_host_notifications = $t->_('View Notifications This Host');
 
+				$page_links = array(
+					 $label_host_status_details => 'status/host/'.$host,
+					 $label_host_alert_history => 'history/host/'.$host,
+					 $label_host_trends => 'trends/host/'.$host,
+					 $label_host_histogram => 'histogram/host/'.$host,
+					 $label_host_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&show_log_entries',
+					 $label_host_notifications => '/notifications/host/'.$host
+				);
+				break;
+			case 'service':
+				$label_host_info = $t->_('View Information For This Host');
+				$label_host_detail = $t->_('View Status Detail For This Host');
+				$label_service_alert_history = $t->_('View Alert History For This Service');
+				$label_service_trends = $t->_('View Trends For This Service');
+				$label_service_histogram = $t->_('View Alert Histogram For This Service');
+				$label_service_avail = $t->_('View Availability Report For This Service');
+				$label_service_notifications = $t->_('View Notifications For This Service');
+
+				$page_links = array(
+					$label_host_info => 'extinfo/details/host/'.$host,
+					$label_host_detail => 'status/service/'.$host,
+					$label_service_alert_history => 'history/host/'.$host.'?service='.urlencode($service),
+					$label_service_trends => 'trends/host/'.$host.'?service='.urlencode($service),
+					$label_service_histogram => 'histogram/host/'.$host.'?service='.urlencode($service),
+					$label_service_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&service='.urlencode($service).'&show_log_entries',
+					$label_service_notifications => '/notifications/host/'.$host.'?service='.urlencode($service)
+				);
+
+				break;
+			case 'servicegroup':
+				$label_status_details = $t->_('View Status Detail For This Servicegroup');
+				$label_group_status_overview = $t->_('View Status Overview For This Servicegroup');
+				$label_group_status_grid = $t->_('View Status Grid For This Servicegroup');
+				$label_avail = $t->_('View Availability For This Servicegroup');
+				$page_links = array(
+					$label_status_details => 'status/service/'.$host.'?group_type='.$type,
+					$label_group_status_overview => 'status/'.$type.'/'.$host,
+					$label_group_status_grid => Router::$controller.'/'.$type.'_grid/'.$host,
+					$label_avail => '/monitor/op5/reports/gui/avail_result.php?'.$type.'='.$host,
+				);
+				break;
+			case 'hostgroup':
+				$label_status_details = $t->_('View Status Detail For This Hostgroup');
+				$label_group_status_overview = $t->_('View Status Overview For This Hostgroup');
+				$label_group_status_grid = $t->_('View Status Grid For This Hostgroup');
+				$label_avail = $t->_('View Availability For This Hostgroup');
+				$page_links = array(
+					$label_status_details => 'status/service/'.$host.'?group_type='.$type,
+					$label_group_status_overview => 'status/'.$type.'/'.$host,
+					$label_group_status_grid => Router::$controller.'/'.$type.'_grid/'.$host,
+					$label_avail => '/monitor/op5/reports/gui/avail_result.php?'.$type.'='.$host,
+				);
+				break;
 		}
+		if (isset($page_links)) {
+			$this->template->content->page_links = $page_links;
+		}
+
 
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
