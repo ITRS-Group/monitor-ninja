@@ -134,3 +134,4 @@ if (!empty($widgets)) {
 	<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
 <?php } ?>
 </div>
+<?php echo (isset($pagination)) ? $pagination : ''; ?>

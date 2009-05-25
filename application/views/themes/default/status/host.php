@@ -114,3 +114,4 @@ foreach ($result as $row) {
 	</table>
 	<div id="status_count_summary"><?php echo sizeof($result).' '.$this->translate->_('Matching Host Entries Displayed'); ?></div>
 </div>
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
