@@ -6,9 +6,8 @@
 		}
 	}
 ?>
-
-<div class="widget left w98" id="status_group-summary">
-<div id="page_links">
+<div class="widget left w32" id="page_links">
+	<ul>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -18,7 +17,10 @@
 		}
 	}
 	?>
+	</ul>
 </div>
+
+<div class="widget left w98" id="status_group-summary">
 	<?php if (!empty($group_details)) { ?>
 	<table id="group_summary_table">
 	<thead>

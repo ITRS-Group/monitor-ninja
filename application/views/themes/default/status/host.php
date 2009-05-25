@@ -6,9 +6,8 @@ if (!empty($widgets)) {
 	}
 }
 ?>
-
-<div class="widget left w98" id="status_host">
-<div id="page_links">
+<div class="widget left w32" id="page_links">
+	<ul>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -18,7 +17,10 @@ if (!empty($widgets)) {
 		}
 	}
 	?>
+	</ul>
 </div>
+
+<div class="widget left w98" id="status_host">
 	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
 	<table id="host_table" style="table-layout: fixed">
 		<colgroup>
@@ -113,5 +115,5 @@ foreach ($result as $row) {
 		</tbody>
 	</table>
 	<div id="status_count_summary"><?php echo sizeof($result).' '.$this->translate->_('Matching Host Entries Displayed'); ?></div>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
-<?php echo (isset($pagination)) ? $pagination : ''; ?>

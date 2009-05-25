@@ -8,8 +8,8 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left w98" id="status_service">
-<div id="page_links">
+<div class="widget left w32" id="page_links">
+	<ul>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -19,8 +19,11 @@ if (!empty($widgets)) {
 		}
 	}
 	?>
+	</ul>
 </div>
 
+
+<div class="widget left w98" id="status_service">
 <table style="table-layout: fixed" id="service_table">
 	<colgroup>
 		<col style="width: 30px" />
@@ -133,5 +136,5 @@ if (!empty($widgets)) {
 
 	<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
 <?php } ?>
-</div>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
+</div>
