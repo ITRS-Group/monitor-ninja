@@ -883,10 +883,9 @@ class Current_status_Model extends Model
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
-		$h = '';
+		$h = $show_services ? 'h.' : '';
 		$s = !$show_services ? '' : 's.';
 		if (!empty($state_filter)) {
-			$h = $show_services ? 'h.' : '';
 			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
 		}
 		if ($service_filter!==false && !empty($service_filter)) {
