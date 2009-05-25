@@ -185,7 +185,12 @@ class Status_Controller extends Authenticated_Controller {
 				$group_hosts[] = $host_info->host_name;
 			}
 
-			$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
+			# servicegroups should only show services in the group
+			if ($group_type == 'servicegroup') {
+				$result = $this->current->get_group_info($grouptype, $name);
+			} else {
+				$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
+			}
 		} else {
 			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
 		}
