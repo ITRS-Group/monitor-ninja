@@ -13,7 +13,7 @@
 			<td>
 				<?php echo html::image('application/views/themes/default/icons/16x16/restart.gif', array('alt' => $label_restart_nagios, 'title' => $label_restart_nagios, 'style' => 'height: 14px')); ?>
 			</td>
-			<td><?php echo $link_shutdown_nagios ?></td>
+			<td><?php echo $link_restart_nagios ?></td>
 		</tr>
 		<tr class="odd">
 			<td>
