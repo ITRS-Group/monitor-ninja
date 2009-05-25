@@ -36,7 +36,7 @@ function status_update()
 		* method (status_totals/ajax_test in this case) with whatever arguments needed,
 		* we can add our ajax methods to our widget class just as any other methods
 		*/
-		url: _site_domain + _index_page + "/widget_callback/ajax/status_totals/status/" + arguments,
+		url: _site_domain + _index_page + "/ajax/widget/status_totals/status/" + arguments,
 		dataType:'json',
 		success: function(data) {
 
