@@ -115,14 +115,22 @@ $config['modules'] = array
  * 	This is used if we need to read some
  * 	configuration from the config files.
  * 	This path sare assumed to contain the
- * 	following subdirectories:
+ * 	following subdirectories (unless specified below):
  * 		/bin
  * 		/etc
  * 		/var
  *
  * 	No trailing slash.
  */
-$config['nagios_base_path'] = '/opt/monitor/etc';
+$config['nagios_base_path'] = '/opt/monitor';
+
+/**
+ *	If the nagios etc directory is to be found outside
+ * 	the nagios base path, please specify here.
+ *
+ * 	No trailing slash.
+ */
+$config['nagios_etc_path'] = false;
 
 /**
  *	Path to where host logos as stored.

@@ -57,7 +57,8 @@ class System_Model extends Model
 	public function fetch_nagios_users()
 	{
 		$cgi_config = false;
-		$cgi_config_file = $this->base_path."/cgi.cfg";
+		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $this->base_path.'/etc';
+		$cgi_config_file = $etc_path."/cgi.cfg";
 		$user_data = false;
 		$access_levels = array('authorized_for_system_information',
 						'authorized_for_configuration_information',
