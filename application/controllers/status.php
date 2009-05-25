@@ -87,7 +87,22 @@ class Status_Controller extends Authenticated_Controller {
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
-		$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
+		# here we should fetch members of group if group_type is set and pass to host_status_subgroup_names
+		if (!empty($group_type)) {
+			# we ned to remove the 'group' part of the group_type variable value
+			# since the method we are about to call expects 'host' or 'service'
+			$grouptype = str_replace('group', '', $group_type);
+			$group_info_res = $this->current->get_group_info($grouptype, $host);
+			if ($group_info_res) {
+				$group_members = false;
+				foreach ($group_info_res as $row) {
+					$group_members[] = $row->host_name;
+				}
+			}
+			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
+		} else {
+			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
+		}
 		$this->template->content->result = $result;
 		$this->template->content->logos_path = $this->logos_path;
 	}
