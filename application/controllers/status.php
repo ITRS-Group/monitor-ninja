@@ -128,6 +128,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->result = $result;
 		$this->template->content->pagination = $pagination;
+		$this->template->content->total_items = $tot;
 		$this->template->content->logos_path = $this->logos_path;
 
 		if (empty($group_type)) {
