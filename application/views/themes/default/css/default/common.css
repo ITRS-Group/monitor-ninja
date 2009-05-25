@@ -371,6 +371,18 @@ input[type=submit] {
 	border-bottom: 1px dotted #777777;
 }
 
+#page_links ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+#page_links ul li {
+	list-style: none;
+	line-height: 20px;
+	background: url(images/arrow.gif) 0px 7px no-repeat;
+	padding-left: 10px;
+}
+
 /**************************************************************************************************/
 
 .error_message {
