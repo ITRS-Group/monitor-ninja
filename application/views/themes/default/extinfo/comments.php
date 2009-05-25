@@ -4,7 +4,7 @@
 
 <div class="widget left w98">
 
-<div style="position: absolute; right: 0px; margin-top: 10px; margin-right: 1%">
+<div style="position: absolute; right: 0px; margin-right: 1%">
 	<?php echo html::image('application/views/themes/default/icons/16x16/add-comment.png', array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
 	&nbsp; &nbsp;
