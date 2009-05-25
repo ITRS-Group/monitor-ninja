@@ -812,7 +812,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	/**
 	*	Print comments for host or service
 	*/
-	public function _comments($host=false, $service=false, $type=false, $all=false)
+	public function _comments($host=false, $service=false, $type=false, $all=false, $num_per_page=100)
 	{
 		$host = trim($host);
 		$service = trim($service);
@@ -820,9 +820,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (empty($all) && empty($host)) {
 			return false;
 		}
-
-		//Pagination configuration
-		$num_per_page = 10;
 
 		if ($all === true) {
 			$tot = Comment_Model::fetch_all_comments($host, $service, false, false, true);
