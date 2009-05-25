@@ -881,6 +881,7 @@ class Status_Controller extends Authenticated_Controller {
 			$group_details[] = $this->_show_grid($grouptype, $group);
 		}
 		$content->group_details = $group_details;
+		$content->grouptype = $grouptype;
 		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('images/icons/16x16/');
 		$content->label_host_extinfo = $t->_('View Extended Information For This Host');
