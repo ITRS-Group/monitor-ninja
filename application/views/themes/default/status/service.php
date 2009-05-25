@@ -68,7 +68,7 @@ if (!empty($widgets)) {
 		<td class="icon bl<?php //echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
 			<?php
 				//if ($curr_host != $row->host_name) {
-					echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
+					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
 				//}
 			?>
 		</td>
@@ -97,7 +97,7 @@ if (!empty($widgets)) {
 			<?php //} ?>
 		</td>
 		<td class="icon">
-			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
+			<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
 		<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
@@ -111,16 +111,16 @@ if (!empty($widgets)) {
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
-			<?php echo html::image('application/views/themes/default/images/icons/16x16/action.png',array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')))?></a>
+			<?php echo html::image('application/views/themes/default/icons/16x16/host-actions.png',array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')))?></a>
 		<?php	} if (!empty($row->notes_url)) { ?>
 			<a href="<?php echo $row->notes_url ?>" style="border: 0px">
-				<?php echo html::image('/application/views/themes/default/images/icons/16x16/notes.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?>
+				<?php echo html::image('/application/views/themes/default/icons/16x16/host-notes.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?>
 			</a>
 			<?php } ?>
 		</td>
 		<td class="icon">
 			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>&amp;service=<?php echo str_replace(' ','%20',$row->service_description) ?>" style="border: 0px">
-				<?php echo html::image('/application/views/themes/default/images/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))?>
+				<?php echo html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))?>
 			</a>
 		</td>
 	</tr>

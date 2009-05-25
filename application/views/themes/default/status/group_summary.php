@@ -39,13 +39,13 @@
 				<?php
 					if ($details->hosts_up > 0) {
 						# @@@FIXME: host_properties?
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-up.png', array('alt' => $label_up, 'title' => $label_up, 'style' => 'margin-bottom: -2px'));
+						echo html::image('application/views/themes/default/icons/12x12/shield-up.png', array('alt' => $label_up, 'title' => $label_up, 'style' => 'margin-bottom: -2px'));
 						echo ' &nbsp;'.html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?hoststatustypes='.nagstat::HOST_UP.'&hostprops=0', $details->hosts_up.' '.$label_up).'<br />';
 					}
 
 					if($details->hosts_down > 0) {
 						# @@@FIXME: host_properties?
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-down.png', array('alt' => $label_down, 'title' => $label_down, 'style' => 'margin-bottom: -2px'));
+						echo html::image('application/views/themes/default/icons/12x12/shield-down.png', array('alt' => $label_down, 'title' => $label_down, 'style' => 'margin-bottom: -2px'));
 						echo ' &nbsp;'.html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_down.' '.$label_down).' : ';
 
 						if ($details->hosts_down_unacknowledged > 0) {
@@ -65,7 +65,7 @@
 
 					if($details->hosts_unreachable > 0){
 						# @@@FIXME: host_properties?
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-unreachable.png', array('alt' => $label_unreachable, 'title' => $label_unreachable, 'style' => 'margin-bottom: -2px'));
+						echo html::image('application/views/themes/default/icons/12x12/shield-unreachable.png', array('alt' => $label_unreachable, 'title' => $label_unreachable, 'style' => 'margin-bottom: -2px'));
 						echo ' &nbsp;'.html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_unreachable.' '.$label_unreachable).' : ';
 
 						if ($details->hosts_unreachable_unacknowledged > 0) {
@@ -85,7 +85,7 @@
 
 					if($details->hosts_pending > 0) {
 						# @@@FIXME: host_properties?
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-pending.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-pending.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_pending.' '.$label_pending);
 					} ?>
 			</td>
@@ -95,12 +95,12 @@
 					$service_data = false;
 					$service_data = $details->service_data;
 					if ($service_data->services_ok > 0) {
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-ok.png', array('alt' => $label_ok, 'title' => $label_ok, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-ok.png', array('alt' => $label_ok, 'title' => $label_ok, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_ok.' '.$label_ok).'<br />';
 					}
 
 					if ($service_data->services_warning > 0) {
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-warning.png', array('alt' => $label_warning, 'title' => $label_warning, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-warning.png', array('alt' => $label_warning, 'title' => $label_warning, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_warning.' '.$label_warning).' : ';
 
 						if ($service_data->services_warning_unacknowledged > 0) {
@@ -122,7 +122,7 @@
 					}
 
 					if ($service_data->services_unknown > 0) {
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-unknown.png', array('alt' => $label_unknown, 'title' => $label_unknown, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-unknown.png', array('alt' => $label_unknown, 'title' => $label_unknown, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_unknown.' '.$label_unknown).' : ';
 
 						if ($service_data->services_unknown_unacknowledged > 0) {
@@ -144,7 +144,7 @@
 					}
 
 					if ($service_data->services_critical > 0) {
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-critical.png', array('alt' => $label_critical, 'title' => $label_critical, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-critical.png', array('alt' => $label_critical, 'title' => $label_critical, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_critical.' '.$label_critical).' : ';
 
 						if ($service_data->services_critical_unacknowledged > 0) {
@@ -166,7 +166,7 @@
 					}
 
 					if ($service_data->services_pending > 0) {
-						echo html::image('application/views/themes/default/images/icons/12x12/shield-pedning.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+						echo html::image('application/views/themes/default/icons/12x12/shield-pedning.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 						echo '<a href="%s?'.$grouptype.'group=%s&style=detail&servicestatustypes=%d&hoststatustypes=%d&serviceprops=%lu&hostprops=%lu">%d PENDING</a>';
 						echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_pending.' '.$label_pending);
 					}

@@ -18,24 +18,24 @@ foreach ($group_details as $details) {
 
 	<table style="table-layout: fixed" class="group_grid_table">
 		<caption>
-			<?php echo html::anchor('status/servicegroup/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
+			<?php echo html::anchor('status/'.$grouptype.'group/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
 			(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
 		</caption>
 		<colgroup>
 			<col style="width: 30px" />
 			<col style="width: 200px" />
 			<col style="width: 100%" />
+			<col style="width: 105px" />
+			<!---<col style="width: 30px" />
 			<col style="width: 30px" />
 			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
+			<col style="width: 30px" />-->
 		</colgroup>
 		<thead>
 		<tr>
 			<th class="no-sort"colspan="2"><?php echo $label_host ?></th>
 			<th class="no-sort"><?php echo $label_services ?></th>
-			<th class="no-sort" colspan="5"><?php echo $label_actions ?></th>
+			<th class="no-sort"><?php echo $label_actions ?></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -61,7 +61,7 @@ foreach ($group_details as $details) {
 						$search = array(0,1,2,3,4);
 						$replace = array('ok','warning','critical','unknown','pending'); // rätt ?? dubbelkolla
 						echo (($service['current_state'] != $tmp && $j != 0) ? '<br />' : '');
-						echo (($service['current_state'] != $tmp || ($service['current_state'] == 0 && $j == 0)) ? html::image('/application/views/themes/default/images/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;' : '');
+						echo (($service['current_state'] != $tmp || ($service['current_state'] == 0 && $j == 0)) ? html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;' : '');
 						$service_class = 'status'.Current_status_Model::status_text($service['current_state'], 'service');
 						echo (($service['current_state'] != $tmp || $j == 0) ? '' : ', ').html::anchor('extinfo/details/service/'.$host['host_name'].'/?service='.$service['service_description'], $service['service_description'], array('class' => $service_class));
 						if ($service['current_state'] != $tmp)
@@ -72,22 +72,22 @@ foreach ($group_details as $details) {
 			<?php
 				# also each host, under Actions
 			?>
-			<td class="icon">
-				<?php echo html::anchor('extinfo/host/'.$host['host_name'], html::image($icon_path.'detail.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')) ?>
-			</td>
-			<td class="icon">
-				<?php echo html::anchor('statusmap/host/'.$host['host_name'], html::image($icon_path.'status3.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')); ?>
-			</td>
-			<td class="icon">
-				<?php echo html::anchor('status/host/'.$host['host_name'], html::image($icon_path.'status2.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')) ?>
-			</td>
-			<td class="icon">
+			<td style="letteer-spacing: 4px; text-align: right; padding-top: 5px">
+				<?php echo html::anchor('extinfo/host/'.$host['host_name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')) ?>
+			<!--</td>
+			<tdzclass="icon">-->
+				<?php echo html::anchor('statusmap/host/'.$host['host_name'], html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')); ?>
+			<!--</td>
+			<td class="icon">-->
+				<?php echo html::anchor('status/host/'.$host['host_name'], html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')) ?>
+			<!--</td>
+			<td class="icon">-->
 				<?php
 				if (isset($pnp_path)) {
-					echo '<a href="'.$pnp_path.'index.php?host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'graphlight.png', array('alt' => $label_pnp, 'title' => $label_pnp)).'</a>';
+					echo '<a href="'.$pnp_path.'index.php?host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp)).'</a>';
 				} ?>
-			</td>
-			<td class="icon">
+			<!--</td>
+			<td class="icon">-->
 			<?php
 				if (isset($nacoma_path)) {
 					echo '<a href="'.$nacoma_path.'edit.php?obj_type=host&amp;host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)).'</a>';
