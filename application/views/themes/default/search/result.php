@@ -31,7 +31,9 @@ if (isset($host_result) ) { ?>
 		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
 		<td><?php echo $host->display_name ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon"><?php printf($nacoma_link, 'host', 'host', urlencode($host->host_name)) ?></td>
+		<td class="icon">
+			<?php echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+		</td>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>
@@ -65,7 +67,9 @@ if (isset($service_result) ) { ?>
 		<td><?php echo date('Y-m-d H:i:s',$service->last_check) ?></td>
 		<td><?php echo $service->display_name ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon"><?php printf($nacoma_link, 'service', 'service', urlencode($service->service_description)) ?></td>
+		<td class="icon">
+			<?php echo html::anchor($nacoma_link.'service/'.$service->host_name.'?service='.urlencode($service->service_description), html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+		</td>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>
@@ -88,7 +92,9 @@ if (isset($hostgroup_result) ) { ?>
 		<td class="bl"><?php echo html::anchor('extinfo/details/hostgroup/'.$hostgroup->hostgroup_name, $hostgroup->hostgroup_name) ?></td>
 		<td><?php echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', $hostgroup->alias) ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon"><?php printf($nacoma_link, 'hostgroup', 'hostgroup', urlencode($hostgroup->hostgroup_name)) ?></td>
+		<td class="icon">
+			<?php echo html::anchor($nacoma_link.'hostgroup/'.urlencode($hostgroup->hostgroup_name), html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+		</td>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>

@@ -90,8 +90,9 @@ class Search_Controller extends Authenticated_Controller {
 				 * if installed, to use this
 				 */
 				if (Kohana::config('config.nacoma_path')!==false) {
-					$lable_nacoma = $this->translate->_('Configure this object using NACOMA (Nagios Configuration Manager)');
-					$content->nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=%s&amp;%s=%s" style="border: 0px">'.html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)).'</a>';
+					$label_nacoma = $this->translate->_('Configure this object using NACOMA (Nagios Configuration Manager)');
+					$content->nacoma_link = 'configuration/configure/';
+					$content->label_nacoma = $label_nacoma;
 				}
 
 
