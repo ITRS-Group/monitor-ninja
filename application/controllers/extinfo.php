@@ -372,6 +372,25 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_disable_flapdetection = $this->command_link($cmd, $host, $service, $commands->lable_enable_disable_flapdetection);
 		}
 
+		$label_host_status_details = $t->_('View Status Detail For This Host');
+		$label_host_alert_history = $t->_('View Alert History For This Host');
+		$label_host_trends = $t->_('View Trends For This Host');
+		$label_host_histogram = $t->_('View Alert Histogram For This Host');
+		$label_host_avail = $t->_('View Availability Report For This Host');
+		$label_host_notifications = $t->_('View Notifications This Host');
+		if ($type == 'host') {
+			$page_links = array(
+				 $label_host_status_details => 'status/host/'.$host,
+				 $label_host_alert_history => 'history/host/'.$host,
+				 $label_host_trends => 'trends/host/'.$host,
+				 $label_host_histogram => 'histogram/host/'.$host,
+				 $label_host_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&show_log_entries',
+				 $label_host_notifications => '/notifications/host/'.$host
+			);
+		} else {
+
+		}
+
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
 			$comments = $this->_comments($host, $service, $type);
