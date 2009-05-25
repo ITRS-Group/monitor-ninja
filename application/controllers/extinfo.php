@@ -637,7 +637,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->label_shutdown_nagios = $t->_('Shutdown the Nagios Process');
 		$commands->link_shutdown_nagios = $this->command_link(nagioscmd::command_id('SHUTDOWN_PROCESS'), false, false, $commands->label_shutdown_nagios);
 		$commands->label_restart_nagios = $t->_('Restart the Nagios Process');
-		$commands->link_shutdown_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
+		$commands->link_restart_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
 
 		if ($content->notifications_enabled) {
 			$commands->label_notifications = $t->_('Disable Notifications');
