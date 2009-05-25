@@ -131,6 +131,42 @@ class Nagios_auth_Model extends Model
 	}
 
 	/**
+	 * Get a 'host_name' => id indexed array of authorized hosts
+	 */
+	public function get_authorized_hosts_r()
+	{
+		$this->get_authorized_hosts();
+		return $this->hosts_r;
+	}
+
+	/**
+	 * Get a "'host_name;service_description' => id"-indexed array of services
+	 */
+	public function get_authorized_services_r()
+	{
+		$this->get_authorized_services();
+		return $this->services_r;
+	}
+
+	/**
+	 * Get a "'hostgroup_name' => id"-indexed array of hostgroups
+	 */
+	public function get_authorized_hostgroups_r()
+	{
+		$this->get_authorized_hostgroups();
+		return $this->hostgroups_r;
+	}
+
+	/**
+	 * Get a "'servicegroup_name' => id"-indexed array of servicegroups
+	 */
+	public function get_authorized_servicegroups_r()
+	{
+		$this->get_authorized_servicegroups();
+		return $this->hostgroups_r;
+	}
+
+	/**
 	*	Build host query parts for integration with other queries
 	* 	that needs to know what hosts a user is authenticated to see.
 	* 	These query parts doesn't assume anything like prior commas (from part)
