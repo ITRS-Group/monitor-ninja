@@ -6,10 +6,10 @@
 
 <div style="position: absolute; right: 0px; margin-right: 1%">
 	<?php echo html::image('application/views/themes/default/icons/16x16/add-comment.png', array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
-	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
+	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
 	&nbsp; &nbsp;
 	<?php echo html::image('application/views/themes/default/icons/16x16/delete-comments.png', array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
-	<?php echo html::anchor('cmd/request_command/?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
+	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
 <a name="comments" />
 	<table class="comments_table">
@@ -56,7 +56,7 @@
 				</td>
 				<td><?php echo $row->expires ? date($date_format_str, $row_>expire_time) : $na_str ?></td>
 				<td class="icon">
-					<?php echo html::anchor('cmd/request_command/?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->comment_id,
+					<?php echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->comment_id,
 					html::image('application/views/themes/default/icons/16x16/delete-comment.png', array('alt' => $label_delete, 'title' => $label_delete)),array('style' => 'border: 0px')) ?>
 				</td>
 			</tr>
