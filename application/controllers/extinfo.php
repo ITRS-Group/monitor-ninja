@@ -451,7 +451,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 * the links to the cmd controller
 	 *
 	 */
-	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='command', $force=false)
+	private function command_link($command_type=false, $host=false, $service=false, $lable='', $method='submit', $force=false)
 	{
 		$host = trim($host);
 
@@ -467,7 +467,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			if ($force === true)
 				$link_params .= '&force=true';
 		}
-		$link =	html::anchor('cmd/'.$method.'?cmd_typ='.$command_type.$link_params,
+		$link =	html::anchor('command/'.$method.'?cmd_typ='.$command_type.$link_params,
 			html::specialchars($lable));
 		return $link;
 	}
