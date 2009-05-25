@@ -42,15 +42,21 @@ class Cmd_Controller extends Authenticated_Controller
 		$this->init_page('cmd/request');
 		$this->template->content->cmd = $name;
 
-		$command = new Command_Model;
-		$info = $command->get_command_info($name);
-		if (!$info) {
-			return;
+		if ($name === false) {
+			$name = $this->input->get('cmd_typ');
 		}
 
+		$params = array();
+		foreach ($_GET as $k => $v) {
+			$params[$k] = $v;
+		}
+
+		$command = new Command_Model;
+		$this->template->content->requested_command = $name;
+		$info = $command->get_command_info($name, $params);
 		$this->template->content->info = $info;
 
-		foreach ($info as $k => $v) {
+		if (is_array($info)) foreach ($info as $k => $v) {
 			$this->template->content->$k = $v;
 		}
 	}
