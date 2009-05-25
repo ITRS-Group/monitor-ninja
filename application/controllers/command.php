@@ -48,7 +48,15 @@ class Cmd_Controller extends Authenticated_Controller
 
 		$params = array();
 		foreach ($_GET as $k => $v) {
-			$params[$k] = $v;
+			switch ($k) {
+			 case 'host':
+			 case 'hostgroup':
+			 case 'servicegroup':
+				$params[$k . '_name'] = $v;
+				break;
+			 default:
+				$params[$k] = $v;
+			}
 		}
 
 		$command = new Command_Model;
