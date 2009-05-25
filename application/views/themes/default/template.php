@@ -5,11 +5,10 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
-		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/status.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/autocomplete_styles.css') ?>
-		<?php echo html::link('application/views/themes/default/images/favicon_ninja.ico','icon','image/icon') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/default/status.css') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/default/autocomplete_styles.css') ?>
+		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.form.js') ?>
@@ -46,15 +45,16 @@
 
 	<body onload="collapse_menu(''); widget_status()">
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/images/ninja_19x19.png','NINJA'); ?>
+			<?php echo html::image('application/views/themes/default/icons/ninja.png','NINJA'); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
-					<?php echo html::image('application/views/themes/default/images/menu-arrow.gif','>') ?>
+					<ul>
 					<?php	$link = html::breadcrumb();
 					for($i = 0; $i < count($link); $i++) {
-						echo $link[$i].' '.html::image('application/views/themes/default/images/menu-arrow.gif','>');
+						echo '<li>'.$link[$i].'</li>';
 					}
 					?>
+					</ul>
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
@@ -74,7 +74,7 @@
 					<?php
 						$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
 						if (is_array($settings_widgets))
-							echo '<li onclick="settings()">'.html::image('application/views/themes/default/images/nyckel.png',$this->translate->_('Settings')).'</li>';
+							echo '<li onclick="settings()">'.html::image('application/views/themes/default/icons/16x16/settings.gif',$this->translate->_('Settings')).'</li>';
 					?>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
@@ -90,9 +90,9 @@
 						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>';
 						foreach ($link as $title => $url):
 							if($url == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
-								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title),array('style' => 'font-weight: bold')).'</li>';
+								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/icons/16x16/star_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title),array('style' => 'font-weight: bold')).'</li>';
 							else
-								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/images/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title)).'</li>';
+								echo '<li>'.html::anchor($url, html::image('application/views/themes/default/icons/16x16/star.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url, html::specialchars($title)).'</li>';
 						endforeach;
 					endforeach;
 				?>
@@ -105,7 +105,7 @@
 				<?php
 					if (is_array($settings_widgets)) {
 						foreach($settings_widgets as $id => $widget) {
-							echo '<li id="li_'.$id.'" class="selected" onclick="control_widgets(\''.$id.'\',this)" class="">'.$widget.'</li>';
+							echo '<li id="li_'.$id.'" class="selected" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
 						}
 					}
 				?>
