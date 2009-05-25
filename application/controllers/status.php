@@ -36,6 +36,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = urldecode($this->input->get('host', $host));
+		$num_per_page = urldecode($this->input->get('num_per_page', 10)); # @@@FIXME: should be configurable from GUI
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
@@ -177,6 +178,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = urldecode($this->input->get('name', $name));
+		$num_per_page = urldecode($this->input->get('num_per_page', 10)); # @@@FIXME: should be configurable from GUI
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$service_props = urldecode($this->input->get('service_props', $service_props));
