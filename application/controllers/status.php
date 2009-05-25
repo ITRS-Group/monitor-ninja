@@ -100,12 +100,34 @@ class Status_Controller extends Authenticated_Controller {
 					$group_members[] = $row->host_name;
 				}
 			}
-			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
+			$result_cnt = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
+			$tot = $result_cnt->current()->cnt;
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $num_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+
+			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $num_per_page, $offset);
 		} else {
-			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops);
+			$result_cnt = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
+
+			$tot = $result_cnt->current()->cnt;
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $num_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+
+			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $num_per_page, $offset);
 		}
 
 		$this->template->content->result = $result;
+		$this->template->content->pagination = $pagination;
 		$this->template->content->logos_path = $this->logos_path;
 
 		if (empty($group_type)) {
@@ -251,12 +273,23 @@ class Status_Controller extends Authenticated_Controller {
 				$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
 			}
 		} else {
-			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
+			$result_cnt = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, false, false, true);
+			$tot = $result_cnt->current()->cnt;
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $num_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+
+			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, $num_per_page, $offset);
 		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
 		$this->template->content->result = $result;
+		$this->template->content->pagination = $pagination;
 		$this->template->content->logos_path = $this->logos_path;
 		if (empty($group_type)) {
 			if ($name == 'all') {
