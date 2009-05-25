@@ -294,7 +294,7 @@ class Status_Controller extends Authenticated_Controller {
 		if (empty($group_type)) {
 			if ($name == 'all') {
 				$label_host_history = $this->translate->_('View History For all host');
-				$label_host_notifications = $this->translate->_('View Notifications all hosts');
+				$label_host_notifications = $this->translate->_('View Notifications For all hosts');
 				$label_host_status_details = $this->translate->_('View Host Status Detail For All Hosts');
 				$page_links = array(
 					 $label_host_history => 'history/host/'.$name,
