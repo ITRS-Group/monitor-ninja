@@ -1047,7 +1047,7 @@ class Status_Controller extends Authenticated_Controller {
 				$action_link = false;
 				if (!is_null($host->action_url)) {
 					$lable_host_action = $t->_('Perform Extra Host Actions');
-					$action_link = '<a href="'.$host->action_url.'" style="border: 0px">'.html::image($this->img_path('icons/16x16/action.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+					$action_link = '<a href="'.$host->action_url.'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
 				}
 				$notes_link = false;
 				if (!is_null($host->notes_url)) {
