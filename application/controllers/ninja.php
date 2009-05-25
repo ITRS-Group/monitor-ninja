@@ -78,11 +78,14 @@ class Ninja_Controller extends Template_Controller {
 			$this->translate->_('Reporting') => array(
 				$this->translate->_('Availability') 					=> 'reporting/availability',
 				$this->translate->_('SLA Reporting') 					=> 'reporting/sla_reporting',
-			),
-			$this->translate->_('Configuration') => array(
-				$this->translate->_('Configure') 							=> 'configuration/configure',
 			)
 		);
+
+		# Add NACOMA link only if enabled in config
+		if (Kohana::config('config.nacoma_path')!==false) {
+			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = 'configuration/configure';
+		}
+
 		if (Kohana::config('config.nagvis_path') !== false) {
 			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = 'nagvis/index';
 		}
