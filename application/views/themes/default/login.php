@@ -5,9 +5,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
-		<?php echo html::stylesheet('application/views/themes/default/css/common.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/css-buttons.css') ?>
-		<?php echo html::link('application/views/themes/default/images/favicon_ninja.ico','icon','image/icon') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
+		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -25,7 +24,6 @@
 
 
 			<div id="login-table">
-			<?php echo html::image('/application/views/themes/default/images/ninja_login.png', array('alt' => 'Ninja', 'title' => 'Ninja')) ?>
 			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open('default/do_login'); ?>
 			<table>
