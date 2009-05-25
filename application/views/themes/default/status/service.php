@@ -122,9 +122,7 @@ if (!empty($widgets)) {
 			<?php } ?>
 		</td>
 		<td class="icon">
-			<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>&amp;service=<?php echo str_replace(' ','%20',$row->service_description) ?>" style="border: 0px">
-				<?php echo html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))?>
-			</a>
+			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>
 		</td>
 	</tr>
 

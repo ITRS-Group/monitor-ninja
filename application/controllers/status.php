@@ -1001,7 +1001,7 @@ class Status_Controller extends Authenticated_Controller {
 				 */
 				if (Kohana::config('config.nacoma_path')!==false) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-					$nacoma_link = '<a href="'.Kohana::config('config.nacoma_path').'edit.php?obj_type=host&amp;host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)).'</a>';
+					$nacoma_link = html::anchor('configuration/configure/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)));
 				}
 
 				/**

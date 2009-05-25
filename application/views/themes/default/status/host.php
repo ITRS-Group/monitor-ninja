@@ -106,9 +106,7 @@ foreach ($result as $row) {
 				<?php	} ?>
 				</td>
 				<td class="icon">
-					<a href="/monitor/op5/webconfig/edit.php?obj_type=<?php echo Router::$method ?>&amp;host=<?php echo $row->host_name ?>" style="border: 0px">
-						<?php echo html::image('/application/views/themes/default/icons/16x16/nacoma.png',$this->translate->_('Configure this host') )?>
-					</a>
+					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image('/application/views/themes/default/icons/16x16/nacoma.png',$this->translate->_('Configure this host')) )?>
 				</td>
 			</tr>
 			<?php	} ?>

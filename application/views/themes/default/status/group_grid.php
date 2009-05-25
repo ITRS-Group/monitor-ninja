@@ -99,7 +99,7 @@ foreach ($group_details as $details) {
 			<td class="icon">
 			<?php
 				if (isset($nacoma_path)) {
-					echo '<a href="'.$nacoma_path.'edit.php?obj_type=host&amp;host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)).'</a>';
+					echo html::anchor('configuration/configure/host/'.$host['host_name'], html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)));
 				} ?>
 			</td>
 		</tr><?php
