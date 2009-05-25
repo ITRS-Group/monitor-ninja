@@ -59,7 +59,7 @@ if (!empty($commands))
 <div class="widget left" id="extinfo_current">
 
 	<table>
-	<caption><?php echo $this->translate->_('Host State Information'); ?></caption>
+	<caption><?php echo $title ?></caption>
 		<tr class="odd">
 			<td style="width: 160px" class="bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
