@@ -835,9 +835,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			array(
 				'uri_segment' => 3,
 				'total_items'=> $tot,
-				'style' => "digg",
-				'items_per_page' => $num_per_page,
-				'auto_hide' => true
+				'items_per_page' => $num_per_page
 			)
 		);
 		$offset = $pagination->sql_offset;
