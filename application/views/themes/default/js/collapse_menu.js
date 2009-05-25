@@ -26,7 +26,7 @@ function collapse_menu(action) {
 		document.cookie = 'ninja_menu=hide;path=/;expires='+date.toGMTString();
 	}
 	if (action == 'show') {
-		document.getElementById('menu').style.width = '161px';
+		document.getElementById('menu').style.width = '166px';
 		document.getElementById('close-menu').style.display = 'block';
 		document.getElementById('show-menu').style.display = 'none';
 		var menu = document.getElementById('menu');
@@ -36,7 +36,7 @@ function collapse_menu(action) {
 		for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
 			menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
 		}
-		document.getElementById('content').style.marginLeft = '161px';
+		document.getElementById('content').style.marginLeft = '166px';
 		var date = new Date();
 		date.setTime(date.getTime()+(365*24*60*60*1000));
 		document.cookie = 'ninja_menu=show;path=/;expires='+date.toGMTString();
