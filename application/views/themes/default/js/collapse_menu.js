@@ -14,11 +14,11 @@ function collapse_menu(action) {
 		document.getElementById('close-menu').style.display = 'none';
 		document.getElementById('show-menu').style.display = 'block';
 		var menu = document.getElementById('menu');
-		menu.getElementsByTagName('cite')[0].setAttribute('style','display: none');
-		menu.getElementsByTagName('cite')[1].setAttribute('style','display: none');
-		menu.getElementsByTagName('cite')[2].setAttribute('style','display: none');
 		for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
 			menu.getElementsByTagName('a')[i].setAttribute('style','display: none');
+		}
+		for (var j = 0; j < menu.getElementsByTagName('cite').length; j++) {
+			menu.getElementsByTagName('cite')[j].setAttribute('style','display: none');
 		}
 		document.getElementById('content').style.marginLeft = '35px';
 		var date = new Date();
@@ -30,11 +30,11 @@ function collapse_menu(action) {
 		document.getElementById('close-menu').style.display = 'block';
 		document.getElementById('show-menu').style.display = 'none';
 		var menu = document.getElementById('menu');
-		menu.getElementsByTagName('cite')[0].setAttribute('style','display: inline');
-		menu.getElementsByTagName('cite')[1].setAttribute('style','display: inline');
-		menu.getElementsByTagName('cite')[2].setAttribute('style','display: inline');
 		for (var i = 1; i < menu.getElementsByTagName('a').length; i = i+2) {
 			menu.getElementsByTagName('a')[i].setAttribute('style','display: inline');
+		}
+		for (var j = 0; j < menu.getElementsByTagName('cite').length; j++) {
+			menu.getElementsByTagName('cite')[j].setAttribute('style','display: inline');
 		}
 		document.getElementById('content').style.marginLeft = '166px';
 		var date = new Date();
