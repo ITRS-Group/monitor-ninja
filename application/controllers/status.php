@@ -55,7 +55,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array('index', $this->current, $host, $hoststatustypes, false, $group_type, $serviceprops, $hostprops), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
@@ -223,20 +223,20 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array('index', $this->current, $name, $hoststatustypes, $servicestatustypes, $group_type), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 
 		# set sort images, used in header_links() below
-		$this->img_sort_up = $this->img_path('icons/16x16/up.gif');
-		$this->img_sort_down = $this->img_path('icons/16x16/down.gif');
+		$this->img_sort_up = $this->img_path('icons/arrow-up.gif');
+		$this->img_sort_down = $this->img_path('icons/arrow-down.gif');
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
 			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'h.host_name', 'sort_field_str' => 'host name'),
-			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
 			array('title' => $this->translate->_('Status'), 'sort_field_db' => 's.current_state', 'sort_field_str' => 'service status'),
+			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
 			array('title' => $this->translate->_('Status Information'))
@@ -462,7 +462,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
@@ -589,7 +589,7 @@ class Status_Controller extends Authenticated_Controller {
 		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
@@ -1131,7 +1131,7 @@ class Status_Controller extends Authenticated_Controller {
 		widget::add('status_totals', array('index', $this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$content->label_host = $t->_('Host');
 		$content->label_services = $t->_('Services');

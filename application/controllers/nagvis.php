@@ -20,6 +20,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/common.css')));
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 }
