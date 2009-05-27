@@ -24,6 +24,7 @@ if (!empty($widgets)) {
 
 
 <div class="widget left w98" id="status_service">
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
 <table style="table-layout: fixed" id="service_table">
 	<colgroup>
 		<col style="width: 30px" />
@@ -40,14 +41,12 @@ if (!empty($widgets)) {
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
-			<th><?php echo $this->translate->_('Host') ?></th>
+			<!--<th><?php echo $this->translate->_('Host') ?></th>
 			<th><?php echo $this->translate->_('') ?></th>
 			<th><?php echo $this->translate->_('Service') ?></th>
 			<th><?php echo $this->translate->_('Last check') ?></th>
 			<th><?php echo $this->translate->_('Duration') ?></th>
-			<th><?php echo $this->translate->_('Status information') ?></th>
-			<?php //echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc']))) : '' ?>
-			<?php //echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc']))) : '' ?>
+			<th><?php echo $this->translate->_('Status information') ?></th>-->
 			<?php
 				/*foreach($header_links as $row) {
 					echo '<th '.
@@ -55,6 +54,16 @@ if (!empty($widgets)) {
 						//(isset($row['url_asc']) ? 'onclick="location.href=\'/ninja/index.php/'.str_replace('&','&amp;',$row['url_asc']).'\'" class="headerSortDown"' : 'class="header"').
 						'>'.$row['title'].'</th>';
 				}*/
+			?>
+			<?php
+				foreach($header_links as $row) {
+					echo '<th><div style="float: left">';
+					echo ($row['title'] == 'Status' ? '' : $row['title']);
+					echo '</div><div style="float: right">';
+					echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc'])), array('style' => 'border: 0px')) : '';
+					echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc'])), array('style' => 'border: 0px')) : '';
+					echo '</div></th>';
+				}
 			?>
 			<th class="no-sort" colspan="2"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
@@ -68,38 +77,38 @@ if (!empty($widgets)) {
 		$a++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon bl<?php //echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php //echo ($curr_host != $row->host_name) ? '' : 'colspan="2"' ?>>
+		<td class="icon <?php echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
-				//if ($curr_host != $row->host_name) {
+				if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
-				//}
+				}
 			?>
 		</td>
-		<td class="service_hostname<?php //echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
-			<?php //if ($curr_host != $row->host_name) { ?>
-				<?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?>
+		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
+			<?php if ($curr_host != $row->host_name) { ?>
+				<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></div>
 				<div style="float: right">
 					<?php
 						if ($row->problem_has_been_acknowledged) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 						}
 						if (empty($row->notifications_enabled)) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/notify.png',array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification enabled'))), array('style' => 'border: 0px'));
 						}
 						if (!$row->active_checks_enabled) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/active-checks-enabled.png',array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks enabled'))), array('style' => 'border: 0px'));
 						}
 						if (isset($row->is_flapping) && $row->is_flapping) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/flapping.gif',array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 						}
 						if ($row->scheduled_downtime_depth > 0) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/downtime.png',array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 						}
 					?>
 				</div>
-			<?php //} ?>
+			<?php } ?>
 		</td>
-		<td class="icon">
+		<td class="icon bl">
 			<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
@@ -132,7 +141,8 @@ if (!empty($widgets)) {
 		</tbody>
 	</table>
 
-	<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
+
 <?php } ?>
+<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>

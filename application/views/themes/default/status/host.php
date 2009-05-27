@@ -21,6 +21,7 @@ if (!empty($widgets)) {
 </div>
 
 <div class="widget left w98" id="status_host">
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
 	<table id="host_table" style="table-layout: fixed">
 		<colgroup>
@@ -41,7 +42,7 @@ if (!empty($widgets)) {
 				<th style="width: 100px"><?php echo $this->translate->_('Last check') ?></th>
 				<th><?php echo $this->translate->_('Duration') ?></th>
 				<th><?php echo $this->translate->_('Status information') ?></th>
-				<th class="{sorter: false} no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+				<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -60,32 +61,33 @@ foreach ($result as $row) {
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 				<td class="icon bl">
-					<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))); ?>
+					<?php echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))), array('style' => 'border: 0px')); ?>
 				</td>
 				<td>
+					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
+					<div style="float: right">
 					<?php
-						echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name));
-
 						if ($row->problem_has_been_acknowledged) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('ACK'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 						}
 						if (empty($row->notifications_enabled)) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('nDIS'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/notify.png',array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification enabled'))), array('style' => 'border: 0px'));
 						}
 						if (!$row->active_checks_enabled) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('DIS'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/active-checks-enabled.png',array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks enabled'))), array('style' => 'border: 0px'));
 						}
 						if (isset($row->is_flapping) && $row->is_flapping) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('FPL'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/flapping.gif',array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 						}
 						if ($row->scheduled_downtime_depth > 0) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars('SDT'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/downtime.png',array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 						}
 					?>
+					</div>
 				</td>
 				<td class="icon" style="width: 10px">
 				<?php if (!empty($row->icon_image)) {
-					echo html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt));
+					echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
 				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
@@ -98,7 +100,7 @@ foreach ($result as $row) {
 				<?php if (!empty($row->action_url)) { ?>
 					<a href="<?php echo $row->action_url ?>" style="border: 0px">
 						<?php echo html::image('/application/views/themes/default/icons/16x16/host-actions.png', $this->translate->_('Perform extra host actions')) ?>
-					</a>
+					</a><!-- a basement burning-->
 				<?php	} if (!empty($row->notes_url)) { ?>
 					<a href="<?php echo $row->notes_url ?>" style="border: 0px">
 						<?php echo html::image('application/views/themes/default/icons/16x16/host-notes.png', $this->translate->_('View extra host notes')) ?>
