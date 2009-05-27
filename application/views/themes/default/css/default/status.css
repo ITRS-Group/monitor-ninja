@@ -123,14 +123,14 @@ td.white:first-child table tr td:first-child {
 
 /* table sorter styles ****************************************************************************/
 
-.group_grid_table tr:hover td,
+/*.group_grid_table tr:hover td,
 .group_overview_table tr:hover td,
 .comments_table tr:hover td,
 #group_summary_table tr:hover td,
 #service_table tr:hover td,
 #host_table tr:hover td {
 	background: #f5f5ef;
-}
+}*/
 
 .group_grid_table th.header,
 .group_overview_table th.header,
