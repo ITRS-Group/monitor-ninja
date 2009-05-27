@@ -19,13 +19,19 @@ class Reporting_Controller extends Authenticated_Controller {
 
 	public function availability()
 	{
-		$this->template->content = '<iframe src="/monitor/op5/reports/gui/avail_setup.php" style="width: 100%; height: 700px" frameborder="0"></iframe>';
+		$this->template->content = '<iframe src="/monitor/op5/reports/gui/avail_setup.php" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » Availability');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function sla_reporting()
 	{
-		$this->template->content = '<iframe src="/monitor/op5/reports/gui/sla/" style="width: 100%; height: 700px" frameborder="0"></iframe>';
+		$this->template->content = '<iframe src="/monitor/op5/reports/gui/sla/" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » SLA Reporting');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 }
