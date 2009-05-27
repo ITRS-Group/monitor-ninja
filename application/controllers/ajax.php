@@ -32,7 +32,6 @@ class Ajax_Controller extends Authenticated_Controller {
 			# we handle queries by trying to locate wanted filtering options separated by colon (:)
 			$q = $this->input->get('query', $q);
 			$q = urldecode($q);
-			$json = zend::instance('json');
 			if (strstr($q, self::FILTER_CHAR)) {
 				# some extra filtering option detected
 				$options = explode(self::FILTER_CHAR, $q);
@@ -101,7 +100,7 @@ class Ajax_Controller extends Authenticated_Controller {
 						$host_info = $this->translate->_('Nothing found');
 					}
 					$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
-					$json_str = $json->encode($var);
+					$json_str = json::encode($var);
 					echo $json_str;
 
 				} else {
@@ -122,7 +121,7 @@ class Ajax_Controller extends Authenticated_Controller {
 					$host_info = $this->translate->_('Nothing found');
 				}
 				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
-				$json_str = $json->encode($var);
+				$json_str = json::encode($var);
 				echo $json_str;
 			}
 		}
