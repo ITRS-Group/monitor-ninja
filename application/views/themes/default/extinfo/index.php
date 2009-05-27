@@ -8,7 +8,8 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div id="page_links">
+<div class="widget left w98" id="page_links">
+	<ul>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -18,6 +19,7 @@ if (!empty($widgets)) {
 		}
 	}
 	?>
+	</ul>
 </div>
 
 <div class="widget left w98" id="extinfo_host-info">
@@ -52,12 +54,8 @@ if (!empty($widgets)) {
 	</table>
 </div>
 
-<?php
-if (!empty($commands))
-	echo $commands;
-?>
-<div class="widget left" id="extinfo_current">
 
+<div class="widget left" id="extinfo_current">
 	<table>
 	<caption><?php echo $title ?></caption>
 		<tr class="odd">
@@ -169,6 +167,11 @@ if (!empty($commands))
 		</tr>
 	</table>
 </div>
+
+<?php
+if (!empty($commands))
+	echo $commands;
+?>
 
 <?php
 if (isset($comments))
