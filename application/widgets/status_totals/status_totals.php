@@ -453,8 +453,7 @@ class Status_totals_Widget extends widget_Core {
 		}
 
 		if(request::is_ajax()) {
-			$json = zend::instance('json');
-			$json_str = $json->encode($var);
+			$json_str = json::encode($var);
 			echo $json_str;
 			echo $this->output(); # fetch from output buffer
 		} else {
