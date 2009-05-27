@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w98" id="search_result" style="margin-top: 0px">
+<div class="widget left w98" id="search_result">
 	<!--<p><strong><?php echo $this->translate->_('Search result for'); ?> &quot;<?php echo $query ?>&quot;</strong>:</p>-->
 
 <?php echo isset($no_data) ? $no_data : '';
@@ -15,7 +15,6 @@ if (isset($host_result) ) { ?>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
-		<th class="header" style="width: 95px"><?php echo $this->translate->_('Display name'); ?></th>
 		<?php if (isset ($nacoma_link)) { ?>
 		<th class="header">&nbsp;</th>
 		<?php } ?>
@@ -23,7 +22,7 @@ if (isset($host_result) ) { ?>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<td class="bl icon">
-			<?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($host->current_state)).'.png',array('alt' => Current_status_Model::status_text($host->current_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($host->current_state))); ?>
+			<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($host->current_state)).'.png',array('alt' => Current_status_Model::status_text($host->current_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($host->current_state))); ?>
 		</td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
@@ -37,7 +36,7 @@ if (isset($host_result) ) { ?>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>
-</table><?php
+</table><br /><?php
 }
 
 # show service data if available
@@ -58,9 +57,9 @@ if (isset($service_result) ) { ?>
 	</tr>
 <?php	$i = 0; foreach ($service_result as $service) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl icon"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->host_state)).'.png',array('alt' => Current_status_Model::status_text($service->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($service->host_state))); ?></td>
+		<td class="bl icon"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->host_state)).'.png',array('alt' => Current_status_Model::status_text($service->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($service->host_state))); ?></td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
-		<td class="icon"><?php echo html::image('/application/views/themes/default/images/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->current_state, 'service')).'.png',array('alt' => Current_status_Model::status_text($service->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($service->current_state, 'service'))); ?></td>
+		<td class="icon"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->current_state, 'service')).'.png',array('alt' => Current_status_Model::status_text($service->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($service->current_state, 'service'))); ?></td>
 		<td>
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
 		</td>
@@ -73,7 +72,7 @@ if (isset($service_result) ) { ?>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>
-</table><?php
+</table><br /><?php
 }
 
 # show hostgroup data if available
@@ -98,7 +97,7 @@ if (isset($hostgroup_result) ) { ?>
 		<?php } ?>
 	</tr>
 <?php	$i++; } ?>
-</table><?php
+</table><br /><?php
 }
 
 # show hostgroup data if available
