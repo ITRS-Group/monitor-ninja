@@ -648,6 +648,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content->group_details = $group_details;
 
 		if ($grouptype == 'host') {
+			$content->label_group_name = $t->_('Host Group');
 			if ($group == 'all') {
 				$label_host_status_details = $this->translate->_('View Service Status Detail For All Host Groups');
 				$label_group_status_details = $this->translate->_('View Host Status Detail For All Host Groups');
@@ -676,6 +677,7 @@ class Status_Controller extends Authenticated_Controller {
 			}
 
 		} else {
+			$content->label_group_name = $t->_('Service Group');
 			if ($group == 'all') {
 				$label_service_status_details = $this->translate->_('View Service Status Detail For All Service Groups');
 				$label_service_status_overview = $this->translate->_('View Status Overview For All Service Groups');
