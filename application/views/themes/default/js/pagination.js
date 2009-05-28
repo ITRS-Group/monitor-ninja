@@ -30,6 +30,13 @@ function set_items_per_page()
 
 function propagate_val(val)
 {
+	val = parseInt(val, '10');
+	if (isNaN(val)) {
+		var cust_val = $.query.get('custom_pagination_field');
+		cust_val = cust_val ? cust_val : 100;
+		propagate_val(cust_val);
+		return false;
+	}
 	$('.custom_pagination_field').each(function() {
 		$(this).val(val);
 		value_exists(val);
@@ -48,6 +55,10 @@ function value_exists(val)
 
 function pagination_add_option(val)
 {
+	val = parseInt(val, '10');
+	if (isNaN(val)) {
+		return false;
+	}
 	var entries_str = $('.pagination_entries_str').html();
 	$('.items_per_page').each(function() {
 		$(this).addOption(val, val + ' ' + entries_str);
