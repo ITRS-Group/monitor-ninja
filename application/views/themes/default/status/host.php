@@ -92,7 +92,7 @@ foreach ($result as $row) {
 				</td>
 				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 				<td><?php echo $row->duration ?></td>
-				<td style="white-space	: normal"><?php echo str_replace('','',$row->plugin_output) ?></td>
+				<td style="white-space	: normal"><?php echo str_replace('','',$row->output) ?></td>
 				<td class="icon">
 					<?php echo html::anchor('status/service/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/service-details.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
 				</td>

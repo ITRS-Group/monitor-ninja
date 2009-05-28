@@ -114,7 +114,7 @@ if (!empty($widgets)) {
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
 		<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 		<td><?php echo $row->duration ?></td>
-		<td style="white-space: normal"><?php echo str_replace('','',$row->plugin_output) ?></td>
+		<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
 		<!--<td class="icon">
 		<?php	//if (!empty($row->icon_image)) { ?>
 			<?php //echo html::image('application/media/images/logos/'.$row->icon_image,array('alt' => $row->icon_image_alt,'title' => $row->icon_image_alt));?>
