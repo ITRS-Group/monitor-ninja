@@ -239,8 +239,10 @@ class Nagios_auth_Model extends Model
 			'from' => ' host AS auth_host, service AS auth_service, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, service_contactgroup AS auth_service_contactgroup',
 			'where' => " auth_service.id = auth_service_contactgroup.service
 				AND auth_service_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
-				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) . "
-				AND auth_host.host_name=auth_service.host_name AND %s = auth_service.host_name");
+				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username),
+			'service_field' => 'auth_service',
+			'host_field' => 'auth_host',
+			);
 		return $query_parts;
 	}
 
