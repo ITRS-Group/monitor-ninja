@@ -77,14 +77,15 @@ if (!empty($widgets)) {
 		$a++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo ($curr_host != $row->host_name) ? 'bt' : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
+		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? '' : 'bt') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
+				//if ($a == 1 || )
 				if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
 				}
 			?>
 		</td>
-		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? 'w80' : 'white' ?>" style="white-space: normal">
+		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
 			<?php if ($curr_host != $row->host_name) { ?>
 				<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></div>
 				<div style="float: right">
@@ -143,6 +144,5 @@ if (!empty($widgets)) {
 
 
 <?php } ?>
-<div id="status_count_summary"><?php echo sizeof($result) ?> Matching Service Entries Displayed</div>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
