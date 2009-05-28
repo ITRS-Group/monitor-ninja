@@ -891,10 +891,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function show_comments()
 	{
+		$items_per_page = $this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'));
 		$this->template->content = $this->add_view('extinfo/all_comments');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->template->content->host_comments = $this->_comments(true, false, 'host', true);
-		$this->template->content->service_comments = $this->_comments(true, true, 'service', true);
+		$this->template->content->host_comments = $this->_comments(true, false, 'host', true, $items_per_page);
+		$this->template->content->service_comments = $this->_comments(true, true, 'service', true, $items_per_page);
 	}
 }
