@@ -20,5 +20,5 @@ $config['default'] = array
 	'style'          => 'digg',
 	'query_string'   => 'page',
 	'items_per_page' => 100,
-	'auto_hide'      => true
+	'auto_hide'      => false
 );
