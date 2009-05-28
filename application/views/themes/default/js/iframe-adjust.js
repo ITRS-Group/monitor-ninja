@@ -6,3 +6,7 @@ window.onload = function(){
  adjust_height();
  collapse_menu('');
 }
+
+window.onresize = function (){
+ adjust_height();
+}
