@@ -49,152 +49,29 @@ class Status_totals_Widget extends widget_Core {
 
 		$host_title = $this->translate->_('Host Status Totals');
 		$service_title = $this->translate->_('Service Status Totals');
+		$host = 'all';
+		$host_state = isset($arguments[1]) && !empty($arguments[1]) ? $arguments[1] : (nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING);
+		$service_state = isset($arguments[2]) ? $arguments[2] : false;
+		$target_method = $service_state === false ? 'host' : 'service';
+		$grouptype = false;
+		$groupname = false;
+
+		# host data
 		$total_up = $current_status->hosts_up;
 		$total_down = $current_status->hosts_down;
 		$total_unreachable = $current_status->hosts_unreachable;
 		$total_pending = $current_status->hosts_pending;
 		$total_hosts = $current_status->total_hosts;
 		$total_problems = $current_status->hosts_down + $current_status->hosts_unreachable;
-		$host = isset($arguments[0]) ? trim($arguments[0]) : 'all';
-		$host_state = isset($arguments[1]) && !empty($arguments[1]) ? $arguments[1] : (nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING);
-		$service_state = isset($arguments[2]) ? $arguments[2] : false;
-		$target_method = $service_state === false ? 'host' : 'service';
 
-		# Check if we are dealing with host or servicegroup
-		$grouptype = false;
-		$groupname = false;
-		if (isset($arguments[3]) && !empty($arguments[3])) {
-			$groupname = $host; # groupname is passed at same position in arguments as host
-			$grouptype = trim($arguments[3]);
-			$target_method = $grouptype;
-			$group_type = str_replace('group', '', $grouptype);
-			$group_info = $current_status->get_group_hoststatus($group_type, $groupname);
-		}
-
-		$total_hosts = 0;
-		$total_up = 0;
-		$total_down = 0;
-		$total_unreachable = 0;
-		$total_pending = 0;
-		$svc_total_ok = 0;
-		$svc_total_warning = 0;
-		$svc_total_critical = 0;
-		$svc_total_unknown = 0;
-		$svc_total_pending = 0;
-		$svc_total_services = 0;
-		$prev_host = false;
-
-		if (empty($groupname) && $host != 'all') {
-			# fetch info on selected host
-			$host_model = new Host_Model();
-			$host_info = $host_model->get_hostinfo($host);
-			if ($host_info === false) {
-				# don't mess up the master page just because
-				# we're unable to find the requested object
-				return;
-			}
-			$total_up = $host_info->current_state == Current_status_Model::HOST_UP ? 1:0;
-			$total_down = $host_info->current_state == Current_status_Model::HOST_DOWN ? 1:0;
-			$total_unreachable = $host_info->current_state == Current_status_Model::HOST_UNREACHABLE ? 1:0;
-			$total_pending = $host_info->current_state == Current_status_Model::HOST_PENDING ? 1:0;
-			$total_hosts = 1;
-			$total_problems = $total_down + $total_unreachable;
-
-			# service data
-			$service_info = $host_model->service_states($host);
-			if (count($service_info)) {
-				foreach ($service_info as $service) {
-					switch ($service->current_state) {
-						case Current_status_Model::SERVICE_OK :
-							$svc_total_ok += $service->cnt;
-							break;
-						case Current_status_Model::SERVICE_WARNING:
-							$svc_total_warning += $service->cnt;
-							break;
-						case Current_status_Model::SERVICE_CRITICAL:
-							$svc_total_critical += $service->cnt;
-							break;
-						case Current_status_Model::SERVICE_UNKNOWN:
-							$svc_total_unknown += $service->cnt;
-							break;
-						case Current_status_Model::SERVICE_PENDING :
-							$svc_total_pending += $service->cnt;
-							break;
-					}
-					$svc_total_services += $service->cnt;
-				}
-			}
-
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-
-		} elseif (!empty($groupname)) {
-			$service_states = false;
-			if (empty($group_info)) {
-				return;
-			}
-			foreach ($group_info as $info) {
-				$service_states[$info->host_name][$info->service_state] = $info->service_state;
-				if ($info->id != $prev_host) {
-					switch ($info->current_state) {
-						case Current_status_Model::HOST_UP:
-							$total_up++;
-							break;
-						case Current_status_Model::HOST_DOWN:
-							$total_down++;
-							break;
-						case Current_status_Model::HOST_UNREACHABLE:
-							$total_unreachable++;
-							break;
-						case Current_status_Model::HOST_PENDING:
-							$total_pending++;
-							break;
-					}
-				}
-
-				# service data
-				switch ($info->service_state) {
-					case Current_status_Model::SERVICE_OK :
-						$svc_total_ok += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_WARNING:
-						$svc_total_warning += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_CRITICAL:
-						$svc_total_critical += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_UNKNOWN:
-						$svc_total_unknown += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_PENDING :
-						$svc_total_pending += $info->state_count;
-						break;
-				}
-				$svc_total_services += $info->state_count;
-				$prev_host = $info->id;
-			}
-
-			$total_hosts = sizeof($service_states);
-			$total_problems = $total_down + $total_unreachable;
-
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-		} else {
-			# host data
-			$total_up = $current_status->hosts_up;
-			$total_down = $current_status->hosts_down;
-			$total_unreachable = $current_status->hosts_unreachable;
-			$total_pending = $current_status->hosts_pending;
-			$total_hosts = $current_status->total_hosts;
-			$total_problems = $current_status->hosts_down + $current_status->hosts_unreachable;
-
-			# service data
-			$svc_total_ok = $current_status->services_ok;
-			$svc_total_warning = $current_status->services_warning;
-			$svc_total_unknown = $current_status->services_unknown;
-			$svc_total_critical = $current_status->services_critical;
-			$svc_total_pending = $current_status->services_pending;
-			$svc_total_services = $current_status->total_services;
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-		}
+		# service data
+		$svc_total_ok = $current_status->services_ok;
+		$svc_total_warning = $current_status->services_warning;
+		$svc_total_unknown = $current_status->services_unknown;
+		$svc_total_critical = $current_status->services_critical;
+		$svc_total_pending = $current_status->services_pending;
+		$svc_total_services = $current_status->total_services;
+		$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
 
 		$host_header = array(
 			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UP.'&group_type='.$grouptype, 'lable' => $total_up, 'status' => $label_up),
@@ -237,25 +114,14 @@ class Status_totals_Widget extends widget_Core {
 		$status = new Current_status_Model;
 		$host_name = isset($arguments[1]) ? $arguments[1] : 'all';
 
-		switch ($method) {
-			case 'host': case 'service':
-				$host_name = isset($arguments[1]) ? $arguments[1] : 'all';
-				break;
-			case 'servicegroup': case 'hostgroup':
-				$grouptype = isset($arguments[0]) ? $arguments[0] : false;
-				$groupname = isset($arguments[1]) ? $arguments[1] : false;
-				$group_type = str_replace('group', '', $grouptype);
-				$group_info = $status->get_group_hoststatus($group_type, $groupname);
-				break;
-			 case 'group_summary':
-				$grouptype = isset($arguments[1]) ? $arguments[1] : false;
-				$groupname = isset($arguments[2]) ? $arguments[2] : false;
-				$group_info = $status->get_group_hoststatus($grouptype, $groupname);
-				break;
-		}
+		$grouptype = false;
+		$groupname = false;
+		$group_type = str_replace('group', '', $grouptype);
 
-		$host_state = isset($arguments[2]) ? $arguments[2] : false;
-		$service_state = isset($arguments[3]) ? $arguments[3] : false;
+		$host_name = 'all';
+
+		$host_state = false;
+		$service_state = false;
 
 		# fetch all available states for hosts and services
 		$host_states = $status->available_states('host');
@@ -292,142 +158,21 @@ class Status_totals_Widget extends widget_Core {
 		$svc_total_pending  = 0;
 		$svc_total_services = 0;
 
-		if (empty($groupname) && $host_name != 'all') {
-			# fetch info on selected host
-			$host_model = new Host_Model();
-			$host_info = $host_model->get_hostinfo($host_name);
-			if (!$host_info) {
-				die();
+		$result = $status->status_totals('host');
+		foreach ($result as $row) {
+			$host[$row->current_state] = $row->cnt;
+			$total_hosts += $row->cnt;
+			if (in_array($row->current_state, $host_problems)) {
+				$total_host_problems += $row->cnt;
 			}
+		}
 
-			$total_up = $host_info->current_state == Current_status_Model::HOST_UP ? 1:0;
-			$total_down = $host_info->current_state == Current_status_Model::HOST_DOWN ? 1:0;
-			$total_unreachable = $host_info->current_state == Current_status_Model::HOST_UNREACHABLE ? 1:0;
-			$total_pending = $host_info->current_state == Current_status_Model::HOST_PENDING ? 1:0;
-			$total_hosts = 1;
-			$total_problems = $total_down + $total_unreachable;
-
-			# service data
-			$service_info = $host_model->service_states($host);
-			foreach ($service_info as $service) {
-				switch ($service->current_state) {
-					case Current_status_Model::SERVICE_OK :
-						$svc_total_ok += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_WARNING:
-						$svc_total_warning += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_CRITICAL:
-						$svc_total_critical += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_UNKNOWN:
-						$svc_total_unknown += $service->cnt;
-						break;
-					case Current_status_Model::SERVICE_PENDING :
-						$svc_total_pending += $service->cnt;
-						break;
-				}
-				$svc_total_services += $service->cnt;
-			}
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-
-			$host = array(
-				Current_status_Model::HOST_UP => $total_up,
-				Current_status_Model::HOST_DOWN => $total_down,
-				Current_status_Model::HOST_UNREACHABLE => $total_unreachable,
-				Current_status_Model::HOST_PENDING => $total_pending
-			);
-
-			$service = array(
-				Current_status_Model::SERVICE_OK => $svc_total_ok,
-				Current_status_Model::SERVICE_WARNING => $svc_total_warning,
-				Current_status_Model::SERVICE_CRITICAL => $svc_total_critical,
-				Current_status_Model::SERVICE_UNKNOWN => $svc_total_unknown,
-				Current_status_Model::SERVICE_PENDING => $svc_total_pending
-			);
-
-		} elseif (!empty($groupname)) {
-			if (empty($group_info)) {
-				return ;
-			}
-			$prev_host = false;
-			$svc_states = false;
-			foreach ($group_info as $info) {
-				$svc_states[$info->host_name][$info->service_state] = $info->service_state;
-				if ($info->id != $prev_host) {
-					switch ($info->current_state) {
-						case Current_status_Model::HOST_UP:
-							$total_up++;
-							break;
-						case Current_status_Model::HOST_DOWN:
-							$total_down++;
-							break;
-						case Current_status_Model::HOST_UNREACHABLE:
-							$total_unreachable++;
-							break;
-						case Current_status_Model::HOST_PENDING:
-							$total_pending++;
-							break;
-					}
-				}
-
-				# service data
-				switch ($info->service_state) {
-					case Current_status_Model::SERVICE_OK :
-						$svc_total_ok += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_WARNING:
-						$svc_total_warning += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_CRITICAL:
-						$svc_total_critical += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_UNKNOWN:
-						$svc_total_unknown += $info->state_count;
-						break;
-					case Current_status_Model::SERVICE_PENDING :
-						$svc_total_pending += $info->state_count;
-						break;
-				}
-				$svc_total_services += $info->state_count;
-				$prev_host = $info->id;
-			}
-			$host = array(
-				Current_status_Model::HOST_UP => $total_up,
-				Current_status_Model::HOST_DOWN => $total_down,
-				Current_status_Model::HOST_UNREACHABLE => $total_unreachable,
-				Current_status_Model::HOST_PENDING => $total_pending
-			);
-
-			$service = array(
-				Current_status_Model::SERVICE_OK => $svc_total_ok,
-				Current_status_Model::SERVICE_WARNING => $svc_total_warning,
-				Current_status_Model::SERVICE_CRITICAL => $svc_total_critical,
-				Current_status_Model::SERVICE_UNKNOWN => $svc_total_unknown,
-				Current_status_Model::SERVICE_PENDING => $svc_total_pending
-			);
-
-			$total_hosts = sizeof($svc_states);
-			$total_problems = $total_down + $total_unreachable;
-
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-		} else {
-			$result = $status->status_totals('host');
-			foreach ($result as $row) {
-				$host[$row->current_state] = $row->cnt;
-				$total_hosts += $row->cnt;
-				if (in_array($row->current_state, $host_problems)) {
-					$total_host_problems += $row->cnt;
-				}
-			}
-
-			$result = $status->status_totals('service');
-			foreach ($result as $row) {
-				$service[$row->current_state] = $row->cnt;
-				$total_services += $row->cnt;
-				if (in_array($row->current_state, $service_problems)) {
-					$total_service_problems += $row->cnt;
-				}
+		$result = $status->status_totals('service');
+		foreach ($result as $row) {
+			$service[$row->current_state] = $row->cnt;
+			$total_services += $row->cnt;
+			if (in_array($row->current_state, $service_problems)) {
+				$total_service_problems += $row->cnt;
 			}
 		}
 
