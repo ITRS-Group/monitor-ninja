@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget movable collapsable removable closeconfirm right" id="widget-status_totals" style="margin-right: 1%;  wdth: 170px">
+<div class="widget movable collapsable removable closeconfirm right" id="widget-status_totals" style="margin-right: 1%">
 	<div class="widget-header"><?php echo $service_title ?></div>
 	<div class="widget-content">
 		<table style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
@@ -36,7 +36,7 @@
 	</div>
 </div>
 
-<div class="widget movable collapsable removable closeconfirm right" id="widget-host_totals" style="wdth: 170px">
+<div class="widget movable collapsable removable closeconfirm right" id="widget-host_totals">
 	<div class="widget-header"><?php echo $host_title ?></div>
 	<div class="widget-content">
 		<table class="max" style="border-spacing: 1px; background-color: #dcdccd; margin-top: -1px">
