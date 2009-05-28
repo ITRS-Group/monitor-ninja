@@ -27,22 +27,6 @@
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 	</head>
 
-	<?php
-		$navigation = array(
-			'Tac' => array('Monitoring','Tactical overview'),
-			'Host' => array('Monitoring','Host details'),
-			'Service' => array('Montioring','Service details'),
-			'Hostgroup' => array('Montioring','Hostgroup overview'),
-			'Hostgroup_grid' => array('Montioring','Hostgroup grid'),
-			'Hostgroup_summary' => array('Montioring','Hostgroup summary'),
-			'Servicegroup' => array('Montioring','Servicegroup overview'),
-			'Servicegroup_grid' => array('Montioring','Servicegroup grid'),
-			'Servicegroup_summary' => array('Montioring','Servicegroup summary'),
-			'Outages' => array('Montioring','Network outages'),
-			'Show_comments' => array('Montioring','Comments')
-		);
-	?>
-
 	<body onload="collapse_menu(''); widget_status()">
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/icons/ninja.png','NINJA'); ?>
@@ -74,7 +58,7 @@
 					<?php
 						$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
 						if (is_array($settings_widgets))
-							echo '<li onclick="settings()">'.html::image('application/views/themes/default/icons/16x16/settings.gif',$this->translate->_('Settings')).'</li>';
+							echo '<li onclick="settings()">'.html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))).'</li>';
 					?>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
@@ -101,7 +85,7 @@
 
 		<div id="page_settings">
 			<ul>
-				<li class="header">Availiable Widgets</li>
+				<li class="header"><?php echo $this->translate->_('Availiable Widgets') ?></li>
 				<?php
 					if (is_array($settings_widgets)) {
 						foreach($settings_widgets as $id => $widget) {
@@ -109,7 +93,7 @@
 						}
 					}
 				?>
-				<li onclick="control_widgets(); return false">Restore to factory settings</li>
+				<li onclick="control_widgets(); return false"><?php echo $this->translate->_('Restore to factory settings') ?></li>
 			</ul>
 		</div>
 		<div id="content">
