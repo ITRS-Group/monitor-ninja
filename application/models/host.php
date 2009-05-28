@@ -78,53 +78,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Fetch breakdown of current service states for a host
-	 * @param $host_name The host_name of the host
-	 * @param $host_id The id of the host object
-	 * @return false on errors, array of services on success
-	 */
-	public function service_states($host_name=false, $host_id=false)
-	{
-		$s = !empty($host_id) ? '' : 's.';
-		$auth_query_parts = $this->auth->authorized_service_query();
-		$auth_from = '';
-		$auth_where = '';
-		if ($auth_query_parts !== true) {
-			$auth_from = ', '.$auth_query_parts['from'];
-
-			# match authorized services against service.host_name
-			$auth_where = ' AND '.sprintf($auth_query_parts['where'], $s.'host_name');
-		}
-		if (!empty($host_id)) {
-			$sql = "
-				SELECT
-					COUNT(current_state) AS cnt,
-					current_state
-				FROM
-					service ".$auth_from."
-				WHERE
-					host_name=".(int)$host_id." ".$auth_where."
-				GROUP BY
-					current_state;";
-		} else {
-			$sql = "
-				SELECT
-					COUNT(s.current_state) AS cnt,
-					s.current_state
-				FROM
-					service s,
-					host h ".$auth_from."
-				WHERE
-					h.host_name=".$this->db->escape($host_name)." AND
-					s.host_name=h.host_name ".$auth_where."
-				GROUP BY
-					s.current_state;";
-		}
-		$res = $this->db->query($sql);
-		return $res;
-	}
-
-	/**
 	*
 	*	Fetch host info filtered on specific field and value
 	*/
