@@ -883,13 +883,13 @@ class Current_status_Model extends Model
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
-		$h = $show_services ? 'h.' : '';
-		$s = !$show_services ? '' : 's.';
+		$h = $show_services ? 'auth_host.' : '';
+		$s = !$show_services ? '' : 'auth_service.';
 		if (!empty($state_filter)) {
 			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
 		}
 		if ($service_filter!==false && !empty($service_filter)) {
-			$filter_sql .= " AND 1 << s.current_state & $service_filter ";
+			$filter_sql .= " AND 1 << ".$s.".current_state & $service_filter ";
 		}
 		$serviceprops_sql = $this->build_service_props_query($serviceprops, $s);
 		$hostprops_sql = $this->build_host_props_query($hostprops, $h);
@@ -941,69 +941,69 @@ class Current_status_Model extends Model
 			$auth_where = '';
 			$service_in_query = '';
 			if ($auth_query_parts !== true) {
-				$auth_from = ', '.$auth_query_parts['from'];
+				$auth_from = $auth_query_parts['from'];
 
 				# match authorized services against service.host_name
-				$auth_where = sprintf($auth_query_parts['where'], 'tmp.host_name');
-				$service_in_query = " s.id IN(SELECT tmp.id FROM service tmp ".$auth_from." WHERE ".$auth_where.") AND ";
+				$auth_where = $auth_query_parts['where'];
+
+				# what aliases are used for host and service field
+				$auth_service_field = $auth_query_parts['service_field'];
+				$auth_host_field = $auth_query_parts['host_field'];
 			}
 
-			$sort_field = empty($sort_field) ? 'h.host_name, s.service_description' : $sort_field;
+			$sort_field = empty($sort_field) ? 'auth_host.host_name, auth_service.service_description' : $h.$sort_field;
 			if ($count === true) {
 			$sql = "
 					SELECT
 						COUNT(*) AS cnt
 					FROM
-						host h,
-						service s
+						".$auth_from."
 					WHERE
-						h.id IN (".$host_str.") AND
-						".$service_in_query."
-						s.host_name = h.host_name
+						".$auth_host_field.".id IN (".$host_str.") AND
+						".$auth_where." AND
+						".$auth_service_field.".host_name = ".$auth_host_field.".host_name
 						".$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			} else {
-				$sql = "
-					SELECT
-						h.id AS host_id,
-						h.host_name,
-						h.address,
-						h.alias,
-						h.current_state AS host_state,
-						h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
-						h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
-						h.notifications_enabled AS host_notifications_enabled,
-						h.action_url AS host_action_url,
-						h.icon_image AS host_icon_image,
-						h.icon_image_alt AS host_icon_image_alt,
-						h.is_flapping AS host_is_flapping,
-						h.notes_url,
-						s.id AS service_id,
-						s.service_description,
-						s.current_state,
-						s.last_check,
-						s.notifications_enabled,
-						s.active_checks_enabled,
-						s.action_url,
-						s.icon_image,
-						s.icon_image_alt,
-						s.passive_checks_enabled,
-						s.problem_has_been_acknowledged,
-						s.scheduled_downtime_depth,
-						s.is_flapping as service_is_flapping,
-						(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
-						s.current_attempt,
-						s.output AS plugin_output
-					FROM
-						host h,
-						service s
-					WHERE
-						h.id IN (".$host_str.") AND
-						".$service_in_query."
-						s.host_name = h.host_name
-						".$filter_sql.$hostprops_sql.$serviceprops_sql."
-					ORDER BY
-						".$sort_field." ".$sort_order;
+				$sql = "SELECT ".
+						$auth_host_field.".id AS host_id,".
+						$auth_host_field.".host_name,".
+						$auth_host_field.".address,".
+						$auth_host_field.".alias,".
+						$auth_host_field.".current_state AS host_state,".
+						$auth_host_field.".problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
+						$auth_host_field.".scheduled_downtime_depth AS hostscheduled_downtime_depth,".
+						$auth_host_field.".notifications_enabled AS host_notifications_enabled,".
+						$auth_host_field.".action_url AS host_action_url,".
+						$auth_host_field.".icon_image AS host_icon_image,".
+						$auth_host_field.".icon_image_alt AS host_icon_image_alt,".
+						$auth_host_field.".is_flapping AS host_is_flapping,".
+						$auth_host_field.".notes_url,".
+						$auth_service_field.".id AS service_id,".
+						$auth_service_field.".service_description,".
+						$auth_service_field.".current_state,".
+						$auth_service_field.".last_check,".
+						$auth_service_field.".notifications_enabled,".
+						$auth_service_field.".active_checks_enabled,".
+						$auth_service_field.".action_url,".
+						$auth_service_field.".icon_image,".
+						$auth_service_field.".icon_image_alt,".
+						$auth_service_field.".passive_checks_enabled,".
+						$auth_service_field.".problem_has_been_acknowledged,".
+						$auth_service_field.".scheduled_downtime_depth,".
+						$auth_service_field.".is_flapping as service_is_flapping,".
+						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration,".
+						$auth_service_field.".current_attempt,".
+						$auth_service_field.".output".
+					" FROM ".
+						$auth_from.
+					" WHERE ".
+						$auth_host_field.".id IN (".$host_str.") AND ".
+						$auth_where." AND ".
+						$auth_service_field.".host_name = ".$auth_host_field.".host_name ".
+						$filter_sql.$hostprops_sql.$serviceprops_sql.
+					" ORDER BY ".
+						$sort_field." ".$sort_order;
 			}
 		}
 		if ($count == false && $num_per_page !== false && $offset !== false) {
