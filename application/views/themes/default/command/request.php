@@ -8,10 +8,11 @@ if (!$info) {
 
 echo "<h2>$brief</h2>\n";
 echo "<h3>$description</h3>\n";
+echo form::open('command/commit');
 
 $params = $info['params'];
 echo "<table>\n";
-foreach ($params as $param_name => $ary) {
+foreach ($params as $pname => $ary) {
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
@@ -19,44 +20,38 @@ foreach ($params as $param_name => $ary) {
 	echo "<tr><td>$ary[name]</td><td>\n";
 	switch ($ary['type']) {
 	 case 'select':
-		echo "<select name='$param_name'>\n";
-		foreach ($ary['options'] as $k => $v) {
-			if ($k == $dflt || $v == $dflt) {
-				echo "ZOMG it's THE CHOSEN ONE<br />\n";
-				echo "<option selected value='$k'>";
-			} else {
-				echo "<option value='$k'>";
-			}
-			echo "$v</option>\n";
+		if ($dflt && array_search($ary['options'], $dflt)) {
+			$dflt = array_search($ary['options']);
 		}
+		echo form::dropdown($pname, $ary['options'], $dflt);
 		break;
 	 case 'checkbox':
 		if (isset($ary['options'])) {
 			foreach ($ary['options'] as $k => $v) {
-				echo "<input type='checkbox' name='" . $param_name . "[$k]'>";
+				echo form::checkbox($pname . "[$k]", 'class="checkbox"');
 			}
 			break;
 		}
 		# fallthrough
 	 case 'bool':
-		echo "<input type='checkbox' name='$param_name'>";
+		echo form::checkbox($pname, $dflt, 'class="checkbox"');
 		break;
 	 case 'float':
 	 case 'int':
-		echo "<input type='text' size=10 name='$param_name' />\n";
+		echo form::input($pname, 'size="10"');
 		break;
 	 case 'immutable':
-		echo "<input type='hidden' name='$param_name' value='$dflt'>$dflt";
+		echo form::hidden($pname, $dflt);
+		echo $dflt;
 		break;
 	 case 'string':
 	 default:
-		echo "<input type='text' name='$param_name' ";
-		if ($dflt)
-			echo "value='$dflt'";
-		echo "/>\n";
+		echo form::input($pname, $dflt, 'class="text"');
 		break;
 	}
 	echo "$ary[type]\n";
 	echo "</td><td>helptext here</td></tr>\n";
 }
 echo "</table>\n";
+echo form::submit('Commit', 'class="submit"');
+echo "<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
