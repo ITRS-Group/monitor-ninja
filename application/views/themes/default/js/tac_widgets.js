@@ -50,3 +50,9 @@ function widget_status(){
 		}
 	}
 }
+
+
+window.onload = function(){
+ widget_status();
+ collapse_menu('');
+}

@@ -55,3 +55,7 @@ function settings(action) {
 			document.getElementById('page_settings').style.display = 'block';
 	}
 }
+
+window.onload = function() {
+	collapse_menu('');
+}

@@ -30,7 +30,7 @@
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 	</head>
 
-	<body onload="collapse_menu(''); widget_status()">
+	<body>
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/icons/ninja.png','NINJA'); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
