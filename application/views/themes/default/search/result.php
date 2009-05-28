@@ -15,9 +15,10 @@ if (isset($host_result) ) { ?>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
-		<?php if (isset ($nacoma_link)) { ?>
-		<th class="header">&nbsp;</th>
-		<?php } ?>
+		<th class="header"><?php echo $this->translate->_('Display Name'); ?></th>
+		<?php //if (isset ($nacoma_link)) { ?>
+		<th class="header" <?php echo (isset ($nacoma_link)) ? 'colspan="2"' : '' ?>>&nbsp;</th>
+		<?php //} ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
@@ -29,9 +30,12 @@ if (isset($host_result) ) { ?>
 		<td><?php echo $host->address ?></td>
 		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
 		<td><?php echo $host->display_name ?></td>
+		<td class="icon">
+			<?php echo html::anchor('status/service/'.$host->host_name,html::image('/application/views/themes/default/icons/16x16/service-details.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
+		</td>
 		<?php if (isset ($nacoma_link)) { ?>
 		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+			<?php echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
 		</td>
 		<?php } ?>
 	</tr>
@@ -67,7 +71,7 @@ if (isset($service_result) ) { ?>
 		<td><?php echo $service->display_name ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
 		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'service/'.$service->host_name.'?service='.urlencode($service->service_description), html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+			<?php echo html::anchor($nacoma_link.'service/'.$service->host_name.'?service='.urlencode($service->service_description), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
 		</td>
 		<?php } ?>
 	</tr>
@@ -92,7 +96,7 @@ if (isset($hostgroup_result) ) { ?>
 		<td><?php echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', $hostgroup->alias) ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
 		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'hostgroup/'.urlencode($hostgroup->hostgroup_name), html::image($this->img_path('images/icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
+			<?php echo html::anchor($nacoma_link.'hostgroup/'.urlencode($hostgroup->hostgroup_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
 		</td>
 		<?php } ?>
 	</tr>
