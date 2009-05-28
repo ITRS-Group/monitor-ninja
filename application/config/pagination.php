@@ -16,6 +16,7 @@
  */
 $config['default'] = array
 (
+	'directory'      => Kohana::config('config.theme_path').Kohana::config('config.current_theme').'pagination',
 	'style'          => 'digg',
 	'query_string'   => 'page',
 	'items_per_page' => 100,
