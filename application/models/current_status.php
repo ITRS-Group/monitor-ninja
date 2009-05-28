@@ -927,7 +927,7 @@ class Current_status_Model extends Model
 						current_attempt,
 						problem_has_been_acknowledged,
 						scheduled_downtime_depth,
-						output AS plugin_output
+						output
 					FROM host
 					WHERE
 						id IN (".$host_str.")
@@ -1459,7 +1459,7 @@ class Current_status_Model extends Model
 				h.*,
 				h.current_state AS host_state,
 				(UNIX_TIMESTAMP() - h.last_state_change) AS duration,
-				h.output AS plugin_output,
+				h.output,
 				s.current_state AS service_state,
 				s.service_description
 			FROM

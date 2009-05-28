@@ -30,7 +30,7 @@ class Host_Model extends Model {
 				return false;
 			} else {
 				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, output AS plugin_output')
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration')
 					->where('host', array('id' => $id));
 			}
 		} elseif (!empty($name)) {
@@ -38,7 +38,7 @@ class Host_Model extends Model {
 				return false;
 			} else {
 				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, output AS plugin_output')
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration')
 					->getwhere('host', array('host_name' => $name));
 			}
 		} else {
