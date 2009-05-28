@@ -290,7 +290,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->sub_title = $sub_title;
 
 		$this->template->content->result = $result;
-		$this->template->content->pagination = $pagination;
+		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->logos_path = $this->logos_path;
 		if (empty($group_type)) {
 			if ($name == 'all') {
