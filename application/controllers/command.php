@@ -8,7 +8,7 @@
  * @author     op5 AB
  * @license    GPL
  */
-class Cmd_Controller extends Authenticated_Controller
+class Command_Controller extends Authenticated_Controller
 {
 	private $command_id = false;
 	private $cmd_params = array();
