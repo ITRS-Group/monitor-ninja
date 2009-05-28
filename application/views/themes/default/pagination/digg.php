@@ -86,14 +86,34 @@ $label_next = $this->translate->_('next');
 
 	<?php
 	$paging_step = 100; # step used below to print nr of items per page
+	$entries = $this->translate->_('entries');
+	if (!isset($items_per_page)) {
+		$items_per_page = Kohana::config('pagination.items_per_page');
+	}
 	?>
-	<form style="float:left" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get"><?php echo $this->translate->_('Show') ?> :<select name="items_per_page" onchange="this.form.submit()">
-		<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected=selected<?php } ?>>All
+	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>
+	<form class="pagination_form" style="float:left" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get"><?php echo $this->translate->_('Show') ?> :
+		<select class="items_per_page" name="items_per_page" onchange="this.form.submit()">
 	<?php
+		if ($total_items < $paging_step) {
+			?>
+			<option value="<?php echo $total_items ?>" selected="selected"><?php echo $total_items ?> <?php echo $entries ?></option>
+			<?php
+		} else {
+			?>
+			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo $this->translate->_('All').' '.$entries ?>
+			<?php
+		}
 		for ($i=$paging_step ; $i<$total_items; $i+=$paging_step ) {
-			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected=selected<?php } ?>><?php echo $i ?> entries</option><?php
+			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected='selected'<?php } ?>><?php echo $i ?> <?php echo $entries ?></option><?php
 		}
 	?>
-	</select> <?php echo $this->translate->_('per page') ?> &nbsp;<input type="submit" name="show_pagination" value="<?php echo $this->translate->_('go') ?>">
+		</select>
+		&nbsp;
+			<input
+				type="text" size="4" name="custom_pagination_field" class="custom_pagination_field"
+				title="<?php echo $this->translate->_('Enter number of items to show on each page or select from the drop-down on the left') ?>"
+				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
+			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('go') ?>" />
 	</form>
 </p>
