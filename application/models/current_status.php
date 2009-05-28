@@ -879,6 +879,7 @@ class Current_status_Model extends Model
 			return false;
 		}
 
+		$num_per_page = (int)$num_per_page;
 		$host_str = implode(', ', $host_list);
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);

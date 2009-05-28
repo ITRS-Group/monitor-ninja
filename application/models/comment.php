@@ -31,6 +31,7 @@ class Comment_Model extends ORM {
 		if (empty($service)) {
 			$service = '';
 		}
+		$num_per_page = (int)$num_per_page;
 		if ($count === false) {
 			$data = ORM::factory('comment')
 				->where(
@@ -68,6 +69,7 @@ class Comment_Model extends ORM {
 	{
 		$host = trim($host);
 		$service = trim($service);
+		$num_per_page = (int)$num_per_page;
 
 		if ($count === false) {
 			if (empty($service)) {
