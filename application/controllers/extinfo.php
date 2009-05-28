@@ -462,16 +462,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if ($command_type===false || empty($lable) || empty($method)) {
 			return false;
 		}
-		$link_params = false;
-		if (!empty($host) && !empty($service)) {
-			# only print extra params when present
-			$link_params = '&host_name='.urlencode($host).'&service='.urlencode($service);
-			if ($force === true)
-				$link_params .= '&force=true';
+		$lnk = "command/$method?cmd_typ=$command_type";
+		# only print extra params when present
+		if (!empty($host)) {
+			$lnk .= '&host_name=' . urlencode($host);
 		}
-		$link =	html::anchor('command/'.$method.'?cmd_typ='.$command_type.$link_params,
-			html::specialchars($lable));
-		return $link;
+		if (!empty($service)) {
+			$lnk .= '&service=' . urlencode($service);
+		}
+		if ($force === true) {
+			$lnk .= '&force=true';
+		}
+
+		return html::anchor($lnk, html::specialchars($lable));
 	}
 
 	/**
