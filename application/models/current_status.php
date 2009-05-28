@@ -944,14 +944,19 @@ class Current_status_Model extends Model
 				$auth_from = $auth_query_parts['from'];
 
 				# match authorized services against service.host_name
-				$auth_where = $auth_query_parts['where'];
+				$auth_where = $auth_query_parts['where'].' AND';
 
 				# what aliases are used for host and service field
 				$auth_service_field = $auth_query_parts['service_field'];
 				$auth_host_field = $auth_query_parts['host_field'];
+			} else {
+				$auth_service_field = 's';
+				$auth_host_field = 'h';
+				$auth_from = ' host '.$auth_host_field.', service '.$auth_service_field;
+				$auth_where = '';#$auth_service_field.'.host_name = '.$auth_host_field.'.host_name';
 			}
 
-			$sort_field = empty($sort_field) ? 'auth_host.host_name, auth_service.service_description' : $h.$sort_field;
+			$sort_field = empty($sort_field) ? $auth_host_field.'.host_name, '.$auth_service_field.'.service_description' : $auth_host_field.'.'.$sort_field;
 			if ($count === true) {
 			$sql = "
 					SELECT
@@ -960,8 +965,8 @@ class Current_status_Model extends Model
 						".$auth_from."
 					WHERE
 						".$auth_host_field.".id IN (".$host_str.") AND
-						".$auth_where." AND
-						".$auth_service_field.".host_name = ".$auth_host_field.".host_name
+						".$auth_where.
+						$auth_service_field.".host_name = ".$auth_host_field.".host_name
 						".$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			} else {
@@ -999,7 +1004,7 @@ class Current_status_Model extends Model
 						$auth_from.
 					" WHERE ".
 						$auth_host_field.".id IN (".$host_str.") AND ".
-						$auth_where." AND ".
+						$auth_where.
 						$auth_service_field.".host_name = ".$auth_host_field.".host_name ".
 						$filter_sql.$hostprops_sql.$serviceprops_sql.
 					" ORDER BY ".
