@@ -385,7 +385,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_host_notifications = $t->_('View Notifications This Host');
 
 				$page_links = array(
-					 $label_host_status_details => 'status/host/'.$host,
+					 $label_host_status_details => 'status/service/'.$host,
 					 $label_host_alert_history => 'history/host/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
