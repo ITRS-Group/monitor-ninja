@@ -226,7 +226,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if ($result->active_checks_enabled ) {
 			$commands->lable_active_checks = $type == 'host' ? $t->_('Disable Active Checks Of This Host') : $t->_('Disable Active Checks Of This Service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('DISABLE_HOST_CHECK') : nagioscmd::command_id('DISABLE_SVC_CHECK');
-			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks, 'command', true);
+			$commands->link_active_checks = $this->command_link($cmd, $host, $service, $commands->lable_active_checks);
 			$force_reschedule = 'true';
 		} else {
 			$commands->lable_active_checks = $type == 'host' ? $t->_('Enable Active Checks Of This Host') : $t->_('Enable Active Checks Of This Service');
