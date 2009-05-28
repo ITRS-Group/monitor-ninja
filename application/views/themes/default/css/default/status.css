@@ -37,15 +37,15 @@ td.icon a {
 }
 
 th.white,
-tr.even td.white,
-tr.odd td.white {
+#service_table tr.even td.white,
+#service_table tr.odd td.white {
 	background: #ffffff;
 	border: 1px solid #ffffff;
 	padding: 0px;
 }
 
 tr.even td.w80,
-tr.odd td.w80 { width: 80px; border-right: 0px; border-top: 1px solid #dcdcbc }
+tr.odd td.w80 { width: 80px; border-right: 0px;  }
 
 #content a {
 	text-decoration: none;
@@ -139,7 +139,7 @@ td.white:first-child table tr td:first-child {
 #service_table th.header,
 #host_table th.header,
 th.header {
-	background: #ffffff url(images/sort.png) top right;
+	background: #ffffff url(images/sort-none.png) top right;
 	cursor: pointer;
 	border-bottom: 1px solid #dcdccd;
 	border-right: 1px solid #dcdccd;
@@ -154,7 +154,7 @@ th.header {
 #service_table th.header:first-child,
 #host_table th.header:first-child,
 th.header:first-child {
-	background: #ffffff url(images/sort.png) top right;
+	background: #ffffff url(images/sort-none.png) top right;
 	cursor: pointer;
 	border-left: 1px solid #dcdccd;
 }
