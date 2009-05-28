@@ -16,8 +16,11 @@
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.autocomplete.min') ?>
+		<?php echo html::script('application/media/js/jquery.selectboxes.min.js') ?>
+		<?php echo html::script('application/media/js/jquery.query.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
+		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
