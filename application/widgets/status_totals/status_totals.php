@@ -74,10 +74,10 @@ class Status_totals_Widget extends widget_Core {
 		$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
 
 		$host_header = array(
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UP.'&group_type='.$grouptype, 'lable' => $total_up, 'status' => $label_up),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&group_type='.$grouptype, 'lable' => $total_down, 'status' => $label_down),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&group_type='.$grouptype, 'lable' => $total_unreachable, 'status' => $label_unreachable),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&group_type='.$grouptype, 'lable' => $total_pending, 'status' => $label_pending)
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UP, 'lable' => $total_up, 'status' => $label_up),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_DOWN, 'lable' => $total_down, 'status' => $label_down),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE, 'lable' => $total_unreachable, 'status' => $label_unreachable),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_PENDING, 'lable' => $total_pending, 'status' => $label_pending)
 		);
 
 		$svc_label_ok = $this->translate->_('Ok');
@@ -87,11 +87,11 @@ class Status_totals_Widget extends widget_Core {
 		$svc_label_pending = $this->translate->_('Pending');
 
 		$service_header = array(
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_OK.'&group_type='.$grouptype, 'lable' => $svc_total_ok, 'status' => $svc_label_ok),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&group_type='.$grouptype, 'lable' => $svc_total_warning, 'status' => $svc_label_warning),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&group_type='.$grouptype, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&group_type='.$grouptype, 'lable' => $svc_total_critical, 'status' => $svc_label_critical),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&group_type='.$grouptype, 'lable' => $svc_total_pending, 'status' => $svc_label_pending)
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_OK, 'lable' => $svc_total_ok, 'status' => $svc_label_ok),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_WARNING, 'lable' => $svc_total_warning, 'status' => $svc_label_warning),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_CRITICAL, 'lable' => $svc_total_critical, 'status' => $svc_label_critical),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_PENDING, 'lable' => $svc_total_pending, 'status' => $svc_label_pending)
 		);
 
 		$this->css = array('/css/status_totals');
@@ -116,7 +116,6 @@ class Status_totals_Widget extends widget_Core {
 
 		$grouptype = false;
 		$groupname = false;
-		$group_type = str_replace('group', '', $grouptype);
 
 		$host_name = 'all';
 
