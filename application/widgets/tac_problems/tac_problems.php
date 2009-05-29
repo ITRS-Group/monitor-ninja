@@ -98,11 +98,18 @@ class Tac_problems_Widget extends widget_Core {
 			$i++;
 		}
 
-		# fetch widget content
-		require_once($view_path);
+		if(request::is_ajax()) {
+			$json_str = json::encode($var);
+			echo $json_str;
+			echo $this->output(); # fetch from output buffer
+		} else {
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+			# fetch widget content
+			require_once($view_path);
+
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 	}
 }
