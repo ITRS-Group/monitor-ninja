@@ -4,7 +4,7 @@
  *
  * @preview  « Previous  1 2 … 5 6 7 8 9 10 11 12 13 14 … 25 26  Next »
  */
-
+if (!empty($total_items)) {
 $label_previous = $this->translate->_('previous');
 $label_next = $this->translate->_('next');
 ?>
@@ -117,3 +117,4 @@ $label_next = $this->translate->_('next');
 			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('go') ?>" />
 	</form>
 </p>
+<?php } ?>
