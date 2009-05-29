@@ -22,3 +22,7 @@ $config['default'] = array
 	'items_per_page' => 100,
 	'auto_hide'      => false
 );
+
+# step is used to generate drop-down for
+# nr of items per page to show
+$config['paging_step'] = 100;

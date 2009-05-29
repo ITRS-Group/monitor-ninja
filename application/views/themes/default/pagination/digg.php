@@ -85,7 +85,7 @@ $label_next = $this->translate->_('next');
 	<?php echo '&nbsp; (' . $this->translate->_('total') . ': ' . $total_items . ' ' . $this->translate->_('entries') . ')' ?>
 
 	<?php
-	$paging_step = 100; # step used below to print nr of items per page
+	$paging_step = Kohana::config('pagination.paging_step');; # step used below to print nr of items per page
 	$entries = $this->translate->_('entries');
 	if (!isset($items_per_page)) {
 		$items_per_page = Kohana::config('pagination.items_per_page');
