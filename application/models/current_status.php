@@ -884,20 +884,26 @@ class Current_status_Model extends Model
 		$sort_field = trim($sort_field);
 		$state_filter = trim($state_filter);
 		$filter_sql = '';
+		$filter_host_sql = false;
+		$filter_service_sql = false;
 		$h = $show_services ? 'auth_host.' : '';
 		$s = !$show_services ? '' : 'auth_service.';
 		if (!empty($state_filter)) {
-			$filter_sql .= 'AND 1 << ' . $h . "current_state & $state_filter ";
+			$filter_host_sql = "AND 1 << %scurrent_state & $state_filter ";
 		}
 		if ($service_filter!==false && !empty($service_filter)) {
-			$filter_sql .= " AND 1 << ".$s.".current_state & $service_filter ";
+			$filter_service_sql = " AND 1 << %scurrent_state & $service_filter ";
 		}
-		$serviceprops_sql = $this->build_service_props_query($serviceprops, $s);
-		$hostprops_sql = $this->build_host_props_query($hostprops, $h);
-		if (!empty($hostprops_sql)) {
-			$hostprops_sql = sprintf($hostprops_sql, $h);
-		}
+
 		if (!$show_services) {
+			if (!empty($filter_host_sql)) {
+				$filter_sql .= sprintf($filter_host_sql, '');
+			}
+			if (!empty($filter_service_sql)) {
+				$filter_sql .= sprintf($filter_service_sql, '');
+			}
+			$serviceprops_sql = $this->build_service_props_query($serviceprops, $s);
+			$hostprops_sql = $this->build_host_props_query($hostprops, $h);
 			$sort_field = empty($sort_field) ? 'host_name' : $sort_field;
 			# only host listing
 			if ($count === true) {
@@ -954,8 +960,17 @@ class Current_status_Model extends Model
 				$auth_service_field = 's';
 				$auth_host_field = 'h';
 				$auth_from = ' host '.$auth_host_field.', service '.$auth_service_field;
-				$auth_where = '';#$auth_service_field.'.host_name = '.$auth_host_field.'.host_name';
+				$auth_where = '';
 			}
+			if (!empty($filter_host_sql)) {
+				$filter_sql .= sprintf($filter_host_sql, $auth_host_field.'.');
+			}
+			if (!empty($filter_service_sql)) {
+				$filter_sql .= sprintf($filter_service_sql, $auth_service_field.'.');
+			}
+
+			$serviceprops_sql = $this->build_service_props_query($serviceprops, $auth_service_field.'.');
+			$hostprops_sql = $this->build_host_props_query($hostprops, $auth_host_field.'.');
 
 			$sort_field = empty($sort_field) ? $auth_host_field.'.host_name, '.$auth_service_field.'.service_description' : $auth_host_field.'.'.$sort_field;
 			if ($count === true) {
