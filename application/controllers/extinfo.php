@@ -389,7 +389,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					 $label_host_alert_history => 'history/host/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
-					 $label_host_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&show_log_entries',
+					 $label_host_avail => 'reporting/availability/'.$type.'/'.$host,
 					 $label_host_notifications => '/notifications/host/'.$host
 				);
 				break;
@@ -408,7 +408,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_service_alert_history => 'history/host/'.$host.'?service='.urlencode($service),
 					$label_service_trends => 'trends/host/'.$host.'?service='.urlencode($service),
 					$label_service_histogram => 'histogram/host/'.$host.'?service='.urlencode($service),
-					$label_service_avail => '/monitor/op5/reports/gui/avail_result.php?host='.$host.'&service='.urlencode($service).'&show_log_entries',
+					$label_service_avail => 'reporting/availability/host/'.$host.'?service='.urlencode($service),
 					$label_service_notifications => '/notifications/host/'.$host.'?service='.urlencode($service)
 				);
 
