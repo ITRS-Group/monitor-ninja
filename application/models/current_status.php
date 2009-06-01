@@ -786,6 +786,10 @@ class Current_status_Model extends Model
 	 * @param $sort_field field to sort on
 	 * @param $sort_order ASC/DESC
 	 * @param $service_filter Bitmask filter of service statuses
+	 * @param $serviceprops Used to filter out services the user is not
+	 *                      allowed to see
+	 * @param $hostprops Used to filter out hosts the user is not allowed
+	 *                   to see
 	 */
 	public function host_status_subgroup
 		($host_ids = false, $show_services = false, $state_filter=false,
@@ -818,6 +822,7 @@ class Current_status_Model extends Model
 
 	/**
 	 * Verify input host_name(s) and redirect to get_host_status()
+	 *
 	 * @param $host_names (array/string) host_name(s) to check
 	 *	Also accepts 'all' as input, which will return
 	 *	all hosts the user has been granted access to.
@@ -826,6 +831,11 @@ class Current_status_Model extends Model
 	 * @param $sort_field field to sort on
 	 * @param $sort_order ASC/DESC
 	 * @param $service_filter Bitmask filter of service statuses
+	 * @param $serviceprops Passed as-is to this->get_host_status
+	 * @param $hostprops Passed as-is to this->get_host_status
+	 * @param $num_per_page Number of items to list per page
+	 * @param $offset Item-number to start at
+	 * @param $count Number of items to return
 	 */
 	public function host_status_subgroup_names
 		($host_names=false, $show_services = false, $state_filter=false,
@@ -1449,11 +1459,12 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	 * Finds all hosts and services that are members of a specific host- or servicegroup
-	 * Will return all info on the hosts but only service_description and current_state for services
+	 * Finds all members of a host- or servicegroup
+	 * Will return all info on the hosts but only service_description
+	 * and current_state for services
 	 *
-	 * @param str $grouptype [host|service]
-	 * @param str $groupname
+	 * @param $grouptype [host|service]
+	 * @param $groupname Name of the group
 	 * @return db result
 	 */
 	public function get_group_info($grouptype='service', $groupname=false)

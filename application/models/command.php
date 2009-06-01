@@ -62,6 +62,7 @@ class Command_Model extends Model
 
 	protected function get_downtime_ids($command_name)
 	{
+		# fixme: STUB
 		return array(1, 2, 3);
 	}
 
@@ -70,6 +71,7 @@ class Command_Model extends Model
 	 * Complete with information and data needed to request input
 	 * regarding a particular command
 	 * @param $cmd The name (or 'id') of the command
+	 * @param $defaults Default values for command parameters
 	 * @return Indexed array
 	 */
 	public function get_command_info($cmd, $defaults = false)
