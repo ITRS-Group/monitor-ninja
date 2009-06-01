@@ -413,30 +413,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 
 				break;
-			case 'servicegroup':
-				$label_status_details = $t->_('View Status Detail For This Servicegroup');
-				$label_group_status_overview = $t->_('View Status Overview For This Servicegroup');
-				$label_group_status_grid = $t->_('View Status Grid For This Servicegroup');
-				$label_avail = $t->_('View Availability For This Servicegroup');
-				$page_links = array(
-					$label_status_details => 'status/service/'.$host.'?group_type='.$type,
-					$label_group_status_overview => 'status/'.$type.'/'.$host,
-					$label_group_status_grid => Router::$controller.'/'.$type.'_grid/'.$host,
-					$label_avail => '/monitor/op5/reports/gui/avail_result.php?'.$type.'='.$host,
-				);
-				break;
-			case 'hostgroup':
-				$label_status_details = $t->_('View Status Detail For This Hostgroup');
-				$label_group_status_overview = $t->_('View Status Overview For This Hostgroup');
-				$label_group_status_grid = $t->_('View Status Grid For This Hostgroup');
-				$label_avail = $t->_('View Availability For This Hostgroup');
-				$page_links = array(
-					$label_status_details => 'status/service/'.$host.'?group_type='.$type,
-					$label_group_status_overview => 'status/'.$type.'/'.$host,
-					$label_group_status_grid => Router::$controller.'/'.$type.'_grid/'.$host,
-					$label_avail => '/monitor/op5/reports/gui/avail_result.php?'.$type.'='.$host,
-				);
-				break;
 		}
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
@@ -810,6 +786,37 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_active_checks = $t->_('Active Checks Of All Services');
 		$content->cmd_disable_active_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
 		$content->cmd_enable_active_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
+
+		switch ($grouptype) {
+			case 'servicegroup':
+				$label_status_details = $t->_('View Status Detail For This Servicegroup');
+				$label_group_status_overview = $t->_('View Status Overview For This Servicegroup');
+				$label_group_status_grid = $t->_('View Status Grid For This Servicegroup');
+				$label_avail = $t->_('View Availability For This Servicegroup');
+				$page_links = array(
+					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
+					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
+					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
+					$label_avail => 'reporting/availability/'.$grouptype.'/'.$group,
+				);
+				break;
+			case 'hostgroup':
+				$label_status_details = $t->_('View Status Detail For This Hostgroup');
+				$label_group_status_overview = $t->_('View Status Overview For This Hostgroup');
+				$label_group_status_grid = $t->_('View Status Grid For This Hostgroup');
+				$label_avail = $t->_('View Availability For This Hostgroup');
+				$page_links = array(
+					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
+					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
+					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
+					$label_avail => 'reporting/availability/'.$grouptype.'/'.$group,
+				);
+				break;
+		}
+		if (isset($page_links)) {
+			$content->page_links = $page_links;
+		}
+
 	}
 
 	/**
