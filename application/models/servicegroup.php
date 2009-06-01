@@ -20,7 +20,13 @@ class Servicegroup_Model extends ORM
 		if (empty($value) || empty($field)) {
 			return false;
 		}
-		$data = ORM::factory('servicegroup')->where($field, $value)->find();
+		$auth = new Nagios_auth_Model();
+		$auth_objects = $auth->get_authorized_servicegroups();
+		$obj_ids = array_keys($auth_objects);
+		$data = ORM::factory('servicegroup')
+			->where($field, $value)
+			->in('id', $obj_ids)
+			->find();
 		return $data->loaded ? $data : false;
 	}
 
@@ -29,7 +35,13 @@ class Servicegroup_Model extends ORM
 	 */
 	public function get_all()
 	{
-		return ORM::factory('servicegroup')->find_all();
+		$auth = new Nagios_auth_Model();
+		$auth_objects = $auth->get_authorized_servicegroups();
+		$obj_ids = array_keys($auth_objects);
+
+		return ORM::factory('servicegroup')
+			->in('id', $obj_ids)
+			->find_all();
 	}
 
 	/**
