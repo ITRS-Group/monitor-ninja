@@ -5,11 +5,9 @@
 		<!--<caption><?php echo $title ?></caption>-->
 		<thead>
 			<tr>
-
-				<th class="header"><?php //echo $label_state ?>&nbsp;</th>
+				<th class="header">&nbsp;</th>
 				<th class="header"><?php echo $label_host ?></th>
 				<th class="header"><?php echo $label_severity ?></th>
-				<!--<th class="header"><?php //echo $label_notes ?></th>-->
 				<th class="header"><?php echo $label_duration ?></th>
 				<th class="header"><?php echo $label_hosts_affected ?></th>
 				<th class="header"><?php echo $label_services_affected ?></th>
@@ -24,9 +22,7 @@
 					$i++;
 			?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
-
 				<td class="icon">
-					<?php //echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 					<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($details['current_state'])).'.png',array('alt' => 'hej', 'title' => 'hej')) ?>
 				</td>
 				<td><a href='extinfo.cgi?type=1&amp;host=switch1'><?php echo $host ?></a></td>
