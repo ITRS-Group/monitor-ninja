@@ -20,8 +20,8 @@ foreach ($params as $pname => $ary) {
 	echo "<tr><td>$ary[name]</td><td>\n";
 	switch ($ary['type']) {
 	 case 'select':
-		if ($dflt && array_search($ary['options'], $dflt)) {
-			$dflt = array_search($ary['options']);
+		if ($dflt && array_search($dflt, $ary['options'])) {
+			$dflt = array_search($dflt, $ary['options']);
 		}
 		echo form::dropdown($pname, $ary['options'], $dflt);
 		break;
@@ -53,5 +53,5 @@ foreach ($params as $pname => $ary) {
 	echo "</td><td>helptext here</td></tr>\n";
 }
 echo "</table>\n";
-echo form::submit('Commit', 'class="submit"');
+echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
 echo "<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
