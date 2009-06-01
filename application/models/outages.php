@@ -54,6 +54,10 @@ class Outages_Model extends Model
 					}
 				}
 
+				if (!isset($outages[$outage_host]['affected_services'])) {
+					$outages[$outage_host]['affected_services'] = 0;
+				}
+
 				# add services for the host causing the outage
 				$outages[$outage_host]['affected_services'] += sizeof($services);
 
