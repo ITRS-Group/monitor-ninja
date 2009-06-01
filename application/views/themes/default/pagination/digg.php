@@ -114,7 +114,6 @@ $label_next = $this->translate->_('next');
 				type="text" size="4" name="custom_pagination_field" class="custom_pagination_field"
 				title="<?php echo $this->translate->_('Enter number of items to show on each page or select from the drop-down on the left') ?>"
 				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
-			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('go') ?>" />
+			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('Go') ?>" />
 	</form>
-</p>
-<?php } ?>
+</p><?php } ?>
