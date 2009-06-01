@@ -51,7 +51,7 @@ class Comment_Model extends ORM {
 				)
 				->find_all();
 		}
-		return $data;//->loaded ? $data : false;
+		return $data ? $data : false;
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Comment_Model extends ORM {
 			}
 			return $data;
 		}
-		return $data;
+		return $data ? $data : false;
 	}
 
 	/**
