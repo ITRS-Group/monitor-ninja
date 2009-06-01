@@ -44,12 +44,14 @@ class Outages_Model extends Model
 				}
 
 				$outages[$outage_host]['affected_hosts'] = $affected_hosts[$outage_host] +1;
-				foreach ($unreachable_hosts[$outage_host] as $host_id => $host_name) {
-					if (!isset($outages[$outage_host]['affected_services'])) {
-						$outages[$outage_host]['affected_services'] = 0;
-					}
+				if (isset($unreachable_hosts[$outage_host]) && !empty($unreachable_hosts[$outage_host])) {
+					foreach ($unreachable_hosts[$outage_host] as $host_id => $host_name) {
+						if (!isset($outages[$outage_host]['affected_services'])) {
+							$outages[$outage_host]['affected_services'] = 0;
+						}
 
-					$outages[$outage_host]['affected_services'] += $children_services[$host_id];
+						$outages[$outage_host]['affected_services'] += $children_services[$host_id];
+					}
 				}
 
 				# add services for the host causing the outage
