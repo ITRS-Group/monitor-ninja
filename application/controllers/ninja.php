@@ -59,35 +59,39 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->template->links = array(
 			$this->translate->_('Monitoring') => array(
-				$this->translate->_('Tactical overview') 			=> 'tac',
-				$this->translate->_('Host detail') 						=> 'status/host',
-				$this->translate->_('Service detail') 				=> 'status/service',
-				$this->translate->_('Hostgroup overview') 		=> 'status/hostgroup',
-				$this->translate->_('Hostgroup grid') 				=> 'status/hostgroup_grid',
-				$this->translate->_('Hostgroup summary') 			=> 'status/hostgroup_summary',
-				$this->translate->_('Servicegroup overview') 	=> 'status/servicegroup',
-				$this->translate->_('Servicegroup grid') 			=> 'status/servicegroup_grid',
-				$this->translate->_('Servicegroup summary') 	=> 'status/servicegroup_summary',
-				$this->translate->_('Network outages') 				=> 'outages',
-				$this->translate->_('Host problems') 					=> 'status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE),
-				$this->translate->_('Service problems') 			=> 'status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),
-				$this->translate->_('Unhandled problems') 		=> 'status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED),
-				$this->translate->_('Comments') 							=> 'extinfo/show_comments',
-				$this->translate->_('Process info') 					=> 'extinfo/show_process_info',
+				$this->translate->_('Tactical overview') 			=> array('tac', 'tac'),
+				$this->translate->_('hr1') 										=> array('', ''),
+				$this->translate->_('Host detail') 						=> array('status/host', 'host'),
+				$this->translate->_('Host problems') 					=> array('status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'host-problems'),
+				$this->translate->_('Hostgroup overview') 		=> array('status/hostgroup', 'hostgroup'),
+				$this->translate->_('Hostgroup grid') 				=> array('status/hostgroup_grid', 'hostgroup-grid'),
+				$this->translate->_('Hostgroup summary') 			=> array('status/hostgroup_summary', 'hostgroup-summary'),
+				$this->translate->_('hr2') 										=> array('', ''),
+				$this->translate->_('Service detail') 				=> array('status/service', 'star'),
+				$this->translate->_('Service problems') 			=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'service-problems'),
+				$this->translate->_('Servicegroup overview') 	=> array('status/servicegroup', 'servicegroup'),
+				$this->translate->_('Servicegroup grid') 			=> array('status/servicegroup_grid', 'servicegroup-grid'),
+				$this->translate->_('Servicegroup summary') 	=> array('status/servicegroup_summary', 'servicegroup-summary'),
+				$this->translate->_('hr3') 										=> array('', ''),
+				$this->translate->_('Network outages') 				=> array('outages', 'problems2'),
+				$this->translate->_('Unhandled problems') 		=> array('status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED), 'problems'),
+				$this->translate->_('hr4') 										=> array('', ''),
+				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
+				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'extinfo'),
 			),
 			$this->translate->_('Reporting') => array(
-				$this->translate->_('Availability') 					=> 'reporting/availability',
-				$this->translate->_('SLA Reporting') 					=> 'reporting/sla_reporting',
+				$this->translate->_('Availability') 					=> array('reporting/availability', 'reports'),
+				$this->translate->_('SLA Reporting') 					=> array('reporting/sla_reporting', 'sla'),
 			)
 		);
 
 		# Add NACOMA link only if enabled in config
 		if (Kohana::config('config.nacoma_path')!==false) {
-			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = 'configuration/configure';
+			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('configuration/configure','nacoma');
 		}
 
 		if (Kohana::config('config.nagvis_path') !== false) {
-			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = 'nagvis/index';
+			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('nagvis/index', 'nagvis');
 		}
 
 		$this->registry->set('Zend_Translate', $this->translate);
