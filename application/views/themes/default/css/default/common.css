@@ -60,13 +60,21 @@ cite em:first-child {
 	margin-left: -4px;
 }
 
-input[type=submit] {
+input[type=submit],
+input[type=button] {
 	font: 11px 'trebuchet ms',arial,sans-serif;
 	border: 1px solid #ffffff;
 	outline:  1px solid #cdcddc;
 	background: transparent url(images/button-bg.png) repeat-x;
 	padding: 1px 5px;
 }
+
+/*input[type=text] {
+	font: 11px 'trebuchet ms',arial,sans-serif;
+	border: 1px solid #ffffff;
+	outline:  1px solid #cdcddc;
+	padding: 2px 5px;
+}*/
 
 select {
 	font: 11px 'trebuchet ms',arial,sans-serif;
@@ -284,6 +292,12 @@ select {
 
 #menu ul li.selected {
 	font-weight: bold;
+}
+
+#menu ul li.hr {
+	height: 2px;
+	background: #ffffff;
+	padding: 0px;
 }
 
 #menu ul li img {
