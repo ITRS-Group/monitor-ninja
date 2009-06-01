@@ -1,4 +1,17 @@
-<div class="widget left w98" style="margin-top: 0px">
+<div class="widget left w33" id="page_links">
+	<ul>
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+	</ul>
+</div>
+<div class="widget left w98">
 <table style="border-spacing: 1px; background-color: #dcdccd">
 	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?></caption>
 	<tr>
