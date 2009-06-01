@@ -11,7 +11,7 @@
 				<th class="header"><?php echo $label_duration ?></th>
 				<th class="header"><?php echo $label_hosts_affected ?></th>
 				<th class="header"><?php echo $label_services_affected ?></th>
-				<th  class="header" colspan="6"><?php echo $label_actions ?></th>
+				<th class="header" colspan="6"><?php echo $label_actions ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -25,7 +25,9 @@
 				<td class="icon">
 					<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($details['current_state'])).'.png',array('alt' => 'hej', 'title' => 'hej')) ?>
 				</td>
-				<td><a href='extinfo.cgi?type=1&amp;host=switch1'><?php echo $host ?></a></td>
+				<td>
+					<?php echo html::anchor('extinfo/details/host/'.$host, $host) ?>
+				</td>
 				<td><?php echo $details['severity'] ?></td>
 				<td><?php echo $details['duration'] ?></td>
 				<td><?php echo $details['affected_hosts'] ?></td>
