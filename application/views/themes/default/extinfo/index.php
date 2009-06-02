@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left w98" id="page_links">
+<div class="widget left" id="page_links" style="width: 250px">
 	<ul>
 	<?php
 	if (isset($page_links)) {
@@ -22,7 +22,7 @@ if (!empty($widgets)) {
 	</ul>
 </div>
 
-<div class="widget left w98" id="extinfo_host-info">
+<div class="widget left w66" id="extinfo_host-info">
 	<table>
 		<colgroup>
 			<col style="width: 80px" />
@@ -54,6 +54,8 @@ if (!empty($widgets)) {
 	</table>
 </div>
 
+<div style="clear:both"></div>
+
 
 <div class="widget left" id="extinfo_current">
 	<table>
@@ -61,7 +63,7 @@ if (!empty($widgets)) {
 		<tr class="odd">
 			<td style="width: 160px" class="bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
-				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($current_status_str).'.png', array('alt' => $current_status_str, 'style' => 'margin-bottom: -2px'));?>
+				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($current_status_str).'.png', array('alt' => $current_status_str, 'style' => 'margin-bottom: -2px; margin-right: 2px'));?>
 				<?php echo ucfirst(strtolower($current_status_str)) ?>
 				(<?php echo $lable_for ?> <?php echo $duration ? $duration : $na_str ?>)
 			</td>
