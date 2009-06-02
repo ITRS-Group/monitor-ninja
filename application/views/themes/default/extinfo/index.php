@@ -132,35 +132,35 @@ if (!empty($widgets)) {
 				<?php echo ucfirst(strtolower($active_checks_enabled)) ?>
 			</td>
 		</tr>
-		<tr class="even">
+		<tr class="odd">
 			<td><?php echo $lable_passive_checks ?></td>
 			<td>
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?>
 				<?php echo ucfirst(strtolower($passive_checks_enabled)) ?>
 			</td>
 		</tr>
-		<tr class="odd">
+		<tr class="even">
 			<td><?php echo $lable_obsessing ?></td>
 			<td>
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?>
 				<?php echo ucfirst(strtolower($obsessing)) ?>
 			</td>
 		</tr>
-		<tr class="even">
+		<tr class="odd">
 			<td><?php echo $lable_notifications ?></td>
 			<td>
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?>
 				<?php echo ucfirst(strtolower($notifications_enabled)) ?>
 			</td>
 		</tr>
-		<tr class="odd">
+		<tr class="even">
 			<td><?php echo $lable_event_handler ?></td>
 			<td>
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?>
 				<?php echo ucfirst(strtolower($event_handler_enabled)) ?>
 			</td>
 		</tr>
-		<tr class="even">
+		<tr class="odd">
 			<td><?php echo $lable_flap_detection ?></td>
 			<td>
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($active_checks_enabled).'.png',$active_checks_enabled);?>
