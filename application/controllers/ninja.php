@@ -73,11 +73,12 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Servicegroup grid') 			=> array('status/servicegroup_grid', 'servicegroup-grid'),
 				$this->translate->_('Servicegroup summary') 	=> array('status/servicegroup_summary', 'servicegroup-summary'),
 				$this->translate->_('hr3') 										=> array('', ''),
-				$this->translate->_('Network outages') 				=> array('outages', 'problems2'),
+				$this->translate->_('Network outages') 				=> array('outages', 'outages'),
 				$this->translate->_('Unhandled problems') 		=> array('status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED), 'problems'),
 				$this->translate->_('hr4') 										=> array('', ''),
 				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
 				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'extinfo'),
+				$this->translate->_('hr5') 										=> array('', ''),
 			),
 			$this->translate->_('Reporting') => array(
 				$this->translate->_('Availability') 					=> array('reporting/availability', 'reports'),
