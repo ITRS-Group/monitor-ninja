@@ -28,9 +28,7 @@ class Tac_problems_Widget extends widget_Core {
 			$current_status = $arguments[0];
 			array_shift($arguments);
 		} else {
-			# don't accept widget to call current_status
-			# and re-generate all status data
-			return false;
+			$current_status = new Current_status_Model();
 		}
 
 		# HOSTS DOWN / problems
