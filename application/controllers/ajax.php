@@ -161,4 +161,21 @@ class Ajax_Controller extends Authenticated_Controller {
 		return false;
 
 	}
+
+	/**
+	*	Save location and order of widgets on a page
+	*	@param  str $widget_str Serialized data for widget locations
+	* 	@param 	str $page The page to save the data for
+	*/
+	public function save_widgets_order($widget_str=false, $page=false)
+	{
+		$widget_str = trim($widget_str);
+		$page = trim($page);
+		if (empty($widget_str) || empty($page))
+			return false;
+		$user = Auth::instance()->get_user()->username;
+		if (empty($user))
+			return false;
+		# save data to database
+	}
 }
