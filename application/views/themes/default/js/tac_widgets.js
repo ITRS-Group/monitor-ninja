@@ -21,6 +21,11 @@ $(document).ready(function() {
 			widgetCloseEdit : 'slide',
 			widgetCancelEdit : 'slide'
 		},
+		callbacks : {
+			onChangePositions : function(str){
+				//console.log(str);
+			}
+		}
 	});
 });
 
