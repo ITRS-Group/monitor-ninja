@@ -11,16 +11,16 @@
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.form.js') ?>
-		<?php echo html::script('application/media/js/jquery.tablesorter.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
+		<?php echo html::script('application/media/js/jquery.form.js') ?>
+		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.autocomplete.min') ?>
 		<?php echo html::script('application/media/js/jquery.selectboxes.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.query.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
+		<?php echo html::script('application/views/themes/default/js/colour-slider.js') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -88,17 +88,36 @@
 			</ul>
 		</div>
 
+		<?php
+		/*$settings_page = array(
+			$this->translate->_('Page Contrast') => array(
+				'low' => $this->translate->_('Low'),
+				'medium' => $this->translate->_('Medium'),
+				'high' => $this->translate->_('High')
+			),
+		);*/
+		$settings_page = '';
+		?>
+
 		<div id="page_settings">
 			<ul>
-				<li class="header"><?php echo $this->translate->_('Availiable Widgets') ?></li>
 				<?php
 					if (is_array($settings_widgets)) {
+						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>';
 						foreach($settings_widgets as $id => $widget) {
 							echo '<li id="li_'.$id.'" class="selected" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
 						}
+						echo '<li onclick="control_widgets(); return false">'.$this->translate->_('Restore to factory settings').'</li>';
+					}
+					if (is_array($settings_page)) {
+						foreach($settings_page as $group => $settings) {
+							echo '<li class="header">'.$group.'</li>';
+							foreach($settings as $id => $title) {
+								echo '<li id="pagesettings_'.$id.'" class="unselected" onclick="page_settings(\''.$id.'\',this)">'.$title.'</li>';
+							}
+						}
 					}
 				?>
-				<li onclick="control_widgets(); return false"><?php echo $this->translate->_('Restore to factory settings') ?></li>
 			</ul>
 		</div>
 		<div id="content">
