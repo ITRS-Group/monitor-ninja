@@ -96,15 +96,27 @@ class Tac_problems_Widget extends widget_Core {
 			$i++;
 		}
 
+		# fetch widget content
+		require_once($view_path);
+
 		if(request::is_ajax()) {
-			$json_str = json::encode($var);
-			echo $json_str;
-			echo $this->output(); # fetch from output buffer
+			# output entire widget content
+			$split = explode('\n', json::encode( $this->output()) );
+			$output = false;
+			$i = 0;
+			# remove the outer div from generated view to make it
+			# easier for the calling javascript to make the update
+			foreach ($split as $part) {
+				if ($i!=1 && $i!= (sizeof($split)-2))
+					$output[] = $part;
+				$i++;
+			}
+			# join the data back together before echoing it back
+			$output = implode('', $output);
+			echo $output;
 		} else {
-
-			# fetch widget content
-			require_once($view_path);
-
+			# add custom javascript to header
+			$this->js = array('/js/tac_problems');
 			# call parent helper to assign all
 			# variables to master controller
 			return $this->fetch();
