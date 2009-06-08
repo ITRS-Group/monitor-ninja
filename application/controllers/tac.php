@@ -59,7 +59,7 @@ class Tac_Controller extends Authenticated_Controller {
 		widget::add('tac_services', array('index', $this->model), $this);
 		widget::add('tac_monfeat', array('index', $this->model), $this);
 
-		$this->xtra_js = array($this->add_path('/js/tac_widgets.js'));
+		$this->xtra_js[] = $this->add_path('/js/tac_widgets.js');
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
