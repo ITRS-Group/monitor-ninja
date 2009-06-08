@@ -1,7 +1,7 @@
-$(function(){
+$(document).ready(function() {
 	$.fn.EasyWidgets({
 		behaviour : {
-			useCookies : true
+			useCookies : false
 		},
 		i18n : {
 			editText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Settings" />',
