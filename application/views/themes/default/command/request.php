@@ -1,23 +1,26 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-echo Kohana::debug($info);
+//echo Kohana::debug($info);
 
+echo '<div class="widget left w98">';
 if (!$info) {
 	echo "Unknown command: $requested_command<br />\n";
 	return;
 }
 
-echo "<h2>$brief</h2>\n";
-echo "<h3>$description</h3>\n";
+echo "<p><strong>$brief</strong></p>\n";
+echo "<p style=\"width: 550px\">$description</p>\n";
 echo form::open('command/commit');
 
 $params = $info['params'];
 echo "<table>\n";
+echo '<tr><th class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
 foreach ($params as $pname => $ary) {
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
-
-	echo "<tr><td>$ary[name]</td><td>\n";
+	echo '<tr class="even">';
+	//echo '<td style="width: 12px">'.html::image('application/views/themes/default/icons/12x12/shield-info.png',array('alt' => $this->translate->_('View help'), 'title' => $this->translate->_('View help'), 'style' => 'float: left')).'</td>';
+	echo '<td style="width: 200px">'.$ary['name'].'</td><td>';
 	switch ($ary['type']) {
 	 case 'select':
 		if ($dflt && array_search($dflt, $ary['options'])) {
@@ -46,12 +49,13 @@ foreach ($params as $pname => $ary) {
 		break;
 	 case 'string':
 	 default:
-		echo form::input($pname, $dflt, 'class="text"');
+		echo form::input($pname, $dflt, '');
 		break;
 	}
-	echo "$ary[type]\n";
-	echo "</td><td>helptext here</td></tr>\n";
+
+	echo "</tr>\n";
 }
-echo "</table>\n";
+echo "</table><br />\n";
 echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
 echo "<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+echo '</div>';
