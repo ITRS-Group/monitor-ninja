@@ -21,13 +21,21 @@
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
 		<?php echo html::script('application/views/themes/default/js/colour-slider.js') ?>
+
+		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
+				<?php
+				if (!empty($inline_js)) {
+					echo "$(document).ready(function() {";
+					echo $inline_js;
+					echo "});";
+				}
+				?>
 			//-->
 		</script>
-		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 	</head>
 
 	<body>
