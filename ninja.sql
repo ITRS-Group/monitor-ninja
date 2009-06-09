@@ -1,20 +1,3 @@
---
--- Table structure for table `permissions`
---
-
-DROP TABLE IF EXISTS `permissions`;
-CREATE TABLE IF NOT EXISTS `permissions` (
-  `role_id` int(11) NOT NULL,
-  `var` varchar(255) NOT NULL,
-  `value` text
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `permissions`
---
-
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `roles`
@@ -90,52 +73,6 @@ INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_pref`
---
-
-DROP TABLE IF EXISTS `user_pref`;
-CREATE TABLE IF NOT EXISTS `user_pref` (
-  `id` int(11) NOT NULL auto_increment,
-  `user_id` int(11) NOT NULL,
-  `widget` int(11) NOT NULL,
-  `var` varchar(255) NOT NULL,
-  `value` text,
-  PRIMARY KEY  (`id`),
-  KEY `user_var` (`user_id`,`var`),
-  KEY `user_widget` (`user_id`,`widget`),
-  KEY `user_widget_var` (`user_id`,`widget`,`var`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `user_pref`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_tokens`
---
-
-DROP TABLE IF EXISTS `user_tokens`;
-CREATE TABLE IF NOT EXISTS `user_tokens` (
-  `id` int(11) unsigned NOT NULL auto_increment,
-  `user_id` int(11) unsigned NOT NULL,
-  `user_agent` varchar(40) NOT NULL,
-  `token` varchar(32) NOT NULL,
-  `created` int(10) unsigned NOT NULL,
-  `expires` int(10) unsigned NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `uniq_token` (`token`),
-  KEY `fk_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `user_tokens`
---
-
-
---
 -- Constraints for dumped tables
 --
 
@@ -151,3 +88,56 @@ ALTER TABLE `roles_users`
 --
 ALTER TABLE `user_tokens`
   ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+
+--
+-- Table structure for table `ninja_settings`
+--
+
+DROP TABLE IF EXISTS `ninja_settings`;
+CREATE TABLE IF NOT EXISTS `ninja_settings` (
+  `id` int(11) NOT NULL auto_increment,
+  `user` varchar(200) NOT NULL,
+  `page` varchar(200) NOT NULL,
+  `type` varchar(200) NOT NULL,
+  `setting` text NOT NULL,
+  `widget_id` int(11) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user` (`user`),
+  KEY `page` (`page`),
+  KEY `widget_id` (`widget_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ninja_widgets`
+--
+
+DROP TABLE IF EXISTS `ninja_widgets`;
+CREATE TABLE IF NOT EXISTS `ninja_widgets` (
+  `id` int(11) NOT NULL auto_increment,
+  `user` varchar(200) NOT NULL,
+  `page` varchar(200) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `friendly_name` varchar(255) NOT NULL,
+  `setting` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user` (`user`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+--
+-- Dumping data for table `ninja_widgets`
+--
+
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES
+(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', 'a:1:{i:0;s:5:"index";} '),
+(2, '', 'tac/index', 'netw_health', 'Network health', 'a:1:{i:0;s:5:"index";} '),
+(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', 'a:1:{i:0;s:5:"index";} '),
+(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', 'a:1:{i:0;s:5:"index";} '),
+(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', 'a:1:{i:0;s:5:"index";} '),
+(6, '', 'tac/index', 'netw_outages', 'Network outages', 'a:1:{i:0;s:5:"index";} '),
+(7, '', 'tac/index', 'tac_hosts', 'Hosts', 'a:1:{i:0;s:5:"index";} '),
+(8, '', 'tac/index', 'tac_services', 'Services', 'a:1:{i:0;s:5:"index";} '),
+(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', 'a:1:{i:0;s:5:"index";} ');
