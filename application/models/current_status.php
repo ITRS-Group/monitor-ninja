@@ -982,7 +982,13 @@ class Current_status_Model extends Model
 			$serviceprops_sql = $this->build_service_props_query($serviceprops, $auth_service_field.'.');
 			$hostprops_sql = $this->build_host_props_query($hostprops, $auth_host_field.'.');
 
-			$sort_field = empty($sort_field) ? $auth_host_field.'.host_name, '.$auth_service_field.'.service_description' : $auth_host_field.'.'.$sort_field;
+			if (empty($sort_field)) {
+				$sort_field = $auth_host_field.'.host_name, '.$auth_service_field.'.service_description';
+			} else {
+				$sort_field = str_replace('s.', $auth_service_field.'.',$sort_field);
+				$sort_field = str_replace('h.', $auth_host_field.'.',$sort_field);
+			}
+
 			if ($count === true) {
 			$sql = "
 					SELECT
