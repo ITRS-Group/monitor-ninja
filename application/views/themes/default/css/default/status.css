@@ -164,6 +164,7 @@ th.header:first-child {
 #group_summary_table th,
 #service_table th,
 #service_table th.headerNone,
+th.headerNone,
 #host_table th,
 #host_table th.no-sort {
 	background:#f5f5ef;
@@ -178,6 +179,7 @@ th.header:first-child {
 .group_grid_table th:first-child,
 .group_overview_table th:first-child,
 .comments_table th:first-child,
+th.headerNone:first-child,
 #group_summary_table th:first-child,
 #service_table th:first-child,
 #host_table th:first-child,

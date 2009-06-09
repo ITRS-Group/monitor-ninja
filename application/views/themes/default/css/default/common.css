@@ -61,6 +61,7 @@ cite em:first-child {
 }
 
 input[type=submit],
+input[type=reset],
 input[type=button] {
 	font: 11px 'trebuchet ms',arial,sans-serif;
 	border: 1px solid #ffffff;
@@ -69,12 +70,13 @@ input[type=button] {
 	padding: 1px 5px;
 }
 
-/*input[type=text] {
+input[type=text] {
 	font: 11px 'trebuchet ms',arial,sans-serif;
 	border: 1px solid #ffffff;
-	outline:  1px solid #cdcddc;
+	border:  1px solid #cdcddc;
 	padding: 2px 5px;
-}*/
+	margin-left: 2px;
+}
 
 select {
 	font: 11px 'trebuchet ms',arial,sans-serif;
@@ -197,6 +199,7 @@ select {
 #navigation input {
 	float: right;
 	border: 0px;
+	outline: 0px;
 	margin-top: 5px;
 	margin-right: 4px;
 	font: 11px 'trebuchet ms';
