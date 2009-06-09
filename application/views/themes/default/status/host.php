@@ -37,10 +37,19 @@ if (!empty($widgets)) {
 		</colgroup>
 		<thead>
 			<tr>
-				<th><?php echo $this->translate->_('') ?></th>
-				<th colspan="2"><?php echo $this->translate->_('Host') ?></th>
-				<th style="width: 100px"><?php echo $this->translate->_('Last check') ?></th>
-				<th><?php echo $this->translate->_('Duration') ?></th>
+				<?php
+				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
+				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'host_name';
+
+				foreach($header_links as $row) {
+					if (isset($row['url_desc'])) {
+						echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
+									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+						echo ($row['title'] == 'Status' ? '' : $row['title']);
+						echo '</th>';
+					}
+				}
+			?>
 				<th><?php echo $this->translate->_('Status information') ?></th>
 				<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
