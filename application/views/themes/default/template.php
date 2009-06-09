@@ -113,7 +113,12 @@
 					if (is_array($settings_widgets)) {
 						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>';
 						foreach($settings_widgets as $id => $widget) {
-							echo '<li id="li_'.$id.'" class="selected" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
+							if (isset($user_widgets) && is_array($user_widgets)) {
+								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
+							} else {
+								$class_name = 'selected';
+							}
+							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
 						}
 						echo '<li onclick="control_widgets(); return false">'.$this->translate->_('Restore to factory settings').'</li>';
 					}
