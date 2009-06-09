@@ -30,41 +30,43 @@ class Tac_Controller extends Authenticated_Controller {
 			$this->translate->_('logout')     => 'default/logout'
 		);
 
-		# run through all checks so we can cache status
 		# data for widgets
 		$this->model->analyze_status_data();
-
-		$settings_widgets = array(
-			'widget-tac_problems' => 'Unhandled problems',
-			'widget-network_health' => 'Network health',
-			'widget-tac_schedduled' => 'Scheduled problems',
-			'widget-tac_acknowledged' => 'Acknowledged problems',
-			'widget-tac_disabled' => 'Disabled cheks',
-			'widget-netw_outages' => 'Network outages',
-			'widget-tac_hosts' => 'Host problems',
-			'widget-tac_services' => 'Service problems',
-			'widget-tac_monfeat' => 'Monitoring features',
-		);
-
+		$all_widgets = Ninja_widget_Model::fetch_widgets(Router::$controller.'/'.Router::$method, true);
+		$settings_widgets = false;
+		if (!empty($all_widgets)) {
+			foreach ($all_widgets as $row) {
+				$settings = unserialize($row->setting);
+				$settings[] = $this->model; # add this model for each widget
+				widget::add($row->name, $settings, $this);
+				$settings_widgets['widget-'.$row->name] = $row->friendly_name;
+			}
+		}
 		$this->template->settings_widgets = $settings_widgets;
+		$widgets = Ninja_widget_Model::fetch_widgets(Router::$controller.'/'.Router::$method);
 
-
-		widget::add('tac_problems', array('index', $this->model), $this);
-		widget::add('netw_health', array('index', $this->model), $this);
-		widget::add('tac_scheduled', array('index', $this->model), $this);
-		widget::add('tac_acknowledged', array('index', $this->model), $this);
-		widget::add('tac_disabled', array('index', $this->model), $this);
-		widget::add('netw_outages', array('index'), $this);
-		widget::add('tac_hosts', array('index', $this->model), $this);
-		widget::add('tac_services', array('index', $this->model), $this);
-		widget::add('tac_monfeat', array('index', $this->model), $this);
+		$user_widgets = false;
+		if (!empty($widgets)) {
+			foreach ($widgets as $w) {
+				$user_widgets['widget-'.$w->name] = $w->friendly_name;
+			}
+		}
+		if (!empty($user_widgets)) {
+			# customized settings detected
+			# some widgets should possibly be hidden
+			foreach ($settings_widgets as $id => $w) {
+				if (!array_key_exists($id, $user_widgets)) {
+					$this->inline_js .= "\$.fn.HideEasyWidget('".$id."');\n";
+				}
+			}
+		}
+		$this->template->inline_js = $this->inline_js;
+		$this->template->user_widgets = $user_widgets;
 
 		$this->xtra_js[] = $this->add_path('/js/tac_widgets.js');
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
-
-		#$this->model->test(); # try to load a model method
 	}
 
 	/**
