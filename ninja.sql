@@ -141,3 +141,21 @@ INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `set
 (7, '', 'tac/index', 'tac_hosts', 'Hosts', 'a:1:{i:0;s:5:"index";} '),
 (8, '', 'tac/index', 'tac_services', 'Services', 'a:1:{i:0;s:5:"index";} '),
 (9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', 'a:1:{i:0;s:5:"index";} ');
+
+--
+-- Table structure for table `db_version`
+--
+
+CREATE TABLE IF NOT EXISTS `db_version` (
+  `id` int(11) NOT NULL auto_increment,
+  `owner` varchar(100) NOT NULL,
+  `version` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
+
+--
+-- Dumping data for table `db_version`
+--
+
+INSERT INTO `db_version` (`id`, `owner`, `version`) VALUES
+(1, 'ninja', 1);
