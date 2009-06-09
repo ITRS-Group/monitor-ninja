@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_hosts">
-	<div class="widget-header"><?php echo $this->translate->_('Host overview') ?></div>
+	<div class="widget-header"><?php echo $this->translate->_('Hosts') ?></div>
 	<div class="widget-editbox"></div>
 	<div class="widget-content">
 		<table>
