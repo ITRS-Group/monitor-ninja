@@ -15,12 +15,6 @@
 			</tr>
 		</table>
 		<?php
-
-		 if (!empty($arguments)) {
-				foreach ($arguments as $arg) {
-					echo $arg."<br />";
-				}
-			}
 		} // end if user_has_access
 ?>
 	</div>
