@@ -169,13 +169,46 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_widgets_order($widget_str=false, $page=false)
 	{
+		$widget_str = urldecode($this->input->post('widget_str', $widget_str));
+		$page = urldecode($this->input->post('page', $page));
 		$widget_str = trim($widget_str);
 		$page = trim($page);
 		if (empty($widget_str) || empty($page))
 			return false;
-		$user = Auth::instance()->get_user()->username;
-		if (empty($user))
+
+		# save data to database
+		Ninja_setting_Model::save_page_setting('widget_order', $page, $widget_str);
+	}
+
+	/**
+	*	Fetch current widget orde from database
+	*/
+	public function fetch_widgets_order($page=false)
+	{
+		$page = urldecode($this->input->get('page', $page));
+		if (empty($page))
+			return false;
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		if (empty($data)) {
+			echo json::encode(array('widget_order' => false));
+			return false;
+		}
+		$settings = $data->setting;
+		echo json::encode(array('widget_order' => $settings));
+	}
+
+	/**
+	*	Save current state of single widget
+	*
+	*/
+	public function save_widget_state()
+	{
+		$page = urldecode($this->input->post('page', false));
+		$method = urldecode($this->input->post('method', false));
+		$name = urldecode($this->input->post('name', false));
+		if (empty($page))
 			return false;
 		# save data to database
+		Ninja_widget_Model::save_widget_state($page, $method, $name);
 	}
 }
