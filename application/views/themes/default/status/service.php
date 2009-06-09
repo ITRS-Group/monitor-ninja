@@ -36,35 +36,24 @@ if (!empty($widgets)) {
 		<col style="width: 100%" />
 		<col style="width: 30px" />
 		<col style="width: 30px" />
-		<!--<col style="width: 30px" />-->
 	</colgroup>
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
-			<!--<th><?php echo $this->translate->_('Host') ?></th>
-			<th><?php echo $this->translate->_('') ?></th>
-			<th><?php echo $this->translate->_('Service') ?></th>
-			<th><?php echo $this->translate->_('Last check') ?></th>
-			<th><?php echo $this->translate->_('Duration') ?></th>
-			<th><?php echo $this->translate->_('Status information') ?></th>-->
 			<?php
-				/*foreach($header_links as $row) {
-					echo '<th '.
-						//((isset($row['url_asc']) && (str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']) == $row['url_asc'])) ? 'onclick="location.href=\'/ninja/index.php/'.str_replace('&','&amp;',$row['url_desc']).'\'" class="headerSortUp"' : 'class="header"').
-						//(isset($row['url_asc']) ? 'onclick="location.href=\'/ninja/index.php/'.str_replace('&','&amp;',$row['url_asc']).'\'" class="headerSortDown"' : 'class="header"').
-						'>'.$row['title'].'</th>';
-				}*/
-			?>
-			<?php
+				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
+				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
+
 				foreach($header_links as $row) {
-					echo '<th><div style="float: left">';
-					echo ($row['title'] == 'Status' ? '' : $row['title']);
-					echo '</div><div style="float: right">';
-					echo isset($row['url_desc']) ? html::anchor($row['url_desc'], html::image($row['img_desc'], array('alt' => $row['alt_desc'], 'title' => $row['alt_desc'])), array('style' => 'border: 0px')) : '';
-					echo isset($row['url_asc']) ? html::anchor($row['url_asc'], html::image($row['img_asc'], array('alt' => $row['alt_asc'], 'title' => $row['alt_asc'])), array('style' => 'border: 0px')) : '';
-					echo '</div></th>';
+					if (isset($row['url_desc'])) {
+						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
+									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+						echo ($row['title'] == 'Status' ? '' : $row['title']);
+						echo '</th>';
+					}
 				}
 			?>
+			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
 			<th class="no-sort" colspan="2"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
@@ -79,7 +68,6 @@ if (!empty($widgets)) {
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? '' : 'bt') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
-				//if ($a == 1 || )
 				if ($curr_host != $row->host_name) {
 					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
 				}
@@ -116,11 +104,6 @@ if (!empty($widgets)) {
 		<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 		<td><?php echo $row->duration ?></td>
 		<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
-		<!--<td class="icon">
-		<?php	//if (!empty($row->icon_image)) { ?>
-			<?php //echo html::image('application/media/images/logos/'.$row->icon_image,array('alt' => $row->icon_image_alt,'title' => $row->icon_image_alt));?>
-		<?php	//} ?>
-		</td>-->
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
