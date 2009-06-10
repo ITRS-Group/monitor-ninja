@@ -132,15 +132,15 @@ CREATE TABLE IF NOT EXISTS `ninja_widgets` (
 --
 
 INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES
-(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', 'a:1:{i:0;s:5:"index";} '),
-(2, '', 'tac/index', 'netw_health', 'Network health', 'a:1:{i:0;s:5:"index";} '),
-(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', 'a:1:{i:0;s:5:"index";} '),
-(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', 'a:1:{i:0;s:5:"index";} '),
-(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', 'a:1:{i:0;s:5:"index";} '),
-(6, '', 'tac/index', 'netw_outages', 'Network outages', 'a:1:{i:0;s:5:"index";} '),
-(7, '', 'tac/index', 'tac_hosts', 'Hosts', 'a:1:{i:0;s:5:"index";} '),
-(8, '', 'tac/index', 'tac_services', 'Services', 'a:1:{i:0;s:5:"index";} '),
-(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', 'a:1:{i:0;s:5:"index";} ');
+(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', ''),
+(2, '', 'tac/index', 'netw_health', 'Network health', ''),
+(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', ''),
+(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', ''),
+(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', ''),
+(6, '', 'tac/index', 'netw_outages', 'Network outages', ''),
+(7, '', 'tac/index', 'tac_hosts', 'Hosts', ''),
+(8, '', 'tac/index', 'tac_services', 'Services', ''),
+(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
 
 --
 -- Table structure for table `db_version`

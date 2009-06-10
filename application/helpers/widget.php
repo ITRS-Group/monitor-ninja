@@ -49,16 +49,9 @@ class widget_Core
 		$classname = $name.'_Widget';
 		$obj = new $classname;
 		# if we have a requested widget method - let's call it
-		if (!empty($arguments) & is_array($arguments)) {
-			$widget_method = $arguments[0];
-			if (method_exists($obj, $widget_method)) {
-				array_shift($arguments);
-				return $obj->$widget_method($arguments, $master);
-			}
-		}
-
-		# return false if no method defined
-		return false;
+		# always call index method of widget
+		$widget_method = 'index';
+		return $obj->$widget_method($arguments, $master);
 	}
 
 	/**
