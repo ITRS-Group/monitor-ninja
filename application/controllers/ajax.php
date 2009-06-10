@@ -229,4 +229,34 @@ class Ajax_Controller extends Authenticated_Controller {
 			return false;
 		Ninja_widget_Model::save_widget_setting($page, $widget, $data);
 	}
+
+	/**
+	*	fetch specific setting
+	*/
+	public function get_setting()
+	{
+		$type = urldecode($this->input->post('type', false));
+		$page = urldecode($this->input->post('page', false));
+		if (empty($type))
+			return false;
+		$type = trim($type);
+		$page = trim($page);
+		$data = Ninja_setting_Model::fetch_page_setting($type, $page);
+		$setting = $data!==false ? $data->setting : false;
+		echo json::encode(array($type => $setting));
+	}
+
+	/**
+	*	Save a specific setting
+	*/
+	public function save_page_setting()
+	{
+		$type = urldecode($this->input->post('type', false));
+		$page = urldecode($this->input->post('page', false));
+		$setting = urldecode($this->input->post('setting', false));
+
+		if (empty($type) || empty($page) || empty($setting))
+			return false;
+		Ninja_setting_Model::save_page_setting($type, $page, $setting);
+	}
 }
