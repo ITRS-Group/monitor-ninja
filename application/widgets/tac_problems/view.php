@@ -1,11 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
-<div class="widget movable collapsable removable closeconfirm w66 left" id="widget-tac_problems">
+<?php if (!$ajax_call) { ?>
+<div class="widget editable movable collapsable removable closeconfirm w66 left" id="widget-tac_problems">
 	<div class="widget-header"><?php echo $this->translate->_('Unhandled problems') ?></div>
 	<div class="widget-editbox">
-		<!--Edit the widget here-->
+		<?php echo form::open('ajax/save_widget_setting', array('id' => 'tac_problems_form', 'onsubmit' => 'return false;')); ?>
+		<label for="tac_problems_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
+		<input style="border:0" type="text" name="tac_problems_refresh" id="tac_problems_refresh" value="<?php echo $tac_problems_refresh ?>" />
+		<?php echo form::hidden('tac_problems_page', urlencode(Router::$controller.'/'.Router::$method)) ?>
+		<div id="tac_problems_slider"></div>
+		<?php echo form::close() ?>
 	</div>
 	<div class="widget-content">
+<?php } ?>
 		<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
@@ -27,4 +33,6 @@
 			<?php } ?>
 		</table>
 	</div>
+<?php if (!$ajax_call) { ?>
 </div>
+<?php } ?>
