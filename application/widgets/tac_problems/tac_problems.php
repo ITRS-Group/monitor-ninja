@@ -107,20 +107,8 @@ class Tac_problems_Widget extends widget_Core {
 		require_once($view_path);
 
 		if(request::is_ajax()) {
-			# output entire widget content
-			$split = explode('\n', json::encode( $this->output()) );
-			$output = false;
-			$i = 0;
-			# remove the outer div from generated view to make it
-			# easier for the calling javascript to make the update
-			foreach ($split as $part) {
-				if ($i!=1 && $i!= (sizeof($split)-2))
-					$output[] = $part;
-				$i++;
-			}
-			# join the data back together before echoing it back
-			$output = implode('', $output);
-			echo $output;
+			# output widget content
+			echo json::encode( $this->output());
 		} else {
 			# add custom javascript to header
 			$this->js = array('/js/tac_problems');
