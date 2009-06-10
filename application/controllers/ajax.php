@@ -211,4 +211,22 @@ class Ajax_Controller extends Authenticated_Controller {
 		# save data to database
 		Ninja_widget_Model::save_widget_state($page, $method, $name);
 	}
+
+	/**
+	*	Accepts call from a widget to save settings for a user
+	*/
+	public function save_widget_setting()
+	{
+		$page = urldecode($this->input->post('page', false));
+		$widget = urldecode($this->input->post('widget', false));
+		$data = false;
+		foreach ($_POST as $key => $val) {
+			if ($key == 'page' || $key == 'widget')
+				continue;
+			$data[$key] = $val;
+		}
+		if (empty($widget) || empty($data) || empty($page))
+			return false;
+		Ninja_widget_Model::save_widget_setting($page, $widget, $data);
+	}
 }
