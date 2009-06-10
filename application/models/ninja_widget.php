@@ -26,22 +26,37 @@ class Ninja_widget_Model extends ORM
 	}
 
 	/**
-	*	User has decided to add or remove a widget from a page
-	*	Store this customized setting for user
+	*	Fetch info on a saved widget for a page
+	*
 	*/
-	public function save_widget_state($page=false, $method='hide', $widget=false)
+	public function get_widget($page=false, $widget=false, $get_user=false)
 	{
 		if (empty($page) || empty($widget))
 			return false;
+		$handle = ORM::factory('ninja_widget');
+		if ($get_user === true) {
+			# fetch customized widget for user
+			# i.e a user has saved settings
+			$user = Auth::instance()->get_user()->username;
+			$result = $handle->where(array('page' => $page, 'user'=> $user, 'name' => $widget))->find();
+		} else {
+			# fetch default widget settings
+			$result = $handle->where(array('page' => $page, 'user'=> '', 'name' => $widget))->find();
+		}
+		return $result->loaded ? $result : false;
+	}
+
+	/**
+	*
+	*
+	*/
+	private function customize_widgets($page=false)
+	{
+		if (empty($page))
+			return false;
 		$page = trim($page);
-		$method = trim(strtolower($method));
-		$widget = trim($widget);
-		$widget = self::clean_widget_name($widget);
 		$user = Auth::instance()->get_user()->username;
 		$setting = ORM::factory('ninja_widget');
-
-		# check if the user already have customized widgets settings
-		# (already removed/added a widget)
 		$check = $setting->where(array('user'=> $user, 'page' => $page))->find_all();
 		if (!count($check)) {
 			# copy all under users' name
