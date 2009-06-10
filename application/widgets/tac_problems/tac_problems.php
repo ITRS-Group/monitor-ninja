@@ -100,6 +100,9 @@ class Tac_problems_Widget extends widget_Core {
 			$i++;
 		}
 
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
+
 		# fetch widget content
 		require_once($view_path);
 
