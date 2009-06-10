@@ -467,6 +467,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
+		$this->template->title = $this->translate->_('Monitoring » Process info');
+
 		# save us some typing
 		$content = $this->template->content;
 		$t = $this->translate;
@@ -743,6 +745,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("Error: No Group Name Specified");
 			return;
 		}
+
+		$this->template->title = $this->translate->_('Monitoring » Group detail');
 
 		$group_info_res = $grouptype == 'servicegroup' ?
 			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
