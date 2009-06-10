@@ -49,6 +49,17 @@ class Status_Controller extends Authenticated_Controller {
 		$host = trim($host);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
+		$replace = array(
+			1  => $this->translate->_('OK'),
+			2  => $this->translate->_('Down'),
+			4  => $this->translate->_('Unreachable'),
+			6  => $this->translate->_('All problems'),
+			64 => $this->translate->_('Pending')
+		);
+
+		$title = $this->translate->_('Monitoring » Host details').($hoststatustypes != false ? ' » '.$replace[$hoststatustypes] : '');
+		$this->template->title = $title;
+
 		$this->template->content = $this->add_view('status/host');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -214,6 +225,31 @@ class Status_Controller extends Authenticated_Controller {
 		$name = trim($name);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 		$servicestatustypes = strtolower($servicestatustypes)==='false' ? false : $servicestatustypes;
+
+		$srv_replace = array(
+			1  => $this->translate->_('OK'),
+			2  => $this->translate->_('Warning'),
+			4  => $this->translate->_('Critical'),
+			8  => $this->translate->_('Unknown'),
+			14 => $this->translate->_('All problems'),
+			64 => $this->translate->_('Pending'),
+			71 => $this->translate->_('All services'),
+		);
+
+		$host_replace = array(
+			1  => $this->translate->_('Host OK'),
+			2  => $this->translate->_('Host Down'),
+			4  => $this->translate->_('Host Unreachable'),
+			6  => $this->translate->_('All host problems'),
+			64 => $this->translate->_('Host Pending'),
+			71 => $this->translate->_('All hosts'),
+		);
+
+		$title = $this->translate->_('Monitoring » Service details').
+			($hoststatustypes != false ? ' » '.$host_replace[$hoststatustypes] : '').
+			($servicestatustypes != false ? ' » '.$srv_replace[$servicestatustypes] : '');
+
+		$this->template->title = $title;
 
 		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
 		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
@@ -389,6 +425,8 @@ class Status_Controller extends Authenticated_Controller {
 		$style = urldecode($this->input->get('style', $style));
 		$grouptype = 'service';
 		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+
+		$this->template->title = 'Servicegroup';
 	}
 
 	/**
@@ -435,9 +473,12 @@ class Status_Controller extends Authenticated_Controller {
 
 		switch ($style) {
 			case 'overview':
+				$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
+				$this->template->header = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
 				$this->template->content = $this->add_view('status/group_overview');
 				break;
 			case 'detail': case 'details':
+				$this->template->title = $grouptype.$this->translate->_('group » Details');
 				return $this->service($group, $hoststatustypes, $servicestatustypes, $serviceprops, false, false, $grouptype.'group', $hostprops);
 				break;
 			case 'summary':
@@ -555,6 +596,7 @@ class Status_Controller extends Authenticated_Controller {
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'service';
 		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
+		$this->template->title = $this->translate->_('Servicegroup » Summary');
 	}
 
 	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
@@ -576,7 +618,7 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-
+		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group summary');
 
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_summary');
@@ -1126,6 +1168,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('status/group_grid');
 		$content = $this->template->content;
 		$t = $this->translate;
+
+		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group grid');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
