@@ -42,6 +42,7 @@ class Ninja_setting_Model extends ORM
 
 	/**
 	*	Fetch page setting for a user
+	* 	Assuems only one value is returned
 	* 	@param str $type [widget_order, widget, etc]
 	* 	@param str $page
 	* 	@param mixed $value
@@ -55,9 +56,12 @@ class Ninja_setting_Model extends ORM
 
 		$setting = ORM::factory('ninja_setting');
 		$user = Auth::instance()->get_user()->username;
-		$limit = 1; # should only be one so no use fetching more
-		$offset = 0;
-		$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find($limit, $offset);
+		# first, try user setting
+		$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find();
+		if (!$setting->loaded) {
+			# try default if nothing found
+			$setting->where(array('user'=> '', 'page' => $page, 'type' => $type))->find();
+		}
 		return $setting->loaded ? $setting : false;
 	}
 
