@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	collapse_menu('');
-
 	$.fn.EasyWidgets({
 		behaviour : {
 			useCookies : false
