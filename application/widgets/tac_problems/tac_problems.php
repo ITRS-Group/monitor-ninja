@@ -112,6 +112,7 @@ class Tac_problems_Widget extends widget_Core {
 		} else {
 			# add custom javascript to header
 			$this->js = array('/js/tac_problems');
+			$this->css = array('/css/tac_problems');
 			# call parent helper to assign all
 			# variables to master controller
 			return $this->fetch();
