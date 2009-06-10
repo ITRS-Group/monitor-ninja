@@ -57,6 +57,27 @@ class Ninja_widget_Model extends ORM
 					$add->clear();
 			}
 		}
+	}
+
+	/**
+	*	User has decided to add or remove a widget from a page
+	*	Store this customized setting for user
+	*/
+	public function save_widget_state($page=false, $method='hide', $widget=false)
+	{
+		if (empty($page) || empty($widget))
+			return false;
+		$page = trim($page);
+		$method = trim(strtolower($method));
+		$widget = trim($widget);
+		$widget = self::clean_widget_name($widget);
+		$user = Auth::instance()->get_user()->username;
+		$setting = ORM::factory('ninja_widget');
+
+		# check if the user already have customized widgets settings
+		# (already removed/added a widget)
+		self::customize_widgets($page);
+
 		# all widgets for current page should exist under users name
 
 		switch ($method) {
