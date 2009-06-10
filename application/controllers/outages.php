@@ -47,6 +47,7 @@ class Outages_Controller extends Authenticated_Controller
 		$content->label_actions = $t->_('Actions');
 
 		$content->outage_data = $outage_data;
+		$this->template->title = $this->translate->_('Monitoring » Network outages');
 		# date::timespan(time(), $result->last_update, 'days,hours,minutes,seconds');
 
 	}
