@@ -145,4 +145,27 @@ class Ninja_widget_Model extends ORM
 		return str_replace('#widget-', '', $widget);
 	}
 
+	/**
+	*	Accept call from a widget that has some settings to store
+	* 	for a user.
+	*
+	*/
+	public function save_widget_setting($page=false, $widget=false, $data=false)
+	{
+		if (empty($widget) || empty($data) || empty($page) || !is_array($data))
+			return false;
+		self::customize_widgets($page);
+		# fetch current setting for widget and merge settings with new
+		# merge/replace new settings with the old
+		$current_widget = self::get_widget($page, $widget, true);
+		$current_settings = false;
+		if ($current_widget !== false) {
+			$user = Auth::instance()->get_user()->username;
+			$new_state = ORM::factory('ninja_widget', $current_widget->id);
+			$new_state->setting = serialize($data);
+			$new_state->save();
+			return $new_state->saved;
+		}
+		return false;
+	}
 }
