@@ -90,11 +90,11 @@
 						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>';
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold')).'</li>';
+								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>';
 							elseif($url[0] == '')
 								echo '<li class="hr">&nbsp;</li>';
 							else
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title)).'</li>';
+								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>';
 						endforeach;
 					endforeach;
 				?>
