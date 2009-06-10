@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
+		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/autocomplete_styles.css') ?>
@@ -20,8 +20,6 @@
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
-		<?php echo html::script('application/views/themes/default/js/colour-slider.js') ?>
-
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
 			//<!--
@@ -44,9 +42,16 @@
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
-					<?php	$link = html::breadcrumb();
+					<?php
+					/*$link = html::breadcrumb();
 					for($i = 0; $i < count($link); $i++) {
 						echo '<li>'.$link[$i].'</li>';
+					}*/
+					if (isset($title)){
+						$link = split(' » ',$title);
+						for($i = 0; $i < count($link); $i++) {
+							echo '<li><a href="#">'.$link[$i].'</a></li>';
+						}
 					}
 					?>
 					</ul>
