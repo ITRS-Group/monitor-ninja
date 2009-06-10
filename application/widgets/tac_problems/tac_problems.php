@@ -30,6 +30,10 @@ class Tac_problems_Widget extends widget_Core {
 		} else {
 			$current_status = new Current_status_Model();
 		}
+		$tac_problems_refresh = 60;
+		if (isset($arguments['tac_problems_refresh'])) {
+			$tac_problems_refresh = $arguments['tac_problems_refresh'];
+		}
 
 		# HOSTS DOWN / problems
 		$problem = array();
