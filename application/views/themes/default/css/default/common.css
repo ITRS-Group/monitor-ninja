@@ -34,16 +34,11 @@ cite {
 	font-style: normal;
 }
 
-/**************************************************************************************************/
-
-input.text {
-	border: 0px;
-	background: #ffffff url(images/input-bg.png) repeat-x;
-	font: 11px 'trebuchet ms',arial,sans-serif;
-	padding: 7px 0px;
-	float: left;
-	margin-bottom: -1px;
+title {
+	text-transform: capitalize;
 }
+
+/**************************************************************************************************/
 
 cite em,
 cite em:first-child {
@@ -78,6 +73,18 @@ input[type=text] {
 	margin-left: 2px;
 }
 
+
+input.text {
+	border: 0px;
+	outline: 0px;
+	background: #ffffff url(images/input-bg.png) repeat-x;
+	font: 11px 'trebuchet ms',arial,sans-serif;
+	padding: 7px 0px;
+	float: left;
+	margin-bottom: -1px;
+	margin-left: 0px;
+}
+
 select {
 	font: 11px 'trebuchet ms',arial,sans-serif;
 	border: 1px solid #ffffff;
@@ -85,7 +92,6 @@ select {
 	padding: 0px;
 	margin-left: 3px;
 }
-
 
 /* login ****************************************************************************************/
 
