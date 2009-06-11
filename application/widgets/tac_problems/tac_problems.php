@@ -34,6 +34,10 @@ class Tac_problems_Widget extends widget_Core {
 		if (isset($arguments['tac_problems_refresh'])) {
 			$tac_problems_refresh = $arguments['tac_problems_refresh'];
 		}
+		$title = $this->translate->_('Unhandled problems');
+		if (isset($arguments['tac_problems_title'])) {
+			$title = $arguments['tac_problems_title'];
+		}
 
 		# HOSTS DOWN / problems
 		$problem = array();

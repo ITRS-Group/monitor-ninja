@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
 <div class="widget editable movable collapsable removable closeconfirm w66 left" id="widget-tac_problems">
-	<div class="widget-header"><?php echo $this->translate->_('Unhandled problems') ?></div>
+	<div class="widget-header"><span class="tac_problems_editable" id="tac_problems_title"><?php echo $title ?></span></div>
 	<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => 'tac_problems_form', 'onsubmit' => 'return false;')); ?>
 		<label for="tac_problems_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
