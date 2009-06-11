@@ -16,6 +16,7 @@
 		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.autocomplete.min') ?>
 		<?php echo html::script('application/media/js/jquery.selectboxes.min.js') ?>
+		<?php echo html::script('application/media/js/jquery.jeditable.min') ?>
 		<?php echo html::script('application/media/js/jquery.query.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
