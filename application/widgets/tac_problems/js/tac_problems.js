@@ -1,8 +1,9 @@
 var tac_problems_interval = 0;
 var tac_problems_data = false;
 var tac_problems_save_interval = 0;
-var tac_problems_current_interval = $('input[name=tac_problems_refresh]').val();
+var tac_problems_current_interval = 0;
 $(document).ready(function() {
+	tac_problems_current_interval = $('input[name=tac_problems_refresh]').val();
 	set_tac_problems_interval(true);
 
 	$("#tac_problems_slider").slider({
@@ -18,14 +19,31 @@ $(document).ready(function() {
 		}
 	});
 	$("#tac_problems_refresh").val($("#tac_problems_slider").slider("value"));
-
+	$(".tac_problems_editable").editable(function(value, settings) {
+		var data = {page: $('input[name=tac_problems_page]').val(), widget:'tac_problems', tac_problems_title:value};
+		save_tac_problems_setting(data);
+		return value;
+	}, {
+		type : 'text',
+		event : 'dblclick',
+		width : 'auto',
+		height : '14px',
+		submit : 'OK',
+		cancel : 'cancel',
+		placeholder:'Double-click to edit'
+	});
 });
 
+/*
+*	Set the refresh interval to use for widget
+*	and also pass this value on to be saved to db
+*/
 function set_tac_problems_interval(is_init)
 {
 	if (tac_problems_interval) {
 		clearInterval(tac_problems_interval);
 	}
+
 	if (tac_problems_current_interval>0) {
 		var interval = (tac_problems_current_interval * 1000);
 		tac_problems_interval = setInterval("tac_problems_update()", interval);
