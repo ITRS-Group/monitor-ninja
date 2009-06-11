@@ -45,7 +45,6 @@ class Ninja_setting_Model extends ORM
 	* 	Assuems only one value is returned
 	* 	@param str $type [widget_order, widget, etc]
 	* 	@param str $page
-	* 	@param mixed $value
 	*/
 	public function fetch_page_setting($type='widget_order', $page=false)
 	{
