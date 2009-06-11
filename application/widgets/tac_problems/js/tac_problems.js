@@ -39,11 +39,11 @@ function set_tac_problems_interval(is_init)
 }
 
 /*
-Sätt en timeout på 5 sekunder för att spara t databasen
-kanske oxå för att verkställa själva checken
-
+*	Since the slider is possible to move rather fast,
+*	we add a delay (timeout) to this before we do anything with it.
+*	The timeout is cleared when a new value is selected and only saved
+*	until there is no activity (new value) for 5 seconds
 */
-
 function tac_problems_control_save()
 {
 	if (tac_problems_save_interval) {
@@ -52,19 +52,35 @@ function tac_problems_control_save()
 	tac_problems_save_interval = setTimeout("set_tac_problems_interval()", 5000);
 }
 
+/*
+*	Update the widget through AJAX
+*/
 function tac_problems_update()
 {
-	var widget_id = 'widget-tac_problems';
+	var content_area = 'widget-content';
+	var widget = 'tac_problems';
+	update_widget(widget, content_area);
+}
+
+/*
+*	Generic method to update a widget through AJAX
+*/
+function update_widget(widget, content_area)
+{
+	var widget_id = 'widget-' + widget;
 	$.ajax({
-		url: _site_domain + _index_page + "/ajax/widget/tac_problems/index/",
+		url: _site_domain + _index_page + "/ajax/widget/" + widget + "/index/",
 		dataType:'json',
 		success: function(data) {
-			$("#" + widget_id + ' #widget-content').html(data);
+			$("#" + widget_id + ' #' + content_area).html(data);
 		},
 		error: function(obj, msg){alert(msg)}
 	});
 }
 
+/*
+*	Save widget settings
+*/
 function save_tac_problems_setting(data)
 {
 	var url = _site_domain + _index_page + "/ajax/save_widget_setting/";
