@@ -146,7 +146,7 @@ INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `set
 -- Table structure for table `db_version`
 --
 
-CREATE TABLE IF NOT EXISTS `db_version` (
+CREATE TABLE IF NOT EXISTS `ninja_db_version` (
   `id` int(11) NOT NULL auto_increment,
   `owner` varchar(100) NOT NULL,
   `version` int(11) NOT NULL default '0',
@@ -157,5 +157,5 @@ CREATE TABLE IF NOT EXISTS `db_version` (
 -- Dumping data for table `db_version`
 --
 
-INSERT INTO `db_version` (`id`, `owner`, `version`) VALUES
+INSERT INTO `ninja_db_version` (`id`, `owner`, `version`) VALUES
 (1, 'ninja', 1);
