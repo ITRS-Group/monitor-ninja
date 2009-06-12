@@ -122,4 +122,33 @@ class Host_Model extends Model {
 		return $host_info;
 	}
 
+	/**
+	*	Fetch parents for a specific host
+	*/
+	public function get_parents($host_name=false)
+	{
+		if (empty($host_name))
+			return false;
+		$host_query = $this->auth->authorized_host_query();
+		if ($host_query === true) {
+			# don't use auth_host fields etc
+			$auth_host_alias = 'h';
+			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_where = ' AND ' . $auth_host_alias . ".host_name = '" . $host_name . "'";
+		} else {
+			$auth_host_alias = $host_query['host_field'];
+			$auth_from = ' ,'.$host_query['from'];
+			$auth_where = ' AND '.sprintf($host_query['where'], "'".$host_name."'");
+		}
+		$sql = "SELECT parent.* " .
+			"FROM " .
+				"host_parents AS hp, " .
+				"host AS parent " . $auth_from .
+			" WHERE ".
+				$auth_host_alias . ".id=hp.host " . $auth_where .
+				" AND parent.id=hp.parents " .
+			"ORDER BY parent.host_name";
+		$result = $this->db->query($sql);
+		return $result;
+	}
 }
