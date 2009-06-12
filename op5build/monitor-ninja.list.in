@@ -13,6 +13,9 @@ $group=root
 
 $prefix=/opt/monitor/op5/ninja
 
+%postinstall <op5build/postinstall
+
+
 d 755 $user $group $prefix -
 f 664 $user $group $prefix/example.htaccess example.htaccess
 f 664 $user $group $prefix/index.php index.php
