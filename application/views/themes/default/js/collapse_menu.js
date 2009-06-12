@@ -38,6 +38,7 @@ function get_ninja_menu_state()
 	var url = _site_domain + _index_page + "/ajax/get_setting/";
 	var page_name = '/';
 	var data = {page: escape(page_name), type: 'ninja_menu_state'};
+	var ret_val;
 
 	$.ajax({
 		url: url,
