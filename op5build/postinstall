@@ -1,0 +1,5 @@
+# Symlink webroot/ninja -> /opt/monitor/op5/ninja
+ln -sfT /opt/monitor/op5/ninja /var/www/html/ninja
+
+# Init database
+sh /opt/monitor/op5/ninja/install_scripts/ninja_db_init.sh
