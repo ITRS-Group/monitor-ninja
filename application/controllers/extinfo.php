@@ -37,6 +37,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$host = urldecode($this->input->get('host', $host));
 		$service = urldecode($this->input->get('service', $service));
 
+		$this->template->title = 'Monitoring » Extinfo';
+
 		# load current status for host/service status totals
 		$this->current = new Current_status_Model();
 
@@ -898,6 +900,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		$comments->pagination = $pagination;
 		return $this->template->content->comments->render();
+		$this->template->title = $this->translate->_('Monitoring » ').$ype.(' Comments');
 	}
 
 	/**
@@ -911,5 +914,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->content->host_comments = $this->_comments(true, false, 'host', true, $items_per_page);
 		$this->template->content->service_comments = $this->_comments(true, true, 'service', true, $items_per_page);
+		$this->template->title = $this->translate->_('Monitoring » All comments');
 	}
 }
