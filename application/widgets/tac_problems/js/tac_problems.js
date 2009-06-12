@@ -34,6 +34,13 @@ $(document).ready(function() {
 	});
 });
 
+/**
+*	Remove whitespace from string
+*/
+function trim(str) {
+	return str.replace(/^\s+|\s+$/g,"");
+}
+
 /*
 *	Set the refresh interval to use for widget
 *	and also pass this value on to be saved to db
