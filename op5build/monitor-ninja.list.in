@@ -4,8 +4,8 @@ $group=root
 %packager build@op5
 %product op5 monitor ninja
 %vendor op5 AB
-%version 0.0.1
-%release op5.1
+%version @@VERSION@@
+%release @@RELEASE@@
 %copyright op5 Software License
 %readme README
 %description Webgui for Nagios 3
