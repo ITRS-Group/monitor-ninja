@@ -2,10 +2,11 @@ var tac_problems_interval = 0;
 var tac_problems_data = false;
 var tac_problems_save_interval = 0;
 var tac_problems_current_interval = 0;
+var tac_problems_title;
 $(document).ready(function() {
 	tac_problems_current_interval = $('input[name=tac_problems_refresh]').val();
 	set_tac_problems_interval(true);
-
+	tac_problems_title =  $('#tac_problems_title').text();
 	$("#tac_problems_slider").slider({
 		value: $('input[name=tac_problems_refresh]').val(),
 		min: 0,
@@ -21,7 +22,14 @@ $(document).ready(function() {
 	$("#tac_problems_refresh").val($("#tac_problems_slider").slider("value"));
 	$(".tac_problems_editable").editable(function(value, settings) {
 		var data = {page: $('input[name=tac_problems_page]').val(), widget:'tac_problems', tac_problems_title:value};
-		save_tac_problems_setting(data);
+		value = trim(value);
+		// don't save an ampty title
+		if (value.length) {
+			save_tac_problems_setting(data);
+			tac_problems_title = value;
+		} else {
+			value = tac_problems_title;
+		}
 		return value;
 	}, {
 		type : 'text',
