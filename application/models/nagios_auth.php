@@ -182,7 +182,8 @@ class Nagios_auth_Model extends Model
 			'where' => " auth_host.id = auth_host_contactgroup.host
 				AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
 				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) . "
-				AND %s = auth_host.host_name");
+				AND %s = auth_host.host_name",
+			'host_field' => 'auth_host');
 		return $query_parts;
 	}
 
