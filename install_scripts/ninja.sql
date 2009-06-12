@@ -1,4 +1,3 @@
-
 --
 -- Table structure for table `roles`
 --
@@ -13,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `roles`
+-- Data for table `roles`
 --
 
 INSERT INTO `roles` (`id`, `name`, `description`) VALUES
@@ -128,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `ninja_widgets` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
--- Dumping data for table `ninja_widgets`
+-- Data for table `ninja_widgets`
 --
 
 INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES
@@ -143,19 +142,18 @@ INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `set
 (9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
 
 --
--- Table structure for table `db_version`
+-- Table structure for table `ninja_db_version`
 --
 
 CREATE TABLE IF NOT EXISTS `ninja_db_version` (
   `id` int(11) NOT NULL auto_increment,
-  `owner` varchar(100) NOT NULL,
   `version` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
 
 --
--- Dumping data for table `db_version`
+-- Data for table `ninja_db_version`
 --
 
-INSERT INTO `ninja_db_version` (`id`, `owner`, `version`) VALUES
-(1, 'ninja', 1);
+INSERT INTO `ninja_db_version` (`id`, `version`) VALUES
+(1, 1);
