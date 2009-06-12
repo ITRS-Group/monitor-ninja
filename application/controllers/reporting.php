@@ -17,7 +17,7 @@ class Reporting_Controller extends Authenticated_Controller {
 		$this->model = new Current_status_Model();
 	}
 
-	public function availability($type='host', $name=false, $service=false)
+	public function availability($type=false, $name=false, $service=false)
 	{
 		$type = urldecode($this->input->get('type', $type));
 		$name = urldecode($this->input->get('name', $name));
