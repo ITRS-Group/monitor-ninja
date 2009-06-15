@@ -73,7 +73,8 @@ class System_Model extends Model
 	public function fetch_nagios_users()
 	{
 		$cgi_config = false;
-		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $this->base_path.'/etc';
+		$base_path = self::get_nagios_base_path();
+		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
 		$cgi_config_file = $etc_path."/cgi.cfg";
 		$user_data = false;
 		$access_levels = array('authorized_for_system_information',
@@ -84,7 +85,7 @@ class System_Model extends Model
 						'authorized_for_all_service_commands',
 						'authorized_for_all_host_commands');
 
-		$cgi_config = $this->parse_config_file($cgi_config_file);
+		$cgi_config = self::parse_config_file($cgi_config_file);
 		if(empty($cgi_config)) {
 			return false;
 		}
@@ -116,7 +117,7 @@ class System_Model extends Model
 		}
 
 		$user_access = false;
-		$data = $this->fetch_nagios_users();
+		$data = self::fetch_nagios_users();
 		if (!empty($data)) {
 			foreach ($data as $access => $users) {
 				if (!empty($users) && in_array($username, $users)) {
