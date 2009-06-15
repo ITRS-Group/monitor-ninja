@@ -961,7 +961,7 @@ class Current_status_Model extends Model
 				$auth_from = $auth_query_parts['from'];
 
 				# match authorized services against service.host_name
-				$auth_where = $auth_query_parts['where'].' AND';
+				$auth_where = $auth_query_parts['where'].' AND ';
 
 				# what aliases are used for host and service field
 				$auth_service_field = $auth_query_parts['service_field'];
