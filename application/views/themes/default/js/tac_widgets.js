@@ -4,11 +4,11 @@ $(document).ready(function() {
 			useCookies : false
 		},
 		i18n : {
-			editText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Settings" style="float: right; margin-top: -14px; margin-right: 32px" />',
-			closeText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-close.png" alt="Close widget" style="float: right; margin-top: -14px" />',
-			collapseText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-maximize.png" alt="Collapse" style="float: right; margin-top: -14px; margin-right: 16px" />',
-			cancelEditText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Cancel" style="float: right; margin-top: -14px; margin-right: 32px" />',
-			extendText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-mimimize.png" alt="Extend" style="float: right; margin-top: -14px; margin-right: 16px" />'
+			editText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Settings" />',
+			closeText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-close.png" alt="Close widget" />',
+			collapseText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-maximize.png" alt="Collapse" />',
+			cancelEditText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Cancel" />',
+			extendText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-mimimize.png" alt="Extend" />'
 		},
 		effects : {
 			effectDuration : 150,
