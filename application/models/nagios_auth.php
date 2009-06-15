@@ -45,8 +45,7 @@ class Nagios_auth_Model extends Model
 
 	public function check_rootness()
 	{
-		$system = new System_Model;
-		$access = $system->nagios_access($this->user);
+		$access = System_Model::nagios_access($this->user);
 		if (empty($access))
 			return;
 
@@ -67,7 +66,7 @@ class Nagios_auth_Model extends Model
 		}
 
 		/* Allow * in cgi.cfg, which mean everybody should get 'rootness' */
-		$tot_access = $system->nagios_access('*');
+		$tot_access = System_Model::nagios_access('*');
 		if (is_array($tot_access) && !empty($tot_access)) {
 			$all_access = array_values($tot_access);
 			if (in_array('authorized_for_all_hosts', $all_access)) {
