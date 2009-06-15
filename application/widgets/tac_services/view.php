@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_services">
-	<div class="widget-header"><?php echo $title ?></div>
+	<div class="widget-header"><span><?php echo $title ?></span></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
 	</div>
@@ -36,7 +36,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -76,7 +76,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-unknown.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -96,7 +96,7 @@
 							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-ok.png',$this->translate->_('OK')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -111,7 +111,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-pending.png',$this->translate->_('Not pending')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>

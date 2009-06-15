@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w98 left" id="widget-tac_hosts">
-	<div class="widget-header"><?php echo $this->translate->_('Hosts') ?></div>
+	<div class="widget-header"><span><?php echo $this->translate->_('Hosts') ?></span></div>
 	<div class="widget-editbox"></div>
 	<div class="widget-content">
 		<table>
@@ -32,7 +32,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -52,7 +52,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-unreachable.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 								</tr>
 							<?php } ?>
 					</table>
@@ -72,7 +72,7 @@
 							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-up.png',$this->translate->_('Up')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -87,7 +87,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-pending.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
