@@ -67,7 +67,7 @@ class Tac_monfeat_Widget extends widget_Core {
 			$execute_service_checks = $status->active_service_checks_enabled;
 			$accept_passive_service_checks = $status->passive_service_checks_enabled;
 		} else {
-			$nagios_config = $current_status->parse_config_file('nagios.cfg');
+			$nagios_config = System_Model::parse_config_file('nagios.cfg');
 			$enable_notifications = isset($nagios_config['enable_notifications']) ? $nagios_config['enable_notifications'] : false;
 			$enable_flap_detection = isset($nagios_config['enable_flap_detection']) ? $nagios_config['enable_flap_detection'] : false;
 			$enable_event_handlers = isset($nagios_config['enable_event_handlers']) ? $nagios_config['enable_event_handlers'] : false;
