@@ -5,7 +5,14 @@
  */
 class System_Model extends Model
 {
+
+	/**
+	*	Fetch nagios base path as configured in config file
+	*	@return string 'config.nagios_base_path'
+	*/
+	public static function get_nagios_base_path()
 	{
+		return Kohana::config('config.nagios_base_path');
 	}
 
 	/**
