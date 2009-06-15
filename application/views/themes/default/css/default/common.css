@@ -38,6 +38,21 @@ title {
 	text-transform: capitalize;
 }
 
+ul.commands {
+	margin: 0px;
+	padding: 0px;
+}
+
+ul.commands li {
+	line-height: 20px;
+	list-style: none;
+}
+
+ul.commands li img {
+	margin-right: 3px;
+	margin-bottom: -2px;
+}
+
 /**************************************************************************************************/
 
 cite em,
@@ -592,6 +607,24 @@ table.extinfo tr td.status.icon img {
 	padding: 3px 5px 3px 5px;
 	border: 1px solid #e9e9e0;
 	border: 1px solid #dcdccd;
+	height: 14px;
+}
+
+.widget-header span {
+	float: left;
+}
+
+.widget-header span img {
+	float: left;
+}
+
+.widget-header span.widget-menu {
+	float: right;
+	margin-top: 1px;
+}
+
+.widget-header span.widget-menu img {
+	margin-left: 3px;
 }
 
 .widget {
