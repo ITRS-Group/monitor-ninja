@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div class="widget movable collapsable removable closeconfirm w32 left" id="widget-tac_scheduled">
-	<div class="widget-header"><?php echo $this->translate->_('Scheduled downtime') ?></div>
+	<div class="widget-header"><span><?php echo $this->translate->_('Scheduled downtime') ?></span></div>
 	<div class="widget-editbox">
 		<!--Edit the widget here-->
 	</div>

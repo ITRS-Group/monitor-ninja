@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div class="widget movable collapsable removable closeconfirm w32 left" id="widget-tac_acknowledged">
-	<div class="widget-header"><?php echo $this->translate->_('Acknowledged problems') ?></div>
+	<div class="widget-header"><span><?php echo $this->translate->_('Acknowledged problems') ?></span></div>
 	<div class="widget-editbox"></div>
 	<div class="widget-content">
 		<table style="border-spacing: 1px; background-color: #e9e9e0; margin-top: -1px">

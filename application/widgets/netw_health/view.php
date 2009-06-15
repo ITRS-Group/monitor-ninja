@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget movable collapsable removable closeconfirm w32 left " id="widget-netw_health">
-	<div class="widget-header"><?php echo $title ?></div>
+	<div class="widget-header"><span><?php echo $title ?></span></div>
 	<div class="widget-content">
 		<table summary="Network healt" class="healt">
 				<tr>
