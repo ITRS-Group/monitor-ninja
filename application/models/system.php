@@ -5,11 +5,7 @@
  */
 class System_Model extends Model
 {
-	public $base_path = ''; /** the base path where nagios is installed */
-	public function __construct()
 	{
-		parent::__construct();
-		$this->base_path = Kohana::config('config.nagios_base_path');
 	}
 
 	/**
