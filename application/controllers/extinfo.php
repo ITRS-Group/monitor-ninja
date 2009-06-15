@@ -482,7 +482,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
 
 			# check if nagios_check_command is defined in cgi.cfg
-			$cgi_config = System_Model::parse_config_file(Kohana::config('config.nagios_base_path').'/cgi.cfg');
+			$cgi_config = System_Model::parse_config_file('/cgi.cfg');
 			$nagios_check_command = false;
 			if (!empty($cgi_config)) {
 				$nagios_check_command = isset($cgi_config['nagios_check_command']) ? $cgi_config['nagios_check_command'] : false;
@@ -524,8 +524,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->lable_performance_data = $t->_('Performance Data Being Processed?');
 
 		# parse nagios.cfg to figure out date format
-		$current_status = new Current_status_Model;
-		$nagios_config = $current_status->parse_config_file('nagios.cfg');
+		$nagios_config = System_Model::parse_config_file('nagios.cfg');
 
 		# @@@FIXME setting date format should be done somewhere global
 		# DATE FORMAT OPTION
@@ -881,8 +880,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->label_expires = $t->_('Expires');
 		$comments->label_actions = $t->_('Actions');
 		$comments->data = $comment_data;
-		$current_status = new Current_status_Model;
-		$nagios_config = $current_status->parse_config_file('nagios.cfg');
+		$nagios_config = System_Model::parse_config_file('nagios.cfg');
 		$comments->label_yes = $t->_('YES');
 		$comments->label_no = $t->_('NO');
 		$comments->label_type_user = $t->_('User');
