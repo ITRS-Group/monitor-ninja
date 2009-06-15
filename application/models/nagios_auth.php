@@ -2,7 +2,6 @@
 
 class Nagios_auth_Model extends Model
 {
-	public $db = false;
 	public $session = false;
 	public $id = false;
 	public $user = '';
@@ -23,9 +22,6 @@ class Nagios_auth_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		#$this->profiler = new Profiler;
-		# we will always need database and session
-		$this->db = new Database;
 		$this->session = Session::instance();
 
 		$this->user = Auth::instance()->get_user()->username;
