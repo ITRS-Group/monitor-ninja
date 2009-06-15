@@ -1415,56 +1415,6 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	 * Reads a configuration file in the format variable=value
-	 * and returns it in an array.
-	 * lines beginning with # are considered to be comments
-	 * @param $config_file The configuration file to parse
-	 * @return Array of key => value type on success, false on errors
-	 */
-	function parse_config_file($config_file) {
-		$config_file = trim($config_file);
-		if (empty($config_file)) {
-			return false;
-		}
-		$etc = strstr($this->base_path, '/etc') ? '' : '/etc/';
-		# check that we have a trailing slash in path
-		if (substr($this->base_path.$etc, -1, 1) != '/') {
-			$etc .= '/';
-		}
-		$config_file = $this->base_path.$etc.$config_file;
-		if (!file_exists($config_file)) {
-			return false;
-		}
-		$buf = file_get_contents($config_file);
-		if($buf === false) return(false);
-
-		$lines = explode("\n", $buf);
-		$buf = '';
-
-		$tmp = false;
-		foreach($lines as $line) {
-			// skip empty lines and non-variables
-			$line = trim($line);
-			if(!strlen($line) || $line{0} === '#') continue;
-			$str = explode('=', $line);
-			if(!isset($str[1])) continue;
-
-			// preserve all values if a variable can be specified multiple times
-			if(isset($options[$str[0]]) && $options[$str[0]] !== $str[1]) {
-				if(!is_array($options[$str[0]])) {
-					$tmp = $options[$str[0]];
-					$options[$str[0]] = array($tmp);
-				}
-				$options[$str[0]][] = $str[1];
-				continue;
-			}
-			$options[$str[0]] = $str[1];
-		}
-
-		return($options);
-	}
-
-	/**
 	 * Finds all members of a host- or servicegroup
 	 * Will return all info on the hosts but only service_description
 	 * and current_state for services

@@ -18,12 +18,25 @@ class System_Model extends Model
 	/**
 	 * Reads a configuration file in the format variable=value
 	 * and returns it in an array.
-	 * Lines beginning with # are considered to be comments
-	 * @param $config_file path to file to parse
+	 * lines beginning with # are considered to be comments
+	 * @param $config_file The configuration file to parse
+	 * @return Array of key => value type on success, false on errors
 	 */
-	public function parse_config_file($config_file)
-	{
-		$options = false;
+	public static function parse_config_file($config_file) {
+		$config_file = trim($config_file);
+		if (empty($config_file)) {
+			return false;
+		}
+		$base_path = self::get_nagios_base_path();
+		$etc = strstr($base_path, '/etc') ? '' : '/etc/';
+		# check that we have a trailing slash in path
+		if (substr($base_path.$etc, -1, 1) != '/') {
+			$etc .= '/';
+		}
+
+		if (!file_exists($config_file)) {
+			return false;
+		}
 		$buf = file_get_contents($config_file);
 		if($buf === false) return(false);
 
