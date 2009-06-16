@@ -19,9 +19,8 @@ class Status_Controller extends Authenticated_Controller {
 		# load current status for host/service status totals
 		$this->current = new Current_status_Model();
 		$this->current->analyze_status_data();
-		$this->xtra_js = array($this->add_path('/js/tablesorter.js'));
 
-		$this->logos_path = config::get('config.logos_path');
+		$this->logos_path = Kohana::config('config.logos_path');
 	}
 
 	/**
@@ -36,7 +35,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = urldecode($this->input->get('host', $host));
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
@@ -212,7 +211,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = urldecode($this->input->get('name', $name));
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$service_props = urldecode($this->input->get('service_props', $service_props));
@@ -1044,7 +1043,7 @@ class Status_Controller extends Authenticated_Controller {
 				 * and set the correct path in config/config.php,
 				 * if installed, to use this
 				 */
-				if (config::get('config.nacoma_path')!==false) {
+				if (Kohana::config('config.nacoma_path')!==false) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
 					$nacoma_link = html::anchor('configuration/configure/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)));
 				}
@@ -1054,9 +1053,9 @@ class Status_Controller extends Authenticated_Controller {
 				 * Set correct path in config/config.php
 				 */
 				$pnp_link = false;
-				if (config::get('config.pnp4nagios_path')!==false) {
+				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					$lable_pnp = $t->_('Show performance graph');
-					$pnp_link = '<a href="'.config::get('config.pnp4nagios_path').'index.php?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $lable_pnp, 'title' => $lable_pnp)).'</a>';
+					$pnp_link = '<a href="'.Kohana::config('config.pnp4nagios_path').'index.php?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $lable_pnp, 'title' => $lable_pnp)).'</a>';
 				}
 
 				# decide status_link host- and servicestate parameters
@@ -1219,9 +1218,9 @@ class Status_Controller extends Authenticated_Controller {
 		 * and set the correct path in config/config.php,
 		 * if installed, to use this
 		 */
-		if (config::get('config.nacoma_path')!==false) {
+		if (Kohana::config('config.nacoma_path')!==false) {
 			$content->label_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-			$content->nacoma_path = config::get('config.nacoma_path');
+			$content->nacoma_path = Kohana::config('config.nacoma_path');
 		}
 
 		/**
@@ -1229,9 +1228,9 @@ class Status_Controller extends Authenticated_Controller {
 		 * Set correct path in config/config.php
 		 */
 		$pnp_link = false;
-		if (config::get('config.pnp4nagios_path')!==false) {
+		if (Kohana::config('config.pnp4nagios_path')!==false) {
 			$content->label_pnp = $t->_('Show performance graph');
-			$content->pnp_path = config::get('config.pnp4nagios_path');
+			$content->pnp_path = Kohana::config('config.pnp4nagios_path');
 		}
 
 		if ($grouptype == 'host') {

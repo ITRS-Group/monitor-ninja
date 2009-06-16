@@ -853,9 +853,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$this->xtra_js = array($this->add_path('/js/tablesorter.js'));
-		$this->template->js_header->js = $this->xtra_js;
-
 		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $items_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $items_per_page, $offset);
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
