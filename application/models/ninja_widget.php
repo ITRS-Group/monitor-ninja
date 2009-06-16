@@ -140,6 +140,22 @@ class Ninja_widget_Model extends ORM
 	}
 
 	/**
+	*	Merges old settings with new settings and reurns serialized settings
+	* 	If settings index of new settings exists in old settings the old value
+	* 	will be	replaced with the value of the new one.
+	*/
+	private function merge_settings($old_setting=false, $new_setting=false)
+	{
+		if (!empty($old_setting)) {
+			$old_setting = unserialize($old_setting);
+			$new_setting = serialize(array_merge($old_setting, $new_setting));
+		} else {
+			$new_setting = serialize($new_setting);
+		}
+		return $new_setting;
+	}
+
+	/**
 	*	Clean the widget name received from easywidgets
 	*/
 	public function clean_widget_name($widget)
