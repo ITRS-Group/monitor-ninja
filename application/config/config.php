@@ -174,7 +174,7 @@ $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
 *	File system path to where PNP keeps the perfdata rrd and xml files
 *	Only used if 'pnp4nagios_path' !== false
 */
-$config['pnp4nagios_perfdata_path'] = '/opt/monitor/op5/pnp/perfdata/';
+$config['pnp4nagios_config_path'] = '/opt/monitor/etc/pnp/config.php';
 
 /**
  * Do we use NagVis?
