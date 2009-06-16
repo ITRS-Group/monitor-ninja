@@ -96,3 +96,13 @@ function control_widgets(id,item) {
 		item.className = 'selected';
 	}
 }
+
+function restore_widgets()
+{
+	$('li[id^=li_widget]').each(function() {
+		var item_id = $(this).attr('id');
+		var widget_id = item_id.replace('li_', '');
+		$('#' + item_id).removeClass().addClass('selected');
+		$('#' + widget_id).show();
+	});
+}
