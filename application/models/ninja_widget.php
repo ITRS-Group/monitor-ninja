@@ -184,4 +184,87 @@ class Ninja_widget_Model extends ORM
 		}
 		return false;
 	}
+
+	/**
+	*	Fetch all info required to show widgets on a page
+	*/
+	public static function fetch_page_widgets($page=false, $model=false)
+	{
+		$all_widgets = self::fetch_widgets($page, true);
+		$settings_widgets = false;
+		$widget_list = false;
+		if (!empty($all_widgets)) {
+			foreach ($all_widgets as $row) {
+				$settings[$row->name] = unserialize($row->setting);
+				if (!empty($settings[$row->name]) && is_array($settings[$row->name])) {
+					# if we have settings we should add this
+					# model to the start of the arguments array
+					# since the widgets expect the first parameter
+					# in arguments list to be the model
+					array_unshift($settings[$row->name], $model);
+				} else {
+					$settings[$row->name][] = $model;
+				}
+
+				$widget_list[] = $row->name; # keep track of all available widgets
+				$settings_widgets['widget-'.$row->name] = $row->friendly_name;
+			}
+		}
+
+		# check if there is customized widgets (with user settings)
+		$widgets = self::fetch_widgets($page);
+
+		$user_widgets = false;
+		if (!empty($widgets)) {
+			foreach ($widgets as $w) {
+				$user_settings = unserialize($w->setting);
+				if (isset($settings[$w->name]) && is_array($settings[$row->name])) {
+					# replace default settings with user settings if available
+					if (!empty($user_settings) && is_array($user_settings)) {
+						if (array_key_exists('status', $user_settings) && $user_settings['status'] == 'show') {
+							$settings[$w->name] = $user_settings;
+							array_unshift($settings[$w->name], $model);
+						}
+					}
+				}
+				if (is_array($user_settings) && !empty($user_settings) && array_key_exists('status', $user_settings)) {
+					if ($user_settings['status'] == 'hide') {
+						# don't show widgets set to 'hide'
+						continue;
+					} else {
+						$user_widgets['widget-'.$w->name] = $w->friendly_name;
+					}
+				} else {
+					$user_widgets['widget-'.$w->name] = $w->friendly_name;
+				}
+			}
+		}
+
+		# add the widgets to the page using user settings or default if not available
+		#foreach ($widget_list as $widget_name) {
+	#		widget::add($widget_name, $settings[$widget_name], $this);
+	#	}
+
+		$inline_js = false;
+		if (!empty($user_widgets)) {
+			# customized settings detected
+			# some widgets should possibly be hidden
+			foreach ($settings_widgets as $id => $w) {
+				if (!array_key_exists($id, $user_widgets)) {
+					#$this->inline_js .= "\$.fn.HideEasyWidget('".$id."');\n";
+					$inline_js .= "\$('#".$id."').hide();\n";
+				}
+			}
+		}
+
+		$widget_info = array(
+			'settings_widgets' => $settings_widgets,
+			'settings' => $settings,
+			'widget_list' => $widget_list,
+			'inline_js' => $inline_js,
+			'user_widgets' => $user_widgets
+		);
+
+		return $widget_info;
+	}
 }
