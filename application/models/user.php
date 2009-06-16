@@ -17,26 +17,21 @@ class User_Model extends Auth_User_Model {
 			url::redirect(Kohana::config('routes._default'));
 		}
 
-		// Regenerate session (prevents session fixation attacks)
-	#	$this->session->regenerate();
-
-		# remove password from session data
-		unset($user_data->password);
-
 		# save user object data to session
-		$this->session->set('user_data', $user_data);
+		#$this->session->set('user_data', $user_data);
 
 		# set logged_in to current timestamp if db
 		$auth_type = Kohana::config('auth.driver');
-		if ($auth_type == 'db') {
-			$this->db->query('UPDATE user SET logged_in = '.time().' WHERE id='.(int)$user_data->id);
+		if ($auth_type == 'db' || $auth_type === 'Ninja') {
+			$user = ORM::factory('user', Auth::instance()->get_user()->id);
+			$user->last_login = time();
+			$user->save();
 		}
 
 		$requested_uri = Session::instance()->get('requested_uri', false);
 
 		# fetch nagios access rights for user
-		$system = new System_Model();
-		$access = $system->nagios_access(Auth::instance()->get_user()->username);
+		$access = System_Model::nagios_access(Auth::instance()->get_user()->username);
 		Session::instance()->set('nagios_access', $access);
 
 		# make sure we don't end up in infinite loop
