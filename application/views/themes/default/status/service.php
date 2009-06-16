@@ -36,6 +36,7 @@ if (!empty($widgets)) {
 		<col style="width: 100%" />
 		<col style="width: 30px" />
 		<col style="width: 30px" />
+		<col style="width: 30px" />
 	</colgroup>
 	<thead>
 		<tr>
@@ -54,7 +55,7 @@ if (!empty($widgets)) {
 				}
 			?>
 			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
-			<th class="no-sort" colspan="2"><?php echo $this->translate->_('Actions') ?></th>
+			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -113,6 +114,11 @@ if (!empty($widgets)) {
 				<?php echo html::image('/application/views/themes/default/icons/16x16/host-notes.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?>
 			</a>
 			<?php } ?>
+		</td>
+		<td class="icon">
+		<?php
+			if (config::get('config.pnp4nagios_path')!==false)
+				echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>'; ?>
 		</td>
 		<td class="icon">
 			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>

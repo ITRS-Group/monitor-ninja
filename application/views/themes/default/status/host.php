@@ -34,6 +34,8 @@ if (!empty($widgets)) {
 			<col style="width: 30px" />
 			<col style="width: 30px" />
 			<col style="width: 30px" />
+			<col style="width: 30px" />
+			<col style="width: 30px" />
 		</colgroup>
 		<thead>
 			<tr>
@@ -51,7 +53,7 @@ if (!empty($widgets)) {
 				}
 			?>
 				<th><?php echo $this->translate->_('Status information') ?></th>
-				<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+				<th class="no-sort" colspan="4"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -115,6 +117,12 @@ foreach ($result as $row) {
 						<?php echo html::image('application/views/themes/default/icons/16x16/host-notes.png', $this->translate->_('View extra host notes')) ?>
 					</a>
 				<?php	} ?>
+				</td>
+				<td class="icon">
+					<?php
+					if (config::get('config.pnp4nagios_path')!==false)
+						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>'; ?>
+					?>
 				</td>
 				<td class="icon">
 					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image('/application/views/themes/default/icons/16x16/nacoma.png',$this->translate->_('Configure this host')) )?>
