@@ -171,6 +171,12 @@ if (is_dir($nacoma_real_path)) {
 $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
 
 /**
+*	File system path to where PNP keeps the perfdata rrd and xml files
+*	Only used if 'pnp4nagios_path' !== false
+*/
+$config['pnp4nagios_perfdata_path'] = '/opt/monitor/op5/pnp/perfdata/';
+
+/**
  * Do we use NagVis?
  * If path differs from the one below but still installed
  * you could simply change it.
