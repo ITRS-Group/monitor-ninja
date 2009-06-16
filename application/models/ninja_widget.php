@@ -17,9 +17,11 @@ class Ninja_widget_Model extends ORM
 		$user = Auth::instance()->get_user()->username;
 		if ($all===true) {
 			$result = $widgets->where(array('page' => $page, 'user'=> ''))
+				->orderby('friendly_name', 'ASC')
 				->find_all();
 		} else {
 			$result = $widgets->where(array('page' => $page, 'user' => $user))
+				->orderby('friendly_name', 'ASC')
 				->find_all();
 		}
 		return !empty($result) ? $result : false;
