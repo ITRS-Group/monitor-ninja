@@ -125,8 +125,7 @@ class Default_Controller extends Ninja_Controller  {
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
-			#echo Kohana::debug($_SESSION);
-			#die('lkj');
+
 			$user_data = Auth::instance()->get_user()->last_login;
 			User_Model::complete_login($user_data);
 		}
