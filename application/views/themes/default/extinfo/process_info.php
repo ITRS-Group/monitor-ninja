@@ -14,10 +14,10 @@
 	<tr class="odd">
 		<td><?php echo $lable_total_run_time ?>:</td>
 		<td><?php echo $run_time ?></td>
-	</tr>
+	</tr><?php  //$last_command_check = 0; ?>
 	<tr class="even">
 		<td><?php echo $lable_last_external_cmd_check ?>:</td>
-		<td><?php echo date('Y-m-d H:m:i',$last_command_check) ?></td>
+		<td><?php echo $last_command_check != 0 ? date('Y-m-d H:m:i',$last_command_check) : $this->translate->_('N/A') ?></td>
 	</tr>
 	<tr class="odd">
 		<td><?php echo $lable_last_logfile_rotation ?>:</td>
