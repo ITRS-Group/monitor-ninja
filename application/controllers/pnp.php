@@ -17,16 +17,16 @@ class Pnp_Controller extends Authenticated_Controller {
 		$this->model = new Current_status_Model();
 	}
 
-	public function index($host_name=false, $service_name=false)
+	public function index($host=false, $srv=false)
 	{
-		$host_name = urldecode($this->input->get('host_name', $host_name));
-		$service_name = urldecode($this->input->get('service_name', $service_name));
+		$host = urldecode($this->input->get('host_name', $host));
+		$srv = urldecode($this->input->get('service_name', $srv));
 
 		$target_link = 'index.php';
-		if (!empty($host_name))
-				$target_link .= '?host='.$host_name;
-		if (!empty($service_name))
-			$target_link .= '&srv='.$service_name;
+		if (!empty($host))
+				$target_link .= '?host='.$host;
+		if (!empty($srv))
+			$target_link .= '&srv='.$srv;
 
 		$this->template->content = '<iframe src="/monitor/op5/pnp/'.$target_link.'" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » PNP');
