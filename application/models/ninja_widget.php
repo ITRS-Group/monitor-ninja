@@ -69,7 +69,7 @@ class Ninja_widget_Model extends ORM
 					$add->page = $page;
 					$add->name = $row->name;
 					$add->friendly_name = $row->friendly_name;
-					$add->setting = $row->setting;
+					$add->setting = self::merge_settings($row->setting, array('status' => 'show'));
 					$add->save();
 					$add->clear();
 			}
@@ -89,7 +89,6 @@ class Ninja_widget_Model extends ORM
 		$widget = trim($widget);
 		$widget = self::clean_widget_name($widget);
 		$user = Auth::instance()->get_user()->username;
-		$setting = ORM::factory('ninja_widget');
 
 		# check if the user already have customized widgets settings
 		# (already removed/added a widget)
@@ -99,7 +98,7 @@ class Ninja_widget_Model extends ORM
 
 		switch ($method) {
 			case 'hide': case 'close':
-				# remove current widget for user and page
+				# mark current widget as hidden for user and page
 				$fetch = ORM::factory('ninja_widget')
 					->where(
 						array
@@ -110,28 +109,27 @@ class Ninja_widget_Model extends ORM
 						)
 					)->find();
 				if ($fetch->loaded) {
-					$fetch->delete($fetch->id);
+					$setting = ORM::factory('ninja_widget', $fetch->id);
+					$setting->setting = self::merge_settings($fetch->setting, array('status' => 'hide'));
+					$setting->save();
 				}
 				break;
 			case 'show': case 'add':
 				# user added a widget to current page
-				# copy settings from default and insert for user
+				# merge settings with previous settings
 				$fetch_clean = ORM::factory('ninja_widget')
 					->where(
 						array
 						(
 							'name' => $widget,
-							'user' => '',
+							'user' => $user,
 							'page' => $page
 						)
 					)->find();
 				if ($fetch_clean->loaded) {
-					$add = ORM::factory('ninja_widget');
-					$add->user = $user;
-					$add->page = $page;
-					$add->name = $widget;
-					$add->friendly_name = $fetch_clean->friendly_name;
-					$add->setting = $fetch_clean->setting;
+					$add = ORM::factory('ninja_widget', $fetch_clean->id);
+					$new_setting = self::merge_settings($fetch_clean->setting, array('status' => 'show'));
+					$add->setting = $new_setting;
 					$add->save();
 				}
 
