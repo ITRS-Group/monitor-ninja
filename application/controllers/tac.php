@@ -32,59 +32,22 @@ class Tac_Controller extends Authenticated_Controller {
 
 		# fetch data for all widgets
 		$this->model->analyze_status_data();
-		$all_widgets = Ninja_widget_Model::fetch_widgets(Router::$controller.'/'.Router::$method, true);
-		$settings_widgets = false;
-		$widget_list = false;
-		if (!empty($all_widgets)) {
-			foreach ($all_widgets as $row) {
-				$settings[$row->name] = unserialize($row->setting);
-				if (!empty($settings[$row->name]) && is_array($settings[$row->name])) {
-					# if we have settings we should add this
-					# model to the start of the arguments array
-					# since the widgets expect the first parameter
-					# in arguments list to be the model
-					array_unshift($settings[$row->name], $this->model);
-				} else {
-					$settings[$row->name][] = $this->model;
-				}
 
-				$widget_list[] = $row->name; # keep track of all available widgets
-				$settings_widgets['widget-'.$row->name] = $row->friendly_name;
+		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $this->model);
+
+		if (!empty($widget_info)) {
+			$settings_widgets = $widget_info['settings_widgets'];
+			$settings = $widget_info['settings'];
+			$widget_list = $widget_info['widget_list'];
+			$this->inline_js .= $widget_info['inline_js'];
+			$user_widgets = $widget_info['user_widgets'];
+
+			# add the widgets to the page using user settings or default if not available
+			foreach ($widget_list as $widget_name) {
+				widget::add($widget_name, $settings[$widget_name], $this);
 			}
-		}
-		$this->template->settings_widgets = $settings_widgets;
-
-		# check if there is customized widgets (with user settings)
-		$widgets = Ninja_widget_Model::fetch_widgets(Router::$controller.'/'.Router::$method);
-
-		$user_widgets = false;
-		if (!empty($widgets)) {
-			foreach ($widgets as $w) {
-				if (isset($settings[$w->name]) && is_array($settings[$row->name])) {
-					$user_settings = unserialize($w->setting);
-					# replace default settings with user settings if available
-					if (!empty($user_settings) && is_array($user_settings)) {
-						$settings[$w->name] = $user_settings;
-						array_unshift($settings[$w->name], $this->model);
-					}
-				}
-				$user_widgets['widget-'.$w->name] = $w->friendly_name;
-			}
-		}
-
-		# add the widgets to the page using user settings or default if not available
-		foreach ($widget_list as $widget_name) {
-			widget::add($widget_name, $settings[$widget_name], $this);
-		}
-
-		if (!empty($user_widgets)) {
-			# customized settings detected
-			# some widgets should possibly be hidden
-			foreach ($settings_widgets as $id => $w) {
-				if (!array_key_exists($id, $user_widgets)) {
-					$this->inline_js .= "\$.fn.HideEasyWidget('".$id."');\n";
-				}
-			}
+			$this->template->settings_widgets = $settings_widgets;
+			$this->template->user_widgets = $user_widgets;
 		}
 
 		# add the inline javascript to master template header
