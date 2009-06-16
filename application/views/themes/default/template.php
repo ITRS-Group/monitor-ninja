@@ -126,7 +126,7 @@
 							}
 							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
 						}
-						echo '<li onclick="control_widgets(); return false">'.$this->translate->_('Restore to factory settings').'</li>';
+						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>';
 					}
 					if (is_array($settings_page)) {
 						foreach($settings_page as $group => $settings) {
