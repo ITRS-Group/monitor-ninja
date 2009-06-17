@@ -25,8 +25,11 @@ class Pnp_Controller extends Authenticated_Controller {
 		$target_link = 'index.php';
 		if (!empty($host))
 				$target_link .= '?host='.$host;
-		if (!empty($srv))
+		if (!empty($srv)) {
 			$target_link .= '&srv='.$srv;
+		} else {
+			$target_link .= '&srv=_HOST_';
+		}
 
 		$this->template->content = '<iframe src="/monitor/op5/pnp/'.$target_link.'" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » PNP');
