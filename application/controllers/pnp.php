@@ -19,8 +19,8 @@ class Pnp_Controller extends Authenticated_Controller {
 
 	public function index($host=false, $srv=false)
 	{
-		$host = urldecode($this->input->get('host_name', $host));
-		$srv = urldecode($this->input->get('service_name', $srv));
+		$host = urldecode($this->input->get('host', $host));
+		$srv = urldecode($this->input->get('srv', $srv));
 
 		$target_link = 'index.php';
 		if (!empty($host))
