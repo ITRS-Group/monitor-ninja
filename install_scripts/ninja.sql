@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `description` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+);
 
 --
 -- Data for table `roles`
@@ -31,15 +31,14 @@ CREATE TABLE IF NOT EXISTS `roles_users` (
   `role_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`user_id`,`role_id`),
   KEY `fk_role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 --
 -- Dumping data for table `roles_users`
 --
 
-INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES
-(1, 1),
-(1, 2);
+INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES(1, 1);
+INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES(1, 2);
 
 -- --------------------------------------------------------
 
@@ -60,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`),
   UNIQUE KEY `uniq_email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+);
 
 --
 -- Dumping data for table `users`
@@ -69,25 +68,22 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`, `last_login`) VALUES
 (1, 'Monitor Admin', 'monitor@example.com', 'monitor', 'l5aAn32uSC0xI8FlhfK2D5dAd5Y=', 0, 0);
 
--- --------------------------------------------------------
 
 --
--- Constraints for dumped tables
+-- Table structure for table `user_tokens`;
 --
-
---
--- Constraints for table `roles_users`
---
-ALTER TABLE `roles_users`
-  ADD CONSTRAINT `roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_tokens`
---
-ALTER TABLE `user_tokens`
-  ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
+DROP TABLE IF EXISTS `user_tokens`;
+CREATE TABLE IF NOT EXISTS `user_tokens` (
+  id int(11) unsigned NOT NULL auto_increment,
+  user_id int(11) unsigned NOT NULL,
+  user_agent varchar(40) NOT NULL,
+  token varchar(32) NOT NULL,
+  created int(10) unsigned NOT NULL,
+  expires int(10) unsigned NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY uniq_token (token),
+  KEY fk_user_id (user_id)
+);
 
 --
 -- Table structure for table `ninja_settings`
@@ -105,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `ninja_settings` (
   KEY `user` (`user`),
   KEY `page` (`page`),
   KEY `widget_id` (`widget_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+);
 
 
 -- --------------------------------------------------------
@@ -124,22 +120,30 @@ CREATE TABLE IF NOT EXISTS `ninja_widgets` (
   `setting` text NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `user` (`user`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+);
 
 --
 -- Data for table `ninja_widgets`
 --
 
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES
-(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', ''),
-(2, '', 'tac/index', 'netw_health', 'Network health', ''),
-(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', ''),
-(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', ''),
-(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', ''),
-(6, '', 'tac/index', 'netw_outages', 'Network outages', ''),
-(7, '', 'tac/index', 'tac_hosts', 'Hosts', ''),
-(8, '', 'tac/index', 'tac_services', 'Services', ''),
-(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(2, '', 'tac/index', 'netw_health', 'Network health', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(6, '', 'tac/index', 'netw_outages', 'Network outages', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(7, '', 'tac/index', 'tac_hosts', 'Hosts', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(8, '', 'tac/index', 'tac_services', 'Services', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
 
 --
 -- Table structure for table `ninja_db_version`
@@ -149,11 +153,10 @@ CREATE TABLE IF NOT EXISTS `ninja_db_version` (
   `id` int(11) NOT NULL auto_increment,
   `version` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2;
+);
 
 --
 -- Data for table `ninja_db_version`
 --
 
-INSERT INTO `ninja_db_version` (`id`, `version`) VALUES
-(1, 1);
+INSERT INTO `ninja_db_version` (`id`, `version`) VALUES(1, 1);
