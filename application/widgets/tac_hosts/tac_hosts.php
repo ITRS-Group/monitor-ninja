@@ -35,11 +35,11 @@ class Tac_hosts_Widget extends widget_Core {
 
 		# assign variables for our view
 		$title = $this->translate->_('Hosts');
-		$header_links = array(
-			'status/host/all/'.nagstat::HOST_DOWN => $current_status->hosts_down.' '.$this->translate->_('Down'),
-			'status/host/all/'.nagstat::HOST_UNREACHABLE => $current_status->hosts_unreachable.' '.$this->translate->_('Unreachable'),
-			'status/host/all/'.nagstat::HOST_UP => $current_status->hosts_up.' '.$this->translate->_('Up'),
-			'status/host/all/'.nagstat::HOST_PENDING => $current_status->hosts_pending.' '.$this->translate->_('Pending')
+		$default_links = array(
+			'down' => 'status/host/all/'.nagstat::HOST_DOWN,
+			'unreachable' => 'status/host/all/'.nagstat::HOST_UNREACHABLE,
+			'up' => 'status/host/all/'.nagstat::HOST_UP,
+			'pending' => 'status/host/all/'.nagstat::HOST_PENDING
 		);
 
 		# HOSTS DOWN

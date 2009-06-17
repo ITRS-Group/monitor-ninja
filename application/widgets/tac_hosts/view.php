@@ -32,7 +32,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['down'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -52,7 +52,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-unreachable.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['unreachable'], $this->translate->_('N/A')) ?></td>
 								</tr>
 							<?php } ?>
 					</table>
@@ -72,7 +72,7 @@
 							<?php } } if (count($hosts_up_disabled) == 0 && $current_status->hosts_up == 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-up.png',$this->translate->_('Up')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['up'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -87,7 +87,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-pending.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['pending'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>

@@ -36,13 +36,13 @@ class Tac_services_Widget extends widget_Core {
 
 		# assign variables for our view
 		$title = $this->translate->_('Services');
-
-		$header_links = array(
-			'status/service/all/0/'.nagstat::SERVICE_CRITICAL => $current_status->services_critical.' '.$this->translate->_('Critical'),
-			'status/service/all/0/'.nagstat::SERVICE_WARNING  => $current_status->services_warning.' '.$this->translate->_('Warning'),
-			'status/service/all/0/'.nagstat::SERVICE_UNKNOWN  => $current_status->services_unknown.' '.$this->translate->_('Unknown'),
-			'status/service/all/0/'.nagstat::SERVICE_OK  => $current_status->services_ok.' '.$this->translate->_('Ok'),
-			'status/service/all/0/'.nagstat::SERVICE_PENDING   => $current_status->services_pending.' '.$this->translate->_('Pending')
+		# $name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
+		$default_links = array(
+			'critical' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_CRITICAL,
+			'warning' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_WARNING,
+			'unknown' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN,
+			'ok' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_OK,
+			'pending' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING
 		);
 
 		# SERVICES CRITICAL

@@ -36,7 +36,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-critical.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['critical'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -56,7 +56,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-warning.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo $this->translate->_('N/A') ?></td>
+								<td><?php echo html::anchor($default_links['warning'], $this->translate->_('N/A') )?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -76,7 +76,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-unknown.png',$this->translate->_('Critical')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['unknown'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -96,7 +96,7 @@
 							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-ok.png',$this->translate->_('OK')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['ok'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
@@ -111,7 +111,7 @@
 							<?php } } else { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-pending.png',$this->translate->_('Not pending')) ?></td>
-								<td><?php echo html::anchor($url, $this->translate->_('N/A')) ?></td>
+								<td><?php echo html::anchor($default_links['pending'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
 					</table>
