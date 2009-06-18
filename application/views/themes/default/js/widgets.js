@@ -73,7 +73,7 @@ function fetch_widget_order()
 				$.fn.EasyWidgets({callbacks:{onRefreshPositions:function(){return data.widget_order;}}});
 			}
 		},
-		error: function(obj, msg){alert(msg)}
+		error: function(obj, msg){$.jGrowl('Unable to fetch widget order from database.', { header: 'ERROR' });}
 	});
 
 }
@@ -171,7 +171,7 @@ function widget(name, content_area)
 				success: function(data) {
 					$("#" + self.widget_id + ' #' + self.content_area).html(data);
 				},
-				error: function(obj, msg){alert(msg)}
+				error: function(obj, msg){$.jGrowl('Unable to update view for widget ' + self.name, { header: 'ERROR' });}
 			});
 		}
 	}
@@ -182,6 +182,7 @@ function widget(name, content_area)
 	this.save_settings = function(data) {
 		var url = ajax_url + "save_widget_setting/";
 		$.post(url, data);
+		$.jGrowl("Settings for widget " + self.name + " was updated", { header: 'Success' });
 	}
 
 	/*
@@ -262,6 +263,7 @@ function widget(name, content_area)
 	if (widget_ok == false) {
 		// here we should probably notify user that
 		// the widget isn't found
+		$.jGrowl("Unable to find widget " + name, { header: 'ERROR' });
 		if( window.console && window.console.firebug ) {
 			console.log("widget " + name + " isn't found");
 		}
