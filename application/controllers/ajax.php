@@ -259,4 +259,16 @@ class Ajax_Controller extends Authenticated_Controller {
 			return false;
 		Ninja_setting_Model::save_page_setting($type, $page, $setting);
 	}
+
+	/**
+	*	Set a refresh rate for all widgets on a page.
+	*/
+	public function set_widget_refresh()
+	{
+		$page = urldecode($this->input->post('page', false));
+		$value = urldecode($this->input->post('value', false));
+		$type = urldecode($this->input->post('type', false));
+		$success = Ninja_widget_Model::update_all_widgets($page, $value, $type);
+		echo json::encode(array('success' => $success));
+	}
 }
