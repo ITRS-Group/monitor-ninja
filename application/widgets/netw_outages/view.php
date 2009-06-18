@@ -9,9 +9,8 @@
 		<div id="<?php echo $widget_id ?>_slider" style="z-index:1000"></div>
 		<?php echo form::close() ?>
 	</div>
-<?php } ?>
 	<div class="widget-content">
-	<?php
+<?php }
 		if (!$user_has_access) {
 			echo $no_access_msg;
 	 	} else { ?>
