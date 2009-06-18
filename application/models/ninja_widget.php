@@ -178,7 +178,7 @@ class Ninja_widget_Model extends ORM
 		if ($current_widget !== false) {
 			$user = Auth::instance()->get_user()->username;
 			$new_state = ORM::factory('ninja_widget', $current_widget->id);
-			$new_state->setting = serialize($data);
+			$new_state->setting = self::merge_settings($current_widget->setting, $data);
 			$new_state->save();
 			return $new_state->saved;
 		}
