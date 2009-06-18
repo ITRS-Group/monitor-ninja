@@ -261,4 +261,34 @@ class Ninja_widget_Model extends ORM
 
 		return $widget_info;
 	}
+
+	/**
+	*
+	*
+	*/
+	public static function update_all_widgets($page=false, $value=false, $type='refresh_interval')
+	{
+		if (empty($page) || empty($value) || empty($type))
+			return false;
+
+		# check if the user already have customized widgets settings
+		# (already removed/added a widget)
+		self::customize_widgets($page);
+
+		# fetch all available widgets for a page
+		$all_widgets = self::fetch_widgets($page);
+		if ($all_widgets !== false) {
+			$new_setting = array('refresh_interval' => $value);
+			foreach ($all_widgets as $widget) {
+				$edit = ORM::factory('ninja_widget', $widget->id);
+				$edit->setting = self::merge_settings($widget->setting, $new_setting);
+				$edit->save();
+				if ($edit->saved == false) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 }
