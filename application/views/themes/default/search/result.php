@@ -1,4 +1,6 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$label_na = $this->translate->_('N/A');
+?>
 
 <div class="widget left w98" id="search_result">
 	<!--<p><strong><?php echo $this->translate->_('Search result for'); ?> &quot;<?php echo $query ?>&quot;</strong>:</p>-->
@@ -67,7 +69,7 @@ if (isset($service_result) ) { ?>
 		<td>
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
 		</td>
-		<td><?php echo date('Y-m-d H:i:s',$service->last_check) ?></td>
+		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
 		<td><?php echo $service->display_name ?></td>
 		<?php if (isset ($nacoma_link)) { ?>
 		<td class="icon">
