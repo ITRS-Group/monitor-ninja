@@ -48,6 +48,79 @@ $(document).ready(function() {
 	});
 });
 
+
+
+var _global_save = 0; 		// timeout handler variable
+var global_refresh = 60;	// keeps track of the refresh rate set by slider
+/**
+*	Update refresh rate for all widgets on the page
+*/
+function widget_page_refresh()
+{
+	if ($('#widget_global_slider').is('div')) {
+		$('#widget_global_slider').remove();
+	} else {
+		var content = '<div id="widget_global_slider" style="height:10px;background-color: #ffffff;">';
+		content += '<br /><input style="border:0px; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="global_widget_refresh" id="global_widget_refresh" value="' + global_refresh + '" />';
+		content += '</div>';
+		$("#page_settings").append(content);
+		$("#widget_global_slider").slider({
+			value: global_refresh,
+			min: 0,
+			max: 500,
+			step: 10,
+			slide: function(event, ui) {
+				$("#global_widget_refresh").val(ui.value);
+				global_refresh = ui.value;
+				update_save_interval();
+			}
+		});
+	}
+}
+
+/**
+*	Keep track of the timeout for when to save
+*	the global refresh rate for widgets.
+*	Is reset to 5 sec between all changes
+*/
+function update_save_interval()
+{
+	if (_global_save) {
+		clearTimeout(_global_save);
+	}
+	_global_save = setTimeout("set_widget_refresh()", 5000);
+}
+
+/**
+*	Save new refresh rate for all widgets to database
+*	and display notification if successful or not
+*/
+function set_widget_refresh()
+{
+	var url = _site_domain + _index_page + "/ajax/set_widget_refresh/";
+	var page_name = _current_uri;
+	var value = global_refresh;
+	var data = {page: escape(page_name), value: value, type: 'refresh_interval'};
+	$.ajax({
+		url: url,
+		dataType:'json',
+		data: data,
+		type: 'POST',
+		success: function(data) {
+			if (data.success == true) {
+				$.jGrowl('Refresh rate for all widgets has been updated to ' + value + ' sec', { header: 'Success' });
+				$('#widget_global_slider').remove();
+				$('.widget-editbox [name$=_refresh]').each(function() {
+					$(this).attr('value', value);
+				});
+			} else {
+				$.jGrowl('Unable to update refresh rate for all widgets.', { header: 'ERROR' });
+			}
+		},
+		error: function(obj, msg){$.jGrowl('An error was encountered when trying to update refresh rate for all widgets.', { header: 'ERROR' });}
+	});
+}
+
 /*
 *	Save widget order to database
 */
