@@ -35,7 +35,6 @@ if (!empty($widgets)) {
 			<col style="width: 30px" />
 			<col style="width: 30px" />
 			<col style="width: 30px" />
-			<col style="width: 30px" />
 		</colgroup>
 		<thead>
 			<tr>
@@ -103,7 +102,7 @@ foreach ($result as $row) {
 				</td>
 				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 				<td><?php echo $row->duration ?></td>
-				<td style="white-space	: normal"><?php echo str_replace('','',$row->output) ?></td>
+				<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
 				<td class="icon">
 					<?php echo html::anchor('status/service/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/service-details.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
 				</td>
@@ -120,8 +119,8 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon">
 					<?php
-					if (config::get('config.pnp4nagios_path')!==false)
-						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>'; ?>
+						if (pnp::has_graph(host_name, service_description))
+							echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
 					?>
 				</td>
 				<td class="icon">

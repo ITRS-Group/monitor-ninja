@@ -76,8 +76,8 @@ if (!empty($widgets)) {
 		</td>
 		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
 			<?php if ($curr_host != $row->host_name) { ?>
-				<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></div>
-				<div style="float: right">
+				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
+				<span style="float: right">
 					<?php
 						if ($row->problem_has_been_acknowledged) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
@@ -95,7 +95,7 @@ if (!empty($widgets)) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/downtime.png',array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 						}
 					?>
-				</div>
+				</span>
 			<?php } ?>
 		</td>
 		<td class="icon bl">
@@ -116,9 +116,10 @@ if (!empty($widgets)) {
 			<?php } ?>
 		</td>
 		<td class="icon">
-		<?php
-			if (config::get('config.pnp4nagios_path')!==false)
-				echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>'; ?>
+			<?php
+				if (pnp::has_graph(host_name, service_description))
+					echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
+			?>
 		</td>
 		<td class="icon">
 			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>
