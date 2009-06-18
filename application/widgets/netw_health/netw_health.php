@@ -40,9 +40,7 @@ class Netw_health_Widget extends widget_Core {
 			$current_status = $arguments[0];
 			array_shift($arguments);
 		} else {
-			# don't accept widget to call current_status
-			# and re-generate all status data
-			return false;
+			$current_status = new Current_status_Model();
 		}
 
 		# fetch network health data
@@ -53,7 +51,16 @@ class Netw_health_Widget extends widget_Core {
 		$this->format_health_data();
 
 		# assign variables to widget
+		$widget_id = $this->widgetname;
+		$refresh_rate = 60;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
 		$title = $this->translate->_('Network health');
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
+		}
+
 		$host_label = $this->translate->_('HOSTS');
 		$service_label = $this->translate->_('SERVICES');
 		$host_value 	= $this->host_val;
@@ -61,16 +68,24 @@ class Netw_health_Widget extends widget_Core {
 		$host_image 	= $this->widget_full_path.$this->host_img;
 		$service_image 	= $this->widget_full_path.$this->service_img;
 
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
+
 		# set required extra resources
-		#$this->js = array('/js/netw_health');
+		$this->js = array('/js/netw_health');
 		$this->css = array('/css/netw_health');
 
 		# fetch widget content
 		require_once($view_path);
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 	}
 
 	/**
