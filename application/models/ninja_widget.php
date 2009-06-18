@@ -11,7 +11,7 @@ class Ninja_widget_Model extends ORM
 	*/
 	public function fetch_widgets($page=false, $all=false)
 	{
-		if (empty($page))
+		if (empty($page) && $all !== true)
 			return false;
 		$widgets = ORM::factory('ninja_widget');
 		$user = Auth::instance()->get_user()->username;
