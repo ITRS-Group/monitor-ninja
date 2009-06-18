@@ -61,10 +61,17 @@ if (isset($service_result) ) { ?>
 		<th class="header">&nbsp;</th>
 		<?php } ?>
 	</tr>
-<?php	$i = 0; foreach ($service_result as $service) { ?>
+<?php
+	$i = 0;
+	$prev_host = false;
+	foreach ($service_result as $service) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
+		<?php if ($prev_host != $service->host_name) { ?>
 		<td class="bl icon"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->host_state)).'.png',array('alt' => Current_status_Model::status_text($service->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($service->host_state))); ?></td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
+		<?php } else { ?>
+		<td colspan="2" class="white" style="background-color:#ffffff;border=0"></td>
+		<?php } ?>
 		<td class="icon"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->current_state, 'service')).'.png',array('alt' => Current_status_Model::status_text($service->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($service->current_state, 'service'))); ?></td>
 		<td>
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
@@ -77,32 +84,9 @@ if (isset($service_result) ) { ?>
 		</td>
 		<?php } ?>
 	</tr>
-<?php	$i++; } ?>
-</table><br /><?php
-}
-
-# show hostgroup data if available
-if (isset($hostgroup_result) ) { ?>
-<table>
-<caption><?php echo $this->translate->_('Hostgroup results for').': &quot;'.$query.'&quot'; ?></caption>
-	<tr>
-		<th class="header"><?php echo $this->translate->_('Hostgroup'); ?></th>
-		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
-		<?php if (isset ($nacoma_link)) { ?>
-		<th class="header">&nbsp;</th>
-		<?php } ?>
-	</tr>
-<?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { ?>
-	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl"><?php echo html::anchor('extinfo/details/hostgroup/'.$hostgroup->hostgroup_name, $hostgroup->hostgroup_name) ?></td>
-		<td><?php echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', $hostgroup->alias) ?></td>
-		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'hostgroup/'.urlencode($hostgroup->hostgroup_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
-		</td>
-		<?php } ?>
-	</tr>
-<?php	$i++; } ?>
+<?php	$i++;
+	$prev_host = $service->host_name;
+	} ?>
 </table><br /><?php
 }
 
