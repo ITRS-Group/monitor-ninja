@@ -78,6 +78,7 @@ function fetch_widget_order()
 
 }
 
+
 function control_widgets(id,item) {
 	if (item.className == 'selected') {
 		$.fn.HideEasyWidget(id);
@@ -87,6 +88,14 @@ function control_widgets(id,item) {
 		$.fn.ShowEasyWidget(id);
 		item.className = 'selected';
 	}
+}
+
+function save_widget_state(what, widget_name)
+{
+	var url = _site_domain + _index_page + "/ajax/save_widget_state/";
+	var page_name = _current_uri;
+	var data = {page: escape(page_name), method: what, name: widget_name};
+	$.post(url, data);
 }
 
 function restore_widgets()
