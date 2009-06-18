@@ -240,18 +240,12 @@ class Ninja_widget_Model extends ORM
 			}
 		}
 
-		# add the widgets to the page using user settings or default if not available
-		#foreach ($widget_list as $widget_name) {
-	#		widget::add($widget_name, $settings[$widget_name], $this);
-	#	}
-
 		$inline_js = false;
 		if (!empty($user_widgets)) {
 			# customized settings detected
 			# some widgets should possibly be hidden
 			foreach ($settings_widgets as $id => $w) {
 				if (!array_key_exists($id, $user_widgets)) {
-					#$this->inline_js .= "\$.fn.HideEasyWidget('".$id."');\n";
 					$inline_js .= "\$('#".$id."').hide();\n";
 				}
 			}
