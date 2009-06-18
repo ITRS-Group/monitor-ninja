@@ -30,13 +30,14 @@ class Tac_problems_Widget extends widget_Core {
 		} else {
 			$current_status = new Current_status_Model();
 		}
-		$tac_problems_refresh = 60;
-		if (isset($arguments['tac_problems_refresh'])) {
-			$tac_problems_refresh = $arguments['tac_problems_refresh'];
+		$refresh_rate = 60;
+		$widget_id = $this->widgetname;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
 		}
 		$title = $this->translate->_('Unhandled problems');
-		if (isset($arguments['tac_problems_title'])) {
-			$title = $arguments['tac_problems_title'];
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
 		}
 
 		# HOSTS DOWN / problems
