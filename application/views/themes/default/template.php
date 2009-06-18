@@ -26,6 +26,7 @@
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
+				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
 				<?php
 				if (!empty($inline_js)) {
 					echo "$(document).ready(function() {";
