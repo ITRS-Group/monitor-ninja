@@ -29,14 +29,24 @@ class Tac_services_Widget extends widget_Core {
 			$current_status = $arguments[0];
 			array_shift($arguments);
 		} else {
-			# don't accept widget to call current_status
-			# and re-generate all status data
-			return false;
+			$current_status = new Current_status_Model();
 		}
 
 		# assign variables for our view
+		$widget_id = $this->widgetname;
+		$refresh_rate = 60;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
+
 		$title = $this->translate->_('Services');
-		# $name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
+		}
+
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
+
 		$default_links = array(
 			'critical' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_CRITICAL,
 			'warning' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_WARNING,
@@ -134,9 +144,18 @@ class Tac_services_Widget extends widget_Core {
 		# fetch widget content
 		require_once($view_path);
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+
+			# set required extra resources
+			$this->js = array('/js/tac_services');
+
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 	}
 }
 

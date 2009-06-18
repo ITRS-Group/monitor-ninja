@@ -28,10 +28,22 @@ class Tac_disabled_Widget extends widget_Core {
 			$current_status = $arguments[0];
 			array_shift($arguments);
 		} else {
-			# don't accept widget to call current_status
-			# and re-generate all status data
-			return false;
+			$current_status = new Current_status_Model();
 		}
+
+		$widget_id = $this->widgetname;
+		$refresh_rate = 60;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
+
+		$title = $this->translate->_('Disabled checks');
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
+		}
+
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
 
 		# HOSTS DOWN / problems
 		$problem = array();
@@ -80,8 +92,14 @@ class Tac_disabled_Widget extends widget_Core {
 		# fetch widget content
 		require_once($view_path);
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+			$this->js = array('/js/tac_disabled');
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 	}
 }

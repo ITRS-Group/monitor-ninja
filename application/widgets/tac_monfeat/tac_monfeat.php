@@ -29,13 +29,24 @@ class Tac_monfeat_Widget extends widget_Core {
 			$current_status = $arguments[0];
 			array_shift($arguments);
 		} else {
-			# don't accept widget to call current_status
-			# and re-generate all status data
-			return false;
+			$current_status = new Current_status_Model();
 		}
 
 		# translation
+		$widget_id = $this->widgetname;
+		$refresh_rate = 60;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
+
 		$title = $this->translate->_('Monitoring Features');
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
+		}
+
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
+
 		$flap_detect_header_label = $this->translate->_('Flap Detection');
 		$notifications_header_label = $this->translate->_('Notifications');
 		$eventhandler_header_label = $this->translate->_('Event Handlers');
@@ -102,8 +113,17 @@ class Tac_monfeat_Widget extends widget_Core {
 		# fetch widget content
 		require_once($view_path);
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+
+			# set required extra resources
+			$this->js = array('/js/tac_monfeat');
+
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 	}
 }
