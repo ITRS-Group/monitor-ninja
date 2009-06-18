@@ -8,6 +8,7 @@
 		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/status.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/autocomplete_styles.css') ?>
+		<?php echo html::stylesheet('application/views/themes/default/css/default/jquery.jgrowl.css') ?>
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
@@ -18,6 +19,7 @@
 		<?php echo html::script('application/media/js/jquery.selectboxes.min.js') ?>
 		<?php echo html::script('application/media/js/jquery.jeditable.min') ?>
 		<?php echo html::script('application/media/js/jquery.query.js') ?>
+		<?php echo html::script('application/media/js/jquery.jgrowl.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
