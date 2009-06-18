@@ -54,9 +54,6 @@ class Netw_outages_Widget extends widget_Core {
 
 		$user_has_access = $auth->view_hosts_root ? true : false;
 
-		# set required extra resources
-		$this->js = array('/js/netw_outages');
-
 		# fetch widget content
 		require_once($view_path);
 
@@ -64,6 +61,9 @@ class Netw_outages_Widget extends widget_Core {
 			# output widget content
 			echo json::encode( $this->output());
 		} else {
+			# set required extra resources
+			$this->js = array('/js/netw_outages');
+
 			# call parent helper to assign all
 			# variables to master controller
 			return $this->fetch();
