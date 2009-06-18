@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
-<div class="widget editable movable collapsable removable closeconfirm w66 left" id="widget-<?php echo $widget_id ?>">
+<div class="widget editable movable collapsable removable closeconfirm w32 left" id="widget-<?php echo $widget_id ?>">
 	<div class="widget-header"><span class="<?php echo $widget_id ?>_editable" id="<?php echo $widget_id ?>_title"><?php echo $title ?></span></div>
 	<div class="widget-editbox" style="background-color: #ffffff; padding: 15px; float: right; margin-top: -1px; border: 1px solid #e9e9e0; right: 0px; width: 200px">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
@@ -15,7 +15,7 @@
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
 					<td class="dark"><?php echo html::image('/application/views/themes/default/icons/24x24/shield-'.strtolower($problem[$i]['status']).'.png', array('alt' => $problem[$i]['status'], 'id' => 'tac_problems_img')) ?></td>
-					<td>
+					<td style="white-space: normal">
 						<strong><?php echo strtoupper($problem[$i]['type']).' '.strtoupper($problem[$i]['status']) ?></strong><br />
 						<?php
 							echo html::anchor($problem[$i]['url'],$problem[$i]['title']);
