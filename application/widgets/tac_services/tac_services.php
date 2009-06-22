@@ -30,6 +30,7 @@ class Tac_services_Widget extends widget_Core {
 			array_shift($arguments);
 		} else {
 			$current_status = new Current_status_Model();
+			$current_status->analyze_status_data();
 		}
 
 		# assign variables for our view
