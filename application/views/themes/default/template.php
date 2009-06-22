@@ -5,10 +5,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
-		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/default/status.css') ?>
-		<?php echo html::stylesheet('application/views/themes/default/css/default/autocomplete_styles.css') ?>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/jquery.jgrowl.css') ?>
+		<link type="text/css" rel="stylesheet" href="<?php url::site('application/views/themes/default/css/default/common.css.php') ?>" />
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
@@ -21,8 +19,8 @@
 		<?php echo html::script('application/media/js/jquery.query.js') ?>
 		<?php echo html::script('application/media/js/jquery.jgrowl.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
-		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
-		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
+		<?php echo html::script('application/views/themes/default/js/global_serach.js') ?>
+		<?php echo html::script('application/views/themes/default/js/pagniation.js') ?>
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
 			//<!--
@@ -47,10 +45,6 @@
 				<div id="navigation">
 					<ul>
 					<?php
-					/*$link = html::breadcrumb();
-					for($i = 0; $i < count($link); $i++) {
-						echo '<li>'.$link[$i].'</li>';
-					}*/
 					if (isset($title)){
 						$link = split(' » ',$title);
 						for($i = 0; $i < count($link); $i++) {
