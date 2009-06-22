@@ -217,6 +217,9 @@ function widget(name, content_area, no_edit)
 		return true;
 	}
 
+	this.set_current_uri = function(uri) {
+		this.current_uri = uri;
+	}
 	/*
 	*	Set the name of the widget.
 	*/
