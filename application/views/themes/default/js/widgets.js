@@ -113,6 +113,7 @@ function set_widget_refresh()
 				$('.widget-editbox [name$=_refresh]').each(function() {
 					$(this).attr('value', value);
 				});
+				window.location.reload();
 			} else {
 				$.jGrowl('Unable to update refresh rate for all widgets.', { header: 'ERROR' });
 			}
