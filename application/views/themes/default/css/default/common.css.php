@@ -577,6 +577,7 @@ table.extinfo tr td.status.icon img {
 	border: 1px solid #e9e9e0;
 	right: 0px;
 	width: 200px;
+	position: relative;
 }
 /**************************************************************************************************/
 div.left {
