@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
 		<?php echo html::stylesheet('application/views/themes/default/css/default/jquery.jgrowl.css') ?>
-		<link type="text/css" rel="stylesheet" href="<?php url::site('application/views/themes/default/css/default/common.css.php') ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo str_replace('index.php/','',url::site('application/views/themes/default/css/default/common.css.php')) ?>" />
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
 		<?php echo html::script('application/media/js/jquery.min.js') ?>
