@@ -5,7 +5,7 @@
 		<span><?php echo $host_title ?></span>
 		<span style="margin-left: 154px"><?php echo $service_title ?></span>
 	</div>
-		<div class="widget-editbox" style="background-color: #ffffff; padding: 15px; float: right; margin-top: -1px; border: 1px solid #e9e9e0; right: 0px; width: 200px">
+		<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
 		<label for="<?php echo $widget_id ?>_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
 		<input style="border:0px solid red; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
@@ -44,7 +44,7 @@
 			</tr>
 		</table>
 
-		<table style="border-spacing: 1px; background-color: #dcdccd; width: 50%; margin-left: 50%; margin-top:-82px">
+		<table style="border-spacing: 1px; background-color: #dcdccd; width: 50%; margin-left: 50%; margin-top:-61px">
 			<?php $i = 0;foreach ($service_header as $row) { ?>
 			<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 				<td class="status icon">
