@@ -25,7 +25,7 @@ class Service_Model extends Model
 		$id = (int)$id;
 		$name = trim($name);
 
-		$auth_services = $this->auth->get_authorized_services();
+		$auth_services = self::authorized_services();
 		$service_info = false;
 
 		if (!empty($id)) {
@@ -57,7 +57,7 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
-		$auth_services = $this->auth->get_authorized_services();
+		$auth_services = self::authorized_services();
 		$service_str = implode(', ', array_keys($auth_services));
 		switch ($type) {
 			case 'service':
@@ -109,7 +109,7 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
-		$auth_hosts = $this->auth->get_authorized_hosts();
+		$auth_hosts = Host_Model::authorized_hosts();
 		$host_str = implode(', ', array_keys($auth_hosts));
 		switch ($type) {
 			case 'servicegroup':
@@ -147,7 +147,7 @@ class Service_Model extends Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth_objects = $this->auth->get_authorized_services();
+		$auth_objects = self::authorized_services();
 		$obj_ids = array_keys($auth_objects);
 		$obj_info = $this->db
 			->from('service')
@@ -164,7 +164,7 @@ class Service_Model extends Model
 	public function search($value=false, $limit=false)
 	{
 		if (empty($value)) return false;
-		$auth_obj = $this->auth->get_authorized_services();
+		$auth_obj = self::authorized_services();
 		$obj_ids = array_keys($auth_obj);
 		$obj_info = $this->db
 			->select('DISTINCT s.*, h.current_state AS host_state')
@@ -182,5 +182,52 @@ class Service_Model extends Model
 			->limit($limit)
 			->get();
 		return $obj_info;
+	}
+
+	/**
+	 * Fetch services for current user and return
+	 * an array of service IDs
+	 * @return array service IDs or false
+	 */
+	public static function authorized_services()
+	{
+		# fetch services for current user
+		$auth = new Nagios_auth_Model();
+		$user_services = $auth->get_authorized_services();
+		$servicelist = array_keys($user_services);
+		# servicelist is an hash array with serviceID => host_name;service_description
+		# since we have the serviceID we might as well use it
+		if (!is_array($servicelist) || empty($servicelist)) {
+			return false;
+		}
+		sort($servicelist);
+		return $servicelist;
+	}
+
+	/**
+	 * Fetch and calculate status for all services for current user
+	 * @return bool
+	 */
+	public function service_status()
+	{
+		$servicelist = self::authorized_services();
+		if (empty($servicelist)) {
+			return false;
+		}
+
+		$str_servicelist = implode(', ', $servicelist);
+
+		$sql = "
+			SELECT
+				s.*,
+				h.current_state AS host_status
+			FROM
+				service s,
+				host h
+			WHERE
+				s.host_name = h.host_name AND
+				s.id IN (".$str_servicelist.")";
+		$result = $this->db->query($sql);
+		return count($result) ? $result : false;
 	}
 }

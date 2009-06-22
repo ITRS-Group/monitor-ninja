@@ -345,24 +345,10 @@ class Current_status_Model extends Model
 	 */
 	public function service_status()
 	{
-		$servicelist = $this->get_servicelist();
-		if (empty($servicelist)) {
+		$svc = new Service_Model();
+		$result = $svc->service_status();
+		if (!$result)
 			return false;
-		}
-
-		$str_servicelist = implode(', ', $servicelist);
-
-		$sql = "
-			SELECT
-				s.*,
-				h.current_state AS host_status
-			FROM
-				service s,
-				host h
-			WHERE
-				s.host_name = h.host_name AND
-				s.id IN (".$str_servicelist.")";
-		$result = $this->db->query($sql);
 
 		/* check all services */
 		foreach ($result as $service) {
