@@ -119,7 +119,7 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon">
 					<?php
-						//if (pnp::has_graph(host_name, service_description))
+						if (pnp::has_graph($row->host_name, $row->service_description))
 							echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
 					?>
 				</td>
