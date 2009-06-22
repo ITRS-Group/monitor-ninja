@@ -192,7 +192,7 @@ function trim(str) {
 /**
 *	Ninja widget class
 */
-function widget(name, content_area)
+function widget(name, content_area, no_edit)
 {
 	var self = this;
 	var ajax_url = _site_domain + _index_page + '/ajax/';
@@ -201,6 +201,7 @@ function widget(name, content_area)
 	this.save_interval = 0;
 	this.current_uri = _current_uri;
 	this.content_area = false;
+	this.no_edit = no_edit;
 
 	/*
 	*	Initialize some internal values.
@@ -351,5 +352,6 @@ function widget(name, content_area)
 		this.set_refresh_interval(true);
 		this.init_slider();
 	}
-	this.init_title_edit();
+	if (this.no_edit != null && this.no_edit != true)
+		this.init_title_edit();
 }
