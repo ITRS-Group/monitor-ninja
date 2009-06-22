@@ -25,7 +25,8 @@ if (!empty($widgets)) {
 
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
-<table style="table-layout: fixed" id="service_table">
+<table style="table-layout: fixed; margin-bottom: 10px" id="service_table">
+<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
 	<colgroup>
 		<col style="width: 30px" />
 		<col style="width: 160px" />
@@ -135,4 +136,5 @@ if (!empty($widgets)) {
 
 <?php } ?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
+<br /><br />
 </div>

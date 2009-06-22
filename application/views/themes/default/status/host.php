@@ -22,8 +22,8 @@ if (!empty($widgets)) {
 
 <div class="widget left w98" id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<!--<div id="status_msg" class="widget-header"><?php echo $sub_title ?></div>-->
-	<table id="host_table" style="table-layout: fixed">
+	<table id="host_table" style="table-layout: fixed; margin-bottom: 10px">
+	<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
 		<colgroup>
 			<col style="width: 30px" />
 			<col style="width: 200px" />
@@ -71,7 +71,7 @@ foreach ($result as $row) {
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 				<td class="icon bl">
-					<?php echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))), array('style' => 'border: 0px')); ?>
+					&nbsp;<?php echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))), array('style' => 'border: 0px')); ?>
 				</td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
@@ -110,7 +110,7 @@ foreach ($result as $row) {
 				<?php if (!empty($row->action_url)) { ?>
 					<a href="<?php echo $row->action_url ?>" style="border: 0px">
 						<?php echo html::image('/application/views/themes/default/icons/16x16/host-actions.png', $this->translate->_('Perform extra host actions')) ?>
-					</a><!-- a basement burning-->
+					</a>
 				<?php	} if (!empty($row->notes_url)) { ?>
 					<a href="<?php echo $row->notes_url ?>" style="border: 0px">
 						<?php echo html::image('application/views/themes/default/icons/16x16/host-notes.png', $this->translate->_('View extra host notes')) ?>
@@ -119,7 +119,7 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon">
 					<?php
-						if (pnp::has_graph(host_name, service_description))
+						//if (pnp::has_graph(host_name, service_description))
 							echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
 					?>
 				</td>
@@ -131,4 +131,5 @@ foreach ($result as $row) {
 		</tbody>
 	</table>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<br /><br />
 </div>
