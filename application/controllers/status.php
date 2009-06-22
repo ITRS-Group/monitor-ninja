@@ -19,6 +19,7 @@ class Status_Controller extends Authenticated_Controller {
 		# load current status for host/service status totals
 		$this->current = new Current_status_Model();
 		$this->current->analyze_status_data();
+		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$this->logos_path = Kohana::config('config.logos_path');
 	}
