@@ -5,7 +5,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
-		<?php echo html::stylesheet('application/views/themes/default/css/default/common.css') ?>
+		<link type="text/css" rel="stylesheet" href="/ninja/application/views/themes/default/css/default/common.css.php" />
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<script type="text/javascript">
 			//<!--
@@ -13,17 +13,11 @@
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 			//-->
 		</script>
-		<?php
-			if (!empty($js_header)) {
-				echo $js_header;
-			}
-		?>
+		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 	</head>
 
 	<body>
-
-
-			<div id="login-table">
+		<div id="login-table">
 			<?php if (isset($error_msg)) echo $error_msg; ?>
 			<?php echo form::open('default/do_login'); ?>
 			<table>
@@ -48,7 +42,6 @@
 				</tr>
 			</table>
 		<?php echo form::close() ?>
-			</div>
-
+		</div>
 	</body>
 </html>
