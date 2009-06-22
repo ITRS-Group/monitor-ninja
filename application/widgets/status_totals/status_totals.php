@@ -31,7 +31,8 @@ class Status_totals_Widget extends widget_Core {
 			array_shift($arguments);
 		} else {
 			$current_status = new Current_status_Model();
-			$current_status->analyze_status_data();
+			$current_status->host_status();
+			$current_status->service_status();
 		}
 
 		# assign variables for our view
