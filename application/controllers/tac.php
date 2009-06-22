@@ -53,7 +53,6 @@ class Tac_Controller extends Authenticated_Controller {
 
 		# add the inline javascript to master template header
 		$this->template->inline_js = $this->inline_js;
-		$this->template->user_widgets = $user_widgets;
 
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
