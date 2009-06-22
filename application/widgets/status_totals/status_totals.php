@@ -93,15 +93,29 @@ class Status_totals_Widget extends widget_Core {
 			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_PENDING, 'lable' => $svc_total_pending, 'status' => $svc_label_pending)
 		);
 
-		$this->css = array('/css/status_totals');
-		$this->js = array('/js/status_totals');
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
 
-		# fetch widget content
+		$widget_id =  $this->widgetname;
+		$refresh_rate = 60;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
+
 		require_once($view_path);
 
-		# call parent helper to assign all
-		# variables to master controller
-		return $this->fetch();
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+			# set required extra resources
+			$this->css = array('/css/status_totals');
+			$this->js = array('/js/status_totals');
+
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
 
 	}
 
