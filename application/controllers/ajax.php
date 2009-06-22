@@ -247,6 +247,20 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	* Fetch widget setting through ajax call
+	*/
+	public function get_widget_setting()
+	{
+		$page = urldecode($this->input->post('page', false));
+		$widget = urldecode($this->input->post('widget', false));
+		$page = trim($page);
+		$widget = trim($widget);
+		$data = Ninja_widget_Model::get_widget($page, $widget, true);
+		$setting = $data!==false ? $data->setting : false;
+		echo json::encode(unserialize($setting));
+	}
+
+	/**
 	*	Save a specific setting
 	*/
 	public function save_page_setting()
