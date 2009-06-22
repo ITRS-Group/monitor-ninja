@@ -247,9 +247,8 @@ function widget(name, content_area, no_edit)
 				url: ajax_url + "widget/" + self.name + "/index/",
 				dataType:'json',
 				success: function(data) {
-					$("#" + self.widget_id + ' #' + self.content_area).html(data);
-				},
-				error: function(obj, msg){$.jGrowl('Unable to update view for widget ' + self.name, { header: 'ERROR' });}
+					$("#" + self.widget_id + ' .' + self.content_area).html(data);
+				}
 			});
 		}
 	}
