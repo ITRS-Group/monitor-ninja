@@ -16,7 +16,7 @@
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
 			<tr>
-				<th><?php echo $label_entry_time ?></th>
+				<th style="white-space: nowrap"><?php echo $label_entry_time ?></th>
 				<th><?php echo $label_author ?></th>
 				<th><?php echo $label_comment ?></th>
 				<th style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
