@@ -74,7 +74,7 @@ class Netw_health_Widget extends widget_Core {
 
 		# set required extra resources
 		$this->js = array('/js/netw_health');
-		$this->css = array('/css/netw_health');
+		#$this->css = array('/css/netw_health');
 
 		# fetch widget content
 		require_once($view_path);
