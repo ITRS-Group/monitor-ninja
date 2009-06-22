@@ -260,7 +260,30 @@ function widget(name, content_area, no_edit)
 		var url = ajax_url + "save_widget_setting/";
 		$.post(url, data);
 		$.jGrowl("Settings for widget " + self.name + " was updated", { header: 'Success' });
-	}
+	};
+
+	/**
+	*	Get saved settings for widget
+	*	So far only refresh_interval is handled
+	*/
+	this.get_settings = function() {
+		$.ajax({
+			url: ajax_url + "get_widget_setting/",
+			dataType:'json',
+			data: {page: self.current_uri, widget:self.name},
+			type: 'POST',
+			success: function(data) {
+				if (data.refresh_interval) {
+					self.current_interval = data.refresh_interval;
+					self.set_refresh_interval(true);
+					$('input[name=' + self.name + '_refresh]').val(self.current_interval);
+					$("#" + self.name + "_slider").slider("value", self.current_interval);
+				}
+			},
+			error: function(obj, msg){$.jGrowl('Unable to fetch setting for widget ' + self.name, { header: 'ERROR' });}
+		});
+
+	};
 
 	/*
 	*	Set the refresh interval to use for widget
