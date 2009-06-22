@@ -568,6 +568,16 @@ table.extinfo tr td.status.icon img {
 .widget-placeholder {
   border: 1px dashed #cdcdbc;
 }
+.widget-editbox{
+	z-index: 9999;
+	background-color: #ffffff;
+	padding: 15px;
+	float: right;
+	margin-top: -1px;
+	border: 1px solid #e9e9e0;
+	right: 0px;
+	width: 200px;
+}
 /**************************************************************************************************/
 div.left {
 	float: left;
