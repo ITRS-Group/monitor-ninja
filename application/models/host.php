@@ -151,4 +151,23 @@ class Host_Model extends Model {
 		$result = $this->db->query($sql);
 		return $result;
 	}
+
+	/**
+	 * Fetch hosts for current user and return
+	 * array of host IDs
+	 * @return array host IDs or false
+	 */
+	public static function authorized_hosts()
+	{
+		# fetch hosts for current user
+		$auth = new Nagios_auth_Model();
+		$user_hosts = $auth->get_authorized_hosts();
+		$hostlist = array_keys($user_hosts);
+		if (!is_array($hostlist) || empty($hostlist)) {
+			return false;
+		}
+		sort($hostlist);
+		return $hostlist;
+	}
+
 }

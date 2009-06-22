@@ -212,48 +212,12 @@ class Current_status_Model extends Model
 	}
 
 	/**
-	 * Fetch hosts for current user and return
-	 * array of host IDs
-	 * @return array host IDs or false
-	 */
-	public function get_hostlist()
-	{
-		# fetch hosts for current user
-		$user_hosts = $this->auth->get_authorized_hosts();
-		$hostlist = array_keys($user_hosts);
-		if (!is_array($hostlist) || empty($hostlist)) {
-			return false;
-		}
-		sort($hostlist);
-		return $hostlist;
-	}
-
-	/**
-	 * Fetch services for current user and return
-	 * an array of service IDs
-	 * @return array service IDs or false
-	 */
-	public function get_servicelist()
-	{
-		# fetch services for current user
-		$user_services = $this->auth->get_authorized_services();
-		$servicelist = array_keys($user_services);
-		# servicelist is an hash array with serviceID => host_name;service_description
-		# since we have the serviceID we might as well use it
-		if (!is_array($servicelist) || empty($servicelist)) {
-			return false;
-		}
-		sort($servicelist);
-		return $servicelist;
-	}
-
-	/**
 	 * Fetch current host status from db for current user
 	 * return bool
 	 */
 	public function host_status()
 	{
-		$hostlist = $this->get_hostlist();
+		$hostlist = Host_Model::authorized_hosts();
 		if (empty($hostlist)) {
 			return false;
 		}
@@ -622,7 +586,7 @@ class Current_status_Model extends Model
 			return false;
 
 		# fetch hosts for current user
-		$hostlist = $this->get_hostlist();
+		$hostlist = Host_Model::authorized_hosts();
 		if (empty($hostlist)) {
 			return false;
 		}
@@ -731,7 +695,7 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		$hostlist = $this->get_hostlist();
+		$hostlist = Host_Model::authorized_hosts();
 		if (empty($hostlist)) {
 			return;
 		}
@@ -1430,7 +1394,7 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		$hostlist = $this->get_hostlist();
+		$hostlist = Host_Model::authorized_hosts();
 		if (empty($hostlist)) {
 			return false;
 		}
