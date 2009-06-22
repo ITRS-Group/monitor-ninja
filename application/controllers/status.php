@@ -66,7 +66,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array($this->current, $host, $hoststatustypes, false, $group_type, $serviceprops, $hostprops), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
@@ -259,7 +259,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array($this->current, $name, $hoststatustypes, $servicestatustypes, $group_type), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
@@ -503,7 +503,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
@@ -631,7 +631,7 @@ class Status_Controller extends Authenticated_Controller {
 		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
@@ -1177,7 +1177,7 @@ class Status_Controller extends Authenticated_Controller {
 		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$content->label_host = $t->_('Host');
 		$content->label_services = $t->_('Services');
