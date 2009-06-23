@@ -165,7 +165,7 @@ if (is_dir($nacoma_real_path)) {
 }
 
 /**
- * Path to Pnp4nagios
+ * Web path to Pnp4nagios
  * If installed, change path below or set to false if not
  */
 $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
