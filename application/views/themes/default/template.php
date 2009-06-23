@@ -21,6 +21,7 @@
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
+		<?php refresh::control(); ?>
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
 			//<!--
