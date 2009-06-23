@@ -58,6 +58,16 @@
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>
+			<div id="ninja_page_refresh" style="margin-top:8px;">
+				<span id="ninja_refresh_lable" style="float:left">&nbsp; <?php echo $this->translate->_('Pause refresh') ?>&nbsp; </span>
+				<input type="checkbox" id="ninja_refresh_control"  style="float:left">
+				<span id="ninja_refresh_edit" style="float:left">&nbsp; &nbsp;|&nbsp;<?php echo $this->translate->_('Edit'); ?></span>
+
+				<div id="ninja_page_refresh_slider" style="display:none;width:200px;float:left;margin-left:5px;">
+					<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;margin-left:205px;border:0;margin-top:-4px">
+				</div>
+
+			</div>
 		</div>
 
 		<div id="quickbar">
