@@ -99,7 +99,16 @@ class Status_Controller extends Authenticated_Controller {
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
-		# here we should fetch members of group if group_type is set and pass to host_status_subgroup_names
+		# here we should fetch members of group if group_type is set and pass to get_host_status()
+		$host_model = new Host_Model();
+		$host_model->show_services = $show_services;
+		$host_model->state_filter = $hoststatustypes;
+		$host_model->set_sort_field($sort_field);
+		$host_model->set_sort_order($sort_order);
+		$host_model->serviceprops = $serviceprops;
+		$host_model->hostprops = $hostprops;
+		$host_model->count = true;
+
 		if (!empty($group_type)) {
 			# we ned to remove the 'group' part of the group_type variable value
 			# since the method we are about to call expects 'host' or 'service'
@@ -111,7 +120,11 @@ class Status_Controller extends Authenticated_Controller {
 					$group_members[] = $row->host_name;
 				}
 			}
-			$result_cnt = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
+
+			$host_model->set_host_list($group_members);
+
+			$result_cnt = $host_model->get_host_status();
+
 			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
 				array(
@@ -120,10 +133,14 @@ class Status_Controller extends Authenticated_Controller {
 				)
 			);
 			$offset = $pagination->sql_offset;
+			$host_model->count = false;
+			$host_model->items_per_page = $items_per_page;
+			$host_model->offset = $offset;
 
-			$result = $this->current->host_status_subgroup_names($group_members, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $items_per_page, $offset);
+			$result = $host_model->get_host_status();
 		} else {
-			$result_cnt = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, false, false, true);
+			$host_model->set_host_list($host);
+			$result_cnt = $host_model->get_host_status();
 
 			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
@@ -133,8 +150,11 @@ class Status_Controller extends Authenticated_Controller {
 				)
 			);
 			$offset = $pagination->sql_offset;
+			$host_model->count = false;
+			$host_model->items_per_page = $items_per_page;
+			$host_model->offset = $offset;
 
-			$result = $this->current->host_status_subgroup_names($host, $show_services, $hoststatustypes, $sort_field, $sort_order, false, $serviceprops, $hostprops, $items_per_page, $offset);
+			$result = $host_model->get_host_status();
 		}
 
 		$this->template->content->result = $result;
@@ -292,6 +312,15 @@ class Status_Controller extends Authenticated_Controller {
 		$shown = strtolower($name) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$name."'";
 
 		# handle host- or servicegroup details
+		$host_model = new Host_Model();
+		$host_model->show_services = true;
+		$host_model->state_filter = $hoststatustypes;
+		$host_model->service_filter = $servicestatustypes;
+		$host_model->set_sort_field($sort_field);
+		$host_model->set_sort_order($sort_order);
+		$host_model->serviceprops = $service_props;
+		$host_model->hostprops = $hostprops;
+
 		if (!empty($group_type)) {
 			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
 			$shown .= " '".$name."'";
@@ -307,10 +336,16 @@ class Status_Controller extends Authenticated_Controller {
 			if ($group_type == 'servicegroup') {
 				$result = $this->current->get_group_info($grouptype, $name);
 			} else {
-				$result = $this->current->host_status_subgroup_names($group_hosts, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops);
+				$host_model->set_host_list($group_hosts);
+				$result = $host_model->get_host_status();
 			}
 		} else {
-			$result_cnt = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, false, false, true);
+			$host_model->num_per_page = false;
+			$host_model->offset = false;
+			$host_model->count = true;
+
+			$host_model->set_host_list($name);
+			$result_cnt = $host_model->get_host_status();
 			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
 			$pagination = new Pagination(
 				array(
@@ -319,8 +354,12 @@ class Status_Controller extends Authenticated_Controller {
 				)
 			);
 			$offset = $pagination->sql_offset;
+			$host_model->count = false;
+			$host_model->num_per_page = $items_per_page;
+			$host_model->offset = $offset;
 
-			$result = $this->current->host_status_subgroup_names($name, true, $hoststatustypes, $sort_field, $sort_order, $servicestatustypes, $service_props, $hostprops, $items_per_page, $offset);
+			$host_model->set_host_list($name);
+			$result = $host_model->get_host_status();
 		}
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
@@ -404,7 +443,6 @@ class Status_Controller extends Authenticated_Controller {
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
 		}
-
 	}
 
 	/**
@@ -867,8 +905,15 @@ class Status_Controller extends Authenticated_Controller {
 		if (empty($hostlist)) {
 			return false;
 		}
+
 		$service_info = false;
-		$result = $this->current->host_status_subgroup_names($hostlist, true, false, false, false, false, $serviceprops, $hostprops);
+		$host_model = new Host_Model();
+		$host_model->show_services = true;
+		$host_model->serviceprops = $serviceprops;
+		$host_model->hostprops = $hostprops;
+		$host_model->set_host_list($hostlist);
+
+		$result = $host_model->get_host_status();
 		$service_model = new Service_Model();
 		$service_data = $service_model->get_services_for_group($group, $grouptype);
 		$service_list = false;

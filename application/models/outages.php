@@ -31,7 +31,11 @@ class Outages_Model extends Model
 			# loop over hosts causing outages
 			foreach ($status->hostoutage_list as $outage_host) {
 				# fetch status of unreachable host
-				$host_data = $status->host_status_subgroup_names($outage_host, true);
+				$host_model = new Host_Model();
+				$host_model->set_host_list($outage_host);
+				$host_model->show_services = true;
+
+				$host_data = $host_model->get_host_status();
 				$services = false;
 				foreach ($host_data as $row) {
 					if (!isset($outages[$outage_host]['current_state'])) {
