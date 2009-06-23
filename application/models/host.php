@@ -526,4 +526,106 @@ class Host_Model extends Model {
 
 		return $ret_str;
 	}
+
+	/**
+	 * Fetch status for single object (host/service)
+	 * Will fetch status for both host and service if
+	 * both params are present.
+	 */
+	public static function object_status($host_name=false, $service_description=false)
+	{
+		$host_name = trim($host_name);
+		if (empty($host_name)) {
+			return false;
+		}
+		$auth = new Nagios_auth_Model();
+
+		$service_description = trim($service_description);
+		# check credentials for host
+		$host_list = $auth->get_authorized_hosts();
+		if (!in_array($host_name, $host_list)) {
+			return false;
+		}
+
+		$db = new Database();
+		if (empty($service_description)) {
+			$sql = "SELECT *, (UNIX_TIMESTAMP() - last_state_change) AS duration FROM host WHERE host_name='".$host_name."'";
+		} else {
+			$service_list = $auth->get_authorized_services();
+			if (!in_array($host_name.';'.$service_description, $service_list)) {
+				return false;
+			}
+
+			$sql = "
+				SELECT
+					h.id AS host_id,
+					h.host_name,
+					h.address,
+					h.alias,
+					h.current_state AS host_state,
+					h.problem_has_been_acknowledged AS host_problem_is_acknowledged,
+					h.scheduled_downtime_depth AS host_scheduled_downtime_depth,
+					h.notifications_enabled AS host_notifications_enabled,
+					h.action_url AS host_action_url,
+					h.last_host_notification,
+					h.icon_image AS host_icon_image,
+					h.icon_image_alt AS host_icon_image_alt,
+					h.is_flapping AS host_is_flapping,
+					h.state_type AS host_state_type,
+					h.next_check AS host_next_check,
+					h.last_update AS host_last_update,
+					h.percent_state_change AS host_percent_state_change,
+					h.perf_data AS host_perf_data,
+					h.flap_detection_enabled AS host_flap_detection_enabled,
+					h.current_notification_number AS host_current_notification_number,
+					h.check_type AS host_check_type,
+					h.latency AS host_latency,
+					h.execution_time AS host_execution_time,
+					h.last_state_change AS host_last_state_change,
+					h.last_check AS host_last_check,
+					h.obsess_over_host,
+					h.event_handler_enabled AS host_event_handler_enabled,
+					s.id AS service_id,
+					s.service_description,
+					s.current_state,
+					s.obsess_over_service,
+					s.last_check,
+					s.notifications_enabled,
+					s.active_checks_enabled,
+					s.action_url,
+					s.last_notification,
+					s.flap_detection_enabled,
+					s.percent_state_change,
+					s.icon_image,
+					s.perf_data,
+					s.current_notification_number,
+					s.icon_image_alt,
+					s.passive_checks_enabled,
+					s.problem_has_been_acknowledged,
+					s.scheduled_downtime_depth,
+					s.is_flapping,
+					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
+					s.last_state_change,
+					s.current_attempt,
+					s.state_type,
+					s.check_type,
+					s.max_attempts,
+					s.last_update,
+					s.latency,
+					s.execution_time,
+					s.next_check,
+					s.event_handler_enabled,
+					s.output
+				FROM
+					host h,
+					service s
+				WHERE
+					h.host_name=".$db->escape($host_name)." AND
+					s.host_name=h.host_name AND
+					s.service_description=".$db->escape($service_description);
+		}
+		$result = $db->query($sql);
+		#echo $sql;
+		return $result;
+	}
 }
