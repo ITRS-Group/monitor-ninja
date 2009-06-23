@@ -88,4 +88,16 @@ class Servicegroup_Model extends ORM
 			->get();
 		return $obj_info;
 	}
+
+	/**
+	 * find all hosts that have services that
+	 * are members of a specific servicegroup and that
+	 * are in the specified state. Shortcut to get_group_hoststatus('service'...)
+	 */
+	public function get_servicegroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
+	{
+		$grouptype = 'service';
+		return Group_Model::get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
+	}
+
 }
