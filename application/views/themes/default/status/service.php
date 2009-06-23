@@ -36,8 +36,11 @@ if (!empty($widgets)) {
 		<col style="width: 70px" />
 		<col style="width: 100%" />
 		<col style="width: 30px" />
+		<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
 		<col style="width: 30px" />
+		<?php } if (Kohana::config('config.nacoma_path')!==false) { ?>
 		<col style="width: 30px" />
+		<?php } ?>
 	</colgroup>
 	<thead>
 		<tr>
@@ -57,7 +60,7 @@ if (!empty($widgets)) {
 			?>
 			<th class="no-sort"><?php echo $this->translate->_('Attempt') ?></th>
 			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
-			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
+			<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 2 : 1); ?>"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -118,15 +121,19 @@ if (!empty($widgets)) {
 			</a>
 			<?php } ?>
 		</td>
+		<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
 		<td class="icon">
 			<?php
-				if (pnp::has_graph($row->host_name, $row->service_description))
+				if (pnp::has_graph($row->host_name, urlencode($row->service_description)))
 					echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
 			?>
 		</td>
+		<?php } ?>
+		<?php if (Kohana::config('config.nacoma_path')!==false) { ?>
 		<td class="icon">
 			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image('/application/views/themes/default/icons/16x16/nacoma.png',array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>
 		</td>
+		<?php } ?>
 	</tr>
 
 	<?php
