@@ -326,7 +326,7 @@ class Status_Controller extends Authenticated_Controller {
 			$shown .= " '".$name."'";
 			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
 			$grouptype = str_replace('group', '', $group_type);
-			$hostlist = $this->current->get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
+			$hostlist = Group_Model::get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
@@ -803,7 +803,7 @@ class Status_Controller extends Authenticated_Controller {
 		if ($group_info_res === false) {
 			return;
 		}
-		$hostlist = $this->current->get_group_hoststatus($grouptype, $group);
+		$hostlist = Group_Model::get_group_hoststatus($grouptype, $group);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
@@ -1072,7 +1072,7 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
 			return;
 		}
-		$hostlist = $this->current->get_group_hoststatus($grouptype, $group, $hoststatustypes, $servicestatustypes);
+		$hostlist = Group_Model::get_group_hoststatus($grouptype, $group, $hoststatustypes, $servicestatustypes);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
 		if ($hostlist->count() > 0) {
