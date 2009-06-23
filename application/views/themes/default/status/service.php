@@ -22,7 +22,6 @@ if (!empty($widgets)) {
 	</ul>
 </div>
 
-
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <table style="table-layout: fixed; margin-bottom: 10px" id="service_table">
@@ -34,6 +33,7 @@ if (!empty($widgets)) {
 		<col style="width: 160px" />
 		<col style="width: 122px" />
 		<col style="width: 105px" />
+		<col style="width: 70px" />
 		<col style="width: 100%" />
 		<col style="width: 30px" />
 		<col style="width: 30px" />
@@ -55,6 +55,7 @@ if (!empty($widgets)) {
 					}
 				}
 			?>
+			<th class="no-sort"><?php echo $this->translate->_('Attempt') ?></th>
 			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
 			<th class="no-sort" colspan="3"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
@@ -104,7 +105,8 @@ if (!empty($widgets)) {
 		</td>
 		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
 		<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
-		<td><?php echo $row->duration ?></td>
+		<td><?php echo time::to_string($row->duration) ?></td>
+		<td style="text-align: center"><?php echo $row->current_attempt;?></td>
 		<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
