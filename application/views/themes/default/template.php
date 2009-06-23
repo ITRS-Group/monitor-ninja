@@ -20,7 +20,7 @@
 		<?php echo html::script('application/media/js/jquery.jgrowl.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
 		<?php echo html::script('application/views/themes/default/js/global_serach.js') ?>
-		<?php echo html::script('application/views/themes/default/js/pagniation.js') ?>
+		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
 			//<!--
