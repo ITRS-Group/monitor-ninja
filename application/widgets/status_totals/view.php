@@ -3,7 +3,7 @@
 <div class="widget collapsable right editable" id="widget-<?php echo $widget_id ?>" style="margin-right: 1%;width:500px">
 	<div class="widget-header">
 		<span><?php echo $host_title ?></span>
-		<span style="margin-left: 154px"><?php echo $service_title ?></span>
+		<span style="margin-left: 145px"><?php echo $service_title ?></span>
 	</div>
 		<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
