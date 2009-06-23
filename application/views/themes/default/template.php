@@ -1,11 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php if(extension_loaded('zlib')){ob_start('ob_gzhandler');} header('Content-type: text/html; charset=utf-8');?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
-		<?php echo html::stylesheet('application/views/themes/default/css/default/jquery.jgrowl.css') ?>
 		<link type="text/css" rel="stylesheet" href="<?php echo str_replace('index.php/','',url::site('application/views/themes/default/css/default/common.css.php')) ?>" />
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<?php echo (!empty($css_header)) ? $css_header : '' ?>
@@ -19,7 +19,7 @@
 		<?php echo html::script('application/media/js/jquery.query.js') ?>
 		<?php echo html::script('application/media/js/jquery.jgrowl.js') ?>
 		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
-		<?php echo html::script('application/views/themes/default/js/global_serach.js') ?>
+		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
 		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
 		<script type="text/javascript">
@@ -143,3 +143,4 @@
 		</div>
 	</body>
 </html>
+<?php if(extension_loaded('zlib')){ob_end_flush();}?>
