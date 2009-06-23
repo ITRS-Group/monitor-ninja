@@ -33,8 +33,11 @@ if (!empty($widgets)) {
 			<col style="width: 100%" />
 			<col style="width: 30px" />
 			<col style="width: 30px" />
+			<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
 			<col style="width: 30px" />
+			<?php } if (Kohana::config('config.nacoma_path')!==false) { ?>
 			<col style="width: 30px" />
+			<?php } ?>
 		</colgroup>
 		<thead>
 			<tr>
@@ -52,7 +55,7 @@ if (!empty($widgets)) {
 				}
 			?>
 				<th><?php echo $this->translate->_('Status information') ?></th>
-				<th class="no-sort" colspan="4"><?php echo $this->translate->_('Actions') ?></th>
+				<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 4 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : 2); ?>"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -117,15 +120,16 @@ foreach ($result as $row) {
 					</a>
 				<?php	} ?>
 				</td>
+				<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
 				<td class="icon">
-					<?php
-						if (pnp::has_graph($row->host_name))
-							echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>';
-					?>
+					<?php echo (pnp::has_graph($row->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image('/application/views/themes/default/icons/16x16/pnp.png', array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>' : ''; ?>
 				</td>
+				<?php } ?>
+				<?php if (Kohana::config('config.nacoma_path')!==false) { ?>
 				<td class="icon">
-					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image('/application/views/themes/default/icons/16x16/nacoma.png',$this->translate->_('Configure this host')) )?>
+					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image('/application/views/themes/default/icons/16x16/nacoma.png',$this->translate->_('Configure this host')));?>
 				</td>
+				<?php } ?>
 			</tr>
 			<?php	} ?>
 		</tbody>
