@@ -187,3 +187,8 @@ if (is_dir($config['nagvis_real_path'])) {
 } else {
 	$config['nagvis_path'] = false;
 }
+
+/**
+ * Default refresh rate for all pages
+ */
+$config['page_refresh_rate'] = 90;
