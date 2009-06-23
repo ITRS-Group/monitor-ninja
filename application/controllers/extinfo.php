@@ -89,7 +89,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$no = $t->_('NO');
 
 		if ($type == 'host') {
-			$group_info = $this->current->get_groups_for_object($type, $result->id);
+			$group_info = Group_Model::get_groups_for_object($type, $result->id);
 			$content->title = $this->translate->_('Host State Information');
 			$content->no_group_lable = $t->_('No hostgroups');
 			$check_compare_value = Current_status_Model::HOST_CHECK_ACTIVE;
@@ -98,7 +98,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
 		} else {
-			$group_info = $this->current->get_groups_for_object($type, $result->service_id);
+			$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
 			$content->title = $this->translate->_('Service State Information');
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Check');
