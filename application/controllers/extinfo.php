@@ -82,7 +82,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$t = $this->translate;
 
-		$result_data = $this->current->object_status($host, $service);
+		$result_data = Host_Model::object_status($host, $service);
 		$result = $result_data->current();
 		$host_link = false;
 		$yes = $t->_('YES');
