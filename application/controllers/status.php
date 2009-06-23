@@ -113,7 +113,7 @@ class Status_Controller extends Authenticated_Controller {
 			# we ned to remove the 'group' part of the group_type variable value
 			# since the method we are about to call expects 'host' or 'service'
 			$grouptype = str_replace('group', '', $group_type);
-			$group_info_res = $this->current->get_group_info($grouptype, $host);
+			$group_info_res = Group_Model::get_group_info($grouptype, $host);
 			if ($group_info_res) {
 				$group_members = false;
 				foreach ($group_info_res as $row) {
@@ -334,7 +334,7 @@ class Status_Controller extends Authenticated_Controller {
 
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
-				$result = $this->current->get_group_info($grouptype, $name);
+				$result = Group_Model::get_group_info($grouptype, $name);
 			} else {
 				$host_model->set_host_list($group_hosts);
 				$result = $host_model->get_host_status();
@@ -1346,7 +1346,7 @@ class Status_Controller extends Authenticated_Controller {
 		$group = urldecode($this->input->get('group', $group));
 
 		$service_info = array();
-		$result = $this->current->get_group_info($grouptype, $group);
+		$result = Group_Model::get_group_info($grouptype, $group);
 		$content = false;
 		$hosts = array();
 		$seen_hosts = array();
