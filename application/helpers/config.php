@@ -14,7 +14,7 @@ class config_Core
 	*	If $page is set it will fetch for a page-specific
 	* 	setting for current user
 	*/
-	public static function get($config_str=false, $page='')
+	public static function get($config_str=false, $page='', $save=false)
 	{
 		$config_str = trim($config_str);
 		if (empty($config_str) || !is_string($config_str)) {
@@ -28,6 +28,10 @@ class config_Core
 
 		if (!isset($setting)) {
 			$setting = Kohana::config($config_str);
+			if ($save === true) {
+				# save to database as user setting
+				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
+			}
 		}
 		# secondly, if nothing was found - try the config file
 		return $setting;
