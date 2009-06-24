@@ -86,6 +86,7 @@ class refresh_Core {
 			var url = _site_domain + _index_page + "/ajax/save_page_setting/";
 			var data = {page: '*', setting: current_interval, type: '<?php echo $refresh_key ?>'};
 			$.post(url, data);
+			$.jGrowl('Updated page refresh rate to ' + current_interval + ' seconds', { header: 'Success' });
 		}
 
 		function ninja_refresh(val)
