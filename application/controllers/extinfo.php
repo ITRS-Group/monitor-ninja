@@ -89,6 +89,31 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$host_link = false;
 		$yes = $t->_('YES');
 		$no = $t->_('NO');
+		$content->label_notifies_to = $t->_('Notifies to');
+		$content->label_contactgroup = $t->_('Contactgroup');
+		$content->label_no_contactgroup = $t->_('No Contactgroup');
+		$content->label_contacts = $t->_('Contacts');
+		$content->label_no_contacts = $t->_('No Contacts');
+		$content->lable_contact_name = $t->_('Contact Name');
+		$content->lable_contact_alias = $t->_('Alias');
+		$content->lable_contact_email = $t->_('Email');
+		$content->lable_click_to_view = $t->_('Click to view contacts');
+		$contactgroups_res = Contactgroup_Model::get_contactgroup($host, $service);
+		$contacts = false;
+		$contactgroups = false;
+		if ($contactgroups_res !== false) {
+			foreach ($contactgroups_res as $c_group) {
+				$contactgroups[] = $c_group->contactgroup_name;
+				$c_members = Contactgroup_Model::get_members($c_group->contactgroup_name);
+				if ($c_members !== false) {
+					foreach ($c_members as $member) {
+						$contacts[$c_group->contactgroup_name][] = $member;
+					}
+				}
+			}
+		}
+		$content->contactgroups = $contactgroups;
+		$content->contacts = $contacts;
 
 		if ($type == 'host') {
 			$group_info = Group_Model::get_groups_for_object($type, $result->id);
