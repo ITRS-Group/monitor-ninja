@@ -12,6 +12,9 @@ class refresh_Core {
 	*/
 	public function control()
 	{
+		if (!Auth::instance()->logged_in()) {
+			return;
+		}
 		# fetch setting
 		$refresh_key = 'config.page_refresh_rate';
 		$refresh = (int)config::get($refresh_key, '*', true);
