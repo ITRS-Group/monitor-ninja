@@ -49,8 +49,7 @@ class Ninja_widget_Model extends ORM
 	}
 
 	/**
-	*
-	*
+	*	Copy all standard widgets for a page to user as customized
 	*/
 	private function customize_widgets($page=false)
 	{
