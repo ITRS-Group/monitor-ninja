@@ -63,16 +63,30 @@ class Ninja_widget_Model extends ORM
 			# copy all under users' name
 			$result = $setting->where(array('user'=> '', 'page' => $page))->find_all();
 			foreach ($result as $row) {
-				$add = ORM::factory('ninja_widget');
-					$add->user = $user;
-					$add->page = $page;
-					$add->name = $row->name;
-					$add->friendly_name = $row->friendly_name;
-					$add->setting = self::merge_settings($row->setting, array('status' => 'show'));
-					$add->save();
-					$add->clear();
+				# copy widget setting to user
+				self::copy_to_user($row);
 			}
 		}
+	}
+
+	/**
+	*	Copy an existing widget and save as customized (ie for a user)
+	*	Assuming that checks has already been made that the user doesn't
+	* 	already have the widget.
+	*/
+	public static function copy_to_user($old_widget=false)
+	{
+		if (empty($old_widget)) {
+			return false;
+		}
+		$user = Auth::instance()->get_user()->username;
+		$add = ORM::factory('ninja_widget');
+		$add->user = $user;
+		$add->page = $old_widget->page;
+		$add->name = $old_widget->name;
+		$add->friendly_name = $old_widget->friendly_name;
+		$add->setting = $old_widget->setting;
+		$add->save();
 	}
 
 	/**
