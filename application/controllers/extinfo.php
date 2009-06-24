@@ -77,6 +77,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js_header->js = $this->xtra_js;
 
 		# save us some typing
 		$content = $this->template->content;
