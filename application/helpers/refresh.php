@@ -18,7 +18,7 @@ class refresh_Core {
 		?>
 		<script language="JavaScript">
 		<!--
-		var sURL = unescape(window.location.pathname);
+		var sURL = unescape(window.location.pathname + location.search);
 		var _interval = 0;
 		var _save_page_interval = 0;
 		var current_interval = 0;
