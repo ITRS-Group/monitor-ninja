@@ -256,7 +256,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = trim($page);
 		$widget = trim($widget);
 		$data = Ninja_widget_Model::get_widget($page, $widget, true);
-		$setting = $data!==false ? $data->setting : false;
+		$setting = $data!==false ? $data->setting : serialize(array(false));
 		echo json::encode(unserialize($setting));
 	}
 
