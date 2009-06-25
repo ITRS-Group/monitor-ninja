@@ -57,6 +57,7 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 
+		$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 		$this->template->links = array(
 			$this->translate->_('Monitoring') => array(
 				$this->translate->_('Tactical overview') 			=> array('tac', 'tac'),
@@ -74,7 +75,7 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Network outages') 				=> array('outages', 'outages'),
 				$this->translate->_('Host problems') 					=> array('status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'host-problems'),
 				$this->translate->_('Service problems') 			=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'service-problems'),
-				$this->translate->_('Unhandled problems') 		=> array('status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED), 'problems'),
+				$this->translate->_('Unhandled problems') 		=> array('status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
 				'hr4' 																				=> array('', ''),
 				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
 				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'extinfo'),
