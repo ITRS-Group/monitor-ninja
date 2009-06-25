@@ -1469,4 +1469,292 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		return $header;
 	}
+
+	/**
+	*	shows service and host filters in use
+	*/
+	public function _show_filters()
+	{
+		$all_host_status_types =
+			nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|
+			nagstat::HOST_UNREACHABLE;
+
+		$all_service_status_types =
+			nagstat::SERVICE_PENDING|nagstat::SERVICE_OK|
+			nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL;
+
+		$hostprops = $this->hostprops;
+
+		$hoststatustypes = $this->hoststatustypes === false || $this->hoststatustypes ==='' ?
+			$all_host_status_types : $this->hoststatustypes;
+
+		$serviceprops = $this->serviceprops;
+
+		$servicestatustypes = $this->servicestatustypes === false || $this->servicestatustypes ==='' ?
+			$all_service_status_types : $this->servicestatustypes;
+
+		/* Don't show filters box if not necessary */
+		if (empty($hostprops) && empty($serviceprops) &&
+			$hoststatustypes == $all_host_status_types &&
+			$servicestatustypes == $all_service_status_types) {
+			return false;
+		}
+
+		$service_status_types =
+			nagstat::SERVICE_PENDING|nagstat::SERVICE_OK|
+			nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|
+			nagstat::SERVICE_CRITICAL;
+
+		$host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|
+			nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
+
+		$all_service_problems = nagstat::SERVICE_UNKNOWN|
+			nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL;
+
+		$all_host_problems = nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
+
+		$filters = $this->add_view('status/filters');
+		$t = $this->translate;
+		$filters->header_title = $t->_('Display Filters');
+		$filters->lable_host_status_types = $t->_('Host Status Types');
+		$filters->lable_host_properties = $t->_('Host Properties');
+		$filters->lable_service_status_types = $t->_('Service Status Types');
+		$filters->lable_service_properties = $t->_('Service Properties');
+		$host_status_type_val = '';
+		$hostprop_val = '';
+		$service_status_type_val = '';
+		$serviceprop_val = '';
+		$found = 0;
+
+		# Host status types
+		if ($hoststatustypes == $all_host_status_types)
+			$host_status_type_val = $t->_("All");
+		elseif ($hoststatustypes == $all_host_problems)
+			$host_status_type_val = $t->_("All problems");
+		else {
+			$found = 0;
+			if ($hoststatustypes & nagstat::HOST_PENDING) {
+				$host_status_type_val .= $t->_(" Pending");
+				$found = 1;
+			}
+			if ($hoststatustypes & nagstat::HOST_UP) {
+				$host_status_type_val .= sprintf($t->_("%s Up"), ($found == 1) ? " |" : '');
+				$found = 1;
+		                }
+			if ($hoststatustypes & nagstat::HOST_DOWN) {
+				$host_status_type_val .= sprintf($t->_("%s Down"), ($found == 1) ? " |" : '');
+				$found = 1;
+			}
+			if ($hoststatustypes & nagstat::HOST_UNREACHABLE)
+				$host_status_type_val .= sprintf($t->_("%s Unreachable"), ($found == 1) ? " |" : '');
+		}
+		$filters->host_status_type_val = $host_status_type_val;
+
+		# Host properties
+		if (!$hostprops)
+			$hostprop_val = $t->_("Any");
+		else {
+			$found = 0;
+			if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME) {
+				$hostprop_val .= ' ' . $t->_('In Scheduled Downtime');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME) {
+				$hostprop_val .= sprintf($t->_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED) {
+				$hostprop_val .= sprintf($t->_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED) {
+				$hostprop_val .= sprintf($t->_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
+				$hostprop_val .= sprintf($t->_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
+				$hostprop_val .= sprintf($t->_("%s Checkss Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED) {
+				$hostprop_val .= sprintf($t->_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+		                }
+			if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED) {
+				$hostprop_val .= sprintf($t->_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED) {
+				$hostprop_val .= sprintf($t->_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED) {
+				$hostprop_val .= sprintf($t->_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_IS_FLAPPING) {
+				$hostprop_val .= sprintf($t->_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING) {
+				$hostprop_val .= sprintf($t->_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED) {
+				$hostprop_val .= sprintf($t->_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED) {
+				$hostprop_val .= sprintf($t->_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED) {
+				$hostprop_val .= sprintf($t->_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED) {
+				$hostprop_val .= sprintf($t->_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_PASSIVE_CHECK) {
+				$hostprop_val .= sprintf($t->_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_ACTIVE_CHECK) {
+				$hostprop_val .= sprintf($t->_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_HARD_STATE) {
+				$hostprop_val .= sprintf($t->_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($hostprops & nagstat::HOST_SOFT_STATE) {
+				$hostprop_val .= sprintf($t->_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+		}
+		$filters->hostprop_val = $hostprop_val;
+
+		# Service Status Types
+		if ($servicestatustypes == $all_service_status_types)
+			$service_status_type_val = $t->_("All");
+		elseif ($servicestatustypes == $all_service_problems)
+			$service_status_type_val = $t->_("All Problems");
+		else {
+			$found = 0;
+			if ($servicestatustypes & nagstat::SERVICE_PENDING) {
+				$service_status_type_val = ' ' . $t->_("Pending");
+				$found = 1;
+			}
+			if ($servicestatustypes & nagstat::SERVICE_OK) {
+				$service_status_type_val .= sprintf($t->_("%s OK"), ($found == 1) ? ' |' : '');
+				$found = 1;
+			}
+			if ($servicestatustypes & nagstat::SERVICE_UNKNOWN) {
+				$service_status_type_val .= sprintf($t->_("%s Unknown"), ($found == 1) ? ' |' : '');
+				$found = 1;
+			}
+			if ($servicestatustypes & nagstat::SERVICE_WARNING) {
+				$service_status_type_val .= sprintf($t->_("%s Warning"), ($found == 1) ? ' |' : '');
+				$found = 1;
+			}
+			if ($servicestatustypes & nagstat::SERVICE_CRITICAL) {
+				$service_status_type_val .= sprintf($t->_("%s Critical"), ($found == 1) ? ' |' : '');
+				$found = 1;
+			}
+		}
+		$filters->service_status_type_val = $service_status_type_val;
+
+		# Service Properties
+		if ($serviceprops == 0)
+			$serviceprop_val = $t->_("Any");
+		else {
+			$found = 0;
+			if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME){
+				$serviceprop_val .= ' ' .  $t->_("In Scheduled Downtime");
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME) {
+				$serviceprop_val .= sprintf($t->_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED) {
+				$serviceprop_val .= sprintf($t->_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED) {
+				$serviceprop_val .= sprintf($t->_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Active Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Active Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_IS_FLAPPING) {
+				$serviceprop_val .= sprintf($t->_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING) {
+				$serviceprop_val .= sprintf($t->_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED) {
+				$serviceprop_val .= sprintf($t->_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK) {
+				$serviceprop_val .= sprintf($t->_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK) {
+				$serviceprop_val .= sprintf($t->_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_HARD_STATE) {
+				$serviceprop_val .= sprintf($t->_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+			if ($serviceprops & nagstat::SERVICE_SOFT_STATE) {
+				$serviceprop_val .= sprintf($t->_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
+				$found = 1;
+			}
+		}
+		$filters->serviceprop_val = $serviceprop_val;
+		return $filters;
+	}
 }
