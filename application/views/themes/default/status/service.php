@@ -22,6 +22,14 @@ if (!empty($widgets)) {
 	</ul>
 </div>
 
+<div id="filters" class="left">
+<?php
+if (isset($filters) && !empty($filters)) {
+	echo $filters;
+}
+?>
+</div>
+
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <table style="table-layout: fixed; margin-bottom: 10px" id="service_table">
