@@ -552,10 +552,10 @@ class Status_Controller extends Authenticated_Controller {
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
 				$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
-				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $style);
 			}
 		} else {
-			$group_details[] = $this->_show_group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
+			$group_details[] = $this->_show_group($grouptype, $group, $style);
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -705,7 +705,7 @@ class Status_Controller extends Authenticated_Controller {
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
 			foreach ($group_info_res as $group_res) {
 				$groupname_tmp = $group_res->{$grouptype.'group_name'};
-				$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp, $serviceprops, $hostprops);
+				$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
 			}
 		} else {
 			# make sure we have the correct servicegroup
@@ -722,7 +722,7 @@ class Status_Controller extends Authenticated_Controller {
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
 			$content->lable_header = $label_header."'".$group."'";
-			$group_details[] = $this->_show_group_totals_summary($grouptype, $group, $serviceprops, $hostprops);
+			$group_details[] = $this->_show_group_totals_summary($grouptype, $group);
 		}
 
 		# since we don't use these values yet we define a default value
@@ -819,7 +819,7 @@ class Status_Controller extends Authenticated_Controller {
 	 *
 	 * @return obj
 	 */
-	public function _show_group_totals_summary($grouptype='service', $group=false, $serviceprops=false, $hostprops=false)
+	public function _show_group_totals_summary($grouptype='service', $group=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		$content = false;
@@ -917,7 +917,7 @@ class Status_Controller extends Authenticated_Controller {
 			$content->hosts_pending = $hosts_pending;
 
 			# fetch servicedata
-			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group, $serviceprops, $hostprops);
+			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group);
 		} else {
 			# nothing found
 		}
@@ -929,7 +929,7 @@ class Status_Controller extends Authenticated_Controller {
 	 *
 	 *
 	 */
-	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false, $serviceprops=false, $hostprops=false)
+	public function _show_group_service_summary($grouptype='service', $hostlist=false, $group=false)
 	{
 		$group = urldecode($this->input->get('group', $group));
 		if (empty($hostlist)) {
