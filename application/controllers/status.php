@@ -253,6 +253,7 @@ class Status_Controller extends Authenticated_Controller {
 			8  => $this->translate->_('Unknown'),
 			14 => $this->translate->_('All problems'),
 			64 => $this->translate->_('Pending'),
+			65 => $this->translate->_('Non-problem services'),
 			71 => $this->translate->_('All services'),
 		);
 
@@ -262,6 +263,7 @@ class Status_Controller extends Authenticated_Controller {
 			4  => $this->translate->_('Host Unreachable'),
 			6  => $this->translate->_('All host problems'),
 			64 => $this->translate->_('Host Pending'),
+			65 => $this->translate->_('Non-problem hosts'),
 			71 => $this->translate->_('All hosts'),
 		);
 
