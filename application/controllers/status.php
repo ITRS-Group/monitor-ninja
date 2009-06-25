@@ -11,6 +11,10 @@ class Status_Controller extends Authenticated_Controller {
 	public $img_sort_up = false;
 	public $img_sort_down = false;
 	public $logos_path = '';
+	public $hoststatustypes = false;
+	public $servicestatustypes = false;
+	public $hostprops = false;
+	public $serviceprops = false;
 
 	public function __construct()
 	{
@@ -60,8 +64,13 @@ class Status_Controller extends Authenticated_Controller {
 		$title = $this->translate->_('Monitoring » Host details').($hoststatustypes != false ? ' » '.$replace[$hoststatustypes] : '');
 		$this->template->title = $title;
 
-		$this->template->content = $this->add_view('status/host');
+		$this->hoststatustypes = $hoststatustypes;
+		$this->hostprops = $hostprops;
+		$this->serviceprops = $serviceprops;
+		$filters = $this->_show_filters();
 
+		$this->template->content = $this->add_view('status/host');
+		$this->template->content->filters = $filters;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -276,7 +285,14 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
 		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
 
+		$this->hoststatustypes = $hoststatustypes;
+		$this->hostprops = $hostprops;
+		$this->servicestatustypes = $servicestatustypes;
+		$this->serviceprops = $service_props;
+		$filters = $this->_show_filters();
+
 		$this->template->content = $this->add_view('status/service');
+		$this->template->content->filters = $filters;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -511,6 +527,11 @@ class Status_Controller extends Authenticated_Controller {
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
+		$this->hoststatustypes = $hoststatustypes;
+		$this->hostprops = $hostprops;
+		$this->servicestatustypes = $servicestatustypes;
+		$this->serviceprops = $serviceprops;
+
 		switch ($style) {
 			case 'overview':
 				$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
@@ -665,6 +686,11 @@ class Status_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$t = $this->translate;
 
+		$this->hoststatustypes = $hoststatustypes;
+		$this->hostprops = $hostprops;
+		$this->servicestatustypes = $servicestatustypes;
+		$this->serviceprops = $serviceprops;
+
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -798,6 +824,8 @@ class Status_Controller extends Authenticated_Controller {
 		$group = urldecode($this->input->get('group', $group));
 		$content = false;
 		#$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+		$serviceprops = $this->serviceprops;
+		$hostprops = $this->hostprops;
 
 		$group_info_res = $grouptype == 'service' ?
 			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
@@ -907,6 +935,8 @@ class Status_Controller extends Authenticated_Controller {
 		if (empty($hostlist)) {
 			return false;
 		}
+		$serviceprops = $this->serviceprops;
+		$hostprops = $this->hostprops;
 
 		$service_info = false;
 		$host_model = new Host_Model();
@@ -1064,6 +1094,9 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$style = urldecode($this->input->get('style', $style));
 
+		$hoststatustypes = $this->hoststatustypes;
+		$servicestatustypes = $this->servicestatustypes;
+
 		$content = false;
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -1215,6 +1248,9 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('status/group_grid');
 		$content = $this->template->content;
 		$t = $this->translate;
+
+		$this->hoststatustypes = $hoststatustypes;
+		$this->servicestatustypes = $servicestatustypes;
 
 		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group grid');
 
