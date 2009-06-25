@@ -17,10 +17,16 @@ class Hostgroup_Model extends ORM
 	{
 		$value = trim($value);
 		$field = trim($field);
-		if (empty($value) || empty($field)) {
+		$auth = new Nagios_auth_Model();
+		$auth_objects = $auth->get_authorized_hostgroups();
+		if (empty($value) || empty($field) || empty($auth_objects)) {
 			return false;
 		}
-		$data = ORM::factory('hostgroup')->where($field, $value)->find();
+		$obj_ids = array_keys($auth_objects);
+		$data = ORM::factory('hostgroup')
+			->where($field, $value)
+			->in('id', $obj_ids)
+			->find();
 		return $data->loaded ? $data : false;
 	}
 
