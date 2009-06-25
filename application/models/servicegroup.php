@@ -22,6 +22,8 @@ class Servicegroup_Model extends ORM
 		}
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
+		if (empty($auth_objects))
+			return false;
 		$obj_ids = array_keys($auth_objects);
 		$data = ORM::factory('servicegroup')
 			->where($field, $value)
@@ -37,6 +39,8 @@ class Servicegroup_Model extends ORM
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
+		if (empty($auth_objects))
+			return false;
 		$obj_ids = array_keys($auth_objects);
 
 		return ORM::factory('servicegroup')
@@ -54,6 +58,8 @@ class Servicegroup_Model extends ORM
 		}
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
+		if (empty($auth_objects))
+			return false;
 		$obj_ids = array_keys($auth_objects);
 		$obj_info = $this->db
 			->from('servicegroup')
@@ -73,6 +79,8 @@ class Servicegroup_Model extends ORM
 
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
+		if (empty($auth_objects))
+			return false;
 		$obj_ids = array_keys($auth_objects);
 		$obj_info = $this->db
 			->select('DISTINCT *')
