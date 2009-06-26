@@ -92,7 +92,7 @@
 							<?php	if ($current_status->services_ok > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-ok.png',$this->translate->_('OK')) ?></td>
-								<td><?php echo html::anchor('status/service/all/0/', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
+								<td><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
 							</tr>
 							<?php }	if (count($services_ok_disabled) > 0) { foreach ($services_ok_disabled as $url => $title) { ?>
 							<tr>
