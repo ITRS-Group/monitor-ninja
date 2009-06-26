@@ -61,16 +61,6 @@
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>
-			<div id="ninja_page_refresh" style="margin-top:8px;">
-				<span id="ninja_refresh_lable" style="float:left">&nbsp; <?php echo $this->translate->_('Pause refresh') ?>&nbsp; </span>
-				<input type="checkbox" id="ninja_refresh_control"  style="float:left">
-				<span id="ninja_refresh_edit" style="float:left">&nbsp; &nbsp;|&nbsp;<?php echo $this->translate->_('Edit'); ?></span>
-
-				<div id="ninja_page_refresh_slider" style="display:none;width:200px;float:left;margin-left:5px;">
-					<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;margin-left:205px;border:0;margin-top:-4px">
-				</div>
-
-			</div>
 		</div>
 
 		<div id="quickbar">
@@ -81,6 +71,14 @@
 					<li>Service Detail</li>
 				</ul>-->
 			</div>
+			<!--<div id="ninja_page_refresh" style="margin-top:10px; margin-left: 10px; float: right">
+				<input type="checkbox" id="ninja_refresh_control"  style="float:left" />
+				<span id="ninja_refresh_lable" style="float:left">&nbsp; <?php echo $this->translate->_('Pause refresh') ?>&nbsp;</span>
+				<span id="ninja_refresh_edit" style="float:left">&nbsp; &nbsp;|&nbsp;<?php echo $this->translate->_('Edit'); ?></span>
+				<div id="ninja_page_refresh_slider" style="display:none;width:200px;float:left;margin-left:5px;">
+					<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;margin-left:205px;border:0;margin-top:-4px">
+				</div>
+			</div>-->
 			<div id="icons">
 				<ul>
 					<?php
@@ -88,9 +86,19 @@
 						if (is_array($settings_widgets))
 							echo '<li onclick="settings()">'.html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))).'</li>';
 					?>
+					<li id="ninja_refresh_edit">
+						<?php echo html::image('application/views/themes/default/icons/16x16/refresh_edit.png',array('alt' => $this->translate->_('Edit'),'title' => $this->translate->_('Edit'))); ?>
+						<div id="ninja_page_refresh_slider" style="display:none;width:200px; margin-top: -17px; margin-left: 24px;padding: 1px; background: #ffffff; border: 1px solid #e9e9e0">
+							<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;background:transparent; font-size: 11px; margin-left: 170px;border:0px;border-color: none;margin-top:-3px;z-index: 500" />
+						</div>
+					</li>
+					<li id="ninja_page_refresh">
+						<input type="checkbox" id="ninja_refresh_control" />
+						<span id="ninja_refresh_lable"> <?php echo $this->translate->_('Pause refresh') ?></span>
+					</li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
-			</div>
+			</div
 		</div>
 
 		<div id="menu">
