@@ -189,7 +189,7 @@ select {
 	width: auto;
 }
 #navigation ul li {
-	background: url(images/menu-arrow.gif) no-repeat;
+	background: url(images/menu-arrow.png) no-repeat;
 	margin-left: 5px;
 	padding-left: 13px;
 	float: left;
