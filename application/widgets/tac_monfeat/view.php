@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
-<div class="widget editable movable collapsable removable closeconfirm left w98" id="widget-<?php echo $widget_id ?>">
+<div class="widget editable movable collapsable removable closeconfirm" id="widget-<?php echo $widget_id ?>">
 <div class="widget-header"><span class="<?php echo $widget_id ?>_editable" id="<?php echo $widget_id ?>_title"><?php echo $title ?></span></div>
 	<div class="widget-editbox" style="background-color: #ffffff; padding: 15px; float: right; margin-top: -1px; border: 1px solid #e9e9e0; right: 0px; width: 200px">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
@@ -20,7 +20,7 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $flap_detect_header_label ?></th>
+				<th class="enabled"><?php echo $flap_detect_header_label ?></th>
 				<th><?php echo $notifications_header_label ?></th>
 				<th><?php echo $eventhandler_header_label ?></th>
 				<th><?php echo $activechecks_header_label ?></th>
