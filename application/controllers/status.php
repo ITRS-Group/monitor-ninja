@@ -531,12 +531,14 @@ class Status_Controller extends Authenticated_Controller {
 		$this->hostprops = $hostprops;
 		$this->servicestatustypes = $servicestatustypes;
 		$this->serviceprops = $serviceprops;
+		$filters = $this->_show_filters();
 
 		switch ($style) {
 			case 'overview':
 				$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
 				$this->template->header = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
 				$this->template->content = $this->add_view('status/group_overview');
+				$this->template->content->filters = $filters;
 				break;
 			case 'detail': case 'details':
 				$this->template->title = $grouptype.$this->translate->_('group » Details');
@@ -690,6 +692,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->hostprops = $hostprops;
 		$this->servicestatustypes = $servicestatustypes;
 		$this->serviceprops = $serviceprops;
+		$filters = $this->_show_filters();
+		$this->template->content->filters = $filters;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -1251,6 +1255,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->servicestatustypes = $servicestatustypes;
+		$filters = $this->_show_filters();
+		$this->template->content->filters = $filters;
 
 		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group grid');
 
