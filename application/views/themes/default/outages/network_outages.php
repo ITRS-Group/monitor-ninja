@@ -5,14 +5,14 @@
 		<caption><?php echo $title ?></caption>
 		<thead>
 			<tr>
-				<th class="header">&nbsp;</th>
-				<th class="header"><?php echo $label_host ?></th>
-				<th class="header" style="width: 57px"><?php echo $label_notes ?></th>
-				<th class="header"><?php echo $label_severity ?></th>
-				<th class="header"><?php echo $label_duration ?></th>
-				<th class="header"><?php echo $label_hosts_affected ?></th>
-				<th class="header"><?php echo $label_services_affected ?></th>
-				<th class="header" colspan="5"><?php echo $label_actions ?></th>
+				<th class="headerNone">&nbsp;</th>
+				<th class="headerNone"><?php echo $label_host ?></th>
+				<th class="headerNone" style="width: 57px"><?php echo $label_notes ?></th>
+				<th class="headerNone"><?php echo $label_severity ?></th>
+				<th class="headerNone"><?php echo $label_duration ?></th>
+				<th class="headerNone"><?php echo $label_hosts_affected ?></th>
+				<th class="headerNone"><?php echo $label_services_affected ?></th>
+				<th class="headerNone" colspan="5"><?php echo $label_actions ?></th>
 			</tr>
 		</thead>
 		<tbody>
