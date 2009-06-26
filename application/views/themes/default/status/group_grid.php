@@ -20,6 +20,14 @@ if (!empty($widgets)) {
 	</ul>
 </div>
 
+<div id="filters" class="left">
+<?php
+if (isset($filters) && !empty($filters)) {
+	echo $filters;
+}
+?>
+</div>
+
 <div class="widget left w98" id="status_group-grid">
 <?php
 foreach ($group_details as $details) {
