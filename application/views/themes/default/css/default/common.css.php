@@ -265,9 +265,10 @@ select {
 	font-weight: bold;
 }
 #icons {
-	position: absolute;
-	right: 0px;
-	top: 1	px;
+	/*position: absolute;
+	right: 0px;*/
+	float: right;
+	top: 1px;
 	z-index: 9999;
 }
 #icons ul {
@@ -557,10 +558,17 @@ table.extinfo tr td.status.icon img {
 	margin-left: 3px;
 }
 .widget {
-	margin-left: 1%;
+	width: 100%;
+	margin-top: 11px;
 }
 .widget-place {
-	clear: both;
+	margin-left: 1%;
+	width: 32%;
+	float: left;
+	min-height: 100px;
+}
+.widget-place.w98{
+	width: 98%;
 }
 .widget-place.col {
 	clear: none;
@@ -592,6 +600,7 @@ div.right {
 .w99 { width: 99%; }
 .w98 { width: 98%; }
 .w66 { width: 65%; }
+.w50 { width: 50%; }
 .w49 { width: 49%; }
 .w48 { width: 48%; }
 .w33 { width: 32%; }
@@ -672,6 +681,11 @@ td.white table tr td {
 }
 td.white:first-child table tr td:first-child {
 	border-left: 1px solid #e9e9e0;
+}
+.w-table {
+	border-spacing: 1px;
+	background-color: #e9e9e0;
+	margin-top: -1px;
 }
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
@@ -902,4 +916,219 @@ div.jGrowl div.jGrowl-closer {
 .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; }
 .ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #d3d3d3/*{borderColorDefault}*/; background: #e6e6e6/*{bgColorDefault}*/ /*url(images/ui-bg_glass_75_e6e6e6_1x400.png)*//*{bgImgUrlDefault}*/ 50%/*{bgDefaultXPos}*/ 50%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/; font-weight: normal/*{fwDefault}*/; color: #555555/*{fcDefault}*/; outline: none; }
 #tac_problems_slider{width:200px}
+/***************************************************************************************************
+*	COLOURS!
+***************************************************************************************************/
+td.white table tr td,
+td.white:first-child table tr td:first-child,
+#widget-tac_hosts table tr th,
+#widget-tac_services table tr th,
+#widget-tac_monfeat table tr th,
+#widget-tac_hosts table tr th:first-child,
+#widget-tac_services table tr th:first-child,
+#widget-tac_monfeat table tr th:first-child,
+#top-bar,
+#quickbar,
+#menu,
+#menu ul,
+#page_settings ul li,
+#menu ul li,
+#page_settings,
+.widget-editbox {
+	border-color: #e9e9e0;
+	border-color: #dcdcdc;
+}
+
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:first-child,
+th.headerSortUp:first-child,
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
+th.headerSortDown:first-child,
+.group_grid_table th:first-child,
+.group_overview_table th:first-child,
+.comments_table th:first-child,
+th.headerNone:first-child,
+#group_summary_table th:first-child,
+#service_table th:first-child,
+#host_table th:first-child,
+#host_table th.no-sort:first-child,
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#service_table th.headerNone,
+th.headerNone,
+#host_table th,
+#host_table th.no-sort,
+.group_grid_table th.header:first-child,
+.group_overview_table th.header:first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
+th.header:first-child,
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
+th.header,
+.autocomplete,
+tr.odd td:first-child,
+tr.even td:first-child,
+tr.even td,
+tr.odd td,
+tr.odd td.bl,
+tr.even td.bl,
+tr.odd td.bt,
+tr.even td.bt,
+.widget-placeholder,
+.widget-header,
+table.healt{
+	border-color: #dcdcdc;
+}
+
+#menu ul li.hr {
+	border-color: #ffffff;
+}
+
+input[type=submit],
+input[type=reset],
+input[type=button],
+input[type=text],
+select {
+	border: 1px solid #ffffff;
+	outline:  1px solid #cdcdcd;
+}
+
+#top-bar{
+	background:#ffffff url(images/menu-top.gif) repeat-x;
+	background:#e9e9e9 url(images/bg.png) repeat-x;
+}
+
+#page_settings ul li,
+#quickbar,
+#menu ul li {
+	background:#ffffff url(images/menu-top-two.gif) repeat-x;
+	background:#e0e0e0 url(images/bg.png) repeat-x;
+}
+
+tr td,
+table.healt tr td div.border {
+	background: #ffffff url(images/td-light.gif) repeat-x;
+	background:#e9e9e9 url(images/bg.png) repeat;
+}
+
+.widget-header.dark,
+.status,
+tr td.dark,
+tr.even td.status {
+	background: #f5f5ef url(images/td-dark.gif) repeat-x;
+	background:#b7b7b7 url(images/bg.png) repeat;
+}
+
+
+.widget-header {
+	/*background:#f5f5f5 url(images/bg.png) repeat-x;*/
+}
+
+
+.w-table,
+table.extinfo {
+	background: #dcdcdc;
+}
+
+#menu ul li.hr {
+background: #ffffff;
+}
+
+tr.even td 	{ background: #fdfdfd; }
+tr.odd td,
+#menu,
+#page_settings,
+.autocomplete .selected { background-color: #f5f5f5; }
+
+#page_settings ul li,
+#menu ul li {
+	background-position: 0px -1px;
+}
+
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
+th.header,
+.group_grid_table th.header:first-child,
+.group_overview_table th.header:first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
+th.header:first-child {
+	background: #ffffff url(images/sort.png) top right;
+}
+
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#service_table th.headerNone,
+th.headerNone,
+#host_table th,
+#host_table th.no-sort {
+	background: #ffffff url(images/sort-none.png) top right;
+	background:#dcdcdc url(images/bg.png) repeat-x;
+}
+
+.group_grid_table th.headerSortDown,
+.group_overview_table th.headerSortDown,
+.comments_table th.headerSortDown,
+#group_summary_table th.headerSortDown,
+#service_table th.headerSortDown,
+#host_table th.headerSortDown,
+th.headerSortDown,
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
+th.headerSortDown:first-child {
+	background: #ffffff url(images/sort-down.png) top right;
+}
+
+.group_grid_table th.headerSortUp,
+.group_overview_table th.headerSortUp,
+.comments_table th.headerSortUp,
+#group_summary_table th.headerSortUp,
+#service_table th.headerSortUp,
+#host_table th.headerSortUp,
+th.headerSortUp,
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:first-child,
+th.headerSortUp:first-child {
+	background: #ffffff url(images/sort-up.png) top right;
+}
+#quickbar { border-top: 1px solid #dcdcdc; }
+/***************************************************************************************************
+*	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
+***************************************************************************************************/
 <?php if(extension_loaded('zlib')){ob_end_flush();}?>
