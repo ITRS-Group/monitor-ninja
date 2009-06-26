@@ -250,8 +250,7 @@ select {
 	left: 0px;
 	background: #ffffff url(images/menu-top-two.gif) repeat-x;
 	z-index: 1;
-	border-left: 1px solid #e9e9e0;
-	border-right: 1px solid #e9e9e0;
+	border: 1px solid #dcdcdc;
 }
 #quicklinks ul {
 	padding: 9px 10px;
@@ -574,6 +573,7 @@ table.extinfo tr td.status.icon img {
 	clear: none;
 }
 .widget-placeholder {
+	margin-top: 11px;
   border: 1px dashed #cdcdbc;
 }
 .widget-editbox{
@@ -591,6 +591,7 @@ table.extinfo tr td.status.icon img {
 div.left {
 	float: left;
 	margin-top: 11px;
+	margin-left: 1%;
 }
 div.right {
 	float: right;
@@ -995,8 +996,10 @@ tr.odd td.bt,
 tr.even td.bt,
 .widget-placeholder,
 .widget-header,
-table.healt{
+table.healt,
+#quickbar{
 	border-color: #dcdcdc;
+	border-color: #d0d0d0;
 }
 
 #menu ul li.hr {
@@ -1013,28 +1016,25 @@ select {
 }
 
 #top-bar{
-	background:#ffffff url(images/menu-top.gif) repeat-x;
 	background:#e9e9e9 url(images/bg.png) repeat-x;
 }
 
 #page_settings ul li,
 #quickbar,
 #menu ul li {
-	background:#ffffff url(images/menu-top-two.gif) repeat-x;
 	background:#e0e0e0 url(images/bg.png) repeat-x;
 }
 
 tr td,
 table.healt tr td div.border {
-	background: #ffffff url(images/td-light.gif) repeat-x;
 	background:#e9e9e9 url(images/bg.png) repeat;
 }
 
 .widget-header.dark,
 .status,
+th,
 tr td.dark,
 tr.even td.status {
-	background: #f5f5ef url(images/td-dark.gif) repeat-x;
 	background:#b7b7b7 url(images/bg.png) repeat;
 }
 
@@ -1047,6 +1047,7 @@ tr.even td.status {
 .w-table,
 table.extinfo {
 	background: #dcdcdc;
+	background: #d0d0d0;
 }
 
 #menu ul li.hr {
@@ -1090,7 +1091,6 @@ th.header:first-child {
 th.headerNone,
 #host_table th,
 #host_table th.no-sort {
-	background: #ffffff url(images/sort-none.png) top right;
 	background:#dcdcdc url(images/bg.png) repeat-x;
 }
 
@@ -1127,7 +1127,10 @@ th.headerSortUp,
 th.headerSortUp:first-child {
 	background: #ffffff url(images/sort-up.png) top right;
 }
-#quickbar { border-top: 1px solid #dcdcdc; }
+th.enabled {
+	background: #b7b7b7 url(images/bg.png) repeat-x;
+}
+
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/
