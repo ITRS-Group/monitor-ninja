@@ -15,10 +15,17 @@
 			echo $no_access_msg;
 	 	} else { ?>
 		<table class="w-table">
+			<?php if (count($total_blocking_outages) > 0) { ?>
 			<tr>
 				<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-critical.png', array('alt' => $label)) ?></td>
 				<td><?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?></td>
 			</tr>
+			<?php } else { ?>
+			<tr>
+				<td class="dark"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-not-critical.png', array('alt' => $label)) ?></td>
+				<td><?php echo html::anchor('outages/index/', html::specialchars($this->translate->_('N/A'))); ?></td>
+			</tr>
+			<?php } ?>
 		</table>
 		<?php
 		} // end if user_has_access
