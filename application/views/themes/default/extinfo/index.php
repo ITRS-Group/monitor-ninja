@@ -96,7 +96,7 @@ if (!empty($widgets)) {
 <div style="clear:both"></div>
 
 
-<div class="widget left" id="extinfo_current">
+<div class="widget left" id="extinfo_current" style="width: 340px">
 	<table>
 	<caption><?php echo $title ?></caption>
 		<tr class="odd">
