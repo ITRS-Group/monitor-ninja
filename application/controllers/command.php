@@ -70,6 +70,37 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * Takes the command parameters given by the "submit" function
+	 * and creates a Nagios command that gets fed to Nagios through
+	 * the external command pipe.
+	 */
+	public function commit()
+	{
+		$this->init_page('command/commit');
+		$cmd = $_REQUEST['requested_command'];
+		$this->template->content->requested_command = $cmd;
+
+		$command = new Command_Model;
+		$info = nagioscmd::cmd_info($cmd);
+		$template = explode(';', $info['template']);
+		for ($i = 1; $i < count($template); $i++) {
+			$k = $template[$i];
+			if (isset($_REQUEST[$k])) {
+				$template[$i] = $_REQUEST[$k];
+			}
+		}
+		$ncmd = join(';', $template);
+
+		$pipe = "/opt/monitor/var/rw/nagios.cmd";
+		$nagconfig = System_Model::parse_config_file("/opt/monitor/etc/nagios.cfg");
+		if (isset($nagconfig['command_file'])) {
+			$pipe = $nagconfig['command_file'];
+		}
+
+		$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
+	}
+
+	/**
 	 * Display "You're not authorized" message
 	 */
 	public function unauthorized()
