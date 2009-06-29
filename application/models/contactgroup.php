@@ -15,10 +15,20 @@ class Contactgroup_Model extends Model
 		}
 		$host = trim($host);
 		$service = trim($service);
-		$user = Auth::instance()->get_user()->username;
 		$db = new Database();
+		$user = Auth::instance()->get_user()->username;
+		$access = System_Model::nagios_access(Auth::instance()->get_user()->username);
+		$view_hosts_root = false;
+		$sql_auth_str = false;
+
+		if (in_array('authorized_for_all_hosts', $access)) {
+			$view_hosts_root = true;
+		} else {
+			$sql_auth_str = " c.contact_name = ".$db->escape($user)." AND ";
+		}
+
 		if (empty($service)) {
-			$sql = "SELECT ".
+			$sql = "SELECT DISTINCT ".
 				"cg.contactgroup_name, ".
 				"h.host_name ".
 			"FROM ".
@@ -31,12 +41,18 @@ class Contactgroup_Model extends Model
 				"h.id = hcg.host AND ".
 				"hcg.contactgroup = cg.id AND ".
 				"ccg.contactgroup = cg.id AND ".
-				"ccg.contact = c.id AND ".
-				"c.contact_name = ".$db->escape($user)." AND ".
+				"ccg.contact = c.id AND ". $sql_auth_str .
 				"hcg.contactgroup = cg.id AND ".
 				"h.host_name = ".$db->escape($host);
 		} else {
-			$sql = "SELECT ".
+			if ($view_hosts_root === false) {
+				if (!in_array('authorized_for_all_services', $access)) {
+					$sql_auth_str = " c.contact_name = ".$db->escape($user)." AND ";
+				} else {
+					$sql_auth_str = false;
+				}
+			}
+			$sql = "SELECT DISTINCT ".
 				"cg.contactgroup_name, ".
 				"s.service_description ".
 			"FROM ".
@@ -49,8 +65,7 @@ class Contactgroup_Model extends Model
 				"s.id = scg.service AND ".
 				"scg.contactgroup = cg.id AND ".
 				"ccg.contactgroup = cg.id AND ".
-				"ccg.contact = c.id AND ".
-				"c.contact_name = ".$db->escape($user)." AND ".
+				"ccg.contact = c.id AND ". $sql_auth_str .
 				"s.service_description = ".$db->escape($service)." AND ".
 				"s.host_name = ".$db->escape($host);
 		}
