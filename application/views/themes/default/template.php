@@ -1,5 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php if(extension_loaded('zlib')){ob_start('ob_gzhandler');} header('Content-type: text/html; charset=utf-8');?>
+<?php
+#if (extension_loaded('zlib')) {
+#	ob_start('ob_gzhandler');
+#}
+header('Content-type: text/html; charset=utf-8');
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -165,4 +170,8 @@
 		</div>
 	</body>
 </html>
-<?php if(extension_loaded('zlib')){ob_end_flush();}?>
+<?php 
+#if (extension_loaded('zlib')) {
+#	ob_end_flush();
+#}
+?>
