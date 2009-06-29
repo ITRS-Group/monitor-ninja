@@ -56,6 +56,8 @@ foreach ($params as $pname => $ary) {
 	echo "</tr>\n";
 }
 echo "</table><br />\n";
+echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
 echo "<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+echo form::close();
 echo '</div>';
