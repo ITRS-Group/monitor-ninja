@@ -71,7 +71,7 @@ html, body {
 }
 body {
 	margin: 0px;
-	font: 11px 'trebuchet ms',arial,sans-serif;
+	font: 11px arial,sans-serif;
 	background-color: #ffffff;
 }
 td { vertical-align: middle; }
@@ -109,14 +109,14 @@ cite em:first-child {
 input[type=submit],
 input[type=reset],
 input[type=button] {
-	font: 11px 'trebuchet ms',arial,sans-serif;
+	font: 11px arial,sans-serif;
 	border: 1px solid #ffffff;
 	outline:  1px solid #cdcddc;
-	background: transparent url(images/button-bg.png) repeat-x;
+	background: #b7b7b7 url(images/bg.png) repeat-x;
 	padding: 1px 5px;
 }
 input[type=text] {
-	font: 11px 'trebuchet ms',arial,sans-serif;
+	font: 11px arial,sans-serif;
 	border: 1px solid #ffffff;
 	border:  1px solid #cdcddc;
 	padding: 2px 5px;
@@ -126,14 +126,14 @@ input.text {
 	border: 0px;
 	outline: 0px;
 	background: #ffffff url(images/input-bg.png) repeat-x;
-	font: 11px 'trebuchet ms',arial,sans-serif;
+	font: 11px arial,sans-serif;
 	padding: 7px 0px;
 	float: left;
 	margin-bottom: -1px;
 	margin-left: 0px;
 }
 select {
-	font: 11px 'trebuchet ms',arial,sans-serif;
+	font: 11px arial,sans-serif;
 	border: 1px solid #ffffff;
 	outline:  1px solid #cdcddc;
 	padding: 0px;
@@ -234,7 +234,7 @@ select {
 	outline: 0px;
 	margin-top: 5px;
 	margin-right: 4px;
-	font: 11px 'trebuchet ms';
+	font: 11px arial,sans-serif;
 	background: transparent url(images/input-170.png) no-repeat;
 	width: 138px;
 	padding: 3px 5px 3px 27px;
@@ -553,6 +553,7 @@ table.extinfo tr td.status.icon img {
 	float: right;
 	margin-top: 1px;
 }
+.wtop { margin-top: 11px; margin-bottom: 0px;}
 .widget-header span.widget-menu img {
 	margin-left: 3px;
 }
@@ -564,7 +565,7 @@ table.extinfo tr td.status.icon img {
 	margin-left: 1%;
 	width: 32%;
 	float: left;
-	min-height: 100px;
+	min-height: 20px;
 }
 .widget-place.w98{
 	width: 98%;
@@ -869,7 +870,7 @@ div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
 	padding:10px;
 	margin-top:5px;
 	margin-bottom:5px;
-	font-family:Tahoma, Arial, Helvetica, sans-serif;
+	font-family:arial,sans-serif;
 	font-size:12px;
 	text-align:left;
 	display:none;
@@ -908,10 +909,10 @@ div.jGrowl div.jGrowl-closer {
 .ui-slider-horizontal .ui-slider-range-max { right: 0; }
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: Verdana,Arial,sans-serif/*{ffDefault}*/; font-size: 1.1em/*{fsDefault}*/; }
+.ui-widget { font-family: arial,sans-serif/*{ffDefault}*/; font-size: 1.1em/*{fsDefault}*/; }
 .ui-widget-content { border: 1px solid #aaaaaa/*{borderColorContent}*/; background: #ffffff/*{bgColorContent}*/ /*url(images/ui-bg_flat_75_ffffff_40x100.png)*//*{bgImgUrlContent}*/ 50%/*{bgContentXPos}*/ 50%/*{bgContentYPos}*/ repeat-x/*{bgContentRepeat}*/; color: #222222/*{fcContent}*/; }
 .ui-widget-content a { color: #222222/*{fcContent}*/; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana,Arial,sans-serif/*{ffDefault}*/; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial,sans-serif/*{ffDefault}*/; font-size: 1em; }
 .ui-widget-header { border: 1px solid #aaaaaa/*{borderColorHeader}*/; background: #cccccc/*{bgColorHeader}*/ /*url(images/ui-bg_highlight-soft_75_cccccc_1x100.png)*//*{bgImgUrlHeader}*/ 50%/*{bgHeaderXPos}*/ 50%/*{bgHeaderYPos}*/ repeat-x/*{bgHeaderRepeat}*/; color: #222222/*{fcHeader}*/; font-weight: bold; }
 .ui-widget-header a { color: #222222/*{fcHeader}*/; }
 .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; }
@@ -1127,7 +1128,7 @@ th.headerSortUp,
 th.headerSortUp:first-child {
 	background: #ffffff url(images/sort-up.png) top right;
 }
-th.enabled {
+th.enabled_monfeat {
 	background: #b7b7b7 url(images/bg.png) repeat-x;
 }
 
