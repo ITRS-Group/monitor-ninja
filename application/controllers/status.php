@@ -1273,6 +1273,8 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_host = $t->_('Host');
 		$content->label_services = $t->_('Services');
 		$content->label_actions = $t->_('Actions');
+
+		$group_details = false;
 		if (strtolower($group) == 'all') {
 			$content->label_header = $grouptype == 'service' ? $t->_('Status Grid For All Service Groups') : $t->_('Status Grid For All Host Groups');
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
