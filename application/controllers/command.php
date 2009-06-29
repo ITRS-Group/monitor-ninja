@@ -40,7 +40,6 @@ class Command_Controller extends Authenticated_Controller
 	public function submit($name = false)
 	{
 		$this->init_page('command/request');
-		$this->template->content->cmd = $name;
 
 		if ($name === false) {
 			$name = $this->input->get('cmd_typ');
