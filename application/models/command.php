@@ -15,15 +15,29 @@ class Command_Model extends Model
 
 	protected function get_object_list($param_name)
 	{
+		$ary = false;
 		switch ($param_name) {
 		 case 'host_name':
-			return $this->auth->get_authorized_hosts();
+			$ary = $this->auth->get_authorized_hosts();
+			break;
 		 case 'service_description':
-			return $this->auth->get_authorized_services();
+			$ary = $this->auth->get_authorized_services();
+			break;
 		 case 'hostgroup_name':
-			return $this->auth->get_authorized_hostgroups();
+			$ary = $this->auth->get_authorized_hostgroups();
+			break;
 		 case 'servicegroup_name':
-			return $this->auth->get_authorized_servicegroups();
+			$ary = $this->auth->get_authorized_servicegroups();
+			break;
+		}
+
+
+		if ($ary) {
+			$ret_ary = array();
+			foreach ($ary as $k => $v) {
+				$ret_ary[$v] = $v;
+			}
+			return $ret_ary;
 		}
 
 		$obj_type = substr($param_name, 0, -5);
