@@ -16,21 +16,23 @@ header('Content-type: text/html; charset=utf-8');
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo str_replace('index.php/','',url::site('application/views/themes/default/css/default/ie7.css.php')) ?>" />
 		<![endif]-->
-		<?php echo (!empty($css_header)) ? $css_header : '' ?>
-		<?php echo html::script('application/media/js/jquery.min.js') ?>
-		<?php echo html::script('application/media/js/jquery-ui.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.form.js') ?>
-		<?php echo html::script('application/media/js/jquery.easywidgets.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.autocomplete.min') ?>
-		<?php echo html::script('application/media/js/jquery.selectboxes.min.js') ?>
-		<?php echo html::script('application/media/js/jquery.jeditable.min') ?>
-		<?php echo html::script('application/media/js/jquery.query.js') ?>
-		<?php echo html::script('application/media/js/jquery.jgrowl.js') ?>
-		<?php echo html::script('application/views/themes/default/js/collapse_menu.js') ?>
-		<?php echo html::script('application/views/themes/default/js/global_search.js') ?>
-		<?php echo html::script('application/views/themes/default/js/pagination.js') ?>
-		<?php refresh::control(); ?>
-		<?php echo (!empty($js_header)) ? $js_header : '' ?>
+		<?php
+			echo (!empty($css_header)) ? $css_header : '';
+			echo html::script('application/media/js/jquery.min.js');
+			echo html::script('application/media/js/jquery-ui.min.js');
+			echo html::script('application/media/js/jquery.form.js');
+			echo html::script('application/media/js/jquery.easywidgets.min.js');
+			echo html::script('application/media/js/jquery.autocomplete.min');
+			echo html::script('application/media/js/jquery.selectboxes.min.js');
+			echo html::script('application/media/js/jquery.jeditable.min');
+			echo html::script('application/media/js/jquery.query.js');
+			echo html::script('application/media/js/jquery.jgrowl.js');
+			echo html::script('application/views/themes/default/js/collapse_menu.js');
+			echo html::script('application/views/themes/default/js/global_search.js');
+			echo html::script('application/views/themes/default/js/pagination.js');
+			refresh::control();
+			echo (!empty($js_header)) ? $js_header : '';
+		?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
@@ -103,23 +105,22 @@ header('Content-type: text/html; charset=utf-8');
 					</li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
-			</div
+			</div>
 		</div>
-
 		<div id="menu">
 			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
 			<div id="show-menu" title="<?php echo $this->translate->_('Show menu') ?>" onclick="collapse_menu('show')"></div>
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
-						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>';
+						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>';
+								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'_highlight.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							elseif($url[0] == '')
-								echo '<li class="hr">&nbsp;</li>';
+								echo '<li class="hr">&nbsp;</li>'."\n";
 							else
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>';
+								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/12x12/menu-'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 						endforeach;
 					endforeach;
 				?>
@@ -141,23 +142,23 @@ header('Content-type: text/html; charset=utf-8');
 			<ul>
 				<?php
 					if (is_array($settings_widgets)) {
-						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>';
+						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>'."\n";
 						foreach($settings_widgets as $id => $widget) {
 							if (isset($user_widgets) && is_array($user_widgets)) {
 								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
 							} else {
 								$class_name = 'selected';
 							}
-							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>';
+							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
 						}
-						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>';
-						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate').'</li>';
+						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>'."\n";
+						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate').'</li>'."\n";
 					}
 					if (is_array($settings_page)) {
 						foreach($settings_page as $group => $settings) {
-							echo '<li class="header">'.$group.'</li>';
+							echo '<li class="header">'.$group.'</li>'."\n";
 							foreach($settings as $id => $title) {
-								echo '<li id="pagesettings_'.$id.'" class="unselected" onclick="page_settings(\''.$id.'\',this)">'.$title.'</li>';
+								echo '<li id="pagesettings_'.$id.'" class="unselected" onclick="page_settings(\''.$id.'\',this)">'.$title.'</li>'."\n";
 							}
 						}
 					}
