@@ -102,7 +102,7 @@ class User_Model extends Auth_User_Model {
 		if (empty($username) || empty($options))
 			return false;
 		$username = trim($username);
-		$options = explode(',', $options);
+		$result = false;
 
 		$auth_fields = Ninja_user_authorization_Model::$auth_fields;
 
@@ -121,7 +121,7 @@ class User_Model extends Auth_User_Model {
 		}
 
 		$db = new Database();
-		if (!$db->table_exists($this->auth_table)) {
+		if (!$db->table_exists(self::$auth_table)) {
 			# make sure we have the ninja_user_authorization table
 			self::create_auth_table();
 		}
@@ -130,15 +130,18 @@ class User_Model extends Auth_User_Model {
 		if ($user->loaded) {
 			# user found in db
 			# does authorization data exist for this user?
-			#$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
-			$result = Ninja_user_authorization_Model::get_auth_data(false, $user->id);
+			$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
 		} else {
-			return array('Fell through (' . $username . ')');
+			return array('Tried to create user (' . $username . ') but didn\'t');
+
 			# seems we found a new user that should be added
 			$user = ORM::factory('user');
 			// add roles for new user
-			$user->add(ORM::factory('role', 'login'));
+			$user->username = $username;
 			$user->save();
+			if ($user->saved) {
+				$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
+			}
 		}
 		return array($result);
 	}
