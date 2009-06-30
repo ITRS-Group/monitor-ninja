@@ -47,9 +47,6 @@ sub, sup {
 a {
 	color: inherit;
 }
-hr {
-	display: none;
-}
 font {
 	color: inherit !important;
 	font: inherit !important;
@@ -132,6 +129,17 @@ input.text {
 	margin-bottom: -1px;
 	margin-left: 0px;
 }
+input.i160 {
+	border: 0px;
+	outline: 0px;
+	background: #ffffff url(images/input-160.png) no-repeat;
+	font: 11px arial,sans-serif;
+	padding: 8px 7px;
+	width: 155px;
+	float: left;
+	margin-bottom: -1px;
+	margin-left: 0px;
+}
 select {
 	font: 11px arial,sans-serif;
 	border: 1px solid #ffffff;
@@ -160,6 +168,7 @@ select {
 	background-color: #dcdccd;
 	height: 1px;
 	border: 0px;
+	margin: 10px 0px;
 }
 /* content ****************************************************************************************/
 #top-bar {
@@ -1040,7 +1049,7 @@ select {
 	border: 1px solid #ffffff;
 	outline:  1px solid #cdcdcd;
 }
-
+input.i160 { border: 0px; outline: 0px; }
 #top-bar{
 	background:#e9e9e9 url(images/bg.png) repeat-x;
 }
