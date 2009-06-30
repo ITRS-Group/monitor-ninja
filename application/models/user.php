@@ -91,4 +91,56 @@ class User_Model extends Auth_User_Model {
 		$this->session->destroy();
 		return true;
 	}
+
+	/**
+	*	Check if user exists and if so we pass the supplied
+	* 	$options data to Nninja_user_authorization_Model to let
+	* 	it decide if to update or insert.
+	*/
+	public function user_auth_data($username=false, $options=false)
+	{
+		if (empty($username) || empty($options))
+			return false;
+		$username = trim($username);
+		$options = explode(',', $options);
+
+		$auth_fields = Ninja_user_authorization_Model::$auth_fields;
+
+		# authorization data fields and order
+		$auth_options = false;
+
+		# check that we have the correct number of auth options
+		# return false otherwise
+		if (count($options) != count($auth_fields)) {
+			return false;
+		}
+
+		# merge the two arrays into one with auth_fields as key
+		for ($i=0;$i<count($options);$i++) {
+			$auth_options[$auth_fields[$i]] = $options[$i];
+		}
+
+		$db = new Database();
+		if (!$db->table_exists($this->auth_table)) {
+			# make sure we have the ninja_user_authorization table
+			self::create_auth_table();
+		}
+
+		$user = ORM::factory('user')->where('username', $username)->find();
+		if ($user->loaded) {
+			# user found in db
+			# does authorization data exist for this user?
+			#$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
+			$result = Ninja_user_authorization_Model::get_auth_data(false, $user->id);
+		} else {
+			return array('Fell through (' . $username . ')');
+			# seems we found a new user that should be added
+			$user = ORM::factory('user');
+			// add roles for new user
+			$user->add(ORM::factory('role', 'login'));
+			$user->save();
+		}
+		return array($result);
+	}
+
 }
