@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_login` int(10) unsigned default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`),
-  UNIQUE KEY `uniq_email` (`email`)
 );
 
 --
