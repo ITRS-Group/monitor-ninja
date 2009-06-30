@@ -1,10 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php
-#if (extension_loaded('zlib')) {
-#	ob_start('ob_gzhandler');
-#}
-header('Content-type: text/html; charset=utf-8');
-?>
+<?php //if (extension_loaded('zlib')) { ob_start('ob_gzhandler'); } header('Content-type: text/html; charset=utf-8'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -78,14 +73,6 @@ header('Content-type: text/html; charset=utf-8');
 					<li>Service Detail</li>
 				</ul>-->
 			</div>
-			<!--<div id="ninja_page_refresh" style="margin-top:10px; margin-left: 10px; float: right">
-				<input type="checkbox" id="ninja_refresh_control"  style="float:left" />
-				<span id="ninja_refresh_lable" style="float:left">&nbsp; <?php echo $this->translate->_('Pause refresh') ?>&nbsp;</span>
-				<span id="ninja_refresh_edit" style="float:left">&nbsp; &nbsp;|&nbsp;<?php echo $this->translate->_('Edit'); ?></span>
-				<div id="ninja_page_refresh_slider" style="display:none;width:200px;float:left;margin-left:5px;">
-					<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;margin-left:205px;border:0;margin-top:-4px">
-				</div>
-			</div>-->
 			<div id="icons">
 				<ul>
 					<?php
@@ -127,21 +114,10 @@ header('Content-type: text/html; charset=utf-8');
 			</ul>
 		</div>
 
-		<?php
-		/*$settings_page = array(
-			$this->translate->_('Page Contrast') => array(
-				'low' => $this->translate->_('Low'),
-				'medium' => $this->translate->_('Medium'),
-				'high' => $this->translate->_('High')
-			),
-		);*/
-		$settings_page = '';
-		?>
-
 		<div id="page_settings">
-			<ul>
 				<?php
 					if (is_array($settings_widgets)) {
+						echo '<ul>'."\n";
 						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>'."\n";
 						foreach($settings_widgets as $id => $widget) {
 							if (isset($user_widgets) && is_array($user_widgets)) {
@@ -153,17 +129,9 @@ header('Content-type: text/html; charset=utf-8');
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate').'</li>'."\n";
-					}
-					if (is_array($settings_page)) {
-						foreach($settings_page as $group => $settings) {
-							echo '<li class="header">'.$group.'</li>'."\n";
-							foreach($settings as $id => $title) {
-								echo '<li id="pagesettings_'.$id.'" class="unselected" onclick="page_settings(\''.$id.'\',this)">'.$title.'</li>'."\n";
-							}
-						}
+						echo '</ul>'."\n";
 					}
 				?>
-			</ul>
 		</div>
 		<div id="content">
 			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
@@ -171,8 +139,4 @@ header('Content-type: text/html; charset=utf-8');
 		</div>
 	</body>
 </html>
-<?php 
-#if (extension_loaded('zlib')) {
-#	ob_end_flush();
-#}
-?>
+<?php //if (extension_loaded('zlib')) { ob_end_flush(); } ?>
