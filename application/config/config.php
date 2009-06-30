@@ -203,3 +203,13 @@ if (is_dir($reports_real_path)) {
 } else {
 	$config['reports_path'] = false;
 }
+
+/**
+ * Control command line access to Ninja
+ * Possible values:
+ * 	false 		: 	No commandline access
+ * 	true		:	Second command line argument (i.e after path)
+ * 					will be used as username (default)
+ * 	'username'	:	The entered username will be used for authentication
+ */
+$config['cli_access'] = true;
