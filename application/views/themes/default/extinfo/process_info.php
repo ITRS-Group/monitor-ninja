@@ -64,37 +64,23 @@
 	</tr>
 	<tr class="even">
 		<td><?php echo $lable_event_handlers ?></td>
-		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($eventhandler_str).'.png',$eventhandler_str);?>
-			<?php echo $eventhandler_str ?>
-		</td>
+		<td><?php echo $eventhandler_str ?></td>
 	</tr>
 	<tr class="odd">
 		<td><?php echo $lable_obsess_services ?></td>
-		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/invert-'.strtolower($obsess_services_str).'.png',$obsess_services_str);?>
-			<?php echo $obsess_services_str ?></td>
+		<td><?php echo $obsess_services_str ?></td>
 	</tr>
 	<tr class="even">
 		<td><?php echo $lable_obsess_hosts ?></td>
-		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/invert-'.strtolower($obsess_services_str).'.png',$obsess_services_str);?>
-			<?php echo $obsess_hosts_str ?>
-		</td>
+		<td><?php echo $obsess_hosts_str ?></td>
 	</tr>
 	<tr class="odd">
 		<td><?php echo $lable_flap_enabled ?></td>
-		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($flap_detection_str).'.png',$flap_detection_str);?>
-			<?php echo $flap_detection_str ?>
-		</td>
+		<td><?php echo $flap_detection_str ?></td>
 	</tr>
 	<tr class="even">
 		<td><?php echo $lable_performance_data ?></td>
-		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/invert-'.strtolower($performance_data_str).'.png',$performance_data_str);?>
-			<?php echo $performance_data_str ?>
-		</td>
+		<td><?php echo $performance_data_str ?></td>
 	</tr>
 </table>
 </div>
