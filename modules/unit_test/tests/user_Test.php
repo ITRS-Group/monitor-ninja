@@ -35,4 +35,42 @@ class User_Test extends Unit_Test_Case {
 		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 		$this->assert_false_strict($db->table_exists('foo'));
 	}
+
+	public function users_exists_test()
+	{
+		$db = new Database();
+		$table = 'users';
+		$sql = "SELECT COUNT(*) as cnt FROM users";
+		$result = $db->query($sql);
+
+		$this->assert_true(count($result));
+	}
+
+	public function table_ninja_settings_exists_test()
+	{
+		$db = new Database();
+		$table = 'ninja_settings';
+		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+	}
+
+	/**
+	 * Check that we have the ninja_user_authorization table
+	 */
+	public function table_ninja_user_authorization_exists_test()
+	{
+		$db = new Database();
+		$table = 'ninja_user_authorization';
+		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+	}
+
+	public function table_ninja_user_authorization_test()
+	{
+		$db = new Database();
+		$table = 'ninja_user_authorization';
+		#$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+		$sql = "SELECT * FROM ".$table;
+		$result = $db->query($sql);
+		$this->assert_true(count($result), 'No data exists for '.$table);
+	}
+
 }
