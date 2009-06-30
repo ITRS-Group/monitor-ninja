@@ -192,3 +192,14 @@ if (is_dir($config['nagvis_real_path'])) {
  * Default refresh rate for all pages
  */
 $config['page_refresh_rate'] = 90;
+
+/** Do we use Reports
+ * If path differs from the one below but still installed
+ * you could simply change it.
+ */
+$reports_real_path = '/opt/monitor/op5/reports/gui/';
+if (is_dir($reports_real_path)) {
+	$config['reports_path'] = '/monitor/op5/reports/gui/';
+} else {
+	$config['reports_path'] = false;
+}
