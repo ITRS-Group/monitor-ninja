@@ -20,18 +20,15 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th class="enabled"><?php echo $flap_detect_header_label ?></th>
-				<th><?php echo $notifications_header_label ?></th>
-				<th><?php echo $eventhandler_header_label ?></th>
-				<th><?php echo $activechecks_header_label ?></th>
-				<th><?php echo $passivechecks_header_label ?></th>
+				<th onclick="location.href='<?php echo $cmd_flap_link ?>'" class="<?php echo $cmd_flap_status ?>"><cite><?php echo $flap_detect_header_label ?></cite> <em><?php echo str_replace('_monfeat','',$cmd_flap_status) ?></em></th>
+				<th onclick="location.href='<?php echo $cmd_notification_link ?>'" class="<?php echo $cmd_notification_status ?>"><cite><?php echo $notifications_header_label ?></cite> <em><?php echo str_replace('_monfeat','',$cmd_notification_status) ?></em></th>
+				<th onclick="location.href='<?php echo $cmd_event_link ?>'" class="<?php echo $cmd_event_status ?>"><cite><?php echo $eventhandler_header_label ?></cite> <em><?php echo str_replace('_monfeat','',$cmd_event_status) ?></em></th>
+				<th onclick="location.href='<?php echo $cmd_activecheck_link ?>'" class="<?php echo $cmd_activecheck_status ?>"><cite><?php echo $activechecks_header_label ?></cite> <em><?php echo str_replace('_monfeat','',$cmd_activecheck_status) ?></em></th>
+				<th onclick="location.href='<?php echo $cmd_passivecheck_link ?>'" class="<?php echo $cmd_passivecheck_status ?>"><cite><?php echo $passivechecks_header_label ?></cite> <em><?php echo str_replace('_monfeat','',$cmd_passivecheck_status) ?></em></th>
 			</tr>
 			<tr>
 				<td class="white">
 				<table>
-					<!--<tr>
-						<td rowspan="5" class="white"><?php echo $cmd_flap_link ?></td>
-					</tr>-->
 					<?php	if ($enable_flap_detection !== false) { ?>
 						<?php if ($flap_disabled_services > 0) {?>
 						<tr>
@@ -76,50 +73,45 @@
 							</tr>
 						<?php } } else { ?>
 							<tr>
-								<td><?php echo $na_str ?></td>
-							</tr>
+									<td style="padding: 6.5px"><?php echo $na_str ?></td>
+								</tr>
 						<?php	} ?>
 					</table>
 				</td>
 				<td class="white">
 					<table>
-						<!--<tr>
-							<td rowspan="5" class="white"><?php echo $cmd_notification_link ?></td>
-						</tr>-->
-							<?php	if ($enable_notifications !== false) { ?>
-									<?php if ($notification_disabled_services > 0) { ?>
-									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
-										<td><?php echo $notification_disabled_services ?> <?php echo $notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural ?> <?php echo $lable_disabled ?></td>
-									</tr>
-									<?php	} else { ?>
-									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
-										<td><?php echo $lable_all_services ?> <?php echo $lable_enabled ?></td>
-									</tr>
-									<?php	} ?>
-									<?php if ($notification_disabled_hosts > 0) { ?>
-									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
-										<td><?php echo $notification_disabled_hosts ?> <?php echo $notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural ?> <?php echo $lable_disabled ?></td>
-									</tr>
-									<?php	} else { ?>
-									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
-										<td><?php echo $lable_all_hosts ?> <?php echo $lable_enabled ?></td>
-									</tr>
-									<?php	} ?>
-
+						<?php	if ($enable_notifications !== false) { ?>
+							<?php if ($notification_disabled_services > 0) { ?>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
+								<td><?php echo $notification_disabled_services ?> <?php echo $notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural ?> <?php echo $lable_disabled ?></td>
+							</tr>
 							<?php	} else { ?>
-								<tr><td><?php echo $na_str ?></td></tr>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+								<td><?php echo $lable_all_services ?> <?php echo $lable_enabled ?></td>
+							</tr>
+							<?php	} ?>
+							<?php if ($notification_disabled_hosts > 0) { ?>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
+								<td><?php echo $notification_disabled_hosts ?> <?php echo $notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural ?> <?php echo $lable_disabled ?></td>
+							</tr>
+							<?php	} else { ?>
+							<tr>
+								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+								<td><?php echo $lable_all_hosts ?> <?php echo $lable_enabled ?></td>
+							</tr>
+							<?php	} ?>
+							<?php	} else { ?>
+								<tr>
+									<td style="padding: 6.5px"><?php echo $na_str ?></td>
+								</tr>
 							<?php	} ?>
 					</table>
 				</td>
 				<td class="white">
 					<table>
-						<!--<tr>
-							<td class="white" rowspan="3"><?php echo $cmd_event_link ?></td>
-						</tr>-->
 						<?php	if ($enable_event_handlers !== false) { ?>
 								<?php if ($event_handler_disabled_services > 0) { ?>
 								<tr>
@@ -144,16 +136,15 @@
 									</tr>
 								<?php } ?>
 						<?php	} else { ?>
-							<tr><td><?php echo $na_str ?></td></tr>
+							<tr>
+								<td style="padding: 6.5px"><?php echo $na_str ?></td>
+							</tr>
 						<?php	} ?>
 					</table>
 				</td>
 
 				<td class="white">
 					<table>
-						<!--<tr>
-							<td class="white" rowspan="3"><?php echo $cmd_activecheck_link ?></td>
-						</tr>-->
 						<?php	if ($execute_service_checks !== false) { ?>
 							<?php if ($active_checks_disabled_services > 0) { ?>
 								<tr>
@@ -178,15 +169,14 @@
 								</tr>
 							<?php } ?>
 						<?php	} else { ?>
-							<tr><td><?php echo $na_str ?></td></tr>
+							<tr>
+								<td style="padding: 6.5px"><?php echo $na_str ?></td>
+							</tr>
 						<?php	} ?>
 					</table>
 				</td>
 				<td class="white">
 					<table>
-						<!--<tr>
-							<td class="white" rowspan="3"><?php echo $cmd_passivecheck_link ?></td>
-						</tr>-->
 							<?php	if ($accept_passive_service_checks !== false) { ?>
 								<?php if ($passive_checks_disabled_services > 0) { ?>
 									<tr>
@@ -211,7 +201,9 @@
 									</tr>
 								<?php } ?>
 						<?php	} else { ?>
-							<tr><td><?php echo $na_str ?></td></tr>
+							<tr>
+								<td style="padding: 6.5px"><?php echo $na_str ?></td>
+							</tr>
 						<?php	} ?>
 					</table>
 				</td>

@@ -104,11 +104,18 @@ class Tac_monfeat_Widget extends widget_Core {
 		$passive_checks_disabled_services = $current_status->passive_checks_disabled_services;
 		$passive_checks_disabled_hosts = $current_status->passive_checks_disabled_hosts;
 
-		$cmd_flap_link = html::anchor('command/submit?cmd_typ='.($enable_flap_detection ? 'DIS' : 'EN').'ABLE_FLAP_DETECTION', html::image($this->widget_full_path.'/images/tac'.($enable_flap_detection ? 'enabled' : 'disabled').'.png', array('alt' => $flap_detect_header_label . ' ' . ($enable_flap_detection ? $lable_enabled : $lable_disabled), 'border' => 0)));
-		$cmd_notification_link = html::anchor('command/submit?cmd_typ='.($enable_notifications ? 'DIS' : 'EN') . 'ABLE_NOTIFICATIONS', html::image($this->widget_full_path.'/images/tac'.($enable_notifications ? 'enabled' : 'disabled').'.png', array('alt' => $notifications_header_label.' '.($enable_notifications ? $lable_enabled : $lable_disabled), 'border' => 0)));
-		$cmd_event_link = html::anchor('command/submit?cmd_typ='.($enable_event_handlers ? 'DIS' : 'EN') . 'ABLE_EVENT_HANDLERS', html::image($this->widget_full_path.'/images/tac'.($enable_event_handlers ? 'enabled' : 'disabled').'.png', array('alt' => $eventhandler_header_label.' '.($enable_event_handlers ? $lable_enabled : $lable_disabled), 'border' => 0)));
-		$cmd_activecheck_link = html::anchor('extinfo/', html::image($this->widget_full_path.'/images/tac'.($execute_service_checks ? 'enabled' : 'disabled').'.png', array('alt' => $activechecks_header_label.' '.($execute_service_checks ? $lable_enabled : $lable_disabled), 'border' => 0)));
-		$cmd_passivecheck_link = html::anchor('extinfo/', html::image($this->widget_full_path.'/images/tac'.($accept_passive_service_checks ? 'enabled' : 'disabled').'.png', array('alt' => $passivechecks_header_label.' '.($accept_passive_service_checks ? $lable_enabled : $lable_disabled), 'border' => 0)));
+		$cmd_flap_status = ($enable_flap_detection ? 'enabled' : 'disabled').'_monfeat';
+		$cmd_notification_status = ($enable_notifications ? 'enabled' : 'disabled').'_monfeat';
+		$cmd_event_status = ($enable_event_handlers ? 'enabled' : 'disabled').'_monfeat';
+		$cmd_activecheck_status = ($execute_service_checks ? 'enabled' : 'disabled').'_monfeat';
+		$cmd_passivecheck_status = ($accept_passive_service_checks ? 'enabled' : 'disabled').'_monfeat';
+
+		$cmd_flap_link = url::site('command/submit?cmd_typ='.($enable_flap_detection ? 'DIS' : 'EN').'ABLE_FLAP_DETECTION');
+		$cmd_notification_link = url::site('command/submit?cmd_typ='.($enable_notifications ? 'DIS' : 'EN') . 'ABLE_NOTIFICATIONS');
+		$cmd_event_link = url::site('command/submit?cmd_typ='.($enable_event_handlers ? 'DIS' : 'EN') . 'ABLE_EVENT_HANDLERS');
+		$cmd_activecheck_link = url::site('extinfo/');
+		$cmd_passivecheck_link = url::site('extinfo/');
+
 		# <a href='extinfo.cgi?type=0'><img src='/monitor/images/tacenabled.png' border='0' alt='Active Checks Enabled' title='Active Checks Enabled'></a>
 
 		# fetch widget content
