@@ -1,33 +1,34 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
-<?php
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
-
-<div class="widget left w32" id="page_links">
-	<ul>
+<div id="content-header">
 	<?php
-	if (isset($page_links)) {
-		foreach ($page_links as $label => $link) {
-			?>
-			<li><?php echo html::anchor($link, $label) ?></li>
-			<?php
+	if (!empty($widgets)) {
+		foreach ($widgets as $widget) {
+			echo $widget;
 		}
 	}
 	?>
-	</ul>
-</div>
 
-<div id="filters" class="left">
-<?php
-if (isset($filters) && !empty($filters)) {
-	echo $filters;
-}
-?>
+	<div class="widget left w32" id="page_links">
+		<ul>
+		<?php
+		if (isset($page_links)) {
+			foreach ($page_links as $label => $link) {
+				?>
+				<li><?php echo html::anchor($link, $label) ?></li>
+				<?php
+			}
+		}
+		?>
+		</ul>
+	</div>
+
+	<div id="filters" class="left">
+	<?php
+	if (isset($filters) && !empty($filters)) {
+		echo $filters;
+	}
+	?>
+	</div>
 </div>
 
 <div class="widget left w98" id="status_service">
