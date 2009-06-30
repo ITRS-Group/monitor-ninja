@@ -162,3 +162,22 @@ CREATE TABLE IF NOT EXISTS `ninja_db_version` (
 --
 
 INSERT INTO `ninja_db_version` (`id`, `version`) VALUES(1, 1);
+
+--
+-- Table structure for table `ninja_user_authorization`
+--
+
+DROP TABLE IF EXISTS `ninja_user_authorization`;
+CREATE TABLE IF NOT EXISTS `ninja_user_authorization` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `system_information` int(11) NOT NULL default '0',
+  `configuration_information` int(11) NOT NULL default '0',
+  `system_commands` int(11) NOT NULL default '0',
+  `all_services` int(11) NOT NULL default '0',
+  `all_hosts` int(11) NOT NULL default '0',
+  `all_service_commands` int(11) NOT NULL default '0',
+  `all_host_commands` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`)
+);
