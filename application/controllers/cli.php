@@ -15,12 +15,12 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	*	Takes input from commandline import of cgi.cfg
 	*/
-	public function edit_user_authorization()
+	public function _edit_user_authorization($username=false, $options=false)
 	{
-		$options = $this->_parse_parameters();
-		$user = new User_Model();
-		$result = $user->user_auth_data($options['user'], $options['authdata']);
-		print_r($result);
+		if (empty($username) || empty($options)) {
+			return false;
+		}
+		$result = User_Model::user_auth_data($username, $options);
 		return $result;
 	}
 
@@ -58,4 +58,89 @@ class Cli_Controller extends Authenticated_Controller {
 		}
 		return $result;
 	}
+
+	/**
+	 * fetch data from cgi.cfg and return to calling script
+	 */
+	public function get_cgi_config()
+	{
+		$auth_data = System_Model::parse_config_file('cgi.cfg');
+		$user_data = false;
+		$user_list = array();
+		$return = false;
+		$access_levels = array(
+			'authorized_for_system_information',
+			'authorized_for_configuration_information',
+			'authorized_for_system_commands',
+			'authorized_for_all_services',
+			'authorized_for_all_hosts',
+			'authorized_for_all_service_commands',
+			'authorized_for_all_host_commands'
+		);
+
+		if(empty($auth_data)) {
+			return false;
+		}
+
+		foreach($auth_data as $k => $v) {
+			if(substr($k, 0, 14) === 'authorized_for') {
+				$auth_data[$k] = explode(',', $v);
+			}
+		}
+
+		# fetch defined access data for users
+		foreach ($access_levels as $level) {
+			$users = $auth_data[$level];
+			foreach ($users as $user) {
+				$user_data[$level][] = $user;
+				if (!in_array($user, $user_list)) {
+					$user_list[] = $user;
+				}
+			}
+		}
+		if (array_key_exists('refresh_rate', $auth_data)) {
+			$return['refresh_rate'] = $auth_data['refresh_rate'];
+		}
+		$return['user_data'] = $user_data;
+		$return['user_list'] = $user_list;
+		return $return;
+	}
+
+	/**
+	 * Insert user data from cgi.cfg into db
+	 */
+	public function insert_user_data()
+	{
+		$config_data = self::get_cgi_config();
+
+		# All db fields that should be set
+		# according to data in cgi.cfg
+		$auth_fields = Ninja_user_authorization_Model::$auth_fields;
+
+		if (empty($config_data['user_list'])) {
+			return false;
+		}
+		foreach ($config_data['user_list'] as $user) {
+			$auth_data = array();
+			if (empty($config_data['user_data'])) {
+				continue;
+			}
+
+			foreach ($auth_fields as $field) {
+				if (!isset($config_data['user_data']['authorized_for_'.$field])) {
+					$auth_data[] = 0;
+				} else {
+					if (in_array($user, $config_data['user_data']['authorized_for_'.$field])) {
+						$auth_data[] = 1;
+					} else {
+						$auth_data[] = 0;
+					}
+				}
+			}
+			if (!empty($auth_data)) {
+				self::_edit_user_authorization($user, $auth_data);
+			}
+		}
+	}
+
 }
