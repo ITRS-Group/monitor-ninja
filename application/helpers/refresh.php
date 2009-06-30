@@ -19,7 +19,7 @@ class refresh_Core {
 		$refresh_key = 'config.page_refresh_rate';
 		$refresh = (int)config::get($refresh_key, '*', true);
 		?>
-		<script language="JavaScript">
+		<script type="text/javascript" language="JavaScript">
 		<!--
 		var sURL = unescape(window.location.pathname + location.search);
 		var _interval = 0;
@@ -107,8 +107,8 @@ class refresh_Core {
 		function refresh() {window.location.href = sURL;}
 		//-->
 		</script>
-		<script language="JavaScript1.1"><!-- function refresh() {window.location.replace( sURL );} //--></script>
-		<script language="JavaScript1.2"><!-- function refresh() {window.location.reload( false );} //--></script>
+		<script type="text/javascript" language="JavaScript1.1"><!-- function refresh() {window.location.replace( sURL );} //--></script>
+		<script type="text/javascript" language="JavaScript1.2"><!-- function refresh() {window.location.reload( false );} //--></script>
 		<?php
 	}
 }
