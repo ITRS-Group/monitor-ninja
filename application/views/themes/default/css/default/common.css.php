@@ -689,6 +689,31 @@ td.white:first-child table tr td:first-child {
 	background-color: #e9e9e0;
 	margin-top: -1px;
 }
+th.enabled_monfeat,
+th.disabled_monfeat {
+	cursor: pointer
+}
+th.disabled_monfeat em,
+th.enabled_monfeat em {
+	font-weight: normal;
+	float: right;
+	margin-top: 2px;
+	margin-bottom: -2px;
+	background: transparent url(../../icons/arrow-down.gif) right no-repeat;
+	width: 70px;
+	height: 16px;
+	padding-left: 20px
+
+}
+th.enabled_monfeat em {
+	width: 65px;
+}
+th.disabled_monfeat cite,
+th.enabled_monfeat cite {
+	float: left;
+	margin-top: 2px;
+	margin-bottom: -2px;
+}
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
 #widget-tac_services table tr th,
@@ -1128,10 +1153,6 @@ th.headerSortUp,
 th.headerSortUp:first-child {
 	background: #ffffff url(images/sort-up.png) top right;
 }
-th.enabled_monfeat {
-	background: #b7b7b7 url(images/bg.png) repeat-x;
-}
-
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/
