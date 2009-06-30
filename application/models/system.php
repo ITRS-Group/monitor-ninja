@@ -27,11 +27,17 @@ class System_Model extends Model
 		if (empty($config_file)) {
 			return false;
 		}
-		$base_path = self::get_nagios_base_path();
-		$etc = strstr($base_path, '/etc') ? '' : '/etc/';
-		# check that we have a trailing slash in path
-		if (substr($base_path.$etc, -1, 1) != '/') {
-			$etc .= '/';
+
+		# check if we have a full path as input
+		if (!file_exists($config_file)) {
+			$base_path = self::get_nagios_base_path();
+			$base_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
+			$etc = strstr($base_path, '/etc') ? '' : '/etc/';
+			# check that we have a trailing slash in path
+			if (substr($base_path.$etc, -1, 1) != '/') {
+				$etc .= '/';
+			}
+			$config_file = $base_path.$etc.$config_file;
 		}
 
 		if (!file_exists($config_file)) {
