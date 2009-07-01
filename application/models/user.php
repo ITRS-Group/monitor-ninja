@@ -168,4 +168,19 @@ class User_Model extends Auth_User_Model {
 		$db->query($sql);
 	}
 
+	/**
+	*	Fetch userinfo based on login
+	*	Will return first user with login role found (for CLI access)
+	* 	if username is set to false.
+	*/
+	public function get_user($username=false)
+	{
+		if (!empty($username)) {
+			$username = trim($username);
+			$user = ORM::factory('user')->where('username', $username)->find();
+		} else {
+			$user = ORM::factory('user')->with('role:login')->find();
+		}
+		return $user->loaded ? $user : false;
+	}
 }
