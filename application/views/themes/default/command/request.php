@@ -15,6 +15,7 @@ $params = $info['params'];
 echo "<table>\n";
 echo '<tr><th class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
 foreach ($params as $pname => $ary) {
+	$form_name = "cmd_param[$pname]";
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
@@ -26,30 +27,30 @@ foreach ($params as $pname => $ary) {
 		if ($dflt && array_search($dflt, $ary['options'])) {
 			$dflt = array_search($dflt, $ary['options']);
 		}
-		echo form::dropdown($pname, $ary['options'], $dflt);
+		echo form::dropdown($form_name, $ary['options'], $dflt);
 		break;
 	 case 'checkbox':
 		if (isset($ary['options'])) {
 			foreach ($ary['options'] as $k => $v) {
-				echo form::checkbox($pname . "[$k]", 'class="checkbox"');
+				echo form::checkbox($form_name . "[$k]", 'class="checkbox"');
 			}
 			break;
 		}
 		# fallthrough
 	 case 'bool':
-		echo form::checkbox($pname, $dflt, 'class="checkbox"');
+		echo form::checkbox($form_name, $dflt, 'class="checkbox"');
 		break;
 	 case 'float':
 	 case 'int':
-		echo form::input($pname, 'size="10"');
+		echo form::input($form_name, 'size="10"');
 		break;
 	 case 'immutable':
-		echo form::hidden($pname, $dflt);
+		echo form::hidden($form_name, $dflt);
 		echo $dflt;
 		break;
 	 case 'string':
 	 default:
-		echo form::input($pname, $dflt, '');
+		echo form::input($form_name, $dflt, '');
 		break;
 	}
 
