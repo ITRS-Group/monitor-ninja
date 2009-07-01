@@ -71,6 +71,13 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => 'Force Check',
 				 );
 			break;
+		 case 'PROCESS_HOST_CHECK_RESULT':
+		 case 'PROCESS_SERVICE_CHECK_RESULT':
+			$info['params']['perfdata'] = array
+				('type' => 'string',
+				 'size' => 100,
+				 'name' => 'Performance data');
+			break;
 		}
 
 		$this->template->content->requested_command = $name;
@@ -119,6 +126,13 @@ class Command_Controller extends Authenticated_Controller
 				$cmd = 'SCHEDULE_FORCED' . substr($cmd, strlen("SCHEDULE"));
 			}
 
+			break;
+		 case 'PROCESS_HOST_CHECK_RESULT':
+		 case 'PROCESS_SERVICE_CHECK_RESULT':
+			if (!empty($param['perfdata']) && !empty($param['plugin_output'])) {
+				$param['plugin_output'] .= "|$param[perfdata]";
+				unset($param['perfdata']);
+			}
 			break;
 		}
 
