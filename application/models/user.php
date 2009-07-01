@@ -132,16 +132,8 @@ class User_Model extends Auth_User_Model {
 			# does authorization data exist for this user?
 			$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
 		} else {
-			return array('Tried to create user (' . $username . ') but didn\'t');
-
-			# seems we found a new user that should be added
-			$user = ORM::factory('user');
-			// add roles for new user
-			$user->username = $username;
-			$user->save();
-			if ($user->saved) {
-				$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
-			}
+			# this should never happen
+			$result = "Tried to save authorization data for nox existing user.\n";
 		}
 		return array($result);
 	}
