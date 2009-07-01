@@ -93,6 +93,7 @@
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
+			<div id="noheader_ctrl" style="display:none"><input type="checkbox" id="noheader_chbx" value="1"><span id="noheader_label"> <?php echo $this->translate->_('Hide page header')?></span></div>
 		</div>
 		<div id="menu">
 			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
