@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div id="content-header">
+<div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
