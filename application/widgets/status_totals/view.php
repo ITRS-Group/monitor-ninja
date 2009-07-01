@@ -44,7 +44,7 @@
 			</tr>
 		</table>
 
-		<table class="w-table"style="margin-left: 249px; margin-top:-70px; width: 251px">
+		<table class="w-table"style="margin-left: 249px; margin-top:-67px; width: 251px">
 			<?php $i = 0;foreach ($service_header as $row) { ?>
 			<?php echo ($i%2 == 0) ? '<tr>' : '' ?>
 				<td class="status icon" style="padding: 4px 7px">
