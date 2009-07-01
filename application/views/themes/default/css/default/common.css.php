@@ -694,9 +694,16 @@ td.white:first-child table tr td:first-child {
 	border-left: 1px solid #e9e9e0;
 }
 .w-table {
-	border-spacing: 1px;
+	/*border-spacing: 1px;
 	background-color: #e9e9e0;
-	margin-top: -1px;
+	margin-top: -1px;*/
+}
+.w-table tr td {
+	border-right: 1px solid #d0d0d0;
+	border-bottom:1px solid #d0d0d0;
+}
+.w-table tr td.dark {
+	border-left: 1px solid #d0d0d0;
 }
 th.enabled_monfeat,
 th.disabled_monfeat {
