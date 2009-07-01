@@ -148,4 +148,36 @@ class Default_Controller extends Ninja_Controller  {
 		User_Model::logout_user();
 		url::redirect('default/');
 	}
+
+	/**
+	*	If called by PHP CLI this will return a username
+	*	of the first user with login access. This is needed
+	* 	for the install script to be able to import authorization
+	* 	data from cgi.cfg
+	*/
+	public function get_a_user()
+	{
+		if (PHP_SAPI !== "cli") {
+			url::redirect('default/index');
+		} else {
+			$this->auto_render=false;
+			$user = User_Model::get_user();
+			echo $user->username;
+		}
+	}
+
+	/**
+	*	Used from CLI calls to detect cli setting and
+	* 	possibly default access from config file
+	*/
+	public function get_cli_status()
+	{
+		if (PHP_SAPI !== "cli") {
+			url::redirect('default/index');
+		} else {
+			$this->auto_render=false;
+			$cli_access =Kohana::config('config.cli_access');
+			echo $cli_access;
+		}
+	}
 }
