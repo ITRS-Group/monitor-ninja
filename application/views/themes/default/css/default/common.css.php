@@ -1114,7 +1114,7 @@ th.header,
 #service_table th.header:first-child,
 #host_table th.header:first-child,
 th.header:first-child {
-	background: #ffffff url(images/sort.png) top right;
+	background: #dcdcdc url(images/sort.png) top right;
 }
 
 .group_grid_table th,
@@ -1143,7 +1143,7 @@ th.headerSortDown,
 #service_table th.headerSortDown:first-child,
 #host_table th.headerSortDown:first-child,
 th.headerSortDown:first-child {
-	background: #ffffff url(images/sort-down.png) top right;
+	background: #dcdcdc url(images/sort-down.png) top right;
 }
 
 .group_grid_table th.headerSortUp,
@@ -1160,7 +1160,7 @@ th.headerSortUp,
 #service_table th.headerSortUp:first-child,
 #host_table th.headerSortUp:first-child,
 th.headerSortUp:first-child {
-	background: #ffffff url(images/sort-up.png) top right;
+	background: #dcdcdc url(images/sort-up.png) top right;
 }
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
