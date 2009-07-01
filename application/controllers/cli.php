@@ -111,6 +111,18 @@ class Cli_Controller extends Authenticated_Controller {
 	 */
 	public function insert_user_data()
 	{
+		# first import new users from cgi.cfg if there is any
+		$path = realpath(APPPATH."../cli-helpers/htpasswd-import.php");
+		$no_auto_import = true;
+		require_once($path);
+		$passwd_import = new htpasswd_importer();
+		$base_path = System_Model::get_nagios_base_path();
+		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
+		if (substr($etc_path, -1, 1) != '/') {
+			$etc_path .= '/';
+		}
+		$passwd_import->import_hashes($etc_path.'htpasswd.users');
+
 		$config_data = self::get_cgi_config();
 
 		# All db fields that should be set
