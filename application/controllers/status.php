@@ -72,6 +72,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('status/host');
 		$this->template->content->filters = $filters;
+		$this->template->content->noheader = $noheader;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -294,6 +295,7 @@ class Status_Controller extends Authenticated_Controller {
 		$filters = $this->_show_filters();
 
 		$this->template->content = $this->add_view('status/service');
+		$this->template->content->noheader = $noheader;
 		$this->template->content->filters = $filters;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -542,6 +544,7 @@ class Status_Controller extends Authenticated_Controller {
 				$this->template->header = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
 				$this->template->content = $this->add_view('status/group_overview');
 				$this->template->content->filters = $filters;
+				$this->template->content->noheader = $noheader;
 				break;
 			case 'detail': case 'details':
 				$this->template->title = $grouptype.$this->translate->_('group » Details');
@@ -689,6 +692,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_summary');
+		$this->template->content->noheader = $noheader;
 		$content = $this->template->content;
 		$t = $this->translate;
 
@@ -1257,6 +1261,7 @@ class Status_Controller extends Authenticated_Controller {
 		$noheader = urldecode($this->input->get('noheader', false));
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_grid');
+		$this->template->content->noheader = $noheader;
 		$content = $this->template->content;
 		$t = $this->translate;
 
