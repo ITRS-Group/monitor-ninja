@@ -48,6 +48,7 @@ class Status_Controller extends Authenticated_Controller {
 		$group_type = urldecode($this->input->get('group_type', $group_type));
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$group_type = urldecode(strtolower($group_type));
 
 		$host = trim($host);
@@ -249,6 +250,7 @@ class Status_Controller extends Authenticated_Controller {
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
 		$group_type = urldecode($this->input->get('group_type', $group_type));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$group_type = strtolower($group_type);
 
 		$name = trim($name);
@@ -524,6 +526,7 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -681,6 +684,7 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group summary');
 
 		$group = trim($group);
@@ -1250,6 +1254,7 @@ class Status_Controller extends Authenticated_Controller {
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_grid');
 		$content = $this->template->content;
