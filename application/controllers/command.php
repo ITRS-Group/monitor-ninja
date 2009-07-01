@@ -59,13 +59,42 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$command = new Command_Model;
-		$this->template->content->requested_command = $name;
 		$info = $command->get_command_info($name, $params);
+
+		switch ($name) {
+		 case 'SCHEDULE_HOST_CHECK':
+		 case 'SCHEDULE_SVC_CHECK':
+		 case 'SCHEDULE_HOST_SVC_CHECKS':
+			$info['params']['force'] = array
+				('type' => 'checkbox',
+				 'default' => true,
+				 'name' => 'Force Check',
+				 );
+			break;
+		}
+
+		$this->template->content->requested_command = $name;
 		$this->template->content->info = $info;
 
 		if (is_array($info)) foreach ($info as $k => $v) {
 			$this->template->content->$k = $v;
 		}
+	}
+
+	protected function get_array_var($ary, $k, $dflt = false)
+	{
+		if (is_array($k)) {
+			if (count($k) === 1)
+				$k = array_pop($k);
+		}
+
+		if (is_array($k))
+			return false;
+
+		if (isset($ary[$k]))
+			return $ary[$k];
+
+		return $dflt;
 	}
 
 	/**
@@ -79,13 +108,27 @@ class Command_Controller extends Authenticated_Controller
 		$cmd = $_REQUEST['requested_command'];
 		$this->template->content->requested_command = $cmd;
 
-		$command = new Command_Model;
+		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
+		switch ($cmd) {
+		 case 'SCHEDULE_HOST_CHECK':
+		 case 'SCHEDULE_SVC_CHECK':
+		 case 'SCHEDULE_HOST_SVC_CHECKS':
+			if (!empty($param['force'])) {
+				echo "Forcing check<br />\n";
+				unset($param['force']);
+				$cmd = 'SCHEDULE_FORCED' . substr($cmd, strlen("SCHEDULE"));
+			}
+
+			break;
+		}
+
 		$info = nagioscmd::cmd_info($cmd);
 		$template = explode(';', $info['template']);
 		for ($i = 1; $i < count($template); $i++) {
 			$k = $template[$i];
-			if (isset($_REQUEST[$k])) {
-				$template[$i] = $_REQUEST[$k];
+			if (isset($param[$k])) {
+				$template[$i] = $param[$k];
+				unset($param[$k]);
 			}
 		}
 		$ncmd = join(';', $template);
@@ -96,6 +139,9 @@ class Command_Controller extends Authenticated_Controller
 			$pipe = $nagconfig['command_file'];
 		}
 
+		echo Kohana::debug($_REQUEST);
+		echo Kohana::debug($ncmd);
+		die();
 		$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
 	}
 
