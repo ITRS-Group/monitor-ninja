@@ -31,9 +31,8 @@ class User_Model extends Auth_User_Model {
 
 		$requested_uri = Session::instance()->get('requested_uri', false);
 
-		# fetch nagios access rights for user
-		$access = System_Model::nagios_access(Auth::instance()->get_user()->username);
-		Session::instance()->set('nagios_access', $access);
+		# cache nagios_access session information
+		System_Model::nagios_access();
 
 		# make sure we don't end up in infinite loop
 		# if user managed to request show_login
