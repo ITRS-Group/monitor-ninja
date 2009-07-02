@@ -210,23 +210,26 @@ class Service_Model extends Model
 	 */
 	public function service_status()
 	{
-		$servicelist = self::authorized_services();
-		if (empty($servicelist)) {
-			return false;
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root || $auth->view_services_root) {
+			$where = '';
+		} else {
+			$servicelist = self::authorized_services();
+			if (empty($servicelist)) {
+				return false;
+			}
+			$str_servicelist = implode(', ', $servicelist);
+			$where = "AND s.id IN (".$str_servicelist.")";
 		}
 
-		$str_servicelist = implode(', ', $servicelist);
-
-		$sql = "
-			SELECT
-				s.*,
-				h.current_state AS host_status
-			FROM
-				service s,
-				host h
-			WHERE
-				s.host_name = h.host_name AND
-				s.id IN (".$str_servicelist.")";
+		$sql = "SELECT ".
+				"s.*, ".
+				"h.current_state AS host_status ".
+			"FROM ".
+				"service s, ".
+				"host h ".
+			"WHERE ".
+				"s.host_name = h.host_name " . $where;
 		$result = $this->db->query($sql);
 		return count($result) ? $result : false;
 	}
