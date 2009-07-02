@@ -192,7 +192,7 @@ class Command_Model extends Model
 			# way (more or less), so we just clump them together here
 			 case 'service_description':
 				$ary['name'] = 'Service';
-				$remove = array('host_name');
+				$remove[] = 'host_name';
 				# fallthrough
 			 case 'servicegroup_name':
 			 case 'contact_name':
@@ -248,6 +248,7 @@ class Command_Model extends Model
 		foreach ($remove as $k) {
 			if (isset($params[$k]))
 				unset($params[$k]);
+			$info['template'] = str_replace(";$k;", ";", $info['template']);
 		}
 
 		$info['params'] = $params;
