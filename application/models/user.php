@@ -144,7 +144,7 @@ class User_Model extends Auth_User_Model {
 	public static function create_auth_table()
 	{
 		$db = new Database();
-		$sql = "CREATE TABLE IF NOT EXISTS `".$this->auth_table."` ( ".
+		$sql = "CREATE TABLE IF NOT EXISTS `".self::$auth_table."` ( ".
 					"`id` int(11) NOT NULL auto_increment, ".
 					"`user_id` int(11) NOT NULL, ".
 					"`system_information` int(11) NOT NULL default '0', ".
