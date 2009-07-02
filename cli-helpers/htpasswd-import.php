@@ -36,7 +36,6 @@ class htpasswd_importer
 			$this->existing_ary[$ary['username']] = array
 				('hash' => $ary['password'], 'algo' => $ary['password_algo']);
 		}
-		print_r($this->existing_ary);
 	}
 
 	public function write_hashes_to_db()
