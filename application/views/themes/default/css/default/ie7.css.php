@@ -28,4 +28,5 @@ select {
 }
 p.pagination { padding-top: 3px;}
 #nagios_commands { padding-left: 1%;}
+#filters{height: 130px;}
 <?php if(extension_loaded('zlib')){ob_end_flush();}?>
