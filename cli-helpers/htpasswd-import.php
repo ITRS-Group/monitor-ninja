@@ -30,6 +30,13 @@ class htpasswd_importer
 
 	private function get_existing_users()
 	{
+		if (!$this->db) {
+			$this->db = mysql_connect($this->db_host, $this->db_user, $this->db_pass);
+			if (!mysql_select_db($this->db_name)) {
+				echo "Failed to select database '$this->db_name'\n";
+				echo mysql_error() . "\n";
+			}
+		}
 		$result = mysql_query('SELECT username, password_algo, password ' .
 							  'FROM ' . $this->db_name . '.' . $this->db_table);
 		while ($ary = mysql_fetch_array($result)) {
