@@ -1033,7 +1033,7 @@ class nagioscmd_Core
 		# loop the command_info array and look for a matching id
 		foreach ($command_info as $cmd_name => $info) {
 			if ($info['nagios_id'] == $name) {
-				$info['name'] = $name;
+				$info['name'] = $cmd_name;
 				return $info;
 			}
 		}
