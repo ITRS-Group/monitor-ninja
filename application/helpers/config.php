@@ -20,20 +20,34 @@ class config_Core
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
-		# first check for database value
-		$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
-		if ($cfg!==false) {
-			$setting =  $cfg->setting;
+		# first check for cached session value
+		$page_val = empty($page) ? '' : '.'.$page;
+		$setting_session = Session::instance()->get($config_str.$page_val, false);
+
+		if (!empty($setting_session)) {
+			$setting = $setting_session;
+		}
+
+		# then check for database value
+		if (!isset($setting)) {
+			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
+			if ($cfg!==false) {
+				$setting =  $cfg->setting;
+			}
 		}
 
 		if (!isset($setting)) {
+			# if nothing was found - try the config file
 			$setting = Kohana::config($config_str);
 			if ($save === true) {
-				# save to database as user setting
+				# save to database and session as user setting
 				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
 		}
-		# secondly, if nothing was found - try the config file
+
+		# store custom setting in session
+		Session::instance()->set($config_str.$page_val, $setting);
+
 		return $setting;
 	}
 }
