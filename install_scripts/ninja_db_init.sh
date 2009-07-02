@@ -35,3 +35,6 @@ then
 	echo "Installing database tables for Ninja GUI"
 	run_sql_file $db_login_opts "$prefix/op5/ninja/install_scripts/ninja.sql"
 fi
+
+# import users annd authorization data
+"$prefix/op5/ninja/install_scripts/auth_import.php"
