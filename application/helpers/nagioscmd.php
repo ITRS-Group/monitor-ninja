@@ -101,13 +101,13 @@ class nagioscmd_Core
 			 ('nagios_id' => 13,
 			  'description' => _('This command is used to restart the Nagios process.   Executing a restart command is equivalent to sending the process a HUP signal. All information will be flushed from memory, the configuration files will be re-read, and Nagios will start monitoring with the new configuration information. '),
 			  'brief' => _('You are trying to restart the Nagios process'),
-			  'template' => 'RESTART_PROGRAM',
+			  'template' => 'RESTART_PROCESS',
 			 ),
 			 'SHUTDOWN_PROCESS' => array
 			 ('nagios_id' => 14,
 			  'description' => _('This command is used to shutdown the Nagios process. Note: Once the Nagios has been shutdown, it cannot be restarted via the web interface! '),
 			  'brief' => _('You are trying to shutdown the Nagios process'),
-			  'template' => 'SHUTDOWN_PROGRAM',
+			  'template' => 'SHUTDOWN_PROCESS',
 			 ),
 			 'ENABLE_HOST_SVC_CHECKS' => array
 			 ('nagios_id' => 15,
@@ -131,7 +131,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 19,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'DELAY_HOST_NOTIFICATION;host_name;notification_time',
+			  'template' => 'DELAY_HOST_SVC_NOTIFICATIONS;host_name;notification_time',
 			 ),
 			 'DEL_ALL_HOST_COMMENTS' => array
 			 ('nagios_id' => 20,
@@ -968,7 +968,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 161,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod',
+			  'template' => 'CHANGE_HOST_NOTIFICATION_TIMEPERIOD;host_name;notification_timeperiod',
 			 ),
 			 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD' => array
 			 ('nagios_id' => 162,
