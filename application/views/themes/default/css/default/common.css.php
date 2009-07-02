@@ -376,7 +376,7 @@ select {
 }
 #page_settings {
 	position: absolute;
-	top: 65px;
+	top: 67px;
 	right: 0px;
 	padding: 0px;
 	border: 1px solid #e9e9e0;
@@ -391,8 +391,9 @@ select {
 #page_settings ul li {
 	list-style: none;
 	border-bottom: 1px solid #e9e9e0;
-	padding: 3px 10px;
+	padding: 5px 10px;
 	background: #ffffff url(images/menu-top-two.gif) 0px -1px repeat-x;
+	background: #d0d0d0 url(images/bg.png) repeat-x;
 	cursor: pointer;
 }
 #page_settings ul li.header {
@@ -401,12 +402,14 @@ select {
 	cursor: default;
 }
 #page_settings ul li.selected {
-	list-style-image: url(images/checkbox-selected.png);
-	list-style-position: inside;
+	list-style-image:none;
+	background: transparent url(images/checkbox-selected.png) 4px 3px no-repeat;
+	padding-left: 25px;
 }
 #page_settings ul li.unselected {
-	list-style-image: url(images/checkbox.png);
-	list-style-position: inside;
+	list-style-image: none;
+	background: transparent url(images/checkbox.png) 4px 3px no-repeat;
+	padding-left: 25px;
 }
 #page_settings ul li a {
 	text-decoration: none;
@@ -521,6 +524,13 @@ table.healt tr td div.border img {
 	margin-bottom: 0px;
 	height: 30px;
 }
+.service-totals {
+	margin-left: 249px;
+	margin-top:-72px;
+	width: 251px;
+}
+.service-totals tr td.status:first-child,
+.w-table.w50 tr td.status:first-child { border-left: 1px solid #d0d0d0;}
 /* extinfo table **********************************************************************************/
 table.extinfo {
 	border-spacing: 1px;
@@ -616,8 +626,6 @@ div.right {
 .w48 { width: 48%; }
 .w33 { width: 32%; }
 .w32 { width: 32%; }
-.w18 { width: 18%; }
-.w19 { width: 19%; }
 /* status *****************************************************************************************/
 .status  {
 	background: #f5f5ef url(images/td-dark.gif) repeat-x;
@@ -629,6 +637,10 @@ div.right {
 	padding: 2px 7px;
 	text-align: center;
 	vertical-align: middle;
+}
+.icon img {
+	margin-top: 2px;
+	margin-bottom: -1px;
 }
 #widget-status_totals .icon,
 #widget-host_totals .icon {
