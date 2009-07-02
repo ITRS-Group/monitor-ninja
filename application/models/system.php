@@ -114,24 +114,17 @@ class System_Model extends Model
 
 	/**
 	 * Fetch authentication information
-	 * for a named user
+	 * for a named user.
+	 * Use cached authorization data from session if available.
 	 */
 	public function nagios_access($username=false)
 	{
-		if (empty($username)) {
-			return false;
+		$access = Session::instance()->get('nagios_access', false);
+		if (empty($access)) {
+			$access = Ninja_user_authorization_Model::get_auth_data($username);
+			Session::instance()->set('nagios_access', $access);
 		}
-
-		$user_access = false;
-		$data = self::fetch_nagios_users();
-		if (!empty($data)) {
-			foreach ($data as $access => $users) {
-				if (!empty($users) && in_array($username, $users)) {
-					$user_access[] = $access;
-				}
-			}
-		}
-		return $user_access;
+		return $access;
 	}
 
 	/**
