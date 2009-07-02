@@ -30,6 +30,22 @@ class Command_Controller extends Authenticated_Controller
 		$this->template->css_header = $this->add_view('css_header');
 	}
 
+	protected function get_array_var($ary, $k, $dflt = false)
+	{
+		if (is_array($k)) {
+			if (count($k) === 1)
+				$k = array_pop($k);
+		}
+
+		if (is_array($k))
+			return false;
+
+		if (isset($ary[$k]))
+			return $ary[$k];
+
+		return $dflt;
+	}
+
 	/**
 	 * Request a command to be submitted
 	 * This method prints input fields to be selected for the
@@ -71,6 +87,7 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => 'Force Check',
 				 );
 			break;
+
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
 			$info['params']['perfdata'] = array
@@ -86,22 +103,6 @@ class Command_Controller extends Authenticated_Controller
 		if (is_array($info)) foreach ($info as $k => $v) {
 			$this->template->content->$k = $v;
 		}
-	}
-
-	protected function get_array_var($ary, $k, $dflt = false)
-	{
-		if (is_array($k)) {
-			if (count($k) === 1)
-				$k = array_pop($k);
-		}
-
-		if (is_array($k))
-			return false;
-
-		if (isset($ary[$k]))
-			return $ary[$k];
-
-		return $dflt;
 	}
 
 	/**
@@ -125,8 +126,8 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['force']);
 				$cmd = 'SCHEDULE_FORCED' . substr($cmd, strlen("SCHEDULE"));
 			}
-
 			break;
+
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
 			if (!empty($param['perfdata']) && !empty($param['plugin_output'])) {
