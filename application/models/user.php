@@ -7,7 +7,7 @@
  * Authentication stuff should *not* end up here.
  */
 class User_Model extends Auth_User_Model {
-	private static $auth_table = 'ninja_user_authorization';
+	public static $auth_table = 'ninja_user_authorization';
 
 	/**
 	 * Takes care of setting session variables etc
