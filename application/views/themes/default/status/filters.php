@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<table id="filter_table">
+<table id="filter_table" style="width: auto">
 	<tr>
 		<th style="border: 1px solid #d0d0d0" colspan="2"><?php echo $header_title ?></th>
 	</tr>
