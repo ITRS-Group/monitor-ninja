@@ -78,7 +78,9 @@ class Ninja_user_authorization_Model extends ORM
 		if ($auth->loaded) {
 			$auth_fields = self::$auth_fields;
 			foreach ($auth_fields as $field) {
-				$auth_data['authorized_for_'.$field] = $auth->{$field};
+				if ($auth->{$field}) {
+					$auth_data['authorized_for_'.$field] = $auth->{$field};
+				}
 			}
 			return $auth_data;
 		}
