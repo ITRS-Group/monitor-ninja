@@ -159,9 +159,7 @@ class Command_Model extends Model
 				$ary = array('type' => 'bool', 'default' => 1);
 				break;
 			 case 'options':
-				$ary = array('type' => 'checkbox', 'options' => array
-							 (1 => 'Broadcast', 2 => 'Forced',
-							  4 => 'Increment notification number'));
+				$ary = 'skip';
 				break;
 			 case 'persistent':
 				$ary = array('type' => 'bool', 'default' => 1);
@@ -224,6 +222,9 @@ class Command_Model extends Model
 					$ary['default'] = time() + 7200;
 				break;
 			}
+
+			if ($ary === 'skip')
+				continue;
 
 			if (!isset($ary['name'])) {
 				if (strpos($param_name, '_') !== false) {

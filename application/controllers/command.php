@@ -112,6 +112,16 @@ class Command_Controller extends Authenticated_Controller
 				 'default' => true,
 				 'name' => 'Schedule downtime for services too');
 			break;
+
+		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
+		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
+			$tmpl = array('type' => 'checkbox', 'default' => true);
+			$info['params']['_broadcast'] = $tmpl;
+			$info['params']['_broadcast']['name'] = 'Broadcast';
+			$info['params']['_force'] = $tmpl;
+			$info['params']['_force']['name'] = 'Force notification';
+			$info['params']['_increment'] = $tmpl;
+			$info['params']['_increment']['name'] = 'Increment notification number';
 		}
 
 		$this->template->content->requested_command = $name;
@@ -178,6 +188,20 @@ class Command_Controller extends Authenticated_Controller
 				else
 					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
 			}
+			break;
+
+		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
+		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
+			$options = 0;
+			if (isset($param['_broadcast'])) {
+				unset($param['_broadcast']);
+				$options |= 1;
+			}
+			if (isset($param['_force'])) {
+				unset($param['_force']);
+				$options |= 2;
+			}
+			$param['options'] = $options;
 			break;
 		}
 
