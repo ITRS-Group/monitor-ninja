@@ -189,9 +189,6 @@ class Command_Controller extends Authenticated_Controller
 			$pipe = $nagconfig['command_file'];
 		}
 
-		echo Kohana::debug($_REQUEST);
-		echo Kohana::debug($nagios_commands);
-		die();
 		while ($ncmd = array_pop($nagios_commands)) {
 			$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
 		}
