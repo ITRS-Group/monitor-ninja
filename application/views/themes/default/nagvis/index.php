@@ -19,7 +19,7 @@
 				echo '<li>';
 				echo '<a href="'.Kohana::config('config.nagvis_path').'nagvis/index.php?map='.$map.'" target="nagvis">'.$map.'</a>';
 				echo '&nbsp;';
-				echo '(<a href="'.Kohana::config('config.nagvis_path').'nagvis/wui/index.php?map='.$map.'" target="nagvis">edit</a>)';
+				echo '(<a href="'.Kohana::config('config.nagvis_path').'wui/index.php?map='.$map.'" target="nagvis">edit</a>)';
 				echo '</li>';
 			}
 			?>
