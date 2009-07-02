@@ -47,6 +47,17 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * Create a standard checkbox item
+	 * @param $name The user visible text for this option
+	 * @param $dflt The default value of the checkbox (true = checked)
+	 * @return array suitable for passing to the request template
+	 */
+	protected function cb($name, $dflt = true)
+	{
+		return array('type' => 'checkbox', 'name' => $name, 'default' => $dflt);
+	}
+
+	/**
 	 * Request a command to be submitted
 	 * This method prints input fields to be selected for the
 	 * named command.
@@ -76,28 +87,24 @@ class Command_Controller extends Authenticated_Controller
 
 		$command = new Command_Model;
 		$info = $command->get_command_info($name, $params);
-
+		$param = $info['params'];
 		switch ($name) {
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			$info['params']['_force'] = array
-				('type' => 'checkbox',
-				 'default' => true,
-				 'name' => 'Force Check',
-				 );
+			$param['_force'] = $this->cb('Force Check');
 			break;
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
-			$info['params']['_perfdata'] = array
+			$param['_perfdata'] = array
 				('type' => 'string',
 				 'size' => 100,
 				 'name' => 'Performance data');
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
-			$info['params']['_child-hosts'] = array
+			$param['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
 				 ('none' => 'Do nothing',
@@ -107,23 +114,17 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => 'Child Hosts');
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			$info['params']['_services-too'] = array
-				('type' => 'checkbox',
-				 'default' => true,
-				 'name' => 'Schedule downtime for services too');
+			$param['_services-too'] = $this->cb('Schedule downtime for services too');
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
 		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
-			$tmpl = array('type' => 'checkbox', 'default' => true);
-			$info['params']['_broadcast'] = $tmpl;
-			$info['params']['_broadcast']['name'] = 'Broadcast';
-			$info['params']['_force'] = $tmpl;
-			$info['params']['_force']['name'] = 'Force notification';
-			$info['params']['_increment'] = $tmpl;
-			$info['params']['_increment']['name'] = 'Increment notification number';
+			$param['_broadcast'] = $this->cb('Broadcast');
+			$param['_force'] = $this->cb('Force notification');
+			$param['_increment'] = $this->cb('Increment notification number');
 			break;
 		}
+		$info['params'] = $param;
 
 		$this->template->content->requested_command = $name;
 		$this->template->content->info = $info;
