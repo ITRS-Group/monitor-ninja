@@ -87,11 +87,16 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_contact_id()
 	{
-		$query = "SELECT id FROM contact WHERE contact_name = " .
-			$this->db->escape($this->user);
+		$contact_id = Session::instance()->get('contact_id', false);
+		if (empty($contact_id)) {
+			$query = "SELECT id FROM contact WHERE contact_name = " .
+				$this->db->escape($this->user);
 
-		$result = $this->db->query($query);
-		$this->id = $result->count() ? $result->current()->id : false;
+			$result = $this->db->query($query);
+			$contact_id = $result->count() ? $result->current()->id : false;
+			Session::instance()->set('contact_id', $contact_id);
+		}
+		$this->id = $contact_id;
 		return $this->id;
 	}
 
