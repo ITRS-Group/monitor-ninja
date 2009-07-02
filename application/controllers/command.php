@@ -95,6 +95,14 @@ class Command_Controller extends Authenticated_Controller
 				 'size' => 100,
 				 'name' => 'Performance data');
 			break;
+
+		 case 'SCHEDULE_HOST_DOWNTIME':
+		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
+			$info['params']['services-too'] = array
+				('type' => 'checkbox',
+				 'default' => true,
+				 'name' => 'Schedule downtime for services too');
+			break;
 		}
 
 		$this->template->content->requested_command = $name;
@@ -116,6 +124,7 @@ class Command_Controller extends Authenticated_Controller
 		$cmd = $_REQUEST['requested_command'];
 		$this->template->content->requested_command = $cmd;
 
+		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
 		switch ($cmd) {
 		 case 'SCHEDULE_HOST_CHECK':
@@ -135,18 +144,20 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['perfdata']);
 			}
 			break;
+
+		 case 'SCHEDULE_HOST_DOWNTIME':
+		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
+			if (!empty($param['services-too'])) {
+				unset($param['services-too']);
+				if ($cmd === 'SCHEDULE_HOST_DOWNTIME')
+					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
+				else
+					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
+			}
+			break;
 		}
 
-		$info = nagioscmd::cmd_info($cmd);
-		$template = explode(';', $info['template']);
-		for ($i = 1; $i < count($template); $i++) {
-			$k = $template[$i];
-			if (isset($param[$k])) {
-				$template[$i] = $param[$k];
-				unset($param[$k]);
-			}
-		}
-		$ncmd = join(';', $template);
+		$nagios_commands[] = nagioscmd::build_command($cmd, $param);
 
 		$pipe = "/opt/monitor/var/rw/nagios.cmd";
 		$nagconfig = System_Model::parse_config_file("/opt/monitor/etc/nagios.cfg");
@@ -155,9 +166,11 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		echo Kohana::debug($_REQUEST);
-		echo Kohana::debug($ncmd);
+		echo Kohana::debug($nagios_commands);
 		die();
-		$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
+		while ($ncmd = array_pop($nagios_commands)) {
+			$this->template->content->result = nagioscmd::submit_to_nagios($ncmd, $pipe);
+		}
 	}
 
 	/**
