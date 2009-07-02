@@ -123,6 +123,18 @@ class Command_Controller extends Authenticated_Controller
 			$param['_force'] = $this->cb('Force notification');
 			$param['_increment'] = $this->cb('Increment notification number');
 			break;
+
+		 case 'ENABLE_HOST_SVC_CHECKS':
+		 case 'DISABLE_HOST_SVC_CHECKS':
+			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
+			$param['_host-too'] = $this->cb($en_dis . ' checks for host too');
+			break;
+
+		 case 'ENABLE_HOST_CHECK':
+		 case 'DISABLE_HOST_CHECK':
+			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
+			$param['_services-too'] = $this->cb($en_dis . ' checks for services too');
+			break;
 		}
 		$info['params'] = $param;
 
@@ -204,6 +216,22 @@ class Command_Controller extends Authenticated_Controller
 				$options |= 2;
 			}
 			$param['options'] = $options;
+			break;
+
+		 case 'ENABLE_HOST_SVC_CHECKS':
+		 case 'DISABLE_HOST_SVC_CHECKS':
+			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
+			$xcmd .= '_HOST_CHECKS';
+			if (!empty($param['_host-too']))
+				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
+			break;
+
+		 case 'ENABLE_HOST_CHECK':
+		 case 'DISABLE_HOST_CHECK':
+			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
+			$xcmd .= '_HOST_SVC_CHECKS';
+			if (!empty($param['_services-too']))
+				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
 			break;
 		}
 
