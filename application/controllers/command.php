@@ -97,6 +97,15 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
+			$info['params']['child-hosts'] = array
+				('type' => 'select',
+				 'options' => array
+				 ('none' => 'Do nothing',
+				  'triggered' => 'Schedule triggered downtime',
+				  'fixed' => 'Schedule fixed downtime'),
+				 'default' => 'triggered',
+				 'name' => 'Child Hosts');
+			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
 			$info['params']['services-too'] = array
 				('type' => 'checkbox',
@@ -146,6 +155,21 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
+			if (!empty($param['child-hosts']) && $param['child-hosts'] != 'none') {
+				$what = $param['child-hosts'];
+				unset($param['child-hosts']);
+				$fixed = $param['fixed'];
+				if ($what === 'triggered') {
+					$param['fixed'] = 0;
+					$xcmd = 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME';
+				} elseif ($what === 'fixed') {
+					$param['fixed'] = 1;
+					$xcmd = 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME';
+				}
+				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
+				$param['fixed'] = $fixed;
+			}
+			# fallthrough to services-too handling
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
 			if (!empty($param['services-too'])) {
 				unset($param['services-too']);
