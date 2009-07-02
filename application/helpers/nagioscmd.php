@@ -47,7 +47,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 3,
 			  'description' => _('This command is used to add a comment for the specified service.  If you work with other administrators, you may find it useful to share information about a host or service that is having problems if more than one of you may be working on it.  If you do not check the \'persistent\' option, the comment will automatically be deleted the next time Nagios is restarted. '),
 			  'brief' => _('You are trying to add a service comment'),
-			  'template' => 'ADD_SVC_COMMENT;host_name;service_description;persistent;author;comment',
+			  'template' => 'ADD_SVC_COMMENT;service;persistent;author;comment',
 			 ),
 			 'DEL_SVC_COMMENT' => array
 			 ('nagios_id' => 4,
@@ -71,13 +71,13 @@ class nagioscmd_Core
 			 ('nagios_id' => 7,
 			  'description' => _('This command is used to schedule the next check of a service.  Nagios will re-queue the service to be checked at the time you specify. If you select the <i>force check</i> option, Nagios will force a check of the service regardless of both what time the scheduled check occurs and whether or not checks are enabled for the service. '),
 			  'brief' => _('You are trying to schedule a service check'),
-			  'template' => 'SCHEDULE_SVC_CHECK;host_name;service_description;check_time',
+			  'template' => 'SCHEDULE_SVC_CHECK;service;check_time',
 			 ),
 			 'DELAY_SVC_NOTIFICATION' => array
 			 ('nagios_id' => 9,
 			  'description' => _('This command is used to delay the next problem notification that is sent out for the specified service.  The notification delay will be disregarded if the service changes state before the next notification is scheduled to be sent out.  This command has no effect if the service is currently in an OK state. '),
 			  'brief' => _('You are trying to delay a service notification'),
-			  'template' => 'DELAY_SVC_NOTIFICATION;host_name;service_description;notification_time',
+			  'template' => 'DELAY_SVC_NOTIFICATION;service;notification_time',
 			 ),
 			 'DELAY_HOST_NOTIFICATION' => array
 			 ('nagios_id' => 10,
@@ -197,7 +197,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 30,
 			  'description' => _('This command is used to submit a passive check result for a service.  It is particularly useful for resetting security-related services to OK states once they have been dealt with. '),
 			  'brief' => _('You are trying to submit a passive check result for a service'),
-			  'template' => 'PROCESS_SERVICE_CHECK_RESULT;host_name;service_description;return_code;plugin_output',
+			  'template' => 'PROCESS_SERVICE_CHECK_RESULT;service;return_code;plugin_output',
 			 ),
 			 'SAVE_STATE_INFORMATION' => array
 			 ('nagios_id' => 31,
@@ -221,7 +221,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 34,
 			  'description' => _('This command is used to acknowledge a service problem.  When a service problem is acknowledged, future notifications about problems are temporarily disabled until the service changes from its current state. If you want acknowledgement to disable notifications until the service recovers, check the \'Sticky Acknowledgement\' checkbox. Contacts for this service will receive a notification about the acknowledgement, so they are aware that someone is working on the problem.  Additionally, a comment will also be added to the service. Make sure to enter your name and fill in a brief description of what you are doing in the comment field.  If you would like the service comment to remain once the acknowledgement is removed, check the \'Persistent Comment\' checkbox.  If you do not want an acknowledgement notification sent out to the appropriate contacts, uncheck the \'Send Notification\' checkbox. '),
 			  'brief' => _('You are trying to acknowledge a service problem'),
-			  'template' => 'ACKNOWLEDGE_SVC_PROBLEM;host_name;service_description;sticky;notify;persistent;author;comment',
+			  'template' => 'ACKNOWLEDGE_SVC_PROBLEM;service;sticky;notify;persistent;author;comment',
 			 ),
 			 'START_EXECUTING_SVC_CHECKS' => array
 			 ('nagios_id' => 35,
@@ -341,7 +341,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 54,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'SCHEDULE_FORCED_SVC_CHECK;host_name;service_description;check_time',
+			  'template' => 'SCHEDULE_FORCED_SVC_CHECK;service;check_time',
 			 ),
 			 'SCHEDULE_HOST_DOWNTIME' => array
 			 ('nagios_id' => 55,
@@ -353,7 +353,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 56,
 			  'description' => _('This command is used to schedule downtime for a service.  During the specified downtime, Nagios will not send notifications out about the service. When the scheduled downtime expires, Nagios will send out notifications for this service as it normally would.  Scheduled downtimes are preserved across program shutdowns and restarts.  Both the start and end times should be specified in the following format:  <b>mm/dd/yyyy hh:mm:ss</b>. option, Nagios will treat this as "flexible" downtime.  Flexible downtime starts when the service enters a non-OK state (sometime between the start and end times you specified) and lasts as long as the duration of time you enter.  The duration fields do not apply for fixed downtime. '),
 			  'brief' => _('You are trying to schedule downtime for a service'),
-			  'template' => 'SCHEDULE_SVC_DOWNTIME;host_name;service_description;start_time;end_time;fixed;trigger_id;duration;author;comment',
+			  'template' => 'SCHEDULE_SVC_DOWNTIME;service;start_time;end_time;fixed;trigger_id;duration;author;comment',
 			 ),
 			 'ENABLE_HOST_FLAP_DETECTION' => array
 			 ('nagios_id' => 57,
@@ -767,7 +767,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 126,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_EVENT_HANDLER;host_name;service_description;event_handler_command',
+			  'template' => 'CHANGE_SVC_EVENT_HANDLER;service;event_handler_command',
 			 ),
 			 'CHANGE_HOST_CHECK_COMMAND' => array
 			 ('nagios_id' => 127,
@@ -779,7 +779,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 128,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_CHECK_COMMAND;host_name;service_description;check_command',
+			  'template' => 'CHANGE_SVC_CHECK_COMMAND;service;check_command',
 			 ),
 			 'CHANGE_NORMAL_HOST_CHECK_INTERVAL' => array
 			 ('nagios_id' => 129,
@@ -791,13 +791,13 @@ class nagioscmd_Core
 			 ('nagios_id' => 130,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_NORMAL_SVC_CHECK_INTERVAL;host_name;service_description;check_interval',
+			  'template' => 'CHANGE_NORMAL_SVC_CHECK_INTERVAL;service;check_interval',
 			 ),
 			 'CHANGE_RETRY_SVC_CHECK_INTERVAL' => array
 			 ('nagios_id' => 131,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_RETRY_SVC_CHECK_INTERVAL;host_name;service_description;check_interval',
+			  'template' => 'CHANGE_RETRY_SVC_CHECK_INTERVAL;service;check_interval',
 			 ),
 			 'CHANGE_MAX_HOST_CHECK_ATTEMPTS' => array
 			 ('nagios_id' => 132,
@@ -809,7 +809,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 133,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_MAX_SVC_CHECK_ATTEMPTS;host_name;service_description;check_attempts',
+			  'template' => 'CHANGE_MAX_SVC_CHECK_ATTEMPTS;service;check_attempts',
 			 ),
 			 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME' => array
 			 ('nagios_id' => 134,
@@ -869,7 +869,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 143,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'SET_SVC_NOTIFICATION_NUMBER;host_name;service_description;notification_number',
+			  'template' => 'SET_SVC_NOTIFICATION_NUMBER;service;notification_number',
 			 ),
 			 'CHANGE_HOST_CHECK_TIMEPERIOD' => array
 			 ('nagios_id' => 144,
@@ -881,7 +881,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 145,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_CHECK_TIMEPERIOD;host_name;service_description;check_timeperiod',
+			  'template' => 'CHANGE_SVC_CHECK_TIMEPERIOD;service;check_timeperiod',
 			 ),
 			 'PROCESS_FILE' => array
 			 ('nagios_id' => 146,
@@ -899,7 +899,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 148,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_CUSTOM_SVC_VAR;host_name;service_description;varname;varvalue',
+			  'template' => 'CHANGE_CUSTOM_SVC_VAR;service;varname;varvalue',
 			 ),
 			 'CHANGE_CUSTOM_CONTACT_VAR' => array
 			 ('nagios_id' => 149,
@@ -959,7 +959,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 158,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_RETRY_HOST_CHECK_INTERVAL;host_name;service_description;check_interval',
+			  'template' => 'CHANGE_RETRY_HOST_CHECK_INTERVAL;service;check_interval',
 			 ),
 			 'SEND_CUSTOM_HOST_NOTIFICATION' => array
 			 ('nagios_id' => 159,
@@ -971,7 +971,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 160,
 			  'description' => _('This command is used to send a custom notification about the specified service.  Useful in emergencies when you need to notify admins of an issue regarding a monitored system or service. Custom notifications normally follow the regular notification logic in Nagios.  Selecting the <i>Forced</i> option will force the notification to be sent out, regardless of the time restrictions, whether or not notifications are enabled, etc.  Selecting the <i>Broadcast</i> option causes the notification to be sent out to all normal (non-escalated) and escalated contacts.  These options allow you to override the normal notification logic if you need to get an important message out. '),
 			  'brief' => _('You are trying to send a custom service notification'),
-			  'template' => 'SEND_CUSTOM_SVC_NOTIFICATION;host_name;service_description;options;author;comment',
+			  'template' => 'SEND_CUSTOM_SVC_NOTIFICATION;service;options;author;comment',
 			 ),
 			 'CHANGE_HOST_NOTIFICATION_TIMEPERIOD' => array
 			 ('nagios_id' => 161,
@@ -983,7 +983,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 162,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD;host_name;service_description;notification_timeperiod',
+			  'template' => 'CHANGE_SVC_NOTIFICATION_TIMEPERIOD;service;notification_timeperiod',
 			 ),
 			 'CHANGE_CONTACT_HOST_NOTIFICATION_TIMEPERIOD' => array
 			 ('nagios_id' => 163,
@@ -1007,7 +1007,7 @@ class nagioscmd_Core
 			 ('nagios_id' => 166,
 			  'description' => _('This command is not implemented in Nagios.'),
 			  'brief' => _('You are trying to execute an unsupported command.'),
-			  'template' => 'CHANGE_SVC_MODATTR;host_name;service_description;value',
+			  'template' => 'CHANGE_SVC_MODATTR;service;value',
 			 ),
 			 'CHANGE_CONTACT_MODATTR' => array
 			 ('nagios_id' => 167,

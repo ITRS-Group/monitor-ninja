@@ -21,6 +21,7 @@ class Command_Model extends Model
 		 case 'host_name':
 			$ary = $this->auth->get_authorized_hosts();
 			break;
+		 case 'service':
 		 case 'service_description':
 			$ary = $this->auth->get_authorized_services();
 			break;
@@ -108,7 +109,7 @@ class Command_Model extends Model
 		$cmd = $info['name'];
 
 		$raw_params = array_slice(explode(';', $info['template']), 1);
-		$remove = $params = array();
+		$params = array();
 		$ary = false;
 		foreach ($raw_params as $param_name) {
 			# reset between each loop
@@ -190,9 +191,9 @@ class Command_Model extends Model
 				break;
 			# nearly all the object link parameters are handled the same
 			# way (more or less), so we just clump them together here
+			 case 'service':
 			 case 'service_description':
 				$ary['name'] = 'Service';
-				$remove[] = 'host_name';
 				# fallthrough
 			 case 'servicegroup_name':
 			 case 'contact_name':
@@ -242,13 +243,6 @@ class Command_Model extends Model
 			}
 
 			$params[$param_name] = $ary;
-		}
-
-		# remove undesireable parameters
-		foreach ($remove as $k) {
-			if (isset($params[$k]))
-				unset($params[$k]);
-			$info['template'] = str_replace(";$k;", ";", $info['template']);
 		}
 
 		$info['params'] = $params;
