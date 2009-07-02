@@ -153,6 +153,10 @@ class Ajax_Controller extends Authenticated_Controller {
 		# if we have a requested widget method - let's call it
 		if (!empty($method)) {
 			if (method_exists($obj, $method)) {
+				if (empty($arguments)) {
+					$arguments[] = false;
+				}
+				$arguments['is_ajax'] = true;
 				return $obj->$method($arguments);
 			}
 		}

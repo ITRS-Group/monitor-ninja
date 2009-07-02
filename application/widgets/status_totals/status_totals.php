@@ -95,7 +95,7 @@ class Status_totals_Widget extends widget_Core {
 		);
 
 		# let view template know if wrapping div should be hidden or not
-		$ajax_call = request::is_ajax() ? true : false;
+		$ajax_call = request::is_ajax() || (isset($arguments['is_ajax']) && $arguments['is_ajax'] === true) ? true : false;
 
 		$widget_id =  $this->widgetname;
 		$refresh_rate = 60;
