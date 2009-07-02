@@ -52,13 +52,15 @@ class Ninja_user_authorization_Model extends ORM
 	}
 
 	/**
-	*
-	*
+	*	fetch authorization data for a user identified by username
+	*	or user_id. If both username and user_id are empty
+	* 	we use the id of the current user.
 	*/
 	public function get_auth_data($username=false, $user_id=false)
 	{
-		# fetch authorization data for a user identified by username
-		# or user_id
+		if (empty($username) && empty($user_id)) {
+			$user_id = Auth::instance()->get_user()->id;
+		}
 		if (empty($user_id)) {
 			# fetch user_id
 			if (empty($username))
