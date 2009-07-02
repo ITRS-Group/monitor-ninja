@@ -81,7 +81,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			$info['params']['force'] = array
+			$info['params']['_force'] = array
 				('type' => 'checkbox',
 				 'default' => true,
 				 'name' => 'Force Check',
@@ -90,14 +90,14 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
-			$info['params']['perfdata'] = array
+			$info['params']['_perfdata'] = array
 				('type' => 'string',
 				 'size' => 100,
 				 'name' => 'Performance data');
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
-			$info['params']['child-hosts'] = array
+			$info['params']['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
 				 ('none' => 'Do nothing',
@@ -107,7 +107,7 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => 'Child Hosts');
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			$info['params']['services-too'] = array
+			$info['params']['_services-too'] = array
 				('type' => 'checkbox',
 				 'default' => true,
 				 'name' => 'Schedule downtime for services too');
@@ -139,7 +139,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			if (!empty($param['force'])) {
+			if (!empty($param['_force'])) {
 				echo "Forcing check<br />\n";
 				unset($param['force']);
 				$cmd = 'SCHEDULE_FORCED' . substr($cmd, strlen("SCHEDULE"));
@@ -148,16 +148,16 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
-			if (!empty($param['perfdata']) && !empty($param['plugin_output'])) {
+			if (!empty($param['_perfdata']) && !empty($param['plugin_output'])) {
 				$param['plugin_output'] .= "|$param[perfdata]";
 				unset($param['perfdata']);
 			}
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
-			if (!empty($param['child-hosts']) && $param['child-hosts'] != 'none') {
-				$what = $param['child-hosts'];
-				unset($param['child-hosts']);
+			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
+				$what = $param['_child-hosts'];
+				unset($param['_child-hosts']);
 				$fixed = $param['fixed'];
 				if ($what === 'triggered') {
 					$param['fixed'] = 0;
@@ -171,8 +171,8 @@ class Command_Controller extends Authenticated_Controller
 			}
 			# fallthrough to services-too handling
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			if (!empty($param['services-too'])) {
-				unset($param['services-too']);
+			if (!empty($param['_services-too'])) {
+				unset($param['_services-too']);
 				if ($cmd === 'SCHEDULE_HOST_DOWNTIME')
 					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
 				else
