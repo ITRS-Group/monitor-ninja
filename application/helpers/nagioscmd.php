@@ -1082,6 +1082,35 @@ class nagioscmd_Core
 	}
 
 	/**
+	 * Construct a command suitable for passing to Nagios
+	 *
+	 * @param $cmd string or command-info array
+	 * @param $param Parameters to use as macros for the template
+	 * @return A command string on success, false on errors
+	 */
+	public function build_command($cmd, $param)
+	{
+		if (is_array($cmd))
+			$info = $cmd;
+		else
+			$info = self::cmd_info($cmd);
+
+		if (!$info || !$info['template'])
+			return false;
+
+		$template = explode(';', $info['template']);
+		for ($i = 1; $i < count($template); $i++) {
+			$k = $template[$i];
+			if (isset($param[$k])) {
+				$template[$i] = $param[$k];
+				unset($param[$k]);
+			}
+		}
+
+		return join(';', $template);
+	}
+
+	/**
 	 * Obtain Nagios' macro name for the given command
 	 * @param $id Numeric or string representation of command
 	 * @return False on errors, Nagios' macro name as string on
