@@ -17,7 +17,9 @@ $label_next = $this->translate->_('next');
 	}
 	?>
 	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>
-	<form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get"><?php echo $this->translate->_('Show') ?> :
+	<form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
+		<fieldset>
+		<?php echo $this->translate->_('Show') ?> :
 		<select class="items_per_page" name="items_per_page" onchange="this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
@@ -26,7 +28,7 @@ $label_next = $this->translate->_('next');
 			<?php
 		} else {
 			?>
-			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo $this->translate->_('All').' '.$entries ?>
+			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo $this->translate->_('All').' '.$entries ?></option>
 			<?php
 		}
 		for ($i=$paging_step ; $i<$total_items; $i+=$paging_step ) {
@@ -40,9 +42,10 @@ $label_next = $this->translate->_('next');
 				title="<?php echo $this->translate->_('Enter number of items to show on each page or select from the drop-down on the left') ?>"
 				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
 			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('Go') ?>" />
+			</fieldset>
 	</form>
 <p class="pagination">
-
+	<?php $url = str_replace('&','&amp;',$url);	?>
 	<?php if ($previous_page): ?>
 		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>">&laquo;&nbsp;<?php echo $label_previous ?></a>
 	<?php else: ?>
