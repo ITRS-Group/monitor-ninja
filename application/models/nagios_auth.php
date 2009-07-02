@@ -50,7 +50,7 @@ class Nagios_auth_Model extends Model
 			return;
 
 		if (is_array($access) && !empty($access)) {
-			$user_access = array_values($access);
+			$user_access = array_keys($access);
 		}
 
 		if (in_array('authorized_for_all_hosts', $user_access)) {
