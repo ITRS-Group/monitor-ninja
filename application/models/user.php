@@ -141,7 +141,7 @@ class User_Model extends Auth_User_Model {
 	*	Create the ninja_user_authorization table if not exists
 	*
 	*/
-	private function create_auth_table()
+	public static function create_auth_table()
 	{
 		$db = new Database();
 		$sql = "CREATE TABLE IF NOT EXISTS `".$this->auth_table."` ( ".
