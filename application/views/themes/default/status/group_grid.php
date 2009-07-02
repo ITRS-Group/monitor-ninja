@@ -35,21 +35,11 @@
 foreach ($group_details as $details) {
 ?>
 
-	<table style="table-layout: fixed" class="group_grid_table">
+	<table class="group_grid_table">
 		<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
 			(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
 		</caption>
-		<colgroup>
-			<col style="width: 30px" />
-			<col style="width: 200px" />
-			<col style="width: 100%" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-		</colgroup>
 		<thead>
 		<tr>
 			<th class="no-sort"colspan="2"><?php echo $label_host ?></th>
@@ -70,7 +60,7 @@ foreach ($group_details as $details) {
 						echo html::anchor('extinfo/details/host/'.$host['host_name'], html::image('application/media/images/logos/'.$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
 					} ?>
 			</td>
-			<td style="white-space: normal"><?php echo html::anchor('extinfo/details/host/'.$host['host_name'], html::specialchars($host['host_name'])) ?></td>
+			<td style="white-space: normal; width: 180px"><?php echo html::anchor('extinfo/details/host/'.$host['host_name'], html::specialchars($host['host_name'])) ?></td>
 			<td style="white-space: normal; line-height: 20px">
 			<?php
 				$tmp = 0;
@@ -91,7 +81,7 @@ foreach ($group_details as $details) {
 			<?php
 				# also each host, under Actions
 			?>
-			<td style="letteer-spacing: 4px; text-align: right; padding-top: 5px">
+			<td class="icon">
 				<?php echo html::anchor('extinfo/host/'.$host['host_name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')) ?>
 			</td>
 			<td class="icon">

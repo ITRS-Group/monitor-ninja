@@ -35,23 +35,11 @@
 	$j = 0;
 	foreach ($group_details as $group) { ?>
 
-		<table style="table-layout: fixed" class="group_overview_table">
+		<table class="group_overview_table">
 			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
 			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
 		</caption>
-			<colgroup>
-				<col style="width: 30px" />
-				<col style="width: 200px" />
-				<col style="width: 30px" />
-				<col style="width: 100%" />
-				<col style="width: 30px" />
-				<col style="width: 30px" />
-				<col style="width: 30px" />
-				<col style="width: 30px" />
-				<col style="width: 30px" />
-				<col style="width: 30px" />
-			</colgroup>
 			<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -65,7 +53,7 @@
 				foreach ($group->hostinfo as $host => $details) { ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
 				<td class="icon bl"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower($details['state_str']).'.png', array('alt' => $details['state_str'], 'title' => $details['state_str'])); ?></td>
-				<td><?php echo $details['status_link'] ?></td>
+				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
 				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
 				<td>
 					<?php if (!empty($group->service_states[$host]))

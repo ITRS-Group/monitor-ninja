@@ -33,24 +33,8 @@
 
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
-<table style="table-layout: fixed; margin-bottom: 10px" id="service_table">
+<table style="margin-bottom: 10px" id="service_table">
 <caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
-	<colgroup>
-		<col style="width: 30px" />
-		<col style="width: 160px" />
-		<col style="width: 30px" />
-		<col style="width: 160px" />
-		<col style="width: 122px" />
-		<col style="width: 105px" />
-		<col style="width: 70px" />
-		<col style="width: 100%" />
-		<col style="width: 30px" />
-		<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
-		<col style="width: 30px" />
-		<?php } if (Kohana::config('config.nacoma_path')!==false) { ?>
-		<col style="width: 30px" />
-		<?php } ?>
-	</colgroup>
 	<thead>
 		<tr>
 			<th>&nbsp;</th>

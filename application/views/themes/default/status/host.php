@@ -32,23 +32,8 @@
 
 <div class="widget left w98" id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<table id="host_table" style="table-layout: fixed; margin-bottom: 10px">
+	<table id="host_table" style="margin-bottom: 10px">
 	<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
-		<colgroup>
-			<col style="width: 30px" />
-			<col style="width: 200px" />
-			<col style="width: 30px" />
-			<col style="width: 122px" />
-			<col style="width: 105px" />
-			<col style="width: 100%" />
-			<col style="width: 30px" />
-			<col style="width: 30px" />
-			<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
-			<col style="width: 30px" />
-			<?php } if (Kohana::config('config.nacoma_path')!==false) { ?>
-			<col style="width: 30px" />
-			<?php } ?>
-		</colgroup>
 		<thead>
 			<tr>
 				<?php
@@ -58,19 +43,18 @@
 				foreach($header_links as $row) {
 					if (isset($row['url_desc'])) {
 						echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
-									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
 						echo '</th>';
 					}
 				}
 			?>
 				<th><?php echo $this->translate->_('Status information') ?></th>
-				<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 4 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : 2); ?>"><?php echo $this->translate->_('Actions') ?></th>
+				<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 5 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 4 : 3); ?>"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
-
 # Do not, under ANY circumstances, remove the if-clause below.
 # Doing so results in a Kohana error if no hosts are found. That
 # is a VERY, VERY BAD THING, so please pretty please leave it where
@@ -108,12 +92,12 @@ foreach ($result as $row) {
 					?>
 					</div>
 				</td>
-				<td class="icon" style="width: 10px">
+				<td class="icon">
 				<?php if (!empty($row->icon_image)) {
 					echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
-				<td><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
+				<td style="white-space: normal"><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
 				<td><?php echo time::to_string($row->duration) ?></td>
 				<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
 				<td class="icon">
@@ -124,7 +108,10 @@ foreach ($result as $row) {
 					<a href="<?php echo $row->action_url ?>" style="border: 0px">
 						<?php echo html::image('/application/views/themes/default/icons/16x16/host-actions.png', $this->translate->_('Perform extra host actions')) ?>
 					</a>
-				<?php	} if (!empty($row->notes_url)) { ?>
+					<?php } ?>
+				</td>
+				<td class="icon">
+				<?php	if (!empty($row->notes_url)) { ?>
 					<a href="<?php echo $row->notes_url ?>" style="border: 0px">
 						<?php echo html::image('application/views/themes/default/icons/16x16/host-notes.png', $this->translate->_('View extra host notes')) ?>
 					</a>
