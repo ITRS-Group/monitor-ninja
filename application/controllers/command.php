@@ -122,6 +122,7 @@ class Command_Controller extends Authenticated_Controller
 			$info['params']['_force']['name'] = 'Force notification';
 			$info['params']['_increment'] = $tmpl;
 			$info['params']['_increment']['name'] = 'Increment notification number';
+			break;
 		}
 
 		$this->template->content->requested_command = $name;
