@@ -66,6 +66,8 @@ class Nagios_auth_Model extends Model
 		}
 
 		/* Allow * in cgi.cfg, which mean everybody should get 'rootness' */
+		/*
+		#@@@FIXME: We should handle this when importing data from cgi.cfg
 		$tot_access = System_Model::nagios_access('*');
 		if (is_array($tot_access) && !empty($tot_access)) {
 			$all_access = array_values($tot_access);
@@ -77,6 +79,7 @@ class Nagios_auth_Model extends Model
 				$this->view_services_root = true;
 			}
 		}
+		*/
 	}
 
 	/**
