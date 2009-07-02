@@ -120,6 +120,16 @@ class System_Model extends Model
 	public function nagios_access($username=false)
 	{
 		$access = Session::instance()->get('nagios_access', false);
+
+		$db = new Database();
+		# make sure we have the ninja_user_authorization table
+		if (!$db->table_exists(User_Model::$auth_table)) {
+			User_Model::create_auth_table();
+
+			# import users and authentication data
+			Cli_Controller::insert_user_data();
+			unset($db);
+		}
 		if (empty($access)) {
 			$access = Ninja_user_authorization_Model::get_auth_data($username);
 			Session::instance()->set('nagios_access', $access);
