@@ -76,25 +76,10 @@
 			</div>
 			<div id="icons">
 				<ul>
-					<?php
-						$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
-						if (is_array($settings_widgets))
-							echo '<li onclick="settings()">'.html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))).'</li>';
-					?>
-					<li id="ninja_refresh_edit">
-						<?php echo html::image('application/views/themes/default/icons/16x16/refresh_edit.png',array('alt' => $this->translate->_('Edit'),'title' => $this->translate->_('Edit'))); ?>
-						<div id="ninja_page_refresh_slider" style="display:none;width:200px; margin-top: -17px; margin-left: 24px;padding: 1px; background: #ffffff; border: 1px solid #e9e9e0">
-							<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="float:left;background:transparent; font-size: 11px; margin-left: 170px;border:0px;border-color: none;margin-top:-3px;z-index: 500" />
-						</div>
-					</li>
-					<li id="ninja_page_refresh">
-						<input type="checkbox" id="ninja_refresh_control" />
-						<span id="ninja_refresh_lable"> <?php echo $this->translate->_('Pause refresh') ?></span>
-					</li>
+					<li onclick="settings()"><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
-			<div id="noheader_ctrl" style="display:none"><input type="checkbox" id="noheader_chbx" value="1" /><span id="noheader_label"> <?php echo $this->translate->_('Hide page header')?></span></div>
 		</div>
 		<div id="menu">
 			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
@@ -117,9 +102,24 @@
 		</div>
 
 		<div id="page_settings">
+			<ul>
+				<li class="header"><?php echo $this->translate->_('Global Settings') ?></li>
+				<li id="noheader_ctrl" style="display:none">
+					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
+				</li>
+				<li id="ninja_page_refresh">
+					<input type="checkbox" id="ninja_refresh_control" />
+					<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo $this->translate->_('Pause refresh') ?></label>
+				</li>
+				<li id="ninja_refresh_edit">
+					<?php echo $this->translate->_('Edit global refresh rate') ?><br />
+					<div id="ninja_page_refresh_slider" style="width:200px; margin-top: 8px;">
+						<input type="text" maxlength="3" size="2" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 170px; padding: 1px; margin-top:-25px;z-index: 500" />
+					</div>
+				</li>
 				<?php
+					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
 					if (is_array($settings_widgets)) {
-						echo '<ul>'."\n";
 						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>'."\n";
 						foreach($settings_widgets as $id => $widget) {
 							if (isset($user_widgets) && is_array($user_widgets)) {
@@ -134,6 +134,7 @@
 						echo '</ul>'."\n";
 					}
 				?>
+			</ul>
 		</div>
 		<div id="content">
 			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
