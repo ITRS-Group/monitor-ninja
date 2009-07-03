@@ -550,17 +550,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->lable_flap_enabled = $t->_('Flap Detection Enabled?');
 		$content->lable_performance_data = $t->_('Performance Data Being Processed?');
 
-		# parse nagios.cfg to figure out date format
-		$nagios_config = System_Model::parse_config_file('nagios.cfg');
-
-		# @@@FIXME setting date format should be done somewhere global
-		# DATE FORMAT OPTION
-		#       us              (MM-DD-YYYY HH:MM:SS)
-		#       euro            (DD-MM-YYYY HH:MM:SS)
-		#       iso8601         (YYYY-MM-DD HH:MM:SS)
-		#       strict-iso8601  (YYYY-MM-DDTHH:MM:SS)
-
-		$date_format_str = nagstat::date_format($nagios_config['date_format']);
+		$date_format_str = nagstat::date_format();
 
 		# fetch program status from program_status_model
 		# uses ORM

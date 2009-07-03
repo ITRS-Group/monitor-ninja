@@ -103,8 +103,8 @@ if (!empty($widgets)) {
 			<td style="width: 160px" class="bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
 				<?php echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower($current_status_str).'.png', array('alt' => $current_status_str, 'style' => 'margin-bottom: -2px; margin-right: 2px'));?>
-				<?php echo ucfirst(strtolower($current_status_str)) ?>
-				(<?php echo $lable_for ?> <?php echo $duration ? $duration : $na_str ?>)
+				&nbsp;<?php echo ucfirst(strtolower($current_status_str)) ?>
+				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : $na_str ?>)
 			</td>
 		</tr>
 		<tr class="even">

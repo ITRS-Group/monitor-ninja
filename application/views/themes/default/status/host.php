@@ -97,8 +97,8 @@ foreach ($result as $row) {
 					echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
-				<td style="white-space: normal"><?php echo date('Y-m-d H:i:s',$row->last_check) ?></td>
-				<td><?php echo time::to_string($row->duration) ?></td>
+				<td style="white-space: normal"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+				<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
 				<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
 				<td class="icon">
 					<?php echo html::anchor('status/service/'.$row->host_name,html::image('/application/views/themes/default/icons/16x16/service-details.gif', $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
