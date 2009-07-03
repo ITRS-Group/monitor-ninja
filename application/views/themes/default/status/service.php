@@ -68,7 +68,7 @@
 		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? '' : 'bt') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
 				if ($curr_host != $row->host_name) {
-					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->host_state, Router::$method), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state, Router::$method)));
+					echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state)).'.png',array('alt' => Current_status_Model::status_text($row->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state)));
 				}
 			?>
 		</td>
