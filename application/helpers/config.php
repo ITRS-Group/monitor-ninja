@@ -14,7 +14,7 @@ class config_Core
 	*	If $page is set it will fetch for a page-specific
 	* 	setting for current user
 	*/
-	public static function get($config_str=false, $page='', $save=false)
+	public static function get($config_str=false, $page='', $save=false, $skip_session=false)
 	{
 		$config_str = trim($config_str);
 		if (empty($config_str) || !is_string($config_str)) {
@@ -22,7 +22,11 @@ class config_Core
 		}
 		# first check for cached session value
 		$page_val = empty($page) ? '' : '.'.$page;
-		$setting_session = Session::instance()->get($config_str.$page_val, false);
+		if (!$skip_session) {
+			$setting_session = Session::instance()->get($config_str.$page_val, false);
+		} else {
+			Session::instance()->delete($config_str.$page_val);
+		}
 
 		if (!empty($setting_session)) {
 			$setting = $setting_session;
@@ -46,7 +50,9 @@ class config_Core
 		}
 
 		# store custom setting in session
-		Session::instance()->set($config_str.$page_val, $setting);
+		if (!$skip_session) {
+			Session::instance()->set($config_str.$page_val, $setting);
+		}
 
 		return $setting;
 	}
