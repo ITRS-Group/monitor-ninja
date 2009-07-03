@@ -17,7 +17,7 @@ class refresh_Core {
 		}
 		# fetch setting
 		$refresh_key = 'config.page_refresh_rate';
-		$refresh = (int)config::get($refresh_key, '*', true);
+		$refresh = (int)config::get($refresh_key, '*', true, true);
 		?>
 		<script type="text/javascript" language="JavaScript">
 		<!--
