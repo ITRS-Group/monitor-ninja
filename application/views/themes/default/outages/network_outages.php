@@ -28,7 +28,7 @@
 				</td>
 				<td><?php echo html::anchor('extinfo/details/host/'.$host, $host) ?></td>
 				<td class="icon">
-					<?php echo html::anchor('extinfo/details/host/'.$host, html::image('/application/views/themes/default/icons/16x16/add-comment.png',array('alt' => $this->translate->_('View comments for this host'), 'title' => $this->translate->_('View comments for this host'))),array('style' => 'border: 0px')); ?>
+					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$host, html::image('/application/views/themes/default/icons/16x16/add-comment.png',array('alt' => $this->translate->_('View comments for this host'), 'title' => $this->translate->_('View comments for this host'))),array('style' => 'border: 0px')); ?>
 				</td>
 				<td><?php echo $details['severity'] ?></td>
 				<td><?php echo $details['duration'] ?></td>
