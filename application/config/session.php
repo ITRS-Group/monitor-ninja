@@ -4,7 +4,7 @@
  *
  * Session driver name.
  */
-$config['driver'] = 'cookie';
+$config['driver'] = 'native';
 
 /**
  * Session storage parameter, used by drivers.
