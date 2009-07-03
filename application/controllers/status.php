@@ -172,6 +172,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->pagination = $pagination;
 		$this->template->content->total_items = $tot;
 		$this->template->content->logos_path = $this->logos_path;
+		$this->template->content->na_str = $this->translate->_('N/A');
 
 		if (empty($group_type)) {
 			if ($host == 'all') {
@@ -305,6 +306,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->content->na_str = $this->translate->_('N/A');
 
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('icons/arrow-up.gif');
