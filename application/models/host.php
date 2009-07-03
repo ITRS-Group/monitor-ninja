@@ -49,7 +49,7 @@ class Host_Model extends Model {
 				return false;
 			} else {
 				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration')
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
 					->where('host', array('id' => $id));
 			}
 		} elseif (!empty($name)) {
@@ -57,7 +57,7 @@ class Host_Model extends Model {
 				return false;
 			} else {
 				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration')
+					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
 					->getwhere('host', array('host_name' => $name));
 			}
 		} else {
@@ -314,6 +314,7 @@ class Host_Model extends Model {
 						is_flapping,
 						action_url,
 						(UNIX_TIMESTAMP() - last_state_change) AS duration,
+						UNIX_TIMESTAMP() AS cur_time,
 						current_attempt,
 						problem_has_been_acknowledged,
 						scheduled_downtime_depth,
@@ -402,7 +403,7 @@ class Host_Model extends Model {
 						$auth_service_field.".problem_has_been_acknowledged,".
 						$auth_service_field.".scheduled_downtime_depth,".
 						$auth_service_field.".is_flapping as service_is_flapping,".
-						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration,".
+						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
 						$auth_service_field.".current_attempt,".
 						$auth_service_field.".output".
 					" FROM ".
@@ -549,7 +550,7 @@ class Host_Model extends Model {
 
 		$db = new Database();
 		if (empty($service_description)) {
-			$sql = "SELECT *, (UNIX_TIMESTAMP() - last_state_change) AS duration FROM host WHERE host_name='".$host_name."'";
+			$sql = "SELECT *, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
 			$service_list = $auth->get_authorized_services();
 			if (!in_array($host_name.';'.$service_description, $service_list)) {
@@ -605,6 +606,7 @@ class Host_Model extends Model {
 					s.scheduled_downtime_depth,
 					s.is_flapping,
 					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
+					UNIX_TIMESTAMP() AS cur_time,
 					s.last_state_change,
 					s.current_attempt,
 					s.state_type,
