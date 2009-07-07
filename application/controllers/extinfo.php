@@ -928,4 +928,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content->service_comments = $this->_comments(true, true, 'service', true, $items_per_page);
 		$this->template->title = $this->translate->_('Monitoring » All comments');
 	}
+
+	/**
+	*	Show Program-Wide Performance Information
+	*	(Performance Info)
+	*/
+	public function performance()
+	{
+		# @@@FIXME
+		$this->template->content = $this->add_view('extinfo/performance');
+		$this->template->content->msg = $this->translate->_("This page is not yet implemented.");
+	}
 }

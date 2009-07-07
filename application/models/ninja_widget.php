@@ -107,6 +107,13 @@ class Ninja_widget_Model extends ORM
 		# (already removed/added a widget)
 		self::customize_widgets($page);
 
+		# Make sure that this particular widget exists for user.
+		# Could've been added later
+		$current_widget = self::get_widget($page, $widget, true);
+		if ($current_widget === false) {
+			self::copy_to_user(self::get_widget($page, $widget));
+		}
+
 		# all widgets for current page should exist under users name
 
 		switch ($method) {
@@ -194,6 +201,9 @@ class Ninja_widget_Model extends ORM
 			$new_state->setting = self::merge_settings($current_widget->setting, $data);
 			$new_state->save();
 			return $new_state->saved;
+		} else {
+			self::copy_to_user(self::get_widget($page, $widget));
+			self::save_widget_setting($page, $widget, $data);
 		}
 		return false;
 	}
