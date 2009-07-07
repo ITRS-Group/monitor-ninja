@@ -9,7 +9,7 @@ if [ $# -ge 1 ]
 then
 	prefix=$1
 else
-	prefix="/opt/monitor";
+	prefix="/opt/monitor/op5";
 fi
 
 run_sql_file () # (db_login_opts, sql_script_path)
@@ -33,8 +33,8 @@ if [ "$db_ver" = '' ]
 then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
-	run_sql_file $db_login_opts "$prefix/op5/ninja/install_scripts/ninja.sql"
+	run_sql_file $db_login_opts "$prefix/ninja/install_scripts/ninja.sql"
 fi
 
 # import users annd authorization data
-/usr/bin/env php "$prefix/op5/ninja/install_scripts/auth_import.php"
+/usr/bin/env php "$prefix/ninja/install_scripts/auth_import.php"
