@@ -145,6 +145,8 @@ INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `set
 	(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
 INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(10, '', 'status', 'status_totals', 'Status Totals', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(11, '', 'tac/index', 'monitoring_performance', 'Monitoring Performance', '');
 
 --
 -- Table structure for table `ninja_db_version`
