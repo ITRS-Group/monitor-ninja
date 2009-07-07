@@ -11,13 +11,13 @@
 			foreach ($maps as $map)
 			{
 				echo '<li>';
-				echo '<a href="/nagvis/nagvis/index.php?map='.$map.'" target="nagvis">'.$map.'</a>';
+				echo '<a href="/ninja/index.php/nagvis/view/'.$map.'">'.$map.'</a>';
 				echo '&nbsp;';
-				echo '(<a href="/nagvis/wui/index.php?map='.$map.'" target="nagvis">edit</a>)';
+				echo '(<a href="/ninja/index.php/nagvis/edit/'.$map.'">edit</a>)';
 				echo '</li>';
 			}
 			?>
-			<li><a href="/nagvis/nagvis/index.php?automap=1" target="nagvis">Automap</a></li>
+			<li><a href="/ninja/index.php/nagvis/automap">Automap</a></li>
 		</ul>
 	</div>
 </div>

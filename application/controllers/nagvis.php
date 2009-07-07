@@ -15,8 +15,44 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$maps = new Nagvis_Maps_Model;
 
 		$this->template->content = $this->add_view('nagvis/index');
-
 		$this->template->content->maps = $maps->get_list();
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+	}
+
+	public function view($map)
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$maps = new Nagvis_Maps_Model;
+
+		$this->template->content = $this->add_view('nagvis/view');
+		$this->template->content->map = $map;
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+	}
+
+	public function edit($map)
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$this->template->content = $this->add_view('nagvis/edit');
+		$this->template->content->map = $map;
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+	}
+
+	public function automap()
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$this->template->content = $this->add_view('nagvis/automap');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
