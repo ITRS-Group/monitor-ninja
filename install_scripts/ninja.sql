@@ -2,6 +2,9 @@
 -- Table structure for table `roles`
 --
 
+-- This must be done first
+DROP TABLE IF EXISTS `roles_users`;
+
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) unsigned NOT NULL auto_increment,
@@ -25,7 +28,6 @@ INSERT INTO `roles` (`id`, `name`, `description`) VALUES
 -- Table structure for table `roles_users`
 --
 
-DROP TABLE IF EXISTS `roles_users`;
 CREATE TABLE IF NOT EXISTS `roles_users` (
   `user_id` int(10) unsigned NOT NULL,
   `role_id` int(10) unsigned NOT NULL,
@@ -45,6 +47,9 @@ INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES(1, 2);
 --
 -- Table structure for table `users`
 --
+
+-- This must be done first
+DROP TABLE IF EXISTS `user_tokens`;
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
@@ -67,11 +72,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`, `last_login`) VALUES
 (1, 'Monitor Admin', 'monitor@example.com', 'monitor', 'l5aAn32uSC0xI8FlhfK2D5dAd5Y=', 0, 0);
 
-
 --
 -- Table structure for table `user_tokens`;
 --
-DROP TABLE IF EXISTS `user_tokens`;
+
 CREATE TABLE IF NOT EXISTS `user_tokens` (
   id int(11) unsigned NOT NULL auto_increment,
   user_id int(11) unsigned NOT NULL,
