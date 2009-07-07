@@ -339,7 +339,7 @@ function widget(name, content_area, no_edit)
 		$("." + this.name + "_editable").editable(function(value, settings) {
 			var data = {page: self.current_uri, widget:self.name, widget_title:value};
 			value = trim(value);
-			// don't save an ampty title
+			// don't save an empty title
 			if (value.length) {
 				self.save_settings(data);
 				self.title = value;
