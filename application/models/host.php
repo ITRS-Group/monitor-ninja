@@ -465,12 +465,12 @@ class Host_Model extends Model {
 		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED)
 			$ret_str .= ' AND '.$table_alias.'passive_checks_enabled=1 ';
 		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK)
-			$ret_str .= ' AND '.$table_alias.'check_type='.self::SERVICE_CHECK_PASSIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.Current_status_Model::SERVICE_CHECK_PASSIVE.' ';
 		if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK)
-			$ret_str .= ' AND '.$table_alias.'check_type='.self::SERVICE_CHECK_ACTIVE.' ';
+			$ret_str .= ' AND '.$table_alias.'check_type='.Current_status_Model::SERVICE_CHECK_ACTIVE.' ';
 		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
 			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::HARD_STATE.' ';
-		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
+		if ($serviceprops & nagstat::SERVICE_SOFT_STATE)
 			$ret_str .= ' AND '.$table_alias.'check_type='.nagstat::SOFT_STATE.' ';
 
 		return $ret_str;
