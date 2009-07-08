@@ -64,12 +64,12 @@ class Command_Controller extends Authenticated_Controller
 	 * @param $name The requested command to run
 	 * @param $parameters The parameters (host_name etc) for the command
 	 */
-	public function submit($name = false)
+	public function submit($cmd = false)
 	{
 		$this->init_page('command/request');
 
-		if ($name === false) {
-			$name = $this->input->get('cmd_typ');
+		if ($cmd === false) {
+			$cmd = $this->input->get('cmd_typ');
 		}
 
 		$params = array();
@@ -86,9 +86,9 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$command = new Command_Model;
-		$info = $command->get_command_info($name, $params);
+		$info = $command->get_command_info($cmd, $params);
 		$param = $info['params'];
-		switch ($name) {
+		switch ($cmd) {
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
@@ -138,7 +138,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 		$info['params'] = $param;
 
-		$this->template->content->requested_command = $name;
+		$this->template->content->requested_command = $cmd;
 		$this->template->content->info = $info;
 
 		if (is_array($info)) foreach ($info as $k => $v) {
