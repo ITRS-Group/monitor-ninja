@@ -1410,7 +1410,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content = false;
 		$hosts = array();
 		$seen_hosts = array();
-		if ($result->count() > 0) {
+		if (count($result) > 0) {
 			foreach ($result as $row) {
 				# loop over result and assign to return variable
 				if (!in_array($row->host_name, $seen_hosts)) {

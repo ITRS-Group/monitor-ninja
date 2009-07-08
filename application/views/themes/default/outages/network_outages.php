@@ -31,7 +31,7 @@
 					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$host, html::image('/application/views/themes/default/icons/16x16/add-comment.png',array('alt' => $this->translate->_('View comments for this host'), 'title' => $this->translate->_('View comments for this host'))),array('style' => 'border: 0px')); ?>
 				</td>
 				<td><?php echo $details['severity'] ?></td>
-				<td><?php echo $details['duration'] ?></td>
+				<td><?php echo time::to_string($details['duration']) ?></td>
 				<td><?php echo $details['affected_hosts'] ?></td>
 				<td><?php echo $details['affected_services'] ?></td>
 				<td class="icon">
