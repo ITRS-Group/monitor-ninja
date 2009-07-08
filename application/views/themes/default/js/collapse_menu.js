@@ -18,7 +18,6 @@ function collapse_menu(action) {
 		$('#content').css('margin-left', '166px');
 		save_ninja_menu_state('show');
 	}
-
 }
 
 function settings(action) {
@@ -31,6 +30,10 @@ function settings(action) {
 		else
 			document.getElementById('page_settings').style.display = 'block';
 	}
+}
+
+function collapse_section(section){
+	$('.'+section).slideToggle(200);
 }
 
 function get_ninja_menu_state()
