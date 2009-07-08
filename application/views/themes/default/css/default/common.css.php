@@ -211,18 +211,16 @@ select {
 #navigation ul li {
 	background: url(images/menu-arrow.png) no-repeat;
 	margin-left: 5px;
-	padding-left: 13px;
+	padding-left: 23px;
 	float: left;
 	height: 32px;
+	padding-top: 9px;
 }
 #navigation a {
-	margin-left: 10px;
-	margin-top: 9px;
 	color: #000000;
 	text-decoration: none;
 	font-weight: bold;
 	float: left;
-	text-transform: capitalize;
 }
 #navigation p {
 	margin: 0px;
