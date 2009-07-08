@@ -14,6 +14,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$maps = new Nagvis_Maps_Model;
 
+		$this->template->title = 'NagVis';
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
 
@@ -28,6 +29,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$maps = new Nagvis_Maps_Model;
 
+		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. $this->translate->_('View') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
 
@@ -40,6 +43,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
+		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. $this->translate->_('Edit') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
 
@@ -52,6 +57,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
+		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. $this->translate->_('Automap');
 		$this->template->content = $this->add_view('nagvis/automap');
 
 		$this->template->js_header = $this->add_view('js_header');
