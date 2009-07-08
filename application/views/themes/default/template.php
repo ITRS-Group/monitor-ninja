@@ -85,14 +85,14 @@
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
-						echo '<li class="header"><cite>'.html::specialchars($header).'</cite></li>'."\n";
+						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')"><cite>'.html::specialchars($header).'</cite></li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							elseif($url[0] == '')
-								echo '<li class="hr">&nbsp;</li>'."\n";
+								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
 							else
-								echo '<li>'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png','')).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png','')).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 						endforeach;
 					endforeach;
 				?>
