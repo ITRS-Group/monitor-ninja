@@ -49,7 +49,7 @@ class Netw_outages_Widget extends widget_Core {
 		# let view template know if wrapping div should be hidden or not
 		$ajax_call = request::is_ajax() ? true : false;
 
-		$label = $this->translate->_('Outages');
+		$label = $this->translate->_('Blocking Outages');
 		$no_access_msg = $this->translate->_('N/A');
 
 		$total_blocking_outages = !empty($outage_data) ? count($outage_data) : array();
