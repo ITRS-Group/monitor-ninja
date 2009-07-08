@@ -19,79 +19,79 @@ class Underconstruction_Controller extends Authenticated_Controller {
 
 	public function index()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
 		$this->template->title = $this->translate->_('Under construction');
 	}
 
 	public function schedule_downtime()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Monitoring » Schedule downtime');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Monitoring Â» Schedule downtime');
 	}
 
 	public function performance_info()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Monitoring » Performance info');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Monitoring Â» Performance info');
 	}
 
 	public function schedule_queue()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Monitoring » Schedule queue');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Monitoring Â» Schedule queue');
 	}
 
 	public function trends()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Trends');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Trends');
 	}
 
 	public function schedule_report()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Schedule report');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Schedule report');
 	}
 
 	public function alert_history()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Alert history');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Alert history');
 	}
 
 	public function alert_summary()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Alert summary');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Alert summary');
 	}
 
 	public function notifications()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Notifications');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Notifications');
 	}
 
 	public function event_log()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Reporting » Event log');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Reporting Â» Event log');
 	}
 
 	public function view_config()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Configuration » View config');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Configuration Â» View config');
 	}
 
 	public function change_password()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Configuration » Change password');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Configuration Â» Change password');
 	}
 
 	public function backup_restore()
 	{
-		$this->template->content = '<div class="widget left">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
-		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
+		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
+		$this->template->title = $this->translate->_('Configuration Â» Backup/Restore');
 	}
 }
