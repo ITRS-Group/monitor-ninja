@@ -171,6 +171,17 @@ select {
 	margin: 10px 0px;
 }
 /* content ****************************************************************************************/
+#license-bar {
+	position: relative;
+	position: fixed;
+	left: 0px;
+	height: 32px;
+	width: 100%;
+	background: #000000 url(images/bg.png) repeat-x;
+	z-index: 1;
+	border-left: 1px solid #d0d0d0;
+	border-right: 1px solid #d0d0d0;
+}
 #top-bar {
 	position: relative;
 	position: fixed;
@@ -262,32 +273,36 @@ select {
 	border: 1px solid #dcdcdc;
 }
 #quicklinks ul {
-	padding: 9px 10px;
+	padding: 10px 7px 11px 7px;
 	margin: 0px;
+	width: 100%;
 	float: left;
+	background: #ffdd00 url(images/bg.png) repeat-x;
 }
 #quicklinks ul li {
 	display: inline;
 	padding: 0px 10px 0px 5px;
-	background: url(images/menu-divider.gif) top right no-repeat;
+	/*background: url(images/menu-divider.gif) top right no-repeat;*/
 	font-weight: bold;
 }
 #icons {
-	/*position: absolute;
-	right: 0px;*/
-	float: right;
-	top: 1px;
+	position: absolute;
+	right: 0px;
+	/*float: right;*/
+	top: 0px;
 	z-index: 9999;
+	background: #e0e0e0 url(images/bg.png) repeat-x;
+	border-bottom: 1px solid #d0d0d0;
 }
 #icons ul {
-	height: 32px;
+	height: 31px;
 }
 #icons ul li {
 	display: inline;
 	margin-left: 0px;
 	float: right;
 	background: url(images/menu-divider.gif) 0px 0px no-repeat;
-	padding: 8px 12px;
+	padding: 11px 12px 4px 12px;
 	cursor: pointer;
 }
 #status {
@@ -332,11 +347,10 @@ select {
 	padding: 0px;
 }
 #menu ul li img {
-	width: 14px;
-	height: 14px;
-	margin-top: 1px;
+	margin-top: -2px;
 	float: left;
 	margin-right: 10px;
+	opacity: 0.8;
 }
 #menu ul li a {
 	text-decoration: none;
