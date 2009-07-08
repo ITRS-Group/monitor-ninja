@@ -55,7 +55,7 @@
 					if (isset($title)){
 						$link = split(' » ',$title);
 						for($i = 0; $i < count($link); $i++) {
-							echo '<li><a href="#">'.$link[$i].'</a></li>';
+							echo '<li>'.$link[$i].'</li>';
 						}
 					}
 					?>
