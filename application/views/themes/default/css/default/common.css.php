@@ -357,6 +357,7 @@ select {
 	font-weight: bold;
 	padding-top: 15px;
 	padding-left: 15px;
+	cursor: pointer;
 }
 #close-menu {
 	position: absolute;
