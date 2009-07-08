@@ -13,10 +13,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$_SESSION['nagvis_user'] = user::session('username');
 
 		$maps = new Nagvis_Maps_Model;
+		$pools = new Nagvis_Rotation_Pools_Model;
 
 		$this->template->title = 'NagVis';
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
+		$this->template->content->pools = $pools->get_list();
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -60,6 +62,21 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Automap');
 		$this->template->content = $this->add_view('nagvis/automap');
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+	}
+
+	public function rotate($pool, $first_map)
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. $this->translate->_('Rotate') . ' » ' . $pool;
+		$this->template->content = $this->add_view('nagvis/rotate');
+		$this->template->content->pool = $pool;
+		$this->template->content->first_map = $first_map;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');

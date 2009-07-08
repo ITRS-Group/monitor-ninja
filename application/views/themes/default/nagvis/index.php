@@ -17,3 +17,18 @@
 		</ul>
 	</div>
 </div>
+
+<div class="left">
+	<div>
+		<ul>
+			<?php
+			foreach ($pools as $pool => $first_map)
+			{
+				echo '<li>';
+				echo '<a href="/ninja/index.php/nagvis/rotate/'.$pool.'/'.$first_map.'">'.$pool.'</a>';
+				echo '</li>';
+			}
+			?>
+		</ul>
+	</div>
+</div>
