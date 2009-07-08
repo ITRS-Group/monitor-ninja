@@ -47,7 +47,7 @@ class Underconstruction_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Reporting » Trends');
 	}
 
-	public function schedule_report()
+	public function schedule_reports()
 	{
 		$this->template->content = '<div class="widget left w32">'.$this->translate->_('This page is not implemented yet. Stay tuned').'</div>';
 		$this->template->title = $this->translate->_('Reporting » Schedule report');
