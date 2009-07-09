@@ -12,7 +12,7 @@
 class Translation_Test extends Unit_Test_Case {
 
 	// Disable this Test class?
-	const DISABLED = FALSE;
+	const DISABLED = true;
 
 	public function translations_exists_test()
 	{
