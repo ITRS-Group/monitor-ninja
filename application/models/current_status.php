@@ -8,14 +8,13 @@ class Current_status_Model extends Model
 	const HOST_UP =  0;
 	const HOST_DOWN = 1;
 	const HOST_UNREACHABLE = 2;
-	const HOST_PENDING = -1;
+	const HOST_PENDING = 6;
 
 	const SERVICE_OK = 0;
 	const SERVICE_WARNING = 1;
 	const SERVICE_CRITICAL = 2;
 	const SERVICE_UNKNOWN =  3;
-	const SERVICE_PENDING = -1;
-	const STATE_PENDING = -1;
+	const SERVICE_PENDING = 6;
 	const HOST_CHECK_ACTIVE = 0;	/* Nagios performed the host check */
 	const HOST_CHECK_PASSIVE = 1;	/* the host check result was submitted by an external source */
 	const SERVICE_CHECK_ACTIVE = 0;

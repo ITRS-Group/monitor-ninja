@@ -195,8 +195,7 @@
 							}
 
 							if ($service_data->services_pending > 0) {
-								echo html::image('application/views/themes/default/icons/12x12/shield-pedning.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
-								echo '<a href="%s?'.$grouptype.'group=%s&style=detail&servicestatustypes=%d&hoststatustypes=%d&serviceprops=%lu&hostprops=%lu">%d PENDING</a>';
+								echo html::image('application/views/themes/default/icons/12x12/shield-pending.png', array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
 								echo html::anchor('status/'.$grouptype.'group/'.$details->groupname.'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_pending.' '.$label_pending);
 							}
 

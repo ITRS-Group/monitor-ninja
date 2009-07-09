@@ -7,7 +7,10 @@
 $err_str = "\nAn error occurred and this script will terminate. Too bad...\n";
 $retval = false;
 $cli_access = false;
-exec('/usr/bin/php ../index.php default/get_cli_status ', $cli_access, $retval);
+$argv = isset($argv) ? $argv : $GLOBALS['argv'];
+$prefix = isset($argv[1]) ? $argv[1] : '';
+
+exec('/usr/bin/php '.$prefix.'/index.php default/get_cli_status ', $cli_access, $retval);
 
 if (!empty($retval)) {
 	echo $err_str;
@@ -26,7 +29,7 @@ if (empty($cli_access)) {
 $user = false;
 if ($cli_access[0] == 1) {
 	# cli_access is set to true which means we should try to find a valid user
-	exec('/usr/bin/php ../index.php default/get_a_user ', $user, $retval);
+	exec('/usr/bin/php '.$prefix.'/index.php default/get_a_user ', $user, $retval);
 	if (!empty($retval)) {
 		echo $err_str;
 		exit(1);
@@ -36,7 +39,7 @@ if ($cli_access[0] == 1) {
 	$user = $cli_access[0];
 }
 
-exec('/usr/bin/php ../index.php cli/insert_user_data '.$user.' ', $result, $retval);
+exec('/usr/bin/php '.$prefix.'/index.php cli/insert_user_data '.$user.' ', $result, $retval);
 
 if (!empty($retval)) {
 	echo $err_str;

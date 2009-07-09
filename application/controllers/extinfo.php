@@ -114,6 +114,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$content->contactgroups = $contactgroups;
 		$content->contacts = $contacts;
+		$is_pending = false;
 
 		if ($type == 'host') {
 			$group_info = Group_Model::get_groups_for_object($type, $result->id);
@@ -124,6 +125,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Active Check');
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
+			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
+				$is_pending = true;
+				$message_str = $t->_('This host has not yet been checked, so status information is not available.');
+			}
 		} else {
 			$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
 			$content->title = $this->translate->_('Service State Information');
@@ -134,6 +139,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
 			$obsessing = $result->obsess_over_service;
+			if ($result->current_state == Current_status_Model::SERVICE_PENDING ) {
+				$is_pending = true;
+				$message_str = $t->_('This service has not yet been checked, so status information is not available.');
+			}
 		}
 
 		$groups = false;
@@ -142,6 +151,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 				html::specialchars($group_row->{$type.'group_name'}));
 		}
 
+		if ($is_pending) {
+			$content->pending_msg = $message_str;
+		}
 		$content->lable_type = $type == 'host' ? $t->_('Host') : $t->_('Service');
 		$content->type = $type;
 		$content->date_format_str = 'Y-m-d H:i:s';

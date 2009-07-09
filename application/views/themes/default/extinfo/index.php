@@ -97,6 +97,11 @@ if (!empty($widgets)) {
 
 
 <div class="widget left" id="extinfo_current" style="width: 340px">
+	<?php
+	if (isset($pending_msg)) {
+		echo $title."<br /><br />";
+		echo $pending_msg;
+	} else { ?>
 	<table>
 	<caption><?php echo $title ?></caption>
 		<tr class="odd">
@@ -207,6 +212,7 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 	</table>
+	<?php } ?>
 </div>
 
 <?php
