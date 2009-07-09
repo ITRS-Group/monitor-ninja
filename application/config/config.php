@@ -157,9 +157,9 @@ $config['current_theme'] = 'default/';
  * If path differs from the one below but still installed
  * you could simply change it.
  */
-$nacoma_real_path = '/opt/monitor/op5/webconfig/';
+$nacoma_real_path = '/opt/monitor/op5/nacoma/';
 if (is_dir($nacoma_real_path)) {
-	$config['nacoma_path'] = '/monitor/op5/webconfig/';
+	$config['nacoma_path'] = '/monitor/op5/nacoma/';
 } else {
 	$config['nacoma_path'] = false;
 }
