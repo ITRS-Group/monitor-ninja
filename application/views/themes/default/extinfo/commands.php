@@ -27,12 +27,14 @@
 			</td>
 			<td><?php echo $link_reschedule_check ?></td>
 		</tr>
+		<?php if (isset($lable_submit_passive_checks)) { ?>
 		<tr class="<?php $i++; echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 			<td class="icon">
 				<?php echo html::image('application/views/themes/default/icons/16x16/passiveonly.png', array('alt' => $lable_submit_passive_checks, 'title' => $lable_submit_passive_checks, 'style' => 'height: 14px')); ?>
 			</td>
 			<td><?php echo $link_submit_passive_check ?></td>
 		</tr>
+		<?php } ?>
 		<tr class="<?php $i++; echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 			<td class="icon">
 				<?php echo html::image('application/views/themes/default/icons/16x16/disabled.png', array('alt' => $lable_stop_start_passive_checks, 'title' => $lable_stop_start_passive_checks, 'style' => 'height: 14px')); ?>
