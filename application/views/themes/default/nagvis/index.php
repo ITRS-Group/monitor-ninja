@@ -4,6 +4,7 @@
 
 <div class="left">
 	<div>
+		<strong>Maps</strong>
 		<ul>
 			<?php
 			foreach ($maps as $map)
@@ -21,6 +22,7 @@
 </div>
 
 <div class="left">
+	<strong>Rotation pools</strong>
 	<div>
 		<ul>
 			<?php
