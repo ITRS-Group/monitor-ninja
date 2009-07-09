@@ -19,6 +19,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
 		$this->template->content->pools = $pools->get_list();
+		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -49,6 +50,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. $this->translate->_('Edit') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
+		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -77,6 +79,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('nagvis/rotate');
 		$this->template->content->pool = $pool;
 		$this->template->content->first_map = $first_map;
+		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
