@@ -37,4 +37,4 @@ then
 fi
 
 # import users annd authorization data
-/usr/bin/env php "$prefix/ninja/install_scripts/auth_import.php"
+/usr/bin/env php "$prefix/ninja/install_scripts/auth_import.php $prefix"
