@@ -103,7 +103,15 @@
 		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
 		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
 		<td style="text-align: center"><?php echo $row->current_attempt;?></td>
-		<td style="white-space: normal"><?php echo str_replace('','',$row->output) ?></td>
+		<td style="white-space: normal">
+		<?php
+			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
+				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
+			} else {
+				echo str_replace('','',$row->output);
+			}
+			?>
+		</td>
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
 			<a href="<?php echo $row->action_url ?>" style="border: 0px">
