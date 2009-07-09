@@ -7,7 +7,10 @@
 $err_str = "\nAn error occurred and this script will terminate. Too bad...\n";
 $retval = false;
 $cli_access = false;
-exec('/usr/bin/php ../index.php default/get_cli_status ', $cli_access, $retval);
+$argv = isset($argv) ? $argv : $GLOBALS['argv'];
+$prefix = isset($argv[1]) ? $argv[1] : '';
+
+exec('/usr/bin/php '.$prefix.'/index.php default/get_cli_status ', $cli_access, $retval);
 
 if (!empty($retval)) {
 	echo $err_str;
