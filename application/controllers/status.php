@@ -109,6 +109,8 @@ class Status_Controller extends Authenticated_Controller {
 		$shown = strtolower($host) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
 		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
+		$this->template->content->pending_output = $this->translate->_('Host check scheduled for %s');
+		$this->template->content->nocheck_output = $this->translate->_('Host is not scheduled to be checked...');
 
 		# here we should fetch members of group if group_type is set and pass to get_host_status()
 		$host_model = new Host_Model();
@@ -388,6 +390,8 @@ class Status_Controller extends Authenticated_Controller {
 		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
+		$this->template->content->pending_output = $this->translate->_('Service check scheduled for %s');
+		$this->template->content->nocheck_output = $this->translate->_('Service is not scheduled to be checked...');
 		$this->template->content->result = $result;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->logos_path = $this->logos_path;

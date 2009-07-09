@@ -339,6 +339,8 @@ class Host_Model extends Model {
 						alias,
 						current_state,
 						last_check,
+						next_check,
+						should_be_scheduled,
 						notes_url,
 						notifications_enabled,
 						active_checks_enabled,
@@ -427,6 +429,8 @@ class Host_Model extends Model {
 						$auth_service_field.".service_description,".
 						$auth_service_field.".current_state,".
 						$auth_service_field.".last_check,".
+						$auth_service_field.".next_check,".
+						$auth_service_field.".should_be_scheduled,".
 						$auth_service_field.".notifications_enabled,".
 						$auth_service_field.".active_checks_enabled,".
 						$auth_service_field.".action_url,".
