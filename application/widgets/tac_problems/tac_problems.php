@@ -44,15 +44,13 @@ class Tac_problems_Widget extends widget_Core {
 		# HOSTS DOWN / problems
 		$problem = array();
 		$i = 0;
-		$outages = new Outages_Model();
-		$outage_data = $outages->fetch_outage_data();
-		#$current_status->find_hosts_causing_outages();
+		$current_status->find_hosts_causing_outages();
 
-		if (!empty($outage_data) && count($outage_data)) {
+		if (!empty($current_status->total_blocking_outages)) {
 			$problem[$i]['type'] = $this->translate->_('Network');
 			$problem[$i]['status'] = $this->translate->_('Outages');
 			$problem[$i]['url'] = 'outages/index/';
-			$problem[$i]['title'] = count($outage_data).' '.$this->translate->_('Network outages');
+			$problem[$i]['title'] = $current_status->total_blocking_outages.' '.$this->translate->_('Network outages');
 			$problem[$i]['no'] = 0;
 			$i++;
 		}
