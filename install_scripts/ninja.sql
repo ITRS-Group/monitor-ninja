@@ -106,6 +106,8 @@ CREATE TABLE IF NOT EXISTS `ninja_settings` (
   KEY `widget_id` (`widget_id`)
 );
 
+INSERT INTO `ninja_settings` (`page`, `type`, `setting`)
+ VALUES('tac/index', 'widget_order', ' widget-placeholder=widget-netw_outages,widget-tac_scheduled|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems')
 
 -- --------------------------------------------------------
 
