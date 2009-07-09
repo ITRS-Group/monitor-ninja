@@ -26,7 +26,9 @@
 			echo html::script('application/views/themes/default/js/global_search.js');
 			echo html::script('application/views/themes/default/js/pagination.js');
 			echo html::script('application/views/themes/default/js/common.js');
-			refresh::control();
+			if (!isset($disable_refresh) || $disable_refresh === false) {
+				refresh::control();
+			}
 			echo (!empty($js_header)) ? $js_header : '';
 		?>
 		<script type="text/javascript">
@@ -74,7 +76,7 @@
 			</div>
 			<div id="icons">
 				<ul>
-					<li onclick="settings()"><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
+					<li onclick="settings()" id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
@@ -105,6 +107,7 @@
 				<li id="noheader_ctrl" style="display:none">
 					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
 				</li>
+			<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 				<li id="ninja_page_refresh">
 					<input type="checkbox" id="ninja_refresh_control" />
 					<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo $this->translate->_('Pause refresh') ?></label>
@@ -116,6 +119,8 @@
 					</div>
 				</li>
 				<?php
+					} # end if disable_refresh
+
 					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
 					if (is_array($settings_widgets)) {
 						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>'."\n";
