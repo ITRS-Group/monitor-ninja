@@ -67,7 +67,7 @@ foreach ($group_details as $details) {
 				$j = 0;
 				sort($details->services[$host['host_name']]);
 				foreach	($details->services[$host['host_name']] as $service) {
-						$search = array(0,1,2,3,4);
+						$search = array(Current_status_Model::SERVICE_OK, Current_status_Model::SERVICE_WARNING, Current_status_Model::SERVICE_CRITICAL, Current_status_Model::SERVICE_UNKNOWN, Current_status_Model::SERVICE_PENDING);
 						$replace = array('ok','warning','critical','unknown','pending'); // rätt ?? dubbelkolla
 						echo (($service['current_state'] != $tmp && $j != 0) ? '<br />' : '');
 						echo (($service['current_state'] != $tmp || ($service['current_state'] == 0 && $j == 0)) ? html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower(str_replace($search,$replace,$service['current_state'])).'.png', array('alt' => strtolower(str_replace($search,$replace,$service['current_state'])), 'title' => strtolower(str_replace($search,$replace,$service['current_state'])), 'style' => 'margin-bottom: -2px')).' &nbsp;' : '');
