@@ -3,6 +3,39 @@
 class Host_Model extends Model {
 	private $auth = false;
 	private $host_list = false; # List of hosts to get status for
+	private $table = "host";
+
+	public $total_host_execution_time = 0;
+	public $min_host_execution_time = 0;
+	public $max_host_execution_time = 0;
+	public $total_host_percent_change_a = 0;
+	public $min_host_percent_change_a = 0;
+	public $max_host_percent_change_a = 0;
+	public $total_host_latency = 0;
+	public $min_host_latency = 0;
+	public $max_host_latency = 0;
+
+	/***** ACTIVE HOST CHECKS *****/
+	public $total_active_host_checks = 0;
+	public $active_host_checks_1min = 0;
+	public $active_host_checks_5min = 0;
+	public $active_host_checks_15min = 0;
+	public $active_host_checks_1hour = 0;
+	public $active_host_checks_start = 0;
+	public $active_host_checks_ever = 0;
+
+	/***** PASSIVE HOST CHECKS *****/
+	public $passive_host_checks_1min = 0;
+	public $total_passive_host_checks = 0;
+	public $passive_host_checks_5min = 0;
+	public $passive_host_checks_15min = 0;
+	public $passive_host_checks_1hour = 0;
+	public $passive_host_checks_start = 0;
+	public $passive_host_checks_ever = 0;
+
+	public $total_host_percent_change_b = 0;
+	public $min_host_percent_change_b = 0;
+	public $max_host_percent_change_b = 0;
 
 	/*
 	* Only show services
@@ -629,5 +662,147 @@ class Host_Model extends Model {
 		$result = $db->query($sql);
 		#echo $sql;
 		return $result;
+	}
+
+	/**
+	*	Fetch performance data for checks (active/passive)
+	*/
+	public function performance_data($checks_state=1)
+	{
+		# only allow 0/1
+		$checks_state = $checks_state==1 ? 1 : 0;
+		$active_passive = $checks_state == 1 ? 'active' : 'passive';
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root || $auth->view_services_root) {
+			$where = '';
+			$where_w_alias = '';
+		} else {
+			$hostlist = self::authorized_hosts();
+			if (empty($hostlist)) {
+				return false;
+			}
+			$str_hostlist = implode(', ', $hostlist);
+			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
+			$where = "AND id IN (".$str_hostlist.")";
+		}
+
+		$extra_sql = "";
+		if ($checks_state == 1) {
+			# fields only needed for active checks
+			$extra_sql = ", SUM(execution_time) AS exec_time, MIN(execution_time) AS min_exec_time, ".
+				"MAX(execution_time) AS max_exec_time, ".
+				"MIN(latency) AS min_latency, MAX(latency) AS max_latency, SUM(latency) AS sum_latency ";
+		}
+		$sql = "SELECT COUNT(id) AS cnt, ".
+			"SUM(percent_state_change) AS tot_perc_change, ".
+			"MIN(percent_state_change) AS min_perc_change, ".
+			"MAX(percent_state_change) AS max_perc_change ".
+			$extra_sql .
+			"FROM ".$this->table." ".
+			"WHERE active_checks_enabled=".$checks_state." ".$where;
+
+		$result = $this->db->query($sql);
+		if (count($result)) {
+			foreach ($result as $row) {
+				if ($checks_state == 1) { # active checks
+					$this->total_active_host_checks = !is_null($row->cnt) ? $row->cnt : 0;
+					$this->total_host_execution_time = !is_null($row->exec_time) ? $row->exec_time : 0;
+					$this->min_host_execution_time = !is_null($row->min_exec_time) ? $row->min_exec_time : 0;
+					$this->max_host_execution_time = !is_null($row->max_exec_time) ? $row->max_exec_time : 0;
+					$this->total_host_percent_change_a =  !is_null($row->tot_perc_change) ? $row->tot_perc_change : 0;
+					$this->min_host_percent_change_a = !is_null($row->min_perc_change) ? $row->min_perc_change : 0;
+					$this->max_host_percent_change_a = !is_null($row->max_perc_change) ? $row->max_perc_change : 0;
+					$this->total_host_latency = !is_null($row->sum_latency) ? $row->sum_latency : 0;
+					$this->min_host_latency = !is_null($row->min_latency) ? $row->min_latency : 0;
+					$this->max_host_latency = !is_null($row->max_latency) ? $row->max_latency : 0;
+				} else{
+					$this->total_passive_host_checks = !is_null($row->cnt) ? $row->cnt : 0;
+					$this->total_host_percent_change_b =  !is_null($row->tot_perc_change) ? $row->tot_perc_change : 0;
+					$this->min_host_percent_change_b = !is_null($row->min_perc_change) ? $row->min_perc_change : 0;
+					$this->max_host_percent_change_b = !is_null($row->max_perc_change) ? $row->max_perc_change : 0;
+				}
+			}
+		}
+		unset($sql);
+
+		$this->compute_last_check($checks_state, 60);			# checks_1min
+		$this->compute_last_check($checks_state, 300);			# checks_5min
+		$this->compute_last_check($checks_state, 900);			# checks_15min
+		$this->compute_last_check($checks_state, 3600);			# checks_1hour
+		$this->compute_last_check($checks_state, false, true);	# checks_start
+		$this->compute_last_check($checks_state, false, false);	# checks_ever
+
+
+	}
+
+	/**
+	*	Compute how many checks made in a specific time frame
+	* 	Doesn't return anything but rather sets some class variables
+	* 	depending on input
+	*/
+	public function compute_last_check($checks_state=1, $time_arg=false, $prog_start=false)
+	{
+		# only allow 0/1
+		$checks_state = $checks_state==1 ? 1 : 0;
+		$active_passive = $checks_state == 1 ? 'active' : 'passive';
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root || $auth->view_services_root) {
+			$where = '';
+			$where_w_alias = '';
+		} else {
+			$hostlist = self::authorized_hosts();
+			if (empty($hostlist)) {
+				return false;
+			}
+			$str_hostlist = implode(', ', $hostlist);
+			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
+			$where = "AND id IN (".$str_hostlist.")";
+		}
+
+		$sql = false;
+		$class_var = false;
+		if ($prog_start !== false) {
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." AS t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$class_var = 'start';
+		} else {
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(unix_timestamp()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			switch ($time_arg) {
+				case 60:
+					$class_var = '1min';
+					break;
+				case 300:
+					$class_var = '5min';
+					break;
+				case 900:
+					$class_var = '15min';
+					break;
+				case 3600:
+					$class_var = '1hour';
+					break;
+			}
+		}
+
+		if (empty($sql) && empty($class_var)) {
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>0 AND active_checks_enabled=".$checks_state." ".$where;
+			$class_var = 'ever';
+		}
+		$class_var = $active_passive.'_'.$this->table.'_checks_'.$class_var;
+
+		$result = $this->db->query($sql);
+		if (count($result)) {
+			foreach ($result as $row) {
+				$this->{$class_var} = !is_null($row->cnt) ? $row->cnt : 0;
+			}
+		}
+	}
+
+	/**
+	*	Generate all performance data needed for performance info page
+	* 	Wraps calls to performance data for both active and passive checks
+	*/
+	public function get_performance_data()
+	{
+		$this->performance_data(1);	# generate active check performance data
+		$this->performance_data(0);	# generate passive check performance data
 	}
 }
