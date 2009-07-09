@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<iframe id="nagvis" name="nagvis" src="/nagvis/nagvis/" style="display: none;"></iframe>
+
 <div class="left">
 	<div>
 		<ul>
@@ -7,13 +9,13 @@
 			foreach ($maps as $map)
 			{
 				echo '<li>';
-				echo '<a href="/ninja/index.php/nagvis/view/'.$map.'">'.$map.'</a>';
+				echo '<a href="/ninja/index.php/nagvis/view/'.$map.'" onmouseover="show_thumbnail($(this));" onmouseout="hide_thumbnail();">'.$map.'</a>';
 				echo '&nbsp;';
 				echo '(<a href="/ninja/index.php/nagvis/edit/'.$map.'">edit</a>)';
 				echo '</li>';
 			}
 			?>
-			<li><a href="/ninja/index.php/nagvis/automap">Automap</a></li>
+			<li><a href="/ninja/index.php/nagvis/automap" onmouseover="show_thumbnail($(this));" onmouseout="hide_thumbnail();">Automap</a></li>
 		</ul>
 	</div>
 </div>

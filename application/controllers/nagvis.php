@@ -22,6 +22,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 
   		$this->template->js_header = $this->add_view('js_header');
+		$this->template->js_header->js = array($this->add_path('/js/nagvis-thumbnails.js'));
 		$this->template->css_header = $this->add_view('css_header');
 	}
 
