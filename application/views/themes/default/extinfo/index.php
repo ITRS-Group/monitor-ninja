@@ -92,7 +92,7 @@ if (!empty($widgets)) {
 		</tr>
 	</table>
 </div>
-
+<?php $this->session->set('back_extinfo',strtolower($lable_type).'/'.$main_object);?>
 <div style="clear:both"></div>
 
 
