@@ -15,61 +15,49 @@
 <?php } ?>
 		<table class="w-table">
 			<tr>
-				<td class='perfBox'>
-					<table border="0" cellspacing="4" cellspadding="0">
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('extinfo/performance', $label_service_check_execution_time.':'  ) ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('extinfo/performance', $min_service_execution_time.' / '.$max_service_execution_time.' / '.$average_service_execution_time.' '.$label_sec) ?>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('extinfo/performance', $label_service_check_latency.':'  ) ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('extinfo/performance', $min_service_latency.' / '.$max_service_latency.' / '.$average_service_latency.' '.$label_sec) ?>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('extinfo/performance', $label_host_check_execution_time.':') ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('extinfo/performance', $min_host_execution_time.' / '.$max_host_execution_time.' / '.$average_host_execution_time.' '.$label_sec) ?>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('extinfo/performance', $label_host_check_latency.':') ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('extinfo/performance', $min_host_latency.' / '.$max_host_latency.' / '.$average_host_latency.' '.$label_sec) ?>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $label_active_host_svc_check.':') ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_host_checks) ?>
-								/
-								<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_service_checks) ?>
-							</td>
-						</tr>
-						<tr>
-							<td align="left" valign="center" class='perfItem'>
-								<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_PASSIVE_CHECK, $label_passive_host_svc_check.':') ?>
-							</td>
-							<td valign="top" class='perfValue' nowrap="nowrap">
-								<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_host_checks) ?>
-								/
-								<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_service_checks) ?>
-							</td>
-						</tr>
-					</table>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/time.png','')?></td>
+				<td>
+					<?php echo html::anchor('extinfo/performance', $label_service_check_execution_time.':'  ) ?><br />
+					<?php echo html::anchor('extinfo/performance', $min_service_execution_time.' / '.$max_service_execution_time.' / '.$average_service_execution_time.' '.$label_sec) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/time_latency.png','')?></td>
+				<td>
+					<?php echo html::anchor('extinfo/performance', $label_service_check_latency.':'  ) ?><br />
+					<?php echo html::anchor('extinfo/performance', $min_service_latency.' / '.$max_service_latency.' / '.$average_service_latency.' '.$label_sec) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/time.png','')?></td>
+				<td>
+					<?php echo html::anchor('extinfo/performance', $label_host_check_execution_time.':') ?><br />
+					<?php echo html::anchor('extinfo/performance', $min_host_execution_time.' / '.$max_host_execution_time.' / '.$average_host_execution_time.' '.$label_sec) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/time_latency.png','')?></td>
+				<td>
+					<?php echo html::anchor('extinfo/performance', $label_host_check_latency.':') ?><br />
+					<?php echo html::anchor('extinfo/performance', $min_host_latency.' / '.$max_host_latency.' / '.$average_host_latency.' '.$label_sec) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/share.png','')?></td>
+				<td>
+					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $label_active_host_svc_check.':') ?><br />
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_host_checks) ?>
+					/
+					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_service_checks) ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="dark icon"><?php echo html::image('/application/views/themes/default/icons/20x20/share2.png','')?></td>
+				<td>
+					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_PASSIVE_CHECK, $label_passive_host_svc_check.':') ?><br />
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_host_checks) ?>
+					/
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_service_checks) ?>
 				</td>
 			</tr>
 		</table>
