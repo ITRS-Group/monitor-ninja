@@ -21,9 +21,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->content->pools = $pools->get_list();
 		$this->template->disable_refresh = true;
 
-		$this->template->js_header = $this->add_view('js_header');
+  		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 
 	public function view($map)
@@ -39,7 +38,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 
 	public function edit($map)
@@ -54,7 +52,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 
 	public function automap()
@@ -67,7 +64,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 
 	public function rotate($pool, $first_map)
@@ -83,6 +79,5 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 	}
 }
