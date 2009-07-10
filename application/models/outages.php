@@ -78,7 +78,14 @@ class Outages_Model extends Model
 				$outages[$outage_host]['comments'] += count($comment_data);
 			}
 		}
-		return $outages;
+
+		$return = false;
+		foreach ($status->unreachable_hosts as $host => $data) {
+			if (!empty($data)) {
+				$return[$host] = $outages[$host];
+			}
+		}
+		return $return;
 	}
 }
 

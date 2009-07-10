@@ -28,8 +28,8 @@ class Netw_outages_Widget extends widget_Core {
 		$auth = new Nagios_auth_Model();
 
 		# fetch info on outages
-		$current_status = new Current_status_Model();
-		$current_status->find_hosts_causing_outages();
+		$outages = new Outages_Model();
+		$outage_data = $outages->fetch_outage_data();
 
 		# assign variables for our view
 
@@ -50,7 +50,7 @@ class Netw_outages_Widget extends widget_Core {
 		$label = $this->translate->_('Blocking Outages');
 		$no_access_msg = $this->translate->_('N/A');
 
-		$total_blocking_outages = $current_status->total_blocking_outages;
+		$total_blocking_outages = count($outage_data);
 
 		$user_has_access = $auth->view_hosts_root ? true : false;
 

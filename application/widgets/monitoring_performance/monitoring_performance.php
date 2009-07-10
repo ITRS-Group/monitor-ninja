@@ -57,17 +57,17 @@ class Monitoring_performance_Widget extends widget_Core {
 
 		$min_service_execution_time= number_format($current_status->min_service_execution_time, 2);
 		$max_service_execution_time = number_format($current_status->max_service_execution_time, 2);
-		$average_service_execution_time = $current_status->average_service_execution_time;
+		$average_service_execution_time = number_format($current_status->average_service_execution_time, 3);
 		$min_service_latency = number_format($current_status->min_service_latency, 2);
 		$max_service_latency = number_format($current_status->max_service_latency, 2);
-		$average_service_latency = number_format($current_status->average_service_latency, 2);
+		$average_service_latency = number_format($current_status->average_service_latency, 3);
 
 		$min_host_execution_time = number_format($current_status->min_host_execution_time, 2);
 		$max_host_execution_time = number_format($current_status->max_host_execution_time, 2);
-		$average_host_execution_time = number_format($current_status->average_host_execution_time, 2);
+		$average_host_execution_time = number_format($current_status->average_host_execution_time, 3);
 		$min_host_latency = number_format($current_status->min_host_latency, 2);
 		$max_host_latency = number_format($current_status->max_host_latency, 2);
-		$average_host_latency = number_format($current_status->average_host_latency, 2);
+		$average_host_latency = number_format($current_status->average_host_latency, 3);
 
 		$total_active_host_checks = $current_status->total_active_host_checks;
 		$total_active_service_checks = $current_status->total_active_service_checks;
