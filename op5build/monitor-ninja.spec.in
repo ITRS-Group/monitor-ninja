@@ -10,11 +10,16 @@ Group: op5/Monitor
 Prefix: /opt/monitor
 Source: %name-%version.tar.gz
 BuildArch: noarch
-%description 
+%description
 Webgui for Nagios 3.
 
 %prep
 %setup -q
+
+%build
+pushd cli-helpers
+make
+popd
 
 %install
 mkdir -p -m 755 %buildroot%prefix/op5/ninja
