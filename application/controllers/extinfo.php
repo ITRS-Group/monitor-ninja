@@ -115,6 +115,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->contactgroups = $contactgroups;
 		$content->contacts = $contacts;
 		$is_pending = false;
+		$back_link = false;
 
 		if ($type == 'host') {
 			$group_info = Group_Model::get_groups_for_object($type, $result->id);
@@ -125,6 +126,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Active Check');
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
+			$back_link = 'host/'.urlencode($host);
 			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = $t->_('This host has not yet been checked, so status information is not available.');
@@ -135,6 +137,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Check');
 			$host_link = html::anchor('extinfo/details/host/'.urlencode($host), html::specialchars($host));
+			$back_link = 'service/'.urlencode($host).'?service='.urlencode($service);
 			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
@@ -156,6 +159,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$content->lable_type = $type == 'host' ? $t->_('Host') : $t->_('Service');
 		$content->type = $type;
+		$content->back_link = $back_link;
 		$content->date_format_str = 'Y-m-d H:i:s';
 		$content->host_link = $host_link;
 		$content->lable_member_of = $t->_('Member of');
