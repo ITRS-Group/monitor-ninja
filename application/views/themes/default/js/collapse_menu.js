@@ -55,7 +55,7 @@ function get_ninja_menu_state()
 			}
 			return ret_val;
 		},
-		error: function(obj, msg){alert(msg)}
+		error: function(obj, msg){/*alert(msg)*/}
 	});
 }
 
