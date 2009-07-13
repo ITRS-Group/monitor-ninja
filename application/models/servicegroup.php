@@ -43,9 +43,10 @@ class Servicegroup_Model extends ORM
 			return false;
 		$obj_ids = array_keys($auth_objects);
 
-		return ORM::factory('servicegroup')
+		$data = ORM::factory('servicegroup')
 			->in('id', $obj_ids)
 			->find_all();
+		return count($data)>0 ? $data : false;
 	}
 
 	/**

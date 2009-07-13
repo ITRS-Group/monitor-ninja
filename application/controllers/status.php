@@ -1294,9 +1294,11 @@ class Status_Controller extends Authenticated_Controller {
 		if (strtolower($group) == 'all') {
 			$content->label_header = $grouptype == 'service' ? $t->_('Status Grid For All Service Groups') : $t->_('Status Grid For All Host Groups');
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
-			foreach ($group_info_res as $group_res) {
-				$groupname_tmp = $group_res->{$grouptype.'group_name'};
-				$group_details[] = $this->_show_grid($grouptype, $groupname_tmp);
+			if (!empty($group_info_res) && count($group_info_res)>0) {
+				foreach ($group_info_res as $group_res) {
+					$groupname_tmp = $group_res->{$grouptype.'group_name'};
+					$group_details[] = $this->_show_grid($grouptype, $groupname_tmp);
+				}
 			}
 		} else {
 			# make sure we have the correct servicegroup

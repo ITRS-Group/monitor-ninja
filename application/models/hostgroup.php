@@ -35,7 +35,8 @@ class Hostgroup_Model extends ORM
 	 */
 	public function get_all()
 	{
-		return ORM::factory('hostgroup')->find_all();
+		$data = ORM::factory('hostgroup')->find_all();
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
