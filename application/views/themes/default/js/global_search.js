@@ -110,18 +110,11 @@ function sprintf()
 
 function do_redirect(value, data)
 {
-	//var parts = data.split(',');
-
-	//var str = sprintf('/%s/%s/', data[0], data[1]);
 	var match = value.split(';');
 	if (match.length) {
 		value = match[1];
 	}
 
 	var str = sprintf(data[0], data[1], value);
-	//console.dir(data);
-	//alert(str);
 	self.location.href = _site_domain + _index_page + str;
-	//self.location.href = _site_domain + _index_page + '/status/service/' + value;
-	//self.location.href = _site_domain + _index_page + '/extinfo/details/service/' + data + '/?service=' + value;
 }
