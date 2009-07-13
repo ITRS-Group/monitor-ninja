@@ -25,11 +25,9 @@
 			echo html::script('application/views/themes/default/js/collapse_menu.js');
 			echo html::script('application/views/themes/default/js/global_search.js');
 			echo html::script('application/views/themes/default/js/pagination.js');
-			echo html::script('application/views/themes/default/js/common.js');
 			if (!isset($disable_refresh) || $disable_refresh === false) {
 				refresh::control();
 			}
-			echo (!empty($js_header)) ? $js_header : '';
 		?>
 		<script type="text/javascript">
 			//<!--
@@ -55,6 +53,8 @@
 				?>
 			//-->
 		</script>
+		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
+		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 	</head>
 
 	<body>
