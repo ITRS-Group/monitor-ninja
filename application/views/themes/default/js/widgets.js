@@ -108,17 +108,17 @@ function set_widget_refresh()
 		type: 'POST',
 		success: function(data) {
 			if (data.success == true) {
-				$.jGrowl('Refresh rate for all widgets has been updated to ' + value + ' sec', { header: 'Success' });
+				$.jGrowl(sprintf(_widget_refresh_msg, value), { header: _success_header });
 				$('#widget_global_slider').remove();
 				$('.widget-editbox [name$=_refresh]').each(function() {
 					$(this).attr('value', value);
 				});
 				window.location.reload();
 			} else {
-				$.jGrowl('Unable to update refresh rate for all widgets.', { header: 'ERROR' });
+				$.jGrowl(_widget_refresh_error, { header: _error_header });
 			}
 		},
-		error: function(obj, msg){$.jGrowl('An error was encountered when trying to update refresh rate for all widgets.', { header: 'ERROR' });}
+		error: function(obj, msg){$.jGrowl(_widget_global_refresh_error, { header: _error_header });}
 	});
 }
 
@@ -147,7 +147,7 @@ function fetch_widget_order()
 				$.fn.EasyWidgets({callbacks:{onRefreshPositions:function(){return data.widget_order;}}});
 			}
 		},
-		error: function(obj, msg){$.jGrowl('Unable to fetch widget order from database.', { header: 'ERROR' });}
+		error: function(obj, msg){$.jGrowl(_widget_order_error, { header: _error_header });}
 	});
 
 }
@@ -259,7 +259,7 @@ function widget(name, content_area, no_edit)
 	this.save_settings = function(data) {
 		var url = ajax_url + "save_widget_setting/";
 		$.post(url, data);
-		$.jGrowl("Settings for widget " + self.name + " was updated", { header: 'Success' });
+		$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
 	};
 
 	/**
@@ -280,7 +280,7 @@ function widget(name, content_area, no_edit)
 					$("#" + self.name + "_slider").slider("value", self.current_interval);
 				}
 			},
-			error: function(obj, msg){$.jGrowl('Unable to fetch setting for widget ' + self.name, { header: 'ERROR' });}
+			error: function(obj, msg){$.jGrowl(sprintf(_widget_settings_error, self.name), { header: _error_header });}
 		});
 
 	};
@@ -363,10 +363,7 @@ function widget(name, content_area, no_edit)
 	if (widget_ok == false) {
 		// here we should probably notify user that
 		// the widget isn't found
-		$.jGrowl("Unable to find widget " + name, { header: 'ERROR' });
-		if( window.console && window.console.firebug ) {
-			console.log("widget " + name + " isn't found");
-		}
+		$.jGrowl(sprintf(_widget_notfound_error, name), { header: _error_header });
 		return false;
 	}
 	this.set_content_area(content_area);
