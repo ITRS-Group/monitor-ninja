@@ -137,7 +137,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr class="odd">
 			<td><?php echo $lable_check_latency_duration ?></td>
-			<td><?php echo $check_latency ?> / <?php echo $execution_time ?> <?php echo $lable_seconds ?></td>
+			<td><?php echo $check_latency ?> / <?php echo number_format($execution_time, 3) ?> <?php echo $lable_seconds ?></td>
 		</tr>
 		<tr class="even">
 			<td><?php echo $lable_next_scheduled_check ?></td>
