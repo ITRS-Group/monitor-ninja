@@ -237,8 +237,9 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands[] = nagioscmd::build_command($cmd, $param);
 
-		$pipe = "/opt/monitor/var/rw/nagios.cmd";
-		$nagconfig = System_Model::parse_config_file("/opt/monitor/etc/nagios.cfg");
+		$nagios_base_path = Kohana::config('config.nagios_base_path');
+		$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+		$nagconfig = System_Model::parse_config_file("nagios.cfg");
 		if (isset($nagconfig['command_file'])) {
 			$pipe = $nagconfig['command_file'];
 		}
