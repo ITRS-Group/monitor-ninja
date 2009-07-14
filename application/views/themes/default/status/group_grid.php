@@ -32,7 +32,8 @@
 
 <div class="widget left w98" id="status_group-grid">
 <?php
-foreach ($group_details as $details) {
+if (!empty($group_details))
+	foreach ($group_details as $details) {
 ?>
 
 	<table class="group_grid_table">
@@ -109,5 +110,7 @@ foreach ($group_details as $details) {
 
 <?php
 }	# end each group
+else
+	echo $this->translate->_(sprintf('No %s group data found', $grouptype));
 ?>
 </div>

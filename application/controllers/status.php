@@ -564,9 +564,11 @@ class Status_Controller extends Authenticated_Controller {
 		$groupname_tmp = false;
 		if ($group == 'all') {
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
-			foreach ($group_info_res as $group_res) {
-				$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
-				$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $style);
+			if (!empty($group_info_res)) {
+				foreach ($group_info_res as $group_res) {
+					$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
+					$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $style);
+				}
 			}
 		} else {
 			$group_details[] = $this->_show_group($grouptype, $group, $style);
