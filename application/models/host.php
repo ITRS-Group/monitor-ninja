@@ -424,7 +424,7 @@ class Host_Model extends Model {
 						$auth_host_field.".icon_image AS host_icon_image,".
 						$auth_host_field.".icon_image_alt AS host_icon_image_alt,".
 						$auth_host_field.".is_flapping AS host_is_flapping,".
-						$auth_host_field.".notes_url,".
+						$auth_host_field.".notes_url AS host_nots_url,".
 						$auth_service_field.".id AS service_id,".
 						$auth_service_field.".service_description,".
 						$auth_service_field.".current_state,".
@@ -434,6 +434,7 @@ class Host_Model extends Model {
 						$auth_service_field.".notifications_enabled,".
 						$auth_service_field.".active_checks_enabled,".
 						$auth_service_field.".action_url,".
+						$auth_service_field.".notes_url,".
 						$auth_service_field.".icon_image,".
 						$auth_service_field.".icon_image_alt,".
 						$auth_service_field.".passive_checks_enabled,".
