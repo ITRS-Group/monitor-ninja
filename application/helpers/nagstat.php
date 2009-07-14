@@ -92,24 +92,114 @@ class nagstat_Core {
 	const SORT_ASC = 'ASC';
 	const SORT_DESC = 'DESC';
 
-	public function process_macros($string=false)
+	/**
+	 * Process macros for host- or service objects
+	 */
+	public function process_macros($string=false, $obj=false)
 	{
-		$string = trim(strtolower($string));
-		if (empty($string)) {
+		if (empty($string) || empty($obj)) {
 			return false;
 		}
+
 		$macros = array(
-			'$HOSTADDRESS$' => 'host_name'
+			'$HOSTNAME$' => 'host_name',
+			'$HOSTADDRESS$' => 'address',
+			'$HOSTDISPLAYNAME$' => 'display_name',
+			'$HOSTALIAS$' => 'alias',
+			'$HOSTSTATE$' => array("status_text[%s, host]", 'current_state'), /* UP/DOWN/UNREACHABLE - callback */
+			'$HOSTSTATEID$' => 'current_state',
+			'$HOSTSTATETYPE$' => array('array[%s,SOFT,HARD]', 'state_type'), /* HARD/SOFT - callback */
+			'$HOSTATTEMPT$' => 'current_attempt',
+			'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
+			'$SERVICEDESC$' => 'service_description',
+			'$SERVICEDISPLAYNAME$' => 'display_name',
+			'$SERVICESTATE$' => array("status_text[%s, service]", 'current_state'),
 		);
-		foreach ($macros as $macro) {
-			if (strstr($string, $macro)) {
-				# how do we solve this?
-				# have to know what to substitute with
-				# a reference to current object?
-				# db callback?
+
+		$regexp = '/\$[A-Z]*\$/';
+		$hits = preg_match_all($regexp, $string, $res);
+
+		if ($hits > 0 && !empty($res)) {
+			foreach ($res as $matches) {
+				foreach ($matches as $match) {
+					if (array_key_exists($match, $macros)) {
+						$field = $macros[$match];
+
+						if (is_array($field)) {
+							$val = isset($obj->{$field[1]}) ? self::do_callback(sprintf($field[0], $obj->{$field[1]})) : false;
+							if ($val !== false) {
+								$string = str_replace($match, $val, $string);
+							}
+						} else {
+							if (isset($obj->{$field})) {
+								$string = str_replace($match, $obj->{$field}, $string);
+							}
+						}
+					}
+				}
 			}
 		}
+
+		return $string;
 	}
+
+	/**
+	* Try to figure out what (and how) to call methods/functions
+	* from the callbacks passed from process_macros()
+	*/
+	public function do_callback(&$callback)
+	{
+		if (is_string($callback)) {
+			if (preg_match('/^([^\[]++)\[(.+)\]$/', $callback, $matches)) {
+				// Split the function and args
+				$callback = $matches[1];
+				$args = preg_split('/(?<!\\\\),\s*/', $matches[2]);
+			}
+		}
+
+		if (is_string($callback)) {
+			if (strpos($callback, '::') !== FALSE) {
+				$callback = explode('::', $callback);
+			} elseif (function_exists($callback)) {
+				// No need to check if the callback is a method
+				$callback = $callback;
+			}
+		}
+
+		if ($callback === 'array' && is_array($args) && !empty($args)) {
+			$val = $args[0];
+			# remove first element which is the value to be "translated"
+			array_shift($args);
+			if (array_key_exists($val, $args)) {
+				return $args[$val];
+			} else {
+				return false;
+			}
+		}
+
+		$value = false;
+		$name = false;
+		if (is_callable($callback)) {
+			if (is_array($callback)) {
+				if (is_object($callback[0])) {
+					// Object instance syntax
+					$name = get_class($callback[0]).'->'.$callback[1];
+				} else {
+					// Static class syntax
+					$name = $callback[0].'::'.$callback[1];
+				}
+			} else {
+				// Function syntax
+				$name = $callback;
+			}
+		}
+
+		if (function_exists($name)) {
+			$value = call_user_func_array($name, $args);
+		}
+		return $value;
+	}
+
 
 	/**
 	*	Format a Nagios date format string to the
