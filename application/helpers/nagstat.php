@@ -245,3 +245,13 @@ class nagstat_Core {
 	}
 
 }
+
+
+/**
+* Helper function to get status text from current status model
+* Used in callbacks in process_macros
+*/
+function status_text($db_status=false, $type='host')
+{
+	return Current_status_Model::status_text($db_status, $type);
+}
