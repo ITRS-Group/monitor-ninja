@@ -113,14 +113,14 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon">
 				<?php if (!empty($row->action_url)) { ?>
-					<a href="<?php echo $row->action_url ?>" style="border: 0px">
+					<a href="<?php echo nagstat::process_macros($row->action_url, $row) ?>" style="border: 0px" target="_blank">
 						<?php echo html::image('/application/views/themes/default/icons/16x16/host-actions.png', $this->translate->_('Perform extra host actions')) ?>
 					</a>
 					<?php } ?>
 				</td>
 				<td class="icon">
 				<?php	if (!empty($row->notes_url)) { ?>
-					<a href="<?php echo $row->notes_url ?>" style="border: 0px">
+					<a href="<?php echo nagstat::process_macros($row->notes_url, $row) ?>" style="border: 0px" target="_blank">
 						<?php echo html::image('application/views/themes/default/icons/16x16/host-notes.png', $this->translate->_('View extra host notes')) ?>
 					</a>
 				<?php	} ?>
