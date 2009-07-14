@@ -60,6 +60,7 @@
 <?php
 	$curr_host = false;
 	$a = 0;
+
 	if (!empty($result)) {
 		foreach ($result as $row) {
 		$a++;
@@ -77,19 +78,19 @@
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
 				<span style="float: right">
 					<?php
-						if ($row->problem_has_been_acknowledged) {
+						if ($row->hostproblem_is_acknowledged) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 						}
-						if (empty($row->notifications_enabled)) {
+						if (empty($row->host_notifications_enabled)) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/notify-disabled.png',array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 						}
 						if (!$row->active_checks_enabled) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/active-checks-disabled.png',array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 						}
-						if (isset($row->is_flapping) && $row->is_flapping) {
+						if (isset($row->host_is_flapping) && $row->host_is_flapping) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/flapping.gif',array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 						}
-						if ($row->scheduled_downtime_depth > 0) {
+						if ($row->hostscheduled_downtime_depth > 0) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image('application/views/themes/default/icons/16x16/downtime.png',array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 						}
 					?>
@@ -99,7 +100,29 @@
 		<td class="icon bl">
 			<?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png',array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, Router::$method))) ?>
 		</td>
-		<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></td>
+		<td style="white-space: normal">
+			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></span>
+			<span style="float: right">
+			<?php
+				echo 'sp '.$serviceprops;
+				if ($row->problem_has_been_acknowledged) {
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
+				}
+				if (empty($row->notifications_enabled)) {
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/notify-disabled.png',array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
+				}
+				if (!$row->active_checks_enabled) {
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/active-checks-disabled.png',array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
+				}
+				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/flapping.gif',array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
+				}
+				if ($row->scheduled_downtime_depth > 0) {
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/downtime.png',array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+				}
+			?>
+			</span>
+		</td>
 		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
 		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
 		<td style="text-align: center"><?php echo $row->current_attempt;?></td>
