@@ -104,7 +104,6 @@
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></span>
 			<span style="float: right">
 			<?php
-				echo 'sp '.$serviceprops;
 				if ($row->problem_has_been_acknowledged) {
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::image('application/views/themes/default/icons/16x16/acknowledged.png',array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 				}
