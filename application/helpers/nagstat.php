@@ -111,9 +111,13 @@ class nagstat_Core {
 			'$HOSTSTATETYPE$' => array('array[%s,SOFT,HARD]', 'state_type'), /* HARD/SOFT - callback */
 			'$HOSTATTEMPT$' => 'current_attempt',
 			'$MAXHOSTATTEMPTS$' => 'max_check_attempts',
+			'$HOSTGROUPNAME$' => 'hostgroup_name',
+			'$HOSTGROUPALIAS$' => 'alias',
 			'$SERVICEDESC$' => 'service_description',
 			'$SERVICEDISPLAYNAME$' => 'display_name',
+			'$SERVICEGROUPNAME$' => 'servicegroup_name',
 			'$SERVICESTATE$' => array("status_text[%s, service]", 'current_state'),
+			'$SERVICEGROUPALIAS$' => 'alias'
 		);
 
 		$regexp = '/\$[A-Z]*\$/';
