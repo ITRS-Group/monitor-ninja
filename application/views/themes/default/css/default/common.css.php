@@ -388,11 +388,12 @@ select {
 	margin: 0px 0px;
 	border: 1px solid #cccccc;
 	position: absolute;
-	top: 67px;
+	top: 82px;
 	left: 165px;
 }
 .ui-slider-handle {
 	position: absolute;
+	position: relative;
 	left: -3px;
 	width: 7px !important;
 	background: #b7b7b7 !important;
