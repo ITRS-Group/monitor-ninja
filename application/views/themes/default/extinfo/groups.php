@@ -11,6 +11,22 @@
 	?>
 	</ul>
 </div>
+
+<?php if (!empty($action_url)) { ?>
+<a href="<?php echo $action_url ?>" style="border: 0px">
+			<?php echo html::image('application/views/themes/default/icons/16x16/host-actions.png',array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')))?></a>
+<br />
+<strong><?php echo $label_action_url ?></strong>
+<?php } ?>
+<br />
+
+<?php if (!empty($notes_url)) { ?>
+<a href="<?php echo $notes_url ?>" style="border: 0px">
+			<?php echo html::image('/application/views/themes/default/icons/16x16/host-notes.png',array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?></a>
+<br />
+<strong><?php echo $label_notes_url ?></strong>
+<?php } ?>
+
 <div class="widget left w98">
 <table style="border-spacing: 1px; background-color: #dcdccd">
 	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?></caption>
