@@ -31,6 +31,9 @@
 		?>
 		<script type="text/javascript">
 			//<!--
+			<?php
+				if (Auth::instance()->logged_in()) { ?>
+
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
@@ -44,13 +47,18 @@
 				var _page_refresh_msg = '<?php echo $this->translate->_('Updated page refresh rate to %s seconds'); ?>';
 				var _success_header = '<?php echo $this->translate->_('Success'); ?>';
 				var _error_header = '<?php echo $this->translate->_('ERROR'); ?>';
+				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false, true) ?>';
+				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false, true) ?>';
+				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false, true) ?>';
 				<?php
+				}
 				if (!empty($inline_js)) {
 					echo "$(document).ready(function() {";
 					echo $inline_js;
 					echo "});";
 				}
 				?>
+
 			//-->
 		</script>
 		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
@@ -101,7 +109,7 @@
 			<?php
 				foreach ($links as $header => $link):
 						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')">
-							<cite>'.html::specialchars($header).'</cite>
+							<cite class="menusection">'.html::specialchars($header).'</cite>
 							<em>'.substr(html::specialchars($header),0,1).'</em>
 						</li>'."\n";
 						foreach ($link as $title => $url):
