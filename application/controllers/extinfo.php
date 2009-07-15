@@ -148,6 +148,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$content->notes_url = $result->notes_url !='' ? nagstat::process_macros($result->notes_url, $result) : false;
+		$content->label_notes_url = $t->_('Extra Notes');
+		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result) : false;
+		$content->label_action_url = $t->_('Extra Actions');
+
 		$groups = false;
 		foreach ($group_info as $group_row) {
 			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
@@ -824,6 +829,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_active_checks = $t->_('Active Checks Of All Services');
 		$content->cmd_disable_active_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
 		$content->cmd_enable_active_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
+
+		$content->notes_url = $group_info_res->notes_url !='' ? nagstat::process_macros($group_info_res->notes_url, $group_info_res) : false;
+		$content->label_notes_url = $t->_('Extra Notes');
+		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res) : false;
+		$content->label_action_url = $t->_('Extra Actions');
 
 		switch ($grouptype) {
 			case 'servicegroup':
