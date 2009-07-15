@@ -374,6 +374,6 @@ function widget(name, content_area, no_edit)
 		this.set_refresh_interval(true);
 		this.init_slider();
 	}
-	if (this.no_edit != null && this.no_edit != true)
+	if (this.no_edit != true)
 		this.init_title_edit();
 }
