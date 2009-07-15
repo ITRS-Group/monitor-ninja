@@ -419,7 +419,7 @@ select {
 #show-menu {
 	position: fixed;
 	top: 62px;
-	left: 25px;
+	left: 23px;
 	background: transparent url(images/menu_show.png) no-repeat;
 	width: 14px;
 	height: 14px;
