@@ -91,13 +91,19 @@
 				</ul>
 			</div>
 		</div>
+		<div style="position: fixed">
+		<div id="menu-slider"></div>
+		<div id="menu-scroll">
 		<div id="menu">
-			<div id="close-menu" title="<?php echo $this->translate->_('Hide menu') ?>" onclick="collapse_menu('hide')"></div>
-			<div id="show-menu" title="<?php echo $this->translate->_('Show menu') ?>" onclick="collapse_menu('show')"></div>
+			<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
+			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
-						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')"><cite>'.html::specialchars($header).'</cite></li>'."\n";
+						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')">
+							<cite>'.html::specialchars($header).'</cite>
+							<em>'.substr(html::specialchars($header),0,1).'</em>
+						</li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
 								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
@@ -110,7 +116,8 @@
 				?>
 			</ul>
 		</div>
-
+		</div>
+		</div>
 		<div id="page_settings">
 			<ul>
 				<li class="header"><?php echo $this->translate->_('Global Settings') ?></li>
@@ -149,6 +156,7 @@
 				?>
 			</ul>
 		</div>
+
 		<div id="content">
 			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
