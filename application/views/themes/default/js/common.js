@@ -133,7 +133,7 @@ $(document).ready(function(){
 	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-82)+'px');
 	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
 	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
-	if ($('#menu ul').height() <= parseInt(document.documentElement.clientHeight)) {
+	if (parseInt($('#menu ul').height()+67) <= parseInt(document.documentElement.clientHeight)) {
 		$('#menu-slider').hide();
 		var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
 		$("#menu-scroll").animate({scrollTop: -100 * (maxScroll / 100) }, 1000);
@@ -146,7 +146,7 @@ $(window).resize(function() {
 	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-82)+'px');
 	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
 	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
-	if ($('#menu ul').height() <= parseInt(document.documentElement.clientHeight)) {
+	if (parseInt($('#menu ul').height()+67) <= parseInt(document.documentElement.clientHeight)) {
 		$('#menu-slider').hide();
 		var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
 		$("#menu-scroll").animate({scrollTop: -100 * (maxScroll / 100) }, 1000);
