@@ -1,20 +1,26 @@
 var default_menu_state = 'show';
 function collapse_menu(action) {
 	if (action == 'hide') {
-		$('#menu').css('width', '35px');
+		$('#menu').css('width', '37px');
+		$('#menu-scroll').css('width', '37px');
+		$('#menu-slider').css('left', '37px');
 		$('#close-menu').hide();
 		$('#show-menu').show();
 		$('.ninja_menu_links').hide();
 		$('li.header cite').hide();
-		$('#content').css('margin-left', '35px');
+		$('li.header em').css('display','block');
+		$('#content').css('margin-left', '37px');
 		save_ninja_menu_state('hide');
 	}
 	if (action == 'show') {
 		$('#menu').css('width', '166px');
+		$('#menu-scroll').css('width', '166px');
+		$('#menu-slider').css('left', '166px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
 		$('li.header cite').show();
+		$('li.header em').hide();
 		$('#content').css('margin-left', '166px');
 		save_ninja_menu_state('show');
 	}
