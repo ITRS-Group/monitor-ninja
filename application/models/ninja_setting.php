@@ -46,7 +46,7 @@ class Ninja_setting_Model extends ORM
 	* 	@param str $type [widget_order, widget, etc]
 	* 	@param str $page
 	*/
-	public function fetch_page_setting($type='widget_order', $page=false)
+	public function fetch_page_setting($type='widget_order', $page=false, $default=false)
 	{
 		$type = trim($type);
 		$page = trim($page);
@@ -55,11 +55,16 @@ class Ninja_setting_Model extends ORM
 
 		$setting = ORM::factory('ninja_setting');
 		$user = Auth::instance()->get_user()->username;
-		# first, try user setting
-		$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find();
-		if (!$setting->loaded) {
-			# try default if nothing found
+		if ($default === true) {
+			# We have a request for default value
 			$setting->where(array('user'=> '', 'page' => $page, 'type' => $type))->find();
+		} else {
+			# first, try user setting
+			$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find();
+			if (!$setting->loaded) {
+				# try default if nothing found
+				$setting->where(array('user'=> '', 'page' => $page, 'type' => $type))->find();
+			}
 		}
 		return $setting->loaded ? $setting : false;
 	}
