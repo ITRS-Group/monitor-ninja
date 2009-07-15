@@ -190,9 +190,11 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function fetch_widgets_order($page=false)
 	{
 		$page = urldecode($this->input->get('page', $page));
+		$default = urldecode($this->input->get('default', false));
+		$default = (int)$default == 1 ? true : $default;
 		if (empty($page))
 			return false;
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page, $default);
 		if (empty($data)) {
 			echo json::encode(array('widget_order' => false));
 			return false;
