@@ -136,14 +136,20 @@ function save_widget_order(order_str)
 /*
 *	Fetch saved widget order from database
 */
-function fetch_widget_order()
+function fetch_widget_order(restore)
 {
 	var page_name = _current_uri;
+	restore = (restore == null) ? false : true;
+	var restore_str = restore ? '&default=1' : '';
 	$.ajax({
-		url: _site_domain + _index_page + "/ajax/fetch_widgets_order/?page=" + escape(page_name),
+		url: _site_domain + _index_page + "/ajax/fetch_widgets_order/?page=" + escape(page_name) + restore_str,
 		dataType:'json',
 		success: function(data) {
 			if (data.widget_order) {
+				if (restore == true) {
+					save_widget_order(data.widget_order);
+				}
+
 				$.fn.EasyWidgets({callbacks:{onRefreshPositions:function(){return data.widget_order;}}});
 			}
 		},
@@ -180,6 +186,7 @@ function restore_widgets()
 		$('#' + item_id).removeClass().addClass('selected');
 		$('#' + widget_id).show();
 	});
+	fetch_widget_order(true);
 }
 
 /**
