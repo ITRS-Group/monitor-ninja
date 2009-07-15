@@ -39,7 +39,36 @@ function settings(action) {
 }
 
 function collapse_section(section){
-	$('.'+section).slideToggle(200);
+	var is_visible = false;
+	$('.'+section).slideToggle(200,function(){
+		$(this).addClass(section + "_hidden");
+	},function(){
+		$(this).removeClass(section + "_hidden");
+	});
+
+	// save menu section state
+	if ($('.' + section + "_hidden").text()) {
+		// save section state visible
+		save_menu_section_state(section, 1);
+	} else {
+		// save section state hidden
+		save_menu_section_state(section, 0);
+	}
+}
+
+/**
+*	Save the current state of a menu state to database
+*	for current user
+*/
+function save_menu_section_state(section, state)
+{
+	// we use 'show' and 'hide' but the only thing used when
+	// page reloads is 'hide' since they are visible by default
+	var state_str = state ? 'show' : 'hide';
+	var url = _site_domain + _index_page + "/ajax/save_page_setting/";
+	var page_name = '/';
+	var data = {page: escape(page_name), type: 'ninja_menusection_'+section, setting: state_str};
+	$.post(url, data)
 }
 
 function get_ninja_menu_state()
