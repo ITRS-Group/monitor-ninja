@@ -42,8 +42,11 @@ class config_Core
 
 		if (!isset($setting)) {
 			# if nothing was found - try the config file
-			$setting = Kohana::config($config_str);
-			if ($save === true) {
+			$setting = Kohana::config($config_str, false, false);
+			if (is_array($setting) && empty($setting)) {
+				$setting = false;
+			}
+			if ($save === true && isset($setting)) {
 				# save to database and session as user setting
 				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
@@ -54,6 +57,6 @@ class config_Core
 			Session::instance()->set($config_str.$page_val, $setting);
 		}
 
-		return $setting;
+		return isset($setting) ? $setting : false;
 	}
 }
