@@ -311,8 +311,8 @@ select {
 	color: #555555;
 }
 #menu {
-	position: absolute;
-	position: fixed;
+	/*position: absolute;
+	position: fixed;*/
 	width: 165px;
 	top: 0px;
 	left: 0px;
@@ -321,11 +321,34 @@ select {
 	background-color: #f5f5ef;
 	border-left: 1px solid #e9e9e0;
 }
+#menu ul li em {
+	margin-top: -6px;
+	border: 1px solid #ffffff;
+	background: #999999;
+	color: #ffffff;
+	width: 16px;
+	text-align: center;
+	margin-left: -6px;
+	display: block;
+	display: none;
+}
+#menu ul li cite {
+
+	margin-left: -3px;
+	/*
+	margin-top: -6px;
+	border: 1px solid #ffffff;
+	background: #999999;
+	color: #ffffff;
+	width: 140px;
+
+	display: block;
+	padding-left: 3px;*/
+}
 #menu ul {
 	margin: 0px;
 	padding: 0px;
 	margin-top: 66px;
-	border-right: 1px solid #e9e9e0;
 }
 #menu ul li {
 	list-style: none;
@@ -359,21 +382,44 @@ select {
 	padding-left: 15px;
 	cursor: pointer;
 }
-#close-menu {
+#menu-slider {
+	width: 3px !important;
+	height: 533px;
+	margin: 0px 0px;
+	border: 1px solid #cccccc;
 	position: absolute;
-	top: 75px;
-	left: 145px;
-	background: transparent url(images/menu-close.png) no-repeat;
+	top: 67px;
+	left: 165px;
+}
+.ui-slider-handle {
+	position: absolute;
+	left: -3px;
+	width: 7px !important;
+	background: #b7b7b7 !important;
+	border: solid 1px #cccccc;
+}
+#menu-scroll {
+	width: 166px;
+	padding: 0px;
+	height: 600px;
+	overflow: hidden;
+	position: absolute;
+}
+#close-menu {
+	position: fixed;
+	top: 62px;
+	left: 152px;
+	background: transparent url(images/menu_hide.png) no-repeat;
 	width: 14px;
 	height: 14px;
 	z-index: 2;
 	cursor: pointer;
 }
 #show-menu {
-	position: absolute;
-	top: 75px;
-	left: 10px;
-	background: transparent url(images/menu-show.png) no-repeat;
+	position: fixed;
+	top: 62px;
+	left: 25px;
+	background: transparent url(images/menu_show.png) no-repeat;
 	width: 14px;
 	height: 14px;
 	z-index: 2;
@@ -1097,6 +1143,7 @@ table.healt tr td div.border {
 	background:#e9e9e9 url(images/bg.png) repeat;
 }
 
+
 .widget-header.dark,
 .status,
 th,
@@ -1105,6 +1152,9 @@ tr.even td.status {
 	background:#b7b7b7 url(images/bg.png) repeat;
 }
 
+/*#menu ul li.header {
+	background:#b7b7b7 url(images/bg.png) 0px -5px repeat;
+}*/
 
 .widget-header {
 	/*background:#f5f5f5 url(images/bg.png) repeat-x;*/
