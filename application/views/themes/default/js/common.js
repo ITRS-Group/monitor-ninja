@@ -88,6 +88,18 @@ $(document).ready(function() {
 		}
 	});
 
+	// menu scroll/slider init
+	$("#menu-slider").slider({
+	orientation: 'vertical',
+		animate: true,
+	change: handleSliderChange,
+	slide: handleSliderSlide,
+		min: -100,
+	max: 0
+	});
+
+	// check if show or hide the scroll/slider
+	scroll_control();
 });
 
 function create_slider(the_id)
