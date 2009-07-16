@@ -149,42 +149,29 @@ function ninja_refresh(val)
 	}
 }
 
-
-
-
-$(document).ready(function(){
-  $("#menu-slider").slider({
-    orientation: 'vertical',
-		animate: true,
-    change: handleSliderChange,
-    slide: handleSliderSlide,
-		min: -100,
-    max: 0
-  }),
-	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-82)+'px');
-	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
-	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
-	if (parseInt($('#menu ul').height()+67) <= parseInt(document.documentElement.clientHeight)) {
-		$('#menu-slider').hide();
-		var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
-		$("#menu-scroll").animate({scrollTop: -100 * (maxScroll / 100) }, 1000);
-	}
-	else
-		$('#menu-slider').show();
-});
-
 $(window).resize(function() {
+	scroll_control()
+});
+
+/**
+*	Control if slider should be shown.
+*	This function should be called from everywhere
+*	we change the menu but with a delay of at least 100msec
+*/
+function scroll_control()
+{
+	var xtra_height = 69; // top bars etc takes up some space
 	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-82)+'px');
 	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
 	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
-	if (parseInt($('#menu ul').height()+67) <= parseInt(document.documentElement.clientHeight)) {
+	if (parseInt($('#menu ul').height()+xtra_height) <= parseInt(document.documentElement.clientHeight)) {
 		$('#menu-slider').hide();
 		var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
 		$("#menu-scroll").animate({scrollTop: -100 * (maxScroll / 100) }, 1000);
 	}
 	else
 		$('#menu-slider').show();
-});
+}
 
 function handleSliderChange(e, ui){
 	var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
