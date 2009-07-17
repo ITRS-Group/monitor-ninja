@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<div class="widget left w32" id="extinfo_info" style="margin-right: 1%; width: 320px">
+<div class="widget left w32" id="extinfo_info" style="margin-right: 1%; width: 320px;padding-left: 50px">
 
 	<table>
 		<caption><?php echo $lable_command_title ?></caption>
