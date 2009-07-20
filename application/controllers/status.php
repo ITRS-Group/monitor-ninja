@@ -998,7 +998,7 @@ class Status_Controller extends Authenticated_Controller {
 		$services_pending = 0;
 
 		foreach ($result as $row) {
-			if (!in_array($row->service_id, $service_list))
+			if (empty($service_list) || !in_array($row->service_id, $service_list))
 				continue;
 			$problem = true;
 			switch ($row->current_state) {
