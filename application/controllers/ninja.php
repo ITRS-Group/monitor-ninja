@@ -35,7 +35,9 @@ class Ninja_Controller extends Template_Controller {
 		$this->template = $this->add_view('template');
 
 		#$this->profiler = new Profiler;
-		#$this->profiler = new Fire_Profiler;
+		if (Authenticated_Controller::ALLOW_PRODUCTION !== true) {
+			$this->profiler = new Fire_Profiler;
+		}
 		# Load session library
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
