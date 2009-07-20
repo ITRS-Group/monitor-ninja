@@ -4,11 +4,11 @@ $(document).ready(function() {
 			useCookies : false
 		},
 		i18n : {
-			editText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Settings" />',
-			closeText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-close.png" alt="Close widget" />',
-			collapseText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-maximize.png" alt="Collapse" />',
-			cancelEditText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-config.png" alt="Cancel" />',
-			extendText : '<img src="/ninja/application/views/themes/default/icons/12x12/box-mimimize.png" alt="Extend" />'
+			editText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-config.png" alt="Settings" />',
+			closeText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-close.png" alt="Close widget" />',
+			collapseText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-maximize.png" alt="Collapse" />',
+			cancelEditText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-config.png" alt="Cancel" />',
+			extendText : '<img src="' + _site_domain + _theme_path + 'icons/12x12/box-mimimize.png" alt="Extend" />'
 		},
 		effects : {
 			effectDuration : 150,
