@@ -129,7 +129,7 @@ class Service_Model extends Model
 		}
 		if (!empty($sql)) {
 			$result = $this->db->query($sql);
-			return $result;
+			return count($result) > 0 ? $result : false;
 		}
 		return false;
 	}
