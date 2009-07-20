@@ -44,8 +44,14 @@ cp ninja/op5build/ninja.httpd-conf /etc/httpd/conf.d
 service httpd restart
 
 6. Configure Ninja. An example config file exists in ninja/op5build/index.php,
-   follow the inline comments and copy it to ninja/
+   edit the $ninja_base variable and copy it to the ninja root dir. There are
+   more configuration files located in ninja/application/config/ but you should
+   normally not require to edit them.
+
 vim ninja/op5build/index.php
+
+  $ninja_base = '/usr/local/nagios/addons/ninja';
+
 cp ninja/op5build/index.php ninja/
 
 7. Point your browser to https://yourip/ninja and try your installation
