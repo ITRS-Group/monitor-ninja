@@ -6,10 +6,10 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo str_replace('index.php/','',url::site('application/views/themes/default/css/default/common.css.php')) ?>" />
-		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css.php') ?>" />
+		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
-		<link type="text/css" rel="stylesheet" href="<?php echo str_replace('index.php/','',url::site('application/views/themes/default/css/default/ie7.css.php')) ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css.php') ?>" />
 		<![endif]-->
 		<?php
 			echo (!empty($css_header)) ? $css_header : '';
@@ -22,9 +22,9 @@
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
 			echo html::script('application/media/js/jquery.jgrowl.js');
-			echo html::script('application/views/themes/default/js/collapse_menu.js');
-			echo html::script('application/views/themes/default/js/global_search.js');
-			echo html::script('application/views/themes/default/js/pagination.js');
+			echo html::script($this->add_path('js/collapse_menu.js'));
+			echo html::script($this->add_path('js/global_search.js'));
+			echo html::script($this->add_path('js/pagination.js'));
 			if (!isset($disable_refresh) || $disable_refresh === false) {
 				refresh::control();
 			}
@@ -61,13 +61,13 @@
 
 			//-->
 		</script>
-		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
+		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 	</head>
 
 	<body>
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/icons/ninja.png','NINJA'); ?>
+			<?php echo html::image($this->add_path('icons/ninja.png'),'NINJA'); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
