@@ -172,4 +172,23 @@ class Ninja_Controller extends Template_Controller {
 		$path = str_replace('//', '/', $path);
 		return $path;
 	}
+
+	/**
+	 * Set correct template path considering
+	 * the path to current theme.
+	 */
+	public function add_template_path($rel_path)
+	{
+		$rel_path = trim($rel_path);
+		if (empty($rel_path)) {
+			return false;
+		}
+
+		$path = false;
+		# assume rel_path is relative from current theme
+		$path = url::base(false).'application/views/'.$this->theme_path.$rel_path;
+		# make sure we didn't mix up start/end slashes
+		$path = str_replace('//', '/', $path);
+		return $path;
+	}
 }
