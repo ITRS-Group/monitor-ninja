@@ -40,37 +40,37 @@
 						</tr>
 						<?php } else { ?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 							<td><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 						</tr>
 						<?php } if ($flapping_services > 0) {?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 							<td><?php echo html::anchor('/status/service/?serviceprops=1024' ,$flapping_services.' '.($flapping_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_flapping) ?></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 							<td><?php echo $lable_no_services.' '.$lable_flapping ?></td>
 						</tr>
 						<?php } if ($flap_disabled_hosts > 0) {?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 							<td><?php echo $flap_disabled_hosts.' '.($flap_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled ?></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 							<td><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 						</tr>
 						<?php } if ($flapping_hosts > 0) {?>
 						<tr>
-							<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 							<td><?php echo html::anchor('/status/host/?hostprops=1024',$flapping_hosts.' '.($flapping_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_flapping) ?></td>
 						</tr>
 						<?php } else { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 								<td><?php echo $lable_no_hosts.' '.$lable_flapping ?></td>
 							</tr>
 						<?php } } else { ?>
@@ -85,23 +85,23 @@
 						<?php	if ($enable_notifications !== false) { ?>
 							<?php if ($notification_disabled_services > 0) { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
 								<td><?php echo html::anchor('/status/service/?serviceprops=4096', $notification_disabled_services.' '.($notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 							</tr>
 							<?php	} else { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 								<td><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 							</tr>
 							<?php	} ?>
 							<?php if ($notification_disabled_hosts > 0) { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png','') ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
 								<td><?php echo html::anchor('/status/host/?hostprops=4096', $notification_disabled_hosts.' '.($notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 							</tr>
 							<?php	} else { ?>
 							<tr>
-								<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 								<td><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 							</tr>
 							<?php	} ?>
@@ -117,23 +117,23 @@
 						<?php	if ($enable_event_handlers !== false) { ?>
 								<?php if ($event_handler_disabled_services > 0) { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 									<td><?php echo html::anchor('/status/service/?serviceprops=64', $event_handler_disabled_services.' '.($event_handler_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 								<?php } else { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 										<td><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 									</tr>
 								<?php } ?>
 								<?php if ($event_handler_disabled_hosts > 0) { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 									<td><?php echo html::anchor('/status/host/?hostprops=64', $event_handler_disabled_hosts.' '.($event_handler_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 								</tr>
 								<?php } else { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 										<td><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 									</tr>
 								<?php } ?>
@@ -150,23 +150,23 @@
 						<?php	if ($execute_service_checks !== false) { ?>
 							<?php if ($active_checks_disabled_services > 0) { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 									<td><?php echo html::anchor('/status/service/?serviceprops=16', $active_checks_disabled_services.' '.($active_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 							<?php } else { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 									<td><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 								</tr>
 							<?php } ?>
 							<?php if ($active_checks_disabled_hosts > 0) { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 									<td><?php echo html::anchor('/status/host/?hostprops=16', $active_checks_disabled_hosts.' '.($active_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 								</tr>
 							<?php } else { ?>
 								<tr>
-									<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 									<td><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 								</tr>
 							<?php } ?>
@@ -182,23 +182,23 @@
 							<?php	if ($accept_passive_service_checks !== false) { ?>
 								<?php if ($passive_checks_disabled_services > 0) { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 										<td><?php echo html::anchor('/status/service/?serviceprops=16384', $passive_checks_disabled_services.' '.($passive_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 									</tr>
 								<?php } else { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 										<td><?php echo $lable_all_services.' '.$lable_enabled ?></td>
 									</tr>
 								<?php } ?>
 								<?php if ($passive_checks_disabled_hosts > 0) { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-disabled.png',$this->translate->_('Disabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 										<td><?php echo html::anchor('/status/host/?hostprops=16384', $passive_checks_disabled_hosts.' '.($passive_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 									</tr>
 								<?php } else { ?>
 									<tr>
-										<td class="dark"><?php echo html::image('/application/views/themes/default/icons/12x12/shield-ok.png',$this->translate->_('Enabled')) ?></td>
+										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-ok.png'),$this->translate->_('Enabled')) ?></td>
 										<td><?php echo $lable_all_hosts.' '.$lable_enabled ?></td>
 									</tr>
 								<?php } ?>

@@ -5,8 +5,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php if (isset($title)) echo html::specialchars($title) ?></title>
-		<link type="text/css" rel="stylesheet" href="/ninja/application/views/themes/default/css/default/common.css.php" />
-		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css.php') ?>" />
+		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
