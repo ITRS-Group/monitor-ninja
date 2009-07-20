@@ -46,7 +46,8 @@ service httpd restart
 6. Configure Ninja. An example config file exists in ninja/op5build/index.php,
    edit the $ninja_base variable and copy it to the ninja root dir. There are
    more configuration files located in ninja/application/config/ but you should
-   normally not require to edit them.
+   normally not require to edit them. Take a look at database.php if you
+   modified any of the default database settings when installing Merlin.
 
 vim ninja/op5build/index.php
 
