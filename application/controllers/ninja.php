@@ -49,6 +49,7 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
+		$this->registry->set('theme_path', $this->theme_path);
 
 		$this->translate = zend::translate('gettext', $this->locale->getLanguage(), $this->locale);
 
