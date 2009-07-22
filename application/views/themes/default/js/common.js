@@ -94,8 +94,9 @@ $(document).ready(function() {
 		animate: true,
 	change: handleSliderChange,
 	slide: handleSliderSlide,
-		min: -100,
-	max: 0
+	min: -100,
+	max: 0,
+	value: -2
 	});
 
 	// check if show or hide the scroll/slider
@@ -161,7 +162,7 @@ $(window).resize(function() {
 function scroll_control()
 {
 	var xtra_height = 69; // top bars etc takes up some space
-	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-82)+'px');
+	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-67)+'px');
 	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
 	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
 	if (parseInt($('#menu ul').height()+xtra_height) <= parseInt(document.documentElement.clientHeight)) {
