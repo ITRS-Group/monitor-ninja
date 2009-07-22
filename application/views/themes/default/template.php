@@ -100,12 +100,13 @@
 				</ul>
 			</div>
 		</div>
-		<div style="position: fixed">
+		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
+			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+		<div style="position: fixed; left: 0px;">
 		<div id="menu-slider"></div>
 		<div id="menu-scroll">
 		<div id="menu">
-			<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
-			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
