@@ -55,11 +55,10 @@ if (!empty($widgets)) {
 			<td class="white"><strong><?php echo $label_notifies_to ?></strong></td>
 			<td class="white">
 		<?php	if (!empty($contactgroups)) { ?>
-				<table id="extinfo_contactgroups" style="width:10px">
+
 		<?php	$c = 0;
 				foreach ($contactgroups as $cgroup) { ?>
-					<tr>
-						<td title="<?php echo $label_contactgroup ?>: <?php echo $cgroup ?>, <?php echo $lable_click_to_view ?>" class="extinfo_contactgroup" id="extinfo_contactgroup_<?php echo $c ?>">
+				<a title="<?php echo $label_contactgroup ?>: <?php echo $cgroup ?>, <?php echo $lable_click_to_view ?>" class="extinfo_contactgroup" id="extinfo_contactgroup_<?php echo $c ?>">
 							<?php echo $cgroup ?>
 							<table id="extinfo_contacts_<?php echo $c ?>" style="display:none" class="extinfo_contacts">
 								<tr>
@@ -78,12 +77,10 @@ if (!empty($widgets)) {
 								</tr>
 						<?php	} ?>
 							</table>
-						</td>
-					</tr>
+						</a>,
 					<?php	# needed to assign unique IDs to extinfo_contacts_ table
 					$c++; 	# and extinfo_contactgroup_ table cells
 				} ?>
-				</table>
 		<?php	} else {
 					echo $label_no_contactgroup;
 				}
@@ -99,8 +96,8 @@ if (!empty($widgets)) {
 	<a href="<?php echo $action_url ?>" style="border: 0px">
 		<?php echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'float: left; margin: -2px 5px 0px 0px'))?></a>
 	<?php echo $label_action_url ?>
-	<?php } ?>
 	<br /><br />
+	<?php } ?>
 	<?php if (!empty($notes_url)) { ?>
 	<a href="<?php echo $notes_url ?>" style="border: 0px">
 		<?php echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes'),'style' => 'float: left; margin: -2px 5px 0px 0px'))?>
