@@ -73,8 +73,8 @@
 				<div id="navigation">
 					<ul>
 					<?php
-					if (isset($breadcumb) && !empty($breadcumb)){
-						$link = split(' » ',$breadcumb);
+					if (isset($breadcrumb) && !empty($breadcrumb)){
+						$link = split(' » ',$breadcrumb);
 						for($i = 0; $i < count($link); $i++) {
 							echo '<li>'.$link[$i].'</li>';
 						}
