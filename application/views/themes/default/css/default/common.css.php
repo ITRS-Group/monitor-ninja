@@ -402,7 +402,6 @@ select {
 	height: 14px;
 	z-index: 2;
 	cursor: pointer;
-	my dreams are sore, very dark
 }
 #show-menu {
 	position: fixed;
