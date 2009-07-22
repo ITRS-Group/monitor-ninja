@@ -57,7 +57,7 @@
 		<?php } ?>
 		<tr class="<?php $i++; echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 			<td class="icon">
-				<?php echo html::image($this->add_path('icons/16x16/nofity-disabled.png'), array('alt' => $lable_notifications, 'title' => $lable_notifications, 'style' => 'height: 14px')); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify-disabled.png'), array('alt' => $lable_notifications, 'title' => $lable_notifications, 'style' => 'height: 14px')); ?>
 			</td>
 			<td><?php echo $link_notifications ?></td>
 		</tr>

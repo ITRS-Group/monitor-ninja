@@ -17,7 +17,7 @@
 		</tr>
 		<tr class="odd">
 			<td>
-				<?php echo html::image($this->add_path('icons/16x16/nofity-disabled.png'), array('alt' => $label_notifications, 'title' => $label_notifications, 'style' => 'height: 14px')); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify-disabled.png'), array('alt' => $label_notifications, 'title' => $label_notifications, 'style' => 'height: 14px')); ?>
 			</td>
 			<td><?php echo $link_notifications ?></td>
 		</tr>
