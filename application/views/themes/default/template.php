@@ -22,6 +22,7 @@
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
 			echo html::script('application/media/js/jquery.jgrowl.js');
+			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script($this->add_path('js/collapse_menu.js'));
 			echo html::script($this->add_path('js/global_search.js'));
 			echo html::script($this->add_path('js/pagination.js'));
