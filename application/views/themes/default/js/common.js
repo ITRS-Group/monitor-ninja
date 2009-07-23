@@ -101,6 +101,16 @@ $(document).ready(function() {
 
 	// check if show or hide the scroll/slider
 	scroll_control();
+
+	jQuery('#service_table').floatHeader({
+		fadeIn: 25,
+		fadeOut: 25
+	});
+	jQuery('#host_table').floatHeader({
+		fadeIn: 25,
+		fadeOut: 25
+	});
+
 });
 
 function create_slider(the_id)
