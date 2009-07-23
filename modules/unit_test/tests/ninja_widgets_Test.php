@@ -50,6 +50,8 @@ class Ninja_widgets_Test extends Unit_Test_Case {
 		}
 
 		foreach ($widget_list as $widget) {
+			if ($widget == 'README')
+				continue;
 			$sql = "SELECT * FROM ".$table." WHERE user='' AND name = ".$db->escape($widget);
 			$result = $db->query($sql);
 			if (!count($result))
