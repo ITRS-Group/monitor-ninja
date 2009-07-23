@@ -1299,7 +1299,10 @@ class Status_Controller extends Authenticated_Controller {
 			if (!empty($group_info_res) && count($group_info_res)>0) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
-					$group_details[] = $this->_show_grid($grouptype, $groupname_tmp);
+					$details_tmp = $this->_show_grid($grouptype, $groupname_tmp);
+					if (!empty($details_tmp)) {
+						$group_details[] = $details_tmp;
+					}
 				}
 			}
 		} else {
@@ -1418,7 +1421,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content = false;
 		$hosts = array();
 		$seen_hosts = array();
-		if (count($result) > 0) {
+		if (!empty($result)) {
 			foreach ($result as $row) {
 				# loop over result and assign to return variable
 				if (!in_array($row->host_name, $seen_hosts)) {
