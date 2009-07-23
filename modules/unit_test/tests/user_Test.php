@@ -109,7 +109,7 @@ class User_Test extends Unit_Test_Case {
 				}
 			}
 		}
-		$this->assert_true((sizeof($menu) == sizeof($menu_dark)), 'Missing: '.implode(', ', $missing));
+		$this->assert_true((sizeof($menu) == sizeof($menu_dark)), 'Missing: '. !empty($missing) ? implode(', ', $missing) : '');
 	}
 
 }
