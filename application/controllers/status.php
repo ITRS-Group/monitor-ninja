@@ -723,7 +723,7 @@ class Status_Controller extends Authenticated_Controller {
 		if (strtolower($group) == 'all') {
 			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
-			if (count($group_info_res)) {
+			if (!empty($group_info_res)) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
 					$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
