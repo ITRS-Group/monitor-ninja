@@ -7,7 +7,7 @@ class Nagvis_Maps_Model extends Model
 		if (Kohana::config('config.nagvis_path') !== false)
 		{
 			$maps = array();
-			$path = Kohana::config('config.nagvis_real_path') . '/etc/maps';
+			$path = Kohana::config('config.nagvis_real_path') . 'etc/maps';
 			$dir = opendir($path);
 			while ($file = readdir($dir)) {
 				if (!is_dir($path.'/'.$file)
