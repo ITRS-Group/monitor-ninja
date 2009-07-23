@@ -164,7 +164,7 @@ if (!empty($widgets)) {
 		<tr class="odd">
 			<td><?php echo $lable_flapping ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/flapping-'.strtolower($flap_value).'.png'),$flap_value);?>
+				<?php echo html::image($this->add_path('icons/12x12/flapping-'.str_replace('/','',strtolower($flap_value)).'.png'),$flap_value);?>
 				<?php echo ucfirst(strtolower($flap_value)).' '.$percent_state_change_str; ?>
 			</td>
 		</tr>
