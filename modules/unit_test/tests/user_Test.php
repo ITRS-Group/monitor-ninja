@@ -80,6 +80,7 @@ class User_Test extends Unit_Test_Case {
 		$menu = glob($menu_path);
 		$menu_dark = glob($menu_path_dark);
 		$missing = false;
+		$missing_str = false;
 		if ((sizeof($menu) != sizeof($menu_dark))) {
 			$menu_icons = false;
 			foreach ($menu as $icon_path) {
@@ -108,8 +109,9 @@ class User_Test extends Unit_Test_Case {
 					}
 				}
 			}
+			$missing_str = (!empty($missing) && is_array($missing) ) ? implode(', ', $missing) : '';
 		}
-		$this->assert_true((sizeof($menu) == sizeof($menu_dark)), 'Missing: '. !empty($missing) ? implode(', ', $missing) : '');
+		$this->assert_true((sizeof($menu) == sizeof($menu_dark)), 'Missing: '. $missing_str);
 	}
 
 }
