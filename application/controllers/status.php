@@ -578,12 +578,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
-
 		$content = $this->template->content;
 		$t = $this->translate;
 
@@ -602,6 +596,13 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("No data found");
 			return;
 		}
+
+		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
+		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+
 		# @@@FIXME: handle macros
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
