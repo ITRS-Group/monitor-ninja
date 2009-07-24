@@ -50,7 +50,7 @@ class Netw_outages_Widget extends widget_Core {
 		$label = $this->translate->_('Blocking Outages');
 		$no_access_msg = $this->translate->_('N/A');
 
-		$total_blocking_outages = count($outage_data);
+		$total_blocking_outages = !empty($outage_data) ? count($outage_data) : 0;
 
 		$user_has_access = $auth->view_hosts_root ? true : false;
 
