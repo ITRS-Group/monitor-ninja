@@ -450,9 +450,9 @@ class Status_Controller extends Authenticated_Controller {
 					$label_host_status_grid = $this->translate->_('View Service Status Grid For All Service Groups');
 
 					$page_links = array(
-						$label_service_status_overview => Router::$controller.'/'.$group_type.'group/all',
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'group/all?style=summary',
-						$label_host_status_grid => Router::$controller.'/'.$group_type.'group_grid/all'
+						$label_service_status_overview => Router::$controller.'/'.$group_type.'/all',
+						$label_group_status_summary => Router::$controller.'/'.$group_type.'/all?style=summary',
+						$label_host_status_grid => Router::$controller.'/'.$group_type.'_grid/all'
 					);
 				} else {
 					$label_group_status_overview = $this->translate->_('View Status Overview For This Service Group');
@@ -460,9 +460,9 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_grid = $this->translate->_('View Service Status Grid For This Service Group');
 					$label_group_status_details = $this->translate->_('View Service Status Detail For All Service Groups');
 					$page_links = array(
-						$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$name,
-						$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/'.$name.'?style=summary',
-						$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$name,
+						$label_group_status_overview => Router::$controller.'/'.$grouptype.'/'.$name,
+						$label_group_status_summary => Router::$controller.'/'.$grouptype.'/'.$name.'?style=summary',
+						$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$name,
 						$label_group_status_details => Router::$controller.'/'.$grouptype.'/all'
 					);
 				}
