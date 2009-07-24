@@ -136,7 +136,7 @@
 		</div>
 		<div id="page_settings">
 			<ul>
-				<li class="header"><?php echo $this->translate->_('Global Settings') ?></li>
+				<li id="menu_global_settings" class="header"<?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo $this->translate->_('Global Settings') ?></li>
 				<li id="noheader_ctrl" style="display:none">
 					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
 				</li>

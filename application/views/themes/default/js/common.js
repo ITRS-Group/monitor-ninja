@@ -12,6 +12,7 @@ $(document).ready(function() {
 	if ($('#content-header').text()!='') {
 		$('#noheader_ctrl').show();
 		$('#settings_icon').show();
+		$('#menu_global_settings').show();
 
 		// Let checkbox state reflect visibility of the #content-header div
 		if ($('#content-header').is(':visible')) {
