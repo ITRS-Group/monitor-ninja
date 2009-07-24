@@ -311,7 +311,7 @@ select {
 	color: #555555;
 }
 #menu {
-	width: 175px;
+	width: 180px;
 	top: 0px;
 	left: 0px;
 	z-index: 0;
@@ -377,7 +377,7 @@ select {
 	border: 1px solid #cccccc;
 	position: absolute;
 	top: 67px;
-	left: 165px;
+	left: 180px;
 }
 .ui-slider-handle {
 	position: absolute;
@@ -387,7 +387,7 @@ select {
 	border: solid 1px #cccccc;
 }
 #menu-scroll {
-	width: 176px;
+	width: 180px;
 	padding: 0px;
 	height: 600px;
 	overflow: hidden;
@@ -396,7 +396,7 @@ select {
 #close-menu {
 	position: fixed;
 	top: 62px;
-	left: 162px;
+	left: 166px;
 	background: transparent url(images/menu_hide.png) no-repeat;
 	width: 14px;
 	height: 14px;

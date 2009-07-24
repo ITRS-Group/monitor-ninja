@@ -13,15 +13,15 @@ function collapse_menu(action) {
 		save_ninja_menu_state('hide');
 	}
 	if (action == 'show') {
-		$('#menu').css('width', '176px');
-		$('#menu-scroll').css('width', '176px');
-		$('#menu-slider').css('left', '176px');
+		$('#menu').css('width', '180px');
+		$('#menu-scroll').css('width', '180px');
+		$('#menu-slider').css('left', '180px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
 		$('li.header cite').show();
 		$('li.header em').hide();
-		$('#content').css('margin-left', '176px');
+		$('#content').css('margin-left', '180px');
 		save_ninja_menu_state('show');
 	}
 }
