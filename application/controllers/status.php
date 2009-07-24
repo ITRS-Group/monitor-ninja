@@ -490,9 +490,8 @@ class Status_Controller extends Authenticated_Controller {
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
 		$grouptype = 'service';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
-
 		$this->template->title = 'Servicegroup';
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
