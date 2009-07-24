@@ -127,6 +127,7 @@ class Group_Model extends Model
 				s.scheduled_downtime_depth,
 				s.last_check,
 				s.current_attempt,
+				s.max_check_attempts,
 				s.should_be_scheduled,
 				s.notifications_enabled,
 				s.service_description
