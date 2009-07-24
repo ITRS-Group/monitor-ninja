@@ -111,6 +111,10 @@ $(document).ready(function() {
 		fadeIn: 25,
 		fadeOut: 25
 	});
+	jQuery('.group_grid_table').floatHeader({
+		fadeIn: 25,
+		fadeOut: 25
+	});
 
 });
 
