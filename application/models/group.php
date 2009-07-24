@@ -104,11 +104,31 @@ class Group_Model extends Model
 
 		$sql = "
 			SELECT
-				h.*,
+				h.host_name,
+				h.address,
+				h.alias,
 				h.current_state AS host_state,
 				(UNIX_TIMESTAMP() - h.last_state_change) AS duration,
+				UNIX_TIMESTAMP() AS cur_time,
 				h.output,
+				h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
+				h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
+				h.notifications_enabled AS host_notifications_enabled,
+				h.action_url AS host_action_url,
+				h.icon_image AS host_icon_image,
+				h.icon_image_alt AS host_icon_image_alt,
+				h.is_flapping AS host_is_flapping,
+				h.notes_url AS host_nots_url,
+				s.id AS service_id,
 				s.current_state AS service_state,
+				s.active_checks_enabled,
+				s.current_state,
+				s.problem_has_been_acknowledged,
+				s.scheduled_downtime_depth,
+				s.last_check,
+				s.current_attempt,
+				s.should_be_scheduled,
+				s.notifications_enabled,
 				s.service_description
 			FROM
 				service s,
@@ -121,6 +141,8 @@ class Group_Model extends Model
 				".$member_match."
 				h.host_name=s.host_name AND
 				h.id IN (".$hostlist_str.")
+			GROUP BY
+				h.host_name, s.id
 			ORDER BY
 				h.host_name,
 				s.service_description,
