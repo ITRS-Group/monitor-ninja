@@ -1428,10 +1428,10 @@ class Status_Controller extends Authenticated_Controller {
 					$hosts[] = array(
 						'host_name' => $row->host_name,
 						'current_state' => $row->current_state,
-						'notes_url' => $row->notes_url,
-						'action_url' => $row->action_url,
-						'icon_image' => $row->icon_image,
-						'icon_image_alt' => $row->icon_image_alt
+						'notes_url' => $row->host_notes_url,
+						'action_url' => $row->host_action_url,
+						'icon_image' => $row->host_icon_image,
+						'icon_image_alt' => $row->host_icon_image_alt
 					);
 					$seen_hosts[] = $row->host_name;
 				}
