@@ -52,14 +52,14 @@
 			<?php $i=0; if (!empty($group->hostinfo))
 				foreach ($group->hostinfo as $host => $details) { ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl"><?php echo html::image('/application/views/themes/default/icons/16x16/shield-'.strtolower($details['state_str']).'.png', array('alt' => $details['state_str'], 'title' => $details['state_str'])); ?></td>
+				<td class="icon bl"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($details['state_str']).'.png'), array('alt' => $details['state_str'], 'title' => $details['state_str'])); ?></td>
 				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
 				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
 				<td>
 					<?php if (!empty($group->service_states[$host]))
 						//print_r($svc_state);
 						foreach ($group->service_states[$host] as $svc_state) {
-							echo html::image('/application/views/themes/default/icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png', array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'style' => 'margin-bottom: -2px'));
+							echo html::image($this->add_path('icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png'), array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'style' => 'margin-bottom: -2px'));
 							echo '&nbsp; '.strtolower(ucfirst($svc_state['status_link'])).' &nbsp; ';
 						}
 					?>

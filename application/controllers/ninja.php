@@ -49,6 +49,7 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
+		$this->registry->set('theme_path', $this->theme_path);
 
 		$this->translate = zend::translate('gettext', $this->locale->getLanguage(), $this->locale);
 
@@ -65,30 +66,26 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Tactical overview') 			=> array('tac', 'tac'),
 				$this->translate->_('Host detail') 						=> array('status/host', 'host'),
 				$this->translate->_('Service detail') 				=> array('status/service', 'service'),
-				'hr1' 																				=> array('', ''),
+				//'hr1' 																				=> array('', ''),
 				$this->translate->_('Hostgroup overview') 		=> array('status/hostgroup', 'hostgroup'),
 				$this->translate->_('Hostgroup grid') 				=> array('status/hostgroup_grid', 'hostgroupgrid'),
 				$this->translate->_('Hostgroup summary') 			=> array('status/hostgroup_summary', 'hostgroupsummary'),
-				'hr2'																					=> array('', ''),
+				//'hr2'																					=> array('', ''),
 				$this->translate->_('Servicegroup overview') 	=> array('status/servicegroup', 'servicegroup'),
 				$this->translate->_('Servicegroup grid') 			=> array('status/servicegroup_grid', 'servicegroupgrid'),
 				$this->translate->_('Servicegroup summary') 	=> array('status/servicegroup_summary', 'servicegroupsummary'),
-				'hr3' 																				=> array('', ''),
+				//'hr3' 																				=> array('', ''),
 				$this->translate->_('Network outages') 				=> array('outages', 'outages'),
 				$this->translate->_('Host problems') 					=> array('status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems'),
 				$this->translate->_('Service problems') 			=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems'),
 				$this->translate->_('Unhandled problems') 		=> array('status/service/all/?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
-				//'hr4' 																				=> array('', ''),
-				//$this->translate->_('Status map') 						=> array('underconstruction', 'statusmap'),
-				//$this->translate->_('Network map') 						=> array('underconstruction', 'nagvis'),
-				//$this->translate->_('Hyper map') 							=> array('underconstruction', 'hypermap'),
-				'hr5' 																				=> array('', ''),
+				//'hr5' 																				=> array('', ''),
 				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
 				$this->translate->_('Schedule downtime') 			=> array('underconstruction/schedule_downtime', 'scheduledowntime'),
 				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'processinfo'),
 				$this->translate->_('Performance info') 			=> array('extinfo/performance', 'performanceinfo'),
 				$this->translate->_('Scheduling queue') 			=> array('underconstruction/scheduling_queue', 'schedulingqueue'),
-				'hr6' 																				=> array('', ''),
+				//'hr6' 																				=> array('', ''),
 			),
 			$this->translate->_('Reporting') => array(
 				$this->translate->_('Trends') 								=> array('underconstruction/trends', 'trends'),

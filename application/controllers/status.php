@@ -327,9 +327,9 @@ class Status_Controller extends Authenticated_Controller {
 		# build header links array
 		foreach ($header_link_fields as $fields) {
 			if (sizeof($fields) > 1) {
-				$header_links[] = $this->header_links(Router::$method, $name, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
+				$header_links[] = $this->header_links('service', $name, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
 			} else {
-				$header_links[] = $this->header_links(Router::$method, $name, $fields['title']);
+				$header_links[] = $this->header_links('service', $name, $fields['title']);
 			}
 		}
 
@@ -450,9 +450,9 @@ class Status_Controller extends Authenticated_Controller {
 					$label_host_status_grid = $this->translate->_('View Service Status Grid For All Service Groups');
 
 					$page_links = array(
-						$label_service_status_overview => Router::$controller.'/'.$group_type.'group/all',
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'group/all?style=summary',
-						$label_host_status_grid => Router::$controller.'/'.$group_type.'group_grid/all'
+						$label_service_status_overview => Router::$controller.'/'.$group_type.'/all',
+						$label_group_status_summary => Router::$controller.'/'.$group_type.'/all?style=summary',
+						$label_host_status_grid => Router::$controller.'/'.$group_type.'_grid/all'
 					);
 				} else {
 					$label_group_status_overview = $this->translate->_('View Status Overview For This Service Group');
@@ -460,9 +460,9 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_grid = $this->translate->_('View Service Status Grid For This Service Group');
 					$label_group_status_details = $this->translate->_('View Service Status Detail For All Service Groups');
 					$page_links = array(
-						$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$name,
-						$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/'.$name.'?style=summary',
-						$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$name,
+						$label_group_status_overview => Router::$controller.'/'.$grouptype.'/'.$name,
+						$label_group_status_summary => Router::$controller.'/'.$grouptype.'/'.$name.'?style=summary',
+						$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$name,
 						$label_group_status_details => Router::$controller.'/'.$grouptype.'/all'
 					);
 				}
@@ -490,9 +490,8 @@ class Status_Controller extends Authenticated_Controller {
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$style = urldecode($this->input->get('style', $style));
 		$grouptype = 'service';
-		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
-
 		$this->template->title = 'Servicegroup';
+		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
 
 	/**
@@ -579,12 +578,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
-		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->css = $this->xtra_css;
-
 		$content = $this->template->content;
 		$t = $this->translate;
 
@@ -603,6 +596,13 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("No data found");
 			return;
 		}
+
+		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
+		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		$this->template->content->widgets = $this->widgets;
+		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+
 		# @@@FIXME: handle macros
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
@@ -723,7 +723,7 @@ class Status_Controller extends Authenticated_Controller {
 		if (strtolower($group) == 'all') {
 			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
-			if (count($group_info_res)) {
+			if (!empty($group_info_res)) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
 					$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
@@ -1299,7 +1299,10 @@ class Status_Controller extends Authenticated_Controller {
 			if (!empty($group_info_res) && count($group_info_res)>0) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
-					$group_details[] = $this->_show_grid($grouptype, $groupname_tmp);
+					$details_tmp = $this->_show_grid($grouptype, $groupname_tmp);
+					if (!empty($details_tmp)) {
+						$group_details[] = $details_tmp;
+					}
 				}
 			}
 		} else {
@@ -1418,17 +1421,17 @@ class Status_Controller extends Authenticated_Controller {
 		$content = false;
 		$hosts = array();
 		$seen_hosts = array();
-		if (count($result) > 0) {
+		if (!empty($result)) {
 			foreach ($result as $row) {
 				# loop over result and assign to return variable
 				if (!in_array($row->host_name, $seen_hosts)) {
 					$hosts[] = array(
 						'host_name' => $row->host_name,
 						'current_state' => $row->current_state,
-						'notes_url' => $row->notes_url,
-						'action_url' => $row->action_url,
-						'icon_image' => $row->icon_image,
-						'icon_image_alt' => $row->icon_image_alt
+						'notes_url' => $row->host_notes_url,
+						'action_url' => $row->host_action_url,
+						'icon_image' => $row->host_icon_image,
+						'icon_image_alt' => $row->host_icon_image_alt
 					);
 					$seen_hosts[] = $row->host_name;
 				}

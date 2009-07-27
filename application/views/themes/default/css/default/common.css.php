@@ -311,9 +311,7 @@ select {
 	color: #555555;
 }
 #menu {
-	/*position: absolute;
-	position: fixed;*/
-	width: 165px;
+	width: 180px;
 	top: 0px;
 	left: 0px;
 	z-index: 0;
@@ -333,17 +331,7 @@ select {
 	display: none;
 }
 #menu ul li cite {
-
 	margin-left: -3px;
-	/*
-	margin-top: -6px;
-	border: 1px solid #ffffff;
-	background: #999999;
-	color: #ffffff;
-	width: 140px;
-
-	display: block;
-	padding-left: 3px;*/
 }
 #menu ul {
 	margin: 0px;
@@ -388,19 +376,18 @@ select {
 	margin: 0px 0px;
 	border: 1px solid #cccccc;
 	position: absolute;
-	top: 82px;
-	left: 165px;
+	top: 67px;
+	left: 180px;
 }
 .ui-slider-handle {
 	position: absolute;
-	position: relative;
 	left: -3px;
 	width: 7px !important;
 	background: #b7b7b7 !important;
 	border: solid 1px #cccccc;
 }
 #menu-scroll {
-	width: 166px;
+	width: 180px;
 	padding: 0px;
 	height: 600px;
 	overflow: hidden;
@@ -409,7 +396,7 @@ select {
 #close-menu {
 	position: fixed;
 	top: 62px;
-	left: 152px;
+	left: 166px;
 	background: transparent url(images/menu_hide.png) no-repeat;
 	width: 14px;
 	height: 14px;
@@ -430,7 +417,7 @@ select {
 #content {
 	position: relative;
 	top: 64px;
-	margin: 0px 0px 0px 166px;
+	margin: 0px 0px 0px 180px;
 	padding-top: 11px;
 	padding-top: 0px;
 }

@@ -351,6 +351,7 @@ class Host_Model extends Model {
 						(UNIX_TIMESTAMP() - last_state_change) AS duration,
 						UNIX_TIMESTAMP() AS cur_time,
 						current_attempt,
+						max_check_attempts,
 						problem_has_been_acknowledged,
 						scheduled_downtime_depth,
 						output
@@ -443,6 +444,7 @@ class Host_Model extends Model {
 						$auth_service_field.".is_flapping as service_is_flapping,".
 						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
 						$auth_service_field.".current_attempt,".
+						$auth_service_field.".max_check_attempts,".
 						$auth_service_field.".output".
 					" FROM ".
 						$auth_from.

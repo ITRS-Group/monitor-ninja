@@ -30,35 +30,35 @@
 	<tr class="odd">
 		<td><?php echo $lable_notifications_enabled ?></td>
 		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($notifications_str).'.png',$notifications_str);?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($notifications_str).'.png'),$notifications_str);?>
 			<?php echo ucfirst(strtolower($notifications_str)) ?>
 		</td>
 	</tr>
 	<tr class="even">
 		<td><?php echo $lable_service_checks ?> </td>
 		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($servicechecks_str).'.png',$servicechecks_str);?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($servicechecks_str).'.png'),$servicechecks_str);?>
 			<?php echo ucfirst(strtolower($servicechecks_str)) ?>
 		</td>
 	</tr>
 	<tr class="odd">
 		<td><?php echo $lable_service_checks_passive ?></td>
 		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($passive_servicechecks_str).'.png',$passive_servicechecks_str);?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_servicechecks_str).'.png'),$passive_servicechecks_str);?>
 			<?php echo ucfirst(strtolower($passive_servicechecks_str)) ?>
 		</td>
 	</tr>
 	<tr class="even">
 		<td><?php echo $lable_host_checks ?></td>
 		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($hostchecks_str).'.png',$hostchecks_str);?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($hostchecks_str).'.png'),$hostchecks_str);?>
 			<?php echo ucfirst(strtolower($hostchecks_str)) ?>
 		</td>
 	</tr>
 	<tr class="odd">
 		<td><?php echo $lable_host_checks_passive ?></td>
 		<td>
-			<?php echo html::image('/application/views/themes/default/icons/12x12/'.strtolower($passive_hostchecks_str).'.png',$passive_hostchecks_str);?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_hostchecks_str).'.png'),$passive_hostchecks_str);?>
 			<?php echo ucfirst(strtolower($passive_hostchecks_str)) ?>
 		</td>
 	</tr>

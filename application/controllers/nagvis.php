@@ -16,6 +16,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$pools = new Nagvis_Rotation_Pools_Model;
 
 		$this->template->title = 'NagVis';
+		$this->template->breadcrumb = 'NagVis';
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
 		$this->template->content->pools = $pools->get_list();
@@ -32,7 +33,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$maps = new Nagvis_Maps_Model;
 
-		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+		$this->template->title = 'NagVis » ' . $this->translate->_('View') . ' » ' . $map;
+		$this->template->breadcrumb = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('View') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
@@ -45,7 +47,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+		$this->template->title = 'NagVis » ' . $this->translate->_('Edit') . ' » ' . $map;
+		$this->template->breadcrumb = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Edit') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
@@ -59,7 +62,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+		$this->template->title = 'NagVis » ' . $this->translate->_('Automap');
+		$this->template->breadcrumb = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Automap');
 		$this->template->content = $this->add_view('nagvis/automap');
 
@@ -71,7 +75,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+		$this->template->title = 'NagVis » ' . $this->translate->_('Rotate') . ' » ' . $pool;
+		$this->template->breadcrumb = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Rotate') . ' » ' . $pool;
 		$this->template->content = $this->add_view('nagvis/rotate');
 		$this->template->content->pool = $pool;

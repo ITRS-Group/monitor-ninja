@@ -22,6 +22,7 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('tac/index');
 		$this->template->title = $this->translate->_('Monitoring » Tactical overview');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
+		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');

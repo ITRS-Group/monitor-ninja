@@ -23,6 +23,8 @@ class widget_Core
 		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
 		$this->auto_render = FALSE;
 
+		$this->theme_path = zend::instance('Registry')->get('theme_path');
+
 		# fetch our translation instance
 		$this->translate = zend::instance('Registry')->get('Zend_Translate');
 
@@ -147,6 +149,25 @@ class widget_Core
 				$this->master_obj->xtra_js = array_merge($this->master_obj->xtra_js, $files);
 				break;
 		}
+	}
+
+	/**
+	 * Set correct paths considering
+	 * the path to current theme.
+	 */
+	public function add_path($rel_path)
+	{
+		$rel_path = trim($rel_path);
+		if (empty($rel_path)) {
+			return false;
+		}
+
+		$path = false;
+		# assume rel_path is relative from current theme
+		$path = 'application/views/'.$this->theme_path.$rel_path;
+		# make sure we didn't mix up start/end slashes
+		$path = str_replace('//', '/', $path);
+		return $path;
 	}
 
 }

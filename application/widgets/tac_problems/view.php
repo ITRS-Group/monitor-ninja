@@ -16,7 +16,7 @@
 		<table class="w-table">
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
-					<td class="dark"><?php echo html::image('/application/views/themes/default/icons/24x24/shield-'.strtolower($problem[$i]['status']).'.png', array('alt' => $problem[$i]['status'])) ?></td>
+					<td class="dark"><?php echo html::image($this->add_path('icons/24x24/shield-'.strtolower($problem[$i]['status']).'.png'), array('alt' => $problem[$i]['status'])) ?></td>
 					<td style="white-space: normal">
 						<strong><?php echo strtoupper($problem[$i]['type']).' '.strtoupper($problem[$i]['status']) ?></strong><br />
 						<?php
@@ -28,7 +28,7 @@
 				</tr>
 			<?php } if (count($problem) == 0) { ?>
 				<tr>
-					<td class="dark"><?php echo html::image('/application/views/themes/default/icons/24x24/shield-not-down.png', array('alt' => $this->translate->_('N/A'))) ?></td>
+					<td class="dark"><?php echo html::image($this->add_path('icons/24x24/shield-not-down.png'), array('alt' => $this->translate->_('N/A'))) ?></td>
 					<td><?php echo $this->translate->_('N/A')?></td>
 				</tr>
 			<?php } ?>

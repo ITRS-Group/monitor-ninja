@@ -22,6 +22,7 @@ class Reporting_Controller extends Authenticated_Controller {
 		$type = urldecode($this->input->get('type', $type));
 		$name = urldecode($this->input->get('name', $name));
 		$service = urldecode($this->input->get('service', $service));
+		$this->template->disable_refresh = true;
 
 		$target_link = 'avail_setup.php';
 		if (!empty($type)) {
@@ -51,6 +52,7 @@ class Reporting_Controller extends Authenticated_Controller {
 		$this->template->content = '<iframe src="/monitor/op5/reports/gui/sla/" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » SLA Reporting');
 		$this->template->js_header = $this->add_view('js_header');
+		$this->template->disable_refresh = true;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}

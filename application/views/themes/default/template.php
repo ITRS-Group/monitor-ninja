@@ -22,6 +22,7 @@
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
 			echo html::script('application/media/js/jquery.jgrowl.js');
+			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script($this->add_path('js/collapse_menu.js'));
 			echo html::script($this->add_path('js/global_search.js'));
 			echo html::script($this->add_path('js/pagination.js'));
@@ -37,6 +38,7 @@
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
+				var _theme_path = '<?php echo 'application/views/'.$this->theme_path ?>';
 				var _widget_refresh_msg = '<?php echo $this->translate->_('Refresh rate for all widgets has been updated to %s sec'); ?>';
 				var _widget_refresh_error = '<?php echo $this->translate->_('Unable to update refresh rate for all widgets.'); ?>';
 				var _widget_global_refresh_error = '<?php echo $this->translate->_('An error was encountered when trying to update refresh rate for all widgets.'); ?>';
@@ -72,7 +74,12 @@
 				<div id="navigation">
 					<ul>
 					<?php
-					if (isset($title)){
+					if (isset($breadcrumb) && !empty($breadcrumb)){
+						$link = split(' » ',$breadcrumb);
+						for($i = 0; $i < count($link); $i++) {
+							echo '<li>'.$link[$i].'</li>';
+						}
+					} elseif (isset($title)) {
 						$link = split(' » ',$title);
 						for($i = 0; $i < count($link); $i++) {
 							echo '<li>'.$link[$i].'</li>';
@@ -94,17 +101,18 @@
 			</div>
 			<div id="icons">
 				<ul>
-					<li onclick="settings()" id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
+					<li onclick="settings()" id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
 		</div>
-		<div style="position: fixed">
+		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
+			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+		<div style="position: fixed; left: 0px;">
 		<div id="menu-slider"></div>
 		<div id="menu-scroll">
 		<div id="menu">
-			<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
-			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
@@ -114,11 +122,11 @@
 						</li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							elseif($url[0] == '')
 								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
 							else
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 						endforeach;
 					endforeach;
 				?>
@@ -128,7 +136,7 @@
 		</div>
 		<div id="page_settings">
 			<ul>
-				<li class="header"><?php echo $this->translate->_('Global Settings') ?></li>
+				<li id="menu_global_settings" class="header"<?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo $this->translate->_('Global Settings') ?></li>
 				<li id="noheader_ctrl" style="display:none">
 					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
 				</li>
