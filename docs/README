@@ -55,7 +55,14 @@ vim ninja/op5build/index.php
 
 cp ninja/op5build/index.php ninja/
 
-7. Point your browser to https://yourip/ninja and try your installation
+7. Setup the db tables required for Ninja by executing 
+
+ninja/install_scripts/ninja_db_init.sh
+
+   This script will also try to import any existing htpasswd users from your
+   Nagios config.
+
+8. Point your browser to https://yourip/ninja and try your installation
 
 congratulations! you now (hopfully) have a working Ninja installation
 
