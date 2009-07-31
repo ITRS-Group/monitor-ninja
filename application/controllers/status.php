@@ -1609,7 +1609,7 @@ class Status_Controller extends Authenticated_Controller {
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Checkss Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf($t->_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED) {
