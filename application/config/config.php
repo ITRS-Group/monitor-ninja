@@ -171,7 +171,7 @@ if (is_dir($nacoma_real_path)) {
 $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
 
 /**
-*	File system path to where PNP keeps the perfdata rrd and xml files
+*	Path to the pnp config file 'config.php'
 *	Only used if 'pnp4nagios_path' !== false
 */
 $config['pnp4nagios_config_path'] = '/opt/monitor/etc/pnp/config.php';
