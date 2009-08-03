@@ -79,6 +79,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->breadcrumb = '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Geomap');
 		$this->template->content = $this->add_view('nagvis/geomap');
+		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
