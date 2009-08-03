@@ -43,6 +43,7 @@
 			}
 			?>
 			<li><a class="view" href="/ninja/index.php/nagvis/automap"><img src="/nagvis/var/__automap-thumb.png" alt="" /><span>Automap</span></a></li>
+			<li><a class="view" href="/ninja/index.php/nagvis/geomap"><img src="/ninja/geomap-thumb.png" alt="" /><span>Geomap</span></a></li>
 		</ul>
 	</div>
 </div>
