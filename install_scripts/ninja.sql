@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `ninja_settings` (
 );
 
 INSERT INTO `ninja_settings` (`page`, `type`, `setting`)
- VALUES('tac/index', 'widget_order', ' widget-placeholder=widget-netw_outages,widget-tac_scheduled|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems');
+ VALUES('tac/index', 'widget_order', 'widget-placeholder=widget-netw_outages,widget-tac_scheduled|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health,widget-geomap|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems');
 
 -- --------------------------------------------------------
 
@@ -153,6 +153,8 @@ INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `set
 	(10, '', 'status', 'status_totals', 'Status Totals', '');
 INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(11, '', 'tac/index', 'monitoring_performance', 'Monitoring Performance', '');
+INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+	(12, '', 'tac/index', 'geomap', 'Geomap', '');
 
 --
 -- Table structure for table `ninja_db_version`
