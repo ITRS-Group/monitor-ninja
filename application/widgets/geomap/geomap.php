@@ -25,10 +25,7 @@ class Geomap_Widget extends widget_Core {
 
 		# assign variables to widget
 		$widget_id = $this->widgetname;
-		$refresh_rate = 60;
-		if (isset($arguments['refresh_interval'])) {
-			$refresh_rate = $arguments['refresh_interval'];
-		}
+		$refresh_rate = 0;
 		$title = $this->translate->_('Geomap');
 		if (isset($arguments['widget_title'])) {
 			$title = $arguments['widget_title'];
@@ -39,7 +36,7 @@ class Geomap_Widget extends widget_Core {
 
 		# set required extra resources
 		$this->js = array('/js/geomap');
-		#$this->css = array('/css/geomap');
+		$this->css = array('/css/geomap');
 
 		# fetch widget content
 		require_once($view_path);
