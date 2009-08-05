@@ -13,9 +13,20 @@
 	</div>
 	<div class="widget-content">
 	<?php } ?>
-		<iframe name="nagvis" src="/nagvis/netmap/shell.html" width="100%" height="100%">
-			Error : Cannot load Geomap.
-		</iframe>
+		<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="400">
+			<param name="base" value="/nagvis/netmap" />
+			<param name="movie" value="/nagvis/netmap/shell.swf" />
+			<!--
+			this works in most normal browsers and even MSIE,
+			but Firefox (tested in 3.5) wants <embed> - what a shame!
+			-->
+			<embed src="/nagvis/netmap/shell.swf"
+				base="/nagvis/netmap"
+				width="100%" height="400"
+				type="application/x-shockwave-flash">
+				<p>Adobe Flash Player is not installed</p>
+			</embed>
+		</object>
 <?php if (!$ajax_call) { ?>
 	</div>
 </div>
