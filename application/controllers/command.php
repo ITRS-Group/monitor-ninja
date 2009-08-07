@@ -28,6 +28,7 @@ class Command_Controller extends Authenticated_Controller
 		$this->template->content = $this->add_view($view);
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+		$this->template->disable_refresh = true;
 	}
 
 	protected function get_array_var($ary, $k, $dflt = false)
