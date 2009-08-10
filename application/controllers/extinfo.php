@@ -154,6 +154,35 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_action_url = $t->_('Extra Actions');
 
 		$xaction = array();
+		if (Kohana::config('config.nacoma_path') !== false) {
+			$label = $t->_('Configure');
+			$url = url::base(false) . "index.php/configuration/configure/$type/" . urlencode($host);
+			if ($type === 'service') {
+				$url .= '?' . urlencode($service);
+				$alt = $t->_('Configure this service using Nacoma');
+			} else {
+				$alt = $t->_('Configure this host using Nacoma');
+			}
+
+			$xaction[$label] =
+				array('url' => $url,
+					  'img' => url::base(false) . $this->img_path('icons/16x16/nacoma.png'),
+					  'alt' => $alt
+					);
+		}
+
+		if (Kohana::config('config.pnp4nagios_path') !== false) {
+			$label = $t->_('Show performance graph');
+			$url = Kohana::config('config.pnp4nagios_path') . 'index.php?host=' . urlencode($host);
+			if ($type ===  'service') {
+				$url .= '&service=' . urlencode($service);
+			}
+			$xaction[$label] = array
+				('url' => $url,
+				 'img' => url::base(false) . $this->img_path('icons/16x16/pnp.png'),
+				 'alt' => $label
+				 );
+		}
 		$content->extra_action_links = $xaction;
 
 		$groups = false;
