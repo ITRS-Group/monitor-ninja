@@ -104,6 +104,15 @@ if (!empty($widgets)) {
 	</a>
 	<?php echo $label_notes_url ?>
 	<?php } ?>
+	<?php
+		foreach ($extra_action_links as $label => $ary) {
+			echo "<br /><br />\n<a href=\"$ary[url]\" style=\"border: 0px\">";
+			if (!empty($ary['img']))
+				echo '<img src="' . $ary['img'] . '" /> ';
+			echo "$label\n</a>\n";
+		}
+	?>
+
 </div>
 <div style="clear:both"></div>
 <div class="widget left" id="extinfo_current" style="width: 340px">

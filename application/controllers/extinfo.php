@@ -153,6 +153,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result) : false;
 		$content->label_action_url = $t->_('Extra Actions');
 
+		$xaction = array();
+		$content->extra_action_links = $xaction;
+
 		$groups = false;
 		foreach ($group_info as $group_row) {
 			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
