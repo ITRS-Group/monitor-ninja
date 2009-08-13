@@ -247,7 +247,7 @@ class Current_status_Model extends Model
 
 			/* active check execution */
 			if(!$host->active_checks_enabled)
-				$this->active_checks_disabled_hostss++;
+				$this->active_checks_disabled_hosts++;
 
 			/* passive check acceptance */
 			if(!$host->passive_checks_enabled)
