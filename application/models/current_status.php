@@ -227,6 +227,7 @@ class Current_status_Model extends Model
 
 		/* check all hosts */
 		foreach ($result as $host){
+			$this->total_hosts++;
 
 			/******** CHECK FEATURES *******/
 
@@ -331,8 +332,6 @@ class Current_status_Model extends Model
 				$this->total_host_execution_time += $host->execution_time;
 			} else
 				$this->total_passive_host_checks++;
-
-			$this->total_hosts++;
 		}
 		$this->host_data_present = true;
 		return true;
@@ -351,6 +350,7 @@ class Current_status_Model extends Model
 
 		/* check all services */
 		foreach ($result as $service) {
+			$this->total_services++;
 
 			/******** CHECK FEATURES *******/
 
@@ -488,7 +488,6 @@ class Current_status_Model extends Model
 				$this->total_service_execution_time += $service->execution_time;
 			} else
 				$this->total_passive_service_checks++;
-			$this->total_services++;
 		}
 		$this->service_data_present = true;
 		return true;
