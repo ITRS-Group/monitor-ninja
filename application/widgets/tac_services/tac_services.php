@@ -136,10 +136,10 @@ class Tac_services_Widget extends widget_Core {
 			$services_ok_disabled['status/service/all/?servicestatustypes='.nagstat::SERVICE_OK.'&service_props='.nagstat::SERVICE_CHECKS_DISABLED] = $current_status->services_ok_disabled.' '.$this->translate->_('Disabled');
 		}
 
-		# SERVICES PENDING DISABLED
-		$services_pending_disabled = array();
-		if ($current_status->services_pending_disabled) {
-			$services_pending_disabled['status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING .'&service_props='.nagstat::SERVICE_CHECKS_DISABLED] = $current_status->services_pending_disabled.' '.$this->translate->_('Disabled');
+		# SERVICES PENDING
+		$services_pending = array();
+		if ($current_status->services_pending) {
+			$services_pending['status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING] = $current_status->services_pending . $this->translate->_('Pending');
 		}
 
 		# fetch widget content

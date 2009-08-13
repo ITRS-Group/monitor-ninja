@@ -89,7 +89,7 @@
 				</td>
 				<td class="white">
 					<table>
-							<?php if (count($hosts_pending_disabled) > 0) { foreach ($hosts_pending_disabled as $url => $title) { ?>
+							<?php if (count($hosts_pending) > 0) { foreach ($hosts_pending as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-pending.png'),$this->translate->_('Pending')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>

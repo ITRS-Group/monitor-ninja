@@ -100,10 +100,10 @@ class Tac_hosts_Widget extends widget_Core {
 			$hosts_up_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_UP .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled');
 		}
 
-		# HOSTS PENDING DISABLED
-		$hosts_pending_disabled = array();
-		if ($current_status->hosts_pending_disabled) {
-			$hosts_pending_disabled['status/host/all/?hoststatustypes='.nagstat::HOST_PENDING  .'&hostprops='.nagstat::HOST_CHECKS_DISABLED] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled');
+		# HOSTS PENDING
+		$hosts_pending = array();
+		if ($current_status->hosts_pending) {
+			$hosts_pending['status/host/all/?hoststatustypes='.nagstat::HOST_PENDING] = $current_status->hosts_pending.' '.$this->translate->_('Pending');
 		}
 
 		# fetch widget content

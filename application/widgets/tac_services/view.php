@@ -111,7 +111,7 @@
 				</td>
 				<td style="padding:0px;" class="white">
 					<table>
-							<?php	if (count($services_pending_disabled) > 0) {	foreach ($services_pending_disabled as $url => $title) { ?>
+							<?php	if (count($services_pending) > 0) {	foreach ($services_pending as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-pending.png'),$this->translate->_('Pending')) ?></td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
