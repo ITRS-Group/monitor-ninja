@@ -24,6 +24,9 @@ popd
 %install
 mkdir -p -m 755 %buildroot%prefix/op5/ninja
 cp -r * %buildroot%prefix/op5/ninja
+sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
+	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
+
 
 %post
 ln -sfT /opt/monitor/op5/ninja /var/www/html/ninja
