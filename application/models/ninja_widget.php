@@ -291,7 +291,7 @@ class Ninja_widget_Model extends ORM
 	*/
 	public static function update_all_widgets($page=false, $value=false, $type='refresh_interval')
 	{
-		if (empty($page) || empty($value) || empty($type))
+		if (empty($page) || ($value!=0 && empty($value)) || empty($type))
 			return false;
 
 		# check if the user already have customized widgets settings
