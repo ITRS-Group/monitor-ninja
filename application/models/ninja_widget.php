@@ -301,7 +301,7 @@ class Ninja_widget_Model extends ORM
 		# fetch all available widgets for a page
 		$all_widgets = self::fetch_widgets($page);
 		if ($all_widgets !== false) {
-			$new_setting = array('refresh_interval' => $value);
+			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
 				$edit = ORM::factory('ninja_widget', $widget->id);
 				$edit->setting = self::merge_settings($widget->setting, $new_setting);
