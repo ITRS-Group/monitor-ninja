@@ -785,16 +785,16 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 		switch ($type) {
 			case 'host':
-				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host...');
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this host or it doesn\'t exist...');
 				break;
 			case 'hostgroup':
-				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this hostgroup...');
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this hostgroup or it doesn\'t exist...');
 				break;
 			case 'servicegroup':
-				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this servicegroup...');
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this servicegroup or it doesn\'t exist...');
 				break;
 			case 'service':
-				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service...');
+				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view information for this service or it doesn\'t exist...');
 				break;
 			default:
 				$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to view process information...');
