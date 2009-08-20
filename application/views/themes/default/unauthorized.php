@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<br />
 
 	<div class="error_message">
 		<?php echo $error_message ?>
