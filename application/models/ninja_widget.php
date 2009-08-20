@@ -286,8 +286,7 @@ class Ninja_widget_Model extends ORM
 	}
 
 	/**
-	*
-	*
+	*	Update setting fo all widgets on a page
 	*/
 	public static function update_all_widgets($page=false, $value=false, $type='refresh_interval')
 	{
