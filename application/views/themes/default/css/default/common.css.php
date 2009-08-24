@@ -284,7 +284,6 @@ select {
 #icons {
 	position: absolute;
 	right: 0px;
-	/*float: right;*/
 	top: 0px;
 	z-index: 9999;
 	background: #e0e0e0 url(images/bg.png) repeat-x;
@@ -368,18 +367,18 @@ select {
 	cursor: pointer;
 }
 #menu-slider {
-	width: 3px !important;
+	width: 8px !important;
 	height: 533px;
 	margin: 0px 0px;
 	border: 1px solid #cccccc;
 	position: absolute;
 	top: 67px;
-	left: 180px;
+	left: 176px;
 }
 .ui-slider-handle {
 	position: absolute;
-	left: -3px;
-	width: 7px !important;
+	left: -2px;
+	width: 10px !important;
 	background: #b7b7b7 !important;
 	border: solid 1px #cccccc;
 }
@@ -393,7 +392,7 @@ select {
 #close-menu {
 	position: fixed;
 	top: 62px;
-	left: 166px;
+	left: 160px;
 	background: transparent url(images/menu_hide.png) no-repeat;
 	width: 14px;
 	height: 14px;
@@ -403,7 +402,7 @@ select {
 #show-menu {
 	position: fixed;
 	top: 62px;
-	left: 23px;
+	left: 18px;
 	background: transparent url(images/menu_show.png) no-repeat;
 	width: 14px;
 	height: 14px;

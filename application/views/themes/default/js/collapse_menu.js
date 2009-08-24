@@ -3,7 +3,8 @@ function collapse_menu(action) {
 	if (action == 'hide') {
 		$('#menu').css('width', '37px');
 		$('#menu-scroll').css('width', '37px');
-		$('#menu-slider').css('left', '37px');
+		$('#menu-slider').css('left', '33px'); // 37
+		$('#menu-slider').css('z-index', '999');
 		$('#close-menu').hide();
 		$('#show-menu').show();
 		$('.ninja_menu_links').hide();
@@ -15,7 +16,8 @@ function collapse_menu(action) {
 	if (action == 'show') {
 		$('#menu').css('width', '180px');
 		$('#menu-scroll').css('width', '180px');
-		$('#menu-slider').css('left', '180px');
+		$('#menu-slider').css('left', '176px'); // 180
+		$('#menu-slider').css('z-index', '999');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
