@@ -25,6 +25,9 @@ class Ninja_Controller extends Template_Controller {
 	public $user = false;
 	public $profiler = false;
 	public $theme_path = false;
+	public $xtra_js = array();
+	public $xtra_css = array();
+	public $inline_js = false;
 
 	public function __construct()
 	{
