@@ -188,7 +188,6 @@ select {
 	left: 0px;
 	height: 32px;
 	width: 100%;
-	background: #ffffff url(images/menu-top.gif) repeat-x;
 	z-index: 1;
 	border-left: 1px solid #e9e9e0;
 	border-right: 1px solid #e9e9e0;
@@ -266,7 +265,6 @@ select {
 	width: 100%;
 	top: 32px;
 	left: 0px;
-	background: #ffffff url(images/menu-top-two.gif) repeat-x;
 	z-index: 1;
 	border: 1px solid #dcdcdc;
 }
@@ -342,7 +340,6 @@ select {
 	list-style: none;
 	padding: 3px 0px 2px 10px;
 	margin: 0px;
-	background: #ffffff url(images/menu-top-two.gif) 0px -1px repeat-x;
 	border-bottom: 1px solid #e9e9e0;
 	height: 14px;
 }
@@ -439,7 +436,6 @@ select {
 	list-style: none;
 	border-bottom: 1px solid #e9e9e0;
 	padding: 5px 10px;
-	background: #ffffff url(images/menu-top-two.gif) 0px -1px repeat-x;
 	background: #d0d0d0 url(images/bg.png) repeat-x;
 	cursor: pointer;
 }
@@ -515,11 +511,9 @@ th {
 	font-weight: bold;
 	border: 0px;
 	padding: 3px 7px;
-	background: #ffffff url(images/td-light.gif) repeat-x;
 	text-transform: uppercase;
 }
 tr td {
-	background: #ffffff url(images/td-light.gif) repeat-x;
 	padding: 0px 5px;
 	border: 0px;
 	text-align:left;
@@ -527,7 +521,6 @@ tr td {
 }
 tr td.dark  {
 	width: 40px;
-	background: #f5f5ef url(images/td-dark.gif) repeat-x;
 	text-align: center;
 	padding: 5.50px 0px;
 }
@@ -563,7 +556,6 @@ table.healt tr td div.border img {
 }
 table.healt tr td div.border {
 	padding: 0px;
-	background: url(images/td-light.gif) repeat-x;
 }
 table.healt tr td div.border img {
 	display: block;
@@ -675,7 +667,6 @@ div.right {
 .w32 { width: 32%; }
 /* status *****************************************************************************************/
 .status  {
-	background: #f5f5ef url(images/td-dark.gif) repeat-x;
 	padding: 5px;
 	height: 16px;
 }
@@ -742,7 +733,6 @@ tr.even td:first-child {
 	border-left: 1px solid #dcdccd;
 }
 tr.even td.status {
-	background: #f5f5ef url(images/td-dark.gif) repeat-x;
 }
 td.white table tr td {
 	border: 1px solid #e9e9e0;
