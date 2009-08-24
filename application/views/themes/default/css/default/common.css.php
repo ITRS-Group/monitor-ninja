@@ -368,6 +368,7 @@ select {
 }
 #menu-slider {
 	width: 8px !important;
+	z-index: 999 !important;
 	height: 533px;
 	margin: 0px 0px;
 	border: 1px solid #cccccc;
