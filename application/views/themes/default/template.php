@@ -99,9 +99,6 @@ if (isset($this->template->js_header))
 
 		<div id="quickbar">
 			<div id="quicklinks">
-				<!--<ul>
-					<li>There seems to be something wrong with your license. Click here to read more.</li>
-				</ul>-->
 			</div>
 			<div id="icons">
 				<ul>
