@@ -1,0 +1,26 @@
+This is where different custom addons should be placed.
+
+What is addons?
+Addons are small pieces of "drop-in" code that customizes the Ninja GUI without having
+to edit the source files directly. By dropping your own directory with a PHP file that
+does something nifty, you can add (or remove) page elements.
+
+Example: Let's say that you would like to add a link to your intranet that should be located
+in the top bar just below the Ninja logo.
+By creating a directory that we call 'intranet_link' which contains a PHP file named link.php
+and a javascript file called link.js, we can achieve this in a simple way.
+
+in link.php:
+	$this->xtra_js[] = 'application/addons/intranet_link/link.js';
+
+in link.js:
+$(document).ready(function() {
+	$('#quicklinks').append('<ul><li id="ninja_intranet_link">Intranet.</li></ul>');
+	$('#ninja_intranet_link').css('cursor', 'pointer'); // change cursor on mouse over
+	$('#ninja_intranet_link').click(function() {
+		top.location.href='/path/to/intranet/'; // the link
+	});
+});
+
+This will make the link.js file to be included in the document header and
+create a link that will point to your intranet.
