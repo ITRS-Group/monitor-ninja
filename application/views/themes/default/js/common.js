@@ -97,7 +97,7 @@ $(document).ready(function() {
 	slide: handleSliderSlide,
 	min: -100,
 	max: 0,
-	value: -2
+	value: -2.7
 	});
 
 	// check if show or hide the scroll/slider
