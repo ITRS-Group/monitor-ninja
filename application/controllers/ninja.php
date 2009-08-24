@@ -121,6 +121,24 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		$this->registry->set('Zend_Translate', $this->translate);
+		$this->_addons();
+	}
+
+	/**
+	*	Check if any addons should be included
+	*/
+	public function _addons()
+	{
+		$addons_dir = APPPATH."addons/";
+		$addons_files = glob($addons_dir.'*', GLOB_ONLYDIR);
+
+		foreach ($addons_files as $file) {
+			$addons = glob($file.'/*.php');
+			foreach ($addons as $addon) {
+				include_once($addon);
+			}
+		}
+
 	}
 
 	public function __call($method, $arguments)
