@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+if (isset($this->template->js_header))
+	$this->template->js_header->js = $this->xtra_js;
+
+?>
 <?php //if (extension_loaded('zlib')) { ob_start('ob_gzhandler'); } header('Content-type: text/html; charset=utf-8'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
