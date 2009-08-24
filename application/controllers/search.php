@@ -79,6 +79,7 @@ class Search_Controller extends Authenticated_Controller {
 		} else {
 			# search through everything
 			$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model');
+			$empty = 0;
 			foreach ($objects as $obj => $model) {
 				$obj_class_name = $model;
 				$obj_class = new $obj_class_name();
@@ -96,11 +97,15 @@ class Search_Controller extends Authenticated_Controller {
 				}
 
 
-				if (count($data) > 0) {
+				if (count($data) > 0 && $data !== false) {
 					$content->{$obj.'_result'} = $data;
+				} else {
+					$empty++;
 				}
 			}
 		}
-
+		if (!empty($empty) && $empty==4) {
+			$content->no_data = $this->translate->_('Nothing found');
+		}
 	}
 }
