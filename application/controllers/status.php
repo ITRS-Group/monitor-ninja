@@ -249,6 +249,7 @@ class Status_Controller extends Authenticated_Controller {
 		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
+		$service_props = urldecode($this->input->get('serviceprops', $service_props));
 		$service_props = urldecode($this->input->get('service_props', $service_props));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
