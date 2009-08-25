@@ -185,7 +185,6 @@ select {
 #top-bar {
 	position: relative;
 	position: fixed;
-	top: 0px;
 	left: 0px;
 	height: 32px;
 	width: 100%;
@@ -413,7 +412,9 @@ select {
 	display: none;
 }
 #content {
-	margin: 64px 0px 0px 180px;
+	position: relative;
+	top: 64px;
+	margin: 0px 0px 0px 180px;
 	padding-top: 11px;
 	padding-top: 0px;
 }
