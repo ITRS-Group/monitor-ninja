@@ -46,7 +46,7 @@
 						<?php } if ($flapping_services > 0) {?>
 						<tr>
 							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-							<td><?php echo html::anchor('/status/service/?serviceprops=1024' ,$flapping_services.' '.($flapping_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_flapping) ?></td>
+							<td><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_IS_FLAPPING  ,$flapping_services.' '.($flapping_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_flapping) ?></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
@@ -66,7 +66,7 @@
 						<?php } if ($flapping_hosts > 0) {?>
 						<tr>
 							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-							<td><?php echo html::anchor('/status/host/?hostprops=1024',$flapping_hosts.' '.($flapping_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_flapping) ?></td>
+							<td><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_IS_FLAPPING ,$flapping_hosts.' '.($flapping_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_flapping) ?></td>
 						</tr>
 						<?php } else { ?>
 							<tr>
@@ -86,7 +86,7 @@
 							<?php if ($notification_disabled_services > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
-								<td><?php echo html::anchor('/status/service/?serviceprops=4096', $notification_disabled_services.' '.($notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+								<td><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_NOTIFICATIONS_DISABLED, $notification_disabled_services.' '.($notification_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 							</tr>
 							<?php	} else { ?>
 							<tr>
@@ -97,7 +97,7 @@
 							<?php if ($notification_disabled_hosts > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
-								<td><?php echo html::anchor('/status/host/?hostprops=4096', $notification_disabled_hosts.' '.($notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
+								<td><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_NOTIFICATIONS_DISABLED, $notification_disabled_hosts.' '.($notification_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 							</tr>
 							<?php	} else { ?>
 							<tr>
@@ -118,7 +118,7 @@
 								<?php if ($event_handler_disabled_services > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td><?php echo html::anchor('/status/service/?serviceprops=64', $event_handler_disabled_services.' '.($event_handler_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+									<td><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_EVENT_HANDLER_DISABLED, $event_handler_disabled_services.' '.($event_handler_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 								<?php } else { ?>
 									<tr>
@@ -129,7 +129,7 @@
 								<?php if ($event_handler_disabled_hosts > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td><?php echo html::anchor('/status/host/?hostprops=64', $event_handler_disabled_hosts.' '.($event_handler_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
+									<td><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_EVENT_HANDLER_DISABLED, $event_handler_disabled_hosts.' '.($event_handler_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 								</tr>
 								<?php } else { ?>
 									<tr>
@@ -151,7 +151,7 @@
 							<?php if ($active_checks_disabled_services > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td><?php echo html::anchor('/status/service/?serviceprops=16', $active_checks_disabled_services.' '.($active_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+									<td><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_CHECKS_DISABLED, $active_checks_disabled_services.' '.($active_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 							<?php } else { ?>
 								<tr>
@@ -162,7 +162,7 @@
 							<?php if ($active_checks_disabled_hosts > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td><?php echo html::anchor('/status/host/?hostprops=16', $active_checks_disabled_hosts.' '.($active_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
+									<td><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_CHECKS_DISABLED, $active_checks_disabled_hosts.' '.($active_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 								</tr>
 							<?php } else { ?>
 								<tr>
@@ -183,7 +183,7 @@
 								<?php if ($passive_checks_disabled_services > 0) { ?>
 									<tr>
 										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-										<td><?php echo html::anchor('/status/service/?serviceprops=16384', $passive_checks_disabled_services.' '.($passive_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+										<td><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_services.' '.($passive_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 									</tr>
 								<?php } else { ?>
 									<tr>
@@ -194,7 +194,7 @@
 								<?php if ($passive_checks_disabled_hosts > 0) { ?>
 									<tr>
 										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-										<td><?php echo html::anchor('/status/host/?hostprops=16384', $passive_checks_disabled_hosts.' '.($passive_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
+										<td><?php echo html::anchor('/status/host/?hostprops='.nagstat::HOST_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_hosts.' '.($passive_checks_disabled_hosts==1 ? $lable_host_singular : $lable_host_plural).' '.$lable_disabled) ?></td>
 									</tr>
 								<?php } else { ?>
 									<tr>
