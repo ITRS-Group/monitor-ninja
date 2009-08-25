@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<!--
 <style type="text/css">
 	/* this is the iframe 100% height workaround used to fix object height in Firefox */
 	html,
@@ -16,9 +17,10 @@
 		width: 100%;
 	}
 </style>
+-->
 
 <div style="margin-left: 20px;">
-	<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="100%">
+	<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="655">
 		<param name="base" value="/nagvis/netmap" />
 		<param name="movie" value="/nagvis/netmap/shell.swf" />
 		<param name="bgcolor" value="#ffffff" />

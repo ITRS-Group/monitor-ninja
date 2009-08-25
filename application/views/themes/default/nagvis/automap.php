@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<!--
 <style type="text/css">
 	html,
 	body,
@@ -15,9 +16,10 @@
 		width: 100%;
 	}
 </style>
+-->
 
 <div style="margin-left: 20px;">
-	<iframe name="nagvis" src="/nagvis/nagvis/index.php?automap=1" width="100%" height="100%">
+	<iframe name="nagvis" src="/nagvis/nagvis/index.php?automap=1" width="100%" height="655">
 		Error : Can not load NagVis.
 	</iframe>
 </div>
