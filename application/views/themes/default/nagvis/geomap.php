@@ -19,8 +19,8 @@
 </style>
 -->
 
-<div style="margin-left: 20px;">
-	<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="655">
+<div style="margin: 0 14px; padding: 14px 0;">
+	<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="625">
 		<param name="base" value="/nagvis/netmap" />
 		<param name="movie" value="/nagvis/netmap/shell.swf" />
 		<param name="bgcolor" value="#ffffff" />
@@ -31,7 +31,7 @@
 		-->
 		<embed src="/nagvis/netmap/shell.swf"
 			base="/nagvis/netmap"
-			width="100%" height="100%"
+			width="100%" height="625"
 			bgcolor="#ffffff"
 			wmode="opaque"
 			type="application/x-shockwave-flash">

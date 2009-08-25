@@ -18,8 +18,8 @@
 </style>
 -->
 
-<div style="margin-left: 20px;">
-	<iframe name="nagvis" src="/nagvis/nagvis/index.php?automap=1" width="100%" height="655">
+<div style="margin: 0 14px; padding: 14px 0;">
+	<iframe name="nagvis" src="/nagvis/nagvis/index.php?automap=1" width="100%" height="625">
 		Error : Can not load NagVis.
 	</iframe>
 </div>
