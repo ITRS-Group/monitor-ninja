@@ -16,6 +16,8 @@
 		<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="400">
 			<param name="base" value="/nagvis/netmap" />
 			<param name="movie" value="/nagvis/netmap/shell.swf" />
+			<param name="bgcolor" value="#ffffff" />
+			<param name="wmode" value="opaque" />
 			<!--
 			this works in most normal browsers and even MSIE,
 			but Firefox (tested in 3.5) wants <embed> - what a shame!
@@ -23,6 +25,8 @@
 			<embed src="/nagvis/netmap/shell.swf"
 				base="/nagvis/netmap"
 				width="100%" height="400"
+				bgcolor="#ffffff"
+				wmode="opaque"
 				type="application/x-shockwave-flash">
 				<p>Adobe Flash Player is not installed</p>
 			</embed>
