@@ -90,7 +90,7 @@ if (isset($service_result) ) { ?>
 </table><br /><?php
 }
 
-# show hostgroup data if available
+# show servicegroup data if available
 if (isset($servicegroup_result) ) { ?>
 <table>
 <caption><?php echo $this->translate->_('Servicegroup results for').': &quot;'.$query.'&quot'; ?></caption>
@@ -102,6 +102,23 @@ if (isset($servicegroup_result) ) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<td class="bl"><?php echo html::anchor('extinfo/details/servicegroup/'.$servicegroup->servicegroup_name, $servicegroup->servicegroup_name) ?></td>
 		<td><?php echo html::anchor('status/servicegroup/'.$servicegroup->servicegroup_name.'?style=detail', $servicegroup->alias) ?></td>
+	</tr>
+<?php $i++;	} ?>
+</table><?php
+}
+
+# show hostgroup data if available
+if (isset($hostgroup_result) ) { ?>
+<table>
+<caption><?php echo $this->translate->_('Hostgroup results for').': &quot;'.$query.'&quot'; ?></caption>
+	<tr>
+		<th class="header"><?php echo $this->translate->_('Hostgroup'); ?></th>
+		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
+	</tr>
+<?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { ?>
+	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
+		<td class="bl"><?php echo html::anchor('extinfo/details/hostgroup/'.$hostgroup->hostgroup_name, $hostgroup->hostgroup_name) ?></td>
+		<td><?php echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', $hostgroup->alias) ?></td>
 	</tr>
 <?php $i++;	} ?>
 </table><?php

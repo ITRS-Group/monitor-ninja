@@ -14,8 +14,6 @@ class Ninja_Controller extends Template_Controller {
 	const ADMIN = 'admin'; # how do we define the admin role in database
 
 	public $session = false;
-	public $output = array(); # page content to be passed to template
-	public $table_prefix = false;
 	public $max_attempts = false;
 	public $locale = false;
 	public $registry = false;
