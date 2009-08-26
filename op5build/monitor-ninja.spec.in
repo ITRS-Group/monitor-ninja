@@ -8,6 +8,7 @@ BuildRoot: /tmp/%name-%version
 Summary: op5 monitor ninja
 Group: op5/Monitor
 Prefix: /opt/monitor
+Requires: merlin
 Source: %name-%version.tar.gz
 BuildArch: noarch
 %description
