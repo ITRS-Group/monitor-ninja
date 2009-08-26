@@ -200,6 +200,8 @@ class Service_Model extends Model
 		if (empty($value)) return false;
 		$auth_obj = self::authorized_services();
 		$obj_ids = array_keys($auth_obj);
+		if (empty($obj_ids))
+			return false;
 		$obj_info = $this->db
 			->select('DISTINCT s.*, h.current_state AS host_state')
 			->from('service AS s, host AS h')

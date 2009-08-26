@@ -157,6 +157,8 @@ class Host_Model extends Model {
 		if (empty($value)) return false;
 		$auth_hosts = $this->auth->get_authorized_hosts();
 		$host_ids = array_keys($auth_hosts);
+		if (empty($host_ids))
+			return false;
 		$host_info = $this->db
 			->select('DISTINCT *')
 			->from('host')
