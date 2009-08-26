@@ -59,25 +59,25 @@ if (!empty($widgets)) {
 		<?php	$c = 0;
 				foreach ($contactgroups as $cgroup) { ?>
 				<a title="<?php echo $label_contactgroup ?>: <?php echo $cgroup ?>, <?php echo $lable_click_to_view ?>" class="extinfo_contactgroup" id="extinfo_contactgroup_<?php echo $c ?>">
-							<?php echo $cgroup ?>
-							<table id="extinfo_contacts_<?php echo $c ?>" style="display:none" class="extinfo_contacts">
-								<tr>
-									<td colspan="3" style="border-bottom:1px solid black;"><?php echo $label_contacts ?>: </td>
-								</tr>
-								<tr>
-									<td><?php echo $lable_contact_name ?></td>
-									<td><?php echo $lable_contact_alias ?></td>
-									<td><?php echo $lable_contact_email ?></td>
-								</tr>
-						<?php	foreach ($contacts[$cgroup] as $cmember) { ?>
-								<tr>
-									<td><?php echo $cmember->contact_name ?></td>
-									<td><?php echo $cmember->alias ?></td>
-									<td><?php echo $cmember->email ?></td>
-								</tr>
-						<?php	} ?>
-							</table>
-						</a>,
+					<?php echo $cgroup ?>
+				</a>
+				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none" class="extinfo_contacts">
+					<tr>
+						<td colspan="3" style="border-bottom:1px solid black;"><?php echo $label_contacts ?>: </td>
+					</tr>
+					<tr>
+						<td><?php echo $lable_contact_name ?></td>
+						<td><?php echo $lable_contact_alias ?></td>
+						<td><?php echo $lable_contact_email ?></td>
+					</tr>
+			<?php	foreach ($contacts[$cgroup] as $cmember) { ?>
+					<tr>
+						<td><?php echo $cmember->contact_name ?></td>
+						<td><?php echo $cmember->alias ?></td>
+						<td><?php echo $cmember->email ?></td>
+					</tr>
+			<?php	} ?>
+				</table>
 					<?php	# needed to assign unique IDs to extinfo_contacts_ table
 					$c++; 	# and extinfo_contactgroup_ table cells
 				} ?>
