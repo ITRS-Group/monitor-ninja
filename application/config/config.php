@@ -213,3 +213,8 @@ if (is_dir($reports_real_path)) {
  * 	'username'	:	The entered username will be used for authentication
  */
 $config['cli_access'] = true;
+
+/**
+* Nr of items returned for searches
+*/
+$config['search_limit'] = 10;

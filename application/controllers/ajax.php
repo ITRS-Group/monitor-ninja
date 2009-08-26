@@ -88,7 +88,7 @@ class Ajax_Controller extends Authenticated_Controller {
 					$obj_class_name = $settings['class'];
 					$obj_class = new $obj_class_name();
 					# find requested object
-					$limit = 10; # limit search result to max items returned @@@FIXME should be configurable?
+					$limit = Kohana::config('config.search_limit');
 					$data = $obj_class->get_where($settings['name_field'], $obj_name, $limit);
 					$obj_info = false;
 					if ($data!==false) {
@@ -109,7 +109,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			} else {
 				# assuming we want host data
 				$host_model = new Host_Model();
-				$limit = 10; # limit search result to max items returned
+				$limit = Kohana::config('config.search_limit');
 				$data = $host_model->get_where('host_name', $q, $limit);
 				$host_info = false;
 				if ($data!==false) {

@@ -62,7 +62,7 @@ class Search_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('search/result');
 		$content = $this->template->content;
-		$limit = 10; # limit search result to max items returned @@@FIXME should be configurable?
+		$limit = Kohana::config('config.search_limit');
 		$content->query = $query;
 		$this->template->title = $this->translate->_('Search » ')."'".$query."'";
 		# user requested a special object type
