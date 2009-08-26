@@ -64,6 +64,7 @@ class Search_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$limit = 10; # limit search result to max items returned @@@FIXME should be configurable?
 		$content->query = $query;
+		$this->template->title = $this->translate->_('Search » ')."'".$query."'";
 		# user requested a special object type
 		if (!empty($settings)) {
 			$obj_class_name = $settings['class'];
