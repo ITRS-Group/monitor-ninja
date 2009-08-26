@@ -92,6 +92,7 @@ if (!empty($widgets)) {
 <?php $this->session->set('back_extinfo',$back_link);?>
 
 <div id="extinfo_icons"  class="widget left w33">
+	<?php echo !empty($icon_image) ? html::image('application/media/images/logos/'.$icon_image, array('alt' => $icon_image_alt, 'title' => $icon_image_alt)) : ''?>
 	<?php if (!empty($action_url)) { ?>
 	<a href="<?php echo $action_url ?>" style="border: 0px">
 		<?php echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'float: left; margin: -2px 5px 0px 0px'))?></a>
@@ -112,7 +113,6 @@ if (!empty($widgets)) {
 			echo "$label\n</a>\n";
 		}
 	?>
-
 </div>
 <div style="clear:both"></div>
 <div class="widget left" id="extinfo_current" style="width: 340px">

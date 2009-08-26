@@ -210,6 +210,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->duration = $result->duration;
 		$content->groups = $groups;
 		$content->host_address = $result->address;
+		$content->icon_image = $result->icon_image;
+		$content->icon_image_alt = $result->icon_image_alt;
 		$content->status_info = $result->output;
 		$content->lable_perf_data = $t->_('Performance Data');
 		$content->perf_data = $result->perf_data;
