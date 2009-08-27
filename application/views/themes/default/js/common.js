@@ -115,6 +115,14 @@ $(document).ready(function() {
 		fadeIn: 25,
 		fadeOut: 25
 	});
+	jQuery('#group_summary_table').floatHeader({
+		fadeIn: 25,
+		fadeOut: 25
+	});
+	jQuery('.group_overview_table').floatHeader({
+		fadeIn: 25,
+		fadeOut: 25
+	});
 
 });
 
