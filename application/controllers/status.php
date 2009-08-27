@@ -147,7 +147,7 @@ class Status_Controller extends Authenticated_Controller {
 			);
 			$offset = $pagination->sql_offset;
 			$host_model->count = false;
-			$host_model->items_per_page = $items_per_page;
+			$host_model->num_per_page = $items_per_page;
 			$host_model->offset = $offset;
 
 			$result = $host_model->get_host_status();
@@ -164,7 +164,7 @@ class Status_Controller extends Authenticated_Controller {
 			);
 			$offset = $pagination->sql_offset;
 			$host_model->count = false;
-			$host_model->items_per_page = $items_per_page;
+			$host_model->num_per_page = $items_per_page;
 			$host_model->offset = $offset;
 
 			$result = $host_model->get_host_status();
