@@ -215,7 +215,7 @@ class Command_Model extends Model
 			# same go for *_time parameters
 			 case 'check_time':
 			 case 'end_time':
-			 case 'notificaton_time':
+			 case 'notification_time':
 			 case 'start_time':
 				$ary = array('type' => 'time', 'default' => date(nagstat::date_format(), time()));
 				if ($param_name === 'end_time')
