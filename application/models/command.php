@@ -240,7 +240,11 @@ class Command_Model extends Model
 			}
 
 			if (isset($defaults[$param_name])) {
-				$ary['default'] = $defaults[$param_name];
+				if ($param_name === 'service' && isset($defaults['host_name'])) {
+					$ary['default'] = $defaults['host_name'] . ';' . $defaults[$param_name];
+				} else {
+					$ary['default'] = $defaults[$param_name];
+				}
 			}
 
 			$params[$param_name] = $ary;
