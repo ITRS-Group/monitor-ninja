@@ -165,7 +165,6 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
 			if (!empty($param['_force'])) {
-				echo "Forcing check<br />\n";
 				unset($param['force']);
 				$cmd = 'SCHEDULE_FORCED' . substr($cmd, strlen("SCHEDULE"));
 			}
