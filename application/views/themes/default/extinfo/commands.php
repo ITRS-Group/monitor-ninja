@@ -12,7 +12,7 @@
 			<td class="icon bt">
 				<?php echo html::image($this->add_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_host_map, 'title' => $lable_host_map, 'style' => 'height: 14px')); ?>
 			</td>
-			<td class="bt"><a href="statusmap/host/<?php echo $host ?>"><?php echo $lable_host_map ?></a></td>
+			<td class="bt"><?php echo html::anchor('statusmap/host/'.$host, $lable_host_map) ?></td>
 		</tr>
 		<?php } ?>
 		<tr class="<?php $i++; echo ($i%2 == 0) ? 'even' : 'odd' ?>">
