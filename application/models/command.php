@@ -217,7 +217,7 @@ class Command_Model extends Model
 			 case 'end_time':
 			 case 'notificaton_time':
 			 case 'start_time':
-				$ary = array('type' => 'time', 'default' => time());
+				$ary = array('type' => 'time', 'default' => date(nagstat::date_format(), time()));
 				if ($param_name === 'end_time')
 					$ary['default'] = time() + 7200;
 				break;
