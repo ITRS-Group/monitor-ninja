@@ -1082,6 +1082,24 @@ class nagioscmd_Core
 	}
 
 	/**
+	 * Massage a parameter value to make it suitable for
+	 * consumption by Nagios.
+	 *
+	 * @param $name The parameter name
+	 * @value The parameter value
+	 * @return The massaged parameter value
+	 */
+	private function massage_param($name, $value)
+	{
+		# We only massage *_time fields for now
+		if (strpos($name, '_time') !== false) {
+			return strtotime($value);
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Construct a command suitable for passing to Nagios
 	 *
 	 * @param $cmd string or command-info array
@@ -1102,7 +1120,7 @@ class nagioscmd_Core
 		for ($i = 1; $i < count($template); $i++) {
 			$k = $template[$i];
 			if (isset($param[$k])) {
-				$template[$i] = $param[$k];
+				$template[$i] = nagioscmd::massage_param($k, $param[$k]);
 				unset($param[$k]);
 			}
 		}
