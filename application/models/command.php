@@ -212,6 +212,10 @@ class Command_Model extends Model
 				$ary['type'] = 'select';
 				$ary['options'] = $this->get_object_list($param_name);
 				break;
+			 case 'notification_delay':
+				$ary = array('type' => 'int', 'default' => 5);
+				$ary['name'] = 'Notification delay (in minutes)';
+				break;
 			# same go for *_time parameters
 			 case 'check_time':
 			 case 'end_time':

@@ -77,13 +77,13 @@ class nagioscmd_Core
 			 ('nagios_id' => 9,
 			  'description' => _('This command is used to delay the next problem notification that is sent out for the specified service.  The notification delay will be disregarded if the service changes state before the next notification is scheduled to be sent out.  This command has no effect if the service is currently in an OK state. '),
 			  'brief' => _('You are trying to delay a service notification'),
-			  'template' => 'DELAY_SVC_NOTIFICATION;service;notification_time',
+			  'template' => 'DELAY_SVC_NOTIFICATION;service;notification_delay',
 			 ),
 			 'DELAY_HOST_NOTIFICATION' => array
 			 ('nagios_id' => 10,
 			  'description' => _('This command is used to delay the next problem notification that is sent out for the specified host.  The notification delay will be disregarded if the host changes state before the next notification is scheduled to be sent out.  This command has no effect if the host is currently UP. '),
 			  'brief' => _('You are trying to delay a host notification'),
-			  'template' => 'DELAY_HOST_NOTIFICATION;host_name;notification_time',
+			  'template' => 'DELAY_HOST_NOTIFICATION;host_name;notification_delay',
 			 ),
 			 'DISABLE_NOTIFICATIONS' => array
 			 ('nagios_id' => 11,
@@ -1094,6 +1094,12 @@ class nagioscmd_Core
 		# We only massage *_time fields for now
 		if (strpos($name, '_time') !== false) {
 			return nagstat::timestamp_format(nagstat::date_format(), $value);
+		}
+
+		# notification_delay is given in minutes,
+		# but nagios wants a unix timestamp
+		if ($name === 'notification_delay') {
+			return ($value * 60) + time();
 		}
 
 		return $value;
