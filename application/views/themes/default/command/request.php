@@ -42,7 +42,7 @@ foreach ($params as $pname => $ary) {
 		break;
 	 case 'float':
 	 case 'int':
-		echo form::input($form_name, 'size="10"');
+		echo form::input($form_name, $dflt, 'size="10"');
 		break;
 	 case 'immutable':
 		echo form::hidden($form_name, $dflt);
