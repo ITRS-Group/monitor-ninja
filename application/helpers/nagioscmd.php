@@ -1093,7 +1093,7 @@ class nagioscmd_Core
 	{
 		# We only massage *_time fields for now
 		if (strpos($name, '_time') !== false) {
-			return strtotime($value);
+			return nagstat::timestamp_format(nagstat::date_format(), $value);
 		}
 
 		return $value;
