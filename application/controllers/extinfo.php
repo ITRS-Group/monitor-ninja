@@ -171,7 +171,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					);
 		}
 
-		if (Kohana::config('config.pnp4nagios_path') !== false) {
+		if (Kohana::config('config.pnp4nagios_path') !== false && pnp::has_graph($host, urlencode($service))) {
 			$label = $t->_('Show performance graph');
 			$url = Kohana::config('config.pnp4nagios_path') . 'index.php?host=' . urlencode($host);
 			if ($type ===  'service') {
