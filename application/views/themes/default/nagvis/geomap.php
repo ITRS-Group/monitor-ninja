@@ -32,24 +32,30 @@
 
 <script type="text/javascript">
 	if (!(document.attachEvent))
-	{
 		window.document["geomap"].addEventListener("DOMMouseScroll", handleWheel, false);
-	}
+	else
+		window.document["geomap"].onmousewheel = handleWheel;
 
 	function handleWheel(event)
 	{
 		var app = window.document["geomap"];
 		if (app)
 		{
+			if (!event)
+				event = window.event;
+
 			var o = {x: event.clientX - parseInt($("#geomap").offset().left),
 				y: event.clientY - parseInt($("#geomap").offset().top),
-				delta: event.detail,
+				delta: (event.detail ? event.detail : -event.wheelDelta/40),
 				ctrlKey: event.ctrlKey, altKey: event.altKey,
 				shiftKey: event.shiftKey
 			};
 
 			app.handleWheel(o);
-			event.preventDefault();
+			if (event.preventDefault)
+				event.preventDefault();
+			else
+				event.returnValue = false;
 		}
 	}
 </script>
