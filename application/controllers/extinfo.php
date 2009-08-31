@@ -173,9 +173,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		if (Kohana::config('config.pnp4nagios_path') !== false && pnp::has_graph($host, urlencode($service))) {
 			$label = $t->_('Show performance graph');
-			$url = Kohana::config('config.pnp4nagios_path') . 'index.php?host=' . urlencode($host);
+			$url = url::base(false) . 'index.php/pnp/?host=' . urlencode($host);
 			if ($type ===  'service') {
-				$url .= '&service=' . urlencode($service);
+				$url .= '&srv=' . urlencode($service);
 			}
 			$xaction[$label] = array
 				('url' => $url,

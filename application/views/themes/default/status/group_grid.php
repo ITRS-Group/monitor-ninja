@@ -93,8 +93,8 @@ if (!empty($group_details))
 			</td>
 			<td class="icon">
 				<?php
-				if (isset($pnp_path)) {
-					echo '<a href="'.$pnp_path.'index.php?host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp)).'</a>';
+				if (isset($pnp_path) && pnp::has_graph($host['host_name'])) {
+					echo '<a href="'.$pnp_path.'host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp)).'</a>';
 				} ?>
 			</td>
 			<td class="icon">
