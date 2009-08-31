@@ -158,7 +158,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$label = $t->_('Configure');
 			$url = url::base(false) . "index.php/configuration/configure/$type/" . urlencode($host);
 			if ($type === 'service') {
-				$url .= '?' . urlencode($service);
+				$url .= '?service=' . urlencode($service);
 				$alt = $t->_('Configure this service using Nacoma');
 			} else {
 				$alt = $t->_('Configure this host using Nacoma');
