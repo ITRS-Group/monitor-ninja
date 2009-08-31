@@ -13,24 +13,37 @@
 	</div>
 	<div class="widget-content">
 	<?php } ?>
-		<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf" width="100%" height="400">
+		<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf"
+			id="geomap" width="100%" height="400">
 			<param name="base" value="/nagvis/netmap" />
 			<param name="movie" value="/nagvis/netmap/shell.swf" />
 			<param name="bgcolor" value="#ffffff" />
 			<param name="wmode" value="opaque" />
-			<!--
-			this works in most normal browsers and even MSIE,
-			but Firefox (tested in 3.5) wants <embed> - what a shame!
-			-->
-			<embed src="/nagvis/netmap/shell.swf"
-				base="/nagvis/netmap"
-				width="100%" height="400"
-				bgcolor="#ffffff"
-				wmode="opaque"
-				type="application/x-shockwave-flash">
-				<p>Adobe Flash Player is not installed</p>
-			</embed>
+			<param name="allowScriptAccess" value="sameDomain" />
 		</object>
+		<script type="text/javascript">
+			if (!(document.attachEvent))
+			{
+				window.document["geomap"].addEventListener("DOMMouseScroll", handleWheel, false);
+			}
+
+			function handleWheel(event)
+			{
+				var app = window.document["geomap"];
+				if (app)
+				{
+					var o = {x: event.clientX - parseInt($("#geomap").offset().left),
+						y: event.clientY - parseInt($("#geomap").offset().top),
+						delta: event.detail,
+						ctrlKey: event.ctrlKey, altKey: event.altKey,
+						shiftKey: event.shiftKey
+					};
+
+					app.handleWheel(o);
+					event.preventDefault();
+				}
+			}
+		</script>
 <?php if (!$ajax_call) { ?>
 	</div>
 </div>
