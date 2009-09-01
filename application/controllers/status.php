@@ -1157,7 +1157,7 @@ class Status_Controller extends Authenticated_Controller {
 				 * Set correct path in config/config.php
 				 */
 				$pnp_link = false;
-				if (Kohana::config('config.pnp4nagios_path')!==false && pnp::has_graph($row->host_name)) {
+				if (Kohana::config('config.pnp4nagios_path')!==false && pnp::has_graph($host->host_name)) {
 					$lable_pnp = $t->_('Show performance graph');
 					$pnp_link = '<a href="'.url::base(true) . 'pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $lable_pnp, 'title' => $lable_pnp)).'</a>';
 				}
