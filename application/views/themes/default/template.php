@@ -107,13 +107,12 @@ if (isset($this->template->js_header))
 				</ul>
 			</div>
 		</div>
-		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
+		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu(55 2'hide')"></div>
 			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
 		<div style="position: fixed; left: 0px;">
 		<div id="menu-slider"></div>
 		<div id="menu-scroll">
 		<div id="menu">
-
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
@@ -122,7 +121,7 @@ if (isset($this->template->js_header))
 							<em>'.substr(html::specialchars($header),0,1).'</em>
 						</li>'."\n";
 						foreach ($link as $title => $url):
-							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']))
+							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']).(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''))s
 								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							elseif($url[0] == '')
 								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
@@ -141,7 +140,7 @@ if (isset($this->template->js_header))
 				<li id="noheader_ctrl" style="display:none">
 					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
 				</li>
-			<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
+				<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 				<li id="ninja_page_refresh">
 					<input type="checkbox" id="ninja_refresh_control" />
 					<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo $this->translate->_('Pause refresh') ?></label>
@@ -152,6 +151,7 @@ if (isset($this->template->js_header))
 						<input type="text" maxlength="3" size="2" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 170px; padding: 1px; margin-top:-25px;z-index: 500" />
 					</div>
 				</li>
+
 				<?php
 					} # end if disable_refresh
 
