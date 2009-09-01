@@ -37,7 +37,7 @@
 				<td><?php echo $row->author_name ?></td>
 				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
 				<td><?php echo $row->comment_id ?></td>
-				<td><?php echo $row->persistent ? $label_yes : $label_yes ?></td>
+				<td><?php echo $row->persistent ? $label_yes : $label_no ?></td>
 				<td>
 					<?php	switch ($row->entry_type) {
 						case Comment_Model::USER_COMMENT:
