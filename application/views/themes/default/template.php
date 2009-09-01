@@ -107,7 +107,7 @@ if (isset($this->template->js_header))
 				</ul>
 			</div>
 		</div>
-		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu(55 2'hide')"></div>
+		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
 			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
 		<div style="position: fixed; left: 0px;">
 		<div id="menu-slider"></div>
