@@ -74,7 +74,7 @@ class Comment_Model extends ORM {
 		if ($count === false) {
 			if (empty($service)) {
 				$data = ORM::factory('comment')
-					->where("host_name!='' AND service_description=''")
+					->where("host_name!='' AND (service_description='' OR service_description is null) ")
 					->orderby('host_name')
 					->find_all($num_per_page,$offset);
 			} else {
@@ -86,7 +86,7 @@ class Comment_Model extends ORM {
 		} else {
 			if (empty($service)) {
 				$data = ORM::factory('comment')
-					->where("host_name!='' AND service_description=''")
+					->where("host_name!='' AND (service_description='' OR service_description is null) ")
 					->orderby('host_name')
 					->find_all()->count();
 			} else {
