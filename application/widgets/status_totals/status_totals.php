@@ -52,7 +52,7 @@ class Status_totals_Widget extends widget_Core {
 		$host = 'all';
 		$host_state = isset($arguments[1]) && !empty($arguments[1]) ? $arguments[1] : (nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE|nagstat::HOST_PENDING);
 		$service_state = isset($arguments[2]) ? $arguments[2] : false;
-		$target_method = $service_state === false ? 'host' : 'service';
+		$target_method = 'host';
 		$grouptype = false;
 		$groupname = false;
 
