@@ -16,6 +16,7 @@
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
 			<tr>
+				<th style="white-space: nowrap"><?php echo $label_host_name ?></th>
 				<th style="white-space: nowrap"><?php echo $label_entry_time ?></th>
 				<th><?php echo $label_author ?></th>
 				<th><?php echo $label_comment ?></th>
@@ -31,6 +32,7 @@
 		if ($data->count()) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
+				<td><?php echo $row->host_name ?></td>
 				<td class="bl"><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
 				<td><?php echo $row->author_name ?></td>
 				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
