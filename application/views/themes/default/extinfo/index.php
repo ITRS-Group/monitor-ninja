@@ -47,6 +47,23 @@ if (!empty($widgets)) {
 				?>
 			</td>
 		</tr>
+
+		<?php if ($parents !== false && count($parents)) { ?>
+		<tr>
+			<td class="white"><strong><?php echo $label_parents ?></strong></td>
+			<td class="white">
+				<?php
+				$cnt = 0;
+				foreach ($parents as $parent) {
+					$cnt++;
+					echo html::anchor('status/service/'.$parent->host_name, $parent->host_name);
+					echo $cnt < count($parents) ? ', ': '';
+				}
+				?>
+			</td>
+		</tr>
+		<?php } ?>
+
 		<tr>
 			<td class="white"><strong><?php echo $lable_member_of ?></strong></td>
 			<td class="white"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>

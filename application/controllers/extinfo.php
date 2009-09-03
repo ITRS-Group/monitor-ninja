@@ -116,6 +116,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->contacts = $contacts;
 		$is_pending = false;
 		$back_link = false;
+		$content->parents = false;
 
 		if ($type == 'host') {
 			$group_info = Group_Model::get_groups_for_object($type, $result->id);
@@ -126,6 +127,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Active Check');
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
+
+			# check for parents
+			$host_obj = new Host_Model();
+			$parents = $host_obj->get_parents($host);
+			$content->label_parents = $t->_('Parents');
+			if (count($parents)) {
+				$content->parents = $parents;
+			}
+
 			$back_link = 'host/'.urlencode($host);
 			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
