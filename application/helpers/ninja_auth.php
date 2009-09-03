@@ -61,7 +61,7 @@ class ninja_auth_Core
 
 		 case 'apr_md5':
 			# ... or a mad and weird aberration of md5
-			return apr_md5_validate($pass, $hash);
+			return ninja_auth::apr_md5_validate($pass, $hash);
 		 default:
 			return false;
 		}
