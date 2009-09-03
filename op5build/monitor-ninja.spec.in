@@ -26,8 +26,8 @@ mkdir -p -m 755 %buildroot%prefix/op5/ninja
 cp -r * %buildroot%prefix/op5/ninja
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
-find -print0 %buildroot | xargs -0 chmod a+r
-find -type d -print0 %buildroot | xargs -0 chmod a+x
+find %buildroot -print0 | xargs -0 chmod a+r
+find %buildroot -type d -print0 | xargs -0 chmod a+x
 
 # executables
 for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
