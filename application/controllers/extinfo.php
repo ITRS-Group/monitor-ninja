@@ -621,8 +621,25 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# uses ORM
 		$status_res = Program_status_Model::get_all();
 
-		# @@@FIXME how do we figure the program version out?
-		$this->template->content->program_version = $na_str;
+		# --------------------------------------
+		# Fetch program version from status.log
+		# --------------------------------------
+		# where is status.log on this system?
+		$nagios_config = System_Model::parse_config_file('nagios.cfg');
+		$status_file = $nagios_config['status_file'];
+
+		# use grep + awk to find version
+		exec("/bin/grep -m1 version= ".$status_file."|/bin/awk -F = {'print $2'}", $version_output, $result);
+
+		# check return values
+		if ($result==0 && !empty($version_output)) {
+			$version = $version_output[0];
+		} else {
+			$version = $na_str;
+		}
+
+		# assign program version to template
+		$this->template->content->program_version = $version;
 
 		if ($status_res->count() > 0) {
 			$status = $status_res->current();
