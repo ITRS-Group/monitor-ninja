@@ -208,8 +208,20 @@
 		</tbody>
 	</table>
 	<?php }
-		else {
-			echo $label_no_data;
-		}
-	?>
+		else { ?>
+	<table id="group_summary_table">
+		<thead>
+			<tr>
+				<th><?php echo $label_group_name ?></th>
+				<th class="no-sort"><?php echo $label_host_summary ?></th>
+				<th class="no-sort"><?php echo $label_service_summary ?></th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td colspan="3"><?php echo $label_no_data ?></td>
+		</tr>
+		</tbody>
+	</table><?php
+		} ?>
 </div>

@@ -110,7 +110,22 @@ if (!empty($group_details))
 
 <?php
 }	# end each group
-else
-	echo $this->translate->_(sprintf('No %s group data found', $grouptype));
+else { ?>
+	<table class="group_grid_table">
+		<thead>
+		<tr>
+			<th class="no-sort"colspan="2"><?php echo $label_host ?></th>
+			<th class="no-sort"><?php echo $label_services ?></th>
+			<th class="no-sort" colspan="5"><?php echo $label_actions ?></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td colspan="8"><?php echo $error_message ?></td>
+		</tr>
+		</tbody>
+
+	<?php
+}
 ?>
 </div>

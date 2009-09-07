@@ -567,11 +567,17 @@ class Status_Controller extends Authenticated_Controller {
 			if (!empty($group_info_res)) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
-					$group_details[] = $this->_show_group($grouptype, $groupname_tmp, $style);
+					$details_tmp = $this->_show_group($grouptype, $groupname_tmp, $style);
+					if (!empty($details_tmp) && count($details_tmp) > 0) {
+						$group_details[] = $details_tmp;
+					}
 				}
 			}
 		} else {
-			$group_details[] = $this->_show_group($grouptype, $group, $style);
+			$details_tmp = $this->_show_group($grouptype, $group, $style);
+			if (!empty($details_tmp) && count($details_tmp) > 0) {
+				$group_details[] = $details_tmp;
+			}
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -593,9 +599,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content->lable_actions = $t->_('Actions');
 		$content->grouptype = $grouptype;
 		if (empty($group_details)) {
-			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = $t->_("No data found");
-			return;
 		}
 
 		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
@@ -760,7 +764,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_group_name = $t->_('Service Group');
 		$content->label_host_summary = $t->_('Host Status Summary');
 		$content->label_service_summary = $t->_('Service Status Summary');
-		$content->label_no_data = $t->_('No matching hosts');
+		$content->label_no_data = $t->_('No data found');
 		$content->label_up = $t->_('UP');
 		$content->label_down = $t->_('DOWN');
 		$content->label_unhandled = $t->_('Unhandled');
@@ -1125,10 +1129,9 @@ class Status_Controller extends Authenticated_Controller {
 
 		$t = $this->translate;
 		$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_by_field_value('servicegroup_name', $group) : Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+
 		if (empty($group_info_res)) {
-			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
-			return;
+			return false;
 		}
 		$hostlist = Group_Model::get_group_hoststatus($grouptype, $group, $hoststatustypes, $servicestatustypes);
 		$content->group_alias = $group_info_res->alias;
@@ -1313,17 +1316,17 @@ class Status_Controller extends Authenticated_Controller {
 				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 			if ($group_info_res) {
 				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
-			} else {
-				# overwrite previous view with the error view, add some text and bail out
-				$this->template->content = $this->add_view('error');
-				$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
-				return;
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Grid For Service Group ') : $t->_('Status Grid For Host Group ');
 			$content->label_header = $label_header."'".$group."'";
-			$group_details[] = $this->_show_grid($grouptype, $group);
+			$details_tmp = $this->_show_grid($grouptype, $group);
+			if (!empty($details_tmp)) {
+				$group_details[] = 	$details_tmp;
+			}
 		}
+
 		$content->group_details = $group_details;
+		$content->error_message = sprintf($t->_('No %s group data found'), $grouptype);
 		$content->grouptype = $grouptype;
 		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('icons/16x16/');
@@ -1422,7 +1425,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content = false;
 		$hosts = array();
 		$seen_hosts = array();
-		if (!empty($result)) {
+		if (!empty($result) && count($result) > 0) {
 			foreach ($result as $row) {
 				# loop over result and assign to return variable
 				if (!in_array($row->host_name, $seen_hosts)) {

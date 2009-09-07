@@ -33,6 +33,8 @@
 <div class="widget left w98" id="status_group-overview">
 <?php
 	$j = 0;
+	# make sure we have something to iterate over
+	if (!empty($group_details))
 	foreach ($group_details as $group) { ?>
 
 		<table class="group_overview_table">
@@ -78,5 +80,23 @@
 			</tbody>
 		</table>
 
-<?php $j++; } ?>
+<?php $j++; }
+	else { ?>
+		<table class="group_overview_table">
+			<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th colspan="2"><?php echo $lable_host ?></th>
+				<th class="no-sort"><?php echo $lable_services ?></th>
+				<th class="no-sort" colspan="6"><?php echo $lable_actions ?></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td colspan="5"><?php echo $error_message ?></td>
+			</tr>
+			</tbody>
+		</table>
+
+<?php } ?>
 </div>
