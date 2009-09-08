@@ -136,7 +136,7 @@ class User_Model extends Auth_User_Model {
 			$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
 		} else {
 			# this should never happen
-			$result = "Tried to save authorization data for nox existing user.\n";
+			$result = "Tried to save authorization data for a non existing user.\n";
 		}
 		return array($result);
 	}
