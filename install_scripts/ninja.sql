@@ -35,13 +35,6 @@ CREATE TABLE IF NOT EXISTS `roles_users` (
   KEY `fk_role_id` (`role_id`)
 );
 
---
--- Dumping data for table `roles_users`
---
-
-INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES(1, 1);
-INSERT INTO `roles_users` (`user_id`, `role_id`) VALUES(1, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -64,14 +57,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `uniq_username` (`username`)
 ) COLLATE latin1_general_cs;
-);
 
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `realname`, `email`, `username`, `password`, `logins`, `last_login`) VALUES
-(1, 'Monitor Admin', 'monitor@example.com', 'monitor', 'l5aAn32uSC0xI8FlhfK2D5dAd5Y=', 0, 0);
 
 --
 -- Table structure for table `user_tokens`;
