@@ -36,5 +36,5 @@ then
 	run_sql_file $db_login_opts "$prefix/install_scripts/ninja.sql"
 fi
 
-# import users annd authorization data
-/usr/bin/env php "$prefix/install_scripts/auth_import.php" $prefix
+# import users and authorization data
+/usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
