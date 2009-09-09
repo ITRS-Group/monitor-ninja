@@ -104,18 +104,6 @@ class ninja_auth_import
 		return mysql_select_db($this->db_database);
 	}
 
-	# fetch a single row to indexed array
-	public function sql_fetch_row($resource)
-	{
-		return(mysql_fetch_row($resource));
-	}
-
-	# fetch a single row to associative array
-	public function sql_fetch_array($resource)
-	{
-		return(mysql_fetch_array($resource, MYSQL_ASSOC));
-	}
-
 	/**
 	*	Fetch a single row as an object
 	*/
