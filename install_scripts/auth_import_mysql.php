@@ -101,6 +101,7 @@ class ninja_auth_import
 		if ($this->db === false)
 			return(false);
 
+		if ($this->DEBUG) echo "  Successfully connected to database\n";
 		return mysql_select_db($this->db_database);
 	}
 
@@ -192,6 +193,7 @@ class ninja_auth_import
 			$options[$str[0]] = $str[1];
 		}
 
+		if ($this->DEBUG) echo "  Parsed file: $config_file\n";
 		return $options;
 	}
 
@@ -251,6 +253,7 @@ class ninja_auth_import
 			exit(1);
 		}
 		$no_auto_import = true;
+		if ($this->DEBUG) echo "  Creating htpasswd_importer() instance\n";
 		require_once($path);
 		$passwd_import = new htpasswd_importer();
 		$passwd_import->import_hashes($this->nagios_cfg_path.'/htpasswd.users');
@@ -282,6 +285,7 @@ class ninja_auth_import
 				}
 			}
 			if (!empty($auth_data)) {
+				if ($this->DEBUG) echo "  Found user '$user', passing auth data to edit_user_data()\n";
 				$this->edit_user_data($user, $auth_data);
 			}
 		}
@@ -319,12 +323,15 @@ class ninja_auth_import
 		$sql .= " username='".$this->sql_escape_string($username)."'";
 		$res = $this->sql_exec_query($sql);
 		if ($res !== false && $this->sql_num_rows($res)) {
+			if ($this->DEBUG) echo "  Found user '$username' in database, continuing with auth data\n";
 			# user found in db
 			# does authorization data exist for this user?
 			$user = $this->sql_fetch_object($res);
 			$result = $this->insert_user_auth_data($user->id, $auth_options);
+			if ($this->DEBUG && $result === false) echo "-->  SQL error in insert_user_auth_data\n";
 		} else {
 			# this should never happen
+			if ($this->DEBUG) echo "  Tried to save authorization data for a non existing user '$username'.\n";
 			$result = "Tried to save authorization data for a non existing user.\n";
 		}
 
@@ -349,6 +356,7 @@ class ninja_auth_import
 		$res = $this->sql_exec_query($sql);
 		if ($res !== false && $this->sql_num_rows($res)) {
 			# user exists, update authorization data
+			if ($this->DEBUG) echo "  user ID '$user_id' exists in ninja_user_authorization, updating authorization data\n";
 			$sql = "UPDATE ".$this->db_database.".ninja_user_authorization SET ";
 			$sql_upd = false;
 			foreach	($options as $field => $value) {
@@ -362,6 +370,7 @@ class ninja_auth_import
 			}
 		} else {
 			# create new record
+			if ($this->DEBUG) echo "  Creating new authorization record for user ID $user_id\n";
 			$sql = "INSERT INTO ".$this->db_database.".ninja_user_authorization";
 			$sql .= " (user_id, `".implode('`,`', array_keys($options))."`) ";
 			$values = array_values($options);
@@ -373,6 +382,7 @@ class ninja_auth_import
 		}
 
 		# done, save it
+		if ($this->DEBUG) echo "  Executing query for user ID $user_id and returning from insert_user_auth_data()\n";
 		return $this->sql_exec_query($sql);
 	}
 }
@@ -380,5 +390,6 @@ class ninja_auth_import
 $import = new ninja_auth_import();
 $import->prefix = $prefix;
 $import->insert_user_data();
+if ($import->DEBUG) echo "== Done with importing users and auth data\n";
 ?>
 

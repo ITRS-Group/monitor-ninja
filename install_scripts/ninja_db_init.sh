@@ -37,4 +37,5 @@ then
 fi
 
 # import users and authorization data
+echo "Importing users from cgi.cfg"
 /usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
