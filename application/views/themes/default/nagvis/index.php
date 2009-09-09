@@ -24,7 +24,13 @@
 
 	ul.thumbnails li a.edit {
 		position: relative;
-		left: 177px;
+		left: 165px;
+		top: -15px;
+	}
+
+	ul.thumbnails li a.delete {
+		position: relative;
+		left: 167px;
 		top: -15px;
 	}
 </style>
@@ -39,6 +45,7 @@
 				echo '<li>';
 				echo '<a class="view" href="/ninja/index.php/nagvis/view/'.$map.'"><img src="/nagvis/var/'.$map.'-thumb.png" alt="" /><span>'.$map.'</span></a>';
 				echo '<a class="edit" href="/ninja/index.php/nagvis/edit/'.$map.'">[edit]</a>';
+				echo '<a class="delete" href="/ninja/index.php/nagvis/delete/'.$map.'">[x]</a>';
 				echo '</li>';
 			}
 			?>

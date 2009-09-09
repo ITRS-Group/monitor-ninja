@@ -57,6 +57,17 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 	}
 
+	public function delete($map)
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$maps = new Nagvis_Maps_Model;
+
+		$maps->delete($map);
+
+		url::redirect('nagvis/index');
+	}
+
 	public function automap()
 	{
 		$_SESSION['nagvis_user'] = user::session('username');

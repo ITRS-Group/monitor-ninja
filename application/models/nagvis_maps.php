@@ -23,4 +23,10 @@ class Nagvis_Maps_Model extends Model
 		else
 			return array();
 	}
+
+	public function delete($map)
+	{
+		if (Kohana::config('config.nagvis_path') !== false)
+			unlink(Kohana::config('config.nagvis_real_path') . 'etc/maps/' . $map . '.cfg');
+	}
 }
