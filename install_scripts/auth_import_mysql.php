@@ -29,7 +29,7 @@ class ninja_auth_import
 	private $merlin_path = '/opt/monitor/op5/merlin';	# where to find merlin files
 	private $nagios_cfg_path = '/opt/monitor/etc';		# path to nagios cfg files
 														# no trailing slash
-	public $DEBUG = true;
+	public $DEBUG = false;
 	public static $auth_fields = array(
 				'system_information',
 				'configuration_information',
