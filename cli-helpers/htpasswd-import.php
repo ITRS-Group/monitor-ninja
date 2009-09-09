@@ -58,6 +58,8 @@ class htpasswd_importer
 		foreach ($this->passwd_ary as $user => $ary) {
 			$hash = $ary['hash'];
 			$algo = $ary['algo'];
+			$is_new = false; 	# keep track if user is new and should be assigned
+								# the login role
 
 			# if we're not supposed to overwrite user's passwords
 			# and this user already exist, just move along
@@ -80,12 +82,15 @@ class htpasswd_importer
 					"'" . mysql_escape_string($user) . "', '" .
 					mysql_escape_string($algo) . "', '" .
 					mysql_escape_string($hash) . "')";
+					$is_new = true; # mark this as new user
 			}
 
 			$result = mysql_query($query);
 			if (!$result) {
 				echo "query '$query' failed with error:\n";
 				echo "  " . mysql_error() . "\n";
+			} elseif ($is_new) {
+				$this->add_user_role($this->sql_insert_id($result));
 			}
 		}
 	}
@@ -138,6 +143,29 @@ class htpasswd_importer
 
 		return $this->passwd_ary;
 	}
+
+	/**
+	*	Return last inserted ID
+	*/
+	public function sql_insert_id($resource=false)
+	{
+		return mysql_insert_id();
+	}
+
+	/**
+	*	Add role for last inserted user
+	*/
+	public function add_user_role($user_id=false)
+	{
+		$user_id = (int)$user_id;
+		if (!$user_id)
+			return false;
+		$login_role = 1;
+		$sql = "INSERT INTO " . $this->db_name . ".roles_users (user_id, role_id) ";
+		$sql .= "VALUES(".$user_id.", ".$login_role.")";
+		mysql_query($sql);
+	}
+
 }
 
 function pw_import_usage($msg = false)
