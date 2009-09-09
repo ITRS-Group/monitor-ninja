@@ -6,9 +6,8 @@ $(document).ready(function() {
     maxHeight:400,
     width:140,
     deferRequestBy: 0, //miliseconds
-    //params: { country:'Yes' } //aditional parameters
     // callback function:
-    onSelect: function(value, data){ do_redirect(value, data); },
+    onSelect: function(value, data){ do_redirect(value, data); }
   });
 
 });
