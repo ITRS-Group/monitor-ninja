@@ -24,6 +24,26 @@ class Nagvis_Maps_Model extends Model
 			return array();
 	}
 
+	public function create($map)
+	{
+		if (Kohana::config('config.nagvis_path') === false)
+			return false;
+
+		$filename = Kohana::config('config.nagvis_real_path') . 'etc/maps/' . $map . '.cfg';
+		$contents = <<<EOD
+define global {
+allowed_user=EVERYONE
+allowed_for_config=EVERYONE
+iconset=std_medium
+map_image=demo_background.png
+}
+EOD;
+		if (file_put_contents($filename, $contents) !== false)
+			return true;
+		else
+			return false;
+	}
+
 	public function delete($map)
 	{
 		if (Kohana::config('config.nagvis_path') !== false)

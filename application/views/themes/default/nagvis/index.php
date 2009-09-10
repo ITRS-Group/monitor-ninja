@@ -15,7 +15,8 @@
 		width: 200px;
 	}
 
-	ul.thumbnails li a.view span {
+	ul.thumbnails li a.view span,
+	ul.thumbnails li a.create {
 		display: block;
 		width: 200px;
 		text-align: center;
@@ -32,6 +33,20 @@
 		position: relative;
 		left: 167px;
 		top: -15px;
+	}
+
+	ul.thumbnails li.create {
+		padding-top: 59px;
+		text-align: center;
+	}
+
+	ul.thumbnails li.create form {
+		margin: 35px 0 4px;
+	}
+
+	ul.thumbnails li a.create {
+		display: block;
+		width: 200px;
 	}
 </style>
 
@@ -51,6 +66,11 @@
 			?>
 			<li><a class="view" href="/ninja/index.php/nagvis/automap"><img src="/nagvis/var/__automap-thumb.png" alt="" /><span>Automap</span></a></li>
 			<li><a class="view" href="/ninja/index.php/nagvis/geomap"><img src="/ninja/geomap-thumb.png" alt="" /><span>Geomap</span></a></li>
+			<li class="create"><?php echo html::image($this->add_path('icons/add.png')); ?>
+				<form id="createmap" action="/ninja/index.php/nagvis/create" method="post">
+					<input type="text" name="name" maxlength="25" />
+				</form>
+				<a class="create" href="#" onclick="$('#createmap').submit(); return false">Create</a></li>
 		</ul>
 	</div>
 </div>
