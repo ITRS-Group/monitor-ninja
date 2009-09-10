@@ -45,7 +45,7 @@
 				echo '<li>';
 				echo '<a class="view" href="/ninja/index.php/nagvis/view/'.$map.'"><img src="/nagvis/var/'.$map.'-thumb.png" alt="" /><span>'.$map.'</span></a>';
 				echo '<a class="edit" href="/ninja/index.php/nagvis/edit/'.$map.'">[edit]</a>';
-				echo '<a class="delete" href="/ninja/index.php/nagvis/delete/'.$map.'">[x]</a>';
+				echo '<a class="delete" href="/ninja/index.php/nagvis/delete/'.$map.'" onclick="return confirm(\'Are you sure you want to delete map '.$map.'?\')">[x]</a>';
 				echo '</li>';
 			}
 			?>
