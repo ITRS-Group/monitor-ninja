@@ -50,6 +50,20 @@
 	}
 </style>
 
+<script type="text/javascript">
+	function createmap()
+	{
+		var rxMapName = /^([-_0-9A-Za-z]+)$/;
+
+		if (!$('#mapname').val().length)
+			alert('Please enter the name of a map');
+		else if (!rxMapName.test($('#mapname').val()))
+			alert('Invalid map name');
+		else
+			$('#createmap').submit();
+	}
+</script>
+
 <div class="left">
 	<div>
 		<strong>Maps</strong>
@@ -68,9 +82,9 @@
 			<li><a class="view" href="/ninja/index.php/nagvis/geomap"><img src="/ninja/geomap-thumb.png" alt="" /><span>Geomap</span></a></li>
 			<li class="create"><?php echo html::image($this->add_path('icons/add.png')); ?>
 				<form id="createmap" action="/ninja/index.php/nagvis/create" method="post">
-					<input type="text" name="name" maxlength="25" />
+					<input type="text" id="mapname" name="name" maxlength="25" />
 				</form>
-				<a class="create" href="#" onclick="$('#createmap').submit(); return false">Create</a></li>
+				<a class="create" href="#" onclick="createmap(); return false">Create</a></li>
 		</ul>
 	</div>
 </div>
