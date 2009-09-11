@@ -66,7 +66,7 @@
 
 <div class="left">
 	<div>
-		<strong>Maps</strong>
+		<strong>Maps</strong> <a class="view" href="/ninja/index.php/nagvis/configure">[configure]</a>
 		<ul class="thumbnails">
 			<?php
 			foreach ($maps as $map)

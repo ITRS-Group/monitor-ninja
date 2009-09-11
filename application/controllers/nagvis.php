@@ -134,4 +134,19 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 	}
+
+	public function configure()
+	{
+		$_SESSION['nagvis_user'] = user::session('username');
+
+		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
+			. $this->translate->_('Configure');
+		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. $this->translate->_('Configure');
+		$this->template->content = $this->add_view('nagvis/configure');
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+	}
 }
