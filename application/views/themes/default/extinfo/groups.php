@@ -75,7 +75,7 @@
 			<?php echo html::image($this->add_path('icons/16x16/notify-disabled.png'), array('alt' => $label_disable.' '.$label_notifications_services.' '.$label_grouptype, 'title' => $label_disable.' '.$label_notifications_services.' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_notifications_services.'&'.strtolower($label_grouptype).'='.$groupname, $label_notifications_services." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_notifications_services.'&'.strtolower($label_grouptype).'='.$groupname, $label_disable.' '.$label_notifications_services." ".$label_grouptype); ?>
 		</td>
 	</tr>
 	<tr>
