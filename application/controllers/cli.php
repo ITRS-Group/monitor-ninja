@@ -123,6 +123,9 @@ class Cli_Controller extends Authenticated_Controller {
 		}
 		$passwd_import->import_hashes($etc_path.'htpasswd.users');
 
+		# don't assume any authorized users - start by removing all auth data
+		User_Model::truncate_auth_data();
+
 		$config_data = self::get_cgi_config();
 
 		# All db fields that should be set

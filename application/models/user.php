@@ -142,6 +142,16 @@ class User_Model extends Auth_User_Model {
 	}
 
 	/**
+	* Truncate ninja_user_authentication table
+	*/
+	public function truncate_auth_data()
+	{
+		$db = new Database();
+		$sql = "TRUNCATE ninja_user_authorization";
+		$db->query($sql);
+	}
+
+	/**
 	*	Create the ninja_user_authorization table if not exists
 	*
 	*/
