@@ -29,10 +29,10 @@
 			</thead>
 			<tbody>
 	<?php
-		if ($data->count()) {
+		if ($data!==false && $data->count()) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
-				<td><?php echo $row->host_name ?></td>
+				<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 				<td class="bl"><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
 				<td><?php echo $row->author_name ?></td>
 				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
