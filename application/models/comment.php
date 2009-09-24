@@ -3,10 +3,7 @@
 /**
  * Handle comments for hosts and services
  */
-class Comment_Model extends ORM {
-	protected $table_names_plural = false;
-	protected $primary_key = 'id';
-
+class Comment_Model extends Model {
 	/***************************** COMMENT TYPES *******************************/
 	const HOST_COMMENT = 1;
 	const SERVICE_COMMENT = 2;
@@ -28,30 +25,46 @@ class Comment_Model extends ORM {
 		if (empty($host)) {
 			return false;
 		}
-		if (empty($service)) {
-			$service = '';
+		$db = new Database();
+		$auth = new Nagios_auth_Model();
+
+		$host_query = $auth->authorized_host_query();
+		if ($host_query === true) {
+			# don't use auth_host fields etc
+			$auth_host_alias = 'h';
+			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
+		} else {
+			$auth_host_alias = $host_query['host_field'];
+			$auth_from = ' ,'.$host_query['from'];
+			$auth_where = ' AND '.sprintf($host_query['where'], "c.host_name");
 		}
+
 		$num_per_page = (int)$num_per_page;
 		if ($count === false) {
-			$data = ORM::factory('comment')
-				->where(
-					array(
-						'host_name'=> $host,
-						'service_description' => $service
-					)
-				)
-				->find_all($num_per_page,$offset);
+			if (empty($service)) {
+				$sql = "SELECT c.* FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
+				" (c.service_description='' OR c.service_description is null) ".$auth_where.
+				" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
+			} else {
+				$sql = "SELECT c.* FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
+				" c.service_description=".$db->escape($service)." ".$auth_where.
+				" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
+			}
+
+			$result = $db->query($sql);
+			return $result->count() ? $result: false;
 		} else {
-			$data = ORM::factory('comment')
-				->where(
-					array(
-						'host_name'=> $host,
-						'service_description' => $service
-					)
-				)
-				->find_all();
+			if (empty($service)) {
+				$sql = "SELECT COUNT(*) AS cnt FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
+				" (c.service_description='' OR c.service_description is null) ".$auth_where;
+			} else {
+				$sql = "SELECT COUNT(*) AS cnt FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
+				" c.service_description=".$db->escape($service)." ".$auth_where;
+			}
+			$result = $db->query($sql);
+			return $result->count() ? (int)$result->current()->cnt : 0;
 		}
-		return $data ? $data : false;
 	}
 
 	/**
@@ -70,34 +83,49 @@ class Comment_Model extends ORM {
 		$host = trim($host);
 		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
+		$db = new Database();
+		$auth = new Nagios_auth_Model();
+
+		$host_query = $auth->authorized_host_query();
+		if ($host_query === true) {
+			# don't use auth_host fields etc
+			$auth_host_alias = 'h';
+			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
+		} else {
+			$auth_host_alias = $host_query['host_field'];
+			$auth_from = ' ,'.$host_query['from'];
+			$auth_where = ' AND '.sprintf($host_query['where'], "c.host_name");
+		}
 
 		if ($count === false) {
 			if (empty($service)) {
-				$data = ORM::factory('comment')
-					->where("host_name!='' AND (service_description='' OR service_description is null) ")
-					->orderby('host_name')
-					->find_all($num_per_page,$offset);
+				$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
+					" c.host_name!='' AND (c.service_description='' OR c.service_description is null) ".$auth_where.
+					" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
 			} else {
-				$data = ORM::factory('comment')
-					->where("host_name!='' AND service_description!=''")
-					->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
-					->find_all($num_per_page,$offset);
+				$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
+					" c.host_name!='' AND c.service_description!='' ".$auth_where.
+					" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
 			}
+
+			$result = $db->query($sql);
+			return $result->count() ? $result: false;
 		} else {
 			if (empty($service)) {
-				$data = ORM::factory('comment')
-					->where("host_name!='' AND (service_description='' OR service_description is null) ")
-					->orderby('host_name')
-					->find_all()->count();
+				$sql = "SELECT COUNT(*) AS cnt FROM comment c ".$auth_from." WHERE".
+					" c.host_name!='' AND (c.service_description='' OR c.service_description is null) ".$auth_where;
+					$result = $db->query($sql);
+					return $result->count() ? (int)$result->current()->cnt : 0;
 			} else {
-				$data = ORM::factory('comment')
-					->where("host_name!='' AND service_description!=''")
-					->orderby(array('host_name' => 'ASC', 'service_description' => 'ASC'))
-					->find_all()->count();
-			}
-			return $data;
+				$sql = "SELECT COUNT(*) AS cnt FROM comment c ".$auth_from." WHERE".
+					" c.host_name!='' AND c.service_description!=''".$auth_where;
+					$result = $db->query($sql);
+					return $result->count() ? (int)$result->current()->cnt : 0;
+				}
 		}
-		return $data ? $data : false;
+		$result = $db->query($sql);
+		return $result->result();
 	}
 
 	/**
