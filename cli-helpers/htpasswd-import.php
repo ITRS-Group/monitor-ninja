@@ -66,14 +66,14 @@ class htpasswd_importer
 			if (isset($this->existing_ary[$user])) {
 				if (!$this->overwrite)
 					continue;
-				if ($hash = $this->existing_ary[$user]['hash'] &&
-					$algo = $this->existing_ary[$user]['algo'])
+				if ($hash == $this->existing_ary[$user]['hash'] &&
+					$algo == $this->existing_ary[$user]['algo'])
 				{
 					continue;
 				}
 
 				$query = "UPDATE $this->db_table SET " .
-					"password_algo = '" . mysql_escape_string($algo) . "' " .
+					"password_algo = '" . mysql_escape_string($algo) . "', " .
 					"password = '" . mysql_escape_string($hash) . "' " .
 					"WHERE username = '" . mysql_escape_string($user) . "'";
 			} else {
