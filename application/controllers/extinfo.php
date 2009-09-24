@@ -360,7 +360,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# acknowledgements
 		$commands->show_ackinfo = false;
 		if ($type == 'host') {
-			if ($result->current_state == nagstat::HOST_DOWN || $result->current_state == nagstat::HOST_UNREACHABLE) {
+			if ($result->current_state == Current_status_Model::HOST_DOWN || $result->current_state == Current_status_Model::HOST_UNREACHABLE) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
 				if (!$result->problem_has_been_acknowledged) {
@@ -374,7 +374,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 			}
 		} else {
-			if (($result->current_state == nagstat::SERVICE_WARNING || $result->current_state == nagstat::SERVICE_UNKNOWN || $result->current_state == nagstat::SERVICE_CRITICAL) && $result->state_type) {
+			if (($result->current_state == Current_status_Model::SERVICE_WARNING || $result->current_state == Current_status_Model::SERVICE_UNKNOWN || $result->current_state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
 				if (!$result->problem_has_been_acknowledged) {
@@ -407,14 +407,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$commands->show_delay = false;
 		if ($type == 'host') {
-			if ($result->current_state == nagstat::HOST_UP) {
+			if ($result->current_state != Current_status_Model::HOST_UP) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = $t->_('Delay Next Host Notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_HOST_NOTIFICATION'),
 				$host, false, $commands->lable_delay_notification);
 			}
 		} else {
-			if ($result->current_state == nagstat::SERVICE_OK) {
+			if ($result->notifications_enabled && $result->current_state != Current_status_Model::SERVICE_OK) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = $t->_('Delay Next Service Notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_SVC_NOTIFICATION'),
