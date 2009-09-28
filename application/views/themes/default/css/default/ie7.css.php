@@ -5,6 +5,7 @@ table{border-collapse:collapse}
 #login-table hr {margin: 0px;}
 .w98 { width: 99%;}
 div.left {float: left;margin-left: 0px;}
+div.right {float: none; position: absolute; right: 0px;}
 .service-totals {margin-top:-75px;}
 
 .icon {padding: 0px 7px;max-width: 16px;}
