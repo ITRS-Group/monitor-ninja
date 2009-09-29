@@ -191,7 +191,7 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
 				$what = $param['_child-hosts'];
 				unset($param['_child-hosts']);
-				$fixed = $param['fixed'];
+				$fixed = isset($param['fixed']) ? $param['fixed'] : false;
 				if ($what === 'triggered') {
 					$param['fixed'] = 0;
 					$xcmd = 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME';
