@@ -82,10 +82,30 @@ class Command_Model extends Model
 		return $ret;
 	}
 
-	protected function get_downtime_ids($command_name)
+	protected function get_downtime_ids($command_name, $defaults=false)
 	{
-		# fixme: STUB
-		return array(1, 2, 3);
+		$host_name = isset($defaults['host_name']) ? $defaults['host_name'] : false;
+		$service = isset($defaults['service']) ? $defaults['service'] : false;
+		if (empty($host_name)) {
+			return false;
+		}
+
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+		$na_str = $translate->_('N/A');
+		$options = false;
+		$options = array(0 => $na_str);
+		$downtime_data = Downtime_Model::get_downtime_data($host_name, $service);
+		if ($downtime_data !== false) {
+			foreach ($downtime_data as $data) {
+				if (strstr($command_name, 'HOST_DOWNTIME')) {
+					$options[$data->downtime_id] = $translate->_(sprintf("ID: %s, Host '%s' starting @ %s\n", $data->downtime_id, $data->host_name, date(nagstat::date_format(), $data->start_time)));
+				} elseif (strstr($command_name, 'SVC_DOWNTIME')) {
+					$options[$data->downtime_id] = sprintf("ID: %s, Service '%s' on host '%s' starting @ %s \n", $data->downtime_id, $data->service_description, $data->host_name, date(nagstat::date_format(), $data->start_time));
+				}
+			}
+		}
+
+		return $options;
 	}
 
 	/**
@@ -138,7 +158,8 @@ class Command_Model extends Model
 				break;
 			 case 'downtime_id':
 			 case 'trigger_id':
-				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd));
+				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd, $defaults));
+				$ary['name'] = $translate->_('Triggered By');
 				break;
 			 case 'duration':
 				$ary = array('type' => 'duration', 'default' => '2,0');
