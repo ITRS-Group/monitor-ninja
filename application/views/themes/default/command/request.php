@@ -9,7 +9,7 @@ if (!$info) {
 
 echo "<p><strong>$brief</strong></p>\n";
 echo "<p style=\"width: 550px\">$description</p>\n";
-echo form::open('command/commit');
+echo form::open('command/commit', array('id' => 'command_form'));
 
 $params = $info['params'];
 echo "<table>\n";
@@ -21,7 +21,7 @@ foreach ($params as $pname => $ary) {
 		$dflt = $ary['default'];
 	echo '<tr class="even">';
 	//echo '<td style="width: 12px">'.html::image('application/views/themes/default/icons/12x12/shield-info.png',array('alt' => $this->translate->_('View help'), 'title' => $this->translate->_('View help'), 'style' => 'float: left')).'</td>';
-	echo '<td style="width: 200px">'.$ary['name'].'</td><td>';
+	echo '<td style="width: 200px" id="'.$pname.'">'.$ary['name'].'</td><td>';
 	switch ($ary['type']) {
 	 case 'select':
 		if ($dflt && array_search($dflt, $ary['options'])) {
@@ -50,11 +50,11 @@ foreach ($params as $pname => $ary) {
 		break;
 	 case 'string':
 	 default:
-		echo form::input($form_name, $dflt, '');
+		echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field')), $dflt, '');
 		break;
 	}
 
-	echo "</tr>\n";
+	echo "</td></tr>\n";
 }
 echo "</table><br />\n";
 echo form::hidden('requested_command', $requested_command);

@@ -68,6 +68,8 @@ class Command_Controller extends Authenticated_Controller
 	public function submit($cmd = false)
 	{
 		$this->init_page('command/request');
+		$this->xtra_js[] = $this->add_path('command/js/command.js');
+		$this->template->js_header->js = $this->xtra_js;
 
 		if ($cmd === false) {
 			$cmd = $this->input->get('cmd_typ');
@@ -160,6 +162,13 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
+		if (isset($param['comment']) && trim($param['comment'])=='') {
+			# comments shouldn't ever be empty
+			$this->template->content->result = false;
+			$this->template->content->error = $this->translate->_("Required field 'Comment' was not entered").'<br />'.
+			$this->translate->_(sprintf('Go %s back %s and verify that you entered all required information correctly', '<a href="javascript:history.back();">', '</a>'));
+			return false;
+		}
 		switch ($cmd) {
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':

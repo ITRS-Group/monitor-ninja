@@ -56,6 +56,8 @@ if (isset($this->template->js_header))
 				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false, true) ?>';
 				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false, true) ?>';
 				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false, true) ?>';
+				var _form_error_header = '<?php echo $this->translate->_("The form couldn\'t be processed since it contains one or more errors.%sPlease correct the following error(s) and try again:%s"); ?>';
+				var _command_empty_field = '<?php echo $this->translate->_("Field \'%s\' is required but empty"); ?>';
 				<?php
 				}
 				if (!empty($inline_js)) {
