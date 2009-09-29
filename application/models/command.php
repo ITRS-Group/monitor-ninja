@@ -162,7 +162,7 @@ class Command_Model extends Model
 				$ary['name'] = $translate->_('Triggered By');
 				break;
 			 case 'duration':
-				$ary = array('type' => 'duration', 'default' => '2,0');
+				$ary = array('type' => 'duration', 'default' => '2.0');
 				break;
 			 case 'event_handler_command':
 				# FIXME: stub options
