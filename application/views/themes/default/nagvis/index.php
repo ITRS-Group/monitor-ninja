@@ -25,8 +25,8 @@
 		margin-bottom: 5px;
 		width: 206px;
 		border: 1px solid #cdcdcd;
-	}
-	ul.thumbnails li a.view {
+  }
+  ul.thumbnails li a.view {
 		display: block;
 		width: 206px;
 	}
@@ -67,7 +67,13 @@
 		width: 203px;
 		border-bottom: 1px solid #cdcdcd;
 	}
-	input { width: 180px }
+	input { width: 128px }
+	a.button {
+    border: 1px solid #cdcdcd;
+    padding: 3px 5px;
+    font-weight: bold;
+    background: #cdcdcd url('/ninja/application/views/themes/default/css/default/images/bg.png') repeat-x;
+  }
 </style>
 
 <script type="text/javascript">
@@ -86,33 +92,32 @@
 
 <div class="left">
 	<div>
-		<strong>Maps</strong> <a class="view" href="/ninja/index.php/nagvis/configure">[configure]</a>
+		<strong><?php echo $this->translate->_('Maps') ?> &nbsp;(<a class="view" href="/ninja/index.php/nagvis/configure"><?php echo $this->translate->_('configure') ?></a>)</strong>
 		<ul class="thumbnails">
 			<?php
 			foreach ($maps as $map){
 				echo '<li>';
-				echo '<a class="edit" href="/ninja/index.php/nagvis/edit/'.$map.'" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-config.png'),'Edit').'</a>';
-				echo '<a class="delete" href="/ninja/index.php/nagvis/delete/'.$map.'" onclick="return confirm(\'Are you sure you want to delete map '.$map.'?\')" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-close.png'),'Delete').'</a>';
+				echo '<a class="edit" href="/ninja/index.php/nagvis/edit/'.$map.'" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-config.png'),$this->translate->_('Edit')).'</a>';
+				echo '<a class="delete" href="/ninja/index.php/nagvis/delete/'.$map.'" onclick="return confirm(\''.$this->translate->_('Are you sure you want to delete map '.$map.'?').'\')" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-close.png'),$this->translate->_('Delete')).'</a>';
 				echo '<a class="view" href="/ninja/index.php/nagvis/view/'.$map.'" style="border: 0px"><span>'.$map.'</span><img src="/nagvis/var/'.$map.'-thumb.png" alt="" /></a>';
 				echo '</li>';
 			}
 			?>
-			<li><a class="view" href="/ninja/index.php/nagvis/automap" style="border: 0px"><span>Automap</span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
-			<li><a class="view" href="/ninja/index.php/nagvis/geomap" style="border: 0px"><span>Geomap</span><img src="/ninja/geomap-thumb.png" alt="" /></a></li>
+			<li><a class="view" href="/ninja/index.php/nagvis/automap" style="border: 0px"><span><?php echo $this->translate->_('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
+			<li><a class="view" href="/ninja/index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="/ninja/geomap-thumb.png" alt="" /></a></li>
 			<li class="create">
-				<a class="create" href="#" onclick="$('#createmap').submit(); return false" style="border: 0px">Create map</a>
-				<?php //echo html::image($this->add_path('icons/add.png')); ?>
+				<a class="create" href="#" onclick="$('#createmap').submit(); return false" style="border: 0px"><?php echo $this->translate->_('Create map') ?></a>
 				<form id="createmap" action="/ninja/index.php/nagvis/create" method="post">
 					<input type="text" id="mapname" name="name" maxlength="25" />
+					<a class="button" href="#" onclick="createmap(); return false" style="border: 1px solid #cdcdcd"><?php echo $this->translate->_('Create') ?></a></li>
 				</form>
-				<a class="create" href="#" onclick="createmap(); return false">Create</a></li>
 			</li>
 		</ul>
 	</div>
 </div>
 
 <div class="left" style="clear: left;">
-	<strong>Rotation pools</strong>
+	<strong><?php echo $this->translate->_('Rotation pools') ?></strong>
 	<div>
 		<ul>
 			<?php
