@@ -105,6 +105,7 @@ class Command_Model extends Model
 		if (empty($info) || !isset($info['template'])) {
 			return false;
 		}
+		$translate = zend::instance('Registry')->get('Zend_Translate');
 
 		$cmd = $info['name'];
 
@@ -185,7 +186,7 @@ class Command_Model extends Model
 			 case 'varname':
 			 case 'varvalue':
 				$ary = array('type' => 'string', 'size' => 100);
-				$ary['name'] = "Variable " . ucfirst(substr($param_name, 3));
+				$ary['name'] = $translate->_(sprintf('Variable %s', ucfirst(substr($param_name, 3))));
 				break;
 			# nearly all the object link parameters are handled the same
 			# way (more or less), so we just clump them together here
@@ -202,19 +203,19 @@ class Command_Model extends Model
 					$ary['name'] = ucfirst(substr($param_name, 0, -5));
 			 case 'timeperiod':
 				if (!isset($ary['name']))
-					$ary['name'] = 'Timeperiod';
+					$ary['name'] = $translate->_('Timeperiod');
 			 case 'notification_timeperiod':
 				if (!isset($ary['name']))
-					$ary['name'] = 'Notification Timeperiod';
+					$ary['name'] = $translate->_('Notification Timeperiod');
 			 case 'check_timeperiod':
 				if (!isset($ary['name']))
-					$ary['name'] = 'Check Timeperiod';
+					$ary['name'] = $translate->_('Check Timeperiod');
 				$ary['type'] = 'select';
 				$ary['options'] = $this->get_object_list($param_name);
 				break;
 			 case 'notification_delay':
 				$ary = array('type' => 'int', 'default' => 5);
-				$ary['name'] = 'Notification delay (in minutes)';
+				$ary['name'] = $translate->_('Notification delay (in minutes)');
 				break;
 			# same go for *_time parameters
 			 case 'check_time':
