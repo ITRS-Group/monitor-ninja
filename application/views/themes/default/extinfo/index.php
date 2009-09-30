@@ -30,21 +30,23 @@ if (!empty($widgets)) {
 		</colgroup>
 		<tr>
 			<td class="white"><strong><?php echo ucfirst($lable_type) ?></strong></td>
-			<td class="white"><?php echo $main_object ?></td>
+			<td class="white">
+				<?php echo $main_object ?>
+				<?php
+					if ($type == 'service') {
+						echo '<br />'.$lable_on_host.'<br />';
+						echo (isset($host) ? $host : '').'<br />';
+						echo isset($host_alias) ? '('.$host_alias.')' : '';
+						echo !empty($host_link) ? '('.$host_link.')' : '';
+					}
+				?>
+			</td>
 		</tr>
 		<?php echo !empty($main_object_alias) ? '<tr><td class="white"><strong>'.$this->translate->_('Alias').'</strong></td><td class="white">'.$main_object_alias.'</td></tr>' : '' ?>
 		<tr>
 			<td class="white"><strong><?php echo $this->translate->_('IP address');?></strong></td>
 			<td class="white">
-				<?php echo isset($host_address) ? $host_address : ''; ?>
-				<?php
-					if ($type == 'service') {
-						echo $lable_on_host.'<br />';
-						echo (isset($host) ? ucfirst($host) : '').'<br />';
-						echo isset($host_alias) ? '('.$host_alias.')' : '';
-						echo !empty($host_link) ? '('.$host_link.')' : '';
-					}
-				?>
+				<?php echo isset($host_address) ? $host_address : ''; ?><br />
 			</td>
 		</tr>
 
