@@ -1096,6 +1096,10 @@ class nagioscmd_Core
 			return nagstat::timestamp_format(nagstat::date_format(), $value);
 		}
 
+		if ($name === 'duration') {
+			return floatval($value) * 3600;
+		}
+
 		# notification_delay is given in minutes,
 		# but nagios wants a unix timestamp
 		if ($name === 'notification_delay') {
