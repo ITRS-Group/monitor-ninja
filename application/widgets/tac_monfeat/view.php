@@ -31,7 +31,7 @@
 			<tr>
 				<td class="white">
 				<table>
-					<?php	if ($enable_flap_detection !== false) { ?>
+					<?php	if ($enable_flap_detection) { ?>
 						<?php if ($flap_disabled_services > 0) {?>
 						<tr>
 							<td>
@@ -82,7 +82,7 @@
 				</td>
 				<td class="white">
 					<table>
-						<?php	if ($enable_notifications !== false) { ?>
+						<?php	if ($enable_notifications) { ?>
 							<?php if ($notification_disabled_services > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),'') ?></td>
@@ -114,7 +114,7 @@
 				</td>
 				<td class="white">
 					<table>
-						<?php	if ($enable_event_handlers !== false) { ?>
+						<?php	if ($enable_event_handlers) { ?>
 								<?php if ($event_handler_disabled_services > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
@@ -147,7 +147,7 @@
 
 				<td class="white">
 					<table>
-						<?php	if ($execute_service_checks !== false) { ?>
+						<?php	if ($execute_service_checks) { ?>
 							<?php if ($active_checks_disabled_services > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
@@ -179,7 +179,7 @@
 				</td>
 				<td class="white">
 					<table>
-							<?php	if ($accept_passive_service_checks !== false) { ?>
+							<?php	if ($accept_passive_service_checks) { ?>
 								<?php if ($passive_checks_disabled_services > 0) { ?>
 									<tr>
 										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
