@@ -291,4 +291,21 @@ class Ajax_Controller extends Authenticated_Controller {
 		$success = Ninja_widget_Model::update_all_widgets($page, $value, $type);
 		echo json::encode(array('success' => $success));
 	}
+
+	/**
+	*	Fetch translated help text
+	* 	Two parameters arre supposed to be passed through POST
+	* 		* controller - where is the translation?
+	* 		* key - what key should be fetched
+	*/
+	public function get_translation()
+	{
+		$controller = urldecode($this->input->post('controller', false));
+		$key = urldecode($this->input->post('key', false));
+
+		$controller = ucfirst($controller).'_Controller';
+		$result = call_user_func(array($controller,'_helptexts'), $key);
+		return $result;
+	}
 }
+
