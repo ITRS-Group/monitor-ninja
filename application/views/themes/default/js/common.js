@@ -124,6 +124,56 @@ $(document).ready(function() {
 		fadeOut: 25
 	});
 
+	$(".helptext_target").each(function(){
+
+		// split the id into controller, key
+		var the_id = $(this).attr('id');
+		var part = the_id.split('|');
+		if (!part.length) {
+			return false;
+		}
+		var controller = part[1];
+		var key = part[2];
+		var elem_id = the_id;
+
+		var loading_img = '/application/media/images/loading.gif';
+		$(this).qtip({
+			content: {
+				url: _site_domain + _index_page + "/ajax/get_translation/",
+				data: {controller: controller, key: key},
+				method: 'post',
+				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
+			},
+			position: {
+				corner: {
+				target: 'bottomMiddle', // Position the tooltip above the link
+				tooltip: 'topMiddle'
+			},
+				adjust: {
+					screen: true // Keep the tooltip on-screen at all times
+				}
+			},
+			show: {
+				when: 'click',
+				solo:true
+			},
+			hide: {
+				effect: 'slide',
+				when: {
+					event: 'unfocus',
+					delay:2000
+				}
+			},
+			style: {
+				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
+					border: {
+					width: 0,
+					radius: 4
+				},
+				name: 'light' // Use the default light style
+			}
+		});
+	})
 });
 
 function create_slider(the_id)
