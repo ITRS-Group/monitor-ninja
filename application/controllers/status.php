@@ -1794,4 +1794,24 @@ class Status_Controller extends Authenticated_Controller {
 		$filters->serviceprop_val = $serviceprop_val;
 		return $filters;
 	}
+
+	/**
+	* Translated helptexts for this controller
+	*/
+	public static function _helptexts($id)
+	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+
+		# No helptexts defined yet - this is just an example
+		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
+		# easier to find those later
+		$helptexts = array(
+			'edit' => $translate->_('@@@HELPTEXT:edit')
+		);
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		}
+		else
+			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+	}
 }
