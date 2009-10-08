@@ -303,6 +303,9 @@ class Ajax_Controller extends Authenticated_Controller {
 		$controller = urldecode($this->input->post('controller', false));
 		$key = urldecode($this->input->post('key', false));
 
+		if (empty($controller) || empty($key)) {
+			return false;
+		}
 		$controller = ucfirst($controller).'_Controller';
 		$result = call_user_func(array($controller,'_helptexts'), $key);
 		return $result;
