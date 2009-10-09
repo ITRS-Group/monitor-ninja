@@ -126,6 +126,7 @@ class Group_Model extends Model
 				s.problem_has_been_acknowledged,
 				s.scheduled_downtime_depth,
 				s.last_check,
+				s.output AS service_output,
 				s.notes_url,
 				s.action_url,
 				s.current_attempt,

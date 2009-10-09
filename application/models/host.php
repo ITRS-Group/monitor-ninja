@@ -447,7 +447,8 @@ class Host_Model extends Model {
 						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
 						$auth_service_field.".current_attempt,".
 						$auth_service_field.".max_check_attempts,".
-						$auth_service_field.".output".
+						$auth_service_field.".output,".
+						$auth_service_field.".output AS service_output".
 					" FROM ".
 						$auth_from.
 					" WHERE ".

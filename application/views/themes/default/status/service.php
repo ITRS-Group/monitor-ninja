@@ -130,7 +130,7 @@
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
 				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
 			} else {
-				echo str_replace('','',$row->output);
+				echo str_replace('','',$row->service_output);
 			}
 			?>
 		</td>
