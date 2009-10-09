@@ -617,7 +617,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_status_grid = $this->translate->_('View Status Grid For All Host Groups');
 				$page_links = array(
 					$label_host_status_details => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					$label_group_status_details => Router::$controller.'/service/all',
+					$label_group_status_details => Router::$controller.'/host/all',
 					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary',
 					$label_host_status_grid => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
@@ -1362,7 +1362,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_group_status_summary = $this->translate->_('View Status Summary For All Host Groups');
 				$page_links = array(
 					$label_host_status_details => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					$label_group_status_details => Router::$controller.'/service/all',
+					$label_group_status_details => Router::$controller.'/host/all',
 					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/all',
 					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary'
 				);
