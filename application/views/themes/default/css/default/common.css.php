@@ -420,6 +420,7 @@ select {
 }
 #page_settings {
 	position: absolute;
+	position: fixed;
 	top: 67px;
 	right: 0px;
 	padding: 0px;
