@@ -24,6 +24,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
   		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function view($map)
@@ -40,8 +43,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
 
+
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function edit($map)
@@ -59,6 +66,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function create()
@@ -99,6 +109,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function geomap()
@@ -115,6 +128,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function rotate($pool, $first_map)
@@ -133,6 +149,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 
 	public function configure()
@@ -148,5 +167,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+
+		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
+		$this->template->css_header->css = $this->xtra_css;
 	}
 }
