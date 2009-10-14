@@ -11,7 +11,7 @@
 	<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
 </div>
-<a name="comments" />
+<a name="comments"></a>
 	<table class="comments_table">
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
