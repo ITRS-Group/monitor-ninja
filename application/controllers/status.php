@@ -731,7 +731,9 @@ class Status_Controller extends Authenticated_Controller {
 			if (!empty($group_info_res)) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
-					$group_details[] = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
+					$tmp_data = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
+					if (!empty($tmp_data))
+						$group_details[] = $tmp_data;
 				}
 			}
 		} else {
@@ -749,7 +751,9 @@ class Status_Controller extends Authenticated_Controller {
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
 			$content->lable_header = $label_header."'".$group."'";
-			$group_details[] = $this->_show_group_totals_summary($grouptype, $group);
+			$tmp_data = $this->_show_group_totals_summary($grouptype, $group);
+			if (!empty($tmp_data))
+				$group_details[] = $tmp_data;
 		}
 
 		# since we don't use these values yet we define a default value
