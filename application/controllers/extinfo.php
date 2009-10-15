@@ -995,7 +995,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$type=='host' ? nagioscmd::command_id('DEL_HOST_COMMENT')
 			: nagioscmd::command_id('DEL_SVC_COMMENT');
 
-		# @@@FIXME setting date format should be done somewhere global
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		$comments->pagination = $pagination;
