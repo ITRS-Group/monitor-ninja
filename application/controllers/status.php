@@ -138,7 +138,7 @@ class Status_Controller extends Authenticated_Controller {
 
 			$result_cnt = $host_model->get_host_status();
 
-			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
+			$tot = $result_cnt !== false ? $result_cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
@@ -155,7 +155,7 @@ class Status_Controller extends Authenticated_Controller {
 			$host_model->set_host_list($host);
 			$result_cnt = $host_model->get_host_status();
 
-			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
+			$tot = $result_cnt !== false ? $result_cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
@@ -373,7 +373,7 @@ class Status_Controller extends Authenticated_Controller {
 
 			$host_model->set_host_list($name);
 			$result_cnt = $host_model->get_host_status();
-			$tot = $result_cnt !== false ? $result_cnt->current()->cnt : 0;
+			$tot = $result_cnt !== false ? $result_cnt : 0;
 			$pagination = new Pagination(
 				array(
 					'total_items'=> $tot,
