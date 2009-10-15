@@ -199,24 +199,18 @@ class Service_Model extends Model
 	{
 		if (empty($value)) return false;
 		$auth_obj = self::authorized_services();
-		$obj_ids = array_keys($auth_obj);
+		$obj_ids = implode(',',$auth_obj);
 		if (empty($obj_ids))
 			return false;
-		$obj_info = $this->db
-			->select('DISTINCT s.*, h.current_state AS host_state')
-			->from('service AS s, host AS h')
-			->orlike(
-				array(
-					's.host_name' => $value,
-					's.service_description' => $value,
-					's.display_name' => $value
-					)
-				)
-			->where('s.host_name=h.host_name')
-			->in('s.id', $obj_ids)
-			->groupby('s.id')
-			->limit($limit)
-			->get();
+		$value = '%'.$value.'%';
+		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
+		"FROM `service` AS `s`, `host` AS `h` ".
+		"WHERE (`s`.`host_name` LIKE ".$this->db->escape($value).
+		" OR `s`.`service_description` LIKE ".$this->db->escape($value).
+		" OR `s`.`display_name` LIKE ".$this->db->escape($value).
+		" AND s.host_name=h.host_name)".
+		" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` LIMIT ".$limit;
+		$obj_info = $this->db->query($sql);
 		return $obj_info;
 	}
 

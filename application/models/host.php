@@ -159,20 +159,12 @@ class Host_Model extends Model {
 		$host_ids = array_keys($auth_hosts);
 		if (empty($host_ids))
 			return false;
-		$host_info = $this->db
-			->select('DISTINCT *')
-			->from('host')
-			->orlike(
-				array(
-					'host_name' => $value,
-					'alias' => $value,
-					'display_name' => $value,
-					'address' => $value
-				)
-			)
-			->in('id', $host_ids)
-			->limit($limit)
-			->get();
+		$value = '%'.$value.'%';
+		$host_ids = implode(',', $host_ids);
+		$sql = "SELECT DISTINCT * FROM `host` WHERE (`host_name` LIKE ".$this->db->escape($value).
+		" OR `alias` LIKE ".$this->db->escape($value)." OR `display_name` LIKE ".$this->db->escape($value).
+		" OR `address` LIKE ".$this->db->escape($value).") AND `id` IN (".$host_ids.") LIMIT ".$limit;
+		$host_info = $this->db->query($sql);
 		return $host_info;
 	}
 
