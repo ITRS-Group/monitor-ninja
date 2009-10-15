@@ -211,20 +211,43 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_services_root)
 			return array();
 
+		# contact <-> service_contactgroup relation
 		$query =
 			'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
 			'FROM host, service, contact, contact_contactgroup, service_contactgroup ' .
 			'WHERE service.id = service_contactgroup.service ' .
 			'AND service_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
-			'AND contact_contactgroup.contact = ' . $this->id . ' AND';
+			'AND contact_contactgroup.contact = ' . $this->id." AND host.host_name=service.host_name";
+
+		# contact <-> service_contact relation
+		$query_contact = "SELECT DISTINCT s.id, h.host_name, s.service_description ".
+			"FROM host h, service s, contact c, service_contact sc ".
+			"WHERE s.id=sc.service AND c.id=sc.contact ".
+			"AND c.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
+			" AND h.host_name=s.host_name";
+
+		# check for services that user is authenticated via authenticated hosts
+		# could be both via host_contact and host_contactgroup
+		$query_host_contact = "SELECT DISTINCT s.id, h.host_name, s.service_description FROM host h, ".
+			"contact c, host_contact hc, service s ".
+			"WHERE h.id = hc.host ".
+			"AND hc.contact=c.id ".
+			"AND c.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
+			" AND s.host_name = h.host_name";
+
+		$query_host_contactgroup = "SELECT DISTINCT s.id, h.host_name, s.service_description FROM host h, ".
+			"host_contactgroup hc, service s, contact_contactgroup cc ".
+			"WHERE h.id = hc.host ".
+			"AND hc.contactgroup=cc.contactgroup ".
+			"AND cc.contact=".$this->db->escape($this->id).
+			"AND s.host_name = h.host_name";
+
+		$query = '(' . $query . ') UNION (' . $query_contact . ') UNION (' . $query_host_contact . ') UNION (' . $query_host_contactgroup . ')';
 
 		if ($this->view_services_root) {
 			$query = 'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
-			'FROM host, service WHERE';
+			'FROM host, service WHERE host.host_name = service.host_name';
 		}
-
-		$query .= ' host.host_name = service.host_name';
-
 		$result = $this->db->query($query);
 		$front = $back = array();
 		foreach ($result as $ary) {
