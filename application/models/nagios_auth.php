@@ -112,12 +112,22 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_hosts_root)
 			return array();
 
+		# host_contactgroup
 		$query =
 			'SELECT DISTINCT host.id, host.host_name from host, ' .
 			'contact_contactgroup, contact, host_contactgroup ' .
 			'WHERE host.id = host_contactgroup.host ' .
 			'AND host_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
 			'AND contact_contactgroup.contact = "' . $this->id.'"';
+
+		# host_contact
+		$query_contact = "SELECT DISTINCT host.id, host.host_name FROM host, ".
+			"contact, host_contact ".
+			"WHERE host.id = host_contact.host ".
+			"AND host_contact.contact=contact.id ".
+			"AND contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username);
+
+		$query = '(' . $query . ') UNION (' . $query_contact . ')';
 
 		if ($this->view_hosts_root)
 			$query = 'SELECT id, host_name from host';
@@ -129,7 +139,6 @@ class Nagios_auth_Model extends Model
 			$this->hosts[$id] = $name;
 			$this->hosts_r[$name] = $id;
 		}
-
 		return $this->hosts;
 	}
 
