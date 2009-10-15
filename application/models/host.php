@@ -267,8 +267,9 @@ class Host_Model extends Model {
 			}
 		} else {
 			if (strtolower($host_names) === 'all') {
-				# return all authenticated host IDs
-				$retval = array_keys($hosts);
+				# return all to fetch all relations
+				# via contact and contactgroups
+				$retval = 'all';
 			} elseif (array_key_exists($host_names, $host_r)) {
 				$retval[] = $host_r[$host_names];
 			}
@@ -279,88 +280,161 @@ class Host_Model extends Model {
 	/**
 	 * Fetch status data for a subset of hosts
 	 * (and their related services if show_services is set to true).
+	 * @@@FIXME: rewrite me please!
 	 */
 	public function get_host_status()
 	{
-		/* $host_list = false, $show_services = false, $state_filter=false,
-		$sort_field='', $sort_order='ASC', $service_filter=false, $serviceprops=false, $hostprops=false,
-		$num_per_page=false, $offset=false, $count=false
-		*/
-
 		if (empty($this->host_list)) {
 			return false;
 		}
 
-		#$num_per_page = (int)$num_per_page;
-		$host_str = implode(', ', $this->host_list);
+		if ($this->host_list !== 'all')
+			$host_str = implode(', ', $this->host_list);
+
 		$filter_sql = '';
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		$h = $this->show_services ? 'auth_host.' : '';
 		$s = !$this->show_services ? '' : 'auth_service.';
 		if (!empty($this->state_filter)) {
-			$filter_host_sql = "AND 1 << %scurrent_state & ".$this->state_filter." ";
+			$filter_host_sql = " AND 1 << %scurrent_state & ".$this->state_filter." ";
 		}
 		if ($this->service_filter!==false && !empty($this->service_filter)) {
 			$filter_service_sql = " AND 1 << %scurrent_state & $this->service_filter ";
 		}
 
+		# host query part
+		$host_query_parts = $this->auth->authorized_host_query();
+		$auth_from_host = '';
+		$auth_where_host = '';
+		if ($host_query_parts !== true) {
+			# build sql query when user isn't authorized_for_all_hosts
+			$auth_from_host = $host_query_parts['from'];
+
+			$auth_host_field_host = $host_query_parts['host_field'];
+
+			$auth_where_host = "WHERE auth_host.id = auth_host_contactgroup.host ".
+				"AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup ".
+				"AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=".
+				$this->db->escape(Auth::instance()->get_user()->username);
+		} else {
+			$auth_service_field_host = 's';
+			$auth_host_field_host = 'h';
+			$auth_from_host = ' host '.$auth_host_field_host;
+			$auth_where_host = '';
+		}
+
 		if (!$this->show_services) {
 			if (!empty($filter_host_sql)) {
-				$filter_sql .= sprintf($filter_host_sql, '');
+				$filter_sql .= sprintf($filter_host_sql, 'auth_host.');
 			}
 			if (!empty($filter_service_sql)) {
 				$filter_sql .= sprintf($filter_service_sql, '');
 			}
 			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $s);
-			$hostprops_sql = $this->build_host_props_query($this->hostprops, $h);
+			$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field_host.'.');
 			$this->sort_field = empty($this->sort_field) ? 'host_name' : $this->sort_field;
-			# only host listing
-			if ($this->count === true) {
-			$sql = "
-					SELECT
-						COUNT(*) AS cnt
-					FROM host
-					WHERE
-						id IN (".$host_str.")
-						".$filter_sql.$hostprops_sql.$serviceprops_sql;
-			} else {
-				$sql = "
-					SELECT
-						id AS host_id,
-						host_name,
-						address,
-						alias,
-						current_state,
-						last_check,
-						next_check,
-						should_be_scheduled,
-						notes_url,
-						notifications_enabled,
-						active_checks_enabled,
-						icon_image,
-						icon_image_alt,
-						is_flapping,
-						action_url,
-						(UNIX_TIMESTAMP() - last_state_change) AS duration,
-						UNIX_TIMESTAMP() AS cur_time,
-						current_attempt,
-						max_check_attempts,
-						problem_has_been_acknowledged,
-						scheduled_downtime_depth,
-						output
-					FROM host
-					WHERE
-						id IN (".$host_str.")
-						".$filter_sql.$hostprops_sql.$serviceprops_sql."
-					ORDER BY
-						".$this->sort_field." ".$this->sort_order;
+
+			# make sure we have 'WHERE' in sql query if we have
+			# filter or host/service props
+			if (
+				(
+					!empty($filter_sql) ||
+					!empty($hostprops_sql) ||
+					!empty($serviceprops_sql)
+				)
+					&& $auth_where_host == ''
+			) {
+				$auth_where_host = ' WHERE 1 ';
 			}
+
+			# when we have a valid host_list, i.e not 'all'
+			# then we should filter on these hosts
+			if ($this->host_list !== 'all' && !empty($host_str)) {
+				$auth_where_host .= empty($auth_where_host) ?  " " : " AND ";
+				$auth_where_host .= $auth_host_field_host.".id IN(".$host_str.") ";
+			}
+
+			# only host listing
+			$sql = "
+				SELECT
+					".$auth_host_field_host.".id AS host_id,
+					".$auth_host_field_host.".host_name,
+					".$auth_host_field_host.".address,
+					".$auth_host_field_host.".alias,
+					".$auth_host_field_host.".current_state,
+					".$auth_host_field_host.".last_check,
+					".$auth_host_field_host.".next_check,
+					".$auth_host_field_host.".should_be_scheduled,
+					".$auth_host_field_host.".notes_url,
+					".$auth_host_field_host.".notifications_enabled,
+					".$auth_host_field_host.".active_checks_enabled,
+					".$auth_host_field_host.".icon_image,
+					".$auth_host_field_host.".icon_image_alt,
+					".$auth_host_field_host.".is_flapping,
+					".$auth_host_field_host.".action_url,
+					(UNIX_TIMESTAMP() - ".$auth_host_field_host.".last_state_change) AS duration,
+					UNIX_TIMESTAMP() AS cur_time,
+					".$auth_host_field_host.".current_attempt,
+					".$auth_host_field_host.".max_check_attempts,
+					".$auth_host_field_host.".problem_has_been_acknowledged,
+					".$auth_host_field_host.".scheduled_downtime_depth,
+					".$auth_host_field_host.".output
+				FROM ".$auth_from_host."
+					".$auth_where_host."
+					".$filter_sql.$hostprops_sql.$serviceprops_sql;
+
+			$order = " ORDER BY ".$this->sort_field." ".$this->sort_order;
+
+			# take into account that users might be authenticated
+			# directly through contact - host_contact
+			$from_contact = " host AS auth_host, ".
+			"contact AS auth_contact, ".
+			"host_contact AS auth_host_contact, ".
+			"service AS auth_service ";
+			$where_contact = "	auth_host.id = auth_host_contact.host ".
+			"AND auth_host_contact.contact=auth_contact.id ".
+			"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
+			" AND auth_service.host_name = auth_host.host_name";
+
+			$sql2 = "
+				SELECT
+					".$auth_host_field_host.".id AS host_id,
+					".$auth_host_field_host.".host_name,
+					".$auth_host_field_host.".address,
+					".$auth_host_field_host.".alias,
+					".$auth_host_field_host.".current_state,
+					".$auth_host_field_host.".last_check,
+					".$auth_host_field_host.".next_check,
+					".$auth_host_field_host.".should_be_scheduled,
+					".$auth_host_field_host.".notes_url,
+					".$auth_host_field_host.".notifications_enabled,
+					".$auth_host_field_host.".active_checks_enabled,
+					".$auth_host_field_host.".icon_image,
+					".$auth_host_field_host.".icon_image_alt,
+					".$auth_host_field_host.".is_flapping,
+					".$auth_host_field_host.".action_url,
+					(UNIX_TIMESTAMP() - ".$auth_host_field_host.".last_state_change) AS duration,
+					UNIX_TIMESTAMP() AS cur_time,
+					".$auth_host_field_host.".current_attempt,
+					".$auth_host_field_host.".max_check_attempts,
+					".$auth_host_field_host.".problem_has_been_acknowledged,
+					".$auth_host_field_host.".scheduled_downtime_depth,
+					".$auth_host_field_host.".output
+				FROM ".$from_contact."
+				WHERE
+					".$where_contact."
+					".$filter_sql.$hostprops_sql.$serviceprops_sql;
+
+			if (!$this->auth->view_hosts_root) {
+				$sql = '('.$sql.') UNION ('.$sql2.') ';
+			}
+			$sql .= $order;
+
 		} else {
 			$auth_query_parts = $this->auth->authorized_service_query();
 			$auth_from = '';
 			$auth_where = '';
-			$service_in_query = '';
 			if ($auth_query_parts !== true) {
 				$auth_from = $auth_query_parts['from'];
 
@@ -383,79 +457,129 @@ class Host_Model extends Model {
 				$filter_sql .= sprintf($filter_service_sql, $auth_service_field.'.');
 			}
 
+			$auth_from_host = '';
+			$auth_where_host = '';
+			if ($host_query_parts !== true) {
+				$auth_from_host = $host_query_parts['from'].', service AS auth_service';
+
+				# what aliases are used for host and service field
+				$auth_service_field_host = 'auth_service';
+				$auth_host_field_host = $host_query_parts['host_field'];
+				# match authorized services against service.host_name
+				$auth_where_host = " WHERE ".sprintf($host_query_parts['where'], $auth_service_field_host.'.host_name');
+			} else {
+				$auth_service_field_host = 's';
+				$auth_host_field_host = 'h';
+				$auth_from_host = ' host '.$auth_host_field_host.', service '.$auth_service_field_host;
+				$auth_where_host = '';
+			}
+
 			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $auth_service_field.'.');
 			$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field.'.');
 
 			if (empty($this->sort_field)) {
-				$this->sort_field = $auth_host_field.'.host_name, '.$auth_service_field.'.service_description';
+				$this->sort_field = 'host_name, service_description';
 			} else {
-				$this->sort_field = str_replace('s.', $auth_service_field.'.',$this->sort_field);
-				$this->sort_field = str_replace('h.', $auth_host_field.'.',$this->sort_field);
+				$this->sort_field = str_replace('s.', '',$this->sort_field);
+				$this->sort_field = str_replace('h.', '',$this->sort_field);
 			}
 
-			if ($this->count === true) {
-			$sql = "
-					SELECT
-						COUNT(*) AS cnt
-					FROM
-						".$auth_from."
-					WHERE
-						".$auth_host_field.".id IN (".$host_str.") AND
-						".$auth_where.
-						$auth_service_field.".host_name = ".$auth_host_field.".host_name
-						".$filter_sql.$hostprops_sql.$serviceprops_sql;
+			# build list of fields to fetch, to be used in several queries
+			# using UNION we must have the same fields or it won't work
+			$field_list = "<HOST_ALIAS>.id AS host_id,".
+					"<HOST_ALIAS>.host_name,".
+					"<HOST_ALIAS>.address,".
+					"<HOST_ALIAS>.alias,".
+					"<HOST_ALIAS>.current_state AS host_state,".
+					"<HOST_ALIAS>.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
+					"<HOST_ALIAS>.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
+					"<HOST_ALIAS>.notifications_enabled AS host_notifications_enabled,".
+					"<HOST_ALIAS>.action_url AS host_action_url,".
+					"<HOST_ALIAS>.icon_image AS host_icon_image,".
+					"<HOST_ALIAS>.icon_image_alt AS host_icon_image_alt,".
+					"<HOST_ALIAS>.is_flapping AS host_is_flapping,".
+					"<HOST_ALIAS>.notes_url AS host_nots_url,".
+					"<SERVICE_ALIAS>.id AS service_id,".
+					"<SERVICE_ALIAS>.service_description,".
+					"<SERVICE_ALIAS>.current_state,".
+					"<SERVICE_ALIAS>.last_check,".
+					"<SERVICE_ALIAS>.next_check,".
+					"<SERVICE_ALIAS>.should_be_scheduled,".
+					"<SERVICE_ALIAS>.notifications_enabled,".
+					"<SERVICE_ALIAS>.active_checks_enabled,".
+					"<SERVICE_ALIAS>.action_url,".
+					"<SERVICE_ALIAS>.notes_url,".
+					"<SERVICE_ALIAS>.icon_image,".
+					"<SERVICE_ALIAS>.icon_image_alt,".
+					"<SERVICE_ALIAS>.passive_checks_enabled,".
+					"<SERVICE_ALIAS>.problem_has_been_acknowledged,".
+					"<SERVICE_ALIAS>.scheduled_downtime_depth,".
+					"<SERVICE_ALIAS>.is_flapping as service_is_flapping,".
+					"(UNIX_TIMESTAMP() - <SERVICE_ALIAS>.last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
+					"<SERVICE_ALIAS>.current_attempt,".
+					"<SERVICE_ALIAS>.max_check_attempts,".
+					"<SERVICE_ALIAS>.output,".
+					"<SERVICE_ALIAS>.output AS service_output";
 
-			} else {
-				$sql = "SELECT ".
-						$auth_host_field.".id AS host_id,".
-						$auth_host_field.".host_name,".
-						$auth_host_field.".address,".
-						$auth_host_field.".alias,".
-						$auth_host_field.".current_state AS host_state,".
-						$auth_host_field.".problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
-						$auth_host_field.".scheduled_downtime_depth AS hostscheduled_downtime_depth,".
-						$auth_host_field.".notifications_enabled AS host_notifications_enabled,".
-						$auth_host_field.".action_url AS host_action_url,".
-						$auth_host_field.".icon_image AS host_icon_image,".
-						$auth_host_field.".icon_image_alt AS host_icon_image_alt,".
-						$auth_host_field.".is_flapping AS host_is_flapping,".
-						$auth_host_field.".notes_url AS host_nots_url,".
-						$auth_service_field.".id AS service_id,".
-						$auth_service_field.".service_description,".
-						$auth_service_field.".current_state,".
-						$auth_service_field.".last_check,".
-						$auth_service_field.".next_check,".
-						$auth_service_field.".should_be_scheduled,".
-						$auth_service_field.".notifications_enabled,".
-						$auth_service_field.".active_checks_enabled,".
-						$auth_service_field.".action_url,".
-						$auth_service_field.".notes_url,".
-						$auth_service_field.".icon_image,".
-						$auth_service_field.".icon_image_alt,".
-						$auth_service_field.".passive_checks_enabled,".
-						$auth_service_field.".problem_has_been_acknowledged,".
-						$auth_service_field.".scheduled_downtime_depth,".
-						$auth_service_field.".is_flapping as service_is_flapping,".
-						"(UNIX_TIMESTAMP() - ".$auth_service_field.".last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
-						$auth_service_field.".current_attempt,".
-						$auth_service_field.".max_check_attempts,".
-						$auth_service_field.".output,".
-						$auth_service_field.".output AS service_output".
+			# service query part
+			# replace table aliases for next query
+			$field_list_tmp = preg_replace('/<HOST_ALIAS>/', $auth_host_field, $field_list);
+			$field_list_tmp = preg_replace('/<SERVICE_ALIAS>/', $auth_service_field, $field_list_tmp);
+
+			# when we have a valid host_list, i.e not 'all'
+			# then we should filter on these hosts
+			if ($this->host_list !== 'all' && !empty($host_str)) {
+				$auth_where .= empty($auth_where) ?  "" : " ";
+				$auth_where .= $auth_host_field.".id IN(".$host_str.") AND ";
+			}
+			$sql = "SELECT ".$field_list_tmp.
+				" FROM ".
+					$auth_from.
+				" WHERE ".
+					$auth_where.
+					$auth_service_field.".host_name = ".$auth_host_field.".host_name ".
+					$filter_sql.$hostprops_sql.$serviceprops_sql;
+
+			# host query part using UNION (only needed if not authorized_for_all_hosts)
+			if (!$this->auth->view_hosts_root) {
+
+				# replace table aliases for next query
+				$field_list_tmp = preg_replace('/<HOST_ALIAS>/', $auth_host_field_host, $field_list);
+				$field_list_tmp = preg_replace('/<SERVICE_ALIAS>/', $auth_service_field_host, $field_list_tmp);
+				$filter_sql = '';
+				if (!empty($filter_host_sql)) {
+					$filter_sql .= sprintf($filter_host_sql, $auth_host_field_host.'.');
+				}
+				if (!empty($filter_service_sql)) {
+					$filter_sql .= sprintf($filter_service_sql, $auth_service_field_host.'.');
+				}
+
+				# build new {host,service}props query part for new table aliases
+				$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $auth_service_field_host.'.');
+				$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field_host.'.');
+
+				$sql2 = "SELECT ".$field_list_tmp.
 					" FROM ".
-						$auth_from.
-					" WHERE ".
-						$auth_host_field.".id IN (".$host_str.") AND ".
-						$auth_where.
-						$auth_service_field.".host_name = ".$auth_host_field.".host_name ".
-						$filter_sql.$hostprops_sql.$serviceprops_sql.
-					" ORDER BY ".
-						$this->sort_field." ".$this->sort_order;
+						$auth_from_host.
+						$auth_where_host.
+						$filter_sql.$hostprops_sql.$serviceprops_sql;
+
+				# join service and host queries with UNION()
+				# to fetch all services for an authenticated contact
+				$sql = '('.$sql.') UNION ('.$sql2.') ';
 			}
+
+			# add order query part
+			$sql = $sql." ORDER BY ".$this->sort_field." ".$this->sort_order;
+
 		}
 		if ($this->count == false && $this->num_per_page !== false && $this->offset !== false) {
 			$sql .= ' LIMIT '.$this->offset.', '.$this->num_per_page;
 		}
 		$result = $this->db->query($sql);
+		if ($this->count === true) {
+			return $result ? count($result) : 0;
+		}
 		return $result;
 	}
 
