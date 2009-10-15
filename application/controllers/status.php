@@ -900,7 +900,7 @@ class Status_Controller extends Authenticated_Controller {
 							$hosts_down_acknowledged++;
 							$host_problem = false;
 						}
-						if ($host->active_checks_enabled) {
+						if (!$host->active_checks_enabled) {
 							$hosts_down_disabled++;
 							$host_problem = false;
 						}
@@ -918,7 +918,7 @@ class Status_Controller extends Authenticated_Controller {
 							$hosts_unreachable_acknowledged++;
 							$host_problem = false;
 						}
-						if ($host->active_checks_enabled) {
+						if (!$host->active_checks_enabled) {
 							$hosts_unreachable_disabled++;
 							$host_problem = false;
 						}
