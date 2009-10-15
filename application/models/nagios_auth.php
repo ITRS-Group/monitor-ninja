@@ -236,9 +236,6 @@ class Nagios_auth_Model extends Model
 	*/
 	public function authorized_service_query()
 	{
-		if ($this->view_services_root) {
-			return true;
-		}
 		$query_parts = array(
 			'from' => ' host AS auth_host, service AS auth_service, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, service_contactgroup AS auth_service_contactgroup',
 			'where' => " auth_service.id = auth_service_contactgroup.service
