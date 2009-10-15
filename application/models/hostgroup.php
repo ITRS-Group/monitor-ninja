@@ -35,7 +35,14 @@ class Hostgroup_Model extends ORM
 	 */
 	public function get_all()
 	{
-		$data = ORM::factory('hostgroup')->find_all();
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root) {
+			$data = ORM::factory('hostgroup')->find_all();
+		} else {
+			$auth_objects = $auth->get_authorized_hostgroups();
+			$auth_ids = array_keys($auth_objects);
+			$data = ORM::factory('hostgroup')->in('id', $auth_ids)->find_all();
+		}
 		return count($data)>0 ? $data : false;
 	}
 
