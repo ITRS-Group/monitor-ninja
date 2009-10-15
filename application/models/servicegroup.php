@@ -83,18 +83,13 @@ class Servicegroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$obj_info = $this->db
-			->select('DISTINCT *')
-			->from('servicegroup')
-			->orlike(
-				array(
-					'servicegroup_name' => $value,
-					'alias' => $value
-				)
-			)
-			->in('id', $obj_ids)
-			->limit($limit)
-			->get();
+		$value = '%'.$value.'%';
+		$obj_ids = implode(',', $obj_ids);
+		$sql = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
+		"(`servicegroup_name` LIKE ".$this->db->escape($value)." OR ".
+		"`alias` LIKE ".$this->db->escape($value).") ".
+		"AND `id` IN (".$obj_ids.") LIMIT ".$limit;
+		$obj_info = $this->db->query($sql);
 		return $obj_info;
 	}
 
