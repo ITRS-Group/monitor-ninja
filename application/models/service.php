@@ -242,24 +242,33 @@ class Service_Model extends Model
 	{
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-		} else {
-			$servicelist = self::authorized_services();
-			if (empty($servicelist)) {
-				return false;
-			}
-			$str_servicelist = implode(', ', $servicelist);
-			$where = "AND s.id IN (".$str_servicelist.")";
-		}
-
-		$sql = "SELECT ".
+			# user authorized for all services
+			$sql = "SELECT ".
 				"s.*, ".
 				"h.current_state AS host_status ".
 			"FROM ".
 				"service s, ".
 				"host h ".
 			"WHERE ".
-				"s.host_name = h.host_name " . $where;
+				"s.host_name = h.host_name ";
+		} else {
+			$servicelist = self::authorized_services();
+			if (empty($servicelist)) {
+				return false;
+			}
+			# @@@FIXME: Redesign needed to get all services via contact and contactgroup and hosts
+			$str_servicelist = implode(', ', $servicelist);
+			$where = "AND s.id IN (".$str_servicelist.")";
+			$sql = "SELECT ".
+					"s.*, ".
+					"h.current_state AS host_status ".
+				"FROM ".
+					"service s, ".
+					"host h ".
+				"WHERE ".
+					"s.host_name = h.host_name " . $where;
+		}
+
 		$result = $this->db->query($sql);
 		return count($result) ? $result : false;
 	}
