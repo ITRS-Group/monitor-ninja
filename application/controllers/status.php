@@ -469,10 +469,10 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_grid = $this->translate->_('View Service Status Grid For This Service Group');
 					$label_group_status_details = $this->translate->_('View Service Status Detail For All Service Groups');
 					$page_links = array(
-						$label_group_status_overview => Router::$controller.'/'.$grouptype.'/'.$name,
-						$label_group_status_summary => Router::$controller.'/'.$grouptype.'/'.$name.'?style=summary',
-						$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$name,
-						$label_group_status_details => Router::$controller.'/'.$grouptype.'/all'
+						$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$name,
+						$label_group_status_summary => Router::$controller.'/'.$group_type.'/'.$name.'?style=summary',
+						$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$name,
+						$label_group_status_details => Router::$controller.'/'.$group_type.'/all'
 					);
 				}
 			}
