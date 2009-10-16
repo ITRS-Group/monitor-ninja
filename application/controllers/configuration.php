@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Tactical overview controller
+ * Configuration controller used to connect to Nacoma
  * Requires authentication
  *
  * @package    NINJA
