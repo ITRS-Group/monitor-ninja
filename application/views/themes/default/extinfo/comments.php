@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 
-
+<a name="comments"></a>
 <div class="widget left w98">
 
 <div style="position: absolute; right: 0px; margin-right: 1%">
