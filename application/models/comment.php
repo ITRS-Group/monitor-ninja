@@ -28,6 +28,10 @@ class Comment_Model extends Model {
 		$db = new Database();
 		$auth = new Nagios_auth_Model();
 
+		# service comments or not?
+		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
+			: " AND c.service_description=".$db->escape($service);
+
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
 			# don't use auth_host fields etc
@@ -41,30 +45,30 @@ class Comment_Model extends Model {
 		}
 
 		$num_per_page = (int)$num_per_page;
-		if ($count === false) {
-			if (empty($service)) {
-				$sql = "SELECT c.* FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
-				" (c.service_description='' OR c.service_description is null) ".$auth_where.
-				" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
-			} else {
-				$sql = "SELECT c.* FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
-				" c.service_description=".$db->escape($service)." ".$auth_where.
-				" ORDER BY c.host_name LIMIT ".$offset.", ".$num_per_page;
-			}
 
-			$result = $db->query($sql);
-			return $result->count() ? $result: false;
-		} else {
-			if (empty($service)) {
-				$sql = "SELECT COUNT(*) AS cnt FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
-				" (c.service_description='' OR c.service_description is null) ".$auth_where;
-			} else {
-				$sql = "SELECT COUNT(*) AS cnt FROM comment c".$auth_from." WHERE c.host_name=".$db->escape($host)." AND".
-				" c.service_description=".$db->escape($service)." ".$auth_where;
-			}
-			$result = $db->query($sql);
-			return $result->count() ? (int)$result->current()->cnt : 0;
+		$service_query = $auth->authorized_service_query();
+
+		$auth_host_alias = $host_query['host_field'];
+		$auth_from = ' ,'.$host_query['from'];
+		$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
+		$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
+			$svc_selection.$auth_where;
+
+		if ($service_query !== true) {
+			$from = !empty($service_query['from']) ? ','.$service_query['from'] : '';
+			# via service_contactgroup
+
+			# @@@FIXME: handle direct relation contact -> {host,service}_contact
+			$sql2 = "SELECT c.* FROM comment c ".$from." WHERE c.host_name=".$db->escape($host).
+				$svc_selection.' AND '.$service_query['where'];
+			$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
 		}
+
+		$result = $db->query($sql);
+		if ($count !== false) {
+			return $result ? count($result) : 0;
+		}
+		return $result->count() ? $result->result(): false;
 	}
 
 	/**
