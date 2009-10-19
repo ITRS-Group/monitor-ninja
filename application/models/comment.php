@@ -118,12 +118,13 @@ class Comment_Model extends Model {
 				" c.host_name!='' ".$svc_selection.$auth_where;
 
 			if ($service_query !== true) {
-				$from = !empty($service_query['from']) ? ','.$service_query['from'] : '';
-				# via service_contactgroup
-
-				# @@@FIXME: handle direct relation contact -> {host,service}_contact
-				$sql2 = "SELECT c.* FROM comment c ".$from." WHERE".
-					" c.host_name!='' ".$svc_selection.' AND '.$service_query['where'];
+				$from = "FROM comment c, host AS auth_host, contact AS auth_contact, host_contact AS auth_host_contact";
+				# via host_contact
+				$sql2 = "SELECT c.* ".$from." WHERE".
+					" c.host_name!='' ".$svc_selection." AND auth_contact.contact_name=".
+					$db->escape(Auth::instance()->get_user()->username).
+					" AND auth_host_contact.contact=auth_contact.id ".
+					"AND auth_host.host_name=c.host_name";
 				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
 			}
 		}
