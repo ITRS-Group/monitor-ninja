@@ -72,6 +72,15 @@ foreach ($result as $row) {
 				</td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
+				<?php	$host_comments = Comment_Model::count_comments($row->host_name);
+						if ($host_comments!=0) { ?>
+					<span style="float: right">
+						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
+								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+					</span>
+					<?php } ?>
 					<div style="float: right">
 					<?php
 						if ($row->problem_has_been_acknowledged) {

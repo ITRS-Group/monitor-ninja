@@ -76,6 +76,15 @@
 		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
 			<?php if ($curr_host != $row->host_name) { ?>
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
+				<?php	$host_comments = Comment_Model::count_comments($row->host_name);
+						if ($host_comments!=0) { ?>
+					<span style="float: right">
+						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
+								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+					</span>
+					<?php } ?>
 				<span style="float: right">
 					<?php
 						if ($row->hostproblem_is_acknowledged) {
