@@ -16,7 +16,12 @@
 		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
 		<thead>
 			<tr>
+			<?php if (Router::$method == 'show_comments') { ?>
 				<th style="white-space: nowrap"><?php echo $label_host_name ?></th>
+				<?php if ($service) { ?>
+				<th style="white-space: nowrap"><?php echo $label_service ?></th>
+				<?php }
+				}?>
 				<th style="white-space: nowrap"><?php echo $label_entry_time ?></th>
 				<th><?php echo $label_author ?></th>
 				<th><?php echo $label_comment ?></th>
@@ -32,7 +37,12 @@
 		if ($data!==false && $data->count()) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
+			<?php if (Router::$method == 'show_comments') { ?>
 				<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
+				<?php if (isset($row->service_description) && !empty($row->service_description)) { ?>
+				<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
+				<?php }
+				} ?>
 				<td class="bl"><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
 				<td><?php echo $row->author_name ?></td>
 				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
