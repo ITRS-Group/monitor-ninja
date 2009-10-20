@@ -66,6 +66,9 @@ class Comment_Model extends Model {
 					$svc_selection.' AND '.$service_query['where'];
 				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
 			}
+		} else {
+			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
+				$svc_selection.$auth_where;
 		}
 
 		$sql .= " ORDER BY host_name ".$offset_limit;
