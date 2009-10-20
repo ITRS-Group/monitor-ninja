@@ -981,6 +981,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->label_title = $type == 'host' ? $t->_('Host Comments') : $t->_('Service Comments');
 		$comments->service = $service;
 		$comments->label_host_name = $t->_('Host Name');
+		$comments->label_service = $t->_('Service');
 		$comments->label_entry_time = $t->_('Entry Time');
 		$comments->label_author = $t->_('Author');
 		$comments->label_comment = $t->_('Comment');
