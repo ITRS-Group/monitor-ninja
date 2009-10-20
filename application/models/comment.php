@@ -32,6 +32,9 @@ class Comment_Model extends Model {
 		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
 			: " AND c.service_description=".$db->escape($service);
 
+		# only use LIMIT when NOT counting
+		$offset_limit = $count!==false ? "" : " LIMIT " . $offset.", ".$num_per_page;
+
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
 			# don't use auth_host fields etc
@@ -40,29 +43,32 @@ class Comment_Model extends Model {
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
-			$auth_from = ' ,'.$host_query['from'];
+			$auth_from = isset($host_query['from']) && !empty($host_query['from']) ? ' ,'.$host_query['from'] : '';
 			$auth_where = ' AND '.sprintf($host_query['where'], "c.host_name");
 		}
 
 		$num_per_page = (int)$num_per_page;
 
-		$service_query = $auth->authorized_service_query();
+		if (!$auth->view_hosts_root) {
+			# this part is not necessary when authorized_for_all_hosts
+			$service_query = $auth->authorized_service_query();
 
-		$auth_host_alias = $host_query['host_field'];
-		$auth_from = ' ,'.$host_query['from'];
-		$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
-		$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
-			$svc_selection.$auth_where;
+			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
+			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
+				$svc_selection.$auth_where;
 
-		if ($service_query !== true) {
-			$from = !empty($service_query['from']) ? ','.$service_query['from'] : '';
-			# via service_contactgroup
+			if ($service_query !== true) {
+				$from = !empty($service_query['from']) ? ','.$service_query['from'] : '';
+				# via service_contactgroup
 
-			# @@@FIXME: handle direct relation contact -> {host,service}_contact
-			$sql2 = "SELECT c.* FROM comment c ".$from." WHERE c.host_name=".$db->escape($host).
-				$svc_selection.' AND '.$service_query['where'];
-			$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
+				# @@@FIXME: handle direct relation contact -> {host,service}_contact
+				$sql2 = "SELECT c.* FROM comment c ".$from." WHERE c.host_name=".$db->escape($host).
+					$svc_selection.' AND '.$service_query['where'];
+				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
+			}
 		}
+
+		$sql .= " ORDER BY host_name ".$offset_limit;
 
 		$result = $db->query($sql);
 		if ($count !== false) {
