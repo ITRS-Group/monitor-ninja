@@ -89,6 +89,12 @@ ul.commands li img {
 	margin-bottom: -2px;
 	height: 14px;
 }
+
+h1 {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
 /**************************************************************************************************/
 cite em,
 cite em:first-child {

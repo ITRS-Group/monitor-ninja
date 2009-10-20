@@ -6,6 +6,7 @@ table{border-collapse:collapse}
 .w98 { width: 99%;}
 div.left {float: left;margin-left: 0px;}
 div.right {float: none; position: absolute; right: 0px;}
+.w49 { padding-right: 10px }
 .service-totals {margin-top:-75px;}
 
 .icon {padding: 0px 7px;max-width: 16px;}
