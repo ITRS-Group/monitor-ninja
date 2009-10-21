@@ -326,7 +326,7 @@ class Host_Model extends Model {
 
 		if (!$this->show_services) {
 			if (!empty($filter_host_sql)) {
-				$filter_sql .= sprintf($filter_host_sql, 'auth_host.');
+				$filter_sql .= sprintf($filter_host_sql, $auth_host_field_host.'.');
 			}
 			if (!empty($filter_service_sql)) {
 				$filter_sql .= sprintf($filter_service_sql, '');
