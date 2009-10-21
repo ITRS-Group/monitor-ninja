@@ -90,7 +90,7 @@
 	}
 </script>
 
-<div class="left">
+<div class="left" style="height: auto">
 	<div>
 		<strong><?php echo $this->translate->_('Maps') ?> &nbsp;(<a class="view" href="/ninja/index.php/nagvis/configure"><?php echo $this->translate->_('configure') ?></a>)</strong>
 		<ul class="thumbnails">
@@ -113,7 +113,6 @@
 				</form>
 			</li>
 		</ul>
-		<!-- god morgon. sovit gott? ser fram emot en helg med g -->
 	</div>
 </div>
 
