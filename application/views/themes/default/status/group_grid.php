@@ -124,7 +124,7 @@ else { ?>
 			<td colspan="3"><?php echo $error_message ?></td>
 		</tr>
 		</tbody>
-
+	</table>
 	<?php
 }
 ?>
