@@ -218,7 +218,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		<tr>
+		<tr class="even">
 			<td colspan="3"><?php echo $label_no_data ?></td>
 		</tr>
 		</tbody>

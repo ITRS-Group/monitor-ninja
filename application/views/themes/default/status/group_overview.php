@@ -86,14 +86,14 @@
 			<thead>
 			<tr>
 				<th>&nbsp;</th>
-				<th colspan="2"><?php echo $lable_host ?></th>
+				<th><?php echo $lable_host ?></th>
 				<th class="no-sort"><?php echo $lable_services ?></th>
-				<th class="no-sort" colspan="6"><?php echo $lable_actions ?></th>
+				<th class="no-sort"><?php echo $lable_actions ?></th>
 			</tr>
 			</thead>
 			<tbody>
-			<tr>
-				<td colspan="5"><?php echo $error_message ?></td>
+			<tr class="even">
+				<td colspan="4"><?php echo $error_message ?></td>
 			</tr>
 			</tbody>
 		</table>
