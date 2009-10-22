@@ -73,8 +73,8 @@
 				</td>
 			</tr>
 			<?php	} } else { # print message - no comments available ?>
-			<tr>
-				<td colspan="8"><?php echo $no_data ?></td>
+			<tr class="even">
+				<td colspan="<?php echo $service ? 10 : 9 ?>"><?php echo $no_data ?></td>
 			</tr>
 		<?php } ?>
 		</tbody>
