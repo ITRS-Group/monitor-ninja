@@ -293,7 +293,7 @@ select {
 	top: 0px;
 	z-index: 9999;
 	background: #e0e0e0 url(images/bg.png) repeat-x;
-	border-bottom: 1px solid #d0d0d0;
+	/*border-bottom: 1px solid #d0d0d0;*/
 }
 #icons ul {
 	height: 31px;
