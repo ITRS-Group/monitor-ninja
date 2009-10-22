@@ -70,7 +70,7 @@ if (isset($service_result) ) { ?>
 		<td class="bl icon"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->host_state)).'.png'),array('alt' => Current_status_Model::status_text($service->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($service->host_state))); ?></td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
 		<?php } else { ?>
-		<td colspan="2" class="white" style="background-color:#ffffff;border=0"></td>
+		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
 		<td class="icon"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($service->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($service->current_state, 'service'))); ?></td>
 		<td>
