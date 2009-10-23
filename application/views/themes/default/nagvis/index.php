@@ -99,7 +99,7 @@
 	}
 </script>
 
-<div class="left" style="height: auto">
+<div class="left" style="height: auto; margin-left: 1%">
 	<div>
 		<strong><?php echo $this->translate->_('Maps') ?> &nbsp;(<a class="view" href="/ninja/index.php/nagvis/configure"><?php echo $this->translate->_('configure') ?></a>)</strong>
 		<ul class="thumbnails">
@@ -125,7 +125,7 @@
 	</div>
 </div>
 
-<div class="left" style="clear: left;">
+<div class="left" style="clear: left; margin-left: 1%">
 	<strong><?php echo $this->translate->_('Rotation pools') ?></strong>
 	<div>
 		<ul>
