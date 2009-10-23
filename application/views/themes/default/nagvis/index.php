@@ -66,10 +66,15 @@
 	ul.thumbnails li.create form {
 		margin: 10px 5px;
 	}
-	ul.thumbnails li a.create {
+	ul.thumbnails li span.create {
 		display: block;
+		font-weight: bold;
 		width: 203px;
+		overflow: hidden;
+		background: #cdcdcd url('/ninja/application/views/themes/default/css/default/images/bg.png') repeat-x;
 		border-bottom: 1px solid #cdcdcd;
+		margin:0px;
+		padding: 3px 0px 3px 3px;
 	}
 	input { width: 128px }
 	a.button {
@@ -110,7 +115,7 @@
 			<li><a class="view" href="/ninja/index.php/nagvis/automap" style="border: 0px"><span><?php echo $this->translate->_('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
 			<li><a class="view" href="/ninja/index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="/ninja/geomap-thumb.png" alt="" /></a></li>
 			<li class="create">
-				<a class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo $this->translate->_('Create map') ?></a>
+				<span class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo $this->translate->_('Create map') ?></span>
 				<form id="createmap" action="/ninja/index.php/nagvis/create" method="post">
 					<input type="text" id="mapname" name="name" maxlength="25" />
 					<a class="button" href="#" onclick="createmap(); return false" style="border: 1px solid #cdcdcd"><?php echo $this->translate->_('Create') ?></a></li>
