@@ -40,6 +40,7 @@ class Outages_Controller extends Authenticated_Controller
 			return;
 		}
 		$this->template->content = $this->add_view('outages/network_outages');
+		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 		$outages = new Outages_Model();
 		$outage_data = $outages->fetch_outage_data();

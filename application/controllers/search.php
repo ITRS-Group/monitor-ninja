@@ -69,6 +69,7 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content = $this->add_view('search/result');
+		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 		$limit = Kohana::config('config.search_limit');
 		$content->query = $query;
