@@ -24,8 +24,12 @@
 		margin-right: 5px;
 		margin-bottom: 5px;
 		width: 206px;
+		height: 180px;
 		border: 1px solid #cdcdcd;
   }
+	ul.thumbnails li.create {
+		height: auto;
+	}
   ul.thumbnails li a.view {
 		display: block;
 		width: 206px;
@@ -106,7 +110,7 @@
 			<li><a class="view" href="/ninja/index.php/nagvis/automap" style="border: 0px"><span><?php echo $this->translate->_('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
 			<li><a class="view" href="/ninja/index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="/ninja/geomap-thumb.png" alt="" /></a></li>
 			<li class="create">
-				<a class="create" href="#" onclick="$('#createmap').submit(); return false" style="border: 0px"><?php echo $this->translate->_('Create map') ?></a>
+				<a class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo $this->translate->_('Create map') ?></a>
 				<form id="createmap" action="/ninja/index.php/nagvis/create" method="post">
 					<input type="text" id="mapname" name="name" maxlength="25" />
 					<a class="button" href="#" onclick="createmap(); return false" style="border: 1px solid #cdcdcd"><?php echo $this->translate->_('Create') ?></a></li>
