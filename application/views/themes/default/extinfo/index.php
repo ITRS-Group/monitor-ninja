@@ -119,7 +119,7 @@ if (!empty($widgets)) {
 	<br /><br />
 	<?php } ?>
 	<?php if (!empty($notes_url)) { ?>
-	<a href="<?php echo $notes_url ?>" style="border: 0px">
+	<a target="_blank" href="<?php echo $notes_url ?>" style="border: 0px">
 		<?php echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes'),'style' => 'float: left; margin: -2px 5px 0px 0px'))?>
 	</a>
 	<?php echo $label_notes_url ?>
