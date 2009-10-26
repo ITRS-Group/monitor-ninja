@@ -41,6 +41,8 @@ class Hostgroup_Model extends ORM
 		} else {
 			$auth_objects = $auth->get_authorized_hostgroups();
 			$auth_ids = array_keys($auth_objects);
+			if (empty($auth_ids))
+				return false;
 			$data = ORM::factory('hostgroup')->in('id', $auth_ids)->find_all();
 		}
 		return count($data)>0 ? $data : false;
