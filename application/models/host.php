@@ -721,9 +721,6 @@ class Host_Model extends Model {
 		$service_description = trim($service_description);
 		# check credentials for host
 		$host_list = $auth->get_authorized_hosts();
-		if (!in_array($host_name, $host_list)) {
-			return false;
-		}
 
 		$db = new Database();
 		if (empty($service_description)) {
