@@ -356,6 +356,7 @@ function widget(name, content_area, no_edit)
 			return value;
 		}, {
 			type : 'text',
+			style : 'margin-top: -4px',
 			event : 'dblclick',
 			width : 'auto',
 			height : '14px',
