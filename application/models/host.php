@@ -573,9 +573,18 @@ class Host_Model extends Model {
 						"AND auth_service.host_name=auth_host.host_name".
 						$filter_sql.$hostprops_sql.$serviceprops_sql;
 
+				# query hosts and services through contact -> service
+				$sql_svc_contact = "SELECT ".$field_list_tmp.
+					" FROM host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ".
+						"WHERE auth_service.id=auth_servicecontact.service ".
+						"AND auth_servicecontact.contact=auth_contact.id ".
+						"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
+						"AND auth_service.host_name=auth_host.host_name".
+						$filter_sql.$hostprops_sql.$serviceprops_sql;
+
 				# join service and host queries with UNION()
 				# to fetch all services for an authenticated contact
-				$sql = '('.$sql.') UNION ('.$sql2.') UNION (' . $sql_contact . ') ';
+				$sql = '('.$sql.') UNION ('.$sql2.') UNION (' . $sql_contact . ') UNION (' . $sql_svc_contact . ') ';
 			}
 
 			# add order query part
