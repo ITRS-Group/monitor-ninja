@@ -223,6 +223,7 @@ class Nagios_auth_Model extends Model
 		$query_contact = "SELECT DISTINCT s.id, h.host_name, s.service_description ".
 			"FROM host h, service s, contact c, service_contact sc ".
 			"WHERE s.id=sc.service AND c.id=sc.contact ".
+			"AND sc.contact=c.id ".
 			"AND c.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
 			" AND h.host_name=s.host_name";
 
