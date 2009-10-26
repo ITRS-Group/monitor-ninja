@@ -296,7 +296,7 @@ select {
 	/*border-bottom: 1px solid #d0d0d0;*/
 }
 #icons ul {
-	height: 31px;
+	height: 35px;
 }
 #icons ul li {
 	display: inline;
@@ -785,6 +785,26 @@ th.enabled_monfeat cite {
 	float: left;
 	margin-top: 2px;
 	margin-bottom: -2px;
+}
+
+table.ext {
+	border-spacing: 1px;
+	background-color: #cdcdcd;
+}
+
+table.ext tr th {
+	border: 0px;
+}
+
+table.ext tr td.dark {
+	text-align: left;
+	padding-left: 7px;
+	padding-right: 5px;
+	width: auto;
+}
+
+table.ext tr td.dark img {
+	display: block;
 }
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
