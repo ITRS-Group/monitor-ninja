@@ -123,19 +123,43 @@ class Comment_Model extends Model {
 			$auth_host_alias = $host_query['host_field'];
 			$auth_from = ' ,'.$host_query['from'];
 			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
-			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
-				" c.host_name!='' ".$svc_selection.$auth_where;
 
-			if ($service_query !== true) {
+			if (!$service) { # host comments
+				# comments via host_contactgroup
+				$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
+					" c.host_name!='' ".$svc_selection.$auth_where;
+
+				# comments via host_contact
 				$from = "FROM comment c, host AS auth_host, contact AS auth_contact, host_contact AS auth_host_contact";
 				# via host_contact
 				$sql2 = "SELECT c.* ".$from." WHERE".
 					" c.host_name!='' ".$svc_selection." AND auth_contact.contact_name=".
 					$db->escape(Auth::instance()->get_user()->username).
 					" AND auth_host_contact.contact=auth_contact.id ".
+					"AND auth_host.id=auth_host_contact.host ".
 					"AND auth_host.host_name=c.host_name";
-				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
-			}
+
+			} else { # service comments
+				# comments via service_contactgroup
+				$from = ','.$service_query['from'];
+				$sql = "SELECT c.* FROM comment c".$from." WHERE ".
+					"(c.service_description!='' AND c.service_description is NOT null) AND ".
+					$service_query['where']." AND c.service_description=".$service_query['service_field'].".service_description ".
+					"AND c.host_name=".$service_query['service_field'].".host_name";
+
+				# comments via service_contact
+				$from = "FROM comment c, host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ";
+				$sql2 = "SELECT c.* ".$from." WHERE ".
+					"(c.service_description!='' AND c.service_description is NOT null) ".
+					"AND auth_service.id=auth_servicecontact.service ".
+					"AND auth_servicecontact.contact=auth_contact.id ".
+					"AND auth_contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
+					" AND auth_service.host_name=auth_host.host_name ".
+					"AND c.service_description=auth_service.service_description ".
+					"AND c.host_name=auth_service.host_name";
+		}
+
+			$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
 		}
 
 		$sql .= " ORDER BY host_name ".$offset_limit;
