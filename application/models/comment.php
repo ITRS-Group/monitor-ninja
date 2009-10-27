@@ -162,7 +162,7 @@ class Comment_Model extends Model {
 			$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
 		}
 
-		$sql .= " ORDER BY c.entry_time, host_name ".$offset_limit;
+		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
 		#echo $sql."<br />";
 
 		$result = $db->query($sql);
