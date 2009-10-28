@@ -156,6 +156,19 @@ class Ajax_Controller extends Authenticated_Controller {
 			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget, $widget, true);
 		}
 
+		$page = false;
+		if (empty($arguments)) {
+			$page = request::referrer();
+			$page_parts = explode(Kohana::config('config.site_domain').Kohana::config('config.index_page').'/', $page);
+			$page = isset($page_parts[1]) ? $page_parts[1] : false;
+			$page = (!empty($page) && $page == 'tac') ? $page.'/index' : $page;
+			if (!empty($page)) {
+				$data = Ninja_widget_Model::get_widget($page, $widget, true);
+				$arguments = $data!==false ? unserialize($data->setting) : false;
+				$arguments[0] = false;
+			}
+		}
+
 		require_once($path);
 		$classname = $widget.'_Widget';
 		$obj = new $classname;
