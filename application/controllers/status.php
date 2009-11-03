@@ -960,6 +960,7 @@ class Status_Controller extends Authenticated_Controller {
 			$content->service_data = $this->_show_group_service_summary($grouptype, $seen_hosts, $group);
 		} else {
 			# nothing found
+			$content = false;
 		}
 
 		return $content;
