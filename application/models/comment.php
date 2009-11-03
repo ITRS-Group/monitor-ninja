@@ -73,7 +73,7 @@ class Comment_Model extends Model {
 				$svc_selection.$auth_where;
 		}
 
-		$sql .= " ORDER BY host_name ".$offset_limit;
+		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
 
 		$result = $db->query($sql);
 		if ($count !== false) {
