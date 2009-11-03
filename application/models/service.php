@@ -91,8 +91,19 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
+		$auth = new Nagios_auth_Model();
 		$auth_services = self::authorized_services();
-		$service_str = implode(', ', array_keys($auth_services));
+		$service_str = !empty($auth_services) ? implode(', ', array_keys($auth_services)) : false;
+		if ($auth->view_hosts_root || $auth->view_services_root) {
+			$auth_str = '';
+		} elseif (!empty($service_str)) {
+			$auth_str = " AND s.id IN(".$service_str.")";
+		} else {
+			# not authorized_for all hosts or services and no hosts
+			# so we return false here.
+			return false;
+		}
+
 		switch ($type) {
 			case 'service':
 				$sql = "SELECT
@@ -104,8 +115,7 @@ class Service_Model extends Model
 				WHERE
 					sg.servicegroup_name=".$this->db->escape($group)." AND
 					ssg.servicegroup = sg.id AND
-					s.id=ssg.service AND
-					s.id IN(".$service_str.")
+					s.id=ssg.service ".$auth_str."
 				ORDER BY
 					s.service_description";
 					break;
@@ -121,8 +131,7 @@ class Service_Model extends Model
 					hg.hostgroup_name=".$this->db->escape($group)." AND
 					hhg.hostgroup = hg.id AND
 					s.host_name=h.host_name AND
-					hhg.host = h.id AND
-					s.id IN(".$service_str.")
+					hhg.host = h.id ".$auth_str."
 				ORDER BY
 					s.service_description";
 				break;
