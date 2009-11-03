@@ -70,6 +70,11 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function submit($cmd = false)
 	{
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_system_commands) {
+			url::redirect(Router::$controller.'/unauthorized');
+		}
+
 		$this->init_page('command/request');
 		$this->xtra_js[] = $this->add_path('command/js/command.js');
 		$this->template->js_header->js = $this->xtra_js;
@@ -159,6 +164,10 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function commit()
 	{
+		if (!$auth->authorized_for_system_commands) {
+			url::redirect(Router::$controller.'/unauthorized');
+		}
+
 		$this->init_page('command/commit');
 		$cmd = $_REQUEST['requested_command'];
 		$this->template->content->requested_command = $cmd;
