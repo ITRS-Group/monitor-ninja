@@ -431,7 +431,7 @@ class Host_Model extends Model {
 			$auth_query_parts = $this->auth->authorized_service_query();
 			$auth_from = '';
 			$auth_where = '';
-			if ($auth_query_parts !== true) {
+			if ($auth_query_parts !== true && !$this->auth->view_hosts_root) {
 				$auth_from = $auth_query_parts['from'];
 
 				# match authorized services against service.host_name
