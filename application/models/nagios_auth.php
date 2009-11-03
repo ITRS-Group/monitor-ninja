@@ -18,6 +18,8 @@ class Nagios_auth_Model extends Model
 	public $command_hosts_root = false;
 	public $command_services_root = false;
 	public $authorized_for_system_information = false;
+	public $authorized_for_system_commands = false;
+	public $authorized_for_configuration_information = false;
 
 	public function __construct()
 	{
@@ -63,6 +65,14 @@ class Nagios_auth_Model extends Model
 
 		if (in_array('authorized_for_system_information', $user_access)) {
 			$this->authorized_for_system_information = true;
+		}
+
+		if (in_array('authorized_for_system_commands', $user_access)) {
+			$this->authorized_for_system_commands = true;
+		}
+
+		if (in_array('authorized_for_configuration_information', $user_access)) {
+			$this->authorized_for_configuration_information = true;
 		}
 
 		/* Allow * in cgi.cfg, which mean everybody should get 'rootness' */
