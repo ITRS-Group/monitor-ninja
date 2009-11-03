@@ -41,36 +41,81 @@ class Group_Model extends Model
 			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
 		}
 
-		$hostlist_str = implode(',', $hostlist);
-
 		$db = new Database();
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
 
-		$sql = "
-			SELECT
-				h.*,
-				s.current_state AS service_state,
-				COUNT(s.current_state) AS state_count
-			FROM
-				service s,
-				host h,
-				".$grouptype."group sg,
-				".$grouptype."_".$grouptype."group ssg
-			WHERE
-				".$all_sql."
-				ssg.".$grouptype."group = sg.id AND
-				".$member_match."
-				h.host_name=s.host_name AND
-				h.id IN (".$hostlist_str.") ".$filter_sql."
-			GROUP BY
-				h.id, s.current_state
-			ORDER BY
-				h.host_name,
-				s.current_state;";
+		if ($auth->view_hosts_root) {
+			$sql = "
+				SELECT
+					h.*,
+					s.current_state AS service_state,
+					COUNT(s.current_state) AS state_count
+				FROM
+					service s,
+					host h,
+					".$grouptype."group sg,
+					".$grouptype."_".$grouptype."group ssg
+				WHERE
+					".$all_sql."
+					ssg.".$grouptype."group = sg.id AND
+					".$member_match."
+					h.host_name=s.host_name ".$filter_sql."
+				GROUP BY
+					h.id, s.current_state
+				ORDER BY
+					h.host_name,
+					s.current_state;";
+		} elseif ($auth->view_services_root && $grouptype == 'service') {
+			$sql = "
+				SELECT
+					h.*,
+					s.current_state AS service_state,
+					COUNT(s.current_state) AS state_count
+				FROM
+					service s,
+					host h,
+					".$grouptype."group sg,
+					".$grouptype."_".$grouptype."group ssg
+				WHERE
+					".$all_sql."
+					ssg.".$grouptype."group = sg.id AND
+					".$member_match."
+					h.host_name=s.host_name ".$filter_sql."
+				GROUP BY
+					h.id, s.current_state
+				ORDER BY
+					h.host_name,
+					s.current_state;";
+		} else {
+			$hostlist_str = implode(',', $hostlist);
+
+			$sql = "
+				SELECT
+					h.*,
+					s.current_state AS service_state,
+					COUNT(s.current_state) AS state_count
+				FROM
+					service s,
+					host h,
+					".$grouptype."group sg,
+					".$grouptype."_".$grouptype."group ssg
+				WHERE
+					".$all_sql."
+					ssg.".$grouptype."group = sg.id AND
+					".$member_match."
+					h.host_name=s.host_name AND
+					h.id IN (".$hostlist_str.") ".$filter_sql."
+				GROUP BY
+					h.id, s.current_state
+				ORDER BY
+					h.host_name,
+					s.current_state;";
+		}
 		$result = $db->query($sql);
+		#echo $sql."<hr />";
 		return $result;
 	}
 
@@ -149,14 +194,14 @@ class Group_Model extends Model
 				".$all_sql."
 				ssg.".$grouptype."group = sg.id AND
 				".$member_match."
-				h.host_name=s.host_name AND
-				h.id IN (".$hostlist_str.")
+				h.host_name=s.host_name ".$auth_str."
 			GROUP BY
 				h.host_name, s.id
 			ORDER BY
 				h.host_name,
 				s.service_description,
 				s.current_state;";
+
 		$result = $db->query($sql);
 		return $result;
 	}
