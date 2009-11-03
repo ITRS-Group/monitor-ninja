@@ -25,9 +25,10 @@ class Group_Model extends Model
 			return false;
 		}
 
+		$auth = new Nagios_auth_Model();
 		$hostlist = Host_Model::authorized_hosts();
-		if (empty($hostlist)) {
-			return;
+		if (!$auth->view_hosts_root && !$auth->view_services_root && empty($hostlist)) {
+			return false;
 		}
 		$filter_sql = '';
 		$state_filter = false;
@@ -90,11 +91,8 @@ class Group_Model extends Model
 		}
 
 		$hostlist = Host_Model::authorized_hosts();
-		if (empty($hostlist)) {
-			return false;
-		}
 
-		$hostlist_str = implode(',', $hostlist);
+		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
 
 		$db = new Database();
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
@@ -102,8 +100,16 @@ class Group_Model extends Model
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
 
-		$sql = "
-			SELECT
+		$auth = new Nagios_auth_Model();
+		$auth_str = '';
+		if ($auth->view_hosts_root || ($auth->view_services_root && $grouptype == 'service')) {
+			$auth_str = "";
+		} else {
+			if (empty($hostlist_str))
+				return false;
+			$auth_str = " AND h.id IN (".$hostlist_str.")";
+		}
+		$sql = "SELECT
 				h.host_name,
 				h.address,
 				h.alias,
