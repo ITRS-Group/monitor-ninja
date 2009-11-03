@@ -22,11 +22,6 @@ class Command_Controller extends Authenticated_Controller
 	private $cmd_params = array();
 	private $csrf_token = false;
 
-	public function __construct()
-	{
-		parent::__construct();
-	}
-
 	/**
 	 * Initializes a page with the correct view, java-scripts and css
 	 * @param $view The name of the theme-page we want to print
