@@ -208,7 +208,7 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->services))
 			return $this->services;
 
-		if (empty($this->id) && !$this->view_services_root)
+		if (empty($this->id) && !$this->view_services_root && !$this->view_hosts_root)
 			return array();
 
 		# contact <-> service_contactgroup relation
@@ -245,7 +245,7 @@ class Nagios_auth_Model extends Model
 
 		$query = '(' . $query . ') UNION (' . $query_contact . ') UNION (' . $query_host_contact . ') UNION (' . $query_host_contactgroup . ')';
 
-		if ($this->view_services_root) {
+		if ($this->view_services_root || $this->view_hosts_root) {
 			$query = 'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
 			'FROM host, service WHERE host.host_name = service.host_name';
 		}
@@ -341,7 +341,7 @@ class Nagios_auth_Model extends Model
 			$query = "SELECT service FROM service_servicegroup WHERE servicegroup = $id";
 			$res = $this->db->query($query);
 			$ok = true;
-			if (!$this->view_services_root) {
+			if (!$this->view_services_root && !$this->view_hosts_root) {
 				foreach ($res as $row) {
 					if (!isset($this->services[$row->service])) {
 						$ok = false;
