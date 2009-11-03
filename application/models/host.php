@@ -284,11 +284,7 @@ class Host_Model extends Model {
 	 */
 	public function get_host_status()
 	{
-		if (empty($this->host_list)) {
-			return false;
-		}
-
-		if ($this->host_list !== 'all')
+		if (!empty($this->host_list) && $this->host_list !== 'all')
 			$host_str = implode(', ', $this->host_list);
 
 		$filter_sql = '';
