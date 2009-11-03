@@ -876,7 +876,7 @@ class Status_Controller extends Authenticated_Controller {
 		$hostlist = Group_Model::get_group_hoststatus($grouptype, $group);
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
-		if ($hostlist->count() > 0) {
+		if (!empty($hostlist) && count($hostlist) > 0) {
 			$service_states = false;
 			$hostinfo = false;
 			$hosts_up = 0;
