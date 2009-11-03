@@ -279,6 +279,7 @@ class Status_Controller extends Authenticated_Controller {
 			64 => $this->translate->_('Pending'),
 			65 => $this->translate->_('Non-problem services'),
 			71 => $this->translate->_('All services'),
+			78 => $this->translate->_('All problems')
 		);
 
 		$host_replace = array(
