@@ -65,6 +65,8 @@ class Comment_Model extends Model {
 				$sql2 = "SELECT c.* FROM comment c ".$from." WHERE c.host_name=".$db->escape($host).
 					$svc_selection.' AND '.$service_query['where'];
 				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
+			} else {
+				$sql = "SELECT c.* FROM comment c WHERE c.host_name=".$db->escape($host).$svc_selection;
 			}
 		} else {
 			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
