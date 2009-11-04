@@ -256,6 +256,7 @@ class ninja_auth_import
 		if ($this->DEBUG) echo "  Creating htpasswd_importer() instance\n";
 		require_once($path);
 		$passwd_import = new htpasswd_importer();
+		$passwd_import->overwrite = true;
 		$passwd_import->import_hashes($this->nagios_cfg_path.'/htpasswd.users');
 
 		$config_data = $this->fetch_nagios_users();
