@@ -164,6 +164,7 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function commit()
 	{
+		$auth = new Nagios_auth_Model();
 		if (!$auth->authorized_for_system_commands) {
 			url::redirect(Router::$controller.'/unauthorized');
 		}
