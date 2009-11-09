@@ -234,17 +234,12 @@ $(window).resize(function() {
 */
 function scroll_control()
 {
-	var xtra_height = 69; // top bars etc takes up some space
-	$('#menu-slider').css('height', parseInt(document.documentElement.clientHeight-67)+'px');
-	$('#menu-scroll').css('height', parseInt(document.documentElement.clientHeight)+'px');
-	$('#menu-scroll').css('border-right', '1px solid #d0d0d0');
-	if (parseInt($('#menu ul').height()+xtra_height) <= parseInt(document.documentElement.clientHeight)) {
-		$('#menu-slider').hide();
-		var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
-		$("#menu-scroll").animate({scrollTop: -100 * (maxScroll / 100) }, 1000);
+	if ($('#menu').width() < 51) {
+		var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight)+'px') ? 50 : 37;
+		$('#menu').css('width', menuwidth+'px');
+		$('#content').css('margin-left', menuwidth+'px');
 	}
-	else
-		$('#menu-slider').show();
+	$('#menu').css('height', parseInt(document.documentElement.clientHeight)+'px');
 }
 
 function handleSliderChange(e, ui){
