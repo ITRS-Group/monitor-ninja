@@ -25,7 +25,7 @@ class Downtime_Model extends Model
 			$auth_from = ' ,'.$host_query['from'];
 			$auth_where = ' WHERE '.sprintf($host_query['where'], "d.host_name");
 		}
-		$sql = "SELECT d.* FROM downtime AS d ".$auth_from.$auth_where;
+		$sql = "SELECT d.* FROM scheduled_downtime AS d ".$auth_from.$auth_where;
 		$result = $db->query($sql);
 		return $result->count() ? $result: false;
 	}
