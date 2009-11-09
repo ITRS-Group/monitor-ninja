@@ -3,7 +3,6 @@ if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 
 ?>
-<?php //if (extension_loaded('zlib')) { ob_start('ob_gzhandler'); } header('Content-type: text/html; charset=utf-8'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -35,6 +34,7 @@ if (isset($this->template->js_header))
 				refresh::control();
 			}
 		?>
+
 		<script type="text/javascript">
 			//<!--
 			<?php
@@ -71,8 +71,10 @@ if (isset($this->template->js_header))
 
 			//-->
 		</script>
+
 		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
+
 	</head>
 
 	<body>
@@ -112,11 +114,10 @@ if (isset($this->template->js_header))
 			</div>
 		</div>
 		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
-			<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+		<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
 		<div style="position: fixed; left: 0px;">
-		<div id="menu-slider"></div>
-		<div id="menu-scroll">
-		<div id="menu">
+
+		<div id="menu" style="overflow-y:auto">
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
@@ -135,7 +136,6 @@ if (isset($this->template->js_header))
 					endforeach;
 				?>
 			</ul>
-		</div>
 		</div>
 		</div>
 		<div id="page_settings">
@@ -184,4 +184,3 @@ if (isset($this->template->js_header))
 		</div>
 	</body>
 </html>
-<?php //if (extension_loaded('zlib')) { ob_end_flush(); } ?>
