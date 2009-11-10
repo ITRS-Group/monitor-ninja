@@ -807,6 +807,7 @@ table.ext tr td.dark {
 
 table.ext tr td {
 	padding: 3px 5px;
+	white-space: normal;
 }
 
 table.ext tr td.dark img {

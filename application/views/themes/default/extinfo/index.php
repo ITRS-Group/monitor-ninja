@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget left" id="extinfo_host-info" style="width: 390px">
+<div class="widget left" id="extinfo_host-info" style="width: 495px">
 	<table>
 		<tr>
 			<td class="white" colspan="2" style="padding: 7px 0px" >
@@ -107,7 +107,7 @@ if (!empty($widgets)) {
 	</table>
 </div>
 
-<div class="widget left" id="page_links" style="width: 250px">
+<div class="widget left w33" id="page_links">
 	<ul style="margin-top: 7px">
 	<?php
 	if (isset($page_links)) {
@@ -125,7 +125,7 @@ if (!empty($widgets)) {
 
 
 <div style="clear:both"></div>
-<div class="widget left" id="extinfo_current" style="width: 340px">
+<div class="widget left" id="extinfo_current" style="width: 495px">
 	<?php
 	if (isset($pending_msg)) {
 		echo $title."<br /><br />";
