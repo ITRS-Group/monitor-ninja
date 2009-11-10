@@ -1164,7 +1164,7 @@ class Status_Controller extends Authenticated_Controller {
 				 * and set the correct path in config/config.php,
 				 * if installed, to use this
 				 */
-				if (Kohana::config('config.nacoma_path')!==false) {
+				if (nacoma::link()===true) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
 					$nacoma_link = html::anchor('configuration/configure/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)));
 				}
@@ -1353,7 +1353,7 @@ class Status_Controller extends Authenticated_Controller {
 		 * and set the correct path in config/config.php,
 		 * if installed, to use this
 		 */
-		if (Kohana::config('config.nacoma_path')!==false) {
+		if (nacoma::link()===true) {
 			$content->label_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
 			$content->nacoma_path = Kohana::config('config.nacoma_path');
 		}

@@ -118,7 +118,7 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		# Add NACOMA link only if enabled in config
-		if (Kohana::config('config.nacoma_path')!==false) {
+		if (nacoma::link()===true) {
 			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('configuration/configure','nacoma');
 		}
 

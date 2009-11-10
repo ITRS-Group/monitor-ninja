@@ -172,7 +172,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_action_url = $t->_('Extra Actions');
 
 		$xaction = array();
-		if (Kohana::config('config.nacoma_path') !== false) {
+		if (nacoma::link()===true) {
 			$label = $t->_('Configure');
 			$url = url::base(false) . "index.php/configuration/configure/$type/" . urlencode($host);
 			if ($type === 'service') {

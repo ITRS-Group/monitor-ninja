@@ -100,7 +100,7 @@ class Search_Controller extends Authenticated_Controller {
 				 * and set the correct path in config/config.php,
 				 * if installed, to use this
 				 */
-				if (Kohana::config('config.nacoma_path')!==false) {
+				if (nacoma::link()!==false) {
 					$label_nacoma = $this->translate->_('Configure this object using NACOMA (Nagios Configuration Manager)');
 					$content->nacoma_link = 'configuration/configure/';
 					$content->label_nacoma = $label_nacoma;
