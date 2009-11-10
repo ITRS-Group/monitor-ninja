@@ -2,7 +2,7 @@ var default_menu_state = 'show';
 function collapse_menu(action) {
 
 	if (action == 'hide') {
-		var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight - 67)+'px') ? 50 : 37;
+		var menuwidth = ($('#menu').css('height') >= parseInt(document.documentElement.clientHeight - 67)+'px') ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
 		$('#content').css('margin-left', menuwidth+'px');
 		$('#menu').css('height', parseInt(document.documentElement.clientHeight - 67)+'px');
