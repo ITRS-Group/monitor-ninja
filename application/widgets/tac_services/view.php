@@ -29,7 +29,7 @@
 				<th><?php echo $this->translate->_('Pending') ?></th>
 			</tr>
 			<tr>
-				<td style="padding:0px;" class="white">
+				<td style="padding:0px;" class="white" style="white-space:normal">
 					<table>
 							<?php if (count($services_critical) > 0) { foreach ($services_critical as $url => $title) { ?>
 							<tr>
@@ -39,7 +39,7 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-critical' : strtolower($icon[1])).'.png'),$icon[1]);
 									?>
 								</td>
-								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
@@ -49,7 +49,7 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding:0px;" class="white">
+				<td style="padding:0px;" class="white" style="white-space:normal">
 					<table>
 							<?php	if (count($services_warning) > 0) { foreach ($services_warning as $url => $title) { ?>
 							<tr>
@@ -59,7 +59,7 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-warning' : strtolower($icon[1])).'.png'),$icon[1]);
 									?>
 								</td>
-								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
@@ -69,7 +69,7 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding:0px;" class="white">
+				<td style="padding:0px;" class="white" style="white-space:normal">
 					<table>
 							<?php	if (count($services_unknown) > 0) { foreach ($services_unknown as $url => $title) { ?>
 							<tr>
@@ -79,7 +79,7 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-unknown' : strtolower($icon[1])).'.png'),$icon[1]);
 									?>
 								</td>
-								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
@@ -89,17 +89,17 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding:0px;" class="white">
+				<td style="padding:0px;" class="white" style="white-space:normal">
 					<table>
 							<?php	if ($current_status->services_ok > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-ok.png'),$this->translate->_('OK')) ?></td>
-								<td><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
 							</tr>
 							<?php }	if (count($services_ok_disabled) > 0) { foreach ($services_ok_disabled as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { ?>
 							<tr>
@@ -109,12 +109,12 @@
 							<?php } ?>
 					</table>
 				</td>
-				<td style="padding:0px;" class="white">
+				<td style="padding:0px;" class="white" style="white-space:normal">
 					<table>
 							<?php	if (count($services_pending) > 0) {	foreach ($services_pending as $url => $title) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-pending.png'),$this->translate->_('Pending')) ?></td>
-								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
