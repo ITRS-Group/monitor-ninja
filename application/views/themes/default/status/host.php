@@ -132,7 +132,7 @@ foreach ($result as $row) {
 				<?php } ?>
 				<?php if (Kohana::config('config.nacoma_path')!==false) { ?>
 				<td class="icon">
-					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image($this->add_path('icons/16x16/nacoma.png'),$this->translate->_('Configure this host')));?>
+					<?php echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host'));?>
 				</td>
 				<?php } ?>
 				<td style="white-space: normal"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>

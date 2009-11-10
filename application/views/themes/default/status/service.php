@@ -154,7 +154,7 @@
 		<?php } ?>
 		<?php if (Kohana::config('config.nacoma_path')!==false) { ?>
 		<td class="icon">
-			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/nacoma.png'),array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>
+			<?php echo nacoma::link('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')) ?>
 		</td>
 		<?php } ?>
 		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
