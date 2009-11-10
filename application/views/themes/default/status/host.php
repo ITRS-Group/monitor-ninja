@@ -39,9 +39,12 @@
 				<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'host_name';
-
+				$n = 0;
 				foreach($header_links as $row) {
+					$n++;
 					if (isset($row['url_desc'])) {
+						if ($n == 3)
+							echo '<th class="no-sort" colspan="'.(((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 5 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 4 : 3)).'">'.$this->translate->_('Actions').'</th>';
 						echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
 									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
@@ -50,7 +53,6 @@
 				}
 			?>
 				<th><?php echo $this->translate->_('Status information') ?></th>
-				<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 5 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 4 : 3); ?>"><?php echo $this->translate->_('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -106,17 +108,6 @@ foreach ($result as $row) {
 					echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
-				<td style="white-space: normal"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
-				<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
-				<td style="white-space: normal">
-					<?php
-					if ($row->current_state == Current_status_Model::HOST_PENDING) {
-						echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
-					} else {
-						echo str_replace('','',$row->output);
-					}
-					?>
-				</td>
 				<td class="icon">
 					<?php echo html::anchor('status/service/'.$row->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
 				</td>
@@ -144,6 +135,17 @@ foreach ($result as $row) {
 					<?php echo html::anchor('configuration/configure/host/'.$row->host_name, html::image($this->add_path('icons/16x16/nacoma.png'),$this->translate->_('Configure this host')));?>
 				</td>
 				<?php } ?>
+				<td style="white-space: normal"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+				<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+				<td style="white-space: normal">
+					<?php
+					if ($row->current_state == Current_status_Model::HOST_PENDING) {
+						echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
+					} else {
+						echo str_replace('','',$row->output);
+					}
+					?>
+				</td>
 			</tr>
 			<?php	} ?>
 		</tbody>

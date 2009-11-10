@@ -41,9 +41,12 @@
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
-
+				$n = 0;
 				foreach($header_links as $row) {
+					$n++;
 					if (isset($row['url_desc'])) {
+						if ($n == 4)
+							echo '<th class="no-sort" colspan="'.(((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 2 : 1)).'">'.$this->translate->_('Actions').'</th>';
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
 									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
@@ -53,7 +56,6 @@
 			?>
 			<th class="no-sort"><?php echo $this->translate->_('Attempt') ?></th>
 			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
-			<th class="no-sort" colspan="<?php echo ((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 2 : 1); ?>"><?php echo $this->translate->_('Actions') ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -109,6 +111,7 @@
 		<td class="icon bl">
 			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, 'service'))) ?>
 		</td>
+
 		<td style="white-space: normal">
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></span>
 			<span style="float: right">
@@ -130,18 +133,6 @@
 				}
 			?>
 			</span>
-		</td>
-		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
-		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
-		<td style="text-align: center"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
-		<td style="white-space: normal">
-		<?php
-			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
-				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
-			} else {
-				echo str_replace('','',$row->service_output);
-			}
-			?>
 		</td>
 		<td class="icon">
 		<?php	if (!empty($row->action_url)) { ?>
@@ -166,6 +157,19 @@
 			<?php echo html::anchor('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/nacoma.png'),array('alt' => $this->translate->_('Configure this service'),'title' => $this->translate->_('Configure this service')))) ?>
 		</td>
 		<?php } ?>
+		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+		<td style="text-align: center"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
+		<td style="white-space: normal">
+		<?php
+			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
+				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
+			} else {
+				echo str_replace('','',$row->service_output);
+			}
+			?>
+		</td>
+
 	</tr>
 
 	<?php
@@ -173,7 +177,6 @@
 		} ?>
 		</tbody>
 	</table>
-
 
 <?php } ?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
