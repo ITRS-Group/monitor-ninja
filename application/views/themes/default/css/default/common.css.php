@@ -321,6 +321,7 @@ select {
 	height: 100%;
 	background-color: #f5f5ef;
 	border-left: 1px solid #e9e9e0;
+	border-right: 1px solid #cdcdcd;
 }
 #menu ul li em {
 	margin-top: -6px;
@@ -801,6 +802,11 @@ table.ext tr td.dark {
 	padding-left: 7px;
 	padding-right: 5px;
 	width: auto;
+	padding: 3px 5px 3px 7px;
+}
+
+table.ext tr td {
+	padding: 3px 5px;
 }
 
 table.ext tr td.dark img {
