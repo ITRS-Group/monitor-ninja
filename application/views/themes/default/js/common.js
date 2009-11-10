@@ -235,11 +235,11 @@ $(window).resize(function() {
 function scroll_control()
 {
 	if ($('#menu').width() < 51) {
-		var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight)+'px') ? 50 : 37;
+		var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight -67)+'px') ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
 		$('#content').css('margin-left', menuwidth+'px');
 	}
-	$('#menu').css('height', parseInt(document.documentElement.clientHeight)+'px');
+	$('#menu').css('height', parseInt(document.documentElement.clientHeight - 67)+'px');
 }
 
 function handleSliderChange(e, ui){

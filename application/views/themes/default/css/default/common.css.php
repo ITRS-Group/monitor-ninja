@@ -314,11 +314,11 @@ select {
 	color: #555555;
 }
 #menu {
+	position: absolute;
 	width: 180px;
-	top: 0px;
+	top: 67px;
 	left: 0px;
 	z-index: 0;
-	height: 100%;
 	background-color: #f5f5ef;
 	border-left: 1px solid #e9e9e0;
 	border-right: 1px solid #cdcdcd;
@@ -340,7 +340,6 @@ select {
 #menu ul {
 	margin: 0px;
 	padding: 0px;
-	margin-top: 66px;
 }
 #menu ul li {
 	list-style: none;
@@ -372,30 +371,6 @@ select {
 	padding-top: 15px;
 	padding-left: 15px;
 	cursor: pointer;
-}
-#menu-slider {
-	width: 8px !important;
-	z-index: 999 !important;
-	height: 533px;
-	margin: 0px 0px;
-	border: 1px solid #cccccc;
-	position: absolute;
-	top: 67px;
-	left: 176px;
-}
-.ui-slider-handle {
-	position: absolute;
-	left: -2px;
-	width: 10px !important;
-	background: #b7b7b7 !important;
-	border: solid 1px #cccccc;
-}
-#menu-scroll {
-	width: 180px;
-	padding: 0px;
-	height: 600px;
-	overflow: hidden;
-	position: absolute;
 }
 #close-menu {
 	position: fixed;
