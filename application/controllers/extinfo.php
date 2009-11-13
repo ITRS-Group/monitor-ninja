@@ -135,6 +135,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Active Check');
 			$content->lable_flapping = $t->_('Is This Host Flapping?');
 			$obsessing = $result->obsess_over_host;
+			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result) : false;
 
 			# check for parents
 			$host_obj = new Host_Model();
@@ -160,12 +161,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
 			$obsessing = $result->obsess_over_service;
+			$content->notes = $result->service_notes !='' ? nagstat::process_macros($result->service_notes, $result) : false;
 			if ($result->current_state == Current_status_Model::SERVICE_PENDING ) {
 				$is_pending = true;
 				$message_str = $t->_('This service has not yet been checked, so status information is not available.');
 			}
 		}
 
+		$content->label_notes = $t->_('Notes');
 		$content->notes_url = $result->notes_url !='' ? nagstat::process_macros($result->notes_url, $result) : false;
 		$content->label_notes_url = $t->_('Extra Notes');
 		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result) : false;

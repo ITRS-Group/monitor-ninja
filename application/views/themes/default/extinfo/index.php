@@ -82,6 +82,12 @@ if (!empty($widgets)) {
 			?>
 			</td>
 		</tr>
+		<?php if (!empty($notes)) {?>
+		<tr>
+			<td class="white"><strong><?php echo $label_notes ?></strong></td>
+			<td class="white"><?php echo $notes ?></td>
+		</tr>
+		<?php } ?>
 		<tr>
 			<td class="white" colspan="2"style="padding-top: 7px">
 				<?php
