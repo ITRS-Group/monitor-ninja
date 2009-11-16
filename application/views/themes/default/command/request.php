@@ -13,7 +13,7 @@ echo form::open('command/commit', array('id' => 'command_form'));
 
 $params = $info['params'];
 echo "<table>\n";
-echo '<tr><th class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
+echo '<tr><th colspan="2" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
@@ -21,7 +21,9 @@ foreach ($params as $pname => $ary) {
 		$dflt = $ary['default'];
 	echo '<tr class="even">';
 	//echo '<td style="width: 12px">'.html::image('application/views/themes/default/icons/12x12/shield-info.png',array('alt' => $this->translate->_('View help'), 'title' => $this->translate->_('View help'), 'style' => 'float: left')).'</td>';
+	echo '<td style="width: 12px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>';
 	echo '<td style="width: 200px" id="'.$pname.'">'.$ary['name'].'</td><td>';
+
 	switch ($ary['type']) {
 	 case 'select':
 		if ($dflt && array_search($dflt, $ary['options'])) {
