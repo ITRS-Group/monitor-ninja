@@ -9,37 +9,90 @@ $label_na = $this->translate->_('N/A');
 # show host data if available
 if (isset($host_result) ) { ?>
 
-<table>
+<table id="host_table">
 	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?></caption>
 	<tr>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
+		<th class="no-sort"
+			<?php echo 'colspan="'.
+					(((nacoma::link()===true) && (Kohana::config('config.pnp4nagios_path')!==false))
+					? 5
+					: (((nacoma::link()===true) || (Kohana::config('config.pnp4nagios_path')!==false))
+						? 4
+						: 3)).'">'?>
+				<?php echo $this->translate->_('Actions'); ?></th>
+
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Display Name'); ?></th>
-		<?php //if (isset ($nacoma_link)) { ?>
-		<th class="header" <?php echo (isset ($nacoma_link)) ? 'colspan="2"' : '' ?>>&nbsp;</th>
-		<?php //} ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<td class="bl icon">
 			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($host->current_state)).'.png'),array('alt' => Current_status_Model::status_text($host->current_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($host->current_state))); ?>
 		</td>
-		<td><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></td>
-		<td style="white-space: normal"><?php echo $host->alias ?></td>
-		<td><?php echo $host->address ?></td>
-		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
-		<td><?php echo $host->display_name ?></td>
+		<td>
+			<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></div>
+			<?php	$host_comments = Comment_Model::count_comments($host->host_name);
+				if ($host_comments!=0) { ?>
+			<span style="float: right">
+				<?php echo html::anchor('extinfo/details/host/'.$host->host_name.'#comments',
+						html::image($this->add_path('icons/16x16/add-comment.png'),
+						array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
+						'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+			</span>
+			<?php } ?>
+			<div style="float: right"><?php
+				if ($host->problem_has_been_acknowledged) {
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
+				}
+				if (empty($host->notifications_enabled)) {
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
+				}
+				if (!$host->active_checks_enabled) {
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
+				}
+				if (isset($host->is_flapping) && $host->is_flapping) {
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+				}
+				if ($host->scheduled_downtime_depth > 0) {
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+				} ?>
+			</div>
+		</td>
 		<td class="icon">
 			<?php echo html::anchor('status/service/'.$host->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
 		</td>
+		<td class="icon">
+			<?php if (!empty($host->action_url)) { ?>
+				<a href="<?php echo nagstat::process_macros($host->action_url, $host) ?>" style="border: 0px" target="_blank">
+					<?php echo html::image($this->add_path('icons/16x16/host-actions.png'), $this->translate->_('Perform extra host actions')) ?>
+				</a>
+				<?php } ?>
+			</td>
+			<td class="icon">
+			<?php	if (!empty($host->notes_url)) { ?>
+				<a href="<?php echo nagstat::process_macros($host->notes_url, $host) ?>" style="border: 0px" target="_blank">
+					<?php echo html::image($this->add_path('icons/16x16/host-notes.png'), $this->translate->_('View extra host notes')) ?>
+				</a>
+			<?php	} ?>
+			</td>
+			<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
+			<td class="icon">
+				<?php echo (pnp::has_graph($host->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>' : ''; ?>
+			</td>
+			<?php } ?>
 		<?php if (isset ($nacoma_link)) { ?>
 		<td class="icon">
 			<?php echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
 		</td>
 		<?php } ?>
+		<td style="white-space: normal"><?php echo $host->alias ?></td>
+		<td><?php echo $host->address ?></td>
+		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
+		<td><?php echo $host->display_name ?></td>
 	</tr>
 <?php	$i++; } ?>
 </table><br /><?php
