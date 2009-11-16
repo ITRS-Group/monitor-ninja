@@ -281,4 +281,24 @@ class Command_Controller extends Authenticated_Controller
 		$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
 		$this->template->content->return_link_lable = $this->translate->_('Return from whence you came');
 	}
+
+	/**
+	* Translated helptexts for this controller
+	*/
+	public static function _helptexts($id)
+	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+
+		# No helptexts defined yet - this is just an example
+		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
+		# easier to find those later
+		$helptexts = array(
+			'triggered_by' => $translate->_('@@@HELPTEXT:edit')
+		);
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		}
+		else
+			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+	}
 }
