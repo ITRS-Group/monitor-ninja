@@ -46,7 +46,7 @@
 					$n++;
 					if (isset($row['url_desc'])) {
 						if ($n == 4)
-							echo '<th class="no-sort" colspan="'.(((Kohana::config('config.nacoma_path')!==false) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : (((Kohana::config('config.nacoma_path')!==false) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 2 : 1)).'">'.$this->translate->_('Actions').'</th>';
+							echo '<th class="no-sort" colspan="'.(((nacoma::link()===true) && (Kohana::config('config.pnp4nagios_path')!==false)) ? 3 : (((nacoma::link()===true) || (Kohana::config('config.pnp4nagios_path')!==false)) ? 2 : 1)).'">'.$this->translate->_('Actions').'</th>';
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
 									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
@@ -152,7 +152,7 @@
 			?>
 		</td>
 		<?php } ?>
-		<?php if (Kohana::config('config.nacoma_path')!==false) { ?>
+		<?php if (nacoma::link()===true) { ?>
 		<td class="icon">
 			<?php echo nacoma::link('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')) ?>
 		</td>
