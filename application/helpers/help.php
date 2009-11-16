@@ -39,7 +39,7 @@ class help_Core
 		# build the element ID with random nr | controller | help key
 		$id = 'help_'.rand(0, 10000).'|'.$controller.'|'.$key;
 
-		echo '<a class="helptext_target" id="'.$id.'" href="#">'.
+		return '<a class="helptext_target" style="border:0" id="'.$id.'" href="#">'.
 		'<img src="'.$img_path.'" title="'.$translate->_('Click for help').'" alt="'.$translate->_('Click for help').'" /></a>';
 	}
 }
