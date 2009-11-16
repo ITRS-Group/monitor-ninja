@@ -160,6 +160,7 @@ class Command_Model extends Model
 			 case 'trigger_id':
 				$ary = array('type' => 'select', 'options' => $this->get_downtime_ids($cmd, $defaults));
 				$ary['name'] = $translate->_('Triggered By');
+				$ary['help'] = help::render('triggered_by');
 				break;
 			 case 'duration':
 				$ary = array('type' => 'duration', 'default' => '2.0');
