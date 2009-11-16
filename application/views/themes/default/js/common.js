@@ -147,7 +147,7 @@ $(document).ready(function() {
 			position: {
 				corner: {
 				target: 'bottomMiddle', // Position the tooltip above the link
-				tooltip: 'topMiddle'
+				tooltip: 'topLeft'
 			},
 				adjust: {
 					screen: true // Keep the tooltip on-screen at all times
