@@ -143,12 +143,12 @@
 						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
 				}
 				if (!empty($row->action_url)) {
-					echo '<a href="<?php echo nagstat::process_macros($row->action_url, $row) ?>" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($row->notes_url)) {
-					echo '<a href="<?php echo nagstat::process_macros($row->notes_url, $row) ?>" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
 					echo '</a> &nbsp;';
 				}
