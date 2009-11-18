@@ -70,11 +70,6 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function submit($cmd = false)
 	{
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_system_commands) {
-			url::redirect(Router::$controller.'/unauthorized');
-		}
-
 		$this->init_page('command/request');
 		$this->xtra_js[] = $this->add_path('command/js/command.js');
 		$this->template->js_header->js = $this->xtra_js;
@@ -94,6 +89,9 @@ class Command_Controller extends Authenticated_Controller
 			 default:
 				$params[$k] = $v;
 			}
+		}
+		if (!$this->_is_authorized_for_command($params)) {
+			url::redirect(Router::$controller.'/unauthorized');
 		}
 
 		$command = new Command_Model;
@@ -164,17 +162,16 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function commit()
 	{
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_system_commands) {
-			url::redirect(Router::$controller.'/unauthorized');
-		}
-
 		$this->init_page('command/commit');
 		$cmd = $_REQUEST['requested_command'];
 		$this->template->content->requested_command = $cmd;
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
+		if (!$this->_is_authorized_for_command($param, $cmd)) {
+			url::redirect(Router::$controller.'/unauthorized');
+		}
+
 		if (isset($param['comment']) && trim($param['comment'])=='') {
 			# comments shouldn't ever be empty
 			$this->template->content->result = false;
@@ -300,5 +297,90 @@ class Command_Controller extends Authenticated_Controller
 		}
 		else
 			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+	}
+
+	/**
+	*	Check if user is authorized for the selected command
+	*/
+	public function _is_authorized_for_command($params = false, $cmd_typ = false)
+	{
+
+		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : false;
+
+		if ( empty($params) || ( empty($cmd) && empty($cmd_typ) ) ) {
+			return false;
+		}
+
+		$authorized = false;
+		$auth = new Nagios_auth_Model();
+		$auth->get_authorized_hosts_r();
+		$auth->get_authorized_services_r();
+		$service = isset($params['service']) ? $params['service'] : false;
+		$host_name = isset($params['host_name']) ? $params['host_name'] : false;
+		if (strstr($service, ';')) {
+			# we have host_name;service in service field
+			$parts = explode(';', $service);
+			if (!empty($parts) && sizeof($parts)==2) {
+				$service = $parts[1];
+				$host_name = $parts[0];
+			}
+		}
+
+		$contact_data = Contact_Model::get_contact();
+		if (!empty($contact_data)) {
+			$contact_data = $contact_data->current();
+		}
+
+		# authorized contacts
+		if (!empty($contact_data)) {
+			# if it is an authenticated contact, the can_submit_commands
+			# will decide if the user can submit commands or not
+			if (!$contact_data->can_submit_commands) {
+				$authorized = false;
+			} else {
+				# check that the user is allowed to submit
+				# command for selected object
+				if (!empty($service)) {
+					$authorized = array_key_exists($host_name.';'.$service, $auth->services_r)
+						? true # service command ok
+						: false; # user isn't allowed to submit command for this command
+				} else {
+					if (!empty($host_name)) {
+						$authorized = array_key_exists($host_name, $auth->hosts_r)
+							? true
+							: false; # user isn't allowed to submit a command for this host
+					} else {
+						# no host_name specified, should not happen but we
+						# return false anyway to be on the safe side
+						$authorized = false;
+					}
+				}
+			}
+		} else {
+			# authorization defined in cgi.cfg
+			if ($auth->authorized_for_system_commands) {
+				# authorized for all commands
+				$authorized = true;
+			} else {
+				if (strstr($cmd, '_SVC_')) {
+					# authorized for this service command?
+					if ($auth->authorized_for_service_commands) {
+						# check if authorized for service_commands
+						if (!empty($service) && !empty($host_name)
+							&& array_key_exists($host_name.';'.$service, $auth->services_r)) {
+								$authorized = true;
+						}
+					}
+				} elseif (strstr($cmd, '_HOST_')) {
+					# authorized for this host command
+					if ($auth->authorized_for_host_commands) {
+						if (!empty($host_name) && array_key_exists($host_name, $auth->hosts_r)) {
+								$authorized = true;
+						}
+					}
+				}
+			}
+		}
+		return $authorized;
 	}
 }
