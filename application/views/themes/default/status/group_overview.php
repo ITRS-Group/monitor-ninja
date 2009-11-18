@@ -47,7 +47,7 @@
 				<th>&nbsp;</th>
 				<th colspan="2"><?php echo $lable_host ?></th>
 				<th class="no-sort"><?php echo $lable_services ?></th>
-				<th class="no-sort" colspan="6"><?php echo $lable_actions ?></th>
+				<th class="no-sort"><?php echo $lable_actions ?></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -66,15 +66,17 @@
 						}
 					?>
 				</td>
-				<td class="icon"><?php echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'] : '' ?></td>
-				<td class="icon"><?php echo $svc_state['extinfo_link'] ?></td>
-				<td class="icon"><?php echo $svc_state['statusmap_link'] ?></td>
-				<td class="icon"><?php echo $svc_state['svc_status_link'] ?></td>
-				<td class="icon">
-					<?php echo !empty($details['notes_link']) ? $details['notes_link'] : '' ?>
-					<?php echo !empty($details['action_link']) ? $details['action_link'] : '' ?>
+				<td class="icon" style="text-align: left">
+					<?php
+						echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
+						echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'].'&nbsp;' : '';
+						echo $svc_state['extinfo_link'].'&nbsp;';
+						echo $svc_state['statusmap_link'].'&nbsp;';
+						echo $svc_state['svc_status_link'].'&nbsp;';
+						echo !empty($details['action_link']) ? $details['action_link'].'&nbsp;' : '';
+						echo !empty($details['notes_link']) ? $details['notes_link'].'&nbsp;' : '';
+					?>
 				</td>
-				<td class="icon"><?php echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'] : '' ?></td>
 			</tr>
 			<?php $i++; } ?>
 			</tbody>
