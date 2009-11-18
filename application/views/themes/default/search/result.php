@@ -54,7 +54,7 @@ if (isset($host_result) ) { ?>
 				} ?>
 			</div>
 		</td>
-		<td class="icon">
+		<td class="icon" style="text-align: left">
 			<?php
 				echo html::anchor('status/service/'.$host->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')).' &nbsp;';
 				if (isset ($nacoma_link))
@@ -147,11 +147,18 @@ if (isset($servicegroup_result) ) { ?>
 	<tr>
 		<th class="header"><?php echo $this->translate->_('Servicegroup'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
+		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 	</tr>
 <?php	$i = 0; foreach ($servicegroup_result as $servicegroup) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<td class="bl"><?php echo html::anchor('extinfo/details/servicegroup/'.$servicegroup->servicegroup_name, $servicegroup->servicegroup_name) ?></td>
 		<td><?php echo html::anchor('status/servicegroup/'.$servicegroup->servicegroup_name.'?style=detail', $servicegroup->alias) ?></td>
+		<td class="icon" style="text-align: left">
+		<?php
+			echo html::anchor('status/servicegroup/'.$servicegroup->servicegroup_name.'?style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
+			echo html::anchor('extinfo/details/servicegroup/'.$servicegroup->servicegroup_name, html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
+		?>
+		</td>
 	</tr>
 <?php $i++;	} ?>
 </table><?php
@@ -164,11 +171,18 @@ if (isset($hostgroup_result) ) { ?>
 	<tr>
 		<th class="header"><?php echo $this->translate->_('Hostgroup'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
+		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 	</tr>
 <?php	$i = 0; foreach ($hostgroup_result as $hostgroup) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<td class="bl"><?php echo html::anchor('extinfo/details/hostgroup/'.$hostgroup->hostgroup_name, $hostgroup->hostgroup_name) ?></td>
 		<td><?php echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', $hostgroup->alias) ?></td>
+		<td class="icon" style="text-align: left">
+		<?php
+			echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', html::image($this->add_path('icons/16x16/service-details.gif')), array('style' => 'border: 0px')).' &nbsp;';
+			echo html::anchor('extinfo/details/hostgroup/'.$hostgroup->hostgroup_name, html::image($this->add_path('icons/16x16/extended-information.gif')), array('style' => 'border: 0px'));
+		?>
+		</td>
 	</tr>
 <?php $i++;	} ?>
 </table><?php
