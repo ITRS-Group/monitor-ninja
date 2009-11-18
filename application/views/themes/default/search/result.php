@@ -14,15 +14,7 @@ if (isset($host_result) ) { ?>
 	<tr>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
-		<th class="no-sort"
-			<?php echo 'colspan="'.
-					(((nacoma::link()===true) && (Kohana::config('config.pnp4nagios_path')!==false))
-					? 5
-					: (((nacoma::link()===true) || (Kohana::config('config.pnp4nagios_path')!==false))
-						? 4
-						: 3)).'">'?>
-				<?php echo $this->translate->_('Actions'); ?></th>
-
+		<th class="no-sort"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
@@ -63,32 +55,24 @@ if (isset($host_result) ) { ?>
 			</div>
 		</td>
 		<td class="icon">
-			<?php echo html::anchor('status/service/'.$host->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')) ?>
+			<?php
+				echo html::anchor('status/service/'.$host->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')).' &nbsp;';
+				if (isset ($nacoma_link))
+					echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))).' &nbsp;';
+				if (Kohana::config('config.pnp4nagios_path')!==false)
+					echo (pnp::has_graph($host->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
+				if (!empty($host->action_url)) {
+					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="_blank">';
+					echo html::image($this->add_path('icons/16x16/host-actions.png'), $this->translate->_('Perform extra host actions'));
+					echo '</a> &nbsp;';
+				}
+				if (!empty($host->notes_url)) {
+					echo '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px" target="_blank">';
+					echo html::image($this->add_path('icons/16x16/host-notes.png'), $this->translate->_('View extra host notes'));
+					echo '</a>';
+				}
+			?>
 		</td>
-		<td class="icon">
-			<?php if (!empty($host->action_url)) { ?>
-				<a href="<?php echo nagstat::process_macros($host->action_url, $host) ?>" style="border: 0px" target="_blank">
-					<?php echo html::image($this->add_path('icons/16x16/host-actions.png'), $this->translate->_('Perform extra host actions')) ?>
-				</a>
-				<?php } ?>
-			</td>
-			<td class="icon">
-			<?php	if (!empty($host->notes_url)) { ?>
-				<a href="<?php echo nagstat::process_macros($host->notes_url, $host) ?>" style="border: 0px" target="_blank">
-					<?php echo html::image($this->add_path('icons/16x16/host-notes.png'), $this->translate->_('View extra host notes')) ?>
-				</a>
-			<?php	} ?>
-			</td>
-			<?php if (Kohana::config('config.pnp4nagios_path')!==false) { ?>
-			<td class="icon">
-				<?php echo (pnp::has_graph($host->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a>' : ''; ?>
-			</td>
-			<?php } ?>
-		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
-		</td>
-		<?php } ?>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
 		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
@@ -108,11 +92,9 @@ if (isset($service_result) ) { ?>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Service'); ?></th>
+		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Display name'); ?></th>
-		<?php if (isset ($nacoma_link)) { ?>
-		<th class="header">&nbsp;</th>
-		<?php } ?>
 	</tr>
 <?php
 	$i = 0;
@@ -129,13 +111,28 @@ if (isset($service_result) ) { ?>
 		<td>
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
 		</td>
+		<td class="icon" style="text-align: left">
+			<?php
+				if (nacoma::link()===true)
+					echo nacoma::link('configuration/configure/service/'.$service->host_name.'?service='.urlencode($service->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
+				if (Kohana::config('config.pnp4nagios_path')!==false) {
+					if (pnp::has_graph($service->host_name, urlencode($service->service_description)))
+						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
+				}
+				if (!empty($service->action_url)) {
+					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px">';
+					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
+					echo '</a> &nbsp;';
+				}
+				if (!empty($service->notes_url)) {
+					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).' style="border: 0px">';
+					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
+					echo '</a> &nbsp;';
+				}
+			?>
+		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
 		<td><?php echo $service->display_name ?></td>
-		<?php if (isset ($nacoma_link)) { ?>
-		<td class="icon">
-			<?php echo html::anchor($nacoma_link.'service/'.$service->host_name.'?service='.urlencode($service->service_description), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))) ?>
-		</td>
-		<?php } ?>
 	</tr>
 <?php	$i++;
 	$prev_host = $service->host_name;
