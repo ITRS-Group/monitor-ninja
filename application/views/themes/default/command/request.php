@@ -12,8 +12,18 @@ echo "<p style=\"width: 550px\">$description</p>\n";
 echo form::open('command/commit', array('id' => 'command_form'));
 
 $params = $info['params'];
+
+# check if we need to make room for help icon
+$use_help = false;
+foreach ($params as $pname => $ary) {
+	if (array_key_exists('help', $ary)) {
+		$use_help = true;
+		break;
+	}
+}
+
 echo "<table>\n";
-echo '<tr><th colspan="2" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
+echo '<tr><th colspan="'.($use_help ? 2 : 1).'" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
@@ -21,7 +31,10 @@ foreach ($params as $pname => $ary) {
 		$dflt = $ary['default'];
 	echo '<tr class="even">';
 	//echo '<td style="width: 12px">'.html::image('application/views/themes/default/icons/12x12/shield-info.png',array('alt' => $this->translate->_('View help'), 'title' => $this->translate->_('View help'), 'style' => 'float: left')).'</td>';
-	echo '<td style="width: 12px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>';
+
+	# help column only printed if we really have a help key
+	echo $use_help ? '<td style="width: 12px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>' : '';
+
 	echo '<td style="width: 200px" id="'.$pname.'">'.$ary['name'].'</td><td>';
 
 	switch ($ary['type']) {
