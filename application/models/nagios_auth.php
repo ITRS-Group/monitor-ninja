@@ -19,6 +19,8 @@ class Nagios_auth_Model extends Model
 	public $command_services_root = false;
 	public $authorized_for_system_information = false;
 	public $authorized_for_system_commands = false;
+	public $authorized_for_host_commands = false;
+	public $authorized_for_service_commands = false;
 	public $authorized_for_configuration_information = false;
 
 	public function __construct()
@@ -69,6 +71,14 @@ class Nagios_auth_Model extends Model
 
 		if (in_array('authorized_for_system_commands', $user_access)) {
 			$this->authorized_for_system_commands = true;
+		}
+
+		if (in_array('authorized_for_all_host_commands', $user_access)) {
+			$this->authorized_for_host_commands = true;
+		}
+
+		if (in_array('authorized_for_all_service_commands', $user_access)) {
+			$this->authorized_for_service_commands = true;
 		}
 
 		if (in_array('authorized_for_configuration_information', $user_access)) {
