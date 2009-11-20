@@ -1,0 +1,33 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+
+/**
+ *	Handle contact data
+ */
+class Contact_Model extends Model
+{
+	/**
+	*	Fetch contact information
+	*/
+	public function get_contact($id = false, $username=false)
+	{
+		$sql = false;
+		$db = new Database();
+		if (empty($id) && empty($username)) {
+			$sql = "SELECT * FROM contact WHERE contact_name = " .
+				$db->escape(Auth::instance()->get_user()->username);
+		} else {
+			if (!empty($id)) {
+				$sql = "SELECT * FROM contact WHERE id = " . (int)($id);
+			} elseif (!empty($username)) {
+				$sql = "SELECT * FROM contact WHERE contact_name = " .
+					$db->escape($username);
+			}
+		}
+		if (empty($sql)) {
+			return false;
+		}
+
+		$result = $db->query($sql);
+		return $result->count() ? $result: false;
+	}
+}
