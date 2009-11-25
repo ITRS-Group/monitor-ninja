@@ -1223,6 +1223,58 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->max_host_percent_change_b = number_format($host_model->max_host_percent_change_b, 2);
 		$content->average_host_percent_change = $host_model->total_passive_host_checks > 0 ?
 			number_format($host_model->total_host_percent_change_b/$host_model->total_passive_host_checks, 3) : '0.00';
+	}
 
+	/**
+	*	Show scheduling queue
+	*/
+	public function scheduling_queue($sort_field='next_check', $sort_order='ASC')
+	{
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		//$items_per_page = urldecode($this->input->get('items_per_page', 20)); # @@@FIXME: should be configurable from GUI
+
+		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);
+		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
+		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
+
+		$result = $sq_model->show_scheduling_queue();
+
+		$pagination = new Pagination(
+			array(
+				'total_items'=> $sq_model->count_queue(),
+				'items_per_page' => $items_per_page
+			)
+		);
+
+		$sq_model->offset = $pagination->sql_offset;
+
+		$header_links = array(
+			array(
+				'title' => $this->translate->_('Host'),
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=host_name',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=host_name',
+			),
+			array(
+				'title' => $this->translate->_('Service'),
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=service_description',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=service_description',
+			),
+			array(
+				'title' => $this->translate->_('Last check'),
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=last_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sorttype=DESC&sort_field=last_check',
+			),
+			array(
+				'title' => $this->translate->_('Next check'),
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=next_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=next_check',
+			)
+		);
+
+		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Scheduling queue');
+		$this->template->content = $this->add_view('extinfo/scheduling_queue');
+		$this->template->content->data = $result;
+		$this->template->content->header_links = $header_links;
+		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
 }
