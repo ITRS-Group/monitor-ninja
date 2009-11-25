@@ -93,7 +93,7 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Schedule downtime') 			=> array('underconstruction/schedule_downtime', 'scheduledowntime'),
 				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'processinfo'),
 				$this->translate->_('Performance info') 			=> array('extinfo/performance', 'performanceinfo'),
-				$this->translate->_('Scheduling queue') 			=> array('underconstruction/scheduling_queue', 'schedulingqueue'),
+				$this->translate->_('Scheduling queue') 			=> array('extinfo/scheduling_queue', 'schedulingqueue'),
 				//'hr6' 																				=> array('', ''),
 			),
 			$this->translate->_('Reporting') => array(
