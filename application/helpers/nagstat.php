@@ -92,6 +92,12 @@ class nagstat_Core {
 	const SORT_ASC = 'ASC';
 	const SORT_DESC = 'DESC';
 
+	/********* SCHEDULING QUEUE TYPES *********/
+	const CHECK_OPTION_NONE = 0;
+	const CHECK_OPTION_FORCE_EXECUTION = 1;
+	const CHECK_OPTION_FRESHNESS_CHECK = 2;
+	const CHECK_OPTION_ORPHAN_CHECK = 4;
+
 	/**
 	 * Process macros for host- or service objects
 	 */
