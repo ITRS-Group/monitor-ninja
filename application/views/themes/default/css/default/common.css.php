@@ -400,6 +400,7 @@ select {
 	padding-top: 11px;
 	padding-top: 0px;
 }
+#version_info,
 #page_settings {
 	position: absolute;
 	position: fixed;
@@ -411,10 +412,12 @@ select {
 	display: none;
 	z-index: 9999;
 }
+#version_info ul,
 #page_settings ul {
 	margin: 0px;
 	padding: 0px;
 }
+#version_info ul li,
 #page_settings ul li {
 	list-style: none;
 	border-bottom: 1px solid #e9e9e0;
@@ -610,6 +613,7 @@ table.extinfo tr td.status.icon img {
 }
 .widget-place.w98{
 	width: 98%;
+	min-height: 100px;
 }
 .widget-place.col {
 	clear: none;
