@@ -38,6 +38,18 @@ function settings(action) {
 	}
 }
 
+function show_info(action) {
+	if (action == 'hide') {
+		document.getElementById('version_info').style.display = 'none';
+	}
+	else {
+		if (document.getElementById('version_info').style.display == 'block')
+			document.getElementById('version_info').style.display = 'none';
+		else
+			document.getElementById('version_info').style.display = 'block';
+	}
+}
+
 function collapse_section(section){
 	var is_visible = false;
 	$('.'+section).slideToggle(200,function(){
