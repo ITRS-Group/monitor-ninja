@@ -109,6 +109,7 @@ if (isset($this->template->js_header))
 			<div id="icons">
 				<ul>
 					<li onclick="settings()" id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
+					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
@@ -127,11 +128,11 @@ if (isset($this->template->js_header))
 						</li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']).(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''))
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0].'#'.str_replace(' ','_',html::specialchars($title)), html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'<a name="'.str_replace(' ','_',html::specialchars($title)).'"></a></li>'."\n";
 							elseif($url[0] == '')
 								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
 							else
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0].'#'.str_replace(' ','_',html::specialchars($title)), html::specialchars($title), array('class' => 'ninja_menu_links')).'<a name="'.str_replace(' ','_',html::specialchars($title)).'"></a></li>'."\n";
 						endforeach;
 					endforeach;
 				?>
@@ -175,6 +176,25 @@ if (isset($this->template->js_header))
 						echo '</ul>'."\n";
 					}
 				?>
+			</ul>
+		</div>
+
+		<div id="version_info">
+			<ul>
+				<li>
+					<?php
+					function get_version_info() {
+						$file = '/etc/op5-release';
+						if (file_exists($file)) {
+							$handle = fopen($file, 'r');
+							$contents = fread($handle, filesize($file));
+							fclose($handle);
+							return str_replace('VERSION=','',$contents);
+						}
+					}
+					echo $this->translate->_('op5 Monitor version: ').get_version_info();
+					?>
+				</li>
 			</ul>
 		</div>
 
