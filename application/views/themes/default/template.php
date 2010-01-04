@@ -85,12 +85,12 @@ if (isset($this->template->js_header))
 					<ul>
 					<?php
 					if (isset($breadcrumb) && !empty($breadcrumb)){
-						$link = split(' » ',$breadcrumb);
+						$link = explode(' » ',$breadcrumb);
 						for($i = 0; $i < count($link); $i++) {
 							echo '<li>'.$link[$i].'</li>';
 						}
 					} elseif (isset($title)) {
-						$link = split(' » ',$title);
+						$link = explode(' » ',$title);
 						for($i = 0; $i < count($link); $i++) {
 							echo '<li>'.$link[$i].'</li>';
 						}
