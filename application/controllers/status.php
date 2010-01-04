@@ -144,39 +144,25 @@ class Status_Controller extends Authenticated_Controller {
 
 			$host_model->set_host_list($group_members);
 
-			$result_cnt = $host_model->get_host_status();
-
-			$tot = $result_cnt !== false ? $result_cnt : 0;
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$host_model->count = false;
-			$host_model->num_per_page = $items_per_page;
-			$host_model->offset = $offset;
-
-			$result = $host_model->get_host_status();
 		} else {
 			$host_model->set_host_list($host);
-			$result_cnt = $host_model->get_host_status();
-
-			$tot = $result_cnt !== false ? $result_cnt : 0;
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$host_model->count = false;
-			$host_model->num_per_page = $items_per_page;
-			$host_model->offset = $offset;
-
-			$result = $host_model->get_host_status();
 		}
+
+		$result_cnt = $host_model->get_host_status();
+
+		$tot = $result_cnt !== false ? $result_cnt : 0;
+		$pagination = new Pagination(
+			array(
+				'total_items'=> $tot,
+				'items_per_page' => $items_per_page
+			)
+		);
+		$offset = $pagination->sql_offset;
+		$host_model->count = false;
+		$host_model->num_per_page = $items_per_page;
+		$host_model->offset = $offset;
+
+		$result = $host_model->get_host_status();
 
 		$this->template->content->result = $result;
 		$this->template->content->pagination = $pagination;
