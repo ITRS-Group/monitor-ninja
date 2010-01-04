@@ -24,7 +24,7 @@ class ninja_auth_Core
 	{
 		$pass = escapeshellarg($pass);
 		$hash = escapeshellarg($hash);
-		$cmd = "/opt/monitor/op5/ninja/cli-helpers/apr_md5_validate $pass $hash";
+		$cmd = realpath(APPPATH.'/../cli-helpers')."/apr_md5_validate $pass $hash";
 		$ret = $output = false;
 		exec($cmd, $output, $ret);
 		return $ret === 0;
