@@ -190,14 +190,22 @@ class Service_Model extends Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth_objects = self::authorized_services();
-		$obj_ids = array_keys($auth_objects);
-		$obj_info = $this->db
-			->from('service')
-			->like($field, $value)
-			->in('id', $obj_ids)
-			->limit($limit)
-			->get();
+		$obj_ids = self::authorized_services();
+		$db = new Database();
+		if ($limit !== false) {
+			$obj_info = $db
+				->from('service')
+				->like($field, $value)
+				->in('id', $obj_ids)
+				->limit($limit)
+				->get();
+		} else {
+			$obj_info = $db
+				->from('service')
+				->like($field, $value)
+				->in('id', $obj_ids)
+				->get();
+		}
 		return $obj_info;
 	}
 
