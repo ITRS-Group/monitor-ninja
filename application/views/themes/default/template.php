@@ -60,6 +60,7 @@ if (isset($this->template->js_header))
 				var _form_error_header = '<?php echo $this->translate->_("The form couldn\'t be processed since it contains one or more errors.%sPlease correct the following error(s) and try again:%s"); ?>';
 				var _command_empty_field = '<?php echo $this->translate->_("Field \'%s\' is required but empty"); ?>';
 				var _loading_str = '<?php echo $this->translate->_("Loading..."); ?>';
+				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
 				<?php
 				}
 				if (!empty($inline_js)) {
