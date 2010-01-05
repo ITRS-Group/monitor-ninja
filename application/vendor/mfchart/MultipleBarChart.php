@@ -1,0 +1,139 @@
+<?php
+
+class MultipleBarChart extends BarChart {
+
+	protected $bar_width = 30;
+
+	protected $bar_gap = -20;	// gap between the bars in a group
+
+	public $bar_colors = false;
+
+	public function __construct($width=NULL, $height=NULL)
+	{
+		parent::__construct($width, $height);
+
+		$this->type = 'multiple';
+
+		$this->colors['bar_color'] = array(
+				array('#e0d62e', NULL, NULL),
+				array('#bdb51c', NULL, NULL),
+				array('#9f9917', NULL, NULL),
+				array('#807a13', NULL, NULL),
+				array('#68640f', NULL, NULL),
+				array('#e6de51', NULL, NULL),
+				array('#eee988', NULL, NULL)
+			);
+		$this->colors['bar_border_color'] = array(
+				array('#747014', 25, 	 NULL),
+				array('#9d971c', 25, 	 NULL)
+			);
+	}
+
+	public function add_bar_colors($values=false)
+	{
+		if (empty($values))
+			return false;
+
+		/*
+		foreach ($values as $val) {
+			#$rgb = utilities::hex2rgb($val);
+			$this->bar_colors[] = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+		}
+		*/
+		$this->bar_colors = $values;
+	}
+
+	protected function draw_values($zeroline, $ratio)
+	{
+		#echo Kohana::debug($this->bar_colors);
+		#die();
+		$plot_sizes = $this->get_plot_area();
+ 		$font_bar_legend = $this->font_size < 1 ? $this->font_size : $this->font_size-1;
+
+		reset($this->values);
+		$total_bars_groups = count($this->values);
+		$bars_per_group = count(current($this->values));	// count of all bars
+		$gap = ($plot_sizes[0] - $total_bars_groups*$bars_per_group*$this->bar_width - $total_bars_groups*($bars_per_group-1)*$this->bar_gap) / ($total_bars_groups+1);	// gap between bars -- 5 is gap between group bars
+
+
+		$i=0;
+		$a=0;
+		foreach ($this->values AS $key => $value)
+		{
+			$x1base = $this->margin_left + $gap + $i*($gap + (count($value)*($this->bar_width+$this->bar_gap)-$this->bar_gap) );
+
+			$fheight = $this->font_size; // default - recomputed later in the next cycle
+
+			$j = 0;
+			foreach ($value as $v)
+			{
+				$x1 = $x1base + $j*($this->bar_width+$this->bar_gap);
+				$x2 = $x1 + $this->bar_width;
+				$y2 = $this->height - $this->margin_bottom - $zeroline;
+				$y1 = $y2 - $v*$ratio;
+
+				if ($this->vertical_bar_lines)
+					imageline($this->image, $x1+$this->bar_width/2, $this->margin_top-1, $x1+$this->bar_width/2, $this->height-$this->margin_bottom-1, IMG_COLOR_STYLED);
+
+				$col = $this->bar_colors[$a];
+				if (!$col) {
+					# sla color
+					$this->bar_legend = false;
+					$rgb = utilities::hex2rgb(Reports_Controller::$colors['lightblue']);
+					$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+				} else {
+					$this->bar_legend = true;
+					$rgb = utilities::hex2rgb($col);
+					$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+				}
+
+				imagefilledrectangle($this->image, $x1, $y1, $x2, $y2, $col); // draw bar
+				$this->add_occupied($x1, $y1, $x2, $y2);
+
+				if ($this->get_color('bar_border_color'))
+				{	// draw bar border
+					imageline($this->image, $x1, $y1, $x1, $y2, $this->get_color('bar_border_color', $j)); // left
+					imageline($this->image, $x2, $y1, $x2, $y2, $this->get_color('bar_border_color', $j)); // right
+					imageline($this->image, $x1, $y1, $x2, $y1, $this->get_color('bar_border_color', $j)); // top
+				}
+
+				if ($v != 0)
+					imagefilledrectangle($this->image, $x2, $y1+($v > 0 ? 1 : -1), $x2+1, $y2, $this->get_color('shade_color')); // draw shade of bar
+
+				$box_points = imagettfbbox($this->font_size, 0, $this->font, $v);
+				$bar_middle = $x1 + $this->bar_width/2;
+				$bar_legend_hwidth = ($box_points[4]-$box_points[6]) / 2;
+				$fheight = $box_points[3]-$box_points[5];
+
+				// bar legend
+				if ($this->bar_legend)
+				{
+					if ($v >= 0)
+					{
+						#utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1, ALIGN_CENTER, VALIGN_MIDDLE, 0, Reports_Controller::_format_report_value($v), $this->get_color('font_color3'));
+						utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, 65, $bar_middle+$bar_legend_hwidth, 995, ALIGN_CENTER, VALIGN_MIDDLE, 0, Reports_Controller::_format_report_value($v), $this->get_color('font_color3'));
+						$this->add_occupied($bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1);
+					}
+					else
+					{
+						utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, $y1+5, $bar_middle+$bar_legend_hwidth, $y1+$fheight+5, ALIGN_CENTER, VALIGN_MIDDLE, 0, $v, $this->get_color('font_color3'));
+						$this->add_occupied($bar_middle-$bar_legend_hwidth, $y1+5, $bar_middle+$bar_legend_hwidth, $y1+$fheight+5);
+					}
+				}
+
+				$j++;
+				$a++;
+			}
+
+			$box_points = imagettfbbox($this->font_size, 0, $this->font, $key);
+			$y_legend_hwidth = ($box_points[4]-$box_points[6]) / 2;
+			$group_bar_middle = $x1base + (count($value)*($this->bar_width+$this->bar_gap)-$this->bar_gap)/2;
+
+ 			// x axis legend
+ 			utilities::imagestringbox($this->image, $this->font, $this->font_size, $group_bar_middle-$y_legend_hwidth, $this->margin_top+$plot_sizes[1]+5, $group_bar_middle+$y_legend_hwidth, $this->margin_top+$plot_sizes[1]+5+$fheight, ALIGN_CENTER, VALIGN_MIDDLE, 0, $key, $this->get_color('font_color'));
+
+			$i++;
+		}
+		#die();
+	}
+}
