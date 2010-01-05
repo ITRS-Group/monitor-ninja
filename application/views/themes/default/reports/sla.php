@@ -1,0 +1,99 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');?>
+
+<?php
+$nr = 0;
+foreach($report_data as $i =>  $report) {
+	$nr++;
+	$custom_group = explode(',',$report['source']);
+	if (!empty($report['data_str'])) {
+		if (count($custom_group) > 1)
+			$str_source = 'SLA breakdown for Custom group';
+		else {
+			if (!$use_alias || $report['group_title'] !== false)
+				$str_source = 'SLA breakdown for: '.$report['source'];
+			else
+				$str_source = 'SLA breakdown for: '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
+		}
+	?>
+	<div class="setup-table members">
+		<h1 onclick="show_hide('sla-graph_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1>
+		<div class="icon-help" onclick="general_help('sla-graph')"></div>
+		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="Uptime" id="pie" class="chart-border" />
+		<!--<a href="<?php #echo $report['avail_links'] ?>">
+			<img
+				src="../chart.php?type=sla_bar&amp;data=<?php echo $report['data_str'] ?>"
+				title="Click to view the corresponding availability report"
+				alt="SLA data"
+				id="sla-graph_<?php echo $nr;?>" />
+		</a>-->
+	</div>
+	<div id="slaChart<?php echo $nr ?>"></div>
+	<?php
+	}
+
+	if (!empty($report['table_data'])) { ?>
+	<div class="sla_table">
+		<h1 onclick="show_hide('sla-table_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1>
+		<div class="icon-help" onclick="general_help('sla-table')"></div>
+		<fieldset id="sla-table_<?php echo $nr;?>"><?php
+			foreach ($report['table_data'] as $source => $data) { ?>
+			<table class="auto">
+				<tr>
+					<th class="null first_child"></th><?php
+					$n = 0;
+					foreach ($data as $month => $values) {
+						$n++; ?>
+					<th class="<?php echo (($values[0][0] < $values[0][1]) ? 'down' : 'up'); ?> padder"><?php echo $month ?>&nbsp;(%)</th>
+					<?php if ($n != count($data)) { ?>
+					<th class="null"></th>
+					<?php }
+					} ?>
+				</tr>
+				<tr>
+					<td class="label">SLA</td><?php
+					$j = 0;
+					foreach ($data as $month => $value) {
+						$j++; ?>
+					<td class="padder"><?php echo $this->_format_report_value($value[0][1]) ?></td>
+					<?php if ($j != count($data)) { ?>
+					<td class="null"></td>
+					<?php }
+					} ?>
+				</tr>
+				<tr>
+					<td class="label">Real</td><?php
+					$i = 0;
+					foreach ($data as $month => $value) {
+						$i++;?>
+					<td class="<?php echo (($value[0][0] < $value[0][1]) ? 'down' : 'up'); ?> padder">
+						<?php echo $this->_format_report_value($value[0][0]) ?>
+					</td>
+					<?php if ($i != count($data)) { ?>
+					<td class="null"></td>
+					<?php }
+					} ?>
+				</tr>
+			</table><?php
+			} ?>
+		</fieldset>
+	</div><?php
+	}
+
+	if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
+	<div class="setup-table members">
+		<h1 onclick="show_hide('group_<?php echo $nr;?>',this)" id="members_<?php echo $nr;?>">
+			<?php echo $report['group_title'] ?>
+		</h1>
+		<div class="icon-help" onclick="general_help('custom-group')"></div>
+			<ul id="group_<?php echo $nr;?>"><?php
+				foreach($report['member_links'] as $member_link) {
+					echo "<li>".$member_link."</li>\n";
+				}
+				?>
+			</ul>
+		</div>
+		<script type='text/javascript'>
+			show_hide('group_<?php echo $nr;?>', document.getElementById('members_<?php echo $nr;?>'))
+		</script><?php
+	}
+}?>
