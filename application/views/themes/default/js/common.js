@@ -173,7 +173,8 @@ $(document).ready(function() {
 				name: 'light' // Use the default light style
 			}
 		});
-	})
+	});
+	$(".helptext_target").click(function() {return false;})
 });
 
 function create_slider(the_id)
