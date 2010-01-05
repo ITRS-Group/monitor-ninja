@@ -317,6 +317,7 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
+			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 's.current_attempt', 'sort_field_str' => 'attempt'),
 			array('title' => $this->translate->_('Status Information'))
 		);
 

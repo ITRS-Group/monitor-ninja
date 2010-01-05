@@ -54,7 +54,6 @@
 					}
 				}
 			?>
-			<th class="no-sort"><?php echo $this->translate->_('Attempt') ?></th>
 			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
 		</tr>
 	</thead>
