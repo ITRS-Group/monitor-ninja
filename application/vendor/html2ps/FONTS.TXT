@@ -1,0 +1,63 @@
+==== Using True-Type fonts in PostScript (Ghostscript)
+
+Say you want to see fancy "Trebuchet MS" font in generated postscript,
+
+1. First of all, TrueType-compatible Ghostscript is a must. 
+   Most of Ghostscipt distributions are TrueType compatible.
+   If you're not sure, ask your system administrator. If your GS is not
+   True-Type compatible, consider building from source using require options
+
+2. Find the file coresponding to "Trebuchet MS". Assuming you're using 
+   some kind of Windows on your home machine, you can do it by opening 
+   "Control Panel -> Fonts" and checking the properties of the chosen 
+   font. At the top of property page you'll see the file name - trebuc.ttf,
+   in our case.
+
+3. Find font files corresponding to the bold, italic and bold italic 
+   versions of this font.  Probably, it will be:
+     "Trebuchet MS Bold" - trebucbd.ttf,
+     "Trebuchet MS Italic" - trebucit.ttf,
+     "Trebuchet MS Bold Italic" - trebucbi.ttf
+
+4. Copy these files from the windows fonts directory (probably C:\Windows\Fonts)
+   to the Ghostscript fonts directory (probably C:\gs\fonts). 
+
+5. Modify Ghostscript fontmap file (probably C:\gs\gs8.51\lib\Fontmap, assuming 
+   you're using Ghostscript version 8.51), adding the folowing lines:
+
+/TrebuchetMS (trebuc.ttf) ;
+/TrebuchetMS-Italic (trebucit.ttf) ;
+/TrebuchetMS-Bold (trebucbd.ttf) ;
+/TrebuchetMS-Bold-Italic (trebucbi.ttf) ;
+
+   Note you can write almost anything after the / assuming it won't interfere 
+   with other font names. Say:
+
+/MyCoolFont1 (trebuc.ttf) ;
+/MyCoolFont2 (trebucit.ttf) ;
+/MyCoolFont3 (trebucbd.ttf) ;
+/MyCoolFont4 (trebucbi.ttf) ;
+
+6. Register the above font names in the script config file. Add the following 
+   lines to .html2ps.config in the FONT section (between <fonts> and </fonts> tags)
+
+  <family name="Trebuchet MS">
+    <normal normal="/TrebuchetMS" italic="/TrebuchetMS-Italic" oblique="/TrebuchetMS-Italic"/>
+    <bold normal="/TrebuchetMS-Bold" italic="/TrebuchetMS-Bold-Italic" oblique="/TrebuchetMS-Bold-Italic"/>
+  </family>
+
+   Of course, modified file should be uploaded to the server where the working script
+   reside.
+
+7. Now, the following example should render using Trebuchet MS font:
+
+<BIG style="font-family: 'Trebuchet MS'">ABCDEFGH</BIG><br>
+<BIG style="font-family: 'Trebuchet MS'; font-weight: bold;">ABCDEFGH</BIG><br>
+<BIG style="font-family: 'Trebuchet MS'; font-style: italic;">ABCDEFGH</BIG><br>
+<BIG style="font-family: 'Trebuchet MS'; font-weight: bold; font-style: italic;">ABCDEFGH</BIG><br>
+
+==== Using True-Type fonts in PDF
+
+Take the steps described above with the only difference: all Ghostscript-related directories
+are on your server where the script resides. Ask your hoster/system administrator regarding 
+the exact location of Ghostscript.

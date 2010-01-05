@@ -1,0 +1,72 @@
+SYSTEM REQUIREMENTS
+
+Required:
+- PHP 4.1.0 or newer (PHP 5 supported too)
+- native _OR_ Active-Link DOM XML extension installed
+
+Recommended:
+- 'gzlib' PHP extension
+- 'iconv' PHP extension
+
+In order to view generated postscript files, you'll need some PS-handling software
+installed on the client computer. Ghostscript (7.05 or newer) and GSView are good
+examples. Also, you can convert posctscript files to PDF using Adobe Acrobat Distiller.
+
+Additionally, following requirements should be met to convert generated PS to 
+PDF server-side:
+- 'ghostscript' package (version 7.05 or newer)
+- 'ghostscript-fonts' package
+- PHP 'exec' function should be enabled (so, PDF conversion will not work in
+php 'safe mode')
+
+FONTS 
+
+--- Using non-standard fonts in PostScript (Ghostscript)
+
+First of all, you'll need TrueType-compatible Ghostscript (most of them do)
+
+--- Using non-standard fonts in PostScript (Adobe Acrobat)
+--- Using non-standard fonts in PDF
+If you're using server-side Postscript to PDF conversion
+
+For the details regarding installation of TrueType fonts with Ghostscript see:
+http://www.cs.wisc.edu/~ghost/doc/gnu/7.05/Fonts.htm
+
+JAVASCRIPT & DHTML
+
+No, not supported.
+
+PHP EXTENSIONS ISSUES
+
+Native PHP XML extesions is HIGHLY recommended. Active-Link extension 
+lack several important features, which can cause processing to fail 
+on miscellanous HTML samples. 
+
+ADOBE ACROBAT COMPATIBILITY ISSUES
+
+The script is configured to work with the Ghostscript out-of-the-box. 
+As GS and Adobe Acrobat use different font names, you'll need to 
+change .html2ps.config to match them.
+
+IMAGE ISSUES
+
+In general, image processing is the weakest part of the script; all images
+are processed in pure PHP, making 
+
+COMPRESSION ISSUES
+
+By default, script tries to compress generated Poscript. Compressed Postscript
+is 4-5 times less in volume than uncompressed, and most Postscript-related software
+understands it.
+
+You'll need gzlib PHP extension installed to generate compressed postscript. 
+Script detects the presence of gzlib at run-time, so you do not need to change
+anything in configuration files or specify any additional parameters to use 
+compression ability.
+
+Unfortunately, Adobe Acrobat Distiller does not support compressed postscript. 
+In this case, you have only the following options:
+1. Uncompress the file manually (all modern achivers do - WinZip, WinRar, 7-Zip etc) and
+   feed it to the Distiller. 
+   Pro: Smaller file size - less traffic and download time. 
+   Contra: you'll need to do by your hands, wasting your time.
