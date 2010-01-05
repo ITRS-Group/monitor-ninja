@@ -1,0 +1,56 @@
+#progress{
+	position: absolute;
+	top:120px;
+	left:270px;
+	display: none;
+}
+
+#options, #new_schedule_form_area, #schedule_report, #report_save_information{display: none;}
+
+#response{
+	margin-left:5px;
+	padding-top:5px;
+	background: #f9f9f5 url(images/response.png) repeat-x;
+}
+.report-page{
+	margin-left:5px;
+}
+
+#response h1 {
+	font: bold 12px arial,helvetica,sans-serif;
+	display: none;
+}
+
+#response ul {
+	padding: 7px 2px 5px 50px;
+	margin: 0px;
+	margin-bottom: 7px;
+	width: auto;
+	background: transparent 7px 5px no-repeat;
+}
+
+#response li {
+	background: none;
+	padding: 2px 0px;
+	width: auto;
+	list-style: none;
+}
+
+#response ul.ok			{ background-image: url(../../icons/32x32/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/32x32/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/32x32/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
+
+#autoreport_periods{display:none}
+
+.pie-chart .icon-help, #details .icon-help, #options .icon-help {
+	right: 2px;
+}
+.pie-chart h1, #details h1, #options h1  {
+	margin: 0px 0px 1px 0px;
+}
+.pie-chart, #details, #options {
+	width: 244px;
+	margin-left: 7px;
+}
