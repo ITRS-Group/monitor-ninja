@@ -20,16 +20,16 @@
 								<td style="width: 279px;"><?php echo $label_startdate ?></td>
 								<td>
 									<span style="width: 115px; margin-left: -4px" id="start_time_tmp"><?php echo $label_click_calendar ?></span>
-									<input type="text" id="cal_start" name="cal_start" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
-									<input type="hidden" name="start_time" id="start_time" value=""/>
+									<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $start_time ?>" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
+									<input type="hidden" name="start_time" id="start_time" value="<?php echo $start_time ?>"/>
 								</td>
 							</tr>
 							<tr>
 								<td><?php echo $label_enddate ?></td>
 								<td>
 									<span style="width: 115px; margin-left: -4px" id="end_time_tmp"><?php echo $label_click_calendar ?></span>
-									<input type="text" id="cal_end" name="cal_end" class="date-pick" title="<?php echo $label_enddate_selector ?>" />
-									<input type="hidden" name="end_time" id="end_time" value="" />
+									<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $end_time ?>" class="date-pick" title="<?php echo $label_enddate_selector ?>" />
+									<input type="hidden" name="end_time" id="end_time" value="<?php echo $end_time ?>" />
 								</td>
 							</tr>
 						</table>

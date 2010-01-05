@@ -991,6 +991,8 @@ class Reports_Controller extends Authenticated_Controller
 			$tpl_options->report_id = $this->report_id;
 			$tpl_options->report_info = $report_info;
 			$tpl_options->html_options = $html_options;
+			$tpl_options->start_time = $start_time;
+			$tpl_options->end_time = $end_time;
 
 			$available_schedule_periods = false;
 			$json_periods = false;
