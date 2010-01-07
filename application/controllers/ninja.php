@@ -34,6 +34,7 @@ class Ninja_Controller extends Template_Controller {
 	public $xtra_js = array();
 	public $xtra_css = array();
 	public $inline_js = false;
+	public $js_strings = false;
 
 	public function __construct()
 	{

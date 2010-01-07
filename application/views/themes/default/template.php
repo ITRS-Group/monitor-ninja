@@ -62,6 +62,9 @@ if (isset($this->template->js_header))
 				var _loading_str = '<?php echo $this->translate->_("Loading..."); ?>';
 				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
 				<?php
+					if (!empty($js_strings)) {
+						echo $js_strings;
+					}
 				}
 				if (!empty($inline_js)) {
 					echo "$(document).ready(function() {";
