@@ -1019,7 +1019,19 @@ class Reports_Controller extends Authenticated_Controller
 			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$scheduled_downtime_as_uptime."');\n";
 			$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
-			$this->inline_js .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
+
+			$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
+			$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
+			$this->js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
+			$this->js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
+			$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
+			$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
+			$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
+			$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
+			$this->js_strings .= "var _reports_view_schedule = '".$t->_('View schedule')."';\n";
+			$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+			$this->js_strings .= "var _reports_errors_found = '".$t->_('Found the following error(s)')."';\n";
+			$this->js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
 
 			$csv_link = $this->_get_csv_link();
 			$tpl_options->csv_link = $csv_link;
@@ -1455,6 +1467,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_start_date."\n";
 
 		$this->template->inline_js = $this->inline_js;
+		$this->template->js_strings = $this->js_strings;
 	}
 
 	/**
