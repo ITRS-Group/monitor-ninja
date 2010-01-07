@@ -142,8 +142,22 @@ $(document).ready(function() {
 			}
 		}
 	);
+	// ajax post form options
+	var options = {
+		target:			'#response',		// target element(s) to be updated with server response
+		beforeSubmit:	validate_form,	// pre-submit callback
+		success:		show_response	// post-submit callback
+	};
 
+	// schedule report when already created
+	$('#schedule_report_form').submit(function() {
+		$(this).ajaxSubmit(options);
+		return false;
+	});
+
+	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
 });
+
 function show_hide(id,h1) {
 	if (document.getElementById(id).style.display == 'none') {
 		document.getElementById(id).style.display = '';
@@ -834,3 +848,93 @@ function moveAndSort(from_id, to_id)
 	move_option(from_id, to_id);
 	$("#" + to_id).sortOptions();
 }
+
+/**
+*	Make sure all values are properly entered
+*/
+function validate_form(formData, jqForm, options) {
+	var interval = $('#period').fieldValue();
+	var recipients_tmp = $('#recipients').fieldValue();
+	var recipients = recipients_tmp[0];
+	var filename = $('#filename').fieldValue();
+	var description = $('#description').fieldValue();
+	var saved_report_id = $('#saved_report_id').fieldValue();
+	var report_id = $('#report_id').fieldValue();
+	var fatal_err_str = _reports_fatal_err_str;// + "<br />";
+	$('.schedule_error').hide();
+
+	var err_str = "";
+	var errors = 0;
+	if (interval[0] == '' || !interval[0]) {
+		err_str += _reports_schedule_interval_error + "<br />";
+		errors++;
+	}
+
+	recipients = recipients.replace(/;/g, ',');
+	$('#recipients').fieldValue();
+	// @@@FIXME: split multiple addresses on ',' and check each one using regexp
+	if (trim(recipients) == '') {
+		err_str += _reports_schedule_recipient_error + "<br />";
+		errors++;
+	}
+	if (!saved_report_id[0]) {
+		alert(fatal_err_str);
+		return false;
+	}
+
+	if (errors) {
+		var str = _reports_errors_found + ':<br />' + err_str + '<br />' + _reports_please_correct + '<br />';
+		$("#TB_ajaxContent").prepend('<div class="schedule_error">' + str + '</div');
+		return false;
+	}
+
+    return true;
+}
+
+function show_response(responseText, statusText)
+{
+	var message_div_start = '<div id="statusmsg">';
+	var ok_img = '<img src="' + _site_domain + _theme_path + 'icons/16x16/shield-ok.png" alt="' + _ok_str + '" title="' + _ok_str + '"> &nbsp;'
+	var message_div_end = '</div>';
+	var time = 3000;
+	$('#response').remove();
+	$('body').prepend('<div id="response"></div>');
+	if (isNaN(responseText)) { // an error occurred
+		$('#response').css("position", "absolute").css('top', '11px').css('left', '200px').html(message_div_start + _reports_schedule_error + message_div_end);
+		time = 6000;
+	} else {
+		var report_id = $('#report_id').fieldValue();
+		if (report_id[0]) { // updated
+			$('#response').css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-ok.png) 7px 7px no-repeat').css("position", "relative").css('top', '0px').css('width','748px').css('left', '0px').css('padding','15px 2px 15px 50px ').html(_reports_schedule_update_ok);
+		} else { //new save
+			$('#response').css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-ok.png) 7px 7px no-repeat').css("position", "relative").css('top', '0px').css('width','748px').css('left', '0px').css('padding','15px 2px 15px 50px ').html(_reports_schedule_create_ok);
+			$('#schedule_report_table').append(create_new_schedule_rows(responseText));
+			$('#schedule_report_table').show();
+			schedule_is_visible = true;
+			$('#schedule_report_form').clearForm();
+			//setup_editable();
+			tb_remove();
+			nr_of_scheduled_instances++;
+			if (nr_of_scheduled_instances==1) {
+				// add 'Vew schedules' Button
+				$('#view_add_schedule').append('<input type="button" id="show_schedule" alt="#TB_inline?height=500&width=550&inlineId=schedule_report" class="button view-schedules20 thickbox" value="' + _reports_view_schedule + '">');
+				tb_init('#show_schedule');
+			}
+		}
+	}
+	setTimeout('hide_response()', time);
+}
+
+function create_new_schedule_rows(id)
+{
+	var return_str = '';
+	var f = document.forms['schedule_report_form'];
+	return_str += '<tr id="report-' + id + '">';
+	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + $('#period option:selected').text(); + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + f.recipients.value + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + f.filename.value + '</td>';
+	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + f.description.value + '</td>';
+	return_str += '<td class="delete_report" onclick="schedule_delete(' + id + ');" id="' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	return return_str;
+}
+
