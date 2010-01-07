@@ -153,4 +153,53 @@ class Scheduled_reports_Model extends Model
 		}
 		return $objResponse;
 	}
+
+	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='')
+	{
+		$db 			= new Database(self::db_name);
+		$id 			= (int)$id;
+		$rep_type 		= (int)$rep_type;
+		$saved_report_id = (int)$saved_report_id;
+		$period			= (int)$period;
+		$recipients 	= trim($recipients);
+		$filename		= trim($filename);
+		$description	= trim($description);
+		$user 			= Auth::instance()->get_user()->username;
+
+		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return false;
+
+		// some users might use ';' to separate email adresses
+		// just replace it with ',' and continue
+		$recipients = str_replace(';', ',', $recipients);
+		$rec_arr = explode(',', $recipients);
+		if (!empty($rec_arr)) {
+			foreach ($rec_arr as $recipient) {
+				if (trim($recipient)!='') {
+					$checked_recipients[] = trim($recipient);
+				}
+			}
+			$recipients = implode(', ', $checked_recipients);
+		}
+
+		if ($id) {
+			// UPDATE
+			$sql = "UPDATE scheduled_reports SET user=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.",
+				recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." WHERE id=".$id;
+		} else {
+			$sql = "INSERT INTO scheduled_reports (user, report_type_id, report_id, recipients, period_id, filename, description)
+				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).");";
+		}
+
+		try {
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			return false;
+		}
+
+		if (!$id) {
+			$id = (int)$res->insert_id();
+		}
+		return $id;
+	}
+
 }
