@@ -2578,7 +2578,48 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function schedule()
 	{
-		# stub
+		$this->auto_render=false;
+		// collect input values
+		$report_id 			= arr::search($_REQUEST, 'report_id'); // scheduled ID
+		$rep_type 			= arr::search($_REQUEST, 'rep_type');
+		$saved_report_id 	= arr::search($_REQUEST, 'saved_report_id'); // ID for report module
+		$period 			= arr::search($_REQUEST, 'period');
+		$recipients			= arr::search($_REQUEST, 'recipients');
+		$filename			= arr::search($_REQUEST, 'filename');
+		$description		= arr::search($_REQUEST, 'description');
+		$module_save		= arr::search($_REQUEST, 'module_save');
+
+		$recipients = str_replace(';', ',', $recipients);
+		$rec_arr = explode(',', $recipients);
+		$a_recipients = false;
+		if (!empty($rec_arr)) {
+			foreach ($rec_arr as $recipient) {
+				if (trim($recipient)!='') {
+					$a_recipients[] = trim($recipient);
+				}
+			}
+			if (!empty($a_recipients)) {
+				$recipients = implode(',', $a_recipients);
+				$recipients = $this->_convert_special_chars($recipients);
+			}
+		}
+
+		$filename = $this->_convert_special_chars($filename);
+		$filename = $this->_check_filename($filename);
+
+		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description);
+
+		if (is_int($ok)) {
+			if ($module_save) {
+				// only return the newly created ID on success if save is initiated from any report module (avail/SLA)
+				echo $ok;
+			} else {
+				echo $this->translate->_("Your report was successfully scheduled.");
+			}
+		} else {
+			echo sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok);
+		}
+		return;
 	}
 
 	/**
@@ -3128,6 +3169,49 @@ class Reports_Controller extends Authenticated_Controller
 			echo $helptexts[$id];
 		} else
 			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+	}
+
+	public function _convert_special_chars($str=false) {
+		$str = trim($str);
+		if (empty($str)) return false;
+		$return_str = '';
+		$str = trim($str);
+		$str = str_replace(' ', '_', $str);
+		$str = str_replace('"', '', $str);
+		$str = str_replace('/', '_', $str);
+		$str = utf8_decode($str);
+		for ($i=0;$i<strlen($str);$i++) {
+			if (ord($str[$i]) > 245) {
+				$str[$i] = 'o';
+			} elseif (ord($str[$i])>122) {
+				$str[$i] = 'a';
+			} else {
+				$str[$i] = $str[$i];
+			}
+			$return_str .= $str[$i];
+		}
+		return $return_str;
+	}
+
+	public function _check_filename($str=false)
+	{
+		$str = trim($str);
+		$str = str_replace(',', '_', $str);
+		if (empty($str)) return false;
+		$extension = 'pdf';
+		if (strstr($str, '.')) {
+			$parts = explode('.', $str);
+			if (is_array($parts)) {
+				$str = '';
+				for ($i=0;$i<(sizeof($parts)-1);$i++) {
+					$str .= $parts[$i];
+				}
+				$str .= '.'.$extension;
+			}
+		} else {
+			$str .= '.'.$extension;
+		}
+		return $str;
 	}
 
 }
