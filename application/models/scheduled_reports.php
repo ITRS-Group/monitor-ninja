@@ -101,7 +101,6 @@ class Scheduled_reports_Model extends Model
 
 	public function fetch_scheduled_field_value($type=false, $id=false, $elem_id=false)
 	{
-		global $dba;
 		$id = (int)$id;
 		$type = trim($type);
 		$elem_id = trim($elem_id);
