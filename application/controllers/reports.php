@@ -583,7 +583,7 @@ class Reports_Controller extends Authenticated_Controller
 			$_REQUEST['assumeinitialstates'] 	= 1;
 			$assumeinitialstates 				= 1;
 		}
-		$this->report_id 	= arr::search($_REQUEST, 'report_id', $this->report_id);
+		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
