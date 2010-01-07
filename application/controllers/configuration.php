@@ -55,7 +55,7 @@ class Configuration_Controller extends Authenticated_Controller {
 			}
 		}
 		$this->template->disable_refresh = true;
-		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0"></iframe>';
+		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Configuration » Configure');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
