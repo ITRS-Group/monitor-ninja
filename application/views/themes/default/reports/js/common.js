@@ -156,6 +156,8 @@ $(document).ready(function() {
 	});
 
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
+	$("#show_scheduled").click(function(){toggle_edit()});
+	setup_editable();
 });
 
 function show_hide(id,h1) {
@@ -912,7 +914,7 @@ function show_response(responseText, statusText)
 			$('#schedule_report_table').show();
 			schedule_is_visible = true;
 			$('#schedule_report_form').clearForm();
-			//setup_editable();
+			setup_editable();
 			tb_remove();
 			nr_of_scheduled_instances++;
 			if (nr_of_scheduled_instances==1) {
@@ -938,3 +940,52 @@ function create_new_schedule_rows(id)
 	return return_str;
 }
 
+function setup_editable()
+{
+	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
+	$(".iseditable").editable(save_url, {
+		id   : 'elementid',
+		name : 'newvalue',
+		type : 'text',
+		event : 'dblclick',
+		width : 'auto',
+		height : '14px',
+		submit : _ok_str,
+		cancel : _cancel_str,
+		placeholder:_reports_edit_information
+	});
+	$(".period_select").editable(save_url, {
+		data : $('#autoreport_periods').text(),
+		id   : 'elementid',
+		name : 'newvalue',
+		event : 'dblclick',
+		type : 'select',
+		submit : _ok_str,
+		cancel : _cancel_str
+	});
+	$(".iseditable_txtarea").editable(save_url, {
+		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
+		id   : 'elementid',
+		name : 'newvalue',
+		type : 'textarea',
+		event : 'dblclick',
+		rows: '3',
+		submit : _ok_str,
+		cancel : _cancel_str,
+		cssclass: "txtarea",
+		placeholder:_reports_edit_information
+	});
+}
+
+var is_visible = false;
+function toggle_edit() {
+	if (is_visible) {
+		$("#schedule_report").hide();
+		$("#show_scheduled").text('[' + _edit_str + ']');
+		is_visible = false;
+	} else {
+		$('#schedule_report').show();
+		$("#show_scheduled").text('[' + _hide_str + ']');
+		is_visible = true;
+	}
+}
