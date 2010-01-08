@@ -540,6 +540,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->old_config_names_js = $old_config_names_js;
 		$template->old_config_names = $old_config_names;
 		$template->scheduled_ids = $scheduled_ids;
+		$template->scheduled_periods = $scheduled_periods;
 		$template->saved_reports = $saved_reports;
 
 		# decide what report periods to print
