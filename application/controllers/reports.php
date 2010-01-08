@@ -311,10 +311,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		# what scheduled reports are there?
 		$scheduled_ids = array();
+		$scheduled_periods = null;
 		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($this->type);
 		if ($scheduled_res && count($scheduled_res)!=0) {
 			foreach ($scheduled_res as $sched_row) {
-				$scheduled_ids[] = $sched_row->id;
+				$scheduled_ids[] = $sched_row->report_id;
+				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
 			}
 		}
 
