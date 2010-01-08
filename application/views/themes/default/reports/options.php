@@ -135,7 +135,7 @@
 		</form>
 	</div>
 	<div id="schedule_report">
-		<strong><?php echo $lable_schedules ?>:</strong>
+		<strong><?php echo $lable_schedules ?> (<?php echo $report_info['report_name'] ?>): </strong>
 		<table id="schedule_report_table" class="white-table">
 				<tr id="schedule_header">
 					<th><?php echo $label_interval ?></th>
@@ -146,14 +146,14 @@
 			<?php if (!empty($scheduled_info)) { ?>
 			<?php
 				foreach ($scheduled_info as $schedule) {
-					$recipients = str_replace(' ', '', $schedule['recipients']);
+					$recipients = str_replace(' ', '', $schedule->recipients);
 					$recipients = str_replace(',', ', ', $recipients); ?>
-			<tr id="report-<?php echo $schedule['id'] ?>">
-				<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule['id'] ?>"><?php echo $schedule['periodname'] ?></td>
-				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule['id'] ?>"><?php echo $recipients ?></td>
-				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule['id'] ?>"><?php echo $schedule['filename'] ?></td>
-				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule['id'] ?>"><?php echo utf8_decode($schedule['description']) ?></td>
-				<td class="delete_report" id="<?php echo $schedule['id'] ?>"><?php echo html::image($this->add_path('icons/12x12/cross.gif')); ?></td>
+			<tr id="report-<?php echo $schedule->id ?>">
+				<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
+				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
+				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
+				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
+				<td class="delete_report" id="<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/12x12/cross.gif')); ?></td>
 			</tr>
 	<?php 		}
 			} ?>
