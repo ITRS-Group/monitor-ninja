@@ -333,7 +333,7 @@ class Reports_Controller extends Authenticated_Controller
 				#$report_info_arr = $report_info_arr->current();
 				$json_report_info = json::encode($report_info);
 			}
-			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+			$scheduled_info = Scheduled_reports_Model::get_scheduled_reports($this->type);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 			$periods = array();
 			$periods_res = Scheduled_reports_Model::get_available_report_periods();
@@ -586,7 +586,7 @@ class Reports_Controller extends Authenticated_Controller
 			$assumeinitialstates 				= 1;
 		}
 		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
-		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+		$scheduled_info = Scheduled_reports_Model::get_scheduled_reports($this->type);
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
 
