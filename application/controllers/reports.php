@@ -3223,4 +3223,158 @@ class Reports_Controller extends Authenticated_Controller
 		return $str;
 	}
 
+	private function _get_element_parts($str=false)
+	{
+		if (empty($str)) return false;
+		if (!strstr($str, '-')) return false;
+		// check for report_name since it has '.' as element id
+		if (strstr($str, '.')) {
+			$dotparts = explode('.', $str);
+			if (is_array($dotparts)) {
+				$str = '';
+				for ($i=1;$i<sizeof($dotparts);$i++) {
+					$str .= $dotparts[$i];
+				}
+			}
+		}
+		$parts = explode('-', $str);
+			if (is_array($parts)) {
+				return $parts;
+			}
+		return false;
+	}
+
+	/**
+	*	Save single item (key, value) from .editable
+	*	fields regarding scheduled reports.
+	*/
+	public function save_schedule_item()
+	{
+		$this->auto_render = false;
+		$field = false;
+		$report_id = false;
+		$new_value = arr::search($_REQUEST, 'newvalue');
+		$tmp_parts = arr::search($_REQUEST, 'elementid');
+
+		if (!$tmp_parts) {
+			# @@@FIXME: inform user via jGrowl and echo old value somehow?
+			echo $this->translate->_("Required data is missing, unable to save changes");
+			return false;
+		}
+
+		$parts = $this->_get_element_parts($tmp_parts);
+		if (!empty($parts)) {
+			$field 		= $parts[0];
+			$report_id 	= (int)$parts[1];
+		}
+
+		// check some fields a little extra
+		switch ($field) {
+			case 'recipients': // convert ';' to ','
+				$new_value = str_replace(';', ',', $new_value);
+				$rec_arr = explode(',', $new_value);
+				$recipients = false;
+				if (!empty($rec_arr)) {
+					foreach ($rec_arr as $recipient) {
+						if (trim($recipient)!='') {
+							$recipients[] = trim($recipient);
+						}
+					}
+					if (!empty($recipients)) {
+						$new_value = implode(',', $recipients);
+						$new_value = $this->_convert_special_chars($new_value);
+					}
+				}
+				// check for required email field, rather lame check
+				// but it's better than nothing...
+				$recipient = explode(",", $new_value);
+				if (is_array($recipient) && !empty($recipient)) {
+					foreach ($recipient as $recip) {
+						if (strlen($recip) < 6 || !preg_match("/.+@.+/", $recip)) {
+							echo '<a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">';
+							echo sprintf($this->translate->_("'%s' is not a valid email address.%sClick here to restore saved value."), $recip, '<br />')."\n</a>";
+							return;
+						}
+					}
+				}
+				break;
+			case 'filename': // remove spaces
+				if (strlen($new_value)>40) {
+					echo sprintf($this->translate->_('The enetered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
+						$this->translate->_('Please').' <a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'.$this->translate->_('click here').'</a> '.$this->translate->_('to view saved value').'.';
+					exit;
+				}
+				$new_value = $this->_convert_special_chars($new_value);
+				$new_value = $this->_check_filename($new_value);
+				break;
+		}
+
+		$ok = false;
+		#echo "Should update field '$field' with value '$new_value' on item '$report_id'";
+
+		$ok = Scheduled_reports_Model::update_report_field($report_id, $field, $new_value);
+
+		if ($ok!==true) {
+			echo $this->translate->_('An error occurred')."<br />";
+		} else {
+			/*
+			# decide how to interpret field and value, since we
+			# should print the correct value back.
+			# If the value is an integer it should indicate that
+			# we need to make a lookup in database to fetch correct value
+			# Let's say we have 'periodname' as field, then value is an
+			# integer and the return value should be Weekly/Monthly
+			# if we get a string we should return that string
+			# The problem is that all values will be passed as strings
+			#
+			#	Possible input values:
+			#	* report_id
+			#	* period_id
+			#	* recipients		no changes needed
+			#	* filename			no changes needed
+			#	* description/info	no changes needed
+			#
+			*/
+			switch ($field) {
+				case 'report_id':
+					$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
+					if (!$report_type) {
+						echo $this->translate->_("Unable to determine type for selected report");
+					} else {
+						$saved_reports = Scheduled_reports_Model::fetch_module_reports($report_type, false);
+						#print_r($saved_reports);
+						if (!empty($saved_reports)) {
+							foreach ($saved_reports as $report) {
+								if ($report['id'] == $new_value) {
+									echo $report['name'];
+									break;
+								}
+							}
+							#echo "Unable to find name of selected report (ID:$new_value	)";
+						} else {
+							echo $this->translate->_("Unable to fetch list of saved reports");
+						}
+					}
+					break;
+				case 'period_id':
+					$period = false;
+					$periods = Scheduled_reports_Model::get_available_report_periods();
+					if ($periods !== false) {
+						foreach ($periods as $row) {
+							$period[$row->id] = $row->periodname;
+						}
+						echo (is_array($period) && array_key_exists($new_value, $period))
+							? $period[$new_value]
+							: '';
+					}
+					break;
+				case 'recipients':
+					$new_value = str_replace(',', ', ', $new_value);
+					echo $new_value;
+					break;
+				default:
+					echo $new_value;
+			}
+		}
+	}
 }
