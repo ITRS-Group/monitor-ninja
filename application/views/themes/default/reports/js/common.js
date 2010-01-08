@@ -135,7 +135,7 @@ $(document).ready(function() {
 			if (d) {
 				d = new Date(d);
 				$('#cal_start').dpSetEndDate(d.addDays(-1).asString());
-				console.log(d.addDays(1).asString());
+				//console.log(d.addDays(1).asString());
 				$('#end_time').attr('value', d.asString());
 				endDate = d.asString();
 				//console.log( Math.round(d.getTime()/1000) ); // working valid timestamp
@@ -801,21 +801,21 @@ function validate_date(what)
 {
 	var start = $('#cal_start').attr('value');
 	var end = $('#cal_end').attr('value');
-	console.log(Date.fromString(start));
-	console.log(Date.fromString(end));
+	//console.log(Date.fromString(start));
+	//console.log(Date.fromString(end));
 
 	if (end < start) {
-		console.log('That is BAD');
+		//console.log('That is BAD');
 	} else {
-		console.log('seems OK');
+		//console.log('seems OK');
 	}
 }
 
 function confirm_delete_report(the_val)
 {
 	var the_path = self.location.href;
-	console.log($("#report_id").attr('value'));
-	console.log('input: ' + the_val);
+	//console.log($("#report_id").attr('value'));
+	//console.log('input: ' + the_val);
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = "Are you really sure that you would like to remove this saved report?";
