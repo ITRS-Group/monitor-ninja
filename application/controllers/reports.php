@@ -448,6 +448,13 @@ class Reports_Controller extends Authenticated_Controller
 			$this->inline_js .= "show_message('".$del_result."', '".$del_msg."');\n";
 		}
 
+		$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
+		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
+		$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
+		$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
+		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+
+		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
