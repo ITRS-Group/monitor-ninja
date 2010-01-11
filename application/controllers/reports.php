@@ -2484,7 +2484,7 @@ class Reports_Controller extends Authenticated_Controller
 		$params = addslashes(trim($params));
 		if (empty($path) || empty($params))
 			return false;
-		$return = form::open('reports/generate', array('style' => 'display:block; position: absolute; top: 0px; left: 720px'));
+		$return = form::open('reports/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
 		$return .= "<div>\n";
 
 		$params_arr = explode('&', $params);
@@ -2690,7 +2690,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		# start of deprecated code needed for old pdf backend:
 
-		$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 10px; left: 760px;'>\n";
+		$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
 		$form .= '<div>';
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
 		$url_params = '';
