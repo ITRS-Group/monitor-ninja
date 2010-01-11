@@ -62,6 +62,7 @@ if (!empty($widgets)) {
 						<tbody>
 							<?php	$recipients = false;
 								foreach ($scheduled_info as $schedule) {
+									$schedule = (object)$schedule;
 									$recipients = str_replace(' ', '', $schedule->recipients);
 									$recipients = str_replace(',', ', ', $recipients);	?>
 								<tr id="report-<?php echo $schedule->id ?>">
