@@ -8,8 +8,8 @@ var service = false;
 var current_obj_type = false; // keep track of what we are viewing
 var is_populated = false; // flag list population when done
 var sla_month_error_color    = 'red';
-var sla_month_disabled_color = '#dcdcd7';
-var sla_month_enabled_color  = 'white';
+var sla_month_disabled_color = '#cdcdcd';
+var sla_month_enabled_color  = '#fafafa';
 var _scheduled_label = '';
 var invalid_report_names = '';
 
@@ -312,7 +312,8 @@ function toggle_label_weight(val, the_id)
 	if (document.getElementById(the_id)) {
 		elem = document.getElementById(the_id);
 		//elem.className = val ? 'bold' : '';
-		elem.style.fontWeight = val ? 'bold' : '';
+		//elem.style.fontStyle = val ? 'italic' : '';
+		//elem.style.fontWeight = val ? 'bold' : '';
 	}
 }
 
