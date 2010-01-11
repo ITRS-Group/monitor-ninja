@@ -1,3 +1,7 @@
+body {
+	margin: 0px 7px;
+}
+
 #progress{
 	position: absolute;
 	top:120px;
@@ -44,13 +48,110 @@
 
 #autoreport_periods{display:none}
 
-.pie-chart .icon-help, #details .icon-help, #options .icon-help {
-	right: 2px;
+/* nytt */
+
+.setup-table { border: 0px; padding: 0px; margin: 0px; border-spacing: 0px; border-collapse: collapse}
+.setup-table table tr td {
+	border: 0px;
+	background-color: transparent;
 }
-.pie-chart h1, #details h1, #options h1  {
-	margin: 0px 0px 1px 0px;
+
+input, select, input#report_name, input#cal_end, input#cal_start {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px;
+	width: 350px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
 }
-.pie-chart, #details, #options {
-	width: 244px;
-	margin-left: 7px;
+
+input#cal_end, input#cal_start {
+	width: 324px;
 }
+
+select[multiple=multiple] {
+	padding: 3px;
+}
+
+input[type=button],
+input[type=submit],
+input[type=checkbox] {
+	width: auto
+}
+
+input[type=checkbox] {
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 5px;
+}
+
+input[type=submit],
+input[type=button] {
+	background: #cdcdcd url(bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+	margin-bottom: 5px;
+}
+
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 3px}
+h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
+
+caption { padding-left:0px}
+
+#header {
+	position: relative;
+	top: 0px;
+}
+
+#header p {
+	margin-top: -12px;
+	padding-left: 5px;
+
+}
+
+a#optiontoggle { margin: 5px;}
+
+table.multiple_services tr.odd td.data,
+table.multiple_services tr.even td.data,
+table#multiple_hosts tr.odd td.data,
+table#multiple_hosts tr.even td.data {
+	text-align: right;
+	white-space: nowrap;
+}
+
+tr#pdf-hide td {
+	background: transparent;
+	margin-top: 5px;
+	text-align: right;
+	padding-right: 2px;
+}
+
+tr.dark td {
+	border: 1px solid #dcdccd;
+	border-left: 0px;
+	background: #eaeaea;
+	border-top: 0px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+th.headerNone {
+	white-space: nowrap;
+	text-align: right
+}
+
+.pie-chart {
+	display: block;
+	float: left;
+	width: auto;
+	margin-right: 7px;
+}
+
+.chart-border { border: 1px solid #dcdcdc}
