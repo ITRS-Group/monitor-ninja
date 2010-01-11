@@ -48,3 +48,12 @@ $config['users'] = array
 );
 
 $config['min_username_chars'] = 2;
+
+/**
+ * Control the use of login by passing username and password
+ * as get parameters.
+ * Default is set to false and by changing this to true it is
+ * possible to login to your account with a url like
+ * http://ninja/default/do_login?username=<username>&password=<password>
+ */
+$config['use_get_auth'] = false;

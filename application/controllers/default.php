@@ -80,6 +80,14 @@ class Default_Controller extends Ninja_Controller  {
 	 */
 	public function do_login()
 	{
+		# check if we should allow login by GET params
+		if (Kohana::config('auth.use_get_auth')
+			&& array_key_exists('username', $_GET)
+			&& array_key_exists('password', $_GET)) {
+				$_POST['username'] = $_GET['username'];
+				$_POST['password'] = $_GET['password'];
+		}
+
 		if ($_POST) {
 			$post = Validation::factory($_POST);
 			$post->add_rules('*', 'required');
