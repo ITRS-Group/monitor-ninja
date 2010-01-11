@@ -242,6 +242,7 @@ class Reports_Model extends Model
 		unset($result['id']);
 		unset($result['timeperiod_name']);
 		unset($result['alias']);
+		unset($result['instance_id']);
 
 		$includes = $result;
 
