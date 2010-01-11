@@ -5,9 +5,7 @@ if (!empty($widgets)) {
 		echo $widget;
 	}
 }
-?><br />
-<br />
-<br />
+?>
 
 <div id="response"></div>
 <div id="progress"></div>
