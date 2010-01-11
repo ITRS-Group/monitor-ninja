@@ -2236,7 +2236,8 @@ class Reports_Controller extends Authenticated_Controller
 		if (empty($host_name)) {
 			return false;
 		}
-		$res = Service_Model::get_where('host_name', $host_name);
+		$service_model = new Service_Model();
+		$res = $service_model->get_where('host_name', $host_name);
 		$res->result(false); # convert to array
 		$service_arr = array();
 		if (!empty($res)) {
