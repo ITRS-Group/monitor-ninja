@@ -1012,7 +1012,7 @@ class Reports_Controller extends Authenticated_Controller
 			$schedule_periods = Scheduled_reports_Model::get_available_report_periods();
 			if ($schedule_periods !== false && !empty($schedule_periods)) {
 				foreach ($schedule_periods as $s) {
-					$available_schedule_periods[] = array('id' => $s->id, 'periodname' => $s->periodname);
+					$available_schedule_periods[$s->id] = $s->periodname;
 				}
 				$json_periods = json::encode($available_schedule_periods);
 			}
