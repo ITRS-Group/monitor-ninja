@@ -1036,6 +1036,9 @@ class Reports_Controller extends Authenticated_Controller
 			$this->js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
 			$this->js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
 			$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
+			$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
+			$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
+			$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
 			$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
 			$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
 			$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
