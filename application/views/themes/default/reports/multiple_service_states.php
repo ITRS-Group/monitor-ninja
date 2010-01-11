@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="state_services"><?php
+<div class="state_services">
+<!--<h1 style="margin-left:0px"><?php echo (!empty($data['servicename']) ? 'Servicegroup breakdown' : 'Service state breakdown'); ?></h1>
+<p style="margin-top: -12px; margin-bottom: 0px">Reporting period: last year (2009-01-01 00:00 to 2010-01-01 00:00)</p>-->
+<?php
 	$prev_host = false;
 	$prev_group = false;
 	$prev_hostname = false;
@@ -14,55 +17,39 @@
 
 		if ($j != 1) { ?>
 	</table>
-	</fieldset>
+
 </div>
 <div class="state_services">
+
 	<?php } ?>
-	<?php	if(!empty($data['groupname'])) { ?>
-	<h1 onclick="show_hide('services',this)">
-		<?php echo $data['groupname']; ?>
-	</h1>
-	<?php } else { ?>
-	<h1 onclick="show_hide('services',this)">
-		Services on host: <a href="<?php echo str_replace('&','&amp;',$data['host_link'][$i]) ?>">
-	<?php if (!$use_alias) { ?>
-		<?php echo $data['HOST_NAME'][$i]; ?></a>
-	<?php } else { ?>
-		<?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $data['HOST_NAME'][$i]; ?>)
-	<?php } ?>
-		</a>
-	</h1>
-	<?php } ?>
-	<div class="icon-help" onclick="general_help('multiple_service_states')"></div>
-	<fieldset id="services">
-		<table summary="State breakdown for host services">
-			<colgroup>
-				<col class="col_label" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-			</colgroup>
+
+
+		<table summary="State breakdown for host services" class="multiple_services" style="margin-top: 15px">
+
 			<tr>
-				<th class="null"></th>
-				<th class="ok">Time <br />OK</th>
-				<th class="null"></th>
-				<th class="warning">Time <br />Warning</th>
-				<th class="null"></th>
-				<th class="unknown">Time <br />Unknown</th>
-				<th class="null"></th>
-				<th class="critical">Time <br />Critical</th>
-				<th class="null"></th>
-				<th class="undetermined">Time <br />Undetermined</th>
+				<th class="headerNone" style="width: 90%; text-align: left">
+				<?php
+				if(!empty($data['groupname'])) {
+					echo $data['groupname'];
+				} else {
+					echo 'Services on host: <a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">';
+					if (!$use_alias) {
+							echo $data['HOST_NAME'][$i].'</a>';
+					 } else {
+						echo $this->_get_host_alias($data['HOST_NAME'][$i]).' '.$data['HOST_NAME'][$i].')';
+						}
+					}
+				?>
+				</th>
+				<th class="headerNone">OK</th>
+				<th class="headerNone">Warning</th>
+				<th class="headerNone">Unknown</th>
+				<th class="headerNone">Critical</th>
+				<th class="headerNone">Undetermined</th>
 			</tr>
-<?php } ?>
+		<?php } ?>
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
-			<tr>
+			<tr class="even">
 			<?php if (!$use_alias) { ?>
 				<td colspan="10" class="multiple label">Services on host: <?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } else { ?>
@@ -70,115 +57,98 @@
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
-			<tr>
+			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td class="label"><a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true); ?></a></td>
-				<td><?php echo $this->_format_report_value($data['ok'][$i]) ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $this->_format_report_value($data['warning'][$i]) ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $this->_format_report_value($data['unknown'][$i]) ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $this->_format_report_value($data['critical'][$i]) ?> %</td>
-				<td class="null"></td>
-				<td class="border-right"><?php echo $this->_format_report_value($data['undetermined'][$i]) ?> %</td>
+				<td class="data"><?php echo $this->_format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => 'Ok', 'title' => 'Ok','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => 'Warning', 'title' => 'Warning','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($data['unknown'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['unknown'][$i]) > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => 'Unknown', 'title' => 'Unknown','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($data['critical'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['critical'][$i]) > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => 'Critical', 'title' => 'Critical','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => 'Undetermined', 'title' => 'Undetermined','style' => 'margin-bottom: -1px')) ?></td>
 			</tr>
 			<?php	} } ?>
 
 			<?php if (!empty($data['groupname'])) {
 					if ($use_average==0) { ?>
 			<tr>
-				<td class="label">Average</td>
-				<td><?php echo $data['average_ok'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_warning'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_unknown'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_critical'] ?> %</td>
-				<td class="null"></td>
-				<td class="border-right"><?php echo $data['average_undetermined'] ?> %</td>
+				<td>Average</td>
+				<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => 'Ok', 'title' => 'Ok','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => 'Warning', 'title' => 'Warning','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => 'Unknown', 'title' => 'Unknown','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => 'Critical', 'title' => 'Critical','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => 'Undetermined', 'title' => 'Undetermined','style' => 'margin-bottom: -1px')) ?></td>
 			</tr>
 			<?php 	} ?>
 			<tr class="group-average">
-				<td class="label"><?php if ($use_average==0) { ?>Group availability (SLA) <?php } else { ?>Average<?php } ?></td>
-				<td class="ok"><?php echo $data['group_average_ok'] ?> %</td>
-				<td class="null"></td>
-				<td class="warning"><?php echo $data['group_average_warning'] ?> %</td>
-				<td class="null"></td>
-				<td class="unknown"><?php echo $data['group_average_unknown'] ?> %</td>
-				<td class="null"></td>
-				<td class="critical"><?php echo $data['group_average_critical'] ?> %</td>
-				<td class="null"></td>
-				<td class="undetermined border-right"><?php echo $data['group_average_undetermined'] ?> %</td>
+				<td><?php if ($use_average==0) { ?>Group availability (SLA) <?php } else { ?>Average<?php } ?></td>
+				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => 'Ok', 'title' => 'Ok','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => 'Warning', 'title' => 'Warning','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => 'Unknown', 'title' => 'Unknown','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => 'Critical', 'title' => 'Critical','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => 'Undetermined', 'title' => 'Undetermined','style' => 'margin-bottom: -1px')) ?></td>
 			</tr>
 			<?php } ?>
 		</table>
-	</fieldset>
 </div>
+
+<br />
 <div class="state_services">
 <?php }  ?>
 <?php if (empty($data['groupname'])) { ?>
-	<h1 onclick="show_hide('services_avg',this)">
-		Average and Group availability for all selected services
-	</h1>
-	<div class="icon-help" onclick="general_help('average_sla_info')"></div>
-	<fieldset id="services_avg">
-		<table summary="State breakdown for host services">
-			<colgroup>
-				<col class="col_label" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-				<col class="col_space_sml" />
-				<col class="auto" />
-			</colgroup>
-			<tr>
-				<th class="null"></th>
-				<th class="ok">Time <br />OK</th>
-				<th class="null"></th>
-				<th class="warning">Time <br />Warning</th>
-				<th class="null"></th>
-				<th class="unknown">Time <br />Unknown</th>
-				<th class="null"></th>
-				<th class="critical">Time <br />Critical</th>
-				<th class="null"></th>
-				<th class="undetermined">Time <br />Undetermined</th>
+	<table summary="State breakdown for host services" class="multiple_services">
+		<tr>
+			<th class="headerNone" style="width: 90%; text-align: left">Average and Group availability for all selected services</th>
+			<th class="headerNone">OK</th>
+			<th class="headerNone">Warning</th>
+			<th class="headerNone">Unknown</th>
+			<th class="headerNone">Critical</th>
+			<th class="headerNone">Undetermined</th>
+		</tr>
+		<?php if ($use_average==0) { ?>
+		<tr class="even">
+			<td>Average</td>
+			<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => 'Ok', 'title' => 'Ok','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => 'Warning', 'title' => 'Warning','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => 'Unknown', 'title' => 'Unknown','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => 'Critical', 'title' => 'Critical','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => 'Undetermined', 'title' => 'Undetermined','style' => 'margin-bottom: -1px')) ?></td>
+		</tr>
+		<?php } ?>
+		<tr class="odd">
+				<td><?php if ($use_average==0) { ?>Group availability (SLA) <?php } else { ?>Average<?php } ?></td>
+				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => 'Ok', 'title' => 'Ok','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => 'Warning', 'title' => 'Warning','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => 'Unknown', 'title' => 'Unknown','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => 'Critical', 'title' => 'Critical','style' => 'margin-bottom: -1px')) ?></td>
+				<td class="data"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => 'Undetermined', 'title' => 'Undetermined','style' => 'margin-bottom: -1px')) ?></td>
 			</tr>
-
-			<?php if ($use_average==0) { ?>
-			<tr>
-				<td class="label">Average</td>
-				<td><?php echo $data['average_ok'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_warning'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_unknown'] ?> %</td>
-				<td class="null"></td>
-				<td><?php echo $data['average_critical'] ?> %</td>
-				<td class="null"></td>
-				<td class="border-right"><?php echo $data['average_undetermined'] ?> %</td>
-			</tr>
-			<?php } ?>
-			<tr class="group-average">
-				<td class="label"><?php if ($use_average==0) { ?>Group availability (SLA) <?php } else { ?>Average<?php } ?></td>
-				<td class="ok"><?php echo $data['group_average_ok'] ?> %</td>
-				<td class="null"></td>
-				<td class="warning"><?php echo $data['group_average_warning'] ?> %</td>
-				<td class="null"></td>
-				<td class="unknown"><?php echo $data['group_average_unknown'] ?> %</td>
-				<td class="null"></td>
-				<td class="critical"><?php echo $data['group_average_critical'] ?> %</td>
-				<td class="null"></td>
-				<td class="undetermined border-right"><?php echo $data['group_average_undetermined'] ?> %</td>
-			</tr>
-			<tr id="pdf-hide">
-				<td colspan="10" style="background: #ffffff;border-bottom: 0px;padding: 7px 0px 0px 0px"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
-			</tr>
-		</table>
-	</fieldset>
+		<tr id="pdf-hide">
+			<td colspan="6"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
+		</tr>
+	</table>
 <?php } ?>
 </div>
