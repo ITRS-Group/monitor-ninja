@@ -248,7 +248,7 @@ class Reports_Model extends Model
 
 		$result_set = Timeperiod_Model::excludes($timeperiod_id);
 
-		if($result_set)
+		if(count($result_set))
 		{
 			foreach($result_set as $result_row) # for each exclude
 			{
