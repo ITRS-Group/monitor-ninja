@@ -453,6 +453,19 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
 		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_propagate = '".$t->_('Would you like to propagate this value to all months')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '".$t->_("Would you like to remove all values from all months")."';\n";
+		$this->js_strings .= "var _reports_invalid_startdate = '".$t->_("You haven't entered a valid Start date")."';\n";
+		$this->js_strings .= "var _reports_invalid_enddate = '".$t->_("You haven't entered a valid End date")."';\n";
+		$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
+		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+		$this->js_strings .= "var _reports_error_name_exists_replace = '".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."';\n";
+		$this->js_strings .= "var _reports_missing_objects = '".$t->_("Some items in your saved report doesn't exist anymore and has been removed")."';\n";
+		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '".$t->_('Please modify the objects to include in your report below and then save it.')."';\n";
+		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s
+			the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
 		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;

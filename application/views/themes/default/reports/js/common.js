@@ -99,12 +99,12 @@ $(document).ready(function() {
 	$('.autofill').click(function() {
 		var the_val = $("input[name='" + $(this).attr('id') + "']").attr('value');
 		if (the_val!='') {
-			if (!confirm("Would you like to propagate this value to all months")) {
+			if (!confirm(_reports_propagate)) {
 				return false;
 			}
 			set_report_form_values(the_val);
 		} else {
-			if (!confirm("Would you like to remove all values from all months")) {
+			if (!confirm(_reports_propagate_remove)) {
 				return false;
 			}
 			set_report_form_values('');
@@ -542,15 +542,15 @@ function check_form_values()
 		if (!startDate || !endDate) {
 			if (!startDate) {
 				errors++;
-				err_str += "<li>You haven't entered a valid Start date.</li>";
+				err_str += "<li>" + _reports_invalid_startdate + ".</li>";
 			}
 			if (!endDate) {
 				errors++;
-				err_str += "<li>You haven't entered a valid End date.</li>";
+				err_str += "<li>" + _reports_invalid_enddate + ".</li>";
 			}
 		} else {
 			if (endDate > now) {
-				if (!confirm("You have entered an End date in the future.\nClick OK to change this to current time or cancel to modify.")) {
+				if (!confirm(_reports_enddate_infuture)) {
 					return false;
 				} else {
 					endDate = now;
@@ -561,8 +561,7 @@ function check_form_values()
 
 	if ($("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
 		errors++;
-		err_str += "<li>Please select what objects to base the report on by moving <br />";
-		err_str += " objects from the left selectbox to the right selectbox.</li>";
+		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
 	/**
@@ -592,7 +591,7 @@ function check_form_values()
 						if (report_name == chk_text) {
 							// trying to save an item with an existing name
 							errors++;
-							err_str += "<li>You have entered a name for your report that already exists. <br />Please select a new name.</li>";
+							err_str += "<li>" + _reports_error_name_exists + ".</li>";
 						}
 					}
 				}
@@ -606,7 +605,7 @@ function check_form_values()
 		// check if report name is unique
 		if(saved_report_id == '' && invalid_report_names && invalid_report_names.indexOf(report_name) != -1)
 		{
-			if(!confirm("The entered name already exists. Press 'Ok' to replace the entry with this name"))
+			if(!confirm(_reports_error_name_exists_replace))
 			{
 				return false;
 			}
@@ -779,9 +778,9 @@ function remove_duplicates()
 		}
 	});
 	if (removed_items.length) {
-		var info_str = "Some items in your saved report doesn't exist anymore and has been removed: ";
+		var info_str = _reports_missing_objects + ": ";
 		info_str += "<ul><li><img src=\"" + _site_domain + _theme_path + "icons/arrow-right.gif" + "\" /> " + removed_items.join('</li><li><img src="' + _site_domain + _theme_path + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
-		info_str += 'Please modify the objects to include in your report below and then save it.';
+		info_str += _reports_missing_objects_pleaseremove;
 		info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + _theme_path + '' + 'icons/12x12/cross.gif" /></a>';
 		$('#response')
 			.css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
@@ -821,12 +820,10 @@ function confirm_delete_report(the_val)
 	//console.log('input: ' + the_val);
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = "Are you really sure that you would like to remove this saved report?";
+	var msg = _reports_confirm_delete;
 	if (the_val!="" && the_path!="") {
 		if (is_scheduled) {
-			msg += "\n\nPlease note that this is a scheduled report and if you decide to delete it, \n";
-			msg += "the corresponding schedule will be deleted as well.\n\n";
-			msg += "Are you really sure that this is what you want?";
+			msg += _reports_confirm_delete_warning;
 		}
 		if (confirm(msg)) {
 			self.location.href=the_path + '?del_report=true&del_id=' + the_val;
