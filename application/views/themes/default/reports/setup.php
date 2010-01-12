@@ -70,7 +70,7 @@ if (!empty($widgets)) {
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
-								<td class="delete_report" id="<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
+								<td class="delete_schedule" id="<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
 							</tr>
 							<?php } } ?>
 						</tbody>
@@ -84,12 +84,7 @@ if (!empty($widgets)) {
 	<!--<h1><?php echo $label_create_new ?></h1>-->
 
 
-	<?php	echo form::open('reports/generate', array('id' => 'report_form'));
-		# @@@FIXME: onsubmit="return check_form_values(this);"
-		?>
-
-
-
+	<?php	echo form::open('reports/generate', array('id' => 'report_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
 			<input type="hidden" name="type" value="<?php echo $type ?>" />
 			<table summary="Select report type" style="width: 700px"><!--id="main_table"-->
