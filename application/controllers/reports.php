@@ -1012,6 +1012,7 @@ class Reports_Controller extends Authenticated_Controller
 			$tpl_options->label_update = $t->_('Update report');
 			$tpl_options->label_interval = $t->_('Report Interval');
 			$tpl_options->label_recipients = $t->_('Recipients');
+			$tpl_options->label_edit_settings = $t->_('edit settings');
 			$tpl_options->label_filename = $t->_('Filename');
 			$tpl_options->label_description = $t->_('Description');
 			$tpl_options->label_save = $t->_('Save');

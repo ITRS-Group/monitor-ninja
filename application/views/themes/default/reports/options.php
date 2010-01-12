@@ -1,4 +1,4 @@
-<input type="button" id="optiontoggle" alt="#TB_inline?height=300&width=365&inlineId=options" class="button thickbox" value="edit settings" />
+<input type="button" id="optiontoggle" alt="#TB_inline?height=300&width=365&inlineId=options" class="button thickbox" value="<?php echo $label_edit_settings ?>" />
 
 <div id="options">
 <?php	echo form::open('reports/generate', array('id' => 'report_form'));
