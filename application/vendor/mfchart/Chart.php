@@ -55,9 +55,9 @@ class Chart {
 		if ($height != NULL)
 			$this->height = (int) $height;
 
-		$this->colors['background_color'] = array('#ffffff', NULL, NULL); // background of the generated image
+		$this->colors['background_color'] = array('#fdfdfd', NULL, NULL); // background of the generated image
 		#$this->colors['background_color'] = array('#f6f7f8', NULL, NULL); // background of the generated image
-		$this->colors['border_color'] = 		array('#f6f7f8',			 NULL, NULL);	// border of the generated image
+		$this->colors['border_color'] = 		array('#fdfdfd',			 NULL, NULL);	// border of the generated image
 		#$this->colors['border_color'] = 		array(NULL,			 NULL, NULL);	// border of the generated image
 		$this->colors['font_color'] = 			array('#595959', NULL, NULL);	// values at axis
 		$this->colors['font_color2'] =			array('#000000', NULL, NULL);	// legend at axis & legend
