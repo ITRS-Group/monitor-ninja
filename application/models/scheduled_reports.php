@@ -5,31 +5,42 @@ class Scheduled_reports_Model extends Model
 	public $db_name = 'monitor_reports';
 	const db_name = 'monitor_reports';
 
-	public function delete_scheduled_report($type='avail',$id=false)
+	public function delete_scheduled_report($id=false)
+	{
+		$id = (int)$id;
+		if (empty($id)) return false;
+		$sql = "DELETE FROM scheduled_reports WHERE id=".$id;
+		$db = new Database(self::db_name);
+		$db->query($sql);
+		return true;
+	}
+
+	/**
+	*	Delete ALL schedules for a certain report_id and type
+	*/
+	public function delete_all_scheduled_reports($type='avail',$id=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla')
 			return false;
+		$db = new Database(self::db_name);
 
-		$id = (int)$id;
-		if (empty($id)) return false;
-		$res = self::get_scheduled_reports($type);
-		if (empty($res)) return false;
-		$scheduled_id = false;
-		foreach ($res as $row) {
-			if ($row->report_id == $id) {
-				$scheduled_id = $row->id;
-				break;
-			}
-		}
-		if (!empty($scheduled_id)) {
-			$sql = "DELETE FROM scheduled_reports WHERE id=".$scheduled_id;
-			$db = new Database(self::db_name);
+		# what report_type_id do we have?
+		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($type);
+		$res = $db->query($sql);
+		if (!count($res))
+			return false;
+			# bail out if we can't find report_type
+
+		$row = $res->current();
+		$report_type_id = $row->id;
+		$sql = "DELETE FROM scheduled_reports WHERE report_type_id=".$report_type_id." AND report_id=".$id;
+		try {
 			$db->query($sql);
-			return true;
-		} else {
+		} catch (Kohana_Database_Exception $e) {
 			return false;
 		}
+		return true;
 	}
 
 	/**

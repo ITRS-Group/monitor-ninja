@@ -139,7 +139,7 @@ class Saved_reports_Model extends Model
 		if ($err !== false) {
 			return false;
 		}
-		Scheduled_reports_Model::delete_scheduled_report($type, $id);
+		Scheduled_reports_Model::delete_all_scheduled_reports($type, $id);
 		return true;
 	}
 
