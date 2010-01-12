@@ -1,5 +1,5 @@
 <div id="header">
-<h1><?php //echo $title; ?>There should be a customised header here but need to edit the controller first</h1>
+<h1><?php echo $title; ?></h1>
 	<p>
 	<?php
 	echo $label_report_period.': '.$report_time_formatted.' (';
