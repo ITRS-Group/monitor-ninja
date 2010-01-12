@@ -11,9 +11,11 @@ class PieChart extends Chart {
 
 	public function __construct($width=NULL, $height=NULL)
 	{
+		$width = 300;
+		$height = 235;
 		parent::__construct($width, $height);
 
-		$this->set_margins(10);
+		$this->set_margins(0);
 
 		$this->colors['colors'] = array(	// for drawing "value lines"
 				array('#f8d01b', NULL, NULL),
@@ -65,12 +67,13 @@ class PieChart extends Chart {
 			$legend_width = $box_points[4]-$box_points[6];
 			if ($legend_width < $width)
 				$legend_width = $width;
-		}
-		$legend_width += 10; // some margins
 
-		$margin_left = ($this->width-$legend_slice_width-$width-$legend_width) / 2;
-		$center_x = $margin_left + $legend_slice_width + $width/2+20;
-		$center_y = $this->margin_top + ($height+$height_3d+$legend_slice_height*2)/2;
+		}
+		$legend_width += 0; // some margins
+
+		$margin_left = ($this->width-$width) / 2;
+		$center_x = $width/2+$margin_left;
+		$center_y = $this->margin_top + ($height+$height_3d)/2;
 
 		$ratio = array_sum($this->values)/360;
 
@@ -201,8 +204,8 @@ class PieChart extends Chart {
 		}
 
 		# print legend
-		# $this->draw_legend('colors', 0, $center_x+$width/2-20+$legend_slice_width*3, $this->height/2-$height/2);
-		$this->draw_legend('colors', 0, $center_x+$width/2-70+$legend_slice_width*3, $this->height/2-$height/2+85);
+		//$this->draw_legend('colors', 0, $center_x+$width/2-20+$legend_slice_width*3, $this->height/2-$height/2);
+		$this->draw_legend('colors', 0, 20, $this->height/2+65);
 
 	}
 
