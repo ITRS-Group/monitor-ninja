@@ -415,9 +415,6 @@ class Reports_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
 
-		# some translations for js script messages
-		$this->inline_js .= "_scheduled_label = '".$scheduled_label."';";
-
 		if ($this->report_id) {
 			$this->inline_js .= "$('#assumed_host_state').hide();
 			$('#assumed_service_state').hide();\n";
@@ -452,20 +449,24 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 		$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
+		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
+		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_schedule_deleted = '".$t->_('Your schedule has been deleted')."';\n";
 		$this->js_strings .= "var _reports_propagate = '".$t->_('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '".$t->_("Would you like to remove all values from all months")."';\n";
-		$this->js_strings .= "var _reports_invalid_startdate = '".$t->_("You haven't entered a valid Start date")."';\n";
-		$this->js_strings .= "var _reports_invalid_enddate = '".$t->_("You haven't entered a valid End date")."';\n";
+		$this->js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
+		$this->js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
 		$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
 		$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
-		$this->js_strings .= "var _reports_error_name_exists_replace = '".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."';\n";
-		$this->js_strings .= "var _reports_missing_objects = '".$t->_("Some items in your saved report doesn't exist anymore and has been removed")."';\n";
+		$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+		$this->js_strings .= "var _reports_missing_objects = \"".$t->_("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '".$t->_('Please modify the objects to include in your report below and then save it.')."';\n";
 		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s
-			the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
 		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;
@@ -484,7 +485,8 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_sch_recipients = $t->_('Recipients');
 		$template->label_sch_filename = $t->_('Filename');
 		$template->label_sch_description = $t->_('Description');
-		$template->label_create_new = $t->_('Create new report');
+		$template->label_create_new = $t->_('Reports');
+		$template->label_saved_reports = $t->_('Saved reports');
 		$template->label_hostgroups = $t->_('Hostgroups');
 		$template->label_hosts = $t->_('Hosts');
 		$template->label_servicegroups = $t->_('Servicegroups');
@@ -1052,6 +1054,7 @@ class Reports_Controller extends Authenticated_Controller
 			$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 			$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
 			$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
+			$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
 			$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
 			$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
 			$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
@@ -1059,6 +1062,18 @@ class Reports_Controller extends Authenticated_Controller
 			$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
 			$this->js_strings .= "var _reports_errors_found = '".$t->_('Found the following error(s)')."';\n";
 			$this->js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
+
+			$this->js_strings .= "var _reports_schedule_deleted = '".$t->_('Your schedule has been deleted')."';\n";
+			$this->js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
+			$this->js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
+			$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
+			$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+			$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+			$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
+			$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+			$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+				"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+
 
 			$csv_link = $this->_get_csv_link();
 			$tpl_options->csv_link = $csv_link;
