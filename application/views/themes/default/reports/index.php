@@ -11,20 +11,13 @@ if (!empty($widgets)) {
 <div id="progress"></div>
 <div class="report-page">
 <?php
-if (isset($error))
-	echo $error;
+	echo isset($error) ? $error : '';
+	echo !empty($header) ? $header : '';
+	echo !empty($report_options) ? $report_options : '';
 
-echo !empty($header) ? $header : '';
-echo !empty($report_options) ? $report_options : '';
-echo !empty($svc_content) ? $svc_content : '';
-echo !empty($content) ? $content : '';
-echo isset($pie) ? $pie : '';
-	?>
-<?php
-	if (!empty($log_content)) {
-		echo '<div id="log_messages">'."\n";
-		echo $log_content;
-		echo '</div>'."\n";
-	}
+	echo !empty($content) ? $content : '';
+	echo !empty($svc_content) ? $svc_content : '';
+	echo isset($pie) ? $pie : '';
+	echo !empty($log_content) ? $log_content : '';
 ?>
 </div>
