@@ -7,14 +7,16 @@ if (isset($data_str)) {
 		<div class="pie-chart">
 			<table>
 				<tr><th class="headerNone" style="text-align: left"><?php //echo help::render('pie_chart') ?> <?php echo $label_status ?> <?php echo ($data_str[$i]['host'] != '') ? ': '.$data_str[$i]['host'] : ''; ?></th></tr>
-				<tr class="even"><td><img src="/ninja/index.php/reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="Uptime" id="pie" /></td>
+				<tr class="even"><td><img src="/ninja/index.php/reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="Uptime" id="pie" /></td></tr>
 			</table>
 		</div>
 		<?php
 		}
 	} else if(!empty($data_str)) { ?>
-	<div class="pie-chart">
-		<?php echo help::render('pie_chart') ?><strong><?php echo $label_status ?></strong><br />
-		<img src="/ninja/index.php/reports/piechart/<?php echo $data_str ?>" alt="Uptime" id="pie" class="chart-border" />
-	</div>
+	<!--<div class="pie-chart">
+		<table>
+			<tr><th class="headerNone" style="text-align: left"><?php //echo help::render('pie_chart') ?> <?php echo $label_status ?></th></tr>
+			<tr class="even"><td>--><img src="/ninja/index.php/reports/piechart/<?php echo $data_str ?>" alt="Uptime" id="pie" /><!--</td></tr>
+		</table>
+	</div>-->
 <?php } } ?>
