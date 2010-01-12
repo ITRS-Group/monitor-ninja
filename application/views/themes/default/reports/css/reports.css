@@ -1,23 +1,33 @@
 body {
-	margin: 0px 7px;
+	margin: 0px 1%;
 }
 
 #progress{
 	position: absolute;
-	top:120px;
-	left:270px;
+	top:107px;
+	left:410px;
 	display: none;
 }
 
-#options, #new_schedule_form_area, #schedule_report, #report_save_information{display: none;}
+#progress em,
+#progress img {
+	float: left;
+}
+#progress em {
+	display: block;
+	margin-top: 12px;
+}
 
-#response{
+#options,
+#new_schedule_form_area,
+#schedule_report,
+#report_save_information,
+#autoreport_periods { display: none; }
+
+#response {
 	margin-left:5px;
 	padding-top:5px;
 	background: #f9f9f5 url(images/response.png) repeat-x;
-}
-.report-page{
-	margin-left:5px;
 }
 
 #response h1 {
@@ -46,8 +56,6 @@ body {
 #response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
 #response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
 
-#autoreport_periods{display:none}
-
 /* nytt */
 
 .setup-table { border: 0px; padding: 0px; margin: 0px; border-spacing: 0px; border-collapse: collapse}
@@ -56,7 +64,15 @@ body {
 	background-color: transparent;
 }
 
-input, select, input#report_name, input#cal_end, input#cal_start {
+
+input,
+select,
+textarea,
+input#report_name,
+input#cal_end,
+input#cal_start,
+input#recipients,
+input#filename {
 	background: #fafafa;
 	border: 1px solid #cccccc;
 	outline: 0px;
@@ -69,6 +85,8 @@ input, select, input#report_name, input#cal_end, input#cal_start {
 	margin-bottom: 15px;
 }
 
+select { width: 354px}
+
 input#cal_end, input#cal_start {
 	width: 324px;
 }
@@ -79,6 +97,7 @@ select[multiple=multiple] {
 
 input[type=button],
 input[type=submit],
+input[type=reset],
 input[type=checkbox] {
 	width: auto
 }
@@ -89,6 +108,7 @@ input[type=checkbox] {
 	margin-bottom: 5px;
 }
 
+input[type=reset],
 input[type=submit],
 input[type=button] {
 	background: #cdcdcd url(bg.png) repeat-x;
@@ -100,7 +120,7 @@ input[type=button] {
 	margin-bottom: 5px;
 }
 
-h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 3px}
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
 h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
 
 caption { padding-left:0px}
@@ -112,12 +132,14 @@ caption { padding-left:0px}
 
 #header p {
 	margin-top: -12px;
-	padding-left: 5px;
 
 }
 
 a#optiontoggle { margin: 5px;}
 
+tr.dark td.data,
+tr.odd td.data,
+tr.even td.data,
 table.multiple_services tr.odd td.data,
 table.multiple_services tr.even td.data,
 table#multiple_hosts tr.odd td.data,
@@ -133,14 +155,18 @@ tr#pdf-hide td {
 	padding-right: 2px;
 }
 
-tr.dark td {
+tr.dark td,
+tr.odd td.dark,
+tr.even td.dark {
 	border: 1px solid #dcdccd;
 	border-left: 0px;
-	background: #eaeaea;
+	background: #efefef;
 	border-top: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
+
+tr.even td.dark { padding: 2px 5px; border-left: 1px solid #dcdcdc; vertical-align: bottom; width: auto; text-align: left}
 
 th.headerNone {
 	white-space: nowrap;
@@ -155,3 +181,30 @@ th.headerNone {
 }
 
 .chart-border { border: 1px solid #dcdcdc}
+
+tr.none td {
+	border: 0px;
+	background: #ffffff;
+}
+
+/*.report-page {
+	width: 64%;
+	margin-right: 1%;
+	float: left;
+}
+
+.report-right {
+	position: relative;
+	border: 1px solid red;
+	width: 32%;
+	float: left;
+}*/
+
+.log_messages { clear: both; float: left;}
+
+.headerNone.left {
+	text-align:left;
+}
+
+
+#log_entries { padding-bottom: 15px}

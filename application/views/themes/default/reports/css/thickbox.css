@@ -40,10 +40,10 @@
 
 .TB_overlayMacFFBGHack {background: url(macFFBgHack.png) repeat;}
 .TB_overlayBG {
-	background-color:#000;
-	filter:alpha(opacity=75);
-	-moz-opacity: 0.75;
-	opacity: 0.75;
+	background-color:#cccccc;
+	filter:alpha(opacity=50);
+	-moz-opacity: 0.50;
+	opacity: 0.50;
 }
 
 * html #TB_overlay { /* ie6 hack */
@@ -60,6 +60,9 @@
 	text-align:left;
 	top:50%;
 	left:50%;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #cdcdcd;
 }
 
 * html #TB_window { /* ie6 hack */
@@ -118,7 +121,7 @@
 }
 
 #TB_title{
-	background-color:#ededce;
+	background:#cdcdcd url(bg.png) repeat-x;
 	height:27px;
 	width: 100%;
 }
