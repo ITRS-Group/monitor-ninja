@@ -71,8 +71,16 @@ $(document).ready(function() {
 		setTimeout('validate_date()', 1000);
 	});
 	*/
+	// delete the report (and all the schedules if any)
 	$("#delete_report").click(function() {
 		confirm_delete_report($("#report_id").attr('value'));
+	});
+
+	// delete single schedule
+	$(".delete_schedule").each(function() {
+		$(this).click(function() {
+			schedule_delete($(this).attr('id'));
+		})
 	});
 
 	$('#new_report').click(function() {
@@ -816,11 +824,10 @@ function validate_date(what)
 function confirm_delete_report(the_val)
 {
 	var the_path = self.location.href;
-	//console.log($("#report_id").attr('value'));
-	//console.log('input: ' + the_val);
+	the_path = the_path.replace('#', '');
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete;
+	var msg = _reports_confirm_delete + "\n";
 	if (the_val!="" && the_path!="") {
 		if (is_scheduled) {
 			msg += _reports_confirm_delete_warning;
@@ -934,8 +941,68 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + f.recipients.value + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + f.filename.value + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + f.description.value + '</td>';
-	return_str += '<td class="delete_report" onclick="schedule_delete(' + id + ');" id="' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
 	return return_str;
+}
+
+function schedule_delete(id)
+{
+	if (!confirm(_reports_confirm_delete_schedule)) {
+		return false;
+	}
+	var message_div_start = '<div id="statusmsg">';
+	var message_div_end = '</div>';
+	var time = 6000;
+
+	$.ajax({
+		url:_site_domain + _index_page + '/reports/delete_schedule?id=' + id,
+		success: function(data) {
+			if (data == 'OK') {
+				// item deleted
+				remove_schedule(id);
+			} else {
+				$('#response').css("position", "absolute").css('top', '11px').css('left', '200px').html(message_div_start + data + message_div_end);
+				setTimeout('hide_response()', time);
+			}
+		}
+	});
+}
+
+function remove_schedule(id)
+{
+	var message_div_start = '<div id="statusmsg"><img src="' + _site_domain + _theme_path +'icons/16x16/sheild-ok.png" alt="' + _ok_str + '" title="' + _ok_str + '"> &nbsp;';
+	var message_div_end = '</div>';
+	var time = 3000;
+	$('#response').remove();
+	$('body').prepend('<div id="response"></div>');
+	$('#response')
+		.css('background','#f4f4ed url(' + _site_domain + _theme_path +'icons/32x32/shield-ok.png) 7px 7px no-repeat')
+		.css("position", "relative")
+		.css('top', '0px')
+		.css('width','748px')
+		.css('left', '0px')
+		.css('padding','15px 2px 15px 50px ')
+		.html(_reports_schedule_deleted);
+	nr_of_scheduled_instances--;
+	// remove row for deleted ID
+	$('#report-' + id).remove();
+	if (nr_of_scheduled_instances == 0) {
+		// last item deleted
+		$('#schedule_report').hide(); // hide entire table/div
+		$('#show_schedule').remove(); // remove 'View schedules' button
+		$('#is_scheduled').remove();
+		if ($('#report_id')) {
+			var chk_text = '';
+			chk_text = $('#report_id option:selected').text();
+			chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
+			$('#report_id option:selected').text(chk_text);
+		}
+
+		if (!$("#report_type").is(":visible")) { // setup doesn't use thickbox
+			tb_remove(); // close thickbox
+		}
+	}
+	setTimeout('hide_response()', time);
 }
 
 function setup_editable()
