@@ -49,7 +49,7 @@ $(document).ready(function() {
 
 	show_state_options($('#assumeinitialstates').attr('checked'));
 
-	$("#optiontoggle").click(function() {$("#options").toggle();});
+	//$("#optiontoggle").click(function() {$("#options").toggle();});
 
 	$("#report_form").bind('submit', function() {
 		loopElements();
@@ -252,7 +252,7 @@ Image1.src = _site_domain + '/application/media/images/loading.gif';
 function show_progress(the_id, info_str)
 {
 	$("#" + the_id)
-		.html('<br /><img id="progress_image_id" src="' + Image1.src + '"> ' + info_str)
+		.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
 		.show();
 }
 
