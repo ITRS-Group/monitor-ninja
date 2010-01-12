@@ -3411,4 +3411,18 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 	}
+
+	/**
+	*	Delete a schedule through ajax call
+	*/
+	public function delete_schedule()
+	{
+		$this->auto_render = false;
+		$id = $this->input->get('id');
+		if (Scheduled_reports_Model::delete_scheduled_report($id)) {
+			echo "OK";
+		} else {
+			echo $this->translate->_('An error occurred - unable to delete selected schedule');
+		}
+	}
 }
