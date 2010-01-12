@@ -1038,7 +1038,7 @@ class Reports_Controller extends Authenticated_Controller
 			$tpl_options->lable_schedules = $t->_('Schedules for this report');
 			$tpl_options->scheduled_info = $scheduled_info;
 			$tpl_options->label_dblclick = $t->_('Double click to edit');
-
+			$scheduled_label = $t->_('Scheduled');
 			$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
 			$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
 			$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
@@ -1151,6 +1151,7 @@ class Reports_Controller extends Authenticated_Controller
 				$groups_added = 0;
 				$pie_groupname = false;
 				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
+					$template->header->title = ucfirst($sub_type).$t->_('group breakdown');
 					foreach($this->data_arr as $data) { # for every group
 						$added_group = false;
 						if (is_array($data['states'])) {
@@ -1171,6 +1172,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 				} else {
 					$added_group = false;
+					$template->header->title = ucfirst($sub_type).' '.$t->_('state breakdown');
 					if (is_array($this->data_arr['states'])) {
 						foreach ($graph_filter as $key => $val) {
 							if ($this->data_arr['states'][$key]!=0)
@@ -1327,6 +1329,7 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 
 								$host = $hostname[0];
+								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
 										 "&amp;host_name=all".
 										 "&amp;report_period=$report_period".
@@ -1395,6 +1398,7 @@ class Reports_Controller extends Authenticated_Controller
 
 								list($host, $service) = split(';',$service[0]);
 
+								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
 								$avail_params = "&show_log_entries".
 											 "&amp;t1=$t1".
 											 "&amp;t2=$t2".
