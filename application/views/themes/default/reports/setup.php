@@ -14,13 +14,13 @@ if (!empty($widgets)) {
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<h1>Reports<?php //echo $label_create_new ?></h1>
+			<h1><?php echo $label_create_new ?></h1>
 			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 			echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 		 ?>
 			<div style="width: 100%; padding-left: 5px">
 				<!--	onchange="check_and_submit(this.form)"	-->
-				<?php echo help::render('saved_reports') ?> Saved reports<br />
+				<?php echo help::render('saved_reports') ?> <?php echo $label_saved_reports ?><br />
 				<select name="report_id" id="report_id">
 					<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
 					<?php	$sched_str = "";
