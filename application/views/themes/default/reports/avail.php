@@ -5,75 +5,93 @@
 	<div class="icon-help" onclick="general_help('avail')"></div>
 	<fieldset id="avail">
 		<table summary="Result table">
-			<caption><?php echo str_replace(': ', ' '.$this->translate->_('for').' '.$source.': ', $header_string); ?></caption>
+			<!--<caption><?php echo str_replace(': ', ' '.$this->translate->_('for').' '.$source.': ', $header_string); ?></caption>-->
 			<tr>
-				<th class="headerNone"><?php echo $this->translate->_('Status') ?></th>
-				<th class="headerNone"><?php echo $label_type_reason ?></th>
+				<th class="headerNone" style="text-align: left">&nbsp;</th>
+				<th class="headerNone" style="text-align: left"><?php echo $label_type_reason ?></th>
 				<th class="headerNone"><?php echo $label_time ?></th>
 				<th class="headerNone"><?php echo $label_tot_time ?></th>
+				<th class="headerNone" style="text-align: left">Status overview</th>
 			</tr>
-			<?php $i = 0; foreach ($avail_data['var_types'] as $var_type) { $i++; ?>
-			<tr class="even<?php //echo ($i%2 == 0) ? 'odd' : 'even'?>">
-				<td class="status icon label <?php echo strtolower($var_type); ?>-left" rowspan="3">
-
-					<?php echo html::image($this->add_path('icons/24x24/shield-'.strtolower($state_values[$var_type]).'.png'),
-							array(
-								'alt' => strtolower($state_values[$var_type]),
-								'title' => strtolower($state_values[$var_type]),
-								'style' => 'cursor: pointer; margin-bottom: -4px')
-							) ?>
-						<?php //echo ucfirst(strtolower($state_values[$var_type])); ?>
-				</td>
+			<?php $no_types = count($avail_data['var_types'] ); $i = 0; foreach ($avail_data['var_types'] as $var_type) { $i++; ?>
+			<tr class="even<?php //echo ($i%2 == 0) ? 'odd' : 'even'?>" >
+				<th class="headerNone" rowspan="3"style="text-align:left; border-top: 0px; vertical-align: bottom; width: 110px">
+						<?php echo ucfirst(strtolower($state_values[$var_type])); ?>
+				</th>
 				<td><?php echo $label_unscheduled ?></td>
-				<td><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_UNSCHEDULED']) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %</td>
+				<td class="data" style="width: 80px"><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_UNSCHEDULED']) ?></td>
+				<td class="data" style="width: 80px"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
+					array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'margin-bottom: -1px')); ?>
+				</td>
+				<?php if ($i == 1) { ?>
+				<td rowspan="<?php echo $no_types*3+4; ?>" style="width: 100px; vertical-align: top">
+					<?php echo isset($pie) ? $pie : ''?>
+				</td>
+				<?php } ?>
 			</tr>
 			<tr class="even<?php //echo ($i%2 == 0) ? 'even' : 'odd'?>">
-				<td><?php echo $label_scheduled ?></td>
-				<td><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_SCHEDULED']) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %</td>
+				<td style="border-left: 0px"><?php echo $label_scheduled ?></td>
+				<td class="data"><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_SCHEDULED']) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
+					array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'margin-bottom: -1px')); ?>
+				</td>
+				</td>
 			</tr>
 			<tr class="dark<?php //echo ($i%2 == 0) ? 'odd' : 'even'?> total <?php echo strtolower($var_type); ?>">
 				<td><?php echo $label_total ?></td>
-				<td><?php echo time::to_string($avail_data['values']['KNOWN_TIME_' . $var_type]) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_KNOWN_TIME_' . $var_type]) ?> %</td>
+				<td class="data"><?php echo time::to_string($avail_data['values']['KNOWN_TIME_' . $var_type]) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_KNOWN_TIME_' . $var_type]) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_KNOWN_TIME_' . $var_type]) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
+					array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'margin-bottom: -1px')); ?>
+				</td>
 			</tr>
 
 			<?php } ?>
 			<tr class="even">
-				<td class="status icon label undetermined-left" rowspan="3">
-					<?php //echo $label_undetermined ?>
-					<?php echo html::image($this->add_path('icons/32x32/shield-unreachable.png'),
-							array(
-								'alt' => strtolower($state_values[$var_type]),
-								'title' => strtolower($state_values[$var_type]),
-								'style' => 'cursor: pointer; margin-bottom: -4px')
-							) ?>
+				<th class="headerNone" rowspan="3" style="text-align: left; vertical-align: bottom; border-top: 0px">
+					<?php echo $label_undetermined ?>
 				</td>
 				<td><?php echo $label_not_running ?></td>
-				<td><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %</td>
+				<td class="data"><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) > 0 ? '' : 'not-').'pending.png'),
+					array('alt' => 'Undetermined','title' => 'Undetermined','style' => 'margin-bottom: -1px')); ?>
+				</td>
 			</tr>
 			<tr class="even">
-				<td><?php echo $label_insufficient_data ?></td>
-				<td><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NO_DATA']) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %</td>
+				<td style="border-left: 0px"><?php echo $label_insufficient_data ?></td>
+				<td class="data"><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NO_DATA']) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) > 0 ? '' : 'not-').'pending.png'),
+					array('alt' => 'Undetermined','title' => 'Undetermined','style' => 'margin-bottom: -1px')); ?>
+				</td>
 			</tr>
 			<tr class="dark total undetermined">
 				<td><?php echo $label_total ?></td>
-				<td><?php echo time::to_string($avail_data['values']['TOTAL_TIME_UNDETERMINED']) ?></td>
-				<td><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED']!=0 ? $avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED'] : $this->_format_report_value(0)) ?> %</td>
+				<td class="data"><?php echo time::to_string($avail_data['values']['TOTAL_TIME_UNDETERMINED']) ?></td>
+				<td class="data"><?php echo $this->_format_report_value($avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED']!=0 ? $avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED'] : $this->_format_report_value(0)) ?> %
+				<?php
+					echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
+					array('alt' => 'Undetermined','title' => 'Undetermined','style' => 'margin-bottom: -1px')); ?>
+				</td>
 			</tr>
-			<tr class="dark border-top total">
-				<td class="status icon label all-left"><?php echo $label_all ?></td>
+			<tr class="even total">
+				<th class="headerNone" style="text-align: left; border-top: 0px"><?php echo $label_all ?></th>
 				<td><?php echo $label_total ?></td>
-				<td><? echo time::to_string($avail_data['tot_time']) ?></td>
-				<td><? echo $this->_format_report_value($avail_data['tot_time_perc']) ?> %</td>
+				<td class="data"><? echo time::to_string($avail_data['tot_time']) ?></td>
+				<td class="data"><? echo $this->_format_report_value($avail_data['tot_time_perc']) ?> %</td>
 			</tr>
 			<tr id="pdf-hide">
-				<td colspan="4" style="padding: 7px 0px 0px 0px; border: 0px; background-color: transparent"><?php echo $testbutton ?></td>
+				<td colspan="5" style="padding: 7px 0px 0px 0px; border: 0px; background-color: transparent"><?php echo $testbutton ?></td>
 			</tr>
 		</table>
 	</fieldset>
-	<?php echo isset($pie) ? $pie : '' ?>
+	<?php //echo isset($pie) ? $pie : '' ?>
 </div>
