@@ -99,8 +99,8 @@
 			<tr class="none">
 				<td>
 					<select name="period" id="period">
-					<?php	foreach ($available_schedule_periods as $period) { ?>
-					<option value="<?php echo $period['id'] ?>"><?php echo $period['periodname'] ?></option>
+					<?php	foreach ($available_schedule_periods as $id => $period) { ?>
+					<option value="<?php echo $id ?>"><?php echo $period ?></option>
 					<?php	} ?>
 					</select>
 				</td>
