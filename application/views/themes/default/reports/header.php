@@ -1,10 +1,11 @@
 <div id="header">
-	<h1><?php echo $label_report_period ?>: <?php echo $report_time_formatted; ?></h1>
+<h1><?php //echo $title; ?>There should be a customised header here but need to edit the controller first</h1>
 	<p>
 	<?php
+	echo $label_report_period.': '.$report_time_formatted.' (';
 	echo (isset($str_start_date) && isset($str_end_date)) ? $str_start_date.' '.$label_to.' '.$str_end_date : '';
 	echo $use_average ? " <strong>(".$label_using_avg.")</strong>" : '';
-	echo '</p>';
+	echo ')</p>';
 	echo html::anchor(
 		'#',
 		html::image(
