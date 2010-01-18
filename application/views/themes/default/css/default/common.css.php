@@ -6,7 +6,7 @@
 	padding: 0;
 	margin: 0;
 }
-code, kbd, samp, pre, tt, var, textarea,
+code, kbd, samp, tt, var, textarea,
 input, select, isindex, listing, xmp, plaintext {
 	white-space: normal;
 	font-size: 1em;
