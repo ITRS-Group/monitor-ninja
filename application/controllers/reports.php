@@ -284,6 +284,8 @@ class Reports_Controller extends Authenticated_Controller
 		#$filters = 1;
 
 		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
+		$this->xajax->registerFunction(array('get_report_periods',$this,'_get_report_periods'));
+		$this->xajax->registerFunction(array('get_saved_reports',$this,'_get_saved_reports'));
 		#$xajax->registerFunction('fetch_scheduled_field_value');
 		#$xajax->registerFunction('delete_schedule_ajax');
 		$this->xajax->processRequest();
@@ -1778,6 +1780,90 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		return array('report_period_strings' => $report_periods, 'selected' => $selected);
+	}
+
+	/**
+	*	Fetch available report periods for selected report type
+	*	This method will be called through an ajax call via xajax
+	*/
+	public function _get_report_periods($type='avail')
+	{
+		if (empty($type))
+			return false;
+
+		// Instantiate the xajaxResponse object
+		$xajax = $this->xajax;
+		$objResponse = new xajaxResponse();
+
+		$objResponse->call("show_progress", "progress", $this->translate->_('Please wait'));
+		$report_periods = $this->_report_period_strings($type);
+		$periods = false;
+		if (!empty($report_periods)) {
+			foreach ($report_periods['report_period_strings'] as $periodval => $periodtext) {
+				$periods[] = array('optionValue' => $periodval, 'optionText' => $periodtext);
+			}
+		} else {
+			return false;
+		}
+
+		# empty report_period
+		$objResponse->call("empty_list", 'report_period');
+		//$objResponse->call("log", json::encode($report_periods));
+		$objResponse->call("populate_report_periods", json::encode($periods));
+		$objResponse->call("set_selected_period", $report_periods['selected']);
+
+		//return the  xajaxResponse object
+		return $objResponse;
+	}
+
+	/**
+	*	Fetch saved reports through xajax call when switching report type
+	*
+	*/
+	public function _get_saved_reports($type='avail')
+	{
+		if (empty($type))
+			return false;
+
+		// Instantiate the xajaxResponse object
+		$xajax = $this->xajax;
+		$objResponse = new xajaxResponse();
+
+		$saved_reports = Saved_reports_Model::get_saved_reports($type);
+		if (count($saved_reports) == 0)
+			return false;
+
+		$objResponse->call("show_progress", "progress", $this->translate->_('Please wait'));
+		$scheduled_label = $this->translate->_('Scheduled');
+		$scheduled_ids = array();
+		$scheduled_periods = null;
+		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($type);
+		if ($scheduled_res && count($scheduled_res)!=0) {
+			foreach ($scheduled_res as $sched_row) {
+				$scheduled_ids[] = $sched_row->report_id;
+				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
+			}
+		}
+
+		$return = false;
+		$return[] = array('optionValue' => '', 'optionText' => ' - '.$this->translate->_('Select saved report') . ' - ');
+		foreach ($saved_reports as $info) {
+			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
+			if (in_array($info->id, $scheduled_ids)) {
+				$sched_str = " ( *".$scheduled_label."* )";
+			} else {
+				$sched_str = "";
+			}
+			$return[] = array('optionValue' => $info->id, 'optionText' =>($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str);
+		}
+
+		# empty report_id (saved reports)
+		$objResponse->call("empty_list", 'report_id');
+		$objResponse->call("populate_saved_reports", json::encode($return));
+
+
+		//return the  xajaxResponse object
+		return $objResponse;
 	}
 
 	/**
