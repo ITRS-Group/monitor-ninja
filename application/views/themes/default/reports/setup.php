@@ -14,7 +14,14 @@ if (!empty($widgets)) {
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<h1><?php echo $label_create_new ?></h1>
+			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
+			<div id="switcher">
+				<a id="switch_report_type" href="">
+				<?php echo $label_switch_to.' '; ?>
+				<?php echo $type == 'avail' ? $label_sla : $label_avail; ?>
+				<?php echo ' '.$label_report; ?>
+				</a>
+			</div><br />
 			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 			echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 		 ?>
@@ -296,8 +303,8 @@ if (!empty($widgets)) {
 			</table>
 		</div>
 		<br />
-		<?php if ($type == 'sla') { ?>
-		<div class="setup-table" id="enter_sla">
+
+		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 742px">
 				<caption style="margin-left: 5px"><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
 				<tr>
@@ -319,7 +326,6 @@ if (!empty($widgets)) {
 				</tr>
 			</table>
 		</div>
-		<?php } ?>
 
 		<div class="setup-table">
 			<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" />
