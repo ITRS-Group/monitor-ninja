@@ -393,6 +393,17 @@ class Reports_Controller extends Authenticated_Controller
 		$template->scheduled_info = $scheduled_info;
 		$scheduled_label = $t->_('Scheduled');
 
+		$label_avail = $this->translate->_('Availability');
+		$template->label_avail = $label_avail;
+
+		$label_sla = $t->_('SLA');
+		$template->label_sla = $label_sla;
+		$label_switch_to = $this->translate->_('Switch to');
+		$template->label_switch_to = $label_switch_to;
+
+		$label_report = $this->translate->_('report');
+		$template->label_report = $label_report;
+
 		# fetch users date format in PHP style so we can use it
 		# in date() below
 		$date_format = $this->_get_date_format(true);
@@ -451,7 +462,11 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 		$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
-		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
+		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
+		$this->js_strings .= "var _label_avail = '".$label_avail."';\n";
+		$this->js_strings .= "var _label_sla = '".$label_sla."';\n";
+		$this->js_strings .= "var _label_switch_to = '".$label_switch_to."';\n";
+		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_schedule_deleted = '".$t->_('Your schedule has been deleted')."';\n";
@@ -487,7 +502,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_sch_recipients = $t->_('Recipients');
 		$template->label_sch_filename = $t->_('Filename');
 		$template->label_sch_description = $t->_('Description');
-		$template->label_create_new = $t->_('Reports');
+		$template->label_create_new = $this->type == 'avail' ? $t->_('Availability report') : $t->_('SLA report');
 		$template->label_saved_reports = $t->_('Saved reports');
 		$template->label_hostgroups = $t->_('Hostgroups');
 		$template->label_hosts = $t->_('Hosts');
@@ -1479,6 +1494,7 @@ class Reports_Controller extends Authenticated_Controller
 						$template->header_string = sprintf($t->_("State breakdown for %s"), $data['source']);
 					} else {
 						# SLA report
+						$template->header->title = $t->_('SLA breakdown');
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
 						$sla->use_alias = $use_alias;
