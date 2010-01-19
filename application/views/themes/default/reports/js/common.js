@@ -83,9 +83,12 @@ $(document).ready(function() {
 		})
 	});
 
+	// reset options and reload page
 	$('#new_report').click(function() {
-		var uri = self.location.href;
-		self.location.href=uri;
+		var current_report = $('input[name=type]').val();
+		var base_uri = _site_domain + _index_page + '/' + _current_uri;
+		var uri_xtra = current_report == 'avail' ? '' : '?type=sla';
+		self.location.href = base_uri + uri_xtra;
 	});
 
 	$("#hide_response").click(function() {
@@ -166,6 +169,11 @@ $(document).ready(function() {
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
 	$("#show_scheduled").click(function(){toggle_edit()});
 	setup_editable();
+
+	$("#switch_report_type").click(function() {
+		switch_report_type();
+		return false;
+	});
 });
 
 function show_hide(id,h1) {
@@ -177,6 +185,35 @@ function show_hide(id,h1) {
 		document.getElementById(id).style.display = 'none';
 		h1.style.background = 'url(icons/arrows/grey.gif) 11px 3px no-repeat';
 	}
+}
+
+/**
+*	Switch report type without page reload
+*/
+function switch_report_type()
+{
+	// new values in report_period (AJAX call)
+	// update saved + scheduled reports
+	var current_report = $('input[name=type]').val();
+	var other_report = current_report == 'avail' ? 'sla' : 'avail';
+	if (current_report == 'avail') { // switching to SLA
+		other_report = 'sla';
+		$('#switch_report_type').text(_label_switch_to + ' ' + _label_avail + ' ' + _label_report);
+		$('#enter_sla').show();
+		$("#report_type_label").text(_label_avail + ' ' + _label_report);
+	} else {
+		other_report = 'avail';
+		$('#switch_report_type').text(_label_switch_to + ' ' + _label_sla + ' ' + _label_report);
+		$('#enter_sla').hide();
+		$("#report_type_label").text(_label_sla + ' ' + _label_report);
+	}
+	$('input[name=type]').val(other_report);
+	get_report_periods(other_report);
+	xajax_get_saved_reports(other_report);
+
+	// reset saved_report_id
+	$('input[name=saved_report_id]').val(0);
+	$('input[name=report_name]').val('');
 }
 
 
@@ -217,7 +254,8 @@ function set_selection(val, no_erase) {
 			break;
 	}
 	show_row('settings_table');
-	show_row('enter_sla');
+	if ($('input[name=type]').val() == 'sla')
+		show_row('enter_sla');
 	show_row('submit_button');
 }
 
@@ -265,6 +303,17 @@ function get_members(val, type, no_erase) {
 	show_row('submit_button');
 }
 
+/**
+*	Let xajax fetch the report periods for
+*	selected report type.
+*
+*	Result will be returned to populate_report_periods() below.
+*/
+function get_report_periods(type)
+{
+	xajax_get_report_periods(type);
+}
+
 function show_row(the_id) {
 	$("#"+the_id).show();
 }
@@ -291,6 +340,48 @@ function populate_options(tmp_field, field, json_data)
 	}
 	is_populated = true;
 	setTimeout('delayed_hide_progress()', 1000);
+}
+
+/**
+*	Re-populate report_period select field
+*/
+function populate_report_periods(json_data)
+{
+	json_data = eval(json_data);
+	var field_name = 'report_period';
+	for (var i = 0; i < json_data.length; i++) {
+		var val = json_data[i].optionValue;
+		var txt = json_data[i].optionText;
+		$("#" + field_name).addOption(val, txt, false);
+	}
+	setTimeout('delayed_hide_progress()', 1000);
+}
+
+/**
+*	Re-populate report_id (saved reports) select field
+*/
+function populate_saved_reports(json_data)
+{
+	json_data = eval(json_data);
+	var field_name = 'report_id';
+	invalid_report_names = new Array();
+	for (var i = 0; i < json_data.length; i++) {
+		var val = json_data[i].optionValue;
+		var txt = json_data[i].optionText;
+		$("#" + field_name).addOption(val, txt, false);
+		invalid_report_names[i] = txt;
+	}
+	setTimeout('delayed_hide_progress()', 1000);
+}
+
+/**
+*	Set selected report period to default
+*	(and disable sla fields out of scope if sla)
+*/
+function set_selected_period(val)
+{
+	$("#report_period").selectOptions(val);
+	disable_sla_fields(val);
 }
 
 // delay hiding of progress indicator
@@ -663,7 +754,12 @@ function expand_and_populate(data)
 	set_initial_state('report_period', reportObj['report_period']);
 	show_calendar(reportObj['report_period']);
 	set_initial_state('rpttimeperiod', reportObj['rpttimeperiod']);
-	set_initial_state('report_name', reportObj['report_name']);
+	if (reportObj['report_name'] != undefined) {
+		set_initial_state('report_name', reportObj['report_name']);
+	} else {
+		set_initial_state('report_name', reportObj['sla_name']);
+		show_row('enter_sla');
+	}
 	set_initial_state('includesoftstates', reportObj['includesoftstates']);
 	if (reportObj['report_period'] == 'custom') {
 		startDate = epoch_to_human(reportObj['start_time']);
