@@ -697,7 +697,7 @@ class Reports_Controller extends Authenticated_Controller
 		$save_report_settings = arr::search($_REQUEST, 'save_report_settings');
 
 		if ($save_report_settings) {
-			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value);
+			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
 		}

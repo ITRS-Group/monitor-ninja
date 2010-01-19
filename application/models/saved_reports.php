@@ -75,7 +75,41 @@ class Saved_reports_Model extends Model
 		if (!self::save_config_objects($type, $id, $objects)) {
 			return false;
 		}
+
+		// Insert/Update sla_periods
+		if($type == 'sla' && !self::save_period_info($id, $months)) {
+			return false;
+		}
+
 		return $id;
+	}
+
+	/**
+	*	Handle info on SLA period values (monthly)
+	* 	Remove old values and enter the new ones
+	*/
+	function save_period_info($sla_id=false, $months=false)
+	{
+		if (empty($sla_id))
+			return false;
+
+		// remove old records (if any)
+		$sql = "DELETE FROM sla_periods WHERE sla_id=".(int)$sla_id;
+		$db = new Database(self::db_name);
+		$db->query($sql);
+		unset($sql);
+
+		if (!empty($months)) {
+			foreach ($months as $key => $value) {
+				#echo "$key => $value<br />";
+				$sql[] = "INSERT INTO sla_periods(sla_id, name, value) VALUES(".(int)$sla_id.", 'month_".$key."', ".floatval($value).")";
+			}
+		}
+
+		foreach ($sql as $query) {
+			$db->query($query);
+		}
+		return true;
 	}
 
 	/**
@@ -191,6 +225,23 @@ class Saved_reports_Model extends Model
 
 		$res->result(false);
 		$return = $res->current();
+		$period_info = self::get_period_info($id);
+		if ($period_info !== false) {
+			foreach ($period_info as $row) {
+				$month_key =  $row->name;
+				if ($return['report_period'] == 'lastmonth') {
+					# special case lastmonth report period to work as expected,
+					# i.e to use the entered SLA value for every month
+					# no matter what month it was scheduled
+					$month = date('n');
+					$month = $month == 1 ? 12 : ($month-1);
+					$month_key = 'month_'.$month;
+				}
+
+				$return[$month_key] = $row->value;
+			}
+		}
+
 		$object_info = self::get_config_objects($type, $id);
 		$objects = false;
 		if ($object_info) {
@@ -201,6 +252,22 @@ class Saved_reports_Model extends Model
 		$return['objects'] = $objects;
 		return $return;
 	}
+
+	/**
+	*	Fetch saved SLA values and month info from db
+	*/
+	public function get_period_info($sla_id=false)
+	{
+		if (empty($sla_id))
+			return false;
+
+		$sql = "SELECT * FROM sla_periods WHERE sla_id=".(int)$sla_id." ORDER BY id";
+		$db = new Database(self::db_name);
+		$res = $db->query($sql);
+
+		return (!$res || count($res)==0) ? false : $res;
+	}
+
 
 	/**
 	*	@name get_config_objects
