@@ -661,6 +661,12 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
+		if ($this->type == 'sla') {
+			$report_name = arr::search($_REQUEST, 'report_name', false);
+			unset($report_options['report_name']);
+			$report_options['sla_name'] = $report_name;
+		}
+
 		$this->report_options = $report_options;
 		$obj_field = $report_options['report_type'] !== false ? self::$map_type_field[$report_options['report_type']] : false;
 		$obj_value = arr::search($_REQUEST, $obj_field, array());
