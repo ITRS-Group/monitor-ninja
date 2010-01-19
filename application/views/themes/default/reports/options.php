@@ -55,10 +55,12 @@
 						</div>
 						<div id="report_setup">
 							<span id="report_save_information">
-								<input type="text" name="report_name" id="report_name" class="input-save-name" value="<?php echo !empty($report_info) ? $report_info['report_name'] : '' ?>" maxlength="255" />
+								<input type="text" name="report_name" id="report_name" class="input-save-name" value="<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
+									$report_info['report_name'] : $report_info['sla_name']) : '' ?>" maxlength="255" />
 							</span>
 							<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
-							<input type="hidden" name="old_report_name" value="<?php echo !empty($report_info) ? $report_info['report_name'] : '' ?>" />
+							<input type="hidden" name="old_report_name" value="<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
+									$report_info['report_name'] : $report_info['sla_name']) : '' ?>" />
 						</div>
 					</td>
 				</tr>
@@ -130,7 +132,8 @@
 
 	<div id="schedule_report">
 		<table id="schedule_report_table">
-				<caption><?php echo $lable_schedules ?> (<?php echo $report_info['report_name'] ?>)</caption>
+				<caption><?php echo $lable_schedules ?> (<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
+									$report_info['report_name'] : $report_info['sla_name']) : '' ?>)</caption>
 				<tr id="schedule_header">
 					<th class="headerNone left"><?php echo $label_interval ?></th>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
