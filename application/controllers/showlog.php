@@ -65,7 +65,6 @@ class Showlog_Controller extends Authenticated_Controller
 	public function showlog()
 	{
 		$x = $this->translate;
-
 		$this->template->title = $this->translate->_("View log");
 		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('showlog/showlog');
