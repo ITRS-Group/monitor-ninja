@@ -329,4 +329,16 @@ class Scheduled_reports_Model extends Model
 		$objResponse->call('hide_progress');
 		return $objResponse;
 	}
+
+	/**
+	*	Fetch info on all defined report types, i.e all
+	* 	types we can schedule
+	*/
+	public function get_all_report_types()
+	{
+		$db = new Database(self::db_name);
+		$sql = "SELECT * FROM scheduled_report_types ORDER BY id";
+		$res = $db->query($sql);
+		return count($res) != 0 ? $res : false;
+	}
 }
