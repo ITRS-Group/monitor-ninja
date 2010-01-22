@@ -585,7 +585,89 @@ class Reports_Controller extends Authenticated_Controller
 		$template->report_periods = $report_periods;
 		$template->selected = $report_period_strings["selected"];
 
+		$new_schedule = $this->add_view('reports/new_schedule');
+		$new_schedule->label_new_schedule = $t->_('Add new schedule');
+		$new_schedule->available_schedule_periods = $periods;
+		$new_schedule->label_interval = $t->_('Report Interval');
+		$new_schedule->label_recipients = $t->_('Recipients');
+		$new_schedule->label_filename = $t->_('Filename');
+		$new_schedule->label_description = $t->_('Description');
+		$new_schedule->label_save = $t->_('Save');
+		$new_schedule->label_clear = $t->_('Clear');
 
+		# we currently only have avail and SLA reports so hard-coding
+		# this somewhat here shouldn't be a big issue.
+		# Extend switch below if we add more schedulable reports.
+		$defined_report_types_res = Scheduled_reports_Model::get_all_report_types();
+		$defined_report_types = false;
+		$report_types = false;
+		if ($defined_report_types_res !== false) {
+			foreach ($defined_report_types_res as $rpt_type) {
+				$report_types[$rpt_type->id] = $rpt_type->identifier; # needed for javascript json
+				switch ($rpt_type->identifier) {
+					case 'avail':
+						$defined_report_types[$rpt_type->identifier] = $t->_('Availability Report');
+						break;
+					case 'sla':
+						$defined_report_types[$rpt_type->identifier] = $t->_('SLA Report');
+						break;
+				}
+			}
+		}
+
+		$new_schedule->defined_report_types = $defined_report_types;
+		$new_schedule->label_report_type = $t->_('Select report type');
+		$avail_reports = Saved_reports_Model::get_saved_reports('avail');
+		$sla_reports = Saved_reports_Model::get_saved_reports('sla');
+
+		$new_schedule->saved_reports = $avail_reports;
+		$new_schedule->label_select_report = $t->_('Select report');
+		$new_schedule->label_select_saved_report = $t->_('Select saved report');
+
+		$template->available_schedules = $this->add_view('reports/schedules');
+		$available_schedules = $template->available_schedules;
+		$available_schedules->label_no_schedules = $t->_('There are no scheduled reports');
+		$available_schedules->avail_header = $t->_('Availability Reports');
+		$available_schedules->sla_header = $t->_('SLA Reports');
+
+		# fetch ALL schedules (avail + SLA)
+		$available_schedules->avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail');
+		$available_schedules->sla_schedules = Scheduled_reports_Model::get_scheduled_reports('sla');
+
+		# re-use parent template's translations
+		$available_schedules->label_sch_interval = $template->label_sch_interval;
+		$available_schedules->label_sch_name = $t->_('Report');
+		$available_schedules->label_sch_recipients = $template->label_sch_recipients;
+		$available_schedules->label_sch_filename = $template->label_sch_filename;
+		$available_schedules->label_sch_description = $template->label_sch_description;
+		$available_schedules->label_dblclick = $template->label_dblclick;
+
+		# add new schedule template to available_schedules template
+		$available_schedules->new_schedule = $new_schedule;
+
+		$available_schedules->avail_reports = $avail_reports;
+		$available_schedules->sla_reports = $sla_reports;
+
+		# we need some data available as json for javascript
+		$avail_reports_arr = false;
+		foreach ($avail_reports as $rep) {
+			$avail_reports_arr[$rep->id] = $rep->report_name;
+		}
+
+		$sla_reports_arr = false;
+		foreach ($sla_reports as $rep) {
+			$sla_reports_arr[$rep->id] = $rep->sla_name;
+		}
+
+		$this->js_strings .= "var _report_types_json = '(".json::encode($report_types).")';\n";
+		$this->js_strings .= "var _saved_avail_reports = '(".json::encode($avail_reports_arr).")';\n";
+		$this->js_strings .= "var _saved_sla_reports = '(".json::encode($sla_reports_arr).")';\n";
+		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
+
+		$this->template->js_strings = $this->js_strings;
 	}
 
 	/**
