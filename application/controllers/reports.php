@@ -477,6 +477,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _reports_propagate_remove = '".$t->_("Would you like to remove all values from all months")."';\n";
 		$this->js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
 		$this->js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
+		$this->js_strings .= "var _schedule_change_filename = \"".$t->_('Would you like to change the filename based on your selections?')."\";\n";
 		$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
 		$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
@@ -488,7 +489,6 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
 			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
-		$this->template->js_strings = $this->js_strings;
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
