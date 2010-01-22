@@ -54,19 +54,23 @@ class Scheduled_reports_Model extends Model
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla')
 			return false;
+		$fieldname = $type == 'avail' ? 'report_name' : 'sla_name';
 		$sql = "SELECT
 				sr.*,
-				rp.periodname
+				rp.periodname,
+				r.".$fieldname." AS reportname
 			FROM
 				scheduled_reports sr,
 				scheduled_report_types rt,
-				scheduled_report_periods rp
+				scheduled_report_periods rp,
+				".$type."_config r
 			WHERE
 				rt.identifier='".$type."' AND
 				sr.report_type_id=rt.id AND
-				rp.id=sr.period_id
+				rp.id=sr.period_id AND
+				sr.report_id=r.id
 			ORDER BY
-				sr.id";
+				reportname";
 		$db = new Database(self::db_name);
 		$res = $db->query($sql);
 		return $res ? $res : false;
