@@ -12,6 +12,7 @@ var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 var _scheduled_label = '';
 var invalid_report_names = '';
+var current_filename;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -204,20 +205,37 @@ function switch_report_type()
 		other_report = 'sla';
 		$('#switch_report_type').text(_label_switch_to + ' ' + _label_avail + ' ' + _label_report);
 		$('#enter_sla').show();
-		$("#report_type_label").text(_label_avail + ' ' + _label_report);
+		$("#report_type_label").text(_label_sla + ' ' + _label_report);
 	} else {
 		other_report = 'avail';
 		$('#switch_report_type').text(_label_switch_to + ' ' + _label_sla + ' ' + _label_report);
 		$('#enter_sla').hide();
-		$("#report_type_label").text(_label_sla + ' ' + _label_report);
+		$("#report_type_label").text(_label_avail + ' ' + _label_report);
 	}
 	$('input[name=type]').val(other_report);
+	$("#single_schedules").remove();
+	$("#display").hide();
 	get_report_periods(other_report);
 	xajax_get_saved_reports(other_report);
 
 	// reset saved_report_id
 	$('input[name=saved_report_id]').val(0);
 	$('input[name=report_name]').val('');
+}
+
+function create_filename()
+{
+	var new_filename = $('#saved_report_id option:selected').text();
+	new_filename += '_' + $('#period option:selected').text() + '.pdf';
+	new_filename = new_filename.replace(' ', '_');
+	if ($('input[name=filename]').val() != '' && $('input[name=filename]').val() != current_filename) {
+		if (!confirm(_schedule_change_filename)) {
+			return false;
+		}
+	}
+	$('input[name=filename]').val(new_filename);
+	current_filename = new_filename;
+	return true;
 }
 
 
