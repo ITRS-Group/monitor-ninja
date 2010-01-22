@@ -254,7 +254,20 @@ class Scheduled_reports_Model extends Model
 		return count($res)!=0 ? $res->current()->identifier : false;
 	}
 
-	function fetch_module_reports($type_id=false,$is_ajax=true)
+	public function get_report_type_id($identifier=false)
+	{
+		$db = new Database(self::db_name);
+		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($identifier).";";
+		try {
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			return false;
+		}
+
+		return count($res)!=0 ? $res->current()->id : false;
+	}
+
+	public function fetch_module_reports($type_id=false,$is_ajax=true)
 	{
 		$translate = zend::instance('Registry')->get('Zend_Translate');
 		if ($is_ajax || request::is_ajax()) {
