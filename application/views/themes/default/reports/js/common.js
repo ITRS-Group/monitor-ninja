@@ -179,7 +179,58 @@ $(document).ready(function() {
 
 	$('#report-tabs').tabs();
 
+	$("#rep_type").change(function() {
+		var rep_type_val = $(this).fieldValue();
+		xajax_get_saved_reports(rep_type_val[0], true);
+	});
+
+	$("#saved_report_id").change(function() {
+		create_filename();
+	});
+	$("#period").change(function() {
+		var sel_report = $("#saved_report_id").fieldValue();
+		if (sel_report[0] != '')
+			create_filename();
+	});
 });
+
+function ajax_submit(f)
+{
+	// fetch values from form
+	var report_id = $('#report_id').fieldValue();
+	report_id = report_id[0];
+
+	var rep_type = $('#rep_type').fieldValue();
+	rep_type = rep_type[0];
+	var rep_type_str = $('#rep_type option:selected').val();
+
+	var saved_report_id = $('#saved_report_id').fieldValue();
+	saved_report_id = saved_report_id[0];
+
+	var period = $('#period').fieldValue();
+	period = period[0];
+	var period_str = $('#period option:selected').text();
+
+	var recipients = $('#recipients').fieldValue();
+	recipients = recipients[0];
+
+	var filename = $('#filename').fieldValue();
+	filename = filename[0];
+
+	var description = $('#description').fieldValue();
+	description = description[0];
+
+//	validate_form();
+	$.ajax({
+		url:_site_domain + _index_page + '/reports/schedule',
+		type: 'POST',
+		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
+		success: function(data) {
+			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, rep_type);
+		}
+	});
+	return false;
+}
 
 function show_hide(id,h1) {
 	if (document.getElementById(id).style.display == 'none') {
@@ -382,10 +433,9 @@ function populate_report_periods(json_data)
 /**
 *	Re-populate report_id (saved reports) select field
 */
-function populate_saved_reports(json_data)
+function populate_saved_reports(json_data, field_name)
 {
 	json_data = eval(json_data);
-	var field_name = 'report_id';
 	invalid_report_names = new Array();
 	for (var i = 0; i < json_data.length; i++) {
 		var val = json_data[i].optionValue;
@@ -1038,12 +1088,13 @@ function show_response(responseText, statusText)
 			schedule_is_visible = true;
 			$('#schedule_report_form').clearForm();
 			setup_editable();
-			tb_remove();
+			//tb_remove();
 			nr_of_scheduled_instances++;
 			if (nr_of_scheduled_instances==1) {
 				// add 'Vew schedules' Button
-				$('#view_add_schedule').append('<input type="button" id="show_schedule" alt="#TB_inline?height=500&width=550&inlineId=schedule_report" class="button view-schedules20 thickbox" value="' + _reports_view_schedule + '">');
-				tb_init('#show_schedule');
+				// @@@FIXME: update when we have fancybox or whatever to replace thickbox
+				//$('#view_add_schedule').append('<input type="button" id="show_schedule" alt="#TB_inline?height=500&width=550&inlineId=schedule_report" class="button view-schedules20 thickbox" value="' + _reports_view_schedule + '">');
+				//tb_init('#show_schedule');
 			}
 		}
 	}
@@ -1059,8 +1110,26 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + f.recipients.value + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + f.filename.value + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + f.description.value + '</td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
 	return return_str;
+}
+
+function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id)
+{
+	var return_str = '';
+	var reportname = $("#saved_report_id option:selected").text();
+	return_str += '<tr id="report-' + id + '">';
+	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
+	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>'
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
+	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
+	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
+	setup_editable();
+	$('#new_schedule_report_form').clearForm();
+
+	return true;
 }
 
 function schedule_delete(id)
@@ -1068,6 +1137,11 @@ function schedule_delete(id)
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
 	}
+
+	// clean input id from prefix (from setup template)
+	id = id.replace('delid_', '');  // from single report listing
+	id = id.replace('alldel_', ''); // from all schedules list
+
 	var message_div_start = '<div id="statusmsg">';
 	var message_div_end = '</div>';
 	var time = 6000;
