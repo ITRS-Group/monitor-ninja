@@ -75,6 +75,7 @@ $(document).ready(function() {
 	$("#delete_report").click(function() {
 		confirm_delete_report($("#report_id").attr('value'));
 	});
+	$(".deleteimg").css('cursor', 'pointer');
 
 	// delete single schedule
 	$(".delete_schedule").each(function() {
