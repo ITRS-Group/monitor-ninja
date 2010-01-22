@@ -328,6 +328,16 @@ class Reports_Controller extends Authenticated_Controller
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
 		$json_periods = false;
+		$periods = array();
+		$periods_res = Scheduled_reports_Model::get_available_report_periods();
+		if ($periods_res) {
+			foreach ($periods_res as $period_row) {
+				$periods[$period_row->id] = $period_row->periodname;
+			}
+			if (!empty($periods)) {
+				$json_periods = json::encode($periods);
+			}
+		}
 		$scheduled_info = false;
 		$report_info = false;
 		$json_report_info = false;
@@ -339,16 +349,7 @@ class Reports_Controller extends Authenticated_Controller
 			}
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
-			$periods = array();
-			$periods_res = Scheduled_reports_Model::get_available_report_periods();
-			if ($periods_res) {
-				foreach ($periods_res as $period_row) {
-					$periods[$period_row->id] = $period_row->periodname;
-				}
-				if (!empty($periods)) {
-					$json_periods = json::encode($periods);
-				}
-			}
+
 			if(isset($report_info["assume_initial_states"]) && $report_info["assume_initial_states"] != 0)
 				$assume_initial_states_checked = "checked='checked'";
 			else
