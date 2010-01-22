@@ -299,6 +299,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = 'application/media/js/date';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
+		$this->xtra_js[] = $this->add_path('reports/js/json');
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = $this->add_path('reports/js/common');
 

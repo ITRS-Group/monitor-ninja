@@ -1232,6 +1232,18 @@ function setup_editable()
 		cssclass: "txtarea",
 		placeholder:_reports_edit_information
 	});
+	$(".report_name").editable(save_url, {
+		data : function (){
+			return fetch_report_data(this.id);
+		},
+		id   : 'elementid',
+		name : 'newvalue',
+		event : 'dblclick',
+		type : 'select',
+		submit : 'OK',
+		cancel : 'cancel'
+	});
+
 }
 
 var is_visible = false;
@@ -1245,4 +1257,31 @@ function toggle_edit() {
 		$("#show_scheduled").text('[' + _hide_str + ']');
 		is_visible = true;
 	}
+}
+
+function fetch_report_data(id)
+{
+	parts = id.split('-');
+	type_id = get_type_id(parts[0]);
+	var sType = '';
+
+	var report_types = $.parseJSON(_report_types_json);
+	sType = report_types[type_id];
+	switch (sType) {
+		case 'avail':
+		//var data = eval('(' + $('#saved_reports').text() + ')');
+			return eval(_saved_avail_reports);
+			break;
+		case 'sla':
+			return eval(_saved_sla_reports);
+			break;
+		default:
+			return false;
+	}
+}
+
+function get_type_id(str)
+{
+	parts = str.split('.');
+	return parts[0];
 }
