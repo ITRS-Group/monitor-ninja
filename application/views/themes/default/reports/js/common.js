@@ -174,6 +174,9 @@ $(document).ready(function() {
 		switch_report_type();
 		return false;
 	});
+
+	$('#report-tabs').tabs();
+
 });
 
 function show_hide(id,h1) {
