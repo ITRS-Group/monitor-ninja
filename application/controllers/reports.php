@@ -1912,6 +1912,8 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			return false;
 		}
+		# add custom period
+		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . $this->translate->_('CUSTOM REPORT PERIOD') . " *");
 
 		# empty report_period
 		$objResponse->call("empty_list", 'report_period');
