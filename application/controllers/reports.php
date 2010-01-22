@@ -1927,7 +1927,7 @@ class Reports_Controller extends Authenticated_Controller
 	*	Fetch saved reports through xajax call when switching report type
 	*
 	*/
-	public function _get_saved_reports($type='avail')
+	public function _get_saved_reports($type='avail', $schedules=false)
 	{
 		if (empty($type))
 			return false;
@@ -1964,9 +1964,16 @@ class Reports_Controller extends Authenticated_Controller
 			$return[] = array('optionValue' => $info->id, 'optionText' =>($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str);
 		}
 
-		# empty report_id (saved reports)
-		$objResponse->call("empty_list", 'report_id');
-		$objResponse->call("populate_saved_reports", json::encode($return));
+		if ($schedules !== false) {
+			# empty saved_report_id (saved reports)
+			$objResponse->call("empty_list", 'saved_report_id');
+			$objResponse->call("populate_saved_reports", json::encode($return), 'saved_report_id');
+
+		} else {
+			# empty report_id (saved reports)
+			$objResponse->call("empty_list", 'report_id');
+			$objResponse->call("populate_saved_reports", json::encode($return), 'report_id');
+		}
 
 
 		//return the  xajaxResponse object
@@ -2830,6 +2837,11 @@ class Reports_Controller extends Authenticated_Controller
 		$description		= arr::search($_REQUEST, 'description');
 		$module_save		= arr::search($_REQUEST, 'module_save');
 
+		if (!$module_save) {
+			# if this parameter is set to false, we have to lookup
+			# $rep_type since it is passed as a string (avail/sla)
+			$rep_type = Scheduled_reports_Model::get_report_type_id($rep_type);
+		}
 		$recipients = str_replace(';', ',', $recipients);
 		$rec_arr = explode(',', $recipients);
 		$a_recipients = false;
@@ -2854,8 +2866,6 @@ class Reports_Controller extends Authenticated_Controller
 			if ($module_save) {
 				// only return the newly created ID on success if save is initiated from any report module (avail/SLA)
 				echo $ok;
-			} else {
-				echo $this->translate->_("Your report was successfully scheduled.");
 			}
 		} else {
 			echo sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok);
@@ -3573,12 +3583,11 @@ class Reports_Controller extends Authenticated_Controller
 					if (!$report_type) {
 						echo $this->translate->_("Unable to determine type for selected report");
 					} else {
-						$saved_reports = Scheduled_reports_Model::fetch_module_reports($report_type, false);
-						#print_r($saved_reports);
-						if (!empty($saved_reports)) {
+						$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
+						if (count($saved_reports)!=0) {
 							foreach ($saved_reports as $report) {
-								if ($report['id'] == $new_value) {
-									echo $report['name'];
+								if ($report->id == $new_value) {
+									echo $report_type == 'avail' ? $report->report_name : $report->sla_name;
 									break;
 								}
 							}
