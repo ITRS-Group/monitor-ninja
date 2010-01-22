@@ -242,7 +242,8 @@ class Scheduled_reports_Model extends Model
 
 	public function get_typeof_report($id=false)
 	{
-		$sql = "SELECT report_type_id FROM scheduled_reports WHERE id=".$id;
+		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
+			"sr.id=".(int)$id." AND t.id=sr.report_type_id";
 		$db = new Database(self::db_name);
 		try {
 			$res = $db->query($sql);
@@ -250,7 +251,7 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		return count($res)!=0 ? $res->current()->report_type_id : false;
+		return count($res)!=0 ? $res->current()->identifier : false;
 	}
 
 	function fetch_module_reports($type_id=false,$is_ajax=true)
