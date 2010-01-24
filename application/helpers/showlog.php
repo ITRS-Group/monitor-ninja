@@ -40,6 +40,9 @@ class showlog_Core
 			 case 'time_format':
 				$cmd .= ' --' . str_replace('_', '-', $k) . '=' . $v;
 				break;
+			 case 'host':
+				$cmd .= " --host='" . join("' --host='", $v) . "'";
+				break;
 			 default:
 				break;
 			}

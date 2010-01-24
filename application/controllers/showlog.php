@@ -62,7 +62,7 @@ class Showlog_Controller extends Authenticated_Controller
 		showlog::show_log_entries($this->options);
 	}
 
-	public function showlog()
+	public function showlog($host = false)
 	{
 		$x = $this->translate;
 		$this->template->title = $this->translate->_("View log");
@@ -81,6 +81,12 @@ class Showlog_Controller extends Authenticated_Controller
 			 $x->_('Service critical') => 'c',
 			 $x->_('Service recovery') => 'r');
 
+		if ($host) {
+			if (!is_array($host)) {
+				$host = array($host);
+			}
+			$this->options['host'] = $host;
+		}
 		$this->template->content->options = $this->options;
 		$this->template->content->host_state_options = $host_state_options;
 		$this->template->content->service_state_options = $service_state_options;

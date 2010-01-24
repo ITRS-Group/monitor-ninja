@@ -186,10 +186,12 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_history = $this->translate->_('View History For This Host');
 				$label_host_notifications = $this->translate->_('View Notifications This Host');
 				$label_host_status_details = $this->translate->_('View Service Status Detail For All Hosts');
+				$label_host_alert_history = $this->translate->_('View Alert History For This Host');
 				$page_links = array(
 					 $label_host_history => 'history/host/'.$host,
 					 $label_host_notifications => 'notifications/host/'.$host,
-					 $label_host_status_details => Router::$controller.'/service/all'
+					 $label_host_status_details => Router::$controller.'/service/all',
+					 $label_host_alert_history => 'showlog/showlog/'.$host
 				);
 			}
 		} else {
@@ -406,10 +408,12 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_history = $this->translate->_('View History For This Host');
 				$label_host_notifications = $this->translate->_('View Notifications This Host');
 				$label_host_status_details = $this->translate->_('View Service Status Detail For All Hosts');
+				$label_host_alert_history = $this->translate->_('View Alert History For This Host');
 				$page_links = array(
 					 $label_host_history => 'history/host/'.$name,
 					 $label_host_notifications => 'notifications/host/'.$name,
-					 $label_host_status_details => Router::$controller.'/service/all'
+					 $label_host_status_details => Router::$controller.'/service/all',
+					 $label_host_alert_history => 'showlog/showlog/'.$name
 				);
 			}
 		} else {
