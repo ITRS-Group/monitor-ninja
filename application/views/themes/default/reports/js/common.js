@@ -227,6 +227,7 @@ function ajax_submit(f)
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
 		success: function(data) {
 			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, rep_type);
+			$.jGrowl(_reports_schedule_create_ok, { header: _reports_successs });
 		}
 	});
 	return false;
@@ -1080,9 +1081,9 @@ function show_response(responseText, statusText)
 	} else {
 		var report_id = $('#report_id').fieldValue();
 		if (report_id[0]) { // updated
-			$('#response').css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-ok.png) 7px 7px no-repeat').css("position", "relative").css('top', '0px').css('width','748px').css('left', '0px').css('padding','15px 2px 15px 50px ').html(_reports_schedule_update_ok);
+			$.jGrowl(_reports_schedule_update_ok, { header: _reports_successs });
 		} else { //new save
-			$('#response').css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-ok.png) 7px 7px no-repeat').css("position", "relative").css('top', '0px').css('width','748px').css('left', '0px').css('padding','15px 2px 15px 50px ').html(_reports_schedule_create_ok);
+			$.jGrowl(_reports_schedule_create_ok, { header: _reports_successs });
 			$('#schedule_report_table').append(create_new_schedule_rows(responseText));
 			$('#schedule_report_table').show();
 			schedule_is_visible = true;
