@@ -11,7 +11,7 @@ class showlog_Core
 		if (!file_exists($showlog) || !is_executable($showlog)) {
 			echo "Showlog program '$showlog' not installed or not executable.<br />\n";
 		}
-		$cmd = $showlog . " /opt/monitor/var/nagios.log ";
+		$cmd = $showlog . " --html /opt/monitor/var/nagios.log ";
 #			"/opt/monitor/var/archives/nagios-*.log";
 
 		if (!isset($options['parse_forward'])) {
@@ -52,6 +52,6 @@ class showlog_Core
 		}
 
 #		echo "cmd = $cmd\n";
-		echo "<pre>\n"; passthru($cmd); echo "</pre>\n";
+		passthru($cmd);
 	}
 }
