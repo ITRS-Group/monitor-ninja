@@ -191,7 +191,7 @@ $(document).ready(function() {
 		var sel_report = $("#saved_report_id").fieldValue();
 		if (sel_report[0] != '')
 			create_filename();
-
+	});
 	$(".fancybox").fancybox({
 		'overlayOpacity'	:	0.7,
 		'overlayColor'		:	'#ffffff',
