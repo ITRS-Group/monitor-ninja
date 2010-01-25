@@ -28,62 +28,53 @@ foreach($report_data as $i =>  $report) {
 		</a>-->
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
-	<?php
-	}
-
-	if (!empty($report['table_data'])) { ?>
+	<?php } if (!empty($report['table_data'])) { ?>
 	<div class="sla_table">
-		<h1 onclick="show_hide('sla-table_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1>
-		<div class="icon-help" onclick="general_help('sla-table')"></div>
-		<fieldset id="sla-table_<?php echo $nr;?>"><?php
-			foreach ($report['table_data'] as $source => $data) { ?>
+		<h1><?php echo $str_source; ?></h1>
+		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
+			<?php foreach ($report['table_data'] as $source => $data) { ?>
 			<table class="auto">
 				<tr>
-					<th class="null first_child"></th><?php
-					$n = 0;
-					foreach ($data as $month => $values) {
-						$n++; ?>
-					<th class="<?php echo (($values[0][0] < $values[0][1]) ? 'down' : 'up'); ?> padder"><?php echo $month ?>&nbsp;(%)</th>
-					<?php if ($n != count($data)) { ?>
-					<th class="null"></th>
-					<?php }
-					} ?>
+					<th class="headerNone"></th>
+					<?php
+						$n = 0;
+						foreach ($data as $month => $values) {
+						$n++;
+					?>
+					<th class="headerNone"><?php echo $month ?></th>
+					<?php } ?>
 				</tr>
-				<tr>
+				<tr class="even">
 					<td class="label">SLA</td><?php
 					$j = 0;
 					foreach ($data as $month => $value) {
 						$j++; ?>
-					<td class="padder"><?php echo $this->_format_report_value($value[0][1]) ?></td>
-					<?php if ($j != count($data)) { ?>
-					<td class="null"></td>
-					<?php }
+					<td  class="data"><?php echo $this->_format_report_value($value[0][1]) ?> %</td>
+					<?php
 					} ?>
 				</tr>
-				<tr>
-					<td class="label">Real</td><?php
+				<tr class="odd">
+					<td>Real</td><?php
 					$i = 0;
 					foreach ($data as $month => $value) {
 						$i++;?>
-					<td class="<?php echo (($value[0][0] < $value[0][1]) ? 'down' : 'up'); ?> padder">
-						<?php echo $this->_format_report_value($value[0][0]) ?>
+					<td class="data">
+						<?php echo $this->_format_report_value($value[0][0]) ?> %
+						<?php
+								echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
+								array('alt' => ($value[0][0] < $value[0][1]) ? 'down' : 'up','title' => (($value[0][0] < $value[0][1]) ? 'down' : 'up'),'style' => 'margin-bottom: -1px'));
+						?>
 					</td>
-					<?php if ($i != count($data)) { ?>
-					<td class="null"></td>
-					<?php }
-					} ?>
+					<?php } ?>
 				</tr>
 			</table><?php
 			} ?>
-		</fieldset>
 	</div><?php
 	}
 
 	if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
 	<div class="setup-table members">
-		<h1 onclick="show_hide('group_<?php echo $nr;?>',this)" id="members_<?php echo $nr;?>">
-			<?php echo $report['group_title'] ?>
-		</h1>
+		<h1><?php echo $report['group_title'] ?></h1>
 		<div class="icon-help" onclick="general_help('custom-group')"></div>
 			<ul id="group_<?php echo $nr;?>"><?php
 				foreach($report['member_links'] as $member_link) {
