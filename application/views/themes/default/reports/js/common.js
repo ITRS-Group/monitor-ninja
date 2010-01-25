@@ -221,14 +221,21 @@ function ajax_submit(f)
 	var description = $('#description').fieldValue();
 	description = description[0];
 
+	var report_types = $.parseJSON(_report_types_json);
+	for (var i in report_types) {
+		if (report_types[i] == rep_type) {
+			report_type_id = i;
+		}
+	}
+
 //	validate_form();
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
 		type: 'POST',
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
 		success: function(data) {
-			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, rep_type);
-			$.jGrowl(_reports_schedule_create_ok, { header: _reports_successs });
+			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, report_type_id);
+			jgrowl_message(_reports_schedule_create_ok, _reports_successs);
 		}
 	});
 	return false;
