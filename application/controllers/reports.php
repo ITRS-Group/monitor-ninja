@@ -764,14 +764,14 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = $this->add_path('reports/js/thickbox-compressed');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox-1.2.6.min';
 		$this->xtra_js[] = $this->add_path('reports/js/common');
 
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		$this->xtra_css[] = $this->add_path('reports/css/reports');
-		$this->xtra_css[] = $this->add_path('reports/css/thickbox');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox-1.2.6';
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->css_header->css = $this->xtra_css;
 
