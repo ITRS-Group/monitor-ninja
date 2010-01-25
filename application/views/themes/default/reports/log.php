@@ -50,7 +50,7 @@ if (!empty($log)) {
 			</table>
 	</div>
 	<script type="text/javascript">
-		document.getElementById('log').style.display='none';
-		document.getElementById('log-h1').style.background = 'url(images/icons/arrows/grey.gif) 11px 3px no-repeat';
+		//document.getElementById('log').style.display='none';
+		//document.getElementById('log-h1').style.background = 'url(images/icons/arrows/grey.gif) 11px 3px no-repeat';
 	</script>
 <?php } ?>
