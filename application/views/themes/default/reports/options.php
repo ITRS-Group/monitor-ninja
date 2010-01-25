@@ -1,4 +1,15 @@
-<input type="button" id="optiontoggle" alt="#TB_inline?height=300&width=365&inlineId=options" class="button thickbox" value="<?php echo $label_edit_settings ?>" />
+<a href="#options" class="fancybox"><?php echo $label_edit_settings ?></a>&nbsp;
+<?php if ($report_id) { ?>
+<span id="view_add_schedule">
+	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox">Add <?php echo strtolower($label_new_schedule) ?></a>&nbsp;
+	<?php if (!empty($scheduled_info)) { ?>
+	<a id="show_schedule" href="#schedule_report" class="fancybox"><?php echo $label_view_schedule ?></a>
+<?php } ?>
+</span>
+<?php } else {
+echo '<em>'.$label_save_to_schedule.'</em>';
+}
+?>
 
 <div id="options">
 <?php	echo form::open('reports/generate', array('id' => 'report_form'));
@@ -8,7 +19,7 @@
 				<tr class="none">
 					<td>
 						<input type="hidden" name="new_report_setup" value="1" />
-						<?php //echo help::render('reporting_period').' '.;?><?php echo $label_report_period ?><br />
+						<?php //echo help::render('reporting_period');?> <?php echo $label_report_period ?><br />
 						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?>
 					</td>
 				</tr>
@@ -31,7 +42,7 @@
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo help::render('assume_initial_states'); ?>
+						<?php //echo he	lp::render('assume_initial_states'); ?>
 						<input type="checkbox" value="1" class="checkbox" id="assume" name="assumeinitialstates" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
 						<label for="assume" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
@@ -67,16 +78,6 @@
 				<tr class="none">
 					<td>
 						<input type="submit" name="s1" value="<?php echo $label_update ?>" class="button update-report20" id="options_submit" />
-						<?php if ($report_id) { ?>
-							<span id="view_add_schedule">
-								<input type="button" id="new_schedule_btn" alt="#TB_inline?height=500&width=365&inlineId=new_schedule_form_area" class="button thickbox" value="<?php echo $label_new_schedule ?>" />
-								<?php if (!empty($scheduled_info)) { ?>
-								<input type="button" id="show_schedule" alt="#TB_inline?height=500&width=365&inlineId=schedule_report" class="button thickbox" value="<?php echo $label_view_schedule ?>" />
-							<?php } ?>
-							</span>
-						<?php } else { ?>
-						<em><?php echo $label_save_to_schedule ?>.</em>
-						<?php } ?>
 					</td>
 				</tr>
 			</table>
@@ -93,7 +94,7 @@
 	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form'));
 		?>
 		<h1><?php echo $label_new_schedule ?></h1>
-		<table id="new_schedule_report_table" class="white-table">
+		<table id="new_schedule_report_table" cellpadding="0" cellspacing="0" style="margin-left: -3px">
 			<?php if (!empty($available_schedule_periods)) { ?>
 			<tr class="none">
 				<td><?php echo $label_interval ?></td>
@@ -119,8 +120,8 @@
 			</tr>
 			<tr class="none">
 				<td id="scheduled_btn_ctrl">
-					<input type="submit" class="button save" name="sched_subm" id="sched_subm" value="<?php echo $label_save ?>" />
-					<input type="reset" class="button clear" name="reset_frm" id="reset_frm" value="<?php echo $label_clear ?>" />
+					<input type="submit" name="sched_subm" id="sched_subm" value="<?php echo $label_save ?>" />
+					<input type="reset" name="reset_frm" id="reset_frm" value="<?php echo $label_clear ?>" />
 				</td>
 			</tr>
 		</table>
