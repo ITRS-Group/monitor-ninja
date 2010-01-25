@@ -286,6 +286,7 @@ function switch_report_type()
 function create_filename()
 {
 	var new_filename = $('#saved_report_id option:selected').text();
+	new_filename = remove_scheduled_str(new_filename);
 	new_filename += '_' + $('#period option:selected').text() + '.pdf';
 	new_filename = new_filename.replace(' ', '_');
 	if ($('input[name=filename]').val() != '' && $('input[name=filename]').val() != current_filename) {
@@ -298,6 +299,12 @@ function create_filename()
 	return true;
 }
 
+function remove_scheduled_str(in_str)
+{
+	in_str = in_str.replace(/\*/g, '');
+	in_str = in_str.replace(" ( " + _scheduled_label + " )", '');
+	return in_str;
+}
 
 function show_calendar(val, update) {
 	if (val=='custom') {
@@ -1127,6 +1134,7 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 {
 	var return_str = '';
 	var reportname = $("#saved_report_id option:selected").text();
+	reportname = remove_scheduled_str(reportname);
 	return_str += '<tr id="report-' + id + '">';
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>'
@@ -1137,6 +1145,7 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
+	setTimeout('delayed_hide_progress()', 1000);
 
 	return true;
 }
