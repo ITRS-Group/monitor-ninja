@@ -1196,7 +1196,8 @@ function remove_schedule(id)
 		}
 
 		if (!$("#report_type").is(":visible")) { // setup doesn't use thickbox
-			tb_remove(); // close thickbox
+			//@@@FIXME: fix when thickbox replacement is in place
+			//tb_remove(); // close thickbox
 		}
 	}
 	setTimeout('hide_response()', time);
