@@ -252,3 +252,10 @@ function handleSliderSlide(e, ui){
 	var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
 	$("#menu-scroll").attr({scrollTop: -ui.value * (maxScroll / 100) });
 }
+
+function jgrowl_message(message_str, header_str)
+{
+	if (message_str!='') {
+		$.jGrowl(message_str, { header: header_str });
+	}
+}

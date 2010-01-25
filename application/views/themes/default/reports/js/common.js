@@ -1096,9 +1096,9 @@ function show_response(responseText, statusText)
 	} else {
 		var report_id = $('#report_id').fieldValue();
 		if (report_id[0]) { // updated
-			$.jGrowl(_reports_schedule_update_ok, { header: _reports_successs });
+			jgrowl_message(_reports_schedule_update_ok, _reports_successs);
 		} else { //new save
-			$.jGrowl(_reports_schedule_create_ok, { header: _reports_successs });
+			jgrowl_message(_reports_schedule_create_ok, _reports_successs);
 			$('#schedule_report_table').append(create_new_schedule_rows(responseText));
 			$('#schedule_report_table').show();
 			schedule_is_visible = true;
@@ -1160,8 +1160,6 @@ function schedule_delete(id)
 	id = id.replace('delid_', '');  // from single report listing
 	id = id.replace('alldel_', ''); // from all schedules list
 
-	var message_div_start = '<div id="statusmsg">';
-	var message_div_end = '</div>';
 	var time = 6000;
 
 	$.ajax({
@@ -1171,7 +1169,7 @@ function schedule_delete(id)
 				// item deleted
 				remove_schedule(id);
 			} else {
-				$('#response').css("position", "absolute").css('top', '11px').css('left', '200px').html(message_div_start + data + message_div_end);
+				jgrowl_message(data, _reports_error);
 				setTimeout('hide_response()', time);
 			}
 		}
@@ -1180,19 +1178,8 @@ function schedule_delete(id)
 
 function remove_schedule(id)
 {
-	var message_div_start = '<div id="statusmsg"><img src="' + _site_domain + _theme_path +'icons/16x16/sheild-ok.png" alt="' + _ok_str + '" title="' + _ok_str + '"> &nbsp;';
-	var message_div_end = '</div>';
 	var time = 3000;
-	$('#response').remove();
-	$('body').prepend('<div id="response"></div>');
-	$('#response')
-		.css('background','#f4f4ed url(' + _site_domain + _theme_path +'icons/32x32/shield-ok.png) 7px 7px no-repeat')
-		.css("position", "relative")
-		.css('top', '0px')
-		.css('width','748px')
-		.css('left', '0px')
-		.css('padding','15px 2px 15px 50px ')
-		.html(_reports_schedule_deleted);
+	jgrowl_message(_reports_schedule_deleted, _reports_successs);
 	nr_of_scheduled_instances--;
 	// remove row for deleted ID
 	$('#report-' + id).remove();
