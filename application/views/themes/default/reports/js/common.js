@@ -196,6 +196,7 @@ $(document).ready(function() {
 
 function ajax_submit(f)
 {
+	show_progress('progress', _wait_str);
 	// fetch values from form
 	var report_id = $('#report_id').fieldValue();
 	report_id = report_id[0];
