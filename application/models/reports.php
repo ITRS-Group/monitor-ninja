@@ -436,7 +436,8 @@ class Reports_Model extends Model
 
 	public function set_option($name, $value)
 	{
-		$vtypes = array('report_timeperiod' => 'string',
+		$vtypes = array('keep_logs' => 'bool',
+						'report_timeperiod' => 'string',
 						'scheduled_downtime_as_uptime' => 'bool',
 						'assume_initial_states' => 'bool',
 						'assume_states_during_not_running' => 'bool',
@@ -497,6 +498,10 @@ class Reports_Model extends Model
 		}
 
 		switch ($name) {
+		 case 'keep_logs':
+			# caller forces us to retain all log-entries
+			$this->st_needs_log = true;
+			break;
 		 case 'scheduled_downtime_as_uptime':
 			$this->scheduled_downtime_as_uptime = $value;
 			break;
@@ -1446,8 +1451,10 @@ class Reports_Model extends Model
 			$this->resolve_timeperiods();
 
 		if (!$this->master && empty($this->sub_reports)) {
-			$this->st_log = array();
 			$this->st_needs_log = true;
+		}
+		if ($this->st_needs_log === true) {
+			$this->st_log = array();
 		}
 
 		if (!empty($servicename)) {
