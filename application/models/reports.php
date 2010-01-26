@@ -52,6 +52,7 @@ class Reports_Model extends Model
 	var $st_sub = array(); # only used by the master report
 	var $st_sub_discrepancies = 0;
 	var $st_obj_type = '';
+	var $st_state_calculator = 'st_worst';
 	var $st_last_dt_start_depth = array();
 
 	/**
@@ -436,7 +437,8 @@ class Reports_Model extends Model
 
 	public function set_option($name, $value)
 	{
-		$vtypes = array('keep_logs' => 'bool',
+		$vtypes = array('cluster_mode' => 'bool',
+						'keep_logs' => 'bool',
 						'report_timeperiod' => 'string',
 						'scheduled_downtime_as_uptime' => 'bool',
 						'assume_initial_states' => 'bool',
@@ -498,9 +500,17 @@ class Reports_Model extends Model
 		}
 
 		switch ($name) {
+		 case 'cluster_mode':
+			# check things in 'cluster mode' (ie, consider a group of
+			# objects ok if one of the objects is
+			if ($value === true)
+				$this->st_state_calculator = 'st_best';
+			else
+				$this->st_state_calculator = 'st_worst';
+			break;
 		 case 'keep_logs':
-			# caller forces us to retain all log-entries
-			$this->st_needs_log = true;
+			# caller forces us to retain or discard all log-entries
+			$this->st_needs_log = $value;
 			break;
 		 case 'scheduled_downtime_as_uptime':
 			$this->scheduled_downtime_as_uptime = $value;
@@ -1422,10 +1432,21 @@ class Reports_Model extends Model
 		return $this->get_worst_host_state();
 	}
 
+	public function st_best()
+	{
+		if (empty($this->sub_reports))
+			return $this->st_obj_state;
+
+		if ($this->st_is_service)
+			return $this->get_best_service_state();
+		return $this->get_best_host_state();
+	}
+
 	public function calculate_object_state($state = false)
 	{
 		if ($this->sub_reports) {
-			$this->st_obj_state = $this->st_worst();
+			$func = $this->st_state_calculator;
+			$this->st_obj_state = $this->$func();
 			return;
 		}
 
@@ -1499,7 +1520,8 @@ class Reports_Model extends Model
 				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state]++;
 			}
-			$this->st_obj_state = $this->st_worst();
+			$func = $this->st_state_calculator;
+			$this->st_obj_state = $this->$func();
 			$this->st_dt_depth = $this->get_common_downtime_state();
 		}
 		else {
@@ -1858,6 +1880,39 @@ class Reports_Model extends Model
 		}
 
 		return 1;
+	}
+
+	public function get_best_host_state()
+	{
+		if (!empty($this->st_sub[self::HOST_UP]))
+			return self::HOST_UP;
+		if (!empty($this->st_sub[self::HOST_DOWN]))
+			return self::HOST_DOWN;
+		if (!empty($this->st_sub[self::HOST_UNREACHABLE]))
+			return self::HOST_UNREACHABLE;
+		if (!empty($this->st_sub[self::HOST_PENDING]))
+			return self::HOST_PENDING;
+
+		# not reached
+		return self::HOST_DOWN;
+	}
+
+	public function get_best_service_state()
+	{
+		if (!empty($this->st_sub[self::SERVICE_OK]))
+			return self::SERVICE_OK;
+		if (!empty($this->st_sub[self::SERVICE_WARNING]))
+			return self::SERVICE_WARNING;
+		if (!empty($this->st_sub[self::SERVICE_CRITICAL]))
+			return self::SERVICE_CRITICAL;
+		# Is UNKNOWN 'better' than WARNING or CRITICAL?
+		if (!empty($this->st_sub[self::SERVICE_UNKNOWN]))
+			return self::SERVICE_UNKNOWN;
+		if (!empty($this->st_sub[self::SERVICE_PENDING]))
+			return self::SERVICE_PENDING;
+
+		# not reached
+		return self::SERVICE_CRITICAL;
 	}
 
 	public function get_worst_host_state()
