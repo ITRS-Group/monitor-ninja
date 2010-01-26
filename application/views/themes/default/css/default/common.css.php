@@ -95,6 +95,12 @@ h1 {
 	font-weight: bold;
 	margin-bottom: 10px;
 }
+
+h2 {
+	font-size: 11px;
+	font-weight: bold;
+	margin: 14px 0px 3px 0px;
+}
 /**************************************************************************************************/
 cite em,
 cite em:first-child {
@@ -791,6 +797,32 @@ table.ext tr td {
 
 table.ext tr td.dark img {
 	display: block;
+}
+
+table.showlog { width: auto; border-spacing: 0px; border-collapse: 0px; 	margin-top: -10px;}
+
+table.showlog tr td {
+	background: none;
+	vertical-align: top;
+	padding: 0px;
+	padding-right: 25px;
+}
+
+table.showlog tr td input[type=text] {
+	margin: 0px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	background-color: #fafafa;
+	padding: 0px 2px;
+	width: 200px;
+}
+
+table.showlog tr td input[type=submit] {
+	margin: 0px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	background-color: #fafafa;
+	margin-top: 10px;
 }
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
