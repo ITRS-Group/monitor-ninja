@@ -1,0 +1,60 @@
+body {
+	margin: 0px 1%;
+}
+
+#progress{
+	position: absolute;
+	top:107px;
+	left:410px;
+	display: none;
+}
+
+#progress em,
+#progress img {
+	float: left;
+}
+#progress em {
+	display: block;
+	margin-top: 12px;
+}
+
+#options,
+#new_schedule_form_area,
+#schedule_report,
+#report_save_information,
+#autoreport_periods { display: none; }
+
+#response {
+	margin-left:5px;
+	padding-top:5px;
+	background: #f9f9f5 url(default/images/response.png) repeat-x;
+}
+
+#response h1 {
+	font: bold 12px arial,helvetica,sans-serif;
+	display: none;
+}
+
+#response ul {
+	padding: 7px 2px 5px 50px;
+	margin: 0px;
+	margin-bottom: 7px;
+	width: auto;
+	background: transparent 7px 5px no-repeat;
+}
+
+#response li {
+	background: none;
+	padding: 2px 0px;
+	width: auto;
+	list-style: none;
+}
+
+#response ul.ok			{ background-image: url(../../icons/32x32/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/32x32/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/32x32/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
+
+/* nytt */
+
