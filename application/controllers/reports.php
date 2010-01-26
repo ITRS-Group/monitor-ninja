@@ -215,7 +215,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function index($type='avail')
 	{
 		# check if we have all required parts installed
-		if (!$this->reports_model->_self_chceck()) {
+		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
@@ -679,7 +679,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function generate($type='avail')
 	{
 		# check if we have all required parts installed
-		if (!$this->reports_model->_self_chceck()) {
+		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 

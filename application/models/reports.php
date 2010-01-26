@@ -153,7 +153,7 @@ class Reports_Model extends Model
 	/**
 	*	Check that we have a valid database installed and usable.
 	*/
-	public function _self_chceck()
+	public function _self_check()
 	{
 		try {
 			# this will result in error if db_name section
