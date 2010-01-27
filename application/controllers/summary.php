@@ -271,4 +271,24 @@ class Summary_Controller extends Authenticated_Controller
 		return get_xajax_Core::group_member($input, $type, $erase, $xajax);
 	}
 
+	/**
+	* Translated helptexts for this controller
+	*/
+	public static function _helptexts($id)
+	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+
+		$nagios_etc_path = Kohana::config('config.nagios_etc_path');
+		$nagios_etc_path = $nagios_etc_path !== false ? $nagios_etc_path : Kohana::config('config.nagios_base_path').'/etc';
+
+		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
+		# easier to find those later
+		$helptexts = array();
+		if (array_key_exists($id, $helptexts)) {
+			echo $helptexts[$id];
+		} else
+			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+	}
+
+
 }
