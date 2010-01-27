@@ -21,8 +21,8 @@ if (!empty($widgets)) {
 				<td colspan="2"><?php echo $label_report_mode ?>:</td>
 			</tr>
 			<tr>
-				<td><?php echo form::radio('report_mode', 'standard', true); ?> <?php echo $label_report_mode_standard ?></td>
-				<td><?php echo form::radio('report_mode', 'custom'); ?> <?php echo $label_report_mode_custom ?></td>
+				<td><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo $label_report_mode_standard ?></td>
+				<td><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo $label_report_mode_custom ?></td>
 			</tr>
 		</table>
 	</form>
