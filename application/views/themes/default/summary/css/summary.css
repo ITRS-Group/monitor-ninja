@@ -18,11 +18,7 @@ body {
 	margin-top: 12px;
 }
 
-#options,
-#new_schedule_form_area,
-#schedule_report,
-#report_save_information,
-#autoreport_periods { display: none; }
+#custom_report { display: none; }
 
 #response {
 	margin-left:5px;
