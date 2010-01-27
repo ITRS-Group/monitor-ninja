@@ -46,13 +46,15 @@ if (!empty($widgets)) {
 	</table>
 
 	<?php echo form::close(); ?>
-<br />
-<br />
+<br /><br />
 
-
+	<div id="custom_report">
 	<?php	echo form::open('summary/generate', array('id' => 'summary_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
-			<table style="width: 700px"><!--id="main_table"-->
+			<table style="width: 700px">
+				<tr>
+					<td colspan="3"><?php echo $label_customreport_options ?></td>
+				</tr>
 				<tr>
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
@@ -61,7 +63,7 @@ if (!empty($widgets)) {
 							<option value="servicegroups"><?php echo $label_servicegroups ?></option>
 							<option value="services"><?php echo $label_services ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo $label_select ?>" />
 					</td>
 				</tr>
 				<tr id="hostgroup_row">
@@ -129,7 +131,6 @@ if (!empty($widgets)) {
 					</td>
 				</tr>
 			</table>
-		</div>
 
 		<div class="setup-table" id="settings_table">
 			<table style="width: 742px">
@@ -178,5 +179,6 @@ if (!empty($widgets)) {
 			<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" />
 		</div>
 	<?php echo form::close(); ?>
+	</div>
 
 </div>
