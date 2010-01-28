@@ -310,13 +310,6 @@ function setup_hide_content(d) {
 
 function hide_response() {setup_hide_content('response');}
 
-function toggle_label_weight(val, the_id)
-{
-	if (document.getElementById(the_id)) {
-		elem = document.getElementById(the_id);
-	}
-}
-
 function edit_state_options(val)
 {
 	var options = $('#state_options');
