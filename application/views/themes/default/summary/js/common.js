@@ -146,25 +146,25 @@ function set_selection(val, no_erase) {
 	switch (val) {
 		case 'hostgroups':
 			get_members('', 'hostgroup', no_erase);
-			show_row('hostgroup_row');
+			$('#hostgroup_row').show();
 			break;
 		case 'servicegroups':
 			get_members('', 'servicegroup', no_erase);
-			show_row('servicegroup_row');
+			$('#servicegroup_row').show();
 			break;
 		case 'hosts':
 			get_members('', 'host', no_erase);
-			show_row('host_row_2');
+			$('#host_row_2').show();
 			break;
 		case 'services':
 			get_members('', 'service', no_erase);
-			show_row('service_row_2');
+			$('#service_row_2').show();
 			break;
 	}
-	show_row('settings_table');
+	$('#settings_table').show();
 	if ($('input[name=type]').val() == 'sla')
-		show_row('enter_sla');
-	show_row('submit_button');
+		$('#enter_sla').show();
+	$('#submit_button').show();
 }
 
 /**
@@ -174,14 +174,13 @@ function set_selection(val, no_erase) {
 */
 function uncheck(the_name, form_name)
 {
-	//document.forms[form_name].elements[the_name].checked=false;
 	$("input[name='" + the_name + "']").attr('checked', false);
 }
 
 function hide_rows(input) {
 	for (i=0;i<input.length;i++) {
 		if (document.getElementById(input[i]))
-			document.getElementById(input[i]).style.display='none';
+			$("#" + input[i]).hide();
 	}
 }
 
@@ -207,8 +206,8 @@ function get_members(val, type, no_erase) {
 	is_populated = false;
 	xajax_get_group_member(val, type, no_erase);
 	sel_str = type;
-	show_row('settings_table');
-	show_row('submit_button');
+	$('#settings_table').show();
+	$('#submit_button').show();
 }
 
 /**
@@ -220,10 +219,6 @@ function get_members(val, type, no_erase) {
 function get_report_periods(type)
 {
 	xajax_get_report_periods(type);
-}
-
-function show_row(the_id) {
-	$("#"+the_id).show();
 }
 
 function empty_list(field) {
