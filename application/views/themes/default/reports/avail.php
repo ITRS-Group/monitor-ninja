@@ -50,8 +50,8 @@
 
 		<?php } ?>
 		<tr class="even">
-				<?php echo $label_undetermined ?>
 			<th class="headerNone" rowspan="3" style="text-align: left; vertical-align: bottom; border-top: 0px">
+				<?php echo $label_undetermined ?>
 			</th>
 			<td><?php echo $label_not_running ?></td>
 			<td class="data"><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>

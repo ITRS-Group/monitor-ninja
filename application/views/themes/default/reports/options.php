@@ -47,6 +47,13 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 						<label for="assume" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 				</tr>
+				<tr class="none">
+					<td>
+						<?php //echo he	lp::render('assume_initial_states'); ?>
+						<input type="checkbox" value="0" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" />
+						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
+					</td>
+				</tr>
 				<tr id="state_options" class="none">
 					<td>
 						<?php echo $label_initialassumedhoststate ?><br />
