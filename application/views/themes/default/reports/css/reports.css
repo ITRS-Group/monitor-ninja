@@ -1,5 +1,5 @@
 body {
-	margin: 0px 1%;
+	margin: 0px 0px 0px 2px;
 }
 
 #progress{
@@ -137,6 +137,16 @@ caption { padding-left:0px}
 
 a#optiontoggle { margin: 5px;}
 
+#new_schedule_report_table {
+	width: auto;
+}
+
+#new_schedule_report_table tr td {
+	background: none;
+	vertical-align: top;
+	width: auto
+}
+
 tr.dark td.data,
 tr.odd td.data,
 tr.even td.data,
@@ -209,4 +219,22 @@ tr.none td {
 
 #log_entries { padding-bottom: 15px}
 
-#schedules_area{margin: 5px}
+#schedules_area{ }
+
+#report-tabs { padding: 0px; }
+
+table.setup-tbl { width: 700px; }
+table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }
+
+#new_schedule_report_table tr td { padding: 0px 15px 0px 0px; }
+
+#switcher { margin-top: -15px }
+
+/* tab specifics **********************************************************************************/
+
+.ui-widget-content { border: 0px; background: #ffffff; color: #222222; }
+.ui-widget-header { border: 0px; background: #cdcdcd url(bg.png) repeat-x; border-bottom: 1px solid #cdcdcd; color: #222222; font-weight: bold; }
+.ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #cdcdcd; background: #dddddd url(bg.png) repeat-x; font-weight: normal; color: #555555; outline: none; }
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus { border: 1px solid #cdcdcd; background: #aaaaaa url(bg.png) repeat-x; font-weight: normal; color: #212121; outline: none; }
+.ui-state-active, .ui-widget-content .ui-state-active { border: 1px solid #cdcdcd; background: #ffffff; font-weight: normal; color: #212121; outline: none; }
+.ui-corner-all { -moz-border-radius: 0px; -webkit-border-radius: 0px; }
