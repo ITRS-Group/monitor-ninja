@@ -16,7 +16,7 @@ if (!empty($widgets)) {
 	</ul>
 	<div id="report-tab">
 
-<div class="report-page">
+<div class="report-page-setup">
 	<div class="setup-table">
 
 		<div class="setup-table">
@@ -183,10 +183,10 @@ if (!empty($widgets)) {
 		</div>
 
 		<div class="setup-table" id="settings_table">
-			<table style="width: 742px" class="setup-tbl">
+			<table class="setup-tbl">
 				<tr>
 					<td><?php echo help::render('reporting_period').' '.$label_report_period ?></td>
-					<td style="width: 30px">&nbsp;</td>
+					<td style="width: 32px">&nbsp;</td>
 					<td><?php echo help::render('report_time_period').' '.$label_rpttimeperiod ?></td>
 				</tr>
 				<tr>
@@ -268,20 +268,6 @@ if (!empty($widgets)) {
 						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
 					</td>
 				</tr>
-
-				<tr>
-					<td>
-						<?php echo help::render('cluster_mode') ?>
-						<input type="checkbox" class="checkbox" value="0" id="cluster_mode" name="cluster_mode"
-								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
-						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
-					</td>
-					<td>&nbsp;</td>
-					<td style="vertical-align:top">
-						<?php # room for one more option here ?>
-					</td>
-				</tr>
-
 				<tr id="assumed_host_state">
 					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '.$label_initialassumedhoststate ?></td>
 					<td>&nbsp;</td>
@@ -311,7 +297,7 @@ if (!empty($widgets)) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3">
+					<td>
 						<?php echo help::render('save_report') ?>
 						<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
 						<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
@@ -320,6 +306,13 @@ if (!empty($widgets)) {
 						<span id="report_save_information">
 							<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
 						</span>
+					</td>
+					<td>&nbsp;</td>
+					<td style="vertical-align:top">
+						<?php echo help::render('cluster_mode') ?>
+						<input type="checkbox" class="checkbox" value="0" id="cluster_mode" name="cluster_mode"
+								onchange="toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
+						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
 					</td>
 				</tr>
 			</table>
