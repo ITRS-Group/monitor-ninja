@@ -127,7 +127,6 @@ class Summary_Controller extends Authenticated_Controller
 		$template->label_report_mode_standard = $this->translate->_('Standard');
 		$template->label_report_mode_custom = $this->translate->_('Custom');
 
-		$this->inline_js .= "set_selection($('#report_type').val());\n";
 		# fetch users date format in PHP style so we can use it
 		# in date() below
 		$date_format = cal::get_calendar_format(true);

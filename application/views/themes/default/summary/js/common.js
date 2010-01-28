@@ -49,6 +49,8 @@ $(document).ready(function() {
 	});
 	$("#report_mode_custom").click(function() {
 		$("#std_report_table").hide();
+		if (!is_populated)
+			set_selection($('#report_type').val());
 		$("#custom_report").show();
 	});
 
