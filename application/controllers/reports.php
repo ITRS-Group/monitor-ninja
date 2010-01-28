@@ -32,6 +32,7 @@ class Reports_Controller extends Authenticated_Controller
 		'assumestatesduringnotrunning' => 'assume_states_during_not_running',
 		'includesoftstates' => 'include_soft_states',
 		'assumeinitialstates' => 'assume_initial_states',
+		'cluster_mode' => 'cluster_mode',
 		'use_average' =>'use_average'
 	);
 
@@ -57,6 +58,7 @@ class Reports_Controller extends Authenticated_Controller
 		'assumestatesduringnotrunning',
 		'includesoftstates',
 		'use_average',
+		'cluster_mode',
 		'use_alias'
 	);
 
@@ -110,6 +112,7 @@ class Reports_Controller extends Authenticated_Controller
 	private $assume_state_retention = true;
 	private $assume_states_during_not_running = true;
 	private $include_soft_states = false;
+	private $cluster_mode = false;
 	private $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
 
@@ -248,6 +251,8 @@ class Reports_Controller extends Authenticated_Controller
 
 		$scheduled_downtime_as_uptime_checked  =
 			arr::search($_REQUEST, 'scheduleddowntimeasuptime', $this->scheduled_downtime_as_uptime) ? 'checked="checked"' : '';
+		$cluster_mode_checked =
+			arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode) ? 'checked="checked"' : '';
 		$assume_initial_states_checked =
 			arr::search($_REQUEST, 'assumeinitialstates', $this->assume_initial_states) ? 'checked="checked"' : '';
 		$assume_states_during_not_running_checked =
@@ -541,10 +546,12 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_initialassumedservicestate = $t->_('First assumed service state');
 		$template->label_assumestatesduringnotrunning = $t->_('Assume states during program downtime');
 		$template->label_assumeinitialstates = $t->_('Assume initial states');
+		$template->label_cluster_mode = $t->_('Cluster mode');
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
 		$template->label_enter_sla = $t->_('Enter SLA');
 		$template->reporting_periods = $this->_get_reporting_periods();
 		$template->scheduled_downtime_as_uptime_checked = $scheduled_downtime_as_uptime_checked;
+		$template->cluster_mode_checked = $cluster_mode_checked;
 		$template->assume_initial_states_checked = $assume_initial_states_checked;
 		$template->initial_assumed_host_states = self::$initial_assumed_host_states;
 		$template->initial_assumed_service_states = self::$initial_assumed_service_states;
@@ -845,6 +852,7 @@ class Reports_Controller extends Authenticated_Controller
 		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period		= arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
 		$rpttimeperiod 		= arr::search($_REQUEST, 'rpttimeperiod', '');
+		$cluster_mode       = arr::search($_REQUEST, 'cluster_mode', '');
 		$hostgroup			= false;
 		$hostname			= false;
 		$servicegroup		= false;
@@ -1104,6 +1112,7 @@ class Reports_Controller extends Authenticated_Controller
 			$tpl_options->label_click_calendar = $t->_('Click calendar to select date');
 
 			$tpl_options->label_assumeinitialstates = $t->_('Assume initial states');
+			$tpl_options->label_cluster_mode = $t->_('Cluster mode');
 
 			$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
 			$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as uptime');
@@ -3341,6 +3350,7 @@ class Reports_Controller extends Authenticated_Controller
 				"to manually specify Start and End date."),
 			'enter-sla' => $translate->_("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
 			'report_settings_sml' => $translate->_("Here you can modify the report settings for the report you are currently viewing."),
+			'cluster_mode' => $translate->_("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
