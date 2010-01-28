@@ -26,6 +26,7 @@ if (!empty($widgets)) {
 			</tr>
 		</table>
 	</form>
+	<br />
 
 	<?php	echo form::open('summary/generate', array('id' => 'summary_form_std')); ?>
 	<table style="width: 700px" id="std_report_table">
