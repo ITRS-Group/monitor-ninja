@@ -79,20 +79,21 @@ input#filename {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	padding: 1px;
-	width: 350px;
+	width: 378px;
 	margin-top: 3px;
 	margin-left: 0px;
 	margin-bottom: 15px;
 }
 
-select { width: 354px}
+select { width: 382px}
 
 input#cal_end, input#cal_start {
-	width: 324px;
+	width: 356px;
 }
 
 select[multiple=multiple] {
 	padding: 3px;
+	width: 380px;
 }
 
 input[type=button],
@@ -197,19 +198,6 @@ tr.none td {
 	background: #ffffff;
 }
 
-/*.report-page {
-	width: 64%;
-	margin-right: 1%;
-	float: left;
-}
-
-.report-right {
-	position: relative;
-	border: 1px solid red;
-	width: 32%;
-	float: left;
-}*/
-
 .log_messages { clear: both; float: left;}
 
 .headerNone.left {
@@ -223,7 +211,7 @@ tr.none td {
 
 #report-tabs { padding: 0px; }
 
-table.setup-tbl { width: 700px; }
+table.setup-tbl { width: auto; }
 table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }
 
 #new_schedule_report_table tr td { padding: 0px 15px 0px 0px; }
@@ -231,6 +219,8 @@ table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }
 #switcher { margin-top: -15px }
 
 table.white-table tr.no-result td { background: #ffffff; font-style: italic; padding-left: 0px; }
+
+.report-page { padding: 0px 1% }
 
 /* tab specifics **********************************************************************************/
 
