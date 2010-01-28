@@ -43,15 +43,19 @@ $(document).ready(function() {
 	$("#service_description").dblclick(function() {moveAndSort('service_description', 'service_tmp');});
 
 	// handle standard/custom report switching
+	$("#td_std").click(function() {
+		$("#report_mode_standard").attr('checked', true);
+		set_report_mode('standard');
+	});
+	$("#td_cust").click(function() {
+		$("#report_mode_custom").attr('checked', true);
+		set_report_mode('custom');
+	});
 	$("#report_mode_standard").click(function() {
-		$("#std_report_table").show();
-		$("#custom_report").hide();
+		set_report_mode('standard');
 	});
 	$("#report_mode_custom").click(function() {
-		$("#std_report_table").hide();
-		if (!is_populated)
-			set_selection($('#report_type').val());
-		$("#custom_report").show();
+		set_report_mode('custom');
 	});
 
 	/*
@@ -115,6 +119,28 @@ $(document).ready(function() {
 	});
 	*/
 });
+
+function set_report_mode(type)
+{
+	switch (type) {
+		case 'standard':
+			$("#std_report_table").show();
+			$("#custom_report").hide();
+			$(this).parent().css('font-weight', 'bold');
+			$("#td_std").css('font-weight', 'bold');
+			$("#td_cust").css('font-weight', 'normal');
+			break;
+		case 'custom':
+			$("#std_report_table").hide();
+			if (!is_populated)
+				set_selection($('#report_type').val());
+			$("#custom_report").show();
+			$('#td_cust').css('font-weight', 'bold');
+			$("#td_std").css('font-weight', 'normal');
+			break;
+	}
+}
+
 
 
 function show_hide(id,h1) {
