@@ -312,8 +312,8 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('reports/css/reports');
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
+		$this->xtra_css[] = $this->add_path('reports/css/reports');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$t = $this->translate;
