@@ -11,8 +11,8 @@ if (!empty($widgets)) {
 <div id="progress"></div>
 <div id="report-tabs">
 	<ul>
-		<li><a href="#report-tab"><?php echo $this->translate->_('Reports') ?></a></li>
-		<li><a href="#schedule-tab"><?php echo $this->translate->_('Schedules') ?></a></li>
+		<li><a href="#report-tab" style="border: 0px"><?php echo $this->translate->_('Reports') ?></a></li>
+		<li><a href="#schedule-tab" style="border: 0px"><?php echo $this->translate->_('Schedules') ?></a></li>
 	</ul>
 	<div id="report-tab">
 
@@ -31,7 +31,7 @@ if (!empty($widgets)) {
 			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 			echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 		 ?>
-			<div style="width: 100%; padding-left: 5px">
+			<div style="width: 100%; padding-left: 0px">
 				<!--	onchange="check_and_submit(this.form)"	-->
 				<?php echo help::render('saved_reports') ?> <?php echo $label_saved_reports ?><br />
 				<select name="report_id" id="report_id">
@@ -102,7 +102,7 @@ if (!empty($widgets)) {
 	<?php	echo form::open('reports/generate', array('id' => 'report_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
 			<input type="hidden" name="type" value="<?php echo $type ?>" />
-			<table summary="Select report type" style="width: 700px"><!--id="main_table"-->
+			<table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 				<tr>
 					<td colspan="3">
 						<?php echo help::render('report-type').' '.$this->translate->_('Report type'); ?><br />
@@ -183,7 +183,7 @@ if (!empty($widgets)) {
 		</div>
 
 		<div class="setup-table" id="settings_table">
-			<table style="width: 742px">
+			<table style="width: 742px" class="setup-tbl">
 				<tr>
 					<td><?php echo help::render('reporting_period').' '.$label_report_period ?></td>
 					<td style="width: 30px">&nbsp;</td>
