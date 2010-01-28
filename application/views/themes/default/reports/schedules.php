@@ -5,6 +5,7 @@
 				<div id="scheduled_avail_reports" style='width: 100%'>
 					<table id="avail_scheduled_reports_table" style='width: 100%;' class="white-table">
 					<caption><?php echo $avail_header ?></caption>
+						<?php if (!empty($avail_schedules) && count($avail_schedules)) { ?>
 						<thead>
 							<tr class="setup">
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_interval ?></th>
@@ -16,7 +17,6 @@
 							</tr>
 						</thead>
 						<tbody>
-						<?php if (!empty($avail_schedules) && count($avail_schedules)) { ?>
 							<?php	$recipients = false;
 								foreach ($avail_schedules as $schedule) {
 									$schedule = (object)$schedule;
@@ -32,10 +32,11 @@
 									<?php echo html::image($this->add_path('icons/12x12/cross.gif'), array('class' => 'deleteimg')) ?>
 								</td>
 							</tr>
-							<?php } } else {?>
-								<tr class="even"><td colspan="6"><?php echo $label_no_schedules ?></td></tr>
 							<?php } ?>
-						</tbody>
+							</tbody>
+							<?php } else {?>
+								<tr class="no-result"><td colspan="6"><?php echo $label_no_schedules ?></td></tr>
+							<?php } ?>
 					</table>
 				</div>
 
@@ -43,6 +44,7 @@
 				<div id="scheduled_sla_reports" style="width: 100%">
 					<table id="sla_scheduled_reports_table" style='width: 100%;' class="white-table">
 					<caption><?php echo $sla_header ?></caption>
+						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
 						<thead>
 							<tr class="setup">
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_interval ?></th>
@@ -54,7 +56,6 @@
 							</tr>
 						</thead>
 						<tbody>
-						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
 							<?php	$recipients = false;
 								foreach ($sla_schedules as $schedule) {
 									$schedule = (object)$schedule;
@@ -68,10 +69,11 @@
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
 								<td class="delete_schedule" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
 							</tr>
-							<?php } } else {?>
-							<tr class="even"><td colspan="6"><?php echo $label_no_schedules ?></td></tr>
 							<?php } ?>
 						</tbody>
+						<?php	} else {?>
+							<tr class="no-result"><td colspan="6"><?php echo $label_no_schedules ?></td></tr>
+							<?php } ?>
 					</table>
 				</div>
 			</div>

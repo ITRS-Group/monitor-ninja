@@ -230,6 +230,8 @@ table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }
 
 #switcher { margin-top: -15px }
 
+table.white-table tr.no-result td { background: #ffffff; font-style: italic; padding-left: 0px; }
+
 /* tab specifics **********************************************************************************/
 
 .ui-widget-content { border: 0px; background: #ffffff; color: #222222; }
