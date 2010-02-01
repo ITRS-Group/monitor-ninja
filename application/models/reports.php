@@ -44,6 +44,8 @@ class Reports_Model extends Model
 	var $state_types = 3; # soft and hard states by default
 	var $host_states = 7; # all host states by default
 	var $service_states = 15; # all service states by default
+	var $summary_items = 25; # max items to return
+	var $summary_result = array();
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
@@ -2610,7 +2612,7 @@ class Reports_Model extends Model
 	{
 		# set some few defaults
 		if (!$this->start_time)
-			$this->start_time = 0;
+			$this->start_time = time() - (86400 * 7);
 		if (!$this->end_time)
 			$this->end_time = time();
 
@@ -2671,5 +2673,97 @@ class Reports_Model extends Model
 		}
 
 		return $query;
+	}
+
+
+	/**
+	 * Get alert summary for "top (hard) alert producers"
+	 */
+	public function top_alert_producers()
+	{
+		try {
+			# this will result in error if db_name section
+			# isn't set in config/database.php
+			$db = new Database($this->db_name);
+		} catch (Kohana_Database_Exception $e) {
+			return false;
+		}
+
+		$query = $this->build_alert_summary_query();
+		$sql_result = $db->query($query);
+		$sql_result = $sql_result->result(false);
+		$result = array();
+		foreach ($sql_result as $row) {
+			switch ($row['event_type']) {
+			 case self::HOSTCHECK:
+				$name = $row['host_name'];
+				break;
+
+			 case self::SERVICECHECK:
+				$name = $row['host_name'] . ';' . $name['service_description'];
+				break;
+			}
+
+			if (empty($this->summary_result[$name])) {
+				$result[$name] = 1;
+			} else {
+				$result[$name]++;
+			}
+		}
+
+		# sort the result and return only the necessary items
+		arsort($result);
+		if ($this->summary_items > 0) {
+			$result = array_slice($result, 0, $this->summary_items, true);
+		}
+
+		$i = 1;
+		$this->summary_result = array();
+		foreach ($result as $obj => $alerts) {
+				$ary = array();
+			if (strstr($obj, ';')) {
+				$obj_ary = explode(';', $obj);
+				$ary['host_name'] = $obj_ary[0];
+				$ary['service_description'] = $obj_ary[1];
+				$ary['event_type'] = self::SERVICECHECK;
+			} else {
+				$ary['host_name'] = $obj;
+				$ary['event_type'] = self::HOSTCHECK;
+			}
+			$ary['total_alerts'] = $alerts;
+			$this->summary_result[$i++] = $ary;
+		}
+
+		return $this->summary_result;
+	}
+
+	/**
+	 * Find and return the latest $this->summary_items alert producers
+	 * according to the search criteria.
+	 */
+	public function latest_alert_producers()
+	{
+		try {
+			# this will result in error if db_name section
+			# isn't set in config/database.php
+			$db = new Database($this->db_name);
+		} catch (Kohana_Database_Exception $e) {
+			return false;
+		}
+
+		$query = $this->build_alert_summary_query();
+		$query .= " ORDER BY timestamp DESCENDING";
+		if ($this->summary_items > 0) {
+			$query .= " LIMIT " . $this->summary_items;
+		}
+		$sql_result = $db->query($query);
+		$sql_result = $sql_result->result(false);
+		$this->summary_result = array();
+		$i = 0;
+		foreach ($result as $row) {
+			$this->summary_result[$i++] = $row;
+		}
+
+		return $this->summary_result;
 	}
 }
