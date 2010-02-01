@@ -39,6 +39,12 @@ class Reports_Model extends Model
 	var $db_end_time = 0;   # latest database timestamp we look at
 	var $debug = array();
 
+	# alert summary options
+	var $alert_types = 3; # host and service alerts by default
+	var $state_types = 3; # soft and hard states by default
+	var $host_states = 7; # all host states by default
+	var $service_states = 15; # all service states by default
+
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
 	var $st_log = false;
@@ -2593,5 +2599,77 @@ class Reports_Model extends Model
 		$min_date = $row->min_date;
 		$max_date = $row->max_date;
 		return array($min_date, $max_date);
+	}
+
+	/**
+	 * Create the base of the query to use when calculating
+	 * alert summary. Each caller is responsible for adding
+	 * sorting and limit options as necessary.
+	 */
+	public function build_alert_summary_query()
+	{
+		# set some few defaults
+		if (!$this->start_time)
+			$this->start_time = 0;
+		if (!$this->end_time)
+			$this->end_time = time();
+
+		$query = "SELECT * FROM " . $this->db_table . " " .
+			"WHERE timestamp >= " . $this->start_time . " " .
+			"AND timestamp <= " . $this->end_time . " ";
+
+		switch ($this->alert_types) {
+		 case 1:
+			if (!$this->host_states)
+				$this->host_states = 7;
+			if ($this->host_states === 7) {
+				$query .= "AND event_type = " . self::HOSTCHECK . " ";
+			}
+			else {
+				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
+					"AND 1 << state & " . $this->host_states . ") ";
+			}
+			break;
+		 case 2:
+			if (!$this->service_states)
+				$this->service_states = 15;
+			if ($this->service_states === 15) {
+				$query .= "AND event_type = " . self::SERVICECHECK . " ";
+			} else {
+				$query .= "AND (event_type = " . self::SERVICECHECK . " " .
+					"AND 1 << state & " . $this->service_states . ") ";
+			}
+			break;
+		 case 3:
+			if ($this->host_states === 7 && $this->service_states === 15) {
+				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
+					"OR event_type = " . self::SERVICECHECK . ") ";
+			} elseif ($this->host_states === 7) {
+				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
+					"OR (event_type = " . self::SERVICECHECK . " " .
+					"AND 1 << state & " . $this->service_states . ")) ";
+			} elseif ($this->service_states === 15) {
+				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
+					"AND 1 << state & " . $this->host_states . ") " .
+					"OR event_type = " . self::SERVICECHECK . ") ";
+			} else {
+				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
+					"AND 1 << state & " . $this->host_states . ") " .
+					"OR (event_type = " . self::SERVICECHECK . " " .
+					"AND 1 << state & " . $this->service_states . ")) ";
+			}
+		}
+		switch ($this->alert_types) {
+		 case 0: case 3: default:
+			break;
+		 case 1:
+			$query .= "AND hard = 0 ";
+			break;
+		 case 2:
+			$query .= "AND hard = 1 ";
+			break;
+		}
+
+		return $query;
 	}
 }
