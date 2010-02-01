@@ -228,20 +228,20 @@ class Summary_Controller extends Authenticated_Controller
 		#hoststates
 		$template->hoststates = array(
 			7 => $t->_("All Host States"),
-			3 => $t->_("Host Problem States"),
-			4 => $t->_("Host Up States"),
-			1 => $t->_("Host Down States"),
-			2 => $t->_("Host Unreachable States")
+			6 => $t->_("Host Problem States"),
+			1 => $t->_("Host Up States"),
+			2 => $t->_("Host Down States"),
+			4 => $t->_("Host Unreachable States")
 		);
 
 		#servicestates
 		$template->servicestates = array(
-			120 => $t->_("All Service States"),
-			56 => $t->_("Service Problem States"),
-			64 => $t->_("Service Ok States"),
-			8 => $t->_("Service Warning States"),
-			16 => $t->_("Service Unknown States"),
-			32 => $t->_("Service Critical States")
+			15 => $t->_("All Service States"),
+			14 => $t->_("Service Problem States"),
+			1 => $t->_("Service Ok States"),
+			2 => $t->_("Service Warning States"),
+			4 => $t->_("Service Critical States"),
+			8 => $t->_("Service Unknown States"),
 		);
 
 		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
