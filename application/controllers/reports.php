@@ -2947,18 +2947,10 @@ class Reports_Controller extends Authenticated_Controller
 		$default_filename = 'report.pdf';
 		$default_options = array
 		(
-			'pixels' 					=> 1024, # can be any integer
-			'renderimages' 	=> true,
-			'cssmedia'			=> 'projection', # to be able to use separate css
-			'output' 				=> 0, # inline view
-			'filename' 			=> $default_filename,
-			# html2ps do not seem to obey the following line
-			'margins'				=> array('leftmargin'=>20, 'rightmargin'=>20, 'topmargin'=>20, 'bottommargin'=>20),
-			'smartpagebreaks' => true,
-	#		'debugbox'			=> 1,
+			'create_pdf' => true
 		);
 		#$default_action_url = 'http://192.168.1.29/html2ps/html2ps.php';
-		$default_action_url = '/monitor/op5/reports/gui/create_pdf.php';
+		$default_action_url = 'reports/generate';
 
 		$url = $_SERVER['SERVER_ADDR'].$_SERVER['PHP_SELF'];
 
@@ -2978,12 +2970,13 @@ class Reports_Controller extends Authenticated_Controller
 			$action_url = $user_action_url;
 
 		# make sure action exists, keeps us from creating broken links on systems where op5common has not been updated
-		if(!file_exists("/var/www/html$action_url"))
-			return "";
+		#if(!file_exists("/var/www/html$action_url"))
+		#	return "";
 
 		# start of deprecated code needed for old pdf backend:
 
-		$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
+		#$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
+		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: 0px; right: 39px;'));
 		$form .= '<div>';
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
 		$url_params = '';
