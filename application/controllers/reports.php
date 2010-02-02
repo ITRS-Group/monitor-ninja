@@ -3012,7 +3012,10 @@ class Reports_Controller extends Authenticated_Controller
 				$form .= "<input type='hidden' name='$opt' value='$val' />\n";
 		}
 
-		$form .= html::image(
+		$pdf_img_src = Kohana::config('config.site_domain').$pdf_img_src;
+		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
+			.'value="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px" />';
+		/*html::image(
 			$pdf_img_src,
 				array(
 					'alt' => $pdf_img_alt,
@@ -3020,6 +3023,7 @@ class Reports_Controller extends Authenticated_Controller
 					'style' => 'border: 0px; width: 32px; height: 32px'
 				)
 			);
+			*/
 		$form .= '</div>';
 		$form .= "</form>";
 
@@ -3030,72 +3034,141 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Create pdf
 	*/
-	public function pdf($type = false)
+	public function _pdf($type = false, $filename=false, $save_path=null)
 	{
-		$type = arr::search($_REQUEST, 'type', $type);
-		$type !== false ? $type : arr::search($_REQUEST, 'report');
+		# include necessary files for PDF creation
+		pdf::start();
 
-		set_time_limit(7200); # 2 hours
+		global $l; # required for tcpdf
 
-		# CONFIGURATION SET FOR HTML2PS RUN
-		$GLOBALS['g_config'] = array
-		(
-			'cssmedia'     => 'projection',
-			'renderimages' => true,
-			'renderforms'  => false,
-			'renderlinks'  => false,
-			'renderfields'  => false,
-			'mode'         => 'html',
-			'debugbox'     => false,
-			'draw_page_border' => false,
-			'smartpagebreak' => true,
-		);
-
-		$valid_includes = array('index.php/reports');
-		$output_filename = tempnam('/tmp', 'autoreports_');
-
-		$_REQUEST['generating_pdf'] = 1;
-		switch($type)
-		{
-			case 'avail':
-				$basepath = APPPATH;
-				#$basepath = '/var/www/html/monitor/op5/reports/gui';
-				#$baseurl = "$basepath/avail_result.php";
-				break;
-
-			case 'sla':
-				$basepath = APPPATH;
-				#$basepath = '/var/www/html/monitor/op5/reports/gui/sla';
-				#$baseurl = "$basepath/sla.php";
-				break;
-
-			default:
-				die($this->translate->_("Invalid report type"));
-
+		if (isset($l['w_page'])) { # use ninja translation
+			$l['w_page'] = $this->translate->_('page');
 		}
 
-		html2ps::instance();
-		parse_html2ps_config_file(HTML2PS_DIR.'html2ps.config');
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-		$media = Media::predefined("A4");
-		$media->set_landscape(false);
-		$media->set_pixels(1024);
-		$media->set_margins(array('left' => 0, 'right' => 0, 'top' => 0, 'bottom' => 0));
+		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : $this->translate->_('Ninja PDF Report');
+		// set document information
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Ninja4Nagios');
+		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
+		$pdf->SetSubject($title);
+		$pdf->SetKeywords('Ninja, , Nagios, PDF, report, '.$type);
 
-		$pipeline = new Pipeline;
-		$pipeline->configure($GLOBALS['g_config']);
+		// set default header data
+		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
-		$pipeline->fetchers[] = new fetcher_report($basepath, array(), $valid_includes);
-		$pipeline->destination = new MyDestinationDownload($output_filename);
-		$pipeline->data_filters[] = new DataFilterHTML2XHTML;
-		$pipeline->pre_tree_filters = array(new PreTreeFilterHTML2PSFields());
-		$pipeline->parser = new ParserXHTML();
-		$pipeline->layout_engine = new LayoutEngineDefault;
-		$pipeline->output_driver = new OutputDriverFPDF($media);
+		// set header and footer fonts
+		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
-		$pipeline->process($baseurl, $media);
+		// set default monospaced font
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
+		//set margins
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		//set auto page breaks
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+		//set image scale factor
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		//set some language-dependent strings
+		$pdf->setLanguageArray($l);
+
+		// ---------------------------------------------------------
+
+		// set font
+		$pdf->SetFont('helvetica', 'B', 10);
+
+		// add a page
+		$pdf->AddPage();
+
+		// set color for filler
+		$pdf->SetFillColor(255, 255, 0);
+
+		// ---------------------------------------------------------
+
+		$images = array();
+		if ($this->type == 'avail') {
+			$image_string = '<table border="1">';
+			# handle piechart data  - render images
+			if (isset($this->pdf_data['pie_data'])) {
+				if (is_array($this->pdf_data['pie_data'])) {
+					$data_str = $this->pdf_data['pie_data'];
+					for ($i = 0; $i < sizeof($data_str); $i++) {
+						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
+						$images[] = $img; # store absolute path to file for later removal
+						$img = $this->_replace_pdf_img_path($img);
+						$image_string .= '<tr><td><b>'.strtoupper($this->translate->_('Status Overview').': '.$data_str[$i]['host']).
+							'</b></td></tr><tr><td><img width="300px" height="200px" src="'.$img.'" /></td></tr>';
+					}
+				} else {
+					# generate image
+					$data_str = $this->pdf_data['pie_data'];
+					$img = $this->piechart($data_str, K_PATH_CACHE);
+					$images[] = $img;
+					$img = $this->_replace_pdf_img_path($img);
+					$image_string .= '<tr><td><img width="300px" height="200px" src="'.$img.'" /></td></tr>';
+				}
+			}
+			$image_string .= '<table>';
+		} else {
+			# sla
+			$nr = 0;
+			foreach($this->data_arr as $i => $report) {
+				$nr++;
+				$data_str = $report['data_str'];
+				$img = $this->barchart($data_str, K_PATH_CACHE);
+				$images[] = $img;
+				$img = $this->_replace_pdf_img_path($img);
+				$this->pdf_data['content'] = str_replace("#chart_placeholder_$nr#", '<img src="'.$img.'" />', $this->pdf_data['content']);
+			}
+		}
+
+		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+
+		if (isset($image_string) && !empty($image_string)) {
+			$pdf->writeHTML($image_string, true, 0, true, 0);
+		}
+		# remove all temporary images
+        foreach ($images as $i) {
+            unlink($i);
+        }
+
+        if (isset($this->pdf_data['svc_content'])) {
+        	$pdf->writeHTML($this->pdf_data['svc_content'], true, 0, true, 0);
+        }
+
+        # print log data if available
+        if (isset($this->pdf_data['log_data']) && !empty($this->pdf_data['log_data'])) {
+        	$pdf->writeHTML($this->pdf_data['log_data'], true, 0, true, 0);
+        }
+
+		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
+		$filename = trim($filename);
+		if (strtolower(substr($filename, -4, 4))!='.pdf') {
+			$filename .= '.pdf';
+		}
+
+		# Close and output PDF document
+		# change last parameter to 'F' to save generated file to a path ($filename)
+		# 'I' is default and pushes the file to browser for download
+		$action = !is_null($save_path) ? 'F' : 'I';
+		$pdf->Output($filename, $action);
+		die();
 	}
+
+	# replace path to image before pdf usage
+	public function _replace_pdf_img_path($in)
+    {
+        $in = str_replace(APPPATH, '', $in);
+        $in = Kohana::config('config.site_domain').'application/' . $in;
+        return $in;
+    }
 
 	/**
 	*	Fetch data from report_class
