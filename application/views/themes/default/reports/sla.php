@@ -16,9 +16,12 @@ foreach($report_data as $i =>  $report) {
 		}
 	?>
 	<div class="setup-table members">
-		<h1 onclick="show_hide('sla-graph_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1>
-		<div class="icon-help" onclick="general_help('sla-graph')"></div>
-		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="Uptime" id="pie" class="chart-border" />
+		<h1 onclick="show_hide('sla-graph_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1><?php
+		if (!$create_pdf) { ?>
+		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="Uptime" id="pie" class="chart-border" /><?php
+		} else {
+			echo "#chart_placeholder_$nr#";
+		} ?>
 		<!--<a href="<?php #echo $report['avail_links'] ?>">
 			<img
 				src="../chart.php?type=sla_bar&amp;data=<?php echo $report['data_str'] ?>"
@@ -33,7 +36,7 @@ foreach($report_data as $i =>  $report) {
 		<h1><?php echo $str_source; ?></h1>
 		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
 			<?php foreach ($report['table_data'] as $source => $data) { ?>
-			<table class="auto">
+			<table class="auto" border="1">
 				<tr>
 					<th class="headerNone"></th>
 					<?php
@@ -45,7 +48,7 @@ foreach($report_data as $i =>  $report) {
 					<?php } ?>
 				</tr>
 				<tr class="even">
-					<td class="label">SLA</td><?php
+					<td class="label"><?php echo $this->translate->_('SLA') ?></td><?php
 					$j = 0;
 					foreach ($data as $month => $value) {
 						$j++; ?>
@@ -54,7 +57,7 @@ foreach($report_data as $i =>  $report) {
 					} ?>
 				</tr>
 				<tr class="odd">
-					<td>Real</td><?php
+					<td><?php echo $this->translate->_('Real') ?></td><?php
 					$i = 0;
 					foreach ($data as $month => $value) {
 						$i++;?>
@@ -72,7 +75,7 @@ foreach($report_data as $i =>  $report) {
 	</div><?php
 	}
 
-	if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
+	if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
 		<h1><?php echo $report['group_title'] ?></h1>
 		<div class="icon-help" onclick="general_help('custom-group')"></div>

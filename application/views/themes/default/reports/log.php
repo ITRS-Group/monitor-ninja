@@ -13,14 +13,14 @@ if (!empty($log)) {
 
 		<!--<div class="icon-help" onclick="general_help('log_entries')"></div>-->
 			<!--<form onsubmit="return false;" action=""><div><input type="text" size="60" name="filterbox" id="filterbox" value="Enter text to filter" /></div></form>-->
-			<table id="log-table">
-				<caption><?php echo ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?></caption>
+			<table id="log-table" border="1">
+				<caption><?php echo ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption>
 				<thead>
 				<tr>
 					<th class="headerNone left"><?php echo $this->translate->_('Status');?></th>
-					<th class="headerNone left" style="width: 110px"><?php echo $this->translate->_('Start time');?></th>
-					<th class="headerNone left" style="width: 110px"><?php echo $this->translate->_('End time');?></th>
-					<th class="headerNone left" style="width: 100px"><?php echo $this->translate->_('Duration');?></th>
+					<th class="headerNone left"<?php if (!$create_pdf) { ?> style="width: 110px"<?php } ?>><?php echo $this->translate->_('Start time');?></th>
+					<th class="headerNone left"<?php if (!$create_pdf) { ?> style="width: 110px"<?php } ?>><?php echo $this->translate->_('End time');?></th>
+					<th class="headerNone left"<?php if (!$create_pdf) { ?> style="width: 110px"<?php } ?>><?php echo $this->translate->_('Duration');?></th>
 					<th class="headerNone left"><?php echo $this->translate->_('Log message');?></th>
 				</tr>
 				</thead>
@@ -49,8 +49,4 @@ if (!empty($log)) {
 				</tbody>
 			</table>
 	</div>
-	<script type="text/javascript">
-		//document.getElementById('log').style.display='none';
-		//document.getElementById('log-h1').style.background = 'url(images/icons/arrows/grey.gif) 11px 3px no-repeat';
-	</script>
 <?php } ?>
