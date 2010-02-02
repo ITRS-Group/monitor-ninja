@@ -3104,7 +3104,7 @@ class Reports_Controller extends Authenticated_Controller
 						$images[] = $img; # store absolute path to file for later removal
 						$img = $this->_replace_pdf_img_path($img);
 						$image_string .= '<tr><td><b>'.strtoupper($this->translate->_('Status Overview').': '.$data_str[$i]['host']).
-							'</b></td></tr><tr><td><img width="300px" height="200px" src="'.$img.'" /></td></tr>';
+							'</b></td></tr><tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
 					}
 				} else {
 					# generate image
@@ -3112,7 +3112,7 @@ class Reports_Controller extends Authenticated_Controller
 					$img = $this->piechart($data_str, K_PATH_CACHE);
 					$images[] = $img;
 					$img = $this->_replace_pdf_img_path($img);
-					$image_string .= '<tr><td><img width="300px" height="200px" src="'.$img.'" /></td></tr>';
+					$image_string .= '<tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
 				}
 			}
 			$image_string .= '<table>';
