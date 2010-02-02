@@ -328,7 +328,6 @@ function set_selection(val, no_erase) {
 	// start by hiding ALL rows
 	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla');
 	hide_rows(hide_these);
-	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'hostgroups':
 			get_members('', 'hostgroup', no_erase);
