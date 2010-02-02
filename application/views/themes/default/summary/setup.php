@@ -173,6 +173,12 @@ if (!empty($widgets)) {
 					<td>&nbsp;</td>
 					<td><?php echo form::dropdown('servicestates', $servicestates) ?></td>
 				</tr>
+				<tr>
+					<td><?php echo $label_show_items ?></td>
+					<td>&nbsp;</td>
+					<td><?php echo form::input(array('name' => 'show_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
+				</tr>
+
 			</table>
 		</div>
 
