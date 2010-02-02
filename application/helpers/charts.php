@@ -13,11 +13,16 @@ class charts
 			require_once(dirname($path).'/BarChart.php');
 			require_once(dirname($path).'/PieChart.php');
 
-			define("FONT_TAHOMA", dirname($path).'/fonts/tahoma.ttf');
-			define("FONT_DEJAVUSANS", dirname($path).'/fonts/DejaVuSans.ttf');
-			define("FONT_DEJAVUSANS_CONDENSED", dirname($path).'/fonts/DejaVuSansCondensed.ttf');
-			define("FONT_DEJAVUSERIF", dirname($path).'/fonts/DejaVuSerif.ttf');
-			define("FONT_DEJAVUSERIF_CONDENSED", dirname($path).'/fonts/DejaVuSerifCondensed.ttf');
+			if (!defined('FONT_TAHOMA'))
+				define("FONT_TAHOMA", dirname($path).'/fonts/tahoma.ttf');
+			if (!defined("FONT_DEJAVUSANS"))
+				define("FONT_DEJAVUSANS", dirname($path).'/fonts/DejaVuSans.ttf');
+			if (!defined("FONT_DEJAVUSANS_CONDENSED"))
+				define("FONT_DEJAVUSANS_CONDENSED", dirname($path).'/fonts/DejaVuSansCondensed.ttf');
+			if (!defined("FONT_DEJAVUSERIF"))
+				define("FONT_DEJAVUSERIF", dirname($path).'/fonts/DejaVuSerif.ttf');
+			if (!defined("FONT_DEJAVUSERIF_CONDENSED"))
+				define("FONT_DEJAVUSERIF_CONDENSED", dirname($path).'/fonts/DejaVuSerifCondensed.ttf');
 
 			include_once( $path );
 
