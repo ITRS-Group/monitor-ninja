@@ -1716,7 +1716,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Create a piechart
 	*/
-	public function piechart($in_data=false)
+	public function piechart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
 		$data = unserialize( base64_decode($in_data) );
@@ -1726,18 +1726,44 @@ class Reports_Controller extends Authenticated_Controller
 		$graph->set_margins(30);
 
 		$graph->draw();
-		$graph->display();
+		if (!is_null($path)) {
+			# save rendered image to somewhere ($path)
+			if (file_exists($path) && is_writable($path)) {
+				$image = $graph->get_image();
+
+				# create temp filename with 'pie' as prefix just to
+				# be able to tell where they come from in case of problems
+				$tmpname = tempnam($path, 'pie');
+
+				# remove the created empty file - we really just want the filename
+				unlink($tmpname);
+
+				$tmpname .= '.png';
+				file_put_contents($tmpname, $image);
+
+				# return path to file
+				return $tmpname;
+			}
+		} else {
+			$graph->display();
+		}
 	}
 
 	/**
 	*	Create a barchart
 	*/
-	public function barchart($in_data=false)
+	public function barchart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
 		$data = unserialize( base64_decode($in_data) );
 		charts::load('MultipleBar');
-		$graph = new MultipleBarChart(800, 600);
+		if (!$this->create_pdf) {
+			$graph = new MultipleBarChart(800, 600);
+		} else {
+			$graph = new MultipleBarChart(450, 350);
+			$graph->set_bar_width(20);
+			$graph->set_bar_gap(-10);
+		}
 
 		$barvalues = false;
 		$barcolors = false;
@@ -1751,13 +1777,33 @@ class Reports_Controller extends Authenticated_Controller
 		$graph->set_background_style(null);
 		$graph->set_plot_bg_color('#fff');
 		$graph->set_data($barvalues);
-		$graph->set_margins(30);
+		$graph->set_margins(7, 20);
 		$graph->set_approx_line_gap(50);
 		$graph->set_legend_y($this->translate->_('Percent (%)'));
 		$graph->set_legend_x($this->translate->_('Period'));
 
 		$graph->draw();
-		$graph->display();
+		if (!is_null($path)) {
+			# save rendered image to somewhere ($path)
+			if (file_exists($path) && is_writable($path)) {
+				$image = $graph->get_image();
+
+				# create temp filename with 'pie' as prefix just to
+				# be able to tell where they come from in case of problems
+				$tmpname = tempnam($path, 'bar');
+
+				# remove the created empty file - we really just want the filename
+				unlink($tmpname);
+
+				$tmpname .= '.png';
+				file_put_contents($tmpname, $image);
+
+				# return path to file
+				return $tmpname;
+			}
+		} else {
+			$graph->display();
+		}
 	}
 
 	/**
