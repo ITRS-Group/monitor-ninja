@@ -2122,7 +2122,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function _get_group_member($input=false, $type=false, $erase=true)
 	{
 		$xajax = $this->xajax;
-		return get_xajax_Core::group_member($input, $type, $erase, $xajax);
+		return get_xajax::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**
