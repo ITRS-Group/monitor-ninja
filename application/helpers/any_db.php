@@ -8,7 +8,7 @@
  * @license    GPL
  */
 class any_db_Core {
-	public function instance()
+	public function instance($database=false)
 	{
 		$path = self::path();
 		if ($path !== false)
@@ -18,8 +18,9 @@ class any_db_Core {
 			require_once(dirname($path).'/sql_class.php');
 			$params = Kohana::config('database.monitor_reports');
 			$config = $params['connection'];
+			$database = !empty($database) ? $database : $config['database'];
 			$obj = new sql_class(
-				$config['database'],
+				$database,
 				$config['user'],
 				$config['pass'],
 				$config['port'],
