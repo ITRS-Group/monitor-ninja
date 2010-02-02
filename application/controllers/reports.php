@@ -705,6 +705,10 @@ class Reports_Controller extends Authenticated_Controller
 				);
 		$t = $this->translate;
 
+		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
+		if ($this->create_pdf) {
+			$this->auto_render=false;
+		}
 		$in_host 			= arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
 			$in_host 		= arr::search($_REQUEST, 'host_name', false);
