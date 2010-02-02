@@ -146,7 +146,7 @@ class BarChart extends Chart {
 			$y_legend_width = $box_points[3]-$box_points[5]; // y-axis legend height
 			$y_legend_gap = $this->margin_left;
 
-			$this->margin_left += $y_legend_width*2;	// modify size of the left margin
+			$this->margin_left += ($y_legend_width*2)-30;	// modify size of the left margin
 		}
 
 		// y axis labels
@@ -219,7 +219,7 @@ class BarChart extends Chart {
 
 		if (!empty($this->legend_y))
 			// draw y axis legend
-			utilities::imagestringbox($this->image, $this->font, $this->font_size, $y_legend_gap, $this->margin_top, $y_legend_gap+$y_legend_width, $this->height-$this->margin_bottom, ALIGN_CENTER, VALIGN_MIDDLE, 0, $this->legend_y, $this->get_color('font_color2'), TRUE);
+			utilities::imagestringbox($this->image, $this->font, $this->font_size, $y_legend_gap-10, $this->margin_top, $y_legend_gap+$y_legend_width, $this->height-$this->margin_bottom, ALIGN_CENTER, VALIGN_MIDDLE, 0, $this->legend_y, $this->get_color('font_color2'), TRUE);
 		if (!empty($this->legend_x))
 			// draw x axis legend
 			utilities::imagestringbox($this->image, $this->font, $this->font_size, $this->margin_left, $this->height-$x_legend_gap-$x_legend_height, $this->width-$this->margin_right, $this->height-$x_legend_gap, ALIGN_CENTER, VALIGN_MIDDLE, 0, $this->legend_x, $this->get_color('font_color2'));
