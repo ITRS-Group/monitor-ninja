@@ -115,6 +115,8 @@ class Reports_Controller extends Authenticated_Controller
 	private $cluster_mode = false;
 	private $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
+	private $create_pdf = false;
+	private $pdf_data = false;
 
 	private $assume_initial_states = true;
 	private $initial_assumed_host_state = -3;
