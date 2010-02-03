@@ -2691,20 +2691,16 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description');
 		$this->summary_query = $query;
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = new Database($this->db_name);
-		} catch (Kohana_Database_Exception $e) {
-			return false;
-		}
 
-		$query = $this->build_alert_summary_query();
-		$sql_result = $db->query($query);
-		$sql_result = $sql_result->result(false);
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query($query);
+		if (!is_object($dbr)) {
+			echo Kohana::debug($db->errorinfo());
+			die;
+		}
 		$result = array();
+		while ($row = $dbr->fetch()) {
 			if (empty($row['service_description'])) {
-		foreach ($sql_result as $row) {
 				$name = $row['host_name'];
 			} else {
 				$name = $row['host_name'] . ';' . $row['service_description'];
