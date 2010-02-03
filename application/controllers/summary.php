@@ -251,14 +251,85 @@ class Summary_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*
-	*
-	*/
+	 * Generates an alert summary report
+	 *
+	 */
 	public function generate()
 	{
-		# stub
-		echo Kohana::debug($_POST);
-		die();
+		$valid_options = array
+			('summary_items', 'alert_types', 'state_types',
+			 'host_states', 'service_states', 'start_time', 'end_time');
+
+		$t = $this->translate;
+		$this->template->disable_refresh = true;
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$rpt = new Reports_Model();
+
+		$report_type = 'toplist';
+		$options = $_REQUEST;
+		if (isset($_REQUEST['standardreport'])) {
+			if ($_REQUEST['standardreport'] < 4) {
+				$report_type = 'latest';
+			}
+
+			switch ($_REQUEST['standardreport']) {
+			 case 1: case 4:
+				$options['alert_types'] = 3;
+				$options['state_types'] = 2;
+				break;
+
+			 case 2: case 5:
+				$options['alert_types'] = 1;
+				$options['state_types'] = 2;
+				break;
+
+			 case 3: case 6:
+				$options['alert_types'] = 2;
+				$options['state_types'] = 2;
+				break;
+			}
+		}
+
+		foreach ($valid_options as $opt) {
+			if (isset($options[$opt])) {
+				$rpt->set_option($opt, $options[$opt]);
+			}
+		}
+
+		$this->template->content = $this->add_view("summary/$report_type");
+		$content = $this->template->content;
+		$content->label_host = $t->_('Host');
+		$content->label_service = $t->_('Service');
+		if ($report_type === 'toplist') {
+			$content->label_rank = $t->_('Rank');
+			$content->label_producer_type = $t->_('Producer Type');
+			$content->label_total_alerts = $t->_('Total Alerts');
+
+			$content->result = $rpt->top_alert_producers();
+		} else {
+			$content->label_time = $t->_('Time');
+			$content->label_alert_type = $t->_('Alert Type');
+			$content->label_state = $t->_('State');
+			$content->label_state_type = $t->_('State Type');
+			$content->label_information = $t->_('Information');
+			$content->label_host_alert = $t->_('Host Alert');
+			$content->label_service_alert = $t->_('Service Alert');
+			$content->host_state_names = array
+				(Reports_Model::HOST_UP => $t->_('UP'),
+				 Reports_Model::HOST_DOWN => $t->_('DOWN'),
+				 Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE'));
+			$content->service_state_names = array
+				(Reports_Model::SERVICE_OK => $t->_('OK'),
+				 Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
+				 Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
+				 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
+
+			$content->result = $rpt->latest_alert_producers();
+		}
+
+		$content->summary_items = $rpt->summary_items;
+		$content->completion_time = $rpt->completion_time;
 	}
 
 	/**

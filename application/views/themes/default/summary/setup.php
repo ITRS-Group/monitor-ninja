@@ -39,7 +39,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td><?php echo $label_show_items ?></td>
-			<td><?php echo form::input(array('name' => 'show_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
+			<td><?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
 		</tr>
 		<tr>
 			<td colspan="2"><?php echo form::submit('create_report', $label_create_report) ?></td>
@@ -156,27 +156,27 @@ if (!empty($widgets)) {
 				<tr>
 					<td><?php echo $label_alert_type ?></td>
 					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('alerttypes', $alerttypes) ?></td>
+					<td><?php echo form::dropdown('alert_types', $alerttypes) ?></td>
 				</tr>
 				<tr>
 					<td><?php echo $label_state_type ?></td>
 					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('statetypes', $statetypes) ?></td>
+					<td><?php echo form::dropdown('state_types', $statetypes) ?></td>
 				</tr>
 				<tr>
 					<td><?php echo $label_host_state ?></td>
 					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('hoststates', $hoststates) ?></td>
+					<td><?php echo form::dropdown('host_states', $hoststates) ?></td>
 				</tr>
 				<tr>
 					<td><?php echo $label_service_state ?></td>
 					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('servicestates', $servicestates) ?></td>
+					<td><?php echo form::dropdown('service_states', $servicestates) ?></td>
 				</tr>
 				<tr>
 					<td><?php echo $label_show_items ?></td>
 					<td>&nbsp;</td>
-					<td><?php echo form::input(array('name' => 'show_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
+					<td><?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
 				</tr>
 
 			</table>
