@@ -2685,6 +2685,8 @@ class Reports_Model extends Model
 
 	/**
 	 * Get alert summary for "top (hard) alert producers"
+	 *
+	 * @return Array in the form { rank => array() }
 	 */
 	public function top_alert_producers()
 	{
@@ -2740,8 +2742,8 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Find and return the latest $this->summary_items alert producers
-	 * according to the search criteria.
+	 * Find and return the latest $this->summary_items alert
+	 * producers according to the search criteria.
 	 */
 	public function latest_alert_producers()
 	{
