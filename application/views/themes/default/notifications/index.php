@@ -1,6 +1,6 @@
 <?php $t = $this->translate; ?>
 <div class="widget w98 left">
-	<?php //echo (isset($pagination)) ? $pagination : ''; ?>
+
 	<form method="get" action="">
 		<strong><?php echo $t->_('Detail level for all contacts');?></strong><br />
 		<select onchange="submit()" name="notification_option" style="margin-top: 3px; margin-left: 0px">
@@ -26,12 +26,10 @@
 		<!--<input type="submit" value="<?php echo $t->_('Update');?>" />-->
 		<br /><br />
 	</form>
-
-	<table id="host_table">
-		<caption>
-			<?php echo html::image($this->add_path('icons/16x16/arrow-left.png'), array('alt' => 'Latest archive', 'title' => 'Latest archive', 'style' => 'float: left; margin: 0px 5px 0px -3px; border: 1px solid #cdcdcd ')); ?>
-			<span style="float: left; display: block; margin-top: 2px;"><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Log file navigation').': Jan 1 00:00:00 CET 2010 to Present'; ?></span>
-			<?php echo html::image($this->add_path('icons/16x16/arrow-right.png'), array('alt' => 'Latest archive', 'title' => 'Latest archive', 'style' => 'float: right; margin: 0px 0px 0px 3px; border: 1px solid #cdcdcd ')); ?>
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<table id="host_table" style="margin-top: 0px;">
+		<caption style="margin-top: -15px;">
+			<span style="float: left; display: block; margin-top: 2px;"><?php echo (isset($label_title)) ? $label_title : $t->_('Notifications'); ?></span>
 		</caption>
 		<tr>
 			<th class="headerNone">&nbsp;</th>
