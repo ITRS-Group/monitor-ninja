@@ -447,7 +447,12 @@ class Reports_Model extends Model
 
 	public function set_option($name, $value)
 	{
-		$vtypes = array('cluster_mode' => 'bool',
+		$vtypes = array('alert_types' => 'int',
+						'state_types' => 'int',
+						'host_states' => 'int',
+						'service_states' => 'int',
+						'summary_items' => 'int',
+						'cluster_mode' => 'bool',
 						'keep_logs' => 'bool',
 						'report_timeperiod' => 'string',
 						'scheduled_downtime_as_uptime' => 'bool',
@@ -518,6 +523,24 @@ class Reports_Model extends Model
 			else
 				$this->st_state_calculator = 'st_worst';
 			break;
+
+			# lots of fallthroughs. lowest must come first
+		 case 'state_types': case 'alert_types':
+			if ($value > 3)
+				return false;
+		 case 'host_states':
+			if ($value > 7)
+				return false;
+		 case 'service_states':
+			if ($value > 15)
+				return false;
+		 case 'summary_items':
+			if ($value < 0)
+				return false;
+			$this->$name = $value;
+			break;
+			# fallthrough end
+
 		 case 'keep_logs':
 			# caller forces us to retain or discard all log-entries
 			$this->st_needs_log = $value;
