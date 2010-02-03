@@ -98,6 +98,24 @@ class nagstat_Core {
 	const CHECK_OPTION_FRESHNESS_CHECK = 2;
 	const CHECK_OPTION_ORPHAN_CHECK = 4;
 
+	/********* NOTIFICATION TYPES *********/
+	/* !!!!!! insert correct values !!!!! */
+	const NOTIFICATION_SERVICE_ALL = 0;
+	const NOTIFICATION_SERVICE_CRITICAL = 0;
+	const NOTIFICATION_SERVICE_RECOVERY = 0;
+	const NOTIFICATION_SERVICE_ACK = 0;
+	const NOTIFICATION_SERVICE_FLAP = 0;
+	const NOTIFICATION_SERVICE_UNKNOWN = 0;
+	const NOTIFICATION_SERVICE_WARNING = 0;
+
+	const NOTIFICATION_HOST_ALL = 0;
+	const NOTIFICATION_HOST_DOWN = 0;
+	const NOTIFICATION_HOST_UNREACHABLE = 0;
+	const NOTIFICATION_HOST_RECOVERY = 0;
+	const NOTIFICATION_HOST_ACK = 0;
+	const NOTIFICATION_HOST_FLAP = 0;
+
+
 	/**
 	 * Process macros for host- or service objects
 	 */
