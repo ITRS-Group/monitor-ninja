@@ -47,6 +47,7 @@ class Reports_Model extends Model
 	var $service_states = 15; # all service states by default
 	var $summary_items = 25; # max items to return
 	var $summary_result = array();
+	var $summary_query = '';
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
@@ -2608,8 +2609,10 @@ class Reports_Model extends Model
 	 * Create the base of the query to use when calculating
 	 * alert summary. Each caller is responsible for adding
 	 * sorting and limit options as necessary.
+	 *
+	 * @param $fields Database fields the caller needs
 	 */
-	public function build_alert_summary_query()
+	private function build_alert_summary_query($fields = '*')
 	{
 		# set some few defaults
 		if (!$this->start_time)
@@ -2617,7 +2620,10 @@ class Reports_Model extends Model
 		if (!$this->end_time)
 			$this->end_time = time();
 
-		$query = "SELECT * FROM " . $this->db_table . " " .
+		if (empty($fields))
+			$fields = '*';
+
+		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
 			"WHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
 
@@ -2683,6 +2689,8 @@ class Reports_Model extends Model
 	public function top_alert_producers()
 	{
 		$start = microtime(true);
+		$query = $this->build_alert_summary_query('host_name, service_description');
+		$this->summary_query = $query;
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
@@ -2695,15 +2703,11 @@ class Reports_Model extends Model
 		$sql_result = $db->query($query);
 		$sql_result = $sql_result->result(false);
 		$result = array();
+			if (empty($row['service_description'])) {
 		foreach ($sql_result as $row) {
-			switch ($row['event_type']) {
-			 case self::HOSTCHECK:
 				$name = $row['host_name'];
-				break;
-
-			 case self::SERVICECHECK:
-				$name = $row['host_name'] . ';' . $name['service_description'];
-				break;
+			} else {
+				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
 
 			if (empty($this->summary_result[$name])) {
