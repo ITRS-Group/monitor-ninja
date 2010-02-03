@@ -292,9 +292,16 @@ class Summary_Controller extends Authenticated_Controller
 			}
 		}
 
+		$used_options = array();
 		foreach ($valid_options as $opt) {
 			if (isset($options[$opt])) {
-				$rpt->set_option($opt, $options[$opt]);
+				if ($rpt->set_option($opt, $options[$opt]) !== false) {
+					$used_options[$opt] = $options[$opt];
+				} else {
+					# handle the fact that we passed an
+					# illegal option = value combo to
+					# the reports model somehow
+				}
 			}
 		}
 
@@ -329,6 +336,7 @@ class Summary_Controller extends Authenticated_Controller
 			$content->result = $rpt->latest_alert_producers();
 		}
 
+		$content->options = $used_options;
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 	}
