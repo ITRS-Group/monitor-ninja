@@ -2613,7 +2613,7 @@ class Reports_Model extends Model
 	{
 		# set some few defaults
 		if (!$this->start_time)
-			$this->start_time = time() - (86400 * 7);
+			$this->start_time = 0;
 		if (!$this->end_time)
 			$this->end_time = time();
 
