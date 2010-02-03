@@ -464,13 +464,58 @@ select {
 #content p.pagination {
 	float: right;
 	margin-top: 3px;
-	margin-right: 10px;
+	/*margin-right: 10px;*/
 }
+#content p.pagination strong,
+#content p.pagination a {
+	border: 1px solid #cdcdcd;
+	background: #cdcdcd url(images/bg.png) repeat-x;
+	padding: 1px 4px 0px 4px;
+	margin-left: -4px;
+}
+
+#content p.pagination strong {
+	background-color: #e2e2e2;
+	background: #333333 url(images/bg.png) repeat-x;
+}
+
+#content p.pagination a.img {
+	border: 1px solid #cdcdcd;
+	background-color: transparent;
+	padding: 0px;
+
+}
+
+#content p.pagination img,
+#content p.pagination a.img img {
+	margin-bottom: -4px
+}
+
+#content p.pagination img {
+	margin-left: 0px;
+}
+
 #status_count_summary {
 	float: left;
 }
 #content form.pagination_form {
 	float: right;
+	margin-right: 7px;
+}
+
+#content form.pagination_form input,
+#content form.pagination_form select,
+#content form.pagination_form input[type=button] {
+	padding: 1px 2px;
+	outline: 0px;
+	border: 1px solid #cdcdcd;
+	margin-top:2px;
+}
+#content form.pagination_form input[type=button] {
+	padding: 0px 2px;
+}
+#content form.pagination_form select {
+	padding: 0px;
 }
 /**************************************************************************************************/
 .error_message {
