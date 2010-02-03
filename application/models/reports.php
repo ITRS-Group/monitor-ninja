@@ -38,6 +38,7 @@ class Reports_Model extends Model
 	var $db_start_time = 0; # earliest database timestamp we look at
 	var $db_end_time = 0;   # latest database timestamp we look at
 	var $debug = array();
+	var $completion_time = 0;
 
 	# alert summary options
 	var $alert_types = 3; # host and service alerts by default
@@ -2681,6 +2682,7 @@ class Reports_Model extends Model
 	 */
 	public function top_alert_producers()
 	{
+		$start = microtime(true);
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
@@ -2733,7 +2735,7 @@ class Reports_Model extends Model
 			$ary['total_alerts'] = $alerts;
 			$this->summary_result[$i++] = $ary;
 		}
-
+		$this->completion_time = microtime(true) - $start;
 		return $this->summary_result;
 	}
 
