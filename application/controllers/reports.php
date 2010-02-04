@@ -154,7 +154,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->reports_model = new Reports_Model();
 
-		$this->xajax = get_xajax::instance();
+		if (PHP_SAPI !== "cli") {
+			$this->xajax = get_xajax::instance();
+		}
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
 			$this->translate->_('Feb'),
