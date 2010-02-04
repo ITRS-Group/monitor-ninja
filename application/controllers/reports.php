@@ -117,6 +117,10 @@ class Reports_Controller extends Authenticated_Controller
 	private $csv_output = false;
 	private $create_pdf = false;
 	private $pdf_data = false;
+	private $pdf_filename = false;
+	private $pdf_recipients = false; # when sending reports by email
+	private $pdf_savepath = false;	# when saving pdf to a path
+	private $schedule_id = false;
 
 	private $assume_initial_states = true;
 	private $initial_assumed_host_state = -3;
