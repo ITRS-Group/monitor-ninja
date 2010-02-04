@@ -132,7 +132,7 @@ if (!empty($widgets)) {
 						<?php echo $label_rpttimeperiod ?><br />
 						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods); ?>
 					</td>
-					<td style="width: 10px">&nbsp;</td>
+					<td style="width: 18px">&nbsp;</td>
 					<td>
 						<?php echo $label_reporttype ?><br />
 						<?php echo form::dropdown('report_type', $report_types) ?>
@@ -155,7 +155,7 @@ if (!empty($widgets)) {
 						<?php echo $label_alert_type ?><br />
 						<?php echo form::dropdown('alert_types', $alerttypes) ?>
 					</td>
-					<td style="width: 10px">&nbsp;</td>
+					<td>&nbsp;</td>
 					<td>
 						<?php echo $label_state_type ?><br />
 						<?php echo form::dropdown('state_types', $statetypes) ?>
