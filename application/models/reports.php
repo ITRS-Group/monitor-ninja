@@ -2853,9 +2853,8 @@ class Reports_Model extends Model
 		}
 
 		$this->summary_result = array();
-		$i = 0;
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
-			$this->summary_result[$i++] = $row;
+			$this->summary_result[] = $row;
 		}
 
 		$this->completion_time = microtime(true) - $this->completion_time;
