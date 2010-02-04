@@ -691,7 +691,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Generate (availability) report from parameters set in index()
 	*/
-	public function generate($type='avail')
+	public function generate($type='avail', $schedule_id=false)
 	{
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
