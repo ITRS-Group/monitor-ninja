@@ -2839,7 +2839,7 @@ class Reports_Model extends Model
 	{
 		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query();
-		$query .= " ORDER BY timestamp DESCENDING";
+		$query .= " ORDER BY timestamp DESC";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
 		}
