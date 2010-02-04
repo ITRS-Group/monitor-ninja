@@ -10,17 +10,20 @@ foreach ($result as $ary) {
 	if (empty($ary['service_description'])) {
 		$alert_type = $label_host_alert;
 		$ary['service_description'] = 'N/A';
-		$state_ary = $host_state_names;
+		$state = $host_state_names[$ary['state']];
 	} else {
 		$alert_type = $label_service_alert;
-		$state_ary = $service_state_names;
+		$state = $service_state_names[$ary['state']];
 	}
+	$softhard = $ary['hard'] == 1 ? $label_hard : $label_soft;
 
 	echo "<td>" . date("Y-m-d H:i:s", $ary['timestamp']) . "</td>\n";
 	echo "<td>$alert_type</td>\n";
 	echo "<td>$ary[host_name]</td>\n";
 	echo "<td>$ary[service_description]</td>\n";
-	echo "<td>$ary[total_alerts]</td>\n";
+	echo "<td>$state</td>\n";
+	echo "<td>$softhard</td>\n";
+	echo "<td>$ary[output]</td>\n";
 	echo "</tr>\n\n";
 }
 echo "</table>\n";
