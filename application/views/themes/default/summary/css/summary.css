@@ -53,7 +53,7 @@
 input,
 select,
 textarea,
-input#show_items,
+input#summary_items,
 input#cal_end,
 input#cal_start {
 	background: #fafafa;
@@ -70,7 +70,7 @@ input#cal_start {
 
 select { width: 382px}
 
-input#show_items {
+input#summary_items {
 	width: 68px;
 }
 
