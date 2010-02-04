@@ -343,7 +343,18 @@ class Summary_Controller extends Authenticated_Controller
 			}
 		}
 
-		$this->template->content = $this->add_view("summary/$report_type");
+		$views = array
+			(self::TOP_ALERT_PRODUCERS => 'toplist',
+			 self::RECENT_ALERTS => 'latest',
+			 self::ALERT_TOTALS => 'alert_totals',
+			 self::ALERT_TOTALS_HG => 'alert_totals_hg',
+			 self::ALERT_TOTALS_HOST => 'alert_totals_host',
+			 self::ALERT_TOTALS_SERVICE => 'alert_totals_service',
+			 self::ALERT_TOTALS_SG => 'alert_totals_sg',
+			 );
+		$this->template->content =
+			$this->add_view("summary/" . $views[$report_type]);
+
 		$content = $this->template->content;
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
