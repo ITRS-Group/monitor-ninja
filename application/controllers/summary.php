@@ -265,11 +265,16 @@ class Summary_Controller extends Authenticated_Controller
 		$rpt->set_option('end_time', time());
 		$result = $rpt->test_summary_queries();
 		echo "<pre>\n";
-		echo count($result) . " total different queries\n";
+		$cnt = count($result);
+		echo $cnt . " total different queries\n";
+		$total_rows = 0.0;
 		foreach ($result as $query => $ary) {
 			echo $query . "\n";
 			print_r($ary);
+			$total_rows += $ary['rows'];
 		}
+		$avg_rows = $total_rows / $cnt;
+		echo "Average row-count: $avg_rows\n";
 		echo "</pre>\n";
 		die;
 	}
