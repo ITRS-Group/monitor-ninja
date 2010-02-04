@@ -2813,18 +2813,21 @@ class Reports_Model extends Model
 			die;
 		}
 
-		$this->summary_result = array();
+		# preparing the result array in advance speeds up the
+		# parsing somewhat. Completing it either way makes it
+		# easier to write templates for it as well
+		for ($state = 0; $state < 4; $state++) {
+			$this->summary_result['host'][$state] = array(0, 0);
+			$this->summary_result['service'][$state] = array(0, 0);
+		}
+		unset($this->summary_result['host'][3]);
 		while ($row = $dbr->fetch()) {
 			if (empty($row['service_description'])) {
 				$type = 'host';
 			} else {
 				$type = 'service';
 			}
-			if (empty($this->summary_result[$type][$row['state']][$row['hard']])) {
-				$this->summary_result[$type][$row['state']][$row['hard']] = 1;
-			} else {
-				$this->summary_result[$type][$row['state']][$row['hard']]++;
-			}
+			$this->summary_result[$type][$row['state']][$row['hard']]++;
 		}
 
 		$this->completion_time = microtime(true) - $this->completion_time;
