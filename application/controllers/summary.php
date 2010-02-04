@@ -17,6 +17,14 @@
  */
 class Summary_Controller extends Authenticated_Controller
 {
+	const RECENT_ALERTS = 1;
+	const ALERT_TOTALS = 2;
+	const TOP_ALERT_PRODUCERS = 3;
+	const ALERT_TOTALS_HG = 4;
+	const ALERT_TOTALS_HOST = 5;
+	const ALERT_TOTALS_SERVICE = 6;
+	const ALERT_TOTALS_SG = 7;
+
 	private $xajax = false;
 	private $reports_model = false;
 	private $abbr_month_names = false;
@@ -155,8 +163,9 @@ class Summary_Controller extends Authenticated_Controller
 			1 => $t->_("Most Recent Hard Alerts"),
 			2 => $t->_("Most Recent Hard Host Alerts"),
 			3 => $t->_("Most Recent Hard Service Alerts"),
-			4 => $t->_("Top Hard Host Alert Producers"),
-			5 => $t->_("Top Hard Service Alert Producers")
+			4 => $t->_('Top Hard Alert Producers'),
+			5 => $t->_("Top Hard Host Alert Producers"),
+			6 => $t->_("Top Hard Service Alert Producers"),
 		);
 		$template->label_show_items = $t->_('Items to show');
 		$template->label_default_show_items = 25;
@@ -184,14 +193,14 @@ class Summary_Controller extends Authenticated_Controller
 
 
 		# displaytype
-		$template->report_types = array(
-			1 => $t->_("Most Recent Alerts"),
-			2 => $t->_("Alert Totals"),
-			4 => $t->_("Alert Totals By Hostgroup"),
-			5 => $t->_("Alert Totals By Host"),
-			7 => $t->_("Alert Totals By Servicegroup"),
-			6 => $t->_("Alert Totals By Service"),
-			3 => $t->_("Top Alert Producers")
+		$template->report_types = array
+			(self::RECENT_ALERTS => $t->_("Most Recent Alerts"),
+			 self::ALERT_TOTALS => $t->_("Alert Totals"),
+			 self::TOP_ALERT_PRODUCERS => $t->_("Top Alert Producers"),
+			 self::ALERT_TOTALS_HG => $t->_("Alert Totals By Hostgroup"),
+			 self::ALERT_TOTALS_HOST => $t->_("Alert Totals By Host"),
+			 self::ALERT_TOTALS_SG => $t->_("Alert Totals By Servicegroup"),
+			 self::ALERT_TOTALS_SERVICE => $t->_("Alert Totals By Service"),
 		);
 
 		# timeperiod
@@ -249,15 +258,151 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 	}
 
+	public function test_queries()
+	{
+		$rpt = new Reports_Model('monitor', 'beta_int_report_data');
+		$rpt->set_option('start_time', 0);
+		$rpt->set_option('end_time', time());
+		$result = $rpt->test_summary_queries();
+		echo "<pre>\n";
+		$cnt = count($result);
+		echo $cnt . " total different queries\n";
+		$total_rows = 0.0;
+		foreach ($result as $query => $ary) {
+			echo $query . "\n";
+			print_r($ary);
+			$total_rows += $ary['rows'];
+		}
+		$avg_rows = $total_rows / $cnt;
+		echo "Average row-count: $avg_rows\n";
+		echo "</pre>\n";
+		die;
+	}
+
 	/**
-	*
-	*
-	*/
+	 * Generates an alert summary report
+	 *
+	 */
 	public function generate()
 	{
-		# stub
-		echo Kohana::debug($_POST);
-		die();
+		$valid_options = array
+			('summary_items', 'alert_types', 'state_types',
+			 'host_states', 'service_states', 'start_time', 'end_time',
+			 'report_period');
+
+		$t = $this->translate;
+		$this->template->disable_refresh = true;
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->css_header = $this->add_view('css_header');
+		$rpt = new Reports_Model();
+
+		if (!empty($_REQUEST['report_type'])) {
+			$report_type = $_REQUEST['report_type'];
+		} else {
+			$report_type = self::TOP_ALERT_PRODUCERS;
+		}
+
+		$options = $_REQUEST;
+		if (isset($_REQUEST['standardreport'])) {
+			if ($_REQUEST['standardreport'] < 4) {
+				$report_type = self::RECENT_ALERTS;
+			}
+
+			switch ($_REQUEST['standardreport']) {
+			 case 1: case 4:
+				$options['alert_types'] = 3;
+				$options['state_types'] = 2;
+				break;
+
+			 case 2: case 5:
+				$options['alert_types'] = 1;
+				$options['state_types'] = 2;
+				break;
+
+			 case 3: case 6:
+				$options['alert_types'] = 2;
+				$options['state_types'] = 2;
+				break;
+
+			 default:
+				die(Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]"));
+				break;
+			}
+		}
+
+		$used_options = array();
+		foreach ($valid_options as $opt) {
+			if (isset($options[$opt])) {
+				if ($rpt->set_option($opt, $options[$opt]) !== false) {
+					$used_options[$opt] = $options[$opt];
+				} else {
+					# handle the fact that we passed an
+					# illegal option = value combo to
+					# the reports model somehow
+				}
+			}
+		}
+
+		$views = array
+			(self::TOP_ALERT_PRODUCERS => 'toplist',
+			 self::RECENT_ALERTS => 'latest',
+			 self::ALERT_TOTALS => 'alert_totals',
+			 self::ALERT_TOTALS_HG => 'alert_totals_hg',
+			 self::ALERT_TOTALS_HOST => 'alert_totals_host',
+			 self::ALERT_TOTALS_SERVICE => 'alert_totals_service',
+			 self::ALERT_TOTALS_SG => 'alert_totals_sg',
+			 );
+		$this->template->content =
+			$this->add_view("summary/" . $views[$report_type]);
+
+		$content = $this->template->content;
+		$content->label_host = $t->_('Host');
+		$content->label_service = $t->_('Service');
+		$content->label_host_alerts = $t->_('Host Alerts');
+		$content->label_service_alerts = $t->_('Service Alerts');
+		$content->label_state = $t->_('State');
+		$content->label_hard = $t->_('Hard');
+		$content->label_soft = $t->_('Soft');
+		$content->label_soft_alerts = $t->_('Soft Alerts');
+		$content->label_hard_alerts = $t->_('Hard Alerts');
+		$content->label_total_alerts = $t->_('Total Alerts');
+		$content->host_state_names = array
+			(Reports_Model::HOST_UP => $t->_('UP'),
+			 Reports_Model::HOST_DOWN => $t->_('DOWN'),
+			 Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE'));
+		$content->service_state_names = array
+			(Reports_Model::SERVICE_OK => $t->_('OK'),
+			 Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
+			 Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
+			 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
+		$content->label_all_states = $t->_('All States');
+
+		switch ($report_type) {
+		 case self::TOP_ALERT_PRODUCERS:
+			$content->label_rank = $t->_('Rank');
+			$content->label_producer_type = $t->_('Producer Type');
+			$content->label_total_alerts = $t->_('Total Alerts');
+			$content->result = $rpt->top_alert_producers();
+			break;
+
+		 case self::RECENT_ALERTS:
+			$content->label_time = $t->_('Time');
+			$content->label_alert_type = $t->_('Alert Type');
+			$content->label_state_type = $t->_('State Type');
+			$content->label_information = $t->_('Information');
+			$content->label_host_alert = $t->_('Host Alert');
+			$content->label_service_alert = $t->_('Service Alert');
+			$content->result = $rpt->recent_alerts();
+			break;
+
+		 case self::ALERT_TOTALS:
+			$content->result = $rpt->alert_totals();
+			break;
+		}
+
+		$content->options = $used_options;
+		$content->summary_items = $rpt->summary_items;
+		$content->completion_time = $rpt->completion_time;
 	}
 
 	/**

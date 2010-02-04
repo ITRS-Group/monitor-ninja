@@ -34,10 +34,10 @@ class Reports_Model extends Model
 	const DATERANGE_WEEK_DAY = 4;  		/* eg: thursday 3 - monday 4 (generic month) */
 	const DATERANGE_TYPES = 5;
 
-
 	var $db_start_time = 0; # earliest database timestamp we look at
 	var $db_end_time = 0;   # latest database timestamp we look at
 	var $debug = array();
+	var $completion_time = 0;
 
 	# alert summary options
 	var $alert_types = 3; # host and service alerts by default
@@ -46,6 +46,7 @@ class Reports_Model extends Model
 	var $service_states = 15; # all service states by default
 	var $summary_items = 25; # max items to return
 	var $summary_result = array();
+	var $summary_query = '';
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
@@ -445,30 +446,37 @@ class Reports_Model extends Model
 
 	public function set_option($name, $value)
 	{
-		$vtypes = array('cluster_mode' => 'bool',
-						'keep_logs' => 'bool',
-						'report_timeperiod' => 'string',
-						'scheduled_downtime_as_uptime' => 'bool',
-						'assume_initial_states' => 'bool',
-						'assume_states_during_not_running' => 'bool',
-						'initial_assumed_host_state' => 'string',
-						'initial_assumed_service_state' => 'string',
-						'include_soft_states' => 'bool',
-						'host_name' => 'list',
-						'service_description' => 'list',
-						'hostgroup_name' => 'string',
-						'servicegroup_name' => 'string',
-						'start_time' => 'int',
-						'end_time' => 'int',
-						'monday' => 'string',
-						'tuesday' => 'string',
-						'wednesday' => 'string',
-						'thursday' => 'string',
-						'friday' => 'string',
-						'saturday' => 'string',
-						'sunday' => 'string',
-						'exclude' => 'string',
-						'use_average' => 'bool');
+		$vtypes = array
+			('report_period' => 'string',
+			 'alert_types' => 'int',
+			 'state_types' => 'int',
+			 'host_states' => 'int',
+			 'service_states' => 'int',
+			 'summary_items' => 'int',
+			 'cluster_mode' => 'bool',
+			 'keep_logs' => 'bool',
+			 'report_timeperiod' => 'string',
+			 'scheduled_downtime_as_uptime' => 'bool',
+			 'assume_initial_states' => 'bool',
+			 'assume_states_during_not_running' => 'bool',
+			 'initial_assumed_host_state' => 'string',
+			 'initial_assumed_service_state' => 'string',
+			 'include_soft_states' => 'bool',
+			 'host_name' => 'list',
+			 'service_description' => 'list',
+			 'hostgroup_name' => 'string',
+			 'servicegroup_name' => 'string',
+			 'start_time' => 'int',
+			 'end_time' => 'int',
+			 'monday' => 'string',
+			 'tuesday' => 'string',
+			 'wednesday' => 'string',
+			 'thursday' => 'string',
+			 'friday' => 'string',
+			 'saturday' => 'string',
+			 'sunday' => 'string',
+			 'exclude' => 'string',
+			 'use_average' => 'bool');
 
 		# this will happen for timeperiod exceptions
 		if (!isset($vtypes[$name]))
@@ -516,6 +524,27 @@ class Reports_Model extends Model
 			else
 				$this->st_state_calculator = 'st_worst';
 			break;
+		 case 'report_period':
+			return $this->calculate_time($value);
+			break;
+
+			# lots of fallthroughs. lowest must come first
+		 case 'state_types': case 'alert_types':
+			if ($value > 3)
+				return false;
+		 case 'host_states':
+			if ($value > 7)
+				return false;
+		 case 'service_states':
+			if ($value > 15)
+				return false;
+		 case 'summary_items':
+			if ($value < 0)
+				return false;
+			$this->$name = $value;
+			break;
+			# fallthrough end
+
 		 case 'keep_logs':
 			# caller forces us to retain or discard all log-entries
 			$this->st_needs_log = $value;
@@ -2607,60 +2636,62 @@ class Reports_Model extends Model
 	 * Create the base of the query to use when calculating
 	 * alert summary. Each caller is responsible for adding
 	 * sorting and limit options as necessary.
+	 *
+	 * @param $fields Database fields the caller needs
 	 */
-	public function build_alert_summary_query()
+	private function build_alert_summary_query($fields = '*')
 	{
 		# set some few defaults
 		if (!$this->start_time)
-			$this->start_time = time() - (86400 * 7);
+			$this->start_time = 0;
 		if (!$this->end_time)
 			$this->end_time = time();
 
-		$query = "SELECT * FROM " . $this->db_table . " " .
+		if (empty($fields))
+			$fields = '*';
+
+		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
 			"WHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
 
-		switch ($this->alert_types) {
-		 case 1:
-			if (!$this->host_states)
-				$this->host_states = 7;
-			if ($this->host_states === 7) {
-				$query .= "AND event_type = " . self::HOSTCHECK . " ";
+		if (!$this->host_states || $this->host_states == 7) {
+			$this->host_states = 7;
+			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
+		} else {
+			$x = array();
+			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 7; $i++) {
+				if (1 << $i & $this->host_states) {
+					$x[$i] = $i;
+				}
 			}
-			else {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") ";
-			}
-			break;
-		 case 2:
-			if (!$this->service_states)
-				$this->service_states = 15;
-			if ($this->service_states === 15) {
-				$query .= "AND event_type = " . self::SERVICECHECK . " ";
-			} else {
-				$query .= "AND (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ") ";
-			}
-			break;
-		 case 3:
-			if ($this->host_states === 7 && $this->service_states === 15) {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"OR event_type = " . self::SERVICECHECK . ") ";
-			} elseif ($this->host_states === 7) {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"OR (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ")) ";
-			} elseif ($this->service_states === 15) {
-				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") " .
-					"OR event_type = " . self::SERVICECHECK . ") ";
-			} else {
-				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") " .
-					"OR (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ")) ";
-			}
+			$host_states_sql .= join(',', $x) . ')) ';
 		}
+
+		if (!$this->service_states || $this->service_states == 15) {
+			$this->service_states = 15;
+			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
+		} else {
+			$x = array();
+			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 15; $i++) {
+				if (1 << $i & $this->service_states) {
+					$x[$i] = $i;
+				}
+			}
+			$service_states_sql .= join(',', $x) . ')) ';
+		}
+
+		switch ($this->alert_types) {
+		 case 1: $query .= 'AND ' . $host_states_sql; break;
+		 case 2: $query .= 'AND ' . $service_states_sql; break;
+		 case 3:
+			$query .= 'AND (' . $host_states_sql .
+				'OR ' . $service_states_sql . ') '; break;
+		}
+
 		switch ($this->alert_types) {
 		 case 0: case 3: default:
 			break;
@@ -2672,36 +2703,63 @@ class Reports_Model extends Model
 			break;
 		}
 
+		$this->summary_query = $query;
 		return $query;
+	}
+
+	public function test_summary_query($query = false)
+	{
+		if (!$query) {
+			$query = $this->build_alert_summary_query();
+		}
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query("EXPLAIN " . $query);
+		return $dbr->fetch(PDO::FETCH_ASSOC);
+	}
+
+	public function test_summary_queries()
+	{
+		$result = array();
+		for ($host_state = 1; $host_state <= 7; $host_state++) {
+			$this->host_states = $host_state;
+			for ($service_state = 1; $service_state <= 15; $service_state++) {
+				$this->service_states = $service_state;
+				for ($state_types = 1; $state_types <= 3; $state_types++) {
+					$this->state_types = $state_types;
+					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
+						$this->alert_types = $alert_types;
+						$query = $this->build_alert_summary_query();
+						$result[$query] = $this->test_summary_query($query);
+					}
+				}
+			}
+		}
+		return $result;
 	}
 
 
 	/**
 	 * Get alert summary for "top (hard) alert producers"
+	 *
+	 * @return Array in the form { rank => array() }
 	 */
 	public function top_alert_producers()
 	{
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = new Database($this->db_name);
-		} catch (Kohana_Database_Exception $e) {
-			return false;
+		$start = microtime(true);
+		$query = $this->build_alert_summary_query('host_name, service_description');
+
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query($query);
+		if (!is_object($dbr)) {
+			echo Kohana::debug($db->errorinfo(), $query);
+			die;
 		}
-
-		$query = $this->build_alert_summary_query();
-		$sql_result = $db->query($query);
-		$sql_result = $sql_result->result(false);
 		$result = array();
-		foreach ($sql_result as $row) {
-			switch ($row['event_type']) {
-			 case self::HOSTCHECK:
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
 				$name = $row['host_name'];
-				break;
-
-			 case self::SERVICECHECK:
-				$name = $row['host_name'] . ';' . $name['service_description'];
-				break;
+			} else {
+				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
 
 			if (empty($this->summary_result[$name])) {
@@ -2733,37 +2791,190 @@ class Reports_Model extends Model
 			$ary['total_alerts'] = $alerts;
 			$this->summary_result[$i++] = $ary;
 		}
-
+		$this->completion_time = microtime(true) - $start;
 		return $this->summary_result;
 	}
 
 	/**
-	 * Find and return the latest $this->summary_items alert producers
-	 * according to the search criteria.
+	 * Get alert totals. This is identical to the toplist in
+	 * many respects, but the result array is different.
+	 *
+	 * @return Array of counts divided by object types and states
 	 */
-	public function latest_alert_producers()
+	public function alert_totals()
 	{
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = new Database($this->db_name);
-		} catch (Kohana_Database_Exception $e) {
-			return false;
+		$this->completion_time = microtime(true);
+		$query = $this->build_alert_summary_query('host_name, service_description, state');
+
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query($query);
+		if (!is_object($dbr)) {
+			echo Kohana::debug($db->errorinfo(), $query);
+			die;
 		}
 
+		# preparing the result array in advance speeds up the
+		# parsing somewhat. Completing it either way makes it
+		# easier to write templates for it as well
+		for ($state = 0; $state < 4; $state++) {
+			$this->summary_result['host'][$state] = array(0, 0);
+			$this->summary_result['service'][$state] = array(0, 0);
+		}
+		unset($this->summary_result['host'][3]);
+		while ($row = $dbr->fetch()) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+			} else {
+				$type = 'service';
+			}
+			$this->summary_result[$type][$row['state']][$row['hard']]++;
+		}
+
+		$this->completion_time = microtime(true) - $this->completion_time;
+		return $this->summary_result;
+	}
+
+	/**
+	 * Find and return the latest $this->summary_items alert
+	 * producers according to the search criteria.
+	 */
+	public function recent_alerts()
+	{
+		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query();
-		$query .= " ORDER BY timestamp DESCENDING";
+		$query .= " ORDER BY timestamp DESC";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
 		}
-		$sql_result = $db->query($query);
-		$sql_result = $sql_result->result(false);
-		$this->summary_result = array();
-		$i = 0;
-		foreach ($result as $row) {
-			$this->summary_result[$i++] = $row;
+		$this->summary_query = $query;
+
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query($query);
+		if (!is_object($dbr)) {
+			echo Kohana::debug($db->errorinfo(), $query);
+			die;
 		}
 
+		$this->summary_result = array();
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			$this->summary_result[] = $row;
+		}
+
+		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
+	}
+
+	/**
+	 * Calculates $this->start_time and $this->end_time based on an
+	 * availability report style period such as "today", "last24hours"
+	 * or "lastmonth".
+	 *
+	 * @param $report_period The textual period to set our options by
+	 * @return false on errors, true on success
+	 */
+	private function calculate_time($report_period)
+	{
+		$year_now 	= date('Y', time());
+		$month_now 	= date('m', time());
+		$day_now	= date('d', time());
+		$week_now 	= date('W', time());
+		$weekday_now = date('w', time())-1;
+		$time_start	= false;
+		$time_end	= false;
+		$now = time();
+
+		switch ($report_period) {
+		 case 'today':
+			$time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
+			$time_end 	= time();
+			break;
+		 case 'last24hours':
+			$time_start = mktime(date('H', time()), date('i', time()), date('s', time()), $month_now, $day_now -1, $year_now);
+			$time_end 	= time();
+			break;
+		 case 'yesterday':
+			$time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
+			$time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
+			break;
+		 case 'thisweek':
+			$time_start = strtotime('today - '.$weekday_now.' days');
+			$time_end 	= time();
+			break;
+		 case 'last7days':
+			$time_start	= strtotime('now - 7 days');
+			$time_end	= time();
+			break;
+		 case 'lastweek':
+			$time_start = strtotime('midnight last monday -7 days');
+			$time_end	= strtotime('midnight last monday');
+			break;
+		 case 'thismonth':
+			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			$time_end	= time();
+			break;
+		 case 'last31days':
+			$time_start = strtotime('now - 31 days');
+			$time_end	= time();
+			break;
+		 case 'lastmonth':
+			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
+			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			break;
+		 case 'thisyear':
+			$time_start = strtotime('midnight '.$year_now.'-01-01');
+			$time_end	= time();
+			break;
+		 case 'lastyear':
+			$time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
+			$time_end	= strtotime('midnight '.$year_now.'-01-01');
+			break;
+		 case 'last12months':
+			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
+			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			break;
+		 case 'last3months':
+			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
+			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			break;
+		 case 'last6months':
+			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
+			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
+			break;
+		 case 'lastquarter':
+			$t = getdate();
+			if($t['mon'] <= 3){
+				$lqstart = ($t['year']-1)."-10-01";
+				$lqend = ($t['year']-1)."-12-31";
+			} elseif ($t['mon'] <= 6) {
+				$lqstart = $t['year']."-01-01";
+				$lqend = $t['year']."-03-31";
+			} elseif ($t['mon'] <= 9){
+				$lqstart = $t['year']."-04-01";
+				$lqend = $t['year']."-06-30";
+			} else {
+				$lqstart = $t['year']."-07-01";
+				$lqend = $t['year']."-09-30";
+			}
+			$time_start = strtotime($lqstart);
+			$time_end = strtotime($lqend);
+			break;
+		 case 'custom':
+			# we'll have "start_time" and "end_time" in
+			# the options when this happens
+			return true;
+		 default:
+			# unknown option, ie bogosity
+			return false;
+		}
+
+		if($time_start > $now)
+			$time_start = $now;
+
+		if($time_end > $now)
+			$time_end = $now;
+
+		$this->start_time = $time_start;
+		$this->end_time = $time_end;
+		return true;
 	}
 }

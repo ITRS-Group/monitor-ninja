@@ -10,16 +10,13 @@ if (!empty($widgets)) {
 <div id="response"></div>
 <div id="progress"></div>
 
-<div class="summary-page">
-	<div class="setup-table">
+<div class="widget w98 left">
 
 	<h1><?php echo $label_create_new ?></h1>
 
 	<form onsubmit="return false;">
-		<table id="report_mode_select" style="width:auto">
-			<tr>
-				<td colspan="2"><?php echo $label_report_mode ?>:</td>
-			</tr>
+		<table id="report_mode_select">
+			<caption><?php echo $label_report_mode ?></caption>
 			<tr>
 				<td id="td_std"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo $label_report_mode_standard ?></td>
 				<td id="td_cust"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo $label_report_mode_custom ?></td>
@@ -29,17 +26,16 @@ if (!empty($widgets)) {
 	<br />
 
 	<?php	echo form::open('summary/generate', array('id' => 'summary_form_std')); ?>
-	<table style="width: 700px" id="std_report_table">
+	<table id="std_report_table">
 		<tr>
-			<td colspan="2"><?php echo $label_standardreport ?>:</td>
-		</tr>
-		<tr>
-			<td><?php echo $label_reporttype ?></td>
-			<td><?php echo form::dropdown(array('name' => 'standardreport'), $standardreport); ?></td>
-		</tr>
-		<tr>
-			<td><?php echo $label_show_items ?></td>
-			<td><?php echo form::input(array('name' => 'show_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
+			<td>
+				<?php echo $label_reporttype ?><br />
+				<?php echo form::dropdown(array('name' => 'standardreport'), $standardreport); ?>
+			</td>
+			<td>
+				<?php echo $label_show_items ?><br />
+				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2"><?php echo form::submit('create_report', $label_create_report) ?></td>
@@ -47,16 +43,12 @@ if (!empty($widgets)) {
 	</table>
 
 	<?php echo form::close(); ?>
-<br /><br />
 
 	<div id="custom_report">
 	<?php	echo form::open('summary/generate', array('id' => 'summary_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
-			<table style="width: 700px">
-				<tr>
-					<td colspan="3"><?php echo $label_customreport_options ?></td>
-				</tr>
-				<tr>
+			<table id="std_report_table">
+				<!--<caption><?php echo $label_customreport_options ?></caption>-->
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
 							<option value="hostgroups"><?php echo $label_hostgroups ?></option>
@@ -133,15 +125,19 @@ if (!empty($widgets)) {
 				</tr>
 			</table>
 
-		<div class="setup-table" id="settings_table">
-			<table style="width: 742px">
+		<div class="setup-table" >
+			<table id="settings_table">
 				<tr>
-					<td colspan="3"><?php echo $label_rpttimeperiod ?></td>
+					<td>
+						<?php echo $label_rpttimeperiod ?><br />
+						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods); ?>
+					</td>
+					<td style="width: 18px">&nbsp;</td>
+					<td>
+						<?php echo $label_reporttype ?><br />
+						<?php echo form::dropdown('report_type', $report_types) ?>
+					</td>
 				</tr>
-				<tr>
-					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods); ?></td>
-				</tr>
-
 				<tr id="display" style="display: none; clear: both;">
 					<td><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
@@ -153,39 +149,39 @@ if (!empty($widgets)) {
 						<input type="hidden" name="end_time" id="end_time" value="" />
 					</td>
 				</tr>
-				<tr>
-					<td><?php echo $label_alert_type ?></td>
-					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('alerttypes', $alerttypes) ?></td>
-				</tr>
-				<tr>
-					<td><?php echo $label_state_type ?></td>
-					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('statetypes', $statetypes) ?></td>
-				</tr>
-				<tr>
-					<td><?php echo $label_host_state ?></td>
-					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('hoststates', $hoststates) ?></td>
-				</tr>
-				<tr>
-					<td><?php echo $label_service_state ?></td>
-					<td>&nbsp;</td>
-					<td><?php echo form::dropdown('servicestates', $servicestates) ?></td>
-				</tr>
-				<tr>
-					<td><?php echo $label_show_items ?></td>
-					<td>&nbsp;</td>
-					<td><?php echo form::input(array('name' => 'show_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?></td>
-				</tr>
 
+				<tr>
+					<td>
+						<?php echo $label_alert_type ?><br />
+						<?php echo form::dropdown('alert_types', $alerttypes) ?>
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<?php echo $label_state_type ?><br />
+						<?php echo form::dropdown('state_types', $statetypes) ?>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<?php echo $label_host_state ?><br />
+						<?php echo form::dropdown('host_states', $hoststates) ?>
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<?php echo $label_service_state ?><br />
+						<?php echo form::dropdown('service_states', $servicestates) ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<?php echo $label_show_items ?><br />
+						<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" /></td>
+				</tr>
 			</table>
-		</div>
-
-		<div class="setup-table">
-			<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" />
 		</div>
 	<?php echo form::close(); ?>
 	</div>
-
-</div>
