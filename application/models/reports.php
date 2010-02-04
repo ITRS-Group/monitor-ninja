@@ -2751,7 +2751,7 @@ class Reports_Model extends Model
 		$db = pdodb::instance('mysql', 'monitor_reports');
 		$dbr = $db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo());
+			echo Kohana::debug($db->errorinfo(), $query);
 			die;
 		}
 		$result = array();
@@ -2809,7 +2809,7 @@ class Reports_Model extends Model
 		$db = pdodb::instance('mysql', 'monitor_reports');
 		$dbr = $db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo());
+			echo Kohana::debug($db->errorinfo(), $query);
 			die;
 		}
 
@@ -2848,7 +2848,7 @@ class Reports_Model extends Model
 		$db = pdodb::instance('mysql', 'monitor_reports');
 		$dbr = $db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo());
+			echo Kohana::debug($db->errorinfo(), $query);
 			die;
 		}
 
