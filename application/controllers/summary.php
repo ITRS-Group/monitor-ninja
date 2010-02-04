@@ -359,21 +359,24 @@ class Summary_Controller extends Authenticated_Controller
 			 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
 		$content->label_all_states = $t->_('All States');
 
-		if ($report_type === self::TOP_ALERT_PRODUCERS) {
+		switch ($report_type) {
+		 case self::TOP_ALERT_PRODUCERS:
 			$content->label_rank = $t->_('Rank');
 			$content->label_producer_type = $t->_('Producer Type');
 			$content->label_total_alerts = $t->_('Total Alerts');
-
 			$content->result = $rpt->top_alert_producers();
-		} else {
+			break;
+
+		 case self::RECENT_ALERTS:
 			$content->label_time = $t->_('Time');
 			$content->label_alert_type = $t->_('Alert Type');
 			$content->label_state_type = $t->_('State Type');
 			$content->label_information = $t->_('Information');
 			$content->label_host_alert = $t->_('Host Alert');
 			$content->label_service_alert = $t->_('Service Alert');
-
 			$content->result = $rpt->latest_alert_producers();
+			break;
+
 		}
 
 		$content->options = $used_options;
