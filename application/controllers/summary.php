@@ -302,6 +302,10 @@ class Summary_Controller extends Authenticated_Controller
 				$options['alert_types'] = 2;
 				$options['state_types'] = 2;
 				break;
+
+			 default:
+				die(Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]"));
+				break;
 			}
 		}
 
