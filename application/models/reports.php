@@ -2775,25 +2775,23 @@ class Reports_Model extends Model
 	public function latest_alert_producers()
 	{
 		$this->completion_time = microtime(true);
-		try {
-			# this will result in error if db_name section
-			# isn't set in config/database.php
-			$db = new Database($this->db_name);
-		} catch (Kohana_Database_Exception $e) {
-			return false;
-		}
-
 		$query = $this->build_alert_summary_query();
 		$query .= " ORDER BY timestamp DESCENDING";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
 		}
 		$this->summary_query = $query;
-		$sql_result = $db->query($query);
-		$sql_result = $sql_result->result(false);
+
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query($query);
+		if (!is_object($dbr)) {
+			echo Kohana::debug($db->errorinfo());
+			die;
+		}
+
 		$this->summary_result = array();
 		$i = 0;
-		foreach ($result as $row) {
+		while ($row = $dbr->fetch()) {
 			$this->summary_result[$i++] = $row;
 		}
 
