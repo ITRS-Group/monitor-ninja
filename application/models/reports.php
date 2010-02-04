@@ -2710,6 +2710,36 @@ class Reports_Model extends Model
 		return $query;
 	}
 
+	public function test_summary_query($query = false)
+	{
+		if (!$query) {
+			$query = $this->build_alert_summary_query();
+		}
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$dbr = $db->query("EXPLAIN " . $query);
+		return $dbr->fetch(PDO::FETCH_ASSOC);
+	}
+
+	public function test_summary_queries()
+	{
+		$result = array();
+		for ($host_state = 1; $host_state <= 7; $host_state++) {
+			$this->host_states = $host_state;
+			for ($service_state = 1; $service_state <= 15; $service_state++) {
+				$this->service_states = $service_state;
+				for ($state_types = 1; $state_types <= 3; $state_types++) {
+					$this->state_types = $state_types;
+					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
+						$this->alert_types = $alert_types;
+						$query = $this->build_alert_summary_query();
+						$result[$query] = $this->test_summary_query($query);
+					}
+				}
+			}
+		}
+		return $result;
+	}
+
 
 	/**
 	 * Get alert summary for "top (hard) alert producers"

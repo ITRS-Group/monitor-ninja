@@ -258,6 +258,22 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 	}
 
+	public function test_queries()
+	{
+		$rpt = new Reports_Model('monitor', 'beta_int_report_data');
+		$rpt->set_option('start_time', 0);
+		$rpt->set_option('end_time', time());
+		$result = $rpt->test_summary_queries();
+		echo "<pre>\n";
+		echo count($result) . " total different queries\n";
+		foreach ($result as $query => $ary) {
+			echo $query . "\n";
+			print_r($ary);
+		}
+		echo "</pre>\n";
+		die;
+	}
+
 	/**
 	 * Generates an alert summary report
 	 *
