@@ -2654,47 +2654,44 @@ class Reports_Model extends Model
 			"WHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
 
-		switch ($this->alert_types) {
-		 case 1:
-			if (!$this->host_states)
-				$this->host_states = 7;
-			if ($this->host_states === 7) {
-				$query .= "AND event_type = " . self::HOSTCHECK . " ";
+		if (!$this->host_states || $this->host_states == 7) {
+			$this->host_states = 7;
+			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
+		} else {
+			$x = array();
+			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 7; $i++) {
+				if (1 << $i & $this->host_states) {
+					$x[$i] = $i;
+				}
 			}
-			else {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") ";
-			}
-			break;
-		 case 2:
-			if (!$this->service_states)
-				$this->service_states = 15;
-			if ($this->service_states === 15) {
-				$query .= "AND event_type = " . self::SERVICECHECK . " ";
-			} else {
-				$query .= "AND (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ") ";
-			}
-			break;
-		 case 3:
-			if ($this->host_states === 7 && $this->service_states === 15) {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"OR event_type = " . self::SERVICECHECK . ") ";
-			} elseif ($this->host_states === 7) {
-				$query .= "AND (event_type = " . self::HOSTCHECK . " " .
-					"OR (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ")) ";
-			} elseif ($this->service_states === 15) {
-				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") " .
-					"OR event_type = " . self::SERVICECHECK . ") ";
-			} else {
-				$query .= "AND ((event_type = " . self::HOSTCHECK . " " .
-					"AND 1 << state & " . $this->host_states . ") " .
-					"OR (event_type = " . self::SERVICECHECK . " " .
-					"AND 1 << state & " . $this->service_states . ")) ";
-			}
+			$host_states_sql .= join(',', $x) . ')) ';
 		}
+
+		if (!$this->service_states || $this->service_states == 15) {
+			$this->service_states = 15;
+			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
+		} else {
+			$x = array();
+			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 15; $i++) {
+				if (1 << $i & $this->service_states) {
+					$x[$i] = $i;
+				}
+			}
+			$service_states_sql .= join(',', $x) . ')) ';
+		}
+
+		switch ($this->alert_types) {
+		 case 1: $query .= 'AND ' . $host_states_sql; break;
+		 case 2: $query .= 'AND ' . $service_states_sql; break;
+		 case 3:
+			$query .= 'AND (' . $host_states_sql .
+				'OR ' . $service_states_sql . ') '; break;
+		}
+
 		switch ($this->alert_types) {
 		 case 0: case 3: default:
 			break;
