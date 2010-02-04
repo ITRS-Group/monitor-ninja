@@ -374,7 +374,7 @@ class Summary_Controller extends Authenticated_Controller
 			$content->label_information = $t->_('Information');
 			$content->label_host_alert = $t->_('Host Alert');
 			$content->label_service_alert = $t->_('Service Alert');
-			$content->result = $rpt->latest_alert_producers();
+			$content->result = $rpt->recent_alerts();
 			break;
 
 		}

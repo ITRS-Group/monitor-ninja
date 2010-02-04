@@ -2802,7 +2802,7 @@ class Reports_Model extends Model
 	 * Find and return the latest $this->summary_items alert
 	 * producers according to the search criteria.
 	 */
-	public function latest_alert_producers()
+	public function recent_alerts()
 	{
 		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query();
