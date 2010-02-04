@@ -2758,7 +2758,7 @@ class Reports_Model extends Model
 			die;
 		}
 		$result = array();
-		while ($row = $dbr->fetch()) {
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$name = $row['host_name'];
 			} else {
@@ -2821,7 +2821,7 @@ class Reports_Model extends Model
 
 		$this->summary_result = array();
 		$i = 0;
-		while ($row = $dbr->fetch()) {
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			$this->summary_result[$i++] = $row;
 		}
 
