@@ -341,4 +341,55 @@ class Scheduled_reports_Model extends Model
 		$res = $db->query($sql);
 		return count($res) != 0 ? $res : false;
 	}
+
+	/**
+	*	Fetch all info for a specific schedule.
+	* 	This includes all relevant data about both schedule
+	* 	and the report.
+	*/
+	public function get_scheduled_data($schedule_id=false)
+	{
+		$schedule_id = (int)$schedule_id;
+		if (!$schedule_id) {
+			return false;
+		}
+
+		$type = self::get_typeof_report($schedule_id);
+
+		switch ($type) {
+			case 'avail':
+				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+					"scheduled_reports sr, avail_config c ".
+					"WHERE sr.id=".$schedule_id." AND ".
+					"c.id=sr.report_id";
+				break;
+			case 'sla':
+				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+					"scheduled_reports sr, sla_config c ".
+					"WHERE sr.id=".$schedule_id." AND ".
+					"c.id=sr.report_id";
+				break;
+			default: return false;
+		}
+
+		$db = new Database(self::db_name);
+		$res = $db->query($sql);
+		$return = false;
+		if (count($res) != 0) {
+			$return = $res->result(false)->current();
+			$id = $return['id'];
+			$object_info = Saved_reports_Model::get_config_objects($type, $id);
+			$objects = false;
+			if (count($object_info) != 0) {
+				foreach ($object_info as $row) {
+					$objects[] = $row->name;
+				}
+			}
+			$return['objects'] = $objects;
+
+		} else {
+			return false;
+		}
+		return $return;
+	}
 }
