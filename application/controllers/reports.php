@@ -711,6 +711,15 @@ class Reports_Controller extends Authenticated_Controller
 				);
 		$t = $this->translate;
 
+		$this->schedule_id 	= $schedule_id;
+
+		# handle call from PHP_CLI to generate PDF report and send by email
+		if (PHP_SAPI === "cli") {
+			#die($this->report_id."\n");
+			$_REQUEST = $this->_cli_report();
+		}
+
+		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
 		if ($this->create_pdf) {
 			$this->auto_render=false;
@@ -731,7 +740,6 @@ class Reports_Controller extends Authenticated_Controller
 			$assumeinitialstates 				= 1;
 		}
 
-		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
 
@@ -3761,5 +3769,38 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			echo $this->translate->_('An error occurred - unable to delete selected schedule');
 		}
+	}
+
+	/**
+	*
+	*	Only valid from commandline (PHP_SAP == 'cli')
+	*/
+	public function _cli_report()
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+
+		# Fetch info on the scheduled report
+		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
+
+		if ($report_data == false) {
+			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
+		}
+
+		$request['create_pdf'] = 1;
+		$request['new_report_setup'] = 1;
+		$this->pdf_filename = $report_data['filename'];
+		$this->pdf_recipients = $report_data['recipients'];
+		foreach (self::$setup_keys as $k) {
+			$request[$k] = $report_data[$k];
+		}
+		if (!empty($report_data['objects'])) {
+			$var_name = self::$map_type_field[$report_data['report_type']];
+			foreach ($report_data['objects'] as $obj) {
+				$request[$var_name][] = $obj;
+			}
+		}
+		return $request;
 	}
 }
