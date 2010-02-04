@@ -141,7 +141,11 @@ if (!empty($widgets)) {
 				<tr>
 					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods); ?></td>
 				</tr>
-
+				<tr>
+					<td><?php echo $label_reporttype ?></td>
+					<td>&nbsp;</td>
+					<td><?php echo form::dropdown('report_type', $report_types) ?></td>
+				</tr>
 				<tr id="display" style="display: none; clear: both;">
 					<td><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
