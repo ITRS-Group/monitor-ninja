@@ -326,6 +326,23 @@ class Summary_Controller extends Authenticated_Controller
 		$content = $this->template->content;
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
+		$content->label_host_alerts => $t->_('Host Alerts');
+		$content->label_service_alerts => $t->('Service Alerts');
+		$content->label_state = $t->_('State');
+		$content->label_soft_alerts = $t->_('Soft Alerts');
+		$content->label_hard_alerts = $t->_('Hard Alerts');
+		$content->label_total_alerts = $t->_('Total Alerts');
+		$content->host_state_names = array
+			(Reports_Model::HOST_UP => $t->_('UP'),
+			 Reports_Model::HOST_DOWN => $t->_('DOWN'),
+			 Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE'));
+		$content->service_state_names = array
+			(Reports_Model::SERVICE_OK => $t->_('OK'),
+			 Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
+			 Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
+			 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
+		$content->label_all_states = $t->_('All States');
+
 		if ($report_type === self::TOP_ALERT_PRODUCERS) {
 			$content->label_rank = $t->_('Rank');
 			$content->label_producer_type = $t->_('Producer Type');
@@ -335,20 +352,10 @@ class Summary_Controller extends Authenticated_Controller
 		} else {
 			$content->label_time = $t->_('Time');
 			$content->label_alert_type = $t->_('Alert Type');
-			$content->label_state = $t->_('State');
 			$content->label_state_type = $t->_('State Type');
 			$content->label_information = $t->_('Information');
 			$content->label_host_alert = $t->_('Host Alert');
 			$content->label_service_alert = $t->_('Service Alert');
-			$content->host_state_names = array
-				(Reports_Model::HOST_UP => $t->_('UP'),
-				 Reports_Model::HOST_DOWN => $t->_('DOWN'),
-				 Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE'));
-			$content->service_state_names = array
-				(Reports_Model::SERVICE_OK => $t->_('OK'),
-				 Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
-				 Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
-				 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
 
 			$content->result = $rpt->latest_alert_producers();
 		}
