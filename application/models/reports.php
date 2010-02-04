@@ -2774,6 +2774,7 @@ class Reports_Model extends Model
 	 */
 	public function latest_alert_producers()
 	{
+		$this->completion_time = microtime(true);
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
@@ -2796,6 +2797,7 @@ class Reports_Model extends Model
 			$this->summary_result[$i++] = $row;
 		}
 
+		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
 	}
 
