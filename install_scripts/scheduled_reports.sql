@@ -45,3 +45,7 @@ INSERT INTO `scheduled_report_periods` (`id`, `periodname`) VALUES
 
 -- ALTER TABLE auto_reports ADD avail_config_id INT;
 INSERT INTO scheduled_reports_db_version VALUES('1.0.0');
+
+ALTER TABLE avail_config ADD cluster_mode INT NOT NULL DEFAULT 0;
+ALTER TABLE sla_config ADD cluster_mode INT NOT NULL DEFAULT 0;
+
