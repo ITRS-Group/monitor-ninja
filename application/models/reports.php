@@ -34,7 +34,6 @@ class Reports_Model extends Model
 	const DATERANGE_WEEK_DAY = 4;  		/* eg: thursday 3 - monday 4 (generic month) */
 	const DATERANGE_TYPES = 5;
 
-
 	var $db_start_time = 0; # earliest database timestamp we look at
 	var $db_end_time = 0;   # latest database timestamp we look at
 	var $debug = array();
@@ -2707,6 +2706,7 @@ class Reports_Model extends Model
 			break;
 		}
 
+		$this->summary_query = $query;
 		return $query;
 	}
 
@@ -2720,7 +2720,6 @@ class Reports_Model extends Model
 	{
 		$start = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description');
-		$this->summary_query = $query;
 
 		$db = pdodb::instance('mysql', 'monitor_reports');
 		$dbr = $db->query($query);
@@ -2788,6 +2787,7 @@ class Reports_Model extends Model
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
 		}
+		$this->summary_query = $query;
 		$sql_result = $db->query($query);
 		$sql_result = $sql_result->result(false);
 		$this->summary_result = array();
