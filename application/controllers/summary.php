@@ -17,6 +17,14 @@
  */
 class Summary_Controller extends Authenticated_Controller
 {
+	const RECENT_ALERTS = 1;
+	const ALERT_TOTALS = 2;
+	const TOP_ALERT_PRODUCERS = 3;
+	const ALERT_TOTALS_HG = 4;
+	const ALERT_TOTALS_HOST = 5;
+	const ALERT_TOTALS_SERVICE = 6;
+	const ALERT_TOTALS_SG = 7;
+
 	private $xajax = false;
 	private $reports_model = false;
 	private $abbr_month_names = false;
@@ -185,14 +193,14 @@ class Summary_Controller extends Authenticated_Controller
 
 
 		# displaytype
-		$template->report_types = array(
-			1 => $t->_("Most Recent Alerts"),
-			2 => $t->_("Alert Totals"),
-			4 => $t->_("Alert Totals By Hostgroup"),
-			5 => $t->_("Alert Totals By Host"),
-			7 => $t->_("Alert Totals By Servicegroup"),
-			6 => $t->_("Alert Totals By Service"),
-			3 => $t->_("Top Alert Producers")
+		$template->report_types = array
+			(self::RECENT_ALERTS => $t->_("Most Recent Alerts"),
+			 self::ALERT_TOTALS => $t->_("Alert Totals"),
+			 self::TOP_ALERT_PRODUCERS => $t->_("Top Alert Producers"),
+			 self::ALERT_TOTALS_HG => $t->_("Alert Totals By Hostgroup"),
+			 self::ALERT_TOTALS_HOST => $t->_("Alert Totals By Host"),
+			 self::ALERT_TOTALS_SG => $t->_("Alert Totals By Servicegroup"),
+			 self::ALERT_TOTALS_SERVICE => $t->_("Alert Totals By Service"),
 		);
 
 		# timeperiod
@@ -267,11 +275,16 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$rpt = new Reports_Model();
 
-		$report_type = 'toplist';
+		if (!empty($_REQUEST['report_type'])) {
+			$report_type = $_REQUEST['report_type'];
+		} else {
+			$report_type = self::TOP_ALERT_PRODUCERS;
+		}
+
 		$options = $_REQUEST;
 		if (isset($_REQUEST['standardreport'])) {
 			if ($_REQUEST['standardreport'] < 4) {
-				$report_type = 'latest';
+				$report_type = self::RECENT_ALERTS;
 			}
 
 			switch ($_REQUEST['standardreport']) {
@@ -309,7 +322,7 @@ class Summary_Controller extends Authenticated_Controller
 		$content = $this->template->content;
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
-		if ($report_type === 'toplist') {
+		if ($report_type === self::TOP_ALERT_PRODUCERS) {
 			$content->label_rank = $t->_('Rank');
 			$content->label_producer_type = $t->_('Producer Type');
 			$content->label_total_alerts = $t->_('Total Alerts');
