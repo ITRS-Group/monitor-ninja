@@ -3048,7 +3048,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Create pdf
 	*/
-	public function _pdf($type = false, $filename=false, $save_path=null)
+	public function _pdf()
 	{
 		# include necessary files for PDF creation
 		pdf::start();
@@ -3058,6 +3058,10 @@ class Reports_Controller extends Authenticated_Controller
 		if (isset($l['w_page'])) { # use ninja translation
 			$l['w_page'] = $this->translate->_('page');
 		}
+
+		$type = $this->type;
+		$filename = $this->pdf_filename;
+		$save_path = $this->pdf_savepath;
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -3105,6 +3109,10 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->SetFillColor(255, 255, 0);
 
 		// ---------------------------------------------------------
+
+		if (PHP_SAPI == 'cli') {
+			$this->pdf_data['content'] = str_replace('/ninja/', '/opt/monitor/op5/ninja/', $this->pdf_data['content']);
+		}
 
 		$images = array();
 		if ($this->type == 'avail') {
@@ -3171,14 +3179,39 @@ class Reports_Controller extends Authenticated_Controller
 		# Close and output PDF document
 		# change last parameter to 'F' to save generated file to a path ($filename)
 		# 'I' is default and pushes the file to browser for download
-		$action = !is_null($save_path) ? 'F' : 'I';
+		$action = 'I';
+		$send_by_mail = false;
+		if (!empty($this->pdf_recipients)) {
+			$action = 'F';
+			$filename = K_PATH_CACHE.$filename;
+			$send_by_mail = true;
+		}
+
 		$pdf->Output($filename, $action);
+
+		if ($send_by_mail) {
+			# send file as email to recipients
+			#chmod($filename, 0777);
+			$to = $this->pdf_recipients;
+			$from = Kohana::config('reports.from_email');
+			$plain = $this->translate->_('Scheduled report sent from ').Kohana::config('reports.from');
+			$subject = $this->translate->_('Scheduled report').": ".basename($filename);
+
+			# $mail_sent will contain the nr of mail sent - not used at the moment
+			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
+
+			# remove file from cache folder
+			unlink($filename);
+		}
 		die();
 	}
 
 	# replace path to image before pdf usage
 	public function _replace_pdf_img_path($in)
     {
+		if (PHP_SAPI == 'cli') {
+			return $in;
+		}
         $in = str_replace(APPPATH, '', $in);
         $in = Kohana::config('config.site_domain').'application/' . $in;
         return $in;
