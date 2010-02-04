@@ -393,6 +393,9 @@ class Summary_Controller extends Authenticated_Controller
 			$content->result = $rpt->recent_alerts();
 			break;
 
+		 case self::ALERT_TOTALS:
+			$content->result = $rpt->alert_totals();
+			break;
 		}
 
 		$content->options = $used_options;
