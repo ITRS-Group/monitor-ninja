@@ -361,6 +361,8 @@ class Summary_Controller extends Authenticated_Controller
 		$content->label_host_alerts = $t->_('Host Alerts');
 		$content->label_service_alerts = $t->_('Service Alerts');
 		$content->label_state = $t->_('State');
+		$content->label_hard = $t->_('Hard');
+		$content->label_soft = $t->_('Soft');
 		$content->label_soft_alerts = $t->_('Soft Alerts');
 		$content->label_hard_alerts = $t->_('Hard Alerts');
 		$content->label_total_alerts = $t->_('Total Alerts');
