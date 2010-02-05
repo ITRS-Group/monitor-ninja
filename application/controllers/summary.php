@@ -127,6 +127,7 @@ class Summary_Controller extends Authenticated_Controller
 
 		$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
 		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
+		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
 
 		$template->label_create_new = $this->translate->_('Alert Summary Report');
 		$template->label_standardreport = $this->translate->_('Standard Reports');
