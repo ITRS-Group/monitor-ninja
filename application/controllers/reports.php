@@ -3845,4 +3845,27 @@ class Reports_Controller extends Authenticated_Controller
 		Auth::instance()->force_login($report_data['user']);
 		return $request;
 	}
+
+	/**
+	*	Receive call from cron to check for scheduled reports
+	*/
+	public function cron($period_str=false)
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+
+		$res = Scheduled_reports_Model::get_period_schedules($period_str);
+		if ($res === false) {
+			return false;
+		}
+
+		$return = false;
+		foreach ($res as $row) {
+			$return[] = $this->generate($row->identifier, $row->id);
+		}
+
+		return $return;
+	}
 }
