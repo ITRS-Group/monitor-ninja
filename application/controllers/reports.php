@@ -3842,6 +3842,7 @@ class Reports_Controller extends Authenticated_Controller
 				$request[$var_name][] = $obj;
 			}
 		}
+		Auth::instance()->force_login($report_data['user']);
 		return $request;
 	}
 }
