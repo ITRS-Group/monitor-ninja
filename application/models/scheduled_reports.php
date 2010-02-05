@@ -392,4 +392,19 @@ class Scheduled_reports_Model extends Model
 		}
 		return $return;
 	}
+
+	/**
+	*	Fetch info on reports to be sent for specific
+	* 	period (daily/weekly/monthly)
+	*/
+	public function get_period_schedules($period_str=false)
+	{
+		$period_str = trim(ucfirst($period_str));
+		$db = new Database(self::db_name);
+
+		$sql = "SELECT rt.identifier, r.id FROm scheduled_report_types rt, scheduled_reports r, scheduled_report_periods p ".
+			"WHERE p.periodname=".$db->escape($period_str)." AND r.period_id=p.id AND rt.id=r.report_type_id";
+		$res = $db->query($sql);
+		return count($res) != 0 ? $res : false;
+	}
 }
