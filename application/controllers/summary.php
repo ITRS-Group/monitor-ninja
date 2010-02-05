@@ -333,7 +333,7 @@ class Summary_Controller extends Authenticated_Controller
 
 		$used_options = array();
 		foreach ($valid_options as $opt) {
-			if (isset($options[$opt])) {
+			if (!empty($options[$opt])) {
 				if ($rpt->set_option($opt, $options[$opt]) !== false) {
 					$used_options[$opt] = $options[$opt];
 				} else {
