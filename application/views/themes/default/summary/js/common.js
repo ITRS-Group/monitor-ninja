@@ -78,6 +78,10 @@ $(document).ready(function() {
 		set_selection($('select[name=report_form] option:selected').attr('value'));
 	});
 	*/
+	$("#summary_form").bind('submit', function() {
+		loopElements();
+		return check_form_values();
+	});
 
 	// datePicker Jquery plugin
 	var datepicker_enddate = new Date().addDays(1).asString();
