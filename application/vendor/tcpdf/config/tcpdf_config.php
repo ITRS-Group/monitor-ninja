@@ -68,7 +68,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 			$k_path_url = 'http://';
 		}
 		$k_path_url .= $_SERVER['HTTP_HOST'];
-		$k_path_url .= str_replace( '\\', '/', substr($_SERVER['PHP_SELF'], 0, -24));
+		$k_path_url .= Kohana::config('config.site_domain');
 	}
 
 	/**
@@ -87,7 +87,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * cache directory for temporary files (full path)
 	 */
-	define ('K_PATH_CACHE', K_PATH_MAIN.'/cache/');
+	define ('K_PATH_CACHE', '/tmp/');
 
 	/**
 	 * cache directory for temporary files (url path)
