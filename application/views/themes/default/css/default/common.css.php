@@ -95,6 +95,11 @@ h1 {
 	font-weight: bold;
 	margin-bottom: 10px;
 }
+h2 {
+	font-size: 15px;
+	font-weight: normal;
+	margin: 7px 0px 15px 0px;
+}
 /**************************************************************************************************/
 cite em,
 cite em:first-child {
