@@ -6,13 +6,13 @@
  * @author     op5 AB
  * @license    GPL
  */
-class user_Core {
-
+class user_Core
+{
 	/**
 	 * Fetch session data for certain variable
 	 *
-	 * @param	string $var
-	 * @return	mixed value from session or false if not found
+	 * @param $var string: Variable name to return value for
+	 * @return Value from session on success. false if not found
 	 */
 	public function session($var = false)
 	{

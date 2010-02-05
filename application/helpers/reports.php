@@ -80,9 +80,10 @@ class reports_Core
 	}
 
 	/**
-	*	Converts an html hexadecimal color from the form "#rrggbb" to its separate components
-	*	@param string $color_str Color represented as hexadecimal html representation
-	*	@return array The RGB components as a triplet with decimal values from 0 to 255.
+	 * Converts an html hexadecimal color from the form "#rrggbb" to
+	 * its separate components.
+	 * @param $color_str string: Color in html hex
+	 * @return False on error. Array of 3 decimal values on success
 	*/
 	public function convert_hex_color($color_str)
 	{
@@ -95,12 +96,12 @@ class reports_Core
 	}
 
 	/**
-	*	Fetch date ranges from reports class
-	*/
+	 * Fetch date ranges from reports class
+	 * @return Array of date ranges
+	 */
 	public function get_date_ranges()
 	{
 		$reports = new Reports_Model();
 		return $reports->get_date_ranges();
 	}
 }
-
