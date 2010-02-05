@@ -1693,9 +1693,11 @@ class Reports_Controller extends Authenticated_Controller
 			# skip the rest if pdf
 			if ($this->create_pdf) {
 				$this->pdf_data['content'] = $template->content->render();
-				$this->_pdf();
-				#die();
-				return true;
+				$retval = $this->_pdf();
+				if (PHP_SAPI == "cli") {
+					echo $retval;
+				}
+				return $retval;
 			}
 		}
 
