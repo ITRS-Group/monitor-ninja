@@ -6,11 +6,13 @@
 class Ninja_setting_Model extends ORM
 {
 	/**
-	*	Save page setting for a user
-	* 	@param str $type [widget_order, widget, etc]
-	* 	@param str $page
-	* 	@param mixed $value
-	*/
+	 * Save page setting for a user
+	 *
+	 * @param $type string: {widget_order, widget, etc...}
+	 * @param $page string: The page we're looking at.
+	 * @param $value mixed: The value to set.
+	 * @return False on error. True on success.
+	 */
 	public function save_page_setting($type='widget_order', $page=false, $value=false)
 	{
 		$type = trim($type);
@@ -38,14 +40,16 @@ class Ninja_setting_Model extends ORM
 		$setting->type = $type;
 		$setting->setting = $value;
 		$setting->save();
+		return true;
 	}
 
 	/**
-	*	Fetch page setting for a user
-	* 	Assuems only one value is returned
-	* 	@param str $type [widget_order, widget, etc]
-	* 	@param str $page
-	*/
+	 * Fetch page setting for a user. Assumes only one value is returned.
+	 *
+	 * @param $type string: {widget_order, widget, etc...}
+	 * @param $page string: The page we're looking at.
+	 * @param $default bool: Request default or not.
+	 */
 	public function fetch_page_setting($type='widget_order', $page=false, $default=false)
 	{
 		$type = trim($type);
@@ -68,5 +72,4 @@ class Ninja_setting_Model extends ORM
 		}
 		return $setting->loaded ? $setting : false;
 	}
-
 }

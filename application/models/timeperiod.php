@@ -6,8 +6,12 @@
 class Timeperiod_Model extends Model
 {
 	/**
-	*	Fetch info on a timeperiod
-	*/
+	 * Fetch info on a timeperiod
+	 *
+	 * @param $period string: Timeperiod name
+	 * @param $use_array bool: Use array if true. Use object if false.
+	 * @return db result
+	 */
 	public function get($period, $use_array=true)
 	{
 		$db = new Database();
@@ -24,8 +28,11 @@ class Timeperiod_Model extends Model
 	}
 
 	/**
-	*	Join timeperiod with excludes
-	*/
+	 * Join timeperiod with excludes
+	 * @param $timeperiod_id int: Timeperiod id
+	 * @param $use_array bool: Use array if true. Object if false.
+	 * @return false on errors. Database result set on success.
+	 */
 	public function excludes($timeperiod_id=null, $use_array=true)
 	{
 		if (empty($timeperiod_id))
@@ -45,9 +52,9 @@ class Timeperiod_Model extends Model
 	}
 
 	/**
-	*	@name 	get_all
-	*	@desc 	Fetch all timperiods
-	*/
+	 * Fetch all timperiods
+	 * @return db result
+	 */
 	public function get_all()
 	{
 		$return = "";
@@ -56,5 +63,4 @@ class Timeperiod_Model extends Model
 		$res = $db->query($sql);
 		return $res ? $res : false;
 	}
-
 }

@@ -200,7 +200,12 @@ if (!empty($widgets)) {
 						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo $label_assumestatesduringnotrunning ?></label>
 					</td>
 					<td>&nbsp;</td>
-					<td>&nbsp;</td>
+					<td style="vertical-align:top">
+						<?php echo help::render('include_soft_states') ?>
+						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
+								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
+						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -210,12 +215,7 @@ if (!empty($widgets)) {
 						<label for="assumeinitialstates" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 					<td>&nbsp;</td>
-					<td style="vertical-align:top">
-						<?php echo help::render('include_soft_states') ?>
-						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
-								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
-						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
-					</td>
+					<td>&nbsp;</td>
 				</tr>
 				<tr id="assumed_host_state">
 					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '.$label_initialassumedhoststate ?></td>
@@ -259,11 +259,10 @@ if (!empty($widgets)) {
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
+				<tr>
+					<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" /></td>
+				</tr>
 			</table>
-		</div>
-
-		<div class="setup-table">
-			<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" />
 		</div>
 	</form>
 </div>

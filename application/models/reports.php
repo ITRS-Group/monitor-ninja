@@ -1,8 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- *	Reports model
- * 	Responsible for fetching data for avail and SLA reports
+ * Reports model
+ * Responsible for fetching data for avail and SLA reports. This class
+ * must be instantiated to work properly.
  */
 class Reports_Model extends Model
 {
@@ -33,6 +34,8 @@ class Reports_Model extends Model
 	const DATERANGE_MONTH_WEEK_DAY = 3; /* eg: thursday 1 april - tuesday 2 may / 2 (specific month) */
 	const DATERANGE_WEEK_DAY = 4;  		/* eg: thursday 3 - monday 4 (generic month) */
 	const DATERANGE_TYPES = 5;
+
+	var $db = false; # PDO database object.
 
 	var $db_start_time = 0; # earliest database timestamp we look at
 	var $db_end_time = 0;   # latest database timestamp we look at
@@ -133,10 +136,10 @@ class Reports_Model extends Model
 	public $options = array();
 
 	/**
-	*	@name	report_class
-	*	@desc	constructor
-	*
-	*/
+	 * Constructor
+	 * @param $db_name Database name
+	 * @param $db_table Database name
+	 */
 	public function __construct($db_name='monitor_reports', $db_table='report_data')
 	{
 		if (self::DEBUG === true) {
@@ -158,6 +161,7 @@ class Reports_Model extends Model
 			$this->db_name 	= $db_name;
 		if (!empty($db_table))
 			$this->db_table = $db_table;
+		$this->db = pdodb::instance('mysql', $this->db_name);
 	}
 
 	/**
@@ -189,8 +193,8 @@ class Reports_Model extends Model
 	/**
 	 * Parses a timerange string
 	 * FIXME: add more validation
-	 * @param string $str
-	 * @return array An array of timeranges
+	 * @param $str string
+	 * @return An array of timeranges
 	 * E.g:
 	 * $str="08:00-12:00,13:00-17:00" gives:
 	 * array
@@ -301,13 +305,15 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Finds next start or stop of timeperiod from a given timestamp. If given time is
-	 * in an inactive timeperiod and we're looking for a stop, current time is returned.
-	 * Vice versa, if we're looking for start inside an active period, the current timestamp is returned.
+	 * Finds next start or stop of timeperiod from a given timestamp. If
+	 * given time is in an inactive timeperiod and we're looking for a
+	 * stop, current time is returned.
+	 * Vice versa, if we're looking for start inside an active period,
+	 * the current timestamp is returned.
 	 *
-	 * @param int $when Current timestamp to start from.
-	 * @param string$what Whether to search for start or stop. Valid values are 'start' and 'stop'.
-	 * @return int The timestamp
+	 * @param $when Current timestamp to start from.
+	 * @param $what Whether to search for start or stop. Valid values are 'start' and 'stop'.
+	 * @return The timestamp
 	 */
 	public function tp_next($when, $what = 'start')
 	{
@@ -380,11 +386,10 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * @name   tp_active_time
-	 * @desc   Returns the number of active seconds "inside"
-	 *         the timeperiod during the start -> stop interval
-	 * @param  int $start: A timestamp in the unix epoch notation
-	 * @param  int $stop: A timestamp in the unix epoch notation
+	 * Returns the number of active seconds "inside"
+	 * the timeperiod during the start -> stop interval
+	 * @param $start: A timestamp in the unix epoch notation
+	 * @param $stop: A timestamp in the unix epoch notation
 	 * @return The number of seconds included in both $stop - $start
 	 *         and the timeperiod set for this report as an integer
 	 *         in the unix epoch notation
@@ -648,19 +653,19 @@ class Reports_Model extends Model
 	/**
 	 * Adds a timeperiod exception to the report.
 	 * FIXME: should probably validate more
-	 * @param int $dateperiod_type Indicates the type of exception. Se timeperiod_class.php for valid values.
-	 * @param int $syear Start year
-	 * @param int $smon Start month
-	 * @param int $smday Start day of month
-	 * @param int $swday Start weekday
-	 * @param int $swday_offset Start weekday offset
-	 * @param int $eyear End year
-	 * @param int $emon End month
-	 * @param int $emday End day of month
-	 * @param int $ewday End weekday
-	 * @param int $ewday_offset End weekday offset
-	 * @param int $skip_interval Interval to skip, such as: "every 3 weeks" etc
-	 * @param string $timeranges
+	 * @param $dateperiod_type Indicates the type of exception. Se timeperiod_class.php for valid values.
+	 * @param $syear Start year
+	 * @param $smon Start month
+	 * @param $smday Start day of month
+	 * @param $swday Start weekday
+	 * @param $swday_offset Start weekday offset
+	 * @param $eyear End year
+	 * @param $emon End month
+	 * @param $emday End day of month
+	 * @param $ewday End weekday
+	 * @param $ewday_offset End weekday offset
+	 * @param $skip_interval Interval to skip, such as: "every 3 weeks" etc
+	 * @param $timeranges Array of timeranges.
 	 * Throws Exception if any parameter has bogus values.
 	 */
 	public function add_timeperiod_exception($dateperiod_type,
@@ -865,15 +870,14 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	get_uptime
-	 *	@desc 	Calculate uptime between two timestamps for host/service
-	 * 	@param 	str $hostname If set to false, internal host_name is used.
-	 * 	@param	str $servicename If set to false, internal service_description is used
-	 * 	@param 	mixed $start_time datetime or unix timestamp
-	 * 	@param 	mixed $end_time datetime or unix timestamp
-	 *	@param mixed $hostgroup If set to false, internal hostgroup is used
-	 *	@param mixed $servicegroup If set to false, internal servicegroup is used
-	 * 	@return array or false on error
+	 * Calculate uptime between two timestamps for host/service
+	 * @param $hostname If set to false, internal host_name is used.
+	 * @param $servicename If set to false, internal service_description is used
+	 * @param $start_time datetime or unix timestamp
+	 * @param $end_time datetime or unix timestamp
+	 * @param $hostgroup If set to false, internal hostgroup is used
+	 * @param $servicegroup If set to false, internal servicegroup is used
+	 * @return array or false on error
 	 *
 	 */
 	public function get_uptime($hostname=false, $servicename=false, $start_time=0,
@@ -1037,9 +1041,9 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name get_last_shutdown
-	 *	@desc returns last shutdown event prior to $start_time
+	 * Get latest (useful) process shutdown event
 	 *
+	 * @return Timestamp when of last shutdown event prior to $start_time
 	 */
 	public function get_last_shutdown()
 	{
@@ -1082,9 +1086,9 @@ class Reports_Model extends Model
 	/**
 	 * Calculate the time spent in different states as total and percentage.
 	 *
-	 * @param array $state State times. Has the format:<br>
+	 * @param $state State times. Has the format:<br>
 	 * array("X:Y:Z" => seconds, 	...). Where X, Y and Z are numeric states and rhs argument is the number of seconds in that state
-	 * @param array $conv State translation table. E.g. for hostgroups:<br> array(0 => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '-1' => 'PENDING')
+	 * @param $conv State translation table. E.g. for hostgroups:<br> array(0 => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '-1' => 'PENDING')
 	 * @return array A huge array with all possible states and time spent in that state. States called PERCENT_* contains percentages rather than a number of seconds.
 	 */
 	public function convert_state_table($state, $conv)
@@ -1500,8 +1504,9 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * @name	st_init
-	 * @desc	Initialize the the state machine for this report
+	 * Initialize the the state machine for this report
+	 * @param $hostname The host(s) we're interested in
+	 * @param $servicename The service(s) we're interested in
 	 */
 	public function st_init($hostname = false, $servicename = false)
 	{
@@ -1605,22 +1610,21 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	calculate_uptime
-	 *	@desc
-	 * 	@param  str $hostname
-	 * 	@param	str $servicename
-
-	 * @global MysqlDB Database interface used.
-	 * @global bool Whether to give verbose debugging.
-	 * 	@return mixed Array or false on error:
-	 * The array is of the form:<br>
-	 * array(<br>
-	 * 	'source' => string,<br>
-	 * 	'log' => array,<br>
-	 * 	'states' => array,<br>
-	 * 	'tot_time' => int,<br>
-	 * 	'groupname' => string<br>
-	 * 	)<br>
+	 * The work-horse of the availability and SLA reports. This is
+	 * generally the entry-point for all reports when options are set.
+	 *
+	 * @param $hostname The host(s) we're interested in.
+	 * @param $servicename The service(s) we're interested in.
+	 *
+	 * @return FALSE on errors. Array of calculated uptime on succes.
+	 * The array is in the form:
+	 * array(
+	 * 	'source' => string,
+	 * 	'log' => array,
+	 * 	'states' => array,
+	 * 	'tot_time' => int,
+	 * 	'groupname' => string
+	 * 	);
 	 */
 	public function calculate_uptime($hostname=false, $servicename=false)
 	{
@@ -1630,16 +1634,24 @@ class Reports_Model extends Model
 		return $this->st_finalize();
 	}
 
-	public function st_parse_all_rows($hostname = false, $servicename = false)
+	/**
+	 * Runs the main query and loops through the results one by one
+	 */
+	private function st_parse_all_rows($hostname = false, $servicename = false)
 	{
-		# run the query and loop through the result one by one
 		$result = $this->uptime_query($hostname, $servicename);
 		foreach ($result as $row) {
 			$this->st_parse_row($row);
-		} // end while
+		}
 	}
 
-	public function st_finalize()
+	/**
+	 * Finalize the report, calculating real uptime from our internal
+	 * meta-format.
+	 *
+	 * @return See 'calculate_uptime()'
+	 */
+	private function st_finalize()
 	{
 		# gather remaining time. If they match, it'll be 0
 		$this->st_update($this->end_time);
@@ -1685,11 +1697,11 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	uptime_query
-	 *	@desc 	Get log details for host/service
-	 * 	@param 	str $hostname
-	 * 	@param	str $servicename
-	 * 	@return res resultset or false on error
+	 * Get log details for host/service
+	 *
+	 * @param $hostname The host(s) we're interested in.
+	 * @param $servicename The service(s) we're interested in.
+	 * @return PDO result object on success. FALSE on error.
 	 */
 	public function uptime_query($hostname=false, $servicename=false)
 	{
@@ -1741,12 +1753,11 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	get_initial_dt_depth
-	 *	@desc 	Fetch information about SCHEDULED_DOWNTIME status
-	 * 	@param 	str $hostname
-	 * 	@param 	str $service_description
-	 * 	@return int depth of initial downtime
+	 * Fetch information about SCHEDULED_DOWNTIME status
 	 *
+	 * @param $hostname string: The host we're interested in.
+	 * @param $service_description string: The service we're interested in.
+	 * @return Depth of initial downtime.
 	 */
 	public function get_initial_dt_depth($hostname=false, $service_description=false)
 	{
@@ -1782,15 +1793,17 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	get_initial_state
-	 *	@desc 	Get initital state from db.
-	 * 			This is usually required when selecting states
-	 * 			for a host/service when the selected start time
-	 * 			don't exactly match a record in db.
-	 * 	@return obj Record fr db or false on error
+	 * Get initital state from db. This is usually required when
+	 * selecting states for a host/service when the selected start
+	 * time doesn't exactly match a record in db. Note that initial
+	 * state can only be obtained for a single object.
 	 *
+	 * @param $host_name string: The host we're interested in.
+	 * @param $service_description string: The service we're interested in.
+	 *
+	 * @return FALSE on error. Record from database on success.
 	 */
-	public function get_initial_state($host_name='', $service_description='')
+	public function get_initial_state($host_name = '', $service_description = '')
 	{
 		$state = false;
 
@@ -1879,10 +1892,8 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 *	@name 	datetime_to_timestamp
-	 *	@desc 	Convert between datetime in format
-	 * 			YYYY-MM-DD H:i:s to UNIX TIMESTAMP
-	 *
+	 * Convert YYYY-MM-DD H:i:s format datetime to unix timestamp
+	 * @return The calculated timestamp on success. false on errors.
 	 */
 	public function datetime_to_timestamp($datetime='')
 	{
@@ -2008,14 +2019,14 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Parses given input as a nagios 3 timeperiod variable. If valid, it is added to the report
+	 * Parses given input as a nagios 3 timeperiod variable. If valid,
+	 * it is added to the report.
 	 * Code is derived from the nagios 3 sources (xdata/xodtemplate.c)
-	 *
-	 * @param str $name
-	 * @param str $value
-	 * @return boolean
-	 *
 	 * FIXME: find better way of adding 24h to end date
+	 *
+	 * @param $name The timeperiod style variable we want to parse
+	 * @param $value The value of the timeperiod variable
+	 * @return boolean
 	 */
 	public function set_timeperiod_variable($name, $value)
 	{
@@ -2348,10 +2359,10 @@ class Reports_Model extends Model
 	 * negative days of month to use days from the end of the month.
 	 * As for time, 00:00:00 of the day is used.
 	 *
-	 * @param int $year
-	 * @param int $month
-	 * @param int $monthday - Day of month, can be negative.
-	 * @return int The resulting timestamp.
+	 * @param $year Year.
+	 * @param $month Month.
+	 * @param $monthday - Day of month, can be negative.
+	 * @return The resulting timestamp.
 	 */
 	public function calculate_time_from_day_of_month($year, $month, $monthday)
 	{
@@ -2446,9 +2457,9 @@ class Reports_Model extends Model
 	 * Determines if two timeranges overlap
 	 * Note: stop time equal to start time in other range is NOT considered an overlap
 	 *
-	 * @param array $range1 Structure: array('start'=> {timestamp}, 'stop' => {timestamp})
-	 * @param array $range2 Structure: array('start'=> {timestamp}, 'stop' => {timestamp})
-	 * @param boolean $inclusive Whether to count "straddling" periods as ovelapping,
+	 * @param $range1 array('start'=> {timestamp}, 'stop' => {timestamp})
+	 * @param $range2 array('start'=> {timestamp}, 'stop' => {timestamp})
+	 * @param $inclusive Whether to count "straddling" periods as ovelapping,
 	 * 	(Eg: start1 == stop2 or start2 == stop1)
 	 * @return boolean
 	 */
@@ -2467,8 +2478,8 @@ class Reports_Model extends Model
 	 *
 	 * Assumes timeranges actually overlap and timeranges are correct (stop time after start time)
 	 *
-	 * @param array $src_range
-	 * @param array $dst_range
+	 * @param $src_range array
+	 * @param $dst_range array
 	 * @return array
 	 */
 	public function merge_timeranges(&$src_range, &$dst_range)
@@ -2481,8 +2492,8 @@ class Reports_Model extends Model
 	 *
 	 * Assumes proper timeranges
 	 *
-	 * @param array $timerange
-	 * @param array $subrange
+	 * @param $timerange
+	 * @param $subrange
 	 * @return array
 	 */
 	public function subtract_timerange(&$timerange, &$subrange)
@@ -2518,9 +2529,8 @@ class Reports_Model extends Model
 	 * Assumes timeranges contain only valid values (eg: stop time after start time)
 	 * Assumes the timerange set does not contain overlapping periods itself
 	 *
-	 * @param array $range
-	 * @param array $timerange_set
-	 *
+	 * @param $range Array of range(s) to add
+	 * @param $timerange_set The timerange set to add to
 	 */
 	public function add_timerange_to_set($range, &$timerange_set)
 	{
@@ -2549,12 +2559,12 @@ class Reports_Model extends Model
 
 	/**
 	 * Merge two sets of timeranges into one, with no overlapping ranges.
+	 * Assumption: The argument sets may contain overlapping timeranges,
+	 * which are wrong in principle, but we'll manage anyway.
 	 *
-	 * @param array $ranges1 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
-	 * @param array $ranges2 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
+	 * @param $timerange_set1 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
+	 * @param $timerange_set2 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
 	 * @return array
-	 *
-	 * Assumption: The argument sets may contain overlapping timeranges, which are wrong in principle, but we'll manage anyway.
 	 */
 	public function merge_timerange_sets(&$timerange_set1, &$timerange_set2)
 	{
