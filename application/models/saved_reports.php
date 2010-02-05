@@ -113,11 +113,14 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	*	@name 	save_config_objects
-	*	@desc 	save information on what objects are related to this
-	* 			report - hosts/services/-groups
-	* 			Stores the name of the objects
-	*/
+	 * Save information on what objects are related to this	report
+	 * (hosts/services/-groups) and stores the name of the objects.
+	 *
+	 * @param $type string: Type of report {avail, sla}
+	 * @param $id Id of the schedule.
+	 * @param $objects Objects this scheduled report concerns
+	 * @return true on success, false on errors.
+	 */
 	public function save_config_objects($type = 'avail', $id=false, $objects=false)
 	{
 		$type = strtolower($type);
@@ -147,11 +150,11 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	*	@name 	delete_report
-	*	@desc 	Delete info on a saved report
-	* 	@param  int $avail_id
-	*
-	*/
+	 * Delete info on a saved report
+	 * @param $type string: Report type { avail, sla }
+	 * @param $id Id of the report to delete.
+	 * @return true on success, false on errors
+	 */
 	public function delete_report($type='avail', $id)
 	{
 		$type = strtolower($type);
@@ -178,10 +181,11 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	* @name 	get_all_report_names
-	* @desc   	Fetches all info names from {avail,sla}_config
-	* @return array all names
-	*/
+	 * Fetches all info names from {avail,sla}_config
+	 *
+	 * @param $type string: Report type. { avail, sla }
+	 * @return false on errors. Array of all names on success
+	 */
 	public function get_all_report_names($type='avail')
 	{
 		$type = strtolower($type);
@@ -205,10 +209,12 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	*	@name 	get_report_info
-	*	@desc 	Fetch info on single saved report
-	*	@return Array
-	*/
+	 * Fetch info on single saved report
+	 *
+	 * @param $type string: Report type { avail, sla }
+	 * @param $id Id of the report.
+	 * @return false on error. Report info as array on success.
+	 */
 	public function get_report_info($type='avail', $id=false)
 	{
 		$type = strtolower($type);
@@ -254,8 +260,10 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	*	Fetch saved SLA values and month info from db
-	*/
+	 * Fetch saved SLA values and month info from db
+	 * @param $sla_id int: Id of the report schedule
+	 * @return false on errors. Database result array on success.
+	 */
 	public function get_period_info($sla_id=false)
 	{
 		if (empty($sla_id))
@@ -270,8 +278,11 @@ class Saved_reports_Model extends Model
 
 
 	/**
-	*	@name get_config_objects
-	*/
+	 * Get config objects
+	 * @param $type string: Report type { avail, sla }
+	 * @param $id int: Report id
+	 * @return false on errors, database result array on success.
+	 */
 	public function get_config_objects($type='avail', $id=false)
 	{
 		$type = strtolower($type);
@@ -284,6 +295,4 @@ class Saved_reports_Model extends Model
 
 		return (!$res || count($res)==0) ? false : $res;
 	}
-
-
 }

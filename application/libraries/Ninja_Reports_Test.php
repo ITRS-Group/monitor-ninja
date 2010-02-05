@@ -383,7 +383,4 @@ class Ninja_Reports_Test_Core
 		echo "test.php: $msg\n";
 		exit(1);
 	}
-
 }
-
-?>

@@ -88,5 +88,3 @@ class Outages_Model extends Model
 		return $return;
 	}
 }
-
-?>

@@ -46,7 +46,7 @@ class Scheduled_reports_Model extends Model
 	/**
 	 * Fetches all scheduled reports of current report type (avail/sla)
 	 *
-	 * @param str $type {avail, sla}
+	 * @param $type string: {avail, sla}
 	 * @return res
 	 */
 	public function get_scheduled_reports($type='avail')
@@ -77,12 +77,11 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	 * Checks if a report is scheduled
-	 * in autoreports
+	 * Checks if a report is scheduled in autoreports
 	 *
-	 * @param int $id
-	 * @param str $type {avail, sla}
-	 * @return mixed array or false on error
+	 * @param $id The report id
+	 * @param $type string: {avail, sla}
+	 * @return Array on success. False on error.
 	 */
 	public function report_is_scheduled($type='avail', $id=false)
 	{
@@ -106,6 +105,10 @@ class Scheduled_reports_Model extends Model
 		return $return;
 	}
 
+	/**
+	 * Get available report periods
+	 * @return Database result object on success. False on errors.
+	 */
 	public function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
@@ -134,12 +137,12 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	 * Delete the schedule from database
+	 * Delete a schedule from database
 	 *
-	 * @param 	int $id
-	 * @param 	str $context enables us to take different actions
+	 * @param $id int: The id of the report to delete.
+	 * @param $context string: Enables us to take different actions
 	 * 			depending on where it is called from
-	 * @return 	ajax output
+	 * @return ajax output
 	 */
 	public function delete_schedule_ajax($id=false, $context=false)
 	{
@@ -217,14 +220,14 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	* Update specific field for certain scheduled report
-	* Called from reports_Controller::save_schedule_item() through ajax
-	*
-	* @param 	int $id
-	* @param 	str $field
-	* @param 	mixed $value
-	* @return 	bool
-	*/
+	 * Update specific field for certain scheduled report
+	 * Called from reports_Controller::save_schedule_item() through ajax
+	 *
+	 * @param $id int: The id of the report.
+	 * @param $field string: The report field to update.
+	 * @param $value string: The new value.
+	 * @return true on succes. false on errors.
+	 */
 	public function update_report_field($id=false, $field=false, $value=false)
 	{
 		$id = (int)$id;
@@ -240,6 +243,12 @@ class Scheduled_reports_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Get the type of a report.
+	 *
+	 * @param $id The id of the report.
+	 * @return Report type on success. False on errors.
+	 */
 	public function get_typeof_report($id=false)
 	{
 		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
@@ -254,6 +263,12 @@ class Scheduled_reports_Model extends Model
 		return count($res)!=0 ? $res->current()->identifier : false;
 	}
 
+	/**
+	 * Get the id of a named report
+	 *
+	 * @param $identifier string: The name of the report
+	 * @return False on errors. Id of the report on success.
+	 */
 	public function get_report_type_id($identifier=false)
 	{
 		$db = new Database(self::db_name);
@@ -343,10 +358,13 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	*	Fetch all info for a specific schedule.
-	* 	This includes all relevant data about both schedule
-	* 	and the report.
-	*/
+	 * Fetch all info for a specific schedule.
+	 * This includes all relevant data about both schedule
+	 * and the report.
+	 *
+	 * @param $schedule_id The id of the schedule we're interested in.
+	 * @return False on errors. Array with schedule-info on succes.
+	 */
 	public function get_scheduled_data($schedule_id=false)
 	{
 		$schedule_id = (int)$schedule_id;
@@ -394,9 +412,12 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	*	Fetch info on reports to be sent for specific
-	* 	period (daily/weekly/monthly)
-	*/
+	 * Fetch info on reports to be sent for specific
+	 * period (daily/weekly/monthly)
+	 *
+	 * @param $period_str string: { daily, weekly, monthly }
+	 * @return Array of schedules for the specific period type
+	 */
 	public function get_period_schedules($period_str=false)
 	{
 		$period_str = trim(ucfirst($period_str));
