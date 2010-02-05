@@ -1,3 +1,4 @@
+<?php $t = $this->translate; ?>
 <a href="#options" class="fancybox"><?php echo $label_edit_settings ?></a>&nbsp;
 <?php if ($report_id) { ?>
 <span id="view_add_schedule">

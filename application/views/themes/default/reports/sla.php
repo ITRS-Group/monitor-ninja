@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
-
+<?php $t = $this->translate; ?>
 <?php
 $nr = 0;
 foreach($report_data as $i =>  $report) {
@@ -10,15 +10,16 @@ foreach($report_data as $i =>  $report) {
 			$str_source = 'SLA breakdown for Custom group';
 		else {
 			if (!$use_alias || $report['group_title'] !== false)
-				$str_source = 'SLA breakdown for: '.$report['source'];
+				$str_source = $t->_('SLA breakdown for').': '.$report['source'];
 			else
-				$str_source = 'SLA breakdown for: '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
+				$str_source = $t->_('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
 		}
 	?>
 	<div class="setup-table members">
-		<h1 onclick="show_hide('sla-graph_<?php echo $nr;?>',this)"><?php echo $str_source; ?></h1><?php
+		<h1><?php echo $str_source; ?></h1>
+		<?php
 		if (!$create_pdf) { ?>
-		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="Uptime" id="pie" class="chart-border" /><?php
+		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
@@ -48,7 +49,7 @@ foreach($report_data as $i =>  $report) {
 					<?php } ?>
 				</tr>
 				<tr class="even">
-					<td class="label"><?php echo $this->translate->_('SLA') ?></td><?php
+					<td class="label"><?php echo $t->_('SLA') ?></td><?php
 					$j = 0;
 					foreach ($data as $month => $value) {
 						$j++; ?>
@@ -57,7 +58,7 @@ foreach($report_data as $i =>  $report) {
 					} ?>
 				</tr>
 				<tr class="odd">
-					<td><?php echo $this->translate->_('Real') ?></td><?php
+					<td><?php echo $t->_('Real') ?></td><?php
 					$i = 0;
 					foreach ($data as $month => $value) {
 						$i++;?>
@@ -65,7 +66,8 @@ foreach($report_data as $i =>  $report) {
 						<?php echo $this->_format_report_value($value[0][0]) ?> %
 						<?php
 								echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
-								array('alt' => ($value[0][0] < $value[0][1]) ? 'down' : 'up','title' => (($value[0][0] < $value[0][1]) ? 'down' : 'up'),'style' => 'margin-bottom: -1px'));
+								array('alt' => ($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK'),
+								'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),'style' => 'width: 12px; height: 12px'));
 						?>
 					</td>
 					<?php } ?>
