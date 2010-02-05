@@ -3129,7 +3129,6 @@ class Reports_Controller extends Authenticated_Controller
 					for ($i = 0; $i < sizeof($data_str); $i++) {
 						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
 						$images[] = $img; # store absolute path to file for later removal
-						$img = $this->_replace_pdf_img_path($img);
 						$image_string .= '<tr><td><b>'.strtoupper($this->translate->_('Status Overview').': '.$data_str[$i]['host']).
 							'</b></td></tr><tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
 					}
@@ -3138,7 +3137,6 @@ class Reports_Controller extends Authenticated_Controller
 					$data_str = $this->pdf_data['pie_data'];
 					$img = $this->piechart($data_str, K_PATH_CACHE);
 					$images[] = $img;
-					$img = $this->_replace_pdf_img_path($img);
 					$image_string .= '<tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
 				}
 			}
@@ -3151,7 +3149,6 @@ class Reports_Controller extends Authenticated_Controller
 				$data_str = $report['data_str'];
 				$img = $this->barchart($data_str, K_PATH_CACHE);
 				$images[] = $img;
-				$img = $this->_replace_pdf_img_path($img);
 				$this->pdf_data['content'] = str_replace("#chart_placeholder_$nr#", '<img src="'.$img.'" />', $this->pdf_data['content']);
 			}
 		}
@@ -3213,17 +3210,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		return true;
 	}
-
-	# replace path to image before pdf usage
-	public function _replace_pdf_img_path($in)
-    {
-		if (PHP_SAPI == 'cli') {
-			return $in;
-		}
-        $in = str_replace(APPPATH, '', $in);
-        $in = Kohana::config('config.site_domain').'application/' . $in;
-        return $in;
-    }
 
 	/**
 	*	Fetch data from report_class
