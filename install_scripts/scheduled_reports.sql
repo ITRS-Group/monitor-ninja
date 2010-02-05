@@ -34,14 +34,14 @@ CREATE TABLE IF NOT EXISTS scheduled_reports_db_version (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 
--- Fix the paths below when decided
-/*INSERT INTO `scheduled_report_types` (`id`, `name`, `script_reports_path`, `script_reports_run`, `identifier`) VALUES
-(1, 'Availability Report', '/opt/monitor/op5/reports/gui/saved_reports.php', '/opt/monitor/op5/reports/gui/avail_auto.php', 'avail'),
-(2, 'SLA Report', '/opt/monitor/op5/reports/gui/sla/saved_reports.php', '/opt/monitor/op5/reports/gui/sla/sla_auto.php', 'sla');
-*/
+INSERT INTO `scheduled_report_types` (`id`, `identifier`) VALUES
+(1, 'avail'),
+(2, 'sla');
+
 INSERT INTO `scheduled_report_periods` (`id`, `periodname`) VALUES
 (1, 'Weekly'),
-(2, 'Monthly');
+(2, 'Monthly'),
+(3, 'Daily');
 
 -- ALTER TABLE auto_reports ADD avail_config_id INT;
 INSERT INTO scheduled_reports_db_version VALUES('1.0.0');
