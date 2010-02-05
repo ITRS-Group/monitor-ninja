@@ -14299,7 +14299,8 @@ if (!class_exists('TCPDF', false)) {
 				case 'img': {
 					if (isset($tag['attribute']['src'])) {
 						// replace relative path with real server path
-						if (($tag['attribute']['src'][0] == '/') AND ($_SERVER['DOCUMENT_ROOT'] != '/')) {
+						if ((($tag['attribute']['src'][0] == '/') AND ($_SERVER['DOCUMENT_ROOT'] != '/'))
+							&& !preg_match("/^\/tmp\//", $tag['attribute']['src'])) { # patched to make TCPDF not to touch paths in /tmp/
 							$tag['attribute']['src'] = $_SERVER['DOCUMENT_ROOT'].$tag['attribute']['src'];
 						}
 						$tag['attribute']['src'] = urldecode($tag['attribute']['src']);
