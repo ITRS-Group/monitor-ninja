@@ -188,4 +188,46 @@ class Default_Controller extends Ninja_Controller  {
 			echo $cli_access;
 		}
 	}
+
+	/**
+	 * Accept a call from cron to look for scheduled reports to send
+	 * @param string $period_str [Daily, Weekly, Monthly]
+	 */
+	public function cron($period_str=false)
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+
+		# figure out path from argv
+		$path = $GLOBALS['argv'][0];
+
+		$user = false;
+		if ($cli_access == 1) {
+			exec('/usr/bin/php '.$path.' default/get_a_user ', $user, $retval);
+			$user = $user[0];
+		} else {
+			# username is hard coded so let's use this
+			$user = $cli_access;
+		}
+
+		if (empty($user)) {
+			# we failed to detect a valid user so there's no use in continuing
+			return false;
+		}
+
+		exec('/usr/bin/php '.$path.' reports/cron/'.$period_str.' '.$user, $return);
+		$sent_mail = array_sum($return);
+		$retval = !empty($sent_mail) ? 0:1;
+		exit($retval);
+	}
+
 }
