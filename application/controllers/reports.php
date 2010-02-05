@@ -3056,6 +3056,7 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		# include necessary files for PDF creation
 		pdf::start();
+		$this->auto_render=false;
 
 		global $l; # required for tcpdf
 
