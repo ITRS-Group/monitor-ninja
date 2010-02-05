@@ -3194,6 +3194,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf->Output($filename, $action);
 
+		$mail_sent = 0;
 		if ($send_by_mail) {
 			# send file as email to recipients
 			#chmod($filename, 0777);
@@ -3207,8 +3208,10 @@ class Reports_Controller extends Authenticated_Controller
 
 			# remove file from cache folder
 			unlink($filename);
+			return $mail_sent;
 		}
-		die();
+
+		return true;
 	}
 
 	# replace path to image before pdf usage
