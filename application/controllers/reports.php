@@ -3049,6 +3049,8 @@ class Reports_Controller extends Authenticated_Controller
 
 	/**
 	*	Create pdf
+	* 	Will also send the generated PDF as an attachment
+	* 	if $this->pdf_recipients is set.
 	*/
 	public function _pdf()
 	{
