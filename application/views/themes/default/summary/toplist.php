@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 
 <div class="widget left w98">
+	<h2><?php echo $this->translate->_('Top hard alert producers'); ?></h2>
 	<table>
 		<tr>
 			<th class="headerNone left"><?php echo $label_rank; ?></th>
@@ -21,7 +22,7 @@
 				$producer = $label_service;
 			}
 		?>
-			<td><?php echo $rank; ?></td>
+			<td class="icon"><?php echo $rank; ?></td>
 			<td><?php echo $producer; ?></td>
 			<td><?php echo $ary['host_name']; ?></td>
 			<td><?php echo $ary['service_description']; ?></td>

@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 
 <div class="widget w98 left">
+	<h2><?php echo $this->translate->_('Most recent hard alerts'); ?></h2>
 	<table>
 		<tr>
 			<th class="headerNone left"><?php //echo $label_state; ?></th>
