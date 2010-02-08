@@ -2718,8 +2718,7 @@ class Reports_Model extends Model
 		if (!$query) {
 			$query = $this->build_alert_summary_query();
 		}
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query("EXPLAIN " . $query);
+		$dbr = $this->db->query("EXPLAIN " . $query);
 		return $dbr->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -2754,8 +2753,7 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description');
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;
@@ -2812,8 +2810,7 @@ class Reports_Model extends Model
 		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description, state');
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;
@@ -2854,8 +2851,7 @@ class Reports_Model extends Model
 		}
 		$this->summary_query = $query;
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;
