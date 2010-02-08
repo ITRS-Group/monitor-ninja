@@ -471,8 +471,8 @@ class Reports_Model extends Model
 			 'service_description' => 'list',
 			 'hostgroup_name' => 'string',
 			 'servicegroup_name' => 'string',
-			 'start_time' => 'int',
-			 'end_time' => 'int',
+			 'start_time' => 'timestamp',
+			 'end_time' => 'timestamp',
 			 'monday' => 'string',
 			 'tuesday' => 'string',
 			 'wednesday' => 'string',
@@ -514,6 +514,15 @@ class Reports_Model extends Model
 		 case 'array':
 			if (!is_array($value))
 				return false;
+			break;
+		 case 'timestamp':
+			if (!is_numeric($value)) {
+				if (strstr($value, '-') === false)
+					return false;
+				$value = strtotime($value);
+				if ($value === false)
+					return false;
+			}
 			break;
 		 default:
 			# this is an exception and should never ever happen
@@ -917,10 +926,6 @@ class Reports_Model extends Model
 		# set_option() but this will have to do for now...
 		if (!empty($hostgroup)) $this->hostgroup = $hostgroup;
 		if (!empty($servicegroup)) $this->servicegroup = $servicegroup;
-
-		// check and possibly convert datetime for start/end_time
-		$start_time = $this->datetime_to_timestamp($start_time);
-		$end_time 	= $this->datetime_to_timestamp($end_time);
 
 		# these get copied to sub objects automagically
 		# using the set_options() method
@@ -1885,32 +1890,6 @@ class Reports_Model extends Model
 
 		$this->initial_state = $state;
 		return $state;
-	}
-
-	/**
-	 * Convert YYYY-MM-DD H:i:s format datetime to unix timestamp
-	 * @return The calculated timestamp on success. false on errors.
-	 */
-	public function datetime_to_timestamp($datetime='')
-	{
-		$datetime = trim($datetime);
-
-		if (is_numeric($datetime))
-			return intval($datetime);
-
-		if (!strstr($datetime, '-')) {
-			// not fully numeric and no dash; wrong format
-			return false;
-		}
-
-		$sql = "SELECT UNIX_TIMESTAMP('".$datetime."') AS timestamp";
-		$db = new Database($this->db_name);
-		$res = $db->query($sql);
-		if (!count($res)) {
-			return false;
-		}
-		$row = $res->current();
-		return $row->timestamp;
 	}
 
 	public function get_common_downtime_state()
