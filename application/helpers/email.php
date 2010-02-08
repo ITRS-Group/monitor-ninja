@@ -6,8 +6,8 @@
  *
  * @package    Core
  * @author     Kohana Team
- * @copyright  (c) 2007-2008 Kohana Team
- * @license    http://kohanaphp.com/license.html
+ * copyright  (c) 2007-2008 Kohana Team
+ * license    http://kohanaphp.com/license.html
  */
 class email_Core {
 
@@ -17,8 +17,8 @@ class email_Core {
 	/**
 	 * Creates a SwiftMailer instance.
 	 *
-	 * @param   string  DSN connection string
-	 * @return  object  Swift object
+	 * @param $config DSN connection string
+	 * @return Swift object
 	 */
 	public static function connect($config = NULL)
 	{
@@ -94,12 +94,12 @@ class email_Core {
 	/**
 	 * Send an email message.
 	 *
-	 * @param   string|array  recipient email (and name), or an array of To, Cc, Bcc names
-	 * @param   string|array  sender email (and name)
-	 * @param   string        message subject
-	 * @param   string        message body
-	 * @param   boolean       send email as HTML
-	 * @return  integer       number of emails sent
+	 * @param $to recipient email (and name), or an array of To, Cc, Bcc names
+	 * @param $from sender email (and name)
+	 * @param $subject message subject
+	 * @param $body message body
+	 * @param $html send email as HTML
+	 * @return number of emails sent
 	 */
 	public static function send($to, $from, $subject, $body, $html = FALSE)
 	{
@@ -167,12 +167,13 @@ class email_Core {
 	/**
 	 * Send an email message.
 	 *
-	 * @param   string|array  recipient email (and name), or an array of To, Cc, Bcc names
-	 * @param   string|array  sender email (and name)
-	 * @param   string        message subject
-	 * @param   string        message body
-	 * @param   boolean       send email as HTML
-	 * @return  integer       number of emails sent
+	 * @param $to  recipient email (and name), or an array of To, Cc, Bcc names
+	 * @param $from  sender email (and name)
+	 * @param $subject message subject
+	 * @param $plain message body
+	 * @param $html send email as HTML
+	 * @param $attachments Attachments(?)
+	 * @return number of emails sent
 	 */
 	public static function send_multipart($to, $from, $subject, $plain='', $html='', $attachments=array())
 	{
