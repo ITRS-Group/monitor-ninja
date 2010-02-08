@@ -713,6 +713,7 @@ class Reports_Controller extends Authenticated_Controller
 				);
 		$t = $this->translate;
 
+		$schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
 		$this->schedule_id 	= $schedule_id;
 
 		# handle call from PHP_CLI to generate PDF report and send by email
