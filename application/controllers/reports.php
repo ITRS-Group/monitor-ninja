@@ -714,12 +714,16 @@ class Reports_Controller extends Authenticated_Controller
 		$t = $this->translate;
 
 		$schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
+
 		$this->schedule_id 	= $schedule_id;
 
-		# handle call from PHP_CLI to generate PDF report and send by email
-		if (PHP_SAPI === "cli") {
-			#die($this->report_id."\n");
-			$_REQUEST = $this->_cli_report();
+		# Handle call from cron or GUI to generate PDF report and send by email
+		#
+		# NOTE:
+		# Passing a schedule_id to this method will ignore all other data passed
+		# in $_REQUEST as data from _cli_report will overwrite it
+		if ($this->schedule_id !== false) {
+			$_REQUEST = $this->_scheduled_report();
 		}
 
 		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
@@ -3802,15 +3806,15 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
+	*	Fetch informaton on a sheduled report and
+	* 	return all data in an array that will replace
+	* 	$_REQUEST.
 	*
-	*	Only valid from commandline (PHP_SAP == 'cli')
+	* 	If called through a call from the commandline, the script will
+	* 	be authorized as the owner of the current schedule.
 	*/
-	public function _cli_report()
+	public function _scheduled_report()
 	{
-		if (PHP_SAPI !== "cli") {
-			die("illegal call\n");
-		}
-
 		# Fetch info on the scheduled report
 		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
 
@@ -3831,7 +3835,12 @@ class Reports_Controller extends Authenticated_Controller
 				$request[$var_name][] = $obj;
 			}
 		}
-		Auth::instance()->force_login($report_data['user']);
+
+		if (PHP_SAPI !== "cli") {
+			# set current user to the owner of the report
+			# this should only be done when called through PHP CLI
+			Auth::instance()->force_login($report_data['user']);
+		}
 		return $request;
 	}
 
