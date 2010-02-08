@@ -67,6 +67,15 @@ $(document).ready(function() {
 		}
 	});
 
+	$(".send_report_now").click(function() {
+		var type_id = $(this).attr('id');
+		type_id = type_id.replace('send_now_', '');
+		type_id = type_id.split('_');
+		var type = type_id[0];
+		var id = type_id[1];
+		send_report_now(type, id);
+	});
+
 	/*
 	$("#cal_end").bind('blur', function() {
 		setTimeout('validate_date()', 1000);
@@ -255,6 +264,27 @@ function show_hide(id,h1) {
 		document.getElementById(id).style.display = 'none';
 		h1.style.background = 'url(icons/arrows/grey.gif) 11px 3px no-repeat';
 	}
+}
+
+function send_report_now(type, id)
+{
+	if (type=='' || id =='') {
+		// missing info
+		return false;
+	}
+	$.ajax({
+		url:_site_domain + _index_page + '/reports/generate',
+		type: 'POST',
+		data: {type: type, schedule_id: id},
+		success: function(data) {
+			if (data == '') {
+				jgrowl_message(_reports_schedule_send_ok, _reports_successs);
+			} else {
+				jgrowl_message(_reports_schedule_send_error, _reports_error);
+			}
+		}
+	});
+
 }
 
 /**
