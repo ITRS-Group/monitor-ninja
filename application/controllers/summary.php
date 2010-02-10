@@ -261,7 +261,7 @@ class Summary_Controller extends Authenticated_Controller
 
 	public function test_queries()
 	{
-		$rpt = new Reports_Model('monitor', 'beta_int_report_data');
+		$rpt = new Reports_Model();
 		$rpt->set_option('start_time', 0);
 		$rpt->set_option('end_time', time());
 		$result = $rpt->test_summary_queries();
