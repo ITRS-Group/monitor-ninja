@@ -471,8 +471,8 @@ class Reports_Model extends Model
 			 'service_description' => 'list',
 			 'hostgroup_name' => 'string',
 			 'servicegroup_name' => 'string',
-			 'start_time' => 'int',
-			 'end_time' => 'int',
+			 'start_time' => 'timestamp',
+			 'end_time' => 'timestamp',
 			 'monday' => 'string',
 			 'tuesday' => 'string',
 			 'wednesday' => 'string',
@@ -514,6 +514,15 @@ class Reports_Model extends Model
 		 case 'array':
 			if (!is_array($value))
 				return false;
+			break;
+		 case 'timestamp':
+			if (!is_numeric($value)) {
+				if (strstr($value, '-') === false)
+					return false;
+				$value = strtotime($value);
+				if ($value === false)
+					return false;
+			}
 			break;
 		 default:
 			# this is an exception and should never ever happen
@@ -918,10 +927,6 @@ class Reports_Model extends Model
 		if (!empty($hostgroup)) $this->hostgroup = $hostgroup;
 		if (!empty($servicegroup)) $this->servicegroup = $servicegroup;
 
-		// check and possibly convert datetime for start/end_time
-		$start_time = $this->datetime_to_timestamp($start_time);
-		$end_time 	= $this->datetime_to_timestamp($end_time);
-
 		# these get copied to sub objects automagically
 		# using the set_options() method
 		$this->set_option('start_time', $start_time);
@@ -1059,21 +1064,18 @@ class Reports_Model extends Model
 			return 0;
 		}
 
-		$db = new Database($this->db_name);
 		$query = "SELECT timestamp, event_type FROM ".
 			$this->db_name.".".$this->db_table.
 			" WHERE timestamp <".$this->start_time.
 			" ORDER BY timestamp DESC LIMIT 1";
-		$res = $db->query($query);
+		$dbr = $this->db->query($query);
 
-		if (!count($res))
+		if (!$dbr || !$dbr->rowCount())
 			return false;
 
-		$res = $res->result(false);
-		$row = $res->current();
+		$row = $dbr->fetch();
 
 		$this->register_db_time($row['timestamp']);
-
 		$event_type = $row['event_type'];
 		if ($event_type==self::PROCESS_SHUTDOWN || $event_type==self::PROCESS_RESTART)
 			$this->last_shutdown = $row['timestamp'];
@@ -1639,8 +1641,8 @@ class Reports_Model extends Model
 	 */
 	private function st_parse_all_rows($hostname = false, $servicename = false)
 	{
-		$result = $this->uptime_query($hostname, $servicename);
-		foreach ($result as $row) {
+		$dbr = $this->uptime_query($hostname, $servicename);
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			$this->st_parse_row($row);
 		}
 	}
@@ -1705,7 +1707,6 @@ class Reports_Model extends Model
 	 */
 	public function uptime_query($hostname=false, $servicename=false)
 	{
-		$db = new Database($this->db_name);
 		$event_type = self::HOSTCHECK;
 		if ($servicename) {
 			$event_type = self::SERVICECHECK;
@@ -1734,8 +1735,8 @@ class Reports_Model extends Model
 		}
 		else {
 			if (empty($servicename)) $servicename = '';
-			$sql .= "AND host_name=".$db->escape($hostname)." " .
-			"AND service_description=".$db->escape($servicename)." ";
+			$sql .= "AND host_name=".$this->db->quote($hostname)." " .
+			"AND service_description=".$this->db->quote($servicename)." ";
 		}
 		if (!$this->include_soft_states)
 			$sql .= 'AND hard = 1 ';
@@ -1748,8 +1749,7 @@ class Reports_Model extends Model
 			" OR event_type=".self::PROCESS_START;
 		$sql .= ") ORDER BY id";
 
-		$res = $db->query($sql);
-		return $res ? $res->result(false) : false;
+		return $this->db->query($sql);
 	}
 
 	/**
@@ -1768,27 +1768,26 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$db = new Database($this->db_name);
 		$sql = "SELECT id, timestamp, event_type, downtime_depth FROM " .
 			$this->db_name . "." . $this->db_table . " " .
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
-			" AND host_name = " . $db->escape($hostname);
+			" AND host_name = " . $this->db->quote($hostname);
 
 		if (!empty($service_description)) {
-			$sql .= "AND service_description=".$db->escape($service_description);
+			$sql .= "AND service_description=".$this->db->quote($service_description);
 		}
 		$sql .= " ORDER BY id DESC LIMIT 1";
 
-		$res = $db->query($sql);
-		if (!count($res))
-		 return false;
+		$dbr = $this->db->query($sql);
+		if (!$dbr || !$dbr->rowCount())
+			return false;
 
-		$row = $res->current();
+		$row = $dbr->fetch(PDO::FETCH_ASSOC);
 
-		$this->register_db_time($row->timestamp);
-		$this->initial_dt_depth = $row->downtime_depth;
+		$this->register_db_time($row['timestamp']);
+		$this->initial_dt_depth = $row['downtime_depth'];
 		return $this->initial_dt_depth;
 	}
 
@@ -1805,7 +1804,7 @@ class Reports_Model extends Model
 	 */
 	public function get_initial_state($host_name = '', $service_description = '')
 	{
-		$state = false;
+		$assumed_state = $state = false;
 
 		if ($this->initial_state !== false)
 			return $this->initial_state;
@@ -1816,11 +1815,10 @@ class Reports_Model extends Model
 		}
 
 		$service_description = $service_description === false ? '' : $service_description;
-		$db = new Database($this->db_name);
 		$sql = "SELECT timestamp, state FROM " .
 			$this->db_name . "." . $this->db_table .
-			" WHERE host_name = " . $db->escape($host_name) .
-			" AND service_description = " . $db->escape($service_description) .
+			" WHERE host_name = " . $this->db->quote($host_name) .
+			" AND service_description = " . $this->db->quote($service_description) .
 			" AND event_type = ";
 
 		if ($service_description !='' ) {
@@ -1838,83 +1836,60 @@ class Reports_Model extends Model
 		$sql .= "AND timestamp < " . $this->start_time .
 			" ORDER BY id DESC LIMIT 1";
 
-		$res = $db->query($sql);
+		
+		# first try to fetch the real initial state so
+		# we don't have to assume
+		$dbr = $this->db->query($sql);
+		if ($dbr && $dbr->rowCount()) {
+			$row = $dbr->fetch(PDO::FETCH_ASSOC);
+			$this->initial_state = $row['state'];
+			return $this->initial_state;
+		}
 
-		if (!count($res)) {
-			# There is no real initial state, so check if we should
-			# assume something. If it's a real state, return early
-			if ($assumed_state > 0) {
-				$this->initial_state = $assumed_state;
-				return $this->initial_state;
-			}
+		# There is no real initial state, so check if we should
+		# assume something. If it's a real state, return early
+		if ($assumed_state > 0) {
+			$this->initial_state = $assumed_state;
+			return $this->initial_state;
+		}
 
-			$state = $assumed_state;
-			# state == -1 is magic for "use current state as initial"
-			# it's fairly bonkers to do that, and will yield different
-			# results for historical data based on present state, but
-			# it's supported in the old cgi's, so we must keep this
-			# mouldering wreck of insanity alive...
-			if ($state == -1) {
-				$sql = $base_sql . "ORDER BY id DESC LIMIT 1";
-				$res = $db->query($sql);
-			}
+		$sql = false;
+		$state = $assumed_state;
+		# state == -1 is magic for "use current state as initial"
+		# it's fairly bonkers to do that, and will yield different
+		# results for historical data based on present state, but
+		# it's supported in the old cgi's, so we must keep this
+		# mouldering wreck of insanity alive...
+		if ($state == -1) {
+			$dbr = $this->db->query($base_sql . "ORDER BY id DESC LIMIT 1");
+		}
 
-			# Using the first real state found in the database as
-			# the assumed initial state is a lot less evil than the
-			# above black voodoo, as reports for last year will always
-			# look the same, no matter what the current state is.
-			elseif ($state == -3) {
-				$sql = $base_sql . "ORDER BY id ASC LIMIT 1";
-				$res = $db->query($sql);
-			}
+		# Using the first real state found in the database as
+		# the assumed initial state is a lot less evil than the
+		# above black voodoo, as reports for last year will always
+		# look the same, no matter what the current state is.
+		elseif ($state == -3) {
+			$dbr = $this->db->query($base_sql . "ORDER BY id ASC LIMIT 1");
+		}
 
-			if (!count($res)) {
-				# this is only reached if there is no state at all
-				# in the database. It should usually be an error,
-				# unless one tries to take a report from, say, last
-				# year on a host that was added less than 30 seconds
-				# ago. Either way, we're out of options so do nothing.
-				# $state will default to STATE_PENDING further down
-			}
+		if (!$dbr || !$dbr->rowCount()) {
+			# this is only reached if there is no state at all
+			# in the database. It should usually be an error,
+			# unless one tries to take a report from, say, last
+			# year on a host that was added less than 30 seconds
+			# ago. Either way, we're out of options so do nothing.
+			# $state will default to STATE_PENDING further down
+		} else {
+			$row = $dbr->fetch();
+			$state = $row['state'];
 		}
 		/* state assumption logic end */
-
-		if (count($res)) {
-			$row = $res->current();
-			$state = $row->state;
-		}
 
 		if ($state === false || $state < 0 || is_null($state))
 			$state = self::STATE_PENDING;
 
 		$this->initial_state = $state;
 		return $state;
-	}
-
-	/**
-	 * Convert YYYY-MM-DD H:i:s format datetime to unix timestamp
-	 * @return The calculated timestamp on success. false on errors.
-	 */
-	public function datetime_to_timestamp($datetime='')
-	{
-		$datetime = trim($datetime);
-
-		if (is_numeric($datetime))
-			return intval($datetime);
-
-		if (!strstr($datetime, '-')) {
-			// not fully numeric and no dash; wrong format
-			return false;
-		}
-
-		$sql = "SELECT UNIX_TIMESTAMP('".$datetime."') AS timestamp";
-		$db = new Database($this->db_name);
-		$res = $db->query($sql);
-		if (!count($res)) {
-			return false;
-		}
-		$row = $res->current();
-		return $row->timestamp;
 	}
 
 	public function get_common_downtime_state()
@@ -2722,8 +2697,7 @@ class Reports_Model extends Model
 		if (!$query) {
 			$query = $this->build_alert_summary_query();
 		}
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query("EXPLAIN " . $query);
+		$dbr = $this->db->query("EXPLAIN " . $query);
 		return $dbr->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -2758,8 +2732,7 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description');
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;
@@ -2816,8 +2789,7 @@ class Reports_Model extends Model
 		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query('host_name, service_description, state');
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;
@@ -2858,8 +2830,7 @@ class Reports_Model extends Model
 		}
 		$this->summary_query = $query;
 
-		$db = pdodb::instance('mysql', 'monitor_reports');
-		$dbr = $db->query($query);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($db->errorinfo(), $query);
 			die;

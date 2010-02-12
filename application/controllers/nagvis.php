@@ -35,6 +35,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function view($map)
@@ -57,6 +59,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function edit($map)
@@ -77,6 +81,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function create()
@@ -91,6 +97,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 			url::redirect('nagvis/edit/' . $map);
 		else
 			url::redirect('nagvis/index');
+
 	}
 
 	public function delete($map)
@@ -120,6 +127,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function geomap()
@@ -139,6 +148,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function rotate($pool, $first_map)
@@ -160,6 +171,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function configure()
@@ -178,5 +191,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->template->js_header->js = $this->xtra_js;
 	}
 }
