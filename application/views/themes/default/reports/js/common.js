@@ -13,6 +13,7 @@ var sla_month_enabled_color  = '#fafafa';
 //var _scheduled_label = '';
 var invalid_report_names = '';
 var current_filename;
+var _time_error = false;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -164,6 +165,7 @@ $(document).ready(function() {
 			}
 		}
 	);
+
 	// ajax post form options
 	var options = {
 		target:			'#response',		// target element(s) to be updated with server response
@@ -344,6 +346,7 @@ function remove_scheduled_str(in_str)
 function show_calendar(val, update) {
 	if (val=='custom') {
 		$("#display").show();
+		init_timepicker();
 		if (update == '') {
 			document.forms['report_form'].start_time.value='';
 			document.forms['report_form'].end_time.value='';
@@ -1324,4 +1327,38 @@ function get_type_id(str)
 {
 	parts = str.split('.');
 	return parts[0];
+}
+
+// init timepicker once it it is shown
+function init_timepicker()
+{
+	// Use default timepicker settings
+	$("#time_start, #time_end").timePicker();
+
+	// Store time used by duration.
+	var oldTime = $.timePicker("#time_start").getTime();
+
+	// Keep the duration between the two inputs.
+	$("#time_start").change(function() {
+		if ($("#time_end").val()) { // Only update when second input has a value.
+			// Calculate duration.
+			var duration = ($.timePicker("#time_end").getTime() - oldTime);
+			var time = $.timePicker("#time_start").getTime();
+			// Calculate and update the time in the second input.
+			$.timePicker("#time_end").setTime(new Date(new Date(time.getTime() + duration)));
+			oldTime = time;
+		}
+	});
+
+	// Validate.
+	$("#time_end").change(function() {
+		if($.timePicker("#time_start").getTime() >= $.timePicker(this).getTime()) {
+			$(this).addClass("time_error");
+			_time_error = true;
+		} else {
+			$(this).removeClass("time_error");
+			_time_error = false;
+		}
+	});
+
 }
