@@ -215,7 +215,11 @@ if (!empty($widgets)) {
 						<label for="assumeinitialstates" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 					<td>&nbsp;</td>
-					<td>&nbsp;</td>
+					<td style="vertical-align:top">
+						<?php echo help::render('show_event_duration') ?>
+						<?php echo form::checkbox(array('name' => 'show_event_duration'), 1, false); ?>
+						<label for="show_event_duration"><?php echo $label_show_event_duration ?></label>
+					</td>
 				</tr>
 				<tr id="assumed_host_state">
 					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '.$label_initialassumedhoststate ?></td>
@@ -245,7 +249,7 @@ if (!empty($widgets)) {
 						</select>
 					</td>
 				</tr>
-				<tr>
+<!--				<tr>
 					<td>
 						<?php echo help::render('save_report') ?>
 						<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
@@ -259,7 +263,7 @@ if (!empty($widgets)) {
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr>
+-->				<tr>
 					<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" /></td>
 				</tr>
 			</table>

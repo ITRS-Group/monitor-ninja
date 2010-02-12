@@ -398,7 +398,8 @@ class Trends_Controller extends Authenticated_Controller {
 		$template->label_assumeinitialstates = $t->_('Assume initial states');
 		#$template->label_cluster_mode = $t->_('Cluster mode');
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
-		$template->label_enter_sla = $t->_('Enter SLA');
+		#$template->label_enter_sla = $t->_('Enter SLA');
+		$template->label_show_event_duration = $t->_('Show event duration');
 		$template->reporting_periods = Reports_Controller::_get_reporting_periods();
 		$template->scheduled_downtime_as_uptime_checked = $scheduled_downtime_as_uptime_checked;
 		$template->cluster_mode_checked = $cluster_mode_checked;
