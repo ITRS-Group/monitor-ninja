@@ -741,11 +741,13 @@ class Reports_Controller extends Authenticated_Controller
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
 
+		/*
 		if (isset($_REQUEST['show_log_entries'])) {
 			$_REQUEST['report_period'] 			= 'last24hours';
 			$_REQUEST['assumeinitialstates'] 	= 1;
 			$assumeinitialstates 				= 1;
 		}
+		*/
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
