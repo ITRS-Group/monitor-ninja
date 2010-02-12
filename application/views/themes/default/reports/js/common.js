@@ -762,13 +762,15 @@ function check_form_values()
 	var rpt_type = $("#report_type").val();
 	if ($("#report_period").val() == 'custom') {
 		// date validation
+		var cur_startdate = $("#cal_start").attr('value');
+		var cur_enddate = $("#cal_end").attr('value');
 		var now = new Date();
-		if (!startDate || !endDate) {
-			if (!startDate) {
+		if (!startDate || !endDate || !cur_startdate || !cur_enddate) {
+			if (!startDate || !cur_startdate) {
 				errors++;
 				err_str += "<li>" + _reports_invalid_startdate + ".</li>";
 			}
-			if (!endDate) {
+			if (!endDate || !cur_enddate) {
 				errors++;
 				err_str += "<li>" + _reports_invalid_enddate + ".</li>";
 			}
