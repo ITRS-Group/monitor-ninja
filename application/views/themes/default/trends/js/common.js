@@ -10,6 +10,7 @@ var is_populated = false; // flag list population when done
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
+var _trends_objects_visible = false;
 //var _scheduled_label = '';
 var invalid_report_names = '';
 var current_filename;
@@ -61,6 +62,10 @@ $(document).ready(function() {
 		return check_and_submit($(this));
 	});
 
+	$("#dummy_form").bind('submit', function() {
+		return false;
+	});
+
 	$("#report_id").bind('change', function() {
 		if (check_and_submit($("#saved_report_form"))) {
 			$("#saved_report_form").trigger('submit');
@@ -101,6 +106,21 @@ $(document).ready(function() {
 
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
+	});
+
+	$("#trends_show_hide_objects").bind('click', function() {
+		//show_hide_objects($(this).attr('value'));
+		if (!_trends_objects_visible) {
+			$("#trends_many_objects").show();
+			$("#trends_show_hide_objects").text(_label_click_to_hide);
+			_trends_objects_visible = true;
+		} else {
+			$("#trends_many_objects").hide();
+			$("#trends_show_hide_objects").text(_label_click_to_view);
+			_trends_objects_visible = false;
+		}
+
+
 	});
 	//set_selection(document.getElementsByName('report_type').item(0).value);
 	/*
@@ -1123,15 +1143,7 @@ function show_response(responseText, statusText)
 
 function create_new_schedule_rows(id)
 {
-	var return_str = '';
-	var f = document.forms['schedule_report_form'];
-	return_str += '<tr id="report-' + id + '">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + $('#period option:selected').text(); + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + f.recipients.value + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + f.filename.value + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + f.description.value + '</td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
-	return return_str;
+	return false;
 }
 
 function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id)
@@ -1209,51 +1221,7 @@ function remove_schedule(id)
 
 function setup_editable()
 {
-	var save_url = _site_domain + _index_page + "/trends/save_schedule_item/";
-	$(".iseditable").editable(save_url, {
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'text',
-		event : 'dblclick',
-		width : 'auto',
-		height : '14px',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		placeholder:_reports_edit_information
-	});
-	$(".period_select").editable(save_url, {
-		data : $('#autoreport_periods').text(),
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : _ok_str,
-		cancel : _cancel_str
-	});
-	$(".iseditable_txtarea").editable(save_url, {
-		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'textarea',
-		event : 'dblclick',
-		rows: '3',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		cssclass: "txtarea",
-		placeholder:_reports_edit_information
-	});
-	$(".report_name").editable(save_url, {
-		data : function (){
-			return fetch_report_data(this.id);
-		},
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : 'OK',
-		cancel : 'cancel'
-	});
-
+	return false;
 }
 
 var is_visible = false;
@@ -1294,4 +1262,312 @@ function get_type_id(str)
 {
 	parts = str.split('.');
 	return parts[0];
+}
+
+// loader function for timeline
+function onLoad(start, end)
+{
+	var eventSource = new Timeline.DefaultEventSource(0);
+	var startProj = SimileAjax.DateTime.parseIso8601DateTime(start);
+	var endProj = SimileAjax.DateTime.parseIso8601DateTime(end);
+	var theme = Timeline.ClassicTheme.create();
+	theme.autoWidth = true;
+	theme.event.bubble.width = 350;
+	theme.event.bubble.height = 300;
+	theme.timeline_start = startProj;
+	theme.timeline_stop  = endProj;
+	var center_val = _graph_center!='' ? _graph_center : start;
+	var dcenter = SimileAjax.DateTime.parseIso8601DateTime(center_val);
+	//var dleft = SimileAjax.DateTime.parseIso8601DateTime(_left_boundary);
+	var d = SimileAjax.DateTime.parseIso8601DateTime(start);
+	if (_is_single) {
+		theme.event.track.height = "20";
+		theme.event.tape.height = 10; // px
+		theme.event.track.height = theme.event.tape.height + 6;
+	}
+	theme.event.track.offset = 20;
+
+	// control report period resolution
+	switch (_zoneperiod) {
+		case 'HOUR':
+			zone_timeline_var = Timeline.DateTime.HOUR;
+			break;
+		case 'DAY':
+			zone_timeline_var = Timeline.DateTime.DAY;
+			break;
+		case 'WEEK':
+			zone_timeline_var = Timeline.DateTime.WEEK;
+			break;
+		case 'MONTH':
+			zone_timeline_var = Timeline.DateTime.MONTH;
+			break;
+	}
+	switch (_intervalunit) {
+		case 'DAY':
+			_timeline_var = Timeline.DateTime.DAY;
+			break;
+		case 'WEEK':
+			_timeline_var = Timeline.DateTime.WEEK;
+			break;
+		case 'MONTH':
+			_timeline_var = Timeline.DateTime.MONTH;
+			break;
+	}
+
+	var zones = [
+		{   start:    startProj,
+			end:      endProj,
+			magnify:  _magnify,
+			unit:     zone_timeline_var
+		}
+	];
+	var bandInfos = [
+		Timeline.createHotZoneBandInfo({
+			width:			"85%",
+			intervalUnit:	_timeline_var,
+			intervalPixels: 50,
+			eventSource:	eventSource,
+			date:			dcenter,
+			zones:			zones,
+			theme:			theme,
+			align:			"Top",
+			layout:			'original'  // original, overview, detailed
+		}),
+		Timeline.createBandInfo({
+			layout:			'overview',
+			date:			d,
+			trackHeight:	0.5,
+			trackGap:		0.2,
+			eventSource:	eventSource,
+			width:			"15%",
+			intervalUnit:	Timeline.DateTime.MONTH,
+			//    showEventText:  false,
+			intervalPixels: 100,
+			theme :theme
+		})
+	];
+
+	bandInfos[1].highlight = false;
+	bandInfos[1].syncWith = 0;
+
+	bandInfos[0].decorators = [
+		new Timeline.SpanHighlightDecorator({
+			startDate:  startProj,
+			endDate:    endProj,
+			inFront:    false,
+			color:      "#FFFFFF",
+			opacity:    30,
+			theme:      theme
+		})
+	];
+	bandInfos[1].decorators = [
+		new Timeline.SpanHighlightDecorator({
+			startDate:  startProj,
+			endDate:    endProj,
+			inFront:    false,
+			color:      "#FFC080",
+			opacity:    30,
+			//startLabel: "Begin",
+			//endLabel:   "End",
+			theme:      theme
+		})
+	];
+
+	tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL);
+	eventSource.loadJSON(json, document.location.href);
+
+	//tl.getBand(0).setMinVisibleDate(dleft);
+	//tl.getBand(0).setMaxVisibleDate(endProj);
+	tl.finishedEventLoading();
+	setupFilterHighlightControls(document.getElementById("controls"), tl, [0,1], theme);
+
+}
+
+function onResize() {
+	if (resizeTimerID == null) {
+		resizeTimerID = window.setTimeout(function() {
+			resizeTimerID = null;
+			tl.layout();
+		}, 500);
+	}
+}
+
+function centerSimileAjax(date) {
+    tl.getBand(0).setCenterVisibleDate(SimileAjax.DateTime.parseIso8601DateTime(date));
+}
+
+function setupFilterHighlightControls(div, timeline, bandIndices, theme) {
+    var table = document.createElement("table");
+    var tr = table.insertRow(0);
+
+    var td = tr.insertCell(0);
+    td.innerHTML = _filter_str + ":";
+
+    td = tr.insertCell(1);
+    td.innerHTML = _highlight_str + ":";
+
+    var handler = function(elmt, evt, target) {
+        onKeyPress(timeline, bandIndices, table);
+    };
+
+    tr = table.insertRow(1);
+    tr.style.verticalAlign = "top";
+
+    td = tr.insertCell(0);
+
+    var input = document.createElement("input");
+    input.type = "text";
+    SimileAjax.DOM.registerEvent(input, "keypress", handler);
+    td.appendChild(input);
+
+    for (var i = 0; i < theme.event.highlightColors.length; i++) {
+        td = tr.insertCell(i + 1);
+
+        input = document.createElement("input");
+        input.type = "text";
+        input.id = "text_filter";
+        SimileAjax.DOM.registerEvent(input, "keypress", handler);
+        td.appendChild(input);
+
+        var divColor = document.createElement("div");
+        divColor.style.height = "0.5em";
+        divColor.style.background = theme.event.highlightColors[i];
+        td.appendChild(divColor);
+    }
+
+    td = tr.insertCell(tr.cells.length);
+    var button = document.createElement("button");
+    button.innerHTML = _clear_all;
+    SimileAjax.DOM.registerEvent(button, "click", function() {
+        clearAll(timeline, bandIndices, table);
+    });
+    td.appendChild(button);
+
+	// == hard and state value filter
+	$('#hard_filter').bind('click', function() {
+		filterHard_States(timeline, bandIndices, table);
+	});
+
+	$('#filter_states').bind('change', function() {
+		filterHard_States(timeline, bandIndices, table);
+	});
+
+    div.appendChild(table);
+}
+
+/**
+*	Filter on hard states and different state values
+*/
+function filterHard_States(timeline, bandIndices, table)
+{
+	var filterMatcher = null;
+
+	var hard = $('#hard_filter').attr('checked');
+	var state_val = $('#filter_states').val();
+	var filterMatcher = null;
+	filterMatcher = function(evt) {
+
+		if (!hard) {
+			if (state_val != '') {
+				return (evt.getProperty(state_val) || false);
+			} else {
+				if (!$('#text_filter').val()) {
+					// no hard state and no state to filter on
+					clearAll(timeline, bandIndices, table);
+					return;
+				} else {
+					//return performFiltering(timeline, bandIndices, table);
+					var tr = table.rows[1];
+					var text = cleanString(tr.cells[0].firstChild.value);
+					if (text.length > 0) {
+				        var regex = new RegExp(text, "i");
+			            return regex.test(evt.getText()) || regex.test(evt.getDescription());
+				    }
+				}
+			}
+		} else {
+			if (state_val != '') {
+				// combine state and hard filter
+				return ((evt.getProperty('hard') && evt.getProperty(state_val)) || false);
+			} else {
+				return (evt.getProperty('hard') || false);
+			}
+		}
+	};
+	for (var i = 0; i < bandIndices.length; i++) {
+		var bandIndex = bandIndices[i];
+		timeline.getBand(bandIndex).getEventPainter().setFilterMatcher(filterMatcher);
+	}
+	timeline.paint();
+}
+
+var timerID = null;
+function onKeyPress(timeline, bandIndices, table) {
+    if (timerID != null) {
+        window.clearTimeout(timerID);
+    }
+    timerID = window.setTimeout(function() {
+		performFiltering(timeline, bandIndices, table);
+    }, 300);
+}
+function cleanString(s) {
+    return s.replace(/^\s+/, '').replace(/\s+$/, '');
+}
+function performFiltering(timeline, bandIndices, table) {
+    timerID = null;
+
+    var tr = table.rows[1];
+    var text = cleanString(tr.cells[0].firstChild.value);
+
+    var filterMatcher = null;
+    if (text.length > 0) {
+        var regex = new RegExp(text, "i");
+        filterMatcher = function(evt) {
+            return regex.test(evt.getText()) || regex.test(evt.getDescription());
+        };
+    }
+
+    var regexes = [];
+    var hasHighlights = false;
+    for (var x = 1; x < tr.cells.length - 1; x++) {
+        var input = tr.cells[x].firstChild;
+        var text2 = cleanString(input.value);
+        if (text2.length > 0) {
+            hasHighlights = true;
+            regexes.push(new RegExp(text2, "i"));
+        } else {
+            regexes.push(null);
+        }
+    }
+    var highlightMatcher = hasHighlights ? function(evt) {
+        var text = evt.getText();
+        var description = evt.getDescription();
+        for (var x = 0; x < regexes.length; x++) {
+            var regex = regexes[x];
+            if (regex != null && (regex.test(text) || regex.test(description))) {
+                return x;
+            }
+        }
+        return -1;
+    } : null;
+
+    for (var i = 0; i < bandIndices.length; i++) {
+        var bandIndex = bandIndices[i];
+        timeline.getBand(bandIndex).getEventPainter().setFilterMatcher(filterMatcher);
+        timeline.getBand(bandIndex).getEventPainter().setHighlightMatcher(highlightMatcher);
+    }
+    timeline.paint();
+}
+function clearAll(timeline, bandIndices, table) {
+    var tr = table.rows[1];
+    for (var x = 0; x < tr.cells.length - 1; x++) {
+        tr.cells[x].firstChild.value = "";
+    }
+
+    for (var i = 0; i < bandIndices.length; i++) {
+        var bandIndex = bandIndices[i];
+        timeline.getBand(bandIndex).getEventPainter().setFilterMatcher(null);
+        timeline.getBand(bandIndex).getEventPainter().setHighlightMatcher(null);
+    }
+    timeline.paint();
 }
