@@ -104,4 +104,12 @@ class reports_Core
 		$reports = new Reports_Model();
 		return $reports->get_date_ranges();
 	}
+	public function is_proper_report_item($k, $data)
+	{
+		if (is_array($data) && !empty($data['states']) && is_array($data['states']))
+			return true;
+
+		return false;
+	}
+
 }
