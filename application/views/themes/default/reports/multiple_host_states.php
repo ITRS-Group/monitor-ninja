@@ -18,17 +18,17 @@
 				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? wordwrap($data['HOST_NAME'][$i],30,'<br />',true) :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . wordwrap($data['HOST_NAME'][$i],30,'<br />',true) . '</a>' ?>)</td>
 				<?php } ?>
 				<td class="data">
-					<?php echo $this->_format_report_value($data['up'][$i]) ?> %
-					<?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
+					<?php echo reports::format_report_value($data['up'][$i]) ?> %
+					<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
 											array( 'alt' => $t->_('Up'), 'title' => $t->_('Up'), 'style' => 'height: 12px; width: 12px')); ?>
 				</td>
 				<td class="data">
-					<?php echo $this->_format_report_value($data['unreachable'][$i]) ?> %
-					<?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['unreachable'][$i]) > 0 ? '' : 'not-').'unreachable.png'),
+					<?php echo reports::format_report_value($data['unreachable'][$i]) ?> %
+					<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unreachable'][$i]) > 0 ? '' : 'not-').'unreachable.png'),
 										array( 'alt' => $t->_('Unreachable'), 'title' => $t->_('Unreachable'), 'style' => 'height: 12px; width: 12px')) ?></td>
-				<td class="data"><?php echo $this->_format_report_value($data['down'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['down'][$i]) > 0 ? '' : 'not-').'down.png'),
+				<td class="data"><?php echo reports::format_report_value($data['down'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['down'][$i]) > 0 ? '' : 'not-').'down.png'),
 							array( 'alt' => $t->_('Down'), 'title' => $t->_('Down'), 'style' => 'height: 12px; width: 12px')) ?></td>
-				<td class="data"><?php echo $this->_format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($this->_format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
+				<td class="data"><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php endfor; if ($use_average==0): ?>
