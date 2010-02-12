@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div id="state_breakdown" style="margin-top: 15px">
-	<?php $i=1; $bg_color = ($i%2 == 0) ? '#fafafa' : '#f2f2f2'; ?>
+	<?php $i=1; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 	<table summary="<?php echo $t->_('Result table') ?>"<?php echo ($create_pdf) ? ' style="border: 1px solid #cdcdcd" cellpadding="5"' : '';?>>
 		<!--<caption><?php echo str_replace(': ', ' '.$t->_('for').' '.$source.': ', $header_string); ?></caption>-->
 		<tr>

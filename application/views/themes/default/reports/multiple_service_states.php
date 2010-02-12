@@ -56,7 +56,7 @@
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
-			<?php $bg_color = ($i%2 == 0) ? '#fafafa' : '#f2f2f2'; ?>
+			<?php $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
 					<?php if ($create_pdf) { ?>
@@ -94,7 +94,7 @@
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php } ?>
-			<?php $i++; $bg_color = ($i%2 == 0) ? '#fafafa' : '#f2f2f2'; ?>
+			<?php $i++; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 			<tr class="group-average">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -140,7 +140,7 @@
 						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php } ?>
-		<?php $i++; $bg_color = ($i%2 == 0) ? '#fafafa' : '#f2f2f2'; ?>
+		<?php $i++; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 		<tr class="odd">
 			<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 			<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
