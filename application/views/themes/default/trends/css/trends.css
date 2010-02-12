@@ -230,3 +230,38 @@ table.white-table tr.no-result td { background: #ffffff; font-style: italic; pad
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus { border: 1px solid #cdcdcd; background: #aaaaaa url(bg.png) repeat-x; font-weight: normal; color: #212121; outline: none; }
 .ui-state-active, .ui-widget-content .ui-state-active { border: 1px solid #cdcdcd; background: #ffffff; font-weight: normal; color: #212121; outline: none; }
 .ui-corner-all { -moz-border-radius: 0px; -webkit-border-radius: 0px; }
+
+.footnotes {
+    background: #eee;
+    padding: 0.25em;
+}
+
+.controls {
+    margin: 1em 0;
+    padding: 0.5em;
+    width:75%;
+}
+
+.controls table{width:300px}
+.controls input{width:100px}
+#filter_states{width:100px}
+#trends_filter_table{
+	width:auto;
+	border:1px solid #c0c0c0;
+	padding: 5px;
+}
+#trends_state_breakdown{
+	width:400px;
+}
+
+#trends_many_objects{
+	display: none;
+}
+#trends_show_hide_objects{
+	cursor:pointer;
+}
+
+.trends_objects{
+	padding-left:10px;
+	list-style: disc;
+}
