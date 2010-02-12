@@ -2321,7 +2321,7 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function _get_multiple_state_info(&$data_arr, $sub_type, $get_vars, $start_time, $end_time, $type)
 	{
-		$date_format = self::_get_date_format(true);
+		$date_format = cal::get_calendar_format(true);
 		$start_time = date($date_format, $start_time);
 		$end_time = date($date_format, $end_time);
 		$prev_host = '';
