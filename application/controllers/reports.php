@@ -2360,23 +2360,23 @@ class Reports_Controller extends Authenticated_Controller
 				$cnt++;
 			}
 			$return['nr_of_items'] = $cnt;
-			$return['average_ok'] = $sum_ok!=0 ? $this->_format_report_value($sum_ok/$cnt) : '0';
-			$return['average_warning'] = $sum_warning!=0 ? $this->_format_report_value($sum_warning/$cnt) : '0';
-			$return['average_unknown'] = $sum_unknown!=0 ? $this->_format_report_value($sum_unknown/$cnt) : '0';
-			$return['average_critical'] = $sum_critical!=0 ? $this->_format_report_value($sum_critical/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? $this->_format_report_value($sum_undetermined/$cnt) : '0';
-			$return['group_average_ok'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_OK']);
-			$return['group_average_warning'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_WARNING']);
-			$return['group_average_unknown'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_UNKNOWN']);
-			$return['group_average_critical'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_CRITICAL']);
-			$return['group_average_undetermined'] = $this->_format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
+			$return['average_ok'] = $sum_ok!=0 ? reports::format_report_value($sum_ok/$cnt) : '0';
+			$return['average_warning'] = $sum_warning!=0 ? reports::format_report_value($sum_warning/$cnt) : '0';
+			$return['average_unknown'] = $sum_unknown!=0 ? reports::format_report_value($sum_unknown/$cnt) : '0';
+			$return['average_critical'] = $sum_critical!=0 ? reports::format_report_value($sum_critical/$cnt) : '0';
+			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
+			$return['group_average_ok'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_OK']);
+			$return['group_average_warning'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_WARNING']);
+			$return['group_average_unknown'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNKNOWN']);
+			$return['group_average_critical'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_CRITICAL']);
+			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
 			$return['groupname'] = $data_arr['groupname']!='' ? 'Servicegroup: '.$data_arr['groupname'] : false;
 			$return[';testcase;'] = $data_arr[';testcase;'];
 		} else {
 			// host
 			$sum_up = $sum_down = $sum_unreachable = $sum_undetermined = 0;
 			foreach ($data_arr as $k => $data) {
-				if (!$this->_is_proper_report_item($k, $data))
+				if (!reports::is_proper_report_item($k, $data))
 					continue;
 				$host_name = $data['states']['HOST_NAME'];
 				$return['host_link'][] = $php_self . "&host_name[]=". $host_name. "&report_type=hosts" .
@@ -2394,33 +2394,18 @@ class Reports_Controller extends Authenticated_Controller
 				$cnt++;
 			}
 			$return['nr_of_items'] = $cnt;
-			$return['average_up'] = $sum_up!=0 ? $this->_format_report_value($sum_up/$cnt) : '0';
-			$return['average_down'] =  $sum_down!=0 ? $this->_format_report_value($sum_down/$cnt) : '0';
-			$return['average_unreachable'] = $sum_unreachable!=0 ? $this->_format_report_value($sum_unreachable/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? $this->_format_report_value($sum_undetermined/$cnt) : '0';
+			$return['average_up'] = $sum_up!=0 ? reports::format_report_value($sum_up/$cnt) : '0';
+			$return['average_down'] =  $sum_down!=0 ? reports::format_report_value($sum_down/$cnt) : '0';
+			$return['average_unreachable'] = $sum_unreachable!=0 ? reports::format_report_value($sum_unreachable/$cnt) : '0';
+			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
 
-			$return['group_average_up'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_UP']);
-			$return['group_average_down'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_DOWN']);
-			$return['group_average_unreachable'] = $this->_format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);
-			$return['group_average_undetermined'] = $this->_format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
+			$return['group_average_up'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UP']);
+			$return['group_average_down'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_DOWN']);
+			$return['group_average_unreachable'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);
+			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
 			$return['groupname'] = $data_arr['groupname']!='' ? 'Hostgroup: '.$data_arr['groupname'] : false;
 			$return[';testcase;'] = $data_arr[';testcase;'];
 		}
-		return $return;
-	}
-
-
-	/**
-	*	Format report value output
-	*/
-	public function _format_report_value($val)
-	{
-		$return = 0;
-		if ($val == '0.000' || $val == '100.000')
-			$return = number_format($val, 0);
-		else
-			$return = number_format($val, 3);
-
 		return $return;
 	}
 
@@ -2532,7 +2517,7 @@ class Reports_Controller extends Authenticated_Controller
 			if ($field_name == 'HOST_NAME' || $field_name == 'SERVICE_DESCRIPTION') {
 				$csv[] = '"' . $states[$field_name] . '"';
 			} else {
-				$csv[] = strstr($field_name, 'PERCENT') ? $this->_format_report_value($states[$field_name]).'%' : $states[$field_name];
+				$csv[] = strstr($field_name, 'PERCENT') ? reports::format_report_value($states[$field_name]).'%' : $states[$field_name];
 			}
 		}
 		return implode(', ', $csv);

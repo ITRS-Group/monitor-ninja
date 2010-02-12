@@ -104,6 +104,21 @@ class reports_Core
 		$reports = new Reports_Model();
 		return $reports->get_date_ranges();
 	}
+
+	/**
+	*	Format report value output
+	*/
+	public function format_report_value($val)
+	{
+		$return = 0;
+		if ($val == '0.000' || $val == '100.000')
+			$return = number_format($val, 0);
+		else
+			$return = number_format($val, 3);
+
+		return $return;
+	}
+
 	public function is_proper_report_item($k, $data)
 	{
 		if (is_array($data) && !empty($data['states']) && is_array($data['states']))

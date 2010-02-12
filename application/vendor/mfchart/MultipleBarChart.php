@@ -120,7 +120,7 @@ class MultipleBarChart extends BarChart {
 
 						#utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, 65, $bar_middle+$bar_legend_hwidth, 995, ALIGN_CENTER, VALIGN_MIDDLE, 0, Reports_Controller::_format_report_value($v), $this->get_color('font_color3'));
 						#utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, -150, $bar_middle+$bar_legend_hwidth, 700, ALIGN_LEFT, VALIGN_MIDDLE, 0, Reports_Controller::_format_report_value($v), $this->get_color('font_color3'));
-						utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1, ALIGN_LEFT, VALIGN_MIDDLE, 0, Reports_Controller::_format_report_value($v), $this->get_color('font_color3'));
+						utilities::imagestringbox($this->image, $this->font, $font_bar_legend, $bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1, ALIGN_LEFT, VALIGN_MIDDLE, 0, reports::format_report_value($v), $this->get_color('font_color3'));
 						#$this->add_occupied($bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1);
 						$this->add_occupied($bar_middle-$bar_legend_hwidth, $y1-$fheight-5, $bar_middle+$bar_legend_hwidth, $y1);
 					}
