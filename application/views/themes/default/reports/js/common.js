@@ -781,6 +781,20 @@ function check_form_values()
 				}
 			}
 		}
+
+		// time validation: _time_error
+		if (_time_error) {
+			errors++;
+			err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
+		}
+
+		// date and time seems OK so let's add time to date field
+		var curval_starttime = $("#time_start").attr('value');
+		$("#start_time").attr('value', startDate + ' ' + curval_starttime);
+
+		var curval_endtime = $("#time_end").attr('value');
+		$("#end_time").attr('value', endDate + ' ' + curval_endtime);
+
 	}
 
 	if ($("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
