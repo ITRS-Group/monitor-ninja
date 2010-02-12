@@ -441,7 +441,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_day_names."\n";
 		$this->inline_js .= $js_abbr_day_names."\n";
 		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
+		$this->js_strings .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
 
 		if ($this->report_id) {
