@@ -1091,7 +1091,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		# AVAIL REPORT
 		if ($in_csvoutput) {
-			$csv_status = $this->_create_csv_output($this->type, $sub_type, $group_name, $in_hostgroup);
+			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
 			# if all went OK we have csv_status === true or we have an error string
 			# @@@FIXME: handle csv output?
 		} elseif ($this->type == 'avail' && (empty($this->data_arr) || (sizeof($this->data_arr)==1 && empty($this->data_arr[0])))) {
@@ -1953,6 +1953,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup)
 	{
 		if (!empty($data_arr)) {
+			$this->auto_render=false;
 			$filename = false;
 			switch ($type) {
 				case 'avail':
@@ -1978,7 +1979,7 @@ class Reports_Controller extends Authenticated_Controller
 							continue;
 						if (!empty($data['states'])) {
 							$csv .= '"'.$csv_group_name.'", ';
-							$csv .= $this->_csv_content($data['states'], $sub_type)."\n";
+							$csv .= self::_csv_content($data['states'], $sub_type)."\n";
 						}
 					}
 				}
@@ -1987,17 +1988,17 @@ class Reports_Controller extends Authenticated_Controller
 					// if we can't find item with index 0, we
 					// are dealing with a single item and should
 					// skip the foreach loop
-					$csv .= csv_content($data_arr['states'], $sub_type)."\n";
+					$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
 				} else {
 					foreach ($data_arr as $k => $data) {
 						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
 							continue;
-						$csv .= csv_content($data['states'], $sub_type)."\n";
+						$csv .= self::_csv_content($data['states'], $sub_type)."\n";
 					}
 				}
 			}
 			echo $csv;
-			return true;
+			die();
 		} else {
 			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
 		}
