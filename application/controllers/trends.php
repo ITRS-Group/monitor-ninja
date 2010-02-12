@@ -16,6 +16,21 @@
  *  PARTICULAR PURPOSE.
  */
 class Trends_Controller extends Authenticated_Controller {
+	public static $options = array(
+		'rpttimeperiod' => 'report_timeperiod',
+		'scheduleddowntimeasuptime' => 'scheduled_downtime_as_uptime',
+		'assumestatesduringnotrunning' => 'assume_states_during_not_running',
+		'includesoftstates' => 'include_soft_states',
+		'assumeinitialstates' => 'assume_initial_states'
+	);
+
+	public static $dep_vars = array(
+		'assumeinitialstates' => array(
+			'initialassumedhoststate' => 'initial_assumed_host_state',
+			'initialassumedservicestate' => 'initial_assumed_service_state'
+		)
+	);
+
 	public static $setup_keys = array(
 		'report_name',
 		'info',
@@ -94,7 +109,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 	private $use_average = 0;
 
-	private $type = false;
+	private $type = 'avail';
 	private $xajax = false;
 	private $report_id = false;
 	private $data_arr = false;
