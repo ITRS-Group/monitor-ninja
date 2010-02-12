@@ -1272,11 +1272,11 @@ class Reports_Controller extends Authenticated_Controller
 						if (empty($data))
 							continue;
 						array_multisort($data);
-						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->start_date, $this->end_date);
+						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 					}
 				} else {
 					array_multisort($this->data_arr);
-					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date);
+					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 				}
 
 
@@ -1462,7 +1462,7 @@ class Reports_Controller extends Authenticated_Controller
 							$service_states = $this->_print_states_for_services($this->data_arr['source'], $this->start_date, $this->end_date, $this->report_type);
 
 							if ($service_states !== false) {
-								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->start_date, $this->end_date);
+								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->start_date, $this->end_date, $this->type);
 								$header_str = $t->_("Service state breakdown");
 								$template->svc_content = $this->add_view('reports/multiple_service_states');
 								$content = $template->svc_content;
@@ -2327,13 +2327,13 @@ class Reports_Controller extends Authenticated_Controller
 	*
 	* 	@return	array report info divided by states
 	*/
-	public function _get_multiple_state_info(&$data_arr, $sub_type, $get_vars, $start_time, $end_time)
+	public function _get_multiple_state_info(&$data_arr, $sub_type, $get_vars, $start_time, $end_time, $type)
 	{
 		$date_format = self::_get_date_format(true);
 		$start_time = date($date_format, $start_time);
 		$end_time = date($date_format, $end_time);
 		$prev_host = '';
-		$php_self = 'generate?type='.$this->type;
+		$php_self = url::site().'reports/generate?type='.$type;
 		if (array_key_exists('states', $data_arr) && !empty($data_arr['states']))
 			$group_averages = $data_arr['states'];
 
