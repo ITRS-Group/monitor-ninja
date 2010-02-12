@@ -943,7 +943,7 @@ class Reports_Controller extends Authenticated_Controller
 		$str_end_date 	= date($this->_get_date_format(true), $this->end_date); // used to set calendar
 
 		if('custom' == $report_period)
-			$report_time_formatted  = sprintf($t->_("%s to %s"), $str_start_date, $str_end_date);
+			$report_time_formatted  = sprintf($t->_("%s to %s"), date(nagstat::date_format(), $this->start_date), date(nagstat::date_format(), $this->end_date));
 		else
 			$report_time_formatted  = (isset($report_period_strings[$report_period]) ? $report_period_strings[$report_period] : $report_period);
 
@@ -1255,8 +1255,10 @@ class Reports_Controller extends Authenticated_Controller
 
 					$header->csv_link = $csv_link;
 					$header->pdf_link = $pdf_link;
-					$header->str_start_date = $str_start_date;
-					$header->str_end_date = $str_end_date;
+					if ($report_period != 'custom') {
+						$header->str_start_date = $str_start_date;
+						$header->str_end_date = $str_end_date;
+					}
 					$header->use_average = $use_average;
 
 					#$header->use_alias = $use_alias;

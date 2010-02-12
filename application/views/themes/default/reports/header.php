@@ -2,10 +2,10 @@
 <h1><?php echo isset($title) ? $title : $this->translate->_('SLA Breakdown'); ?></h1>
 	<p>
 	<?php
-	echo $label_report_period.': '.$report_time_formatted.' (';
-	echo (isset($str_start_date) && isset($str_end_date)) ? $str_start_date.' '.$label_to.' '.$str_end_date : '';
+	echo $label_report_period.': '.$report_time_formatted;
+	echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '.$label_to.' '.$str_end_date.')' : '';
 	echo $use_average ? " <strong>(".$label_using_avg.")</strong>" : '';
-	echo ')</p>';
+	#echo ')</p>';
 	echo html::anchor(
 		'#',
 		html::image(
