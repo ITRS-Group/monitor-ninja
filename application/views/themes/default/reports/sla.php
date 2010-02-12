@@ -39,45 +39,42 @@ foreach($report_data as $i =>  $report) {
 			<?php foreach ($report['table_data'] as $source => $data) { ?>
 			<table class="auto" border="1">
 				<tr>
-					<th class="headerNone"></th>
+					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
 					<?php
 						$n = 0;
 						foreach ($data as $month => $values) {
 						$n++;
 					?>
-					<th class="headerNone"><?php echo $month ?></th>
+					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $month ?></th>
 					<?php } ?>
 				</tr>
 				<tr class="even">
-					<td class="label"><?php echo $t->_('SLA') ?></td><?php
+					<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo $t->_('SLA') ?></td><?php
 					$j = 0;
 					foreach ($data as $month => $value) {
 						$j++; ?>
-					<td  class="data"><?php echo $this->_format_report_value($value[0][1]) ?> %</td>
+					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo $this->_format_report_value($value[0][1]) ?> %</td>
 					<?php
 					} ?>
 				</tr>
 				<tr class="odd">
-					<td><?php echo $t->_('Real') ?></td><?php
+					<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo $t->_('Real') ?></td><?php
 					$i = 0;
 					foreach ($data as $month => $value) {
 						$i++;?>
-					<td class="data">
-						<?php echo $this->_format_report_value($value[0][0]) ?> %
-						<?php
-								echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
-								array('alt' => ($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK'),
-								'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),'style' => 'width: 12px; height: 12px'));
-						?>
-					</td>
+					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
+						<?php echo $this->_format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
+								array(
+								//'alt' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
+								//'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
+								'style' => 'width: 12px; height: 12px'));
+						?></td>
 					<?php } ?>
 				</tr>
-			</table><?php
-			} ?>
-	</div><?php
-	}
-
-	if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
+			</table>
+			<?php } ?>
+	</div>
+	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
 		<h1><?php echo $report['group_title'] ?></h1>
 		<div class="icon-help" onclick="general_help('custom-group')"></div>
@@ -90,6 +87,5 @@ foreach($report_data as $i =>  $report) {
 		</div>
 		<script type='text/javascript'>
 			show_hide('group_<?php echo $nr;?>', document.getElementById('members_<?php echo $nr;?>'))
-		</script><?php
-	}
-}?>
+		</script>
+	<?php } } ?>
