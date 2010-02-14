@@ -690,8 +690,8 @@ class Trends_Controller extends Authenticated_Controller {
 		# any 'old' cgi's anymore
 		if(!isset($_REQUEST['new_report_setup']))
 		{
-			$this->initial_assumed_host_state = $this->_convert_assumed_state($this->initial_assumed_host_state, $sub_type);
-			$this->initial_assumed_service_state = $this->_convert_assumed_state($this->initial_assumed_service_state, $sub_type);
+			$this->initial_assumed_host_state = Reports_Controller::_convert_assumed_state($this->initial_assumed_host_state, $sub_type);
+			$this->initial_assumed_service_state = Reports_Controller::_convert_assumed_state($this->initial_assumed_service_state, $sub_type);
 
 			$_REQUEST['initialassumedhoststate'] = $this->initial_assumed_host_state;
 			$_REQUEST['initialassumedservicestate'] = $this->initial_assumed_service_state;
