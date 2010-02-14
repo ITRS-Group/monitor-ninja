@@ -3433,7 +3433,7 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	private function _generate_sla_member_link($member)
 	{
-		$return = "<a href='reports/generate?type=sla&{$this->object_varname}[]=$member";
+		$return = "<a href='".url::site()."reports/generate?type=sla&amp;{$this->object_varname}[]=$member";
 		foreach($this->report_options as $key => $val) {
 			switch ($key) {
 				case 'report_type':
@@ -3483,7 +3483,7 @@ class Reports_Controller extends Authenticated_Controller
 	private function _generate_avail_member_link($members)
 	{
 		$objects = '';
-		$return = "../avail_result.php?";
+		$return = url::site().'reports/generate?type='.$this->type.'&amp;';
 		if (is_array($members)) {
 			$objects .= implode('&amp;'.$this->object_varname.'[]=',$members);
 		} else {
