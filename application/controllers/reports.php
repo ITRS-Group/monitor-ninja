@@ -3447,10 +3447,10 @@ class Reports_Controller extends Authenticated_Controller
 					}
 					break;
 			}
-			$return .= "&$key=$val";
+			$return .= "&amp;$key=$val";
 		}
 		foreach($this->in_months as $month => $sla) {
-			$return .= "&month_$month=$sla";
+			$return .= "&amp;month_$month=$sla";
 		}
 		$host_alias = '';
 		$service_description = '';
