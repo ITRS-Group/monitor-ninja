@@ -39,13 +39,18 @@
 					if (!$create_pdf)
 						echo '</a>';
 				?>
+					&nbsp; <?php
+					if(empty($data['groupname'])) {
+						echo html::anchor('trends/generate?host_name[]='.$data['HOST_NAME'][$i].$get_vars.'&report_type=hosts', html::image($this->add_path('icons/menu/trends.png'), array('title' => $this->translate->_('Trends for this host'))));
+					} ?>
 				</th>
+				<th class="headerNone left"><?php echo $t->_('Actions') ?></th>
 				<th class="headerNone"><?php echo $t->_('OK') ?></th>
 				<th class="headerNone"><?php echo $t->_('Warning') ?></th>
 				<th class="headerNone"><?php echo $t->_('Unknown') ?></th>
 				<th class="headerNone"><?php echo $t->_('Critical') ?></th>
 				<th class="headerNone"><?php echo $t->_('Undetermined') ?></th>
-				</tr>
+			</tr>
 		<?php } ?>
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
@@ -64,6 +69,9 @@
 					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true); ?></a>
 					<?php } ?>
 				</td>
+				<td class="data">
+					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this service')))) ?>
+				</td>
 				<td class="data"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td class="data"><?php echo reports::format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
@@ -80,7 +88,7 @@
 			<?php if (!empty($data['groupname'])) {
 					if ($use_average==0) { ?>
 			<tr>
-				<td><?php echo $t->_('Average') ?></td>
+				<td colspan="2"><?php echo $t->_('Average') ?></td>
 				<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td class="data"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
@@ -94,7 +102,7 @@
 			</tr>
 			<?php 	} ?>
 			<tr class="group-average">
-				<td><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
+				<td colspan="2"><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
