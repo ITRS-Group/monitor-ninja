@@ -884,8 +884,45 @@ class Trends_Controller extends Authenticated_Controller {
 				$avail_template->label_not_running = $t->_('Not running');
 				$avail_template->label_insufficient_data = $t->_('Insufficient data');
 				$avail_template->label_all = $t->_('All');
+				$trend_links = false;
+				$host_name = $avail_data['values']['HOST_NAME'];
+				$avail_link = url::site().'reports/generate?type=avail'.
+				"&host_name[]=". $host_name. "&report_type=hosts" .
+				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
+
+				#@@@FIXME: Add links to  Alert History + Noticications when available
+				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
+					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
+					$avail_link .= '&service_description[]=' . "$host_name;$service_description";
+					$avail_link_name = $t->_('Availability Report For This Service');
+				} else {
+					$service_description = false;
+					$avail_link_name = $t->_('Availability Report For This Host');
+
+					$statuslink = url::site().'status/service?name='.$host_name;
+					$trend_links[$t->_('Status Detail For This Host')] = $statuslink;
+				}
+				$trend_links[$avail_link_name] = $avail_link;
+
+				$avail_template->trend_links = $trend_links;
 				$avail_template->state_values = $this->state_values;
 				$avail_template->create_pdf = $this->create_pdf;
+				/*
+			LINKS:
+				host:
+					View Availability Report For This Host
+						View Status Detail For This Host
+					View Alert History For This Host
+					View Notifications For This Host
+
+				service:
+						View Trends For This Host
+					View Availability Report For This Service
+						View Alert Histogram For This Service
+					View Alert History For This Service
+					View Notifications For This Service
+				*/
+
 				# hosts or services
 				if (isset($this->data_arr['log'])) {
 					$raw_trends_data = $this->data_arr['log'];

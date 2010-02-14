@@ -1,5 +1,19 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
+<br />
+
+<?php
+	if (isset($trend_links) && !empty($trend_links)) { ?>
+<div id="trend_links">
+	<ul>
+	<?php	foreach ($trend_links as $name => $link) { ?>
+		<li><a href="<?php echo $link ?>"><?php echo $name ?></a></li>
+	<?php	} ?>
+	</ul>
+</div>
+<?php
+	} ?>
+
 <div id="trends_state_breakdown" style="margin-top: 15px">
 	<table>
 		<tr>
