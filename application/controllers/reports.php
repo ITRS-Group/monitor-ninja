@@ -2344,8 +2344,8 @@ class Reports_Controller extends Authenticated_Controller
 				$host_name = $data['states']['HOST_NAME'];
 				$service_description = $data['states']['SERVICE_DESCRIPTION'];
 
-				$return['host_link'][] = $php_self . "&host_name[]=". $host_name . "&report_type=hosts" . '&start_time=' . $start_time . '&end_time=' . $end_time . '&origin=print_multiple&new_avail_report_setup=1'.$get_vars;
-				$return['service_link'][] = $php_self . "&host_name[]=". $host_name . '&service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&origin=print_multiple&new_avail_report_setup=1'.$get_vars;
+				$return['host_link'][] = $php_self . "&host_name[]=". $host_name . "&report_type=hosts" . '&start_time=' . $start_time . '&end_time=' . $end_time . '&new_avail_report_setup=1'.$get_vars;
+				$return['service_link'][] = $php_self . "&host_name[]=". $host_name . '&service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&new_avail_report_setup=1'.$get_vars;
 
 				$return['HOST_NAME'][] 				= $host_name;
 				$return['SERVICE_DESCRIPTION'][] 	= $service_description;
@@ -2384,7 +2384,7 @@ class Reports_Controller extends Authenticated_Controller
 					continue;
 				$host_name = $data['states']['HOST_NAME'];
 				$return['host_link'][] = $php_self . "&host_name[]=". $host_name. "&report_type=hosts" .
-				'&start_time=' . $start_time . '&end_time=' . $end_time .'&origin=print_multiple'.$get_vars;
+				'&start_time=' . $start_time . '&end_time=' . $end_time .$get_vars;
 				$return['HOST_NAME'][] 		= $host_name;
 				$return['up'][] 			= $data['states']['PERCENT_KNOWN_TIME_UP'];
 				$return['down'][] 			= $data['states']['PERCENT_KNOWN_TIME_DOWN'];
