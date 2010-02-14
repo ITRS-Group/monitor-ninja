@@ -821,10 +821,12 @@ class Trends_Controller extends Authenticated_Controller {
 			$avail_data = false;
 			$raw_trends_data = false;
 			$multiple_items = false; # structure of avail_data
-			$avail_template = $this->add_view('trends/multiple_'.$sub_type.'_states');
-			$avail_template->create_pdf = $this->create_pdf;
-			$avail_template->hide_host = false;
+
 			if (isset($this->data_arr[0])) {
+				$avail_template = $this->add_view('trends/multiple_'.$sub_type.'_states');
+				$avail_template->create_pdf = $this->create_pdf;
+				$avail_template->hide_host = false;
+				$avail_template->get_vars = $get_vars;
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
 						if (empty($data))
