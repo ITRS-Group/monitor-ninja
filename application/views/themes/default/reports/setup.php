@@ -245,7 +245,7 @@ if (!empty($widgets)) {
 						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo $label_assumestatesduringnotrunning ?></label>
 					</td>
 					<td>&nbsp;</td>
-					<td>
+					<td id="csv_cell">
 						<?php echo help::render('csv_format') ?>
 						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
 								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
