@@ -56,8 +56,15 @@ class Tac_hosts_Widget extends widget_Core {
 
 		# HOSTS DOWN
 		$hosts_down = array();
+
+		# alter filter depending on config.show_passive_as_active value in config/checks.php
+		$host_fiiter =
+			config::get('checks.show_passive_as_active')
+			? (nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED)
+			: (nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED);
+
 		if ($current_status->hosts_down_unacknowledged) {
-			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
+			$hosts_down['status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.$host_fiiter] =
 				$current_status->hosts_down_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
@@ -77,7 +84,7 @@ class Tac_hosts_Widget extends widget_Core {
 		$hosts_unreachable = array();
 
 		if ($current_status->hosts_unreachable_unacknowledged) {
-			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED)] =
+			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.$host_fiiter] =
 				$current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
