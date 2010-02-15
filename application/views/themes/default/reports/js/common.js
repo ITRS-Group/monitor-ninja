@@ -1047,20 +1047,6 @@ function hideMe(elem)
 	$('#' + elem).hide('slow');
 }
 
-function validate_date(what)
-{
-	var start = $('#cal_start').attr('value');
-	var end = $('#cal_end').attr('value');
-	//console.log(Date.fromString(start));
-	//console.log(Date.fromString(end));
-
-	if (end < start) {
-		//console.log('That is BAD');
-	} else {
-		//console.log('seems OK');
-	}
-}
-
 function confirm_delete_report(the_val)
 {
 	var the_path = self.location.href;
