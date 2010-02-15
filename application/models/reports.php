@@ -140,7 +140,7 @@ class Reports_Model extends Model
 	 * @param $db_name Database name
 	 * @param $db_table Database name
 	 */
-	public function __construct($db_name='monitor_reports', $db_table='report_data')
+	public function __construct($db_name='monitor_reports', $db_table='report_data', $db = false)
 	{
 		if (self::DEBUG === true) {
 			assert_options(ASSERT_ACTIVE, 1);
@@ -157,11 +157,16 @@ class Reports_Model extends Model
 		/** The real state of the object */
 		$this->st_real_state = self::STATE_PENDING;
 
-		if (!empty($db_name))
-			$this->db_name 	= $db_name;
-		if (!empty($db_table))
-			$this->db_table = $db_table;
-		$this->db = pdodb::instance('mysql', $this->db_name);
+		if ($db) {
+			$this->db = $db;
+		} else {
+			if (!empty($db_name))
+				$this->db_name 	= $db_name;
+			if (!empty($db_table))
+				$this->db_table = $db_table;
+			
+			$this->db = pdodb::instance('mysql', $this->db_name);
+		}
 	}
 
 	/**
@@ -991,7 +996,7 @@ class Reports_Model extends Model
 		if (is_array($hostname)) {
 			// == multiple hosts ==
 			foreach ($hostname as $host) {
-				$sub_class = new Reports_Model($this->db_name, $this->db_table);
+				$sub_class = new Reports_Model(false, false, $this->db);
 				$sub_class->set_master($this);
 				$sub_class->id = $host;
 				$sub_class->st_init($host, false);
@@ -1003,7 +1008,7 @@ class Reports_Model extends Model
 				foreach ($servicename as $service) {
 					// split hostname, service_desciption on ';'
 					$service_parts = explode(';', $service);
-					$sub_class = new Reports_Model($this->db_name, $this->db_table);
+					$sub_class = new Reports_Model(false, false, $this->db);
 					$sub_class->set_master($this);
 					$sub_class->id = $service;
 					$sub_class->st_init($service_parts[0], $service_parts[1]);
