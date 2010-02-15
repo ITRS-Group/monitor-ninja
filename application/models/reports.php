@@ -597,14 +597,14 @@ class Reports_Model extends Model
 			$this->include_soft_states = $value;
 			break;
 		 case 'host_name':
-			$this->hostgroup_name = false;
-			$this->servicegroup_name = false;
+			$this->hostgroup = false;
+			$this->servicegroup = false;
 			$this->host_name = $value;
 			return true;
 			break;
 		 case 'service_description':
-			$this->hostgroup_name = false;
-			$this->servicegroup_name = false;
+			$this->hostgroup = false;
+			$this->servicegroup = false;
 			$this->service_description = $value;
 			if (!is_array($value) && !$this->host_name && strchr($value, ';')) {
 				$parts = explode(';', $value);
@@ -616,15 +616,15 @@ class Reports_Model extends Model
 		 case 'hostgroup_name':
 			$this->host_name = false;
 			$this->service_description = false;
-			$this->servicegroup_name = false;
-			$this->hostgroup_name = $value;
+			$this->servicegroup = false;
+			$this->hostgroup = $value;
 			return true;
 			break;
 		 case 'servicegroup_name':
 			$this->host_name = false;
 			$this->service_description = false;
-			$this->hostgroup_name = false;
-			$this->servicegroup_name = $value;
+			$this->hostgroup = false;
+			$this->servicegroup = $value;
 			return true;
 			break;
 		 case 'sunday':
@@ -892,7 +892,8 @@ class Reports_Model extends Model
 	public function get_uptime($hostname=false, $servicename=false, $start_time=0,
 						$end_time=0, $hostgroup=false, $servicegroup=false)
 	{
-		if (is_array($servicename) && empty($servicename)) $servicename = false;
+		if (is_array($servicename) && empty($servicename))
+			$servicename = false;
 		if (empty($hostname) && !empty($this->host_name))
 			$hostname = $this->host_name;
 		if (empty($servicename) && !empty($this->service_description))
@@ -1694,7 +1695,7 @@ class Reports_Model extends Model
 
 		$this->states = $converted_state;
 		$total_time = $this->end_time - $this->start_time;
-		$groupname = $this->hostgroup!='' ? $this->hostgroup : $this->servicegroup;
+		$groupname = $this->hostgroup != '' ? $this->hostgroup : $this->servicegroup;
 		return array('source' => $this->st_source, 'log' => $this->st_log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
 	}
 
