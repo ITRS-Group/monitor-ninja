@@ -334,6 +334,7 @@ function remove_scheduled_str(in_str)
 function show_calendar(val, update) {
 	if (val=='custom') {
 		$("#display").show();
+		init_timepicker();
 		if (update == '') {
 			document.forms['report_form'].start_time.value='';
 			document.forms['report_form'].end_time.value='';
@@ -1570,4 +1571,53 @@ function clearAll(timeline, bandIndices, table) {
         timeline.getBand(bandIndex).getEventPainter().setHighlightMatcher(null);
     }
     timeline.paint();
+}
+
+// init timepicker once it it is shown
+function init_timepicker()
+{
+	// Use default timepicker settings
+	$("#time_start, #time_end").timePicker();
+
+	// Store time used by duration.
+	var oldTime = $.timePicker("#time_start").getTime();
+
+	// Keep the duration between the two inputs.
+	$("#time_start").change(function() {
+		if (!validate_time($("#time_start").val())) {
+			$(this).addClass("time_error");
+			_time_error_start = true;
+		} else {
+			$(this).removeClass("time_error");
+			_time_error_start = false;
+		}
+		if ($("#time_end").val()) { // Only update when second input has a value.
+			// Calculate duration.
+			var duration = ($.timePicker("#time_end").getTime() - oldTime);
+			var time = $.timePicker("#time_start").getTime();
+			// Calculate and update the time in the second input.
+			$.timePicker("#time_end").setTime(new Date(new Date(time.getTime() + duration)));
+			oldTime = time;
+		}
+	});
+
+	// Validate.
+	$("#time_end").change(function() {
+		if($.timePicker("#time_start").getTime() >= $.timePicker(this).getTime()) {
+			$(this).addClass("time_error");
+			_time_error = true;
+		} else {
+			$(this).removeClass("time_error");
+			_time_error = false;
+		}
+	});
+}
+
+function validate_time(tmp_time)
+{
+	var time_parts = tmp_time.split(':');
+	if (time_parts.length!=2 || isNaN(time_parts[0]) || isNaN(time_parts[1])) {
+		return false;
+	}
+	return true;
 }
