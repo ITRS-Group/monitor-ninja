@@ -72,7 +72,9 @@ input#report_name,
 input#cal_end,
 input#cal_start,
 input#recipients,
-input#filename {
+input#filename,
+input#time_start,
+input#time_end {
 	background: #fafafa;
 	border: 1px solid #cccccc;
 	outline: 0px;
@@ -85,11 +87,14 @@ input#filename {
 	margin-bottom: 15px;
 }
 
-select { width: 382px}
-
-input#cal_end, input#cal_start {
-	width: 356px;
+input#cal_end,
+input#cal_start,
+input#time_start,
+input#time_end {
+	width: 100px;
 }
+
+select { width: 382px}
 
 select[multiple=multiple] {
 	padding: 3px;
@@ -309,4 +314,35 @@ input[type=button] {
 	-webkit-border-radius: 4px;
 	padding: 1px 3px;
 	margin-bottom: 5px;
+}
+.time_error {
+	border:1px solid red;
+	color:red;
+}
+
+div.time-picker {
+	position: absolute;
+	height: 200px;
+	width:9em; /* needed for IE */
+	overflow: auto;
+	background: #fff;
+	border: 1px solid #000;
+	z-index: 99;
+}
+div.time-picker-12hours {
+	width:6em; /* needed for IE */
+}
+
+div.time-picker ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+div.time-picker li {
+	padding: 1px;
+	cursor: pointer;
+}
+div.time-picker li.selected {
+	background: #316AC5;
+	color: #fff;
 }
