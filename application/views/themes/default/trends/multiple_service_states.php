@@ -22,7 +22,7 @@
 	<?php } ?>
 		<table summary="<?php echo $t->_('State breakdown for host services') ?>" class="multiple_services" style="margin-top: 15px" border="1">
 			<tr>
-				<th class="headerNone left">
+				<th class="headerNone left" style="width: 90%">
 				<?php
 				if(!empty($data['groupname'])) {
 					echo $data['groupname'];
@@ -124,7 +124,7 @@
 <?php if (empty($data['groupname'])) { ?>
 	<table summary="<?php echo $t->_('State breakdown for host services') ?>" class="multiple_services" border="1">
 		<tr>
-			<th class="headerNone" style="text-align: left"><?php echo $t->_('Average and Group availability for all selected services') ?></th>
+			<th class="headerNone left" style="width: 90%"><?php echo $t->_('Average and Group availability for all selected services') ?></th>
 			<th class="headerNone"><?php echo $t->_('OK') ?></th>
 			<th class="headerNone"><?php echo $t->_('Warning') ?></th>
 			<th class="headerNone"><?php echo $t->_('Unknown') ?></th>

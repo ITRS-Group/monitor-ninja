@@ -1,5 +1,5 @@
 body {
-	margin: 0px 0px 0px 2px;
+	margin: 0px 1%;
 }
 
 #progress{
@@ -57,7 +57,7 @@ body {
 #response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
 
 /* nytt */
-.report-page-setup{margin-left:10px;}
+.report-page-setup{}
 .setup-table { border: 0px; padding: 0px; margin: 0px; border-spacing: 0px; border-collapse: collapse}
 .setup-table table tr td {
 	border: 0px;
@@ -220,7 +220,7 @@ table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }
 
 table.white-table tr.no-result td { background: #ffffff; font-style: italic; padding-left: 0px; }
 
-.report-page { padding: 0px 1% }
+.report-page { }
 
 /* tab specifics **********************************************************************************/
 
@@ -237,19 +237,38 @@ table.white-table tr.no-result td { background: #ffffff; font-style: italic; pad
 }
 
 .controls {
-    margin: 1em 0;
-    padding: 0.5em;
+    margin: 10px 0;
     width:75%;
 }
 
 .controls table{width:300px}
 .controls input{width:100px}
 #filter_states{width:100px}
+
 #trends_filter_table{
 	width:auto;
-	border:1px solid #c0c0c0;
-	padding: 5px;
+	margin-top: 27px;
 }
+
+#controls {
+	padding: 0px;
+	width: auto;
+	float: left;
+}
+
+#controls table tr td,
+#trends_filter_table tr td {
+	background: none;
+	padding: 0px 10px 0px 0px;
+	vertical-align: top;
+}
+
+#controls table tr td div {
+	margin-top: -14px;
+	margin-top: -10px;
+	margin-left: 2px;
+}
+
 #trends_state_breakdown{
 	width:400px;
 }
@@ -264,4 +283,30 @@ table.white-table tr.no-result td { background: #ffffff; font-style: italic; pad
 .trends_objects{
 	padding-left:10px;
 	list-style: disc;
+}
+
+input,
+select {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 3px 1px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
+}
+
+button,
+input[type=reset],
+input[type=submit],
+input[type=button] {
+	background: #cdcdcd url(bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+	margin-bottom: 5px;
 }

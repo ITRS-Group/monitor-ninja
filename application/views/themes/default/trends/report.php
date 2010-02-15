@@ -7,13 +7,13 @@
 ?>
 
 <div id="trends_content">
-	<div class="footnotes">
-	<strong><?php echo $title ?></strong>: <?php
+	<div class="footnotes" style="background-color: #ffffff; padding: 0px">
+	<h1><?php echo $title ?>: <?php
 		if (count($objects) <= 5) {
-			echo implode(', ', $objects);
+			echo implode(', ', $objects).'</h1>';
 		} else {
 			# make list hidden by default ?>
-		<span id="trends_show_hide_objects"><?php echo $label_click_to_view ?></span>
+		<span id="trends_show_hide_objects"><?php echo $label_click_to_view ?></span></h1>
 		<div id="trends_many_objects">
 			<ul class="trends_objects">
 			<?php
@@ -23,33 +23,32 @@
 				}
 			?>
 			</ul>
+
 		</div>
 		<?php
 		}
 
-		?><br />
+		?>
 
-		<strong><?php echo $str_start_date ?> - <?php echo $str_end_date ?></strong> <br />
-		<strong><?php echo $label_duration ?></strong>: <?php echo $duration ?>
+		<p style="margin-top: -13px; margin-bottom: 10px"><?php echo $str_start_date ?> - <?php echo $str_end_date ?>
+		(<?php echo $label_duration ?>: <?php echo $duration ?>)</p>
 	</div>
 
 	<div id="tl" class="timeline-default" style="height: 300px;"></div>
 
 	<div class="controls" id="controls"></div>
-</div>
 
-<?php echo form::open('', array('id' => 'dummy_form')); ?>
-<table id="trends_filter_table">
-<tr>
-	<td><?php echo help::render('filter') ?></td>
-	<td><?php echo $label_only_hard_events.":" ?></td>
-	<td><?php echo form_Core::checkbox(array('name' => 'hard_filter'), 1, false) ?></td>
-</tr>
-<tr>
-	<td colspan="2"><?php echo $label_filter_states.': '; ?></td>
-	<td><?php echo form::dropdown(array('name' => 'filter_states'), $filter_states); ?></td>
-</tr>
+	<?php echo form::open('', array('id' => 'dummy_form')); ?>
+<table id="trends_filter_table" style="float: left">
+	<tr>
+		<td><?php echo help::render('filter') ?>
+		<?php echo form_Core::checkbox(array('name' => 'hard_filter'), 1, false) ?> <?php echo $label_only_hard_events ?></td>
+		<td><?php echo $label_filter_states.': '; ?><?php echo form::dropdown(array('name' => 'filter_states','style' => 'margin-top: -2px'), $filter_states); ?></td>
+	</tr>
 </table>
 <?php echo form::close(); ?>
+</div>
 
+
+<div style="clear:both"></div>
 <?php echo (isset($avail_template) && !empty($avail_template)) ? $avail_template : ''; ?>
