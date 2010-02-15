@@ -146,7 +146,7 @@ $(document).ready(function() {
 				d = new Date(d);
 				startDate = d.asString();
 				$('#start_time').attr('value', d.asString());
-				$('#cal_end').dpSetStartDate(d.addDays(1).asString());
+				$('#cal_end').dpSetStartDate(d.asString());
 			}
 		}
 	);
@@ -157,7 +157,7 @@ $(document).ready(function() {
 			var d = selectedDates[0];
 			if (d) {
 				d = new Date(d);
-				$('#cal_start').dpSetEndDate(d.addDays(-1).asString());
+				$('#cal_start').dpSetEndDate(d.asString());
 				//console.log(d.addDays(1).asString());
 				$('#end_time').attr('value', d.asString());
 				endDate = d.asString();
