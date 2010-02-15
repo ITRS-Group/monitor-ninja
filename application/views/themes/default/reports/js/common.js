@@ -14,6 +14,7 @@ var sla_month_enabled_color  = '#fafafa';
 var invalid_report_names = '';
 var current_filename;
 var _time_error = false;
+var _time_error_start = false;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -765,8 +766,8 @@ function check_form_values()
 	var rpt_type = $("#report_type").val();
 	if ($("#report_period").val() == 'custom') {
 		// date validation
-		var cur_startdate = $("#cal_start").attr('value');
-		var cur_enddate = $("#cal_end").attr('value');
+		var cur_startdate = Date.fromString($("#cal_start").attr('value'));
+		var cur_enddate = Date.fromString($("#cal_end").attr('value'));
 		var now = new Date();
 		if (!startDate || !endDate || !cur_startdate || !cur_enddate) {
 			if (!startDate || !cur_startdate) {
@@ -787,8 +788,8 @@ function check_form_values()
 			}
 		}
 
-		// time validation: _time_error
-		if (_time_error) {
+		// time validation: _time_error and _time_error_start
+		if (_time_error || _time_error_start) {
 			errors++;
 			err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
 		}
@@ -1345,6 +1346,13 @@ function init_timepicker()
 
 	// Keep the duration between the two inputs.
 	$("#time_start").change(function() {
+		if (!validate_time($("#time_start").val())) {
+			$(this).addClass("time_error");
+			_time_error_start = true;
+		} else {
+			$(this).removeClass("time_error");
+			_time_error_start = false;
+		}
 		if ($("#time_end").val()) { // Only update when second input has a value.
 			// Calculate duration.
 			var duration = ($.timePicker("#time_end").getTime() - oldTime);
@@ -1366,4 +1374,13 @@ function init_timepicker()
 		}
 	});
 
+}
+
+function validate_time(tmp_time)
+{
+	var time_parts = tmp_time.split(':');
+	if (time_parts.length!=2 || isNaN(time_parts[0]) || isNaN(time_parts[1])) {
+		return false;
+	}
+	return true;
 }
