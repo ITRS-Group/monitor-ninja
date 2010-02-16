@@ -2871,7 +2871,7 @@ class Reports_Model extends Model
 	public function alert_totals()
 	{
 		$this->completion_time = microtime(true);
-		$query = $this->build_alert_summary_query('host_name, service_description, state');
+		$query = $this->build_alert_summary_query('host_name, service_description, state, hard');
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
