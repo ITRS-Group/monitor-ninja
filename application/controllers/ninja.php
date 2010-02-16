@@ -112,10 +112,9 @@ class Ninja_Controller extends Template_Controller {
 			)
 		);
 
-		# Add Reports link only if enabled in config
-		if (Kohana::config('config.reports_path')!==false) {
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('reporting/availability', 'availability');
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('reporting/sla_reporting', 'sla');
+		if (Reports_Model::_self_check() === true) {
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('reports/?type=avail', 'availability');
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('reports/?type=sla', 'sla');
 		}
 
 		# Add NACOMA link only if enabled in config

@@ -128,6 +128,7 @@ class Reports_Model extends Model
 	public $hostgroup = false;
 	public $db_name = 'monitor_reports';
 	public $db_table = 'report_data';
+	const db_table = 'report_data';
 	public $sub_reports = array();
 	public $last_shutdown = false;
 	public $states = array();
@@ -177,14 +178,14 @@ class Reports_Model extends Model
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
-			$db = new Database($this->db_name);
+			$db = new Database(self::db_name);
 		} catch (Kohana_Database_Exception $e) {
 			return false;
 		}
 		$table_exists = false;
 		if (isset($db)) {
 			try {
-				$table_exists = $db->table_exists($this->db_table);
+				$table_exists = $db->table_exists(self::db_table);
 			} catch (Kohana_Database_Exception $e) {
 				return false;
 			}
