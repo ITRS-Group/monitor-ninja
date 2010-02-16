@@ -289,7 +289,8 @@ class Summary_Controller extends Authenticated_Controller
 		$valid_options = array
 			('summary_items', 'alert_types', 'state_types',
 			 'host_states', 'service_states', 'start_time', 'end_time',
-			 'report_period');
+			 'report_period', 'host_name', 'service_description',
+			 'hostgroup', 'servicegroup');
 
 		$t = $this->translate;
 		$this->template->disable_refresh = true;
