@@ -57,4 +57,18 @@ class showlog_Core
 #		echo "cmd = $cmd\n";
 		passthru($cmd);
 	}
+
+	/**
+	*	Get path to showlog executable
+	*/
+	public function get_path()
+	{
+		$showlog = Kohana::config('reports.showlog_path');
+		if (!file_exists($showlog) || !is_executable($showlog)) {
+			echo "Showlog program '$showlog' not installed or not executable.<br />\n";
+			return false;
+		}
+		return $showlog;
+
+	}
 }
