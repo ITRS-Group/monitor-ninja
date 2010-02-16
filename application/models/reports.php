@@ -50,6 +50,8 @@ class Reports_Model extends Model
 	var $summary_items = 25; # max items to return
 	var $summary_result = array();
 	var $summary_query = '';
+	private $host_hostgroup; /** array(host => array(hgroup1, hgroupx...)) */
+	private $service_servicegroup; /** same as $host_hostgroup */
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
@@ -476,7 +478,9 @@ class Reports_Model extends Model
 			 'include_soft_states' => 'bool',
 			 'host_name' => 'list',
 			 'service_description' => 'list',
+			 'hostgroup' => 'list',
 			 'hostgroup_name' => 'string',
+			 'servicegroup' => 'list',
 			 'servicegroup_name' => 'string',
 			 'start_time' => 'timestamp',
 			 'end_time' => 'timestamp',
@@ -619,6 +623,12 @@ class Reports_Model extends Model
 				$this->service_description = $parts[1];
 			}
 			return true;
+			break;
+		 case 'hostgroup':
+			$this->hostgroup = $value;
+			break;
+		 case 'servicegroup':
+			$this->servicegroup = $value;
 			break;
 		 case 'hostgroup_name':
 			$this->host_name = false;
@@ -2639,12 +2649,79 @@ class Reports_Model extends Model
 		if (!$this->end_time)
 			$this->end_time = time();
 
+		$hosts = false;
+		$services = false;
+		if ($this->servicegroup) {
+			$services = array();
+			$smod = new Service_Model();
+			foreach ($this->servicegroup as $sg) {
+				$res = $smod->get_services_for_group($sg);
+				foreach ($res as $o) {
+					$name = $o->host_name . ';' . $o->service_description;
+					if (empty($services[$name])) {
+						$services[$name] = array();
+					}
+					$services[$name][$sg] = $sg;
+				}
+			}
+			$this->service_servicegroup = $services;
+		} elseif ($this->hostgroup) {
+			$hosts = array();
+			$hmod = new Host_Model();
+			foreach ($this->hostgroup as $hg) {
+				$res = $hmod->get_hosts_for_group($hg);
+				foreach ($res as $o) {
+					$name = $o->host_name;
+					if (empty($hosts[$name])) {
+						$hosts[$name] = array();
+					}
+					$hosts[$name][$hg] = $hg;
+				}
+			}
+			$this->host_hostgrop = $hosts;
+		} elseif ($this->service_description) {
+			$services = false;
+			foreach ($this->service_description as $srv) {
+				$services[$srv] = $srv;
+			}
+		} elseif ($this->host_name) {
+			$hosts = false;
+			foreach ($this->host_name as $hn) {
+				$hosts[$hn] = $hn;
+			}
+		}
+
+		$object_selection = false;
+		if ($hosts) {
+			$object_selection = "AND host_name IN('" .
+				join("', '", array_keys($hosts)) . "')";
+		} elseif ($services) {
+			$object_selection = "AND (";
+			$orstr = '';
+			# Must do this the hard way to allow host_name indices to
+			# take effect when running the query, since the construct
+			# "concat(host_name, ';', service_description)" isn't
+			# indexable
+			foreach ($services as $srv => $discard) {
+				$ary = explode(';', $srv);
+				$h = $ary[0];
+				$s = $ary[1];
+				$object_selection .= $orstr . "(host_name = '" . $h . "' " .
+					"AND service_description = '" . $s . "')";
+				$orstr = " OR ";
+			}
+			$object_selection .= ')';
+		}
+
 		if (empty($fields))
 			$fields = '*';
 
 		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
 			"WHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
+		if (!empty($object_selection)) {
+			$query .= $object_selection . " ";
+		}
 
 		if (!$this->host_states || $this->host_states == 7) {
 			$this->host_states = 7;
