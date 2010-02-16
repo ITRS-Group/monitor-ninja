@@ -2782,6 +2782,10 @@ class Reports_Model extends Model
 			$query = $this->build_alert_summary_query();
 		}
 		$dbr = $this->db->query("EXPLAIN " . $query);
+		if (!$dbr) {
+			echo Kohana::debug($query, $this->db->errorinfo());
+			die;
+		}
 		return $dbr->fetch(PDO::FETCH_ASSOC);
 	}
 
