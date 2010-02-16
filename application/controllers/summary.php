@@ -379,12 +379,13 @@ class Summary_Controller extends Authenticated_Controller
 			 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
 		$content->label_all_states = $t->_('All States');
 
+		$result = false;
 		switch ($report_type) {
 		 case self::TOP_ALERT_PRODUCERS:
 			$content->label_rank = $t->_('Rank');
 			$content->label_producer_type = $t->_('Producer Type');
 			$content->label_total_alerts = $t->_('Total Alerts');
-			$content->result = $rpt->top_alert_producers();
+			$result = $rpt->top_alert_producers();
 			break;
 
 		 case self::RECENT_ALERTS:
@@ -394,14 +395,16 @@ class Summary_Controller extends Authenticated_Controller
 			$content->label_information = $t->_('Information');
 			$content->label_host_alert = $t->_('Host Alert');
 			$content->label_service_alert = $t->_('Service Alert');
-			$content->result = $rpt->recent_alerts();
+			$result = $rpt->recent_alerts();
 			break;
 
 		 case self::ALERT_TOTALS:
-			$content->result = $rpt->alert_totals();
+		 case self::ALERT_TOTALS_SG:
+			$result = $rpt->alert_totals();
 			break;
 		}
 
+		$content->result = $result;
 		$content->options = $used_options;
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
