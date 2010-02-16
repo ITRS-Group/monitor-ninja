@@ -271,11 +271,11 @@ class Current_status_Model extends Model
 
 
 			/********* CHECK STATUS ********/
-
+			$show_passive_as_active = config::get('checks.show_passive_as_active');
 			$this->problem = true;
 			switch ($host->current_state) {
 				case self::HOST_UP:
-					if (!$host->active_checks_enabled)
+					if (!$host->active_checks_enabled && !$show_passive_as_active)
 						$this->hosts_up_disabled++;
 					else
 						$this->hosts_up_unacknowledged++;
@@ -290,7 +290,7 @@ class Current_status_Model extends Model
 						$this->hosts_down_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$host->active_checks_enabled) {
+					if (!$host->active_checks_enabled && !$show_passive_as_active) {
 						$this->hosts_down_disabled++;
 						$this->problem = false;
 					}
@@ -307,7 +307,7 @@ class Current_status_Model extends Model
 						$this->hosts_unreachable_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$host->active_checks_enabled) {
+					if (!$host->active_checks_enabled && !$show_passive_as_active) {
 						$this->hosts_unreachable_disabled++;
 						$this->problem = false;
 					}
@@ -316,7 +316,7 @@ class Current_status_Model extends Model
 					$this->hosts_unreachable++;
 					break;
 				case self::HOST_PENDING:
-					if(!$host->active_checks_enabled)
+					if(!$host->active_checks_enabled && !$show_passive_as_active)
 						$this->hosts_pending_disabled++;
 					$this->hosts_pending++;
 					break;
@@ -396,10 +396,10 @@ class Current_status_Model extends Model
 			/********* CHECK STATUS ********/
 
 			$this->problem = true;
-
+			$show_passive_as_active = config::get('checks.show_passive_as_active');
 			switch ($service->current_state) {
 				case self::SERVICE_OK:
-					if(!$service->active_checks_enabled)
+					if(!$service->active_checks_enabled && !$show_passive_as_active)
 						$this->services_ok_disabled++;
 					else
 						$this->services_ok_unacknowledged++;
@@ -418,7 +418,7 @@ class Current_status_Model extends Model
 						$this->services_warning_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$service->active_checks_enabled) {
+					if (!$service->active_checks_enabled && !$show_passive_as_active) {
 						$this->services_warning_disabled++;
 						$this->problem = false;
 					}
@@ -439,7 +439,7 @@ class Current_status_Model extends Model
 						$this->services_unknown_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$service->active_checks_enabled) {
+					if (!$service->active_checks_enabled && !$show_passive_as_active) {
 						$this->services_unknown_disabled++;
 						$this->problem = false;
 					}
@@ -460,7 +460,7 @@ class Current_status_Model extends Model
 						$this->services_critical_acknowledged++;
 						$this->problem = false;
 					}
-					if (!$service->active_checks_enabled) {
+					if (!$service->active_checks_enabled && !$show_passive_as_active) {
 						$this->services_critical_disabled++;
 						$this->problem = false;
 					}
@@ -469,7 +469,7 @@ class Current_status_Model extends Model
 					$this->services_critical++;
 					break;
 				case self::SERVICE_PENDING:
-					if(!$service->active_checks_enabled)
+					if(!$service->active_checks_enabled && !$show_passive_as_active)
 						$this->services_pending_disabled++;
 					$this->services_pending++;
 					break;

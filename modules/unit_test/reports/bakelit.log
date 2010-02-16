@@ -1,0 +1,13 @@
+[1208608787] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;kb-nas1.kb-01.konstruktions-bakelit.com;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.146ms
+[1209203006] HOST DOWNTIME ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;STARTED; Host has entered a period of scheduled downtime
+[1209203166] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;kb-nas1.kb-01.konstruktions-bakelit.com;2;192.168.224.250 is DOWN - Host unreachable @ 192.168.224.245: rta: nan, lost 100%
+[1209203166] HOST ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;UNREACHABLE;HARD;1;192.168.224.250 is DOWN - Host unreachable @ 192.168.224.245: rta: nan, lost 100%
+[1209203288] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;kb-nas1.kb-01.konstruktions-bakelit.com;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.151ms
+[1209203288] HOST ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;UP;HARD;1;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.151ms
+[1209204314] HOST DOWNTIME ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;STOPPED; Host has exited from a period of scheduled downtime
+[1209205131] HOST DOWNTIME ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;STARTED; Host has entered a period of scheduled downtime
+[1209205160] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;kb-nas1.kb-01.konstruktions-bakelit.com;2;192.168.224.250 is DOWN - rta: nan, lost 100%
+[1209205160] HOST ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;UNREACHABLE;HARD;1;192.168.224.250 is DOWN - rta: nan, lost 100%
+[1209205266] EXTERNAL COMMAND: PROCESS_HOST_CHECK_RESULT;kb-nas1.kb-01.konstruktions-bakelit.com;0;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.140ms
+[1209205266] HOST ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;UP;HARD;1;OK - 192.168.224.250 responds to ICMP. Packet 1, rtt 0.140ms
+[1209206920] HOST DOWNTIME ALERT: kb-nas1.kb-01.konstruktions-bakelit.com;STOPPED; Host has exited from a period of scheduled downtime

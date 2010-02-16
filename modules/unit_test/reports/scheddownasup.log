@@ -1,0 +1,21 @@
+[1202684400] LOG ROTATION: MONTHLY
+[1202684400] LOG VERSION: 2.0
+[1202684400] CURRENT HOST STATE: up_down_dtstart_dtend_up;UP;HARD;1;OK - yadayada
+[1202684400] CURRENT HOST STATE: down_dtstart_up_dtend;DOWN;HARD;1;BAD - yadayada
+[1202684400] CURRENT HOST STATE: up_dtstart_down_dtend;UP;HARD;1;OK - yadayada
+[1202684400] CURRENT HOST STATE: up_dtstart_down_up_down_dtend;UP;HARD;1;OK - yadayada
+[1202688000] HOST ALERT: up_down_dtstart_dtend_up;DOWN;SOFT;1;192.168.1.18 is DOWN
+[1202688000] HOST DOWNTIME ALERT: up_down_dtstart_dtend_up;STARTED; Host has entered a period of scheduled downtime
+[1202688000] HOST DOWNTIME ALERT: down_dtstart_up_dtend;STARTED; Host has entered a period of scheduled downtime
+[1202688000] HOST DOWNTIME ALERT: up_dtstart_down_dtend;STARTED; Host has entered a period of scheduled downtime
+[1202688000] HOST DOWNTIME ALERT: up_dtstart_down_up_down_dtend;STARTED; Host has entered a period of scheduled downtime
+[1202689800] HOST ALERT: up_dtstart_down_up_down_dtend;DOWN;SOFT;1;yada
+[1202691600] HOST ALERT: down_dtstart_up_dtend;UP;SOFT;1;192.168.1.18 is UP
+[1202691600] HOST ALERT: up_dtstart_down_dtend;DOWN;SOFT;1;192.168.1.18 is DOWN
+[1202691600] HOST ALERT: up_dtstart_down_up_down_dtend;UP;SOFT;1;yada
+[1202693400] HOST ALERT: up_dtstart_down_up_down_dtend;DOWN;SOFT;1;yada
+[1202695200] HOST DOWNTIME ALERT: up_down_dtstart_dtend_up;STOPPED; Host has exited from a period of scheduled downtime
+[1202695200] HOST DOWNTIME ALERT: down_dtstart_up_dtend;STOPPED; Host has exited from a period of scheduled downtime
+[1202695200] HOST DOWNTIME ALERT: up_dtstart_down_dtend;STOPPED; Host has exited from a period of scheduled downtime
+[1202695200] HOST DOWNTIME ALERT: up_dtstart_down_up_down_dtend;STOPPED; Host has exited from a period of scheduled downtime
+[1202698800] HOST ALERT: up_down_dtstart_dtend_up;UP;HARD;1;OK - yadayada

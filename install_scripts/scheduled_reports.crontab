@@ -1,0 +1,3 @@
+0 0 * * * monitor /usr/bin/php /opt/monitor/op5/ninja/index.php reports/cron/Daily >/dev/null 2>&1
+0 0 * * 1 monitor /usr/bin/php /opt/monitor/op5/ninja/index.php reports/cron/Weekly >/dev/null 2>&1
+0 0 1 * * monitor /usr/bin/php /opt/monitor/op5/ninja/index.php reports/cron/Monthly >/dev/null 2>&1

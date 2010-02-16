@@ -173,7 +173,8 @@ $(document).ready(function() {
 				name: 'light' // Use the default light style
 			}
 		});
-	})
+	});
+	$(".helptext_target").click(function() {return false;})
 });
 
 function create_slider(the_id)
@@ -250,4 +251,11 @@ function handleSliderChange(e, ui){
 function handleSliderSlide(e, ui){
 	var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
 	$("#menu-scroll").attr({scrollTop: -ui.value * (maxScroll / 100) });
+}
+
+function jgrowl_message(message_str, header_str)
+{
+	if (message_str!='') {
+		$.jGrowl(message_str, { header: header_str });
+	}
 }

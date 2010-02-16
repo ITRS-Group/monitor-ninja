@@ -22,11 +22,11 @@
 				<col style="width: 20%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $this->translate->_('Critical') ?></th>
-				<th><?php echo $this->translate->_('Warning') ?></th>
-				<th><?php echo $this->translate->_('Unknown') ?></th>
-				<th><?php echo $this->translate->_('OK') ?></th>
-				<th><?php echo $this->translate->_('Pending') ?></th>
+				<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_CRITICAL, $current_status->services_critical.' '.$this->translate->_('Critical')) ?></th>
+				<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_WARNING, $current_status->services_warning.' '.$this->translate->_('Warning'))?></th>
+				<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_UNKNOWN, $current_status->services_unknown.' '.$this->translate->_('Unknown')) ?></th>
+				<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_OK, $current_status->services_ok.' '.$this->translate->_('OK')) ?></th>
+				<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_PENDING, $current_status->services_pending.' '.$this->translate->_('Pending')) ?></th>
 			</tr>
 			<tr>
 				<td style="padding:0px;" class="white" style="white-space:normal">

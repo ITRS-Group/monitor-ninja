@@ -9,12 +9,11 @@
 class nagioscmd_Core
 {
 	/**
-	 * Obtain information about a command
+	 * Obtain information about a command.
 	 * "information" in this case is a template we can use to inject
 	 * one such command into Nagios' FIFO, a description of the
 	 * command, it's name and the number Nagios has assigned to it via
 	 * a macro.
-	 * @param $id The Nagios ID of the command (avoid if possible)
 	 * @param $name The 'name' of the command (DEL_HOST_COMMENT, fe)
 	 * @return array with command information if a command was found, or
 	 *         false otherwise

@@ -2,10 +2,8 @@
 /**
  * Kohana loader class for Zend
  *
- *
  * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class zend_Core {
 
@@ -18,8 +16,8 @@ class zend_Core {
 	 * Note that some classes won't be able to call this way since their
 	 * constructors are protected.
 	 *
-	 * @param 	string $class, case insensitive
-	 * @return	object or false on error
+	 * @param $class string: Class name, case insensitive
+	 * @return object on success. false on error
 	 */
 	public static function instance($class = false)
 	{
@@ -52,8 +50,8 @@ class zend_Core {
 	/**
 	 * Set include path to zend libraries
 	 *
-	 * @param	string $class
-	 * @return	path returned by kohana::find_file or false on error
+	 * @param $class string: Class-name
+	 * @return path returned by kohana::find_file on succes. false on error
 	 */
 	public function set_zend_path($class = false)
 	{
@@ -71,9 +69,9 @@ class zend_Core {
 	/**
 	 * Instantiate Zend_Translate
 	 *
-	 * @param string $driver (default gettext)
-	 * @param string $lang (default en)
-	 * @return obj
+	 * @param $driver (default gettext)
+	 * @param $lang (default en)
+	 * @return translate object
 	 */
 	public function translate($driver='gettext', $lang="en")
 	{

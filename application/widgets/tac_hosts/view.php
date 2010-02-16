@@ -21,10 +21,10 @@
 				<col style="width: 25%" />
 			</colgroup>
 			<tr>
-				<th><?php echo $this->translate->_('Down') ?></th>
-				<th><?php echo $this->translate->_('Unreachable') ?></th>
-				<th><?php echo $this->translate->_('Up') ?></th>
-				<th><?php echo $this->translate->_('Pending') ?></th>
+				<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_DOWN , $current_status->hosts_down.' '.$this->translate->_('Down')) ?></th>
+				<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UNREACHABLE , $current_status->hosts_unreachable.' '.$this->translate->_('Unreachable')) ?></th>
+				<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_UP, $current_status->hosts_up.' '.$this->translate->_('Up') )?></th>
+				<th><?php echo html::anchor('status/host/all?hoststatustypes='.nagstat::HOST_PENDING, $current_status->hosts_pending.' '.$this->translate->_('Pending')) ?></th>
 			</tr>
 			<tr>
 				<td class="white">

@@ -9,7 +9,8 @@ if (isset($this->template->js_header))
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css.php') ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css.php') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/print.css') ?>" media="print" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css.php') ?>" />
@@ -60,21 +61,26 @@ if (isset($this->template->js_header))
 				var _form_error_header = '<?php echo $this->translate->_("The form couldn\'t be processed since it contains one or more errors.%sPlease correct the following error(s) and try again:%s"); ?>';
 				var _command_empty_field = '<?php echo $this->translate->_("Field \'%s\' is required but empty"); ?>';
 				var _loading_str = '<?php echo $this->translate->_("Loading..."); ?>';
+				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
 				<?php
+					if (!empty($js_strings)) {
+						echo $js_strings;
+					}
 				}
 				if (!empty($inline_js)) {
 					echo "$(document).ready(function() {";
 					echo $inline_js;
 					echo "});";
-				}
-				?>
-
+				}?>
 			//-->
 		</script>
+	<?php	# use xajax if controller needs it
+			if (isset($xajax_js)) echo $xajax_js; ?>
 
 		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
+</script>
 	</head>
 
 	<body>

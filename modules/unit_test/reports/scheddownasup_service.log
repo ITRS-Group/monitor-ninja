@@ -1,0 +1,7 @@
+[1202684400] LOG ROTATION: MONTHLY
+[1202684400] LOG VERSION: 2.0
+[1202684400] CURRENT SERVICE STATE: testhost;PING;OK;HARD;1;OK - yadayada
+[1202688000] SERVICE ALERT: testhost;PING;WARNING;SOFT;1;WARNING - yadayada
+[1202691600] SERVICE DOWNTIME ALERT: testhost;PING;STARTED; Service has entered a period of scheduled downtime
+[1202695200] SERVICE DOWNTIME ALERT: testhost;PING;STOPPED; Service has exited from a period of scheduled downtime
+[1202698800] SERVICE ALERT: testhost;PING;OK;HARD;1;OK - yadayada

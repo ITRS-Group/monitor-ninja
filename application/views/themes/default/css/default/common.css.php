@@ -97,9 +97,9 @@ h1 {
 }
 
 h2 {
-	font-size: 11px;
-	font-weight: bold;
-	margin: 14px 0px 3px 0px;
+	font-size: 15px;
+	font-weight: normal;
+	margin: 7px 0px 15px 0px;
 }
 /**************************************************************************************************/
 cite em,
@@ -1312,6 +1312,93 @@ th.headerSortUp,
 th.headerSortUp:first-child {
 	background: #dcdcdc url(images/sort-up.png) top right;
 }
+
+/* Reports */
+div.setup-table tr.odd td,
+div.setup-table tr.even td {
+	border-bottom: 1px solid #dcdccd;
+	border-left: 0px;
+	border-top: 0px;
+	background: #f8f8f3;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+tr#service_row_2 td.bl,
+tr#host_row_2 td.bl,
+tr#hostgroup_row td.bl,
+tr#servicegroup_row td.bl {
+	border-left: 1px solid #dcdccd;
+}
+
+div.setup-table tr.even td:first-child,
+div.setup-table tr.odd td:first-child {
+	border-left: 1px solid #dcdccd;
+}
+
+div.setup-table tr.odd td {
+	background: #fdfdfd;
+}
+
+div#schedule_report tr.odd td {
+	padding-left: 7px;
+}
+div.setup-table {
+	clear: both;
+	width: 100%;
+	margin-bottom: 0px;
+}
+
+div.setup-table table tr td, div.setup-table table tr th {
+	text-align: left;
+}
+
+#hostgroup_row{display:none;}
+#servicegroup_row{display:none;}
+#host_row_1{display:none;}
+#host_row_2{display:none;}
+#host_row_3{display:none;}
+#service_row_1{display:none;}
+#service_row_2{display:none;}
+#settings_table{display:none;}
+#submit_button{display:none;}
+#enter_sla{display:none;}
+#sla_setup{display:none;}
+
+tr#hostgroup_row td {
+	border: 0px solid #cccccc;
+}
+
+#hostgroup_row select {
+	overflow: hidden;
+}
+
+td a.help, a.help {
+	color: #0186b3;
+	color: #b00000;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+}
+
+td.move-buttons {
+	vertical-align: middle;
+	padding: 10px 0px;
+}
+
+select.multiple {
+	width: 351px;
+}
+
+select {
+	width: 160px;
+}
+#report_setup {
+	position: relative;
+	float: right;
+	margin-bottom: -2px;
+}
+
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/

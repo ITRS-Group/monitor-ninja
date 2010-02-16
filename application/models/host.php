@@ -280,7 +280,7 @@ class Host_Model extends Model {
 	/**
 	 * Fetch status data for a subset of hosts
 	 * (and their related services if show_services is set to true).
-	 * @@@FIXME: rewrite me please!
+	 * FIXME: rewrite me please!
 	 */
 	public function get_host_status()
 	{

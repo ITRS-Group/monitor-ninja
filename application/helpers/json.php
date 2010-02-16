@@ -14,42 +14,37 @@ class json_Core
 	/**
 	 * Encode variable data into JSON
 	 *
-	 * @param 	mixed $var
-	 * @return 	string
+	 * @param $var Variable to encode
+	 * @return false on error, json-encoded string on success.
 	 */
 	public static function encode($var = false)
 	{
 		if (empty($var)) {
 			return false;
 		}
-		$json_str = false;
-		if (!function_exists('json_encode')) {
-			$json = zend::instance('json');
-			$json_str = $json->encode($var);
-		} else {
-			$json_str = json_encode($var);
+		if (function_exists('json_encode')) {
+			return json_encode($var);
 		}
-		return $json_str;
+
+		$json = zend::instance('json');
+		return $json->encode($var);
 	}
 
 	/**
 	 * Decode JSON data into PHP
 	 *
-	 * @param 	str $var
-	 * @return	 mixed JSON decoded data
+	 * @param $var json-encoded string to decode
+	 * @return false on error, json-decoded data on success
 	 */
 	public static function decode($var = false)
 	{
 		if (empty($var)) {
 			return false;
 		}
-		$return = false;
-		if (!function_exists('json_decode')) {
-			$json = zend::instance('json');
-			$return = $json->decode($var);
-		} else {
-			$return = json_decode($var);
+		if (function_exists('json_decode')) {
+			return json_decode($var);
 		}
-		return $return;
+		$json = zend::instance('json');
+		return $json->decode($var);
 	}
 }

@@ -112,9 +112,11 @@ class Command_Model extends Model
 	/**
 	 * Obtain command information
 	 * Complete with information and data needed to request input
-	 * regarding a particular command
+	 * regarding a particular command.
+	 *
 	 * @param $cmd The name (or 'id') of the command
 	 * @param $defaults Default values for command parameters
+	 * @param $dryrun Testing variable. Ignore.
 	 * @return Indexed array
 	 */
 	public function get_command_info($cmd, $defaults = false, $dryrun = false)

@@ -43,3 +43,26 @@ $config['default'] = array
 	'cache'         => FALSE,
 	'escape'        => TRUE
 );
+
+
+# reports database connection
+$config['monitor_reports'] = array
+(
+	'benchmark'     => TRUE,
+	'persistent'    => FALSE,
+	'connection'    => array
+	(
+		'type'     => 'mysql',
+		'user'     => 'root',
+		'pass'     => '',
+		'host'     => 'localhost',
+		'port'     => FALSE,
+		'socket'   => FALSE,
+		'database' => 'monitor_reports'
+	),
+	'character_set' => 'utf8',
+	'table_prefix'  => '',
+	'object'        => TRUE,
+	'cache'         => FALSE,
+	'escape'        => TRUE
+);
