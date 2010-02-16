@@ -127,6 +127,7 @@ class Reports_Model extends Model
 	public $servicegroup = false;
 	public $hostgroup = false;
 	public $db_name = 'monitor_reports';
+	const db_name = 'monitor_reports';
 	public $db_table = 'report_data';
 	const db_table = 'report_data';
 	public $sub_reports = array();
@@ -165,7 +166,7 @@ class Reports_Model extends Model
 				$this->db_name 	= $db_name;
 			if (!empty($db_table))
 				$this->db_table = $db_table;
-			
+
 			$this->db = pdodb::instance('mysql', $this->db_name);
 		}
 	}
@@ -1843,7 +1844,6 @@ class Reports_Model extends Model
 		$sql .= "AND timestamp < " . $this->start_time .
 			" ORDER BY id DESC LIMIT 1";
 
-		
 		# first try to fetch the real initial state so
 		# we don't have to assume
 		$dbr = $this->db->query($sql);
@@ -2965,4 +2965,60 @@ class Reports_Model extends Model
 		$this->end_time = $time_end;
 		return true;
 	}
+
+	/**
+	 * Fetch and print the SQL insert statements we need to run to duplicate
+	 * the data-set the report used to generate its data.
+	 */
+	public static function print_db_lines($prefix, $table = 'report_data', $test, $db_start_time, $db_end_time)
+	{
+		$db = pdodb::instance('mysql', 'monitor_reports');
+		$return_str = '';
+		$start = $db_start_time;
+		$stop = $db_end_time;
+		$query = "SELECT * FROM ".$table." " .
+			"WHERE timestamp >= ".$db_start_time." AND timestamp <= ".$db_end_time;
+		if (!empty($test['service_description'])) {
+			$ignore_event = 801;
+			$objects = $test['service_description'];
+			$otype = 'concat(host_name, ";", service_description)';
+			if (!is_array($objects))
+				$objects = array($objects);
+			$objects[] = ';';
+		} else {
+			$ignore_event = 701;
+			$objects = $test['host_name'];
+			$otype = 'host_name';
+			if (!is_array($objects))
+				$objects = array($objects);
+			$objects[] = '';
+		}
+		$query .= " AND event_type != ".$ignore_event." " .
+			"AND ".$otype." IN ('" . join("', '", $objects) . "') ";
+		$res = $db->query($query);
+
+		if (!$res) {
+			return;
+		}
+
+		$return_str .= "\tsql {\n";
+		while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+			unset($row['id']);
+			$return_str .= "\t\tINSERT INTO ".$table."(" . join(',', array_keys($row)) . ')';
+			$return_str .=" VALUES(";
+			$first = true;
+			foreach ($row as $v) {
+				if (!$first)
+					$return_str .= ",";
+				else
+					$first = false;
+				$return_str .= $db->quote($v);
+			}
+			$return_str .= ");\n";
+		}
+		$return_str .= "\t}\n";
+
+		return $return_str;
+	}
+
 }

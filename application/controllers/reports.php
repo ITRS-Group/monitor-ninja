@@ -2879,9 +2879,58 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Create testcase
 	*/
-	public function mktest()
+	public function mktest($desc='auto-created test')
 	{
-		# stub
+		$this->auto_render=false;
+		$test = array();
+		$correct = array();
+
+		$table = 'report_data';
+		if (!isset($_REQUEST['test'])) {
+			die("No test data to produce test-case from");
+		}
+		$test = $_REQUEST['test'];
+		if (isset($_REQUEST['correct']))
+			$correct = $_REQUEST['correct'];
+		if (!isset($test['db_start_time']) && isset($test['start_time']))
+			$test['db_start_time'] = $test['start_time'];
+		if (!isset($test['db_end_time']) && isset($test['end_time']))
+			$test['db_end_time'] = $test['end_time'];
+		if (!isset($test['start_time']) && isset($test['db_start_time']))
+			$test['start_time'] = $test['db_start_time'];
+		if (!isset($test['end_time']) && isset($test['db_end_time']))
+			$test['end_time'] = $test['db_start_time'];
+
+		if (!isset($test['db_start_time']))
+			die("No db_start_time defined\n");
+		if (!isset($test['db_end_time']))
+			die("No db_end_time defined\n");
+
+		$db_start_time = $test['db_start_time'];
+		$db_end_time = $test['db_end_time'];
+		unset($test['db_start_time']);
+		unset($test['db_end_time']);
+
+		$showlog = false;
+		$showlog = showlog::get_path();
+
+		if (PHP_SAPI !== 'cli') {
+			header("Content-disposition: attachment; filename=report-test.txt");
+			header("Content-type: text");
+		}
+
+		$retcode = 0;
+		echo "$desc {\n";
+		reports::print_test_settings($test);
+		echo Reports_Model::print_db_lines("\t\t", $table, $test, $db_start_time, $db_end_time);
+		echo "\tlog {\n";
+		$var_path = Kohana::config('config.nagios_base_path');
+		$cmd = "$showlog $var_path./var/nagios.log";
+		passthru($cmd, $retcode);
+		echo "\t}\n\n";
+
+		echo "}\n";
+		die();
 	}
 
 	/**
