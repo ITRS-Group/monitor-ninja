@@ -282,69 +282,6 @@ class Scheduled_reports_Model extends Model
 		return count($res)!=0 ? $res->current()->id : false;
 	}
 
-	public function fetch_module_reports($type_id=false,$is_ajax=true)
-	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-		if ($is_ajax || request::is_ajax()) {
-			$xajax = get_xajax::instance();
-			$objResponse = new xajaxResponse();
-			$objResponse->call("show_progress", "progress", $translate->_('Please wait...'));
-		}
-		$db = new Database(self::db_name);
-		if (is_array($type_id)) $type_id = $type_id[0];
-		$type_id = (int)$type_id;
-		// fetch info on selected id
-		if (!$type_id) {
-			$sql = "SELECT * FROM scheduled_report_types";
-		} else {
-			$sql = "SELECT * FROM scheduled_report_types WHERE id=".$type_id;
-		}
-		try {
-			$res = $db->query($sql);
-		} catch (Kohana_Database_Exception $e) {
-			return false;
-		}
-
-		if (!$res || count($res)==0) {
-			if ($is_ajax) {
-				$objResponse->assign("err_msg","innerHTML", $translate->_("FAILED fetching path"));
-			} else {
-				return false;
-			}
-		}
-
-		// if we got no type and we aren't in the middle of an ajax call
-		// we are only interested in the actual result for further
-		// processing by PHP
-		if (!$type_id && !$is_ajax) {
-			return $res;
-		}
-
-		$info = $res->current();
-		$path = $info->script_reports_path;
-
-		// fetch data from module by including the file
-		// with path stored in db
-		$return = false;
-		include($path);
-		if (!empty($return)) {
-			if ($is_ajax) {
-				$objResponse->call('show_reports', json::encode($return));
-			} else {
-				return $return;
-			}
-		} else {
-			if ($is_ajax) {
-				$objResponse->assign("err_msg","innerHTML", sprintf($translate->_("Found no saved reports.%sPlease create and save a report using the links in the menu on the left."), '<br />'));
-				$objResponse->call("hide_rows");
-			} else {
-				return false;
-			}
-		}
-		$objResponse->call('hide_progress');
-		return $objResponse;
-	}
-
 	/**
 	*	Fetch info on all defined report types, i.e all
 	* 	types we can schedule
