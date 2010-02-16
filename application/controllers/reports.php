@@ -2911,8 +2911,11 @@ class Reports_Controller extends Authenticated_Controller
 		unset($test['db_start_time']);
 		unset($test['db_end_time']);
 
-		$showlog = false;
 		$showlog = showlog::get_path();
+
+		if ($showlog !== true) {
+			die($this->translate->_('Unable to find the showlog executable'));
+		}
 
 		if (PHP_SAPI !== 'cli') {
 			header("Content-disposition: attachment; filename=report-test.txt");
@@ -2924,8 +2927,8 @@ class Reports_Controller extends Authenticated_Controller
 		reports::print_test_settings($test);
 		echo Reports_Model::print_db_lines("\t\t", $table, $test, $db_start_time, $db_end_time);
 		echo "\tlog {\n";
-		$var_path = Kohana::config('config.nagios_base_path');
-		$cmd = "$showlog $var_path./var/nagios.log";
+		$nagios_path = Kohana::config('config.nagios_base_path');
+		$cmd = "$showlog ".$nagios_path."/var/nagios.log";
 		passthru($cmd, $retcode);
 		echo "\t}\n\n";
 
