@@ -22,3 +22,8 @@ if (!empty($mail_sender_address)) {
 
 $config['from_email'] = $from_email;
 
+/**
+*	Path to showlog executable
+*/
+$config['showlog_path'] = '/opt/monitor/op5/reports/module/showlog';
+
