@@ -358,6 +358,8 @@ class Summary_Controller extends Authenticated_Controller
 			$this->add_view("summary/" . $views[$report_type]);
 
 		$content = $this->template->content;
+		$content->label_time = $t->_('Time');
+		$content->label_alert_type = $t->_('Alert Type');
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
 		$content->label_host_alerts = $t->_('Host Alerts');
@@ -389,8 +391,6 @@ class Summary_Controller extends Authenticated_Controller
 			break;
 
 		 case self::RECENT_ALERTS:
-			$content->label_time = $t->_('Time');
-			$content->label_alert_type = $t->_('Alert Type');
 			$content->label_state_type = $t->_('State Type');
 			$content->label_information = $t->_('Information');
 			$content->label_host_alert = $t->_('Host Alert');
