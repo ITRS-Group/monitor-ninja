@@ -7,11 +7,9 @@ class showlog_Core
 {
 	public function show_log_entries($options)
 	{
-		$showlog = '/opt/monitor/op5/reports/module/showlog';
-		if (!file_exists($showlog) || !is_executable($showlog)) {
-			echo "Showlog program '$showlog' not installed or not executable.<br />\n";
-		}
-		$cmd = $showlog . " --html /opt/monitor/var/nagios.log ";
+		$showlog = self::get_path();
+		$nagios_path = Kohana::config('config.nagios_base_path');
+		$cmd = $showlog . " --html ".$nagios_path."/var/nagios.log ";
 #			"/opt/monitor/var/archives/nagios-*.log";
 
 		if (!isset($options['parse_forward'])) {
