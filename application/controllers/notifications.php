@@ -31,7 +31,7 @@ class Notifications_Controller extends Authenticated_Controller {
 	 * Redirects to show_process_info() which
 	 * is the equivalent of calling extinfo.cgi?type=0
 	 */
-	public function index($sort_field='host_name', $sort_order='ASC', $notification_option = '')
+	public function index($sort_field='host_name', $sort_order='ASC', $notification_option = '', $query_type = nagstat::FIND_HOST)
 	{
 
 		//$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
@@ -57,6 +57,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Reporting').' » '.$this->translate->_('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
+		$this->template->content->query_type = $query_type;
 		$this->template->content->notification_option = $notification_option;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
