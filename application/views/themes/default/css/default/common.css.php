@@ -450,7 +450,7 @@ select {
 	text-decoration: none;
 	border-bottom: 1px dotted #777777;
 }
-#page_links ul {
+/*#page_links ul {
 	margin: 0px;
 	padding: 0px;
 }
@@ -459,6 +459,26 @@ select {
 	line-height: 17px;
 	background: url(images/arrow.gif) 0px 7px no-repeat;
 	padding-left: 10px;
+}*/
+#page_links {
+	margin-top: 4px;
+	margin-left: 0px;
+	width: 100%;
+}
+#page_links ul {
+	margin: 0px;
+	padding: 0px;
+	width: 99%;
+	background: #f4f4f4 url(images/bg.png) repeat-x;
+	padding: 9px 7px 8px 7px;
+	border-bottom: 1px solid #dcdcdc;
+}
+#page_links ul li {
+	list-style: none;
+	display: inline;
+	margin: 0px;
+	padding: 0px 4px;
+	/*border-right: 1px solid #dcdcdc;*/
 }
 /* pagination *************************************************************************************/
 #content p.pagination {
