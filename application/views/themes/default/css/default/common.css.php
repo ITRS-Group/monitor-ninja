@@ -183,16 +183,24 @@ select {
 	margin: 10px 0px;
 }
 /* content ****************************************************************************************/
-#license-bar {
-	position: relative;
-	position: fixed;
+#infobar {
+	cursor: pointer; 
+	position: fixed; 
+	width: 100%; 
+	float: left; 
+	color: #ffffff;
+	background: #333333 url(images/licensebarbg.png); 
+	z-index: 99999;
+	height: 24px; 
+	padding: 19px 0px 17px 0px; 
+	font-size: 16px;
 	left: 0px;
-	height: 32px;
-	width: 100%;
-	background: #000000 url(images/bg.png) repeat-x;
-	z-index: 1;
-	border-left: 1px solid #d0d0d0;
-	border-right: 1px solid #d0d0d0;
+}
+#infobar p {
+	/*background: url(../../icons/24x24/shield-critical.png) 10px 0px no-repeat;
+	padding-left: 40px;*/
+	padding-left: 10px;
+	height: 24px;
 }
 #top-bar {
 	position: relative;
