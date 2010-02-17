@@ -2871,6 +2871,72 @@ class Reports_Model extends Model
 		return $this->summary_result;
 	}
 
+
+	private function alert_totals_by_host($dbr)
+	{
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+			} else {
+				$type = 'service';
+			}
+			$this->summary_result[$type][$row['state']][$row['hard']]++;
+		}
+		return $this->summary_result;
+	}
+
+
+	private function alert_totals_by_hostgroup($dbr)
+	{
+		# pre-load the result set to keep conditionals away
+		# from the inner loop
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->hostgroup as $hostgroup) {
+			$result[$hostgroup] = $template;
+		}
+
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+			} else {
+				$type = 'service';
+			}
+			$hostgroups = $this->host_hostgroup[$row['host_name']];
+			foreach ($hostgroups as $hostgroup) {
+				$result[$hostgroup][$type][$row['state']][$row['hard']]++;
+			}
+		}
+		return $result;
+	}
+
+
+	private function alert_totals_by_servicegroup($dbr)
+	{
+		# pre-load the result set to keep conditionals away
+		# from the inner loop
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->servicegroup as $servicegroup) {
+			$result[$servicegroup] = $template;
+		}
+
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+				$name = $row['host_name'];
+			} else {
+				$type = 'service';
+				$name = $row['host_name'] . ';' . $row['service_description'];
+			}
+			$servicegroups = $this->service_servicegroup[$name];
+			foreach ($servicegroups as $sg) {
+				$result[$sg][$type][$row['state']][$row['hard']]++;
+			}
+		}
+		return $result;
+	}
+
 	/**
 	 * Get alert totals. This is identical to the toplist in
 	 * many respects, but the result array is different.
@@ -2890,21 +2956,30 @@ class Reports_Model extends Model
 
 		# preparing the result array in advance speeds up the
 		# parsing somewhat. Completing it either way makes it
-		# easier to write templates for it as well
+		# easier to write templates for it as well.
+		# We stash it in $this->summary_result so all functions
+		# can take advantage of it
 		for ($state = 0; $state < 4; $state++) {
 			$this->summary_result['host'][$state] = array(0, 0);
 			$this->summary_result['service'][$state] = array(0, 0);
 		}
 		unset($this->summary_result['host'][3]);
-		while ($row = $dbr->fetch()) {
-			if (empty($row['service_description'])) {
-				$type = 'host';
-			} else {
-				$type = 'service';
-			}
-			$this->summary_result[$type][$row['state']][$row['hard']]++;
+
+		$result = false;
+		# groups must be first here, since the other variables
+		# are expanded in the build_alert_summary_query() method
+		if ($this->servicegroup) {
+			$result = $this->alert_totals_by_servicegroup($dbr);
+		} elseif ($this->hostgroup) {
+			$result = $this->alert_totals_by_hostgroup($dbr);
+		} elseif ($this->host_name) {
+			$result = $this->alert_totals_by_host($dbr);
+		} elseif ($this->service_description) {
+			$result = $this->alert_totals_by_host($dbr);
+			$result = $result['service'];
 		}
 
+		$this->summary_result = $result;
 		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
 	}
