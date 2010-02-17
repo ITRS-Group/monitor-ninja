@@ -1,14 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
-	<?php
-	if (!empty($widgets)) {
-		foreach ($widgets as $widget) {
-			echo $widget;
-		}
-	}
-	?>
-	<div class="widget left w32" id="page_links">
+<div class="widget left w32" id="page_links">
 		<ul>
+		<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
 		<?php
 		if (isset($page_links)) {
 			foreach ($page_links as $label => $link) {
@@ -20,6 +14,13 @@
 		?>
 		</ul>
 	</div>
+	<?php
+	if (!empty($widgets)) {
+		foreach ($widgets as $widget) {
+			echo $widget;
+		}
+	}
+	?>
 
 	<div id="filters" class="left">
 	<?php
