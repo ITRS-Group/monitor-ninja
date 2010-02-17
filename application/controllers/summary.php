@@ -400,8 +400,16 @@ class Summary_Controller extends Authenticated_Controller
 			break;
 
 		 case self::ALERT_TOTALS:
+		 case self::ALERT_TOTALS_HG:
 		 case self::ALERT_TOTALS_SG:
+		 case self::ALERT_TOTALS_HOST:
+		 case self::ALERT_TOTALS_SERVICE:
 			$result = $rpt->alert_totals();
+			break;
+
+		 default:
+			echo Kohana::debug("Case fallthrough");
+			die;
 			break;
 		}
 
