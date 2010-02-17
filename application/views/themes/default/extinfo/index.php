@@ -1,4 +1,18 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<div class="widget left w33" id="page_links">
+	<ul>
+	<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
+	<?php
+	if (isset($page_links)) {
+		foreach ($page_links as $label => $link) {
+			?>
+			<li><?php echo html::anchor($link, $label) ?></li>
+			<?php
+		}
+	}
+	?>
+	</ul>
+</div>
 
 <?php
 if (!empty($widgets)) {
@@ -111,20 +125,6 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 	</table>
-</div>
-
-<div class="widget left w33" id="page_links">
-	<ul style="margin-top: 7px">
-	<?php
-	if (isset($page_links)) {
-		foreach ($page_links as $label => $link) {
-			?>
-			<li><?php echo html::anchor($link, $label) ?></li>
-			<?php
-		}
-	}
-	?>
-	</ul>
 </div>
 
 <?php $this->session->set('back_extinfo',$back_link);?>
