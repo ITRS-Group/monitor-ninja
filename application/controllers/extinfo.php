@@ -482,13 +482,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# create page links
 		switch ($type) {
 			case 'host':
-				$label_host_status_details = $t->_('View Status Detail For This Host');
-				$label_host_alert_history = $t->_('View Alert History For This Host');
-				$label_host_trends = $t->_('View Trends For This Host');
-				$label_host_histogram = $t->_('View Alert Histogram For This Host');
-				$label_host_avail = $t->_('View Availability Report For This Host');
-				$label_host_notifications = $t->_('View Notifications This Host');
-
+				$label_host_status_details = $t->_('Status detail');
+				$label_host_alert_history = $t->_('Alert history');
+				$label_host_trends = $t->_('Trends');
+				$label_host_histogram = $t->_('Alert histogram');
+				$label_host_avail = $t->_('Availability report');
+				$label_host_notifications = $t->_('Notifications');
+				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
 					 $label_host_status_details => 'status/service/'.$host,
 					 $label_host_alert_history => 'history/host/'.$host,
@@ -499,14 +499,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 				break;
 			case 'service':
-				$label_host_info = $t->_('View Information For This Host');
-				$label_host_detail = $t->_('View Status Detail For This Host');
-				$label_service_alert_history = $t->_('View Alert History For This Service');
-				$label_service_trends = $t->_('View Trends For This Service');
-				$label_service_histogram = $t->_('View Alert Histogram For This Service');
-				$label_service_avail = $t->_('View Availability Report For This Service');
-				$label_service_notifications = $t->_('View Notifications For This Service');
-
+				$label_host_info = $t->_('Information for this Host');
+				$label_host_detail = $t->_('Status detail for this Host');
+				$label_service_alert_history = $t->_('Alert history');
+				$label_service_trends = $t->_('Trends');
+				$label_service_histogram = $t->_('Alert histogram');
+				$label_service_avail = $t->_('Availability report');
+				$label_service_notifications = $t->_('Notifications');
+				$label_view_for = $this->translate->_('for this service');
 				$page_links = array(
 					$label_host_info => 'extinfo/details/host/'.$host,
 					$label_host_detail => 'status/service/'.$host,
@@ -521,6 +521,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
+			$this->template->content->label_view_for = $label_view_for;
 		}
 
 
@@ -909,10 +910,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		switch ($grouptype) {
 			case 'servicegroup':
-				$label_status_details = $t->_('View Status Detail For This Servicegroup');
-				$label_group_status_overview = $t->_('View Status Overview For This Servicegroup');
-				$label_group_status_grid = $t->_('View Status Grid For This Servicegroup');
-				$label_avail = $t->_('View Availability For This Servicegroup');
+				$label_status_details = $t->_('Status detail');
+				$label_group_status_overview = $t->_('Status overview');
+				$label_group_status_grid = $t->_('Status grid');
+				$label_avail = $t->_('Availability');
+				$label_view_for = $t->_('for this servicegroup');
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
@@ -921,10 +923,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 				);
 				break;
 			case 'hostgroup':
-				$label_status_details = $t->_('View Status Detail For This Hostgroup');
-				$label_group_status_overview = $t->_('View Status Overview For This Hostgroup');
-				$label_group_status_grid = $t->_('View Status Grid For This Hostgroup');
-				$label_avail = $t->_('View Availability For This Hostgroup');
+				$label_status_details = $t->_('Status detail');
+				$label_group_status_overview = $t->_('Status overview');
+				$label_group_status_grid = $t->_('Status grid');
+				$label_avail = $t->_('Availability');
+				$label_view_for = $t->_('for this hostgroup');
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
@@ -935,6 +938,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		if (isset($page_links)) {
 			$content->page_links = $page_links;
+			$content->label_view_for = $label_view_for;
 		}
 
 	}
