@@ -2652,7 +2652,7 @@ class Reports_Model extends Model
 		$hosts = false;
 		$services = false;
 		if ($this->servicegroup) {
-			$services = array();
+			$hosts = $services = array();
 			$smod = new Service_Model();
 			foreach ($this->servicegroup as $sg) {
 				$res = $smod->get_services_for_group($sg);
@@ -2662,9 +2662,14 @@ class Reports_Model extends Model
 						$services[$name] = array();
 					}
 					$services[$name][$sg] = $sg;
+					if (empty($hosts[$name])) {
+						$hosts[$name] = array();
+					}
+					$hosts[$name][$sg] = $sg;
 				}
 			}
-			$this->service_servicegroup = $services;
+			$this->service_servicegroup['hosts'] = $hosts;
+			$this->service_servicegroup['services'] = $services;
 		} elseif ($this->hostgroup) {
 			$hosts = array();
 			$hmod = new Host_Model();
