@@ -327,7 +327,8 @@ class Summary_Controller extends Authenticated_Controller
 				break;
 
 			 default:
-				die(Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]"));
+				echo Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]");
+				die;
 				break;
 			}
 		}
