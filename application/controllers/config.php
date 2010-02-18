@@ -43,6 +43,7 @@ class Config_Controller extends Authenticated_Controller {
 
 		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View config');
 		$this->template->content = $this->add_view('config/index');
+		$data = $config_model->list_config($this->type);
 
 		switch ($this->type) {
 			case 'hosts': // *****************************************************************************
@@ -53,7 +54,9 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Parent Hosts'),
 					$t->_('Max. Check Attempts'),
 					$t->_('Check Interval'),
+					$t->_('Retry Interval'),
 					$t->_('Host Check Command'),
+					$t->_('Check Period'),
 					$t->_('Obsess Over'),
 					$t->_('Enable Active Checks'),
 					$t->_('Enable Passive Checks'),
@@ -75,6 +78,39 @@ class Config_Controller extends Authenticated_Controller {
 					//$t->_('Failure Prediction Options'),
 					//$t->_('Retention Options')
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= $row->host_name;
+					$result[$i][]= $row->alias;
+					$result[$i][]= $row->address;
+					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parents, $row->parents); // ID
+					$result[$i][]= $row->max_check_attempts;
+					$result[$i][]= time::to_string($row->check_interval);
+					$result[$i][]= time::to_string($row->retry_interval);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->check_command, $row->check_command);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
+					$result[$i][]= $row->obsess_over_host == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->active_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
+					$result[$i][]= html::anchor(Router::$controller.'/?type=contact_groups#'.$row->contactgroup, $row->contactgroup); // ID
+					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
+					$result[$i][]= time::to_string($row->first_notification_delay);
+					$result[$i][]= $row->notification_options; // Down, Unreachable, Recovery, Flapping, Downtime
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
+					$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
+					$result[$i][]= $row->event_handler_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->stalking_options == 'n' ? $t->_('None') : $t->_('??');
+					$result[$i][]= $row->flap_detection_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->low_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->low_flap_threshold;
+					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
+					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$i++;
+				}
+				$data = $result;
 			break;
 
 			case 'services': // **************************************************************************
@@ -132,6 +168,7 @@ class Config_Controller extends Authenticated_Controller {
 				$t->_('Description'),
 				//$t->_('Contact Members'),
 			);
+
 			break;
 
 			case 'timeperiods': // ***********************************************************************
@@ -159,7 +196,10 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Group Name'),
 					$t->_('Description'),
-					$t->_('Host Members'),
+					//$t->_('Host Members'),
+					$t->_('Notes'),
+					$t->_('Notes URL'),
+					$t->_('Action URL'),
 				);
 			break;
 			case 'host_dependencies': // *****************************************************************
@@ -242,7 +282,6 @@ class Config_Controller extends Authenticated_Controller {
 			break;
 		}
 
-		$data = $config_model->list_config($this->type);
 		$this->template->content->header = $header;
 		$this->template->content->data = $data;
 		$this->template->content->type = $this->type;
