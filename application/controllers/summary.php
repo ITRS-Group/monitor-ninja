@@ -385,6 +385,17 @@ class Summary_Controller extends Authenticated_Controller
 			}
 		}
 
+		if ($report_type == self::ALERT_TOTALS) {
+			if (isset($used_options['servicegroup']))
+				$report_type = self::ALERT_TOTALS_SG;
+			elseif (isset($used_options['hostgroup']))
+				$report_type = self::ALERT_TOTALS_HG;
+			elseif (isset($used_options['service_description']))
+				$report_type = self::ALERT_TOTALS_SERVICE;
+			elseif (isset($used_options['host_name']))
+				$report_type = self::ALERT_TOTALS_HOST;
+		}
+
 		$views = array
 			(self::TOP_ALERT_PRODUCERS => 'toplist',
 			 self::RECENT_ALERTS => 'latest',
