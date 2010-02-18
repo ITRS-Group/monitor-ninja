@@ -2838,7 +2838,7 @@ class Reports_Model extends Model
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
 
-			if (empty($this->summary_result[$name])) {
+			if (empty($result[$name])) {
 				$result[$name] = 1;
 			} else {
 				$result[$name]++;
