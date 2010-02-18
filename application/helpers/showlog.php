@@ -10,7 +10,7 @@ class showlog_Core
 		$showlog = self::get_path();
 		$nagios_path = Kohana::config('config.nagios_base_path');
 		$cmd = $showlog . " --html ".$nagios_path."/var/nagios.log ";
-#			"/opt/monitor/var/archives/nagios-*.log";
+			"/opt/monitor/var/archives/nagios-*.log";
 
 		if (!isset($options['parse_forward'])) {
 			$cmd .= ' --reverse';
