@@ -2891,6 +2891,24 @@ class Reports_Model extends Model
 			$name = $row['host_name'];
 			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
+
+		foreach ($result as $hn => $ary) {
+			$ary['total'] = 0;
+			foreach ($ary as $type => $state_ary) {
+				if ($type === 'total')
+					continue;
+				$ary[$type . '_totals'] = array('soft' => 0, 'hard' => 0);
+				$ary[$type . '_total'] = 0;
+				foreach ($state_ary as $sh) {
+					$ary[$type . '_totals']['soft'] += $sh[0];
+					$ary[$type . '_totals']['hard'] += $sh[1];
+					$ary[$type . '_total'] += $sh[0] + $sh[1];
+					$ary['total'] += $sh[0] + $sh[1];
+				}
+			}
+			$result[$hn] = $ary;
+		}
+
 		$this->summary_result = $result;
 		return $this->summary_result;
 	}
