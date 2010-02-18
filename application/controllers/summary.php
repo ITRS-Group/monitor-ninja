@@ -454,6 +454,7 @@ class Summary_Controller extends Authenticated_Controller
 		 case self::ALERT_TOTALS_SG:
 		 case self::ALERT_TOTALS_HOST:
 		 case self::ALERT_TOTALS_SERVICE:
+			$content->label_overall_totals = $t->_('Overall Totals');
 			$result = $rpt->alert_totals();
 			break;
 
