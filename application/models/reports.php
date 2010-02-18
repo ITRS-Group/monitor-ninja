@@ -2877,14 +2877,21 @@ class Reports_Model extends Model
 
 	private function alert_totals_by_host($dbr)
 	{
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->host_name as $hn) {
+			$result[$hn] = $template;
+		}
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$type = 'host';
 			} else {
 				$type = 'service';
 			}
-			$this->summary_result[$type][$row['state']][$row['hard']]++;
+			$name = $row['host_name'];
+			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
+		$this->summary_result = $result;
 		return $this->summary_result;
 	}
 
