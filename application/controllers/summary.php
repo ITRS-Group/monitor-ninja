@@ -413,6 +413,8 @@ class Summary_Controller extends Authenticated_Controller
 		$content->label_alert_type = $t->_('Alert Type');
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
+		$content->label_hostgroup = $t->_('Hostgroup');
+		$content->label_servicegroup = $t->_('Servicegroup');
 		$content->label_host_alerts = $t->_('Host Alerts');
 		$content->label_service_alerts = $t->_('Service Alerts');
 		$content->label_state = $t->_('State');
