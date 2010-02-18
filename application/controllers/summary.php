@@ -284,8 +284,44 @@ class Summary_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * Print one alert totals table. Since they all look more or
+	 * less the same, we can re-use the same function for all of
+	 * them, provided we get the statenames (OK, UP etc) from the
+	 * caller, along with the array of state totals.
+	 */
+	public function _print_alert_totals_table($topic, $ary, $state_names, $totals)
+	{
+		$t = $this->translate;
+		echo "<table class=\"host_alerts\"><tr>\n";
+		echo "<th>" . $t->_('State') . "</th>\n";
+		echo "<th>" . $t->_('Soft Alerts') . "</th>\n";
+		echo "<th>" . $t->_('Hard Alerts') . "</th>\n";
+		echo "<th>" . $t->_('Total Alerts') . "</th>\n";
+		echo "</tr>\n";
+
+		$total = array(0, 0); # soft and hard
+		foreach ($ary as $state_id => $sh) {
+			if (!isset($state_names[$state_id]))
+				continue;
+
+			echo "<tr>\n";
+			echo "<td>" . $state_names[$state_id] . "</td>\n"; # topic
+			echo "<td>" . $sh[0] . "</td>\n"; # soft
+			echo "<td>" . $sh[1] . "</td>\n"; # hard
+			$tot = $sh[0] + $sh[1];
+			echo "<td>" . $tot . "</td>\n"; # soft + hard
+			echo "</tr>\n";
+		}
+		echo "<tr><td>Total</td>\n";
+		echo "<td>" . $totals['soft'] . "</td>\n";
+		echo "<td>" . $totals['hard'] . "</td>\n";
+		$tot = $totals['soft'] + $totals['hard'];
+		echo "<td>" . $tot . "</td>\n";
+		echo "</tr></table>\n";
+	}
+
+	/**
 	 * Generates an alert summary report
-	 *
 	 */
 	public function generate()
 	{
