@@ -2874,6 +2874,25 @@ class Reports_Model extends Model
 		return $this->summary_result;
 	}
 
+	private function set_alert_total_totals(&$result)
+	{
+		foreach ($result as $name => $ary) {
+			$ary['total'] = 0;
+			foreach ($ary as $type => $state_ary) {
+				if ($type === 'total')
+					continue;
+				$ary[$type . '_totals'] = array('soft' => 0, 'hard' => 0);
+				$ary[$type . '_total'] = 0;
+				foreach ($state_ary as $sh) {
+					$ary[$type . '_totals']['soft'] += $sh[0];
+					$ary[$type . '_totals']['hard'] += $sh[1];
+					$ary[$type . '_total'] += $sh[0] + $sh[1];
+					$ary['total'] += $sh[0] + $sh[1];
+				}
+			}
+			$result[$name] = $ary;
+		}
+	}
 
 	private function alert_totals_by_host($dbr)
 	{
@@ -2892,25 +2911,23 @@ class Reports_Model extends Model
 			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
 
-		foreach ($result as $hn => $ary) {
-			$ary['total'] = 0;
-			foreach ($ary as $type => $state_ary) {
-				if ($type === 'total')
-					continue;
-				$ary[$type . '_totals'] = array('soft' => 0, 'hard' => 0);
-				$ary[$type . '_total'] = 0;
-				foreach ($state_ary as $sh) {
-					$ary[$type . '_totals']['soft'] += $sh[0];
-					$ary[$type . '_totals']['hard'] += $sh[1];
-					$ary[$type . '_total'] += $sh[0] + $sh[1];
-					$ary['total'] += $sh[0] + $sh[1];
-				}
-			}
-			$result[$hn] = $ary;
+		return $result;
+	}
+
+	private function alert_totals_by_service($dbr)
+	{
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->service_description as $name) {
+			$result[$name] = $template;
+		}
+		$type = 'service';
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			$name = $row['host_name'] . ';' . $row['service_description'];
+			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
 
-		$this->summary_result = $result;
-		return $this->summary_result;
+		return $result;
 	}
 
 
@@ -3003,10 +3020,10 @@ class Reports_Model extends Model
 		} elseif ($this->host_name) {
 			$result = $this->alert_totals_by_host($dbr);
 		} elseif ($this->service_description) {
-			$result = $this->alert_totals_by_host($dbr);
-			$result = $result['service'];
+			$result = $this->alert_totals_by_service($dbr);
 		}
 
+		$this->set_alert_total_totals($result);
 		$this->summary_result = $result;
 		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
