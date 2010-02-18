@@ -2766,7 +2766,7 @@ class Reports_Model extends Model
 				'OR ' . $service_states_sql . ') '; break;
 		}
 
-		switch ($this->alert_types) {
+		switch ($this->state_types) {
 		 case 0: case 3: default:
 			break;
 		 case 1:
