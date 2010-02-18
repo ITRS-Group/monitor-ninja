@@ -2690,6 +2690,9 @@ class Reports_Model extends Model
 				$services[$srv] = $srv;
 			}
 		} elseif ($this->host_name) {
+			if (!is_array($this->host_name)) {
+				$this->host_name = array($this->host_name);
+			}
 			$hosts = false;
 			foreach ($this->host_name as $hn) {
 				$hosts[$hn] = $hn;
