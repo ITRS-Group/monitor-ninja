@@ -259,6 +259,9 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 	}
 
+	/**
+	 * Test a massive amount of queries. For debugging only
+	 */
 	public function test_queries()
 	{
 		$rpt = new Reports_Model();
