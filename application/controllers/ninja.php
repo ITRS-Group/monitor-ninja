@@ -102,11 +102,11 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Schedule reports') 			=> array('underconstruction/schedule_reports', 'schedulereports'),
 				$this->translate->_('Alert history') 					=> array('showlog/showlog', 'alerthistory'),
 				$this->translate->_('Alert summary') 					=> array('underconstruction/alert_summary', 'alertsummary'),
-				$this->translate->_('Notifications') 					=> array('underconstruction/notifications', 'notifications'),
+				$this->translate->_('Notifications') 					=> array('notifications', 'notifications'),
 				$this->translate->_('Event log') 							=> array('underconstruction/event_log', 'eventlog'),
 			),
 			$this->translate->_('Configuration') => array(
-				$this->translate->_('View config') 						=> array('underconstruction/view_config', 'viewconfig'),
+				$this->translate->_('View config') 						=> array('config', 'viewconfig'),
 				$this->translate->_('Change password') 				=> array('underconstruction/change_password', 'password'),
 				$this->translate->_('Backup/Restore')					=> array('underconstruction/backup_restore', 'backup'),
 			)
