@@ -34,18 +34,20 @@ class Config_Model extends Model {
 			switch($type) {
 				case 'hosts':
 					$sql = "SELECT
-									host_name, alias, address, host_parents.parents, max_check_attempts, check_interval,
-									retry_interval, check_command, check_period, notification_interval,
-									notes, notes_url, action_url, icon_image, icon_image_alt,
-									obsess_over_host, active_checks_enabled, passive_checks_enabled, check_freshness,
-									freshness_threshold, host_contactgroup.contactgroup, last_host_notification, next_host_notification,
-									first_notification_delay, event_handler, notification_options, notification_period,
-									event_handler_enabled, stalking_options, flap_detection_enabled, low_flap_threshold,
-									high_flap_threshold, process_perf_data, failure_prediction_enabled
-									FROM host, host_parents, host_contactgroup
-									WHERE host.id = host_parents.host AND
-									host.id = host_contactgroup.host
-									ORDER BY host_name";
+									h.host_name, h.alias, h.address, hh.host_name as parent, h.max_check_attempts, h.check_interval,
+									h.retry_interval, h.check_command, h.check_period, h.notification_interval,
+									h.notes, h.notes_url, h.action_url, h.icon_image, h.icon_image_alt,
+									h.obsess_over_host, h.active_checks_enabled, h.passive_checks_enabled, h.check_freshness,
+									h.freshness_threshold, cg.contactgroup_name, h.last_host_notification, h.next_host_notification,
+									h.first_notification_delay, h.event_handler, h.notification_options, h.notification_period,
+									h.event_handler_enabled, h.stalking_options, h.flap_detection_enabled, h.low_flap_threshold,
+									h.high_flap_threshold, h.process_perf_data, h.failure_prediction_enabled
+									FROM host as h, host_parents as hp, host_contactgroup as hc, host as hh, contactgroup as cg
+									WHERE h.id = hp.host AND
+									h.id = hc.host AND
+									hp.parents = hh.id AND
+									hc.contactgroup = cg.id
+									ORDER BY h.host_name";
 									/* Failure Prediction Options, Retention Options*/
 				break;
 
@@ -58,16 +60,19 @@ class Config_Model extends Model {
 									notes, notes_url, action_url, icon_image, icon_image_alt,
 									notification_interval, notification_options, notification_period,
 									event_handler, event_handler_enabled, stalking_options, flap_detection_enabled,
-									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled
-									FROM service ORDER BY host_name, service_description";
-									/*'Default Contact Groups, Failure Prediction Options,Retention Options*/
+									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled,
+									cg.contactgroup_name
+									FROM service, service_contactgroup as sc, contactgroup as cg
+									WHERE service.id = sc.contactgroup AND sc.contactgroup = cg.id
+									ORDER BY host_name, service_description";
+									/* Failure Prediction Options,Retention Options*/
 				break;
 
 				case 'contacts':
 					$sql = "SELECT contact_name, alias, email, pager, service_notification_options,
 									host_notification_options, service_notification_period, host_notification_period,
 									service_notification_commands, host_notification_commands
-								FROM contact ORDER BY contact_name";
+									FROM contact ORDER BY contact_name";
 				break;
 
 				case 'commands':
@@ -82,7 +87,7 @@ class Config_Model extends Model {
 
 				case 'host_groups':
 					$sql = "SELECT hostgroup_name, alias, notes, notes_url, action_url
-									FROM hostgroup ORDER BY hostgroup_name"; // members
+									FROM hostgroup ORDER BY hostgroup_name";
 				break;
 
 				case 'service_groups':

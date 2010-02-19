@@ -92,9 +92,9 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->host_name;
 					$result[$i][]= $row->alias;
 					$result[$i][]= $row->address;
-					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parents, $row->parents); // ID
+					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parent, $row->parent);
 					$result[$i][]= $row->max_check_attempts;
-					$result[$i][]= time::to_string($row->check_interval);
+					$result[$i][]= time::to_string($row->check_interval*60);
 					$result[$i][]= time::to_string($row->retry_interval);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->check_command, $row->check_command);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
@@ -103,7 +103,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-					$result[$i][]= html::anchor(Router::$controller.'/?type=contact_groups#'.$row->contactgroup, $row->contactgroup); // ID
+					$result[$i][]= html::anchor(Router::$controller.'/?type=contact_groups#'.$row->contactgroup_name, $row->contactgroup_name);
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 					$result[$i][]= time::to_string($row->first_notification_delay);
 					$result[$i][]= $row->notification_options; // Down, Unreachable, Recovery, Flapping, Downtime
@@ -144,7 +144,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Enable Passive Checks'),
 					$t->_('Check Freshness'),
 					$t->_('Freshness Threshold'),
-					//$t->_('Default Contact Groups'),
+					$t->_('Default Contact Groups'),
 					$t->_('Enable Notifications'),
 					$t->_('Notification Interval'),
 					$t->_('Notification Options'),
@@ -184,7 +184,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-					// contactgroup
+					$result[$i][]= html::anchor(Router::$controller.'/?type=contacts#'.$row->contactgroup_name, $row->contactgroup_name);
 					$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 					$result[$i][]= $row->notification_options; // d,u,r,f,d -> Down, Unreachable, Recovery, Flapping, Downtime
@@ -221,7 +221,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Host Notification Period'),
 					$t->_('Service Notification Commands'),
 					$t->_('Host Notification Commands'),
-					// retention options
+					// $t->_('Retention Options'),
 				);
 				$data = $config_model->list_config($this->type);
 				$i = 0;
@@ -236,18 +236,37 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->host_notification_period, $row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->service_notification_commands, $row->service_notification_commands);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->host_notification_commands, $row->host_notification_commands);
-					//retention options
+					// retention options
+					$i++;
 				}
 				$data = $result;
 			break;
 
 			case 'contact_groups': // ********************************************************************
-			$header = array(
-				$t->_('Group Name'),
-				$t->_('Description'),
-				//$t->_('Contact Members'),
-			);
+				$header = array(
+					$t->_('Group Name'),
+					$t->_('Description'),
+					$t->_('Contact Members'),
+				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= $row->contactgroup_name;
+					$result[$i][]= $row->alias;
 
+					$travel = Contactgroup_Model::get_members($row->contactgroup_name);
+					if (count($travel) > 0) {
+						$temp = false;
+						foreach ($travel as $trip) {
+							$temp[] = html::anchor(Router::$controller.'/?type=contacts#'.$trip->contact_name, $trip->contact_name);
+						}
+						$result[$i][]= implode(', ',$temp);
+					}
+					else
+						$result[$i][]= '';
+					$i++;
+				}
+				$data = $result;
 			break;
 
 			case 'timeperiods': // ***********************************************************************
@@ -275,11 +294,35 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Group Name'),
 					$t->_('Description'),
-					//$t->_('Host Members'),
+					$t->_('Host Members'),
 					$t->_('Notes'),
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				$hgm = new Hostgroup_Model;
+				foreach($data as $row) {
+					$result[$i][]= $row->hostgroup_name;
+					$result[$i][]= $row->alias;
+
+					$travel = $hgm->get_hosts_for_group($row->hostgroup_name);
+					if (count($travel) > 0) {
+						$temp = false;
+						foreach ($travel as $trip) {
+							$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$trip->host_name, $trip->host_name);
+						}
+						$result[$i][]= implode(', ',$temp);
+					}
+					else
+						$result[$i][]= '';
+
+					$result[$i][]= $row->notes;
+					$result[$i][]= $row->notes_url;
+					$result[$i][]= $row->action_url;
+					$i++;
+				}
+				$data = $result;
 			break;
 			case 'host_dependencies': // *****************************************************************
 				$header = array(
@@ -293,7 +336,7 @@ class Config_Controller extends Authenticated_Controller {
 			case 'host_escalations': // ******************************************************************
 				$header = array(
 					$t->_('Host'),
-					//$t->_('Contacts/Groups'),
+					$t->_('Contacts/Groups'), //?
 					$t->_('First Notification'),
 					$t->_('Last Notification'),
 					$t->_('Notification Interval'),
@@ -306,11 +349,37 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Group Name'),
 					$t->_('Description'),
-					//$t->_('Service Members'),
+					$t->_('Service Members'),
 					$t->_('Notes'),
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
 				);
+				$data = $config_model->list_config($this->type);
+				if ($data!==false) {
+					$i = 0;
+					$sgm = new Servicegroup_Model;
+					foreach($data as $row) {
+						$result[$i][]= $row->servicegroup_name;
+						$result[$i][]= $row->alias;
+
+						$travel = $sgm->get_services_for_group($row->servicegroup_name);
+						if (count($travel) > 0) {
+							$temp = false;
+							foreach ($travel as $trip) {
+								$temp[] = html::anchor(Router::$controller.'/?type=services#'.$trip->description, $trip->description);
+							}
+							$result[$i][]= implode(', ',$temp);
+						}
+						else
+							$result[$i][]= '';
+
+						$result[$i][]= $row->notes;
+						$result[$i][]= $row->notes_url;
+						$result[$i][]= $row->action_url;
+						$i++;
+					}
+					$data = $result;
+				}
 			break;
 
 			case 'service_dependencies': // **************************************************************
@@ -328,7 +397,7 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Host'),
 					$t->_('Service description'),
-					$t->_('Contact Groups'),
+					$t->_('Contacts/Groups'),
 					$t->_('First Notification'),
 					$t->_('Last Notification'),
 					$t->_('Notification Interval'),
@@ -337,7 +406,7 @@ class Config_Controller extends Authenticated_Controller {
 				);
 			break;
 		}
-
+		//die (Kohana::debug($data));
 		$this->template->content->header = $header;
 		$this->template->content->data = $data;
 		$this->template->content->type = $this->type;
