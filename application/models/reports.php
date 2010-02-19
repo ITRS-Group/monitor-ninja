@@ -2700,10 +2700,7 @@ class Reports_Model extends Model
 		}
 
 		$object_selection = false;
-		if ($hosts) {
-			$object_selection = "AND host_name IN('" .
-				join("', '", array_keys($hosts)) . "')";
-		} elseif ($services) {
+		if ($services) {
 			$object_selection = "AND (";
 			$orstr = '';
 			# Must do this the hard way to allow host_name indices to
@@ -2719,6 +2716,9 @@ class Reports_Model extends Model
 				$orstr = " OR ";
 			}
 			$object_selection .= ')';
+		} elseif ($hosts) {
+			$object_selection = "AND host_name IN('" .
+				join("', '", array_keys($hosts)) . "')";
 		}
 
 		if (empty($fields))
