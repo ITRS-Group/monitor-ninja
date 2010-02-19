@@ -2662,10 +2662,10 @@ class Reports_Model extends Model
 						$services[$name] = array();
 					}
 					$services[$name][$sg] = $sg;
-					if (empty($hosts[$name])) {
-						$hosts[$name] = array();
+					if (empty($hosts[$o->host_name])) {
+						$hosts[$o->host_name] = array();
 					}
-					$hosts[$name][$sg] = $sg;
+					$hosts[$o->host_name][$sg] = $sg;
 				}
 			}
 			$this->service_servicegroup['hosts'] = $hosts;
