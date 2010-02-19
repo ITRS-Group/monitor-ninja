@@ -24,10 +24,12 @@
 						<?php echo $label_startdate ?> (<span id="start_time_tmp"><?php echo $label_click_calendar ?></span>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $start_time ?>" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
 						<input type="hidden" name="start_time" id="start_time" value="<?php echo $start_time ?>" />
+						<input type="text" maxlength="5" name="time_start" id="time_start" value="08:00">
 						<br /><br /><br />
 						<?php echo $label_enddate ?> (<span id="end_time_tmp"><?php echo $label_click_calendar ?></span>)<br />
 						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $end_time ?>" class="date-pick" title="<?php echo $label_enddate_selector ?>" />
 						<input type="hidden" name="end_time" id="end_time" value="<?php echo $end_time ?>" />
+						<input type="text" maxlength="5" name="time_end" id="time_end" value="09:00">
 					</td>
 				</tr>
 				<tr class="none">
