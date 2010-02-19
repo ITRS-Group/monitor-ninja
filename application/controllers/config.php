@@ -158,11 +158,18 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Process Performance Data'),
 					$t->_('Enable Failure Prediction'),
 					//$t->_('Failure Prediction Options'),
+					$t->_('Notes'),
+					$t->_('Notes URL'),
+					$t->_('Action URL'),
+					$t->_('Icon image'),
+					$t->_('Icon image alt'),
 					//$t->_('Retention Options'),
 				);
 				$data = $config_model->list_config($this->type);
 				$i = 0;
 				foreach($data as $row) {
+					$note_options = explode(',',$row->notification_options);
+
 					$result[$i][]= $row->host_name;
 					$result[$i][]= $row->service_description;
 					$result[$i][]= $row->max_check_attempts;
@@ -180,7 +187,7 @@ class Config_Controller extends Authenticated_Controller {
 					// contactgroup
 					$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
-					$result[$i][]= $row->notification_options; // Down, Unreachable, Recovery, Flapping, Downtime
+					$result[$i][]= $row->notification_options; // d,u,r,f,d -> Down, Unreachable, Recovery, Flapping, Downtime
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
 					$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
 					$result[$i][]= $row->event_handler_enabled == 1 ? $t->_('Yes') : $t->_('No');
@@ -190,13 +197,13 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
 					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
-					//
-					/*$result[$i][]= $row->notes;
+					// failure prediction options
+					$result[$i][]= $row->notes;
 					$result[$i][]= $row->notes_url;
 					$result[$i][]= $row->action_url;
 					$result[$i][]= $row->icon_image;
-					$result[$i][]= $row->icon_image_alt;*/
-					//
+					$result[$i][]= $row->icon_image_alt;
+					//retention options
 					$i++;
 				}
 				$data = $result;
@@ -295,19 +302,6 @@ class Config_Controller extends Authenticated_Controller {
 				);
 			break;
 
-			case 'extended_host_information': // *********************************************************
-				$header = array(
-					$t->_('Host'),
-					$t->_('Notes URL'),
-					$t->_('2-D Coords'),
-					$t->_('3-D Coords'),
-					$t->_('Statusmap Image'),
-					$t->_('VRML Image'),
-					$t->_('Logo Image'),
-					$t->_('Image Alt'),
-				);
-			break;
-
 			case 'service_groups': // ********************************************************************
 				$header = array(
 					$t->_('Group Name'),
@@ -340,16 +334,6 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Notification Interval'),
 					$t->_('Escalation Period'),
 					$t->_('Escalation Options'),
-				);
-			break;
-
-			case 'extended_service_information': // ******************************************************
-				$header = array(
-					$t->_('Host'),
-					$t->_('Description'),
-					$t->_('Notes URL'),
-					$t->_('Logo Image'),
-					$t->_('Image Alt'),
 				);
 			break;
 		}

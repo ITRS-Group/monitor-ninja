@@ -55,6 +55,7 @@ class Config_Model extends Model {
 									retry_interval, check_command, check_period, parallelize_check, is_volatile,
 									obsess_over_service, active_checks_enabled, passive_checks_enabled,
 									check_freshness, freshness_threshold, notifications_enabled,
+									notes, notes_url, action_url, icon_image, icon_image_alt,
 									notification_interval, notification_options, notification_period,
 									event_handler, event_handler_enabled, stalking_options, flap_detection_enabled,
 									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled
