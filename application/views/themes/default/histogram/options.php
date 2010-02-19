@@ -11,7 +11,7 @@
 <?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
 			<table summary="Report settings" id="report">
 				<tr class="none">
-					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?></td>
+					<td><?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $report_periods, $selected); ?></td>
 				</tr>
 				<tr>
 					<td>
