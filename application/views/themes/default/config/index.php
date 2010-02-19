@@ -33,7 +33,7 @@
 		<tbody>
 		<?php
 			$i = 0;
-			if ($data!==false && $data->count()) {
+			if ($data!==false) {
 				foreach ($data as $row) {
 					$i++;
 					echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'">'."\n";

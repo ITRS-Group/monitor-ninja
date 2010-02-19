@@ -35,6 +35,8 @@ class Config_Model extends Model {
 				case 'hosts':
 					$sql = "SELECT
 									host_name, alias, address, host_parents.parents, max_check_attempts, check_interval,
+									retry_interval, check_command, check_period, notification_interval,
+									notes, notes_url, action_url, icon_image, icon_image_alt,
 									obsess_over_host, active_checks_enabled, passive_checks_enabled, check_freshness,
 									freshness_threshold, host_contactgroup.contactgroup, last_host_notification, next_host_notification,
 									first_notification_delay, event_handler, notification_options, notification_period,
@@ -78,7 +80,8 @@ class Config_Model extends Model {
 				break;
 
 				case 'host_groups':
-					$sql = "SELECT hostgroup_name, alias, notes FROM hostgroup ORDER BY hostgroup_name";
+					$sql = "SELECT hostgroup_name, alias, notes, notes_url, action_url
+									FROM hostgroup ORDER BY hostgroup_name"; // members
 				break;
 
 				case 'service_groups':
