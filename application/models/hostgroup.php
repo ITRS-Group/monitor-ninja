@@ -103,4 +103,34 @@ class Hostgroup_Model extends ORM
 		return Group_Model::get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
 	}
 
+	/**
+	*	Fetch hosts that belongs to a specific hostgroup
+	*/
+	public function get_hosts_for_group($group=false)
+	{
+		if (empty($group)) {
+			return false;
+		}
+		$auth_hosts = Host_Model::authorized_hosts();
+		$host_str = implode(', ', array_values($auth_hosts));
+		$sql = "SELECT
+			DISTINCT h.*
+		FROM
+			host h,
+			hostgroup hg,
+			host_hostgroup hhg
+		WHERE
+			hg.hostgroup_name=".$this->db->escape($group)." AND
+			hhg.hostgroup = hg.id AND
+			h.id=hhg.host AND
+			h.id IN(".$host_str.")
+		ORDER BY
+			h.host_name";
+		if (!empty($sql)) {
+			$result = $this->db->query($sql);
+			return $result;
+		}
+		return false;
+	}
+
 }
