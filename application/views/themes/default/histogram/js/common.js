@@ -147,8 +147,8 @@ function show_calendar(val, update) {
 		$("#display").show();
 		init_timepicker();
 		if (update == '') {
-			document.forms['report_form'].start_time.value='';
-			document.forms['report_form'].end_time.value='';
+			$('input[name=start_time]').attr('value', '');
+			$('input[name=end_time]').attr('value', '');
 		}
 	} else {
 		$("#display").hide();
