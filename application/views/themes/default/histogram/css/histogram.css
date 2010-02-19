@@ -1,0 +1,161 @@
+#progress{
+	position: absolute;
+	top:107px;
+	left:410px;
+	display: none;
+}
+
+#progress em,
+#progress img {
+	float: left;
+}
+#progress em {
+	display: block;
+	margin-top: 12px;
+}
+
+#response {
+	margin-left:5px;
+	padding-top:5px;
+	background: #f9f9f5 url(default/images/response.png) repeat-x;
+}
+
+#response h1 {
+	font: bold 12px arial,helvetica,sans-serif;
+	display: none;
+}
+
+#options,
+#block_host_states,
+#block_service_states{
+	display:none;
+}
+
+#response ul {
+	padding: 7px 2px 5px 50px;
+	margin: 0px;
+	margin-bottom: 7px;
+	width: auto;
+	background: transparent 7px 5px no-repeat;
+}
+
+#response li {
+	background: none;
+	padding: 2px 0px;
+	width: auto;
+	list-style: none;
+}
+
+#response ul.ok			{ background-image: url(../../icons/32x32/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/32x32/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/32x32/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
+
+/* nytt */
+
+input,
+select,
+textarea,
+input#cal_end,
+input#cal_start,
+input#time_start,
+input#time_end {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px;
+	width: 378px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
+}
+
+select { width: 382px}
+
+input#cal_end,
+input#cal_start,
+input#time_start,
+input#time_end {
+	width: 100px;
+}
+
+select[multiple=multiple] {
+	padding: 3px;
+	width: 380px;
+}
+
+input[type=button],
+input[type=submit],
+input[type=reset],
+input[type=checkbox],
+input[type=radio] {
+	width: auto
+}
+
+input[type=checkbox],
+input[type=radio] {
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 5px;
+}
+
+input[type=radio] { border: 0px; }
+
+input[type=reset],
+input[type=submit],
+input[type=button] {
+	background: #cdcdcd url(bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+	margin-bottom: 5px;
+}
+
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
+h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
+
+caption { padding-left:0px}
+
+#settings_table,
+#std_report_table,
+#report_mode_select { width: auto; }
+#settings_table tr td,
+#report_mode_select tr td,
+#history_report_table tr td  { padding: 0px 5px 0px 0px; background: none;}
+
+.time_error {
+	border:1px solid red;
+	color:red;
+}
+
+div.time-picker {
+	position: absolute;
+	height: 200px;
+	width:9em; /* needed for IE */
+	overflow: auto;
+	background: #fff;
+	border: 1px solid #000;
+	z-index: 99;
+}
+div.time-picker-12hours {
+	width:6em; /* needed for IE */
+}
+
+div.time-picker ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+div.time-picker li {
+	padding: 1px;
+	cursor: pointer;
+}
+div.time-picker li.selected {
+	background: #316AC5;
+	color: #fff;
+}
