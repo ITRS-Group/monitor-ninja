@@ -98,7 +98,7 @@ $(document).ready(function() {
 	$(".fancybox").fancybox({
 		'overlayOpacity'	:	0.7,
 		'overlayColor'		:	'#ffffff',
-		'hideOnContentClick' : false,
+		'hideOnContentClick' : false
 	});
 	var previousPoint = null;
 	$("#histogram_graph").bind("plothover", function (event, pos, item) {
