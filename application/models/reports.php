@@ -2668,8 +2668,8 @@ class Reports_Model extends Model
 					$hosts[$o->host_name][$sg] = $sg;
 				}
 			}
-			$this->service_servicegroup['hosts'] = $hosts;
-			$this->service_servicegroup['services'] = $services;
+			$this->service_servicegroup['host'] = $hosts;
+			$this->service_servicegroup['service'] = $services;
 		} elseif ($this->hostgroup) {
 			$hosts = array();
 			$hmod = new Host_Model();
@@ -2974,7 +2974,8 @@ class Reports_Model extends Model
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
-			$servicegroups = $this->service_servicegroup[$name];
+
+			$servicegroups = $this->service_servicegroup[$type][$name];
 			foreach ($servicegroups as $sg) {
 				$result[$sg][$type][$row['state']][$row['hard']]++;
 			}
