@@ -45,6 +45,9 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('config/index');
 		$data = $config_model->list_config($this->type);
 
+		$search = array('d','u','r','f','d');
+		$replace = array($t->_('Down'), $t->_('Unreachable'), $t->_('Recovery'), $t->_('Flapping'), $t->_('Downtime'));
+
 		switch ($this->type) {
 			case 'hosts': // *****************************************************************************
 				$header = array(
@@ -76,6 +79,11 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Process Performance Data'),
 					$t->_('Enable Failure Prediction'),
 					//$t->_('Failure Prediction Options'),
+					$t->_('Notes'),
+					$t->_('Notes URL'),
+					$t->_('Action URL'),
+					$t->_('Icon image'),
+					$t->_('Icon image alt'),
 					//$t->_('Retention Options')
 				);
 				$data = $config_model->list_config($this->type);
@@ -108,6 +116,13 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
 					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					//
+					$result[$i][]= $row->notes;
+					$result[$i][]= $row->notes_url;
+					$result[$i][]= $row->action_url;
+					$result[$i][]= $row->icon_image;
+					$result[$i][]= $row->icon_image_alt;
+					//
 					$i++;
 				}
 				$data = $result;
@@ -116,7 +131,7 @@ class Config_Controller extends Authenticated_Controller {
 			case 'services': // **************************************************************************
 				$header = array(
 					$t->_('Host'),
-					$t->_('Description'),
+					$t->_('Service Description'),
 					$t->_('Max. Check Attempts'),
 					$t->_('Normal Check Interval'),
 					$t->_('Retry Check Interal'),
@@ -145,6 +160,46 @@ class Config_Controller extends Authenticated_Controller {
 					//$t->_('Failure Prediction Options'),
 					//$t->_('Retention Options'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= $row->host_name;
+					$result[$i][]= $row->service_description;
+					$result[$i][]= $row->max_check_attempts;
+					$result[$i][]= time::to_string($row->check_interval);
+					$result[$i][]= time::to_string($row->retry_interval);
+					$result[$i][]= $row->check_command;
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
+					$result[$i][]= $row->parallelize_check == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->is_volatile == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->obsess_over_service == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->active_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
+					// contactgroup
+					$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
+					$result[$i][]= $row->notification_options; // Down, Unreachable, Recovery, Flapping, Downtime
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
+					$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
+					$result[$i][]= $row->event_handler_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->stalking_options == 'n' ? $t->_('None') : $t->_('??');
+					$result[$i][]= $row->flap_detection_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->low_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->low_flap_threshold;
+					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
+					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
+					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
+					//
+					/*$result[$i][]= $row->notes;
+					$result[$i][]= $row->notes_url;
+					$result[$i][]= $row->action_url;
+					$result[$i][]= $row->icon_image;
+					$result[$i][]= $row->icon_image_alt;*/
+					//
+					$i++;
+				}
+				$data = $result;
 			break;
 
 			case 'contacts': // **************************************************************************
@@ -159,7 +214,24 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Host Notification Period'),
 					$t->_('Service Notification Commands'),
 					$t->_('Host Notification Commands'),
+					// retention options
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= $row->contact_name;
+					$result[$i][]= $row->alias;
+					$result[$i][]= html::anchor('mailto:'.$row->email, $row->email);
+					$result[$i][]= $row->pager;
+					$result[$i][]= $row->service_notification_options; // Unknown, Warning, Critical, Recovery, Flapping
+					$result[$i][]= $row->host_notification_options; // Down, Unreachable, Recovery, Flapping
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->service_notification_period, $row->service_notification_period == 0 ? $t->_('None') : $row->service_notification_period);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->host_notification_period, $row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->service_notification_commands, $row->service_notification_commands);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->host_notification_commands, $row->host_notification_commands);
+					//retention options
+				}
+				$data = $result;
 			break;
 
 			case 'contact_groups': // ********************************************************************
@@ -240,7 +312,7 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Group Name'),
 					$t->_('Description'),
-					$t->_('Service Members'),
+					//$t->_('Service Members'),
 					$t->_('Notes'),
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
