@@ -9,12 +9,9 @@ if (!empty($widgets)) {
 
 <div id="response"></div>
 <div id="progress"></div>
-<div class="report-page">
 <?php
 	echo isset($error) ? $error : '';
 	echo !empty($header) ? $header : '';
 	echo !empty($report_options) ? $report_options : '';
-
 	echo !empty($content) ? $content : '';
 ?>
-</div>

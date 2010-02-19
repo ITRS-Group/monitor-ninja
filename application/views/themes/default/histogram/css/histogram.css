@@ -1,3 +1,5 @@
+body { margin: 0px 1%; }
+
 #progress{
 	position: absolute;
 	top:107px;
@@ -159,3 +161,20 @@ div.time-picker li.selected {
 	background: #316AC5;
 	color: #fff;
 }
+
+#report tr td,
+#histogram_holder tr td {
+	background: #ffffff;
+}
+
+#histogram_holder tr.odd td {
+	background: #f5f5f5;
+}
+
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
+
+td.ledgedColorBox { width: auto; float; left; }
+
+#idUp, #idDown, #idUnreachable { margin-right: 5px;}
+
+

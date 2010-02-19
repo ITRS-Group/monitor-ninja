@@ -16,7 +16,8 @@ if (!empty($widgets)) {
 
 	<div id="histogram_report">
 	<?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
-			<table id="history_report_table">
+			<table id="history_report_table" style="width: auto">
+				<tr>
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
 							<option value="hostgroups"><?php echo $label_hostgroups ?></option>

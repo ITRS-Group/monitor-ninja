@@ -8,31 +8,30 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div style="padding:10px">
-	<?php echo $title ?><br />
-	<?php echo $report_time ?>
-</div>
-<table id="histogram_holder" style="width:auto">
+<h1><?php echo $title ?></h1>
+<p style="margin-top: -15px"><?php echo $report_time ?></p>
+
+<table id="histogram_holder" style="width:auto; margin-top: 15px">
 	<tr>
-		<td valign="top"><div id="histogram_graph" style="width:800px;height:300px"></div></td>
-		<td valign="top">
-			<div id="overviewLegend" style="width:50px"></div>
-			<br />
-			<p id="choices" style="padding-left:6px"><?php echo $this->translate->_('Show') ?>:</p>
+		<td><div id="histogram_graph" style="width:800px;height:300px; margin-bottom: 15px"></div></td>
+
+		<td style="vertical-align: bottom; padding-bottom: 30px">
+			<p id="choices" style="padding-left:6px; margin-bottom: 7px;"><?php echo $this->translate->_('Show') ?>:</p>
+			<div id="overviewLegend" style=" width: 40px"></div>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td>
 			<table id="histogram_overview">
 				<tr>
-					<th><?php echo $label_eventtype ?></th>
-					<th><?php echo $label_min ?></th>
-					<th><?php echo $label_max ?></th>
-					<th><?php echo $label_sum ?></th>
-					<th><?php echo $label_avg ?></th>
+					<th class="headerNone"><?php echo $label_eventtype ?></th>
+					<th class="headerNone"><?php echo $label_min ?></th>
+					<th class="headerNone"><?php echo $label_max ?></th>
+					<th class="headerNone"><?php echo $label_sum ?></th>
+					<th class="headerNone"><?php echo $label_avg ?></th>
 				</tr>
-					<?php foreach ($available_states as $state) { ?>
-					<tr>
+					<?php $i=0; foreach ($available_states as $state) { $i++;?>
+					<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 						<td><?php echo $states[$state] ?></td>
 						<td><?php echo $min[$state] ?></td>
 						<td><?php echo $max[$state] ?></td>
@@ -41,6 +40,8 @@ if (!empty($widgets)) {
 					</tr>
 					<?php } ?>
 			</table>
+
 		</td>
+		<td></td>
 	</tr>
 </table>
