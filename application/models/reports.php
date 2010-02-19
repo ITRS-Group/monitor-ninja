@@ -2713,19 +2713,19 @@ class Reports_Model extends Model
 				$s = $ary[1];
 				$object_selection .= $orstr . "(host_name = '" . $h . "' " .
 					"AND service_description = '" . $s . "')";
-				$orstr = " OR ";
+				$orstr = "\n OR ";
 			}
 			$object_selection .= ')';
 		} elseif ($hosts) {
-			$object_selection = "AND host_name IN('" .
-				join("', '", array_keys($hosts)) . "')";
+			$object_selection = "\nAND host_name IN(\n '" .
+				join("',\n '", array_keys($hosts)) . "')";
 		}
 
 		if (empty($fields))
 			$fields = '*';
 
-		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
-			"WHERE timestamp >= " . $this->start_time . " " .
+		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
+			"\nWHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
 		if (!empty($object_selection)) {
 			$query .= $object_selection . " ";
@@ -2748,11 +2748,11 @@ class Reports_Model extends Model
 
 		if (!$this->service_states || $this->service_states == 15) {
 			$this->service_states = 15;
-			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
+			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
-			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
-				'AND state IN(';
+			$service_states_sql = '(event_type = ' . self::SERVICECHECK .
+				"\nAND state IN(";
 			for ($i = 0; $i < 15; $i++) {
 				if (1 << $i & $this->service_states) {
 					$x[$i] = $i;
@@ -2762,21 +2762,21 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->alert_types) {
-		 case 1: $query .= 'AND ' . $host_states_sql; break;
-		 case 2: $query .= 'AND ' . $service_states_sql; break;
+		 case 1: $query .= "\nAND " . $host_states_sql; break;
+		 case 2: $query .= "\nAND " . $service_states_sql; break;
 		 case 3:
-			$query .= 'AND (' . $host_states_sql .
-				'OR ' . $service_states_sql . ') '; break;
+			$query .= "\nAND (" . $host_states_sql .
+				"OR " . $service_states_sql . ') '; break;
 		}
 
 		switch ($this->state_types) {
 		 case 0: case 3: default:
 			break;
 		 case 1:
-			$query .= "AND hard = 0 ";
+			$query .= "\nAND hard = 0 ";
 			break;
 		 case 2:
-			$query .= "AND hard = 1 ";
+			$query .= "\nAND hard = 1 ";
 			break;
 		}
 
@@ -2791,7 +2791,7 @@ class Reports_Model extends Model
 		}
 		$dbr = $this->db->query("EXPLAIN " . $query);
 		if (!$dbr) {
-			echo Kohana::debug($query, $this->db->errorinfo());
+			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
 			die;
 		}
 		return $dbr->fetch(PDO::FETCH_ASSOC);
@@ -2830,7 +2830,7 @@ class Reports_Model extends Model
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo(), $query);
+			echo Kohana::debug($db->errorinfo(), explode("\n", $query));
 			die;
 		}
 		$result = array();
@@ -2996,7 +2996,7 @@ class Reports_Model extends Model
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($this->db->errorinfo(), $query);
+			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
 			die;
 		}
 
