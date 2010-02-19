@@ -2701,7 +2701,14 @@ class Reports_Model extends Model
 
 		$object_selection = false;
 		if ($services) {
-			$object_selection = "AND (";
+			if ($hosts) {
+				$object_selection = "\nAND ((event_type = " . self::HOSTCHECK .
+					"\nAND host_name IN(\n '" .
+					join("',\n '", array_keys($hosts)) . "'))" .
+					"\nOR ";
+			} else {
+				$object_selection = "\nAND ";
+			}
 			$orstr = '';
 			# Must do this the hard way to allow host_name indices to
 			# take effect when running the query, since the construct
