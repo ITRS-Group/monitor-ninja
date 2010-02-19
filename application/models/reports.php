@@ -2641,13 +2641,18 @@ class Reports_Model extends Model
 	 *
 	 * @param $fields Database fields the caller needs
 	 */
-	private function build_alert_summary_query($fields = '*')
+	private function build_alert_summary_query($fields = false)
 	{
 		# set some few defaults
 		if (!$this->start_time)
 			$this->start_time = 0;
 		if (!$this->end_time)
 			$this->end_time = time();
+
+		# default to the most commonly used fields
+		if (!$fields) {
+			$fields = 'host_name, service_description, state, hard';
+		}
 
 		$hosts = false;
 		$services = false;
@@ -2999,7 +3004,7 @@ class Reports_Model extends Model
 	public function alert_totals()
 	{
 		$this->completion_time = microtime(true);
-		$query = $this->build_alert_summary_query('host_name, service_description, state, hard');
+		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
@@ -3044,7 +3049,7 @@ class Reports_Model extends Model
 	public function recent_alerts()
 	{
 		$this->completion_time = microtime(true);
-		$query = $this->build_alert_summary_query();
+		$query = $this->build_alert_summary_query('*');
 		$query .= " ORDER BY timestamp DESC";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
