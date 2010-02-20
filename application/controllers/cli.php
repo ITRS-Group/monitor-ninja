@@ -140,34 +140,69 @@ class Cli_Controller extends Authenticated_Controller {
 		# don't assume any authorized users - start by removing all auth data
 		User_Model::truncate_auth_data();
 
+		if (empty($passwd_import->passwd_ary)) {
+			# this is really bad since no users were found.
+			# It could mean that this system is using some other means of authorization
+			# (like LDAP?) but if we end up here something else in the configuration
+			# is terribly wrong.
+			return false;
+		}
 		$config_data = self::get_cgi_config();
-
 		# All db fields that should be set
 		# according to data in cgi.cfg
 		$auth_fields = Ninja_user_authorization_Model::$auth_fields;
-
 		if (empty($config_data['user_list'])) {
 			return false;
-		}
-		foreach ($config_data['user_list'] as $user) {
-			$auth_data = array();
-			if (empty($config_data['user_data'])) {
-				continue;
-			}
-
-			foreach ($auth_fields as $field) {
-				if (!isset($config_data['user_data']['authorized_for_'.$field])) {
-					$auth_data[] = 0;
-				} else {
-					if (in_array($user, $config_data['user_data']['authorized_for_'.$field])) {
-						$auth_data[] = 1;
+		} else {
+			if (in_array('*', $config_data['user_list']) && sizeof($config_data['user_list'])==1) {
+				# we don't have named users from cgi.cfg but ONLY one item
+				# since all users has been assigned all access rights (*)
+				# Instead we use the list from the htpasswd importer
+				# and assign all user the correct Nagios credentials
+				foreach (array_keys($passwd_import->passwd_ary) as $username) {
+					self::_edit_user_authorization($username, array(1, 1, 1, 1, 1, 1, 1));
+				}
+			} else {
+				$auth_users = false;
+				foreach ($auth_fields as $field) {
+					if (isset($config_data['user_data']['authorized_for_'.$field])) {
+						foreach ($config_data['user_data']['authorized_for_'.$field] as $username) {
+							if ($username === '*') {
+								foreach (array_keys($passwd_import->passwd_ary) as $u) {
+									$auth_users[$u][$field] = 1;
+								}
+							} else {
+								# named user - set current access right
+								$auth_users[$username][$field] = 1;
+								foreach (array_keys($passwd_import->passwd_ary) as $u) {
+									# check all other users
+									if ($u === $username || isset($auth_users[$u][$field])) {
+										# discard users already been checked for this access right
+										continue;
+									} else {
+										# prevent the rest from getting this access
+										$auth_users[$u][$field] = 0;
+									}
+								} # end foreach
+							}
+						} # end foreach
 					} else {
-						$auth_data[] = 0;
+						# unset access rights for all users for this key
+						foreach (array_keys($passwd_import->passwd_ary) as $u) {
+							$auth_users[$u][$field] = 0;
+						}
 					}
 				}
-			}
-			if (!empty($auth_data)) {
-				self::_edit_user_authorization($user, $auth_data);
+				if (!empty($auth_users)) {
+					# take all the users in auth_users where keys are usernames
+					# and contained array has 'autorized_for'<field> as key and boolean
+					# value indicatingn if user has this access or not
+					foreach ($auth_users as $user => $options) {
+						self::_edit_user_authorization($user, array_values($options));
+					}
+				} else {
+					return false;
+				}
 			}
 		}
 	}
