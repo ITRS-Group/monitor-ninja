@@ -115,6 +115,8 @@ class Default_Controller extends Ninja_Controller  {
 			# explicitly
 			if (Kohana::config('auth.driver') === 'Ninja') {
 				$result = Auth::instance()->driver->login($username, $password, false);
+			} elseif (Kohana::config('auth.driver') === 'LDAP') {
+				$result = Auth::instance()->driver->login($username, $password, false);
 			} else {
 				$result = Auth::instance()->login($username, $password);
 			}

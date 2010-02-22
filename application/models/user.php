@@ -23,7 +23,7 @@ class User_Model extends Auth_User_Model {
 
 		# set logged_in to current timestamp if db
 		$auth_type = Kohana::config('auth.driver');
-		if ($auth_type == 'db' || $auth_type === 'Ninja') {
+		if ($auth_type == 'db' || $auth_type === 'Ninja' || $auth_type === 'LDAP') {
 			$user = ORM::factory('user', Auth::instance()->get_user()->id);
 			$user->last_login = time();
 			$user->save();
