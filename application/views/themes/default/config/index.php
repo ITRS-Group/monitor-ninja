@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+		<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div class="widget w98 left">
 	<form method="get" action="">
@@ -25,8 +25,12 @@
 		<caption><?php echo ucfirst(str_replace('_',' ',$type)); ?></caption>
 		<thead>
 		<tr>
-			<?php foreach ($header as $item) {
-				echo '<th class="headerNone">'.$item.'</th>'."\n";
+			<?php $i = 0; foreach ($header as $item) {
+				if ($i == 0)
+					echo '<th class="headerSortDown">'.$item.'</th>'."\n";
+				else
+					echo '<th class="header">'.$item.'</th>'."\n";
+				$i++;
 			} ?>
 		</tr>
 		</thead>
