@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+	<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Config controller
  * Requires authentication
@@ -45,8 +45,67 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('config/index');
 		$data = $config_model->list_config($this->type);
 
-		$search = array('d','u','r','f','d');
-		$replace = array($t->_('Down'), $t->_('Unreachable'), $t->_('Recovery'), $t->_('Flapping'), $t->_('Downtime'));
+		$options['host'] = array(
+			'notification' => array(
+				'd' => $t->_('Down'),
+				'u' => $t->_('Unreachable'),
+				'r' => $t->_('Recovery'),
+				'f' => $t->_('Flapping start and stop'),
+				's' => $t->_('Scheduled downtime start and stop'),
+				'n' => false
+			),
+			'escalation' => array(
+				'd' => $t->_('Down'),
+				'u' => $t->_('Unreachable'),
+				'r' => $t->_('Recovery'),
+				'n' => false
+			),
+			'notification_failure' => array(
+				'd' => $t->_('Down'),
+				'u' => $t->_('Unreachable'),
+				'o' => $t->_('OK'),
+				'n' => false
+			),
+			'execution_failure' => array(
+				'd' => $t->_('Down'),
+				'u' => $t->_('Unreachable'),
+				'o' => $t->_('OK'),
+				'n' => false
+			),
+		);
+
+		$options['service'] = array(
+			'notification' => array(
+				'c' => $t->_('Critical'),
+				'w' => $t->_('Warning'),
+				'u' => $t->_('Unknown'),
+				'r' => $t->_('Recovery'),
+				'f' => $t->_('Flapping start and stop'),
+				's' => $t->_('Scheduled downtime start and stop'),
+				'n' => false
+			),
+			'escalation' => array(
+				'c' => $t->_('Critical'),
+				'w' => $t->_('Warning'),
+				'u' => $t->_('Unknown'),
+				'r' => $t->_('Recovery'),
+				'n' => false
+			),
+			'notification_failure' => array(
+				'c' => $t->_('Critical'),
+				'w' => $t->_('Warning'),
+				'u' => $t->_('Unknown'),
+				'o' => $t->_('OK'),
+				'n' => false
+			),
+			'execution_failure' => array(
+				'c' => $t->_('Critical'),
+				'w' => $t->_('Warning'),
+				'u' => $t->_('Unknown'),
+				'o' => $t->_('OK'),
+				'n' => false
+			),
+		);
 
 		switch ($this->type) {
 			case 'hosts': // *****************************************************************************
@@ -106,7 +165,11 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= html::anchor(Router::$controller.'/?type=contact_groups#'.$row->contactgroup_name, $row->contactgroup_name);
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 					$result[$i][]= time::to_string($row->first_notification_delay);
-					$result[$i][]= $row->notification_options; // Down, Unreachable, Recovery, Flapping, Downtime
+						$note_options = explode(',',$row->notification_options);
+						foreach($note_options as $option) {
+							$tmp[] = $options['host']['notification'][$option];
+						}
+					$result[$i][]= implode(', ',$tmp);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
 					$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
 					$result[$i][]= $row->event_handler_enabled == 1 ? $t->_('Yes') : $t->_('No');
@@ -116,13 +179,13 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
 					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
-					//
+					// failure predition options
 					$result[$i][]= $row->notes;
 					$result[$i][]= $row->notes_url;
 					$result[$i][]= $row->action_url;
 					$result[$i][]= $row->icon_image;
 					$result[$i][]= $row->icon_image_alt;
-					//
+					// retention options
 					$i++;
 				}
 				$data = $result;
@@ -173,7 +236,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->host_name;
 					$result[$i][]= $row->service_description;
 					$result[$i][]= $row->max_check_attempts;
-					$result[$i][]= time::to_string($row->check_interval);
+					$result[$i][]= time::to_string($row->check_interval*60);
 					$result[$i][]= time::to_string($row->retry_interval);
 					$result[$i][]= $row->check_command;
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
@@ -187,7 +250,11 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= html::anchor(Router::$controller.'/?type=contacts#'.$row->contactgroup_name, $row->contactgroup_name);
 					$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
-					$result[$i][]= $row->notification_options; // d,u,r,f,d -> Down, Unreachable, Recovery, Flapping, Downtime
+					$notification_options = explode(',',$row->notification_options);
+						foreach($notification_options as $option) {
+							$tmp[] = $options['service']['notification'][$option];
+						}
+					$result[$i][]= implode(', ',$tmp);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->notification_period, $row->notification_period);
 					$result[$i][]= $row->event_handler == 0 ? '&nbsp;' : $row->event_handler;
 					$result[$i][]= $row->event_handler_enabled == 1 ? $t->_('Yes') : $t->_('No');
@@ -230,8 +297,19 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->alias;
 					$result[$i][]= html::anchor('mailto:'.$row->email, $row->email);
 					$result[$i][]= $row->pager;
-					$result[$i][]= $row->service_notification_options; // Unknown, Warning, Critical, Recovery, Flapping
-					$result[$i][]= $row->host_notification_options; // Down, Unreachable, Recovery, Flapping
+
+					$s_notification_options = explode(',',$row->service_notification_options);
+						foreach($s_notification_options as $s_option) {
+							$s_tmp[] = $options['service']['notification'][$s_option];
+						}
+					$result[$i][]= implode(', ',$s_tmp);
+
+					$h_notification_options = explode(',',$row->host_notification_options);
+						foreach($h_notification_options as $h_option) {
+							$h_tmp[] = $options['host']['notification'][$h_option];
+						}
+					$result[$i][]= implode(', ',$h_tmp);
+
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->service_notification_period, $row->service_notification_period == 0 ? $t->_('None') : $row->service_notification_period);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->host_notification_period, $row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->service_notification_commands, $row->service_notification_commands);
@@ -329,20 +407,71 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Dependent Host'),
 					$t->_('Master Host'),
 					$t->_('Dependency Type'),
+					$t->_('Dependency Period'),
 					$t->_('Dependency Failure Options'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					if ($row->execution_failure_options != NULL) {
+						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->dependent, $row->dependent);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->master, $row->master);
+						$result[$i][]= $t->_('Check Execution');
+						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->dependency_period, $row->dependency_period);
+						$execution_failure_options = explode(',',$row->execution_failure_options);
+						$tmp = false;
+						foreach($execution_failure_options as $option) {
+							$tmp[] = $options['host']['execution_failure'][$option];
+						}
+						$result[$i][]= implode(', ',$tmp);
+						$i++;
+					}
+					if ($row->notification_failure_options != NULL) {
+						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->dependent, $row->dependent);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->master, $row->master);
+						$result[$i][]= $t->_('Notification');
+						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->dependency_period, $row->dependency_period);
+						$notification_failure_options = explode(',',$row->notification_failure_options);
+						$n_tmp = false;
+						foreach($notification_failure_options as $n_option) {
+							$n_tmp[] = $options['host']['notification_failure'][$n_option];
+						}
+						$result[$i][]= implode(', ',$n_tmp);
+						$i++;
+					}
+				}
+				$data = $result;
 			break;
 
 			case 'host_escalations': // ******************************************************************
 				$header = array(
 					$t->_('Host'),
-					$t->_('Contacts/Groups'), //?
+					$t->_('Contacts/Groups'),
 					$t->_('First Notification'),
 					$t->_('Last Notification'),
 					$t->_('Notification Interval'),
 					$t->_('Escalation Period'),
 					$t->_('Escalation Options'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->host_name, $row->host_name);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
+					$result[$i][]= $row->first_notification;
+					$result[$i][]= $row->last_notification;
+					$result[$i][]= time::to_string($row->notification_interval*60);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->escalation_period, $row->escalation_period);
+
+					$escalation_options = explode(',',$row->escalation_options);
+						foreach($escalation_options as $option) {
+							$tmp[] = $options['host']['escalation'][$option];
+						}
+					$result[$i][]= implode(', ',$tmp);
+
+					$i++;
+				}
+				$data = $result;
 			break;
 
 			case 'service_groups': // ********************************************************************
@@ -366,7 +495,8 @@ class Config_Controller extends Authenticated_Controller {
 						if (count($travel) > 0) {
 							$temp = false;
 							foreach ($travel as $trip) {
-								$temp[] = html::anchor(Router::$controller.'/?type=services#'.$trip->description, $trip->description);
+								$temp[] = html::anchor(Router::$controller.'/?type=hosts#'.$trip->host_name, $trip->host_name).' / '.
+													html::anchor(Router::$controller.'/?type=services#'.$trip->service_description, $trip->service_description);
 							}
 							$result[$i][]= implode(', ',$temp);
 						}
@@ -389,8 +519,45 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Host (master)'),
 					$t->_('Service (master)'),
 					$t->_('Dependency Type'),
+					$t->_('Dependency Period'),
 					$t->_('Dependency Failure Options'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					if ($row->execution_failure_options != NULL) {
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->dependent_host, $row->dependent_host);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->dependent_service, $row->dependent_service);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->master_host, $row->master_host);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->master_service, $row->master_service);
+						$result[$i][]= $t->_('Check Execution');
+						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->dependency_period, $row->dependency_period);
+						$execution_failure_options = explode(',',$row->execution_failure_options);
+						$tmp = false;
+						foreach($execution_failure_options as $option) {
+							$tmp[] = $options['service']['execution_failure'][$option];
+						}
+						$result[$i][]= implode(', ',$tmp);
+						$i++;
+					}
+					if ($row->notification_failure_options != NULL) {
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->dependent_host, $row->dependent_host);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->dependent_service, $row->dependent_service);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->master_host, $row->master_host);
+						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->master_service, $row->master_service);
+						$result[$i][]= $t->_('Notification');
+						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->dependency_period, $row->dependency_period);
+						//$result[$i][]= $row->notification_failure_options;
+						$notification_failure_options = explode(',',$row->notification_failure_options);
+						$n_tmp = false;
+						foreach($notification_failure_options as $n_option) {
+							$n_tmp[] = $options['service']['notification_failure'][$n_option];
+						}
+						$result[$i][]= implode(', ',$n_tmp);
+						$i++;
+					}
+				}
+				$data = $result;
 			break;
 
 			case 'service_escalations': // ***************************************************************
@@ -404,6 +571,26 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Escalation Period'),
 					$t->_('Escalation Options'),
 				);
+				$data = $config_model->list_config($this->type);
+				$i = 0;
+				foreach($data as $row) {
+					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->host_name, $row->host_name);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->service_description, $row->service_description);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
+					$result[$i][]= $row->first_notification;
+					$result[$i][]= $row->last_notification;
+					$result[$i][]= time::to_string($row->notification_interval*60);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->escalation_period, $row->escalation_period);
+
+					$escalation_options = explode(',',$row->escalation_options);
+						$tmp = false;
+						foreach($escalation_options as $option) {
+							$tmp[] = $options['service']['escalation'][$option];
+						}
+					$result[$i][]= implode(', ',$tmp);
+					$i++;
+				}
+				$data = $result;
 			break;
 		}
 		//die (Kohana::debug($data));
