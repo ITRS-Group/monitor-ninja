@@ -96,15 +96,19 @@ class Config_Model extends Model {
 				break;
 
 				case 'host_escalations':
-					$sql = "SELECT host_name, first_notification, last_notification, notification_interval,
-									escalation_period, escalation_options
-									FROM hostescalation ORDER BY host_name"; //contacts/groups?
+					$sql = "SELECT h.host_name, cg.contactgroup_name, he.first_notification, he.last_notification, he.notification_interval,
+									he.escalation_period, he.escalation_options
+									FROM hostescalation as he, host as h, host_contactgroup as hc, contactgroup as cg
+									WHERE h.id = he.host_name AND hc.host = h.id
+									ORDER BY h.host_name";
 				break;
 
 				case 'service_escalations':
-					$sql = "SELECT service, first_notification, last_notification, notification_interval,
-									escalation_period, escalation_options
-									FROM serviceescalation ORDER BY service";
+					$sql = "SELECT s.host_name, s.service_description, se.first_notification, se.last_notification, se.notification_interval,
+									se.escalation_period, se.escalation_options, cg.contactgroup_name
+									FROM serviceescalation as se, service as s, service_contactgroup as sc, contactgroup as cg
+									WHERE s.id = se.service AND sc.service = s.id
+									ORDER BY s.service_description";
 				break;
 
 				case 'contact_groups':
@@ -112,13 +116,20 @@ class Config_Model extends Model {
 				break;
 
 				case 'host_dependencies';
-					$sql = "SELECT dependent_host_name, host_name, dependency_period, execution_failure_options
-									FROM hostdependency ORDER BY host_name"; // dependency type?
+					$sql = "SELECT dh.host_name as dependent, mh.host_name as master, dependency_period, execution_failure_options,
+									notification_failure_options
+									FROM hostdependency as hd, host as mh, host dh
+									WHERE hd.dependent_host_name = dh.id AND hd.host_name = mh.id
+									ORDER BY dh.host_name";
 				break;
 
 				case 'service_dependencies';
-					$sql = "SELECT dependent_service, service, dependency_period, execution_failure_options
-									FROM servicedependency ORDER BY service"; // master host? dependent host? dep. type?
+					$sql = "SELECT ds.host_name as dependent_host, ds.service_description as dependent_service,
+									ms.service_description as master_service, ms.host_name as master_host,
+									dependency_period, execution_failure_options, notification_failure_options
+									FROM servicedependency as sd, service as ds, service as ms
+									WHERE ds.id = sd.dependent_service AND ms.id = sd.service
+									ORDER BY ds.service_description";
 				break;
 			}
 
