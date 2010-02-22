@@ -104,4 +104,35 @@ class Servicegroup_Model extends ORM
 		return Group_Model::get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
 	}
 
+	/**
+	*	Fetch services that belongs to a specific servicegroup
+	*/
+	public function get_services_for_group($group=false)
+	{
+		if (empty($group)) {
+			return false;
+		}
+		$auth_services = Service_Model::authorized_services();
+		$service_str = implode(', ', array_values($auth_services));
+		$sql = "SELECT
+			DISTINCT s.*
+		FROM
+			service s,
+			servicegroup sg,
+			service_servicegroup ssg
+		WHERE
+			sg.servicegroup_name=".$this->db->escape($group)." AND
+			ssg.servicegroup = sg.id AND
+			s.id=ssg.service AND
+			s.id IN(".$service_str.")
+		ORDER BY
+			s.service_description";
+
+		if (!empty($sql)) {
+			$result = $this->db->query($sql);
+			return $result;
+		}
+		return false;
+	}
+
 }
