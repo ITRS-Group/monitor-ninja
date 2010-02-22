@@ -137,7 +137,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('High Flap Threshold'),
 					$t->_('Process Performance Data'),
 					$t->_('Enable Failure Prediction'),
-					//$t->_('Failure Prediction Options'),
+					$t->_('Failure Prediction Options'),
 					$t->_('Notes'),
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
@@ -180,7 +180,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
 					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
-					// failure predition options
+					$result[$i][]= !isset($row->failure_prediction_options) ? '&nbsp;' : $row->failure_prediction_options; // ?
 					$result[$i][]= $row->notes;
 					$result[$i][]= $row->notes_url;
 					$result[$i][]= $row->action_url;
@@ -233,7 +233,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('High Flap Threshold'),
 					$t->_('Process Performance Data'),
 					$t->_('Enable Failure Prediction'),
-					//$t->_('Failure Prediction Options'),
+					$t->_('Failure Prediction Options'),
 					$t->_('Notes'),
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
@@ -278,7 +278,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->high_flap_threshold == 0.0 ? $t->_('Program-wide value') : $row->high_flap_threshold;
 					$result[$i][]= $row->process_perf_data == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->failure_prediction_enabled == 1 ? $t->_('Yes') : $t->_('No');
-					// failure prediction options
+					$result[$i][]= !isset($row->failure_prediction_options) ? '&nbsp;' : $row->failure_prediction_options; // ?
 					$result[$i][]= $row->notes;
 					$result[$i][]= $row->notes_url;
 					$result[$i][]= $row->action_url;
