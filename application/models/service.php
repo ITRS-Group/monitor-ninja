@@ -153,7 +153,7 @@ class Service_Model extends Model
 			return false;
 		}
 		$auth_hosts = Host_Model::authorized_hosts();
-		$host_str = implode(', ', array_keys($auth_hosts));
+		$host_str = implode(', ', array_values($auth_hosts));
 		switch ($type) {
 			case 'servicegroup':
 				$sql = "SELECT

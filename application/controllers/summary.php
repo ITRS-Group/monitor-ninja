@@ -128,6 +128,10 @@ class Summary_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
 		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$this->js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
+		$this->js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
+		$this->js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";
+		$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
 
 		$template->label_create_new = $this->translate->_('Alert Summary Report');
 		$template->label_standardreport = $this->translate->_('Standard Reports');
@@ -259,6 +263,9 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 	}
 
+	/**
+	 * Test a massive amount of queries. For debugging only
+	 */
 	public function test_queries()
 	{
 		$rpt = new Reports_Model();
@@ -281,8 +288,44 @@ class Summary_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * Print one alert totals table. Since they all look more or
+	 * less the same, we can re-use the same function for all of
+	 * them, provided we get the statenames (OK, UP etc) from the
+	 * caller, along with the array of state totals.
+	 */
+	public function _print_alert_totals_table($topic, $ary, $state_names, $totals)
+	{
+		$t = $this->translate;
+		echo "<table class=\"host_alerts\"><tr>\n";
+		echo "<th>" . $t->_('State') . "</th>\n";
+		echo "<th>" . $t->_('Soft Alerts') . "</th>\n";
+		echo "<th>" . $t->_('Hard Alerts') . "</th>\n";
+		echo "<th>" . $t->_('Total Alerts') . "</th>\n";
+		echo "</tr>\n";
+
+		$total = array(0, 0); # soft and hard
+		foreach ($ary as $state_id => $sh) {
+			if (!isset($state_names[$state_id]))
+				continue;
+
+			echo "<tr>\n";
+			echo "<td>" . $state_names[$state_id] . "</td>\n"; # topic
+			echo "<td>" . $sh[0] . "</td>\n"; # soft
+			echo "<td>" . $sh[1] . "</td>\n"; # hard
+			$tot = $sh[0] + $sh[1];
+			echo "<td>" . $tot . "</td>\n"; # soft + hard
+			echo "</tr>\n";
+		}
+		echo "<tr><td>Total</td>\n";
+		echo "<td>" . $totals['soft'] . "</td>\n";
+		echo "<td>" . $totals['hard'] . "</td>\n";
+		$tot = $totals['soft'] + $totals['hard'];
+		echo "<td>" . $tot . "</td>\n";
+		echo "</tr></table>\n";
+	}
+
+	/**
 	 * Generates an alert summary report
-	 *
 	 */
 	public function generate()
 	{
@@ -327,7 +370,8 @@ class Summary_Controller extends Authenticated_Controller
 				break;
 
 			 default:
-				die(Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]"));
+				echo Kohana::debug("Unknown standardreport: $_REQUEST[standardreport]");
+				die;
 				break;
 			}
 		}
@@ -343,6 +387,17 @@ class Summary_Controller extends Authenticated_Controller
 					# the reports model somehow
 				}
 			}
+		}
+
+		if ($report_type == self::ALERT_TOTALS) {
+			if (isset($used_options['servicegroup']))
+				$report_type = self::ALERT_TOTALS_SG;
+			elseif (isset($used_options['hostgroup']))
+				$report_type = self::ALERT_TOTALS_HG;
+			elseif (isset($used_options['service_description']))
+				$report_type = self::ALERT_TOTALS_SERVICE;
+			elseif (isset($used_options['host_name']))
+				$report_type = self::ALERT_TOTALS_HOST;
 		}
 
 		$views = array
@@ -362,6 +417,8 @@ class Summary_Controller extends Authenticated_Controller
 		$content->label_alert_type = $t->_('Alert Type');
 		$content->label_host = $t->_('Host');
 		$content->label_service = $t->_('Service');
+		$content->label_hostgroup = $t->_('Hostgroup');
+		$content->label_servicegroup = $t->_('Servicegroup');
 		$content->label_host_alerts = $t->_('Host Alerts');
 		$content->label_service_alerts = $t->_('Service Alerts');
 		$content->label_state = $t->_('State');
@@ -399,8 +456,17 @@ class Summary_Controller extends Authenticated_Controller
 			break;
 
 		 case self::ALERT_TOTALS:
+		 case self::ALERT_TOTALS_HG:
 		 case self::ALERT_TOTALS_SG:
+		 case self::ALERT_TOTALS_HOST:
+		 case self::ALERT_TOTALS_SERVICE:
+			$content->label_overall_totals = $t->_('Overall Totals');
 			$result = $rpt->alert_totals();
+			break;
+
+		 default:
+			echo Kohana::debug("Case fallthrough");
+			die;
 			break;
 		}
 

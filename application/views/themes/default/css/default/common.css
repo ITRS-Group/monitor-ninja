@@ -1,4 +1,3 @@
-<?php if(extension_loaded('zlib')){ob_start('ob_gzhandler');} header('Content-type: text/css; charset: UTF-8'); ?>
 * {
 	text-decoration: none;
 	font-size: 1em;
@@ -23,7 +22,6 @@ abbr, acronym, object, applet, table {
 	border: none;
 }
 table {
-	/*border-collapse: collapse;*/
 	border-spacing: 0;
 }
 caption, th, td, center {
@@ -100,6 +98,12 @@ h2 {
 	font-size: 15px;
 	font-weight: normal;
 	margin: 7px 0px 15px 0px;
+}
+
+h3 {
+	font-size: 11px;
+	font-weight: bold;
+	margin: 14px 0px 3px 0px;
 }
 /**************************************************************************************************/
 cite em,
@@ -184,21 +188,19 @@ select {
 }
 /* content ****************************************************************************************/
 #infobar {
-	cursor: pointer; 
-	position: fixed; 
-	width: 100%; 
-	float: left; 
+	cursor: pointer;
+	position: fixed;
+	width: 100%;
+	float: left;
 	color: #ffffff;
-	background: #333333 url(images/licensebarbg.png); 
+	background: #333333 url(images/licensebarbg.png);
 	z-index: 99999;
-	height: 24px; 
-	padding: 19px 0px 17px 0px; 
+	height: 24px;
+	padding: 19px 0px 17px 0px;
 	font-size: 16px;
 	left: 0px;
 }
 #infobar p {
-	/*background: url(../../icons/24x24/shield-critical.png) 10px 0px no-repeat;
-	padding-left: 40px;*/
 	padding-left: 10px;
 	height: 24px;
 }
@@ -298,7 +300,6 @@ select {
 #quicklinks ul li {
 	display: inline;
 	padding: 0px 10px 0px 5px;
-	/*background: url(images/menu-divider.gif) top right no-repeat;*/
 	font-weight: bold;
 }
 #icons {
@@ -410,7 +411,7 @@ select {
 #content {
 	position: relative;
 	top: 64px;
-	margin: 0px 0px 0px 180px;
+	margin: 0px 0px 0px 181px;
 	padding-top: 11px;
 	padding-top: 0px;
 }
@@ -458,16 +459,6 @@ select {
 	text-decoration: none;
 	border-bottom: 1px dotted #777777;
 }
-/*#page_links ul {
-	margin: 0px;
-	padding: 0px;
-}
-#page_links ul li {
-	list-style: none;
-	line-height: 17px;
-	background: url(images/arrow.gif) 0px 7px no-repeat;
-	padding-left: 10px;
-}*/
 #page_links {
 	margin-top: 4px;
 	margin-left: 0px;
@@ -486,13 +477,11 @@ select {
 	display: inline;
 	margin: 0px;
 	padding: 0px 4px;
-	/*border-right: 1px solid #dcdcdc;*/
 }
 /* pagination *************************************************************************************/
 #content p.pagination {
 	float: right;
 	margin-top: 3px;
-	/*margin-right: 10px;*/
 }
 #content p.pagination strong,
 #content p.pagination a {
@@ -808,11 +797,6 @@ td.white table tr td {
 td.white:first-child table tr td:first-child {
 	border-left: 1px solid #e9e9e0;
 }
-.w-table {
-	/*border-spacing: 1px;
-	background-color: #e9e9e0;
-	margin-top: -1px;*/
-}
 .w-table tr td {
 	border-right: 1px solid #d0d0d0;
 	border-bottom:1px solid #d0d0d0;
@@ -1007,7 +991,6 @@ th.headerSortUp:first-child {
 }
 /* autocomplete styles ****************************************************************************/
 .autocomplete-w1 {
-	/*background:url(/application/views/themes/default/images/shadow.png) no-repeat bottom right;*/
 	position:absolute;
 	top:0px;
 	left:0px;
@@ -1247,16 +1230,6 @@ tr td.dark,
 tr.even td.status {
 	background:#b7b7b7 url(images/bg.png) repeat;
 }
-
-/*#menu ul li.header {
-	background:#b7b7b7 url(images/bg.png) 0px -5px repeat;
-}*/
-
-.widget-header {
-	/*background:#f5f5f5 url(images/bg.png) repeat-x;*/
-}
-
-
 .w-table,
 table.extinfo {
 	background: #dcdcdc;
@@ -1430,4 +1403,3 @@ select {
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/
-<?php if(extension_loaded('zlib')){ob_end_flush();}?>

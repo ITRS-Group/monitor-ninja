@@ -937,6 +937,23 @@ class Host_Model extends Model {
 		}
 	}
 
+	public function get_hosts_for_group($name)
+	{
+		if (empty($name))
+			return false;
+
+		$auth_hosts = self::authorized_hosts();
+		$host_str = join(',', array_keys($auth_hosts));
+		$sql = "SELECT DISTINCT h.* " .
+			"FROM host h, hostgroup hg, host_hostgroup hhg " .
+			"WHERE hg.hostgroup_name = " . $this->db->escape($name) .
+			"AND hhg.hostgroup = hg.id AND h.id = hhg.host " .
+			"AND h.id IN(" . $host_str . ")";
+
+		return $this->db->query($sql);
+	}
+
+
 	/**
 	*	Generate all performance data needed for performance info page
 	* 	Wraps calls to performance data for both active and passive checks

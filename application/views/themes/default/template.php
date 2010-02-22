@@ -9,7 +9,7 @@ if (isset($this->template->js_header))
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? 'Ninja » '.ucwords(html::specialchars($title)) : 'Ninja' ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css.php') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/print.css') ?>" media="print" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>

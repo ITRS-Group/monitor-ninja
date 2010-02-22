@@ -14,41 +14,10 @@ if (!empty($widgets)) {
 
 	<h1><?php echo $label_create_new ?></h1>
 
-	<form onsubmit="return false;">
-		<table id="report_mode_select">
-			<caption><?php echo $label_report_mode ?></caption>
-			<tr>
-				<td id="td_std"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo $label_report_mode_standard ?></td>
-				<td id="td_cust"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo $label_report_mode_custom ?></td>
-			</tr>
-		</table>
-	</form>
-	<br />
-
-	<?php	echo form::open('summary/generate', array('id' => 'summary_form_std')); ?>
-	<table id="std_report_table">
-		<tr>
-			<td>
-				<?php echo $label_reporttype ?><br />
-				<?php echo form::dropdown(array('name' => 'standardreport'), $standardreport); ?>
-			</td>
-			<td>
-				<?php echo $label_show_items ?><br />
-				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"><?php echo form::submit('create_report', $label_create_report) ?></td>
-		</tr>
-	</table>
-
-	<?php echo form::close(); ?>
-
-	<div id="custom_report">
-	<?php	echo form::open('summary/generate', array('id' => 'summary_form')); ?>
-			<input type="hidden" name="new_report_setup" value="1" />
-			<table id="std_report_table">
-				<!--<caption><?php echo $label_customreport_options ?></caption>-->
+	<div id="histogram_report">
+	<?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
+			<table id="history_report_table" style="width: auto">
+				<tr>
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
 							<option value="hostgroups"><?php echo $label_hostgroups ?></option>
@@ -56,7 +25,7 @@ if (!empty($widgets)) {
 							<option value="servicegroups"><?php echo $label_servicegroups ?></option>
 							<option value="services"><?php echo $label_services ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection($('#report_type').val());" value="<?php echo $label_select ?>" />
 					</td>
 				</tr>
 				<tr id="hostgroup_row">
@@ -130,13 +99,14 @@ if (!empty($widgets)) {
 				<tr>
 					<td>
 						<?php echo $label_rpttimeperiod ?><br />
-						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods); ?>
+						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected_report_period); ?>
 					</td>
 					<td style="width: 18px">&nbsp;</td>
 					<td>
-						<?php echo $label_reporttype ?><br />
-						<?php echo form::dropdown('report_type', $report_types) ?>
+						<?php echo $label_statetypes_to_graph ?><br />
+						<?php echo form::dropdown('state_types', $statetypes) ?>
 					</td>
+
 				</tr>
 				<tr id="display" style="display: none; clear: both;">
 					<td><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
@@ -151,33 +121,28 @@ if (!empty($widgets)) {
 						<input type="text" maxlength="5" name="time_end" id="time_end" value="09:00">
 					</td>
 				</tr>
-
-				<tr>
-					<td>
-						<?php echo $label_alert_type ?><br />
-						<?php echo form::dropdown('alert_types', $alerttypes) ?>
-					</td>
-					<td>&nbsp;</td>
-					<td>
-						<?php echo $label_state_type ?><br />
-						<?php echo form::dropdown('state_types', $statetypes) ?>
-					</td>
 				</tr>
 				<tr>
 					<td>
-						<?php echo $label_host_state ?><br />
-						<?php echo form::dropdown('host_states', $hoststates) ?>
+						<?php echo $label_breakdown ?><br />
+						<?php echo form::dropdown('breakdown', $breakdown, 'dayofmonth') ?>
 					</td>
-					<td>&nbsp;</td>
+					<td style="width: 18px">&nbsp;</td>
 					<td>
-						<?php echo $label_service_state ?><br />
-						<?php echo form::dropdown('service_states', $servicestates) ?>
+						<div id="block_host_states">
+							<?php echo $label_events_to_graph ?><br />
+							<?php echo form::dropdown('host_states', $hoststates) ?>
+						</div>
+						<div id="block_service_states">
+							<?php echo $label_events_to_graph ?><br />
+							<?php echo form::dropdown('service_states', $servicestates) ?>
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3">
-						<?php echo $label_show_items ?><br />
-						<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
+					<td colspan="2">
+					<?php echo form::checkbox('newstatesonly', 1, true); ?>
+					<?php echo $label_newstatesonly ?>
 					</td>
 				</tr>
 				<tr>

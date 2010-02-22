@@ -1,3 +1,4 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div class="widget w98 left">
 	<form method="get" action="">

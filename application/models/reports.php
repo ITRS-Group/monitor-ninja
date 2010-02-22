@@ -985,7 +985,7 @@ class Reports_Model extends Model
 			$res_group->result(false);
 
 			foreach ($res_group as $row) {
-				$hostname[] = $row['host_name'];
+				$hostname[$row['host_name']] = $row['host_name'];
 			}
 		} elseif (!empty($servicegroup)) {
 			$servicename = array();
@@ -998,7 +998,8 @@ class Reports_Model extends Model
 			$res_group->result(false);
 
 			foreach ($res_group as $row) {
-				$servicename[] = $row['host_name'] . ';' . $row['service_description'];
+				$name = $row['host_name'] . ';' . $row['service_description'];
+				$servicename[$name] = $name;
 			}
 		}
 
@@ -2641,7 +2642,7 @@ class Reports_Model extends Model
 	 *
 	 * @param $fields Database fields the caller needs
 	 */
-	private function build_alert_summary_query($fields = '*')
+	private function build_alert_summary_query($fields = false)
 	{
 		# set some few defaults
 		if (!$this->start_time)
@@ -2649,10 +2650,15 @@ class Reports_Model extends Model
 		if (!$this->end_time)
 			$this->end_time = time();
 
+		# default to the most commonly used fields
+		if (!$fields) {
+			$fields = 'host_name, service_description, state, hard';
+		}
+
 		$hosts = false;
 		$services = false;
 		if ($this->servicegroup) {
-			$services = array();
+			$hosts = $services = array();
 			$smod = new Service_Model();
 			foreach ($this->servicegroup as $sg) {
 				$res = $smod->get_services_for_group($sg);
@@ -2662,9 +2668,14 @@ class Reports_Model extends Model
 						$services[$name] = array();
 					}
 					$services[$name][$sg] = $sg;
+					if (empty($hosts[$o->host_name])) {
+						$hosts[$o->host_name] = array();
+					}
+					$hosts[$o->host_name][$sg] = $sg;
 				}
 			}
-			$this->service_servicegroup = $services;
+			$this->service_servicegroup['host'] = $hosts;
+			$this->service_servicegroup['service'] = $services;
 		} elseif ($this->hostgroup) {
 			$hosts = array();
 			$hmod = new Host_Model();
@@ -2685,6 +2696,9 @@ class Reports_Model extends Model
 				$services[$srv] = $srv;
 			}
 		} elseif ($this->host_name) {
+			if (!is_array($this->host_name)) {
+				$this->host_name = array($this->host_name);
+			}
 			$hosts = false;
 			foreach ($this->host_name as $hn) {
 				$hosts[$hn] = $hn;
@@ -2692,11 +2706,15 @@ class Reports_Model extends Model
 		}
 
 		$object_selection = false;
-		if ($hosts) {
-			$object_selection = "AND host_name IN('" .
-				join("', '", array_keys($hosts)) . "')";
-		} elseif ($services) {
-			$object_selection = "AND (";
+		if ($services) {
+			if ($hosts) {
+				$object_selection = "\nAND ((event_type = " . self::HOSTCHECK .
+					"\nAND host_name IN(\n '" .
+					join("',\n '", array_keys($hosts)) . "'))" .
+					"\nOR ";
+			} else {
+				$object_selection = "\nAND ";
+			}
 			$orstr = '';
 			# Must do this the hard way to allow host_name indices to
 			# take effect when running the query, since the construct
@@ -2708,16 +2726,19 @@ class Reports_Model extends Model
 				$s = $ary[1];
 				$object_selection .= $orstr . "(host_name = '" . $h . "' " .
 					"AND service_description = '" . $s . "')";
-				$orstr = " OR ";
+				$orstr = "\n OR ";
 			}
 			$object_selection .= ')';
+		} elseif ($hosts) {
+			$object_selection = "\nAND host_name IN(\n '" .
+				join("',\n '", array_keys($hosts)) . "')";
 		}
 
 		if (empty($fields))
 			$fields = '*';
 
-		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
-			"WHERE timestamp >= " . $this->start_time . " " .
+		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
+			"\nWHERE timestamp >= " . $this->start_time . " " .
 			"AND timestamp <= " . $this->end_time . " ";
 		if (!empty($object_selection)) {
 			$query .= $object_selection . " ";
@@ -2740,11 +2761,11 @@ class Reports_Model extends Model
 
 		if (!$this->service_states || $this->service_states == 15) {
 			$this->service_states = 15;
-			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
+			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
-			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
-				'AND state IN(';
+			$service_states_sql = '(event_type = ' . self::SERVICECHECK .
+				"\nAND state IN(";
 			for ($i = 0; $i < 15; $i++) {
 				if (1 << $i & $this->service_states) {
 					$x[$i] = $i;
@@ -2754,21 +2775,21 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->alert_types) {
-		 case 1: $query .= 'AND ' . $host_states_sql; break;
-		 case 2: $query .= 'AND ' . $service_states_sql; break;
+		 case 1: $query .= "\nAND " . $host_states_sql; break;
+		 case 2: $query .= "\nAND " . $service_states_sql; break;
 		 case 3:
-			$query .= 'AND (' . $host_states_sql .
-				'OR ' . $service_states_sql . ') '; break;
+			$query .= "\nAND (" . $host_states_sql .
+				"OR " . $service_states_sql . ') '; break;
 		}
 
-		switch ($this->alert_types) {
+		switch ($this->state_types) {
 		 case 0: case 3: default:
 			break;
 		 case 1:
-			$query .= "AND hard = 0 ";
+			$query .= "\nAND hard = 0 ";
 			break;
 		 case 2:
-			$query .= "AND hard = 1 ";
+			$query .= "\nAND hard = 1 ";
 			break;
 		}
 
@@ -2783,7 +2804,7 @@ class Reports_Model extends Model
 		}
 		$dbr = $this->db->query("EXPLAIN " . $query);
 		if (!$dbr) {
-			echo Kohana::debug($query, $this->db->errorinfo());
+			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
 			die;
 		}
 		return $dbr->fetch(PDO::FETCH_ASSOC);
@@ -2822,7 +2843,7 @@ class Reports_Model extends Model
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo(), $query);
+			echo Kohana::debug($db->errorinfo(), explode("\n", $query));
 			die;
 		}
 		$result = array();
@@ -2833,7 +2854,7 @@ class Reports_Model extends Model
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
 
-			if (empty($this->summary_result[$name])) {
+			if (empty($result[$name])) {
 				$result[$name] = 1;
 			} else {
 				$result[$name]++;
@@ -2866,6 +2887,115 @@ class Reports_Model extends Model
 		return $this->summary_result;
 	}
 
+	private function set_alert_total_totals(&$result)
+	{
+		foreach ($result as $name => $ary) {
+			$ary['total'] = 0;
+			foreach ($ary as $type => $state_ary) {
+				if ($type === 'total')
+					continue;
+				$ary[$type . '_totals'] = array('soft' => 0, 'hard' => 0);
+				$ary[$type . '_total'] = 0;
+				foreach ($state_ary as $sh) {
+					$ary[$type . '_totals']['soft'] += $sh[0];
+					$ary[$type . '_totals']['hard'] += $sh[1];
+					$ary[$type . '_total'] += $sh[0] + $sh[1];
+					$ary['total'] += $sh[0] + $sh[1];
+				}
+			}
+			$result[$name] = $ary;
+		}
+	}
+
+	private function alert_totals_by_host($dbr)
+	{
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->host_name as $hn) {
+			$result[$hn] = $template;
+		}
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+			} else {
+				$type = 'service';
+			}
+			$name = $row['host_name'];
+			$result[$name][$type][$row['state']][$row['hard']]++;
+		}
+
+		return $result;
+	}
+
+	private function alert_totals_by_service($dbr)
+	{
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->service_description as $name) {
+			$result[$name] = $template;
+		}
+		$type = 'service';
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			$name = $row['host_name'] . ';' . $row['service_description'];
+			$result[$name][$type][$row['state']][$row['hard']]++;
+		}
+
+		return $result;
+	}
+
+
+	private function alert_totals_by_hostgroup($dbr)
+	{
+		# pre-load the result set to keep conditionals away
+		# from the inner loop
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->hostgroup as $hostgroup) {
+			$result[$hostgroup] = $template;
+		}
+
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+			} else {
+				$type = 'service';
+			}
+			$hostgroups = $this->host_hostgroup[$row['host_name']];
+			foreach ($hostgroups as $hostgroup) {
+				$result[$hostgroup][$type][$row['state']][$row['hard']]++;
+			}
+		}
+		return $result;
+	}
+
+
+	private function alert_totals_by_servicegroup($dbr)
+	{
+		# pre-load the result set to keep conditionals away
+		# from the inner loop
+		$template = $this->summary_result;
+		$result = array();
+		foreach ($this->servicegroup as $servicegroup) {
+			$result[$servicegroup] = $template;
+		}
+
+		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+			if (empty($row['service_description'])) {
+				$type = 'host';
+				$name = $row['host_name'];
+			} else {
+				$type = 'service';
+				$name = $row['host_name'] . ';' . $row['service_description'];
+			}
+
+			$servicegroups = $this->service_servicegroup[$type][$name];
+			foreach ($servicegroups as $sg) {
+				$result[$sg][$type][$row['state']][$row['hard']]++;
+			}
+		}
+		return $result;
+	}
+
 	/**
 	 * Get alert totals. This is identical to the toplist in
 	 * many respects, but the result array is different.
@@ -2875,31 +3005,40 @@ class Reports_Model extends Model
 	public function alert_totals()
 	{
 		$this->completion_time = microtime(true);
-		$query = $this->build_alert_summary_query('host_name, service_description, state, hard');
+		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo(), $query);
+			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
 			die;
 		}
 
 		# preparing the result array in advance speeds up the
 		# parsing somewhat. Completing it either way makes it
-		# easier to write templates for it as well
+		# easier to write templates for it as well.
+		# We stash it in $this->summary_result so all functions
+		# can take advantage of it
 		for ($state = 0; $state < 4; $state++) {
 			$this->summary_result['host'][$state] = array(0, 0);
 			$this->summary_result['service'][$state] = array(0, 0);
 		}
 		unset($this->summary_result['host'][3]);
-		while ($row = $dbr->fetch()) {
-			if (empty($row['service_description'])) {
-				$type = 'host';
-			} else {
-				$type = 'service';
-			}
-			$this->summary_result[$type][$row['state']][$row['hard']]++;
+
+		$result = false;
+		# groups must be first here, since the other variables
+		# are expanded in the build_alert_summary_query() method
+		if ($this->servicegroup) {
+			$result = $this->alert_totals_by_servicegroup($dbr);
+		} elseif ($this->hostgroup) {
+			$result = $this->alert_totals_by_hostgroup($dbr);
+		} elseif ($this->host_name) {
+			$result = $this->alert_totals_by_host($dbr);
+		} elseif ($this->service_description) {
+			$result = $this->alert_totals_by_service($dbr);
 		}
 
+		$this->set_alert_total_totals($result);
+		$this->summary_result = $result;
 		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
 	}
@@ -2911,7 +3050,7 @@ class Reports_Model extends Model
 	public function recent_alerts()
 	{
 		$this->completion_time = microtime(true);
-		$query = $this->build_alert_summary_query();
+		$query = $this->build_alert_summary_query('*');
 		$query .= " ORDER BY timestamp DESC";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
@@ -3100,6 +3239,287 @@ class Reports_Model extends Model
 		$return_str .= "\t}\n";
 
 		return $return_str;
+	}
+
+	/**
+	*	Build alert history query based
+	* 	on supplied options
+	*/
+	public function build_alert_history_query($fields='*', $report_type=false)
+	{
+		# set some few defaults
+		if (!$this->start_time)
+			$this->start_time = 0;
+		if (!$this->end_time)
+			$this->end_time = time();
+
+		$hosts = false;
+		$services = false;
+		if ($this->servicegroup) {
+			$services = array();
+			$smod = new Service_Model();
+			if (!is_array($this->servicegroup)) {
+				$this->servicegroup = array($this->servicegroup);
+			}
+
+			foreach ($this->servicegroup as $sg) {
+				$res = $smod->get_services_for_group($sg);
+				foreach ($res as $o) {
+					$name = $o->host_name . ';' . $o->service_description;
+					if (empty($services[$name])) {
+						$services[$name] = array();
+					}
+					$services[$name][$sg] = $sg;
+				}
+			}
+			$this->service_servicegroup = $services;
+		} elseif ($this->hostgroup) {
+			$hosts = array();
+			$hmod = new Hostgroup_Model();
+			if (!is_array($this->hostgroup)) {
+				$this->hostgroup = array($this->hostgroup);
+			}
+			foreach ($this->hostgroup as $hg) {
+				$res = $hmod->get_hosts_for_group($hg);
+				foreach ($res as $o) {
+					$name = $o->host_name;
+					if (empty($hosts[$name])) {
+						$hosts[$name] = array();
+					}
+					$hosts[$name][$hg] = $hg;
+				}
+			}
+			$this->host_hostgrop = $hosts;
+		} elseif ($this->service_description) {
+			$services = false;
+			if (is_array($this->service_description) && !empty($this->service_description)) {
+				foreach ($this->service_description as $srv) {
+					$services[$srv] = $srv;
+				}
+			} else {
+				$services[$this->host_name.';'.$this->service_description] = $this->host_name.';'.$this->service_description;
+			}
+		} elseif ($this->host_name) {
+			$hosts = false;
+			if (is_array($this->host_name) && !empty($this->host_name)) {
+				foreach ($this->host_name as $hn) {
+					$hosts[$hn] = $hn;
+				}
+			} else {
+				$hosts[$this->host_name] = $this->host_name;
+			}
+		}
+
+		$object_selection = false;
+		if ($hosts) {
+			$object_selection = "AND host_name IN('" .
+				join("', '", array_keys($hosts)) . "')";
+		} elseif ($services) {
+			$object_selection = "AND (";
+			$orstr = '';
+			# Must do this the hard way to allow host_name indices to
+			# take effect when running the query, since the construct
+			# "concat(host_name, ';', service_description)" isn't
+			# indexable
+			foreach ($services as $srv => $discard) {
+				$ary = explode(';', $srv);
+				$h = $ary[0];
+				$s = $ary[1];
+				$object_selection .= $orstr . "(host_name = '" . $h . "' " .
+					"AND service_description = '" . $s . "')";
+				$orstr = " OR ";
+			}
+			$object_selection .= ')';
+		}
+
+		if (empty($fields))
+			$fields = '*';
+
+		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
+			"WHERE timestamp >= " . $this->start_time . " " .
+			"AND timestamp <= " . $this->end_time . " ";
+		if (!empty($object_selection)) {
+			$query .= $object_selection . " ";
+		}
+
+		if (!$this->host_states || $this->host_states == 7) {
+			$this->host_states = 7;
+			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
+		} else {
+			$x = array();
+			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 7; $i++) {
+				if (1 << $i & $this->host_states) {
+					$x[$i] = $i;
+				}
+			}
+			$host_states_sql .= join(',', $x) . ')) ';
+		}
+
+		if (!$this->service_states || $this->service_states == 15) {
+			$this->service_states = 15;
+			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
+		} else {
+			$x = array();
+			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
+				'AND state IN(';
+			for ($i = 0; $i < 15; $i++) {
+				if (1 << $i & $this->service_states) {
+					$x[$i] = $i;
+				}
+			}
+			$service_states_sql .= join(',', $x) . ')) ';
+		}
+
+		switch ($report_type) {
+			case 'hosts': case 'hostgroups': $query .= 'AND ' . $host_states_sql; break;
+			case 'services': case 'servicegroups': $query .= 'AND ' . $service_states_sql; break;
+		}
+
+		switch ($this->state_types) {
+		 case 0: case 3: default:
+			break;
+		 case 1:
+			$query .= "AND hard = 0 ";
+			break;
+		 case 2:
+			$query .= "AND hard = 1 ";
+			break;
+		}
+
+		$this->summary_query = $query;
+		return $query;
+	}
+
+	/**
+	*	Fetch alert history for histogram report
+	* 	@param $options array with values needed for report
+	* 	@param $slots array with slots to fill with data
+	* 	@return array with keys: min, max, avg, data
+	*/
+	public function alert_history($options=false, $slots=false)
+	{
+		if (empty($slots) || !is_array($slots))
+			return false;
+
+		$breakdown = $options['breakdown'];
+		$report_type = $options['report_type'];
+		$newstatesonly = $options['newstatesonly'];
+
+		# compute what event counters we need depending on report type
+		$events = false;
+		switch ($report_type) {
+			case 'hosts': case 'hostgroups':
+				if (!$this->host_states || $this->host_states == 7) {
+					$events = array(0 => 0, 1 => 0, 2 => 0);
+				} else {
+					$events = array();
+					for ($i = 0; $i < 7; $i++) {
+						if (1 << $i & $this->host_states) {
+							$events[$i] = 0;
+						}
+					}
+				}
+				break;
+			case 'services': case 'servicegroups':
+				if (!$this->service_states || $this->service_states == 15) {
+					$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
+				} else {
+					$events = array();
+					for ($i = 0; $i < 15; $i++) {
+						if (1 << $i & $this->service_states) {
+							$events[$i] = 0;
+						}
+					}
+				}
+				break;
+		}
+
+		# add event (state) counters to slots
+		$fixed_slots = false;
+		foreach ($slots as $s => $l) {
+			$fixed_slots[$l] = $events;
+		}
+
+		# fields to fetch from db
+		$fields = 'timestamp, event_type, host_name, service_description, state, hard, retry';
+		$query = $this->build_alert_history_query($fields, $report_type);
+
+		$data = false;
+
+		# tell alert_history_data() how to treat timestamp
+		$date_str = false;
+		switch ($breakdown) {
+			case 'monthly':
+				$date_str = 'n';
+				break;
+			case 'dayofmonth':
+				$date_str = 'j';
+				break;
+			case 'dayofweek':
+				$date_str = 'N';
+				break;
+			case 'hourly':
+				$date_str = 'H';
+				break;
+		}
+
+		$data = $this->alert_history_data($date_str, $fixed_slots, $newstatesonly);
+
+		$min = $events;
+		$max = $events;
+		$avg = $events;
+		$sum = $events;
+		if (!empty($data)) {
+			foreach ($data as $slot => $slotstates) {
+				foreach ($slotstates as $id => $val) {
+					if ($val > $max[$id]) $max[$id] = $val;
+					if ($val < $min[$id]) $min[$id] = $val;
+					$sum[$id] += $val;
+				}
+			}
+			foreach ($max as $v => $k) {
+				if ($k != 0) {
+					$avg[$v] = number_format(($k/count($data)), 2);
+				}
+			}
+			return array('min' => $min, 'max' => $max, 'avg' => $avg, 'sum' => $sum, 'data' => $data);
+		}
+		return false;
+	}
+
+	/**
+	*	Populate slots for histogram
+	*
+	* 	@param $date_str string for use in PHP date()
+	* 	@param $slots array with slots to fill with data
+	* 	@param $newstatesonly bool Used to decide if to ignore repated events or not
+	* 	@return array Populated slots array with found data
+	*/
+	public function alert_history_data($date_str='j' , $slots=false, $newstatesonly=false)
+	{
+		if (empty($this->summary_query) || empty($slots)) {
+			return false;
+		}
+
+		$res = $this->db->query($this->summary_query);
+		if (!$res) {
+			return false;
+		}
+		$last_state = null;
+		while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+			if ($newstatesonly) {
+				if ($row['state'] != $last_state) {
+					# only count this state if it differs from the last
+					$slots[date($date_str, $row['timestamp'])][$row['state']]++;
+				}
+			} else {
+				$slots[date($date_str, $row['timestamp'])][$row['state']]++;
+			}
+			$last_state = $row['state'];
+		}
+		return $slots;
 	}
 
 }

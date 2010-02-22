@@ -1,3 +1,5 @@
+body { margin: 0px 1%; }
+
 #progress{
 	position: absolute;
 	top:107px;
@@ -14,8 +16,6 @@
 	margin-top: 12px;
 }
 
-#custom_report { display: none; }
-
 #response {
 	margin-left:5px;
 	padding-top:5px;
@@ -25,6 +25,12 @@
 #response h1 {
 	font: bold 12px arial,helvetica,sans-serif;
 	display: none;
+}
+
+#options,
+#block_host_states,
+#block_service_states{
+	display:none;
 }
 
 #response ul {
@@ -53,7 +59,6 @@
 input,
 select,
 textarea,
-input#summary_items,
 input#cal_end,
 input#cal_start,
 input#time_start,
@@ -71,10 +76,6 @@ input#time_end {
 }
 
 select { width: 382px}
-
-input#summary_items {
-	width: 68px;
-}
 
 input#cal_end,
 input#cal_start,
@@ -127,8 +128,7 @@ caption { padding-left:0px}
 #report_mode_select { width: auto; }
 #settings_table tr td,
 #report_mode_select tr td,
-#std_report_table tr td  { padding: 0px 5px 0px 0px; background: none;}
-
+#history_report_table tr td  { padding: 0px 5px 0px 0px; background: none;}
 
 .time_error {
 	border:1px solid red;
@@ -161,3 +161,20 @@ div.time-picker li.selected {
 	background: #316AC5;
 	color: #fff;
 }
+
+#report tr td,
+#histogram_holder tr td {
+	background: #ffffff;
+}
+
+#histogram_holder tr.odd td {
+	background: #f5f5f5;
+}
+
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
+
+td.ledgedColorBox { width: auto; float; left; }
+
+#idUp, #idDown, #idUnreachable { margin-right: 5px;}
+
+

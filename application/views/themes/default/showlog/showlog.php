@@ -12,12 +12,12 @@
 	<table class="showlog">
 		<tr>
 			<td>
-	<h2><?php echo $x->_('State type options'); ?></h2>
+	<h3><?php echo $x->_('State type options'); ?></h3>
 	<?php echo form::checkbox('state_types[soft]', isset($options['state_types']['soft'])).' '.$x->_('Soft states'); ?><br />
 	<?php echo form::checkbox('state_types[hard]', isset($options['state_types']['hard'])).' '.$x->_('Hard states'); ?>
 	</td>
 	<td>
-	<h2><?php echo $x->_('Host state options'); ?></h2>
+	<h3><?php echo $x->_('Host state options'); ?></h3>
 		<?php
 			$i = 0;
 			foreach ($host_state_options as $k => $v) {
@@ -30,7 +30,7 @@
 			}
 		?>
 		</td><td>
-		<h2><?php echo $x->_('Service state options'); ?></h2>
+		<h3><?php echo $x->_('Service state options'); ?></h3>
 		<?php
 			$i = 0;
 			foreach ($service_state_options as $k => $v) {
@@ -43,7 +43,7 @@
 			}
 		?>
 		</td><td>
-		<h2><?php echo $x->_('General options'); ?></h2>
+		<h3><?php echo $x->_('General options'); ?></h3>
 		<?php echo form::checkbox('hide_flapping').' '.$x->_('Hide flapping alerts'); ?><br />
 		<?php echo form::checkbox('hide_downtime').' '.$x->_('Hide downtime alerts'); ?><br />
 		<?php echo form::checkbox('hide_process').' '.$x->_('Hide process messages'); ?><br />
@@ -52,7 +52,7 @@
 		</tr>
 		<tr>
 		<td colspan="2">
-			<h2><?php echo $x->_('First time').'</h2>'.form::input('first'); ?>
+			<h3><?php echo $x->_('First time').'</h3>'.form::input('first'); ?>
 			<?php echo html::image($this->add_path('icons/16x16/calendar.png'),'First'); ?>
 				<script type="text/javascript">
 				Calendar.setup({
@@ -71,7 +71,7 @@
 				</script>
 			</td>
 			<td colspan="2">
-				<h2><?php echo $x->_('Last time').'</h2>'.form::input('last'); ?>
+				<h3><?php echo $x->_('Last time').'</h3>'.form::input('last'); ?>
 				<?php echo html::image($this->add_path('icons/16x16/calendar.png'),'First'); ?>
 				<script type="text/javascript">
 				Calendar.setup({

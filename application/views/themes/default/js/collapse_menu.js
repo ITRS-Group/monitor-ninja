@@ -15,7 +15,7 @@ function collapse_menu(action) {
 	}
 	if (action == 'show') {
 		$('#menu').css('width', '180px');
-		$('#content').css('margin-left', '180px');
+		$('#content').css('margin-left', '182px');
 		$('#menu').css('height', parseInt(document.documentElement.clientHeight - 67)+'px');
 		$('#close-menu').show();
 		$('#show-menu').hide();

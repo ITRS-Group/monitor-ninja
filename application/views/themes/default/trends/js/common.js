@@ -717,7 +717,11 @@ function loopElements(f) {
 
 	// select all elements that doesn't contain the nosave_suffix
 	$('.multiple:not([name*=' + nosave_suffix + '])').each(function() {
-		$(this).children(':option').attr('selected', 'selected');
+		if ($(this).is(':visible')) {
+			$(this).children(':option').attr('selected', 'selected');
+		} else {
+			$(this).children(':option').attr('selected', false);
+		}
 	});
 
 	// unselect the rest

@@ -7,6 +7,8 @@ var service_tmp = false;
 var service = false;
 var current_obj_type = false; // keep track of what we are viewing
 var is_populated = false; // flag list population when done
+var _time_error = false;
+var _time_error_start = false;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -42,28 +44,6 @@ $(document).ready(function() {
 	$("#mv_s_l").click(function() {moveAndSort('service_description', 'service_tmp');});
 	$("#service_description").dblclick(function() {moveAndSort('service_description', 'service_tmp');});
 
-	// handle standard/custom report switching
-	$("#td_std").click(function() {
-		$("#report_mode_standard").attr('checked', true);
-		set_report_mode('standard');
-	});
-	$("#td_cust").click(function() {
-		$("#report_mode_custom").attr('checked', true);
-		set_report_mode('custom');
-	});
-	$("#report_mode_standard").click(function() {
-		set_report_mode('standard');
-	});
-	$("#report_mode_custom").click(function() {
-		set_report_mode('custom');
-	});
-
-	/*
-	$("#cal_end").bind('blur', function() {
-		setTimeout('validate_date()', 1000);
-	});
-	*/
-
 	$("#hide_response").click(function() {
 		hideMe('response');
 	});
@@ -78,7 +58,7 @@ $(document).ready(function() {
 		set_selection($('select[name=report_form] option:selected').attr('value'));
 	});
 	*/
-	$("#summary_form").bind('submit', function() {
+	$("#histogram_form").bind('submit', function() {
 		loopElements();
 		return check_form_values();
 	});
@@ -115,37 +95,41 @@ $(document).ready(function() {
 		}
 	);
 
-	/*
 	$(".fancybox").fancybox({
 		'overlayOpacity'	:	0.7,
 		'overlayColor'		:	'#ffffff',
-		'hideOnContentClick' : false,
+		'hideOnContentClick' : false
 	});
-	*/
+	var previousPoint = null;
+	$("#histogram_graph").bind("plothover", function (event, pos, item) {
+		$("#x").text(pos.x.toFixed(2));
+		$("#y").text(pos.y.toFixed(2));
+
+		if (item) {
+			if (previousPoint != item.datapoint) {
+				previousPoint = item.datapoint;
+
+				$("#tooltip").remove();
+				var x = item.datapoint[0].toFixed(0),
+				y = item.datapoint[1].toFixed(0);
+
+				showTooltip(item.pageX, item.pageY,
+				item.series.label + ": " + y + " (" + get_label(x) + ")");
+				//item.series.label + " of " + get_label(x) + " = " + y);
+			}
+		} else {
+			$("#tooltip").remove();
+			previousPoint = null;
+		}
+	});
+
+
 });
 
-function set_report_mode(type)
+function get_label(x)
 {
-	switch (type) {
-		case 'standard':
-			$("#std_report_table").show();
-			$("#custom_report").hide();
-			$(this).parent().css('font-weight', 'bold');
-			$("#td_std").css('font-weight', 'bold');
-			$("#td_cust").css('font-weight', 'normal');
-			break;
-		case 'custom':
-			$("#std_report_table").hide();
-			if (!is_populated)
-				set_selection($('#report_type').val());
-			$("#custom_report").show();
-			$('#td_cust').css('font-weight', 'bold');
-			$("#td_std").css('font-weight', 'normal');
-			break;
-	}
+	return graph_xlables[x];
 }
-
-
 
 function show_hide(id,h1) {
 	if (document.getElementById(id).style.display == 'none') {
@@ -163,8 +147,8 @@ function show_calendar(val, update) {
 		$("#display").show();
 		init_timepicker();
 		if (update == '') {
-			document.forms['report_form'].start_time.value='';
-			document.forms['report_form'].end_time.value='';
+			$('input[name=start_time]').attr('value', '');
+			$('input[name=end_time]').attr('value', '');
 		}
 	} else {
 		$("#display").hide();
@@ -180,18 +164,26 @@ function set_selection(val, no_erase) {
 		case 'hostgroups':
 			get_members('', 'hostgroup', no_erase);
 			$('#hostgroup_row').show();
+			$('#block_host_states').show();
+			$('#block_service_states').hide();
 			break;
 		case 'servicegroups':
 			get_members('', 'servicegroup', no_erase);
 			$('#servicegroup_row').show();
+			$('#block_host_states').hide();
+			$('#block_service_states').show();
 			break;
 		case 'hosts':
 			get_members('', 'host', no_erase);
 			$('#host_row_2').show();
+			$('#block_host_states').show();
+			$('#block_service_states').hide();
 			break;
 		case 'services':
 			get_members('', 'service', no_erase);
 			$('#service_row_2').show();
+			$('#block_host_states').hide();
+			$('#block_service_states').show();
 			break;
 	}
 	$('#settings_table').show();
@@ -374,7 +366,7 @@ function loopElements(f) {
 	// select all elements that doesn't contain the nosave_suffix
 	$('.multiple:not([name*=' + nosave_suffix + '])').each(function() {
 		if ($(this).is(':visible')) {
-				$(this).children(':option').attr('selected', 'selected');
+			$(this).children(':option').attr('selected', 'selected');
 		} else {
 			$(this).children(':option').attr('selected', false);
 		}
@@ -446,6 +438,11 @@ function check_form_values()
 
 		var curval_endtime = $("#time_end").attr('value');
 		$("#end_time").attr('value', endDate + ' ' + curval_endtime);
+	}
+
+	if ($("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
+		errors++;
+		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
 	/**
@@ -600,6 +597,7 @@ function validate_form(formData, jqForm, options) {
 
     return true;
 }
+
 // init timepicker once it it is shown
 function init_timepicker()
 {
@@ -648,4 +646,17 @@ function validate_time(tmp_time)
 		return false;
 	}
 	return true;
+}
+
+function showTooltip(x, y, contents) {
+	$('<div id="tooltip">' + contents + '</div>').css( {
+		position: 'absolute',
+		display: 'none',
+		top: y + 5,
+		left: x + 5,
+		border: '1px solid #fdd',
+		padding: '2px',
+		'background-color': '#fee',
+		opacity: 0.80
+	}).appendTo("body").fadeIn(200);
 }
