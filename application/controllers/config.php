@@ -148,7 +148,7 @@ class Config_Controller extends Authenticated_Controller {
 				$data = $config_model->list_config($this->type);
 				$i = 0;
 				foreach($data as $row) {
-					$result[$i][]= $row->host_name;
+					$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
 					$result[$i][]= $row->alias;
 					$result[$i][]= $row->address;
 					$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parent, $row->parent);
@@ -166,6 +166,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 					$result[$i][]= time::to_string($row->first_notification_delay);
 						$note_options = explode(',',$row->notification_options);
+						$tmp = false;
 						foreach($note_options as $option) {
 							$tmp[] = $options['host']['notification'][$option];
 						}
@@ -233,8 +234,8 @@ class Config_Controller extends Authenticated_Controller {
 				foreach($data as $row) {
 					$note_options = explode(',',$row->notification_options);
 
-					$result[$i][]= $row->host_name;
-					$result[$i][]= $row->service_description;
+					$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
+					$result[$i][]= '<a name="'.$row->service_description.'"></a>'.$row->service_description;
 					$result[$i][]= $row->max_check_attempts;
 					$result[$i][]= time::to_string($row->check_interval*60);
 					$result[$i][]= time::to_string($row->retry_interval);
@@ -251,6 +252,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 					$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 					$notification_options = explode(',',$row->notification_options);
+						$tmp = false;
 						foreach($notification_options as $option) {
 							$tmp[] = $options['service']['notification'][$option];
 						}
@@ -293,18 +295,20 @@ class Config_Controller extends Authenticated_Controller {
 				$data = $config_model->list_config($this->type);
 				$i = 0;
 				foreach($data as $row) {
-					$result[$i][]= $row->contact_name;
+					$result[$i][]= '<a name="'.$row->contact_name.'"></a>'.$row->contact_name;
 					$result[$i][]= $row->alias;
 					$result[$i][]= html::anchor('mailto:'.$row->email, $row->email);
 					$result[$i][]= $row->pager;
 
 					$s_notification_options = explode(',',$row->service_notification_options);
+						$s_tmp = false;
 						foreach($s_notification_options as $s_option) {
 							$s_tmp[] = $options['service']['notification'][$s_option];
 						}
 					$result[$i][]= implode(', ',$s_tmp);
 
 					$h_notification_options = explode(',',$row->host_notification_options);
+						$h_tmp = false;
 						foreach($h_notification_options as $h_option) {
 							$h_tmp[] = $options['host']['notification'][$h_option];
 						}
@@ -329,7 +333,7 @@ class Config_Controller extends Authenticated_Controller {
 				$data = $config_model->list_config($this->type);
 				$i = 0;
 				foreach($data as $row) {
-					$result[$i][]= $row->contactgroup_name;
+					$result[$i][]= '<a name="'.$row->contactgroup_name.'"></a>'.$row->contactgroup_name;
 					$result[$i][]= $row->alias;
 
 					$travel = Contactgroup_Model::get_members($row->contactgroup_name);
@@ -381,7 +385,7 @@ class Config_Controller extends Authenticated_Controller {
 				$i = 0;
 				$hgm = new Hostgroup_Model;
 				foreach($data as $row) {
-					$result[$i][]= $row->hostgroup_name;
+					$result[$i][]= '<a name="'.$row->hostgroup_name.'"></a>'.$row->hostgroup_name;
 					$result[$i][]= $row->alias;
 
 					$travel = $hgm->get_hosts_for_group($row->hostgroup_name);
@@ -464,6 +468,7 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->escalation_period, $row->escalation_period);
 
 					$escalation_options = explode(',',$row->escalation_options);
+						$tmp = false;
 						foreach($escalation_options as $option) {
 							$tmp[] = $options['host']['escalation'][$option];
 						}
