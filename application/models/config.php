@@ -41,14 +41,15 @@ class Config_Model extends Model {
 									h.freshness_threshold, cg.contactgroup_name, h.last_host_notification, h.next_host_notification,
 									h.first_notification_delay, h.event_handler, h.notification_options, h.notification_period,
 									h.event_handler_enabled, h.stalking_options, h.flap_detection_enabled, h.low_flap_threshold,
-									h.high_flap_threshold, h.process_perf_data, h.failure_prediction_enabled
+									h.high_flap_threshold, h.process_perf_data, h.failure_prediction_enabled,
+									h.retain_status_information, h.retain_nonstatus_information
 									FROM host as h, host_parents as hp, host_contactgroup as hc, host as hh, contactgroup as cg
 									WHERE h.id = hp.host AND
 									h.id = hc.host AND
 									hp.parents = hh.id AND
 									hc.contactgroup = cg.id
 									ORDER BY h.host_name";
-									/* Failure Prediction Options, Retention Options*/
+									/* Failure Prediction Options*/
 				break;
 
 				case 'services':
@@ -61,7 +62,7 @@ class Config_Model extends Model {
 									notification_interval, notification_options, notification_period,
 									event_handler, event_handler_enabled, stalking_options, flap_detection_enabled,
 									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled,
-									cg.contactgroup_name
+									cg.contactgroup_name, retain_status_information, retain_nonstatus_information
 									FROM service, service_contactgroup as sc, contactgroup as cg
 									WHERE service.id = sc.contactgroup AND sc.contactgroup = cg.id
 									ORDER BY host_name, service_description";
@@ -71,7 +72,8 @@ class Config_Model extends Model {
 				case 'contacts':
 					$sql = "SELECT contact_name, alias, email, pager, service_notification_options,
 									host_notification_options, service_notification_period, host_notification_period,
-									service_notification_commands, host_notification_commands
+									service_notification_commands, host_notification_commands,
+									retain_status_information, retain_nonstatus_information
 									FROM contact ORDER BY contact_name";
 				break;
 

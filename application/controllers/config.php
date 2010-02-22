@@ -143,7 +143,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Action URL'),
 					$t->_('Icon image'),
 					$t->_('Icon image alt'),
-					//$t->_('Retention Options')
+					$t->_('Retention Options')
 				);
 				$data = $config_model->list_config($this->type);
 				$i = 0;
@@ -187,6 +187,18 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->icon_image;
 					$result[$i][]= $row->icon_image_alt;
 					// retention options
+					$ret = false;
+					if ($row->retain_status_information == true) {
+						$ret[] = $t->_('Status Information');
+						$retention = 1;
+					}
+					if ($row->retain_nonstatus_information == true) {
+						$ret[] = $t->_('Non-status Information');
+					}
+					if ($retention != 1) {
+						$ret[] = $t->_('None');
+					}
+					$result[$i][] = implode(', ',$ret);
 					$i++;
 				}
 				$data = $result;
@@ -227,7 +239,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Action URL'),
 					$t->_('Icon image'),
 					$t->_('Icon image alt'),
-					//$t->_('Retention Options'),
+					$t->_('Retention Options'),
 				);
 				$data = $config_model->list_config($this->type);
 				$i = 0;
@@ -273,6 +285,18 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= $row->icon_image;
 					$result[$i][]= $row->icon_image_alt;
 					//retention options
+					$ret = false;
+					if ($row->retain_status_information == true) {
+						$ret[] = $t->_('Status Information');
+						$retention = 1;
+					}
+					if ($row->retain_nonstatus_information == true) {
+						$ret[] = $t->_('Non-status Information');
+					}
+					if ($retention != 1) {
+						$ret[] = $t->_('None');
+					}
+					$result[$i][] = implode(', ',$ret);
 					$i++;
 				}
 				$data = $result;
@@ -290,7 +314,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Host Notification Period'),
 					$t->_('Service Notification Commands'),
 					$t->_('Host Notification Commands'),
-					// $t->_('Retention Options'),
+					$t->_('Retention Options'),
 				);
 				$data = $config_model->list_config($this->type);
 				$i = 0;
@@ -319,6 +343,18 @@ class Config_Controller extends Authenticated_Controller {
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->service_notification_commands, $row->service_notification_commands);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->host_notification_commands, $row->host_notification_commands);
 					// retention options
+					$ret = false;
+					if ($row->retain_status_information == true) {
+						$ret[] = $t->_('Status Information');
+						$retention = 1;
+					}
+					if ($row->retain_nonstatus_information == true) {
+						$ret[] = $t->_('Non-status Information');
+					}
+					if ($retention != 1) {
+						$ret[] = $t->_('None');
+					}
+					$result[$i][] = implode(', ',$ret);
 					$i++;
 				}
 				$data = $result;
@@ -493,7 +529,7 @@ class Config_Controller extends Authenticated_Controller {
 					$i = 0;
 					$sgm = new Servicegroup_Model;
 					foreach($data as $row) {
-						$result[$i][]= $row->servicegroup_name;
+						$result[$i][]= '<a name="'.$row->servicegroup_name.'"></a>'.$row->servicegroup_name;
 						$result[$i][]= $row->alias;
 
 						$travel = $sgm->get_services_for_group($row->servicegroup_name);
