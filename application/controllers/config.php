@@ -635,6 +635,10 @@ class Config_Controller extends Authenticated_Controller {
 			break;
 		}
 		//die (Kohana::debug($data));
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$this->xtra_js[] = $this->add_path('config/js/config.js');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->js_header->js = $this->xtra_js;
 		$this->template->content->header = $header;
 		$this->template->content->data = $data;
 		$this->template->content->type = $this->type;
