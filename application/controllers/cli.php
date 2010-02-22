@@ -125,28 +125,36 @@ class Cli_Controller extends Authenticated_Controller {
 	 */
 	public function insert_user_data()
 	{
-		# first import new users from cgi.cfg if there is any
-		$path = realpath(APPPATH."../cli-helpers/htpasswd-import.php");
-		require_once($path);
-		$passwd_import = new htpasswd_importer();
-		$passwd_import->overwrite = true;
-		$base_path = System_Model::get_nagios_base_path();
-		$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-		if (substr($etc_path, -1, 1) != '/') {
-			$etc_path .= '/';
+		$auth_type = Kohana::config('auth.driver');
+		if ($auth_type !== 'LDAP') {
+			# first import new users from cgi.cfg if there is any
+			$path = realpath(APPPATH."../cli-helpers/htpasswd-import.php");
+			require_once($path);
+			$passwd_import = new htpasswd_importer();
+			$passwd_import->overwrite = true;
+			$base_path = System_Model::get_nagios_base_path();
+			$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
+			if (substr($etc_path, -1, 1) != '/') {
+				$etc_path .= '/';
+			}
+			$passwd_import->import_hashes($etc_path.'htpasswd.users');
+
+
+			if (empty($passwd_import->passwd_ary)) {
+				# this is really bad since no users were found.
+				# It could mean that this system is using some other means of authorization
+				# (like LDAP?) but if we end up here something else in the configuration
+				# is terribly wrong.
+				return false;
+			}
 		}
-		$passwd_import->import_hashes($etc_path.'htpasswd.users');
+
+		# fetch all usernames from users table
+		$users = User_Model::get_all_usernames();
 
 		# don't assume any authorized users - start by removing all auth data
 		User_Model::truncate_auth_data();
 
-		if (empty($passwd_import->passwd_ary)) {
-			# this is really bad since no users were found.
-			# It could mean that this system is using some other means of authorization
-			# (like LDAP?) but if we end up here something else in the configuration
-			# is terribly wrong.
-			return false;
-		}
 		$config_data = self::get_cgi_config();
 		# All db fields that should be set
 		# according to data in cgi.cfg
@@ -159,7 +167,7 @@ class Cli_Controller extends Authenticated_Controller {
 				# since all users has been assigned all access rights (*)
 				# Instead we use the list from the htpasswd importer
 				# and assign all user the correct Nagios credentials
-				foreach (array_keys($passwd_import->passwd_ary) as $username) {
+				foreach ($users as $username) {
 					self::_edit_user_authorization($username, array(1, 1, 1, 1, 1, 1, 1));
 				}
 			} else {
@@ -168,13 +176,13 @@ class Cli_Controller extends Authenticated_Controller {
 					if (isset($config_data['user_data']['authorized_for_'.$field])) {
 						foreach ($config_data['user_data']['authorized_for_'.$field] as $username) {
 							if ($username === '*') {
-								foreach (array_keys($passwd_import->passwd_ary) as $u) {
+								foreach ($users as $u) {
 									$auth_users[$u][$field] = 1;
 								}
 							} else {
 								# named user - set current access right
 								$auth_users[$username][$field] = 1;
-								foreach (array_keys($passwd_import->passwd_ary) as $u) {
+								foreach ($users as $u) {
 									# check all other users
 									if ($u === $username || isset($auth_users[$u][$field])) {
 										# discard users already been checked for this access right
@@ -188,7 +196,7 @@ class Cli_Controller extends Authenticated_Controller {
 						} # end foreach
 					} else {
 						# unset access rights for all users for this key
-						foreach (array_keys($passwd_import->passwd_ary) as $u) {
+						foreach ($users as $u) {
 							$auth_users[$u][$field] = 0;
 						}
 					}
