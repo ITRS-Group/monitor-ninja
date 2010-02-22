@@ -985,7 +985,7 @@ class Reports_Model extends Model
 			$res_group->result(false);
 
 			foreach ($res_group as $row) {
-				$hostname[] = $row['host_name'];
+				$hostname[$row['host_name']] = $row['host_name'];
 			}
 		} elseif (!empty($servicegroup)) {
 			$servicename = array();
@@ -998,7 +998,8 @@ class Reports_Model extends Model
 			$res_group->result(false);
 
 			foreach ($res_group as $row) {
-				$servicename[] = $row['host_name'] . ';' . $row['service_description'];
+				$name = $row['host_name'] . ';' . $row['service_description'];
+				$servicename[$name] = $name;
 			}
 		}
 
