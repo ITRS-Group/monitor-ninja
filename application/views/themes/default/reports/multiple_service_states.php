@@ -109,6 +109,11 @@
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php } ?>
+			<?php if (!$create_pdf) { ?>
+			<tr id="pdf-hide">
+				<td colspan="6"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
+			</tr>
+			<?php } ?>
 		</table>
 </div>
 
@@ -153,12 +158,7 @@
 						array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
-			</tr>
-		<?php if (!$create_pdf) { ?>
-		<tr id="pdf-hide">
-			<td colspan="6"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
 		</tr>
-		<?php } ?>
 	</table>
 <?php } ?>
 </div>
