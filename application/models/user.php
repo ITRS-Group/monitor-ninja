@@ -188,4 +188,22 @@ class User_Model extends Auth_User_Model {
 		}
 		return $user->loaded ? $user : false;
 	}
+
+	/**
+	*	Fetch an array of all usernames in users table
+	*	@return array of usernames or false on error
+	*/
+	public function get_all_usernames()
+	{
+		$user_res = ORM::factory('user')->find_all();
+
+		if (count($user_res)==0) {
+			return false;
+		}
+		$users = false;
+		foreach ($user_res as $user) {
+			$users[] = $user->username;
+		}
+		return $users;
+	}
 }
