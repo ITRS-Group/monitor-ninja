@@ -126,26 +126,6 @@ class nagstat_Core {
 	const HOST_NOTIFICATION	= 1;
 
 
-/* *************** CONFIG ************************/
-
-/*const DISPLAY_NONE = 0;
-const DISPLAY_HOSTS = 1;
-const DISPLAY_HOSTGROUPS = 2;
-const DISPLAY_CONTACTS = 3;
-const DISPLAY_CONTACTGROUPS = 4;
-const DISPLAY_SERVICES = 5;
-const DISPLAY_TIMEPERIODS = 6;
-const DISPLAY_COMMANDS = 7;
-const DISPLAY_HOSTGROUPESCALATIONS = 8;    // no longer implemented
-const DISPLAY_SERVICEDEPENDENCIES = 9;
-const DISPLAY_SERVICEESCALATIONS = 10;
-const DISPLAY_HOSTDEPENDENCIES = 11;
-const DISPLAY_HOSTESCALATIONS = 12;
-const DISPLAY_HOSTEXTINFO = 13;
-const DISPLAY_SERVICEEXTINFO = 14;
-const DISPLAY_SERVICEGROUPS = 15;*/
-
-
 	/**
 	 * Process macros for host- or service objects
 	 */
