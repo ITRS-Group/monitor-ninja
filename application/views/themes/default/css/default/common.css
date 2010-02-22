@@ -1266,6 +1266,7 @@ th.header,
 #host_table th.header:first-child,
 th.header:first-child {
 	background: #dcdcdc url(images/sort.png) top right;
+	padding-right: 17px;
 }
 
 .group_grid_table th,
@@ -1295,6 +1296,7 @@ th.headerSortDown,
 #host_table th.headerSortDown:first-child,
 th.headerSortDown:first-child {
 	background: #dcdcdc url(images/sort-down.png) top right;
+	padding-right: 17px;
 }
 
 .group_grid_table th.headerSortUp,
@@ -1312,6 +1314,7 @@ th.headerSortUp,
 #host_table th.headerSortUp:first-child,
 th.headerSortUp:first-child {
 	background: #dcdcdc url(images/sort-up.png) top right;
+	padding-right: 17px;
 }
 
 /* Reports */
