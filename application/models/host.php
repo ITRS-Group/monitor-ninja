@@ -943,7 +943,7 @@ class Host_Model extends Model {
 			return false;
 
 		$auth_hosts = self::authorized_hosts();
-		$host_str = join(',', array_keys($auth_hosts));
+		$host_str = join(',', $auth_hosts);
 		$sql = "SELECT DISTINCT h.* " .
 			"FROM host h, hostgroup hg, host_hostgroup hhg " .
 			"WHERE hg.hostgroup_name = " . $this->db->escape($name) .
