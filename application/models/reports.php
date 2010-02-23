@@ -2644,6 +2644,8 @@ class Reports_Model extends Model
 	 */
 	private function build_alert_summary_query($fields = false)
 	{
+		$this->mangle_summary_options();
+
 		# set some few defaults
 		if (!$this->start_time)
 			$this->start_time = 0;
@@ -2658,9 +2660,6 @@ class Reports_Model extends Model
 		$hosts = false;
 		$services = false;
 		if ($this->servicegroup) {
-			if (!is_array($this->servicegroup)) {
-				$this->servicegroup = array($this->servicegroup);
-			}
 			$hosts = $services = array();
 			$smod = new Service_Model();
 			foreach ($this->servicegroup as $sg) {
@@ -2682,9 +2681,6 @@ class Reports_Model extends Model
 		} elseif ($this->hostgroup) {
 			$hosts = array();
 			$hmod = new Host_Model();
-			if (!is_array($this->hostgroup)) {
-				$this->hostgroup = array($this->hostgroup);
-			}
 			foreach ($this->hostgroup as $hg) {
 				$res = $hmod->get_hosts_for_group($hg);
 				foreach ($res as $o) {
@@ -2702,9 +2698,6 @@ class Reports_Model extends Model
 				$services[$srv] = $srv;
 			}
 		} elseif ($this->host_name) {
-			if (!is_array($this->host_name)) {
-				$this->host_name = array($this->host_name);
-			}
 			$hosts = false;
 			foreach ($this->host_name as $hn) {
 				$hosts[$hn] = $hn;
@@ -3000,6 +2993,24 @@ class Reports_Model extends Model
 			}
 		}
 		return $result;
+	}
+
+	private function mangle_summary_options()
+	{
+		if (!empty($this->hostgroup) && !is_array($this->hostgroup)) {
+			$this->hostgroup = array($this->hostgroup);
+		}
+		if (!empty($this->servicegroup) && !is_array($this->servicegroup)) {
+			$this->servicegroup = array($this->servicegroup);
+		}
+		if (is_string($this->host_name) && is_string($this->service_description)) {
+			$this->service_description =
+				array($this->host_name . ';' . $this->service_description);
+			$this->host_name = false;
+		}
+		if (!empty($this->host_name) && !is_array($this->host_name)) {
+			$this->host_name = array($this->host_name);
+		}
 	}
 
 	/**
