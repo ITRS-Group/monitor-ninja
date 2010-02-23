@@ -17,21 +17,16 @@
  */
 class Notifications_Controller extends Authenticated_Controller {
 	public $current = false;
-	public $logos_path = '';
 
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->logos_path = Kohana::config('config.logos_path');
 	}
 
 	/**
 	 * Default controller method
-	 * Redirects to show_process_info() which
-	 * is the equivalent of calling extinfo.cgi?type=0
 	 */
-	public function index($sort_field='host_name', $sort_order='ASC', $notification_option = '', $query_type = nagstat::FIND_HOST)
+	public function index($sort_field='host_name', $sort_order='ASC', $type = '', $query_type = nagstat::FIND_HOST)
 	{
 
 		//$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
@@ -41,7 +36,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		$note_model->where = urldecode($this->input->get('notification_option', $notification_option));
+		$note_model->where = urldecode($this->input->get('type', $type));
 
 		$result = $note_model->show_notifications();
 
@@ -58,7 +53,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
 		$this->template->content->query_type = $query_type;
-		$this->template->content->notification_option = $notification_option;
+		$this->template->content->type = $type;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
 }
