@@ -1,9 +1,13 @@
-<?php defined('SYSPATH') OR die("No direct access allowed");
+<?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 
-echo "<br />" . $label_overall_totals . "<br />\n";
-foreach ($result as $sg_name => $ary) {
-	echo "$label_servicegroup '" . $sg_name . "'<br />\n";
-	$this->_print_alert_totals_table($label_host_alerts, $ary['host'], $host_state_names, $ary['host_totals']);
-	$this->_print_alert_totals_table($label_service_alerts, $ary['service'], $service_state_names, $ary['service_totals']);
-}
-printf("Report completed in %.3f seconds<br />\n", $completion_time);
+<div style="margin: 0px 1%; border: 1px solid white">
+	<h2 style="margin-top: 11px; margin-bottom: 0px"><?php echo $label_overall_totals ?></h2>
+
+	<?php
+	foreach ($result as $sg_name => $ary) {
+		$this->_print_alert_totals_table($label_host_alerts, $ary['host'], $host_state_names, $ary['host_totals'], $sg_name);
+		$this->_print_alert_totals_table($label_service_alerts, $ary['service'], $service_state_names, $ary['service_totals'], $sg_name);
+	}
+	//printf("Report completed in %.3f seconds<br />\n", $completion_time);
+	?>
+</div>
