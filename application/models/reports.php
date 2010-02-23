@@ -1278,7 +1278,7 @@ class Reports_Model extends Model
 				$this->st_raw[$st] += $active;
 		}
 
-		if ($this->st_needs_log) {
+		if ($this->st_needs_log && !$this->master) {
 			$this->st_prev_row['duration'] = $duration;
 			$this->st_log[] = $this->st_prev_row;
 		}
@@ -1537,7 +1537,7 @@ class Reports_Model extends Model
 		if (!$this->master && empty($this->sub_reports)) {
 			$this->st_needs_log = true;
 		}
-		if ($this->st_needs_log === true) {
+		if ($this->st_needs_log === true && !$this->master) {
 			$this->st_log = array();
 		}
 
