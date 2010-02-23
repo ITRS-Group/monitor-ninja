@@ -2712,7 +2712,7 @@ class Reports_Model extends Model
 					join("',\n '", array_keys($hosts)) . "'))" .
 					"\nOR ";
 			} else {
-				$object_selection = "\nAND ";
+				$object_selection = "\nAND (";
 			}
 			$orstr = '';
 			# Must do this the hard way to allow host_name indices to
