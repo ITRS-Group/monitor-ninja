@@ -5,7 +5,7 @@
 
 		<?php
 		foreach ($result as $service_name => $ary) {
-			$foo = explode(';');
+			$foo = explode(';', $service_name);
 			$host_name = $foo[0];
 			$service = $foo[1];
 			//echo $label_service . "'" . $service . "' on " .$label_host . "'" . $host_name . "'<br />\n";
