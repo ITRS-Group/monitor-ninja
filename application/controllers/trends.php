@@ -733,6 +733,7 @@ class Trends_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$report_class->set_option('keep_logs', true);
 		$this->data_arr = $group_name!== false
 			? $this->_expand_group_request($group_name, substr($this->report_type, 0, strlen($this->report_type)-1), $this->start_date, $this->end_date)
 			: $report_class->get_uptime(false, false, $this->start_date, $this->end_date, $hostgroup, $servicegroup);
@@ -1161,6 +1162,7 @@ class Trends_Controller extends Authenticated_Controller {
 								$key, $_REQUEST[$dep])."'<br />";
 
 			$rpt_class->set_option(substr($type, 0, strlen($type)).'_name', $$type);
+			$rpt_class->set_option('keep_logs', true);
 			$data_arr[] = $rpt_class->get_uptime(false, false, $start_date, $end_date, $hostgroup, $servicegroup);
 			unset($rpt_class);
 		}
