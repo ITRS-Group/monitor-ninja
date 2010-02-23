@@ -5,25 +5,25 @@
 		<strong><?php echo $t->_('Detail level for all contacts');?></strong><br />
 		<select onchange="submit()" name="type" style="margin-top: 3px; margin-left: 0px">
 			<?php if($query_type == nagstat::FIND_SERVICE){ ?>
-				<option value="<?php echo nagstat::NOTIFICATION_SERVICE_ALL;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_ALL ? ' selected' : ''?>><?php echo $t->_('All service notifications');?></option>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_ALL;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_ALL ? ' selected' : ''?>><?php echo $t->_('All host notifications');?></option>
+				<option value="<?php echo nagstat::NOTIFICATION_SERVICE_ALL;?>"<?php echo  $state == nagstat::NOTIFICATION_SERVICE_ALL ? ' selected' : ''?>><?php echo $t->_('All service notifications');?></option>
+				<option value="<?php echo nagstat::NOTIFICATION_HOST_ALL;?>"<?php echo  $state == nagstat::NOTIFICATION_HOST_ALL ? ' selected' : ''?>><?php echo $t->_('All host notifications');?></option>
 			<?php } ?>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_ACK;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_ACK ? ' selected' : ''?>><?php echo $t->_('Service acknowledgements');?></option>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_WARNING;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_WARNING ? ' selected' : ''?>><?php echo $t->_('Service warning');?></option>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_UNKNOWN;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_UNKNOWN ? ' selected' : ''?>><?php echo $t->_('Service unknown');?></option>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_CRITICAL;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_CRITICAL ? ' selected' : ''?>><?php echo $t->_('Service critical');?></option>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_RECOVERY;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_RECOVERY ? ' selected' : ''?>><?php echo $t->_('Service recovery');?></option>
-			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_FLAP;?>"<?php echo  $type == nagstat::NOTIFICATION_SERVICE_FLAP ? ' selected' : ''?>><?php echo $t->_('Service flapping');?></option>-->
+			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_ACK.'_'.nagstat::SERVICE_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_SERVICE_ACK ? ' selected' : ''?>><?php echo $t->_('Service acknowledgements');?></option>
+			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_WARNING.'_'.nagstat::SERVICE_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_SERVICE_WARNING ? ' selected' : ''?>><?php echo $t->_('Service warning');?></option>
+			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_UNKNOWN.'_'.nagstat::SERVICE_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_SERVICE_UNKNOWN ? ' selected' : ''?>><?php echo $t->_('Service unknown');?></option>
+			<option value="<?php echo nagstat::NOTIFICATION_SERVICE_CRITICAL.'_'.nagstat::SERVICE_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_SERVICE_CRITICAL ? ' selected' : ''?>><?php echo $t->_('Service critical');?></option>
+			<option value="<?php echo '_'.nagstat::SERVICE_NOTIFICATION.'_'.nagstat::NOTIFICATION_SERVICE_RECOVERY;?>"<?php echo  $reason_type == nagstat::NOTIFICATION_SERVICE_RECOVERY ? ' selected' : ''?>><?php echo $t->_('Service recovery');?></option>
+			<option value="<?php echo '_'.nagstat::SERVICE_NOTIFICATION.'_'.nagstat::NOTIFICATION_SERVICE_FLAP;?>"<?php echo  $reason_type == nagstat::NOTIFICATION_SERVICE_FLAP ? ' selected' : ''?>><?php echo $t->_('Service flapping');?></option>-->
 			<?php if($query_type == nagstat::FIND_HOST){ ?>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_ACK;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_ACK ? ' selected' : ''?>><?php echo $t->_('Host acknowledgements');?></option>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_DOWN;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_DOWN ? ' selected' : ''?>><?php echo $t->_('Host down');?></option>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_UNREACHABLE;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_UNREACHABLE ? ' selected' : ''?>><?php echo $t->_('Host unreachable');?></option>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_RECOVERY;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_RECOVERY ? ' selected' : ''?>><?php echo $t->_('Host recovery');?></option>
-				<option value="<?php echo nagstat::NOTIFICATION_HOST_FLAP;?>"<?php echo  $type == nagstat::NOTIFICATION_HOST_FLAP ? ' selected' : ''?>><?php echo $t->_('Host flapping');?></option>
+				<option value="<?php echo nagstat::NOTIFICATION_HOST_ACK.'_'.nagstat::HOST_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_HOST_ACK ? ' selected' : ''?>><?php echo $t->_('Host acknowledgements');?></option>
+				<option value="<?php echo nagstat::NOTIFICATION_HOST_DOWN.'_'.nagstat::HOST_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_HOST_DOWN ? ' selected' : ''?>><?php echo $t->_('Host down');?></option>
+				<option value="<?php echo nagstat::NOTIFICATION_HOST_UNREACHABLE.'_'.nagstat::HOST_NOTIFICATION;?>"<?php echo  $state == nagstat::NOTIFICATION_HOST_UNREACHABLE ? ' selected' : ''?>><?php echo $t->_('Host unreachable');?></option>
+				<option value="<?php echo '_'.nagstat::HOST_NOTIFICATION.'_'.nagstat::NOTIFICATION_HOST_RECOVERY;?>"<?php echo  $reason_type == nagstat::NOTIFICATION_HOST_RECOVERY ? ' selected' : ''?>><?php echo $t->_('Host recovery');?></option>
+				<option value="<?php echo '_'.nagstat::HOST_NOTIFICATION.'_'.nagstat::NOTIFICATION_HOST_FLAP;?>"<?php echo  $reason_type == nagstat::NOTIFICATION_HOST_FLAP ? ' selected' : ''?>><?php echo $t->_('Host flapping');?></option>
 			<?php } ?>
 		</select> &nbsp;
-		<input type="checkbox" name="sort_order" value="desc" /> <?php echo $t->_('Older Entries First');?> &nbsp;
-		<!--<input type="submit" value="<?php echo $t->_('Update');?>" />-->
+		<input type="checkbox" name="sort_order" value="asc" /> <?php echo $t->_('Older Entries First');?> &nbsp;
+		<input type="submit" value="<?php echo $t->_('Update');?>" />
 		<br /><br />
 	</form>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
@@ -47,7 +47,7 @@
 					$i++;
 		?>
 		<tr class="<?php echo $i%2 == 0 ? 'odd' : 'even'; ?>">
-			<td class="icon status">
+			<td class="icon status" style="text-align: left">
 				<?php
 				if($row->notification_type == nagstat::SERVICE_NOTIFICATION) {
 					// state

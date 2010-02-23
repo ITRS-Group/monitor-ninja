@@ -36,7 +36,7 @@ class Notifications_Model extends Model {
 
 			//echo 'offset_limit: '.$offset_limit;
 
-			$where_string = (!empty($this->where)) ? 'WHERE notification_type = "'.$this->where.'" ' : '';
+			$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
 
 			$sql = "(SELECT host_name, service_description, start_time, end_time, reason_type, state,
 							contact_name, notification_type, output

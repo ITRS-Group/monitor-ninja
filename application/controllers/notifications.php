@@ -28,6 +28,8 @@ class Notifications_Controller extends Authenticated_Controller {
 	 */
 	public function index($sort_field='host_name', $sort_order='ASC', $type = '', $query_type = nagstat::FIND_HOST)
 	{
+		$type = urldecode($this->input->get('type', $type));
+
 
 		//$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$items_per_page = urldecode($this->input->get('items_per_page', 20)); # @@@FIXME: should be configurable from GUI
@@ -36,7 +38,11 @@ class Notifications_Controller extends Authenticated_Controller {
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		$note_model->where = urldecode($this->input->get('type', $type));
+		if ($type != '') {
+			$where = explode('_', $type);
+			//print_r($where);
+			$note_model->where = " notification_type = '".$where[0]."' AND state = '".$where[1]."'".(!isset($where[2]) ? '' : " AND reason_type = '".$where[2]."'");
+		}
 
 		$result = $note_model->show_notifications();
 
@@ -54,6 +60,9 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->data = $result;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
+		$this->template->content->notification_type = $where[0];
+		$this->template->content->state = $where[1];
+		$this->template->content->reason_type = $where[2];
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
 }
