@@ -2695,7 +2695,7 @@ class Reports_Model extends Model
 					$hosts[$name][$hg] = $hg;
 				}
 			}
-			$this->host_hostgrop = $hosts;
+			$this->host_hostgroup = $hosts;
 		} elseif ($this->service_description) {
 			$services = false;
 			foreach ($this->service_description as $srv) {
