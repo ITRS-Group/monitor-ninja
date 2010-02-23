@@ -293,22 +293,24 @@ class Summary_Controller extends Authenticated_Controller
 	 * them, provided we get the statenames (OK, UP etc) from the
 	 * caller, along with the array of state totals.
 	 */
-	public function _print_alert_totals_table($topic, $ary, $state_names, $totals)
+	public function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
 	{
 		$t = $this->translate;
 		echo "<table class=\"host_alerts\"><tr>\n";
-		echo "<th>" . $t->_('State') . "</th>\n";
-		echo "<th>" . $t->_('Soft Alerts') . "</th>\n";
-		echo "<th>" . $t->_('Hard Alerts') . "</th>\n";
-		echo "<th>" . $t->_('Total Alerts') . "</th>\n";
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>";
+		echo "<th class=\"headerNone\" style=\"width: 70%\">" . $t->_('State') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Soft Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Hard Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Total Alerts') . "</th>\n";
 		echo "</tr>\n";
 
 		$total = array(0, 0); # soft and hard
+		$i = 0;
 		foreach ($ary as $state_id => $sh) {
 			if (!isset($state_names[$state_id]))
 				continue;
-
-			echo "<tr>\n";
+			$i++;
+			echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\">\n";
 			echo "<td>" . $state_names[$state_id] . "</td>\n"; # topic
 			echo "<td>" . $sh[0] . "</td>\n"; # soft
 			echo "<td>" . $sh[1] . "</td>\n"; # hard
@@ -316,7 +318,8 @@ class Summary_Controller extends Authenticated_Controller
 			echo "<td>" . $tot . "</td>\n"; # soft + hard
 			echo "</tr>\n";
 		}
-		echo "<tr><td>Total</td>\n";
+		$i++;
+		echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\"><td>Total</td>\n";
 		echo "<td>" . $totals['soft'] . "</td>\n";
 		echo "<td>" . $totals['hard'] . "</td>\n";
 		$tot = $totals['soft'] + $totals['hard'];
