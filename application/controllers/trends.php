@@ -846,30 +846,21 @@ class Trends_Controller extends Authenticated_Controller {
 				# hostgroups / servicegroups or >= 2 hosts or services
 				$i=0;
 				foreach ($this->data_arr as $key => $data) {
-					if (is_int($key)) {
-						# $data should be an array with [log] as key
-						# use ONLY [log][0]
-						if (isset($data['log'][0])) {
-							$raw_trends_data[] = $data['log'][0];
-						} elseif (isset($data['log']) && !empty($data['log'])) {
-							# @@@FIXME: Filter out relevant data when we have some
-							$raw_trends_data[] = $data['log'];
-						}
-					} elseif (is_string($key) && $key === 'log') {
-						# $data is the outer array (with, source, log, states etc)
-						# must check for [log] key!
-						# use ALL BUT [log][0]
-						$cnt = 0;
-						if (is_array($data) && !empty($data)) {
-							foreach ($data as $row) {
-								if ($cnt++ > 0) {
-									$raw_trends_data[] = $row;
-								}
-							}
-						}
+					# >= 2 hosts or services won't have the extra
+					# depth in the array, so we break out early
+					if (empty($data['log']) || !is_array($data['log'])) {
+						$raw_trends_data = $this->data_arr['log'];
+						break;
+					}
+
+					# $data is the outer array (with, source, log,
+					# states etc)
+					if (empty($raw_trends_data)) {
+						$raw_trends_data = $data['log'];
+					} else {
+						$raw_trends_data = array_merge($data['log'], $raw_trends_data);
 					}
 				} # end foreach
-
 			} else {
 				$avail_data = Reports_Controller::_print_state_breakdowns($this->data_arr['source'], $this->data_arr['states'], $this->report_type);
 				$avail_template = $this->add_view('trends/avail');
@@ -935,8 +926,20 @@ class Trends_Controller extends Authenticated_Controller {
 		$filter_states = array('' => ''); # set first empty option
 		$to = $t->_('to');
 		if (is_array($raw_trends_data) && !empty($raw_trends_data)) {
-			foreach ($raw_trends_data as $row) {
-				$title = ($sub_type == 'service') ? $row['host_name'].';'.$row[self::$map_type_field[$sub_type.'s']] : $row[self::$map_type_field[$sub_type.'s']];
+			foreach ($raw_trends_data as $id => $row) {
+				# skip the first (faked) log-entry
+				if ($id == 0 || empty($row['host_name']))
+					continue;
+				if (empty($row['service_description'])) {
+					$sub_type = 'host';
+					$title = $row['host_name'];
+					$info_url = urlencode($title);
+				} else {
+					$sub_type = 'service';
+					$info_url = $row['host_name'] . '?service=' .
+						urlencode($row['service_description']);
+					$title = $row['host_name'] . ';' . $row['service_description'];
+				}
 				$description_links = ''; #@@@FIXME: create working links for all pop-ups and objects
 				/*
 				$description_links = '<br /><a href="'.url::site().'status/'.$statuslink_prefix.$sub_type.'/'.$row[$obj_field].'">'.$t->_('Status details').'</a><br />'.
@@ -955,7 +958,7 @@ class Trends_Controller extends Authenticated_Controller {
 						'textColor' => "#000000",
 						'image' => url::base(false).$this->add_path('icons/16x16/shield-'.$this->_translate_state_to_string($row['state'], $sub_type).'.png'),
 						'icon' => url::base(false).$this->add_path('icons/12x12/shield-'.$this->_translate_state_to_string($row['state'], $sub_type).'.png'),
-						'link' => url::site().'extinfo/details/'.$sub_type.'/'.$row[$obj_field],
+						'link' => url::site().'extinfo/details/'.$sub_type.'/'.$info_url,
 						'caption' => $start_time_str.$end_time_str.$row['output']
 						);
 
