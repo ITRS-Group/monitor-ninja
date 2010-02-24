@@ -8,7 +8,7 @@
 
 
 <div id="options">
-<?php	echo form::open('trends/generate', array('id' => 'report_form'));
+<?php	echo form::open('trends/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));
 		# @@@FIXME: onsubmit="return check_form_update_values(this);" ?>
 			<h1><?php //echo help::render('report_settings_sml') ?> <?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
@@ -16,20 +16,20 @@
 					<td>
 						<input type="hidden" name="new_report_setup" value="1" />
 						<?php //echo help::render('reporting_period');?> <?php echo $label_report_period ?><br />
-						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?>
+						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $report_periods, $selected); ?>
 					</td>
 				</tr>
-				<tr id="display" style="display: none; clear: both;" class="none">
+				<tr id="display" style="display: none; clear: both;" class="none fancydisplay">
 					<td>
 						<?php echo $label_startdate ?> (<span id="start_time_tmp"><?php echo $label_click_calendar ?></span>)<br />
-						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $start_time ?>" class="date-pick" title="<?php echo $label_startdate_selector ?>" />
-						<input type="hidden" name="start_time" id="start_time" value="<?php echo $start_time ?>" />
-						<input type="text" maxlength="5" name="time_start" id="time_start" value="08:00">
-						<br /><br /><br />
+						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo $start_date ?>" class="date-pick datepick-start" title="<?php echo $label_startdate_selector ?>" />
+						<input type="hidden" name="start_time" id="start_time" value="<?php echo $start_date ?>" />
+						<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo $start_time ?>">
+						<br />
 						<?php echo $label_enddate ?> (<span id="end_time_tmp"><?php echo $label_click_calendar ?></span>)<br />
-						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $end_time ?>" class="date-pick" title="<?php echo $label_enddate_selector ?>" />
-						<input type="hidden" name="end_time" id="end_time" value="<?php echo $end_time ?>" />
-						<input type="text" maxlength="5" name="time_end" id="time_end" value="09:00">
+						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo $end_date ?>" class="date-pick datepick-end" title="<?php echo $label_enddate_selector ?>" />
+						<input type="hidden" name="end_time" id="end_time" value="<?php echo $end_date ?>" />
+						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo $end_time ?>">
 					</td>
 				</tr>
 				<tr class="none">
