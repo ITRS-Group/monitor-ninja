@@ -60,9 +60,9 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->data = $result;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
-		$this->template->content->notification_type = $where[0];
-		$this->template->content->state = $where[1];
-		$this->template->content->reason_type = $where[2];
+		$this->template->content->notification_type = isset($where[0]) ? $where[0] : '';
+		$this->template->content->state = isset($where[1]) ? $where[1] : '';
+		$this->template->content->reason_type = isset($where[2]) ? $where[2] : '';
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
 }
