@@ -250,7 +250,8 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		$this->xtra_js[] = $this->add_path('reports/js/json');
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = $this->add_path('trends/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('trends/js/trends');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 
 
@@ -486,7 +487,8 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/timeline/timeline_js/timeline-api';
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('trends/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('trends/js/trends');
 
 		$this->template->js_header->js = $this->xtra_js;
 

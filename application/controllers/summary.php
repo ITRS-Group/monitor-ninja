@@ -117,7 +117,8 @@ class Summary_Controller extends Authenticated_Controller
 		#$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		#$this->xtra_js[] = $this->add_path('summary/js/json');
 		$this->xtra_js[] = $this->add_path('summary/js/move_options');
-		$this->xtra_js[] = $this->add_path('summary/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('summary/js/summary');
 
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');

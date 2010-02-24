@@ -315,6 +315,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = $this->add_path('reports/js/json');
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/reports');
 
 		$this->template->js_header->js = $this->xtra_js;
 
@@ -799,6 +800,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/reports');
 
 		$this->template->js_header->js = $this->xtra_js;
 

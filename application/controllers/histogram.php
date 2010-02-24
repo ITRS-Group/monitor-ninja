@@ -163,7 +163,8 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 		$this->xtra_js[] = $this->add_path('histogram/js/move_options');
-		$this->xtra_js[] = $this->add_path('histogram/js/common');
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('histogram/js/histogram');
 
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
@@ -301,8 +302,9 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_start_date."\n";
 
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = $this->add_path('histogram/js/histogram');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_js[] = $this->add_path('histogram/js/common');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram');
 		$this->template->css_header->css = $this->xtra_css;
 		$rpt = new Reports_Model();
