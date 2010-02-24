@@ -604,6 +604,8 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->end_date = $time_parts[1];  // used in calculations by lib_report
 		$str_start_date = date(nagstat::date_format(), $this->start_date); // used to set calendar
 		$str_end_date 	= date(nagstat::date_format(), $this->end_date); // used to set calendar
+		$report_class->set_option('start_time', $this->start_date);
+		$report_class->set_option('end_time', $this->end_date);
 
 		if('custom' == $report_period)
 			$report_time_formatted  = sprintf($t->_("%s to %s"), $str_start_date, $str_end_date);
@@ -796,8 +798,12 @@ class Trends_Controller extends Authenticated_Controller {
 
 			$tpl_options->label_edit_settings = $t->_('edit settings');
 			$tpl_options->html_options = $html_options;
-			$tpl_options->start_time = $start_time;
-			$tpl_options->end_time = $end_time;
+
+			$tpl_options->start_date = date($date_format, $report_class->start_time);
+			$tpl_options->start_time = date('H:i', $report_class->start_time);
+			$tpl_options->end_date = date($date_format, $report_class->end_time);
+			$tpl_options->end_time = date('H:i', $report_class->end_time);
+
 			$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
 			$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
 			$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
@@ -805,7 +811,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
-
 			$this->js_strings .= "var Timeline_ajax_url = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_ajax/simile-ajax-api.js';\n";
 			$this->js_strings .= "var Timeline_urlPrefix = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_js/';\n";
 			$this->js_strings .= "var Timeline_parameters = 'bundle=true';\n";

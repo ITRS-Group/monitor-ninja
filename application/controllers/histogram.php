@@ -599,10 +599,13 @@ class Histogram_Controller extends Authenticated_Controller
 		$tpl_options->label_clear = $t->_('Clear');
 		$tpl_options->html_options = $html_options;
 		$tpl_options->label_edit_settings = $t->_('edit settings');
-		$tpl_options->start_time = $start_time;
-		$tpl_options->end_time = $end_time;
+		$tpl_options->start_date = date($date_format, $rpt->start_time);
+		$tpl_options->start_time = date('H:i', $rpt->start_time);
+		$tpl_options->end_date = date($date_format, $rpt->end_time);
+		$tpl_options->end_time = date('H:i', $rpt->end_time);
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+
 	}
 
 	/**
