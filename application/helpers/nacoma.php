@@ -34,7 +34,7 @@ class nacoma_Core {
 		# create the link.
 		$link = false;
 		if (!empty($path) && !empty($img)) {
-			$link = html::anchor($path, html::image($this->add_path($img),$title));
+			$link = html::anchor($path, html::image($this->add_path($img),$title), array('style' => 'border: 0px'));
 		} else {
 			# helper only used to decide if the link should be displayed at all
 			$link = true;
