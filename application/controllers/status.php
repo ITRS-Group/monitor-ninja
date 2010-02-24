@@ -1173,7 +1173,7 @@ $label_view_for = $this->translate->_('For this service group');
 				 */
 				if (nacoma::link()===true) {
 					$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-					$nacoma_link = html::anchor('configuration/configure/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)));
+					$nacoma_link = html::anchor('configuration/configure/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px'));
 				}
 
 				/**
@@ -1208,7 +1208,7 @@ $label_view_for = $this->translate->_('For this service group');
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.$this->current->status_text($host->service_state, 'service')), array('style' => 'border: 0px') ),
+					'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.ucfirst(strtolower($this->current->status_text($host->service_state, 'service'))))),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ),
 					'svc_status_link' => html::anchor('status/service/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ),
 					'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') ),
