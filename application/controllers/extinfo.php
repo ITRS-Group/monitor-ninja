@@ -1281,4 +1281,74 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content->header_links = $header_links;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}
+
+	/**
+	*	Print scheduled downtime
+	*/
+	public function scheduled_downtime($type='all')
+	{
+		# valid types
+		$types = array(
+			nagstat::HOST_DOWNTIME => 'host',
+			nagstat::SERVICE_DOWNTIME  => 'service',
+			nagstat::ANY_DOWNTIME => 'all'
+			);
+		$type = arr::search($_REQUEST, 'type', $type);
+		$downtime_type = false;
+		if (in_array($type, $types)) {
+			$downtime_type = array_search($type, $types);
+		} else {
+			$downtime_type = nagstat::ANY_DOWNTIME;
+		}
+
+		$host_title_str = $this->translate->_('Scheduled Host Downtime');
+		$service_title_str = $this->translate->_('Scheduled Service Downtime');
+		$title = $this->translate->_('Scheduled Downtime');
+		$type_str = false;
+		$host_data = false;
+		$service_data = false;
+
+		switch ($downtime_type) {
+			case nagstat::HOST_DOWNTIME:
+				$type_str = $types[$downtime_type];
+				$host_data = Downtime_Model::get_downtime_data('downtime_type DESC', $downtime_type);
+				break;
+			case nagstat::SERVICE_DOWNTIME:
+				$type_str = $types[$downtime_type];
+				$service_data = Downtime_Model::get_downtime_data('downtime_type DESC', $downtime_type);
+				break;
+			case nagstat::ANY_DOWNTIME:
+				$host_data = Downtime_Model::get_downtime_data('downtime_type DESC', nagstat::HOST_DOWNTIME);
+				$service_data = Downtime_Model::get_downtime_data('downtime_type DESC', nagstat::SERVICE_DOWNTIME);
+				break;
+		}
+		$this->template->content = $this->add_view('extinfo/scheduled_downtime');
+		$content = $this->template->content;
+
+		# table header fields
+		$content->label_host_name = $this->translate->_('Host Name');
+		$content->label_service = $this->translate->_('Service');
+		$content->label_entry_time = $this->translate->_('Entry Time');
+		$content->label_author = $this->translate->_('Author');
+		$content->label_comment = $this->translate->_('Comment');
+		$content->label_start_time = $this->translate->_('Start Time');
+		$content->label_end_time = $this->translate->_('End Time');
+		$content->label_type = $this->translate->_('Type');
+		$content->label_duration = $this->translate->_('Duration');
+		$content->label_downtime_id = $this->translate->_('Downtime ID');
+		$content->label_trigger_id = $this->translate->_('Trigger ID');
+		$content->label_actions = $this->translate->_('Actions');
+
+		$content->title = $title;
+		$content->fixed = $this->translate->_('Fixed');
+		$content->flexible = $this->translate->_('Flexible');
+		$content->na_str = $this->translate->_('N/A');
+		$content->date_format = nagstat::date_format();
+		$content->host_data = $host_data;
+		$content->host_title_str = $host_title_str;
+
+		$content->service_data = $service_data;
+		$content->service_title_str = $service_title_str;
+
+	}
 }
