@@ -310,6 +310,8 @@ class Reports_Controller extends Authenticated_Controller
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		$this->xtra_js[] = $this->add_path('reports/js/json');
@@ -321,6 +323,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->xtra_css[] = $this->add_path('reports/css/reports');
 		$this->template->css_header->css = $this->xtra_css;
