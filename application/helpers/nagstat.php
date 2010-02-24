@@ -21,6 +21,10 @@ class nagstat_Core {
 	const HOST_UNREACHABLE = 4;
 	const HOST_PENDING = 64;
 
+	const SERVICE_DOWNTIME= 1;	/* service downtime */
+	const HOST_DOWNTIME = 2;	/* host downtime */
+	const ANY_DOWNTIME = 3;		/* host or service downtime */
+
 	const HOST_STATE_ACKNOWLEDGED = 4;
 	const HOST_STATE_UNACKNOWLEDGED = 8;
 	const HOST_SCHEDULED_DOWNTIME = 1;
