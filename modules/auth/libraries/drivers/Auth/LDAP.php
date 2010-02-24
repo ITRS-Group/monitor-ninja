@@ -14,12 +14,31 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			$user->username = $username;
 		}
 
-		if (!($ds = ldap_connect($this->config['ldap_server'])))
+		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
 			return false;
 
-		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, $this->config['ldap_version']);
+		$config = array(
+			'LDAP_SERVER' => null,
+			'LDAP_USERKEY' => null,
+			'LDAP_USERS' => null
+		);
+		foreach ($raw_config as $line)
+		{
+			$key = strtok(trim($line), '=');
+			$value = strtok('');
+			if ($key[0] != '#')
+				$config[$key] = $value;
+		}
 
-		if (@ldap_bind($ds, str_replace('[username]', $user->username, $this->config['ldap_dn']), $password))
+		// check if all config variables are set
+		foreach ($config as $value)
+			if (is_null($value))
+				return false;
+
+		if (!($ds = ldap_connect($config['LDAP_SERVER'])))
+			return false;
+
+		if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$user->username},{$config['LDAP_USERS']}", $password))
 		{
 			$this->complete_login($user);
 			return true;
