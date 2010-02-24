@@ -6,9 +6,6 @@
  * LDAP, OpenID and others
  */
 $config['driver'] = 'Ninja'; // db
-//$config['ldap_server'] = 'ldap.domain.com';
-//$config['ldap_dn'] = 'cn=[username],ou=users,dc=domain,dc=com';
-//$config['ldap_version'] = 3;
 
 /**
  * Type of hash to use for passwords. Any algorithm supported by the hash function
