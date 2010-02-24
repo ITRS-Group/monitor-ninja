@@ -1,0 +1,21 @@
+DESCRIPTION="Ninja database options settings"
+
+function CHECK()
+{
+	test -d /opt/monitor/op5/ninja
+	return $?
+}
+
+function BACKUP_ACTION()
+{
+	mysqldump merlin > $WORKDIR/merlin-db.sql
+	mysqldump monitor_reports avail_config avail_config_objects \
+		avail_db_version sla_config sla_config_objects sla_db_version \
+			sla_periods > avail_sla_settings.sql
+}
+
+function RESTORE_ACTION()
+{
+	mysql merlin < $WORKDIR/merlin-db.sql
+	mysql monitor_reports_data < $WORKDIR/avail_sla_settings.sql
+}
