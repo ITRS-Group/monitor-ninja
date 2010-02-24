@@ -448,6 +448,10 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
 
+		if (arr::search($_REQUEST, 'show_schedules') !== false) {
+			$this->js_strings .= "var _show_schedules = true;\n";
+		}
+
 		if ($this->report_id) {
 			$this->inline_js .= "$('#assumed_host_state').hide();
 			$('#assumed_service_state').hide();\n";

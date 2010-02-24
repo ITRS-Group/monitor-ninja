@@ -99,7 +99,7 @@ class Ninja_Controller extends Template_Controller {
 			),
 			$this->translate->_('Reporting') => array(
 				$this->translate->_('Trends') 								=> array('trends', 'trends'),
-				$this->translate->_('Schedule reports') 			=> array('reports', 'schedulereports'),
+				$this->translate->_('Schedule reports') 			=> array('reports?show_schedules', 'schedulereports'),
 				$this->translate->_('Alert history') 					=> array('showlog/showlog', 'alerthistory'),
 				$this->translate->_('Alert summary') 					=> array('summary', 'alertsummary'),
 				$this->translate->_('Notifications') 					=> array('notifications', 'notifications'),

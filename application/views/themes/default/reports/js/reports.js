@@ -13,6 +13,7 @@ var sla_month_enabled_color  = '#fafafa';
 //var _scheduled_label = '';
 var invalid_report_names = '';
 var current_filename;
+var _show_schedules;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -105,7 +106,10 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#report-tabs').tabs();
+	var $tabs = $('#report-tabs').tabs();
+	if (_show_schedules) {
+		$tabs.tabs('select', 1);
+	}
 
 	$("#rep_type").change(function() {
 		var rep_type_val = $(this).fieldValue();
