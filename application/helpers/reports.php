@@ -152,4 +152,23 @@ class reports_Core
 			echo "\t$k = $v\n";
 		}
 	}
+
+	/**
+	*	Create common translated javascript strings
+	*/
+	public function js_strings()
+	{
+		$t = $this->translate;
+		$js_strings = false;
+		$js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
+		$js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
+		$js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
+		$js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
+		$js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";
+		$js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
+		$js_strings .= "var _reports_enddate_lessthan_startdate = '".$t->_("You have entered an End date before Start Date.")."';\n";
+
+		return $js_strings;
+	}
 }

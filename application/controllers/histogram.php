@@ -171,13 +171,7 @@ class Histogram_Controller extends Authenticated_Controller
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 
-		$this->js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
-		$this->js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
-		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
-		$this->js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
-		$this->js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
-		$this->js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";
-		$this->js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
+		$this->js_strings .= reports::js_strings();
 
 		$template->label_create_new = $this->translate->_('Event History Report');
 		$template->label_standardreport = $this->translate->_('Standard Reports');
@@ -502,6 +496,9 @@ class Histogram_Controller extends Authenticated_Controller
 
 		$this->inline_js .= "var graph_options = {legend: {show: true,container: $('#overviewLegend')},xaxis:{ticks:".$this->_get_xaxis_ticks()."},bars:{align:'center'}, grid: { hoverable: true, clickable: true }, yaxis:{min:0}};";
 		$this->js_strings .= "var graph_xlables = new Array(".implode(',', $this->labels).");";
+
+		$this->js_strings .= reports::js_strings();
+
 		$data = $this->_prepare_graph_data();
 		$datasets = array();
 		$this->inline_js .= "var datasets = {";
