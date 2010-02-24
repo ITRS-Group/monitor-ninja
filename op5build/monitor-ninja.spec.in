@@ -30,7 +30,7 @@ sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
 
-mkdir -p %buildroot%/etc/cron.d/
+mkdir -p %buildroot/etc/cron.d/
 install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
 
 # executables
