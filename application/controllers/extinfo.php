@@ -1039,6 +1039,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function performance()
 	{
 		$this->template->content = $this->add_view('extinfo/performance');
+		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Performance info');
 		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
 		$service_model = new Service_Model();
