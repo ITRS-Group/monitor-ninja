@@ -166,7 +166,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->xtra_js[] = $this->add_path('histogram/js/common');
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = $this->add_path('histogram/css/datePicker');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
@@ -301,6 +301,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_start_date."\n";
 
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		$this->xtra_js[] = $this->add_path('histogram/js/common');
 		$this->xtra_css[] = $this->add_path('histogram/css/histogram');
 		$this->template->css_header->css = $this->xtra_css;
