@@ -60,6 +60,8 @@ input,
 select,
 textarea,
 input#cal_end,
+input.datepick-end,
+input.datepick-start,
 input#cal_start,
 input#time_start,
 input#time_end {
@@ -79,6 +81,8 @@ select { width: 382px}
 
 input#cal_end,
 input#cal_start,
+input.datepick-end,
+input.datepick-start,
 input#time_start,
 input#time_end {
 	width: 100px;

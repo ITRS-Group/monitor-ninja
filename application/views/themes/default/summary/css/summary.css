@@ -49,12 +49,12 @@
 #response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
 
 /* nytt */
-
 input,
 select,
 textarea,
-input#summary_items,
 input#cal_end,
+input.datepick-end,
+input.datepick-start,
 input#cal_start,
 input#time_start,
 input#time_end {
@@ -72,12 +72,10 @@ input#time_end {
 
 select { width: 382px}
 
-input#summary_items {
-	width: 68px;
-}
-
 input#cal_end,
 input#cal_start,
+input.datepick-end,
+input.datepick-start,
 input#time_start,
 input#time_end {
 	width: 100px;

@@ -63,16 +63,13 @@ body {
 	border: 0px;
 	background-color: transparent;
 }
-
-
 input,
 select,
 textarea,
-input#report_name,
 input#cal_end,
+input.datepick-end,
+input.datepick-start,
 input#cal_start,
-input#recipients,
-input#filename,
 input#time_start,
 input#time_end {
 	background: #fafafa;
@@ -87,8 +84,12 @@ input#time_end {
 	margin-bottom: 15px;
 }
 
+select { width: 382px}
+
 input#cal_end,
 input#cal_start,
+input.datepick-end,
+input.datepick-start,
 input#time_start,
 input#time_end {
 	width: 100px;
