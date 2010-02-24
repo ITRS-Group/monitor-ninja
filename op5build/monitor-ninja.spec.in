@@ -44,6 +44,7 @@ done
 ln -sfT /opt/monitor/op5/ninja /var/www/html/ninja
 sh /opt/monitor/op5/ninja/install_scripts/ninja_db_init.sh
 
+sh %prefix/op5/ninja/op5-upgradescripts/monitor-reports-db-upgrade.sh %prefix
 
 %files
 %defattr(-,monitor,apache)
