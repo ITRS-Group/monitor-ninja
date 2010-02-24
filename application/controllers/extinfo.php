@@ -1298,7 +1298,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (in_array($type, $types)) {
 			$downtime_type = array_search($type, $types);
 		} else {
-			$downtime_type = nagstat::ANY_DOWNTIME;
+			if (array_key_exists($type, $types)) {
+				$downtime_type = $type;
+			} else {
+				$downtime_type = nagstat::ANY_DOWNTIME;
+			}
 		}
 
 		$host_title_str = $this->translate->_('Scheduled Host Downtime');
