@@ -31,7 +31,7 @@ find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
 
 mkdir -p %buildroot%/etc/cron.d/
-install -m 644 install_scripts/scheduled_reports.crontab %buildroot%/etc/cron.d/scheduled-reports
+install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
 
 # executables
 for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
