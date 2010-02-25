@@ -709,7 +709,8 @@ class Histogram_Controller extends Authenticated_Controller
 		$service = arr::search($_REQUEST, 'service');
 		$report_type = empty($service) ? 'hosts' : 'services';
 		$breakdown = arr::search($_REQUEST, 'breakdown', 'hourly');
-		$link = empty($service) ? 'host_name[]='.$host_name : 'service_description[]='.$host_name.';'.$service;
+		$link = 'host_name[]='.$host_name;
+		$link .= !empty($service) ?'&service_description[]='.$service : '';
 
 		url::redirect(Router::$controller.'/generate?'.$link.'&report_type='.$report_type.'&breakdown='.$breakdown);
 	}
