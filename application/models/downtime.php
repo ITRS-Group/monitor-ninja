@@ -12,6 +12,7 @@ class Downtime_Model extends Model
 	public function get_downtime_data($filter=3, $order_by='downtime_id')
 	{
 		$db = new Database();
+		$filter = empty($filter) ? 3 : $filter;
 		$auth = new Nagios_auth_Model();
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
