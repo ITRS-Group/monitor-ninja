@@ -19,6 +19,7 @@
 		<!--<option value="extended_host_information"<?php echo $type == 'extended_host_information' ? ' selected="selected"' : '';?>><?php echo $t->_('Extended Host Information');?>
 		<option value="extended_service_information"<?php echo $type == 'extended_service_information' ? ' selected="selected"' : '';?>><?php echo $t->_('Extended Service Information');?>-->
 	</select>
+	<?php echo form::input(array('id' => 'filterbox', 'style' => 'color:grey'), $filter_string) ?>
 	</form>
 	<br /><br />
 	<table id="config_table">
