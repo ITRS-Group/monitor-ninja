@@ -39,6 +39,7 @@ class Command_Model extends Model
 			foreach ($ary as $k => $v) {
 				$ret_ary[$v] = $v;
 			}
+			ksort($ret_ary);
 			return $ret_ary;
 		}
 
