@@ -350,9 +350,9 @@ class Command_Controller extends Authenticated_Controller
 							? true
 							: false; # user isn't allowed to submit a command for this host
 					} else {
-						# no host_name specified, should not happen but we
-						# return false anyway to be on the safe side
-						$authorized = false;
+						# no host_name specified. This is probably because user hasn't selected
+						# the host yet. Return true to let user select from the drop-down list
+						$authorized = true;
 					}
 				}
 			}

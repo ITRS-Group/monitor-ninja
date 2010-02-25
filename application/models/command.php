@@ -86,9 +86,6 @@ class Command_Model extends Model
 	{
 		$host_name = isset($defaults['host_name']) ? $defaults['host_name'] : false;
 		$service = isset($defaults['service']) ? $defaults['service'] : false;
-		if (empty($host_name)) {
-			return false;
-		}
 
 		$translate = zend::instance('Registry')->get('Zend_Translate');
 		$na_str = $translate->_('N/A');
