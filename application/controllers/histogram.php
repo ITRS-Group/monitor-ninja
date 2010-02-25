@@ -309,17 +309,11 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->template->css_header->css = $this->xtra_css;
 		$rpt = new Reports_Model();
 
-		$options = $_REQUEST;
-		$used_options = array();
-		foreach ($valid_options as $opt) {
-			if (!empty($options[$opt])) {
-				if ($rpt->set_option($opt, $options[$opt]) !== false) {
-					$used_options[$opt] = $options[$opt];
-				}
-			}
-		}
-
 		$report_period = arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
+		if (empty($report_period)) {
+			$report_period = 'last24hours';
+			$_REQUEST['report_period'] = $report_period;
+		}
 		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
 		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
@@ -338,6 +332,16 @@ class Histogram_Controller extends Authenticated_Controller
 		$hostname			= false;
 		$servicegroup		= false;
 		$service			= false;
+
+		$options = $_REQUEST;
+		$used_options = array();
+		foreach ($valid_options as $opt) {
+			if (!empty($options[$opt])) {
+				if ($rpt->set_option($opt, $options[$opt]) !== false) {
+					$used_options[$opt] = $options[$opt];
+				}
+			}
+		}
 
 		$group_name = false;
 		$title = $t->_('Event history for ');
