@@ -1315,15 +1315,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		switch ($downtime_type) {
 			case nagstat::HOST_DOWNTIME:
 				$type_str = $types[$downtime_type];
-				$host_data = Downtime_Model::get_downtime_data('downtime_type DESC', $downtime_type);
+				$host_data = Downtime_Model::get_downtime_data($downtime_type, 'downtime_type DESC');
 				break;
 			case nagstat::SERVICE_DOWNTIME:
 				$type_str = $types[$downtime_type];
-				$service_data = Downtime_Model::get_downtime_data('downtime_type DESC', $downtime_type);
+				$service_data = Downtime_Model::get_downtime_data($downtime_type, 'downtime_type DESC');
 				break;
 			case nagstat::ANY_DOWNTIME:
-				$host_data = Downtime_Model::get_downtime_data('downtime_type DESC', nagstat::HOST_DOWNTIME);
-				$service_data = Downtime_Model::get_downtime_data('downtime_type DESC', nagstat::SERVICE_DOWNTIME);
+				$host_data = Downtime_Model::get_downtime_data(nagstat::HOST_DOWNTIME, 'downtime_type DESC');
+				$service_data = Downtime_Model::get_downtime_data(nagstat::SERVICE_DOWNTIME, 'downtime_type DESC');
 				break;
 		}
 		$this->template->content = $this->add_view('extinfo/scheduled_downtime');

@@ -9,7 +9,7 @@ class Downtime_Model extends Model
 	/**
 	*	Fetch current downtime information
 	*/
-	public function get_downtime_data($order_by='downtime_id', $filter=3)
+	public function get_downtime_data($filter=3, $order_by='downtime_id')
 	{
 		$db = new Database();
 		$auth = new Nagios_auth_Model();
