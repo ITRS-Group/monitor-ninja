@@ -1347,6 +1347,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->fixed = $this->translate->_('Fixed');
 		$content->flexible = $this->translate->_('Flexible');
 		$content->na_str = $this->translate->_('N/A');
+		$content->host_link_text = $this->translate->_('Schedule host downtime');
+		$content->service_link_text = $this->translate->_('Schedule service downtime');
+		$content->link_titlestring = $this->translate->_('Delete/Cancel This Scheduled Downtime Entry');
 		$content->date_format = nagstat::date_format();
 		$content->host_data = $host_data;
 		$content->host_title_str = $host_title_str;
