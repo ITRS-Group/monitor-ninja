@@ -92,7 +92,7 @@ class Command_Model extends Model
 		$na_str = $translate->_('N/A');
 		$options = false;
 		$options = array(0 => $na_str);
-		$downtime_data = Downtime_Model::get_downtime_data($host_name, $service);
+		$downtime_data = Downtime_Model::get_downtime_data();
 		if ($downtime_data !== false) {
 			foreach ($downtime_data as $data) {
 				if (strstr($command_name, 'HOST_DOWNTIME')) {
