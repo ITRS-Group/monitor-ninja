@@ -91,7 +91,7 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Unhandled problems') 		=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
 				//'hr5' 																				=> array('', ''),
 				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
-				$this->translate->_('Schedule downtime') 			=> array('underconstruction/schedule_downtime', 'scheduledowntime'),
+				$this->translate->_('Schedule downtime') 			=> array('extinfo/scheduled_downtime', 'scheduledowntime'),
 				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'processinfo'),
 				$this->translate->_('Performance info') 			=> array('extinfo/performance', 'performanceinfo'),
 				$this->translate->_('Scheduling queue') 			=> array('extinfo/scheduling_queue', 'schedulingqueue'),
