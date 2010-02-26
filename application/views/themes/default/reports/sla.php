@@ -19,7 +19,7 @@ foreach($report_data as $i =>  $report) {
 		<h1><?php echo $str_source; ?></h1>
 		<?php
 		if (!$create_pdf) { ?>
-		<img src="/ninja/index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
+		<img src="<?php echo Kohana::config('config.site_domain'); ?>index.php/reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
