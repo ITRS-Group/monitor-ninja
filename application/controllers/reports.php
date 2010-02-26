@@ -3169,7 +3169,10 @@ class Reports_Controller extends Authenticated_Controller
 		// ---------------------------------------------------------
 
 		if (PHP_SAPI == 'cli') {
-			$this->pdf_data['content'] = str_replace('/ninja/', '/opt/monitor/op5/ninja/', $this->pdf_data['content']);
+			$site = Kohana::config('config.site_domain');
+			$path = '/opt/monitor/op5/ninja';
+			$cont = $this->pdf_data['content'];
+			$this->pdf_data['content'] = str_replace($site, $path, $cont);
 		}
 
 		$images = array();
