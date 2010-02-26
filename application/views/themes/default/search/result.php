@@ -60,7 +60,7 @@ if (isset($host_result) ) { ?>
 				if (isset ($nacoma_link))
 					echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false)
-					echo (pnp::has_graph($host->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
+					echo (pnp::has_graph($host->host_name))  ? '<a href="' . Kohana::config('config.site_domain') . '/index.php/pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
 					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="_blank">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'), $this->translate->_('Perform extra host actions'));
@@ -117,7 +117,7 @@ if (isset($service_result) ) { ?>
 					echo nacoma::link('configuration/configure/service/'.$service->host_name.'?service='.urlencode($service->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					if (pnp::has_graph($service->host_name, urlencode($service->service_description)))
-						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
+						echo '<a href="' . Kohana::config('config.site_domain') . '/index.php/pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
 					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px">';
