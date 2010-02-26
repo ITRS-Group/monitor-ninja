@@ -169,9 +169,15 @@ then
 	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports.sql"
 	run_sql_file $db_login_opts $upgrade_script
 
-	# import old schedules
-	echo "Importing old scheduled reports"
-	/usr/bin/env php "$prefix/op5/ninja/op5-upgradescripts/import_schedules.php"
+	# check if old tables exists
+	old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
+
+	if [ "$old_sched_db_ver" = "" ]
+	then
+		# import old schedules if any
+		echo "Importing old scheduled reports"
+		/usr/bin/env php "$prefix/op5/ninja/op5-upgradescripts/import_schedules.php"
+	fi
 fi
 
 echo "Database upgrade complete."
