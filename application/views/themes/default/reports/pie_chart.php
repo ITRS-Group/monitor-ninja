@@ -7,11 +7,11 @@ if (isset($data_str)) {
 		<div class="pie-chart">
 			<table>
 				<tr><th class="headerNone left"><?php echo $label_status ?> <?php echo ($data_str[$i]['host'] != '') ? ': '.$data_str[$i]['host'] : ''; ?></th></tr>
-				<tr class="even"><td><img src="/ninja/index.php/reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" /></td></tr>
+				<tr class="even"><td><img src="<?echo Kohana::config('config.site_domain'); ?>index.php/reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" /></td></tr>
 			</table>
 		</div>
 		<?php
 		}
 	} else if(!empty($data_str)) { ?>
-		<img src="/ninja/index.php/reports/piechart/<?php echo $data_str ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" />
+		<img src="<?php echo Kohana::config('config.site_domain');?>index.php/reports/piechart/<?php echo $data_str ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" />
 <?php } } ?>
