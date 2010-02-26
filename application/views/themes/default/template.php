@@ -133,7 +133,7 @@ if (isset($this->template->js_header))
 							<em>'.substr(html::specialchars($header),0,1).'</em>
 						</li>'."\n";
 						foreach ($link as $title => $url):
-							if($url[0] == str_replace('/ninja/index.php/','',$_SERVER['PHP_SELF']).(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''))
+							if($url[0] == str_replace(Kohana::config('config.site_domain') . '/index.php/','',$_SERVER['PHP_SELF']).(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''))
 								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0].'#'.str_replace(' ','_',html::specialchars($title)), html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'<a name="'.str_replace(' ','_',html::specialchars($title)).'"></a></li>'."\n";
 							elseif($url[0] == '')
 								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
