@@ -49,8 +49,8 @@
 					if (isset($row['url_desc'])) {
 						if ($n == 4)
 							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
-						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
-									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
+							'" onclick="location.href=\'' . Kohana::config('config.site_domain') . '/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
 						echo '</th>';
 					}
@@ -141,7 +141,7 @@
 					echo nacoma::link('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					if (pnp::has_graph($row->host_name, urlencode($row->service_description)))
-						echo '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
+						echo '<a href="' . Kohana::config('config.site_domain') . '/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
 				}
 				if (!empty($row->action_url)) {
 					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px">';
