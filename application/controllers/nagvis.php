@@ -48,7 +48,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 			. $this->translate->_('View') . ' » ' . $map;
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('View') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
@@ -70,7 +71,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 		. $this->translate->_('Edit') . ' » ' . $map;
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Edit') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
@@ -118,8 +120,9 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 			. $this->translate->_('Automap');
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('Automap');
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » ' .
+			$this->translate->_('Automap');
 		$this->template->content = $this->add_view('nagvis/automap');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -138,7 +141,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 			. $this->translate->_('Geomap');
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Geomap');
 		$this->template->content = $this->add_view('nagvis/geomap');
 		$this->template->disable_refresh = true;
@@ -159,7 +163,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 			. $this->translate->_('Rotate') . ' » ' . $pool;
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Rotate') . ' » ' . $pool;
 		$this->template->content = $this->add_view('nagvis/rotate');
 		$this->template->content->pool = $pool;
@@ -182,7 +187,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
 			. $this->translate->_('Configure');
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
-			. '<a href="/ninja/index.php/nagvis/index">NagVis</a> » '
+			. '<a href="' . Kohana::config('config.site_domain') .
+			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Configure');
 		$this->template->content = $this->add_view('nagvis/configure');
 
