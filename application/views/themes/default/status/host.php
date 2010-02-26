@@ -49,8 +49,8 @@
 						if (isset($row['url_desc'])) {
 							if ($n == 3)
 								echo '<th class="no-sort">'.$t->_('Actions').'</th>';
-							echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))).'"
-										onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
+							echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
+								'" onclick="location.href=\'' . Kohana::config('config.site_domain') . '/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
 							echo ($row['title'] == 'Status' ? '' : $row['title']);
 							echo '</th>';
 						}
@@ -113,7 +113,7 @@ foreach ($result as $row) {
 						if (nacoma::link()===true)
 							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $t->_('Configure this host')).' &nbsp;';
 						if (Kohana::config('config.pnp4nagios_path')!==false)
-							echo (pnp::has_graph($row->host_name))  ? '<a href="/ninja/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
+							echo (pnp::has_graph($row->host_name))  ? '<a href="' . Kohana:config('config.site_domain') . '/index.php/pnp/?host='.urlencode($row->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="_blank">';
 							echo html::image($this->add_path('icons/16x16/host-actions.png'), $t->_('Perform extra host actions'));
