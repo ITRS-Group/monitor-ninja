@@ -11,8 +11,8 @@
 						echo '<th class="header'.
 						(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' :
 						(($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' :
-						(isset($row['url_desc']) ? '' : 'None'))).'"
-									onclick="location.href=\'/ninja/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
+						(isset($row['url_desc']) ? '' : 'None'))) .
+							'"onclick="location.href=\'' . Kohana::config('config.site_domain') . 'index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
 						echo $row['title'];
 						echo '</th>';
 					}
