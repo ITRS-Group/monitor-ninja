@@ -192,21 +192,12 @@ class Service_Model extends Model
 		}
 		$obj_ids = self::authorized_services();
 		$db = new Database();
-		if ($limit !== false) {
-			$obj_info = $db
-				->from('service')
-				->like($field, $value)
-				->in('id', $obj_ids)
-				->limit($limit)
-				->get();
-		} else {
-			$obj_info = $db
-				->from('service')
-				->like($field, $value)
-				->in('id', $obj_ids)
-				->get();
-		}
-		return $obj_info;
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$value = '%' . $value . '%';
+		$sql = "SELECT * FROM service WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
+		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$obj_info = $db->query($sql);
+		return count($obj_info) > 0 ? $obj_info : false;
 	}
 
 	/**
@@ -222,9 +213,9 @@ class Service_Model extends Model
 		$value = '%'.$value.'%';
 		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
 		"FROM `service` AS `s`, `host` AS `h` ".
-		"WHERE (`s`.`host_name` LIKE ".$this->db->escape($value).
-		" OR `s`.`service_description` LIKE ".$this->db->escape($value).
-		" OR `s`.`display_name` LIKE ".$this->db->escape($value).
+		"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
+		" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
+		" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value).")".
 		" AND s.host_name=h.host_name)".
 		" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` LIMIT ".$limit;
 		$obj_info = $this->db->query($sql);

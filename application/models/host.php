@@ -140,13 +140,12 @@ class Host_Model extends Model {
 		}
 		$auth_hosts = $this->auth->get_authorized_hosts();
 		$host_ids = array_keys($auth_hosts);
-		$host_info = $this->db
-			->from('host')
-			->like($field, $value)
-			->in('id', $host_ids)
-			->limit($limit)
-			->get();
-		return $host_info;
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$value = '%' . $value . '%';
+		$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$this->db->escape($value).") ".
+		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
+		$host_info = $this->db->query($sql);
+		return count($host_info)>0 ? $host_info : false;
 	}
 
 	/**
@@ -161,9 +160,9 @@ class Host_Model extends Model {
 			return false;
 		$value = '%'.$value.'%';
 		$host_ids = implode(',', $host_ids);
-		$sql = "SELECT DISTINCT * FROM `host` WHERE (`host_name` LIKE ".$this->db->escape($value).
-		" OR `alias` LIKE ".$this->db->escape($value)." OR `display_name` LIKE ".$this->db->escape($value).
-		" OR `address` LIKE ".$this->db->escape($value).") AND `id` IN (".$host_ids.") LIMIT ".$limit;
+		$sql = "SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($value).")".
+		" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($value).")".
+		" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") LIMIT ".$limit;
 		$host_info = $this->db->query($sql);
 		return $host_info;
 	}

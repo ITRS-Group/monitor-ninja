@@ -62,13 +62,12 @@ class Servicegroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$obj_info = $this->db
-			->from('servicegroup')
-			->like($field, $value)
-			->in('id', $obj_ids)
-			->limit($limit)
-			->get();
-		return $obj_info;
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$value = '%' . $value . '%';
+		$sql = "SELECT * FROM servicegroup WHERE LCASE(".$field.") LIKE LCASE(".$this->db->escape($value).") ".
+		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$obj_info = $this->db->query($sql);
+		return count($obj_info) > 0 ? $obj_info : false;
 	}
 
 	/**
@@ -86,8 +85,8 @@ class Servicegroup_Model extends ORM
 		$value = '%'.$value.'%';
 		$obj_ids = implode(',', $obj_ids);
 		$sql = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
-		"(`servicegroup_name` LIKE ".$this->db->escape($value)." OR ".
-		"`alias` LIKE ".$this->db->escape($value).") ".
+		"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
+		"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) ".
 		"AND `id` IN (".$obj_ids.") LIMIT ".$limit;
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
