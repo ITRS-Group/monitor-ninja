@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `avail_config` (
   `cluster_mode` INT NOT NULL DEFAULT 0,
   PRIMARY KEY  (`id`),
   KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS avail_config_objects (
   `id` int(11) NOT NULL auto_increment,
@@ -33,11 +33,11 @@ CREATE TABLE IF NOT EXISTS avail_config_objects (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY  (id),
   KEY avail_id (avail_id)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS avail_db_version (
   version int(11) NOT NULL default '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO avail_db_version VALUES(1);
 
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `scheduled_reports` (
   PRIMARY KEY  (`id`),
   KEY `report_type_id` (`report_type_id`),
   KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `scheduled_report_types` (
   `id` int(11) NOT NULL auto_increment,
@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS `scheduled_report_types` (
   `identifier` varchar(50) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `identifier` (`identifier`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 
 CREATE TABLE IF NOT EXISTS scheduled_reports_db_version (
   version varchar(10) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO scheduled_reports_db_version VALUES('1.0.0');
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `scheduled_report_periods` (
   `id` int(11) NOT NULL auto_increment,
   `periodname` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO `scheduled_report_periods` (`id`, `periodname`) VALUES
 (1, 'Weekly'),
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS sla_config (
  `use_alias` TINYINT(1) DEFAULT 0,
  `cluster_mode` INT NOT NULL DEFAULT 0,
  PRIMARY KEY  (id)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS sla_config_objects (
 `id` int(11) NOT NULL auto_increment,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS sla_config_objects (
 `name` varchar(255) NOT NULL,
 PRIMARY KEY  (id),
 KEY sla_id (sla_id)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS sla_periods (
 `id` int(11) NOT NULL auto_increment,
@@ -126,11 +126,11 @@ CREATE TABLE IF NOT EXISTS sla_periods (
 `value` float NOT NULL default '0',
 PRIMARY KEY  (id),
 KEY sla_id (sla_id)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS sla_db_version (
  version int(11) NOT NULL default '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO sla_db_version VALUES(1);
 

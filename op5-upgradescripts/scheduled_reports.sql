@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `scheduled_reports` (
   PRIMARY KEY  (`id`),
   KEY `report_type_id` (`report_type_id`),
   KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `scheduled_report_types` (
   `id` int(11) NOT NULL auto_increment,
@@ -20,12 +20,12 @@ CREATE TABLE IF NOT EXISTS `scheduled_report_types` (
   `identifier` varchar(50) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `identifier` (`identifier`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 
 CREATE TABLE IF NOT EXISTS scheduled_reports_db_version (
   version varchar(10) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO scheduled_reports_db_version VALUES('5');
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `scheduled_report_periods` (
   `id` int(11) NOT NULL auto_increment,
   `periodname` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1_general_cs;
+) COLLATE latin1_general_cs;
 
 INSERT INTO `scheduled_report_periods` (`id`, `periodname`) VALUES
 (1, 'Weekly'),
