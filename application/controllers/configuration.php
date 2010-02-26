@@ -54,6 +54,9 @@ class Configuration_Controller extends Authenticated_Controller {
 				$target_link = 'edit.php?obj_type='.$type.'&'.$type.'='.$name;
 			}
 		}
+
+		# set the username so Nacoma can pick it up
+		$_SESSION['nacoma_user'] = user::session('username');
 		$this->template->disable_refresh = true;
 		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Configuration » Configure');
