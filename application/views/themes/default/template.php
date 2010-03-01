@@ -1,4 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
+	$ninja_menu_state = $ninja_menu_setting->setting;
+} else {
+	$ninja_menu_state = 'show';
+}
 if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 
@@ -55,6 +61,7 @@ if (isset($this->template->js_header))
 				var _page_refresh_msg = '<?php echo $this->translate->_('Updated page refresh rate to %s seconds'); ?>';
 				var _success_header = '<?php echo $this->translate->_('Success'); ?>';
 				var _error_header = '<?php echo $this->translate->_('ERROR'); ?>';
+				var _ninja_menu_state = '<?php echo $ninja_menu_state ?>';
 				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false, true) ?>';
 				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false, true) ?>';
 				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false, true) ?>';

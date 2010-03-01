@@ -5,6 +5,7 @@ var current_interval = 0;
 var edit_visible = 0;
 
 $(document).ready(function() {
+	collapse_menu(_ninja_menu_state);
 	/**
 	*	Show the checkbox to show/hide "page header" if
 	*	we find the content-header div in the current page
