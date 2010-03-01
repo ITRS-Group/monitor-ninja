@@ -44,6 +44,7 @@ class Tac_Controller extends Authenticated_Controller {
 		$this->model->analyze_status_data();
 
 		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $this->model);
+		$widget_order = Ninja_widget_Model::fetch_widget_order(Router::$controller.'/'.Router::$method);
 
 		if (!empty($widget_info)) {
 			$settings_widgets = $widget_info['settings_widgets'];
@@ -56,13 +57,16 @@ class Tac_Controller extends Authenticated_Controller {
 			foreach ($widget_list as $widget_name) {
 				widget::add($widget_name, $settings[$widget_name], $this);
 			}
+
 			$this->template->settings_widgets = $settings_widgets;
 			$this->template->user_widgets = $user_widgets;
+			$this->template->content->widget_settings = $settings;
 		}
 
 		# add the inline javascript to master template header
 		$this->template->inline_js = $this->inline_js;
 
+		$this->template->content->widget_order = $widget_order;
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;

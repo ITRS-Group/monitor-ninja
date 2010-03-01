@@ -312,4 +312,29 @@ class Ninja_widget_Model extends ORM
 		}
 		return false;
 	}
+
+	/**
+	*	Parse the widget order for use on a page
+	*/
+	public function fetch_widget_order($page=false)
+	{
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		$widget_parts = $data->setting;
+		$widget_order = false;
+		if (!empty($widget_parts)) {
+			$widget_parts = explode('|', $widget_parts);
+			if (!empty($widget_parts)) {
+				foreach ($widget_parts as $part) {
+					$parts = explode('=', $part);
+					if (is_array($parts) && !empty($parts)) {
+						$widget_sublist = explode(',', $parts[1]);
+						if (is_array($widget_sublist) && !empty($widget_sublist)) {
+							$widget_order[$parts[0]] = $widget_sublist;
+						}
+					}
+				}
+			}
+		}
+		return $widget_order;
+	}
 }
