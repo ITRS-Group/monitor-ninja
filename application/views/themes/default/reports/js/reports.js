@@ -65,6 +65,11 @@ $(document).ready(function() {
 
 	disable_sla_fields($('#report_period').attr('value'));
 
+	$("#report_form").bind('submit', function() {
+		loopElements();
+		return check_form_values();
+	});
+
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
 	});
