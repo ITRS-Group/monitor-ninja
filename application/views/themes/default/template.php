@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+if (Auth::instance()->logged_in()) {
+	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+}
 if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 	$ninja_menu_state = $ninja_menu_setting->setting;
 } else {
