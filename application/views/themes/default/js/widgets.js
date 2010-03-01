@@ -43,7 +43,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-	$("#widget-placeholder").bind('click', function() {
+	$(".widget-place").bind('click', function() {
 		$("#page_settings").hide();
 	});
 });
