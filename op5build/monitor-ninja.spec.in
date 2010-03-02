@@ -27,6 +27,9 @@ mkdir -p -m 755 %buildroot%prefix/op5/ninja
 cp -r * %buildroot%prefix/op5/ninja
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
+sed -i 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
+	%buildroot%prefix/op5/ninja/application/config/config.inc.php
+
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
 
@@ -42,6 +45,8 @@ for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 	chmod 755 %buildroot%prefix/op5/ninja/$f
 done
 
+# recursive symbolic link, so must be after all 'find' stuff above
+ln -s ../ %buildroot%prefix/op5/ninja/op5
 
 %post
 ln -sfT /opt/monitor/op5/ninja /var/www/html/ninja

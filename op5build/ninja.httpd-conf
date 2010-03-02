@@ -2,7 +2,7 @@
 	LoadModule alias_module modules/mod_alias.so
 </IfModule>
 
-Alias /ninja /opt/monitor/op5/ninja-gui
+Alias /monitor /opt/monitor/op5/ninja-gui
 <Directory "/opt/monitor/op5/ninja-gui">
 	Order allow,deny
 	Allow from all
