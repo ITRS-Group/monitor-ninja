@@ -1218,4 +1218,22 @@ class Trends_Controller extends Authenticated_Controller {
 		}
 		return strtolower(Current_status_Model::status_text($state, $type));
 	}
+
+	/**
+	*	Accept direct link from extinfo and redirect
+	*/
+	public function host($host_name=false)
+	{
+		$host_name = arr::search($_REQUEST, 'host_name', $host_name);
+		if (empty($host_name)) {
+			die($this->translate->_('ERROR: No host name found'));
+		}
+		$service = arr::search($_REQUEST, 'service');
+		$report_type = empty($service) ? 'hosts' : 'services';
+		$breakdown = arr::search($_REQUEST, 'breakdown', 'hourly');
+		$link = 'host_name[]='.$host_name;
+		$link .= !empty($service) ?'&service_description[]='.$service : '';
+
+		url::redirect(Router::$controller.'/generate?'.$link.'&report_type='.$report_type);
+	}
 }
