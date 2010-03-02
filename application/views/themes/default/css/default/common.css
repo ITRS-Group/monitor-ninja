@@ -467,9 +467,9 @@ select {
 #page_links ul {
 	margin: 0px;
 	padding: 0px;
-	width: 99%;
+	width: 100%;
 	background: #f4f4f4 url(images/bg.png) repeat-x;
-	padding: 9px 7px 8px 7px;
+	padding: 9px 0px 8px 0px;
 	border-bottom: 1px solid #dcdcdc;
 }
 #page_links ul li {
@@ -477,6 +477,7 @@ select {
 	display: inline;
 	margin: 0px;
 	padding: 0px 4px;
+	padding: 0px 7px 0px 7px;
 }
 /* pagination *************************************************************************************/
 #content p.pagination {
