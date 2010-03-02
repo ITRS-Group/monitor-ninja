@@ -7,7 +7,7 @@ if (!$info) {
 	return;
 }
 
-echo "<p><strong>$brief</strong></p>\n";
+echo "<h2>$brief</h2>\n";
 echo "<p style=\"width: 550px\">$description</p>\n";
 echo form::open('command/commit', array('id' => 'command_form'));
 
@@ -22,7 +22,7 @@ foreach ($params as $pname => $ary) {
 	}
 }
 
-echo "<table>\n";
+echo "<table style=\"margin-top: 15px\">\n";
 echo '<tr><th colspan="'.($use_help ? 2 : 1).'" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
@@ -74,6 +74,6 @@ foreach ($params as $pname => $ary) {
 echo "</table><br />\n";
 echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
-echo "<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+echo " &nbsp;<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
 echo form::close();
 echo '</div>';
