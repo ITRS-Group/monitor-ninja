@@ -63,7 +63,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		<?php £i = 0; foreach ($service_data as $row) { $i++; ?>
+		<?php $i = 0; foreach ($service_data as $row) { $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
