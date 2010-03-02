@@ -33,4 +33,4 @@ function filter_table (phrase, _id){
 		}
 		table.rows[r].style.display = displayStyle;
 	}
-}
+};
