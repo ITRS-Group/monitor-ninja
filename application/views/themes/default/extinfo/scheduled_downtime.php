@@ -1,30 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<br />
 <div class="widget left w98">
-	<h1><?php echo $title ?></h1>
+	<h2><?php echo $title ?></h2>
 
 	<?php if (!empty($host_data)) { ?>
 
-	<h1><?php echo $host_title_str ?></h1>
 	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$host_link_text) ?>
 	<table id="scheduled_host_downtime">
+		<caption><?php echo $host_title_str ?></caption>
 		<thead>
 			<tr>
-				<th><?php echo $label_host_name ?></th>
-				<th><?php echo $label_entry_time ?></th>
-				<th><?php echo $label_author ?></th>
-				<th><?php echo $label_comment ?></th>
-				<th><?php echo $label_start_time ?></th>
-				<th><?php echo $label_end_time ?></th>
-				<th><?php echo $label_type ?></th>
-				<th><?php echo $label_duration ?></th>
-				<th><?php echo $label_trigger_id ?></th>
-				<th><?php echo $label_actions ?></th>
+				<th class="headerNone"><?php echo $label_host_name ?></th>
+				<th class="headerNone"><?php echo $label_entry_time ?></th>
+				<th class="headerNone"><?php echo $label_author ?></th>
+				<th class="headerNone"><?php echo $label_comment ?></th>
+				<th class="headerNone"><?php echo $label_start_time ?></th>
+				<th class="headerNone"><?php echo $label_end_time ?></th>
+				<th class="headerNone"><?php echo $label_type ?></th>
+				<th class="headerNone"><?php echo $label_duration ?></th>
+				<th class="headerNone"><?php echo $label_trigger_id ?></th>
+				<th class="headerNone"><?php echo $label_actions ?></th>
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach ($host_data as $row) { ?>
-		<tr>
+		<?php $i=0; foreach ($host_data as $row) { $i++; ?>
+		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
 			<td><?php echo $row->author_name ?></td>
@@ -45,27 +44,27 @@
 	<?php }
 
 	if (!empty($service_data)) { ?>
-	<h1><?php echo $service_title_str ?></h1>
 	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$service_link_text) ?>
 	<table id="scheduled_service_downtime">
+		<caption><?php echo $service_title_str ?></caption>
 		<thead>
 			<tr>
-				<th><?php echo $label_host_name ?></th>
-				<th><?php echo $label_service ?></th>
-				<th><?php echo $label_entry_time ?></th>
-				<th><?php echo $label_author ?></th>
-				<th><?php echo $label_comment ?></th>
-				<th><?php echo $label_start_time ?></th>
-				<th><?php echo $label_end_time ?></th>
-				<th><?php echo $label_type ?></th>
-				<th><?php echo $label_duration ?></th>
-				<th><?php echo $label_trigger_id ?></th>
-				<th><?php echo $label_actions ?></th>
+				<th class="headerNone"><?php echo $label_host_name ?></th>
+				<th class="headerNone"><?php echo $label_service ?></th>
+				<th class="headerNone"><?php echo $label_entry_time ?></th>
+				<th class="headerNone"><?php echo $label_author ?></th>
+				<th class="headerNone"><?php echo $label_comment ?></th>
+				<th class="headerNone"><?php echo $label_start_time ?></th>
+				<th class="headerNone"><?php echo $label_end_time ?></th>
+				<th class="headerNone"><?php echo $label_type ?></th>
+				<th class="headerNone"><?php echo $label_duration ?></th>
+				<th class="headerNone"><?php echo $label_trigger_id ?></th>
+				<th class="headerNone"><?php echo $label_actions ?></th>
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach ($service_data as $row) { ?>
-		<tr>
+		<?php £i = 0; foreach ($service_data as $row) { $i++; ?>
+		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
