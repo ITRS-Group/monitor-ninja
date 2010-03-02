@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-	<div class="widget left w98"><h1><?php echo $title ?></h1></div>
+	<div class="widget left w98"><h2><?php echo $title ?></h2></div>
 
 	<div class="widget left w49">
 		<strong><?php echo $label_svc_actively_checked ?></strong>
