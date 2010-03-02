@@ -722,6 +722,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->schedule_id 	= $schedule_id;
 
+		# handle direct link from other page
+		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
+			$_REQUEST['report_period'] 			= 'last24hours';
+			$_REQUEST['assumeinitialstates'] 	= 1;
+		}
+
 		# Handle call from cron or GUI to generate PDF report and send by email
 		#
 		# NOTE:

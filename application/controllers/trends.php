@@ -462,6 +462,12 @@ class Trends_Controller extends Authenticated_Controller {
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
 
+		# handle direct link from other page
+		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
+			$_REQUEST['report_period'] 			= 'last24hours';
+			$_REQUEST['assumeinitialstates'] 	= 1;
+		}
+
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
