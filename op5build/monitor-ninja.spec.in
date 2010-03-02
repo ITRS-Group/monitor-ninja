@@ -28,7 +28,7 @@ cp -r * %buildroot%prefix/op5/ninja
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
 sed -i 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
-	%buildroot%prefix/op5/ninja/application/config/config.inc.php
+	%buildroot%prefix/op5/ninja/application/config/config.php
 
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
