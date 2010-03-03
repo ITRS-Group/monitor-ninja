@@ -37,9 +37,6 @@ find %buildroot -type d -print0 | xargs -0 chmod a+x
 mkdir -p %buildroot/etc/cron.d/
 install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
 
-mkdir -p %buildroot/etc/op5-backup/modules
-install -m 644 op5build/ninja.backup %buildroot/etc/op5-backup/modules/ninja
-
 # executables
 for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 		install_scripts/ninja_db_init.sh; do
@@ -59,7 +56,6 @@ sh %prefix/op5/ninja/op5-upgradescripts/monitor-reports-db-upgrade.sh %prefix
 %defattr(-,monitor,apache)
 /opt/monitor/op5/ninja
 /etc/cron.d/scheduled-reports
-/etc/op5-backup/modules/ninja
 /var/www/html/monitor
 
 %clean
