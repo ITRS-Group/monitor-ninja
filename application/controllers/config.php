@@ -338,8 +338,8 @@ class Config_Controller extends Authenticated_Controller {
 						}
 					$result[$i][]= implode(', ',$h_tmp);
 
-					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->service_notification_period, $row->service_notification_period == 0 ? $t->_('None') : $row->service_notification_period);
-					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->host_notification_period, $row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period), $row->service_notification_period == 0 ? $t->_('None') : $row->service_notification_period);
+					$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.($row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period), $row->host_notification_period == 0 ? $t->_('None') : $row->host_notification_period);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->service_notification_commands, $row->service_notification_commands);
 					$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->host_notification_commands, $row->host_notification_commands);
 					// retention options
