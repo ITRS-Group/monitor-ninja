@@ -17,7 +17,7 @@
 			echo $no_access_msg;
 	 	} else { ?>
 		<table class="w-table">
-			<?php if (count($total_blocking_outages) > 0) { ?>
+			<?php if ($total_blocking_outages > 0) { ?>
 			<tr>
 				<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-critical.png'), array('alt' => $label)) ?></td>
 				<td><?php echo html::anchor('outages/index/', html::specialchars($total_blocking_outages.' '.$label)); ?></td>
