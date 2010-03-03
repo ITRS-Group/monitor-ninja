@@ -10,6 +10,7 @@ Group: op5/Monitor
 Prefix: /opt/monitor
 Requires: monitor-gui-core
 Requires: merlin, monitor-reports-module >= 2.0.6
+Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
 %description
 Webgui for Nagios 3.
@@ -45,11 +46,11 @@ for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 	chmod 755 %buildroot%prefix/op5/ninja/$f
 done
 
+ln -sfT /opt/monitor/op5/ninja %buildroot/var/www/html/monitor
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ %buildroot%prefix/op5/ninja/op5
 
 %post
-ln -sfT /opt/monitor/op5/ninja /var/www/html/ninja
 sh /opt/monitor/op5/ninja/install_scripts/ninja_db_init.sh
 
 sh %prefix/op5/ninja/op5-upgradescripts/monitor-reports-db-upgrade.sh %prefix
@@ -59,6 +60,7 @@ sh %prefix/op5/ninja/op5-upgradescripts/monitor-reports-db-upgrade.sh %prefix
 /opt/monitor/op5/ninja
 /etc/cron.d/scheduled-reports
 /etc/op5-backup/modules/ninja
+/var/www/html/monitor
 
 %clean
 rm -rf %buildroot
