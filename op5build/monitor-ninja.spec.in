@@ -43,6 +43,7 @@ for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 	chmod 755 %buildroot%prefix/op5/ninja/$f
 done
 
+mkdir -p %buildroot/var/www/html
 ln -sfT /opt/monitor/op5/ninja %buildroot/var/www/html/monitor
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ %buildroot%prefix/op5/ninja/op5
