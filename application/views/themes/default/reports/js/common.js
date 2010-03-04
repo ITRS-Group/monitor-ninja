@@ -135,13 +135,14 @@ function init_datepicker()
 }
 
 function show_hide(id,h1) {
-	if (document.getElementById(id).style.display == 'none') {
-		document.getElementById(id).style.display = '';
-		h1.style.background = 'url(icons/arrows/grey-down.gif) 7px 7px no-repeat';
-	}
-	else {
-		document.getElementById(id).style.display = 'none';
-		h1.style.background = 'url(icons/arrows/grey.gif) 11px 3px no-repeat';
+	if ($('#' + id) && !$('#' + id).is(':visible')) {
+		$('#' + id)
+		.show()
+		.css('background', 'url(icons/arrows/grey-down.gif) 7px 7px no-repeat');
+	} else {
+		$('#' + id)
+		.hide()
+		.css('background', 'url(icons/arrows/grey.gif) 11px 3px no-repeat');
 	}
 }
 
