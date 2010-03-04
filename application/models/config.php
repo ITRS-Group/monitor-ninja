@@ -64,9 +64,9 @@ class Config_Model extends Model {
 									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled,
 									cg.contactgroup_name, retain_status_information, retain_nonstatus_information
 									FROM service, service_contactgroup as sc, contactgroup as cg
-									WHERE service.id = sc.contactgroup AND sc.contactgroup = cg.id
+									WHERE service.id = sc.service AND sc.contactgroup = cg.id
 									ORDER BY host_name, service_description";
-									/* Failure Prediction Options,Retention Options*/
+									/* Failure Prediction Options*/
 				break;
 
 				case 'contacts':
