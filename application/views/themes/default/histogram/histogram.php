@@ -8,6 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
+<div class="widget w98 left">
 <h1><?php echo $title ?></h1>
 <p style="margin-top: -15px"><?php echo $report_time ?></p>
 
@@ -45,3 +46,4 @@ if (!empty($widgets)) {
 		<td></td>
 	</tr>
 </table>
+</div>
