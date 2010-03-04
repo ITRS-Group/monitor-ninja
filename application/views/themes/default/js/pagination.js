@@ -23,6 +23,14 @@ $(document).ready(function() {
 
 function set_items_per_page()
 {
+	// make sure we don't loose GET variables from current query string
+	if ($.query.keys) {
+		for (var key in $.query.keys) {
+			if (key != 'items_per_page' && key!= 'custom_pagination_field') {
+				$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + $.query.keys[key] + '">');
+			}
+		}
+	}
 	// submit form
 	$('.pagination_form').trigger('submit');
 }
