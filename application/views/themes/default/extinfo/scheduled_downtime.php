@@ -2,9 +2,9 @@
 <div class="widget left w98">
 	<h2><?php echo $title ?></h2>
 
+	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$host_link_text) ?><br />
 	<?php if (!empty($host_data)) { ?>
 
-	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$host_link_text) ?>
 	<table id="scheduled_host_downtime">
 		<caption><?php echo $host_title_str ?></caption>
 		<thead>
@@ -43,8 +43,9 @@
 
 	<?php }
 
+	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$service_link_text)."<br />";
+
 	if (!empty($service_data)) { ?>
-	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/downtime.png')).' '.$service_link_text) ?>
 	<table id="scheduled_service_downtime">
 		<caption><?php echo $service_title_str ?></caption>
 		<thead>
