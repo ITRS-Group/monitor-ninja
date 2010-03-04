@@ -257,6 +257,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+		$this->template->title = $this->translate->_("Reporting » Alert summary » Setup");
 	}
 
 	/**
@@ -476,6 +477,7 @@ class Summary_Controller extends Authenticated_Controller
 		$content->options = $used_options;
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
+		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
 	}
 
 	/**

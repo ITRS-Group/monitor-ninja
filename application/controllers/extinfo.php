@@ -1357,6 +1357,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$content->service_data = $service_data;
 		$content->service_title_str = $service_title_str;
+		$this->template->title = $this->translate->_("Monitoring » Scheduled downtime");
 
 	}
 }
