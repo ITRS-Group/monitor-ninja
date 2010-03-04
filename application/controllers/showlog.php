@@ -65,7 +65,7 @@ class Showlog_Controller extends Authenticated_Controller
 	public function showlog($host = false)
 	{
 		$x = $this->translate;
-		$this->template->title = $this->translate->_("View log");
+		$this->template->title = $this->translate->_("Reporting » Alert history");
 		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->template->js_header = $this->add_view('js_header');

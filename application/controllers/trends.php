@@ -447,7 +447,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
 		$this->template->js_strings = $this->js_strings;
-
+		$this->template->title = $this->translate->_('Reporting » Trends » Setup');
 	}
 
 	/**
@@ -1088,6 +1088,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+		$this->template->title = $this->translate->_('Reporting » Trends » Report');
 	}
 
 	/**

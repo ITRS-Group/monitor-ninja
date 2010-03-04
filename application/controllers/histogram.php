@@ -241,6 +241,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+		$this->template->title = $this->translate->_('Reporting » Histogram » Setup');
 	}
 
 	/**
@@ -609,7 +610,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$tpl_options->end_time = date('H:i', $rpt->end_time);
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
-
+		$this->template->title = $this->translate->_('Reporting » Histogram » Report');
 	}
 
 	/**
