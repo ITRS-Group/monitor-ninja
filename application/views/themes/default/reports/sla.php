@@ -53,7 +53,7 @@ foreach($report_data as $i =>  $report) {
 					$j = 0;
 					foreach ($data as $month => $value) {
 						$j++; ?>
-					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo $this->_format_report_value($value[0][1]) ?> %</td>
+					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo reports::format_report_value($value[0][1]) ?> %</td>
 					<?php
 					} ?>
 				</tr>
@@ -63,7 +63,7 @@ foreach($report_data as $i =>  $report) {
 					foreach ($data as $month => $value) {
 						$i++;?>
 					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
-						<?php echo $this->_format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
+						<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 								array(
 								//'alt' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
 								//'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
