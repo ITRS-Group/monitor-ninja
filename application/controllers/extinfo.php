@@ -491,10 +491,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
 					 $label_host_status_details => 'status/service/'.$host,
-					 $label_host_alert_history => 'history/host/'.$host,
+					 $label_host_alert_history => 'showlog/showlog/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
-					 $label_host_avail => 'reporting/availability/'.$type.'/'.$host,
+					 $label_host_avail => 'reports/generate/?type=avail&host_name[]='.$host,
 					 $label_host_notifications => '/notifications/host/'.$host
 				);
 				break;
@@ -510,10 +510,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					$label_host_info => 'extinfo/details/host/'.$host,
 					$label_host_detail => 'status/service/'.$host,
-					$label_service_alert_history => 'history/host/'.$host.'?service='.urlencode($service),
+					$label_service_alert_history => 'showlog/showlog/'.$host.'?service='.urlencode($service),
 					$label_service_trends => 'trends/host/'.$host.'?service='.urlencode($service),
 					$label_service_histogram => 'histogram/host/'.$host.'?service='.urlencode($service),
-					$label_service_avail => 'reporting/availability/host/'.$host.'?service='.urlencode($service),
+					$label_service_avail => 'reports/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					$label_service_notifications => '/notifications/host/'.$host.'?service='.urlencode($service)
 				);
 
@@ -919,7 +919,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
-					$label_avail => 'reporting/availability/'.$grouptype.'/'.$group,
+					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
 			case 'hostgroup':
@@ -932,7 +932,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
-					$label_avail => 'reporting/availability/'.$grouptype.'/'.$group,
+					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
 		}

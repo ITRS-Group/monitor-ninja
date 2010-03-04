@@ -187,13 +187,11 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_history = $this->translate->_('History');
 				$label_host_notifications = $this->translate->_('Notifications');
 				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
-				$label_host_alert_history = $this->translate->_('Alert history');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_history => 'history/host/'.$host,
+					 $label_host_alert_history => 'showlog/showlog/'.$host,
 					 $label_host_notifications => 'notifications/host/'.$host,
-					 $label_host_status_details => Router::$controller.'/service/all',
-					 $label_host_alert_history => 'showlog/showlog/'.$host
+					 $label_host_status_details => Router::$controller.'/service/all'
 				);
 			}
 		} else {
@@ -404,7 +402,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_status_details = $this->translate->_('Host status detail');
 				$label_view_for = $this->translate->_('for all hosts');
 				$page_links = array(
-					 $label_host_history => 'history/host/'.$name,
+					 $label_host_history => 'showlog/showlog/',
 					 $label_host_notifications => 'notifications/host/'.$name,
 					 $label_host_status_details => Router::$controller.'/host/all'
 				);
@@ -412,13 +410,11 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_history = $this->translate->_('History');
 				$label_host_notifications = $this->translate->_('Notifications');
 				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
-				$label_host_alert_history = $this->translate->_('Alert history');
-				$label_view_for = $this->translate->_('for all this host');
+				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_history => 'history/host/'.$name,
+					 $label_host_history => 'showlog/showlog/'.$name,
 					 $label_host_notifications => 'notifications/host/'.$name,
 					 $label_host_status_details => Router::$controller.'/service/all',
-					 $label_host_alert_history => 'showlog/showlog/'.$name
 				);
 			}
 		} else {
@@ -441,7 +437,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_overview = $this->translate->_('Status overview');
 					$label_group_status_summary = $this->translate->_('Status summary');
 					$label_group_status_grid = $this->translate->_('Status grid');
-					$label_view_for = $this->translate->_('for this host groups');
+					$label_view_for = $this->translate->_('for this host group');
 					$page_links = array(
 						$label_group_status_details_all => Router::$controller.'/'.$group_type.'/all?style=detail',
 						$label_group_status_details => Router::$controller.'/host/'.$name.'?group_type='.$group_type,
