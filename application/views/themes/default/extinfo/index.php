@@ -42,7 +42,7 @@ if (!empty($widgets)) {
 			}
 		?>
 		<tr>
-			<td class="white" style="width: 80px"><strong><?php echo $this->translate->_('IP address');?></strong></td>
+			<td class="white" style="width: 80px"><strong><?php echo $this->translate->_('Address');?></strong></td>
 			<td class="white"><?php echo isset($host_address) ? $host_address : ''; ?></td>
 		</tr>
 		<?php if ($parents !== false && count($parents)) { ?>
