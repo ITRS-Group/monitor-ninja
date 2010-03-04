@@ -114,7 +114,7 @@
 		</td>
 
 		<td style="white-space: normal">
-			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, html::specialchars($row->service_description)) ?></span>
+			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
 			<span style="float: right">
 			<?php
 				if ($row->problem_has_been_acknowledged) {
