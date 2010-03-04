@@ -1014,7 +1014,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		$comments->pagination = $pagination;
-		$this->template->title = $this->translate->_(sprintf('Monitoring » %s Comments', $type));
+		$this->template->title = $this->translate->_(sprintf('Monitoring » %s information', ucfirst($type)));
 		return $this->template->content->comments->render();
 	}
 
