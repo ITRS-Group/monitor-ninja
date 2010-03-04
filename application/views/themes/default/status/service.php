@@ -36,7 +36,7 @@
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <table style="margin-bottom: 10px" id="service_table">
-<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
+<caption style="margin-top: 0px"><?php echo $sub_title ?></caption>
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
