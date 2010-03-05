@@ -300,21 +300,62 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Check if user is authorized for the selected command
-	*/
-	public function _is_authorized_for_command($params = false, $cmd_typ = false)
+	 * Check if user is authorized for the selected command
+	 * http://nagios.sourceforge.net/docs/3_0/configcgi.html controls
+	 * the correctness of this method
+	 */
+	public function _is_authorized_for_command($params = false, $cmd = false)
 	{
+		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;
 
-		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : false;
-
-		if ( empty($params) || ( empty($cmd) && empty($cmd_typ) ) ) {
+		if (empty($cmd)) {
 			return false;
 		}
 
-		$authorized = false;
+		# first see if this is a contact and, if so, if that contact
+		# is allowed to submit commands. If it isn't, we can bail out
+		# early.
+		$contact = Contact_Model::get_contact();
+		if (!empty($contact)) {
+			$contact = $contact->current();
+			if (!$contact->can_submit_commands) {
+				return false;
+			}
+		}
+
+		# second we check if this contact is allowed to submit
+		# the type of command we're looking at and, if so, if
+		# we can bypass fetching all the objects we're authorized
+		# to see
 		$auth = new Nagios_auth_Model();
-		$auth->get_authorized_hosts_r();
-		$auth->get_authorized_services_r();
+		if (!strstr($cmd, '_HOST_')) {
+			if ($auth->command_hosts_root) {
+				return true;
+			}
+			if (!$auth->authorized_for_host_commands) {
+				return false;
+			}
+		} elseif (!strstr($cmd, '_SVC_')) {
+			if ($auth->command_services_root) {
+				return true;
+			}
+			if (!$auth->authorized_for_service_commands) {
+				return false;
+			}
+		} else {
+			# must be a system command
+			if ($auth->authorized_for_system_commands) {
+				return true;
+			}
+
+			return false;
+		}
+
+		# not authorized from cgi.cfg, and not a configured contact,
+		# so bail out early
+		if (empty($contact))
+			return false;
+
 		$service = isset($params['service']) ? $params['service'] : false;
 		$host_name = isset($params['host_name']) ? $params['host_name'] : false;
 		if (strstr($service, ';')) {
@@ -326,61 +367,30 @@ class Command_Controller extends Authenticated_Controller
 			}
 		}
 
-		$contact_data = Contact_Model::get_contact();
-		if (!empty($contact_data)) {
-			$contact_data = $contact_data->current();
+		# FIXME handle host/servicegroup commands as well
+
+		# neither host_name nor service description. Either the user
+		# hasn't filled out the form yet, or this regards hostgroups
+		# or servicegroups
+		if (!$service && !$host_name) {
+			return true;
 		}
 
-		# authorized contacts
-		if (!empty($contact_data)) {
-			# if it is an authenticated contact, the can_submit_commands
-			# will decide if the user can submit commands or not
-			if (!$contact_data->can_submit_commands) {
-				$authorized = false;
-			} else {
-				# check that the user is allowed to submit
-				# command for selected object
-				if (!empty($service)) {
-					$authorized = array_key_exists($host_name.';'.$service, $auth->services_r)
-						? true # service command ok
-						: false; # user isn't allowed to submit command for this command
-				} else {
-					if (!empty($host_name)) {
-						$authorized = array_key_exists($host_name, $auth->hosts_r)
-							? true
-							: false; # user isn't allowed to submit a command for this host
-					} else {
-						# no host_name specified. This is probably because user hasn't selected
-						# the host yet. Return true to let user select from the drop-down list
-						$authorized = true;
-					}
-				}
-			}
-		} else {
-			# authorization defined in cgi.cfg
-			if ($auth->authorized_for_system_commands) {
-				# authorized for all commands
-				$authorized = true;
-			} else {
-				if (strstr($cmd, '_SVC_')) {
-					# authorized for this service command?
-					if ($auth->authorized_for_service_commands) {
-						# check if authorized for service_commands
-						if (!empty($service) && !empty($host_name)
-							&& array_key_exists($host_name.';'.$service, $auth->services_r)) {
-								$authorized = true;
-						}
-					}
-				} elseif (strstr($cmd, '_HOST_')) {
-					# authorized for this host command
-					if ($auth->authorized_for_host_commands) {
-						if (!empty($host_name) && array_key_exists($host_name, $auth->hosts_r)) {
-								$authorized = true;
-						}
-					}
-				}
+		# if the user isn't specifically configured for the service, he/she
+		# can still submit commands for it if he/she is a contact for the host
+		if ($service) {
+			$auth->get_authorized_services_r();
+			if (isset($auth->services_r[$host_name . ';' . $service])) {
+				return true;
 			}
 		}
-		return $authorized;
+
+		if ($host_name) {
+			$auth->get_authorized_hosts_r();
+			if (isset($auth->hosts_r[$host_name])) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
