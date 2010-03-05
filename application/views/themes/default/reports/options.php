@@ -13,14 +13,13 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 ?>
 
 <div id="options">
-<?php	echo form::open('reports/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));
-		# @@@FIXME: onsubmit="return check_form_update_values(this);" ?>
-			<h1><?php //echo help::render('report_settings_sml') ?> <?php echo $label_settings ?></h1>
+<?php	echo form::open('reports/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));?>
+			<h1><?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
 					<td>
 						<input type="hidden" name="new_report_setup" value="1" />
-						<?php //echo help::render('reporting_period');?> <?php echo $label_report_period ?><br />
+						<?php echo $label_report_period ?><br />
 						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $report_periods, $selected); ?>
 					</td>
 				</tr>
@@ -39,20 +38,17 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo help::render('schedule_downtime'); ?>
 						<input type="checkbox" value="1" class="checkbox" id="count" name="scheduleddowntimeasuptime" onchange="toggle_label_weight(this.checked, 'sched_downt')" />
 						<label for="count" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label></td>
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo he	lp::render('assume_initial_states'); ?>
 						<input type="checkbox" value="1" class="checkbox" id="assume" name="assumeinitialstates" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
 						<label for="assume" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo he	lp::render('assume_initial_states'); ?>
 						<input type="checkbox" value="0" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" />
 						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
 					</td>
