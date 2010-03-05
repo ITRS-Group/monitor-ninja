@@ -351,7 +351,7 @@ class Host_Model extends Model {
 			}
 
 			if (!strstr($auth_where_host, 'WHERE')) {
-				$auth_where_host = 'WHERE '.$auth_where_host;
+				$auth_where_host = 'WHERE 1 '.$auth_where_host;
 			}
 
 			# only host listing
