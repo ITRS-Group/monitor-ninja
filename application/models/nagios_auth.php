@@ -73,16 +73,36 @@ class Nagios_auth_Model extends Model
 			$this->authorized_for_system_commands = true;
 		}
 
-		if (in_array('authorized_for_all_host_commands', $user_access)) {
+		if (in_array('authorized_for_host_commands', $user_access)) {
 			$this->authorized_for_host_commands = true;
 		}
 
-		if (in_array('authorized_for_all_service_commands', $user_access)) {
+		if (in_array('authorized_for_service_commands', $user_access)) {
 			$this->authorized_for_service_commands = true;
+		}
+
+		if (in_array('authorized_for_all_host_commands', $user_access)) {
+			$this->command_hosts_root = true;
+		}
+
+		if (in_array('authorized_for_all_service_commands', $user_access)) {
+			$this->command_services_root = true;
 		}
 
 		if (in_array('authorized_for_configuration_information', $user_access)) {
 			$this->authorized_for_configuration_information = true;
+		}
+
+		if ($this->authorized_for_host_commands && $this->view_hosts_root) {
+			$this->command_hosts_root = true;
+		}
+
+		# according to http://nagios.sourceforge.net/docs/3_0/configcgi.html
+		# regarding authorized_for_all_host_commands
+		# "Users in this list are also automatically authorized to
+		#  issue commands for all services."
+		if ($this->command_hosts_root) {
+			$this->command_services_root = true;
 		}
 
 		/* Allow * in cgi.cfg, which mean everybody should get 'rootness' */
