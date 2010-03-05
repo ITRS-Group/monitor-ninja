@@ -51,26 +51,26 @@ class Command_Model extends Model
 		return $this->db->query($query);
 	}
 
-	protected function get_comment_ids($command_name = 'DEL_HOST_COMMENT')
+	/**
+	 * Get ids of current comments
+	 *
+	 * @param $command_name Name of the command (determines which id's to get)
+	 * @return array(id => object_name);
+	 */
+	public function get_comment_ids($command_name = 'DEL_HOST_COMMENT')
 	{
 		if ($this->dryrun)
 			return array(1);
 
-		$type = 'host';
 		if ($command_name != 'DEL_HOST_COMMENT') {
-			$type = 'service';
-		}
-		$query = 'SELECT comment_id, host_name, service_description ' .
-			'FROM comment WHERE service_description ';
-		if ($type === 'host') {
-			$objs = $this->auth->get_authorized_hosts_r();
-			$query = 'SELECT comment_id, host_name as objname FROM comment ' .
-				"WHERE service_description = ''";
-		} else {
 			$objs = $this->auth->get_authorized_services_r();
 			$query = "SELECT comment_id, " .
 				"concat(host_name, ';', service_description) as objname " .
 				"FROM comment WHERE service_description != ''";
+		} else {
+			$objs = $this->auth->get_authorized_hosts_r();
+			$query = 'SELECT comment_id, host_name as objname FROM comment ' .
+				"WHERE (service_description = '' OR service_description IS NULL)";
 		}
 
 		$result = $this->db->query($query);
