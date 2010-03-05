@@ -1129,9 +1129,22 @@ class nagioscmd_Core
 		for ($i = 1; $i < count($template); $i++) {
 			$k = $template[$i];
 			if (isset($param[$k])) {
-				$template[$i] = nagioscmd::massage_param($k, $param[$k]);
-				unset($param[$k]);
+				$v = $param[$k];
+			} else {
+				# boolean variables that have gone missing mean "0"
+				switch ($k) {
+				 case 'persistent': case 'delete':
+				 case 'fixed': case 'notify': case 'sticky':
+					$v = 0;
+					break;
+				 default:
+					$v = false;
+					break;
+				}
 			}
+			if ($v === false)
+				continue;
+			$template[$i] = nagioscmd::massage_param($k, $v);
 		}
 
 		return join(';', $template);
