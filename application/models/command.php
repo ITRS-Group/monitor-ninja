@@ -76,9 +76,7 @@ class Command_Model extends Model
 		$result = $this->db->query($query);
 		$ret = array();
 		foreach ($result as $ary) {
-			if (isset($objs[$ary->objname])) {
-				$ret[$ary->comment_id] = $ary->comment_id;
-			}
+			$ret[$ary->comment_id] = $ary->comment_id;
 		}
 		return $ret;
 	}
