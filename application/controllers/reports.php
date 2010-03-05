@@ -762,6 +762,8 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		*/
 
+		$use_average_selected = arr::search($_REQUEST, 'use_average', $this->use_average);
+
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
 
@@ -1042,7 +1044,7 @@ class Reports_Controller extends Authenticated_Controller
 		$selected_objects = ""; // string containing selected objects for this report
 
 		# pass selected calculation method on to report options
-		$html_options[] = array('hidden', 'use_average', $use_average);
+		#$html_options[] = array('hidden', 'use_average', $use_average);
 		$html_options[] = array('hidden', 'use_alias', $use_alias);
 
 		# $objects is an array used when creating report_error page (template).
@@ -1189,6 +1191,13 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->html_options = $html_options;
 				$tpl_options->start_time = $start_time;
 				$tpl_options->end_time = $end_time;
+
+				$use_average_options = array(
+					0 => $t->_('Group availability (SLA)'),
+					1 => $t->_('Average')
+				);
+				$tpl_options->use_average_options = $use_average_options;
+				$tpl_options->use_average_selected = $use_average_selected;
 
 				$date_format = $this->_get_date_format(true);
 				$tpl_options->start_date = date($date_format, $report_class->start_time);

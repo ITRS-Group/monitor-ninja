@@ -38,8 +38,14 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 				</tr>
 				<tr class="none">
 					<td>
+						<?php echo form::dropdown(array('name' => 'use_average'), $use_average_options, $use_average_selected) ?>
+					</td>
+				</tr>
+				<tr class="none">
+					<td>
 						<input type="checkbox" value="1" class="checkbox" id="count" name="scheduleddowntimeasuptime" onchange="toggle_label_weight(this.checked, 'sched_downt')" />
-						<label for="count" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label></td>
+						<label for="count" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label>
+					</td>
 				</tr>
 				<tr class="none">
 					<td>
