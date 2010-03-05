@@ -56,11 +56,11 @@
 			<td class="icon">
 				<?php
 					if ($row->active_checks_enabled == true)
-						echo html::anchor('command/submit?cmd_typ=CMD_DISABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/disable.gif'), array('alt' => $this->translate->_('Disable active checks of this host'), 'title' => $this->translate->_('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+						echo html::anchor('command/submit?cmd_typ=DISABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/disable.gif'), array('alt' => $this->translate->_('Disable active checks of this host'), 'title' => $this->translate->_('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
 					else
-						echo html::anchor('command/submit?cmd_typ=CMD_ENABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => $this->translate->_('Enable active checks of this host'), 'title' => $this->translate->_('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+						echo html::anchor('command/submit?cmd_typ=ENABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => $this->translate->_('Enable active checks of this host'), 'title' => $this->translate->_('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
 
-					echo html::anchor('command/submit?cmd_typ=CMD_SCHEDULE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/calendar.png'), array('alt' => $this->translate->_('Re-schedule this host check'), 'title' => $this->translate->_('Re-schedule this host check'))),array('style' => 'border: 0px'));
+					echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/calendar.png'), array('alt' => $this->translate->_('Re-schedule this host check'), 'title' => $this->translate->_('Re-schedule this host check'))),array('style' => 'border: 0px'));
 				?>
 			</td>
 		</tr>
