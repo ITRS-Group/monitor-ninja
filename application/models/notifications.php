@@ -41,7 +41,7 @@ class Notifications_Model extends Model {
 			$sql = "(SELECT host_name, service_description, start_time, end_time, reason_type, state,
 							contact_name, notification_type, output
 							FROM notification ".$where_string."
-							ORDER BY ".$this->sort_field." ".$this->sort_order." LIMIT 10)";
+							ORDER BY ".$this->sort_field." ".$this->sort_order.")";
 							//.$offset_limit;
 
 			$result = $db->query($sql);
