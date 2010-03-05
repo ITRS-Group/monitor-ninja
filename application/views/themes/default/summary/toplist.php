@@ -20,11 +20,12 @@
 				$ary['service_description'] = 'N/A';
 			} else {
 				$producer = $label_service;
+				$ary['service_description'] = html::anchor('extinfo/details/service/'.$ary['host_name'].'?service='.urlencode($ary['service_description']), $ary['service_description']);
 			}
 		?>
 			<td class="icon"><?php echo $rank; ?></td>
 			<td><?php echo $producer; ?></td>
-			<td><?php echo $ary['host_name']; ?></td>
+			<td><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
 			<td><?php echo $ary['service_description']; ?></td>
 			<td><?php echo $ary['total_alerts']; ?></td>
 		</tr>

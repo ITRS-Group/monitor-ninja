@@ -22,6 +22,7 @@
 					$state = $host_state_names[$ary['state']];
 				} else {
 					$alert_type = $label_service_alert;
+					$ary['service_description'] = html::anchor('extinfo/details/service/'.$ary['host_name'].'?service='.urlencode($ary['service_description']), $ary['service_description']);
 					$state = $service_state_names[$ary['state']];
 				}
 				$softhard = $ary['hard'] == 1 ? $label_hard : $label_soft;
@@ -29,7 +30,7 @@
 			<td class="icon status">
 				<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($state).'.png'), array('title' => $state, 'alt' => $state)); ?>
 			</td>
-			<td><?php echo $ary['host_name']; ?></td>
+			<td><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
 			<td><?php echo $ary['service_description']; ?></td>
 			<td><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
 			<td><?php echo $alert_type; ?></td>
