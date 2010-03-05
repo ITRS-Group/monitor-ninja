@@ -120,10 +120,10 @@ class nagstat_Core {
 	const NOTIFICATION_HOST_UNREACHABLE	= 2;
 
 	// reason type - every uncertain
-	const NOTIFICATION_SERVICE_ACK = 1;
-	const NOTIFICATION_HOST_ACK = 2;
-	const NOTIFICATION_SERVICE_FLAP = 3;
-	const NOTIFICATION_HOST_FLAP = 99;
+	const NOTIFICATION_SERVICE_ACK = 2; // ? 0, 99?
+	const NOTIFICATION_SERVICE_FLAP = 3; // ? 0, 99
+	const NOTIFICATION_HOST_ACK = 2; // ?
+	const NOTIFICATION_HOST_FLAP = 3; // ?
 
 	const FIND_HOST = 1;
 	const FIND_CONTACT = 2;
@@ -131,8 +131,9 @@ class nagstat_Core {
 
 	const MAX_QUERYNAME_LENGTH	= 256;
 
-	const SERVICE_NOTIFICATION	= 0;
-	const HOST_NOTIFICATION	= 1;
+
+	const HOST_NOTIFICATION	= 0;
+	const SERVICE_NOTIFICATION	= 1;
 
 
 	/**
