@@ -153,6 +153,9 @@ class Command_Model extends Model
 				break;
 			 case 'comment_id':
 				$ary = array('type' => 'select', 'options' => $this->get_comment_ids($cmd));
+				if (isset($defaults['com_id'])) {
+					$ary['default'] = $defaults['com_id'];
+				}
 				break;
 			 case 'delete':
 				$ary = array('type' => 'bool', 'default' => 1);
