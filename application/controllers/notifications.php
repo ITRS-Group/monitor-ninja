@@ -98,4 +98,63 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->select_strings = $select_strings;
 		$this->template->content->selected_val = $type;
 	}
+
+	public function host($host_name = false, $service = false, $sort_field='host_name', $sort_order='ASC', $query_type = nagstat::FIND_HOST)
+	{
+
+		//$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', 20)); # @@@FIXME: should be configurable from GUI
+		$items_per_page = 100;
+		$note_model = new Notifications_Model($items_per_page, true, true);
+		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
+		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
+
+		$t = $this->translate;
+
+		$select_strings = array(
+			0  => $t->_('All notifications'),
+			1  => $t->_('All service notifications'),
+			2  => $t->_('All host notifications'),
+			3  => $t->_('Service acknowledgements'),
+			4  => $t->_('Service warning'),
+			5  => $t->_('Service uknown'),
+			6  => $t->_('Service critical'),
+			7  => $t->_('Service recovery'),
+			8  => $t->_('Service flapping'),
+			9  => $t->_('Host acknowledgements'),
+			10 => $t->_('Host down'),
+			11 => $t->_('Host unreachable'),
+			12 => $t->_('Host recoverys'),
+			13 => $t->_('Host flapping'),
+		);
+
+
+		$service = urldecode($this->input->get('service', $service));
+
+		if ($host_name != false)
+			$sql = " host_name = '".$host_name."'";
+		if ($service != false)
+			$sql .= " AND service_description = '".$service."'";
+
+		$note_model->where = $sql;
+
+		$result = $note_model->show_notifications();
+
+		$pagination = new Pagination(
+			array(
+				'total_items'=> $note_model->count_notifications(),
+				'items_per_page' => $items_per_page
+			)
+		);
+
+		$note_model->offset = $pagination->sql_offset;
+
+		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
+		$this->template->content = $this->add_view('notifications/index');
+		$this->template->content->data = $result;
+		$this->template->content->query_type = $query_type;
+		$this->template->content->pagination = isset($pagination) ? $pagination : false;
+		$this->template->content->select_strings = $select_strings;
+		$this->template->content->selected_val = 0;
+	}
 }
