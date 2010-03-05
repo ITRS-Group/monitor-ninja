@@ -189,7 +189,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_alert_history => 'showlog/showlog/'.$host,
+					 $label_host_history => 'showlog/showlog/'.$host,
 					 $label_host_notifications => 'notifications/host/'.$host,
 					 $label_host_status_details => Router::$controller.'/service/all'
 				);
