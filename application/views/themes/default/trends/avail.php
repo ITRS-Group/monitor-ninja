@@ -30,7 +30,7 @@
 			<td class="data"><?php echo reports::format_report_value($avail_data['values']['PERCENT_KNOWN_TIME_' . $var_type]) ?> %
 			<?php
 				echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_KNOWN_TIME_' . $var_type]) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
-				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 12px')); ?>
+				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 11px')); ?>
 			</td>
 		</tr>
 		<?php } ?>
@@ -42,7 +42,7 @@
 			<td class="data"><?php echo reports::format_report_value($avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED']!=0 ? $avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED'] : reports::format_report_value(0)) ?> %
 			<?php
 				echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TOTAL_TIME_UNDETERMINED']) > 0 ? '' : 'not-').'pending.png'),
-				array('alt' => $t->_('Undetermined'),'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')); ?>
+				array('alt' => $t->_('Undetermined'),'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')); ?>
 			</td>
 		</tr>
 		<tr class="even">

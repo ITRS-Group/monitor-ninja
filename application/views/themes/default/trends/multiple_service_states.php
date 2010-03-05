@@ -73,15 +73,15 @@
 					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this service')))) ?>
 				</td>
 				<td class="data"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo reports::format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo reports::format_report_value($data['unknown'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unknown'][$i]) > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo reports::format_report_value($data['critical'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['critical'][$i]) > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
 			<?php	} } ?>
 
@@ -90,29 +90,29 @@
 			<tr>
 				<td colspan="2"><?php echo $t->_('Average') ?></td>
 				<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
 			<?php 	} ?>
 			<tr class="group-average">
 				<td colspan="2"><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
 			<?php } ?>
 		</table>
@@ -135,29 +135,29 @@
 		<tr class="even">
 			<td><?php echo $t->_('Average');?></td>
 			<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 		</tr>
 		<?php } ?>
 		<tr class="odd">
 				<td><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
 	</table>
 <?php } ?>
