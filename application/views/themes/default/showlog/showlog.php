@@ -1,20 +1,15 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-	echo html::script('application/media/js/jscalendar/calendar.js');
-	echo html::script('application/media/js/jscalendar/lang/calendar-en.js');
-	echo html::script('application/media/js/jscalendar/calendar-setup.js');
-	echo html::script('application/media/js/calendar-extras.js');
-	echo html::stylesheet('application/media/js/jscalendar/skins/aqua/theme.css');
-	$x = $this->translate;
-	//echo "\$options = ".Kohana::debug($options);
-	echo form::open();
-?>
+	$date_format = cal::get_calendar_format(true);
+	$x = $this->translate; ?>
+<div id="response"></div>
+<?php echo form::open('showlog/showlog', array('id' => 'summary_form')); ?>
 <div class="widget left w98">
 	<table class="showlog">
 		<tr>
 			<td>
 	<h3><?php echo $x->_('State type options'); ?></h3>
-	<?php echo form::checkbox('state_types[soft]', isset($options['state_types']['soft'])).' '.$x->_('Soft states'); ?><br />
-	<?php echo form::checkbox('state_types[hard]', isset($options['state_types']['hard'])).' '.$x->_('Hard states'); ?>
+	<?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '.$x->_('Soft states'); ?><br />
+	<?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '.$x->_('Hard states'); ?>
 	</td>
 	<td>
 	<h3><?php echo $x->_('Host state options'); ?></h3>
@@ -25,7 +20,7 @@
 				$set = isset($options['host_state_options'][$v]);
 				$name = 'host_state_options[' . $v . ']';
 				//echo ($i%2 == 0) ? '': '<tr>';
-				echo form::checkbox($name, $set).' '.$k.'<br />';
+				echo form::checkbox($name, 1, $set).' '.$k.'<br />';
 				//echo ($i%2 == 0) ? '</tr>': ''."\n";
 			}
 		?>
@@ -38,61 +33,35 @@
 				$i++;
 				$name = 'service_state_options[' . $v . ']';
 				//echo ($i%2 == 0) ? '': '<tr>';
-				echo form::checkbox($name, $set).' '.$k.'<br />';
+				echo form::checkbox($name,1, $set).' '.$k.'<br />';
 				//echo ($i%2 == 0) ? '</tr>': ''."\n";
 			}
 		?>
 		</td><td>
 		<h3><?php echo $x->_('General options'); ?></h3>
-		<?php echo form::checkbox('hide_flapping').' '.$x->_('Hide flapping alerts'); ?><br />
-		<?php echo form::checkbox('hide_downtime').' '.$x->_('Hide downtime alerts'); ?><br />
-		<?php echo form::checkbox('hide_process').' '.$x->_('Hide process messages'); ?><br />
-		<?php echo form::checkbox('parse_forward').' '.$x->_('Older entries first'); ?>
+		<?php echo form::checkbox('hide_flapping', 1, isset($options['hide_flapping'])).' '.$x->_('Hide flapping alerts'); ?><br />
+		<?php echo form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '.$x->_('Hide downtime alerts'); ?><br />
+		<?php echo form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages'); ?><br />
+		<?php echo form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '.$x->_('Older entries first'); ?>
 		</td>
 		</tr>
 		<tr>
-		<td colspan="2">
-			<h3><?php echo $x->_('First time').'</h3>'.form::input('first'); ?>
-			<?php echo html::image($this->add_path('icons/16x16/calendar.png'),'First'); ?>
-				<script type="text/javascript">
-				Calendar.setup({
-					inputField      : 'first',           // id of the input field
-					ifFormat        : '%Y-%m-%d %H:%M',  // format of the input field
-					daFormat        : '%Y-%m-%d %H:%M',  // format of the displayed field
-					button          : 'f_trigger_start', // trigger for the calendar (button ID)
-					align           : 'Bl',              // alignment (defaults to "Bl")
-					timeFormat      : '24',
-					showsTime       : true,
-					displayArea     : 'start_time_tmp',
-					firstDay        : 1,
-					onClose         : store_start_date,
-					singleClick     : true
-				});
-				</script>
+			<td colspan="2">
+				<h3><?php echo $x->_('First time') ?></h3> (<em id="start_time_tmp"><?php echo $x->_('Click calendar to select date') ?></em>)<br />
+				<input type="text" value="<?php echo isset($options['first']) && !empty($options['first']) ? date($date_format, $options['first']) : ''; ?>" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo $x->_('Date Start selector') ?>" />
+				<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($options['first']) && !empty($options['first']) ? date('H:i', $options['first']) : ''; ?>">
 			</td>
 			<td colspan="2">
-				<h3><?php echo $x->_('Last time').'</h3>'.form::input('last'); ?>
-				<?php echo html::image($this->add_path('icons/16x16/calendar.png'),'First'); ?>
-				<script type="text/javascript">
-				Calendar.setup({
-					inputField      : 'last',            // id of the input field
-					ifFormat        : '%Y-%m-%d %H:%M',  // format of the input field
-					daFormat        : '%Y-%m-%d %H:%M',  // format of the displayed field
-					button          : 'f_trigger_end',   // trigger for the calendar (button ID)
-					align           : 'Bl',              // alignment (defaults to "Bl")
-					timeFormat      : '24',
-					showsTime       : true,
-					displayArea     : 'end_time_tmp',
-					firstDay        : 1,
-					onClose         : check_start_date,
-					singleClick     : true
-				});
-				</script>
+				<h3><?php echo $x->_('Last time') ?></h3> (<em id="end_time_tmp"><?php echo $x->_('Click calendar to select date') ?></em>)<br />
+				<input type="text" value="<?php echo isset($options['last']) && !empty($options['last']) ? date($date_format, $options['last']) : ''; ?>" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo $x->_('Date Start selector') ?>" />
+				<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($options['last']) && !empty($options['last']) ? date('H:i', $options['last']) : ''; ?>">
 			</td>
 		</tr>
 		<tr>
 			<td colspan="4">
 			<?php
+				echo form::hidden('first', '');
+				echo form::hidden('last', '');
 				echo form::hidden('have_options', 1);
 				echo form::submit('Update', 'Update');
 			?>
