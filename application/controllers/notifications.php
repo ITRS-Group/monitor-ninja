@@ -131,8 +131,12 @@ class Notifications_Controller extends Authenticated_Controller {
 
 		$service = urldecode($this->input->get('service', $service));
 
-		if ($host_name != false)
-			$sql = " host_name = '".$host_name."'";
+		if ($host_name != false) {
+			if ($host_name == 'all')
+				$sql = " notification_type = 0";
+			else
+				$sql = " host_name = '".$host_name."'";
+		}
 		if ($service != false)
 			$sql .= " AND service_description = '".$service."'";
 
