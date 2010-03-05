@@ -81,6 +81,10 @@ input#time_end {
 	width: 100px;
 }
 
+input#summary_items{
+	width:50px;
+}
+
 select[multiple=multiple] {
 	padding: 3px;
 	width: 380px;
