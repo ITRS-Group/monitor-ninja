@@ -316,7 +316,7 @@ class Host_Model extends Model {
 			$auth_service_field_host = 's';
 			$auth_host_field_host = 'h';
 			$auth_from_host = ' host '.$auth_host_field_host;
-			$auth_where_host = '';
+			$auth_where_host = 'WHERE 1 ';
 		}
 
 		if (!$this->show_services) {
@@ -348,10 +348,6 @@ class Host_Model extends Model {
 			if ($this->host_list !== 'all' && !empty($host_str)) {
 				$auth_where_host .= empty($auth_where_host) ?  " " : " AND ";
 				$auth_where_host .= $auth_host_field_host.".id IN(".$host_str.") ";
-			}
-
-			if (!strstr($auth_where_host, 'WHERE')) {
-				$auth_where_host = 'WHERE 1 '.$auth_where_host;
 			}
 
 			# only host listing
