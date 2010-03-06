@@ -272,6 +272,7 @@ function get_type_id(str)
 	return parts[0];
 }
 
+var tl = false;
 // loader function for timeline
 function onLoad(start, end)
 {
