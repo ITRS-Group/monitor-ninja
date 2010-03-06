@@ -341,6 +341,23 @@ class Scheduled_reports_Model extends Model
 				}
 			}
 			$return['objects'] = $objects;
+			if ($type == 'sla') {
+				$period_info = Saved_reports_Model::get_period_info($id);
+				if ($period_info !== false) {
+					foreach ($period_info as $row) {
+						$month_key =  $row->name;
+						if (isset($return['report_period']) && $return['report_period'] == 'lastmonth') {
+							# special case lastmonth report period to work as expected,
+							# i.e to use the entered SLA value for every month
+							# no matter what month it was scheduled
+							$month = date('n');
+							$month = $month == 1 ? 12 : ($month-1);
+							$month_key = 'month_'.$month;
+						}
+						$return['month'][$month_key] = $row->value;
+					}
+				}
+			}
 
 		} else {
 			return false;

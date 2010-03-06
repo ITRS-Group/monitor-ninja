@@ -3886,7 +3886,6 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		# Fetch info on the scheduled report
 		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
-
 		if ($report_data == false) {
 			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
 		}
@@ -3895,13 +3894,22 @@ class Reports_Controller extends Authenticated_Controller
 		$request['new_report_setup'] = 1;
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_recipients = $report_data['recipients'];
+		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
 		foreach (self::$setup_keys as $k) {
+			if ($type === 'sla' && $k === 'report_name')
+				$k = 'sla_name';
 			$request[$k] = $report_data[$k];
 		}
 		if (!empty($report_data['objects'])) {
 			$var_name = self::$map_type_field[$report_data['report_type']];
 			foreach ($report_data['objects'] as $obj) {
 				$request[$var_name][] = $obj;
+			}
+		}
+
+		if ($type === 'sla' && isset($report_data['month']) && !empty($report_data['month'])) {
+			foreach ($report_data['month'] as $k => $v) {
+				$request[$k] = $v;
 			}
 		}
 
