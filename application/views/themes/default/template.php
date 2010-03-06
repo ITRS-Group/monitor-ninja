@@ -22,6 +22,7 @@ if (isset($this->template->js_header))
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css.php') ?>" />
+		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 		<![endif]-->
 		<?php
 			echo (!empty($css_header)) ? $css_header : '';
