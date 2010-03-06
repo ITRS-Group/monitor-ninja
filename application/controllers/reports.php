@@ -3149,7 +3149,7 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->SetAuthor('Ninja4Nagios');
 		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
 		$pdf->SetSubject($title);
-		$pdf->SetKeywords('Ninja, , Nagios, PDF, report, '.$type);
+		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 
 		// set default header data
 		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);

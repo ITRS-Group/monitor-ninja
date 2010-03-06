@@ -310,9 +310,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$status = Program_status_Model::get_all();
 		if (empty($status) || !$status->current()->is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
-			$this->template->content->commands->info_message_extra = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
-			return;
+			$this->template->content->commands->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
+			$this->template->content->commands->info_message_extra = sprintf($t->_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))), Kohana::config('config.product_name'));
 		} else {
 			$this->template->content->commands = $this->add_view('extinfo/commands');
 		}
@@ -583,7 +582,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$status = Program_status_Model::get_all();
 		if (!$status->current()->is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
+			$this->template->content->commands->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
 
 			# check if nagios_check_command is defined in cgi.cfg
 			$cgi_config = System_Model::parse_config_file('/cgi.cfg');
@@ -615,7 +614,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->lable_total_run_time = $t->_('Total Running Time');
 		$content->lable_last_external_cmd_check = $t->_('Last External Command Check');
 		$content->lable_last_logfile_rotation = $t->_('Last Log File Rotation');
-		$content->lable_pid = strstr(__FILE__, 'op5') ? $t->_('Monitor PID') : $t->_('Nagios PID');
+		$content->lable_pid = sprintf($t->_('%s PID'), Kohana::config('config.product_name'));
 		$content->lable_notifications_enabled = $t->_('Notifications Enabled?');
 		$content->lable_service_checks = $t->_('Service Checks Being Executed?');
 		$content->lable_service_checks_passive = $t->_('Passive Service Checks Being Accepted?');
@@ -727,9 +726,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# Assign commands variables
 		$commands->title = $t->_('Process Commands');
-		$commands->label_shutdown_nagios = $t->_('Shutdown the Nagios Process');
+		$commands->label_shutdown_nagios = sprintf($t->_('Shutdown the %s Process'), Kohana::config('config.product_name'));
 		$commands->link_shutdown_nagios = $this->command_link(nagioscmd::command_id('SHUTDOWN_PROCESS'), false, false, $commands->label_shutdown_nagios);
-		$commands->label_restart_nagios = $t->_('Restart the Nagios Process');
+		$commands->label_restart_nagios = sprintf($t->_('Restart the %s Process'), Kohana::config('config.product_name'));
 		$commands->link_restart_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
 
 		if ($content->notifications_enabled) {
@@ -874,8 +873,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$status = Program_status_Model::get_all();
 		if (empty($status) || !$status->current()->is_running) {
 			$this->template->content = $this->add_view('extinfo/not_running');
-			$this->template->content->info_message = $t->_('It appears as though Nagios is not running, so commands are temporarily unavailable...');
-			$this->template->content->info_message_extra = sprintf($t->_('Click %s to view Nagios process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))));
+			$this->template->content->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
+			$this->template->content->info_message_extra = sprintf($t->_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))), Kohana::config('config.product_name'));
 			return;
 		} else {
 			$this->template->content = $this->add_view('extinfo/groups');

@@ -21,6 +21,13 @@ $config['site_protocol'] = '';
 $config['index_page'] = 'index.php';
 
 /**
+* In case anyone would like to brand their installation
+* This string is shown throughout the GUI in various places
+* and this is the only place you will have to change it.
+*/
+$config['product_name'] = 'Nagios';
+
+/**
  * Fake file extension that will be added to all generated URLs. Example: .html
  */
 $config['url_suffix'] = '';
