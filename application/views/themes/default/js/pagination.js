@@ -19,9 +19,19 @@ $(document).ready(function() {
 		value_exists(cust_val); // added if not
 	}
 
+	$('.pagination_form').bind('submit', function() {
+		preserve_get_params();
+	});
+
 });
 
 function set_items_per_page()
+{
+	// submit form
+	$('.pagination_form').trigger('submit');
+}
+
+function preserve_get_params()
 {
 	// make sure we don't loose GET variables from current query string
 	if ($.query.keys) {
@@ -31,10 +41,7 @@ function set_items_per_page()
 			}
 		}
 	}
-	// submit form
-	$('.pagination_form').trigger('submit');
 }
-
 
 function propagate_val(val)
 {
