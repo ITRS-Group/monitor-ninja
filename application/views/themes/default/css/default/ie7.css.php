@@ -31,5 +31,5 @@ select {
 p.pagination { padding-top: 3px;}
 #extinfo_info,#nagios_commands { padding-left: 1%;}
 #filters{height: 130px;}
-#icons { width: 236px; }
+
 <?php if(extension_loaded('zlib')){ob_end_flush();}?>
