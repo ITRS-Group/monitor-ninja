@@ -14301,10 +14301,13 @@ if (!class_exists('TCPDF', false)) {
 						// replace relative path with real server path
 						if ((($tag['attribute']['src'][0] == '/') AND ($_SERVER['DOCUMENT_ROOT'] != '/'))
 							&& !preg_match("/^\/tmp\//", $tag['attribute']['src'])) { # patched to make TCPDF not to touch paths in /tmp/
-							$tag['attribute']['src'] = $_SERVER['DOCUMENT_ROOT'].$tag['attribute']['src'];
+							#$tag['attribute']['src'] = $_SERVER['DOCUMENT_ROOT'].$tag['attribute']['src'];
+
+							# patched to make TCPDF not to assume document root as default installation path
+							$tag['attribute']['src'] = str_replace(url::base(false).'application/', APPPATH, $tag['attribute']['src']);
 						}
 						$tag['attribute']['src'] = urldecode($tag['attribute']['src']);
-						$tag['attribute']['src'] = str_replace(K_PATH_URL, K_PATH_MAIN, $tag['attribute']['src']);
+						#$tag['attribute']['src'] = str_replace(K_PATH_URL, K_PATH_MAIN, $tag['attribute']['src']);
 						if (!isset($tag['attribute']['width'])) {
 							$tag['attribute']['width'] = 0;
 						}
