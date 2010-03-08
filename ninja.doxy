@@ -4,8 +4,8 @@ INPUT            = application/models application/helpers
 QUIET            = YES
 RECURSIVE        = YES
 FILE_PATTERNS    = *.php
-OUTPUT_DIRECTORY = apidocs
-GENERATE_TAGFILE = apidocs/api.tags
+OUTPUT_DIRECTORY = Documentation
+GENERATE_TAGFILE = Documentation/api.tags
 
 JAVADOC_AUTOBRIEF     = YES
 MACRO_EXPANSION       = YES
