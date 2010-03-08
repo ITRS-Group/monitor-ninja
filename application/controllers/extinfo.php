@@ -177,7 +177,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$xaction = array();
 		if (nacoma::link()===true) {
 			$label = $t->_('Configure');
-			$url = url::base(false) . "index.php/configuration/configure/$type/" . urlencode($host);
+			$url = url::site() . "configuration/configure/$type/" . urlencode($host);
 			if ($type === 'service') {
 				$url .= '?service=' . urlencode($service);
 				$alt = $t->_('Configure this service using Nacoma');
@@ -194,7 +194,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		if (Kohana::config('config.pnp4nagios_path') !== false && pnp::has_graph($host, urlencode($service))) {
 			$label = $t->_('Show performance graph');
-			$url = url::base(false) . 'index.php/pnp/?host=' . urlencode($host);
+			$url = url::site() . 'pnp/?host=' . urlencode($host);
 			if ($type ===  'service') {
 				$url .= '&srv=' . urlencode($service);
 			}

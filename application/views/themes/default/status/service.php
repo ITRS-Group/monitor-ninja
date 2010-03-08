@@ -50,7 +50,7 @@
 						if ($n == 4)
 							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
-							'" onclick="location.href=\'' . Kohana::config('config.site_domain') . '/index.php/'.((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
 						echo '</th>';
 					}
