@@ -14,8 +14,8 @@ function collapse_menu(action) {
 		save_ninja_menu_state('hide');
 	}
 	if (action == 'show') {
-		$('#menu').css('width', '180px');
-		$('#content').css('margin-left', '183px');
+		$('#menu').css('width', '185px');
+		$('#content').css('margin-left', '187px');
 		$('#menu').css('height', parseInt(document.documentElement.clientHeight - 67)+'px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
