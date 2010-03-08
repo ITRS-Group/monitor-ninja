@@ -22,6 +22,8 @@ Webgui for Nagios 3.
 pushd cli-helpers
 make
 popd
+doxygen ninja.doxy
+
 
 %install
 mkdir -p -m 755 %buildroot%prefix/op5/ninja
