@@ -75,7 +75,7 @@ if (isset($host_result) ) { ?>
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
-		<td style="white-space	: normal"><?php echo str_replace('','',$host->output) ?></td>
+		<td style="white-space	: normal"><?php echo str_replace('','',$host->output.' '.$host->long_output) ?></td>
 		<td><?php echo $host->display_name ?></td>
 	</tr>
 <?php	$i++; } ?>

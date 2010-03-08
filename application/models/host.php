@@ -374,7 +374,8 @@ class Host_Model extends Model {
 					".$auth_host_field_host.".max_check_attempts,
 					".$auth_host_field_host.".problem_has_been_acknowledged,
 					".$auth_host_field_host.".scheduled_downtime_depth,
-					".$auth_host_field_host.".output
+					".$auth_host_field_host.".output,
+					".$auth_host_field_host.".long_output
 				FROM ".$auth_from_host."
 					".$auth_where_host."
 					".$filter_sql.$hostprops_sql.$serviceprops_sql;
@@ -415,7 +416,8 @@ class Host_Model extends Model {
 					".$auth_host_field_host.".max_check_attempts,
 					".$auth_host_field_host.".problem_has_been_acknowledged,
 					".$auth_host_field_host.".scheduled_downtime_depth,
-					".$auth_host_field_host.".output
+					".$auth_host_field_host.".output,
+					".$auth_host_field_host.".long_output
 				FROM ".$from_contact."
 				WHERE
 					".$where_contact."
@@ -514,7 +516,9 @@ class Host_Model extends Model {
 					"<SERVICE_ALIAS>.current_attempt,".
 					"<SERVICE_ALIAS>.max_check_attempts,".
 					"<SERVICE_ALIAS>.output,".
-					"<SERVICE_ALIAS>.output AS service_output";
+					"<SERVICE_ALIAS>.long_output,".
+					"<SERVICE_ALIAS>.output AS service_output,".
+					"<SERVICE_ALIAS>.long_output AS service_long_output";
 
 			# service query part
 			# replace table aliases for next query
@@ -790,7 +794,8 @@ class Host_Model extends Model {
 					s.execution_time,
 					s.next_check,
 					s.event_handler_enabled,
-					s.output
+					s.output,
+					s.long_output
 				FROM
 					host h,
 					service s
