@@ -141,7 +141,7 @@
 					echo nacoma::link('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					if (pnp::has_graph($row->host_name, urlencode($row->service_description)))
-						echo '<a href="' . Kohana::config('config.site_domain') . '/index.php/pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
+						echo html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph'))).' &nbsp;';
 				}
 				if (!empty($row->action_url)) {
 					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px">';
