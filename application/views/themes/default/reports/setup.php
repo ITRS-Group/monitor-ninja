@@ -7,7 +7,7 @@ if (!empty($widgets)) {
 	}
 }
 ?>
-<div id="response"></div>
+<br />
 <div id="progress"></div>
 <div id="report-tabs">
 	<ul>
@@ -17,6 +17,7 @@ if (!empty($widgets)) {
 	<div id="report-tab">
 
 <div class="report-page-setup">
+	<div id="response"></div>
 	<div class="setup-table">
 
 		<div class="setup-table">
