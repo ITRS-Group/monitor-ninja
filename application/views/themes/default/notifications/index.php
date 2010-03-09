@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div class="widget w98 left">
-	<form method="get" action="<?php echo Kohana::config('config.site_domain').Kohana::config('config.index_page').'/'.Router::$controller; ?>">
+	<?php echo form::open('notifications/'.Router::$method.(isset($host_name) ? '/'.$host_name : ''), array('method' => 'get', 'id' => 'notification_form')); ?>
 		<strong><?php echo $t->_('Detail level for all contacts');?></strong><br />
 		<?php echo form::dropdown(array('name' => 'type'), $select_strings, $selected_val); ?>
 		<input type="checkbox" name="sort_order" value="asc" /> <?php echo $t->_('Older Entries First');?> &nbsp;
@@ -24,7 +24,7 @@
 		</tr>
 		<?php
 			$i = 0;
-			if ($data!==false && $data->count()) {
+			if ($data!==false && count($data)) {
 				foreach ($data as $row) {
 					$i++;
 		?>

@@ -33,21 +33,19 @@ class Notifications_Model extends Model {
 			else
 				$offset_limit = '';
 				//$offset_limit = $count!==false ? "" : " LIMIT ".$num_per_page;
-
 			//echo 'offset_limit: '.$offset_limit;
 
 			$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
 
-			$sql = "(SELECT host_name, service_description, start_time, end_time, reason_type, state,
+			$sql = "SELECT host_name, service_description, start_time, end_time, reason_type, state,
 							contact_name, notification_type, output
 							FROM notification ".$where_string."
-							ORDER BY ".$this->sort_field." ".$this->sort_order.")";
-							//.$offset_limit;
+							ORDER BY ".$this->sort_field." ".$this->sort_order.
+							$offset_limit;
 
 			$result = $db->query($sql);
-
-			if ($count !== false) {
-				return $result ? count($result) : 0;
+			if ($count === true) {
+				return count($result);
 			}
 			return $result->count() ? $result->result(): false;
 		}
