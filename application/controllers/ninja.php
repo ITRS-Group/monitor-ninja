@@ -108,7 +108,7 @@ class Ninja_Controller extends Template_Controller {
 			),
 			$this->translate->_('Configuration') => array(
 				$this->translate->_('View config') 						=> array('config', 'viewconfig'),
-				$this->translate->_('Change password') 				=> array('underconstruction/change_password', 'password'),
+				$this->translate->_('Change password') 				=> array('change_password', 'password'),
 				$this->translate->_('Backup/Restore')					=> array('underconstruction/backup_restore', 'backup'),
 			)
 		);

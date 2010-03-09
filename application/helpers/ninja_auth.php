@@ -12,7 +12,7 @@ class ninja_auth_Core
 	 * @param $plain Plaintext password
 	 * @return Password hash
 	 */
-	public function hash_password($plain)
+	public function hash_password($pass)
 	{
 		return base64_encode(sha1($pass, true));
 	}

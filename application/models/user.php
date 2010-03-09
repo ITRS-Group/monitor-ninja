@@ -9,6 +9,17 @@
 class User_Model extends Auth_User_Model {
 	public static $auth_table = 'ninja_user_authorization';
 
+	public function __set($key, $value)
+	{
+		if ($key === 'password')
+		{
+			// Use Auth to hash the password
+			$value = ninja_auth::hash_password($value);
+		}
+
+		ORM::__set($key, $value);
+	}
+
 	/**
 	 * Takes care of setting session variables etc
 	 */
