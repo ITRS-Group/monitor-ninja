@@ -35,6 +35,9 @@ sed -i \
 	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
 	%buildroot%prefix/op5/ninja/application/config/config.php
 
+cp op5build/login.png \
+	%buildroot%prefix/op5/ninja/views/themes/default/css/default/images
+
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
 
