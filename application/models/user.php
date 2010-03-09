@@ -13,8 +13,32 @@ class User_Model extends Auth_User_Model {
 	{
 		if ($key === 'password')
 		{
-			// Use Auth to hash the password
 			$value = ninja_auth::hash_password($value);
+
+			$etc_path = Kohana::config('config.nagios_etc_path')?
+				Kohana::config('config.nagios_etc_path')
+				: System_Model::get_nagios_base_path() . '/etc';
+			$htpasswd_path = $etc_path . '/htpasswd.users';
+			$htpasswd = @file($htpasswd_path);
+			if ($htpasswd === false)
+				throw new Exception("Could not read {$htpasswd_path}");
+
+			$found = false;
+			foreach($htpasswd as $n => $line)
+			{
+				$username = strtok($line, ':');
+				if ($username !== false && $username == $this->username)
+				{
+					$htpasswd[$n] = $this->username . ':{SHA}' . $value . "\n";
+					$found = true;
+					break;
+				}
+			}
+			if (!$found)
+				$htpasswd[] = $this->username . ':{SHA}' . $value . "\n";
+
+			if (@file_put_contents($htpasswd_path, $htpasswd) === false)
+				throw new Exception("Could not write {$htpasswd_path}");;
 		}
 
 		ORM::__set($key, $value);
