@@ -30,7 +30,9 @@ mkdir -p -m 755 %buildroot%prefix/op5/ninja
 cp -r * %buildroot%prefix/op5/ninja
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
-sed -i 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
+sed -i \
+	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
+	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
 	%buildroot%prefix/op5/ninja/application/config/config.php
 
 find %buildroot -print0 | xargs -0 chmod a+r
