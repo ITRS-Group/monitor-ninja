@@ -58,7 +58,7 @@ if (isset($host_result) ) { ?>
 			<?php
 				echo html::anchor('status/service/'.$host->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), $this->translate->_('View service details for this host')), array('style' => 'border: 0px')).' &nbsp;';
 				if (isset ($nacoma_link))
-					echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma))).' &nbsp;';
+					echo html::anchor($nacoma_link.'host/'.$host->host_name, html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $label_nacoma, 'title' => $label_nacoma)), array('style' => 'border: 0px')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false)
 					echo (pnp::has_graph($host->host_name))  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->host_name).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
