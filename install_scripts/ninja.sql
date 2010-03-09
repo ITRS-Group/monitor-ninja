@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `ninja_settings` (
 );
 
 INSERT INTO `ninja_settings` (`page`, `type`, `setting`)
- VALUES('tac/index', 'widget_order', 'widget-placeholder=widget-netw_outages,widget-tac_scheduled|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health,widget-geomap|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems');
+ VALUES('tac/index', 'widget_order', 'widget-placeholder=widget-netw_outages,widget-tac_scheduled,widget-monitoring_performance|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health,widget-geomap|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems');
 
 -- --------------------------------------------------------
 
