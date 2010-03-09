@@ -7,7 +7,7 @@ Vendor: op5 AB
 BuildRoot: /tmp/%name-%version
 Summary: op5 monitor ninja
 Group: op5/Monitor
-Prefix: /opt/monitor
+Prefix: /opt/monitor/op5/ninja
 Requires: monitor-gui-core
 Requires: merlin, monitor-reports-module >= 2.0.6
 Conflicts: monitor-gui-core <= 4.0.7
@@ -26,17 +26,17 @@ doxygen ninja.doxy
 
 
 %install
-mkdir -p -m 755 %buildroot%prefix/op5/ninja
-cp -r * %buildroot%prefix/op5/ninja
+mkdir -p -m 755 %buildroot%prefix
+cp -r * %buildroot%prefix
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
-	%buildroot%prefix/op5/ninja/application/controllers/authenticated.php
+	%buildroot%prefix/application/controllers/authenticated.php
 sed -i \
 	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
 	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
-	%buildroot%prefix/op5/ninja/application/config/config.php
+	%buildroot%prefix/application/config/config.php
 
 cp op5build/login.png \
-	%buildroot%prefix/op5/ninja/views/themes/default/css/default/images
+	%buildroot%prefix/views/themes/default/css/default/images
 
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
@@ -47,22 +47,22 @@ install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/s
 # executables
 for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 		install_scripts/ninja_db_init.sh; do
-	chmod 755 %buildroot%prefix/op5/ninja/$f
+	chmod 755 %buildroot%prefix/$f
 done
 
 mkdir -p %buildroot/var/www/html
-ln -sfT /opt/monitor/op5/ninja %buildroot/var/www/html/monitor
+ln -sfT %prefix %buildroot/var/www/html/monitor
 # recursive symbolic link, so must be after all 'find' stuff above
-ln -s ../ %buildroot%prefix/op5/ninja/op5
+ln -s ../ %buildroot%prefix/op5
 
 %post
-sh /opt/monitor/op5/ninja/install_scripts/ninja_db_init.sh
+sh %prefix/install_scripts/ninja_db_init.sh
 
-sh %prefix/op5/ninja/op5-upgradescripts/monitor-reports-db-upgrade.sh %prefix
+sh %prefix/op5-upgradescripts/monitor-reports-db-upgrade.sh /opt/monitor
 
 %files
 %defattr(-,monitor,apache)
-/opt/monitor/op5/ninja
+%prefix
 /etc/cron.d/scheduled-reports
 /var/www/html/monitor
 
