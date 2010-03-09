@@ -11,6 +11,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 	echo form::legend('Change password');
 
 	$fields = array(
+		'current_password' => form::password('current_password'),
 		'new_password' => form::password('new_password'),
 		'confirm_password' => form::password('confirm_password'),
 	);?>

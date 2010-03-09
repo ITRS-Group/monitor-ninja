@@ -35,18 +35,24 @@ class Change_Password_Controller extends Authenticated_Controller {
 	{
 		$post = Validation::factory($_POST);
 		$post->add_rules('*', 'required');
-		$password = $this->input->post('new_password', false);
-		$password2 = $this->input->post('confirm_password', false);
-		if (strlen($password) < 5 || strlen($password2) < 5)
+		$current_password = $this->input->post('current_password', false);
+		$new_password = $this->input->post('new_password', false);
+		$new_password2 = $this->input->post('confirm_password', false);
+		if (strlen($current_password) < 5 || strlen($new_password) < 5 || strlen($new_password2) < 5)
 		{
 			$this->template->content->status_msg = $this->translate->_('The password must be at least 5 chars long.');
 		}
-		elseif ($password == $password2)
+		elseif ($new_password == $new_password2)
 		{
 			$user = Auth::instance()->get_user();
-			$user->password = $password;
-			$user->save();
-			$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+			if ($user->password == ninja_auth::hash_password($current_password))
+			{
+				$user->password = $new_password;
+				$user->save();
+				$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+			}
+			else
+				$this->template->content->status_msg = $this->translate->_('You entered incorrect current password.');
 		}
 		else
 		{
