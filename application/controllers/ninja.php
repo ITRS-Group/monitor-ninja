@@ -112,6 +112,8 @@ class Ninja_Controller extends Template_Controller {
 				$this->translate->_('Backup/Restore')					=> array('underconstruction/backup_restore', 'backup'),
 			)
 		);
+		if (Kohana::config('auth.driver') == 'LDAP')
+			unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
 		if (Reports_Model::_self_check() === true) {
 			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('reports/?type=avail', 'availability');
