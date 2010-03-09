@@ -75,7 +75,6 @@ class Tac_Controller extends Authenticated_Controller {
 		if (sizeof($widget_info['widget_list']) != sizeof($tmp_arr)) {
 			foreach ($widget_info['widget_list'] as $tmp) {
 				if (!in_array('widget-'.$tmp, $tmp_arr)) {
-					echo Kohana::debug('widget-'.$tmp);
 					$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
 				}
 			}
