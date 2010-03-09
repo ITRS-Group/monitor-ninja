@@ -147,21 +147,27 @@ function show_hide(id,h1) {
 }
 
 function show_calendar(val, update) {
+	$('#response').html('');
 	if (val=='custom') {
-		$("#display").show();
+		if ($('input[name=type]').val() != 'sla') {
+			$("#display").show();
 
-		$(".fancydisplay").each(function() {
-			$(this).show();
-		});
+			$(".fancydisplay").each(function() {
+				$(this).show();
+			});
 
-		if (_current_uri.indexOf('generate') != -1){
-			fancybox_datepicker();
-		}
-		init_timepicker();
+			if (_current_uri.indexOf('generate') != -1){
+				fancybox_datepicker();
+			}
+			init_timepicker();
 
-		if (update == '') {
-			$('input[name=start_time]').attr('value', '');
-			$('input[name=end_time]').attr('value', '');
+			if (update == '') {
+				$('input[name=start_time]').attr('value', '');
+				$('input[name=end_time]').attr('value', '');
+			}
+		} else {
+			// known issue - custom report period does not work for SLA reports
+			$('#response').html("<ul class=\"error\"><li>Known issue in this beta: <br />Custom report period does not currently work for SLA</li></ul><br />");
 		}
 	} else {
 		$("#display").hide();
@@ -420,6 +426,9 @@ function check_form_values()
 	var field_obj = new field_maps();
 	var rpt_type = $("#report_type").val();
 	if ($("#report_period").val() == 'custom') {
+		if ($('input[name=type]').val() == 'sla') {
+			return false;
+		}
 		// date validation
 		var cur_startdate = startDate = Date.fromString($("input[name=start_time]").attr('value'));
 		var cur_enddate = endDate = Date.fromString($("input[name=end_time]").attr('value'));
@@ -769,6 +778,7 @@ function disable_months(start, end)
 
 function check_custom_months()
 {
+	return false;
 	var f		 	= document.forms['report_form'];
 	var start_year 	= f.start_year.value;
 	var start_month = f.start_month.value;
