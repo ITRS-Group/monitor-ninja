@@ -63,6 +63,24 @@ class Tac_Controller extends Authenticated_Controller {
 			$this->template->content->widget_settings = $settings;
 		}
 
+		# Validate that we have all the widgets in our order string.
+		# If this fails users will get a jGrowl error each time the page
+		# reloaded.
+		$tmp_arr = array();
+		foreach ($widget_order as $place => $widgets) {
+			$tmp_arr = array_merge($tmp_arr, (array)$widgets);
+		}
+
+		# only continue checks if sizes differs
+		if (sizeof($widget_info['widget_list']) != sizeof($tmp_arr)) {
+			foreach ($widget_info['widget_list'] as $tmp) {
+				if (!in_array('widget-'.$tmp, $tmp_arr)) {
+					echo Kohana::debug('widget-'.$tmp);
+					$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
+				}
+			}
+		}
+
 		# add the inline javascript to master template header
 		$this->template->inline_js = $this->inline_js;
 
