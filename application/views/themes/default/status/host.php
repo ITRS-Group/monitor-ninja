@@ -113,7 +113,7 @@ foreach ($result as $row) {
 						if (nacoma::link()===true)
 							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $t->_('Configure this host')).' &nbsp;';
 						if (Kohana::config('config.pnp4nagios_path')!==false)
-							echo (pnp::has_graph($row->host_name))  ? html::anchor('pnp/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph'))).'&nbsp;' : '';
+							echo (pnp::has_graph($row->host_name))  ? html::anchor('pnp/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')), array('style' => 'border: 0px')).'&nbsp;' : '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="_blank">';
 							echo html::image($this->add_path('icons/16x16/host-actions.png'), $t->_('Perform extra host actions'));
