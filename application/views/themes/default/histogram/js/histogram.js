@@ -40,7 +40,9 @@ $(document).ready(function() {
 			previousPoint = null;
 		}
 	});
-
+	$("#report_period").bind('change', function() {
+		show_calendar($(this).attr('value'));
+	});
 
 });
 
