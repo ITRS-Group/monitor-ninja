@@ -584,6 +584,28 @@ tr td.white {
 	background: #ffffff;
 	vertical-align: top;
 }
+table.white-table tr td {
+	background: none;
+	border: 0px;
+	padding: 0px;
+	padding-bottom: 4px;
+}
+table.white-table tr td input {
+ background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+table.white-table tr td input[type=submit]{
+	background: #cdcdcd url(images/bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+	margin-bottom: 5px;
+}
 /* health css *************************************************************************************/
 table.healt {
 	border: 1px solid #dcdccd;

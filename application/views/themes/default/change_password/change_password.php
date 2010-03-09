@@ -4,30 +4,32 @@
 <?php
 if (isset($error_msg)) echo $error_msg; ?>
 <?php echo $status_msg ?>
-<br />
 <?php
 	echo form::open('change_password/change_password');
-	echo form::open_fieldset();
-	echo form::legend('Change password');
+	echo '<h2>'.$this->translate->_('Change password').'</h2>';
 
 	$fields = array(
 		'current_password' => form::password('current_password'),
 		'new_password' => form::password('new_password'),
 		'confirm_password' => form::password('confirm_password'),
 	);?>
-	<table cellpadding="0" cellspacing="0">
+	<table class="white-table">
 	<?php
 		foreach ($fields as $label => $field) {
 			echo '
 			<tr>
-				<td><strong>'.form::label($label).'</strong>: </td>
+				<td style="padding-right: 10px; width: 100px">'.form::label($label).'</td>
 				<td>'.$field.'</td>
 			</tr>';
 		} ?>
+		<tr>
+		  <td></td>
+		  <td><?php echo form::submit('change_password', 'Change password'); ?></tr>
+		</tr>
 	</table>
 	<?php
-	echo form::submit('change_password', 'Change password');
-	echo form::close_fieldset();
+
+
 	echo form::close();
 ?>
 </div>
