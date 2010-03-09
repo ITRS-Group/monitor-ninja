@@ -36,7 +36,7 @@ sed -i \
 	%buildroot%prefix/application/config/config.php
 
 cp op5build/login.png \
-	%buildroot%prefix/views/themes/default/css/default/images
+	%buildroot%prefix/applications/views/themes/default/css/default/images
 
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
