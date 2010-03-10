@@ -24,7 +24,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 		} ?>
 		<tr>
 		  <td></td>
-		  <td><?php echo form::submit('change_password', $this->translate->_('Change password')); ?></tr>
+		  <td><?php echo form::submit('change_password', $this->translate->_('Change password')); ?></td>
 		</tr>
 	</table>
 	<?php
