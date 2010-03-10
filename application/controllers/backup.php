@@ -20,7 +20,7 @@ class Backup_Controller extends Authenticated_Controller {
 	
 	private $cmd_restore = '/opt/monitor/op5/backup/restore';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
-	private $cmd_reload = 'echo "[$time] RESTART_PROGRAM;$time2" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg'
+	private $cmd_reload = 'echo "[$time] RESTART_PROGRAM;$time2" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
 	
 	private $backup_suffix = '.tar.gz';
 	private $backups_location = '/var/www/html/backup';
@@ -41,15 +41,12 @@ class Backup_Controller extends Authenticated_Controller {
 		$files = @scandir($this->backups_location);
 		if ($files === false)
 			throw new Exception('Cannot get directory contents: /var/www/html/backup');
-			
-		$files2 = array();
-		foreach($files as $file)
-		{
-			if( substr_compare($file, $this->backup_suffix, -1, strlen($this->backup_suffix), true))
-				$files2[] = $file;
-		}
-				
 
-		$this->template->content->files = $files2;
+		$backupfiles = array();
+		foreach ($files as $file)
+			if (substr($file, -7) == '.tar.gz')
+				$backupfiles[] = substr($file, 0, -7);
+
+		$this->template->content->files = $backupfiles;
 	}
 }
