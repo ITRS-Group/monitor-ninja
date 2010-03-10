@@ -42,10 +42,11 @@ class Backup_Controller extends Authenticated_Controller {
 		if ($files === false)
 			throw new Exception('Cannot get directory contents: /var/www/html/backup');
 
+		$suffix_len = strlen($this->backup_suffix);
 		$backupfiles = array();
 		foreach ($files as $file)
-			if (substr($file, -7) == '.tar.gz')
-				$backupfiles[] = substr($file, 0, -7);
+			if (substr($file, -$suffix_len) == $this->backup_suffix)
+				$backupfiles[] = substr($file, 0, -$suffix_len);
 
 		$this->template->content->files = $backupfiles;
 	}
