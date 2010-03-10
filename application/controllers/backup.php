@@ -29,5 +29,11 @@ class Backup_Controller extends Authenticated_Controller {
 	public function index()
 	{
 		$this->template->content->status_msg = '';
+
+		$files = @scandir('/var/www/html/backup');
+		if ($files === false)
+			throw new Exception('Cannot get directory contents: /var/www/html/backup');
+
+		$this->template->content->files = $files;
 	}
 }

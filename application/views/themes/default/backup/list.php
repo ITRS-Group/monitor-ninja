@@ -8,23 +8,15 @@ if (isset($error_msg)) echo $error_msg; ?>
 	<p><a href="#">Save your perfect configuration</a></p>
 	<br />
 	<table class="white-table">
+		<?php foreach ($files as $file):
+			if (substr($file, -7) == '.tar.gz'):
+		?>
 		<tr>
-		  <td>backup-2010-03-10_16.30</td>
+		  <td><?php echo substr($file, 0, -7); ?></td>
 		  <td><a href="#">view</a></td>
 		  <td><a href="#">restore</a></td>
 		  <td><a href="#">delete</a></td>
 		</tr>
-		<tr>
-		  <td>backup-2010-03-10_16.24</td>
-		  <td><a href="#">view</a></td>
-		  <td><a href="#">restore</a></td>
-		  <td><a href="#">delete</a></td>
-		</tr>
-		<tr>
-		  <td>backup-2010-03-10_16.10</td>
-		  <td><a href="#">view</a></td>
-		  <td><a href="#">restore</a></td>
-		  <td><a href="#">delete</a></td>
-		</tr>
+		<?php endif; endforeach; ?>
 	</table>
 </div>
