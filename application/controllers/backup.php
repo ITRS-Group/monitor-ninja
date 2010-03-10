@@ -21,6 +21,7 @@ class Backup_Controller extends Authenticated_Controller {
 	private $cmd_restore = '/opt/monitor/op5/backup/restore';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
 	private $cmd_reload = 'echo "[$time] RESTART_PROGRAM;$time2" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
+	private $cmd_view = 'tar tfz ';
 	
 	private $backup_suffix = '.tar.gz';
 	private $backups_location = '/var/www/html/backup';
