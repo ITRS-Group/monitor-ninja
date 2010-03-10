@@ -26,6 +26,7 @@ doxygen ninja.doxy
 
 
 %install
+rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
 cp -r * %buildroot%prefix
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
