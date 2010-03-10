@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Extinfo controller
+ * Password change controller
  *
  * @package NINJA
  * @author op5 AB
