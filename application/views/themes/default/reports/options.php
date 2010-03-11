@@ -37,7 +37,7 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 					</td>
 				</tr>
 				<tr class="none">
-					<td>
+					<td><?php echo $label_sla_calc_method ?><br />
 						<?php echo form::dropdown(array('name' => 'use_average'), $use_average_options, $use_average_selected) ?>
 					</td>
 				</tr>
