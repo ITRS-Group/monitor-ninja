@@ -10,8 +10,7 @@ if (isset($error_msg)) echo $error_msg; ?>
 	<table class="white-table">
 		<?php foreach ($files as $file): ?>
 		<tr>
-		  <td><?php echo $file; ?></td>
-		  <td><a href="#">view</a></td>
+		  <td><a href="<?php echo url::base() . '/index.php/backup/view/' . $file; ?>"><?php echo $file; ?></a></td>
 		  <td><a href="#">restore</a></td>
 		  <td><a href="#">delete</a></td>
 		</tr>

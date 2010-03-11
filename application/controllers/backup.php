@@ -30,13 +30,13 @@ class Backup_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->template->content = $this->add_view('backup/list');
 		$this->template->disable_refresh = true;
-		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
 	}
 
 	public function index()
 	{
+		$this->template->content = $this->add_view('backup/list');
+		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
 		$this->template->content->status_msg = '';
 
 		$files = @scandir($this->backups_location);
@@ -50,5 +50,20 @@ class Backup_Controller extends Authenticated_Controller {
 				$backupfiles[] = substr($file, 0, -$suffix_len);
 
 		$this->template->content->files = $backupfiles;
+	}
+
+	public function view($file)
+	{
+		$this->template->content = $this->add_view('backup/view');
+		$this->template->title = $this->translate->_('Configuration » Backup/Restore » View');
+		$this->template->content->backup = $file;
+		$this->template->content->status_msg = '';
+
+		$contents = array();
+		$status = 0;
+		exec($this->cmd_view . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $contents, $status);
+		sort($contents);
+
+		$this->template->content->files = $contents;
 	}
 }
