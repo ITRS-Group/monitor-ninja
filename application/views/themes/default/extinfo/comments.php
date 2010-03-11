@@ -43,7 +43,7 @@
 				<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
 				<?php }
 				} ?>
-				<td class="bl"><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
+				<td><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
 				<td><?php echo $row->author_name ?></td>
 				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
 				<td><?php echo $row->comment_id ?></td>
