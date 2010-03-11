@@ -36,7 +36,6 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
-		$this->template->content->status_msg = '';
 
 		$files = @scandir($this->backups_location);
 		if ($files === false)
@@ -56,7 +55,6 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('backup/view');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore » View');
 		$this->template->content->backup = $file;
-		$this->template->content->status_msg = '';
 
 		$contents = array();
 		$status = 0;
@@ -64,5 +62,14 @@ class Backup_Controller extends Authenticated_Controller {
 		sort($contents);
 
 		$this->template->content->files = $contents;
+	}
+
+	public function delete($file)
+	{
+		$this->template = $this->add_view('backup/delete');
+
+		$this->template->status = @unlink($this->backups_location . '/' . $file . $this->backup_suffix);
+		$this->template->message = $this->template->status ? "The backup '{$file}' has been deleted"
+			: "Could not delete the backup '{$file}' has been deleted";
 	}
 }
