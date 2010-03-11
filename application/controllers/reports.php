@@ -1153,7 +1153,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
-				$tpl_options->selected = $report_period_strings["selected"];
+				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 				$tpl_options->label_settings = $t->_('Report settings');
 				$tpl_options->label_startdate = $t->_('Start date');
 				$tpl_options->label_enddate = $t->_('End date');
