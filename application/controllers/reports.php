@@ -1757,13 +1757,13 @@ class Reports_Controller extends Authenticated_Controller
 		# var host =
 		# var service =
 		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
+		$this->js_strings .= "\n".$js_month_names."\n";
+		$this->js_strings .= $js_abbr_month_names."\n";
+		$this->js_strings .= $js_day_names."\n";
+		$this->js_strings .= $js_abbr_day_names."\n";
+		$this->js_strings .= $js_day_of_week."\n";
+		$this->js_strings .= $js_date_format."\n";
+		$this->js_strings .= $js_start_date."\n";
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
