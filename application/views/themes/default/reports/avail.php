@@ -5,7 +5,7 @@
 	<table summary="<?php echo $t->_('Result table') ?>"<?php echo ($create_pdf) ? ' style="border: 1px solid #cdcdcd" cellpadding="5"' : '';?>>
 		<!--<caption><?php echo str_replace(': ', ' '.$t->_('for').' '.$source.': ', $header_string); ?></caption>-->
 		<tr>
-			<th <?php echo ($create_pdf) ? 'style="font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left"'; ?>>&nbsp;</th>
+			<th <?php echo ($create_pdf) ? 'style="font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left"'; ?>><?php echo help::render('availability'); ?></th>
 			<th <?php echo ($create_pdf) ? 'style="font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left"'; ?>><?php echo $label_type_reason ?></th>
 			<th <?php echo ($create_pdf) ? 'style="font-size: 0.9em; text-align:right; background-color: '.$bg_color.'"' : 'class="headerNone"'; ?>><?php echo $label_time ?></th>
 			<th <?php echo ($create_pdf) ? 'style="font-size: 0.9em; text-align:right; background-color: '.$bg_color.'"' : 'class="headerNone"'; ?>><?php echo $label_tot_time ?></th>

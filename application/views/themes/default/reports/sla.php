@@ -16,7 +16,7 @@ foreach($report_data as $i =>  $report) {
 		}
 	?>
 	<div class="setup-table members">
-		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo $str_source; ?></h2>
+		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<?php
 		if (!$create_pdf) { ?>
 		<img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
@@ -38,7 +38,7 @@ foreach($report_data as $i =>  $report) {
 		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
 			<?php foreach ($report['table_data'] as $source => $data) { ?>
 			<table class="auto" border="1" style="margin-top: 15px">
-				<caption><?php echo $str_source; ?></caption>
+				<caption><?php echo help::render('sla_breakdown').' '.$str_source; ?></caption>
 				<tr>
 					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
 					<?php
@@ -79,7 +79,7 @@ foreach($report_data as $i =>  $report) {
 	<div class="setup-table members">
 
 		<table style="margin-bottom: 20px; margin-top: 15px">
-			<caption><?php echo $this->translate->_('Group members');?></caption>
+			<caption><?php echo help::render('sla_group_members').' '.$this->translate->_('Group members');?></caption>
 			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : $this->translate->_('Custom group') ?></th></tr>
 			<?php
 				$i = 0;
