@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div class="widget w98 left">
+	<div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<?php echo form::open('notifications/'.Router::$method.(isset($host_name) ? '/'.$host_name : ''), array('method' => 'get', 'id' => 'notification_form')); ?>
 		<strong><?php echo $t->_('Detail level for all contacts');?></strong><br />
 		<?php echo form::dropdown(array('name' => 'type'), $select_strings, $selected_val); ?>
@@ -9,6 +10,7 @@
 		<br /><br />
 	</form>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
+</div><br />
 	<table id="host_table" style="margin-top: 0px;">
 		<caption style="margin-top: -15px;">
 			<span style="float: left; display: block; margin-top: 2px;"><?php echo (isset($label_title)) ? $label_title : $t->_('Notifications'); ?></span>

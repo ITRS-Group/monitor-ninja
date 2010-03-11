@@ -66,6 +66,7 @@ class Notifications_Controller extends Authenticated_Controller {
 	public function index($sort_field='host_name', $sort_order='ASC', $type = false, $query_type = nagstat::FIND_HOST)
 	{
 		$type = urldecode($this->input->get('type', $type));
+		$noheader = urldecode($this->input->get('noheader', false));
 
 		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$note_model = new Notifications_Model();
@@ -95,6 +96,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
+		$this->template->content->noheader = $noheader;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
@@ -105,6 +107,7 @@ class Notifications_Controller extends Authenticated_Controller {
 	public function host($host_name = false, $service = false, $sort_field='host_name', $sort_order='ASC', $query_type = nagstat::FIND_HOST)
 	{
 		$type = urldecode($this->input->get('type', false));
+		$noheader = urldecode($this->input->get('noheader', false));
 		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$note_model = new Notifications_Model($items_per_page, true, true);
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
@@ -147,6 +150,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
+		$this->template->content->noheader = $noheader;
 		$this->template->content->host_name = $host_name;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;

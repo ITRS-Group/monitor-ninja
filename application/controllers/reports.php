@@ -1153,7 +1153,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
-				$tpl_options->selected = $report_period_strings["selected"];
+				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 				$tpl_options->label_settings = $t->_('Report settings');
 				$tpl_options->label_startdate = $t->_('Start date');
 				$tpl_options->label_enddate = $t->_('End date');
@@ -1182,6 +1182,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_interval = $t->_('Report Interval');
 				$tpl_options->label_recipients = $t->_('Recipients');
 				$tpl_options->label_edit_settings = $t->_('edit settings');
+				$tpl_options->label_sla_calc_method = $t->_('SLA calculation method');
 				$tpl_options->label_filename = $t->_('Filename');
 				$tpl_options->label_description = $t->_('Description');
 				$tpl_options->label_save = $t->_('Save');
@@ -1757,13 +1758,13 @@ class Reports_Controller extends Authenticated_Controller
 		# var host =
 		# var service =
 		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
+		$this->js_strings .= "\n".$js_month_names."\n";
+		$this->js_strings .= $js_abbr_month_names."\n";
+		$this->js_strings .= $js_day_names."\n";
+		$this->js_strings .= $js_abbr_day_names."\n";
+		$this->js_strings .= $js_day_of_week."\n";
+		$this->js_strings .= $js_date_format."\n";
+		$this->js_strings .= $js_start_date."\n";
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -2944,7 +2945,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$showlog = showlog::get_path();
 
-		if ($showlog !== true) {
+		if ($showlog === false) {
 			die($this->translate->_('Unable to find the showlog executable'));
 		}
 

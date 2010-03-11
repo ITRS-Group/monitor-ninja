@@ -20,15 +20,16 @@ class config_Core
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
+		$setting_session = null;
 		# first check for cached session value
 		$page_val = empty($page) ? '' : '.'.$page;
 		if (!$skip_session) {
-			$setting_session = Session::instance()->get($config_str.$page_val, false);
+			$setting_session = Session::instance()->get($config_str.$page_val, null);
 		} else {
 			Session::instance()->delete($config_str.$page_val);
 		}
 
-		if (!empty($setting_session)) {
+		if (!is_null($setting_session)) {
 			$setting = $setting_session;
 		}
 

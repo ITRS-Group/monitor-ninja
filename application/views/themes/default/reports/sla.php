@@ -16,7 +16,7 @@ foreach($report_data as $i =>  $report) {
 		}
 	?>
 	<div class="setup-table members">
-		<h1><?php echo $str_source; ?></h1>
+		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo $str_source; ?></h2>
 		<?php
 		if (!$create_pdf) { ?>
 		<img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
@@ -34,10 +34,11 @@ foreach($report_data as $i =>  $report) {
 	<div id="slaChart<?php echo $nr ?>"></div>
 	<?php } if (!empty($report['table_data'])) { ?>
 	<div class="sla_table">
-		<h1><?php echo $str_source; ?></h1>
+
 		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
 			<?php foreach ($report['table_data'] as $source => $data) { ?>
-			<table class="auto" border="1">
+			<table class="auto" border="1" style="margin-top: 15px">
+				<caption><?php echo $str_source; ?></caption>
 				<tr>
 					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
 					<?php
@@ -76,16 +77,18 @@ foreach($report_data as $i =>  $report) {
 	</div>
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
-		<h1><?php echo $report['group_title'] ?></h1>
-		<div class="icon-help" onclick="general_help('custom-group')"></div>
-			<ul id="group_<?php echo $nr;?>"><?php
+
+		<table style="margin-bottom: 20px; margin-top: 15px">
+			<caption><?php echo $this->translate->_('Group members');?></caption>
+			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : $this->translate->_('Custom group') ?></th></tr>
+			<?php
+				$i = 0;
 				foreach($report['member_links'] as $member_link) {
-					echo "<li>".$member_link."</li>\n";
+					$i++;
+					echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\"><td>".$member_link."</td></tr>\n";
 				}
 				?>
-			</ul>
+			</table>
+			<br />
 		</div>
-		<script type='text/javascript'>
-			show_hide('group_<?php echo $nr;?>', document.getElementById('members_<?php echo $nr;?>'))
-		</script>
 	<?php } } ?>

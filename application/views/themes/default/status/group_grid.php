@@ -90,7 +90,7 @@ if (!empty($group_details))
 						echo html::anchor('configuration/configure/host/'.$host['host_name'], html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)),array('style' => 'border: 0px')).' &nbsp;';
 					if (isset($pnp_path) && pnp::has_graph($host['host_name']))
 						echo '<a href="'.$pnp_path.'host='.$host['host_name'].'" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp)).'</a> &nbsp;';
-					echo html::anchor('extinfo/host/'.$host['host_name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('extinfo/details/host/'.$host['host_name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('statusmap/host/'.$host['host_name'], html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('status/host/'.$host['host_name'], html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px'));
 				?>

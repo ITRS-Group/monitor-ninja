@@ -22,7 +22,7 @@ new function(settings) {
       return o != undefined && o !== null && (!!t ? o.constructor == t : true);
     };
     var parse = function(path) {
-      var m, rx = /\[([^[]*)\]/g, match = /^(\S+?)(\[\S*\])?$/.exec(path), base = match[1], tokens = [];
+      var m, rx = /\[([^[]*)\]/g, match = /^([^[]+)(\[.*\])?$/.exec(path), base = match[1], tokens = [];
       while (m = rx.exec(match[2])) tokens.push(m[1]);
       return [base, tokens];
     };

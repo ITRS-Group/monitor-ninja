@@ -241,6 +241,7 @@ class Current_status_Model extends Model
 
 		$result = $this->db->query($sql);
 
+		$show_passive_as_active = config::get('checks.show_passive_as_active');
 		/* check all hosts */
 		foreach ($result as $host){
 			$this->total_hosts++;
@@ -271,7 +272,6 @@ class Current_status_Model extends Model
 
 
 			/********* CHECK STATUS ********/
-			$show_passive_as_active = config::get('checks.show_passive_as_active');
 			$this->problem = true;
 			switch ($host->current_state) {
 				case self::HOST_UP:
@@ -364,6 +364,7 @@ class Current_status_Model extends Model
 		if (!$result)
 			return false;
 
+		$show_passive_as_active = config::get('checks.show_passive_as_active');
 		/* check all services */
 		foreach ($result as $service) {
 			$this->total_services++;
@@ -396,7 +397,6 @@ class Current_status_Model extends Model
 			/********* CHECK STATUS ********/
 
 			$this->problem = true;
-			$show_passive_as_active = config::get('checks.show_passive_as_active');
 			switch ($service->current_state) {
 				case self::SERVICE_OK:
 					if(!$service->active_checks_enabled && !$show_passive_as_active)
