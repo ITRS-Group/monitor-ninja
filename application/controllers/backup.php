@@ -20,7 +20,7 @@ class Backup_Controller extends Authenticated_Controller {
 	
 	private $cmd_restore = '/opt/monitor/op5/backup/restore';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
-	private $cmd_reload = 'echo "[$time] RESTART_PROGRAM;$time2" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
+	private $cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
 	private $cmd_view = 'tar tfz ';
 
 	private $backup_suffix = '.tar.gz';
@@ -62,6 +62,39 @@ class Backup_Controller extends Authenticated_Controller {
 		sort($contents);
 
 		$this->template->content->files = $contents;
+	}
+
+	public function restore($file)
+	{
+		$this->template = $this->add_view('backup/restore');
+		$this->template->status = false;
+
+		$status = 0;
+		system($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		if ($status != 0)
+		{
+			$this->template->message = "Could not restore the configuration '{$file}'";
+			return;
+		}
+
+		system($this->cmd_verify . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		if ($status != 0)
+		{
+			$this->template->message = "Could not verify the configuration '{$file}'";
+			return;
+		}
+
+		$time = time();
+		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
+		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
+		system($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		if ($status == 0)
+			$this->template->message = "Could not reload the configuration '{$file}'";
+		else
+		{
+			$this->template->status = true;
+			$this->template->message = "The configuration '{$file}' has been restored";
+		}
 	}
 
 	public function delete($file)
