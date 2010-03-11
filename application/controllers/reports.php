@@ -2945,7 +2945,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$showlog = showlog::get_path();
 
-		if ($showlog !== true) {
+		if ($showlog === false) {
 			die($this->translate->_('Unable to find the showlog executable'));
 		}
 
