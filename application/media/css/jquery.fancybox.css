@@ -39,7 +39,7 @@ div#fancy_loading div {
 	top: 0;
 	left: 0;
 	width: 40px;
-	height: 480px;
+	height: 100%; /* 480px */
 	background: transparent url('../images/fancy_progress.png') no-repeat;
 }
 
@@ -58,7 +58,7 @@ div#fancy_outer {
 div#fancy_inner {
 	position: relative;
 	width:100%;
-	height:100%;
+	height:440px; /* 100% */
 	background: #FFF;
 }
 
