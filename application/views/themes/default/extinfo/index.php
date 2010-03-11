@@ -108,18 +108,18 @@ if (!empty($widgets)) {
 					if (!empty($action_url)) {
 						echo '<a href="'.$action_url.'" style="border: 0px">';
 						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo $label_action_url;
+						echo '<a href="'.$action_url.'">'.$label_action_url.'</a>';
 					}
 					if (!empty($notes_url)) {
 						echo '&nbsp; <a target="_blank" href="'.$notes_url.'" style="border: 0px">';
 						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo $label_notes_url;
+						echo '<a target="_blank" href="'.$notes_url.'">'.$label_notes_url.'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
 						echo '&nbsp; <a href="'.$ary['url'].'" style="border: 0px">';
 						if (!empty($ary['img']))
-							echo '<img src="'.$ary['img'].'" alt="" /> ';
-						echo $label.'</a>'."\n";
+							echo '<img src="'.$ary['img'].'" alt="" /></a> ';
+						echo '<a href="'.$ary['url'].'">'.$label.'</a>'."\n";
 					}
 				?>
 			</td>
