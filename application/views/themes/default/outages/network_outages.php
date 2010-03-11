@@ -12,7 +12,7 @@
 				<th class="headerNone"><?php echo $label_duration ?></th>
 				<th class="headerNone"><?php echo $label_hosts_affected ?></th>
 				<th class="headerNone"><?php echo $label_services_affected ?></th>
-				<th class="headerNone" colspan="5"><?php echo $label_actions ?></th>
+				<th class="headerNone"><?php echo $label_actions ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -34,20 +34,14 @@
 				<td><?php echo time::to_string($details['duration']) ?></td>
 				<td><?php echo $details['affected_hosts'] ?></td>
 				<td><?php echo $details['affected_services'] ?></td>
-				<td class="icon">
-					<?php echo html::anchor('status/service/'.$host, html::image($this->add_path('icons/16x16/service-details.gif'),array('alt' => $this->translate->_('View status detail for this host'), 'title' => $this->translate->_('View status detail for this host'))),array('style' => 'border: 0px')) ?>
-				</td>
-				<td class="icon">
-					<?php echo html::anchor('statusmap/'.$host, html::image($this->add_path('icons/16x16/locate-host-on-map.png'),array('alt' => $this->translate->_('View status map for this host and its children'), 'title' => $this->translate->_('View status map for this host and its children'))),array('style' => 'border: 0px')) ?>
-				</td>
-				<td class="icon">
-					<?php echo html::anchor('trends/host/'.$host, html::image($this->add_path('icons/16x16/trends.gif'),array('alt' => $this->translate->_('View trends for this host'), 'title' => $this->translate->_('View trends for this host'))),array('style' => 'border: 0px')) ?>
-				</td>
-				<td class="icon">
-					<?php echo html::anchor('showlog/showlog/'.$host, html::image($this->add_path('icons/16x16/history.gif'),array('alt' => $this->translate->_('View alert history for this host'), 'title' => $this->translate->_('View alert history for this host'))),array('style' => 'border: 0px')) ?>
-				</td>
-				<td class="icon">
-					<?php echo html::anchor('notifications/host/'.$host, html::image($this->add_path('icons/16x16/notify.png'),array('alt' => $this->translate->_('View notifications for this host'), 'title' => $this->translate->_('View notifications for this host'))),array('style' => 'border: 0px')) ?>
+				<td>
+					<?php
+						echo html::anchor('status/service/'.$host, html::image($this->add_path('icons/16x16/service-details.gif'),array('alt' => $this->translate->_('View status detail for this host'), 'title' => $this->translate->_('View status detail for this host'))),array('style' => 'border: 0px'));
+						echo html::anchor('statusmap/'.$host, html::image($this->add_path('icons/16x16/locate-host-on-map.png'),array('alt' => $this->translate->_('View status map for this host and its children'), 'title' => $this->translate->_('View status map for this host and its children'))),array('style' => 'border: 0px'));
+						echo html::anchor('trends/host/'.$host, html::image($this->add_path('icons/16x16/trends.gif'),array('alt' => $this->translate->_('View trends for this host'), 'title' => $this->translate->_('View trends for this host'))),array('style' => 'border: 0px'));
+						echo html::anchor('showlog/showlog/'.$host, html::image($this->add_path('icons/16x16/history.gif'),array('alt' => $this->translate->_('View alert history for this host'), 'title' => $this->translate->_('View alert history for this host'))),array('style' => 'border: 0px'));
+						echo html::anchor('notifications/host/'.$host, html::image($this->add_path('icons/16x16/notify.png'),array('alt' => $this->translate->_('View notifications for this host'), 'title' => $this->translate->_('View notifications for this host'))),array('style' => 'border: 0px'))
+					?>
 				</td>
 			</tr>
 			<?php }	}	?>
