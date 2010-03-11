@@ -64,9 +64,9 @@
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td class="label">
 					<?php if ($create_pdf) { ?>
-						<?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true) ?>
+						<?php echo $data['SERVICE_DESCRIPTION'][$i]; ?>
 					<?php } else { ?>
-					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true); ?></a>
+					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 					<?php } ?>
 				</td>
 				<td class="data">

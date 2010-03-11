@@ -14,9 +14,9 @@
 			<?php for ($i=0;$i<$data['nr_of_items'];$i++): ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
 			<?php if (!$use_alias) { ?>
-				<td><?php echo $create_pdf != false ? wordwrap($data['HOST_NAME'][$i],30,'<br />',true) : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . wordwrap($data['HOST_NAME'][$i],30,'<br />',true) . '</a>' ?></td>
+				<td><?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
 				<?php } else { ?>
-				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? wordwrap($data['HOST_NAME'][$i],30,'<br />',true) :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . wordwrap($data['HOST_NAME'][$i],30,'<br />',true) . '</a>' ?>)</td>
+				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
 				<?php } ?>
 				<td class="data">
 					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => $this->translate->_('Service details for this host'))), array('style' => 'border: 0px')) ?>

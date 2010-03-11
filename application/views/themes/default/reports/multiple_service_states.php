@@ -60,9 +60,9 @@
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
 					<?php if ($create_pdf) { ?>
-						<?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true) ?>
+						<?php echo $data['SERVICE_DESCRIPTION'][$i] ?>
 					<?php } else { ?>
-					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo wordwrap($data['SERVICE_DESCRIPTION'][$i],25,'<br />',true); ?></a>
+					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 					<?php } ?>
 				</td>
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
