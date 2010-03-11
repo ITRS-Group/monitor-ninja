@@ -19,7 +19,7 @@ foreach($report_data as $i =>  $report) {
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<?php
 		if (!$create_pdf) { ?>
-		<img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /><?php
+		<a href="<?php echo $report['avail_links'];?>" style="border: 0px"><img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /></a><?php
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
@@ -68,7 +68,7 @@ foreach($report_data as $i =>  $report) {
 								array(
 								//'alt' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
 								//'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
-								'style' => 'width: 12px; height: 12px'));
+								'style' => 'width: 11px; height: 12px'));
 						?></td>
 					<?php } ?>
 				</tr>
