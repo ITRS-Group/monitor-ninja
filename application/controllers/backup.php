@@ -18,6 +18,16 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public $model = false;
 	
+	private $files2backup = array(
+		'/opt/monitor/etc/*.cfg',
+		'/opt/monitor/etc/*.users',
+		'/opt/monitor/var/*.log',
+		'/opt/monitor/var/archives',
+		'/opt/monitor/var/errors',
+		'/opt/monitor/var/traffic',
+	);
+	
+	private $cmd_backup = '/opt/monitor/op5/backup/backup';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
 	private $cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
