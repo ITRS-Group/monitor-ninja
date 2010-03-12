@@ -249,7 +249,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (arr::search($_REQUEST, 'del_report', false) !== false && $del_id !== false) {
 			$del_ok = Saved_reports_Model::delete_report($this->type, $del_id);
 			if ($del_ok != '') {
-				$del_msg = $this->translate->_('Report wad deleted successfully.');
+				$del_msg = $this->translate->_('Report was deleted successfully.');
 				$del_result = 'ok';
 			} else {
 				$del_msg = $this->translate->_('An error occurred while trying to delete the report.');
