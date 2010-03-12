@@ -46,6 +46,7 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
+		$this->template->content->suffix = $this->backup_suffix;
 
 		$files = @scandir($this->backups_location);
 		if ($files === false)
