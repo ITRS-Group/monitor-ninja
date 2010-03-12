@@ -1,19 +1,22 @@
-<?php $t = $this->translate; ?>
+<?php $t = $this->translate;
+if ($type == 'avail') { ?>
 <a href="#options" class="fancybox"><?php echo $label_edit_settings ?></a>&nbsp;
-<?php if ($report_id) { ?>
-<span id="view_add_schedule">
-	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox">Add <?php echo strtolower($label_new_schedule) ?></a>&nbsp;
-	<?php if (!empty($scheduled_info)) { ?>
-	<a id="show_schedule" href="#schedule_report" class="fancybox"><?php echo $label_view_schedule ?></a>
-<?php } ?>
+<?php
+} else {?>
+<a href="#sla_options" id="sla_save_report" class="fancybox"><?php echo $t->_('Save report') ?></a>&nbsp;
+<?php
+} ?>
+<span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
+	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox"><?php echo $t->_('Add') . ' '. strtolower($label_new_schedule) ?></a>&nbsp;
+	<a id="show_schedule" href="#schedule_report"<?php if (empty($scheduled_info)) { ?> style="display:none;"<?php } ?> class="fancybox"><?php echo $label_view_schedule ?></a>
 </span>
-<?php } else {
-echo '<em>'.$label_save_to_schedule.'</em>';
-}
-?>
-
+<span id="save_to_schedule">
+<?php echo !$report_id ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?>
+</span>
+<?php
+if ($type == 'avail') { ?>
 <div id="options">
-<?php	echo form::open('reports/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));?>
+<?php	echo form::open('reports/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
 			<h1><?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
@@ -78,12 +81,12 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 						</div>
 						<div id="report_setup">
 							<span id="report_save_information">
-								<input type="text" name="report_name" id="report_name" class="input-save-name" value="<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
-									$report_info['report_name'] : $report_info['sla_name']) : '' ?>" maxlength="255" />
+								<input type="text" name="report_name" id="report_name" class="input-save-name"
+									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" maxlength="255" />
 							</span>
 							<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
-							<input type="hidden" name="old_report_name" value="<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
-									$report_info['report_name'] : $report_info['sla_name']) : '' ?>" />
+							<input type="hidden" name="old_report_name"
+									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" />
 						</div>
 					</td>
 				</tr>
@@ -93,17 +96,46 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 					</td>
 				</tr>
 			</table>
-
-
-		<?php	if (is_array($html_options))
-				foreach ($html_options as $html_option)
-					echo form::hidden($html_option[1], $html_option[2]); ?>
-			<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
 		</div>
+<?php
+# SLA form - only save report. No "update"
+} else { ?>
+<div id="sla_options">
+<?php	echo form::open('reports/save', array('id' => 'report_form_sla', 'onsubmit' => 'return trigger_ajax_save(this);'));?>
+	<h1><?php echo $t->_('Save report') ?></h1>
+	<table style="width: 350px">
+		<tr class="none">
+			<td>
+				<label for="save_report_settings" id="save_report_label"><?php echo $label_save_report ?></label>
+				<div id="report_setup">
+						<input type="text" name="report_name" id="report_name" class="input-save-name"
+						value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" maxlength="255" />
+					<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+					<input type="hidden" name="sla_save" value="1" />
+					<input type="hidden" name="save_report_settings" value="1" />
+					<input type="hidden" name="old_report_name"
+						value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" />
+				</div>
+			</td>
+		</tr>
+		<tr class="none">
+			<td>
+				<input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />
+			</td>
+		</tr>
+
+	</table>
+</div>
+<?php }
+	if (is_array($html_options))
+			foreach ($html_options as $html_option)
+				echo form::hidden($html_option[1], $html_option[2]); ?>
+		<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
+	<?php # closing forms for both avail and SLA ?>
 	</form>
 	<span id="autoreport_periods"><?php echo $json_periods ?></span>
 	<div id="new_schedule_form_area">
-	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form'));
+	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form', 'onsubmit' => 'return trigger_schedule_save(this);'));
 		?>
 		<h1><?php echo $label_new_schedule ?></h1>
 		<table id="new_schedule_report_table" cellpadding="0" cellspacing="0" style="margin-left: -3px">
@@ -145,8 +177,8 @@ echo '<em>'.$label_save_to_schedule.'</em>';
 
 	<div id="schedule_report">
 		<table id="schedule_report_table">
-				<caption><?php echo $lable_schedules ?> (<?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
-									$report_info['report_name'] : $report_info['sla_name']) : '' ?>)</caption>
+				<caption><?php echo $lable_schedules ?> (<span id="scheduled_report_name"><?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
+									$report_info['report_name'] : $report_info['sla_name']) : '' ?></span>)</caption>
 				<tr id="schedule_header">
 					<th class="headerNone left"><?php echo $label_interval ?></th>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
