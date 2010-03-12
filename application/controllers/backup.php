@@ -18,8 +18,8 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public $model = false;
 	
-	private $cmd_restore = '/opt/monitor/op5/backup/restore';
-	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg';
+	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
+	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
 	private $cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
 	private $cmd_view = 'tar tfz ';
 
@@ -77,7 +77,7 @@ class Backup_Controller extends Authenticated_Controller {
 			return;
 		}
 
-		system($this->cmd_verify . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		system($this->cmd_verify, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not verify the configuration '{$file}'";
