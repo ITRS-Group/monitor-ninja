@@ -27,10 +27,11 @@ $('a.restore').live('click', function(){
 });
 $('a.delete').live('click', function(){
 	var link = $(this);
-	$('#backupstatus').load($(link).attr('href'), function(){
-		if ($(this).find('span').hasClass('ok'))
-			$(link).closest('tr').remove();
-	});
+	if (confirm('Do you really want to delete ' + $(link).closest('td').siblings().eq(0).text() + ' ?'))
+		$('#backupstatus').load($(link).attr('href'), function(){
+			if ($(this).find('span').hasClass('ok'))
+				$(link).closest('tr').remove();
+		});
 	return false;
 });
 </script>
