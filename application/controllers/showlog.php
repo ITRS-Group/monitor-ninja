@@ -211,5 +211,6 @@ class Showlog_Controller extends Authenticated_Controller
 	{
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Event Log");
+		$this->options['hide_initial'] = true;
 	}
 }
