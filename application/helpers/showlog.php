@@ -17,10 +17,12 @@ class showlog_Core
 		}
 
 		foreach ($options as $k => $v) {
-			switch ($k) {
-			 case 'hide_flapping': case 'hide_process': case 'hide_downtime':
+			# support all the various 'hide' options
+			if (substr($k, 0, 4) === 'hide') {
 				$cmd .= ' --' . str_replace('_', '-', $k);
-				break;
+				continue;
+			}
+			switch ($k) {
 			 case 'state_types':
 			 	if (isset($v['hard']) && isset($v['soft'])) {
 					break;
