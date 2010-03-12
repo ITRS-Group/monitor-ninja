@@ -132,7 +132,7 @@ class Backup_Controller extends Authenticated_Controller {
 		exec($this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
-			$this->template->message = "Could not verify the configuration '{$file}'";
+			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
 			return;
 		}
 
