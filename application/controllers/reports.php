@@ -498,6 +498,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->js_strings .= reports::js_strings();
 
+		$this->js_strings .= "var _reports_name_empty = '".$t->_("Please give your report a meaningful name.")."';\n";
 		$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
 		$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects = \"".$t->_("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
@@ -692,6 +693,9 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
+		$this->js_strings .= "var _reports_no_sla_str = '".$t->_('Please enter at least one SLA value')."';\n";
+		$this->js_strings .= "var _reports_sla_err_str = '".$t->_('Please check SLA values in fields marked red below and try again')."';\n";
+
 		$this->template->js_strings = $this->js_strings;
 
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Setup');
@@ -826,6 +830,10 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->css_header->css = $this->xtra_css;
+
+		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
@@ -1230,6 +1238,8 @@ class Reports_Controller extends Authenticated_Controller
 				$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 				$this->inline_js .= "show_calendar('".$report_period."');\n";
 
+				$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
+				$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
 				$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 				$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 				$this->js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
@@ -1249,11 +1259,12 @@ class Reports_Controller extends Authenticated_Controller
 
 				$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
 				$this->js_strings .= reports::js_strings();
+				$this->js_strings .= "var _reports_name_empty = '".$t->_("Please give your report a meaningful name.")."';\n";
 				$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 				$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
 				$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
 				$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
-					"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+					"the corresponding schedule(s) will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
 				$csv_link = $this->_get_csv_link();
 				$tpl_options->csv_link = $csv_link;
