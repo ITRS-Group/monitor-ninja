@@ -120,14 +120,15 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template->status = false;
 
 		$status = 0;
-		system($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		$output = array();
+		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
 			return;
 		}
 
-		system($this->cmd_verify, $status);
+		exec($this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not verify the configuration '{$file}'";
@@ -137,7 +138,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
-		system($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $status);
+		exec($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status == 0)
 			$this->template->message = "Could not reload the configuration '{$file}'";
 		else
