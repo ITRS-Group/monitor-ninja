@@ -317,6 +317,7 @@ if (isset($report_info)) {
 						<span id="report_save_information">
 							<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
 						</span>
+						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
 					</td>
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
