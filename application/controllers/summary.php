@@ -386,6 +386,8 @@ class Summary_Controller extends Authenticated_Controller
 				}
 			}
 		}
+		$used_options['start_time'] = $rpt->start_time;
+		$used_optiosn['end_time'] = $rpt->end_time;
 
 		if ($report_type == self::ALERT_TOTALS) {
 			if (isset($used_options['servicegroup']))
