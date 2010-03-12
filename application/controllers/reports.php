@@ -913,6 +913,10 @@ class Reports_Controller extends Authenticated_Controller
 		$sub_type			= false;
 		$time_parts 		= false;
 
+		# just make sure the javascript isn't messing things up for us
+		$start_time = trim($start_time) == 'undefined' ? '' : $start_time;
+		$end_time = trim($end_time) == 'undefined' ? '' : $end_time;
+
 		// cgi compatibility variables
 		// Start dates
 		$syear 	= (int)arr::search($_REQUEST, 'syear');
