@@ -27,7 +27,7 @@ class Backup_Controller extends Authenticated_Controller {
 		'/opt/monitor/var/traffic',
 	);
 	
-	private $cmd_backup = '/opt/monitor/op5/backup/backup';
+	private $cmd_backup = '/opt/monitor/op5/backup/backup ';
 	private $cmd_restore = '/opt/monitor/op5/backup/restore ';
 	private $cmd_verify = '/opt/monitor/bin/nagios -v /opt/monitor/etc/nagios.cfg 2>/dev/null';
 	private $cmd_reload = 'echo "[{TIME}] RESTART_PROGRAM;{TIME2}" >> /opt/monitor/var/rw/nagios.cmd && touch /opt/monitor/etc/misccommands.cfg';
@@ -72,6 +72,46 @@ class Backup_Controller extends Authenticated_Controller {
 		sort($contents);
 
 		$this->template->content->files = $contents;
+	}
+
+	public function verify()
+	{
+		$this->template = $this->add_view('backup/verify');
+
+		$output = array();
+		exec($this->cmd_verify, $output, $status);
+		if ($status != 0)
+		{
+			$this->template->status = false;
+			$this->template->message = "The current configuration is invalid";
+		}
+		else
+		{
+			$this->template->status = true;
+			$this->template->message = "The current configuration is valid";
+		}
+	}
+
+	public function backup()
+	{
+		$this->template = $this->add_view('backup/backup');
+
+		$file = strftime('backup-%Y-%m-%d_%H.%M');
+		$output = array();
+		exec($this->cmd_backup . $this->backups_location . '/' . $file . $this->backup_suffix
+			. ' ' . implode(' ', $this->files2backup) . ' 2>/dev/null', $output, $status);
+		if ($status != 0)
+		{
+			$this->template->status = false;
+			$this->template->file = '';
+			$this->template->message = "Could not backup the current configuration";
+		}
+		else
+		{
+			$this->template->status = true;
+			$this->template->file = $file;
+			$this->template->message = "The backup of the current configuration has been created";
+		}
 	}
 
 	public function restore($file)
