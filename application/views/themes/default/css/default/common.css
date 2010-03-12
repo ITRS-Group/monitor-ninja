@@ -589,6 +589,7 @@ table.white-table tr td {
 	border: 0px;
 	padding: 0px;
 	padding-bottom: 4px;
+	vertical-align: top;
 }
 table.white-table tr td input {
  background: #fafafa;
@@ -1038,6 +1039,23 @@ th.headerSortUp:first-child {
 .autocomplete strong {
 	font-weight:normal;
 	color:#3399ff;
+}
+.hidden { display: none; }
+/* pnp ********************************************************************************************/
+#pnp_navigation {
+	border: 1px solid #cdcdcd;
+	padding: 15px;
+	width: 200px;
+	line-height: 24px;
+	margin-left: 15px;
+}
+
+#pnp_navigation hr {
+	border: 0px;
+	height: 1px;
+	background-color: #cdcdcd;
+	color: #cdcdcd;
+	margin: 10px 0px;
 }
 /* jquery.jgrowl.css ******************************************************************************/
 div.jGrowl {

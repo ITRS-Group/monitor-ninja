@@ -2830,6 +2830,11 @@ class Reports_Model extends Model
 	}
 
 
+	private function comparable_state($row)
+	{
+		return $row['state'] << 1 | $row['hard'];
+	}
+
 	/**
 	 * Get alert summary for "top (hard) alert producers"
 	 *
@@ -2838,7 +2843,7 @@ class Reports_Model extends Model
 	public function top_alert_producers()
 	{
 		$start = microtime(true);
-		$query = $this->build_alert_summary_query('host_name, service_description');
+		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
@@ -2846,12 +2851,20 @@ class Reports_Model extends Model
 			die;
 		}
 		$result = array();
+		$pstate = array();
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$name = $row['host_name'];
 			} else {
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
+
+			# only count true state-changes
+			$state = $this->comparable_state($row);
+			if (isset($pstate[$name]) && $pstate[$name] === $state) {
+				continue;
+			}
+			$pstate[$name] = $state;
 
 			if (empty($result[$name])) {
 				$result[$name] = 1;
@@ -2913,12 +2926,23 @@ class Reports_Model extends Model
 		foreach ($this->host_name as $hn) {
 			$result[$hn] = $template;
 		}
+		$pstate = array();
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$type = 'host';
+				$sname = $row['host_name'];
 			} else {
 				$type = 'service';
+				$sname = $row['host_name'] . ';' . $row['service_description'];
 			}
+
+			# only count real state-changes
+			$state = $this->comparable_state($row);
+			if (isset($pstate[$sname]) && $pstate[$sname] === $pstate[$sname]) {
+				continue;
+			}
+			$pstate[$sname] = $state;
+
 			$name = $row['host_name'];
 			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
@@ -2934,8 +2958,14 @@ class Reports_Model extends Model
 			$result[$name] = $template;
 		}
 		$type = 'service';
+		$pstate = array();
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			$name = $row['host_name'] . ';' . $row['service_description'];
+			$state = $this->comparable_state($row);
+			if (isset($pstate[$name]) && $pstate[$name] === $state) {
+				continue;
+			}
+			$pstate[$name] = $state;
 			$result[$name][$type][$row['state']][$row['hard']]++;
 		}
 
@@ -2953,12 +2983,20 @@ class Reports_Model extends Model
 			$result[$hostgroup] = $template;
 		}
 
+		$pstate = array();
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$type = 'host';
+				$name = $row['host_name'];
 			} else {
 				$type = 'service';
+				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
+			$state = $this->comparable_state($row);
+			if (isset($pstate[$name]) && $pstate[$name] === $state) {
+				continue;
+			}
+			$pstate[$name] = $state;
 			$hostgroups = $this->host_hostgroup[$row['host_name']];
 			foreach ($hostgroups as $hostgroup) {
 				$result[$hostgroup][$type][$row['state']][$row['hard']]++;
@@ -2978,6 +3016,7 @@ class Reports_Model extends Model
 			$result[$servicegroup] = $template;
 		}
 
+		$pstate = array();
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$type = 'host';
@@ -2986,6 +3025,11 @@ class Reports_Model extends Model
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
+			$state = $this->comparable_state[$row];
+			if (isset($pstate[$name]) && $pstate[$name] === $state) {
+				continue;
+			}
+			$pstate[$name] = $state;
 
 			$servicegroups = $this->service_servicegroup[$type][$name];
 			foreach ($servicegroups as $sg) {
