@@ -89,7 +89,7 @@ class Backup_Controller extends Authenticated_Controller {
 		else
 		{
 			$this->template->status = true;
-			$this->template->message = "The current configuration is valid";
+			$this->template->message = "The current configuration is valid. Creating a backup...";
 		}
 	}
 

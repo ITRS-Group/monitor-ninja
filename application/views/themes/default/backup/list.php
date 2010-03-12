@@ -20,7 +20,7 @@ $('#verify').live('click', function(){
 	var link = $(this);
 	$('#backupstatus').load($(link).attr('href'), function(){
 		if ($(this).find('span').hasClass('ok'))
-			backup();
+			setTimeout(backup, 2000);
 	});
 	return false;
 });
