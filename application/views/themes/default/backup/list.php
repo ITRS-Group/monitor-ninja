@@ -1,23 +1,26 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <script type="text/javascript">
+function backup(){
+	$('#backupstatus').load($('#backup').attr('href'), function(){
+		if ($(this).find('span').hasClass('ok'))
+		{
+			var file = $('#backupfilename').text();
+			if ($('#backups tr:last a:first').text() != file)
+				$('#backups tr:last').after('<tr>'
+					+ '<td><a class="download" href="/backup/' + file + '<?php echo $suffix; ?>">' + file + '</a></td>'
+					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file + '">view</a></td>'
+					+ '<td><a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file + '">restore</a></td>'
+					+ '<td><a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file + '">delete</a></td>'
+					+ '</tr>');
+		}
+	});
+}
 $('#verify').live('click', function(){
 	var link = $(this);
 	$('#backupstatus').load($(link).attr('href'), function(){
 		if ($(this).find('span').hasClass('ok'))
-			$('#backupstatus').load($('#backup').attr('href'), function(){
-				if ($(this).find('span').hasClass('ok'))
-				{
-					var file = $('#backupfilename').text();
-					if ($('#backups tr:last a:first').text() != file)
-						$('#backups tr:last').after('<tr>'
-							+ '<td><a class="download" href="/backup/' + file + '<?php echo $suffix; ?>">' + file + '</a></td>'
-							+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file + '">view</a></td>'
-							+ '<td><a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file + '">restore</a></td>'
-							+ '<td><a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file + '">delete</a></td>'
-							+ '</tr>');
-				}
-			});
+			backup();
 	});
 	return false;
 });
