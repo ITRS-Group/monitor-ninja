@@ -14,6 +14,8 @@ class Geomap_Widget extends widget_Core {
 
 		# needed to figure out path to widget
 		$this->set_widget_name(__CLASS__, basename(__FILE__));
+
+		$_SESSION['nagvis_user'] = user::session('username');
 	}
 
 	public function index($arguments=false, $master=false)
