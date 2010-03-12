@@ -67,7 +67,7 @@ $(document).ready(function() {
 
 	$("#report_form").bind('submit', function() {
 		loopElements();
-		return check_form_values();
+		return validate_report_form();
 	});
 
 	$("#report_period").bind('change', function() {
@@ -130,6 +130,126 @@ $(document).ready(function() {
 			create_filename();
 	});
 });
+
+function validate_report_form(f)
+{
+	var is_ok = check_form_values();
+	if (!is_ok) {
+		return false;
+	}
+	var errors = 0;
+	var err_str = '';
+	var jgrowl_err_str = '';
+	var is_sla = false;
+	// only run this part if report should be saved
+	if ($("#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
+
+		var f = f == null ? document.forms['report_form'] : f;
+		if ($('input[name=sla_save]').attr('value') == '1') {
+			f = document.forms['report_form_sla'];
+			is_sla = true;
+		}
+
+		var report_name = $.trim(f.report_name.value);
+		if (report_name == '') {
+			// fancybox is stupid and copies the form so we have to force
+			// this script to check the form in the fancybox_content div
+			report_name = $('#fancy_content #report_name').attr('value');
+		}
+
+		// these 2 fields should be the same no matter where on the
+		// page they are found
+		var saved_report_id = f.saved_report_id.value;
+		var old_report_name = $.trim(f.old_report_name.value);
+
+		if (report_name == '') {
+			errors++;
+			jgrowl_err_str += _reports_name_empty + "\n";
+			err_str += "<li>" + _reports_name_empty + ".</li>";
+		}
+
+		// display err_str if any
+
+		if (errors) {
+			// clear all style info from progress
+			$('#response').attr("style", "");
+			$('#response').html("<ul class=\"error\">" + err_str + "</ul>");
+			window.scrollTo(0,0); // make sure user sees the error message
+
+			jgrowl_message(jgrowl_err_str, _error_header);
+			return false;
+		}
+	}
+	$('#response').html('');
+	return true;
+}
+
+function trigger_ajax_save(f)
+{
+	// first we need to make sure we get the correct field information
+	// for report_name since fancybox is pretty stupid
+	$('input[name=report_name]').attr('value', $('#fancy_content #report_name').attr('value'));
+
+	// ajax post form options for SLA save generated report
+	var sla_options = {
+		target:			'#response',		// target element(s) to be updated with server response
+		beforeSubmit:	validate_report_form,	// pre-submit callback
+		success:		show_sla_saveresponse,	// post-submit callback
+		dataType: 'json'
+	};
+	$('#report_form_sla').ajaxSubmit(sla_options);
+	return false;
+}
+
+function show_sla_saveresponse(responseText, statusText)
+{
+	if (responseText['status'] == 'ok' && statusText == 'success') {
+		jgrowl_message(responseText['status_msg'], _success_header);
+
+		// propagate new values to form
+		$('input[name=saved_report_id]').attr('value', responseText['report_id']);
+		$('input[name=report_id]').attr('value', responseText['report_id']);
+		$('input[name=report_name]').attr('value', $('#fancy_content #report_name').attr('value'));
+		$('#scheduled_report_name').text($('#fancy_content #report_name').attr('value'));
+	}
+	$('#view_add_schedule').show();
+	$('#save_to_schedule').hide();
+	$(".fancybox").fancybox.close();
+}
+
+function trigger_schedule_save(f)
+{
+	// ajax post form options
+	show_progress('progress', _wait_str);
+	// fetch values from form
+	var report_id = 0; // new schedule has no ID
+	var rep_type = $('input[name=type]').attr('value');
+	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
+	var period = $('#fancy_content #period').attr('value');
+	var period_str = $('#fancy_content #period option:selected').text();
+	var recipients = $('#fancy_content #recipients').attr('value');
+	var filename = $('#fancy_content #filename').attr('value');
+	var description = $('#fancy_content #description').attr('value');
+
+	$.ajax({
+		url:_site_domain + _index_page + '/reports/schedule',
+		type: 'POST',
+		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
+		success: function(data) {
+			if (isNaN(data)) { // error!
+				jgrowl_message(data, _reports_error);
+			} else {
+				$('#schedule_report_table').append(create_new_schedule_rows(data));
+				jgrowl_message(_reports_schedule_create_ok, _reports_success);
+				$(".fancybox").fancybox.close();
+				$('#show_schedule').show(); // show the link to view available schedules
+			}
+		}
+	});
+
+	setTimeout('delayed_hide_progress()', 1000);
+	return false;
+}
 
 function ajax_submit(f)
 {
