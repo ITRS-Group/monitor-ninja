@@ -124,11 +124,10 @@ class Showlog_Controller extends Authenticated_Controller
 		showlog::show_log_entries($this->options);
 	}
 
-	public function showlog($host = false)
+	public function basic_setup()
 	{
 		$x = $this->translate;
-		$this->template->title = $this->translate->_("Reporting » Alert history");
-		$this->template->disable_refresh = true;
+
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -183,14 +182,34 @@ class Showlog_Controller extends Authenticated_Controller
 			 $x->_('Service critical') => 'c',
 			 $x->_('Service recovery') => 'r');
 
-		if ($host) {
-			if (!is_array($host)) {
-				$host = array($host);
-			}
-			$this->options['host'] = $host;
-		}
-		$this->template->content->options = $this->options;
 		$this->template->content->host_state_options = $host_state_options;
 		$this->template->content->service_state_options = $service_state_options;
+	}
+
+	public function alert_history($obj_name = false)
+	{
+		$this->basic_setup();
+		$this->template->title = $this->translate->_("Reporting » Alert history");
+		$this->template->disable_refresh = true;
+		if ($obj_name) {
+			$obj_type = 'host';
+			if (!is_array($obj_name)) {
+				if (strstr($obj_name, ';') !== false) {
+					$obj_type = 'service';
+				}
+				$obj_name = array($obj_name);
+			}
+			$this->options[$obj_type] = $obj_name;
+		}
+		$this->options['hide_process'] = true;
+		$this->options['hide_initial'] = true;
+		$this->options['hide_commands'] = true;
+		$this->template->content->options = $this->options;
+	}
+
+	public function showlog()
+	{
+		$this->basic_setup();
+		$this->template->title = $this->translate->_("Reporting » Event Log");
 	}
 }
