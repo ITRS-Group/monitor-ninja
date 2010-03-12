@@ -6,6 +6,15 @@ if (!empty($widgets)) {
 		echo $widget;
 	}
 }
+
+$report_name = false;
+if (isset($report_info)) {
+	if (isset($report_info['report_name'])) {
+		$report_name = $report_info['report_name'];
+	} elseif (isset($report_info['sla_name'])) {
+		$report_name = $report_info['sla_name'];
+	}
+}
 ?>
 <br />
 <div id="progress"></div>
