@@ -183,7 +183,7 @@ class Scheduled_reports_Model extends Model
 		$description	= trim($description);
 		$user 			= Auth::instance()->get_user()->username;
 
-		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return false;
+		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
 
 		// some users might use ';' to separate email adresses
 		// just replace it with ',' and continue
@@ -210,7 +210,7 @@ class Scheduled_reports_Model extends Model
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
-			return false;
+			return $this->translate->_('DATABASE ERROR').": $sql";
 		}
 
 		if (!$id) {
