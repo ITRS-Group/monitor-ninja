@@ -1040,7 +1040,7 @@ th.headerSortUp:first-child {
 	font-weight:normal;
 	color:#3399ff;
 }
-.hidden { display: block; }
+.hidden { display: none; }
 /* pnp ********************************************************************************************/
 #pnp_navigation {
 	border: 1px solid #cdcdcd;
