@@ -172,7 +172,7 @@ function ajax_submit(f)
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
 		success: function(data) {
 			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, report_type_id);
-			jgrowl_message(_reports_schedule_create_ok, _reports_successs);
+			jgrowl_message(_reports_schedule_create_ok, _reports_success);
 		}
 	});
 	return false;
@@ -190,7 +190,7 @@ function send_report_now(type, id)
 		data: {type: type, schedule_id: id},
 		success: function(data) {
 			if (data == '') {
-				jgrowl_message(_reports_schedule_send_ok, _reports_successs);
+				jgrowl_message(_reports_schedule_send_ok, _reports_success);
 			} else {
 				jgrowl_message(_reports_schedule_send_error, _reports_error);
 			}
@@ -681,9 +681,9 @@ function show_response(responseText, statusText)
 	} else {
 		var report_id = $('#report_id').fieldValue();
 		if (report_id[0]) { // updated
-			jgrowl_message(_reports_schedule_update_ok, _reports_successs);
+			jgrowl_message(_reports_schedule_update_ok, _reports_success);
 		} else { //new save
-			jgrowl_message(_reports_schedule_create_ok, _reports_successs);
+			jgrowl_message(_reports_schedule_create_ok, _reports_success);
 			$('#schedule_report_table').append(create_new_schedule_rows(responseText));
 			$('#schedule_report_table').show();
 			schedule_is_visible = true;
@@ -764,7 +764,6 @@ function schedule_delete(id)
 function remove_schedule(id)
 {
 	var time = 3000;
-	jgrowl_message(_reports_schedule_deleted, _reports_successs);
 	nr_of_scheduled_instances--;
 	// remove row for deleted ID
 	$('#report-' + id).remove();
@@ -785,6 +784,7 @@ function remove_schedule(id)
 			//tb_remove(); // close thickbox
 		}
 	}
+	jgrowl_message(_reports_schedule_deleted, _reports_success);
 	setTimeout('hide_response()', time);
 }
 

@@ -683,7 +683,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _report_types_json = '(".json::encode($report_types).")';\n";
 		$this->js_strings .= "var _saved_avail_reports = '(".json::encode($avail_reports_arr).")';\n";
 		$this->js_strings .= "var _saved_sla_reports = '(".json::encode($sla_reports_arr).")';\n";
-		$this->js_strings .= "var _reports_successs = '".$t->_('Success')."';\n";
+		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
 		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
