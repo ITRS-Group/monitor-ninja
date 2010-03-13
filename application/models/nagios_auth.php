@@ -458,7 +458,7 @@ class Nagios_auth_Model extends Model
 		if ($this->view_services_root === true)
 			return true;
 
-		if (!$this->servicegroups())
+		if (!$this->servicegroups)
 			$this->get_authorized_servicegroups();
 
 		if (is_numeric($servicegroup)) {
