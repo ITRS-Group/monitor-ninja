@@ -168,6 +168,12 @@ class reports_Core
 		$js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";
 		$js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
 		$js_strings .= "var _reports_enddate_lessthan_startdate = '".$t->_("You have entered an End date before Start Date.")."';\n";
+		$js_strings .= "var _reports_send_now = '".$t->_('Send this report now')."';\n";
+		$js_strings .= "var _reports_send = '".$t->_('Send')."';\n";
+		$js_strings .= "var _reports_errors_found = '".$t->_('Found the following error(s)')."';\n";
+		$js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
+		$js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
+		$js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
 
 		return $js_strings;
 	}
