@@ -821,13 +821,41 @@ function show_response(responseText, statusText)
 function create_new_schedule_rows(id)
 {
 	var return_str = '';
-	var f = document.forms['schedule_report_form'];
+	var rep_type = $('input[name=type]').attr('value');
+
+	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
+	if (saved_report_id == '')
+		saved_report_id = $('#saved_report_id').attr('value');
+
+	var period = $('#fancy_content #period').attr('value');
+	if (period == '')
+		period = $('#period').attr('value');
+
+	var period_str = $('#fancy_content #period option:selected').text();
+	if (period_str == '')
+		period_str = $('#period option:selected').text();
+
+	var recipients = $('#fancy_content #recipients').attr('value');
+	if (recipients == '')
+		recipients = $('#recipients').attr('value');
+
+	var filename = $('#fancy_content #filename').attr('value');
+	if (filename == '')
+		filename = $('#filename').attr('value');
+
+	var description = $('#fancy_content #description').attr('value');
+	if (description == '')
+		description = $('#description').attr('value');
+	if (description == '')
+		description = '&nbsp;';
+
 	return_str += '<tr id="report-' + id + '">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + $('#period option:selected').text(); + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + f.recipients.value + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + f.filename.value + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + f.description.value + '</td>';
+	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
+	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
 	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	nr_of_scheduled_instances++;
 	return return_str;
 }
 
