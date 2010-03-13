@@ -882,13 +882,17 @@ function schedule_delete(id)
 function remove_schedule(id)
 {
 	var time = 3000;
-	nr_of_scheduled_instances--;
-	// remove row for deleted ID
+
+	if (nr_of_scheduled_instances)
+		nr_of_scheduled_instances--;
+
+	// remove row for deleted ID (both in fancybox and in original table)
 	$('#report-' + id).remove();
+	$('#fancy_content #report-' + id).remove();
 	if (nr_of_scheduled_instances == 0) {
 		// last item deleted
 		$('#schedule_report').hide(); // hide entire table/div
-		$('#show_schedule').remove(); // remove 'View schedules' button
+		$('#show_schedule').hide(); // remove 'View schedules' button
 		$('#is_scheduled').remove();
 		if ($('#report_id')) {
 			var chk_text = '';
@@ -896,12 +900,11 @@ function remove_schedule(id)
 			chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
 			$('#report_id option:selected').text(chk_text);
 		}
-
-		if (!$("#report_type").is(":visible")) { // setup doesn't use thickbox
-			//@@@FIXME: fix when thickbox replacement is in place
-			//tb_remove(); // close thickbox
+		if ($(".fancybox").is(':visible')) {
+			$(".fancybox").fancybox.close();
 		}
 	}
+
 	jgrowl_message(_reports_schedule_deleted, _reports_success);
 	setTimeout('hide_response()', time);
 }
