@@ -1265,12 +1265,14 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->scheduled_info = $scheduled_info;
 				$tpl_options->label_dblclick = $t->_('Double click to edit');
 				$scheduled_label = $t->_('Scheduled');
-				$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
-				$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
-				$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
-				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$scheduled_downtime_as_uptime."');\n";
-				$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
-				$this->inline_js .= "show_calendar('".$report_period."');\n";
+				if ($this->type == 'avail') {
+					$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
+					$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
+					$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
+					$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$scheduled_downtime_as_uptime."');\n";
+					$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
+					$this->inline_js .= "show_calendar('".$report_period."');\n";
+				}
 
 				$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
 				$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
