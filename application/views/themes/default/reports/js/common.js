@@ -1,5 +1,8 @@
 var _time_error = false;
 var _time_error_start = false;
+var sla_month_error_color    = 'red';
+var sla_month_disabled_color = '#cdcdcd';
+var sla_month_enabled_color  = '#fafafa';
 
 $(document).ready(function() {
 	// handle the move-between-lists-button (> + <) and double click events
@@ -489,6 +492,40 @@ function check_form_values()
 	if ($("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
+	}
+
+	if ($("#enter_sla").is(":visible")) {
+		// check for sane SLA values
+		var red_error = false;
+		var max_val = 100;
+		var nr_of_slas = 0;
+
+		for (i=1;i<=12;i++) {
+			var field_name = 'month_' + i;
+			var value = $('input[name=' + field_name + ']').attr('value');
+			value = value.replace(',', '.');
+			if (value > max_val || isNaN(value)) {
+				$('input[name=' + field_name + ']').css('background', sla_month_error_color);
+				errors++;
+				red_error = true;
+			} else {
+				if (value != '') {
+					nr_of_slas++;
+				}
+				if ($("input[name='" + field_name + "']").attr('disabled'))
+					$('input[name=' + field_name + ']').css('background', sla_month_disabled_color);
+				else
+					$('input[name=' + field_name + ']').css('background', sla_month_enabled_color);
+			}
+		}
+		if (red_error) {
+			err_str += '<li>' + _reports_sla_err_str + '</li>';
+		}
+
+		if (nr_of_slas == 0 && !red_error) {
+			errors++;
+			err_str += "<li>" + _reports_no_sla_str + "</li>";
+		}
 	}
 
 	/**
