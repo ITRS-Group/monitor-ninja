@@ -37,6 +37,12 @@ class Notifications_Model extends Model {
 
 			$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
 
+			if (!empty($where_string)) {
+				$where_string .= "\nAND ";
+			} else {
+				$where_string .= "\nWHERE ";
+			}
+			$where_string .= "contact_name != ''\n";
 			$sql = "SELECT host_name, service_description, start_time, end_time, reason_type, state,
 							contact_name, notification_type, output
 							FROM notification ".$where_string."
