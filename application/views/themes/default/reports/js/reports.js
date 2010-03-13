@@ -16,6 +16,7 @@ var _show_schedules;
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
 var end_time_bkup = '';
+var _schedule_remove = false;
 
 $(document).ready(function() {
 
@@ -49,7 +50,14 @@ $(document).ready(function() {
 	// delete single schedule
 	$(".delete_schedule").each(function() {
 		$(this).click(function() {
-			schedule_delete($(this).attr('id'));
+			if ($(this).attr('class').indexOf('avail_del') > -1) {
+				_schedule_remove = 'avail';
+			} else {
+				if ($(this).attr('class').indexOf('sla_del') > -1) {
+					_schedule_remove = 'sla';
+				}
+			}
+			schedule_delete($(this).attr('id'), _schedule_remove);
 		})
 	});
 
@@ -283,16 +291,24 @@ function ajax_submit(f)
 		}
 	}
 
-//	validate_form();
+	if(!validate_form()) {
+		setTimeout('delayed_hide_progress()', 1000);
+		return false;
+	}
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
 		type: 'POST',
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
 		success: function(data) {
-			new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, report_type_id);
-			jgrowl_message(_reports_schedule_create_ok, _reports_success);
+			if (isNaN(data)) { // error!
+				jgrowl_message(data, _reports_error);
+			} else {
+				new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, report_type_id);
+				jgrowl_message(_reports_schedule_create_ok, _reports_success);
+			}
 		}
 	});
+	setTimeout('delayed_hide_progress()', 1000);
 	return false;
 }
 
@@ -809,7 +825,7 @@ function show_response(responseText, statusText)
 			$('#schedule_report_form').clearForm();
 			setup_editable();
 			//tb_remove();
-			nr_of_scheduled_instances++;
+			update_visible_schedules();
 			if (nr_of_scheduled_instances > 0) {
 				$('#show_schedule').show();
 			}
@@ -818,6 +834,7 @@ function show_response(responseText, statusText)
 	setTimeout('hide_response()', time);
 }
 
+// used from options template
 function create_new_schedule_rows(id)
 {
 	var return_str = '';
@@ -854,11 +871,13 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
-	nr_of_scheduled_instances++;
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
+	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
+	update_visible_schedules();
 	return return_str;
 }
 
+// used from setup
 function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id)
 {
 	var return_str = '';
@@ -870,16 +889,46 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif"></td></tr>';
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form></td>';
+	return_str += '<td class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
 	setTimeout('delayed_hide_progress()', 1000);
+	update_visible_schedules();
+	//nr_of_scheduled_instances++;
 
+	// make sure we hide message about no schedules and show table headers
+	$('#' + rep_type_str + '_no_result').hide();
+	$('#' + rep_type_str + '_headers').show();
 	return true;
 }
 
-function schedule_delete(id)
+var avail_schedules = 0;
+var sla_schedules = 0;
+function update_visible_schedules()
+{
+	if ($('#avail_scheduled_reports_table').is(':visible')) {
+		avail_schedules = $('#avail_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+	}
+
+	if ($('#sla_scheduled_reports_table').is(':visible')) {
+		sla_schedules = $('#sla_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+	}
+
+	if ($('#schedule_report_table').is(':visible')) {
+		// setup and options templates
+		if ($('#fancy_content').is(':visible')) {
+			// check the fancybox layer (options template)
+			nr_of_scheduled_instances = $('#fancy_content #schedule_report_table tr').not('#schedule_header').length;
+		} else {
+			nr_of_scheduled_instances = $('#schedule_report_table tr').not('#schedule_header').length;
+		}
+
+	}
+}
+
+function schedule_delete(id, remove_type)
 {
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
@@ -898,7 +947,7 @@ function schedule_delete(id)
 		success: function(data) {
 			if (data == 'OK') {
 				// item deleted
-				remove_schedule(id);
+				remove_schedule(id, remove_type);
 			} else {
 				jgrowl_message(data, _reports_error);
 				setTimeout('hide_response()', time);
@@ -907,12 +956,11 @@ function schedule_delete(id)
 	});
 }
 
-function remove_schedule(id)
+function remove_schedule(id, remove_type)
 {
 	var time = 3000;
 
-	if (nr_of_scheduled_instances)
-		nr_of_scheduled_instances--;
+	update_visible_schedules();
 
 	// remove row for deleted ID (both in fancybox and in original table)
 	$('#report-' + id).remove();
@@ -930,6 +978,13 @@ function remove_schedule(id)
 		}
 		if ($(".fancybox").is(':visible')) {
 			$(".fancybox").fancybox.close();
+		}
+	}
+
+	if (remove_type!='' && remove_type != 'undefined') {
+		if ($('#' + remove_type + '_scheduled_reports_table tbody tr:visible').not('.no-result').length == 0) {
+			$('#' + remove_type + '_headers').hide();
+			$('#' + remove_type + '_no_result').show();
 		}
 	}
 

@@ -5,8 +5,7 @@
 				<div id="scheduled_avail_reports" style='width: 100%'>
 					<table id="avail_scheduled_reports_table" style='width: 100%;' class="white-table">
 					<caption><?php echo $avail_header ?></caption>
-						<?php if (!empty($avail_schedules) && count($avail_schedules)) { ?>
-						<thead>
+						<thead id="avail_headers" <?php if (!count($avail_schedules)) { ?>style="display:none;"<?php } ?>>
 							<tr class="setup">
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_interval ?></th>
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_name ?></th>
@@ -16,6 +15,7 @@
 								<th class="headerNone left" colspan="2" style='width: 1%'></th>
 							</tr>
 						</thead>
+						<?php if (!empty($avail_schedules) && count($avail_schedules)) { ?>
 						<tbody>
 							<?php	$recipients = false;
 								foreach ($avail_schedules as $schedule) {
@@ -29,15 +29,14 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
 								<td><form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>"" value="<?php echo $this->translate->_('Send') ?>"></form></td>
-								<td class="delete_schedule" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'>
+								<td class="delete_schedule avail_del" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'>
 									<?php echo html::image($this->add_path('icons/12x12/cross.gif'), array('class' => 'deleteimg')) ?>
 								</td>
 							</tr>
 							<?php } ?>
 							</tbody>
-							<?php } else {?>
-								<tr class="no-result"><td colspan="7"><?php echo $label_no_schedules ?></td></tr>
-							<?php } ?>
+							<?php }?>
+								<tr id="avail_no_result" class="no-result"<?php if (!empty($avail_schedules) && count($avail_schedules)) { ?> style="display:none;"<?php } ?>><td colspan="7"><?php echo $label_no_schedules ?></td></tr>
 					</table>
 				</div>
 
@@ -45,8 +44,7 @@
 				<div id="scheduled_sla_reports" style="width: 100%">
 					<table id="sla_scheduled_reports_table" style='width: 100%;' class="white-table">
 					<caption><?php echo $sla_header ?></caption>
-						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
-						<thead>
+						<thead id="sla_headers"<?php if (!count($sla_schedules)) { ?> style="display:none"<?php } ?>>
 							<tr class="setup">
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_interval ?></th>
 								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_name ?></th>
@@ -56,6 +54,7 @@
 								<th class="headerNone left" colspan="2" style='width: 1%'></th>
 							</tr>
 						</thead>
+						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
 						<tbody>
 							<?php	$recipients = false;
 								foreach ($sla_schedules as $schedule) {
@@ -69,13 +68,12 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
 								<td><form><input type="button" class="send_report_now" id="send_now_sla_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>"" value="<?php echo $this->translate->_('Send') ?>"></form></td>
-								<td class="delete_schedule" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
+								<td class="delete_schedule sla_del" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
-						<?php	} else {?>
-							<tr class="no-result"><td colspan="7"><?php echo $label_no_schedules ?></td></tr>
-							<?php } ?>
+						<?php }?>
+							<tr id="sla_no_result" class="no-result"<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?> style="display:none"<?php } ?>><td colspan="7"><?php echo $label_no_schedules ?></td></tr>
 					</table>
 				</div>
 			</div>
