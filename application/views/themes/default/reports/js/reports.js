@@ -771,12 +771,13 @@ function confirm_delete_report(the_val)
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = _reports_confirm_delete + "\n";
+	var type = $('input[name=type]').attr('value');
 	if (the_val!="" && the_path!="") {
 		if (is_scheduled) {
 			msg += _reports_confirm_delete_warning;
 		}
 		if (confirm(msg)) {
-			self.location.href=the_path + '?del_report=true&del_id=' + the_val;
+			self.location.href=the_path + '?del_report=true&del_id=' + the_val + '&type=' + type;
 			return true;
 		}
 	}
