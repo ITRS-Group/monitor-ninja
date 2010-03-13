@@ -603,8 +603,10 @@ function edit_state_options(val)
 function toggle_field_visibility(val, theId) {
 	if (val) {
 		$('#' + theId).show();
+		$('#fancy_content #' + theId).show();
 	} else {
 		$('#' + theId).hide();
+		$('#fancy_content #' + theId).hide();
 	}
 }
 
