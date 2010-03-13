@@ -810,11 +810,8 @@ function show_response(responseText, statusText)
 			setup_editable();
 			//tb_remove();
 			nr_of_scheduled_instances++;
-			if (nr_of_scheduled_instances==1) {
-				// add 'Vew schedules' Button
-				// @@@FIXME: update when we have fancybox or whatever to replace thickbox
-				//$('#view_add_schedule').append('<input type="button" id="show_schedule" alt="#TB_inline?height=500&width=550&inlineId=schedule_report" class="button view-schedules20 thickbox" value="' + _reports_view_schedule + '">');
-				//tb_init('#show_schedule');
+			if (nr_of_scheduled_instances > 0) {
+				$('#show_schedule').show();
 			}
 		}
 	}
