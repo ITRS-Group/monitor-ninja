@@ -3057,10 +3057,7 @@ class Reports_Controller extends Authenticated_Controller
 		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description);
 
 		if (is_int($ok)) {
-			if ($module_save) {
-				// only return the newly created ID on success if save is initiated from any report module (avail/SLA)
-				echo $ok;
-			}
+			echo $ok;
 		} else {
 			echo sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok);
 		}
