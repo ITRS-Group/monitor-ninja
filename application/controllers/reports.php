@@ -1150,6 +1150,36 @@ class Reports_Controller extends Authenticated_Controller
 			if($assume_states_during_not_running)
 				$html_options[] = array('hidden', 'assumestatesduringnotrunning', $assume_states_during_not_running);
 
+			if ($this->type === 'sla') {
+				# we need to stash all the variables needed for the report
+				# to be able to save it later. In avail they are editable form elements
+
+				foreach($this->report_options as $key => $val) {
+					switch ($key) {
+						case 'start_time': case 'end_time':
+							if (is_numeric($val)) {
+								$val = date('Y-m-d H:i', $val);
+							} elseif (trim($val) == 'undefined') {
+								$val = '';
+							}
+							break;
+					}
+
+					for ($i = 0; $i< sizeof($html_options);$i++) {
+						if(isset($html_options[$i][1]) && $html_options[$i][1] === $key) {
+							unset($html_options[$i]);
+						}
+					}
+					$html_options[] = array('hidden', $key, $val);
+				}
+			}
+
+			$html_options[] = array('hidden', 'type', $this->type);
+			if (!empty($this->in_months)) {
+				foreach ($this->in_months as $k => $d) {
+					$html_options[] = array('hidden', 'month_'.$k, $d);
+				}
+			}
 			$label_report_period = $t->_('Reporting period');
 			$label_custom_period = $t->_('CUSTOM REPORT PERIOD');
 
