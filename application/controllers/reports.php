@@ -1821,6 +1821,85 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
+	*	Save a report via ajax call
+	* 	Called from reports.js (trigger_ajax_save())
+	* 	@return JSON string
+	*/
+	public function save()
+	{
+		if(!request::is_ajax()) {
+			$msg = $this->translate->_('Only Ajax calls are supported here');
+			die($msg);
+		}
+
+		$this->auto_render=false;
+
+		# 	Fetch the input variable 'type' from
+		#	either $_GET or $_POST and use default
+		# 	method param if nothing found
+		$this->type = arr::search($_REQUEST, 'type');
+		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+
+		$report_options = false;
+		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+
+		// store all variables in array for later use
+		foreach ($_REQUEST as $key => $value) {
+			if (in_array($key, self::$setup_keys)) {
+				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
+					if ($this->type == 'avail') {
+						$report_options[$key] = strtotime($value);
+					} else { # SLA
+						if (is_numeric($value)) {
+							$report_options[$key] = $value;
+							$_REQUEST[$key] = date("Y-m-d H:i", $value);
+						} else {
+							$report_options[$key] = strtotime($value);
+							$_REQUEST[$key] = $value;
+						}
+					}
+				} else {
+					$report_options[$key] = $value;
+				}
+			} else {
+				if ($this->type == 'sla' && preg_match('/^month/', trim($key))) {
+					$id = (int)str_replace('month_', '', $key);
+					if (trim($value) == '') continue;
+					$value = str_replace(',', '.', $value);
+					$value = (float)$value;
+					// values greater than 100 doesn't make sense
+					if ($value>100)
+						$value = 100;
+					$this->in_months[$id] = $value;
+				}
+			}
+		}
+
+		if ($this->type == 'sla') {
+			$report_name = arr::search($_REQUEST, 'report_name', false);
+			unset($report_options['report_name']);
+			$report_options['sla_name'] = $report_name;
+		}
+
+		$obj_field = arr::search($_REQUEST, 'report_type', false);
+		$obj_value = arr::search($_REQUEST, self::$map_type_field[$obj_field], array());
+
+		$save_report_settings = arr::search($_REQUEST, 'save_report_settings');
+		$report_name = arr::search($_REQUEST, 'report_name', false);
+		$return = false;
+		if ($save_report_settings && $report_name !== false && !empty($obj_value)) {
+			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
+			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
+			$msg_type = $this->report_id ? "ok" : "";
+			#$return = array('status' => $obj_field, 'status_msg' => Kohana::debug($this->report_id));
+			$return = array('status' => $msg_type, 'status_msg' => $status_msg, 'report_id' => $this->report_id);
+		} else {
+			$return = array('status' => '', 'status_msg' => $this->translate->_('Unable to save this report.'));
+		}
+		echo json::encode($return);
+	}
+
+	/**
 	*	Create a piechart
 	*/
 	public function piechart($in_data=false, $path=null)
