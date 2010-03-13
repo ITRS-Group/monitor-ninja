@@ -303,7 +303,7 @@ function ajax_submit(f)
 			if (isNaN(data)) { // error!
 				jgrowl_message(data, _reports_error);
 			} else {
-				new_schedule_rows(saved_report_id, period_str, recipients, filename, description, rep_type_str, report_type_id);
+				new_schedule_rows(data, period_str, recipients, filename, description, rep_type_str, report_type_id);
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
 			}
 		}
