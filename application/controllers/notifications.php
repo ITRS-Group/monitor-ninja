@@ -63,7 +63,7 @@ class Notifications_Controller extends Authenticated_Controller {
 	/**
 	 * Default controller method
 	 */
-	public function index($sort_field='host_name', $sort_order='ASC', $type = false, $query_type = nagstat::FIND_HOST)
+	public function index($sort_field='start_time', $sort_order='DESC', $type = false, $query_type = nagstat::FIND_HOST)
 	{
 		$type = urldecode($this->input->get('type', $type));
 		$noheader = urldecode($this->input->get('noheader', false));
