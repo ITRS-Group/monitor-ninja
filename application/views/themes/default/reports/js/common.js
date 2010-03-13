@@ -51,7 +51,7 @@ $(document).ready(function() {
 		'autoScale':true,
 		'autoDimensions': true,
 		'callbackOnShow': function() {
-			if ($("#report_period").val() == 'custom') {
+			if ($("#report_period").val() == 'custom' && $('input[name=sla_save]').attr('value') == '') {
 				$(".fancydisplay").each(function() {
 					$(this).show();
 				});
