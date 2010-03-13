@@ -646,13 +646,18 @@ function moveAndSort(from_id, to_id)
 *	Make sure all values are properly entered
 */
 function validate_form(formData, jqForm, options) {
-	var interval = $('#period').fieldValue();
-	var recipients_tmp = $('#recipients').fieldValue();
-	var recipients = recipients_tmp[0];
-	var filename = $('#filename').fieldValue();
-	var description = $('#description').fieldValue();
-	var saved_report_id = $('#saved_report_id').fieldValue();
-	var report_id = $('#report_id').fieldValue();
+	var interval = $('#period').val();
+	var recipients = $('input[name=recipients]').attr('value');
+	var filename = $('input[name=filename]').attr('value');
+	var description = $('input[name=description]').attr('value');
+	var saved_report_id = $('input[name=saved_report_id]').attr('value');
+	if (!saved_report_id) {
+		saved_report_id = $('#saved_report_id').attr('value');
+	}
+	var report_id = $('input[name=report_id]').attr('value');
+	if (report_id == '' || report_id == 'undefined') {
+		report_id = $('#report_id').val();
+	}
 	var fatal_err_str = _reports_fatal_err_str;// + "<br />";
 	$('.schedule_error').hide();
 
@@ -664,23 +669,27 @@ function validate_form(formData, jqForm, options) {
 	}
 
 	recipients = recipients.replace(/;/g, ',');
-	$('#recipients').fieldValue();
 	// @@@FIXME: split multiple addresses on ',' and check each one using regexp
 	if (trim(recipients) == '') {
 		err_str += _reports_schedule_recipient_error + "<br />";
 		errors++;
 	}
-	if (!saved_report_id[0]) {
+	if (!saved_report_id) {
 		alert(fatal_err_str);
 		return false;
 	}
 
 	if (errors) {
+		/*
+		$('#response').attr("style", "");
+		$('#response').html("<ul class=\"error\">" + err_str + "</ul>").show();
+		*/
 		var str = _reports_errors_found + ':<br />' + err_str + '<br />' + _reports_please_correct + '<br />';
-		$("#TB_ajaxContent").prepend('<div class="schedule_error">' + str + '</div');
+		$("#new_schedule_area").prepend("<div id=\"response\" class=\"schedule_err_display\"><ul class=\"error\">" + str + "</ul></div>");
+		window.scrollTo(0,0); // make sure user sees the error message
 		return false;
 	}
-
+	$('.schedule_err_display').remove();
     return true;
 }
 
