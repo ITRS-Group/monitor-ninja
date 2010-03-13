@@ -368,6 +368,10 @@ function switch_report_type()
 
 function create_filename()
 {
+	if (!$('#saved_report_id option:selected').val()) {
+		$('input[name=filename]').val('');
+		return false;
+	}
 	var new_filename = $('#saved_report_id option:selected').text();
 	new_filename = remove_scheduled_str(new_filename);
 	new_filename += '_' + $('#period option:selected').text() + '.pdf';
