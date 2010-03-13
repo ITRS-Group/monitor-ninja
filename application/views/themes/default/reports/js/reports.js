@@ -7,9 +7,7 @@ var service_tmp = false;
 var service = false;
 var current_obj_type = false; // keep track of what we are viewing
 var is_populated = false; // flag list population when done
-var sla_month_error_color    = 'red';
-var sla_month_disabled_color = '#cdcdcd';
-var sla_month_enabled_color  = '#fafafa';
+
 //var _scheduled_label = '';
 var invalid_report_names = '';
 var current_filename;
