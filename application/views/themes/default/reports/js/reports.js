@@ -858,8 +858,10 @@ function schedule_delete(id)
 	}
 
 	// clean input id from prefix (from setup template)
-	id = id.replace('delid_', '');  // from single report listing
-	id = id.replace('alldel_', ''); // from all schedules list
+	if (isNaN(id)) {
+		id = id.replace('delid_', '');  // from single report listing
+		id = id.replace('alldel_', ''); // from all schedules list
+	}
 
 	var time = 6000;
 
