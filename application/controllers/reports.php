@@ -299,6 +299,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
 		$this->xajax->registerFunction(array('get_report_periods',$this,'_get_report_periods'));
 		$this->xajax->registerFunction(array('get_saved_reports',$this,'_get_saved_reports'));
+		$this->xajax->registerFunction(array('get_date_ranges',$this,'_get_date_ranges'));
 		#$xajax->registerFunction('fetch_scheduled_field_value');
 		#$xajax->registerFunction('delete_schedule_ajax');
 		$this->xajax->processRequest();
@@ -550,6 +551,10 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_lastyear = $t->_('Last Year');
 		$template->label_custom_period = $t->_('CUSTOM REPORT PERIOD');
 		$template->label_startdate = $t->_('Start date');
+		$template->label_start_year = $t->_('Start year');
+		$template->label_start_month = $t->_('Start month');
+		$template->label_end_year = $t->_('End year');
+		$template->label_end_month = $t->_('End month');
 		$template->label_enddate = $t->_('End date');
 		$template->label_startdate_selector = $t->_('Date Start selector');
 		$template->label_enddate_selector = $t->_('Date End selector');
@@ -778,6 +783,21 @@ class Reports_Controller extends Authenticated_Controller
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+
+		if ($this->type == 'sla') {
+			// take care of start_year, end_year etc
+			$start_year = arr::search($_REQUEST, 'start_year');
+			$start_month = arr::search($_REQUEST, 'start_month');
+			$end_year = arr::search($_REQUEST, 'end_year');
+			$end_month = arr::search($_REQUEST, 'end_month');
+			if ($start_year && $start_month) {
+				$_REQUEST['start_time'] = "$start_year-$start_month-01";
+			}
+			if ($end_year && $end_month) {
+				$tmp_end_time = mktime(0, 0, 0, $end_month+1, 1, $end_year);
+				$_REQUEST['end_time'] = date('Y-m-d', $tmp_end_time);
+			}
+		}
 
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
@@ -4056,5 +4076,62 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		return $return;
+	}
+
+	/**
+	*
+	*
+	*/
+	public function _get_date_ranges($the_year, $type='start', $item='year')
+	{
+		// Instantiate the xajaxResponse object
+		$xajax = $this->xajax;
+		$objResponse = new xajaxResponse();
+		$date_ranges = reports::get_date_ranges();
+
+		if (empty($date_ranges)) return false;
+
+		$start_date 	= $date_ranges[0]; 	// first date in db
+		$end_date 		= $date_ranges[1];	// last date in db
+		$type 			= trim($type);
+		$item 			= trim($item);
+		$the_year 		= (int)$the_year;
+		$start_year 	= date('Y', $start_date);
+		$current_year	= date('Y');
+		$current_month	= date('m');
+		$end_year 		= date('Y', $end_date);
+		$start_month 	= date('m', $start_date);
+		$end_month 		= date('m', $end_date);
+
+		#$objResponse->call("log", "Current: $current_year, Start year: $start_year, End Year = $end_year, Start month = $start_month");
+
+		if (empty($type)) {
+			// Print all years
+			for ($i=$start_year;$i<=$end_year;$i++) {
+				$objResponse->call("addSelectOption", "start_year", $i, $i);
+				$objResponse->call("addSelectOption", "end_year", $i, $i);
+			}
+		} else {
+			// empty month list
+			$objResponse->call("empty_list", $type."_month");
+			if (!empty($the_year)) {
+				// end month should always be 12 unless we only
+				// have data for a single year
+				if ($start_year == $end_year) {
+					$end_num = ($end_month == 1) ? 11 : $end_month-1;
+					$start_num = $start_month;
+				} else {
+					$end_num = $the_year == $current_year ? $current_month: 12;
+					$start_num = $the_year == $start_year ? $start_month : 1;
+					$objResponse->call("log","end_num: $end_num, current_year: $current_year, current_month: $current_month");
+				}
+			} else {
+				return $objResponse;
+			}
+			for ($i=$start_num;$i<=$end_num;$i++) {
+				$objResponse->call("addSelectOption", $type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
+			}
+		}
+		return $objResponse;
 	}
 }

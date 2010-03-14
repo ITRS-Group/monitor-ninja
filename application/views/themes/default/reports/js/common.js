@@ -178,8 +178,8 @@ function show_calendar(val, update) {
 				$('input[name=end_time]').attr('value', '');
 			}
 		} else {
-			// known issue - custom report period does not work for SLA reports
-			$('#response').html("<ul class=\"error\"><li>Known issue in this beta: <br />Custom report period does not currently work for SLA</li></ul><br />");
+			$("#display").show();
+			js_print_date_ranges();
 		}
 	} else {
 		$("#display").hide();
@@ -438,63 +438,62 @@ function check_form_values()
 	var field_obj = new field_maps();
 	var rpt_type = $("#report_type").val();
 	if ($("#report_period").val() == 'custom') {
-		if ($('input[name=type]').val() == 'sla') {
-			return false;
-		}
-		// date validation
-		var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
-		var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
-		var now = new Date();
-		if (!cur_startdate || !cur_enddate) {
-			if (!cur_startdate) {
-				errors++;
-				err_str += "<li>" + _reports_invalid_startdate + ".</li>";
-			}
-			if (!cur_enddate) {
-				errors++;
-				err_str += "<li>" + _reports_invalid_enddate + ".</li>";
-			}
-		} else {
-			if (endDate > now) {
-				if (!confirm(_reports_enddate_infuture)) {
-					return false;
-				} else {
-					endDate = now;
+		if ($('input[name=type]').val() == 'avail') {
+			// date validation
+			var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
+			var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
+			var now = new Date();
+			if (!cur_startdate || !cur_enddate) {
+				if (!cur_startdate) {
+					errors++;
+					err_str += "<li>" + _reports_invalid_startdate + ".</li>";
+				}
+				if (!cur_enddate) {
+					errors++;
+					err_str += "<li>" + _reports_invalid_enddate + ".</li>";
+				}
+			} else {
+				if (endDate > now) {
+					if (!confirm(_reports_enddate_infuture)) {
+						return false;
+					} else {
+						endDate = now;
+					}
 				}
 			}
-		}
 
-		// time validation: _time_error and _time_error_start
-		if (_time_error || _time_error_start) {
-			errors++;
-			err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
-		}
+			// time validation: _time_error and _time_error_start
+			if (_time_error || _time_error_start) {
+				errors++;
+				err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
+			}
 
-		// date and time seems OK so let's add time to date field
-		// since fancybox has the (bad) habit of duplicating
-		// the element that is shows, it means that the contained form
-		// values will be duplicated as well.
-		// By looping through these fields (class names) we can use the last one for
-		// the correct value. If we are NOT using fancybox, we will get
-		// the (only) value anyway.
-		var curval_starttime = false;;
-		$(".time_start").each(function() {
-			curval_starttime = $(this).val();
-		});
+			// date and time seems OK so let's add time to date field
+			// since fancybox has the (bad) habit of duplicating
+			// the element that is shows, it means that the contained form
+			// values will be duplicated as well.
+			// By looping through these fields (class names) we can use the last one for
+			// the correct value. If we are NOT using fancybox, we will get
+			// the (only) value anyway.
+			var curval_starttime = false;;
+			$(".time_start").each(function() {
+				curval_starttime = $(this).val();
+			});
 
-		var curval_endtime = false;
-		$(".time_end").each(function() {
-			curval_endtime = $(this).val();
-		});
+			var curval_endtime = false;
+			$(".time_end").each(function() {
+				curval_endtime = $(this).val();
+			});
 
-		if (endDate < startDate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
-			errors++;
-			err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
-			$(".datepick-start").addClass("time_error");
-			$(".datepick-end").addClass("time_error");
-		} else {
-			$(".datepick-start").removeClass("time_error");
-			$(".datepick-end").removeClass("time_error");
+			if (endDate < startDate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
+				errors++;
+				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
+				$(".datepick-start").addClass("time_error");
+				$(".datepick-end").addClass("time_error");
+			} else {
+				$(".datepick-start").removeClass("time_error");
+				$(".datepick-end").removeClass("time_error");
+			}
 		}
 	}
 
@@ -838,7 +837,6 @@ function disable_months(start, end)
 
 function check_custom_months()
 {
-	return false;
 	var f		 	= document.forms['report_form'];
 	var start_year 	= f.start_year.value;
 	var start_month = f.start_month.value;

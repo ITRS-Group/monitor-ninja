@@ -141,6 +141,13 @@ $(document).ready(function() {
 
 });
 
+function js_print_date_ranges(the_year, type, item)
+{
+	show_progress('progress', _wait_str);
+	xajax_get_date_ranges(the_year, type, item);
+	setTimeout('check_custom_months()', 1000);
+}
+
 function validate_report_form(f)
 {
 	var is_ok = check_form_values();
