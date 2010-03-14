@@ -664,10 +664,10 @@ function expand_and_populate(data)
 	set_initial_state('includesoftstates', reportObj['includesoftstates']);
 	if (reportObj['report_period'] == 'custom') {
 		startDate = epoch_to_human(reportObj['start_time']);
-		$('#start_time_tmp').text(format_date_str(startDate));
+		$('#cal_start').text(format_date_str(startDate));
 		document.forms['report_form'].start_time.value = format_date_str(startDate);
 		endDate = epoch_to_human(reportObj['end_time']);
-		$('#end_time_tmp').text(format_date_str(endDate));
+		$('#cal_end').text(format_date_str(endDate));
 		document.forms['report_form'].end_time.value = format_date_str(endDate);
 	}
 	current_obj_type = field_str;
@@ -675,6 +675,21 @@ function expand_and_populate(data)
 	// wait for lists to populate
 	setTimeout("remove_duplicates();", 500);
 }
+
+function format_date_str(date) {
+	var YY = date.getFullYear();
+	var MM = date.getMonth() + 1;
+	var DD = date.getDate();
+	var hh = date.getHours();
+	var mm = date.getMinutes();
+	MM = MM<10 ? '0' + MM :MM;
+	DD = DD<10 ? '0' + DD : DD;
+	hh = hh<10 ? '0' + hh : hh;
+	mm = mm<10 ? '0' + mm : mm;
+	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
+	return ret_val;
+}
+
 
 function set_initial_state(what, val)
 {
