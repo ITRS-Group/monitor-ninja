@@ -851,7 +851,7 @@ function show_response(responseText, statusText)
 			$('#schedule_report_form').clearForm();
 			setup_editable();
 			//tb_remove();
-			update_visible_schedules();
+			update_visible_schedules(true);
 			if (nr_of_scheduled_instances > 0) {
 				$('#show_schedule').show();
 			}
@@ -899,7 +899,7 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
 	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
-	update_visible_schedules();
+	update_visible_schedules(false);
 	return return_str;
 }
 
@@ -921,7 +921,7 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
 	setTimeout('delayed_hide_progress()', 1000);
-	update_visible_schedules();
+	update_visible_schedules(false);
 	//nr_of_scheduled_instances++;
 
 	// make sure we hide message about no schedules and show table headers
@@ -932,14 +932,20 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 
 var avail_schedules = 0;
 var sla_schedules = 0;
-function update_visible_schedules()
+function update_visible_schedules(count)
 {
 	if ($('#avail_scheduled_reports_table').is(':visible')) {
 		avail_schedules = $('#avail_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		if (count) {
+			avail_schedules--;
+		}
 	}
 
 	if ($('#sla_scheduled_reports_table').is(':visible')) {
 		sla_schedules = $('#sla_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		if (count) {
+			sla_schedules--;
+		}
 	}
 
 	if ($('#schedule_report_table').is(':visible')) {
@@ -950,7 +956,9 @@ function update_visible_schedules()
 		} else {
 			nr_of_scheduled_instances = $('#schedule_report_table tr').not('#schedule_header').length;
 		}
-
+		if (count) {
+			nr_of_scheduled_instances--;
+		}
 	}
 }
 
@@ -986,7 +994,7 @@ function remove_schedule(id, remove_type)
 {
 	var time = 3000;
 
-	update_visible_schedules();
+	update_visible_schedules(true);
 
 	// remove row for deleted ID (both in fancybox and in original table)
 	$('#report-' + id).remove();
