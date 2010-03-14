@@ -105,6 +105,10 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
+			# check if new authorization data is available in cgi.cfg
+			# this enables incremental import
+			Cli_Controller::insert_user_data();
+
 			$username = $this->input->post('username', false);
 			$password = $this->input->post('password', false);
 			# Kohana is stupid (well, it's Auth module is anyways) and

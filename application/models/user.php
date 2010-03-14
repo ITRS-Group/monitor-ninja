@@ -66,10 +66,6 @@ class User_Model extends Auth_User_Model {
 
 		$requested_uri = Session::instance()->get('requested_uri', false);
 
-		# check if new authorization data is available in cgi.cfg
-		# this enables incremental import
-		Cli_Controller::insert_user_data();
-
 		# cache nagios_access session information
 		System_Model::nagios_access();
 
