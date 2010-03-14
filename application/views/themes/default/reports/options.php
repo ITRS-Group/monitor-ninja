@@ -96,7 +96,13 @@ if ($type == 'avail') { ?>
 					</td>
 				</tr>
 			</table>
-		</div>
+		<?php
+	if (is_array($html_options))
+			foreach ($html_options as $html_option)
+				echo form::hidden($html_option[1], $html_option[2]); ?>
+		<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
+	</form>
+	</div>
 <?php
 # SLA form - only save report. No "update"
 } else { ?>
@@ -125,14 +131,14 @@ if ($type == 'avail') { ?>
 		</tr>
 
 	</table>
-</div>
-<?php }
+<?php
 	if (is_array($html_options))
 			foreach ($html_options as $html_option)
 				echo form::hidden($html_option[1], $html_option[2]); ?>
 		<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
-	<?php # closing forms for both avail and SLA ?>
 	</form>
+</div>
+<?php } ?>
 	<span id="autoreport_periods"><?php echo $json_periods ?></span>
 	<div id="new_schedule_form_area">
 	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form', 'onsubmit' => 'return trigger_schedule_save(this);'));
