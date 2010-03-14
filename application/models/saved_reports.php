@@ -42,6 +42,17 @@ class Saved_reports_Model extends Model
 		$name_field = ($type == 'avail') ? 'report_name' : 'sla_name';
 		$db = new Database(self::db_name);
 
+		# check options for start_time or end_time
+		# and convert to timestamp before save
+		if (isset($options['report_period']) && $options['report_period'] == 'custom') {
+			if (isset($options['start_time']) && !is_numeric($options['start_time'])) {
+				$options['start_time'] = strtotime($options['start_time']);
+			}
+			if (isset($options['end_time']) && !is_numeric($options['end_time'])) {
+				$options['end_time'] = strtotime($options['end_time']);
+			}
+		}
+
 		// INSERT or UPDATE?
 		if (!empty($id))
 			$update = true;
