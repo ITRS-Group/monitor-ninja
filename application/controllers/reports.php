@@ -591,6 +591,14 @@ class Reports_Controller extends Authenticated_Controller
 		$template->edit_str = $edit_str;
 		$template->is_scheduled_clickstr = sprintf($t->_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
 
+		if ($report_info) {
+			$date_format = $this->_get_date_format(true);
+			$template->start_date = date($date_format, $report_info['start_time']);
+			$template->start_time = date('H:i', $report_info['start_time']);
+			$template->end_date = date($date_format, $report_info['end_time']);
+			$template->end_time = date('H:i', $report_info['end_time']);
+		}
+
 		$template->report_id = $this->report_id;
 		$template->report_info = $report_info;
 		$template->old_config_names_js = $old_config_names_js;

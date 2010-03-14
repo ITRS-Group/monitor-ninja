@@ -211,15 +211,15 @@ if (isset($report_info)) {
 				</tr>
 				<tr id="display" style="display: none; clear: both;">
 					<td><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
-						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo $label_startdate_selector ?>" />
-						<input type="hidden" name="start_time" id="start_time" value=""/>
-						<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="08:00">
+						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo isset($start_date) ? $start_date : '' ?>" class="date-pick datepick-start" title="<?php echo $label_startdate_selector ?>" />
+						<input type="hidden" name="start_time" id="start_time"  value="<?php echo isset($start_date) ? $start_date : '' ?>"/>
+						<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($start_time) ? $start_time : '08:00' ?>">
 					</td>
 					<td>&nbsp;</td>
 					<td><?php echo help::render('end-date').' '.$label_enddate ?> (<em id="end_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
-						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo $label_enddate_selector ?>" />
-						<input type="hidden" name="end_time" id="end_time" value="" />
-						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="09:00">
+						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo isset($end_date) ? $end_date : '' ?>" class="date-pick datepick-end" title="<?php echo $label_enddate_selector ?>" />
+						<input type="hidden" name="end_time" id="end_time" value="<?php echo isset($end_date) ? $end_date : '' ?>" />
+						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($end_time) ? $end_time : '09:00' ?>">
 					</td>
 				</tr>
 				<tr>
