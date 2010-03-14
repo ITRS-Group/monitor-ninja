@@ -782,20 +782,11 @@ class Reports_Controller extends Authenticated_Controller
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
+				$report_options[$key] = $value;
 				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
-					if ($this->type == 'avail') {
-						$report_options[$key] = strtotime($value);
-					} else { # SLA
-						if (is_numeric($value)) {
-							$report_options[$key] = $value;
-							$_REQUEST[$key] = date("Y-m-d H:i", $value);
-						} else {
-							$report_options[$key] = strtotime($value);
-							$_REQUEST[$key] = $value;
-						}
+					if (is_numeric($value)) {
+						$_REQUEST[$key] = date("Y-m-d H:i", $value);
 					}
-				} else {
-					$report_options[$key] = $value;
 				}
 			} else {
 				if ($this->type == 'sla' && preg_match('/^month/', trim($key))) {
@@ -1240,8 +1231,6 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->report_id = $this->report_id;
 				$tpl_options->report_info = $report_info;
 				$tpl_options->html_options = $html_options;
-				$tpl_options->start_time = $start_time;
-				$tpl_options->end_time = $end_time;
 
 				$use_average_options = array(
 					0 => $t->_('Group availability (SLA)'),
@@ -1251,10 +1240,10 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->use_average_selected = $use_average_selected;
 
 				$date_format = $this->_get_date_format(true);
-				$tpl_options->start_date = date($date_format, $report_class->start_time);
-				$tpl_options->start_time = date('H:i', $report_class->start_time);
-				$tpl_options->end_date = date($date_format, $report_class->end_time);
-				$tpl_options->end_time = date('H:i', $report_class->end_time);
+				$tpl_options->start_date = date($date_format, $this->start_date);
+				$tpl_options->start_time = date('H:i', $this->start_date);
+				$tpl_options->end_date = date($date_format, $this->end_date);
+				$tpl_options->end_time = date('H:i', $this->end_date);
 
 				$available_schedule_periods = false;
 				$json_periods = false;
@@ -1855,16 +1844,12 @@ class Reports_Controller extends Authenticated_Controller
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
 				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
-					if ($this->type == 'avail') {
+					if (is_numeric($value)) {
+						$report_options[$key] = $value;
+						$_REQUEST[$key] = date("Y-m-d H:i", $value);
+					} else {
 						$report_options[$key] = strtotime($value);
-					} else { # SLA
-						if (is_numeric($value)) {
-							$report_options[$key] = $value;
-							$_REQUEST[$key] = date("Y-m-d H:i", $value);
-						} else {
-							$report_options[$key] = strtotime($value);
-							$_REQUEST[$key] = $value;
-						}
+						$_REQUEST[$key] = $value;
 					}
 				} else {
 					$report_options[$key] = $value;
@@ -3214,9 +3199,6 @@ class Reports_Controller extends Authenticated_Controller
 			}
 			else
 			{
-				if(in_array($key, array('start_time', 'end_time')))
-					$val = strtotime($val);
-
 				if(!in_array($key, $url_params_to_skip))
 					$form .= "<input type='hidden' name='$key' value='$val' />\n";
 			}
