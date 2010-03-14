@@ -55,14 +55,12 @@ $(document).ready(function() {
 				$(".fancydisplay").each(function() {
 					$(this).show();
 				});
-				fancybox_datepicker();
 				init_timepicker();
 			}
 		}
 	});
 
 });
-
 function fancybox_datepicker()
 {
 	// datePicker Jquery plugin
@@ -159,9 +157,6 @@ function show_calendar(val, update) {
 				$(this).show();
 			});
 
-			if (_current_uri.indexOf('generate') != -1){
-				fancybox_datepicker();
-			}
 			init_timepicker();
 
 			if (update == '') {

@@ -135,6 +135,12 @@ $(document).ready(function() {
 		if (sel_report[0] != '')
 			create_filename();
 	});
+
+	$('.fancybox').click(function() {
+		// check if we should re-initialize datepicker
+		fancybox_datepicker();
+		init_timepicker();
+	});
 });
 
 function validate_report_form(f)
