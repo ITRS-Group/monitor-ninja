@@ -176,6 +176,9 @@ class Saved_reports_Model extends Model
 		$err = false;
 		$sql[] = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
 		$sql[] = "DELETE FROM ".$type."_config WHERE id=".$id;
+		if ($type == 'sla') {
+			$sql[] = "DELETE FROM sla_periods WHERE sla_id=".$id;
+		}
 		$db = new Database(self::db_name);
 		foreach ($sql as $query) {
 			try {
