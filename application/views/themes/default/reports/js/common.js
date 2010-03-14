@@ -428,8 +428,8 @@ function check_form_values()
 			return false;
 		}
 		// date validation
-		var cur_startdate = startDate = Date.fromString($("input[name=start_time]").attr('value'));
-		var cur_enddate = endDate = Date.fromString($("input[name=end_time]").attr('value'));
+		var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
+		var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
 		var now = new Date();
 		if (!cur_startdate || !cur_enddate) {
 			if (!cur_startdate) {
@@ -473,7 +473,7 @@ function check_form_values()
 			curval_endtime = $(this).val();
 		});
 
-		if (endDate < startDate || ($("input[name=start_time]").val() === $("input[name=end_time]").val() && curval_endtime < curval_starttime) ) {
+		if (endDate < startDate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
 			errors++;
 			err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
 			$(".datepick-start").addClass("time_error");
@@ -569,8 +569,13 @@ function check_form_values()
 				return false;
 			}
 		}
-		$("input[name=start_time]").attr('value', $("input[name=start_time]").attr('value') + ' ' + curval_starttime);
-		$("input[name=end_time]").attr('value', $("input[name=end_time]").attr('value') + ' ' + curval_endtime);
+		if ($('#fancy_content').is(':visible')) {
+			$('#fancy_content #start_time').attr('value', $('#fancy_content #cal_start').attr('value') + ' ' + curval_starttime);
+			$('#fancy_content #end_time').attr('value', $('#fancy_content #cal_end').attr('value') + ' ' + curval_endtime);
+		} else {
+			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + ' ' + curval_starttime);
+			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + ' ' + curval_endtime);
+		}
 
 		return true;
 	}
