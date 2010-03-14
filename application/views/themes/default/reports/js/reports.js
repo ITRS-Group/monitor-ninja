@@ -57,6 +57,9 @@ $(document).ready(function() {
 					_schedule_remove = 'sla';
 				}
 			}
+			if (!_schedule_remove) {
+				_schedule_remove = $('input[name=type]').attr('value');
+			}
 			schedule_delete($(this).attr('id'), _schedule_remove);
 		})
 	});
@@ -1016,7 +1019,7 @@ function remove_schedule(id, remove_type)
 	}
 
 	if (remove_type!='' && remove_type != 'undefined') {
-		if ($('#' + remove_type + '_scheduled_reports_table tbody tr:visible').not('.no-result').length == 0) {
+		if ($('#' + remove_type + '_scheduled_reports_table tbody').not('.no-result').length == 0) {
 			$('#' + remove_type + '_headers').hide();
 			$('#' + remove_type + '_no_result').show();
 		}
