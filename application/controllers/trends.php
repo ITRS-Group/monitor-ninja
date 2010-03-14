@@ -933,6 +933,56 @@ class Trends_Controller extends Authenticated_Controller {
 		$filter_states = array('' => ''); # set first empty option
 		$to = $t->_('to');
 		if (is_array($raw_trends_data) && !empty($raw_trends_data)) {
+
+
+			#####################################################
+			# Concatenate repeting events with the same status. #
+			# This to avoid cluttering the trends graph         #
+			#####################################################
+
+			# Save the first element which possible is supposed to hold info on the object but
+			# it can not be correct in multi object reports
+			$first_element = array_shift($raw_trends_data);
+			# Sort the array so that all states from a single servie/host are in sequece
+			foreach ($raw_trends_data as $key => $row) {
+				$host_name[$key]  = $row['host_name'];
+				$service_description[$key]  = $row['service_description'];
+				$the_time[$key] = $row['the_time'];
+			}
+			if(count($raw_trends_data) > 1) {
+				$res = array_multisort($host_name, SORT_ASC, $service_description, SORT_ASC, $the_time, SORT_ASC,$raw_trends_data);
+			}
+			# Loop over the trends data and concatenate repeting events. If host_name, service_description and state
+			# are the same we add the duration of the second element to the first and remove the second event.
+			$i=0;
+			while(isset($raw_trends_data[$i+1])){
+				# We compare current element to the next one (if there is a next element)
+				while( isset($raw_trends_data[$i+1]) &&
+					   $raw_trends_data[$i]['host_name'] == $raw_trends_data[$i+1]['host_name'] &&
+					   $raw_trends_data[$i]['service_description'] == $raw_trends_data[$i+1]['service_description'] &&
+					   $raw_trends_data[$i]['state'] == $raw_trends_data[$i+1]['state']) {
+
+					# It seems as if we can not rely on the duration in multiobject reports. It looks like the duration
+					# is to small and possible it have been effected by events on other objects.
+					# So we set durations to: end_time of event #2 - starttime of event #1 + duration from event #2
+					$raw_trends_data[$i]['duration'] = $raw_trends_data[$i+1]['the_time'] - $raw_trends_data[$i]['the_time'] + $raw_trends_data[$i+1]['duration'];
+					array_splice($raw_trends_data, $i+1,1);
+				}
+				# Since we can not trust the duration in multiobject reports we make sure the last event of every
+				# object have a duration that lasts to the end of the report period.
+				if( ! isset($raw_trends_data[$i+1]) || $raw_trends_data[$i]['host_name'] != $raw_trends_data[$i+1]['host_name'] ||
+					$raw_trends_data[$i]['service_description'] != $raw_trends_data[$i+1]['service_description']){
+					$raw_trends_data[$i]['duration'] = $this->end_date - $raw_trends_data[$i]['the_time'];
+				}
+				$i++;
+			}
+			# Re-add the element removed during sort.
+			$res = array_unshift($raw_trends_data, $first_element);
+
+			######################
+			# Conatination done. #
+			######################
+
 			foreach ($raw_trends_data as $id => $row) {
 				# skip the first (faked) log-entry
 				if ($id == 0 || empty($row['host_name']))
