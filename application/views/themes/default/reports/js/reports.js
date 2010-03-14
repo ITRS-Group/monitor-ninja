@@ -1080,15 +1080,8 @@ function setup_editable()
 
 var is_visible = false;
 function toggle_edit() {
-	if (is_visible) {
-		$("#schedule_report").hide();
-		$("#show_scheduled").text('[' + _edit_str + ']');
-		is_visible = false;
-	} else {
-		$('#schedule_report').show();
-		$("#show_scheduled").text('[' + _hide_str + ']');
-		is_visible = true;
-	}
+	var $tabs = $('#report-tabs').tabs();
+	$tabs.tabs('select', 1);
 }
 
 function fetch_report_data(id)
