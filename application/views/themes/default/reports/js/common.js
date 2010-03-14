@@ -60,7 +60,13 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.fancybox').click(function() {
+		// check if we should re-initialize datepicker
+		fancybox_datepicker();
+		init_timepicker();
+	});
 });
+
 function fancybox_datepicker()
 {
 	// datePicker Jquery plugin
