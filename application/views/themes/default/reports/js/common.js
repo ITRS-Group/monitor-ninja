@@ -60,12 +60,27 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.fancybox').click(function() {
+		// check if we should re-initialize datepicker
+		fancybox_datepicker();
+		init_timepicker();
+	});
 });
+
 function fancybox_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = new Date().addDays(1).asString();
 	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+
+	if ($('#fancy_content #cal_start').attr('value')) {
+		var ds = Date.fromString($('#fancy_content #cal_start').attr('value'));
+		$('#fancy_content #cal_end').dpSetStartDate(ds.addDays(1).asString());
+	}
+	if ($('#fancy_content #cal_end').attr('value')) {
+		var ds = Date.fromString($('#fancy_content #cal_end').attr('value'));
+		$('#fancy_content #cal_start').dpSetEndDate(ds.addDays(1).asString());
+	}
 
 	$('.datepick-start').bind(
 		'dpClosed',
@@ -75,12 +90,13 @@ function fancybox_datepicker()
 			if (d) {
 				d = new Date(d);
 				startDate = d.asString();
-				$('#start_time').attr('value', d.asString());
+				$('#fancy_content #start_time').attr('value', d.asString());
 				$("input[name=start_time]").attr('value', d.asString());
-				$('#cal_end').dpSetStartDate(d.addDays(1).asString());
+				$('#fancy_content #cal_end').dpSetStartDate(d.addDays(1).asString());
 			}
 		}
 	);
+
 	$('.datepick-end').bind(
 		'dpClosed',
 		function(e, selectedDates)
@@ -88,12 +104,10 @@ function fancybox_datepicker()
 			var d = selectedDates[0];
 			if (d) {
 				d = new Date(d);
-				$('#cal_start').dpSetEndDate(d.addDays(-1).asString());
-				//console.log(d.addDays(1).asString());
-				$('#end_time').attr('value', d.asString());
-				$("input[name=end_time]").attr('value', d.addDays(1).asString());
 				endDate = d.asString();
-				//console.log( Math.round(d.getTime()/1000) ); // working valid timestamp
+				$('#fancy_content #end_time').attr('value', d.asString());
+				$("input[name=end_time]").attr('value', d.addDays(1).asString());
+				$('#fancy_content #cal_start').dpSetEndDate(d.addDays(-1).asString());
 			}
 		}
 	);
