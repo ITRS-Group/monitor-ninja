@@ -136,6 +136,7 @@ caption { padding-left:0px}
 #header {
 	position: relative;
 	top: 0px;
+	padding-top: 14px;
 }
 
 #header p {
