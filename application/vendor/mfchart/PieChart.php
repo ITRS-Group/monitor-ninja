@@ -71,7 +71,7 @@ class PieChart extends Chart {
 		}
 		$legend_width += 0; // some margins
 
-		$margin_left = ($this->width-$width) / 2;
+		$margin_left = ($this->width-$width+35) / 2;
 		$center_x = $width/2+$margin_left;
 		$center_y = $this->margin_top + ($height+$height_3d)/2;
 
@@ -205,7 +205,7 @@ class PieChart extends Chart {
 
 		# print legend
 		//$this->draw_legend('colors', 0, $center_x+$width/2-20+$legend_slice_width*3, $this->height/2-$height/2);
-		$this->draw_legend('colors', 0, 20, $this->height/2+65);
+		$this->draw_legend('colors', 0, 20, $this->height/2+62);
 
 	}
 
