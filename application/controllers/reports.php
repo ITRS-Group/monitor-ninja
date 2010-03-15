@@ -3712,7 +3712,7 @@ class Reports_Controller extends Authenticated_Controller
 	private function _generate_avail_member_link($members)
 	{
 		$objects = '';
-		$return = url::site().'reports/generate?type='.$this->type.'&amp;';
+		$return = url::site().'reports/generate?type=avail&amp;';
 		if (is_array($members)) {
 			$objects .= implode('&amp;'.$this->object_varname.'[]=',$members);
 		} else {
