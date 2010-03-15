@@ -12,7 +12,16 @@ function backup(){
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file + '">view</a></td>'
 					+ '<td><a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file + '">restore</a></td>'
 					+ '<td><a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file + '">delete</a></td>'
-					+ '</tr>');
+					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
+					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
+						array('alt' => $this->translate->_('View'), 'title' => $this->translate->_('View'))); ?></a>'
+					+ '<a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file
+					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'),
+						array('alt' => $this->translate->_('Restore'), 'title' => $this->translate->_('Restore'))); ?></a>'
+					+ '<a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file
+					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'),
+						array('alt' => $this->translate->_('Delete'), 'title' => $this->translate->_('Delete'))); ?></a>'
+					+ '</td></tr>');
 		}
 	});
 }
@@ -50,13 +59,13 @@ $('a.delete').live('click', function(){
 			<th class="headerNone"><?php echo $this->translate->_('Backups'); ?></th>
 			<th class="headerNone" style="width: 50px"><?php echo $this->translate->_('Actions'); ?></th>
 		</tr>
-		<?php $i = 0; foreach ($files as $file): $i++;?>
-		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
-		  <td><a class="download" href="/backup/<?php echo $file . $suffix; ?>"><?php echo $file; ?></a></td>
-		  <td>
-				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => $this->translate->_('View'), 'title' => $this->translate->_('View')));?></a>
-			<a class="restore" href="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => $this->translate->_('Restore'), 'title' => $this->translate->_('Restore')));?></a>
-			<a class="delete" href="<?php echo url::base() . 'index.php/backup/delete/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'), array('alt' => $this->translate->_('Delete'), 'title' => $this->translate->_('Delete')));?></a>
+		<?php $i = 0; foreach ($files as $file): $i++; ?>
+		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
+			<td><a class="download" href="/backup/<?php echo $file . $suffix; ?>"><?php echo $file; ?></a></td>
+			<td>
+				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => $this->translate->_('View'), 'title' => $this->translate->_('View'))); ?></a>
+				<a class="restore" href="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => $this->translate->_('Restore'), 'title' => $this->translate->_('Restore'))); ?></a>
+				<a class="delete" href="<?php echo url::base() . 'index.php/backup/delete/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'), array('alt' => $this->translate->_('Delete'), 'title' => $this->translate->_('Delete'))); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>
