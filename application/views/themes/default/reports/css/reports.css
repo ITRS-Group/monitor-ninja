@@ -28,7 +28,7 @@ body {
 #response {
 	margin-left:5px;
 	padding-top:5px;
-	background: #f9f9f5 url(default/images/response.png) repeat-x;
+	background: #f9f9f5 url(../images/response.png) repeat-x;
 }
 
 #response h1 {
