@@ -13,7 +13,7 @@
 			array(
 				'alt' => $label_print,
 				'title' => $label_print,
-				'style' => 'position: absolute; top: 0px; right: 0px;',
+				'style' => 'position: absolute; top: 7px; right: 0px;',
 				'onclick' => 'window.print()'
 			)
 		)

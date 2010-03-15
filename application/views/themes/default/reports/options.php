@@ -1,12 +1,12 @@
 <?php $t = $this->translate; ?>
-<div style="position: absolute; top: 12px; right: 92px">
+<div style="position: relative; top: -26px; right: 118px; float: right">
 <?php if ($type == 'avail') { ?>
 	<?php if (!$report_id) { ?>
-	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>&nbsp;
+	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>
 	<?php } ?>
-	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => $label_edit_settings, 'title' => $label_edit_settings)); ?></a>&nbsp;
+	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => $label_edit_settings, 'title' => $label_edit_settings)); ?></a>
 <?php } else {?>
-<a href="#sla_options" id="sla_save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $t->_('Save report'), 'title' => $t->_('Save report'))); ?></a>&nbsp;
+<a href="#sla_options" id="sla_save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $t->_('Save report'), 'title' => $t->_('Save report'))); ?></a>
 <?php } ?>
 <span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
 		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>

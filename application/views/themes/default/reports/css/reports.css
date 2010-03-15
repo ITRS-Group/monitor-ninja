@@ -286,4 +286,5 @@ div.time-picker li.selected {
 
 #save_to_schedule em { font-style: italic; }
 
-a.fancybox { border: 0px; }
+a.fancybox { border: 0px; margin-left: 4px }
+
