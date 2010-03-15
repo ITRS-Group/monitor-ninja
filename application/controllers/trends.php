@@ -1053,7 +1053,7 @@ class Trends_Controller extends Authenticated_Controller {
 		switch ($report_period) {
 			case 'today':
 				$magnify = 30;
-				$zoneperiod = 'DAY';
+				$zoneperiod = 'HOUR';
 				$intervalunit = 'DAY';
 				break;
 			case 'last24hours': case 'yesterday':
