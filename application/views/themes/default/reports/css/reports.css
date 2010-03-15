@@ -283,3 +283,7 @@ div.time-picker li.selected {
 #header form input {
 	margin-top: -1px;
 }
+
+#save_to_schedule em { font-style: italic; }
+
+a.fancybox { border: 0px; }

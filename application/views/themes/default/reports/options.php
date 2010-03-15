@@ -1,18 +1,20 @@
-<?php $t = $this->translate;
-if ($type == 'avail') { ?>
-<a href="#options" class="fancybox"><?php echo $label_edit_settings ?></a>&nbsp;
-<?php
-} else {?>
-<a href="#sla_options" id="sla_save_report" class="fancybox"><?php echo $t->_('Save report') ?></a>&nbsp;
-<?php
-} ?>
+<?php $t = $this->translate; ?>
+<div style="position: absolute; top: 12px; right: 92px">
+<?php if ($type == 'avail') { ?>
+	<?php if (!$report_id) { ?>
+	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>&nbsp;
+	<?php } ?>
+	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => $label_edit_settings, 'title' => $label_edit_settings)); ?></a>&nbsp;
+<?php } else {?>
+<a href="#sla_options" id="sla_save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $t->_('Save report'), 'title' => $t->_('Save report'))); ?></a>&nbsp;
+<?php } ?>
 <span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
-	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox"><?php echo $t->_('Add') . ' '. strtolower($label_new_schedule) ?></a>&nbsp;
-	<a id="show_schedule" href="#schedule_report"<?php if (empty($scheduled_info)) { ?> style="display:none;"<?php } ?> class="fancybox"><?php echo $label_view_schedule ?></a>
+		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>
+	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? 'style="display:none;' : ''; ?> class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 </span>
-<span id="save_to_schedule">
-<?php echo !$report_id ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?>
-</span>
+</div>
+<span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
+
 <?php
 if ($type == 'avail') { ?>
 <div id="options">
