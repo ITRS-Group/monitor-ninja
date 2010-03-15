@@ -47,7 +47,7 @@ $('a.delete').live('click', function(){
 	<br />
 	<table id="backups">
 		<tr>
-			<th class="headerNone"><?php echo $this->translate->_('Backup'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Backups'); ?></th>
 			<th class="headerNone" style="width: 50px"><?php echo $this->translate->_('Actions'); ?></th>
 		</tr>
 		<?php $i = 0; foreach ($files as $file): $i++;?>
