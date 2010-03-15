@@ -931,6 +931,11 @@ class Reports_Model extends Model
 		# stash the report settings for debugging/test-creation purposes
 		$this->options['start_time'] = $this->start_time = $start_time;
 		$this->options['end_time'] = $this->end_time = $end_time;
+
+		# register first and last possible database entry times
+		$this->register_db_time($start_time);
+		$this->register_db_time($end_time);
+
 		$this->debug = $this->options;
 		if (!is_array($hostname))
 			$this->debug['host_name'] = $this->host_name = $hostname;
@@ -1337,8 +1342,6 @@ class Reports_Model extends Model
 
 	public function st_parse_row($row = false)
 	{
-		$this->register_db_time($row['the_time']);
-
 		$this->st_update($row['the_time']);
 
 		$obj_name = $sub = false;
