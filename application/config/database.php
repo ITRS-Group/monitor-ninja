@@ -53,8 +53,8 @@ $config['monitor_reports'] = array
 	'connection'    => array
 	(
 		'type'     => 'mysql',
-		'user'     => 'root',
-		'pass'     => '',
+		'user'     => 'monitor',
+		'pass'     => 'monitor',
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
