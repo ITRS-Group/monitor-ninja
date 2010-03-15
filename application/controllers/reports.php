@@ -362,7 +362,16 @@ class Reports_Controller extends Authenticated_Controller
 		if ($this->report_id) {
 			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
 			if ($report_info) {
-				#$report_info_arr = $report_info_arr->current();
+				if ($this->type == 'sla') {
+					if (isset($report_info['start_time'])) {
+						$report_info['start_year'] = date('Y', $report_info['start_time']);
+						$report_info['start_month'] = date('m', $report_info['start_time']);
+					}
+					if (isset($report_info['end_time'])) {
+						$report_info['end_year'] = date('Y', $report_info['end_time']);
+						$report_info['end_month'] = date('m', $report_info['end_time']-1);
+					}
+				}
 				$json_report_info = json::encode($report_info);
 			}
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);

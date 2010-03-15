@@ -140,10 +140,8 @@ function init_datepicker()
 			if (d) {
 				d = new Date(d);
 				$('#cal_start').dpSetEndDate(d.addDays(-1).asString());
-				//console.log(d.addDays(1).asString());
 				$('#end_time').attr('value', d.addDays(1).asString());
 				endDate = d.asString();
-				//console.log( Math.round(d.getTime()/1000) ); // working valid timestamp
 			}
 		}
 	);
@@ -625,20 +623,6 @@ function hideMe(elem)
 	$('#' + elem).hide('slow');
 }
 
-function validate_date(what)
-{
-	var start = $('#cal_start').attr('value');
-	var end = $('#cal_end').attr('value');
-	//console.log(Date.fromString(start));
-	//console.log(Date.fromString(end));
-
-	if (end < start) {
-		//console.log('That is BAD');
-	} else {
-		//console.log('seems OK');
-	}
-}
-
 function show_message(class_name, msg)	{
 	$('#response').show().html('<ul class="' + class_name + '">' + msg + '</ul>');
 	setTimeout('hide_response()', 5000);
@@ -856,6 +840,8 @@ function check_custom_months()
 				disable_months(0, 0);
 			}
 		}
+	} else {
+		setTimeout('check_custom_months()', 1000);
 	}
 	setup_hide_content('progress');
 }

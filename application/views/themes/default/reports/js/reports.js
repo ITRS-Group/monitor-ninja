@@ -667,12 +667,22 @@ function expand_and_populate(data)
 	}
 	set_initial_state('includesoftstates', reportObj['includesoftstates']);
 	if (reportObj['report_period'] == 'custom') {
-		startDate = epoch_to_human(reportObj['start_time']);
-		$('#cal_start').text(format_date_str(startDate));
-		document.forms['report_form'].start_time.value = format_date_str(startDate);
-		endDate = epoch_to_human(reportObj['end_time']);
-		$('#cal_end').text(format_date_str(endDate));
-		document.forms['report_form'].end_time.value = format_date_str(endDate);
+		if ($('input[name=type]').attr('value') == 'sla') {
+			js_print_date_ranges(reportObj['start_time'], 'start', 'month');
+			js_print_date_ranges(reportObj['end_time'], 'end', 'month');
+
+			setTimeout('set_initial_state("report_period-start", ' + reportObj['start_year'] + ')', 2000);
+			setTimeout('set_initial_state("report_period-startmonth", ' + reportObj['start_month'] + ')', 2000);
+			setTimeout('set_initial_state("report_period-end", ' + reportObj['end_year'] + ')', 2000);
+			setTimeout('set_initial_state("report_period-endmonth", ' + reportObj['end_month'] + ')', 2000);
+		} else {
+			startDate = epoch_to_human(reportObj['start_time']);
+			$('#cal_start').text(format_date_str(startDate));
+			document.forms['report_form'].start_time.value = format_date_str(startDate);
+			endDate = epoch_to_human(reportObj['end_time']);
+			$('#cal_end').text(format_date_str(endDate));
+			document.forms['report_form'].end_time.value = format_date_str(endDate);
+		}
 	}
 	current_obj_type = field_str;
 
@@ -741,6 +751,32 @@ function set_initial_state(what, val)
 			break;
 		case 'rpttimeperiod':
 			item = 'rpttimeperiod';
+			break;
+		case 'report_period-start':
+			item = 'start_year';
+			if ($('select[name=' + item + '] option').length < 2) {
+				setTimeout('set_initial_state("' + what + '", ' + val + ')', 1000);
+			}
+			break;
+		case 'report_period-startmonth':
+			item = 'start_month';
+			if ($('select[name=' + item + '] option').length < 2) {
+				if (val < 10) val = '0' + val;
+				setTimeout('set_initial_state("' + what + '", ' + val + ')', 1000);
+			}
+			break;
+		case 'report_period-end':
+			item = 'end_year';
+			if ($('select[name=' + item + '] option').length < 2) {
+				setTimeout('set_initial_state("' + what + '", ' + val + ')', 1000);
+			}
+			break;
+		case 'report_period-endmonth':
+			item = 'end_month';
+			if ($('select[name=' + item + '] option').length < 2) {
+				if (val < 10) val = '0' + val;
+				setTimeout('set_initial_state("' + what + '", ' + val + ')', 1000);
+			}
 			break;
 		default:
 			item = what;
