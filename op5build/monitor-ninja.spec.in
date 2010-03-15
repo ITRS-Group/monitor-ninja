@@ -34,6 +34,7 @@ sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 sed -i \
 	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
 	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
+	-e 's/^\(.config..version_info.. = .\)ninja/\1op5-monitor/' \
 	%buildroot%prefix/application/config/config.php
 
 cp op5build/login.png \

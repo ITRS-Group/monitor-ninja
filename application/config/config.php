@@ -28,6 +28,13 @@ $config['index_page'] = 'index.php';
 $config['product_name'] = 'Nagios';
 
 /**
+ * Custom version info file. Format:
+ * VERSION=x.y.z
+ * This info will be visible in the 'product info' link
+ */
+$config['version_info'] = '/etc/ninja-release';
+
+/**
  * Fake file extension that will be added to all generated URLs. Example: .html
  */
 $config['url_suffix'] = '';
