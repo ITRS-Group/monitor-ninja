@@ -200,7 +200,7 @@ if (isset($this->template->js_header))
 				<li>
 					<?php
 					function get_version_info() {
-						$file = '/etc/op5-release';
+						$file = '/etc/op5-monitor-release';
 						if (file_exists($file)) {
 							$handle = fopen($file, 'r');
 							$contents = fread($handle, filesize($file));
