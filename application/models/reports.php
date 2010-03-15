@@ -1095,10 +1095,8 @@ class Reports_Model extends Model
 			" ORDER BY timestamp DESC LIMIT 1";
 		$dbr = $this->db->query($query);
 
-		if (!$dbr || !$dbr->rowCount())
+		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
 			return false;
-
-		$row = $dbr->fetch();
 
 		$this->register_db_time($row['timestamp']);
 		$event_type = $row['event_type'];
@@ -1818,10 +1816,8 @@ class Reports_Model extends Model
 		$sql .= " ORDER BY id DESC LIMIT 1";
 
 		$dbr = $this->db->query($sql);
-		if (!$dbr || !$dbr->rowCount())
+		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
 			return false;
-
-		$row = $dbr->fetch(PDO::FETCH_ASSOC);
 
 		$this->register_db_time($row['timestamp']);
 		$this->initial_dt_depth = $row['downtime_depth'];
@@ -1876,8 +1872,7 @@ class Reports_Model extends Model
 		# first try to fetch the real initial state so
 		# we don't have to assume
 		$dbr = $this->db->query($sql);
-		if ($dbr && $dbr->rowCount()) {
-			$row = $dbr->fetch(PDO::FETCH_ASSOC);
+		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
 			$this->initial_state = $row['state'];
 			return $this->initial_state;
 		}
@@ -1908,16 +1903,15 @@ class Reports_Model extends Model
 			$dbr = $this->db->query($base_sql . "ORDER BY id ASC LIMIT 1");
 		}
 
-		if (!$dbr || !$dbr->rowCount()) {
+		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
+			$state = $row['state'];
+		} else {
 			# this is only reached if there is no state at all
 			# in the database. It should usually be an error,
 			# unless one tries to take a report from, say, last
 			# year on a host that was added less than 30 seconds
 			# ago. Either way, we're out of options so do nothing.
 			# $state will default to STATE_PENDING further down
-		} else {
-			$row = $dbr->fetch();
-			$state = $row['state'];
 		}
 		/* state assumption logic end */
 
