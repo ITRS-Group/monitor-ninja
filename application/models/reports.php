@@ -1884,7 +1884,8 @@ class Reports_Model extends Model
 			return $this->initial_state;
 		}
 
-		$sql = false;
+		# we must reset $dbr here to work around a bug in PDO or PHP
+		$dbr = $sql = false;
 		$state = $assumed_state;
 		# state == -1 is magic for "use current state as initial"
 		# it's fairly bonkers to do that, and will yield different
