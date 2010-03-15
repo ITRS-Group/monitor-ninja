@@ -7,7 +7,7 @@
 <div id="trend_links">
 	<ul>
 	<?php	foreach ($trend_links as $name => $link) { ?>
-		<li><a href="<?php echo $link ?>"><?php echo $name ?></a></li>
+		<li><?php echo html::anchor($link[0], html::image($this->add_path('icons/menu/'.$link[1].'.png'), array('alt' => $name, 'title' => $name)) . '&nbsp;' . $name, array('title' => $name)) ?></li>
 	<?php	} ?>
 	</ul>
 </div>
