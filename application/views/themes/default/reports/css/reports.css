@@ -26,8 +26,8 @@ body {
 #autoreport_periods { display: none; }
 
 #response {
-	margin-left:5px;
-	padding-top:5px;
+	margin-left:0px;
+	padding-top:0px;
 	background: #f9f9f5 url(../images/response.png) repeat-x;
 }
 
@@ -37,11 +37,11 @@ body {
 }
 
 #response ul {
-	padding: 7px 2px 5px 50px;
+	padding: 7px 2px 5px 33px;
 	margin: 0px;
 	margin-bottom: 7px;
 	width: auto;
-	background: transparent 7px 5px no-repeat;
+	background: transparent 10px 8px no-repeat;
 }
 
 #response li {
@@ -51,11 +51,11 @@ body {
 	list-style: none;
 }
 
-#response ul.ok			{ background-image: url(../../icons/32x32/shield-ok.png); }
-#response ul.error 		{ background-image: url(../../icons/32x32/shield-error.png); }
-#response ul.warning 	{ background-image: url(../../icons/32x32/shield-warning.png); }
-#response ul.info 		{ background-image: url(../../icons/32x32/shield-info.png); }
-#response ul.help 		{ background-image: url(../../icons/32x32/shield-help.png); }
+#response ul.ok			{ background-image: url(../../icons/16x16/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/16x16/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/16x16/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/16x16/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/16x16/shield-help.png); }
 
 /* nytt */
 
