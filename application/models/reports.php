@@ -57,6 +57,7 @@ class Reports_Model extends Model
 	var $st_needs_log = false;
 	var $st_log = false;
 	var $st_prev_row = array();
+	var $st_prev_state = self::STATE_PENDING;
 	var $st_running = 0;
 	var $st_dt_depth = 0;
 	var $st_is_service = false;
@@ -1342,8 +1343,6 @@ class Reports_Model extends Model
 
 	public function st_parse_row($row = false)
 	{
-		$this->st_update($row['the_time']);
-
 		$obj_name = $sub = false;
 		if (!empty($row['service_description'])) {
 			$obj_name = $row['host_name'] . ";" . $row['service_description'];
@@ -1352,11 +1351,26 @@ class Reports_Model extends Model
 			$obj_name = $row['host_name'];
 		}
 
+		if ($obj_name && isset($this->sub_reports[$obj_name])) {
+			$rpt = $sub = $this->sub_reports[$obj_name];
+		} else {
+			$rpt = $this;
+		}
+
+		# skip duplicate events immediately
+		if ($row['event_type'] == self::HOSTCHECK ||
+		    $row['event_type'] == self::SERVICECHECK)
+		{
+			if ($row['state'] === $rpt->st_prev_state) {
+				return;
+			}
+			$rpt->st_prev_state = $row['state'];
+		}
+		$this->st_update($row['the_time']);
+
 		# sub-reports must be be st_update()d before we
 		# set its state in the case statement below
-		$sub = false;
-		if ($obj_name && isset($this->sub_reports[$obj_name])) {
-			$sub = $this->sub_reports[$obj_name];
+		if ($sub) {
 			$sub->st_update($row['the_time']);
 		}
 
@@ -1614,6 +1628,7 @@ class Reports_Model extends Model
 			 'the_time' => $this->start_time,
 			 'event_type' => $fevent_type,
 			 'downtime_depth' => $this->st_dt_depth);
+		$this->st_prev_state = $this->st_obj_state;
 
 		# if we're actually going to use the log, we'll need
 		# to generate a faked initial message for it.
