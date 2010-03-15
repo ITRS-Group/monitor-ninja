@@ -3790,6 +3790,16 @@ class Reports_Controller extends Authenticated_Controller
 			'enter-sla' => $translate->_("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
 			'report_settings_sml' => $translate->_("Here you can modify the report settings for the report you are currently viewing."),
 			'cluster_mode' => $translate->_("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
+			'log_entries' => $translate->_("Shows the actual log messages that this report was created of."),
+			'hostgroup_breakdown' => $translate->_("Here you have a list of all hosts that are member of this hostgroup and their states."),
+			'servicegroup_breakdown' => $translate->_("Here you have a list of all services that are member of this servicegroup and their states."),
+			'average_and_sla' => $translate->_(""),
+			'availability' => $translate->_("This table shows a breakdown of the different states. How much time that was ok, warning, unknown, critical or undetermined in both actual time and percent. Time is also divied between uncheduled and scheduled which helps you to separate unplanned and planned events."),
+			'piechart' => $translate->_("Pie chart that displays how much time in percent that was ok, warning, unknown, critical or undetermined."),
+			'sla_graph' => $translate->_("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled. The graph will autoscale."),
+			'sla_breakdown' => $translate->_("Breakdown of the SLA report in actual figures."),
+			'sla_group_member' => $translate->_(""),
+
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
