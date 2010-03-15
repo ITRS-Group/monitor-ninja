@@ -3793,12 +3793,12 @@ class Reports_Controller extends Authenticated_Controller
 			'log_entries' => $translate->_("Shows the actual log messages that this report was created of."),
 			'hostgroup_breakdown' => $translate->_("Here you have a list of all hosts that are member of this hostgroup and their states."),
 			'servicegroup_breakdown' => $translate->_("Here you have a list of all services that are member of this servicegroup and their states."),
-			'average_and_sla' => $translate->_(""),
+			//'average_and_sla' => $translate->_(""), // text needed
 			'availability' => $translate->_("This table shows a breakdown of the different states. How much time that was ok, warning, unknown, critical or undetermined in both actual time and percent. Time is also divied between uncheduled and scheduled which helps you to separate unplanned and planned events."),
 			'piechart' => $translate->_("Pie chart that displays how much time in percent that was ok, warning, unknown, critical or undetermined."),
 			'sla_graph' => $translate->_("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled. The graph will autoscale."),
 			'sla_breakdown' => $translate->_("Breakdown of the SLA report in actual figures."),
-			'sla_group_member' => $translate->_(""),
+			//'sla_group_member' => $translate->_(""), // text needed
 
 		);
 		if (array_key_exists($id, $helptexts)) {
