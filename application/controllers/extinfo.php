@@ -263,7 +263,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->last_state_change = (int)$result->last_state_change;
 		$content->lable_last_notification = $t->_('Last Notification');
 		$content->lable_n_a = $na_str;
-		$content->last_notification = $last_notification!=0 ? $last_notification : $na_str;
+		$content->last_notification = $last_notification!=0 ? date(nagstat::date_format(), $last_notification) : $na_str;
 		$content->lable_notifications = $t->_('notification');
 		$content->current_notification_number = $result->current_notification_number;
 		$lable_flapping_state_change = $t->_('state change');
