@@ -4,10 +4,10 @@
 	<table>
 		<tr>
 			<th class="headerNone left"><?php //echo $label_state; ?></th>
-			<th class="headerNone left"><?php echo $label_host; ?></th>
-			<th class="headerNone left"><?php echo $label_service; ?></th>
 			<th class="headerNone left"><?php echo $label_time; ?></th>
 			<th class="headerNone left"><?php echo $label_alert_type; ?></th>
+			<th class="headerNone left"><?php echo $label_host; ?></th>
+			<th class="headerNone left"><?php echo $label_service; ?></th>
 			<th class="headerNone left"><?php echo $label_state_type; ?></th>
 			<th class="headerNone left"><?php echo $label_information; ?></th>
 		</tr>
@@ -30,10 +30,10 @@
 			<td class="icon status">
 				<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($state).'.png'), array('title' => $state, 'alt' => $state)); ?>
 			</td>
-			<td><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
-			<td><?php echo $ary['service_description']; ?></td>
 			<td><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
 			<td><?php echo $alert_type; ?></td>
+			<td><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
+			<td><?php echo $ary['service_description']; ?></td>
 			<td><?php echo $softhard; ?></td>
 			<td><?php echo $ary['output']; ?></td>
 		</tr>
