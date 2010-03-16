@@ -4,8 +4,8 @@ body {
 
 #progress{
 	position: absolute;
-	top:107px;
-	left:410px;
+	top:175px;
+	left:450px;
 	display: none;
 }
 
@@ -288,4 +288,3 @@ div.time-picker li.selected {
 #save_to_schedule em { font-style: italic; }
 
 a.fancybox { border: 0px; margin-left: 4px }
-
