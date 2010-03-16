@@ -200,7 +200,7 @@ if (isset($this->template->js_header))
 				<li>
 					<?php
 					function get_version_info() {
-						$file = '/etc/op5-release';
+						$file = Kohana::config('config.version_info');
 						if (file_exists($file)) {
 							$handle = fopen($file, 'r');
 							$contents = fread($handle, filesize($file));
@@ -208,7 +208,7 @@ if (isset($this->template->js_header))
 							return str_replace('VERSION=','',$contents);
 						}
 					}
-					echo $this->translate->_('op5 Monitor version: ').get_version_info();
+				       echo  Kohana::config('config.product_name') . ":" . get_version_info();
 					?>
 				</li>
 			</ul>

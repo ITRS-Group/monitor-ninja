@@ -152,7 +152,16 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
 						$result[$i][]= $row->alias;
 						$result[$i][]= $row->address;
-						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parent, $row->parent);
+					    if(isset($row->parent)) {
+								$parents = explode(',',$row->parent);
+					      $tmp = false;
+					      foreach ($parents as $parent) {
+									$tmp[] = html::anchor(Router::$controller.'/?type=hosts#'.$parent, $parent);
+								}
+								$result[$i][] = implode(', ',$tmp);
+					    } else {
+								$result[$i][]= '';
+					    }
 						$result[$i][]= $row->max_check_attempts;
 						$result[$i][]= time::to_string($row->check_interval*60);
 						$result[$i][]= time::to_string($row->retry_interval);
@@ -163,7 +172,22 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-						$result[$i][]= html::anchor(Router::$controller.'/?type=contact_groups#'.$row->contactgroup_name, $row->contactgroup_name);
+					    $cg_link = "";
+					    $c_link = "";
+					    if(isset($row->contactgroup_name)) {
+							$tmp = explode(",", $row->contactgroup_name);
+							foreach($tmp as $cg){
+								$cg_link= $cg_link . " " .html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+							}
+					    }
+					    if(isset($row->contact_name)){
+							$tmp = explode(",", $row->contact_name);
+							foreach($tmp as $c){
+								$c_link= $c_link . " " .html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+							}
+					    }
+					    $result[$i][]= $c_link . " " . $cg_link;
+
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 						$result[$i][]= time::to_string($row->first_notification_delay);
 							$note_options = explode(',',$row->notification_options);
@@ -263,7 +287,23 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-						$result[$i][]= html::anchor(Router::$controller.'/?type=contacts#'.$row->contactgroup_name, $row->contactgroup_name);
+
+					    $cg_link = "";
+					    $c_link = "";
+					    if(isset($row->contactgroup_name)) {
+							$tmp = explode(",", $row->contactgroup_name);
+							foreach($tmp as $cg){
+								$cg_link= $cg_link . " " .html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+							}
+					    }
+					    if(isset($row->contact_name)){
+							$tmp = explode(",", $row->contact_name);
+							foreach($tmp as $c){
+								$c_link= $c_link . " " .html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+							}
+					    }
+					    $result[$i][]= $c_link . " " . $cg_link;
+
 						$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 						$notification_options = explode(',',$row->notification_options);

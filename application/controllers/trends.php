@@ -836,6 +836,8 @@ class Trends_Controller extends Authenticated_Controller {
 				$avail_template->create_pdf = $this->create_pdf;
 				$avail_template->hide_host = false;
 				$avail_template->get_vars = $get_vars;
+				$avail_template->report_type = $this->report_type;
+				$avail_template->selected_objects = $selected_objects;
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
 						if (empty($data))
@@ -885,43 +887,57 @@ class Trends_Controller extends Authenticated_Controller {
 				$avail_template->label_insufficient_data = $t->_('Insufficient data');
 				$avail_template->label_all = $t->_('All');
 				$trend_links = false;
+				$notification_link = url::site().'notifications/host/';
+
 				$host_name = $avail_data['values']['HOST_NAME'];
 				$avail_link = url::site().'reports/generate?type=avail'.
 				"&host_name[]=". $host_name. "&report_type=hosts" .
 				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
+				$avail_link_icon = 'availability';
+				$notification_icon = 'notifications';
+				$status_icon = 'host';
+				$histogram_icon = 'histogram';
+				$alerthistory_icon = 'alerthistory';
 
-				#@@@FIXME: Add links to  Alert History + Noticications when available
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
 					$avail_link .= '&service_description[]=' . "$host_name;$service_description";
 					$avail_link_name = $t->_('Availability Report For This Service');
+
+					$notification_link_name = $t->_('Notifications For This Service');
+					$notification_link .= $host_name.'?service='.$service_description;
+
+					$histogram_link_name = $t->_('View Alert Histogram For This Service');
+					$histogram_link = 'histogram/host/'.$host_name.'?service='.$service_description;
+
+					$trend_links[$t->_('View Trends For This Host')] = array('trends/host/'.$host_name, 'trends');
+
+					$alerthistory_link = 'showlog/alert_history/'.$host_name.';'.$service_description;
+					$alerthistory_link_name = $t->_('View Alert History For This Host');
 				} else {
 					$service_description = false;
 					$avail_link_name = $t->_('Availability Report For This Host');
 
-					$statuslink = url::site().'status/service?name='.$host_name;
-					$trend_links[$t->_('Status Detail For This Host')] = $statuslink;
+					$statuslink = 'status/service?name='.$host_name;
+					$trend_links[$t->_('Status Detail For This Host')] = array($statuslink, $status_icon);
+
+					$notification_link_name = $t->_('Notifications For This Host');
+					$notification_link .= $host_name;
+
+					$histogram_link_name = $t->_('View Alert Histogram For This Host');
+					$histogram_link = 'histogram/host/'.$host_name;
+
+					$alerthistory_link = 'showlog/alert_history/'.$host_name;
+					$alerthistory_link_name = $t->_('View Alert History For This Host');
 				}
-				$trend_links[$avail_link_name] = $avail_link;
+				$trend_links[$avail_link_name] = array($avail_link, $avail_link_icon);
+				$trend_links[$notification_link_name] = array($notification_link, $notification_icon);
+				$trend_links[$histogram_link_name] = array($histogram_link, $histogram_icon);
+				$trend_links[$alerthistory_link_name] = array($alerthistory_link, $alerthistory_icon);
 
 				$avail_template->trend_links = $trend_links;
 				$avail_template->state_values = $this->state_values;
 				$avail_template->create_pdf = $this->create_pdf;
-				/*
-			LINKS:
-				host:
-					View Availability Report For This Host
-						View Status Detail For This Host
-					View Alert History For This Host
-					View Notifications For This Host
-
-				service:
-						View Trends For This Host
-					View Availability Report For This Service
-						View Alert Histogram For This Service
-					View Alert History For This Service
-					View Notifications For This Service
-				*/
 
 				# hosts or services
 				if (isset($this->data_arr['log'])) {

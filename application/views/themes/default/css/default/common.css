@@ -918,6 +918,9 @@ table.showlog tr td input[type=submit] {
 #widget-tac_monfeat table tr th:first-child {
 	border-left: 1px solid #e9e9e0;
 }
+.group_overview_table,
+.group_grid_table { margin-bottom: 15px;}
+
 /* table sorter styles ****************************************************************************/
 .group_grid_table th.header,
 .group_overview_table th.header,

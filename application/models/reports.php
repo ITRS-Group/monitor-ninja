@@ -57,6 +57,7 @@ class Reports_Model extends Model
 	var $st_needs_log = false;
 	var $st_log = false;
 	var $st_prev_row = array();
+	var $st_prev_state = self::STATE_PENDING;
 	var $st_running = 0;
 	var $st_dt_depth = 0;
 	var $st_is_service = false;
@@ -143,6 +144,7 @@ class Reports_Model extends Model
 	 * Constructor
 	 * @param $db_name Database name
 	 * @param $db_table Database name
+	 * @param $db Connected PDO object
 	 */
 	public function __construct($db_name='monitor_reports', $db_table='report_data', $db = false)
 	{
@@ -931,6 +933,11 @@ class Reports_Model extends Model
 		# stash the report settings for debugging/test-creation purposes
 		$this->options['start_time'] = $this->start_time = $start_time;
 		$this->options['end_time'] = $this->end_time = $end_time;
+
+		# register first and last possible database entry times
+		$this->register_db_time($start_time);
+		$this->register_db_time($end_time);
+
 		$this->debug = $this->options;
 		if (!is_array($hostname))
 			$this->debug['host_name'] = $this->host_name = $hostname;
@@ -1089,10 +1096,8 @@ class Reports_Model extends Model
 			" ORDER BY timestamp DESC LIMIT 1";
 		$dbr = $this->db->query($query);
 
-		if (!$dbr || !$dbr->rowCount())
+		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
 			return false;
-
-		$row = $dbr->fetch();
 
 		$this->register_db_time($row['timestamp']);
 		$event_type = $row['event_type'];
@@ -1337,10 +1342,6 @@ class Reports_Model extends Model
 
 	public function st_parse_row($row = false)
 	{
-		$this->register_db_time($row['the_time']);
-
-		$this->st_update($row['the_time']);
-
 		$obj_name = $sub = false;
 		if (!empty($row['service_description'])) {
 			$obj_name = $row['host_name'] . ";" . $row['service_description'];
@@ -1349,11 +1350,26 @@ class Reports_Model extends Model
 			$obj_name = $row['host_name'];
 		}
 
+		if ($obj_name && isset($this->sub_reports[$obj_name])) {
+			$rpt = $sub = $this->sub_reports[$obj_name];
+		} else {
+			$rpt = $this;
+		}
+
+		# skip duplicate events immediately
+		if ($row['event_type'] == self::HOSTCHECK ||
+		    $row['event_type'] == self::SERVICECHECK)
+		{
+			if ($row['state'] === $rpt->st_prev_state) {
+				return;
+			}
+			$rpt->st_prev_state = $row['state'];
+		}
+		$this->st_update($row['the_time']);
+
 		# sub-reports must be be st_update()d before we
 		# set its state in the case statement below
-		$sub = false;
-		if ($obj_name && isset($this->sub_reports[$obj_name])) {
-			$sub = $this->sub_reports[$obj_name];
+		if ($sub) {
 			$sub->st_update($row['the_time']);
 		}
 
@@ -1611,6 +1627,7 @@ class Reports_Model extends Model
 			 'the_time' => $this->start_time,
 			 'event_type' => $fevent_type,
 			 'downtime_depth' => $this->st_dt_depth);
+		$this->st_prev_state = $this->st_obj_state;
 
 		# if we're actually going to use the log, we'll need
 		# to generate a faked initial message for it.
@@ -1800,10 +1817,8 @@ class Reports_Model extends Model
 		$sql .= " ORDER BY id DESC LIMIT 1";
 
 		$dbr = $this->db->query($sql);
-		if (!$dbr || !$dbr->rowCount())
+		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
 			return false;
-
-		$row = $dbr->fetch(PDO::FETCH_ASSOC);
 
 		$this->register_db_time($row['timestamp']);
 		$this->initial_dt_depth = $row['downtime_depth'];
@@ -1858,8 +1873,7 @@ class Reports_Model extends Model
 		# first try to fetch the real initial state so
 		# we don't have to assume
 		$dbr = $this->db->query($sql);
-		if ($dbr && $dbr->rowCount()) {
-			$row = $dbr->fetch(PDO::FETCH_ASSOC);
+		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
 			$this->initial_state = $row['state'];
 			return $this->initial_state;
 		}
@@ -1871,7 +1885,8 @@ class Reports_Model extends Model
 			return $this->initial_state;
 		}
 
-		$sql = false;
+		# we must reset $dbr here to work around a bug in PDO or PHP
+		$dbr = $sql = false;
 		$state = $assumed_state;
 		# state == -1 is magic for "use current state as initial"
 		# it's fairly bonkers to do that, and will yield different
@@ -1890,16 +1905,15 @@ class Reports_Model extends Model
 			$dbr = $this->db->query($base_sql . "ORDER BY id ASC LIMIT 1");
 		}
 
-		if (!$dbr || !$dbr->rowCount()) {
+		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
+			$state = $row['state'];
+		} else {
 			# this is only reached if there is no state at all
 			# in the database. It should usually be an error,
 			# unless one tries to take a report from, say, last
 			# year on a host that was added less than 30 seconds
 			# ago. Either way, we're out of options so do nothing.
 			# $state will default to STATE_PENDING further down
-		} else {
-			$row = $dbr->fetch();
-			$state = $row['state'];
 		}
 		/* state assumption logic end */
 

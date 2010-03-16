@@ -35,8 +35,8 @@ if (!empty($widgets)) {
 				echo '<tr>';
 				echo '<td class="white" style="width: 80px"><strong>'.$lable_on_host.'</strong></td>';
 				echo '<td class="white">'.(isset($host) ? $host : '');
-				echo isset($host_alias) ? '('.$host_alias.')' : '';
-				echo !empty($host_link) ? '('.$host_link.')' : '';
+				echo isset($host_alias) ? ' ('.$host_alias.')' : '';
+				echo !empty($host_link) ? ' ('.$host_link.')' : '';
 				echo '</td>';
 				echo '</tr>';
 			}
@@ -145,7 +145,7 @@ if (!empty($widgets)) {
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
 				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($current_status_str).'.png'), array('alt' => $current_status_str, 'style' => 'margin-bottom: -2px; margin-right: 2px'));?>
-				&nbsp;<?php echo ucfirst(strtolower($current_status_str)) ?>
+				<?php echo ucfirst(strtolower($current_status_str)) ?>
 				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : $na_str ?>)
 			</td>
 		</tr>
@@ -159,7 +159,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_current_attempt ?></td>
-			<td><?php echo $current_attempt ?>/<?php echo $max_attempts ?>(<?php echo $state_type ?>)</td>
+			<td><?php echo $current_attempt ?>/<?php echo $max_attempts ?> (<?php echo $state_type ?>)</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_check ?></td>

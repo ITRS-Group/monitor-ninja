@@ -285,7 +285,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			foreach ($last_update_ago_arr as $key => $val) {
 				$last_update_ago[] = $val.substr($key, 0, 1);
 			}
-			$last_update_ago_str = '( '.implode(' ', $last_update_ago) . ' ' . $ago . ')';
+			$last_update_ago_str = '('.implode(' ', $last_update_ago) . ' ' . $ago . ')';
 		}
 		$content->last_update_ago = $last_update_ago_str !='' ? $last_update_ago_str : $na_str;
 		$content->lable_active_checks = $t->_('Active Checks');

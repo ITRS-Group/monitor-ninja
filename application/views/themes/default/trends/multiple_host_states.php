@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
+<?php echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))) . ' ' . $this->translate->_('View corresponding Availability report')) ?>
 <div class="host_breakdown wide" style="margin-top: 15px;">
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo $t->_('Host state breakdown') ?>" id="multiple_hosts" border="1">
@@ -13,14 +14,19 @@
 			</tr>
 			<?php for ($i=0;$i<$data['nr_of_items'];$i++): ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
-			<?php if (!$use_alias) { ?>
-				<td><?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
+			<?php if (!$use_alias) {
+				$host_link = str_replace('&','&amp;',$data['host_link'][$i]);
+				$host_link = str_replace('reports/generate?type=avail', 'trends/generate?1', $host_link);?>
+				<td><?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.$host_link.'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
 				<?php } else { ?>
 				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
 				<?php } ?>
 				<td class="data">
-					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => $this->translate->_('Service details for this host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => $this->translate->_('Service details for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/alerthistory.png'), array('title' => $this->translate->_('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/notifications.png'), array('title' => $this->translate->_('Notifications for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
 				</td>
 				<td class="data">
 					<?php echo reports::format_report_value($data['up'][$i]) ?> %

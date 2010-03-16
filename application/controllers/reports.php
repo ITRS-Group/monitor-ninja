@@ -1356,6 +1356,7 @@ class Reports_Controller extends Authenticated_Controller
 					$header = $template->header;
 					$header->report_time_formatted = $report_time_formatted;
 
+					$csv_link = $this->_get_csv_link();
 					$header->csv_link = $csv_link;
 					$header->pdf_link = $pdf_link;
 					if ($report_period != 'custom') {
@@ -2982,24 +2983,33 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$path = addslashes(trim($path));
 		$params = addslashes(trim($params));
-		if (empty($path) || empty($params))
-			return false;
 		$return = form::open('reports/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
 		$return .= "<div>\n";
+		$url_params = '';
+		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
 
-		$params_arr = explode('&', $params);
-		foreach ($params_arr as $data) {
-			$key_val = explode('=', $data);
-			if (!empty($key_val)) {
-				$key = $key_val[0];
-				$val = $key_val[1];
-				$return .= form::hidden($key, $val);
+		foreach($_REQUEST as $key => $val)
+		{
+			if(is_array($val))
+			{
+				# note: only support arrays of depth==1
+				foreach($val as $subval)
+				{
+					$return .= "<input type='hidden' name='{$key}[]' value='$subval' />\n";
+				}
+			}
+			else
+			{
+				if (strstr($key, 'month_'))
+					continue;
+				if(!in_array($key, $url_params_to_skip))
+					$return .= "<input type='hidden' name='$key' value='$val' />\n";
 			}
 		}
-
+		$return .= form::hidden('csvoutput', 1);
 		$label = $this->translate->_('Download report as CSV');
-		$return .= "<input type='image' src='".Ninja_Controller::add_path('icons/32x32/page-csv.png').
-			" alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: -1px;' /></div></form>\n";
+		$return .= "<input type='image' src='".Kohana::config('config.site_domain').$this->add_path('icons/32x32/page-csv.png').
+			"' alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: 14px; margin-right: 7px' /></div></form>\n";
 		return $return;
 	}
 
@@ -3246,7 +3256,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf_img_src = Kohana::config('config.site_domain').$pdf_img_src;
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
-			.'value="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px" />';
+			.'value="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px" />';
 		/*html::image(
 			$pdf_img_src,
 				array(
@@ -3712,7 +3722,7 @@ class Reports_Controller extends Authenticated_Controller
 	private function _generate_avail_member_link($members)
 	{
 		$objects = '';
-		$return = url::site().'reports/generate?type='.$this->type.'&amp;';
+		$return = url::site().'reports/generate?type=avail&amp;';
 		if (is_array($members)) {
 			$objects .= implode('&amp;'.$this->object_varname.'[]=',$members);
 		} else {
