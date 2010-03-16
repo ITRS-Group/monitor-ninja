@@ -165,6 +165,8 @@ class Summary_Controller extends Authenticated_Controller
 			2 => $t->_("Most Recent Hard Host Alerts"),
 			3 => $t->_("Most Recent Hard Service Alerts"),
 			4 => $t->_('Top Alert Producers'),
+			5 => $t->_("Top Hard Host Alert Producers"),
+			6 => $t->_("Top Hard Service Alert Producers"),
 		);
 		$template->label_show_items = $t->_('Items to show');
 		$template->label_default_show_items = 25;
