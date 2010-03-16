@@ -167,7 +167,7 @@ if (isset($report_info)) {
 			<table class="setup-tbl">
 				<tr>
 					<td><?php echo help::render('reporting_period').' '.$label_report_period ?></td>
-					<td style="width: 32px">&nbsp;</td>
+					<td style="width: 18px">&nbsp;</td>
 					<td><?php echo help::render('report_time_period').' '.$label_rpttimeperiod ?></td>
 				</tr>
 				<tr>

@@ -172,8 +172,8 @@ if (!empty($widgets)) {
 			<table class="setup-tbl">
 				<tr>
 					<td><?php echo help::render('reporting_period').' '.$label_report_period ?></td>
-					<td style="width: 32px">&nbsp;</td>
-					<td style="width: 32px">&nbsp;</td>
+					<td style="width: 18px">&nbsp;</td>
+					<td>&nbsp;</td>
 				</tr>
 				<tr>
 					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?></td>
