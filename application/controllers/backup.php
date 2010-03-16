@@ -58,6 +58,7 @@ class Backup_Controller extends Authenticated_Controller {
 			if (substr($file, -$suffix_len) == $this->backup_suffix)
 				$backupfiles[] = substr($file, 0, -$suffix_len);
 
+		rsort($backupfiles);
 		$this->template->content->files = $backupfiles;
 	}
 

@@ -6,8 +6,8 @@ function backup(){
 		if ($(this).find('span').hasClass('ok'))
 		{
 			var file = $('#backupfilename').text();
-			if ($('#backups tr:last a:first').text() != file)
-				$('#backups tr:last').after('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
+			if ($('#backups tbody tr:first a:first').text() != file)
+				$('#backups tbody tr:first').before('<tr class="' + ($('#backups tr:last').attr('class') == 'odd' ? 'even' : 'odd') + '">'
 					+ '<td><a class="download" href="/backup/' + file + '<?php echo $suffix; ?>">' + file + '</a></td>'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
@@ -53,10 +53,13 @@ $('a.delete').live('click', function(){
 	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo $this->translate->_('Save your current op5 Monitor configuration'); ?></a></p>
 	<br />
 	<table id="backups">
+		<thead>
 		<tr>
 			<th class="headerNone"><?php echo $this->translate->_('Backups'); ?></th>
 			<th class="headerNone" style="width: 50px"><?php echo $this->translate->_('Actions'); ?></th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php $i = 0; foreach ($files as $file): $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td><a class="download" href="/backup/<?php echo $file . $suffix; ?>"><?php echo $file; ?></a></td>
@@ -67,5 +70,6 @@ $('a.delete').live('click', function(){
 			</td>
 		</tr>
 		<?php endforeach; ?>
+		</tbody>
 	</table>
 </div>
