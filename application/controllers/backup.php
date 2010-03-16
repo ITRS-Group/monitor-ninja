@@ -111,7 +111,7 @@ class Backup_Controller extends Authenticated_Controller {
 		{
 			$this->template->status = true;
 			$this->template->file = $file;
-			$this->template->message = "The backup of the current configuration has been created";
+			$this->template->message = "A backup of the current configuration has been created";
 		}
 	}
 

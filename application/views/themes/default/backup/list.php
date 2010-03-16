@@ -50,7 +50,7 @@ $('a.delete').live('click', function(){
 	<h2><?php echo $this->translate->_('Backup/Restore'); ?></h2>
 	<div id="backupstatus">&nbsp;</div>
 	<p><a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => $this->translate->_('Save your current Monitor configuration'), 'title' => $this->translate->_('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?></a>
-	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo $this->translate->_('Save your current Monitor configuration'); ?></a></p>
+	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo $this->translate->_('Save your current op5 Monitor configuration'); ?></a></p>
 	<br />
 	<table id="backups">
 		<tr>
