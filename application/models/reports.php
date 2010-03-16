@@ -144,6 +144,7 @@ class Reports_Model extends Model
 	 * Constructor
 	 * @param $db_name Database name
 	 * @param $db_table Database name
+	 * @param $db Connected PDO object
 	 */
 	public function __construct($db_name='monitor_reports', $db_table='report_data', $db = false)
 	{

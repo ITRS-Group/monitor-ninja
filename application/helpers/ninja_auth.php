@@ -9,7 +9,7 @@ class ninja_auth_Core
 {
 	/**
 	 * Generates a password hash
-	 * @param $plain Plaintext password
+	 * @param $pass Plaintext password
 	 * @return Password hash
 	 */
 	public function hash_password($pass)
