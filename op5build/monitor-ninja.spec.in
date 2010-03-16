@@ -22,7 +22,7 @@ Webgui for Nagios 3.
 pushd cli-helpers
 make
 popd
-doxygen ninja.doxy
+make test docs
 
 
 %install
