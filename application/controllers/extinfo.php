@@ -490,7 +490,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
 					 $label_host_status_details => 'status/service/'.$host,
-					 $label_host_alert_history => 'showlog/showlog/'.$host,
+					 $label_host_alert_history => 'showlog/alert_history/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
 					 $label_host_avail => 'reports/generate/?type=avail&host_name[]='.$host,
@@ -509,7 +509,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					$label_host_info => 'extinfo/details/host/'.$host,
 					$label_host_detail => 'status/service/'.$host,
-					$label_service_alert_history => 'showlog/showlog/'.$host.'?service='.urlencode($service),
+					$label_service_alert_history => 'showlog/alert_history/'.$host.'?service='.urlencode($service),
 					$label_service_trends => 'trends/host/'.$host.'?service='.urlencode($service),
 					$label_service_histogram => 'histogram/host/'.$host.'?service='.urlencode($service),
 					$label_service_avail => 'reports/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
