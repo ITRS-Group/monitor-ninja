@@ -347,6 +347,8 @@ class Summary_Controller extends Authenticated_Controller
 
 		$options = $_REQUEST;
 		if (isset($_REQUEST['standardreport'])) {
+			# the default for standardreports is 'last7days'
+			$options['report_period'] = 'last7days';
 			if ($_REQUEST['standardreport'] < 4) {
 				$report_type = self::RECENT_ALERTS;
 			}
