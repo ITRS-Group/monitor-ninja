@@ -894,10 +894,10 @@ class Trends_Controller extends Authenticated_Controller {
 				"&host_name[]=". $host_name. "&report_type=hosts" .
 				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
 				$avail_link_icon = 'availability';
-				$notification_icon = 'notifications';
-				$status_icon = 'host';
+				$notification_icon = 'notify';
+				$status_icon = 'hoststatus';
 				$histogram_icon = 'histogram';
-				$alerthistory_icon = 'alerthistory';
+				$alerthistory_icon = 'history';
 
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
