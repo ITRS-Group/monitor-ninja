@@ -134,7 +134,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 	}
 
-	public function geomap()
+	public function geomap($object_type = '', $object_name = '')
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
@@ -145,6 +145,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Geomap');
 		$this->template->content = $this->add_view('nagvis/geomap');
+		$this->template->content->mark_object_type = $object_type;
+		$this->template->content->mark_object_name = $object_name;
 		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');

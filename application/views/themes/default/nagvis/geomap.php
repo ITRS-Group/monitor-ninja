@@ -8,6 +8,11 @@
 		<param name="bgcolor" value="#ffffff" />
 		<param name="wmode" value="opaque" />
 		<param name="allowScriptAccess" value="sameDomain" />
+		<?php if ($mark_object_type == 'host'): ?>
+		<param name="FlashVars" value="MarkHost=<?php echo $mark_object_name; ?>" />
+		<?php elseif ($mark_object_type == 'hostgroup'): ?>
+		<param name="FlashVars" value="MarkHostGroup=<?php echo $mark_object_name; ?>" />
+		<?php endif; ?>
 	</object>
 </div>
 
