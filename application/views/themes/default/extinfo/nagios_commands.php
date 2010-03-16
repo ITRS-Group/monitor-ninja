@@ -38,8 +38,8 @@
 				<?php echo html::image($this->add_path('icons/16x16/stop-execute.png'), array('alt' => $label_execute_host_checks, 'title' => $label_execute_host_checks, 'style' => 'height: 16px')); ?>
 			</td>
 			<td><?php echo $link_execute_host_checks ?></td>
-		<tr>
 		</tr>
+		<tr>
 			<td class="dark">
 				<?php echo html::image($this->add_path('icons/16x16/stop-execute.png'), array('alt' => $label_accept_passive_host_checks, 'title' => $label_accept_passive_host_checks, 'style' => 'height: 16px')); ?>
 			</td>
