@@ -153,9 +153,14 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->alias;
 						$result[$i][]= $row->address;
 					    if(isset($row->parent)) {
-							$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->parent, $row->parent);
+								$parents = explode(',',$row->parent);
+					      $tmp = false;
+					      foreach ($parents as $parent) {
+									$tmp[] = html::anchor(Router::$controller.'/?type=hosts#'.$parent, $parent);
+								}
+								$result[$i][] = implode(', ',$tmp);
 					    } else {
-							$result[$i][]= " ";
+								$result[$i][]= '';
 					    }
 						$result[$i][]= $row->max_check_attempts;
 						$result[$i][]= time::to_string($row->check_interval*60);
