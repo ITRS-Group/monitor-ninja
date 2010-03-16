@@ -26,7 +26,7 @@ class Ninja_Reports_Test_Core
 
 	public function __construct($test_file)
 	{
-		if (PHP_SAPI === 'cli') {
+		if (PHP_SAPI === 'cli' && posix_isatty(STDOUT)) {
 			$this->color_red   =  "\033[31m";
 			$this->color_green =  "\033[32m";
 			$this->color_reset =  "\033[0m";
