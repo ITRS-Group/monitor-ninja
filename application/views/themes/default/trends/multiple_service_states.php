@@ -70,11 +70,11 @@
 					<?php } ?>
 				</td>
 				<td class="data">
-					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this service')))) ?>
-					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/menu/alerthistory.png'), array('title' => $this->translate->_('Alert History for this Service')))) ?>
-					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i]."?service=".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/menu/notifications.png'), array('title' => $this->translate->_('Notifications for this Service')))) ?>
-					<?php echo html::anchor('trends/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/trends.png'), array('title' => $this->translate->_('Trends for this Host')))) ?>
-					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host')))) ?>
+					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('Availability report for this service'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/history.png'), array('title' => $this->translate->_('Alert History for this Service'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i]."?service=".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => $this->translate->_('Notifications for this Service'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('trends/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/trends.png'), array('title' => $this->translate->_('Trends for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
 				</td>
 				<td class="data"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
@@ -91,7 +91,7 @@
 
 			<?php if (!empty($data['groupname'])) {
 					if ($use_average==0) { ?>
-			<tr>
+			<tr class="<?php echo ($i%2 == 0 ? 'even' : 'odd'); ?>">
 				<td colspan="2"><?php echo $t->_('Average') ?></td>
 				<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
@@ -105,7 +105,7 @@
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
 			<?php 	} ?>
-			<tr class="group-average">
+			<tr class="<?php $i++; echo ($i%2 == 0 ? 'even' : 'odd'); ?>">
 				<td colspan="2"><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>

@@ -1,12 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
-<?php echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))) . ' ' . $this->translate->_('View corresponding Availability report')) ?>
-<div class="host_breakdown wide" style="margin-top: 15px;">
+<?php
+	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; float: left'));
+	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, $this->translate->_('View corresponding Availability report'));
+?>
+<div class="host_breakdown wide" style="margin-top: 5px;">
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo $t->_('Host state breakdown') ?>" id="multiple_hosts" border="1">
 			<tr>
 				<th class="headerNone left" style="<?php echo (!$create_pdf) ? 'width: 70%;' : ''; ?>"><?php echo (!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
-				<th class="headerNone left"><?php echo $t->_('Actions') ?></th>
+				<th class="headerNone left" style="width: 60px"><?php echo $t->_('Actions') ?></th>
 				<th class="headerNone"><?php echo $t->_('Up') ?></th>
 				<th class="headerNone"><?php echo $t->_('Unreachable') ?></th>
 				<th class="headerNone"><?php echo $t->_('Down') ?></th>
@@ -23,10 +26,10 @@
 				<?php } ?>
 				<td class="data">
 					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => $this->translate->_('Service details for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/menu/availability.png'), array('title' => $this->translate->_('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/alerthistory.png'), array('title' => $this->translate->_('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/notifications.png'), array('title' => $this->translate->_('Notifications for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/menu/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/history.png'), array('title' => $this->translate->_('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => $this->translate->_('Notifications for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
 				</td>
 				<td class="data">
 					<?php echo reports::format_report_value($data['up'][$i]) ?> %

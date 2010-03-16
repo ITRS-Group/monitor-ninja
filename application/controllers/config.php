@@ -215,15 +215,11 @@ class Config_Controller extends Authenticated_Controller {
 						$ret = false;
 						if ($row->retain_status_information == true) {
 							$ret[] = $t->_('Status Information');
-							$retention = 1;
 						}
 						if ($row->retain_nonstatus_information == true) {
 							$ret[] = $t->_('Non-status Information');
 						}
-						if ($retention != 1) {
-							$ret[] = $t->_('None');
-						}
-						$result[$i][] = implode(', ',$ret);
+						$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
 						$i++;
 					}
 					$data = $result;
@@ -331,15 +327,11 @@ class Config_Controller extends Authenticated_Controller {
 						$ret = false;
 						if ($row->retain_status_information == true) {
 							$ret[] = $t->_('Status Information');
-							$retention = 1;
 						}
 						if ($row->retain_nonstatus_information == true) {
 							$ret[] = $t->_('Non-status Information');
 						}
-						if ($retention != 1) {
-							$ret[] = $t->_('None');
-						}
-						$result[$i][] = is_array($ret) ? implode(', ',$ret) : '';
+						$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
 						$i++;
 					}
 					$data = $result;
@@ -391,15 +383,11 @@ class Config_Controller extends Authenticated_Controller {
 						$ret = false;
 						if ($row->retain_status_information == true) {
 							$ret[] = $t->_('Status Information');
-							$retention = 1;
 						}
 						if ($row->retain_nonstatus_information == true) {
 							$ret[] = $t->_('Non-status Information');
 						}
-						if ($retention != 1) {
-							$ret[] = $t->_('None');
-						}
-						$result[$i][] = implode(', ',$ret);
+						$result[$i][] = is_array($ret) ? implode(', ',$ret) : 'None';
 						$i++;
 					}
 					$data = $result;

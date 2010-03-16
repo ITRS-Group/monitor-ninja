@@ -124,7 +124,7 @@
 <?php if (empty($data['groupname'])) { ?>
 	<table summary="<?php echo $t->_('State breakdown for host services') ?>" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : 'class="multiple_services" style="margin-bottom: 15px"';?>>
 		<tr>
-			<th <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo help::render('average_and_sla').' '.$t->_('Average and Group availability for all selected services') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 90%"';?>><?php echo help::render('average_and_sla').' '.$t->_('Average and Group availability for all selected services') ?></th>
 			<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('OK') ?></th>
 			<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Warning') ?></th>
 			<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Unknown') ?></th>
