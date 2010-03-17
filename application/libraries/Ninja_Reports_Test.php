@@ -107,6 +107,11 @@ class Ninja_Reports_Test_Core
 				echo "Failed to set option '$k' to '$v'\n";
 		}
 
+		# force logs to be kept so we can analyze them and make
+		# sure the durations add up
+		$rpt->set_option('keep_logs', true);
+		$rpt->set_option('keep_sub_logs', true);
+
 		$return_arr = $rpt->get_uptime();
 		$this->result = $return_arr;
 		$this->report_objects[$this->cur_test] = $rpt;
@@ -115,7 +120,7 @@ class Ninja_Reports_Test_Core
 			return false;
 		}
 
-		return $this->compare_test_result($return_arr, $correct);
+		return $this->compare_test_result($return_arr, $correct, $rpt);
 	}
 
 	public function parse_test($test_file = false)
@@ -326,13 +331,26 @@ class Ninja_Reports_Test_Core
 
 		return $subs;
 	}
+
+	public function log_duration($st_log)
+	{
+		if (!is_array($st_log))
+			return 0;
+
+		$duration = 0;
+		foreach ($st_log as $le) {
+			$duration += $le['duration'];
+		}
+		return $duration;
+	}
+
 	/**
 	*	@name 	compare_test_result
 	*	@desc 	Compare result from test with correct values
 	* 	@return mixed true or array with diff
 	*
 	*/
-	public function compare_test_result($full_result, $correct)
+	public function compare_test_result($full_result, $correct, $rpt)
 	{
 		if (empty($full_result) || empty($full_result['states']))
 			$this->crash("No test result\n");
@@ -360,6 +378,22 @@ class Ninja_Reports_Test_Core
 			else {
 				$failed['sub-reports'] = "Expected $this->sub_reports sub reports. Got $subs";
 			}
+		}
+
+		# check duration for all sub-reports individually
+		if (!empty($rpt->sub_reports)) {
+			foreach ($rpt->sub_reports as $r) {
+				$duration = $this->log_duration($r->st_log);
+				if ($duration != $r->end_time - $r->start_time) {
+					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration";
+				}
+			}
+		}
+		# also check the master report
+		$duration = $this->log_duration($rpt->st_log);
+		echo "duration: $duration; rpt->duration: " . ($rpt->end_time - $rpt->start_time) . "\n";
+		if ($duration != $rpt->end_time - $rpt->start_time) {
+			$failed['st_log'] = "Log duration doesn't match report period duration";
 		}
 
 		if (empty($failed)) {
