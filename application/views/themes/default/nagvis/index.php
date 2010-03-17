@@ -115,7 +115,7 @@ $img_url = $this->add_path('css/default/images');
 			}
 			?>
 			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/automap" style="border: 0px"><span><?php echo $this->translate->_('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
-			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="<?php $site; ?>geomap-thumb.png" alt="" /></a></li>
+			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="<?php echo $site; ?>geomap-thumb.png" alt="" /></a></li>
 			<li class="create">
 				<span class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo $this->translate->_('Create map') ?></span>
 				<form id="createmap" action="<?php echo $site; ?>index.php/nagvis/create" method="post">
