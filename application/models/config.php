@@ -213,5 +213,7 @@ class Config_Model extends Model {
 		    }
 		    return $result->count() ? $result->result(): false;
 		}
+		else
+			return false;
 	}
 }

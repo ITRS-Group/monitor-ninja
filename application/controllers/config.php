@@ -35,11 +35,21 @@ class Config_Controller extends Authenticated_Controller {
 	public function index()
 	{
 
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_system_information) {
+			url::redirect('extinfo/unauthorized/0');
+		}
+
 		$this->type = isset($_GET['type']) ? $_GET['type'] : $this->type;
 		$t = $this->translate;
 
 		$items_per_page = 20;
 		$config_model = new Config_Model($items_per_page, true, true);
+
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_system_information) {
+			url::redirect('extinfo/unauthorized/0');
+		}
 
 		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View config');
 		$this->template->content = $this->add_view('config/index');
@@ -691,5 +701,13 @@ class Config_Controller extends Authenticated_Controller {
 		$this->template->content->data = $data;
 		$this->template->content->filter_string = $this->translate->_('Enter text to filter');
 		$this->template->content->type = $this->type;
+	}
+
+	public function unauthorized()
+	{
+		$this->template->content = $this->add_view('extinfo/unauthorized');
+		$this->template->disable_refresh = true;
+
+		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
 }
