@@ -94,6 +94,7 @@ if (isset($service_result) ) { ?>
 		<th class="header"><?php echo $this->translate->_('Service'); ?></th>
 		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
+		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Display name'); ?></th>
 	</tr>
 <?php
@@ -132,6 +133,7 @@ if (isset($service_result) ) { ?>
 			?>
 		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
+		<td><?php echo $service->output ?> <?php echo $service->long_output ?></td>
 		<td><?php echo $service->display_name ?></td>
 	</tr>
 <?php	$i++;
