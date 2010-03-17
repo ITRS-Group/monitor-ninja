@@ -951,7 +951,7 @@ class Trends_Controller extends Authenticated_Controller {
 		if (is_array($raw_trends_data) && !empty($raw_trends_data)) {
 			foreach ($raw_trends_data as $id => $row) {
 				# skip the first (faked) log-entry
-				if ($id == 0 || empty($row['host_name']))
+				if (empty($row['host_name']))
 					continue;
 				if (empty($row['service_description'])) {
 					$sub_type = 'host';
