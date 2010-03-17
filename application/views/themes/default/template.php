@@ -90,12 +90,12 @@ if (isset($this->template->js_header))
 		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
-</script>
+		</script>
 	</head>
 
 	<body>
 		<div id="top-bar">
-			<?php echo html::image($this->add_path('icons/ninja.png'),array('alt' => 'NINJA', 'title' => 'NINJA')); ?>
+			<?php echo html::image($this->add_path('icons/icon.png'),''); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
