@@ -121,13 +121,14 @@ class Ajax_Controller extends Authenticated_Controller {
 				$limit = Kohana::config('config.search_limit');
 				$data = $host_model->get_where('host_name', $q, $limit);
 				$host_info = false;
+				$host_data = false;
 				if ($data!==false) {
 					foreach ($data as $row) {
 						$host_info[] = $row->host_name;
 						$host_data[] = array('/status/service/%s', $row->host_name);
 					}
 				} else {
-					$host_info = $this->translate->_('Nothing found');
+					$host_info = array($this->translate->_('Nothing found'));
 				}
 				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
 				$json_str = json::encode($var);
