@@ -36,14 +36,27 @@ class Backup_Controller extends Authenticated_Controller {
 	private $backup_suffix = '.tar.gz';
 	private $backups_location = '/var/www/html/backup';
 
+	private $unauthorized = false;
+
 	public function __construct()
 	{
 		parent::__construct();
 		$this->template->disable_refresh = true;
+
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_configuration_information || !$auth->authorized_for_system_commands) {
+			$this->template->content = $this->add_view('unauthorized');
+			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the backup interface.");
+			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization for more information.');
+			$this->unauthorized = true;
+		}
 	}
 
 	public function index()
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;
@@ -64,6 +77,9 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function view($file)
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template->content = $this->add_view('backup/view');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore » View');
 		$this->template->content->backup = $file;
@@ -78,6 +94,9 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function verify()
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template = $this->add_view('backup/verify');
 
 		$output = array();
@@ -96,6 +115,9 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function backup()
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template = $this->add_view('backup/backup');
 
 		$file = strftime('backup-%Y-%m-%d_%H.%M');
@@ -118,6 +140,9 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function restore($file)
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template = $this->add_view('backup/restore');
 		$this->template->status = false;
 
@@ -152,6 +177,9 @@ class Backup_Controller extends Authenticated_Controller {
 
 	public function delete($file)
 	{
+		if ($this->unauthorized)
+			return;
+
 		$this->template = $this->add_view('backup/delete');
 
 		$this->template->status = @unlink($this->backups_location . '/' . $file . $this->backup_suffix);
