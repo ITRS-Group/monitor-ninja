@@ -35,8 +35,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
-		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function view($map)
@@ -154,8 +152,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->xtra_css = array($this->add_path('/css/default/nagvis.css'));
 		$this->template->css_header->css = $this->xtra_css;
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
-		$this->template->js_header->js = $this->xtra_js;
 	}
 
 	public function rotate($pool, $first_map)
