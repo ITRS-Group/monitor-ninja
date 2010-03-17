@@ -55,6 +55,7 @@ class Reports_Model extends Model
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
+	var $keep_sub_logs = false;
 	var $st_log = false;
 	var $st_prev_row = array();
 	var $st_prev_state = self::STATE_PENDING;
@@ -471,6 +472,7 @@ class Reports_Model extends Model
 			 'summary_items' => 'int',
 			 'cluster_mode' => 'bool',
 			 'keep_logs' => 'bool',
+			 'keep_sub_logs' => 'bool',
 			 'report_timeperiod' => 'string',
 			 'scheduled_downtime_as_uptime' => 'bool',
 			 'assume_initial_states' => 'bool',
@@ -575,6 +577,9 @@ class Reports_Model extends Model
 		 case 'keep_logs':
 			# caller forces us to retain or discard all log-entries
 			$this->st_needs_log = $value;
+			break;
+		 case 'keep_sub_logs':
+			$this->keep_sub_logs = $value;
 			break;
 		 case 'scheduled_downtime_as_uptime':
 			$this->scheduled_downtime_as_uptime = $value;
@@ -893,6 +898,7 @@ class Reports_Model extends Model
 	{
 		$this->master = $master;
 		$this->set_options($master->options);
+		$this->st_needs_log = $master->keep_sub_logs;
 		$this->last_shutdown = $master->last_shutdown;
 		$this->report_timeperiod = $master->report_timeperiod;
 	}
@@ -1283,7 +1289,7 @@ class Reports_Model extends Model
 				$this->st_raw[$st] += $active;
 		}
 
-		if ($this->st_needs_log && !$this->master) {
+		if ($this->st_needs_log) {
 			$this->st_prev_row['duration'] = $duration;
 			$this->st_log[] = $this->st_prev_row;
 		}
@@ -1550,10 +1556,13 @@ class Reports_Model extends Model
 		if (!$this->timeperiods_resolved)
 			$this->resolve_timeperiods();
 
+		# single object reports always gets a log
 		if (!$this->master && empty($this->sub_reports)) {
 			$this->st_needs_log = true;
 		}
-		if ($this->st_needs_log === true && !$this->master) {
+
+		# if user asked for it, we preserve the log
+		if ($this->st_needs_log) {
 			$this->st_log = array();
 		}
 
@@ -1755,7 +1764,7 @@ class Reports_Model extends Model
 			"state,timestamp AS the_time, hard, event_type, " .
 			"downtime_depth";
 		# output is a TEXT field, so it needs an extra disk
-		# lookup to fetch and we don't (usually) need it
+		# lookup to fetch and we don't always need it
 		if ($this->st_needs_log)
 			$sql .= ", output";
 
