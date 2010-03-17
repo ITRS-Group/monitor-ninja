@@ -99,7 +99,6 @@ class Ninja_Controller extends Template_Controller {
 			),
 			$this->translate->_('Reporting') => array(
 				$this->translate->_('Trends') 								=> array('trends', 'trends'),
-				$this->translate->_('Schedule reports') 			=> array('reports?show_schedules', 'schedulereports'),
 				$this->translate->_('Histogram') 							=> array('histogram', 'histogram'),
 				$this->translate->_('Alert history') 					=> array('showlog/alert_history', 'alerthistory'),
 				$this->translate->_('Alert summary') 					=> array('summary', 'alertsummary'),
@@ -119,6 +118,7 @@ class Ninja_Controller extends Template_Controller {
 			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('reports/?type=avail', 'availability');
 			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('reports/?type=sla', 'sla');
 		}
+		$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('reports?show_schedules', 'schedulereports');
 
 		# Add NACOMA link only if enabled in config
 		if (nacoma::link()===true) {
