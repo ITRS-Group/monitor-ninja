@@ -95,7 +95,7 @@ if (isset($this->template->js_header))
 
 	<body>
 		<div id="top-bar">
-			<?php echo html::image($this->add_path('icons/ninja.png'),'NINJA'); ?>
+			<?php echo html::image($this->add_path('icons/ninja.png'),array('alt' => 'NINJA', 'title' => 'NINJA')); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
@@ -144,11 +144,11 @@ if (isset($this->template->js_header))
 						</li>'."\n";
 						foreach ($link as $title => $url):
 							if($url[0] == str_replace(url::site(),'',$_SERVER['PHP_SELF']).(!empty($_SERVER['QUERY_STRING']) ? '?'.$_SERVER['QUERY_STRING'] : ''))
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0].'#'.str_replace(' ','_',html::specialchars($title)), html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'<a name="'.str_replace(' ','_',html::specialchars($title)).'"></a></li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							elseif($url[0] == '')
 								echo '<li class="hr '.html::specialchars($header).'">&nbsp;</li>'."\n";
 							else
-								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0].'#'.str_replace(' ','_',html::specialchars($title)), html::specialchars($title), array('class' => 'ninja_menu_links')).'<a name="'.str_replace(' ','_',html::specialchars($title)).'"></a></li>'."\n";
+								echo '<li class="'.html::specialchars($header).'">'.html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 						endforeach;
 					endforeach;
 				?>
@@ -188,7 +188,7 @@ if (isset($this->template->js_header))
 							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>'."\n";
-						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate').'</li>'."\n";
+						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
 						echo '</ul>'."\n";
 					}
 				?>
