@@ -42,8 +42,7 @@ class pnp_Core
 			# replace some strings in service name
 			# like PNP does
 			$service = urldecode($service);
-			$service = str_replace(' ', '_', $service);
-			$service = str_replace('/', '_', $service);
+			$service = preg_replace('/[ :\/\\\\]/', "_", $service);
 		}
 
 		$path = $rrdbase . $host . '/' . $service . '.rrd';
