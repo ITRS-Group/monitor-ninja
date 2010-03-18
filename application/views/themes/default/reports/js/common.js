@@ -535,6 +535,16 @@ function check_form_values()
 		}
 	}
 
+	// create array prototype to sole the lack of in_array() in javascript
+	Array.prototype.has = function(value) {
+		var i;
+		for (var i = 0, loopCnt = this.length; i < loopCnt; i++) {
+			if (this[i] === value) {
+				return true;
+			}
+		}
+		return false;
+	};
 	/**
 	*	Using JQuery to ensure that an existing report
 	*	can't use an already existing (saved) name.
@@ -575,7 +585,7 @@ function check_form_values()
 		$('#response').html('');
 
 		// check if report name is unique
-		if(saved_report_id == '' && invalid_report_names && invalid_report_names.indexOf(report_name) != -1)
+		if(saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
 		{
 			if(!confirm(_reports_error_name_exists_replace))
 			{
