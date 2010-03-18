@@ -169,7 +169,7 @@ if (isset($this->template->js_header))
 				<li id="ninja_refresh_edit">
 					<?php echo $this->translate->_('Edit global refresh rate') ?><br />
 					<div id="ninja_page_refresh_slider" style="width:200px; margin-top: 8px;">
-						<input type="text" maxlength="3" size="2" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 170px; padding: 1px; margin-top:-25px;z-index: 500" />
+						<input type="text" maxlength="3" size="3" id="ninja_page_refresh_value" name="ninja_page_refresh_value" style="position: absolute; font-size: 11px; margin-left: 160px; padding: 1px; margin-top:-25px;z-index: 500" /> <div style="position: aboslute; margin-left: 192px; margin-top: -23px">s</div>
 					</div>
 				</li>
 
