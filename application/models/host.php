@@ -138,13 +138,24 @@ class Host_Model extends Model {
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth_hosts = $this->auth->get_authorized_hosts();
+		if (!isset($this->auth) || !is_object($this->auth)) {
+			$auth = new Nagios_auth_Model();
+			$auth_hosts = $auth->get_authorized_hosts();
+		} else {
+			$auth_hosts = $this->auth->get_authorized_hosts();
+		}
 		$host_ids = array_keys($auth_hosts);
 		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		if (!isset($this->db) || !is_object($this->db)) {
+			$db = new Database();
+		} else {
+			$db = $this->db;
+		}
+
 		$value = '%' . $value . '%';
-		$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$this->db->escape($value).") ".
+		$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
 		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
-		$host_info = $this->db->query($sql);
+		$host_info = $db->query($sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
 
