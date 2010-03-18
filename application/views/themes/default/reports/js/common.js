@@ -578,8 +578,15 @@ function check_form_values()
 					}
 				}
 			});
+		} else {
+			if (do_save_report && report_name == '') {
+				// trying to save a report without a name
+				errors++;
+				err_str += "<li>" + _reports_name_empty + "</li>";
+			}
 		}
 	}
+
 	// display err_str if any
 	if (!errors) {
 		$('#response').html('');
