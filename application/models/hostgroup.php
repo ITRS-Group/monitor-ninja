@@ -103,12 +103,22 @@ class Hostgroup_Model extends ORM
 	}
 
 	/**
-	*	Fetch hosts that belongs to a specific hostgroup
-	*/
+	/**
+	 * Fetch hosts that belongs to a specific hostgroup
+	 * @param $group Hostgroup name, or array of names
+	 * @return database result set
+	 */
 	public function get_hosts_for_group($group=false)
 	{
 		if (empty($group)) {
 			return false;
+		}
+		if (!is_array($group)) {
+			$group = array($group);
+		}
+		$hg = array();
+		foreach ($group as $g) {
+			$hg[$g] = $this->db->escape($g);
 		}
 		$auth_hosts = Host_Model::authorized_hosts();
 		$host_str = implode(', ', array_values($auth_hosts));
@@ -119,7 +129,7 @@ class Hostgroup_Model extends ORM
 			hostgroup hg,
 			host_hostgroup hhg
 		WHERE
-			hg.hostgroup_name=".$this->db->escape($group)." AND
+			hg.hostgroup_name IN (" . join(', ', $hg) . ") AND
 			hhg.hostgroup = hg.id AND
 			h.id=hhg.host AND
 			h.id IN(".$host_str.")
