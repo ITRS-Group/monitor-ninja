@@ -131,6 +131,79 @@ class System_Model extends Model
 	}
 
 	/**
+	*	Fetch status info from nagios log file
+	*/
+	public function get_status_info($file = 'status.log', $section = 'programstatus')
+	{
+		if (empty($file))
+			return false;
+
+		if (!file_exists($file)) {
+			$base_path = self::get_nagios_base_path();
+			$file = $base_path.'/var/'.$file;
+		}
+		if (!file_exists($file)) {
+			return false;
+		}
+
+		$buf = file_get_contents($file);
+		if($buf === false)
+			return false;
+		$lines = explode("\n", $buf);
+		$block = false;
+		$pushed_blocks = array();
+		$pushed_names = array();
+		$block_name = false;
+		$num_line = 0;
+		$found_section = false;
+		$data = false;
+		foreach ($lines as $raw_line) {
+			$num_line++;
+			$line = trim($raw_line);
+			if (!strlen($line) || $line{0} === '#')
+				continue;
+
+			if (strstr($line, $section.' {')) {
+				$found_section = true;
+				continue;
+			}
+
+			if ($found_section === true) {
+				$ary = split("=", $line);
+				if (is_array($ary) && sizeof($ary)==2) {
+					$data[$section][$ary[0]] = $ary[1];
+				}
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	*	Extract values from status.log array returned from
+	*	get_status_info()
+	*/
+	public function extract_stat_key($key=false, &$arr=false)
+	{
+		if (empty($key) || empty($arr))
+			return false;
+		$return = false;
+		if (isset($arr[$key])) {
+			$tmp = split(',', $arr[$key]);
+			if (is_array($tmp) && !empty($tmp)) {
+				if (count($tmp) == 1) {
+					$return = $tmp[0];
+				} else {
+					$return = $tmp;
+				}
+			} else {
+				$return = $arr[$key];
+			}
+		}
+		return $return;
+	}
+
+	/**
 	 * Fetch info on installed rpm packages
 	 * @param $filter A regular expression passed to 'grep'
 	 * @return array or false
