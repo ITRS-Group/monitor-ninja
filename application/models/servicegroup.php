@@ -152,7 +152,7 @@ class Servicegroup_Model extends ORM
 			s.id=ssg.service AND
 			s.id IN(".$service_str.")
 		ORDER BY
-			s.service_description";
+			s.host_name, s.service_description";
 
 		if (!empty($sql)) {
 			$result = $this->db->query($sql);
