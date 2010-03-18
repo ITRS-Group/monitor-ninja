@@ -115,6 +115,15 @@
 
 		<td style="white-space: normal">
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
+				<?php	$svc_comments = Comment_Model::count_comments($row->host_name, $row->service_description);
+						if ($svc_comments!=0) { ?>
+					<span style="float: right">
+						<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description).'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $svc_comments),
+								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $svc_comments))), array('style' => 'border: 0px')); ?>
+					</span>
+					<?php } ?>
 			<span style="float: right">
 			<?php
 				if ($row->problem_has_been_acknowledged) {
