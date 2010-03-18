@@ -104,7 +104,25 @@ class Servicegroup_Model extends ORM
 	}
 
 	/**
-	 * Fetch services that belongs to a specific servicegroup
+	 * Fetch services that belong to one or more specific servicegroup(s)
+	 * @param $group Servicegroup name, or array of names
+	 * @return Array of service_id => host_name;service_description
+	 */
+	public function member_names($group = false)
+	{
+		$objs = $this->get_services_for_group($group);
+		if ($objs === false)
+			return false;
+
+		$ret = array();
+		foreach ($objs as $obj) {
+			$ret[$obj->id] = $obj->host_name . ';' . $obj->service_description;
+		}
+		return $ret;
+	}
+
+	/**
+	 * Fetch services that belong to one or more specific servicegroup(s)
 	 * @param $group Servicegroup name, or array of names
 	 * @return database result set
 	 */

@@ -103,6 +103,23 @@ class Hostgroup_Model extends ORM
 	}
 
 	/**
+	 * Fetch hosts that belong to a specific hostgroup
+	 * @param $group The host group name(s)
+	 * @return Array of host_id => host_name
+	 */
+	public function member_names($group = false)
+	{
+		$objs = $this->get_hosts_for_group($group);
+		if ($objs === false) {
+			return false;
+		}
+		$ret = array();
+		foreach ($objs as $obj) {
+			$ret[$obj->id] = $obj->host_name;
+		}
+		return $ret;
+	}
+
 	/**
 	 * Fetch hosts that belongs to a specific hostgroup
 	 * @param $group Hostgroup name, or array of names
