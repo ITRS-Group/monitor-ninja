@@ -540,8 +540,9 @@ function check_form_values()
 	*	can't use an already existing (saved) name.
 	*/
 	if(typeof window.jQuery != "undefined") {
-		var report_name 	= $("input[name=report_name]").val();
-		var saved_report_id = $("input[name=saved_report_id]").val();
+		var report_name 	= $("input[name=report_name]").attr('value');
+		report_name = $.trim(report_name);
+		var saved_report_id = $("input[name=saved_report_id]").attr('value');
 		var do_save_report 	= $('input[name=save_report_settings]').attr('checked') ? 1 : 0;
 
 		/*
