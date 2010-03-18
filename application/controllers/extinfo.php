@@ -1227,6 +1227,26 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->max_host_percent_change_b = number_format($host_model->max_host_percent_change_b, 2);
 		$content->average_host_percent_change = $host_model->total_passive_host_checks > 0 ?
 			number_format($host_model->total_host_percent_change_b/$host_model->total_passive_host_checks, 3) : '0.00';
+
+		$stats_key = 'programstatus';
+		$check_stats = System_Model::get_status_info('status.log', $stats_key);
+		if ($check_stats !== false && isset($check_stats[$stats_key])) {
+			$stats = $check_stats[$stats_key];
+			$content->active_scheduled_host_check_stats = System_Model::extract_stat_key('active_scheduled_host_check_stats', $stats);
+			$content->active_ondemand_host_check_stats = System_Model::extract_stat_key('active_ondemand_host_check_stats', $stats);
+			$content->parallel_host_check_stats = System_Model::extract_stat_key('parallel_host_check_stats', $stats);
+			$content->serial_host_check_stats = System_Model::extract_stat_key('serial_host_check_stats', $stats);
+			$content->cached_host_check_stats = System_Model::extract_stat_key('cached_host_check_stats', $stats);
+			$content->passive_host_check_stats = System_Model::extract_stat_key('passive_host_check_stats', $stats);
+			$content->active_scheduled_service_check_stats = System_Model::extract_stat_key('active_scheduled_service_check_stats', $stats);
+			$content->active_ondemand_service_check_stats = System_Model::extract_stat_key('active_ondemand_service_check_stats', $stats);
+			$content->cached_service_check_stats = System_Model::extract_stat_key('cached_service_check_stats', $stats);
+			$content->passive_service_check_stats = System_Model::extract_stat_key('passive_service_check_stats', $stats);
+			$content->external_command_stats = System_Model::extract_stat_key('external_command_stats', $stats);
+			$content->total_external_command_buffer_slots = System_Model::extract_stat_key('total_external_command_buffer_slots', $stats);
+			$content->used_external_command_buffer_slots = System_Model::extract_stat_key('used_external_command_buffer_slots', $stats);
+			$content->high_external_command_buffer_slots = System_Model::extract_stat_key('high_external_command_buffer_slots', $stats);
+		}
 	}
 
 	/**
