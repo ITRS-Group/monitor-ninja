@@ -975,7 +975,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
-		$comments->label_add_comment = $t->_('Add a new comment');
+		$comments->label_add_comment = $service ? $t->_('Add a new service comment') : $t->_('Add a new host comment');
 		$comments->cmd_add_comment =
 			$type=='host' ? nagioscmd::command_id('ADD_HOST_COMMENT')
 			: nagioscmd::command_id('ADD_SVC_COMMENT');
