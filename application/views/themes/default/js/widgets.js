@@ -153,7 +153,10 @@ function fetch_widget_order(restore)
 				$.fn.EasyWidgets({callbacks:{onRefreshPositions:function(){return data.widget_order;}}});
 			}
 		},
-		error: function(obj, msg){$.jGrowl(_widget_order_error, { header: _error_header });}
+		error: function(obj, msg){
+			// disable annoying error message
+			//$.jGrowl(_widget_order_error, { header: _error_header });
+		}
 	});
 
 }
@@ -287,7 +290,10 @@ function widget(name, content_area, no_edit)
 					$("#" + self.name + "_slider").slider("value", self.current_interval);
 				}
 			},
-			error: function(obj, msg){$.jGrowl(sprintf(_widget_settings_error, self.name), { header: _error_header });}
+			error: function(obj, msg){
+				// disable annoying error message
+				//$.jGrowl(sprintf(_widget_settings_error, self.name), { header: _error_header });
+			}
 		});
 
 	};
