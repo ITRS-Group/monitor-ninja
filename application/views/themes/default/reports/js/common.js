@@ -50,6 +50,7 @@ $(document).ready(function() {
 		'hideOnContentClick' : false,
 		'autoScale':true,
 		'autoDimensions': true,
+		'frameHeight' : 418,
 		'callbackOnShow': function() {
 			if ($("#report_period").val() == 'custom' && $('input[name=sla_save]').attr('value') == '') {
 				$(".fancydisplay").each(function() {
