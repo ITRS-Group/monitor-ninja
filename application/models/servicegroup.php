@@ -104,12 +104,21 @@ class Servicegroup_Model extends ORM
 	}
 
 	/**
-	*	Fetch services that belongs to a specific servicegroup
-	*/
+	 * Fetch services that belongs to a specific servicegroup
+	 * @param $group Servicegroup name, or array of names
+	 * @return database result set
+	 */
 	public function get_services_for_group($group=false)
 	{
 		if (empty($group)) {
 			return false;
+		}
+		if (!is_array($group)) {
+			$group = array($group);
+		}
+		$sg = array();
+		foreach ($group as $g) {
+			$sg[$g] = $this->db->escape($g);
 		}
 		$auth_services = Service_Model::authorized_services();
 		$service_str = implode(', ', array_values($auth_services));
@@ -120,7 +129,7 @@ class Servicegroup_Model extends ORM
 			servicegroup sg,
 			service_servicegroup ssg
 		WHERE
-			sg.servicegroup_name=".$this->db->escape($group)." AND
+			sg.servicegroup_name IN(". join(', ', $sg) . ") AND
 			ssg.servicegroup = sg.id AND
 			s.id=ssg.service AND
 			s.id IN(".$service_str.")
