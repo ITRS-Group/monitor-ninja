@@ -31,10 +31,16 @@ if (isset($report_info)) {
 
 		<div class="setup-table">
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
-			<div id="switcher">
+			<div id="switcher" style="margin-top: -10gpx;">
+				<a id="switch_report_type" href="" style="border: 0px; float: left; margin-right: 5px">
+				<?php
+					echo $type == 'avail' ?
+					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => $label_sla, 'title' => $label_sla)) :
+					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => $label_avail, 'title' => $label_avail));
+				?>
+				</a>
 				<a id="switch_report_type" href="">
-				<?php echo $label_switch_to.' '; ?>
-				<?php echo $type == 'avail' ? $label_sla : $label_avail; ?>
+				<?php echo $type == 'avail' ? $label_switch_to.' '.$label_sla :$label_switch_to.' '.$label_avail; ?>
 				<?php echo ' '.$label_report; ?>
 				</a>
 			</div><br />

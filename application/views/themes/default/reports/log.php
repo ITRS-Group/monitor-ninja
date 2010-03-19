@@ -12,7 +12,7 @@ if (!empty($log)) {
 	<div id="log_entries">
 		<!--<form onsubmit="return false;" action=""><div><input type="text" size="60" name="filterbox" id="filterbox" value="Enter text to filter" /></div></form>-->
 		<table id="log-table" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : '';?>>
-			<caption><?php echo help::render('log_entries').' '.ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption>
+			<caption><?php echo ((!$create_pdf) ? help::render('log_entries') : '').' '.ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption>
 			<thead>
 			<tr>
 				<th <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo $this->translate->_('Status');?></th>
