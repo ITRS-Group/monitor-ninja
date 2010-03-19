@@ -391,7 +391,6 @@ class Ninja_Reports_Test_Core
 		}
 		# also check the master report
 		$duration = $this->log_duration($rpt->st_log);
-		echo "duration: $duration; rpt->duration: " . ($rpt->end_time - $rpt->start_time) . "\n";
 		if ($duration != $rpt->end_time - $rpt->start_time) {
 			$failed['st_log'] = "Log duration doesn't match report period duration";
 		}
