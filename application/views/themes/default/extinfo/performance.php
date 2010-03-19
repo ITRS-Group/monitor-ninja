@@ -1,3 +1,4 @@
+
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 	<div class="widget left w98"><h2><?php echo $title ?></h2></div>
@@ -210,10 +211,13 @@
 		</table>
 	</div>
 
+
+<div style="clear: both"></div>
+
 	<div class="widget left w49">
-		<br /><br />
+		<br />
 		<strong><?php echo $label_check_statistics ?></strong>
-		<table>
+		<table style="margin-bottom: 15px">
 			<tr>
 				<th style="width: 40%" class="headerNone"><?php echo $label_type ?></th>
 				<th style="width: 20%" class="headerNone"><?php echo $label_last_1_min ?></th>
@@ -311,8 +315,8 @@
 		</table>
 	</div>
 
-	<div class="widget left w49">
-		<br /><br />
+		<div class="widget left w49">
+		<br />
 		<strong><?php echo $label_buffer_usage ?></strong>
 		<table>
 			<tr>
