@@ -3174,7 +3174,7 @@ class Reports_Model extends Model
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo(), $query);
+			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
 			die;
 		}
 
