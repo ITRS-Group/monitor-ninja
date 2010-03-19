@@ -1645,7 +1645,7 @@ class Reports_Model extends Model
 			                "we're%s in scheduled downtime, state is %s (%d)",
 			                $this->st_running ? '' : ' not',
 			                $this->st_dt_depth ? '' : ' not',
-			                $this->st_text[$this->st_real_state], $this->st_real_state);
+			                $this->st_text[$this->st_obj_state], $this->st_obj_state);
 			$this->st_prev_row['output'] = $fout;
 
 			if (!empty($hostname) && is_string($hostname))
