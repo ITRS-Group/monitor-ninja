@@ -14,11 +14,13 @@ class Reports_Model extends Model
 	const HOST_DOWN = 1;
 	const HOST_UNREACHABLE = 2;
 	const HOST_PENDING = -1;
+	const HOST_ALL = 7;
 	const SERVICE_OK = 0;
 	const SERVICE_WARNING = 1;
 	const SERVICE_CRITICAL = 2;
 	const SERVICE_UNKNOWN = 3;
 	const SERVICE_PENDING = -1;
+	const SERVICE_ALL = 15;
 	const PROCESS_SHUTDOWN = 103;
 	const PROCESS_RESTART = 102;
 	const PROCESS_START = 100;
@@ -45,8 +47,8 @@ class Reports_Model extends Model
 	# alert summary options
 	var $alert_types = 3; # host and service alerts by default
 	var $state_types = 3; # soft and hard states by default
-	var $host_states = 7; # all host states by default
-	var $service_states = 15; # all service states by default
+	var $host_states = self::HOST_ALL;
+	var $service_states = self::SERVICE_ALL;
 	var $summary_items = 25; # max items to return
 	var $summary_result = array();
 	var $summary_query = '';
@@ -2795,14 +2797,14 @@ class Reports_Model extends Model
 			$query .= $object_selection . " ";
 		}
 
-		if (!$this->host_states || $this->host_states == 7) {
-			$this->host_states = 7;
+		if (!$this->host_states || $this->host_states == self::HOST_ALL) {
+			$this->host_states = self::HOST_ALL;
 			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
 		} else {
 			$x = array();
 			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
 				'AND state IN(';
-			for ($i = 0; $i < 7; $i++) {
+			for ($i = 0; $i < self::HOST_ALL; $i++) {
 				if (1 << $i & $this->host_states) {
 					$x[$i] = $i;
 				}
@@ -2810,14 +2812,14 @@ class Reports_Model extends Model
 			$host_states_sql .= join(',', $x) . ')) ';
 		}
 
-		if (!$this->service_states || $this->service_states == 15) {
-			$this->service_states = 15;
+		if (!$this->service_states || $this->service_states == self::SERVICE_ALL) {
+			$this->service_states = self::SERVICE_ALL;
 			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
 			$service_states_sql = '(event_type = ' . self::SERVICECHECK .
 				"\nAND state IN(";
-			for ($i = 0; $i < 15; $i++) {
+			for ($i = 0; $i < self::SERVICE_ALL; $i++) {
 				if (1 << $i & $this->service_states) {
 					$x[$i] = $i;
 				}
