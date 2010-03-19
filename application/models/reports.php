@@ -1683,8 +1683,10 @@ class Reports_Model extends Model
 
 	private function st_update_log($sub = false, $row = false)
 	{
-		if (!$this->st_needs_log)
+		if (!$this->st_needs_log) {
+			$this->st_prev_row = $row;
 			return;
+		}
 
 		# called from st_finalize(), so bail out early
 		if (!$sub && !$row) {
