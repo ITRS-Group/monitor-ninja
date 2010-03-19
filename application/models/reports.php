@@ -2799,7 +2799,7 @@ class Reports_Model extends Model
 
 		if (!$this->host_states || $this->host_states == self::HOST_ALL) {
 			$this->host_states = self::HOST_ALL;
-			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
+			$host_states_sql = 'event_type = ' . self::HOSTCHECK;
 		} else {
 			$x = array();
 			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
@@ -2809,7 +2809,7 @@ class Reports_Model extends Model
 					$x[$i] = $i;
 				}
 			}
-			$host_states_sql .= join(',', $x) . ')) ';
+			$host_states_sql .= join(',', $x) . '))';
 		}
 
 		if (!$this->service_states || $this->service_states == self::SERVICE_ALL) {
@@ -2824,15 +2824,15 @@ class Reports_Model extends Model
 					$x[$i] = $i;
 				}
 			}
-			$service_states_sql .= join(',', $x) . ')) ';
+			$service_states_sql .= join(',', $x) . '))';
 		}
 
 		switch ($this->alert_types) {
-		 case 1: $query .= "\nAND " . $host_states_sql; break;
-		 case 2: $query .= "\nAND " . $service_states_sql; break;
+		 case 1: $query .= "\nAND " . $host_states_sql . ' '; break;
+		 case 2: $query .= "\nAND " . $service_states_sql . ' '; break;
 		 case 3:
 			$query .= "\nAND (" . $host_states_sql .
-				"OR " . $service_states_sql . ') '; break;
+				" OR " . $service_states_sql . ') '; break;
 		}
 
 		switch ($this->state_types) {
