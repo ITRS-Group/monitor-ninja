@@ -375,8 +375,14 @@ function edit_state_options(val)
 
 	if (val) {
 		$('#state_options').show();
+		if ($('#fancy_content').is(':visible')) {
+			$('tr#state_options').show();
+		}
 	} else {
 		$('#state_options').hide();
+		if ($('#fancy_content').is(':visible')) {
+			$('tr#state_options').hide();
+		}
 	}
 }
 

@@ -817,6 +817,12 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
+			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
+			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_service_state."';\n";
+			$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
+			$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
+			$this->js_strings .= "var report_period = '".$report_period."';\n";
+			$this->js_strings .= "var show_event_duration = '".$show_event_duration."';\n";
 			$this->js_strings .= "var Timeline_ajax_url = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_ajax/simile-ajax-api.js';\n";
 			$this->js_strings .= "var Timeline_urlPrefix = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_js/';\n";
 			$this->js_strings .= "var Timeline_parameters = 'bundle=true';\n";

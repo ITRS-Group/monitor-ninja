@@ -67,6 +67,12 @@ $(document).ready(function() {
 		success:		show_response	// post-submit callback
 	};
 
+	$('.fancybox').click(function() {
+		// set initial states
+		set_initial_state('assumeinitialstates', assumeinitialstates);
+		set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+		set_initial_state('show_event_duration', show_event_duration);
+	});
 });
 
 
@@ -76,12 +82,9 @@ function show_row(the_id) {
 
 function toggle_label_weight(val, the_id)
 {
-	if (document.getElementById(the_id)) {
-		elem = document.getElementById(the_id);
-		//elem.className = val ? 'bold' : '';
-		//elem.style.fontStyle = val ? 'italic' : '';
-		//elem.style.fontWeight = val ? 'bold' : '';
-	}
+	var val_str = val ? 'bold' : 'normal';
+	$('#' + the_id).css('font-weight', val_str);
+	$('#fancy_content#' + the_id).css('font-weight', val_str);
 }
 
 function show_state_options(val)
@@ -111,9 +114,15 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
 				f.elements['includesoftstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
 				f.elements['includesoftstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'assumeinitialstates':
@@ -121,8 +130,14 @@ function set_initial_state(what, val)
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
 				f.elements['assumeinitialstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['assumeinitialstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 				edit_state_options(0);
 				toggle_label_weight(0, 'assume_initial');
 			}
@@ -131,9 +146,30 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'sched_downt');
 				f.elements['scheduleddowntimeasuptime'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
+			}
+			break;
+		case 'show_event_duration':
+			if (val!='0' && val!= '') {
+				toggle_label_weight(1, 'sched_downt');
+				f.elements[what].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
+			} else {
+				f.elements[what].checked = false;
+				toggle_label_weight(0, 'sched_downt');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'report_name':
