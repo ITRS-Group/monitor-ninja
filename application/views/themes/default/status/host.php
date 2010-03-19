@@ -78,13 +78,12 @@ foreach ($result as $row) {
 				</td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
-				<?php	$host_comments = Comment_Model::count_comments($row->host_name);
-						if ($host_comments!=0) { ?>
+				<?php	if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments),
-								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
+								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px')); ?>
 					</span>
 					<?php } ?>
 					<div style="float: right">

@@ -79,13 +79,12 @@
 		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
 			<?php if ($curr_host != $row->host_name) { ?>
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
-				<?php	$host_comments = Comment_Model::count_comments($row->host_name);
-						if ($host_comments!=0) { ?>
+				<?php	if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
-								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
+								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px')); ?>
 					</span>
 					<?php } ?>
 				<span style="float: right">
@@ -115,13 +114,12 @@
 
 		<td style="white-space: normal">
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
-				<?php	$svc_comments = Comment_Model::count_comments($row->host_name, $row->service_description);
-						if ($svc_comments!=0) { ?>
+				<?php	if ($comments !== false && array_key_exists($row->host_name.';'.$row->service_description, $comments)) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $svc_comments),
-								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $svc_comments))), array('style' => 'border: 0px')); ?>
+								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]),
+								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]))), array('style' => 'border: 0px')); ?>
 					</span>
 					<?php } ?>
 			<span style="float: right">
