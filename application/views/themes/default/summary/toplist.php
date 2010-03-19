@@ -2,6 +2,7 @@
 
 <div class="widget left w98">
 	<h2><?php echo $this->translate->_('Top hard alert producers'); ?></h2>
+	<?php $this->_print_duration($options['start_time'], $options['end_time']); ?>
 	<table>
 		<tr>
 			<th class="headerNone left"><?php echo $label_rank; ?></th>

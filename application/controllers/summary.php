@@ -324,6 +324,20 @@ class Summary_Controller extends Authenticated_Controller
 		echo "</tr></table>\n";
 	}
 
+	public function _print_duration($start_time, $end_time)
+	{
+		$fmt = "Y-m-d H:i:s";
+		echo date($fmt, $start_time) . " to " .
+			date($fmt, $end_time) . "<br />\n";
+		$duration = $end_time - $start_time;
+		$days = $duration / 86400;
+		$hours = ($duration % 86400) / 3600;
+		$minutes = ($duration % 3600) / 60;
+		$seconds = ($duration % 60);
+		printf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
+			   $days, $hours, $minutes, $seconds);
+	}
+
 	/**
 	 * Generates an alert summary report
 	 */

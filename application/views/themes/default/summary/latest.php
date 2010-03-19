@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <div class="widget w98 left">
 	<h2><?php echo $this->translate->_('Most recent hard alerts'); ?></h2>
+	<?php $this->_print_duration($options['start_time'], $options['end_time']); ?>
 	<table>
 		<tr>
 			<th class="headerNone left"><?php //echo $label_state; ?></th>
