@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <?php
-	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; float: left'));
+	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; margin-bottom: -4px; display: block; float: left'));
 	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, $this->translate->_('View corresponding Availability report'));
 ?>
 <div class="host_breakdown wide" style="margin-top: 5px;">
