@@ -187,4 +187,35 @@ class Comment_Model extends Model {
 	{
 		return self::fetch_all_comments($host, $service, false, false, true);
 	}
+
+	/**
+	*	Fetch comment counts for all objects that has comments
+	*	Returned array will contain object name as key and count
+	* 	as value for all objects with comments.
+	*/
+	public function count_comments_by_object($service=false)
+	{
+		if ($service === false) { # only host comments
+			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM comment WHERE ".
+			"service_description = '' OR service_description is NULL ".
+			"GROUP BY obj_name ORDER BY obj_name";
+		} else { # service comments
+			$sql = "SELECT COUNT(*) as cnt, CONCAT(host_name, ';', service_description) AS obj_name FROM comment WHERE ".
+			"service_description != '' OR service_description is not NULL ".
+			"GROUP BY obj_name ORDER BY obj_name";
+		}
+
+		$db = new Database();
+		$result = $db->query($sql);
+		if (!$result || count($result) == 0) {
+			return false;
+		}
+		$data = false;
+		foreach ($result as $row) {
+			if ($row->cnt != 0) {
+				$data[$row->obj_name] = $row->cnt;
+			}
+		}
+		return $data;
+	}
 }
