@@ -164,7 +164,7 @@ class Comment_Model extends Model {
 						"AND c.host_name=auth_service.host_name";
 					$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
 				} else {
-					$sql = "SELECT * FROM comment WHERE (service_description!='' AND service_description is NOT null) ";
+					$sql = "SELECT * FROM comment WHERE (service_description!='' OR service_description is NOT null) ";
 				}
 			}
 		}
