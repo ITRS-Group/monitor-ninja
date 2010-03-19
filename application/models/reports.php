@@ -2897,6 +2897,10 @@ class Reports_Model extends Model
 	public function top_alert_producers()
 	{
 		$start = microtime(true);
+		$host_states = $this->host_states;
+		$service_states = $this->service_states;
+		$this->host_states = self::HOST_ALL;
+		$this->service_states = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
@@ -2909,8 +2913,10 @@ class Reports_Model extends Model
 		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
 			if (empty($row['service_description'])) {
 				$name = $row['host_name'];
+				$interesting_states = $host_states;
 			} else {
 				$name = $row['host_name'] . ';' . $row['service_description'];
+				$interesting_states = $service_states;
 			}
 
 			# only count true state-changes
@@ -2919,6 +2925,11 @@ class Reports_Model extends Model
 				continue;
 			}
 			$pstate[$name] = $state;
+
+			# if we're not interested in this state, just move along
+			if (!(1 << $row['state'] & $interesting_states)) {
+				continue;
+			}
 
 			if (empty($result[$name])) {
 				$result[$name] = 1;
