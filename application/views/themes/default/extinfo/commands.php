@@ -25,14 +25,14 @@
 		</tr>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/delay.png'), array('alt' => $lable_reschedule_check, 'title' => $lable_reschedule_check)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => $lable_reschedule_check, 'title' => $lable_reschedule_check)); ?>
 			</td>
 			<td><?php echo $link_reschedule_check ?></td>
 		</tr>
 		<?php if (isset($lable_submit_passive_checks)) { ?>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/passiveonly.png'), array('alt' => $lable_submit_passive_checks, 'title' => $lable_submit_passive_checks)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/checks-passive.png'), array('alt' => $lable_submit_passive_checks, 'title' => $lable_submit_passive_checks)); ?>
 			</td>
 			<td><?php echo $link_submit_passive_check ?></td>
 		</tr>
@@ -65,40 +65,40 @@
 		</tr>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => $lable_custom_notifications, 'title' => $lable_custom_notifications)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify-send.png'), array('alt' => $lable_custom_notifications, 'title' => $lable_custom_notifications)); ?>
 			</td>
 			<td><?php echo $link_custom_notifications ?></td>
 		</tr>
 		<?php if ($show_delay) {	?>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/delay.png'), array('alt' => $lable_delay_notification, 'title' => $lable_delay_notification)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify-delay.png'), array('alt' => $lable_delay_notification, 'title' => $lable_delay_notification)); ?>
 			</td>
 			<td><?php echo $link_delay_notifications ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/downtime.png'), array('alt' => $lable_schedule_dt, 'title' => $lable_schedule_dt)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => $lable_schedule_dt, 'title' => $lable_schedule_dt)); ?>
 			</td>
 			<td><?php echo $link_schedule_dt ?></td>
 		</tr>
 		<?php if ($type == 'host') {?>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $lable_disable_service_notifications_on_host, 'title' => $lable_disable_service_notifications_on_host)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify-disabled.png'), array('alt' => $lable_disable_service_notifications_on_host, 'title' => $lable_disable_service_notifications_on_host)); ?>
 			</td>
 			<td><?php echo $link_disable_service_notifications_on_host ?></td>
 		</tr>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => $lable_enable_service_notifications_on_host, 'title' => $lable_enable_service_notifications_on_host)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => $lable_enable_service_notifications_on_host, 'title' => $lable_enable_service_notifications_on_host)); ?>
 			</td>
 			<td><?php echo $link_enable_service_notifications_on_host ?></td>
 		</tr>
 		<tr>
 			<td class="dark">
-				<?php echo html::image($this->add_path('icons/16x16/delay.png'), array('alt' => $lable_check_all_services, 'title' => $lable_check_all_services)); ?>
+				<?php echo html::image($this->add_path('icons/16x16/schedule.png'), array('alt' => $lable_check_all_services, 'title' => $lable_check_all_services)); ?>
 			</td>
 			<td><?php echo $link_check_all_services ?></td>
 		</tr>

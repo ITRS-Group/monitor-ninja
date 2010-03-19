@@ -27,7 +27,7 @@
 				<td class="data">
 					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => $this->translate->_('Service details for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/history.png'), array('title' => $this->translate->_('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/alert-history.png'), array('title' => $this->translate->_('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => $this->translate->_('Notifications for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => $this->translate->_('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
 				</td>

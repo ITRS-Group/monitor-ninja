@@ -102,7 +102,7 @@
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 						}
 						if ($row->hostscheduled_downtime_depth > 0) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 						}
 					?>
 				</span>
@@ -137,7 +137,7 @@
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 				}
 				if ($row->scheduled_downtime_depth > 0) {
-					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 				}
 			?>
 			</span>

@@ -32,7 +32,7 @@
 	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?></caption>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/downtime.png'), array('alt' => $label_schedule_downtime_hosts.' '.$label_grouptype, 'title' => $label_schedule_downtime_hosts.' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => $label_schedule_downtime_hosts.' '.$label_grouptype, 'title' => $label_schedule_downtime_hosts.' '.$label_grouptype)); ?>
 		</td>
 		<td>
 			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_schedule_downtime_hosts.'&'.strtolower($label_grouptype).'='.$groupname, $label_schedule_downtime_hosts." ".$label_grouptype); ?>
@@ -40,7 +40,7 @@
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/downtime.png'), array('alt' => $label_schedule_downtime_services.' '.$label_grouptype, 'title' => $label_schedule_downtime_services.' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => $label_schedule_downtime_services.' '.$label_grouptype, 'title' => $label_schedule_downtime_services.' '.$label_grouptype)); ?>
 		</td>
 		<td>
 			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_schedule_downtime_services.'&'.strtolower($label_grouptype).'='.$groupname, $label_schedule_downtime_services." ".$label_grouptype); ?>

@@ -89,15 +89,15 @@ foreach ($result as $row) {
 					<div style="float: right">
 					<?php
 						if ($row->problem_has_been_acknowledged)
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $t->_('Acknowledged'), 'title' => $t->_('Acknowledged'))), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $t->_('Acknowledged'), 'title' => $t->_('Acknowledged'))), array('style' => 'border: 0px'));
 						if (empty($row->notifications_enabled))
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $t->_('Notification enabled'), 'title' => $t->_('Notification disabled'))), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $t->_('Notification disabled'), 'title' => $t->_('Notification disabled'))), array('style' => 'border: 0px'));
 						if (!$row->active_checks_enabled)
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $t->_('Active checks enabled'), 'title' => $t->_('Active checks disabled'))), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $t->_('Active checks enabled'), 'title' => $t->_('Active checks disabled'))), array('style' => 'border: 0px'));
 						if (isset($row->is_flapping) && $row->is_flapping)
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 						if ($row->scheduled_downtime_depth > 0)
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/downtime.png'),array('alt' => $t->_('Scheduled downtime'), 'title' => $t->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => $t->_('Scheduled downtime'), 'title' => $t->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 					?>
 					</div>
 				</td>

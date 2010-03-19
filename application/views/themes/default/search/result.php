@@ -50,7 +50,7 @@ if (isset($host_result) ) { ?>
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 				}
 				if ($host->scheduled_downtime_depth > 0) {
-					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 				} ?>
 			</div>
 		</td>
