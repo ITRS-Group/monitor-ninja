@@ -1288,11 +1288,6 @@ class Reports_Model extends Model
 			else
 				$this->st_raw[$st] += $active;
 		}
-
-		if ($this->st_needs_log) {
-			$this->st_prev_row['duration'] = $duration;
-			$this->st_log[] = $this->st_prev_row;
-		}
 	}
 
 	/**
@@ -1492,18 +1487,12 @@ class Reports_Model extends Model
 		# call it if you're going to.
 		#$this->check_st_sub_discrepancies($row);
 
-		# this must come after the case table above
-		if ($sub) {
-			$sub->st_prev_row = $row;
-		}
-
-		# we mangle $row here, since $this->st_prev_row is always
-		# derived from it, except when it's the initial
-		# state which always has (faked) output
-		if (empty($row['output']))
-			$row['output'] = '(No output)';
-
-		$this->st_prev_row = $row;
+		# $sub must update its log *after* the master has done so,
+		# since master will look at $sub's previous state to see
+		# how it changed
+		$this->st_update_log($sub, $row);
+		if ($sub)
+			$sub->st_update_log(false, $row);
 	}
 
 	public function st_worst()
@@ -1692,6 +1681,43 @@ class Reports_Model extends Model
 		}
 	}
 
+	private function st_update_log($sub = false, $row = false)
+	{
+		if (!$this->st_needs_log)
+			return;
+
+		# called from st_finalize(), so bail out early
+		if (!$sub && !$row) {
+			$this->st_prev_row['duration'] = $this->end_time - $this->st_prev_row['the_time'];
+			$this->st_log[] = $this->st_prev_row;
+			return;
+		}
+
+		# we mangle $row here, since $this->st_prev_row is always
+		# derived from it, except when it's the initial
+		# state which always has (faked) output
+		if (empty($row['output']))
+			$row['output'] = '(No output)';
+
+		if ($sub) {
+			$output = $sub->id . ' went from ' . $sub->st_prev_row['state'] .
+				' to ' . $row['state'];
+			$row['state'] = $this->st_obj_state;
+			$row['hard'] = 1;
+			$row['output'] = $output;
+			unset($row['host_name']);
+			unset($row['service_description']);
+		}
+
+		# don't save states without duration for master objects
+		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
+		if ($duration || $sub) {
+			$this->st_prev_row['duration'] = $duration;
+			$this->st_log[] = $this->st_prev_row;
+		}
+		$this->st_prev_row = $row;
+	}
+
 	/**
 	 * Finalize the report, calculating real uptime from our internal
 	 * meta-format.
@@ -1702,6 +1728,7 @@ class Reports_Model extends Model
 	{
 		# gather remaining time. If they match, it'll be 0
 		$this->st_update($this->end_time);
+		$this->st_update_log();
 
 		$converted_state = $this->convert_state_table($this->st_raw, $this->st_text);
 
