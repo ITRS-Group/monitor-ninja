@@ -331,7 +331,7 @@ select {
 #menu {
 	position: absolute;
 	width: 182px;
-	top: 67px;
+	top: 68px;
 	left: 0px;
 	z-index: 0;
 	background-color: #f5f5ef;
@@ -394,7 +394,7 @@ select {
 	background: transparent url(images/menu_hide.png) no-repeat;
 	width: 14px;
 	height: 14px;
-	z-index: 2;
+	z-index: 3;
 	cursor: pointer;
 }
 #show-menu {
@@ -404,7 +404,7 @@ select {
 	background: transparent url(images/menu_show.png) no-repeat;
 	width: 14px;
 	height: 14px;
-	z-index: 2;
+	z-index: 3;
 	cursor: pointer;
 	display: none;
 }

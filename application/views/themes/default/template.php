@@ -132,9 +132,9 @@ if (isset($this->template->js_header))
 		</div>
 		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
 		<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
-		<div style="position: fixed; left: 0px;">
+		<div style="position: fixed; left: 0px; z-index:2">
 
-		<div id="menu" style="overflow-y:auto">
+		<div id="menu" style="overflow-y:auto;">
 			<ul>
 			<?php
 				foreach ($links as $header => $link):
