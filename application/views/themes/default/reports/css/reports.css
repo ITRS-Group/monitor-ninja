@@ -74,7 +74,9 @@ input.datepick-end,
 input.datepick-start,
 input#cal_start,
 input#time_start,
-input#time_end {
+input#time_end,
+input#filename,
+input#recipients {
 	background: #fafafa;
 	border: 1px solid #cccccc;
 	outline: 0px;
