@@ -139,6 +139,9 @@ $(document).ready(function() {
 			create_filename();
 	});
 
+	$('.fancybox').click(function() {
+		setup_editable('fancy');
+	});
 });
 
 function js_print_date_ranges(the_year, type, item)
@@ -1080,10 +1083,15 @@ function remove_schedule(id, remove_type)
 	setTimeout('hide_response()', time);
 }
 
-function setup_editable()
+function setup_editable(mode)
 {
+	var mode_str = '';
+	if (mode == 'fancy') {
+		var mode_str = '#fancy_content ';
+	}
+	console.log(mode_str);
 	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
-	$(".iseditable").editable(save_url, {
+	$(mode_str +".iseditable").editable(save_url, {
 		id   : 'elementid',
 		name : 'newvalue',
 		type : 'text',
@@ -1094,7 +1102,7 @@ function setup_editable()
 		cancel : _cancel_str,
 		placeholder:_reports_edit_information
 	});
-	$(".period_select").editable(save_url, {
+	$(mode_str +".period_select").editable(save_url, {
 		data : $('#autoreport_periods').text(),
 		id   : 'elementid',
 		name : 'newvalue',
@@ -1103,7 +1111,7 @@ function setup_editable()
 		submit : _ok_str,
 		cancel : _cancel_str
 	});
-	$(".iseditable_txtarea").editable(save_url, {
+	$(mode_str +".iseditable_txtarea").editable(save_url, {
 		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
 		id   : 'elementid',
 		name : 'newvalue',
@@ -1115,7 +1123,7 @@ function setup_editable()
 		cssclass: "txtarea",
 		placeholder:_reports_edit_information
 	});
-	$(".report_name").editable(save_url, {
+	$(mode_str +".report_name").editable(save_url, {
 		data : function (){
 			return fetch_report_data(this.id);
 		},

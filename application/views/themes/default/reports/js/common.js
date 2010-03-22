@@ -719,7 +719,11 @@ function validate_form(formData, jqForm, options) {
 function init_timepicker()
 {
 	// Use default timepicker settings
-	$("#time_start, #time_end").timePicker();
+	if ($("#time_start").is(':visible')) {
+		$("#time_start, #time_end").timePicker();
+	} else {
+		return false;
+	}
 
 	// Store time used by duration.
 	var oldTime = $.timePicker("#time_start").getTime();
