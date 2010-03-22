@@ -1502,7 +1502,7 @@ class Reports_Controller extends Authenticated_Controller
 						$template->header->report_time_formatted = $report_time_formatted;
 						$template->header->str_start_date = $str_start_date;
 						$template->header->str_end_date = $str_end_date;
-						$template->header->csv_link = false;
+						$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 						$template->header->pdf_link = $pdf_link;
 						$template->header->label_report_period = $label_report_period;
 						$template->header->label_to = $t->_('to');
