@@ -7,20 +7,21 @@ if (!isset($object_data) || empty($object_data)) {
 <br />
 <br />
 <div id="trend_event_display"></div>
+<?php if (!isset($is_avail)) { ?>
 <p style="margin-top: -13px; margin-bottom: 10px"><?php echo $title ?><br />
 	<?php echo $str_start_date ?> - <?php echo $str_end_date ?><br />
 	<?php echo $label_report_period ?>: <?php echo $rpttimeperiod	 ?>
 	(<?php echo $label_duration ?>: <?php echo $duration ?>)
-</p>
+</p><br />
 
 <?php
+}
+
 $cell_height = 50;
 $title_str = $this->translate->_('Start: %s, End: %s, Duration: %s, Output: %s');
 foreach ($object_data as $obj => $data) {
-	$cnt = 0;
-	?>
-	<strong><?php echo $obj ?>:</strong>
-	<table style="width:100%;padding:0" class="noneAtAll" cellpadding="0" cellspacing="0">
+	$cnt = 0; ?>
+	<table style="width:100%;padding:0" cellpadding="0" cellspacing="0">
 		<tr>
 			<?php foreach ($data as $event) {
 				$width = 0;
@@ -30,7 +31,7 @@ foreach ($object_data as $obj => $data) {
 				} else {
 					continue;
 				}?>
-			<td class="trend_event trend_<?php echo $this->_translate_state_to_string($event['state'], $sub_type) ?>"
+			<td class="trend_event trend_<?php echo Trends_Controller::_translate_state_to_string($event['state'], $sub_type) ?>"
 				title="<?php echo
 					sprintf(
 						$title_str,
@@ -38,7 +39,7 @@ foreach ($object_data as $obj => $data) {
 							date('Y-m-d H:i', ($event['the_time'] + $event['duration'])),
 							time::to_string($event['duration']),
 							$event['output'] ) ?>"
-				style="width:<?php echo $width ?>%;background:<?php echo $this->_state_colors($sub_type, $event['state']) ?>"></td>
+				style="width:<?php echo $width ?>%;background:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
 		<?php	$cnt++;
 			} ?>
 		</tr>
