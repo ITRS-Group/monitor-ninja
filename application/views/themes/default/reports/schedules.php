@@ -43,7 +43,7 @@
 
 				<br /><br />
 				<div id="scheduled_sla_reports" style="width: 100%">
-					<table id="sla_scheduled_reports_table" style='width: 100%;' class="white-table">
+					<table id="sla_scheduled_reports_table">
 					<caption><?php echo $sla_header ?></caption>
 						<thead id="sla_headers"<?php if (!count($sla_schedules)) { ?> style="display:none"<?php } ?>>
 							<tr class="setup">
