@@ -35,8 +35,8 @@ if (isset($report_info)) {
 				<a id="switch_report_type" href="" style="border: 0px; float: left; margin-right: 5px">
 				<?php
 					echo $type == 'avail' ?
-					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => $label_sla, 'title' => $label_sla)) :
-					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => $label_avail, 'title' => $label_avail));
+					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => $label_sla, 'title' => $label_sla, 'ID' => 'switcher_image')) :
+					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => $label_avail, 'title' => $label_avail, 'ID' => 'switcher_image'));
 				?>
 				<span id="switch_report_type_txt">
 				<?php echo $type == 'avail' ? $label_switch_to.' '.$label_sla :$label_switch_to.' '.$label_avail; ?>

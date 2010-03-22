@@ -356,12 +356,20 @@ function switch_report_type()
 		other_report = 'sla';
 		$('#switch_report_type_txt').text(_label_switch_to + ' ' + _label_avail + ' ' + _label_report);
 		$('#enter_sla').show();
+		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/availability.png');
+		$('#switcher_image').attr('alt', _label_avail);
+		$('#switcher_image').attr('title', _label_avail);
+
 		$('#csv_cell').hide();
 		$("#report_type_label").text(_label_sla + ' ' + _label_report);
 	} else {
 		other_report = 'avail';
 		$('#switch_report_type_txt').text(_label_switch_to + ' ' + _label_sla + ' ' + _label_report);
 		$('#enter_sla').hide();
+		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/sla.png');
+		$('#switcher_image').attr('alt', _label_sla);
+		$('#switcher_image').attr('title', _label_sla);
+
 		$('#csv_cell').show();
 		$("#report_type_label").text(_label_avail + ' ' + _label_report);
 	}
