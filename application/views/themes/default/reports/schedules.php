@@ -30,7 +30,7 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
 								<td>
-									<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;<?php //echo $this->translate->_('Send') ?>"></form>
+									<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
 									<div class="delete_schedule avail_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
 								</td>
 							</tr>
@@ -47,29 +47,33 @@
 					<caption><?php echo $sla_header ?></caption>
 						<thead id="sla_headers"<?php if (!count($sla_schedules)) { ?> style="display:none"<?php } ?>>
 							<tr class="setup">
-								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_interval ?></th>
-								<th class="headerNone left" style='width: 9%'><?php echo $label_sch_name ?></th>
-								<th class="headerNone left" style='width: 20%'><?php echo $label_sch_recipients ?></th>
-								<th class="headerNone left" style='width: 20%'><?php echo $label_sch_filename ?></th>
-								<th class="headerNone left" style='width: 50%'><?php echo $label_sch_description ?></th>
-								<th class="headerNone left" colspan="2" style='width: 1%'></th>
+								<th class="headerNone left"><?php echo $label_sch_interval ?></th>
+								<th class="headerNone left"><?php echo $label_sch_name ?></th>
+								<th class="headerNone left"><?php echo $label_sch_recipients ?></th>
+								<th class="headerNone left"><?php echo $label_sch_filename ?></th>
+								<th class="headerNone left"><?php echo $label_sch_description ?></th>
+								<th class="headerNone left"style='width: 60px'><?php echo $this->translate->_('Actions'); ?></th>
 							</tr>
 						</thead>
 						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
 						<tbody>
 							<?php	$recipients = false;
+								$j=0;
 								foreach ($sla_schedules as $schedule) {
+									$j++;
 									$schedule = (object)$schedule;
 									$recipients = str_replace(' ', '', $schedule->recipients);
 									$recipients = str_replace(',', ', ', $recipients);	?>
-								<tr id="report-<?php echo $schedule->id ?>">
+								<tr id="report-<?php echo $schedule->id ?>" class="<?php echo ($j%2 == 0 ? 'odd' : 'even')?>">
 								<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
 								<td class="report_name" id="<?php echo $schedule->report_type_id ?>.report_id-<?php echo $schedule->id ?>"><?php echo $schedule->reportname ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
-								<td><form><input type="button" class="send_report_now" id="send_now_sla_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>"" value="<?php echo $this->translate->_('Send') ?>"></form></td>
-								<td class="delete_schedule sla_del" id="alldel_<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif')) ?></td>
+								<td>
+									<form><input type="button" class="send_report_now" id="send_now_sla_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
+									<div class="delete_schedule sla_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
+								</td>
 							</tr>
 							<?php } ?>
 						</tbody>
