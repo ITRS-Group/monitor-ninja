@@ -111,7 +111,7 @@ class Nagvis_Controller extends Authenticated_Controller {
 		url::redirect('nagvis/index');
 	}
 
-	public function automap()
+	public function automap($object_type = '', $object_name = '')
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
@@ -122,6 +122,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 			'index.php/nagvis/index">NagVis</a> » ' .
 			$this->translate->_('Automap');
 		$this->template->content = $this->add_view('nagvis/automap');
+		$this->template->content->mark_object_type = $object_type;
+		$this->template->content->mark_object_name = $object_name;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
