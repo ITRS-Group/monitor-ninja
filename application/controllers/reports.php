@@ -3819,6 +3819,14 @@ class Reports_Controller extends Authenticated_Controller
 			'sla_breakdown' => $translate->_("Breakdown of the SLA report in actual figures."),
 			//'sla_group_member' => $translate->_(""), // text needed
 
+			// new scheduled report
+			'report-type-save' => $translate->_("Select what type of report you would like to schedule the creation of"),
+			'select-report' => $translate->_("Select which report you want to you want to schedule"), // text ok?
+			'report' => $translate->_("Select the saved report to schedule"),
+			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
+			'recipients' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
+			'filename' => $translate->_("This field lets you select a custom filename for the report"),
+			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
