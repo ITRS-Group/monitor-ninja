@@ -1150,6 +1150,7 @@ class Reports_Controller extends Authenticated_Controller
 		# AVAIL REPORT
 		if ($in_csvoutput) {
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
+			die();
 			# if all went OK we have csv_status === true or we have an error string
 			# @@@FIXME: handle csv output?
 		} elseif ($this->type == 'avail' && (empty($this->data_arr) || (sizeof($this->data_arr)==1 && empty($this->data_arr[0])))) {
@@ -1502,7 +1503,7 @@ class Reports_Controller extends Authenticated_Controller
 						$template->header->report_time_formatted = $report_time_formatted;
 						$template->header->str_start_date = $str_start_date;
 						$template->header->str_end_date = $str_end_date;
-						$template->header->csv_link = $csv_link;
+						$template->header->csv_link = false;
 						$template->header->pdf_link = $pdf_link;
 						$template->header->label_report_period = $label_report_period;
 						$template->header->label_to = $t->_('to');
