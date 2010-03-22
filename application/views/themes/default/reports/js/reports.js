@@ -1089,7 +1089,6 @@ function setup_editable(mode)
 	if (mode == 'fancy') {
 		var mode_str = '#fancy_content ';
 	}
-	console.log(mode_str);
 	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
 	$(mode_str +".iseditable").editable(save_url, {
 		id   : 'elementid',
