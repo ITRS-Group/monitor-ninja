@@ -1156,3 +1156,17 @@ function get_type_id(str)
 	parts = str.split('.');
 	return parts[0];
 }
+
+/**
+*	create ajax call to reports/fetch_field_value
+*	to fetch a specific field value and asssign it to html element.
+*/
+function fetch_field_value(type, id, elem_id)
+{
+	$.ajax({
+		url: _site_domain + _index_page + '/reports/fetch_field_value?id=' + id + '&type=' + type,
+		success: function(data) {
+			$('#' + elem_id).text(data);
+		}
+	});
+}

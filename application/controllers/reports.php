@@ -4163,4 +4163,22 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		return $objResponse;
 	}
+
+	/**
+	*	Fetch specific field value for a scheduled report
+	*/
+	public function fetch_field_value()
+	{
+		$this->auto_render=false;
+		$id = arr::search($_REQUEST, 'id');
+		$type = arr::search($_REQUEST, 'type');
+		if (empty($id) || empty($type))
+			return false;
+		$data = Scheduled_reports_Model::fetch_scheduled_field_value($type, $id);
+		if (!empty($data)) {
+			echo $data;
+		} else {
+			echo 'error';
+		}
+	}
 }
