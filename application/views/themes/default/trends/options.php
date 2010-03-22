@@ -45,12 +45,6 @@
 						<label for="assume" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 				</tr>
-				<tr>
-					<td class="none">
-						<?php echo form::checkbox(array('name' => 'show_event_duration'), 1, false); ?>
-						<label for="show_event_duration"><?php echo $label_show_event_duration ?></label>
-					</td>
-				</tr>
 				<tr id="state_options" class="none">
 					<td>
 						<?php echo $label_initialassumedhoststate ?><br />

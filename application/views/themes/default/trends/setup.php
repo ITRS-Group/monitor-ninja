@@ -216,12 +216,7 @@ if (!empty($widgets)) {
 								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" <?php print $assume_initial_states_checked ?> />
 						<label for="assumeinitialstates" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
 					</td>
-					<td>&nbsp;</td>
-					<td style="vertical-align:top">
-						<?php echo help::render('show_event_duration') ?>
-						<?php echo form::checkbox(array('name' => 'show_event_duration'), 1, false); ?>
-						<label for="show_event_duration"><?php echo $label_show_event_duration ?></label>
-					</td>
+					<td colspan="2">&nbsp;</td>
 				</tr>
 				<tr id="assumed_host_state">
 					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '.$label_initialassumedhoststate ?></td>

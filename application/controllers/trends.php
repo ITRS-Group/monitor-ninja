@@ -396,7 +396,6 @@ class Trends_Controller extends Authenticated_Controller {
 		#$template->label_cluster_mode = $t->_('Cluster mode');
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
 		#$template->label_enter_sla = $t->_('Enter SLA');
-		$template->label_show_event_duration = $t->_('Show event duration');
 		$template->reporting_periods = Reports_Controller::_get_reporting_periods();
 		$template->scheduled_downtime_as_uptime_checked = $scheduled_downtime_as_uptime_checked;
 		$template->cluster_mode_checked = $cluster_mode_checked;
@@ -490,7 +489,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/date';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = 'application/media/js/timeline/timeline_js/timeline-api';
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 		$this->xtra_js[] = $this->add_path('reports/js/common');
@@ -516,7 +514,6 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
-		$show_event_duration = arr::search($_REQUEST, 'show_event_duration', false);
 
 		$mon_auth = new Nagios_auth_Model();
 		if (is_string($in_host)) {
@@ -786,7 +783,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$tpl_options->label_settings = $t->_('Report settings');
 			$tpl_options->label_startdate = $t->_('Start date');
 			$tpl_options->label_enddate = $t->_('End date');
-			$tpl_options->label_show_event_duration = $t->_('Show event duration');
 			$tpl_options->label_startdate_selector = $t->_('Date Start selector');
 			$tpl_options->label_enddate_selector = $t->_('Date End selector');
 			$tpl_options->label_click_calendar = $t->_('Click calendar to select date');
@@ -822,17 +818,7 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
 			$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
 			$this->js_strings .= "var report_period = '".$report_period."';\n";
-			$this->js_strings .= "var show_event_duration = '".$show_event_duration."';\n";
-			$this->js_strings .= "var Timeline_ajax_url = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_ajax/simile-ajax-api.js';\n";
-			$this->js_strings .= "var Timeline_urlPrefix = '".Kohana::config('config.site_domain')."application/media/js/timeline/timeline_js/';\n";
-			$this->js_strings .= "var Timeline_parameters = 'bundle=true';\n";
 
-			# for filter boxes
-			$this->js_strings .= "var _clear_all = '".$t->_("Clear All")."';\n";
-			$this->js_strings .= "var _filter_str = '".$t->_("Filter")."';\n";
-			$this->js_strings .= "var _highlight_str = '".$t->_("Highlight")."';\n";
-
-			$trends_data['dateTimeFormat'] ='iso8601';
 			$avail_data = false;
 			$raw_trends_data = false;
 			$multiple_items = false; # structure of avail_data
@@ -844,23 +830,35 @@ class Trends_Controller extends Authenticated_Controller {
 				$avail_template->get_vars = $get_vars;
 				$avail_template->report_type = $this->report_type;
 				$avail_template->selected_objects = $selected_objects;
-				if ($group_name) {
+
+				# prepare avail data
+				if ($group_name) { # {host,service}group
 					foreach ($this->data_arr as $data) {
 						if (empty($data))
 							continue;
 						array_multisort($data);
 						$avail_data[] = Reports_Controller::_get_multiple_state_info($data, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 					}
-				} else {
+				} else { # custom group
 					array_multisort($this->data_arr);
 					$avail_data[] = Reports_Controller::_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 				}
 				$multiple_items = true;
 				$avail_template->multiple_states = $avail_data;
 
+				$obj_key = false;
+
 				# hostgroups / servicegroups or >= 2 hosts or services
 				$i=0;
 				foreach ($this->data_arr as $key => $data) {
+					if (!empty($data['groupname'])) {
+						$obj_key[] = $data['groupname'];
+					} elseif (isset($data['source']) && !empty($data['source'])) {
+						$obj_key = $data['source'];
+					}
+					if (isset($this->data_arr['source']) && !empty($this->data_arr['source'])) {
+						$obj_key = $this->data_arr['source'];
+					}
 					# >= 2 hosts or services won't have the extra
 					# depth in the array, so we break out early
 					if (empty($data['log']) || !is_array($data['log'])) {
@@ -949,164 +947,145 @@ class Trends_Controller extends Authenticated_Controller {
 				if (isset($this->data_arr['log'])) {
 					$raw_trends_data = $this->data_arr['log'];
 				}
+				if (isset($this->data_arr['source']) && !empty($this->data_arr['source'])) {
+					$obj_key = $this->data_arr['source'];
+				}
 			}
 		}
 
-		$filter_states = array('' => ''); # set first empty option
 		$to = $t->_('to');
+
+		$container = array();
+
+		$report_start = $report_class->start_time;
+		$report_end = $report_class->end_time;
+
+		if (!empty($obj_key)) {
+			if (is_array($obj_key)) {
+				$obj_key = implode(', ', $obj_key);
+			}
+		}
+		# stash events with object as key
 		if (is_array($raw_trends_data) && !empty($raw_trends_data)) {
 			foreach ($raw_trends_data as $id => $row) {
-				# skip the first (faked) log-entry
-				if (empty($row['host_name']))
-					continue;
-				if (empty($row['service_description'])) {
-					$sub_type = 'host';
-					$title = $row['host_name'];
-					$info_url = urlencode($title);
+				if (empty($obj_key) && (isset($row['host_name']) || isset($row['service_description'])) ) {
+					if (empty($row['service_description'])) {
+						$key = $row['host_name'];
+					} else {
+						$key = $row['host_name'] . ';' . $row['service_description'];
+					}
+				} elseif(empty($obj_key) && isset($row['source']) && !empty($row['source'])) {
+					$key = $row['source'];
 				} else {
-					$sub_type = 'service';
-					$info_url = $row['host_name'] . '?service=' .
-						urlencode($row['service_description']);
-					$title = $row['host_name'] . ';' . $row['service_description'];
+					$key = $obj_key;
 				}
-				$description_links = ''; #@@@FIXME: create working links for all pop-ups and objects
-				/*
-				$description_links = '<br /><a href="'.url::site().'status/'.$statuslink_prefix.$sub_type.'/'.$row[$obj_field].'">'.$t->_('Status details').'</a><br />'.
-					'<a href="'.url::site().'notifications/'.$sub_type.'/'.$row[$obj_field].'">'.$t->_('Notifications').'</a><br />'.
-					'<a href="'.url::site().'history/'.$sub_type.'/'.$row[$obj_field].'">'.$t->_('History').'</a><br />';
-				*/
-				$start_time_str = date(nagstat::date_format(), $row['the_time']).': ';
-
-				$end_time_str = ($row['duration'] > 0 ) ? ' '.$to.' '.date(nagstat::date_format(), ($row['the_time']+$row['duration'])).' ' : '';
-
-					$tmp = array(
-						'start' => date('c', $row['the_time']),
-						'title' => htmlspecialchars($title),
-						'description' => $row['output'].$description_links,
-						'color' => $this->_state_colors($sub_type, $row['state']),
-						'textColor' => "#000000",
-						'image' => url::base(false).$this->add_path('icons/16x16/shield-'.$this->_translate_state_to_string($row['state'], $sub_type).'.png'),
-						'icon' => url::base(false).$this->add_path('icons/12x12/shield-'.$this->_translate_state_to_string($row['state'], $sub_type).'.png'),
-						'link' => url::site().'extinfo/details/'.$sub_type.'/'.$info_url,
-						'caption' => $start_time_str.$end_time_str.$row['output']
-						);
-
-					if (isset($row['hard'])) {
-						switch ($row['hard']) {
-							case 1:
-								$tmp['hard'] = 1;
-								break;
-							case 0:
-								$tmp['soft'] = 1;
-								break;
-						}
-					}
-
-					$tmp[$this->_translate_state_to_string($row['state'], $sub_type)] = 1;
-					if (!in_array($this->_translate_state_to_string($row['state'], $sub_type), $filter_states)) {
-						$filter_states[$this->_translate_state_to_string($row['state'], $sub_type)] = $this->_translate_state_to_string($row['state'], $sub_type);
-					}
-					if ((!empty($row['duration']) && $row['duration'] > 0) && $show_event_duration || !$multiple_items) {
-						$tmp['end'] = date('c', ($row['the_time']+$row['duration']));
-					}
-					$trends_data['events'][] = $tmp;
-				/*} else {
-					$trends_data['events'][] = array(
-						'start' => date('c', $row['the_time']),
-						'end' => date('c', ($row['the_time']+$row['duration'])),
-						'title' => htmlspecialchars($title),
-						'description' => $row['output'].' <br /><a href=""><strong>test</strong></a>',
-						'color' => $this->_state_colors($sub_type, $row['state']),
-						'textColor' => "#000000",
-						'image' => url::base(false).$this->add_path('icons/16x16/shield-'.$this->_translate_state_to_string($row['state'], $sub_type).'.png'),
-						'link' => url::site().'extinfo/details/'.$sub_type.'/'.$row[$obj_field],
-						'caption' => $start_time_str.$row['output']
-						);
-				}*/
+				$container[$key][] = $row;
 			}
 		}
-		$this->template->content->content = $this->add_view('trends/report');
-		$report = $this->template->content->content;
-		$report->filter_states = $filter_states;
-		$report->avail_data = $avail_data;
-		$avail_template->use_alias = false;
-		$avail_template->use_average = false;
-		if ($multiple_items) {
-			$avail_template->multiple_states = $avail_data;
-			$this->js_strings .= "var _is_single=0;";
+
+		unset($raw_trends_data);
+		$resolution = false;
+		$resolution_steps = false;
+		$resolution_names = false;
+		$length = $report_end-$report_start;
+		$days = floor($length/86400);
+		$time = $report_start;
+		$df = nagstat::date_format();
+		$df_parts = explode(' ', $df);
+		if (is_array($df_parts) && !empty($df_parts)) {
+			$df = $df_parts[0];
 		} else {
-			$avail_template->avail_data = $avail_data;
-			$this->js_strings .= "var _is_single=1;";
+			$df = 'Y-m-d';
 		}
-		$report->avail_template = $avail_template;
-		$report->multiple_items = $multiple_items;
-		$report->label_filter_states = $t->_('Filter on state');
-		$label_click_to_view = $t->_('Click to view');
-		$report->label_click_to_view = $label_click_to_view;
-		$label_click_to_hide = $t->_('Click to hide');
-		$report->label_click_to_hide = $label_click_to_hide;
-		$report->rpttimeperiod = $rpttimeperiod;
-		$report->str_start_date = $str_start_date;
-		$report->str_end_date = $str_end_date;
-		$report->title = sprintf($t->_('State History for %s'), $label_type);
-		$report->objects = $objects;
-		$report_duration = $this->end_date - $this->start_date;
-		$report->duration = time::to_string($report_duration);
-		$report->label_duration = $t->_('Duration');
-		$report->label_only_hard_events = $t->_('Show only Hard events');
 
-		$this->js_strings .= "var t1;";
-
-		$this->js_strings .= "var json=".json::encode($trends_data).";";
-		$this->js_strings .= "var resizeTimerID = null;";
-		$this->js_strings .= "var _label_click_to_view = '".$label_click_to_view."';";
-		$this->js_strings .= "var _label_click_to_hide = '".$label_click_to_hide."';";
-		$graph_center = ceil((($this->end_date - $this->start_date)/2) + $this->start_date);
-		$graph_center = date('c', $graph_center);
-		#$this->js_strings .= "var _left_boundary = '".date('c', $this->start_date - 86400)."';";
-		$this->js_strings .= "var _graph_center = '".$graph_center."';";
-		$this->inline_js .= "onLoad('".date('c', $this->start_date)."', '".date('c', $this->end_date)."');";
-		$this->inline_js .= "$(window).resize(function() {onResize();});";
-
-		# decide granularity of trends graph depending on report period
-		$magnify = 1;
-		$zoneperiod = 'DAY';
-		$intervalunit = 'MONTH';
-		switch ($report_period) {
-			case 'today':
-				$magnify = 30;
-				$zoneperiod = 'HOUR';
-				$intervalunit = 'DAY';
+		switch ($days) {
+			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
+				while ($time < $report_end) {
+					$h = date('H:i', $time);
+					$resolution_names[] = $h;
+					$time += (60*60);
+				}
 				break;
-			case 'last24hours': case 'yesterday':
-				$magnify = 10;
-				$zoneperiod = 'HOUR';
-				$intervalunit = 'DAY';
+			case 7: # thisweek', last7days', 'lastweek':
+				while ($time < $report_end) {
+					$h = date('w', $time);
+					$resolution_names[] = date($df, $time);
+					$time += 86400;
+				}
+				break;
+			case ($days > 7) :
+				while ($time < $report_end) {
+					$h = date('d', $time);
+					$resolution_names[] = $h;
+					$time += 86400;
+				}
+
+				break;
+			default: # < 7 days, custom report period, defaulting to day names
+				while ($time < $report_end) {
+					$h = date('w', $time);
+					$resolution_names[] = $this->abbr_day_names[$h];
+					$time += 86400;
+				}
+				break;
+		}
+/*
+		if (sizeof($resolution_names) > 30) {
+			$tmp = false;
+			$i = 0;
+			foreach ($resolution_names as $tm) {
+				if ($i++%2 == 0) {
+					$tmp[] = $tm;
+				}
+				$resolution_names = $tmp;
+			}
+		}
+*/
+		switch ($report_period) {
+			case 'today': case 'last24hours': case 'yesterday':
+				$resolution = 'H';
+				$resolution_steps = 24;
 				break;
 			case 'thisweek': case 'last7days': case 'lastweek':
-				$magnify = 2;
-				$zoneperiod = 'DAY';
-				$intervalunit = 'DAY';
+				$resolution = 'd';
+				$resolution_steps = 7;
 				break;
 			case 'thismonth': case 'last31days': case 'lastmonth':
-				$magnify = 15;
-				$zoneperiod = 'WEEK';
-				$intervalunit = 'MONTH';
+				$resolution = 'd';
+				$resolution_steps = 31;
 				break;
-			case 'thisyear':
-				$magnify = 20;
-				$zoneperiod = 'WEEK';
-				$intervalunit = 'MONTH';
-				break;
-			case 'lastyear':
-				$magnify = 2;
-				$zoneperiod = 'MONTH';
-				$intervalunit = 'MONTH';
+			case 'thisyear': case 'lastyear':
+				$resolution = 'm';
+				$resolution_steps = 12;
 				break;
 		}
-		$this->js_strings .= "var _magnify = '".$magnify."';";
-		$this->js_strings .= "var _zoneperiod = '".$zoneperiod."';";
-		$this->js_strings .= "var _intervalunit = '".$intervalunit."';";
+
+		$this->template->content->content = $this->add_view('trends/new_report');
+		$content = $this->template->content->content;
+		$content->object_data = $container;
+		$content->start = $report_start;
+		$content->end = $report_end;
+		$content->report_period = $report_period;
+		$content->resolution = $resolution;
+		$content->resolution_steps = $resolution_steps;
+		$content->resolution_names = $resolution_names;
+		$content->length = ($report_end - $report_start);
+		$content->sub_type = $sub_type;
+
+		$avail_template->use_alias = false;
+		$avail_template->use_average = false;
+		$content->avail_data = $avail_data;
+		$content->avail_template = $avail_template;
+		$content->multiple_items = $multiple_items;
+		$content->str_start_date = $str_start_date;
+		$content->str_end_date = $str_end_date;
+		$content->title = sprintf($t->_('State History for %s'), $label_type).': '.$obj_key;
+		$content->rpttimeperiod = $rpttimeperiod;
+		$content->label_report_period = $label_report_period;
+		$content->objects = $objects;
+		$report_duration = $this->end_date - $this->start_date;
+		$content->duration = time::to_string($report_duration);
+		$content->label_duration = $t->_('Duration');
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;

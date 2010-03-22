@@ -347,3 +347,70 @@ div.time-picker li.selected {
 	background: #316AC5;
 	color: #fff;
 }
+
+.trend_event{
+	padding:0;
+	height:50px;
+}
+
+div#trend_event_display {
+	background:#ffffff;
+	padding:10px;
+	position:absolute;
+	left:20px;
+	top:10px;
+	width:200px;
+	border:1px solid #000;
+	display:none;
+}
+.trend_event_highlight {
+	border:1px solid #000;
+}
+
+.trend_time{
+	padding:0;
+	font-size: 8px;
+}
+.trend_time:first-child{
+	border-left:1px solid #000;
+	padding-left:2px;
+}
+table.time_table{
+	background:#ffffff;
+	padding:0;
+	border-right:1px solid #000;
+	border-bottom:1px solid #000;
+}
+
+div#trend_event_display.trend_up_d{
+	background: #ffffff url(../../icons/16x16/shield-up.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_down_d{
+	background: #ffffff url(../../icons/16x16/shield-down.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_unreachable_d{
+	background: #ffffff url(../../icons/16x16/shield-unreachable.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_ok_d{
+	background: #ffffff url(../../icons/16x16/shield-ok.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_warning_d{
+	background: #fff url(../../icons/16x16/shield-warning.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_critical_d{
+	background: #fff url(../../icons/16x16/shield-critical.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_pending_d{
+	background:#fff url(../../icons/16x16/shield-pending.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
+div#trend_event_display.trend_unknown_d{
+	background: #fff url(../../icons/16x16/shield-unknown.png) 10px 8px no-repeat ;
+	padding-left:35px;
+}
