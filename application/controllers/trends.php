@@ -901,7 +901,7 @@ class Trends_Controller extends Authenticated_Controller {
 				$notification_icon = 'notify';
 				$status_icon = 'hoststatus';
 				$histogram_icon = 'histogram';
-				$alerthistory_icon = 'history';
+				$alerthistory_icon = 'alert-history';
 
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
