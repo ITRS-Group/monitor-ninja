@@ -354,13 +354,13 @@ function switch_report_type()
 	var other_report = current_report == 'avail' ? 'sla' : 'avail';
 	if (current_report == 'avail') { // switching to SLA
 		other_report = 'sla';
-		$('#switch_report_type').text(_label_switch_to + ' ' + _label_avail + ' ' + _label_report);
+		$('#switch_report_type_txt').text(_label_switch_to + ' ' + _label_avail + ' ' + _label_report);
 		$('#enter_sla').show();
 		$('#csv_cell').hide();
 		$("#report_type_label").text(_label_sla + ' ' + _label_report);
 	} else {
 		other_report = 'avail';
-		$('#switch_report_type').text(_label_switch_to + ' ' + _label_sla + ' ' + _label_report);
+		$('#switch_report_type_txt').text(_label_switch_to + ' ' + _label_sla + ' ' + _label_report);
 		$('#enter_sla').hide();
 		$('#csv_cell').show();
 		$("#report_type_label").text(_label_avail + ' ' + _label_report);

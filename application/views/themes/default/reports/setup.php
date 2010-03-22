@@ -38,10 +38,10 @@ if (isset($report_info)) {
 					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => $label_sla, 'title' => $label_sla)) :
 					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => $label_avail, 'title' => $label_avail));
 				?>
-				</a>
-				<a id="switch_report_type" href="">
+				<span id="switch_report_type_txt">
 				<?php echo $type == 'avail' ? $label_switch_to.' '.$label_sla :$label_switch_to.' '.$label_avail; ?>
 				<?php echo ' '.$label_report; ?>
+				</span>
 				</a>
 			</div><br />
 			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
