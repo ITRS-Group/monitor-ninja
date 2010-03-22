@@ -984,8 +984,6 @@ class Trends_Controller extends Authenticated_Controller {
 		}
 
 		unset($raw_trends_data);
-		$resolution = false;
-		$resolution_steps = false;
 		$resolution_names = false;
 		$length = $report_end-$report_start;
 		$days = floor($length/86400);
@@ -1029,36 +1027,6 @@ class Trends_Controller extends Authenticated_Controller {
 				}
 				break;
 		}
-/*
-		if (sizeof($resolution_names) > 30) {
-			$tmp = false;
-			$i = 0;
-			foreach ($resolution_names as $tm) {
-				if ($i++%2 == 0) {
-					$tmp[] = $tm;
-				}
-				$resolution_names = $tmp;
-			}
-		}
-*/
-		switch ($report_period) {
-			case 'today': case 'last24hours': case 'yesterday':
-				$resolution = 'H';
-				$resolution_steps = 24;
-				break;
-			case 'thisweek': case 'last7days': case 'lastweek':
-				$resolution = 'd';
-				$resolution_steps = 7;
-				break;
-			case 'thismonth': case 'last31days': case 'lastmonth':
-				$resolution = 'd';
-				$resolution_steps = 31;
-				break;
-			case 'thisyear': case 'lastyear':
-				$resolution = 'm';
-				$resolution_steps = 12;
-				break;
-		}
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
@@ -1066,8 +1034,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$content->start = $report_start;
 		$content->end = $report_end;
 		$content->report_period = $report_period;
-		$content->resolution = $resolution;
-		$content->resolution_steps = $resolution_steps;
 		$content->resolution_names = $resolution_names;
 		$content->length = ($report_end - $report_start);
 		$content->sub_type = $sub_type;
