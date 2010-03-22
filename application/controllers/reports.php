@@ -1542,6 +1542,74 @@ class Reports_Controller extends Authenticated_Controller
 						if ($this->create_pdf) {
 							$content = $avail;
 						}
+
+						$trends_data = false;
+						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
+							$trends_data[$data['source']] = $data['log'];
+						}
+
+						# from trends:
+						$report_start = $report_class->start_time;
+						$report_end = $report_class->end_time;
+
+						$resolution = false;
+						$resolution_steps = false;
+						$resolution_names = false;
+						$length = $report_end-$report_start;
+						$days = floor($length/86400);
+						$time = $report_start;
+						$df = nagstat::date_format();
+						$df_parts = explode(' ', $df);
+						if (is_array($df_parts) && !empty($df_parts)) {
+							$df = $df_parts[0];
+						} else {
+							$df = 'Y-m-d';
+						}
+
+						switch ($days) {
+							case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
+								while ($time < $report_end) {
+									$h = date('H:i', $time);
+									$resolution_names[] = $h;
+									$time += (60*60);
+								}
+								break;
+							case 7: # thisweek', last7days', 'lastweek':
+								while ($time < $report_end) {
+									$h = date('w', $time);
+									$resolution_names[] = date($df, $time);
+									$time += 86400;
+								}
+								break;
+							case ($days > 7) :
+								while ($time < $report_end) {
+									$h = date('d', $time);
+									$resolution_names[] = $h;
+									$time += 86400;
+								}
+
+								break;
+							default: # < 7 days, custom report period, defaulting to day names
+								while ($time < $report_end) {
+									$h = date('w', $time);
+									$resolution_names[] = $this->abbr_day_names[$h];
+									$time += 86400;
+								}
+								break;
+						}
+
+						$template->trends_graph = $this->add_view('trends/new_report');
+						$this->xtra_css[] = $this->add_path('trends/css/trends');
+						$this->xtra_js[] = $this->add_path('trends/js/trends');
+						$template->trends_graph->object_data = $trends_data;
+						$template->trends_graph->start = $report_start;
+						$template->trends_graph->end = $report_end;
+						$template->trends_graph->report_period = $report_period;
+						$template->trends_graph->resolution_names = $resolution_names;
+						$template->trends_graph->length = ($report_end - $report_start);
+						$template->trends_graph->sub_type = $sub_type;
+						$template->trends_graph->is_avail = true;
+
 						$avail->pie = $this->add_view('reports/pie_chart');
 						$avail->pie->label_status = $t->_('Status overview');
 						$avail->pie->report_time_formatted = $report_time_formatted;
