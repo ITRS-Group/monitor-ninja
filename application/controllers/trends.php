@@ -1138,13 +1138,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
-		$helptexts = array(
-			'filter' => $translate->_("Those filters (Hard Events and State) does currently NOT work together with the 'Filter' box above".
-				" and should still be considered as experimental."),
-			'show_event_duration' => $translate->_("Check this option to always show event duration in the generated graph. ".
-			"This is always the case when selecting a single object. Please note that this might make the graph harder to read with many ".
-			"selected objects since the state icon is replaced by a duration bar.")
-		);
+		$helptexts = array();
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
