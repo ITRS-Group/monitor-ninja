@@ -37,8 +37,9 @@ foreach($report_data as $i =>  $report) {
 
 		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
 			<?php foreach ($report['table_data'] as $source => $data) { ?>
-			<table class="auto" border="1" style="margin-top: 15px">
-				<caption><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></caption>
+			<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
+			<table class="auto" border="1">
+
 				<tr>
 					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
 					<?php
