@@ -14,7 +14,7 @@ if (!empty($widgets)) {
 	echo isset($error) ? $error : '';
 	echo !empty($header) ? $header : '';
 	echo !empty($report_options) ? $report_options : '';
-
+	echo !empty($trends_graph) ? $trends_graph : '';
 	echo !empty($content) ? $content : '';
 	echo !empty($svc_content) ? $svc_content : '';
 	echo isset($pie) ? $pie : '';
