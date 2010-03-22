@@ -857,7 +857,6 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/reports');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header = $this->add_view('css_header');
-		$this->template->css_header->css = $this->xtra_css;
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
@@ -1843,6 +1842,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
+		$this->template->css_header->css = $this->xtra_css;
 
 		//$this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
