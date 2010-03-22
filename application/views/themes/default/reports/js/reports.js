@@ -941,13 +941,13 @@ function create_new_schedule_rows(id)
 	if (description == '')
 		description = '&nbsp;';
 
-	return_str += '<tr id="report-' + id + '">';
+	return_str += '<tr id="report-' + id + '" class="odd">';
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
+	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></td></tr>';
 	update_visible_schedules(false);
 	return return_str;
 }
@@ -958,14 +958,14 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	var return_str = '';
 	var reportname = $("#saved_report_id option:selected").text();
 	reportname = remove_scheduled_str(reportname);
-	return_str += '<tr id="report-' + id + '">';
+	return_str += '<tr id="report-' + id + '" class="odd">';
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form></td>';
-	return_str += '<td class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form>';
+	return_str += '<div class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" title="Delete scheduled report" /></td></tr>';
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
