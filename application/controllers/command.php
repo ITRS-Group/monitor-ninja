@@ -290,7 +290,8 @@ class Command_Controller extends Authenticated_Controller
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'triggered_by' => $translate->_('@@@HELPTEXT:triggered_by')
+			'triggered_by' => $translate->_("With triggered downtime the start of the downtime ".
+				"is triggered by the start of some other scheduled host or service downtime")
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
