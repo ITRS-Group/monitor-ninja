@@ -10,7 +10,7 @@
 <?php } ?>
 <span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
 		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>
-	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? 'style="display:none;' : ''; ?> class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
+	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? 'style="display:none;' : ''; ?> class="fancybox"style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 </span>
 </div>
 <span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
