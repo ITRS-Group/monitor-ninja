@@ -814,7 +814,7 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
-			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_service_state."';\n";
+			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
 			$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
 			$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
 			$this->js_strings .= "var report_period = '".$report_period."';\n";
