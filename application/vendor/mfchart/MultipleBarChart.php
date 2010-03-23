@@ -144,6 +144,49 @@ class MultipleBarChart extends BarChart {
 
 			$i++;
 		}
-		#die();
+
+		#******************************************************************
+		#	Draw SLA graph legend to explain bar colors
+		#******************************************************************
+
+		# colors
+		$rgb = utilities::hex2rgb(Reports_Controller::$colors['lightblue']);
+		$color = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+
+		$rgb_red = utilities::hex2rgb(Reports_Controller::$colors['red']);
+		$red_color = imagecolorallocate($this->image, $rgb_red[0], $rgb_red[1], $rgb_red[2]);
+
+		$rgb_green = utilities::hex2rgb(Reports_Controller::$colors['green']);
+		$green_color = imagecolorallocate($this->image, $rgb_green[0], $rgb_green[1], $rgb_green[2]);
+
+		# black col
+		$rgb = utilities::hex2rgb('#000000');
+		$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+
+		# legend boxes - 2 for each legend with one black box being 1 pixel larger to create a border
+		imagefilledrectangle($this->image, 34, $this->height-30, 55, $this->height-45, $col); // draw sla compliance border
+		imagefilledrectangle($this->image, 35, $this->height-31, 54, $this->height-44, $color); // draw sla compliance color legend
+
+		imagefilledrectangle($this->image, 34, $this->height-10, 55, $this->height-25, $col); // draw sla breach border
+		imagefilledrectangle($this->image, 35, $this->height-11, 54, $this->height-24, $red_color); // draw sla breach color legend
+
+		imagefilledrectangle($this->image, 184, $this->height-10, 205, $this->height-25, $col); // draw fulfilled sla border
+		imagefilledrectangle($this->image, 185, $this->height-11, 204, $this->height-24, $green_color); // draw fulfilled sla color legend
+
+		# text color
+		$rgb = utilities::hex2rgb('#000000');
+		$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+
+		# legend strings:
+
+		# sla compliance string
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-70, -50, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('SLA Compliance'), $col);
+
+		# breached sla string
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('Breached SLA'), $col);
+
+		# Fulfilled sla string
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 545, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('Fulfilled SLA'), $col);
 	}
 }
