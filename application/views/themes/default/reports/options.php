@@ -14,7 +14,7 @@
 </span>
 </div>
 <span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
-
+<a id="old_avail_link" style="<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo $this->translate->_('Old availability') ?></a>
 <?php
 if ($type == 'avail') { ?>
 <div id="options">

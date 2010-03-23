@@ -30,6 +30,7 @@ if (isset($report_info)) {
 	<div class="setup-table">
 
 		<div class="setup-table">
+			<a id="old_avail_link" style="<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo $this->translate->_('Old availability') ?></a>
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
 			<div id="switcher" style="margin-top: -10gpx;">
 				<a id="switch_report_type" href="" style="border: 0px; float: left; margin-right: 5px">

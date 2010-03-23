@@ -367,6 +367,7 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/availability.png');
 		$('#switcher_image').attr('alt', _label_avail);
 		$('#switcher_image').attr('title', _label_avail);
+		$("#old_avail_link").hide();
 
 		$('#csv_cell').hide();
 		$("#report_type_label").text(_label_sla + ' ' + _label_report);
@@ -377,6 +378,7 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/sla.png');
 		$('#switcher_image').attr('alt', _label_sla);
 		$('#switcher_image').attr('title', _label_sla);
+		$("#old_avail_link").show();
 
 		$('#csv_cell').show();
 		$("#report_type_label").text(_label_avail + ' ' + _label_report);

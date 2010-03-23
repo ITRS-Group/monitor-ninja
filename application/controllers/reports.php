@@ -603,6 +603,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->is_scheduled_report = $t->_('This is a scheduled report');
 		$edit_str = $t->_('edit');
 		$template->edit_str = $edit_str;
+		$template->old_avail_link = config::get_cgi_cfg_key('url_html_path').'/cgi-bin/avail.cgi';
 		$template->is_scheduled_clickstr = sprintf($t->_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
 
 		if ($report_info) {
@@ -1260,6 +1261,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->report_id = $this->report_id;
 				$tpl_options->report_info = $report_info;
 				$tpl_options->html_options = $html_options;
+				$tpl_options->old_avail_link = config::get_cgi_cfg_key('url_html_path').'/cgi-bin/avail.cgi';
 
 				$use_average_options = array(
 					0 => $t->_('Group availability (SLA)'),
