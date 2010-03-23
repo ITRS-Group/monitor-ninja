@@ -48,7 +48,7 @@ foreach ($object_data as $obj => $data) {
 				<table class="time_table">
 					<tr>
 				<?php	foreach ($resolution_names as $tm) {	?>
-						<td class="trend_time"><?php echo $tm ?></td>
+						<td class="trend_time" title="<?php echo $tm ?>"><?php echo $tm ?></td>
 				<?php 	} ?>
 					</tr>
 				</table>
