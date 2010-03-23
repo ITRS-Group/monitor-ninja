@@ -78,14 +78,6 @@ foreach ($result as $row) {
 				</td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
-				<?php	if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) { ?>
-					<span style="float: right">
-						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
-								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
-								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px')); ?>
-					</span>
-					<?php } ?>
 					<div style="float: right">
 					<?php
 						if ($row->problem_has_been_acknowledged)
@@ -98,6 +90,12 @@ foreach ($result as $row) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 						if ($row->scheduled_downtime_depth > 0)
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => $t->_('Scheduled downtime'), 'title' => $t->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
+								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px'));
+						}
 					?>
 					</div>
 				</td>
@@ -125,8 +123,8 @@ foreach ($result as $row) {
 						}
 					?>
 				</td>
-				<td style="white-space: normal"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
-				<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+				<td style="white-space: normal; width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+				<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
 				<td style="white-space: normal">
 					<?php
 					if ($row->current_state == Current_status_Model::HOST_PENDING)
