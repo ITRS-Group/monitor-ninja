@@ -1,5 +1,5 @@
 body {
-	margin: 0px 0px 0px 2px;
+	margin: 0px 0px 0px 0px;
 }
 
 #progress{
@@ -229,7 +229,7 @@ tr.none td {
 
 #schedules_area{ }
 
-#report-tabs { padding: 0px; }
+#report-tabs { padding: 0px; padding-top: 6px  }
 
 table.setup-tbl { width: auto; }
 table.setup-tbl tr td  { padding: 0px 5px 0px 0px; }

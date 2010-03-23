@@ -16,7 +16,7 @@ if (isset($report_info)) {
 	}
 }
 ?>
-<br />
+
 <div id="progress"></div>
 <div id="report-tabs">
 	<ul>
