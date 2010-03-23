@@ -81,7 +81,7 @@ $c=0;
 		</td>
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
-				<span style="float: left"><?php echo $a.html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
+				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
 				<span style="float: right">
 					<?php
 						if ($row->hostproblem_is_acknowledged)
@@ -161,9 +161,9 @@ $c=0;
 				}
 			?>
 		</td>
-		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
-		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
-		<td style="text-align: center"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
+		<td style="width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+		<td style="text-align: center; width: 60px"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
 		<td style="white-space: normal">
 		<?php
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
