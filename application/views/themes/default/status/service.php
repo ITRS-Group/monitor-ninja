@@ -63,22 +63,25 @@
 <?php
 	$curr_host = false;
 	$a = 0;
-
+$c=0;
 	if (!empty($result)) {
 		foreach ($result as $row) {
 		$a++;
+		if ($curr_host != $row->host_name)
+			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? '' : 'bt') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
+		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
 				if ($curr_host != $row->host_name) {
 					echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state)).'.png'),array('alt' => Current_status_Model::status_text($row->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state)));
 				}
+
 			?>
 		</td>
-		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
-			<?php if ($curr_host != $row->host_name) { ?>
-				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
+		<?php if ($curr_host != $row->host_name) { ?>
+		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
+				<span style="float: left"><?php echo $a.html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
 				<span style="float: right">
 					<?php
 						if ($row->hostproblem_is_acknowledged)
@@ -99,9 +102,12 @@
 						}
 					?>
 				</span>
-			<?php } ?>
+
 		</td>
-		<td class="icon bl">
+		<?php } else { $c = 0;?>
+			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
+		<?php } ?>
+		<td class="icon">
 			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, 'service'))) ?>
 		</td>
 
