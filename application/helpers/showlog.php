@@ -7,10 +7,15 @@ class showlog_Core
 {
 	public function show_log_entries($options)
 	{
-		$showlog = self::get_path();
+		$cgi_cfg = false;
 		$nagios_path = Kohana::config('config.nagios_base_path');
-		$cmd = $showlog . " --html ".$nagios_path."/var/nagios.log ";
-			"/opt/monitor/var/archives/nagios-*.log";
+		$etc_path = Kohana::config('config.nagios_etc_path');
+		if (!$etc_path)
+			$etc_path = $nagios_path . '/etc';
+		$cgi_cfg = $etc_path . '/cgi.cfg';
+
+		$showlog = self::get_path();
+		$cmd = $showlog . " --html --cgi-cfg=" . $cgi_cfg;
 
 		if (!isset($options['parse_forward'])) {
 			$cmd .= ' --reverse';
