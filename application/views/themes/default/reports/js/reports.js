@@ -141,6 +141,11 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
+		$("#fancy_content .delete_schedule").each(function() {
+			$(this).click(function() {
+				schedule_delete($(this).attr('id'));
+			});
+		});
 	});
 });
 

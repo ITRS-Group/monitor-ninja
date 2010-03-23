@@ -206,7 +206,7 @@ if ($type == 'avail') { ?>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
-				<td class="delete_report" id="<?php echo $schedule->id ?>" style="width: 16px; padding-left: 0px"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')); ?></td>
+				<td class="delete_schedule" id="<?php echo $schedule->id ?>" style="width: 16px; padding-left: 0px"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')); ?></td>
 			</tr>
 		<?php }	} ?>
 	</table>
