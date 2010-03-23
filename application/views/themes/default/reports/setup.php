@@ -30,21 +30,23 @@ if (isset($report_info)) {
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<a id="old_avail_link" style="<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo $this->translate->_('Old availability') ?></a>
+			<a id="old_avail_link" style="position: absolute; right: 1%; top: 54px;border: 0px; margin-left: 4px;<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
-			<div id="switcher" style="margin-top: -10gpx;">
+
+			<div id="switcher" style="margin-top: -7gpx; padding-bottom: 15px;">
 				<a id="switch_report_type" href="" style="border: 0px; float: left; margin-right: 5px">
 				<?php
 					echo $type == 'avail' ?
 					html::image($this->add_path('icons/16x16/sla.png'), array('alt' => $label_sla, 'title' => $label_sla, 'ID' => 'switcher_image')) :
 					html::image($this->add_path('icons/16x16/availability.png'), array('alt' => $label_avail, 'title' => $label_avail, 'ID' => 'switcher_image'));
 				?>
-				<span id="switch_report_type_txt">
+				<span id="switch_report_type_txt" style="border-bottom: 1px dotted #777777">
 				<?php echo $type == 'avail' ? $label_switch_to.' '.$label_sla :$label_switch_to.' '.$label_avail; ?>
 				<?php echo ' '.$label_report; ?>
 				</span>
 				</a>
 			</div><br />
+
 			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 			echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 		 ?>
