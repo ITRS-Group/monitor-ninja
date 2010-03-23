@@ -1181,6 +1181,7 @@ function fetch_field_value(type, id, elem_id)
 		url: _site_domain + _index_page + '/reports/fetch_field_value?id=' + id + '&type=' + type,
 		success: function(data) {
 			$('#' + elem_id).text(data);
+			$('#fancy_content #' + elem_id).text(data);
 		}
 	});
 }
