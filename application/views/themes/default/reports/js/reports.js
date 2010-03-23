@@ -147,6 +147,12 @@ $(document).ready(function() {
 			});
 		});
 	});
+
+	$('.fancybox').click(function() {
+		// set initial states
+		set_initial_state('assumeinitialstates', assumeinitialstates);
+		set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+	});
 });
 
 function js_print_date_ranges(the_year, type, item)
@@ -744,9 +750,15 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
 				f.elements['includesoftstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
 				f.elements['includesoftstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'assumeinitialstates':
@@ -754,8 +766,14 @@ function set_initial_state(what, val)
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
 				f.elements['assumeinitialstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['assumeinitialstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 				edit_state_options(0);
 				toggle_label_weight(0, 'assume_initial');
 			}
@@ -764,9 +782,15 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'sched_downt');
 				f.elements['scheduleddowntimeasuptime'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'report_name':
