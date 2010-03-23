@@ -441,8 +441,12 @@ function check_form_values()
 	var errors = 0;
 	var err_str = '';
 	var field_obj = new field_maps();
-	var rpt_type = $("#report_type").val();
-	if ($("#report_period").val() == 'custom') {
+	var fancy_str = '';
+	if ($('#fancy_content').is(':visible')) {
+		fancy_str = '#fancy_content ';
+	}
+	var rpt_type = $("input[name=report_type]").val();
+	if ($(fancy_str + "#report_period").val() == 'custom') {
 		if ($('input[name=type]').val() == 'avail') {
 			// date validation
 			var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
@@ -480,13 +484,12 @@ function check_form_values()
 			// By looping through these fields (class names) we can use the last one for
 			// the correct value. If we are NOT using fancybox, we will get
 			// the (only) value anyway.
-			var curval_starttime = false;;
-			$(".time_start").each(function() {
+			var curval_starttime = false;
+			var curval_endtime = false;
+			$(fancy_str + ".time_start").each(function() {
 				curval_starttime = $(this).val();
 			});
-
-			var curval_endtime = false;
-			$(".time_end").each(function() {
+			$(fancy_str + ".time_end").each(function() {
 				curval_endtime = $(this).val();
 			});
 
