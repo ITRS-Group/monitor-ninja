@@ -72,61 +72,62 @@ class Ninja_Controller extends Template_Controller {
 
 		$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 		$this->template->links = array(
+			// place for other categories
 			$this->translate->_('Monitoring') => array(
-				$this->translate->_('Tactical overview') 			=> array('tac', 'tac'),
-				$this->translate->_('Host detail') 						=> array('status/host', 'host'),
-				$this->translate->_('Service detail') 				=> array('status/service', 'service'),
+				$this->translate->_('Tactical overview') 			=> array('/tac', 'tac'),
+				$this->translate->_('Host detail') 						=> array('/status/host/all', 'host'),
+				$this->translate->_('Service detail') 				=> array('/status/service/all', 'service'),
 				//'hr1' 																				=> array('', ''),
-				$this->translate->_('Hostgroup summary') 			=> array('status/hostgroup_summary', 'hostgroupsummary'),
-				$this->translate->_('Hostgroup overview') 		=> array('status/hostgroup', 'hostgroup'),
-				$this->translate->_('Hostgroup grid') 				=> array('status/hostgroup_grid', 'hostgroupgrid'),
+				$this->translate->_('Hostgroup summary') 			=> array('/status/hostgroup_summary', 'hostgroupsummary'),
+				$this->translate->_('Hostgroup overview') 		=> array('/status/hostgroup', 'hostgroup'),
+				$this->translate->_('Hostgroup grid') 				=> array('/status/hostgroup_grid', 'hostgroupgrid'),
 				//'hr2'																					=> array('', ''),
-				$this->translate->_('Servicegroup summary') 	=> array('status/servicegroup_summary', 'servicegroupsummary'),
-				$this->translate->_('Servicegroup overview') 	=> array('status/servicegroup', 'servicegroup'),
-				$this->translate->_('Servicegroup grid') 			=> array('status/servicegroup_grid', 'servicegroupgrid'),
+				$this->translate->_('Servicegroup summary') 	=> array('/status/servicegroup_summary', 'servicegroupsummary'),
+				$this->translate->_('Servicegroup overview') 	=> array('/status/servicegroup', 'servicegroup'),
+				$this->translate->_('Servicegroup grid') 			=> array('/status/servicegroup_grid', 'servicegroupgrid'),
 				//'hr3' 																				=> array('', ''),
-				$this->translate->_('Network outages') 				=> array('outages', 'outages'),
-				$this->translate->_('Host problems') 					=> array('status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems'),
-				$this->translate->_('Service problems') 			=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems'),
-				$this->translate->_('Unhandled problems') 		=> array('status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
+				$this->translate->_('Network outages') 				=> array('/outages', 'outages'),
+				$this->translate->_('Host problems') 					=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems'),
+				$this->translate->_('Service problems') 			=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems'),
+				$this->translate->_('Unhandled problems') 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
 				//'hr5' 																				=> array('', ''),
-				$this->translate->_('Comments') 							=> array('extinfo/show_comments', 'comments'),
-				$this->translate->_('Schedule downtime') 			=> array('extinfo/scheduled_downtime', 'scheduledowntime'),
-				$this->translate->_('Process info') 					=> array('extinfo/show_process_info', 'processinfo'),
-				$this->translate->_('Performance info') 			=> array('extinfo/performance', 'performanceinfo'),
-				$this->translate->_('Scheduling queue') 			=> array('extinfo/scheduling_queue', 'schedulingqueue'),
+				$this->translate->_('Comments') 							=> array('/extinfo/show_comments', 'comments'),
+				$this->translate->_('Schedule downtime') 			=> array('/extinfo/scheduled_downtime', 'scheduledowntime'),
+				$this->translate->_('Process info') 					=> array('/extinfo/show_process_info', 'processinfo'),
+				$this->translate->_('Performance info') 			=> array('/extinfo/performance', 'performanceinfo'),
+				$this->translate->_('Scheduling queue') 			=> array('/extinfo/scheduling_queue', 'schedulingqueue'),
 				//'hr6' 																				=> array('', ''),
 			),
 			$this->translate->_('Reporting') => array(
-				$this->translate->_('Trends') 								=> array('trends', 'trends'),
+				$this->translate->_('Trends') 								=> array('/trends', 'trends'),
 				//$this->translate->_('Histogram') 							=> array('histogram', 'histogram'),
-				$this->translate->_('Alert history') 					=> array('showlog/alert_history', 'alerthistory'),
-				$this->translate->_('Alert summary') 					=> array('summary', 'alertsummary'),
-				$this->translate->_('Notifications') 					=> array('notifications', 'notifications'),
-				$this->translate->_('Event log') 							=> array('showlog/showlog', 'eventlog'),
+				$this->translate->_('Alert history') 					=> array('/showlog/alert_history', 'alerthistory'),
+				$this->translate->_('Alert summary') 					=> array('/summary', 'alertsummary'),
+				$this->translate->_('Notifications') 					=> array('/notifications', 'notifications'),
+				$this->translate->_('Event log') 							=> array('/showlog/showlog', 'eventlog'),
 			),
 			$this->translate->_('Configuration') => array(
-				$this->translate->_('View config') 						=> array('config', 'viewconfig'),
-				$this->translate->_('Change password') 				=> array('change_password', 'password'),
-				$this->translate->_('Backup/Restore')					=> array('backup', 'backup'),
+				$this->translate->_('View config') 						=> array('/config', 'viewconfig'),
+				$this->translate->_('Change password') 				=> array('/change_password', 'password'),
+				$this->translate->_('Backup/Restore')					=> array('/backup', 'backup'),
 			)
 		);
 		if (Kohana::config('auth.driver') == 'LDAP')
 			unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
 		if (Reports_Model::_self_check() === true) {
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('reports/?type=avail', 'availability');
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('reports/?type=sla', 'sla');
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('/reports/?type=avail', 'availability');
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('/reports/?type=sla', 'sla');
 		}
-		$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('reports?show_schedules', 'schedulereports');
+		$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('/reports?show_schedules', 'schedulereports');
 
 		# Add NACOMA link only if enabled in config
 		if (nacoma::link()===true) {
-			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('configuration/configure','nacoma');
+			$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('/configuration/configure','nacoma');
 		}
 
 		if (Kohana::config('config.nagvis_path') !== false) {
-			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('nagvis/index', 'nagvis');
+			$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('/nagvis/index', 'nagvis');
 		}
 
 		$this->registry->set('Zend_Translate', $this->translate);
