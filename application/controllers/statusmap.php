@@ -25,4 +25,13 @@ class Statusmap_Controller extends Authenticated_Controller {
 	{
 		url::redirect('underconstruction/');
 	}
+
+	/**
+	*	Wrapper for automap call to show host
+	* 	Used from group grid and group overview
+	*/
+	public function host($host_name = false)
+	{
+		url::redirect('nagvis/automap/host/'. $host_name);
+	}
 }
