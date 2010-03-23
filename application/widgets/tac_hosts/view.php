@@ -34,7 +34,7 @@
 								<td class="dark">
 								<?php
 									$icon = explode(' ',$title);
-									echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-critical' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '').'.png')),$icon[1]);
+									echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-critical' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '')).'.png'),$icon[1]);
 								?>
 								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
@@ -54,7 +54,7 @@
 								<td class="dark">
 									<?php
 										$icon = explode(' ',$title);
-										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-unreachable' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '').'.png')),$icon[1]);
+										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled') ? 'shield-unreachable' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '')).'.png'),$icon[1]);
 									?>
 								</td>
 								<td><?php echo html::anchor($url, html::specialchars($title)) ?></td>
