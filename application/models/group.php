@@ -128,11 +128,21 @@ class Group_Model extends Model
 	 * @param $groupname Name of the group
 	 * @return db result
 	 */
-	public static function get_group_info($grouptype='service', $groupname=false)
+	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false)
 	{
 		$groupname = trim($groupname);
 		if (empty($groupname)) {
 			return false;
+		}
+		$filter_sql = '';
+		$state_filter = false;
+		if (!empty($hoststatus)) {
+			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
+		}
+		$service_filter = false;
+		$servicestatus = trim($servicestatus);
+		if ($servicestatus!==false && !empty($servicestatus)) {
+			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
 		}
 
 		$hostlist = Host_Model::authorized_hosts();
@@ -196,8 +206,8 @@ class Group_Model extends Model
 				".$all_sql."
 				ssg.".$grouptype."group = sg.id AND
 				".$member_match."
-				h.host_name=s.host_name ".$auth_str."
-			GROUP BY
+				h.host_name=s.host_name ".$auth_str." ".$filter_sql.
+			" GROUP BY
 				h.host_name, s.id
 			ORDER BY
 				h.host_name,

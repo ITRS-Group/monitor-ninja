@@ -365,7 +365,7 @@ class Status_Controller extends Authenticated_Controller {
 
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
-				$result = Group_Model::get_group_info($grouptype, $name);
+				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes);
 			} else {
 				$host_model->set_host_list($group_hosts);
 				$result = $host_model->get_host_status();
