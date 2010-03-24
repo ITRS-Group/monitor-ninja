@@ -1357,27 +1357,25 @@ class Reports_Controller extends Authenticated_Controller
 
 			# hostgroups / servicegroups
 			if ($this->type == 'avail' && isset($this->data_arr[0])) {
+				$template->header = $this->add_view('reports/header');
+				$header = $template->header;
+				$header->report_time_formatted = $report_time_formatted;
+				$template->header->create_pdf = $this->create_pdf;
 				if (!$this->create_pdf) {
-					$template->header = $this->add_view('reports/header');
-					$header = $template->header;
-					$header->report_time_formatted = $report_time_formatted;
-
 					$csv_link = $this->_get_csv_link();
 					$header->csv_link = $csv_link;
 					$header->pdf_link = $pdf_link;
-					if ($report_period != 'custom') {
-						$header->str_start_date = $str_start_date;
-						$header->str_end_date = $str_end_date;
-					}
-					$header->use_average = $use_average;
-
-					#$header->use_alias = $use_alias;
-					$header->label_report_period = $label_report_period;
-					$header->label_to = $t->_('to');
-					$header->label_using_avg = $t->_('using averages');
-					$header->label_print = $t->_('Print report');
-
 				} #end if NOT create_pdf
+				if ($report_period != 'custom') {
+					$header->str_start_date = $str_start_date;
+					$header->str_end_date = $str_end_date;
+				}
+				$header->use_average = $use_average;
+
+				$header->label_report_period = $label_report_period;
+				$header->label_to = $t->_('to');
+				$header->label_using_avg = $t->_('using averages');
+				$header->label_print = $t->_('Print report');
 
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
@@ -1423,9 +1421,8 @@ class Reports_Controller extends Authenticated_Controller
 				$pie_groupname = false;
 				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
 					$tmp_title = ucfirst($sub_type).$t->_('group breakdown');
-					if (!$this->create_pdf) {
-						$template->header->title = $tmp_title;
-					} else {
+					$template->header->title = $tmp_title;
+					if ($this->create_pdf) {
 						$this->pdf_data['title'] = $tmp_title;
 					}
 					foreach($this->data_arr as $data) { # for every group
@@ -1449,9 +1446,8 @@ class Reports_Controller extends Authenticated_Controller
 				} else {
 					$added_group = false;
 					$tmp_title = ucfirst($sub_type).' '.$t->_('state breakdown');
-					if (!$this->create_pdf) {
-						$template->header->title = $tmp_title;
-					} else {
+					$template->header->title = $tmp_title;
+					if ($this->create_pdf) {
 						$this->pdf_data['title'] = $tmp_title;
 					}
 					if (is_array($this->data_arr['states'])) {
@@ -1503,20 +1499,21 @@ class Reports_Controller extends Authenticated_Controller
 					$data = $this->data_arr;
 					$template->content = $this->add_view('reports/'.$this->type);
 					$template->content->create_pdf = $this->create_pdf;
-					if (!$this->create_pdf) { # no header for PDF
-						$template->header = $this->add_view('reports/header');
-						$template->header->report_time_formatted = $report_time_formatted;
-						$template->header->str_start_date = $str_start_date;
-						$template->header->str_end_date = $str_end_date;
-						$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
-						$template->header->pdf_link = $pdf_link;
-						$template->header->label_report_period = $label_report_period;
-						$template->header->label_to = $t->_('to');
-						$template->header->label_using_avg = $t->_('using averages');
-						$template->header->label_print = $t->_('Print report');
-						$template->header->use_average = $use_average;
-						$template->header->use_alias = $use_alias;
-					} else {
+					$template->header = $this->add_view('reports/header');
+					$template->header->report_time_formatted = $report_time_formatted;
+					$template->header->str_start_date = $str_start_date;
+					$template->header->str_end_date = $str_end_date;
+					$template->header->create_pdf = $this->create_pdf;
+					$csv_link = isset($csv_link) ? $csv_link : false;
+					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
+					$template->header->pdf_link = isset($pdf_link) ? $pdf_link : false;
+					$template->header->label_report_period = $label_report_period;
+					$template->header->label_to = $t->_('to');
+					$template->header->label_using_avg = $t->_('using averages');
+					$template->header->label_print = $t->_('Print report');
+					$template->header->use_average = $use_average;
+					$template->header->use_alias = $use_alias;
+					if ($this->create_pdf) {
 						$this->pdf_data['report_time_formatted'] = $report_time_formatted;
 						$this->pdf_data['str_start_date'] = $str_start_date;
 						$this->pdf_data['str_end_date'] = $str_end_date;
@@ -1696,164 +1693,152 @@ class Reports_Controller extends Authenticated_Controller
 						$trends_assumed_initial_service_state 	= $this->initial_assumed_service_state == -3 ? $report_class->initial_state : $this->_convert_assumed_state($this->initial_assumed_service_state, $sub_type, false);
 
 						# links - only for HTML reports
-						if (!$this->create_pdf) {
-							switch($this->report_type) {
-								case 'hosts':
-									# only meaningful to print these links if only one host selected
-									if(count($hostname) != 1)
-										break;
+						switch($this->report_type) {
+							case 'hosts':
+								# only meaningful to print these links if only one host selected
+								if(count($hostname) != 1)
+									break;
 
-									$host = $hostname[0];
-									$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
-									$all_avail_params = "report_type=".$this->report_type.
-											 "&amp;host_name=all".
-											 "&amp;report_period=$report_period".
+								$host = $hostname[0];
+								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
+								$all_avail_params = "report_type=".$this->report_type.
+										 "&amp;host_name=all".
+										 "&amp;report_period=$report_period".
+										 "&amp;rpttimeperiod=$rpttimeperiod".
+										 "&amp;start_time=".$this->start_date.
+										 "&amp;end_time=".$this->end_date.
+										 "&amp;initialassumedhoststate=".$this->initial_assumed_host_state.
+										 "&amp;initialassumedservicestate=".$this->initial_assumed_service_state;
+
+								if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
+								if($assume_initial)		$all_avail_params .= "&amp;assumeinitialstates=$assume_initial";
+								if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
+								if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
+
+								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('View availability report for all hosts');
+
+								$trends_params = "host=$host".
+												"&amp;t1=$t1".
+												"&amp;t2=$t2".
+												"&amp;assumestateretention=$assume_state_retention".
+												"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+												"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+												"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+												"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+												"&amp;backtrack=$backtrack";
+
+								$trends_img_params = $this->trend_link."?".
+															"host=$host".
+															"&amp;createimage&amp;smallimage".
+															"&amp;t1=$t1".
+															"&amp;t2=$t2".
+															"&amp;assumestateretention=$assume_state_retention".
+															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+															"&amp;backtrack=$backtrack";
+
+								$trends_link_params = $this->trend_link."?".
+															"host=$host".
+															"&amp;t1=$t1".
+															"&amp;t2=$t2".
+															"&amp;assumestateretention=$assume_state_retention".
+															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+															"&amp;backtrack=$backtrack";
+
+
+
+								$links[$this->trend_link."?".$trends_params] = $t->_('View trends for this host');
+
+								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
+
+								# @@@FIXME: Fix links to remaining cgi'e when implemented
+								$links[$this->histogram_link . "?" . $histogram_params] = $t->_('View alert histogram for this host');
+
+								$links[$this->status_link.$host] = $t->_('View status detail for this host');
+
+								$links[$this->history_link . "?host=" .$host] = $t->_('View alert history for this host');
+								$links[$this->notifications_link . "?host=" . $host] = $t->_('View notifications for this host');
+								break;
+
+							case 'services':
+
+								list($host, $service) = split(';',$service[0]);
+
+								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
+								$avail_params = "&show_log_entries".
+											 "&amp;t1=$t1".
+											 "&amp;t2=$t2".
+											 "&amp;report_period=".$report_period.
 											 "&amp;rpttimeperiod=$rpttimeperiod".
-											 "&amp;start_time=".$this->start_date.
-											 "&amp;end_time=".$this->end_date.
-											 "&amp;initialassumedhoststate=".$this->initial_assumed_host_state.
-											 "&amp;initialassumedservicestate=".$this->initial_assumed_service_state;
-
-									if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-									if($assume_initial)		$all_avail_params .= "&amp;assumeinitialstates=$assume_initial";
-									if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-									if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
-
-									$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('View availability report for all hosts');
-
-									$trends_params = "host=$host".
-													"&amp;t1=$t1".
-													"&amp;t2=$t2".
-													"&amp;assumestateretention=$assume_state_retention".
-													"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-													"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-													"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-													"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-													"&amp;backtrack=$backtrack";
-
-									$trends_img_params = $this->trend_link."?".
-																"host=$host".
-																"&amp;createimage&amp;smallimage".
-																"&amp;t1=$t1".
-																"&amp;t2=$t2".
-																"&amp;assumestateretention=$assume_state_retention".
-																"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-																"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-																"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-																"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-																"&amp;backtrack=$backtrack";
-
-									$trends_link_params = $this->trend_link."?".
-																"host=$host".
-																"&amp;t1=$t1".
-																"&amp;t2=$t2".
-																"&amp;assumestateretention=$assume_state_retention".
-																"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-																"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-																"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-																"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-																"&amp;backtrack=$backtrack";
+											 "&amp;backtrack=$backtrack".
+											 "&amp;assumestateretention=$assume_state_retention".
+											 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+											 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+											 "&amp;initialassumedhoststate=".$this->initialassumedhoststate.
+											 "&amp;initialassumedservicestate=".$this->initialassumedservicestate.
+											 "&amp;show_log_entries".
+											 "&amp;showscheduleddowntime=yes";
 
 
+								if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
+								if($assume_initial)		$avail_params .= "&amp;assumeinitialstates=$assume_initial";
+								if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
+								if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
 
-									$links[$this->trend_link."?".$trends_params] = $t->_('View trends for this host');
+								$trends_params = "host=$host".
+												"&amp;t1=$t1".
+												"&amp;t2=$t2".
+												"&amp;assumestateretention=$assume_state_retention".
+												"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+												"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+												"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+												"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+												"&amp;backtrack=$backtrack";
 
-									$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
+								$trends_img_params = $this->trend_link."?".
+															"host=$host".
+															"&amp;service=$service".
+															"&amp;createimage&amp;smallimage".
+															"&amp;t1=$t1".
+															"&amp;t2=$t2".
+															"&amp;assumestateretention=$assume_state_retention".
+															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+															"&amp;backtrack=$backtrack";
 
-									# @@@FIXME: Fix links to remaining cgi'e when implemented
-									$links[$this->histogram_link . "?" . $histogram_params] = $t->_('View alert histogram for this host');
-
-									$links[$this->status_link.$host] = $t->_('View status detail for this host');
-
-									$links[$this->history_link . "?host=" .$host] = $t->_('View alert history for this host');
-									$links[$this->notifications_link . "?host=" . $host] = $t->_('View notifications for this host');
-									break;
-
-								case 'services':
-
-									list($host, $service) = split(';',$service[0]);
-
-									$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
-									$avail_params = "&show_log_entries".
-												 "&amp;t1=$t1".
-												 "&amp;t2=$t2".
-												 "&amp;report_period=".$report_period.
-												 "&amp;rpttimeperiod=$rpttimeperiod".
-												 "&amp;backtrack=$backtrack".
-												 "&amp;assumestateretention=$assume_state_retention".
-												 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-												 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-												 "&amp;initialassumedhoststate=".$this->initialassumedhoststate.
-												 "&amp;initialassumedservicestate=".$this->initialassumedservicestate.
-												 "&amp;show_log_entries".
-												 "&amp;showscheduleddowntime=yes";
-
-
-									if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-									if($assume_initial)		$avail_params .= "&amp;assumeinitialstates=$assume_initial";
-									if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-									if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
-
-									$trends_params = "host=$host".
-													"&amp;t1=$t1".
-													"&amp;t2=$t2".
-													"&amp;assumestateretention=$assume_state_retention".
-													"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-													"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-													"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-													"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-													"&amp;backtrack=$backtrack";
-
-									$trends_img_params = $this->trend_link."?".
-																"host=$host".
-																"&amp;service=$service".
-																"&amp;createimage&amp;smallimage".
-																"&amp;t1=$t1".
-																"&amp;t2=$t2".
-																"&amp;assumestateretention=$assume_state_retention".
-																"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-																"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-																"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-																"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-																"&amp;backtrack=$backtrack";
-
-									$trends_link_params = $this->trend_link."?".
-																"host=$host".
-																"&amp;service=$service".
-																"&amp;t1=$t1".
-																"&amp;t2=$t2".
-																"&amp;assumestateretention=$assume_state_retention".
-																"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-																"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-																"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-																"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-																"&amp;backtrack=$backtrack";
+								$trends_link_params = $this->trend_link."?".
+															"host=$host".
+															"&amp;service=$service".
+															"&amp;t1=$t1".
+															"&amp;t2=$t2".
+															"&amp;assumestateretention=$assume_state_retention".
+															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
+															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+															"&amp;backtrack=$backtrack";
 
 
-									$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
-									$history_params       = "host=$host&amp;service=$service";
-									$notifications_params = "host=$host&amp;service=$service";
+								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
+								$history_params       = "host=$host&amp;service=$service";
+								$notifications_params = "host=$host&amp;service=$service";
 
 
-									$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('View Availability Report For This Host');
-									$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('View Availability Report For All Services');
-									$links[$this->trend_link . "?" . $trends_params . "&amp;service=" . $service] = $t->_('View Trends For This Service');
-									$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('View Alert Histogram For This Service');
-									$links[$this->history_link . "?" . $history_params] 			= $t->_('View Alert History This Service');
-									$links[$this->notifications_link . "?" . $notifications_params] = $t->_('View Notifications For This Service');
+								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('View Availability Report For This Host');
+								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('View Availability Report For All Services');
+								$links[$this->trend_link . "?" . $trends_params . "&amp;service=" . $service] = $t->_('View Trends For This Service');
+								$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('View Alert Histogram For This Service');
+								$links[$this->history_link . "?" . $history_params] 			= $t->_('View Alert History This Service');
+								$links[$this->notifications_link . "?" . $notifications_params] = $t->_('View Notifications For This Service');
 
-									break;
-							}
-						} else {
-							switch($this->report_type) {
-								case 'hosts':
-									$this->pdf_data['title'] = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($hostname[0]);
-									break;
-								case 'services':
-									list($host, $service) = split(';',$service[0]);
-									$this->pdf_data['title'] = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
-									break;
-							}
+								break;
 						}
 
 						if (!$this->create_pdf) {
@@ -1865,9 +1850,8 @@ class Reports_Controller extends Authenticated_Controller
 						}
 					} else {
 						# SLA report
-						if (!$this->create_pdf) {
-							$template->header->title = $t->_('SLA breakdown');
-						} else {
+						$template->header->title = $t->_('SLA breakdown');
+						if ($this->create_pdf) {
 							$this->pdf_data['title'] = $t->_('SLA breakdown');
 						}
 						$sla = $template->content;
@@ -1882,6 +1866,7 @@ class Reports_Controller extends Authenticated_Controller
 			# skip the rest if pdf
 			if ($this->create_pdf) {
 				$this->pdf_data['content'] = $template->content->render();
+				$this->pdf_data['header'] = $template->header->render();
 				$retval = $this->_pdf();
 				if (PHP_SAPI == "cli") {
 					echo $retval;
@@ -3457,6 +3442,7 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
+		$pdf->writeHTML($this->pdf_data['header'], true, 0, true, 0);
 		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
 
 		if (isset($image_string) && !empty($image_string)) {
