@@ -460,11 +460,27 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
+		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
 			$_REQUEST['report_period'] 			= 'last24hours';
 			$_REQUEST['assumeinitialstates'] 	= 1;
+		}
+		if ($end_time && $start_time) {
+			$rpttimeperiod = 'custom';
+			if (!is_numeric($start_time)) {
+				$start_time = strtotime($start_time);
+			}
+			if (!is_numeric($end_time)) {
+				$end_time = strtotime($end_time);
+			}
+			$_REQUEST['report_period'] = 'custom';
+			$_REQUEST['start_time'] = $start_time;
+			$_REQUEST['end_time'] = $end_time;
+		} else {
+			$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
 		}
 
 		// store all variables in array for later use
@@ -541,10 +557,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->report_type 	= arr::search($_REQUEST, 'report_type');
 		$in_csvoutput		= arr::search($_REQUEST, 'csvoutput');
-		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
-		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period		= arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
-		$rpttimeperiod 		= arr::search($_REQUEST, 'rpttimeperiod', '');
 		$cluster_mode		= arr::search($_REQUEST, 'cluster_mode', '');
 		$hostgroup			= false;
 		$hostname			= false;
