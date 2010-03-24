@@ -140,7 +140,7 @@ class Reports_Controller extends Authenticated_Controller
 	private $trend_link = "trends/generate";
 	private $histogram_link = "histogram/host";
 	private $history_link = "showlog/alert_history";
-	private $notifications_link = "notifications/index";
+	private $notifications_link = "notifications/host";
 
 	private $reports_model = false;
 	public $start_date = false;
@@ -1767,7 +1767,7 @@ class Reports_Controller extends Authenticated_Controller
 								$links[$this->status_link.$host] = $t->_('Status detail');
 
 								$links[$this->history_link . "/" .$host] = $t->_('Alert history');
-								$links[$this->notifications_link . "?host=" . $host] = $t->_('Notifications');
+								$links[$this->notifications_link . "/" . $host] = $t->_('Notifications');
 								break;
 
 							case 'services':
