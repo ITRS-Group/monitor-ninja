@@ -2044,7 +2044,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (!$this->create_pdf) {
 			$graph = new MultipleBarChart(800, 600);
 		} else {
-			$graph = new MultipleBarChart(450, 350);
+			$graph = new MultipleBarChart(600, 400);
 			$graph->set_bar_width(20);
 			$graph->set_bar_gap(-10);
 		}
