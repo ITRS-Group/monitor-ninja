@@ -2,7 +2,7 @@
 if (!isset($object_data) || empty($object_data)) {
 	die('no data');
 }
-
+$create_pdf = !isset($create_pdf) ? false : $create_pdf;
 ?>
 <br />
 <br />
@@ -17,7 +17,7 @@ if (!isset($object_data) || empty($object_data)) {
 <?php
 }
 
-$cell_height = 50;
+$cell_height = isset($avail_height) ? $avail_height: 50;
 $title_str = $this->translate->_('Start: %s, End: %s, Duration: %s, Output: %s');
 foreach ($object_data as $obj => $data) {
 	$cnt = 0; ?>
@@ -26,20 +26,23 @@ foreach ($object_data as $obj => $data) {
 			<?php foreach ($data as $event) {
 				$width = 0;
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
-				if (isset($event['duration'])) {
+				if (isset($event['duration']) && $event['duration']>0) {
 					$width = number_format(($event['duration']/$length)*100, 2);
 				} else {
 					continue;
-				}?>
+				}
+				if ($width == '0.00')
+					continue;?>
 			<td class="trend_event trend_<?php echo Trends_Controller::_translate_state_to_string($event['state'], $sub_type) ?>"
-				title="<?php echo
+				<?php if ($create_pdf === false) { ?>title="<?php echo
 					sprintf(
 						$title_str,
 							date('Y-m-d H:i', $event['the_time']),
 							date('Y-m-d H:i', ($event['the_time'] + $event['duration'])),
 							time::to_string($event['duration']),
-							$event['output'] ) ?>"
-				style="width:<?php echo $width ?>%;background:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
+							$event['output'] ); ?>"
+					<?php } ?>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background<?php if ($create_pdf !== false) { ?>-color<?php } ?>:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
 		<?php	$cnt++;
 			} ?>
 		</tr>

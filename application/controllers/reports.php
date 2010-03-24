@@ -1612,6 +1612,11 @@ class Reports_Controller extends Authenticated_Controller
 						$template->trends_graph->length = ($report_end - $report_start);
 						$template->trends_graph->sub_type = $sub_type;
 						$template->trends_graph->is_avail = true;
+						$template->trends_graph->avail_height = 30;
+						$template->trends_graph->create_pdf = $this->create_pdf;
+						if ($this->create_pdf) {
+							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+						}
 
 						$avail->pie = $this->add_view('reports/pie_chart');
 						$avail->pie->label_status = $t->_('Status overview');
@@ -3440,6 +3445,10 @@ class Reports_Controller extends Authenticated_Controller
 				$images[] = $img;
 				$this->pdf_data['content'] = str_replace("#chart_placeholder_$nr#", '<img src="'.$img.'" />', $this->pdf_data['content']);
 			}
+		}
+
+		if (isset($this->pdf_data['trends_graph'])) {
+			$pdf->writeHTML($this->pdf_data['trends_graph'], true, 0, true, 0);
 		}
 
 		$pdf->writeHTML($this->pdf_data['header'], true, 0, true, 0);
