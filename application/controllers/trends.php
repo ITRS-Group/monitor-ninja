@@ -455,8 +455,6 @@ class Trends_Controller extends Authenticated_Controller {
 	public function generate()
 	{
 		$this->template->disable_refresh = true;
-	#	echo Kohana::debug($_REQUEST);
-
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
@@ -468,7 +466,11 @@ class Trends_Controller extends Authenticated_Controller {
 			$_REQUEST['report_period'] 			= 'last24hours';
 			$_REQUEST['assumeinitialstates'] 	= 1;
 		}
-		if ($end_time && $start_time) {
+
+		# make sure we don't have ' ' as start- or end_time
+		$start_time = trim($start_time);
+		$end_time = trim($end_time);
+		if (!empty($end_time) && !empty($start_time)) {
 			$rpttimeperiod = 'custom';
 			if (!is_numeric($start_time)) {
 				$start_time = strtotime($start_time);
