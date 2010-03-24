@@ -190,44 +190,40 @@ if (isset($report_info)) {
 					</td>
 				</tr>
 				<tr id="display" style="display: none; clear: both;">
-				<?php if ($type == 'avail') { ?>
-					<td><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
+					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
 						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo isset($start_date) ? $start_date : '' ?>" class="date-pick datepick-start" title="<?php echo $label_startdate_selector ?>" />
 						<input type="hidden" name="start_time" id="start_time"  value="<?php echo isset($start_date) ? $start_date : '' ?>"/>
 						<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($start_time) ? $start_time : '08:00' ?>">
 					</td>
-					<td>&nbsp;</td>
-					<td><?php echo help::render('end-date').' '.$label_enddate ?> (<em id="end_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
+					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>&nbsp;</td>
+					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '.$label_enddate ?> (<em id="end_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
 						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo isset($end_date) ? $end_date : '' ?>" class="date-pick datepick-end" title="<?php echo $label_enddate_selector ?>" />
 						<input type="hidden" name="end_time" id="end_time" value="<?php echo isset($end_date) ? $end_date : '' ?>" />
 						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($end_time) ? $end_time : '09:00' ?>">
 					</td>
-					<?php } else { ?>
-						<td>
-							<table summary="Reporting time" style="margin-left: -4px">
-								<tr><?php echo help::render('start-date').' '.$label_startdate ?>
-									<td><?php echo $label_start_year ?></td>
-									<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
-									<td><?php echo $label_start_month ?></td>
-									<td><select name="start_month" id="start_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
-								</tr>
-							</table>
-						</td>
-						<td>&nbsp;</td>
-						<td><?php echo help::render('end-date').' '.$label_enddate ?>
-							<input type="hidden" name="start_time" id="start_time" value="" />
-							<input type="hidden" name="end_time" id="end_time" value="" />
-							<table summary="Reporting time" style="margin-left: -4px">
-								<tr>
-									<td><?php echo $label_end_year ?></td>
-									<td><select name="end_year" id="end_year" style="width: 50px" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
-									<td><?php echo $label_end_month ?></td>
-									<td><select name="end_month" id="end_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
-								</tr>
-							</table>
-						</td>
-
-					<?php } ?>
+					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>
+						<table summary="Reporting time" style="margin-left: -4px">
+							<tr><?php echo help::render('start-date').' '.$label_startdate ?>
+								<td><?php echo $label_start_year ?></td>
+								<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
+								<td><?php echo $label_start_month ?></td>
+								<td><select name="start_month" id="start_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
+							</tr>
+						</table>
+					</td>
+					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>&nbsp;</td>
+					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '.$label_enddate ?>
+						<input type="hidden" name="start_time" id="start_time" value="" />
+						<input type="hidden" name="end_time" id="end_time" value="" />
+						<table summary="Reporting time" style="margin-left: -4px">
+							<tr>
+								<td><?php echo $label_end_year ?></td>
+								<td><select name="end_year" id="end_year" style="width: 50px" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
+								<td><?php echo $label_end_month ?></td>
+								<td><select name="end_month" id="end_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				<tr>
 					<td colspan="3">

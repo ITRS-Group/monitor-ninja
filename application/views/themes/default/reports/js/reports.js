@@ -379,6 +379,8 @@ function switch_report_type()
 		$('#switcher_image').attr('alt', _label_avail);
 		$('#switcher_image').attr('title', _label_avail);
 		$("#old_avail_link").hide();
+		$(".sla_display").show();
+		$(".avail_display").hide();
 
 		$('#csv_cell').hide();
 		$("#report_type_label").text(_label_sla + ' ' + _label_report);
@@ -390,6 +392,8 @@ function switch_report_type()
 		$('#switcher_image').attr('alt', _label_sla);
 		$('#switcher_image').attr('title', _label_sla);
 		$("#old_avail_link").show();
+		$(".sla_display").hide();
+		$(".avail_display").show();
 
 		$('#csv_cell').show();
 		$("#report_type_label").text(_label_avail + ' ' + _label_report);
