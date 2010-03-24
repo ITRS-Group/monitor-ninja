@@ -15,11 +15,7 @@ class showlog_Core
 		$cgi_cfg = $etc_path . '/cgi.cfg';
 
 		$showlog = self::get_path();
-		$cmd = $showlog . " --html --cgi-cfg=" . $cgi_cfg;
-
-		if (!isset($options['parse_forward'])) {
-			$cmd .= ' --reverse';
-		}
+		$cmd = $showlog . " --cgi-cfg=" . $cgi_cfg;
 
 		foreach ($options as $k => $v) {
 			# support all the various 'hide' options
@@ -59,12 +55,19 @@ class showlog_Core
 			$cmd .= ' --service-states=' . join(array_keys($options['service_state_options']));
 		}
 
+		if (empty($options['parse_forward'])) {
+			$cmd .= ' --reverse';
+		}
+
 		# Add the proper image url for this theme. Screw the user if he/she
 		# uses a non-standard theme which lacks the images we need
 		$cmd .= " --image-url=" . url::base(false) .
 			'/application/views/' .
 			zend::instance('Registry')->get('theme_path') .
 			'/icons/16x16/';
+
+		$cmd .= " --html";
+
 		passthru($cmd);
 	}
 
