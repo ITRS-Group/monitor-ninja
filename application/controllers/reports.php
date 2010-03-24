@@ -1836,12 +1836,12 @@ class Reports_Controller extends Authenticated_Controller
 								$notifications_params = "host=$host&amp;service=$service";
 
 
-								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('View Availability Report For This Host');
-								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('View Availability Report For All Services');
-								$links[$this->trend_link . "?" . $trends_params . "&amp;service=" . $service] = $t->_('View Trends For This Service');
-								$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('View Alert Histogram For This Service');
-								$links[$this->history_link . "?" . $history_params] 			= $t->_('View Alert History This Service');
-								$links[$this->notifications_link . "?" . $notifications_params] = $t->_('View Notifications For This Service');
+								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('Availability report for this host');
+								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('Availability report for all services');
+								$links[$this->trend_link . "?" . $trends_params . "&amp;service=" . $service] = $t->_('Trends');
+								$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('Alert histogram');
+								$links[$this->history_link . "?" . $history_params] 			= $t->_('Alert history');
+								$links[$this->notifications_link . "?" . $notifications_params] = $t->_('Notifications');
 
 								break;
 						}
