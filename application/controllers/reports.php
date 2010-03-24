@@ -1720,7 +1720,7 @@ class Reports_Controller extends Authenticated_Controller
 								if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
 								if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
 
-								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('View availability report for all hosts');
+								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('Availability report for all hosts');
 
 								$trends_params = "host=$host".
 												"&amp;t1=$t1".
@@ -1757,17 +1757,17 @@ class Reports_Controller extends Authenticated_Controller
 
 
 
-								$links[$this->trend_link."?".$trends_params] = $t->_('View trends for this host');
+								$links[$this->trend_link."?".$trends_params] = $t->_('Trends');
 
 								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
 
 								# @@@FIXME: Fix links to remaining cgi'e when implemented
-								$links[$this->histogram_link . "?" . $histogram_params] = $t->_('View alert histogram for this host');
+								$links[$this->histogram_link . "?" . $histogram_params] = $t->_('Alert histogram');
 
-								$links[$this->status_link.$host] = $t->_('View status detail for this host');
+								$links[$this->status_link.$host] = $t->_('Status detail');
 
-								$links[$this->history_link . "?host=" .$host] = $t->_('View alert history for this host');
-								$links[$this->notifications_link . "?host=" . $host] = $t->_('View notifications for this host');
+								$links[$this->history_link . "?host=" .$host] = $t->_('Alert history');
+								$links[$this->notifications_link . "?host=" . $host] = $t->_('Notifications');
 								break;
 
 							case 'services':
