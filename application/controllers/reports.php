@@ -137,8 +137,8 @@ class Reports_Controller extends Authenticated_Controller
 	private $object_varname = false;
 
 	private $status_link = "status/host/";
+	private $histogram_link = "histogram/host";
 	private $trend_link = "trends/index";
-	private $histogram_link = "histogram/index";
 	private $history_link = "history/index";
 	private $notifications_link = "notifications/index";
 

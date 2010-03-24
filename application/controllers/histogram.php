@@ -317,7 +317,20 @@ class Histogram_Controller extends Authenticated_Controller
 		}
 		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
 		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
-		$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
+		if ($end_time && $start_time) {
+			$rpttimeperiod = 'custom';
+			if (!is_numeric($start_time)) {
+				$start_time = strtotime($start_time);
+			}
+			if (!is_numeric($end_time)) {
+				$end_time = strtotime($end_time);
+			}
+			$_REQUEST['report_period'] = 'custom';
+			$_REQUEST['start_time'] = $start_time;
+			$_REQUEST['end_time'] = $end_time;
+		} else {
+			$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
+		}
 		$in_host = arr::search($_REQUEST, 'host', false);
 		$selected_state_types = arr::search($_REQUEST, 'state_types', false);
 		if ($in_host === false)
@@ -707,6 +720,7 @@ class Histogram_Controller extends Authenticated_Controller
 	*/
 	public function host($host_name=false)
 	{
+		$host_name = arr::search($_REQUEST, 'host', $host_name);
 		$host_name = arr::search($_REQUEST, 'host_name', $host_name);
 		if (empty($host_name)) {
 			die($this->translate->_('ERROR: No host name found'));
@@ -716,7 +730,11 @@ class Histogram_Controller extends Authenticated_Controller
 		$breakdown = arr::search($_REQUEST, 'breakdown', 'hourly');
 		$link = 'host_name[]='.$host_name;
 		$link .= !empty($service) ?'&service_description[]='.$service : '';
+		$xtra_params = false;
+		if (!empty(Router::$query_string)) {
+			$xtra_params = preg_replace('/^\?/', '&', Router::$query_string);
+		}
 
-		url::redirect(Router::$controller.'/generate?'.$link.'&report_type='.$report_type.'&breakdown='.$breakdown);
+		url::redirect(Router::$controller.'/generate?'.$link.'&report_type='.$report_type.'&breakdown='.$breakdown.$xtra_params);
 	}
 }
