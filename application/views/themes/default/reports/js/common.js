@@ -442,6 +442,9 @@ function check_form_values()
 	var err_str = '';
 	var field_obj = new field_maps();
 	var fancy_str = '';
+	var curval_starttime = '';
+	var curval_endtime = '';
+
 	if ($('#fancy_content').is(':visible')) {
 		fancy_str = '#fancy_content ';
 	}
@@ -484,8 +487,6 @@ function check_form_values()
 			// By looping through these fields (class names) we can use the last one for
 			// the correct value. If we are NOT using fancybox, we will get
 			// the (only) value anyway.
-			var curval_starttime = false;
-			var curval_endtime = false;
 			$(fancy_str + ".time_start").each(function() {
 				curval_starttime = $(this).val();
 			});
