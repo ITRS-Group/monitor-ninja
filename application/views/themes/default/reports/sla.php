@@ -24,19 +24,10 @@ foreach($report_data as $i =>  $report) {
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
-		<!--<a href="<?php #echo $report['avail_links'] ?>">
-			<img
-				src="../chart.php?type=sla_bar&amp;data=<?php echo $report['data_str'] ?>"
-				title="Click to view the corresponding availability report"
-				alt="SLA data"
-				id="sla-graph_<?php echo $nr;?>" />
-		</a>-->
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
 	<?php  if (!empty($report['table_data'])) { ?>
 	<div class="sla_table">
-
-		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
 			<?php $h = 0; foreach ($report['table_data'] as $source => $data) { if ($h == 0) { $h++;?>
 			<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
 			<table class="auto" border="1">
