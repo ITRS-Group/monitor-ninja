@@ -63,10 +63,11 @@ foreach($report_data as $i =>  $report) {
 								//'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
 								'style' => 'width: 11px; height: 12px'));
 						?></td>
-					<?php } }?>
+					<?php } ?>
 				</tr>
 			</table>
-			<?php } ?>
+			<?php }
+			 } ?>
 	</div>
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
