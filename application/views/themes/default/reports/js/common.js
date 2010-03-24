@@ -447,7 +447,7 @@ function check_form_values()
 	}
 	var rpt_type = $("input[name=report_type]").val();
 	if ($(fancy_str + "#report_period").val() == 'custom') {
-		if ($('input[name=type]').val() == 'avail') {
+		if ($('input[name=type]').val() != 'sla') {
 			// date validation
 			var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
 			var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
