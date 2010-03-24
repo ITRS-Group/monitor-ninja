@@ -41,8 +41,12 @@ foreach ($object_data as $obj => $data) {
 							date('Y-m-d H:i', ($event['the_time'] + $event['duration'])),
 							time::to_string($event['duration']),
 							$event['output'] ); ?>"
+					<?php }
+					if ($create_pdf !== false) { ?>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background-color:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
+					<?php } else { ?>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background:url(<?php echo url::base(false).$this->add_path('trends/images/'.Trends_Controller::_translate_state_to_string($event['state'], $sub_type).'.png') ?>)"></td>
 					<?php } ?>
-				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background<?php if ($create_pdf !== false) { ?>-color<?php } ?>:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
 		<?php	$cnt++;
 			} ?>
 		</tr>
