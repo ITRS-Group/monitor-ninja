@@ -7,6 +7,8 @@ class showlog_Core
 {
 	public function show_log_entries($options)
 	{
+		# default limit
+		$limit = 2500;
 		$cgi_cfg = false;
 		$nagios_path = Kohana::config('config.nagios_base_path');
 		$etc_path = Kohana::config('config.nagios_etc_path');
@@ -37,6 +39,7 @@ class showlog_Core
 			 case 'first': case 'last':
 				if (!empty($v))
 					$cmd .= " --$k=$v";
+				$limit = false;
 				break;
 			 case 'time_format':
 				$cmd .= ' --' . str_replace('_', '-', $k) . '=' . $v;
@@ -57,6 +60,13 @@ class showlog_Core
 
 		if (empty($options['parse_forward'])) {
 			$cmd .= ' --reverse';
+		}
+		# invoke a hard limit in case the user didn't set any.
+		# This will prevent php from exiting with an out-of-memory
+		# error, and will also stop users' browsers from hanging
+		# when trying to load a gargantually large page
+		if (empty($options['limit']) && $limit !== false) {
+			$cmd .= ' --limit=' . $limit;
 		}
 
 		# Add the proper image url for this theme. Screw the user if he/she
