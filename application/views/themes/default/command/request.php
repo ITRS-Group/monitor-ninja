@@ -22,8 +22,10 @@ foreach ($params as $pname => $ary) {
 	}
 }
 
-echo "<table style=\"margin-top: 15px\">\n";
-echo '<tr><th colspan="'.($use_help ? 2 : 1).'" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
+if (!empty($params)) {
+	echo "<table style=\"margin-top: 15px\">\n";
+	echo '<tr><th colspan="'.($use_help ? 2 : 1).'" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
+}
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
@@ -74,9 +76,13 @@ foreach ($params as $pname => $ary) {
 
 	echo "</td></tr>\n";
 }
-echo "</table><br />\n";
+if (!empty($params)) {
+	echo "</table><br />\n";
+}
 echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
-echo " &nbsp;<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+if (!empty($params)) {
+	echo " &nbsp;<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+}
 echo form::close();
 echo '</div>';
