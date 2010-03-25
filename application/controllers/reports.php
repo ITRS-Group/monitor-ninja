@@ -1308,6 +1308,7 @@ class Reports_Controller extends Authenticated_Controller
 
 				$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
 				$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
+				$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
 				$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 				$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 				$this->js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
