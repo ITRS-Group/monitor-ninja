@@ -146,6 +146,15 @@ $(document).ready(function() {
 				schedule_delete($(this).attr('id'));
 			});
 		});
+
+		$("#fancy_content .send_report_now").click(function() {
+			var type_id = $(this).attr('id');
+			type_id = type_id.replace('send_now_', '');
+			type_id = type_id.split('_');
+			var type = type_id[0];
+			var id = type_id[1];
+			send_report_now(type, id);
+		});
 	});
 
 	$('.fancybox').click(function() {

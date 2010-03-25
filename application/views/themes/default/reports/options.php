@@ -193,7 +193,7 @@ if ($type == 'avail') { ?>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
 					<th class="headerNone left"><?php echo $label_filename ?></th>
 					<th class="headerNone left"><?php echo $label_description ?></th>
-					<th class="headerNone left">&nbsp;</th>
+					<th class="headerNone left" colspan="2">&nbsp;</th>
 				</tr>
 			<?php if (!empty($scheduled_info)) {
 				$i = 0;
@@ -207,6 +207,10 @@ if ($type == 'avail') { ?>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
+				<td>
+					<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
+					<div class="delete_schedule <?php echo $type ?>_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
+				</td>
 				<td class="delete_schedule" id="<?php echo $schedule->id ?>" style="width: 16px; padding-left: 0px"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')); ?></td>
 			</tr>
 		<?php }	} ?>
