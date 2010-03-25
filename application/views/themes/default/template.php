@@ -166,7 +166,7 @@ if (isset($this->template->js_header))
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 									html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-
+							//elseifportal
 							else
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
