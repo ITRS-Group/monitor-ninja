@@ -44,7 +44,7 @@ class Notifications_Model extends Model {
 			}
 			$where_string .= "contact_name != ''\n";
 			$sql = "SELECT host_name, service_description, start_time, end_time, reason_type, state,
-							contact_name, notification_type, output
+							contact_name, notification_type, output, command_name
 							FROM notification ".$where_string."
 							ORDER BY ".$this->sort_field." ".$this->sort_order.
 							$offset_limit;
