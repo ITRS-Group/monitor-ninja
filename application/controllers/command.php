@@ -281,14 +281,19 @@ class Command_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
+		$t = zend::instance('Registry')->get('Zend_Translate');
 
 		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
-		$helptexts = array(
-			'triggered_by' => $translate->_("With triggered downtime the start of the downtime ".
-				"is triggered by the start of some other scheduled host or service downtime")
+		$helptexts = array
+			('triggered_by' =>
+			 $t->_ ("With triggered downtime the start of the downtime ".
+					"is triggered by the start of some other scheduled " .
+					"host or service downtime"),
+			 'duration' =>
+			 $t->_("Duration is given as a decimal value of full hours. " .
+				   "Thus, 1h 15m should be written as <b>1.25</b>"),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

@@ -166,6 +166,7 @@ class Command_Model extends Model
 				break;
 			 case 'duration':
 				$ary = array('type' => 'duration', 'default' => '2.0');
+				$ary['help'] = help::render('duration');
 				break;
 			 case 'event_handler_command':
 				# FIXME: stub options
