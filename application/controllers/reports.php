@@ -3888,6 +3888,7 @@ class Reports_Controller extends Authenticated_Controller
 			'sla_graph' => $translate->_("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled."),
 			'sla_breakdown' => $translate->_("Breakdown of the SLA report in actual figures."),
 			'sla_group_members' => $translate->_("Members of the selected group that the report is generated for. All members are links to individual reports."),
+			'trends' => $translate->_("Shows trends during selected report period"),
 
 			// new scheduled report
 			'report-type-save' => $translate->_("Select what type of report you would like to schedule the creation of"),

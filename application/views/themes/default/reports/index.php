@@ -21,7 +21,10 @@ if (!empty($widgets)) {
 			' <a href="'.url::site($url).'">'.$name.'</a>, &nbsp;';
 		}
 	}
-	echo !empty($trends_graph) ? $trends_graph : '';
+	if (!empty($trends_graph)) {
+		echo '<strong style="margin-bottom: -25px; margin-top: 25px;display: block">'.help::render('trends').' '.$this->translate->_('Trends').'</strong>';
+		echo $trends_graph;
+	}
 	echo !empty($content) ? $content : '';
 	echo !empty($svc_content) ? $svc_content : '';
 	echo isset($pie) ? $pie : '';
