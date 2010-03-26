@@ -354,11 +354,41 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 		$rpt = new Reports_Model();
+		// cgi compatibility variables
+		// Start dates
+		$syear 	= (int)arr::search($_REQUEST, 'syear');
+		$smon 	= (int)arr::search($_REQUEST, 'smon');
+		$sday 	= (int)arr::search($_REQUEST, 'sday');
+		$shour 	= (int)arr::search($_REQUEST, 'shour');
+		$smin 	= (int)arr::search($_REQUEST, 'smin');
+		$ssec 	= (int)arr::search($_REQUEST, 'ssec');
+		// end dates
+		$eyear 	= (int)arr::search($_REQUEST, 'eyear');
+		$emon 	= (int)arr::search($_REQUEST, 'emon');
+		$eday 	= (int)arr::search($_REQUEST, 'eday');
+		$ehour 	= (int)arr::search($_REQUEST, 'ehour');
+		$emin 	= (int)arr::search($_REQUEST, 'emin');
+		$esec 	= (int)arr::search($_REQUEST, 'esec');
+
+		if (isset($_REQUEST['displaytype'])) {
+			$_REQUEST['report_type'] = $_REQUEST['displaytype'];
+		}
 
 		if (!empty($_REQUEST['report_type'])) {
 			$report_type = $_REQUEST['report_type'];
 		} else {
 			$report_type = self::TOP_ALERT_PRODUCERS;
+		}
+
+		if (!isset($_REQUEST['report_period']) && isset($_REQUEST['timeperiod'])) {
+			$_REQUEST['report_period'] = $_REQUEST['timeperiod'];
+		}
+
+		// convert report period to timestamps
+		if ($_REQUEST['report_period'] == 'custom' && !empty($syear) && !empty($eyear)) {
+			// cgi compatibility
+			$_REQUEST['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
+			$_REQUEST['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
 		}
 
 		$options = $_REQUEST;
