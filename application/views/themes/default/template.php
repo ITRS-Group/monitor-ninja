@@ -143,7 +143,6 @@ if (isset($this->template->js_header))
 							<em>'.substr(html::specialchars($header),0,1).'</em>
 						</li>'."\n";
 						foreach ($link as $title => $url):
-						//echo Router::$query_string;
 							$query_string = explode('&',Router::$query_string);
 							$unhandled_string = array(
 								'?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
@@ -166,8 +165,13 @@ if (isset($this->template->js_header))
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 									html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-							//elseifportal
-							else
+							elseif (Kohana::config('config.site_domain') == '/monitor/' && $url[1] == 'portal') {
+								$title = $this->translate->_('op5 Portal');
+								echo '<li class="'.html::specialchars($header).'">'.
+									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::image($this->add_path('icons/menu/portal.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+								}
+							elseif ($url[1] != 'portal')
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 									html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";

@@ -73,7 +73,7 @@ class Ninja_Controller extends Template_Controller {
 		$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 		$this->template->links = array(
 			$this->translate->_('Monitoring') => array(
-				// place for more links
+				$this->translate->_('op5 Portal') 						=> array('/', 'portal'),
 				$this->translate->_('Tactical overview') 			=> array('/tac', 'tac'),
 				$this->translate->_('Host detail') 						=> array('/status/host/all', 'host'),
 				$this->translate->_('Service detail') 				=> array('/status/service/all', 'service'),
