@@ -9,8 +9,24 @@ if (!empty($widgets)) {
 ?>
 
 <div class="widget w98 left">
-<h1><?php echo $title ?></h1>
-<p style="margin-top: -15px"><?php echo $report_time ?></p>
+<h1><?php echo $title ?>
+<?php
+$print_limit = 3;
+if (sizeof($objects) > $print_limit) {
+	$show_objects = array_slice($objects, 0, $print_limit);
+	$rest_objects = array_slice($objects, $print_limit); ?>
+		<?php echo implode(', ', $show_objects); ?>
+		...<a title="<?php echo $this->translate->_('Click to show/hide list of objects') ?>" href="#" id="show_all_objects"><?php echo sprintf($this->translate->_('Show %s more'), sizeof($rest_objects)) ?></a>
+		</h1>
+	<div id="all_objects" style="display:none">
+		<?php echo implode(', ', $rest_objects); ?>
+	</div><br />
+<?php
+} else { ?>
+	<?php echo implode(', ', $objects); ?>
+<?php
+} ?></h1>
+<p style=""><?php echo $report_time ?></p>
 
 <table id="histogram_holder" style="width:auto; margin-top: 15px">
 	<tr>

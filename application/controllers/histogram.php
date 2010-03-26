@@ -359,17 +359,13 @@ class Histogram_Controller extends Authenticated_Controller
 
 		$group_name = false;
 		$title = $t->_('Event history for ');
+		$objects = false;
 		switch ($this->report_type) {
 			case 'hostgroups':
 				$sub_type = "host";
 				$hostgroup = $in_hostgroup;
 				$group_name = $hostgroup;
 				$title .= $t->_('Hostgroup(s): ');
-				if (is_array($hostgroup)) {
-					$title .= implode(',', $hostgroup);
-				} else {
-					$title .= $hostgroup;
-				}
 				$this->object_varname = 'host_name';
 				break;
 			case 'servicegroups':
@@ -377,22 +373,12 @@ class Histogram_Controller extends Authenticated_Controller
 				$servicegroup = $in_servicegroup;
 				$group_name = $servicegroup;
 				$title .= $t->_('Servicegroup(s): ');
-				if (is_array($servicegroup)) {
-					$title .= implode(', ', $servicegroup);
-				} else {
-					$title .= $servicegroup;
-				}
 				$this->object_varname = 'service_description';
 				break;
 			case 'hosts':
 				$sub_type = "host";
 				$hostname = $in_host;
 				$title .= $t->_('Host(s): ');
-				if (is_array($hostname)) {
-					$title .= implode(', ', $hostname);
-				} else {
-					$title .= $hostname;
-				}
 				$this->object_varname = 'host_name';
 				break;
 			case 'services':
@@ -408,14 +394,12 @@ class Histogram_Controller extends Authenticated_Controller
 						}
 					}
 					if (!empty($tmp_obj)) {
-						$title .= implode(', ', $tmp_obj);
+						$objects = $tmp_obj;
 					}
 				} else {
 					if (strstr($s, ';')) {
 						$tmp = explode(';', $s);
-						$title .= "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
-					} else {
-						$title .= $service;
+						$objects[] = "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
 					}
 				}
 				$this->object_varname = 'service_description';
@@ -424,7 +408,6 @@ class Histogram_Controller extends Authenticated_Controller
 				url::redirect(Router::$controller.'/index');
 		}
 
-		$objects = false;
 		if (($this->report_type == 'hosts' || $this->report_type == 'services')) {
 			if (is_array($in_host)) {
 				foreach ($in_host as $host) {
@@ -437,7 +420,8 @@ class Histogram_Controller extends Authenticated_Controller
 				foreach ($in_service as $svc) {
 					$html_options[] = array('hidden', 'service_description[]', $svc);
 					$selected_objects .= "&service_description[]=".$svc;
-					$objects[] = $svc;
+					if (empty($objects))
+						$objects[] = $svc;
 				}
 			}
 		} else {

@@ -44,6 +44,10 @@ $(document).ready(function() {
 		show_calendar($(this).attr('value'));
 	});
 
+	$('#show_all_objects').click(function() {
+		$('#all_objects').toggle('slow');
+	});
+
 });
 
 function get_label(x)
