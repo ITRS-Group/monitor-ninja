@@ -38,7 +38,7 @@ class Change_Password_Controller extends Authenticated_Controller {
 		$current_password = $this->input->post('current_password', false);
 		$new_password = $this->input->post('new_password', false);
 		$new_password2 = $this->input->post('confirm_password', false);
-		if (strlen($current_password) < 5 || strlen($new_password) < 5 || strlen($new_password2) < 5)
+		if (strlen($new_password) < 5 || strlen($new_password2) < 5)
 		{
 			$this->template->content->status_msg = $this->translate->_('The password must be at least 5 chars long.');
 		}
