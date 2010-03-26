@@ -1228,12 +1228,12 @@ $label_view_for = $this->translate->_('For this service group');
 				$action_link = false;
 				if (!is_null($host->action_url)) {
 					$lable_host_action = $t->_('Perform Extra Host Actions');
-					$action_link = '<a href="'.$host->action_url.'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+					$action_link = '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
 				}
 				$notes_link = false;
 				if (!is_null($host->notes_url)) {
 					$lable_host_notes = $t->_('View Extra Host Notes');
-					$notes_link = '<a href="'.$host->notes_url.'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+					$notes_link = '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
 				}
 
 				$host_icon = false;
@@ -1467,8 +1467,8 @@ $label_view_for = $this->translate->_('For this service group');
 					$hosts[] = array(
 						'host_name' => $row->host_name,
 						'current_state' => $row->current_state,
-						'notes_url' => $row->host_notes_url,
-						'action_url' => $row->host_action_url,
+						'notes_url' => nagstat::process_macros($row->host_notes_url, $row),
+						'action_url' => nagstat::process_macros($row->host_action_url, $row),
 						'icon_image' => $row->host_icon_image,
 						'icon_image_alt' => $row->host_icon_image_alt
 					);
