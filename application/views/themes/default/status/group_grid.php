@@ -1,4 +1,5 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$t = $this->translate; ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
 		<ul>
@@ -93,6 +94,17 @@ if (!empty($group_details))
 					echo html::anchor('extinfo/details/host/'.$host['host_name'], html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('statusmap/host/'.$host['host_name'], html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).' &nbsp;';
 					echo html::anchor('status/host/'.$host['host_name'], html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px'));
+					if (!empty($host['action_url'])) {
+						echo '<a href="'.nagstat::process_macros($host['action_url'], $host).'" style="border: 0px" target="_blank">';
+						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
+						echo '</a> &nbsp;';
+					}
+					if (!empty($host['notes_url'])) {
+						echo '<a href="'.nagstat::process_macros($host['notes_url'], $host).'" style="border: 0px" target="_blank">';
+						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
+						echo '</a>';
+					}
+
 				?>
 			</td>
 		</tr><?php
