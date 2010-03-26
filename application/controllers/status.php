@@ -1335,6 +1335,7 @@ $label_view_for = $this->translate->_('For this service group');
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
 					$details_tmp = $this->_show_grid($grouptype, $groupname_tmp);
 					if (!empty($details_tmp)) {
+						$details_tmp->group_alias = $group_res->alias;
 						$group_details[] = $details_tmp;
 					}
 				}
@@ -1351,6 +1352,7 @@ $label_view_for = $this->translate->_('For this service group');
 			$content->label_header = $label_header."'".$group."'";
 			$details_tmp = $this->_show_grid($grouptype, $group);
 			if (!empty($details_tmp)) {
+				$details_tmp->group_alias = $group_info_res->alias;
 				$group_details[] = 	$details_tmp;
 			}
 		}

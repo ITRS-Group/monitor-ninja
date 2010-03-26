@@ -40,7 +40,7 @@ if (!empty($group_details))
 
 	<table class="group_grid_table">
 		<caption>
-			<?php echo html::anchor('status/'.$grouptype.'group/'.$details->group_name.'?style=detail', html::specialchars($details->group_name)) ?>
+			<?php echo html::anchor('status/'.$grouptype.'group/'.$details->group_name.'?style=detail', html::specialchars($details->group_alias)) ?>
 			(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
 		</caption>
 		<thead>
