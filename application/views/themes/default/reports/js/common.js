@@ -449,6 +449,9 @@ function check_form_values()
 		fancy_str = '#fancy_content ';
 	}
 	var rpt_type = $("input[name=report_type]").val();
+	if (rpt_type == '' || rpt_type == undefined) {
+		var rpt_type = $("select[name=report_type]").val();
+	}
 	if ($(fancy_str + "#report_period").val() == 'custom') {
 		if ($('input[name=type]').val() != 'sla') {
 			// date validation
@@ -681,7 +684,7 @@ function validate_form(formData, jqForm, options) {
 		saved_report_id = $('#saved_report_id').attr('value');
 	}
 	var report_id = $('input[name=report_id]').attr('value');
-	if (report_id == '' || report_id == 'undefined') {
+	if (report_id == '' || report_id == undefined) {
 		report_id = $('#report_id').val();
 	}
 	var fatal_err_str = _reports_fatal_err_str;// + "<br />";
