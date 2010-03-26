@@ -70,6 +70,10 @@ function fetch_and_import()
 	global $gui_db_opt;
 
 	$version = get_db_version();
+	if ($version === false) {
+		echo "Nothing to import\n";
+		return true;
+	}
 	if ($version >= $gui_db_opt['new_db_version']) {
 		# return if already imported and updated
 		echo "Schedules seems to be already imported.\n";
@@ -112,6 +116,10 @@ function import_schedule($row)
 function get_db_version()
 {
 	global $gui_db_opt;
+	$ok = db_exists($gui_db_opt['database']);
+	if (!$ok)
+		return false;
+
 	$sql = "SELECT version FROM ".$gui_db_opt['database'].".auto_reports_db_version";
 	$res = sql_exec_query($sql);
 	if ($res === false) {
@@ -119,6 +127,18 @@ function get_db_version()
 	}
 	$row = sql_fetch_array($res);
 	return isset($row['version']) ? $row['version'] : false;
+}
+
+function db_exists($db=false)
+{
+    if (empty($db))
+        return false;
+    global $gui_db_opt;
+    $db_selected = mysql_select_db($db);
+    if (!$db_selected) {
+        return false;
+    }
+    return true;
 }
 
 function upgrade_db_version($version=false)
