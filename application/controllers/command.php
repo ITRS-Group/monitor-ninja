@@ -179,6 +179,7 @@ class Command_Controller extends Authenticated_Controller
 			$this->translate->_(sprintf('Go %s back %s and verify that you entered all required information correctly', '<a href="javascript:history.back();">', '</a>'));
 			return false;
 		}
+		$fallthrough = false;
 		switch ($cmd) {
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
@@ -201,22 +202,18 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
 				$what = $param['_child-hosts'];
 				unset($param['_child-hosts']);
-				$fixed = isset($param['fixed']) ? $param['fixed'] : false;
 				if ($what === 'triggered') {
-					$param['fixed'] = 0;
-					$xcmd = 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME';
+					$cmd = 'SCHEDULE_AND_PROPAGATE_TRIGGERED_HOST_DOWNTIME';
 				} elseif ($what === 'fixed') {
-					$param['fixed'] = 1;
-					$xcmd = 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME';
+					$cmd = 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME';
 				}
-				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
-				$param['fixed'] = $fixed;
 			}
+			$fallthrough = true;
 			# fallthrough to services-too handling
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
 			if (!empty($param['_services-too'])) {
 				unset($param['_services-too']);
-				if ($cmd === 'SCHEDULE_HOST_DOWNTIME')
+				if ($fallthrough)
 					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
 				else
 					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
@@ -284,13 +281,19 @@ class Command_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
+		$t = zend::instance('Registry')->get('Zend_Translate');
 
 		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
-		$helptexts = array(
-			'triggered_by' => $translate->_('@@@HELPTEXT:triggered_by')
+		$helptexts = array
+			('triggered_by' =>
+			 $t->_ ("With triggered downtime the start of the downtime ".
+					"is triggered by the start of some other scheduled " .
+					"host or service downtime"),
+			 'duration' =>
+			 $t->_("Duration is given as a decimal value of full hours. " .
+				   "Thus, 1h 15m should be written as <b>1.25</b>"),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

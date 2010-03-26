@@ -60,4 +60,25 @@ class config_Core
 
 		return isset($setting) ? $setting : false;
 	}
+
+	/**
+	*	Fetch specific key from config file
+	* 	Default is cgi.cfg
+	*/
+	public function get_cgi_cfg_key($key=false, $file='cgi.cfg')
+	{
+		$key = trim($key);
+		if (empty($key) || empty($file) || !Auth::instance()->logged_in())
+			return false;
+
+		$val = $this->session->get($key, null);
+		if ($val === null) {
+			$val = arr::search(System_Model::parse_config_file($file), $key, null);
+			if (!is_null($val)) {
+				# store value in session
+				$this->session->set($key, $val);
+			}
+		}
+		return $val;
+	}
 }

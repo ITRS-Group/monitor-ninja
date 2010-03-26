@@ -63,52 +63,51 @@
 <?php
 	$curr_host = false;
 	$a = 0;
-
+$c=0;
 	if (!empty($result)) {
 		foreach ($result as $row) {
 		$a++;
+		if ($curr_host != $row->host_name)
+			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? '' : 'bt') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
+		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
 			<?php
 				if ($curr_host != $row->host_name) {
 					echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state)).'.png'),array('alt' => Current_status_Model::status_text($row->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state)));
 				}
+
 			?>
 		</td>
-		<td class="service_hostname <?php echo ($curr_host != $row->host_name) ? ($a == 1 ? 'w80' : 'w80 bt') : 'white' ?>" style="white-space: normal">
-			<?php if ($curr_host != $row->host_name) { ?>
+		<?php if ($curr_host != $row->host_name) { ?>
+		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
-				<?php	if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) { ?>
-					<span style="float: right">
-						<?php echo html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
-								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
-								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px')); ?>
-					</span>
-					<?php } ?>
 				<span style="float: right">
 					<?php
-						if ($row->hostproblem_is_acknowledged) {
+						if ($row->hostproblem_is_acknowledged)
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
-						}
-						if (empty($row->host_notifications_enabled)) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
-						}
-						if (!$row->active_checks_enabled) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
-						}
-						if (isset($row->host_is_flapping) && $row->host_is_flapping) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
-						}
-						if ($row->hostscheduled_downtime_depth > 0) {
-							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+						if (empty($row->host_notifications_enabled))
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification disabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
+						if (!$row->active_checks_enabled)
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
+						if (isset($row->host_is_flapping) && $row->host_is_flapping)
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
+						if ($row->hostscheduled_downtime_depth > 0)
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
+								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px'));
 						}
 					?>
 				</span>
-			<?php } ?>
+
 		</td>
-		<td class="icon bl">
+		<?php } else { $c = 0;?>
+			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
+		<?php } ?>
+		<td class="icon">
 			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, 'service'))) ?>
 		</td>
 
@@ -162,9 +161,9 @@
 				}
 			?>
 		</td>
-		<td><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
-		<td><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
-		<td style="text-align: center"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
+		<td style="width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+		<td style="text-align: center; width: 60px"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
 		<td style="white-space: normal">
 		<?php
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {

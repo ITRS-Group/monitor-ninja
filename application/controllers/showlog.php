@@ -121,6 +121,9 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function _show_log_entries()
 	{
+		$user = user::session('username');
+		if (!empty($user))
+			$this->options['user'] = $user;
 		showlog::show_log_entries($this->options);
 	}
 

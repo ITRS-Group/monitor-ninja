@@ -174,6 +174,7 @@ class reports_Core
 		$js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
 		$js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
 		$js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
+		$js_strings .= "var _reports_invalid_email = '".$t->_('You have entered an invalid email address')."';\n";
 
 		return $js_strings;
 	}

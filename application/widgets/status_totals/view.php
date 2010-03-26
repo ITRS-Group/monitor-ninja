@@ -72,7 +72,7 @@
 							echo html::image($this->add_path('icons/12x12/shield-not-warning.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
 					?>
 				</td>
-				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL), html::specialchars($svc_total_problems.' Problems')) ?></td>
+				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL), html::specialchars($svc_total_problems.' Problems')) ?></td>
 				<td colspan="2">&nbsp;</td>
 			</tr>
 		</table>

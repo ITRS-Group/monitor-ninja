@@ -70,7 +70,7 @@
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, $row->service_description); ?></td>
 			<td><?php echo date('Y-m-d H:i:s',$row->start_time); ?></td>
 			<td><?php echo html::anchor('config?type=contacts#config'.$row->contact_name, !empty($row->contact_name) ? $row->contact_name: ''); ?></td>
-			<td><?php //echo html::anchor('config?type=commands#'.$row->notification_command, $row->notification_command); ?>&nbsp;</td>
+			<td><?php echo html::anchor('config?type=commands#'.$row->command_name, $row->command_name); ?>&nbsp;</td>
 			<td><?php echo $row->output; ?></td>
 		</tr>
 		<?php } } else { ?>

@@ -9,9 +9,10 @@
 <a href="#sla_options" id="sla_save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $t->_('Save report'), 'title' => $t->_('Save report'))); ?></a>
 <?php } ?>
 <span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
-		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>
-	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? 'style="display:none;' : ''; ?> class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
+	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>
+	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 </span>
+	<a id="old_avail_link" style="border: 0px; margin-left: 4px;<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
 </div>
 <span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
 
@@ -191,7 +192,8 @@ if ($type == 'avail') { ?>
 					<th class="headerNone left"><?php echo $label_interval ?></th>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
 					<th class="headerNone left"><?php echo $label_filename ?></th>
-					<th class="headerNone left" colspan="2"><?php echo $label_description ?></th>
+					<th class="headerNone left"><?php echo $label_description ?></th>
+					<th class="headerNone left" style="width: 45px"><?php echo $this->translate->_('Actions') ?></th>
 				</tr>
 			<?php if (!empty($scheduled_info)) {
 				$i = 0;
@@ -205,7 +207,10 @@ if ($type == 'avail') { ?>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
-				<td class="delete_report" id="<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/12x12/cross.gif')); ?></td>
+				<td>
+					<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
+					<div class="delete_schedule <?php echo $type ?>_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
+				</td>
 			</tr>
 		<?php }	} ?>
 	</table>

@@ -117,23 +117,19 @@ class Scheduled_reports_Model extends Model
 		return (!$res || count($res)==0) ? false : $res;
 	}
 
-	public function fetch_scheduled_field_value($type=false, $id=false, $elem_id=false)
+	public function fetch_scheduled_field_value($type=false, $id=false)
 	{
 		$id = (int)$id;
 		$type = trim($type);
-		$elem_id = trim($elem_id);
-		if (empty($type) || empty($id) || empty($elem_id)) return false;
-		$xajax = get_xajax::instance();
-		$objResponse = new xajaxResponse();
+		if (empty($type) || empty($id)) return false;
 		$sql = "SELECT * FROM scheduled_reports WHERE id=".$id;
 		$db = new Database(self::db_name);
 		$res = $db->query($sql);
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-		$objResponse->call("show_progress", "progress", $translate->_('Please wait...'));
+		if (!$res || count($res) == 0) {
+			return false;
+		}
 		$row = $res->current();
-		$objResponse->assign($elem_id,"innerHTML", $row->{$type});
-		$objResponse->call('setup_hide_content', 'progress');
-		return $objResponse;
+		return $row->{$type};
 	}
 
 	/**

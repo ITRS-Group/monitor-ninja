@@ -455,16 +455,34 @@ class Trends_Controller extends Authenticated_Controller {
 	public function generate()
 	{
 		$this->template->disable_refresh = true;
-	#	echo Kohana::debug($_REQUEST);
-
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
+		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
 			$_REQUEST['report_period'] 			= 'last24hours';
 			$_REQUEST['assumeinitialstates'] 	= 1;
+		}
+
+		# make sure we don't have ' ' as start- or end_time
+		$start_time = trim($start_time);
+		$end_time = trim($end_time);
+		if (!empty($end_time) && !empty($start_time)) {
+			$rpttimeperiod = 'custom';
+			if (!is_numeric($start_time)) {
+				$start_time = strtotime($start_time);
+			}
+			if (!is_numeric($end_time)) {
+				$end_time = strtotime($end_time);
+			}
+			$_REQUEST['report_period'] = 'custom';
+			$_REQUEST['start_time'] = $start_time;
+			$_REQUEST['end_time'] = $end_time;
+		} else {
+			$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
 		}
 
 		// store all variables in array for later use
@@ -541,10 +559,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->report_type 	= arr::search($_REQUEST, 'report_type');
 		$in_csvoutput		= arr::search($_REQUEST, 'csvoutput');
-		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
-		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period		= arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
-		$rpttimeperiod 		= arr::search($_REQUEST, 'rpttimeperiod', '');
 		$cluster_mode		= arr::search($_REQUEST, 'cluster_mode', '');
 		$hostgroup			= false;
 		$hostname			= false;
@@ -814,7 +829,7 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
-			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_service_state."';\n";
+			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
 			$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
 			$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
 			$this->js_strings .= "var report_period = '".$report_period."';\n";
@@ -901,7 +916,7 @@ class Trends_Controller extends Authenticated_Controller {
 				$notification_icon = 'notify';
 				$status_icon = 'hoststatus';
 				$histogram_icon = 'histogram';
-				$alerthistory_icon = 'history';
+				$alerthistory_icon = 'alert-history';
 
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
@@ -984,8 +999,6 @@ class Trends_Controller extends Authenticated_Controller {
 		}
 
 		unset($raw_trends_data);
-		$resolution = false;
-		$resolution_steps = false;
 		$resolution_names = false;
 		$length = $report_end-$report_start;
 		$days = floor($length/86400);
@@ -1029,36 +1042,6 @@ class Trends_Controller extends Authenticated_Controller {
 				}
 				break;
 		}
-/*
-		if (sizeof($resolution_names) > 30) {
-			$tmp = false;
-			$i = 0;
-			foreach ($resolution_names as $tm) {
-				if ($i++%2 == 0) {
-					$tmp[] = $tm;
-				}
-				$resolution_names = $tmp;
-			}
-		}
-*/
-		switch ($report_period) {
-			case 'today': case 'last24hours': case 'yesterday':
-				$resolution = 'H';
-				$resolution_steps = 24;
-				break;
-			case 'thisweek': case 'last7days': case 'lastweek':
-				$resolution = 'd';
-				$resolution_steps = 7;
-				break;
-			case 'thismonth': case 'last31days': case 'lastmonth':
-				$resolution = 'd';
-				$resolution_steps = 31;
-				break;
-			case 'thisyear': case 'lastyear':
-				$resolution = 'm';
-				$resolution_steps = 12;
-				break;
-		}
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
@@ -1066,8 +1049,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$content->start = $report_start;
 		$content->end = $report_end;
 		$content->report_period = $report_period;
-		$content->resolution = $resolution;
-		$content->resolution_steps = $resolution_steps;
 		$content->resolution_names = $resolution_names;
 		$content->length = ($report_end - $report_start);
 		$content->sub_type = $sub_type;

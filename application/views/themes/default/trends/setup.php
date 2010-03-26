@@ -15,75 +15,7 @@ if (!empty($widgets)) {
 
 		<div class="setup-table">
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
-			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
-			echo form::open('trends/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
-		 ?>
-			<div style="width: 100%; padding-left: 0px">
-				<?php echo help::render('saved_reports') ?> <?php echo $label_saved_reports ?><br />
-				<select name="report_id" id="report_id">
-					<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
-					<?php	$sched_str = "";
-					foreach ($saved_reports as $info) {
-						$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
-						if (in_array($info->id, $scheduled_ids)) {
-							$sched_str = " ( *".$scheduled_label."* )";
-							$title_str = $scheduled_periods[$info->id]." ".$title_label;
-						} else {
-							$sched_str = "";
-							$title_str = "";
-						}
-						echo '<option title="'.$title_str.'" '.(($report_id == $info->id) ? 'selected="selected"' : '').
-							' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
-					}  ?>
-				</select>
-				<input type="hidden" name="type" value="<?php echo $type ?>" />
-				<input type="submit" class="button select" value="<?php echo $label_select ?>" name="fetch_report" />
-				<input type="button" class="button new" value="<?php echo $label_new ?>" name="new_report" title="<?php echo $new_saved_title ?>" id="new_report" />
-				<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo $label_delete ?>" id="delete_report" />
-				<span id="autoreport_periods"><?php echo $json_periods ?></span>
-				<?php if (isset($is_scheduled) && $is_scheduled) { ?>
-				<div id="single_schedules" style="display:inline">
-					<span id="is_scheduled" title="<?php echo $is_scheduled_clickstr ?>">
-						<?php echo $is_scheduled_report ?>
-						<a href="#" id="show_scheduled" class="help">[<?php echo $edit_str ?>]</a>
-					</span>
-					<div id="schedule_report" style='width: 100%'>
-						<table id="schedule_report_table" style='width: 100%; margin-top: 10px' class="white-table">
-						<?php if (!empty($scheduled_info)) { ?>
-							<thead>
-								<tr id="schedule_header" class="setup">
-									<th style='width: 9%'><?php echo $label_sch_interval ?></th>
-									<th style='width: 20%'><?php echo $label_sch_recipients ?></th>
-									<th style='width: 20%'><?php echo $label_sch_filename ?></th>
-									<th style='width: 50%'><?php echo $label_sch_description ?></th>
-									<th style='width: 1%'></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php	$recipients = false;
-									foreach ($scheduled_info as $schedule) {
-										$schedule = (object)$schedule;
-										$recipients = str_replace(' ', '', $schedule->recipients);
-										$recipients = str_replace(',', ', ', $recipients);	?>
-									<tr id="report-<?php echo $schedule->id ?>">
-									<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
-									<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
-									<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
-									<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo utf8_decode($schedule->description) ?></td>
-									<td class="delete_schedule" id="delid_<?php echo $schedule->id ?>" style='text-align: right'><?php echo html::image($this->add_path('icons/12x12/cross.gif'), array('class' => 'deleteimg')) ?></td>
-								</tr>
-								<?php } } ?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			<?php	} ?>
-		</div>
-		<?php echo form::close(); } ?>
 	</div>
-
-	<!--<h1><?php echo $label_create_new ?></h1>-->
-
 
 	<?php	echo form::open('trends/generate', array('id' => 'report_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />

@@ -14,6 +14,7 @@ foreach($report_data as $i =>  $report) {
 			else
 				$str_source = $t->_('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
 		}
+
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo ((!$create_pdf) ? help::render('sla_graph') : '').' '.$str_source; ?></h2>
@@ -23,22 +24,14 @@ foreach($report_data as $i =>  $report) {
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
-		<!--<a href="<?php #echo $report['avail_links'] ?>">
-			<img
-				src="../chart.php?type=sla_bar&amp;data=<?php echo $report['data_str'] ?>"
-				title="Click to view the corresponding availability report"
-				alt="SLA data"
-				id="sla-graph_<?php echo $nr;?>" />
-		</a>-->
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
-	<?php } if (!empty($report['table_data'])) { ?>
+	<?php  if (!empty($report['table_data'])) { ?>
 	<div class="sla_table">
+			<?php $h = 0; foreach ($report['table_data'] as $source => $data) { if ($h == 0) { $h++;?>
+			<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
+			<table class="auto" border="1">
 
-		<!--<div class="icon-help" onclick="general_help('sla-table')"></div>-->
-			<?php foreach ($report['table_data'] as $source => $data) { ?>
-			<table class="auto" border="1" style="margin-top: 15px">
-				<caption><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></caption>
 				<tr>
 					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
 					<?php
@@ -60,9 +53,9 @@ foreach($report_data as $i =>  $report) {
 				</tr>
 				<tr class="odd">
 					<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo $t->_('Real') ?></td><?php
-					$i = 0;
+					$y = 0;
 					foreach ($data as $month => $value) {
-						$i++;?>
+						$y++;?>
 					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
 						<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 								array(
@@ -73,7 +66,8 @@ foreach($report_data as $i =>  $report) {
 					<?php } ?>
 				</tr>
 			</table>
-			<?php } ?>
+			<?php }
+			 } ?>
 	</div>
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
@@ -82,13 +76,13 @@ foreach($report_data as $i =>  $report) {
 			<caption><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '.$this->translate->_('Group members');?></caption>
 			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : $this->translate->_('Custom group') ?></th></tr>
 			<?php
-				$i = 0;
+				$x = 0;
 				foreach($report['member_links'] as $member_link) {
-					$i++;
-					echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\"><td>".$member_link."</td></tr>\n";
+					$x++;
+					echo "<tr class=\"".($x%2 == 0 ? 'odd' : 'even')."\"><td>".$member_link."</td></tr>\n";
 				}
 				?>
 			</table>
 			<br />
 		</div>
-	<?php } } ?>
+	<?php } } } ?>

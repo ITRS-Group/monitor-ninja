@@ -71,3 +71,5 @@
 		<?php } ?>
 	</table>
 </div>
+
+<?php $this->session->set('back_extinfo',$back_link);?>

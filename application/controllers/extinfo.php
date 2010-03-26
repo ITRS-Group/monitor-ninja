@@ -145,7 +145,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$content->parents = $parents;
 			}
 
-			$back_link = 'host/'.urlencode($host);
+			$back_link = '/extinfo/details/host/'.urlencode($host);
 			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = $t->_('This host has not yet been checked, so status information is not available.');
@@ -156,7 +156,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next Scheduled Check');
 			$host_link = html::anchor('extinfo/details/host/'.urlencode($host), html::specialchars($host));
-			$back_link = 'service/'.urlencode($host).'?service='.urlencode($service);
+			$back_link = '/extinfo/details/service/'.urlencode($host).'?service='.urlencode($service);
 			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is This Service Flapping?');
@@ -1255,6 +1255,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	public function scheduling_queue($sort_field='next_check', $sort_order='ASC')
 	{
 		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$back_link = '/extinfo/scheduling_queue/';
 		//$items_per_page = urldecode($this->input->get('items_per_page', 20)); # @@@FIXME: should be configurable from GUI
 
 		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);
@@ -1298,6 +1299,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $result;
+		$this->template->content->back_link = $back_link;
 		$this->template->content->header_links = $header_links;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 	}

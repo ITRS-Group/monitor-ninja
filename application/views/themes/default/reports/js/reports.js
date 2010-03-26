@@ -139,6 +139,29 @@ $(document).ready(function() {
 			create_filename();
 	});
 
+	$('.fancybox').click(function() {
+		setup_editable('fancy');
+		$("#fancy_content .delete_schedule").each(function() {
+			$(this).click(function() {
+				schedule_delete($(this).attr('id'));
+			});
+		});
+
+		$("#fancy_content .send_report_now").click(function() {
+			var type_id = $(this).attr('id');
+			type_id = type_id.replace('send_now_', '');
+			type_id = type_id.split('_');
+			var type = type_id[0];
+			var id = type_id[1];
+			send_report_now(type, id);
+		});
+	});
+
+	$('.fancybox').click(function() {
+		// set initial states
+		set_initial_state('assumeinitialstates', assumeinitialstates);
+		set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+	});
 });
 
 function js_print_date_ranges(the_year, type, item)
@@ -286,7 +309,12 @@ function ajax_submit(f)
 	var period_str = $('#period option:selected').text();
 
 	var recipients = $('#recipients').fieldValue();
-	recipients = recipients[0];
+	recipients = $.trim(recipients[0]);
+
+	if (!check_email(recipients)) {
+		alert(_reports_invalid_email);
+		return false;
+	}
 
 	var filename = $('#filename').fieldValue();
 	filename = filename[0];
@@ -359,6 +387,9 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/availability.png');
 		$('#switcher_image').attr('alt', _label_avail);
 		$('#switcher_image').attr('title', _label_avail);
+		$("#old_avail_link").hide();
+		$(".sla_display").show();
+		$(".avail_display").hide();
 
 		$('#csv_cell').hide();
 		$("#report_type_label").text(_label_sla + ' ' + _label_report);
@@ -369,6 +400,9 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/sla.png');
 		$('#switcher_image').attr('alt', _label_sla);
 		$('#switcher_image').attr('title', _label_sla);
+		$("#old_avail_link").show();
+		$(".sla_display").hide();
+		$(".avail_display").show();
 
 		$('#csv_cell').show();
 		$("#report_type_label").text(_label_avail + ' ' + _label_report);
@@ -729,9 +763,15 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
 				f.elements['includesoftstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
 				f.elements['includesoftstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'assumeinitialstates':
@@ -739,8 +779,14 @@ function set_initial_state(what, val)
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
 				f.elements['assumeinitialstates'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['assumeinitialstates'].checked = false;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 				edit_state_options(0);
 				toggle_label_weight(0, 'assume_initial');
 			}
@@ -749,9 +795,15 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'sched_downt');
 				f.elements['scheduleddowntimeasuptime'].checked = true;
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
 			} else {
 				f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
 			}
 			break;
 		case 'report_name':
@@ -941,13 +993,13 @@ function create_new_schedule_rows(id)
 	if (description == '')
 		description = '&nbsp;';
 
-	return_str += '<tr id="report-' + id + '">';
+	return_str += '<tr id="report-' + id + '" class="odd">';
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
-	return_str += '<td class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
+	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></td></tr>';
 	update_visible_schedules(false);
 	return return_str;
 }
@@ -958,14 +1010,14 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	var return_str = '';
 	var reportname = $("#saved_report_id option:selected").text();
 	reportname = remove_scheduled_str(reportname);
-	return_str += '<tr id="report-' + id + '">';
+	return_str += '<tr id="report-' + id + '" class="odd">';
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="' + _reports_send + '" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form></td>';
-	return_str += '<td class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/12x12/cross.gif" style="cursor: pointer;" /></td></tr>';
+	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form>';
+	return_str += '<div class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" title="Delete scheduled report" /></td></tr>';
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
@@ -1075,10 +1127,14 @@ function remove_schedule(id, remove_type)
 	setTimeout('hide_response()', time);
 }
 
-function setup_editable()
+function setup_editable(mode)
 {
+	var mode_str = '';
+	if (mode == 'fancy') {
+		var mode_str = '#fancy_content ';
+	}
 	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
-	$(".iseditable").editable(save_url, {
+	$(mode_str +".iseditable").editable(save_url, {
 		id   : 'elementid',
 		name : 'newvalue',
 		type : 'text',
@@ -1089,7 +1145,7 @@ function setup_editable()
 		cancel : _cancel_str,
 		placeholder:_reports_edit_information
 	});
-	$(".period_select").editable(save_url, {
+	$(mode_str +".period_select").editable(save_url, {
 		data : $('#autoreport_periods').text(),
 		id   : 'elementid',
 		name : 'newvalue',
@@ -1098,7 +1154,7 @@ function setup_editable()
 		submit : _ok_str,
 		cancel : _cancel_str
 	});
-	$(".iseditable_txtarea").editable(save_url, {
+	$(mode_str +".iseditable_txtarea").editable(save_url, {
 		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
 		id   : 'elementid',
 		name : 'newvalue',
@@ -1110,7 +1166,7 @@ function setup_editable()
 		cssclass: "txtarea",
 		placeholder:_reports_edit_information
 	});
-	$(".report_name").editable(save_url, {
+	$(mode_str +".report_name").editable(save_url, {
 		data : function (){
 			return fetch_report_data(this.id);
 		},
@@ -1155,4 +1211,47 @@ function get_type_id(str)
 {
 	parts = str.split('.');
 	return parts[0];
+}
+
+/**
+*	create ajax call to reports/fetch_field_value
+*	to fetch a specific field value and asssign it to html element.
+*/
+function fetch_field_value(type, id, elem_id)
+{
+	$.ajax({
+		url: _site_domain + _index_page + '/reports/fetch_field_value?id=' + id + '&type=' + type,
+		success: function(data) {
+			$('#' + elem_id).text(data);
+			$('#fancy_content #' + elem_id).text(data);
+		}
+	});
+}
+
+function check_email(mail_str)
+{
+	var emailRegex= new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i );
+	var mail_list = mail_str.split(',');
+	var result = false;
+	if (mail_list.length > 1) {
+		for (var i=0;i<mail_list.length;i++) {
+			if ($.trim(mail_list[i]) != '') {
+				var m = emailRegex.exec($.trim(mail_list[i]));
+				if (!m) {
+					return false;
+				} else {
+					result = true;
+				}
+			}
+		}
+	} else {
+		mail_str = $.trim(mail_str);
+		var m = emailRegex.exec(mail_str);
+		if (!m) {
+			result = false;
+		} else {
+			result = true;
+		}
+	}
+	return result;
 }

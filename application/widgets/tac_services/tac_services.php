@@ -145,7 +145,7 @@ class Tac_services_Widget extends widget_Core {
 		# SERVICES PENDING
 		$services_pending = array();
 		if ($current_status->services_pending) {
-			$services_pending['status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING] = $current_status->services_pending . $this->translate->_('Pending');
+			$services_pending['status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING] = $current_status->services_pending.' '.$this->translate->_('Pending');
 		}
 
 		# fetch widget content

@@ -166,6 +166,7 @@ class Command_Model extends Model
 				break;
 			 case 'duration':
 				$ary = array('type' => 'duration', 'default' => '2.0');
+				$ary['help'] = help::render('duration');
 				break;
 			 case 'event_handler_command':
 				# FIXME: stub options
@@ -246,7 +247,7 @@ class Command_Model extends Model
 			 case 'end_time':
 			 case 'notification_time':
 			 case 'start_time':
-				$ary = array('type' => 'time', 'default' => date(nagstat::date_format(), time()));
+				$ary = array('type' => 'time', 'default' => date(nagstat::date_format(), time()+10));
 				if ($param_name === 'end_time')
 					$ary['default'] = date(nagstat::date_format(), time() + 7200);
 				break;

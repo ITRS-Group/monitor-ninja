@@ -134,7 +134,7 @@ class Notifications_Controller extends Authenticated_Controller {
 				$sql .= " host_name = '".$host_name."'";
 		}
 		if ($service != false)
-			$sql .= " service_description = '".$service."'";
+			$sql .= " AND service_description = '".$service."'";
 
 		$note_model->where = $sql;
 		$pagination = new Pagination(

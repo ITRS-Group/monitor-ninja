@@ -60,18 +60,22 @@
 							# @@@FIXME: host_properties?
 							echo html::image($this->add_path('icons/12x12/shield-down.png'), array('alt' => $label_down, 'title' => $label_down, 'style' => 'margin-bottom: -2px'));
 							echo ' &nbsp;'.html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_down.' '.$label_down).': ';
-
+							$c = 0;
 							if ($details->hosts_down_unacknowledged > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_down_unacknowledged.' '.$label_unhandled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_down_unacknowledged.' '.$label_unhandled);
+								$c++;
 							}
 							if ($details->hosts_down_scheduled > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME, $details->hosts_down_scheduled.' '.$label_scheduled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME, $details->hosts_down_scheduled.' '.$label_scheduled);
+								$c++;
 							}
 							if ($details->hosts_down_acknowledged > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED, $details->hosts_down_acknowledged.' '.$label_acknowledged);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED, $details->hosts_down_acknowledged.' '.$label_acknowledged);
+								$c++;
 							}
 							if ($details->hosts_down_disabled > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_down_disabled.' '.$label_disabled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_down_disabled.' '.$label_disabled);
+								$c++;
 							}
 							echo '<br />';
 						}
@@ -80,18 +84,22 @@
 							# @@@FIXME: host_properties?
 							echo html::image($this->add_path('icons/12x12/shield-unreachable.png'), array('alt' => $label_unreachable, 'title' => $label_unreachable, 'style' => 'margin-bottom: -2px'));
 							echo ' &nbsp;'.html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_unreachable.' '.$label_unreachable).': ';
-
+							$c = 0;
 							if ($details->hosts_unreachable_unacknowledged > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_unreachable_unacknowledged.' '.$label_unhandled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_unreachable_unacknowledged.' '.$label_unhandled);
+								$c++;
 							}
 							if ($details->hosts_unreachable_scheduled > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME, $details->hosts_unreachable_scheduled.' '.$label_scheduled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_SCHEDULED_DOWNTIME, $details->hosts_unreachable_scheduled.' '.$label_scheduled);
+								$c++;
 							}
 							if ($details->hosts_unreachable_acknowledged > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED, $details->hosts_unreachable_acknowledged.' '.$label_acknowledged);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_STATE_ACKNOWLEDGED, $details->hosts_unreachable_acknowledged.' '.$label_acknowledged);
+								$c++;
 							}
 							if ($details->hosts_unreachable_disabled > 0) {
-								echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_unreachable_disabled.' '.$label_disabled);
+								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_unreachable_disabled.' '.$label_disabled);
+								$c++;
 							}
 							echo '<br />';
 						}
