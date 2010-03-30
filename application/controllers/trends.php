@@ -765,7 +765,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$template->error->error_msg = sprintf($t->_("The selected objects for this %s report doesn't seem to exist anymore.%s
 			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->report_type, 0, strlen($this->report_type)-1)), '<br />');
 			if (!empty($objects)) {
-				# @@@FIXME: move presentation code to template
 				$template->error->label_missing_objects = $t->_('Missing objects');
 				$template->error->missing_objects = $objects;
 			}

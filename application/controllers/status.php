@@ -626,7 +626,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 
-		# @@@FIXME: handle macros
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
 				$label_host_status_details = $this->translate->_('Service status detail');

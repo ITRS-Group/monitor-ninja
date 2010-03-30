@@ -8,9 +8,8 @@
 
 
 <div id="options">
-<?php	echo form::open('trends/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));
-		# @@@FIXME: onsubmit="return check_form_update_values(this);" ?>
-			<h1><?php //echo help::render('report_settings_sml') ?> <?php echo $label_settings ?></h1>
+<?php	echo form::open('trends/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);')); ?>
+			<h1> <?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
 					<td>

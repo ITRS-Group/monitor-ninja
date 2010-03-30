@@ -303,9 +303,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
-		# @@@FIXME Add commands and translations for servcies, below only hosts
-		# @@@FIXME Add different icons depending on values below
-
 		# check if nagios is running, will affect wich template to use
 		$status = Program_status_Model::get_all();
 		if (empty($status) || !$status->current()->is_running) {
@@ -674,7 +671,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->process_performance_data = $status->process_performance_data;
 		} else {
 			# nothing found in program_status
-			# @@@FIXME probably an error - handle this someway
 			# fetch what we can find from nagios.cfg for now
 
 			$content->notifications_enabled = isset($nagios_config['enable_notifications']) ? $nagios_config['enable_notifications'] : false;
@@ -1250,7 +1246,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	{
 		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$back_link = '/extinfo/scheduling_queue/';
-		//$items_per_page = urldecode($this->input->get('items_per_page', 20)); # @@@FIXME: should be configurable from GUI
 
 		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);
 		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));

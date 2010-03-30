@@ -1152,7 +1152,6 @@ class Reports_Controller extends Authenticated_Controller
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
 			die();
 			# if all went OK we have csv_status === true or we have an error string
-			# @@@FIXME: handle csv output?
 		} elseif ($this->type == 'avail' && (empty($this->data_arr) || (sizeof($this->data_arr)==1 && empty($this->data_arr[0])))) {
 			# avail report is empty
 
@@ -1164,7 +1163,6 @@ class Reports_Controller extends Authenticated_Controller
 			$template->error->error_msg = sprintf($t->_("The selected objects for this %s report doesn't seem to exist anymore.%s
 			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->report_type, 0, strlen($this->report_type)-1)), '<br />');
 			if (!empty($objects)) {
-				# @@@FIXME: move presentation code to template
 				$template->error->label_missing_objects = $t->_('Missing objects');
 				$template->error->missing_objects = $objects;
 			}
@@ -1762,7 +1760,6 @@ class Reports_Controller extends Authenticated_Controller
 
 								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
 
-								# @@@FIXME: Fix links to remaining cgi'e when implemented
 								$links[$this->histogram_link . "?" . $histogram_params] = $t->_('Alert histogram');
 
 								$links[$this->status_link.$host] = $t->_('Status detail');
