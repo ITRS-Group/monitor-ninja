@@ -137,6 +137,7 @@ if (isset($this->template->js_header))
 		<div id="menu" style="overflow-y:auto;">
 			<ul>
 			<?php
+			if (isset($links))
 				foreach ($links as $header => $link):
 						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')">
 							<cite class="menusection">'.html::specialchars($header).'</cite>
