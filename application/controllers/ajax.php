@@ -333,5 +333,21 @@ class Ajax_Controller extends Authenticated_Controller {
 		$result = call_user_func(array($controller,'_helptexts'), $key);
 		return $result;
 	}
+
+	/**
+	*	Check that we are still getting data from merlin.
+	*	If not, user should be alerted
+	*/
+	public function is_alive()
+	{
+		$last_alive = Program_status_Model::last_alive();
+		$stale_data_limit = Kohana::config('config.stale_data_limit');
+		$diff = time() - $last_alive;
+		$return = 0;
+		if ($diff  > $stale_data_limit) {
+			$return = $diff;
+		}
+		echo $return;
+	}
 }
 
