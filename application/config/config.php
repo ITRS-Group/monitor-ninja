@@ -228,3 +228,9 @@ $config['cli_access'] = true;
 * Nr of items returned for searches
 */
 $config['search_limit'] = 10;
+
+/**
+* 	Nr of seconds while we still are considering
+* 	merlin to be alive.
+*/
+$config['stale_data_limit'] = 60;

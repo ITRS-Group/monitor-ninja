@@ -35,6 +35,7 @@ class Ninja_Controller extends Template_Controller {
 	public $xtra_css = array();
 	public $inline_js = false;
 	public $js_strings = false;
+	public $stale_data = false;
 
 	public function __construct()
 	{
@@ -139,6 +140,21 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->registry->set('Zend_Translate', $this->translate);
 		$this->_addons();
+		$this->_is_alive();
+	}
+
+	/**
+	*	Check that we are still getting data from merlin.
+	*	If not, user should be alerted
+	*/
+	public function _is_alive()
+	{
+		$last_alive = Program_status_Model::last_alive();
+		$stale_data_limit = Kohana::config('config.stale_data_limit');
+		$diff = time() - $last_alive;;
+		if ($diff  > $stale_data_limit) {
+			$this->stale_data = $diff;
+		}
 	}
 
 	/**
