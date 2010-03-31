@@ -204,6 +204,24 @@ select {
 	padding-left: 10px;
 	height: 24px;
 }
+#infobar-sml {
+	cursor: pointer;
+	position: fixed;
+	width: 100%;
+	float: left;
+	color: #ffffff;
+	background: #333333 url(images/licensebarbg.png);
+	z-index: 99999;
+	height: 24px;
+	padding: 7px 0px 2px 0px;
+	font-size: 12px;
+	left: 0px;
+	display: none;
+}
+#infobar-sml p {
+	padding-left: 10px;
+	height: 24px;
+}
 #top-bar {
 	position: relative;
 	position: fixed;

@@ -94,6 +94,9 @@ if (isset($this->template->js_header))
 	</head>
 
 	<body>
+		<div id="infobar-sml">
+			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px')).' '.$this->translate->_('It appears that the database is not up to date. Please check if Merlin is running properly.'); ?></p>
+		</div>
 		<div id="top-bar">
 			<?php echo html::image($this->add_path('icons/icon.png'),''); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
