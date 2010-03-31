@@ -305,7 +305,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# check if nagios is running, will affect wich template to use
 		$status = Program_status_Model::get_all();
-		if (empty($status) || !$status->current()->is_running) {
+		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
+		if (empty($status) || !$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
 			$this->template->content->commands->info_message_extra = sprintf($t->_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars($t->_('here'))), Kohana::config('config.product_name'));
@@ -577,7 +578,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# check if nagios is running, will affect wich template to use
 		$status = Program_status_Model::get_all();
-		if (!$status->current()->is_running) {
+		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
+		if (!$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
 
@@ -649,7 +651,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# assign program version to template
 		$this->template->content->program_version = $version;
 
-		if ($status_res->count() > 0) {
+		if (!empty($status_res) && count($status_res) > 0) {
 			$status = $status_res->current();
 			$content->program_start = date($date_format_str, $status->program_start);
 			$run_time_str = time::to_string(time() - $status->program_start);
