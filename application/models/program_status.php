@@ -3,16 +3,17 @@
 /**
  * Reads program status data
  */
-class Program_status_Model extends ORM
+class Program_status_Model extends Model
 {
-	protected $table_names_plural = false;
-	protected $primary_key = 'instance_id';
-
 	/**
 	 * Fetch all info from program_status table
 	 */
 	public function get_all()
 	{
-		return ORM::factory('program_status')->find_all();
+		$db = new Database();
+		$sql = "SELECT * FROM program_status";
+		$res = $db->query($sql);
+		return (!$res || count($res) == 0) ? false : $res;
 	}
+
 }
