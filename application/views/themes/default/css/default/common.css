@@ -294,7 +294,7 @@ select {
 	font: 11px arial,sans-serif;
 	background: transparent url(images/input-270.png) no-repeat;
 	width: 238px;
-	padding: 3px 5px 3px 27px;
+	padding: 3px 5px 4px 27px;
 	color: #999999;
 }
 #quickbar {
