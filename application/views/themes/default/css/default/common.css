@@ -216,7 +216,6 @@ select {
 	font-size: 12px;
 	left: 0px;
 	display: none;
-
 }
 #infobar-sml p {
 	padding-left: 10px;
@@ -293,8 +292,8 @@ select {
 	margin-top: 5px;
 	margin-right: 4px;
 	font: 11px arial,sans-serif;
-	background: transparent url(images/input-170.png) no-repeat;
-	width: 138px;
+	background: transparent url(images/input-270.png) no-repeat;
+	width: 238px;
 	padding: 3px 5px 3px 27px;
 	color: #999999;
 }
