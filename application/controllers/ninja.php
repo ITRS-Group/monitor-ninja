@@ -154,6 +154,8 @@ class Ninja_Controller extends Template_Controller {
 		$diff = time() - $last_alive;;
 		if ($diff  > $stale_data_limit) {
 			$this->stale_data = $diff;
+			$this->inline_js .= "$('#infobar-sml').show();";
+			$this->template->inline_js = "$('#infobar-sml').show();";
 		}
 	}
 
