@@ -3,8 +3,8 @@ $(document).ready(function() {
     serviceUrl:_site_domain + _index_page + '/ajax/global_search/',
     minChars:2,
     //delimiter: /(,|;)\s*/, // regex or character
-    maxHeight:400,
-    width:140,
+    maxHeight:500,
+    width:269,
     deferRequestBy: 0, //miliseconds
     // callback function:
     onSelect: function(value, data){ do_redirect(value, data); }
