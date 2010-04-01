@@ -385,7 +385,7 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		// convert report period to timestamps
-		if ($_REQUEST['report_period'] == 'custom' && !empty($syear) && !empty($eyear)) {
+		if (isset($_REQUEST['report_period']) && $_REQUEST['report_period'] == 'custom' && !empty($syear) && !empty($eyear)) {
 			// cgi compatibility
 			$_REQUEST['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
 			$_REQUEST['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
