@@ -172,10 +172,12 @@ final class Kohana {
 		spl_autoload_register(array('Kohana', 'auto_load'));
 
 		// Set error handler
-		set_error_handler(array('Kohana', 'exception_handler'));
+		if (PHP_SAPI !== 'cli') {
+			set_error_handler(array('Kohana', 'exception_handler'));
 
-		// Set exception handler
-		set_exception_handler(array('Kohana', 'exception_handler'));
+			// Set exception handler
+			set_exception_handler(array('Kohana', 'exception_handler'));
+		}
 
 		// Send default text/html UTF-8 header
 		header('Content-Type: text/html; charset=UTF-8');
