@@ -885,7 +885,7 @@ function remove_duplicates()
 		if ($("select[name='" + tmp_field + "']").containsOption(this_item)) {
 			$("select[name='" + tmp_field + "']").removeOption($(this).val());
 		} else {
-			$("select[name='" + field + "']").removeOption(this_item);
+			//$("select[name='" + field + "']").removeOption(this_item);
 			removed_items[i++] = this_item;
 		}
 	});

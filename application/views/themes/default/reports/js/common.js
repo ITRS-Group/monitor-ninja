@@ -619,7 +619,7 @@ function check_form_values()
 			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + ' ' + curval_starttime);
 			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + ' ' + curval_endtime);
 		}
-
+		$('#response').hide();
 		return true;
 	}
 

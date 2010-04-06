@@ -1152,7 +1152,9 @@ class Reports_Controller extends Authenticated_Controller
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
 			die();
 			# if all went OK we have csv_status === true or we have an error string
-		} elseif ($this->type == 'avail' && (empty($this->data_arr) || (sizeof($this->data_arr)==1 && empty($this->data_arr[0])))) {
+		} elseif ($this->type == 'avail' && (empty($this->data_arr)
+			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
+			|| (!isset($this->data_arr['source']) && empty($this->data_arr[0][0]['source']) ))) {
 			# avail report is empty
 
 			# what objects were submitted?
