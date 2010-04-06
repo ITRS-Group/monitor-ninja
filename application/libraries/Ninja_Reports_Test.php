@@ -166,7 +166,7 @@ class Ninja_Reports_Test_Core
 			}
 
 			if ($line{strlen($line) - 1} === '{') {
-				$ary = split("[\t ]*{[\t ]*", $line);
+				$ary = preg_split("/[\t ]*{[\t ]*/", $line);
 				if ($block_name) {
 					array_push($pushed_blocks, $block);
 					array_push($pushed_names, $block_name);
@@ -177,7 +177,7 @@ class Ninja_Reports_Test_Core
 			}
 
 			# regular variable, or possibly a single string
-			$ary = split("[\t ]*=[\t ]", $line);
+			$ary = preg_split("/[\t ]*=[\t ]/", $line);
 
 			if (count($ary) !== 2) {
 				if ($block !== false) {
