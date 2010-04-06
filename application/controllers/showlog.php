@@ -207,6 +207,7 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->options['hide_process'] = true;
 		$this->options['hide_initial'] = true;
 		$this->options['hide_commands'] = true;
+		$this->options['hide_notifications'] = true;
 		$this->template->content->options = $this->options;
 	}
 
