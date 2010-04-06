@@ -169,7 +169,7 @@ class System_Model extends Model
 			}
 
 			if ($found_section === true) {
-				$ary = split("=", $line);
+				$ary = explode('=', $line);
 				if (is_array($ary) && sizeof($ary)==2) {
 					$data[$section][$ary[0]] = $ary[1];
 				}
@@ -189,7 +189,7 @@ class System_Model extends Model
 			return false;
 		$return = false;
 		if (isset($arr[$key])) {
-			$tmp = split(',', $arr[$key]);
+			$tmp = explode(',', $arr[$key]);
 			if (is_array($tmp) && !empty($tmp)) {
 				if (count($tmp) == 1) {
 					$return = $tmp[0];

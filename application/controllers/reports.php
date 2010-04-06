@@ -1770,7 +1770,7 @@ class Reports_Controller extends Authenticated_Controller
 
 							case 'services':
 
-								list($host, $service) = split(';',$service[0]);
+								list($host, $service) = explode(';',$service[0]);
 
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
 								$avail_params = "&show_log_entries".
