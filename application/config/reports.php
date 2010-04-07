@@ -3,26 +3,15 @@
  * @package reports
  *
  * Sender of reports
+ * Enter name of sender of reports here or it will be
+ * something like <product_name>@<hostname>
  */
 $config['from'] = false;
 
-$mail_sender_address = '';
-
-if (!empty($mail_sender_address)) {
-	$from_email = $mail_sender_address;
-} else {
-	$hostname = exec('hostname --long');
-	$from = !empty($config['from']) ? $config['from'] : Kohana::config('config.product_name');
-	$from = str_replace(' ', '', trim($from));
-	if (empty($hostname) && $hostname != '(none)') {
-		// unable to get a valid hostname
-		$from_email = $from . '@localhost';
-	} else {
-		$from_email = $from . '@'.$hostname;
-	}
-}
-
-$config['from_email'] = $from_email;
+/**
+ * email of sender
+ */
+$config['from_email'] = '';
 
 /**
 *	Path to showlog executable

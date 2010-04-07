@@ -3495,8 +3495,25 @@ class Reports_Controller extends Authenticated_Controller
 			# send file as email to recipients
 			#chmod($filename, 0777);
 			$to = $this->pdf_recipients;
-			$from = Kohana::config('reports.from_email');
-			$plain = $this->translate->_('Scheduled report sent from ').Kohana::config('reports.from');
+
+			$config = Kohana::config('reports');
+			$mail_sender_address = $config['from_email'];
+
+			if (!empty($mail_sender_address)) {
+				$from = $mail_sender_address;
+			} else {
+				$hostname = exec('hostname --long');
+				$from = !empty($config['from']) ? $config['from'] : Kohana::config('config.product_name');
+				$from = str_replace(' ', '', trim($from));
+				if (empty($hostname) && $hostname != '(none)') {
+					// unable to get a valid hostname
+					$from = $from . '@localhost';
+				} else {
+					$from = $from . '@'.$hostname;
+				}
+			}
+
+			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
 			$subject = $this->translate->_('Scheduled report').": ".basename($filename);
 
 			# $mail_sent will contain the nr of mail sent - not used at the moment
