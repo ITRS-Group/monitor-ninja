@@ -172,7 +172,7 @@ then
 	# check if old tables exists
 	old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
 
-	if [ "$old_sched_db_ver" = "" ]
+	if [ "$old_sched_db_ver" != "" ]
 	then
 		# import old schedules if any
 		echo "Importing old scheduled reports"
