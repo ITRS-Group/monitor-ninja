@@ -91,13 +91,14 @@ do
 			echo "Tried to use $upgrade_script"
 		fi
 		;;
-	5)
+	4)
 		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/sla_v5_to_v6.sql"
-		echo -n "Upgrading SLA tables to v6 ... "
+		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/sla_v4_to_v5.sql"
+		echo -n "Upgrading SLA tables to v5 ... "
 		if [ -r "$upgrade_script" ]
 		then
 			run_sql_file $db_login_opts $upgrade_script
+			mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '5'" monitor_reports 2>/dev/null
 			echo "done."
 		else
 			echo "SCRIPT MISSING."
@@ -138,13 +139,14 @@ do
 			echo "Tried to use $upgrade_script"
 		fi
 		;;
-	5)
+	4)
 		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v5_to_v6.sql"
-		echo -n "Upgrading AVAIL tables to v6 ... "
+		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v2_to_v5.sql"
+		echo -n "Upgrading AVAIL tables to v5 ... "
 		if [ -r "$upgrade_script" ]
 		then
 			run_sql_file $db_login_opts $upgrade_script
+			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '5'" monitor_reports 2>/dev/null
 			echo "done."
 		else
 			echo "SCRIPT MISSING."
