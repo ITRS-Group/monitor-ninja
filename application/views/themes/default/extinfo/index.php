@@ -140,7 +140,7 @@ if (!empty($widgets)) {
 	<table class="ext">
 		<tr>
 			<th colspan="2" class="headerNone" style="border: 0px"><?php echo $title ?></th>
-		</td>
+		</tr>
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
