@@ -159,8 +159,10 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		// set initial states
-		set_initial_state('assumeinitialstates', assumeinitialstates);
-		set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+		if ($('input[name=type]').attr('value') != 'sla') {
+			set_initial_state('assumeinitialstates', assumeinitialstates);
+			set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+		}
 	});
 });
 
@@ -180,17 +182,9 @@ function validate_report_form(f)
 	var errors = 0;
 	var err_str = '';
 	var jgrowl_err_str = '';
-	var is_sla = false;
 	// only run this part if report should be saved
 	if ($("#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
-
-		var f = f == null ? document.forms['report_form'] : f;
-		if ($('input[name=sla_save]').attr('value') == '1') {
-			f = document.forms['report_form_sla'];
-			is_sla = true;
-		}
-
-		var report_name = $.trim(f.report_name.value);
+		var report_name = $.trim($('input[name=report_name]').attr('value'));
 		if (report_name == '') {
 			// fancybox is stupid and copies the form so we have to force
 			// this script to check the form in the fancybox_content div
@@ -199,8 +193,9 @@ function validate_report_form(f)
 
 		// these 2 fields should be the same no matter where on the
 		// page they are found
-		var saved_report_id = f.saved_report_id.value;
-		var old_report_name = $.trim(f.old_report_name.value);
+		//var saved_report_id = f.saved_report_id.value;
+		var saved_report_id = $('input[name=saved_report_id]').attr('value');
+		var old_report_name = $.trim($('input[name=old_report_name]').attr('value'));
 
 		if (report_name == '') {
 			errors++;
@@ -220,7 +215,7 @@ function validate_report_form(f)
 			return false;
 		}
 	}
-	$('#response').html('');
+	$('#response').html('').hide();
 	return true;
 }
 
@@ -237,7 +232,7 @@ function trigger_ajax_save(f)
 		success:		show_sla_saveresponse,	// post-submit callback
 		dataType: 'json'
 	};
-	$('#report_form_sla').ajaxSubmit(sla_options);
+	$('#fancy_content #report_form_sla').ajaxSubmit(sla_options);
 	return false;
 }
 
@@ -749,7 +744,19 @@ function format_date_str(date) {
 
 function set_initial_state(what, val)
 {
-	f = document.forms['report_form'];
+	var rep_type = $('input[name=type]').attr('value');
+	if (document.forms['report_form_sla'] != undefined) {
+		f = document.forms['report_form_sla'];
+	} else {
+		f = document.forms['report_form'];
+	}
+	/*
+	if (rep_type == 'sla') {
+		f = document.forms['report_form_sla'];
+	} else {
+		f = document.forms['report_form'];
+	}
+	*/
 	var item = '';
 	var elem = false;
 	switch (what) {
