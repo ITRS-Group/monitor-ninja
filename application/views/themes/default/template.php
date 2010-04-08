@@ -92,7 +92,6 @@ if (isset($this->template->js_header))
 		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
-		</script>
 	</head>
 
 	<body>
@@ -221,7 +220,6 @@ if (isset($this->template->js_header))
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
-						echo '</ul>'."\n";
 					}
 				?>
 			</ul>
