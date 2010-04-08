@@ -2,8 +2,6 @@
 
 /**
  * Type of authentication method
- * Today only 'file' and 'db' but future version could include
- * LDAP, OpenID and others
  */
 $config['driver'] = 'Ninja'; // db
 
