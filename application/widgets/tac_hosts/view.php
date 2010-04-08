@@ -72,7 +72,7 @@
 							<?php	if ($current_status->hosts_up > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-ok.png'),$this->translate->_('Up')) ?></td>
-								<td><?php echo html::anchor('status/host/all/0/', html::specialchars($current_status->hosts_up.' '.$this->translate->_('Up'))) ?></td>
+								<td><?php echo html::anchor('status/host/all/1/', html::specialchars($current_status->hosts_up.' '.$this->translate->_('Up'))) ?></td>
 							</tr>
 							<?php } if (count($hosts_up_disabled) > 0) { foreach ($hosts_up_disabled as $url => $title) { ?>
 								<tr>
