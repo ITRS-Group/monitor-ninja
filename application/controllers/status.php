@@ -63,7 +63,7 @@ class Status_Controller extends Authenticated_Controller {
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
 		$replace = array(
-			1  => $this->translate->_('OK'),
+			1  => $this->translate->_('UP'),
 			2  => $this->translate->_('Down'),
 			4  => $this->translate->_('Unreachable'),
 			6  => $this->translate->_('All problems'),
