@@ -108,7 +108,7 @@ if (isset($report_info)) {
 				<tr id="hostgroup_row">
 					<td>
 						<?php echo $label_available.' '.$label_hostgroups ?><br />
-						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple" />
+						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -124,7 +124,7 @@ if (isset($report_info)) {
 				<tr id="servicegroup_row">
 					<td>
 						<?php echo $label_available.' '.$label_servicegroups ?><br />
-						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple" />
+						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -133,7 +133,7 @@ if (isset($report_info)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_servicegroups ?><br />
-						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple" />
+						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
@@ -149,14 +149,14 @@ if (isset($report_info)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_hosts ?><br />
-						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple" />
+						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
 				<tr id="service_row_2">
 					<td>
 						<?php echo $label_available.' '.$label_services ?><br />
-						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple" />
+						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -165,7 +165,7 @@ if (isset($report_info)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_services ?><br />
-						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple" />
+						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
@@ -202,8 +202,9 @@ if (isset($report_info)) {
 						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($end_time) ? $end_time : '09:00' ?>">
 					</td>
 					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>
+						<?php echo help::render('start-date').' '.$label_startdate ?>
 						<table summary="Reporting time" style="margin-left: -4px">
-							<tr><?php echo help::render('start-date').' '.$label_startdate ?>
+							<tr>
 								<td><?php echo $label_start_year ?></td>
 								<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
 								<td><?php echo $label_start_month ?></td>

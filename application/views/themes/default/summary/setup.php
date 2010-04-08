@@ -48,6 +48,7 @@ if (!empty($widgets)) {
 	<?php	echo form::open('summary/generate', array('id' => 'summary_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
 			<table id="std_report_table">
+				<tr>
 				<!--<caption><?php echo $label_customreport_options ?></caption>-->
 					<td colspan="3">
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
@@ -62,7 +63,7 @@ if (!empty($widgets)) {
 				<tr id="hostgroup_row">
 					<td>
 						<?php echo $label_available.' '.$label_hostgroups ?><br />
-						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple" />
+						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -78,7 +79,7 @@ if (!empty($widgets)) {
 				<tr id="servicegroup_row">
 					<td>
 						<?php echo $label_available.' '.$label_servicegroups ?><br />
-						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple" />
+						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -87,7 +88,7 @@ if (!empty($widgets)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_servicegroups ?><br />
-						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple" />
+						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
@@ -103,14 +104,14 @@ if (!empty($widgets)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_hosts ?><br />
-						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple" />
+						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
 				<tr id="service_row_2">
 					<td>
 						<?php echo $label_available.' '.$label_services ?><br />
-						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple" />
+						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 					<td class="move-buttons">
@@ -119,7 +120,7 @@ if (!empty($widgets)) {
 					</td>
 					<td>
 						<?php echo $label_selected.' '.$label_services ?><br />
-						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple" />
+						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
