@@ -7,6 +7,8 @@ $(document).ready(function() {
 	$('#summary_form').bind('submit', function() {
 		return validate_showlog();
 	});
+
+	$('<br /><hr style="width:75%" />').insertBefore('h2');
 });
 
 // date validation
