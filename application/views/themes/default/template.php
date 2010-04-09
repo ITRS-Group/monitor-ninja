@@ -176,7 +176,12 @@ if (isset($this->template->js_header))
 									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::image($this->add_path('icons/menu/portal.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 								}
-							elseif ($url[1] != 'portal')
+							elseif ($url[0] == 'statistics') {
+								$title = $this->translate->_('Statistics');
+								echo '<li class="'.html::specialchars($header).'"><a href="/'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/trends.png'),array('title' => html::specialchars($title),
+								'alt' => html::specialchars($title))).html::specialchars($title).'</a></li>'."\n";
+								}
+							elseif ($url[1] != 'portal' && $url[0] != 'statistics')
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 									html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";

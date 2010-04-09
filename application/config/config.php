@@ -210,6 +210,16 @@ if (is_dir($config['nagvis_real_path'])) {
 }
 
 /**
+* Add some suport for cacti/statistics
+*/
+$condition['cacti_real_path'] = '/opt/statistics';
+if (is_dir($condition['cacti_real_path'])) {
+	$config['cacti_path'] = true;
+} else {
+	$config['cacti_path'] = false;
+}
+
+/**
  * Default refresh rate for all pages
  */
 $config['page_refresh_rate'] = 90;
