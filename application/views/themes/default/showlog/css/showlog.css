@@ -1,0 +1,130 @@
+body {
+	margin: 0px 0px 0px 0px;
+}
+
+#response {
+	margin-left:0px;
+	padding-top:0px;
+	background: #f9f9f5 url(../images/response.png) repeat-x;
+}
+
+#response h1 {
+	font: bold 12px arial,helvetica,sans-serif;
+	display: none;
+}
+
+#response ul {
+	padding: 7px 2px 5px 33px;
+	margin: 0px;
+	margin-bottom: 7px;
+	width: auto;
+	background: transparent 10px 8px no-repeat;
+}
+
+#response li {
+	background: none;
+	padding: 2px 0px;
+	width: auto;
+	list-style: none;
+}
+
+#response ul.ok			{ background-image: url(../../icons/16x16/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/16x16/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/16x16/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/16x16/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/16x16/shield-help.png); }
+
+/* nytt */
+
+select,
+textarea,
+input#cal_end,
+input.datepick-end,
+input.datepick-start,
+input#cal_start,
+input#time_start,
+input#time_end {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px;
+	width: 378px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
+}
+
+select { width: 382px}
+
+input#cal_end,
+input#cal_start,
+input.datepick-end,
+input.datepick-start,
+input#time_start,
+input#time_end {
+	width: 100px;
+}
+
+input[type=button],
+input[type=submit],
+input[type=reset],
+input[type=checkbox] {
+	width: auto
+}
+
+input[type=checkbox] {
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-bottom: 5px;
+}
+
+input[type=reset],
+input[type=submit],
+input[type=button] {
+	background: #cdcdcd url(bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+	margin-bottom: 5px;
+}
+
+h1 { font-size: 15px; font-weight: normal; margin: 7px 0px 15px 0px}
+h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
+
+.time_error {
+	border:1px solid red;
+	color:red;
+}
+
+div.time-picker {
+	position: absolute;
+	height: 200px;
+	width:9em; /* needed for IE */
+	overflow: auto;
+	background: #fff;
+	border: 1px solid #000;
+	z-index: 99;
+}
+div.time-picker-12hours {
+	width:6em; /* needed for IE */
+}
+
+div.time-picker ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+div.time-picker li {
+	padding: 1px;
+	cursor: pointer;
+}
+div.time-picker li.selected {
+	background: #316AC5;
+	color: #fff;
+}
+
+
