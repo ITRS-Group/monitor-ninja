@@ -467,10 +467,12 @@ class Trends_Controller extends Authenticated_Controller {
 			$_REQUEST['assumeinitialstates'] 	= 1;
 		}
 
+		$rpttimeperiod = arr::search($_REQUEST, 'report_period', false);
+
 		# make sure we don't have ' ' as start- or end_time
 		$start_time = trim($start_time);
 		$end_time = trim($end_time);
-		if (!empty($end_time) && !empty($start_time)) {
+		if (!empty($end_time) && !empty($start_time) && ($rpttimeperiod == 'custom' || empty($rpttimeperiod))) {
 			$rpttimeperiod = 'custom';
 			if (!is_numeric($start_time)) {
 				$start_time = strtotime($start_time);
@@ -481,8 +483,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$_REQUEST['report_period'] = 'custom';
 			$_REQUEST['start_time'] = $start_time;
 			$_REQUEST['end_time'] = $end_time;
-		} else {
-			$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', 'last24hours');
 		}
 
 		// store all variables in array for later use
