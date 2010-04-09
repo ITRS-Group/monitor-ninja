@@ -28,23 +28,10 @@ function validate_showlog()
 	var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
 	var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
 	var now = new Date();
-	if (!cur_startdate || !cur_enddate) {
-		if (!cur_startdate) {
-			errors++;
-			err_str += "<li>" + _reports_invalid_startdate + ".</li>";
-		}
-		if (!cur_enddate) {
-			errors++;
-			err_str += "<li>" + _reports_invalid_enddate + ".</li>";
-		}
-	} else {
-		if (endDate > now) {
-			if (!confirm(_reports_enddate_infuture)) {
-				return false;
-			} else {
-				endDate = now;
-			}
-		}
+	if (!cur_startdate) {
+		// both are empty but we can only handle empty end_date
+		errors++;
+		err_str += "<li>" + _reports_invalid_startdate + ".</li>";
 	}
 
 	// time validation: _time_error and _time_error_start
@@ -70,7 +57,7 @@ function validate_showlog()
 		curval_endtime = $(this).val();
 	});
 
-	if (cur_enddate < cur_startdate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
+	if ((cur_enddate < cur_startdate && $.trim($("input[name=cal_end]").attr('value')) != '' ) || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
 		errors++;
 		err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
 		$(".datepick-start").addClass("time_error");
