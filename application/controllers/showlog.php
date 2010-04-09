@@ -145,7 +145,7 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('reports/css/reports');
+		$this->xtra_css[] = $this->add_path('showlog/css/showlog');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header->css = $this->xtra_css;
 		# fetch users date format in PHP style so we can use it
