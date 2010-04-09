@@ -777,9 +777,6 @@ class Trends_Controller extends Authenticated_Controller {
 			if($include_soft_states)
 				$html_options[] = array('hidden', 'includesoftstates', $include_soft_states);
 
-			if($assume_states_during_not_running)
-				$html_options[] = array('hidden', 'assumestatesduringnotrunning', $assume_states_during_not_running);
-
 			$label_report_period = $t->_('Reporting period');
 			$label_custom_period = $t->_('CUSTOM REPORT PERIOD');
 
@@ -802,7 +799,7 @@ class Trends_Controller extends Authenticated_Controller {
 			$tpl_options->label_click_calendar = $t->_('Click calendar to select date');
 			$tpl_options->label_assumeinitialstates = $t->_('Assume initial states');
 			$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
-			$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as uptime');
+			$tpl_options->label_assumestatesduringnotrunning = $t->_('Assume states during program downtime');
 			$tpl_options->label_initialassumedservicestate = $t->_('First assumed service state');
 			$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
 			$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
@@ -823,14 +820,14 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
 			$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
 			$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
-			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$scheduled_downtime_as_uptime."');\n";
+			$this->inline_js .= "set_initial_state('assumestatesduringnotrunning', '".$assume_states_during_not_running."');\n";
 			$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
 			$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
 			$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
-			$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
+			$this->js_strings .= "var assumestatesduringnotrunning = '".$assume_states_during_not_running."';\n";
 			$this->js_strings .= "var report_period = '".$report_period."';\n";
 
 			$avail_data = false;
