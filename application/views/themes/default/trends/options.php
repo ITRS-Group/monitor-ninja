@@ -33,9 +33,8 @@
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo help::render('schedule_downtime'); ?>
-						<input type="checkbox" value="1" class="checkbox" id="count" name="scheduleddowntimeasuptime" onchange="toggle_label_weight(this.checked, 'sched_downt')" />
-						<label for="count" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label></td>
+						<input type="checkbox" value="1" class="checkbox" id="count" name="assumestatesduringnotrunning" onchange="toggle_label_weight(this.checked, 'assume_statesnotrunning')" />
+						<label for="count" id="assume_statesnotrunning"><?php echo $label_assumestatesduringnotrunning ?></label></td>
 				</tr>
 				<tr class="none">
 					<td>

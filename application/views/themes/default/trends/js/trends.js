@@ -20,7 +20,7 @@ var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
-	show_state_options($('#assumeinitialstates').attr('checked'));
+	//show_state_options($('#assumeinitialstates').attr('checked'));
 
 	$("#report_form").bind('submit', function() {
 		loopElements();
@@ -70,12 +70,12 @@ $(document).ready(function() {
 	$('.fancybox').click(function() {
 		// set initial states
 		set_initial_state('assumeinitialstates', assumeinitialstates);
-		set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
+		set_initial_state('assumestatesduringnotrunning', assumestatesduringnotrunning);
+		show_state_options(assumeinitialstates=='1' ? true:false);
 	});
 
 	var class_rest = '';
 	$('.trend_event').mouseover(function(e) {
-		//console.log((e.clientX-200));
 		var right = $(window).width();
 
 		var x_offset = e.pageX-195;
@@ -116,17 +116,15 @@ function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
 	$('#' + the_id).css('font-weight', val_str);
-	$('#fancy_content#' + the_id).css('font-weight', val_str);
+	$('#fancy_content #' + the_id).css('font-weight', val_str);
 }
 
 function show_state_options(val)
 {
 	if (val) {
-		show_row('assumed_host_state');
-		show_row('assumed_service_state');
+		$('#fancy_content #state_options').show();
 	} else {
-		hide_these = new Array('assumed_host_state', 'assumed_service_state');
-		hide_rows(hide_these);
+		$('#fancy_content #state_options').hide();
 	}
 }
 
@@ -145,28 +143,28 @@ function set_initial_state(what, val)
 		case 'includesoftstates':
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
-				f.elements['includesoftstates'].checked = true;
+				$('input[name=' + what + ']').attr('checked', true);
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
-				f.elements['includesoftstates'].checked = false;
+				$('input[name=' + what + ']').attr('checked', false);
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
 			break;
 		case 'assumeinitialstates':
-			if (val!='0') {
+			if (val=='1') {
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
-				f.elements['assumeinitialstates'].checked = true;
+				$('input[name=' + what + ']').attr('checked', true);
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				f.elements['assumeinitialstates'].checked = false;
+				$('input[name=' + what + ']').attr('checked', false);
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
@@ -174,15 +172,32 @@ function set_initial_state(what, val)
 				toggle_label_weight(0, 'assume_initial');
 			}
 			break;
-		case 'scheduleddowntimeasuptime':
-			if (val!='0') {
-				toggle_label_weight(1, 'sched_downt');
-				f.elements['scheduleddowntimeasuptime'].checked = true;
+		case 'assumestatesduringnotrunning':
+			if (val!='0' && val!='') {
+				edit_state_options(1);
+				toggle_label_weight(1, 'assume_statesnotrunning');
+				$('input[name=' + what + ']').attr('checked', true);
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				f.elements['scheduleddowntimeasuptime'].checked = false;
+				$('input[name=' + what + ']').attr('checked', false);
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
+				edit_state_options(0);
+				toggle_label_weight(0, 'assume_statesnotrunning');
+			}
+			break;
+		case 'scheduleddowntimeasuptime':
+			if (val!='0' && val!='') {
+				toggle_label_weight(1, 'sched_downt');
+				$('input[name=' + what + ']').attr('checked', true);
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
+			} else {
+				$('input[name=' + what + ']').attr('checked', false);
 				toggle_label_weight(0, 'sched_downt');
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);

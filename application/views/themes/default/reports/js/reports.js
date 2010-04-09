@@ -616,12 +616,9 @@ function hide_response() {setup_hide_content('response');}
 
 function toggle_label_weight(val, the_id)
 {
-	if (document.getElementById(the_id)) {
-		elem = document.getElementById(the_id);
-		//elem.className = val ? 'bold' : '';
-		//elem.style.fontStyle = val ? 'italic' : '';
-		//elem.style.fontWeight = val ? 'bold' : '';
-	}
+	var val_str = val ? 'bold' : 'normal';
+	$('#' + the_id).css('font-weight', val_str);
+	$('#fancy_content #' + the_id).css('font-weight', val_str);
 }
 
 function show_state_options(val)
