@@ -26,7 +26,7 @@ class showlog_Core
 				continue;
 			}
 			switch ($k) {
-			 case 'state_types':
+			 case 'state_type':
 			 	if (isset($v['hard']) && isset($v['soft'])) {
 					break;
 				}
