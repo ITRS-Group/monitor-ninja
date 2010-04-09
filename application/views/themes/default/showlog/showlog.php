@@ -2,7 +2,7 @@
 	$date_format = cal::get_calendar_format(true);
 	$x = $this->translate; ?>
 <div id="response"></div>
-<?php echo form::open('showlog/showlog', array('id' => 'summary_form')); ?>
+<?php echo form::open('showlog/'.Router::$method, array('id' => 'summary_form')); ?>
 <div class="widget left w98">
 	<table class="showlog">
 		<tr>
