@@ -909,7 +909,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
+					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
 					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
@@ -922,7 +922,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group,
+					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
 					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
