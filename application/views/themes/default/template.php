@@ -179,8 +179,8 @@ if (isset($this->template->js_header))
 							elseif ($url[0] == 'statistics') {
 								$title = $this->translate->_('Statistics');
 								echo '<li class="'.html::specialchars($header).'"><a href="/'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/trends.png'),array('title' => html::specialchars($title),
-								'alt' => html::specialchars($title))).html::specialchars($title).'</a></li>'."\n";
-								}
+								'alt' => html::specialchars($title))).'</a> <a href="/'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+							}
 							elseif ($url[1] != 'portal' && $url[0] != 'statistics')
 								echo '<li class="'.html::specialchars($header).'">'.
 									html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
