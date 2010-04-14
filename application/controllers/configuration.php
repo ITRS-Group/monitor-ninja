@@ -48,12 +48,19 @@ class Configuration_Controller extends Authenticated_Controller {
 
 		$target_link = 'configure.php';
 		if (!empty($type) && !empty($name)) {
-			if (!empty($service)) {
-				$target_link = 'edit.php?obj_type='.$type.'&host='.$name.'&service='.$service;
+			if (strstr($type, 'group')) {
+				$target_link = 'edit.php?obj_type='.$type.'&obj_name='.$name;
 			} else {
-				$target_link = 'edit.php?obj_type='.$type.'&'.$type.'='.$name;
+				if (!empty($service)) {
+					$target_link = 'edit.php?obj_type='.$type.'&host='.$name.'&service='.$service;
+				} else {
+					$target_link = 'edit.php?obj_type='.$type.'&'.$type.'='.$name;
+				}
 			}
+		} elseif (!empty($type)) {
+			$target_link = 'edit.php?obj_type='.$type;
 		}
+
 
 		# set the username so Nacoma can pick it up
 		$_SESSION['nacoma_user'] = user::session('username');

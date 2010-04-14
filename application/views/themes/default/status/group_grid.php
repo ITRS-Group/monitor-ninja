@@ -43,6 +43,8 @@ if (!empty($group_details))
 		<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$details->group_name.'?style=detail', html::specialchars($details->group_alias)) ?>
 			(<?php echo html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)) ?>)
+			<?php if (nacoma::link()===true)
+				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($details->group_name), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
 		<thead>
 		<tr>

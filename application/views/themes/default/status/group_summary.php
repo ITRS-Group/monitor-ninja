@@ -47,6 +47,8 @@
 				<td class="bl">
 					<?php echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=overview', $details->group_alias) ?>
 					(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.urlencode($details->groupname), $details->groupname) ?>)
+					<?php if (nacoma::link()===true)
+						echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($details->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 				</td>
 				<td style="line-height: 20px">
 					<?php
