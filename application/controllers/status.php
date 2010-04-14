@@ -357,7 +357,7 @@ class Status_Controller extends Authenticated_Controller {
 			$shown .= " '".$name."'";
 			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
 			$grouptype = str_replace('group', '', $group_type);
-			$hostlist = Group_Model::get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
+			$hostlist = Group_Model::get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes);
 			$group_hosts = false;
 			foreach ($hostlist as $host_info) {
 				$group_hosts[] = $host_info->host_name;
@@ -365,7 +365,7 @@ class Status_Controller extends Authenticated_Controller {
 
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
-				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes);
+				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
 			} else {
 				$host_model->set_host_list($group_hosts);
 				$result = $host_model->get_host_status();
