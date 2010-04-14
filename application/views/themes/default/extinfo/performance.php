@@ -3,7 +3,7 @@
 
 	<div class="widget left w98"><h2><?php echo $title ?></h2></div>
 
-	<div class="widget left w49">
+	<div class="widget left w48">
 		<strong><?php echo $label_svc_actively_checked ?></strong>
 		<table>
 			<tr>
@@ -109,7 +109,7 @@
 	<div style="clear: both"></div>
 	<br />
 
-	<div class="widget w49 left">
+	<div class="widget w48 left">
 		<strong><?php echo $label_hosts_actively_checked ?></strong>
 		<table>
 			<tr>
@@ -214,7 +214,7 @@
 
 <div style="clear: both"></div>
 
-	<div class="widget left w49">
+	<div class="widget left w48">
 		<br />
 		<strong><?php echo $label_check_statistics ?></strong>
 		<table style="margin-bottom: 15px">
