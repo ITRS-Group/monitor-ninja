@@ -36,19 +36,23 @@ class Ninja_Controller extends Template_Controller {
 	public $inline_js = false;
 	public $js_strings = false;
 	public $stale_data = false;
+	public $run_tests = false;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->theme_path = Kohana::config('config.theme_path').Kohana::config('config.current_theme');
 
+		$this->run_tests = $this->input->get('run_tests', false);
+
 		# set base template file to current theme
 		$this->template = $this->add_view('template');
 
 		#$this->profiler = new Profiler;
-		if (Authenticated_Controller::ALLOW_PRODUCTION !== true) {
+		if (Authenticated_Controller::ALLOW_PRODUCTION !== true && $this->run_tests === false) {
 			$this->profiler = new Fire_Profiler;
 		}
+
 		# Load session library
 		# If any current session data exists, it will become available.
 		# If no session data exists, a new session is automatically started
@@ -200,7 +204,13 @@ class Ninja_Controller extends Template_Controller {
 		if (empty($view)) {
 			return false;
 		}
-		return new View($this->theme_path.$view);
+
+		if ($this->run_tests !== false && unittest::get_testfile($view) !== false) {
+			return new View('tests/'.$view);
+		} else {
+			return new View($this->theme_path.$view);
+		}
+
 	}
 
 	/**
