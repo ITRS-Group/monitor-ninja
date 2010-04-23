@@ -198,6 +198,7 @@ class Group_Model extends Model
 				s.current_attempt,
 				s.max_check_attempts,
 				s.should_be_scheduled,
+				s.next_check,
 				s.notifications_enabled,
 				s.service_description
 			FROM
