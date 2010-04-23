@@ -397,8 +397,8 @@ class Histogram_Controller extends Authenticated_Controller
 						$objects = $tmp_obj;
 					}
 				} else {
-					if (strstr($service, ';')) {
-						$tmp = explode(';', $service);
+					if (strstr($s, ';')) {
+						$tmp = explode(';', $s);
 						$objects[] = "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
 					}
 				}
@@ -415,6 +415,8 @@ class Histogram_Controller extends Authenticated_Controller
 					$selected_objects .= "&host_name[]=".$host;
 					$objects[] = $host;
 				}
+			} else {
+				$objects[] = $in_host;
 			}
 			if (is_array($in_service)) {
 				foreach ($in_service as $svc) {
@@ -423,6 +425,8 @@ class Histogram_Controller extends Authenticated_Controller
 					if (empty($objects))
 						$objects[] = $svc;
 				}
+			} else {
+				$objects[] = $in_service;
 			}
 		} else {
 			if (is_array($hostgroup)) {
@@ -431,6 +435,8 @@ class Histogram_Controller extends Authenticated_Controller
 					$selected_objects .= "&hostgroup[]=".$h_gr;
 					$objects[] = $h_gr;
 				}
+			} else {
+				$objects[] = $hostgroup;
 			}
 			if (is_array($servicegroup)) {
 				foreach ($servicegroup as $s_gr) {
@@ -438,6 +444,8 @@ class Histogram_Controller extends Authenticated_Controller
 					$selected_objects .= "&servicegroup[]=".$s_gr;
 					$objects[] = $s_gr;
 				}
+			} else {
+				$objects[] = $servicegroup;
 			}
 		}
 		$html_options[] = array('hidden', 'report_type', $this->report_type);
