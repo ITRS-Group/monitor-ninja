@@ -3,17 +3,24 @@
 
 <a name="comments"></a>
 <div class="widget left w98">
-
-<div style="position: absolute; right: 0px; margin-right: 1%">
+<!--<div style="position: absolute; right: 0px; margin-right: 1%; margin-top: -20px">
 	<?php echo html::image($this->add_path('icons/16x16/add-comment.png'), array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
 	&nbsp; &nbsp;
 	<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $label_delete_all_comments); ?>
-</div>
+</div>-->
 <a name="comments"></a>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<table class="comments_table">
-		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?></caption>
+		<caption>
+			<?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?>:
+			<?php echo html::image($this->add_path('icons/16x16/add-comment.png'), array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
+			<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $this->translate->_('Add comment'), array('style' => 'font-weight: normal')); ?>
+			&nbsp;
+			<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
+			<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $this->translate->_('Delete all'), array('style' => 'font-weight: normal')); ?>
+		</caption>
 		<thead>
 			<tr>
 			<?php if (Router::$method == 'show_comments') { ?>
@@ -29,7 +36,7 @@
 				<th style="width: 80px"><?php echo $label_persistent ?></th>
 				<th><?php echo $label_type ?></th>
 				<th style="width: 65px"><?php echo $label_expires ?></th>
-				<th class="no-sort"><?php echo $label_actions ?></th>
+				<th style="width: 25px" class="no-sort"><?php echo $label_actions ?></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -79,5 +86,5 @@
 		<?php } ?>
 		</tbody>
 	</table>
-	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+
 </div>
