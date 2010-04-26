@@ -501,6 +501,7 @@ select {
 #content p.pagination {
 	float: right;
 	margin-top: 3px;
+	margin-bottom: -15px;
 }
 #content p.pagination strong,
 #content p.pagination a {
@@ -537,6 +538,7 @@ select {
 #content form.pagination_form {
 	float: right;
 	margin-right: 7px;
+	margin-bottom: -15px;
 }
 
 #content form.pagination_form input,
@@ -609,14 +611,23 @@ table.white-table tr td {
 	padding-bottom: 4px;
 	vertical-align: top;
 }
-table.white-table tr td input {
+table.white-table tr td input,
+table.white-table tr td select,
+table.white-table tr td textarea {
  background: #fafafa;
 	border: 1px solid #cccccc;
 	outline: 0px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	margin: 0px;
+	/*width: 340px;*/
 }
-table.white-table tr td input[type=submit]{
+table.white-table tr td select {
+	padding: 2px;
+	/*width: 352px;*/
+}
+table.white-table tr td input[type=submit],
+table.white-table tr td input[type=reset] {
 	background: #cdcdcd url(images/bg.png) repeat-x;
 	border: 1px solid #cccccc;
 	outline: 0px;
@@ -624,6 +635,10 @@ table.white-table tr td input[type=submit]{
 	-webkit-border-radius: 4px;
 	padding: 1px 3px;
 	margin-bottom: 5px;
+	width: auto;
+}
+table.white-table tr td input[type=checkbox] {
+	width: auto;
 }
 /* health css *************************************************************************************/
 table.healt {
@@ -938,6 +953,8 @@ table.showlog tr td input[type=submit] {
 }
 .group_overview_table,
 .group_grid_table { margin-bottom: 15px;}
+
+.comments_table { margin-bottom: 10px; }
 
 /* table sorter styles ****************************************************************************/
 .group_grid_table th.header,
@@ -1457,7 +1474,7 @@ select.multiple {
 }
 
 select {
-	width: 160px;
+	/*width: 160px;*/
 }
 #report_setup {
 	position: relative;
