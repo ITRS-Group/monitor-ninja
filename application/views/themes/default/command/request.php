@@ -23,21 +23,19 @@ foreach ($params as $pname => $ary) {
 }
 
 if (!empty($params)) {
-	echo "<table style=\"margin-top: 15px\">\n";
-	echo '<tr><th colspan="'.($use_help ? 2 : 1).'" class="headerNone">Name</th><th class="headerNone">Option</th></tr>';
+	echo "<table style=\"margin-top: 20px; width: auto\" class=\"white-table\">\n";
 }
 foreach ($params as $pname => $ary) {
 	$form_name = "cmd_param[$pname]";
 	$dflt = false;
 	if (isset($ary['default']))
 		$dflt = $ary['default'];
-	echo '<tr class="even">';
-	//echo '<td style="width: 12px">'.html::image('application/views/themes/default/icons/12x12/shield-info.png',array('alt' => $this->translate->_('View help'), 'title' => $this->translate->_('View help'), 'style' => 'float: left')).'</td>';
+	echo '<tr>';
 
 	# help column only printed if we really have a help key
-	echo $use_help ? '<td style="width: 12px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>' : '';
+	echo $use_help ? '<td style="width: 16px">'.(isset($ary['help']) ? $ary['help'] : '').'</td>' : '';
 
-	echo '<td style="width: 200px" id="'.$pname.'">'.$ary['name'].'</td><td>';
+	echo '<td style="padding-right: 30px" id="'.$pname.'">'.$ary['name'].'</td><td>';
 
 	switch ($ary['type']) {
 	 case 'select':
@@ -76,13 +74,13 @@ foreach ($params as $pname => $ary) {
 
 	echo "</td></tr>\n";
 }
-if (!empty($params)) {
-	echo "</table><br />\n";
-}
+
+echo '<tr><td colspan="'.($use_help ? 2 : 1).'">&nbsp;</td><td>';
 echo form::hidden('requested_command', $requested_command);
 echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
 if (!empty($params)) {
 	echo " &nbsp;<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
 }
+echo '</td></tr></table>';
 echo form::close();
 echo '</div>';
