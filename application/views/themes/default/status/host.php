@@ -36,8 +36,8 @@
 
 <div class="widget left w98" id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<table id="host_table" style="margin-bottom: 10px">
-	<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
+	<table id="host_table" style="margin-bottom: 2px">
+	<caption><?php echo $sub_title ?></caption>
 		<thead>
 			<tr>
 				<?php
