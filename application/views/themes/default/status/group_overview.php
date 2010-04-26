@@ -32,6 +32,8 @@
 </div>
 
 <div class="widget left w98" id="status_group-overview">
+<?php if (nacoma::link()===true)
+	echo sprintf($this->translate->_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf($this->translate->_('Add new %sgroup'), $grouptype));?>
 <?php
 	$j = 0;
 	# make sure we have something to iterate over
@@ -42,6 +44,8 @@
 			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
 			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
+			<?php if (nacoma::link()===true)
+				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($group->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
 			<thead>
 			<tr>

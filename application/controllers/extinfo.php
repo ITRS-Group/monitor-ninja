@@ -877,6 +877,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_grouptype = $grouptype=='servicegroup' ? $t->_('Servicegroup') : $t->_('Hostgroup');
 		$content->group_alias = $group_info_res->alias;
 		$content->groupname = $group;
+		$content->grouptype = $grouptype;
 		$content->label_commands = $t->_('Commands');
 		$content->label_schedule_downtime_hosts = $t->_('Schedule downtime for all hosts in this');
 		$content->cmd_schedule_downtime_hosts = nagioscmd::command_id('SCHEDULE_'.strtoupper($grouptype).'_HOST_DOWNTIME');

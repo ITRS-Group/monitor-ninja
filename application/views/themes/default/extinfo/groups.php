@@ -29,7 +29,10 @@
 
 <div class="widget left w98">
 <table style="border-spacing: 1px; background-color: #dcdccd">
-	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?></caption>
+	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?>
+		<?php if (nacoma::link()===true)
+			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
+	</caption>
 	<tr>
 		<td class="status icon">
 			<?php echo html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => $label_schedule_downtime_hosts.' '.$label_grouptype, 'title' => $label_schedule_downtime_hosts.' '.$label_grouptype)); ?>

@@ -128,7 +128,7 @@ class Group_Model extends Model
 	 * @param $groupname Name of the group
 	 * @return db result
 	 */
-	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false)
+	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false)
 	{
 		$groupname = trim($groupname);
 		if (empty($groupname)) {
@@ -154,6 +154,9 @@ class Group_Model extends Model
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+
+		$service_props_sql = Host_Model::build_service_props_query($service_props, 's.');
+		$host_props_sql = Host_Model::build_host_props_query($host_props, 'h.');
 
 		$auth = new Nagios_auth_Model();
 		$auth_str = '';
@@ -195,6 +198,7 @@ class Group_Model extends Model
 				s.current_attempt,
 				s.max_check_attempts,
 				s.should_be_scheduled,
+				s.next_check,
 				s.notifications_enabled,
 				s.service_description
 			FROM
@@ -206,14 +210,14 @@ class Group_Model extends Model
 				".$all_sql."
 				ssg.".$grouptype."group = sg.id AND
 				".$member_match."
-				h.host_name=s.host_name ".$auth_str." ".$filter_sql.
+				h.host_name=s.host_name ".$auth_str." ".$filter_sql.$service_props_sql.$host_props_sql.
 			" GROUP BY
 				h.host_name, s.id
 			ORDER BY
 				h.host_name,
 				s.service_description,
 				s.current_state;";
-
+#echo $sql;
 		$result = $db->query($sql);
 		return $result;
 	}
