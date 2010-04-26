@@ -28,7 +28,7 @@
 						echo html::image($this->add_path('icons/12x12/shield-not-'.strtolower($row['status']).'.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
 					?>
 				</td>
-				<td style="width: 85px"><?php echo html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status'])) ?></td>
+				<td style="width: 85px"><?php echo ($row['status_id'] == $hoststatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status'])).($row['status_id'] == $hoststatus ? '</strong>' : '') ?></td>
 			<?php echo ($i%2 == 1) ? '</tr>' : '' ?>
 			<?php	 $i++; } ?>
 			<tr>
@@ -57,7 +57,7 @@
 							echo html::image($this->add_path('icons/12x12/shield-not-'.strtolower($row['status']).'.png'), array('alt' => $row['status'],'title' => $row['status'],'style' => 'margin-bottom: -2px')) ;
 					?>
 				</td>
-				<td style="width: 85px"><?php echo html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status'])) ?></td>
+				<td style="width: 85px"><?php echo ($row['status_id'] == $servicestatus ? '<strong>' : '').html::anchor($row['url'], html::specialchars($row['lable'].' '.$row['status'])).($row['status_id'] == $servicestatus ? '</strong>' : '') ?></td>
 			<?php echo ($i%2 == 1) ? '</tr>' : ''; ?>
 			<?php  $i++; } ?>
 				<td class="status icon" style="padding: 4px 7px"><?php echo html::image($this->add_path('icons/12x12/shield-info.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px')); ?></td>
