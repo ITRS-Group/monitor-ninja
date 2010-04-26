@@ -123,7 +123,7 @@ class Ninja_Controller extends Template_Controller {
 			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('/reports?show_schedules', 'schedulereports');
 
 			if (Kohana::config('config.cacti_path')) # @@@FIXME: Create a specific cacti logo, now re-using trends
-				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Statistics')] = array('statistics', 'trends');
+				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Statistics')] = array('statistics', 'statistics');
 
 			# Add NACOMA link only if enabled in config
 			if (nacoma::link()===true) {
