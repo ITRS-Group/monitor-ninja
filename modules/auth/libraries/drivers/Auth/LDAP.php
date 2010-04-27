@@ -19,7 +19,6 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 
 		$config = array(
 			'LDAP_SERVER' => null,
-			'LDAP_USERKEY' => null,
 			'LDAP_USERS' => null
 		);
 		foreach ($raw_config as $line)
@@ -38,13 +37,28 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (!($ds = ldap_connect($config['LDAP_SERVER'])))
 			return false;
 
-		if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$user->username},{$config['LDAP_USERS']}", $password))
+		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
+			&& isset($config['LDAP_UPNSUFFIX']))
 		{
-			$this->complete_login($user);
-			return true;
+			if (@ldap_bind($ds, "{$user->username}@{$config['LDAP_UPNSUFFIX']}", $password))
+			{
+				$this->complete_login($user);
+				return true;
+			}
 		}
 		else
-			return false;
+		{
+			if (!isset($config['LDAP_USERKEY']))
+				return false;
+
+			if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$user->username},{$config['LDAP_USERS']}", $password))
+			{
+				$this->complete_login($user);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function password($user)
