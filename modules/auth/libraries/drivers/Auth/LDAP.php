@@ -17,10 +17,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
 			return false;
 
-		$config = array(
-			'LDAP_SERVER' => null,
-			'LDAP_USERS' => null
-		);
+		$config = array();
 		foreach ($raw_config as $line)
 		{
 			$key = strtok(trim($line), '=');
@@ -29,12 +26,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 				$config[$key] = $value;
 		}
 
-		// check if all config variables are set
-		foreach ($config as $value)
-			if (is_null($value))
-				return false;
-
-		if (!($ds = ldap_connect($config['LDAP_SERVER'])))
+		if (!isset($config['LDAP_SERVER']) || !($ds = ldap_connect($config['LDAP_SERVER'])))
 			return false;
 
 		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
@@ -48,7 +40,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		}
 		else
 		{
-			if (!isset($config['LDAP_USERKEY']))
+			if (!isset($config['LDAP_USERS']) || !isset($config['LDAP_USERKEY']))
 				return false;
 
 			if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$user->username},{$config['LDAP_USERS']}", $password))
