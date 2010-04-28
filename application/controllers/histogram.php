@@ -397,8 +397,8 @@ class Histogram_Controller extends Authenticated_Controller
 						$objects = $tmp_obj;
 					}
 				} else {
-					if (strstr($s, ';')) {
-						$tmp = explode(';', $s);
+					if (strstr($service, ';')) {
+						$tmp = explode(';', $service);
 						$objects[] = "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
 					}
 				}
