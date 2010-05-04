@@ -37,9 +37,10 @@ class showlog_Core
 				}
 				break;
 			 case 'first': case 'last':
-				if (!empty($v))
+				if (!empty($v)) {
 					$cmd .= " --$k=$v";
-				$limit = false;
+					$limit = false;
+				}
 				break;
 			 case 'time_format':
 				$cmd .= ' --' . str_replace('_', '-', $k) . '=' . $v;
