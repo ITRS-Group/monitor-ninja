@@ -193,7 +193,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'PROCESS_HOST_CHECK_RESULT':
 		 case 'PROCESS_SERVICE_CHECK_RESULT':
 			if (!empty($param['_perfdata']) && !empty($param['plugin_output'])) {
-				$param['plugin_output'] .= "|$param[perfdata]";
+				$param['plugin_output'] .= "|".$param['_perfdata'];
 				unset($param['perfdata']);
 			}
 			break;
