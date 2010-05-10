@@ -5,7 +5,16 @@ $(document).ready(function() {
 		 *	Since all command input fields are required, we check
 		 *	them all and prompt user in case they are empty.
 		 */
+
+		$('select').each(function() {
+			if ($(this).attr('multiple')) {
+				$(this).children(':option').attr('selected', true);
+			}
+		});
 		var inputs = $('#command_form :input');
+		$('select[type="select-multiple"]').each(function() {
+			$(this).children(':option').attr('selected', true);
+		});
 		var empty = 0;
 		var err_str = '';
 		inputs.each(function() {
