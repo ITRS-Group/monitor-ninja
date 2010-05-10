@@ -711,10 +711,10 @@ function expand_and_populate(data)
 			setTimeout('set_initial_state("report_period-endmonth", ' + reportObj['end_month'] + ')', 2000);
 		} else {
 			startDate = epoch_to_human(reportObj['start_time']);
-			$('#cal_start').text(format_date_str(startDate));
+			//$('#cal_start').text(format_date_str(startDate));
 			document.forms['report_form'].start_time.value = format_date_str(startDate);
 			endDate = epoch_to_human(reportObj['end_time']);
-			$('#cal_end').text(format_date_str(endDate));
+			//$('#cal_end').text(format_date_str(endDate));
 			document.forms['report_form'].end_time.value = format_date_str(endDate);
 		}
 	}
@@ -782,12 +782,12 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
-				f.elements['assumeinitialstates'].checked = true;
+				//f.elements['assumeinitialstates'].checked = true;
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				f.elements['assumeinitialstates'].checked = false;
+				//f.elements['assumeinitialstates'].checked = false;
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
@@ -798,12 +798,12 @@ function set_initial_state(what, val)
 		case 'scheduleddowntimeasuptime':
 			if (val!='0') {
 				toggle_label_weight(1, 'sched_downt');
-				f.elements['scheduleddowntimeasuptime'].checked = true;
+				//f.elements['scheduleddowntimeasuptime'].checked = true;
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				f.elements['scheduleddowntimeasuptime'].checked = false;
+				//f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
