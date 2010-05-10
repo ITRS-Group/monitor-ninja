@@ -887,6 +887,8 @@ th.enabled_monfeat cite {
 	margin-bottom: -2px;
 }
 
+.item_select{display:none}
+
 table.ext {
 	border-spacing: 1px;
 	background-color: #cdcdcd;
