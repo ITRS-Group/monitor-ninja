@@ -31,7 +31,7 @@ $(document).ready(function() {
 						empty++;
 					}
 				} else {
-					if ($.trim(val) == '') {
+					if ( (typeof val == 'string' && $.trim(val) == '') || (typeof val == 'object' && !val.length) ) {
 						err_str += ' - ' + sprintf(_command_empty_field, $("#" + key_str).text())+"\n";
 						empty++;
 					}
