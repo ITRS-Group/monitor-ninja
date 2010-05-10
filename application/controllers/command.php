@@ -21,6 +21,8 @@ class Command_Controller extends Authenticated_Controller
 	private $command_id = false;
 	private $cmd_params = array();
 	private $csrf_token = false;
+	private $objects = false;
+	private $obj_type = false;
 
 	/**
 	 * Initializes a page with the correct view, java-scripts and css
@@ -214,9 +216,9 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_services-too'])) {
 				unset($param['_services-too']);
 				if ($fallthrough)
-					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
+					$nagios_commands[] = $this->_build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
 				else
-					$nagios_commands[] = nagioscmd::build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
+					$nagios_commands[] = $this->_build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
 			}
 			break;
 
@@ -239,7 +241,7 @@ class Command_Controller extends Authenticated_Controller
 			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
 			$xcmd .= '_HOST_CHECKS';
 			if (!empty($param['_host-too']))
-				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
+				$nagios_commands[] = $this->_build_command($xcmd, $param);
 			break;
 
 		 case 'ENABLE_HOST_CHECK':
@@ -247,11 +249,11 @@ class Command_Controller extends Authenticated_Controller
 			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
 			$xcmd .= '_HOST_SVC_CHECKS';
 			if (!empty($param['_services-too']))
-				$nagios_commands[] = nagioscmd::build_command($xcmd, $param);
+				$nagios_commands[] = $this->_build_command($xcmd, $param);
 			break;
 		}
 
-		$nagios_commands[] = nagioscmd::build_command($cmd, $param);
+		$nagios_commands = $this->_build_command($cmd, $param, $nagios_commands);
 
 		$nagios_base_path = Kohana::config('config.nagios_base_path');
 		$pipe = $nagios_base_path."/var/rw/nagios.cmd";
@@ -395,5 +397,90 @@ class Command_Controller extends Authenticated_Controller
 			}
 		}
 		return false;
+	}
+
+	/**
+	*	Handle submitting of one command for multiple objects
+	*/
+	public function multi_action()
+	{
+		if (!isset($_REQUEST['multi_action'])) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing action parameter - unable to process request');
+			return false;
+		}
+
+		$cmd_typ = $_REQUEST['multi_action'];
+		$this->obj_type = isset($_REQUEST['obj_type']) ? $_REQUEST['obj_type'] : false;
+		$this->objects = isset($_REQUEST['object_select']) ? $_REQUEST['object_select'] : false;
+		if (empty($this->objects)) {
+			$this->template->content = $this->add_view('error');
+			$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing objects - unable to process request');
+			return false;
+		}
+
+		$param_name = false;
+		switch ($this->obj_type) {
+			case 'host':
+				$param_name = 'host_name[]';
+				break;
+			case 'service':
+				$param_name = 'service[]';
+				break;
+		}
+
+		$params = false;
+
+		foreach ($this->objects as $obj) {
+			$params[] = $param_name.'='.$obj;
+		}
+
+		$param_str = '';
+		if (is_array($params) && !empty($params)) {
+			$param_str = implode('&', $params);
+		}
+		if (!empty($param_str) && !empty($cmd_typ)) {
+			url::redirect(Router::$controller.'/submit?cmd_typ='.$cmd_typ.'&'.$param_str);
+		}
+
+		$this->template->content = $this->add_view('error');
+		$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing parameters - unable to process request');
+		return false;
+	}
+
+	/**
+	*	Wrapper around nagioscmd::build_command() to be able
+	*	to create valid commands for multiple objects at once
+	*/
+	public function _build_command($cmd = false, $param = false, $nagios_commands = false)
+	{
+		if (
+		(isset($param['host_name']) && is_array($param['host_name'])) ||
+		(isset($param['service']) && is_array($param['service'])) )
+		{ # we have a multi command, i.e one command for multiple objects
+
+			# remove host_name (or service) from param
+			if (isset($param['host_name'])) {
+				$obj_list = $param['host_name'];
+				unset($param['host_name']);
+				$param_str = 'host_name';
+			} else {
+				$obj_list = $param['service'];
+				unset($param['service']);
+				$param_str = 'service';
+			}
+
+			# create new param array for each object
+			foreach ($obj_list as $obj) {
+				$multi_param = false;
+				$multi_param = $param;
+				$multi_param[$param_str] = $obj;
+				$nagios_commands[] = nagioscmd::build_command($cmd, $multi_param);
+			}
+		} else {
+			$nagios_commands[] = nagioscmd::build_command($cmd, $param);
+		}
+
+		return $nagios_commands;
 	}
 }
