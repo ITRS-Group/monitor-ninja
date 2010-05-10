@@ -38,38 +38,48 @@ foreach ($params as $pname => $ary) {
 	echo '<td style="padding-right: 30px" id="'.$pname.'">'.$ary['name'].'</td><td>';
 
 	switch ($ary['type']) {
-	 case 'select':
-		if ($dflt && array_search($dflt, $ary['options'])) {
-			$dflt = array_search($dflt, $ary['options']);
-		}
-		echo form::dropdown($form_name, $ary['options'], $dflt);
-		break;
-	 case 'checkbox':
-		if (isset($ary['options'])) {
-			foreach ($ary['options'] as $k => $v) {
-				echo form::checkbox($form_name . "[$k]", 'class="checkbox"');
+		case 'select':
+			if (!is_array($dflt)) {
+				if ($dflt && array_search($dflt, $ary['options'])) {
+					$dflt = array_search($dflt, $ary['options']);
+				}
+				echo form::dropdown($form_name, $ary['options'], $dflt);
+			} else {
+				if (!empty($dflt)) {
+					$tmp_obj = false;
+					foreach($dflt as $tmp) {
+						$tmp_obj[$tmp] = $tmp;
+					}
+					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple'), $tmp_obj);
+				}
 			}
 			break;
-		}
-		# fallthrough
-	 case 'bool':
-		echo form::checkbox($form_name, $dflt, 'class="checkbox"');
-		break;
-	 case 'float':
-	 case 'int':
-		echo form::input($form_name, $dflt, 'size="10"');
-		break;
-	 case 'immutable':
-		echo form::hidden($form_name, $dflt);
-		echo $dflt;
-		break;
-	 case 'string':
-	 default:
-	 	if ($form_name == 'cmd_param[comment]')
-			echo form::textarea(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 350px; height: 70px'), $dflt, '');
-		else
-			echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field')), $dflt, '');
-		break;
+		case 'checkbox':
+			if (isset($ary['options'])) {
+				foreach ($ary['options'] as $k => $v) {
+					echo form::checkbox($form_name . "[$k]", 'class="checkbox"');
+				}
+				break;
+			}
+			# fallthrough
+		case 'bool':
+			echo form::checkbox($form_name, $dflt, 'class="checkbox"');
+			break;
+		case 'float':
+		case 'int':
+			echo form::input($form_name, $dflt, 'size="10"');
+			break;
+		case 'immutable':
+			echo form::hidden($form_name, $dflt);
+			echo $dflt;
+			break;
+		case 'string':
+		default:
+			if ($form_name == 'cmd_param[comment]')
+				echo form::textarea(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 350px; height: 70px'), $dflt, '');
+			else
+				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field')), $dflt, '');
+			break;
 	}
 
 	echo "</td></tr>\n";
