@@ -609,10 +609,16 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($report_info) {
 			$date_format = $this->_get_date_format(true);
-			$template->start_date = date($date_format, $report_info['start_time']);
-			$template->start_time = date('H:i', $report_info['start_time']);
-			$template->end_date = date($date_format, $report_info['end_time']);
-			$template->end_time = date('H:i', $report_info['end_time']);
+			# due to an old bug, some reports could have been saved
+			# with the timestamp being the year which would result in
+			# dates being printed as 1970-01-01
+			# Checking that it is > the timestamp for 1980-01-01 (315525600)
+			# will make us being possible to handle this anyway
+			$ts_check = 315525600; # 1980-01-01
+			$template->start_date = !empty($report_info['start_time']) && $report_info['start_time'] > $ts_check ? date($date_format, $report_info['start_time']) : '';
+			$template->start_time = !empty($report_info['start_time']) && $report_info['start_time'] > $ts_check ? date('H:i', $report_info['start_time']) : '08:00';
+			$template->end_date = !empty($report_info['end_time']) && $report_info['end_time'] > $ts_check ? date($date_format, $report_info['end_time']) : '';
+			$template->end_time = !empty($report_info['end_time']) && $report_info['end_time'] > $ts_check ? date('H:i', $report_info['end_time']) : '09:00';
 		}
 
 		$template->report_id = $this->report_id;
