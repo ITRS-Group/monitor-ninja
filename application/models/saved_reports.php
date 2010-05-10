@@ -53,6 +53,12 @@ class Saved_reports_Model extends Model
 			}
 		}
 
+		# Don't save start- or end_time when we have report_period != custom
+		if (isset($options['report_period']) && $options['report_period'] != 'custom') {
+			unset($options['start_time']);
+			unset($options['end_time']);
+		}
+
 		// INSERT or UPDATE?
 		if (!empty($id))
 			$update = true;
