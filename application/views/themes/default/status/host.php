@@ -109,6 +109,9 @@ foreach ($result as $row) {
 								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
 								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px'));
 						}
+						if ($row->current_state == Current_status_Model::HOST_DOWN || $row->current_state == Current_status_Model::HOST_UNREACHABLE) {
+							$properties += 16;
+						}
 					?><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 					</div>
 				</td>

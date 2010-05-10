@@ -248,7 +248,7 @@ function multi_action_select(action)
 		case 'ACKNOWLEDGE_HOST_PROBLEM':
 		case 'ACKNOWLEDGE_SVC_PROBLEM':
 			$('.obj_prop').each(function() {
-				if ($(this).text() & ACKNOWLEDGED) {
+				if ($(this).text() & ACKNOWLEDGED || !($(this).text() & 16)) {
 					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
 				}
 			});

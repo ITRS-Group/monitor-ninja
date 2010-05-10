@@ -148,6 +148,9 @@ $c=0;
 					$properties += 8;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 				}
+				if ($row->current_state == Current_status_Model::SERVICE_CRITICAL || $row->current_state == Current_status_Model::SERVICE_UNKNOWN || $row->current_state == Current_status_Model::SERVICE_WARNING ) {
+					$properties += 16;
+				}
 			?>
 			</span><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 		</td>
