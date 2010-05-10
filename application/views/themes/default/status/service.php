@@ -35,6 +35,8 @@
 
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
+<a href="#" id="select_multiple_items"><?php echo $this->translate->_('Select Multiple Items') ?></a><br />
+<?php echo form::open('command/multi_action'); ?><br />
 <table style="margin-bottom: 2px" id="service_table">
 <caption><?php echo $sub_title ?></caption>
 	<thead>
@@ -47,6 +49,9 @@
 				foreach($header_links as $row) {
 					$n++;
 					if (isset($row['url_desc'])) {
+						if ($n == 3) { ?>
+							<th class="item_select"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
+				<?php	}
 						if ($n == 4)
 							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
@@ -110,7 +115,7 @@ $c=0;
 		<td class="icon">
 			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, 'service'))) ?>
 		</td>
-
+		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></td>
 		<td style="white-space: normal">
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
 				<?php	if ($comments !== false && array_key_exists($row->host_name.';'.$row->service_description, $comments)) { ?>
@@ -123,23 +128,28 @@ $c=0;
 					<?php } ?>
 			<span style="float: right">
 			<?php
+				$properties = 0;
 				if ($row->problem_has_been_acknowledged) {
+					$properties++;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 				}
 				if (empty($row->notifications_enabled)) {
+					$properties += 2;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 				}
 				if (!$row->active_checks_enabled) {
+					$properties += 4;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 				}
 				if ($row->scheduled_downtime_depth > 0) {
+					$properties += 8;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 				}
 			?>
-			</span>
+			</span><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td class="icon" style="text-align: left">
 			<?php
@@ -183,6 +193,21 @@ $c=0;
 	</table>
 
 <?php } ?>
+	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable Service Notifications'),
+			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
+			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'service'); ?>
+	<?php echo form::close(); ?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <br /><br />
 </div>

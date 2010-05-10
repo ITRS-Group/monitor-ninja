@@ -36,10 +36,13 @@
 
 <div class="widget left w98" id="status_host">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<table id="host_table" style="margin-bottom: 2px">
-	<caption><?php echo $sub_title ?></caption>
+	<a href="#" id="select_multiple_items"><?php echo $this->translate->_('Select Multiple Items') ?></a><br />
+	<?php echo form::open('command/multi_action'); ?><br />
+	<table id="host_table" style="margin-bottom: 10px">
+	<caption style="margin-top: -15px"><?php echo $sub_title ?></caption>
 		<thead>
 			<tr>
+				<th class="item_select"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
 				<?php
 					$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 					$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'host_name';
@@ -73,6 +76,7 @@ foreach ($result as $row) {
 	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
+				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></td>
 				<td class="icon bl">
 					&nbsp;<?php echo html::anchor('extinfo/details/host/'.$row->host_name,html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $t->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))), array('style' => 'border: 0px')); ?>
 				</td>
@@ -80,23 +84,32 @@ foreach ($result as $row) {
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
 					<div style="float: right">
 					<?php
-						if ($row->problem_has_been_acknowledged)
+						$properties = 0;
+						if ($row->problem_has_been_acknowledged) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $t->_('Acknowledged'), 'title' => $t->_('Acknowledged'))), array('style' => 'border: 0px'));
-						if (empty($row->notifications_enabled))
+							$properties++;
+						}
+						if (empty($row->notifications_enabled)) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $t->_('Notification disabled'), 'title' => $t->_('Notification disabled'))), array('style' => 'border: 0px'));
-						if (!$row->active_checks_enabled)
+							$properties += 2;
+						}
+						if (!$row->active_checks_enabled) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $t->_('Active checks enabled'), 'title' => $t->_('Active checks disabled'))), array('style' => 'border: 0px'));
+							$properties += 4;
+						}
 						if (isset($row->is_flapping) && $row->is_flapping)
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
-						if ($row->scheduled_downtime_depth > 0)
+						if ($row->scheduled_downtime_depth > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => $t->_('Scheduled downtime'), 'title' => $t->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+							$properties += 8;
+						}
 						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
 								array('alt' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
 								'title' => sprintf($t->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px'));
 						}
-					?>
+					?><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 					</div>
 				</td>
 				<td class="icon">
@@ -137,6 +150,22 @@ foreach ($result as $row) {
 			<?php	} ?>
 		</tbody>
 	</table>
+	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'host'); ?>
+	<?php echo form::close(); ?>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<br /><br />
 </div>

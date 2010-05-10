@@ -45,6 +45,7 @@ $(document).ready(function() {
 
 	// refresh helper code
 	var old_refresh = 0;
+	var refresh_is_paused = false;
 	$("#ninja_refresh_control").bind('change', function() {
 		if ($("#ninja_refresh_control").attr('checked')) {
 			// save previous refresh rate
@@ -52,9 +53,11 @@ $(document).ready(function() {
 			old_refresh = current_interval;
 			$('#ninja_refresh_lable').css('font-weight', 'bold');
 			ninja_refresh(0);
+			refresh_is_paused = true;
 		} else {
 			// restore previous refresh rate
 			ninja_refresh(old_refresh);
+			refresh_is_paused = false;
 			$('#ninja_refresh_lable').css('font-weight', '');
 		}
 	});
@@ -176,7 +179,125 @@ $(document).ready(function() {
 		});
 	});
 	$(".helptext_target").click(function() {return false;})
+
+	$('#multi_action_select').bind('change', function() {
+		multi_action_select($(this).find('option:selected').val());
+
+	});
+
+	$('#select_multiple_items').click(function() {
+		if (!refresh_is_paused) {
+			if (!$('.item_select').is(':visible')) {
+				// pausing and un-pausing refresh might be
+				// irritating for users that already has selected
+				// to pause refresh
+
+				// save previous refresh rate
+				// to be able to restore it later
+				old_refresh = current_interval;
+				$('#ninja_refresh_lable').css('font-weight', 'bold');
+				ninja_refresh(0);
+				$("#ninja_refresh_control").attr('checked', true);
+			} else {
+				// restore previous refresh rate
+				ninja_refresh(old_refresh);
+				$("#ninja_refresh_control").attr('checked', false);
+				$('#ninja_refresh_lable').css('font-weight', '');
+			}
+		}
+		$('.item_select').toggle();
+		return false;
+	});
+
+	$('.select_all_items').live('click', function() {
+		if ($(this).attr('checked')) {
+			$('.select_all_items').attr('checked', true);
+			$(".item_select input[type='checkbox']").not('.select_all_items').each(function() {
+				if (!$(this).attr('disabled')) {
+					$(this).attr('checked', true);
+				}
+			});
+		} else {
+			$('.select_all_items').attr('checked', false);
+			$(".item_select input[type='checkbox']").not('.select_all_items').each(function() {
+				$(this).attr('checked', false);
+			});
+		}
+	});
+
 });
+
+/**
+*	Handle multi select of different actions
+*/
+function multi_action_select(action)
+{
+	// start by enabling all checkboxes in case
+	// they have been previously disabled
+	$(".item_select input[type='checkbox']").attr('disabled', false);
+
+	if (action == '')
+		return false;
+
+	var ACKNOWLEDGED = 1;
+	var NOTIFICATIONS_ENABLED = 2;
+	var CHECKS_ENABLED = 4;
+	var SCHEDULED_DT = 8;
+
+	switch (action) {
+		case 'ACKNOWLEDGE_HOST_PROBLEM':
+		case 'ACKNOWLEDGE_SVC_PROBLEM':
+			$('.obj_prop').each(function() {
+				if ($(this).text() & ACKNOWLEDGED) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+
+			break;
+		case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+		case 'REMOVE_SVC_ACKNOWLEDGEMENT':
+			$('.obj_prop').each(function() {
+				if ( !($(this).text() & ACKNOWLEDGED) ) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+
+			break;
+		case 'DISABLE_HOST_NOTIFICATIONS':
+		case 'DISABLE_SVC_NOTIFICATIONS':
+			$('.obj_prop').each(function() {
+				if ($(this).text() & NOTIFICATIONS_ENABLED) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+
+			break;
+		case 'ENABLE_HOST_NOTIFICATIONS':
+		case 'ENABLE_SVC_NOTIFICATIONS':
+			$('.obj_prop').each(function() {
+				if ( !($(this).text() & NOTIFICATIONS_ENABLED) ) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+			break;
+		case 'ENABLE_HOST_CHECK':
+		case 'ENABLE_SVC_CHECK':
+			$('.obj_prop').each(function() {
+				if ($(this).text() & CHECKS_ENABLED) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+			break;
+		case 'DISABLE_HOST_CHECK':
+		case 'DISABLE_SVC_CHECK':
+			$('.obj_prop').each(function() {
+				if ( !($(this).text() & CHECKS_ENABLED) ) {
+					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+				}
+			});
+			break;
+	}
+}
 
 function create_slider(the_id)
 {
