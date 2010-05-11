@@ -43,24 +43,6 @@ $(document).ready(function() {
 			}
 		}
 	});
-
-	// Handle show/hide of settings layer
-	$("#settings_icon").click(function() {
-		if ($("#page_settings").is(':hidden'))
-			$("#page_settings").show();
-		else{
-			$("#page_settings").hide();
-		}
-		return false;
-	});
-
-	$('#page_settings').click(function(e) {
-		e.stopPropagation();
-	});
-
-	$(document).click(function() {
-		$('#page_settings').hide();
-	});
 });
 
 
