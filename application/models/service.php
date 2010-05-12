@@ -201,6 +201,44 @@ class Service_Model extends Model
 	}
 
 	/**
+	*
+	*
+	*/
+	public function multi_search($host_name=array(), $service=array(), $limit=false)
+	{
+		if (empty($host_name) || empty($service)) {
+			return false;
+		}
+
+		$obj_ids = self::authorized_services();
+		$db = new Database();
+
+		#$sql = "SELECT * FROM service WHERE ";
+		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
+		"FROM `service` AS `s`, `host` AS `h` WHERE ";
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$query_parts = false;
+		foreach ($host_name as $host) {
+			$host = '%' . $host . '%';
+			$query = "LCASE(`s`.`host_name`) LIKE LCASE(".$db->escape($host).") ";
+			foreach ($service as $s) {
+				$s = '%' . $s . '%';
+				$query .= " AND LCASE(`s`.`service_description`) LIKE LCASE(".$db->escape($s).") ";
+			}
+			$query_parts[] = $query;
+		}
+		if (!empty($query_parts)) {
+			$sql .= '( '.implode(') OR (', $query_parts) . ') ';
+			$sql .= " AND s.host_name = h.host_name";
+			$sql .= " AND s.id IN(".implode(',', $obj_ids).") ".$limit_str;
+			#echo $sql;
+			$obj_info = $db->query($sql);
+			return $obj_info;
+		}
+		return false;
+	}
+
+	/**
 	*	Search through several fields for a specific value
 	*/
 	public function search($value=false, $limit=false)
@@ -210,14 +248,34 @@ class Service_Model extends Model
 		$obj_ids = implode(',',$auth_obj);
 		if (empty($obj_ids))
 			return false;
-		$value = '%'.$value.'%';
-		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
-		"FROM `service` AS `s`, `host` AS `h` ".
-		"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
-		" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
-		" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value).")".
-		" AND s.host_name=h.host_name)".
-		" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` LIMIT ".$limit;
+
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		if (is_array($value) && !empty($value)) {
+			$query = false;
+			$sql = false;
+			foreach ($value as $val) {
+				$val = '%'.$val.'%';
+				$query[] = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
+			"FROM `service` AS `s`, `host` AS `h` ".
+			"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($val).")".
+			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($val).")".
+			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($val).")".
+			" AND s.host_name=h.host_name)".
+			" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` ";
+			}
+			if (!empty($query)) {
+				$sql = implode(' UNION ', $query).$limit_str;
+			}
+		} else {
+			$value = '%'.$value.'%';
+			$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
+			"FROM `service` AS `s`, `host` AS `h` ".
+			"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value).")".
+			" AND s.host_name=h.host_name)".
+			" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` ".$limit_str;
+		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
 	}

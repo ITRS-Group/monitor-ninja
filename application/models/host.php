@@ -169,11 +169,28 @@ class Host_Model extends Model {
 		$host_ids = array_keys($auth_hosts);
 		if (empty($host_ids))
 			return false;
-		$value = '%'.$value.'%';
+
 		$host_ids = implode(',', $host_ids);
-		$sql = "SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($value).")".
-		" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($value).")".
-		" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") LIMIT ".$limit;
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+
+		if (is_array($value) && !empty($value)) {
+			$query = false;
+			$sql = false;
+			foreach ($value as $val) {
+				$val = '%'.$val.'%';
+				$query[] = "(SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($val).")".
+				" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($val).")".
+				" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($val).")) AND `id` IN (".$host_ids.") )";
+			}
+			if (!empty($query)) {
+				$sql = implode(' UNION ', $query).$limit_str;
+			}
+		} else {
+			$value = '%'.$value.'%';
+			$sql = "SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") ".$limit_str;
+		}
 		$host_info = $this->db->query($sql);
 		return $host_info;
 	}

@@ -81,12 +81,29 @@ class Hostgroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$value = '%'.$value.'%';
+
 		$obj_ids = implode(',', $obj_ids);
-		$sql = "SELECT DISTINCT * FROM `hostgroup` ".
-			"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
-			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) AND ".
-			"`id` IN (".$obj_ids.") LIMIT ".$limit;
+		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		if (is_array($value) && !empty($value)) {
+			$query = false;
+			$sql = false;
+			foreach ($value as $val) {
+				$val = '%'.$val.'%';
+				$query[] = "SELECT DISTINCT * FROM `hostgroup` ".
+				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($val).") OR ".
+				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).")) AND ".
+				"`id` IN (".$obj_ids.")  ";
+			}
+			if (!empty($query)) {
+				$sql = implode(' UNION ', $query).$limit_str;
+			}
+		} else {
+			$value = '%'.$value.'%';
+			$sql = "SELECT DISTINCT * FROM `hostgroup` ".
+				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
+				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) AND ".
+				"`id` IN (".$obj_ids.")  ".$limit_str;
+		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
 	}
