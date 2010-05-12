@@ -4,8 +4,8 @@ $label_na = $this->translate->_('N/A');
 
 <div class="widget left w98" id="search_result">
 	<!--<p><strong><?php echo $this->translate->_('Search result for'); ?> &quot;<?php echo $query ?>&quot;</strong>:</p>-->
-
-<?php echo isset($no_data) ? $no_data : '';
+<?php echo help::render('search_help') ?>&nbsp;
+<?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong>';
 # show host data if available
 if (isset($host_result) ) { ?>
 
