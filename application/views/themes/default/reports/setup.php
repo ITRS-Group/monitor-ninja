@@ -109,7 +109,7 @@ if (isset($report_info)) {
 					<td colspan="3">
 						<?php echo $this->translate->_('Filter:') ?><br />
 						<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
-						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>"
+						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>">
 					</td>
 				</tr>
 				<tr id="hostgroup_row">
