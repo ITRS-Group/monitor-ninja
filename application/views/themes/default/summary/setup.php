@@ -60,6 +60,13 @@ if (!empty($widgets)) {
 						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo $label_select ?>" />
 					</td>
 				</tr>
+				<tr id="filter_row">
+					<td colspan="3">
+						<?php echo $this->translate->_('Filter:') ?><br />
+						<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
+						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>">
+					</td>
+				</tr>
 				<tr id="hostgroup_row">
 					<td>
 						<?php echo $label_available.' '.$label_hostgroups ?><br />
