@@ -66,6 +66,20 @@ $(document).ready(function() {
 		fancybox_datepicker();
 		init_timepicker();
 	});
+
+	$('#filter_field').keyup(function() {
+		var val = $(this).attr('value').toLowerCase();
+		$("select[id$=_tmp] option").show(); // show all
+		$("select[id$=_tmp] option").filter(function(index) {
+			return $(this).val().toLowerCase().indexOf(val) == -1;
+		}).hide();
+	});
+
+	$('#clear_filter').click(function() {
+		$('#filter_field').attr('value', '');
+		$("select[id$=_tmp] option").show();
+		$('#filter_field').focus();
+	});
 });
 
 function fancybox_datepicker()
