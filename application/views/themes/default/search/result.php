@@ -123,7 +123,7 @@ if (isset($service_result) ) { ?>
 						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
-					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px" target="_blank">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}

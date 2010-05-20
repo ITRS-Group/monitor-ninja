@@ -13,7 +13,7 @@
 </div>
 
 <?php if (!empty($action_url)) { ?>
-<a href="<?php echo $action_url ?>" style="border: 0px">
+<a href="<?php echo $action_url ?>" style="border: 0px" target="_blank">
 			<?php echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')))?></a>
 <br />
 <strong><?php echo $label_action_url ?></strong>
@@ -21,7 +21,7 @@
 <br />
 
 <?php if (!empty($notes_url)) { ?>
-<a href="<?php echo $notes_url ?>" style="border: 0px">
+<a href="<?php echo $notes_url ?>" style="border: 0px" target="_blank">
 			<?php echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?></a>
 <br />
 <strong><?php echo $label_notes_url ?></strong>

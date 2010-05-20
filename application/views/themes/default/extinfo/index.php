@@ -106,9 +106,9 @@ if (!empty($widgets)) {
 			<td class="white" colspan="2"style="padding-top: 7px">
 				<?php
 					if (!empty($action_url)) {
-						echo '<a href="'.$action_url.'" style="border: 0px">';
+						echo '<a href="'.$action_url.'" style="border: 0px" target="_blank">';
 						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a href="'.$action_url.'">'.$label_action_url.'</a>';
+						echo '<a href="'.$action_url.'" target="_blank">'.$label_action_url.'</a>';
 					}
 					if (!empty($notes_url)) {
 						echo '&nbsp; <a target="_blank" href="'.$notes_url.'" style="border: 0px">';

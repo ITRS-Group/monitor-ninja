@@ -163,7 +163,7 @@ $c=0;
 						echo html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => 'Show performance graph', 'title' => 'Show performance graph')), array('style' => 'border: 0px')).' &nbsp;';
 				}
 				if (!empty($row->action_url)) {
-					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="_blank">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
