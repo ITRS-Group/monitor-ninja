@@ -71,11 +71,13 @@ if (isset($host_result) ) { ?>
 					echo html::image($this->add_path('icons/16x16/host-notes.png'), $this->translate->_('View extra host notes'));
 					echo '</a>';
 				}
+
+				$output = nl2br($host->output.' '.$host->long_output);
 			?>
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
-		<td style="white-space	: normal"><?php echo str_replace('','',$host->output.' '.$host->long_output) ?></td>
+		<td style="white-space	: normal"><?php echo str_replace('','', $output) ?></td>
 		<td><?php echo $host->display_name ?></td>
 	</tr>
 <?php	$i++; } ?>
@@ -133,7 +135,7 @@ if (isset($service_result) ) { ?>
 			?>
 		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
-		<td><?php echo $service->output ?> <?php echo $service->long_output ?></td>
+		<td><?php echo nl2br($service->output . ' ' . $service->long_output) ?></td>
 		<td><?php echo $service->display_name ?></td>
 	</tr>
 <?php	$i++;
