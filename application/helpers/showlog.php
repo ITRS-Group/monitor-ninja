@@ -51,6 +51,9 @@ class showlog_Core
 			 case 'service':
 				$cmd .= " --service='" . join("' --service='", $v) . "'";
 				break;
+			 case 'user':
+				$cmd .= " --user='$v'";
+				break;
 			 default:
 				break;
 			}
