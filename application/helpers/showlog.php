@@ -60,9 +60,13 @@ class showlog_Core
 		}
 		if (!empty($options['host_state_options'])) {
 			$cmd .= ' --host-states=' . join(array_keys($options['host_state_options']));
+		} else {
+			$cmd .= ' --host-states=n';
 		}
 		if (!empty($options['service_state_options'])) {
 			$cmd .= ' --service-states=' . join(array_keys($options['service_state_options']));
+		} else {
+			$cmd .= ' --service-states=n';
 		}
 
 		if (empty($options['parse_forward'])) {
