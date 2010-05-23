@@ -66,6 +66,15 @@
 				echo form::hidden('first', '');
 				echo form::hidden('last', '');
 				echo form::hidden('have_options', 1);
+				if (isset($options['host'])) {
+					foreach ($options['host'] as $h)
+					echo form::hidden('host[]', $h);
+				}
+				if (isset($options['service'])) {
+					foreach ($options['service'] as $s) {
+						echo form::hidden('service[]', $s);
+					}
+				}
 				echo form::submit('Update', 'Update');
 			?>
 			</td>
