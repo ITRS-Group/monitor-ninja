@@ -196,10 +196,16 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->disable_refresh = true;
 		if ($obj_name) {
 			$obj_type = 'host';
+			$service = urldecode( # check for service param passed in GET or POST
+					$this->input->get('service',
+						$this->input->post('service', false)
+					)
+				);
 			if (!is_array($obj_name)) {
-				if (strstr($obj_name, ';') !== false) {
+				if (strstr($obj_name, ';') !== false || !empty($service)) {
 					$obj_type = 'service';
 				}
+				$obj_name = !empty($service) ? $obj_name.';'.$service : $obj_name;
 				$obj_name = array($obj_name);
 			}
 			$this->options[$obj_type] = $obj_name;
