@@ -48,6 +48,9 @@ class showlog_Core
 			 case 'host':
 				$cmd .= " --host='" . join("' --host='", $v) . "'";
 				break;
+			 case 'service':
+				$cmd .= " --service='" . join("' --service='", $v) . "'";
+				break;
 			 default:
 				break;
 			}
