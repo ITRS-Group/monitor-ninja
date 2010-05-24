@@ -1205,7 +1205,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$report_type = empty($service) ? 'hosts' : 'services';
 		$breakdown = arr::search($_REQUEST, 'breakdown', 'hourly');
 		$link = 'host_name[]='.$host_name;
-		$link .= !empty($service) ?'&service_description[]='.$service : '';
+		$link .= !empty($service) ?'&service_description[]='.$host_name.';'.$service : '';
 
 		url::redirect(Router::$controller.'/generate?'.$link.'&report_type='.$report_type);
 	}
