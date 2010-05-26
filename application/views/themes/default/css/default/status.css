@@ -1,0 +1,169 @@
+tr.even td.ok,
+tr.odd td.ok,
+tr.even td.up,
+tr.odd td.up,
+tr.even td.critical,
+tr.odd td.critical,
+tr.even td.down,
+tr.odd td.down,
+tr.even td.warning,
+tr.odd td.warning,
+tr.even td.unreachable,
+tr.odd td.unreachable,
+tr.even td.unknown,
+tr.odd td.unknown,
+tr.even td.pending,
+tr.odd td.pending {
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+/* 12x12 *******************************************************************/
+tr.even td.small,
+tr.odd td.small {
+	height: 16px;
+	width: 12px;
+}
+
+tr.even td.ok.small,
+tr.odd td.ok.small,
+tr.even td.up.small,
+tr.odd td.up.small {
+	background-image: url(../../icons/12x12/shield-ok.png); /* shield-green */
+}
+
+tr.even td.critical.small,
+tr.odd td.critical.small,
+tr.even td.down.small,
+tr.odd td.down.small {
+	background-image: url(../../icons/12x12/shield-down.png); /* shield-red */
+}
+
+tr.even td.warning.small,
+tr.odd td.warning.small,
+tr.even td.unreachable.small,
+tr.odd td.unreachable.small {
+	background-image: url(../../icons/12x12/shield-warning.png); /* shield-yellow */
+}
+
+tr.even td.unknown.small,
+tr.odd td.unknown.small {
+	background-image: url(../../icons/12x12/shield-unknown.png); /* shield-orange */
+}
+
+tr.even td.pending.small,
+tr.odd td.pending.small {
+	background-image: url(../../icons/12x12/shield-pending.png); /* shield-grey */
+}
+
+
+/* 16x16 *******************************************************************/
+
+tr.even td.ok,
+tr.odd td.ok,
+tr.even td.up,
+tr.odd td.up {
+	background-image: url(../../icons/16x16/shield-ok.png); /* shield-green */
+}
+
+tr.even td.critical,
+tr.odd td.critical,
+tr.even td.down,
+tr.odd td.down {
+	background-image: url(../../icons/16x16/shield-down.png); /* shield-red */
+}
+
+tr.even td.warning,
+tr.odd td.warning,
+tr.even td.unreachable,
+tr.odd td.unreachable {
+	background-image: url(../../icons/16x16/shield-warning.png); /* shield-yellow */
+}
+
+tr.even td.unknown,
+tr.odd td.unknown {
+	background-image: url(../../icons/16x16/shield-unknown.png); /* shield-orange */
+}
+
+tr.even td.pending,
+tr.odd td.pending {
+	background-image: url(../../icons/16x16/shield-pending.png); /* shield-grey */
+}
+
+/* 24x24 *******************************************************************/
+
+tr.even td.medium,
+tr.odd td.medium {
+	height: 32px;
+	width: 24px;
+}
+
+tr.even td.ok.medium,
+tr.odd td.ok.medium,
+tr.even td.up.medium,
+tr.odd td.up.medium {
+	background-image: url(../../icons/24x24/shield-ok.png); /* shield-green */
+}
+
+tr.even td.critical.medium,
+tr.odd td.critical.medium,
+tr.even td.down.medium,
+tr.odd td.down.medium {
+	background-image: url(../../icons/24x24/shield-down.png); /* shield-red */
+}
+
+tr.even td.warning.medium,
+tr.odd td.warning.medium,
+tr.even td.unreachable.medium,
+tr.odd td.unreachable.medium {
+	background-image: url(../../icons/24x24/shield-warning.png); /* shield-yellow */
+}
+
+tr.even td.unknown.medium,
+tr.odd td.unknown.medium {
+	background-image: url(../../icons/24x24/shield-unknown.png); /* shield-orange */
+}
+
+tr.even td.pending.medium,
+tr.odd td.pending.medium {
+	background-image: url(../../icons/24x24/shield-pending.png); /* shield-grey */
+}
+
+/* 32x32 *******************************************************************/
+
+tr.even td.large,
+tr.odd td.large {
+	height: 40px;
+	width: 32px;
+}
+
+tr.even td.ok.large,
+tr.odd td.ok.large,
+tr.even td.up.large,
+tr.odd td.up.large {
+	background-image: url(../../icons/32x32/shield-ok.png); /* shield-green */
+}
+
+tr.even td.critical.large,
+tr.odd td.critical.large,
+tr.even td.down.large,
+tr.odd td.down.large {
+	background-image: url(../../icons/32x32/shield-down.png); /* shield-red */
+}
+
+tr.even td.warning.large,
+tr.odd td.warning.large,
+tr.even td.unreachable.large,
+tr.odd td.unreachable.large {
+	background-image: url(../../icons/32x32/shield-warning.png); /* shield-yellow */
+}
+
+tr.even td.unknown.large,
+tr.odd td.unknown.large {
+	background-image: url(../../icons/32x32/shield-unknown.png); /* shield-orange */
+}
+
+tr.even td.pending.large,
+tr.odd td.pending.large {
+	background-image: url(../../icons/32x32/shield-pending.png); /* shield-grey */
+}
