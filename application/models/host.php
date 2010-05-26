@@ -574,10 +574,15 @@ class Host_Model extends Model {
 						$auth_where_host.
 						$filter_sql.$hostprops_sql.$serviceprops_sql;
 
+				if ($this->host_list !== 'all' && !empty($host_str)) {
+					$auth_where = $auth_host_field.".id IN(".$host_str.") AND ";
+				} else {
+					$auth_where = '';
+				}
 				# query hosts and services through contact -> host
 				$sql_contact = "SELECT ".$field_list_tmp.
 					" FROM host AS auth_host, contact AS auth_contact, host_contact AS auth_hostcontact, service AS auth_service ".
-						"WHERE auth_host.id=auth_hostcontact.host ".
+						"WHERE ".$auth_where." auth_host.id=auth_hostcontact.host ".
 						"AND auth_hostcontact.contact=auth_contact.id ".
 						"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
 						"AND auth_service.host_name=auth_host.host_name".
@@ -586,7 +591,7 @@ class Host_Model extends Model {
 				# query hosts and services through contact -> service
 				$sql_svc_contact = "SELECT ".$field_list_tmp.
 					" FROM host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ".
-						"WHERE auth_service.id=auth_servicecontact.service ".
+						"WHERE ".$auth_where." auth_service.id=auth_servicecontact.service ".
 						"AND auth_servicecontact.contact=auth_contact.id ".
 						"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
 						"AND auth_service.host_name=auth_host.host_name".
