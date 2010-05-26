@@ -1,4 +1,3 @@
-<?php if(extension_loaded('zlib')){ob_start('ob_gzhandler');} header('Content-type: text/css; charset: UTF-8'); ?>
 #content{padding-left: 1%}
 #content.ie7conf { padding-left: 0px }
 table{border-collapse:collapse}
@@ -31,5 +30,3 @@ select {
 p.pagination { padding-top: 3px;}
 #extinfo_info,#nagios_commands { padding-left: 1%;}
 #filters{height: 130px;}
-
-<?php if(extension_loaded('zlib')){ob_end_flush();}?>
