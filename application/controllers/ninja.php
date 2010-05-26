@@ -120,10 +120,9 @@ class Ninja_Controller extends Template_Controller {
 			if (Kohana::config('auth.driver') == 'LDAP')
 				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
-			if (Reports_Model::_self_check() === true) {
-				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('/reports/?type=avail', 'availability');
-				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('/reports/?type=sla', 'sla');
-			}
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('/reports/?type=avail', 'availability');
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('/reports/?type=sla', 'sla');
+
 			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('/reports?show_schedules', 'schedulereports');
 
 			if (Kohana::config('config.cacti_path')) # @@@FIXME: Create a specific cacti logo, now re-using trends
