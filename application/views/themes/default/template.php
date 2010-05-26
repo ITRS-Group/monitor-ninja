@@ -17,8 +17,9 @@ if (isset($this->template->js_header))
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css') ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/print.css') ?>" media="print" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'common.css') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'status.css') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'print.css') ?>" media="print" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css.php') ?>" />
@@ -130,6 +131,7 @@ if (isset($this->template->js_header))
 				<ul>
 					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
+					<li onclick="window.location.reload()"><?php echo html::image($this->add_path('icons/16x16/refresh.png'),array('alt' => $this->translate->_('Refresh page'), 'title' => $this->translate->_('Refresh page'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo date('d F Y H:i:s'); ?></li>
 				</ul>
 			</div>
@@ -241,15 +243,15 @@ if (isset($this->template->js_header))
 							$contents = fread($handle, filesize($file));
 							fclose($handle);
 							return str_replace('VERSION=','',$contents);
+							}
 						}
-					}
 				       echo  Kohana::config('config.product_name') . ":" . get_version_info();
 					?>
 				</li>
 			</ul>
 		</div>
 
-		<div id="content">
+		<div id="content"<?php echo ($title == 'Configure') ? ' class="ie7conf"' : ''?>>
 			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
