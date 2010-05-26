@@ -167,6 +167,13 @@ $config['theme_path'] = 'themes/';
 $config['current_theme'] = 'default/';
 
 /**
+ * current_skin is the subdirectory to 'css' within the
+ * theme. a skin a simple way of altering colours etc
+ * in the gui.
+ */
+$config['current_skin'] = 'default/';
+
+/**
  * Do we use NACOMA (Nagios Configuration Manager)?
  * If path differs from the one below but still installed
  * you could simply change it.
