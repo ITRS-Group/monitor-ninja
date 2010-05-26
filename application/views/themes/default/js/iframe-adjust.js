@@ -1,6 +1,6 @@
 function adjust_height() {
-	$('#iframe').css('height', parseInt(document.documentElement.clientHeight-67)+'px');
-	$('#nagvis').css('height', parseInt(document.documentElement.clientHeight-67)+'px');
+	$('#iframe').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
+	$('#nagvis').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
 	$('body').css('overflow-y', 'hidden');
 }
 
