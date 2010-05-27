@@ -23,8 +23,8 @@
 					$i++;
 			?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
-				<td class="icon">
-					<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($details['current_state'])).'.png'),array('alt' => Current_status_Model::status_text($details['current_state']), 'title' => Current_status_Model::status_text($details['current_state']))) ?>
+				<td class="icon <?php echo strtolower(Current_status_Model::status_text($details['current_state'])); ?>">
+					&nbsp;<?php //echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($details['current_state'])).'.png'),array('alt' => Current_status_Model::status_text($details['current_state']), 'title' => Current_status_Model::status_text($details['current_state']))) ?>
 				</td>
 				<td><?php echo html::anchor('extinfo/details/host/'.$host, $host) ?></td>
 				<td class="icon">
