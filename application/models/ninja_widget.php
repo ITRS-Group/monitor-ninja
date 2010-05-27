@@ -268,7 +268,7 @@ class Ninja_widget_Model extends ORM
 			# some widgets should possibly be hidden
 			foreach ($settings_widgets as $id => $w) {
 				if (!array_key_exists($id, $user_widgets)) {
-					$inline_js .= "\$('#".$id."').hide();\n";
+					$inline_js .= "\$('#".$id."').removeClass('movable').hide();\n";
 				}
 			}
 		}
