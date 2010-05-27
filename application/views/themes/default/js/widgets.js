@@ -1,4 +1,11 @@
 $(document).ready(function() {
+	init_easywidgets();
+	$(".widget-place").bind('click', function() {
+		$("#page_settings").hide();
+	});
+});
+
+function init_easywidgets(){
 	$.fn.EasyWidgets({
 		behaviour : {
 			useCookies : false
@@ -31,6 +38,7 @@ $(document).ready(function() {
 			onClose: function(link, widget) {
 				var widget_name = '#' + widget[0].id;
 				$('#li_' + widget[0].id).removeClass().addClass('unselected');
+				$(widget_name).removeClass('movable');
 				save_widget_state('hide', widget_name);
 			},
 			onHide: function(widget) {
@@ -43,8 +51,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-});
-
+}
 
 
 var _global_save = 0; 		// timeout handler variable
@@ -162,10 +169,14 @@ function fetch_widget_order(restore)
 function control_widgets(id,item) {
 	if (item.className == 'selected') {
 		$.fn.HideEasyWidget(id);
+		$('#'+id).removeClass('movable');
 		item.className = 'unselected';
 	}
 	else {
+
+		$('#'+id).addClass('movable');
 		$.fn.ShowEasyWidget(id);
+		init_easywidgets();
 		item.className = 'selected';
 	}
 }
