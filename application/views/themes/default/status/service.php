@@ -76,14 +76,7 @@ $c=0;
 			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo ($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white' ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>
-			<?php
-				if ($curr_host != $row->host_name) {
-					echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->host_state)).'.png'),array('alt' => Current_status_Model::status_text($row->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($row->host_state)));
-				}
-
-			?>
-		</td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>&nbsp;</td>
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
@@ -107,14 +100,11 @@ $c=0;
 						}
 					?>
 				</span>
-
 		</td>
 		<?php } else { $c = 0;?>
 			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
 		<?php } ?>
-		<td class="icon">
-			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($row->current_state, 'service'))) ?>
-		</td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>">&nbsp;</td>
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></td>
 		<td style="white-space: normal">
 			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>

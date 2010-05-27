@@ -59,7 +59,7 @@
 			<?php $i=0; if (!empty($group->hostinfo))
 				foreach ($group->hostinfo as $host => $details) { ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($details['state_str']).'.png'), array('alt' => $details['state_str'], 'title' => $details['state_str'])); ?></td>
+				<td class="icon bl <?php echo strtolower($details['state_str']); ?>">&nbsp;</td>
 				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
 				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
 				<td>

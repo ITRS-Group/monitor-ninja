@@ -77,9 +77,7 @@ foreach ($result as $row) {
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></td>
-				<td class="icon bl">
-					&nbsp;<?php echo html::anchor('extinfo/details/host/'.$row->host_name,html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($row->current_state, Router::$method)).'.png'),array('alt' => Current_status_Model::status_text($row->current_state, Router::$method), 'title' => $t->_('Host status').': '.Current_status_Model::status_text($row->current_state, Router::$method))), array('style' => 'border: 0px')); ?>
-				</td>
+				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?>">&nbsp;</td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
 					<div style="float: right">
