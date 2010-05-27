@@ -333,19 +333,13 @@ class Command_Controller extends Authenticated_Controller
 		# we can bypass fetching all the objects we're authorized
 		# to see
 		$auth = new Nagios_auth_Model();
-		if (!strstr($cmd, '_HOST_')) {
+		if (strstr($cmd, '_HOST_') !== false) {
 			if ($auth->command_hosts_root) {
 				return true;
 			}
-			if (!$auth->authorized_for_host_commands) {
-				return false;
-			}
-		} elseif (!strstr($cmd, '_SVC_')) {
+		} elseif (strstr($cmd, '_SVC_') !== false) {
 			if ($auth->command_services_root) {
 				return true;
-			}
-			if (!$auth->authorized_for_service_commands) {
-				return false;
 			}
 		} else {
 			# must be a system command
