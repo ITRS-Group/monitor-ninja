@@ -35,10 +35,10 @@
 
 <div class="widget left w98" id="status_service">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
-<a href="#" id="select_multiple_items"><?php echo $this->translate->_('Select Multiple Items') ?></a><br />
+
 <?php echo form::open('command/multi_action'); ?><br />
 <table style="margin-bottom: 2px" id="service_table">
-<caption><?php echo $sub_title ?></caption>
+<caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a></caption>
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
@@ -49,13 +49,11 @@
 				foreach($header_links as $row) {
 					$n++;
 					if (isset($row['url_desc'])) {
-						if ($n == 3) { ?>
-							<th class="item_select"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
-				<?php	}
 						if ($n == 4)
 							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
 							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+						echo ($row['title'] == 'Service' ? '<div class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></div>' : '');
 						echo ($row['title'] == 'Status' ? '' : $row['title']);
 						echo '</th>';
 					}
@@ -105,9 +103,10 @@ $c=0;
 			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
 		<?php } ?>
 		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>">&nbsp;</td>
-		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></td>
 		<td style="white-space: normal">
-			<span style="float: left"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
+			<span style="float: left">
+				<div class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></div>
+				<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::specialchars($row->service_description)) ?></span>
 				<?php	if ($comments !== false && array_key_exists($row->host_name.';'.$row->service_description, $comments)) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description).'#comments',
