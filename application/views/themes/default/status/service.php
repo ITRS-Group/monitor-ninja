@@ -165,7 +165,12 @@ $c=0;
 			?>
 		</td>
 		<td style="width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+<?php	if (isset($is_svc_details) && $is_svc_details !== false) {
+			# make sure we print service duration and not host since we have a special query result here, i.e displaying servicegroup result ?>
+		<td style="width: 110px"><?php echo $row->service_duration != $row->service_cur_time ? time::to_string($row->service_duration) : $na_str ?></td>
+<?php	} else { ?>
 		<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+<?php	} ?>
 		<td style="text-align: center; width: 60px"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
 		<td style="white-space: normal">
 		<?php
