@@ -599,9 +599,13 @@ tr td {
 	white-space: nowrap;
 }
 tr td.dark  {
-	width: 40px;
+	width: 40px !important;
 	text-align: center;
 	padding: 5.50px 0px;
+}
+#mmm tr td.dark {
+	width: auto !important;
+	padding: 5.5px 2px;
 }
 tr td.white {
 	padding: 0px;
@@ -947,16 +951,16 @@ table.showlog tr td input[type=submit] {
 	margin-top: 10px;
 }
 
-tr.odd td.item_select,
-tr.even td.item_select {
-	width: 16px;
-	text-align: center;
-	border-right: 0px;
+div.item_select {
+	float: left;
+	margin-right: 5px;
+	margin-left: 2px;
 }
 
-th.item_select {
-	border-right: 0px;
+th div.item_select {
+ margin-left: 0px;
 }
+
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
 #widget-tac_services table tr th,
