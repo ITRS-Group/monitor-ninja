@@ -186,6 +186,8 @@ class Group_Model extends Model
 				h.notes_url AS host_notes_url,
 				s.id AS service_id,
 				s.current_state AS service_state,
+				(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,
+				UNIX_TIMESTAMP() AS service_cur_time,
 				s.active_checks_enabled,
 				s.current_state,
 				s.problem_has_been_acknowledged,
