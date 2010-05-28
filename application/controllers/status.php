@@ -352,6 +352,8 @@ class Status_Controller extends Authenticated_Controller {
 		$host_model->serviceprops = $service_props;
 		$host_model->hostprops = $hostprops;
 
+		$this->template->content->is_svc_details = false;
+
 		if (!empty($group_type)) {
 			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
 			$shown .= " '".$name."'";
@@ -366,6 +368,7 @@ class Status_Controller extends Authenticated_Controller {
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
 				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
+				$this->template->content->is_svc_details = true;
 			} else {
 				$host_model->set_host_list($group_hosts);
 				$result = $host_model->get_host_status();
