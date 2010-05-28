@@ -195,7 +195,9 @@ function restore_widgets()
 		var item_id = $(this).attr('id');
 		var widget_id = item_id.replace('li_', '');
 		$('#' + item_id).removeClass().addClass('selected');
-		$('#' + widget_id).show();
+		$.fn.ShowEasyWidget(widget_id);
+		$('#'+widget_id).addClass('movable');
+		init_easywidgets();
 	});
 	fetch_widget_order(true);
 }
