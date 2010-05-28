@@ -946,6 +946,17 @@ table.showlog tr td input[type=submit] {
 	background-color: #fafafa;
 	margin-top: 10px;
 }
+
+tr.odd td.item_select,
+tr.even td.item_select {
+	width: 16px;
+	text-align: center;
+	border-right: 0px;
+}
+
+th.item_select {
+	border-right: 0px;
+}
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
 #widget-tac_services table tr th,
@@ -1279,6 +1290,9 @@ table.healt,
 #quickbar{
 	border-color: #dcdcdc;
 	border-color: #d0d0d0;
+}
+#host_table th.header:first-child {
+	border-left: 1px solid #cdcdcd;
 }
 
 #menu ul li.hr {
