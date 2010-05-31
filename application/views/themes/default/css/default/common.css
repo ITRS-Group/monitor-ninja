@@ -951,14 +951,16 @@ table.showlog tr td input[type=submit] {
 	margin-top: 10px;
 }
 
-div.item_select {
-	float: left;
-	margin-right: 5px;
+tr.odd td.item_select,
+tr.even td.item_select {
 	margin-left: 2px;
+	width: 1px;
+	border-right: 0px;
 }
 
-th div.item_select {
+th.item_select {
  margin-left: 0px;
+ border-right: 0px !important;
 }
 
 /* widget thihngys  *******************************************************************************/
