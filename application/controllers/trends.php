@@ -906,7 +906,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 				$host_name = $avail_data['values']['HOST_NAME'];
 				$avail_link = url::site().'reports/generate?type=avail'.
-				"&host_name[]=". $host_name. "&report_type=hosts" .
+				"&host_name[]=". $host_name .
 				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
 				$avail_link_icon = 'availability';
 				$notification_icon = 'notify';
@@ -916,7 +916,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
-					$avail_link .= '&service_description[]=' . "$host_name;$service_description";
+					$avail_link .= '&service_description[]=' . "$host_name;$service_description&report_type=services";
 					$avail_link_name = $t->_('Availability Report For This Service');
 
 					$notification_link_name = $t->_('Notifications For This Service');
@@ -932,6 +932,7 @@ class Trends_Controller extends Authenticated_Controller {
 				} else {
 					$service_description = false;
 					$avail_link_name = $t->_('Availability Report For This Host');
+					$avail_link .= "&report_type=hosts";
 
 					$statuslink = 'status/service?name='.$host_name;
 					$trend_links[$t->_('Status Detail For This Host')] = array($statuslink, $status_icon);
