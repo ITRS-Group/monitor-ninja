@@ -38,8 +38,8 @@
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<?php echo form::open('command/multi_action'); ?><br />
 	<table id="host_table" style="margin-bottom: 10px">
-	<caption style="margin-top: -15px"><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
-		<thead>
+	<caption style="margin-top: 0px"><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
+
 			<tr>
 				<?php
 					$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
@@ -48,22 +48,19 @@
 					foreach($header_links as $row) {
 						$n++;
 						if (isset($row['url_desc'])) {
-							//if ($n == 2)
-								//echo '<th class="item_select" style="border-right: 0px"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></th>';
-							if ($n == 3)
-								echo '<th class="no-sort">'.$t->_('Actions').'</th>';
+							echo ($n == 2 ? '<th class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></th>' : '')."\n";
+							echo ($n == 3 ? '<th class="no-sort">'.$t->_('Actions').'</th>' : '')."\n";
 							echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
-								'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">';
-							echo ($row['title'] == 'Host' ? '<div class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></div>' : '');
-							echo ($row['title'] == 'Status' ? '' : $row['title']);
-							echo '</th>';
+								'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">'."\n";
+							echo ($n == 1 ? '' : $row['title']);
+							echo '</th>'."\n";
 						}
 					}
 				?>
 				<th><?php echo $t->_('Status information') ?></th>
 			</tr>
-		</thead>
-		<tbody>
+
+
 		<?php
 # Do not, under ANY circumstances, remove the if-clause below.
 # Doing so results in a Kohana error if no hosts are found. That
@@ -78,8 +75,9 @@ foreach ($result as $row) {
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
 				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?>">&nbsp;</td>
+				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></td>
 				<td>
-					<div style="float: left"><div class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></div><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
+					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
 					<div style="float: right">
 					<?php
 						$properties = 0;
@@ -151,7 +149,7 @@ foreach ($result as $row) {
 				</td>
 			</tr>
 			<?php	} ?>
-		</tbody>
+
 	</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
