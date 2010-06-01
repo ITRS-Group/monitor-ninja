@@ -93,9 +93,30 @@ class Notifications_Controller extends Authenticated_Controller {
 		$offset = $pagination->sql_offset;
 		$result = $note_model->show_notifications($items_per_page, $offset, false);
 
+		$header_link_fields = array(
+			array('title' => $t->_('Host'),'sort_field_db' => 'host_name'),
+			array('title' => $t->_('Service'),'sort_field_db' => 'service_description'),
+			array('title' => $t->_('Time'), 'sort_field_db' => 'start_time'),
+			array('title' => $t->_('Contact'), 'sort_field_db' => 'contact_name'),
+			array('title' => $t->_('Notification command'), 'sort_field_db' => 'command_name'),
+			array('title' => $t->_('Information'), 'sort_field_db' => 'output')
+		);
+
+		$header = false;
+		$i = 0;
+		foreach ($header_link_fields as $field) {
+			$header_links[$i]['title'] = $field['title'];
+			$header_links[$i]['url_asc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['alt_asc'] = $t->_('Sort by').' '.$t->_('last').' '.$field['title'].' ('.$t->_('ascending').')';
+			$header_links[$i]['url_desc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['alt_desc'] = $t->_('Sort by').' '.$field['title'].' ('.$t->_('descending').')';
+			$i++;
+		}
+
 		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
+		$this->template->content->header_links = $header_links;
 		$this->template->content->noheader = $noheader;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
@@ -147,8 +168,29 @@ class Notifications_Controller extends Authenticated_Controller {
 		$offset = $pagination->sql_offset;
 		$result = $note_model->show_notifications($items_per_page, $offset, false);
 
+		$header_link_fields = array(
+			array('title' => $t->_('Host'),'sort_field_db' => 'host_name'),
+			array('title' => $t->_('Service'),'sort_field_db' => 'service_description'),
+			array('title' => $t->_('Time'), 'sort_field_db' => 'start_time'),
+			array('title' => $t->_('Contact'), 'sort_field_db' => 'contact_name'),
+			array('title' => $t->_('Notification command'), 'sort_field_db' => 'command_name'),
+			array('title' => $t->_('Information'), 'sort_field_db' => 'output')
+		);
+
+		$header = false;
+		$i = 0;
+		foreach ($header_link_fields as $field) {
+			$header_links[$i]['title'] = $field['title'];
+			$header_links[$i]['url_asc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['alt_asc'] = $t->_('Sort by').' '.$t->_('last').' '.$field['title'].' ('.$t->_('ascending').')';
+			$header_links[$i]['url_desc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['alt_desc'] = $t->_('Sort by').' '.$field['title'].' ('.$t->_('descending').')';
+			$i++;
+		}
+
 		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
+		$this->template->content->header_links = $header_links;
 		$this->template->content->data = $result;
 		$this->template->content->noheader = $noheader;
 		$this->template->content->host_name = $host_name;

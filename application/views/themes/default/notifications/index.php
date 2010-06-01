@@ -12,17 +12,33 @@
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div><br />
 	<table id="host_table" style="margin-top: 0px;">
-		<caption style="margin-top: -15px;">
+		<caption style="margin-top: 15px;">
 			<span style="float: left; display: block; margin-top: 2px;"><?php echo (isset($label_title)) ? $label_title : $t->_('Notifications'); ?></span>
 		</caption>
 		<tr>
 			<th class="headerNone"><?php echo $t->_('&nbsp;'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Host'); ?></th>
+			<!--<th class="headerNone"><?php echo $t->_('Host'); ?></th>
 			<th class="headerNone"><?php echo $t->_('Service'); ?></th>
 			<th class="headerNone"><?php echo $t->_('Time'); ?></th>
 			<th class="headerNone"><?php echo $t->_('Contact'); ?></th>
 			<th class="headerNone"><?php echo $t->_('Notification Command'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Information'); ?></th>
+			<th class="headerNone"><?php echo $t->_('Information'); ?></th>-->
+
+			<?php
+				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
+				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
+				$n = 0;
+				//print_r($header_links);
+				foreach($header_links as $row) {
+					$n++;
+					if (isset($row['url_desc'])) {
+						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
+							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
+						echo $row['title'];
+						echo '</th>';
+					}
+				}
+			?>
 		</tr>
 		<?php
 			$i = 0;
