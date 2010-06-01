@@ -2,10 +2,11 @@ var default_menu_state = 'show';
 function collapse_menu(action) {
 
 	if (action == 'hide') {
-		var menuwidth = ($('#menu').css('height') >= parseInt(document.documentElement.clientHeight - 68)+'px') ? 50 : 37;
+		//var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight - 67)+'px') ? 50 : 37;
+		var menuwidth = (parseInt($('#menu ul').css('height')+68) > document.documentElement.clientHeight) ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
 		$('#content').css('margin-left', parseInt(menuwidth+2)+'px');
-		$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
+		//$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
 		$('#close-menu').hide();
 		$('#show-menu').show();
 		$('.ninja_menu_links').hide();
@@ -16,7 +17,7 @@ function collapse_menu(action) {
 	if (action == 'show') {
 		$('#menu').css('width', '185px');
 		$('#content').css('margin-left', '187px');
-		$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
+		//$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
@@ -68,7 +69,7 @@ function collapse_section(section){
 	}
 
 	// wait some for menu to get it's correct height
-	setTimeout("scroll_control()", 100)
+	setTimeout("scroll_control()", 210)
 }
 
 /**
