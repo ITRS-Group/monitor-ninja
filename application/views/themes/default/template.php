@@ -251,8 +251,8 @@ if (isset($this->template->js_header))
 			</ul>
 		</div>
 
-		<div id="content"<?php echo ($title == 'Configure') ? ' class="ie7conf"' : ''?>>
-			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); } ?>
+		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
+			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); }?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 	</body>
