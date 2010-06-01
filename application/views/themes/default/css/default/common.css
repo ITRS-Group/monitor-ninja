@@ -882,10 +882,8 @@ th.enabled_monfeat em {
 	margin-top: 2px;
 	margin-bottom: -2px;
 	background: transparent url(../../icons/arrow-down.gif) right no-repeat;
-	width: 70px;
+	/*width: 70px;*/
 	height: 16px;
-	padding-left: 20px
-
 }
 th.enabled_monfeat em {
 	width: 65px;
