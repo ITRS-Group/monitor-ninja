@@ -141,7 +141,7 @@ $c=0;
 			?>
 			</span><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 		</td>
-		<td class="icon" style="text-align: left">
+		<td>
 			<?php
 				if (nacoma::link()===true)
 					echo nacoma::link('configuration/configure/service/'.$row->host_name.'?service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';

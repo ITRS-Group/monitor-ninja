@@ -116,7 +116,7 @@ foreach ($result as $row) {
 					echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
-				<td class="icon" style="text-align: left">
+				<td style="width: 105px">
 					<?php
 						echo html::anchor('status/service/'.$row->host_name,html::image($this->add_path('icons/16x16/service-details.gif'), array('alt' => $t->_('View service details for this host'), 'title' => $t->_('View service details for this host'))), array('style' => 'border: 0px')).' &nbsp;';
 						if (nacoma::link()===true)

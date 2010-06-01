@@ -71,7 +71,7 @@
 						}
 					?>
 				</td>
-				<td class="icon" style="text-align: left">
+				<td style="text-align: left; width: 133px">
 					<?php
 						echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
 						echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'].'&nbsp;' : '';
