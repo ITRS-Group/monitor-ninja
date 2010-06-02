@@ -17,18 +17,10 @@
 		</caption>
 		<tr>
 			<th class="headerNone"><?php echo $t->_('&nbsp;'); ?></th>
-			<!--<th class="headerNone"><?php echo $t->_('Host'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Service'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Time'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Contact'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Notification Command'); ?></th>
-			<th class="headerNone"><?php echo $t->_('Information'); ?></th>-->
-
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
 				$n = 0;
-				//print_r($header_links);
 				foreach($header_links as $row) {
 					$n++;
 					if (isset($row['url_desc'])) {
