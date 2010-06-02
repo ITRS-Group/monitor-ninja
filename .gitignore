@@ -8,3 +8,4 @@ generated/*
 *.kpf
 *~
 Documentation
+application/widgets/cloudinfo
