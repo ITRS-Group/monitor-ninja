@@ -95,14 +95,14 @@ class Hostgroup_Model extends ORM
 				"`id` IN (".$obj_ids.")  ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).$limit_str;
+				$sql = implode(' UNION ', $query).' ORDER BY hostgroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT DISTINCT * FROM `hostgroup` ".
 				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
 				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) AND ".
-				"`id` IN (".$obj_ids.")  ".$limit_str;
+				"`id` IN (".$obj_ids.") ORDER BY hostgroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;

@@ -183,13 +183,13 @@ class Host_Model extends Model {
 				" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($val).")) AND `id` IN (".$host_ids.") )";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).$limit_str;
+				$sql = implode(' UNION ', $query).' ORDER BY host_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") ".$limit_str;
+			" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") ORDER BY host_name ".$limit_str;
 		}
 		$host_info = $this->db->query($sql);
 		return $host_info;

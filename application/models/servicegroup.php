@@ -96,14 +96,14 @@ class Servicegroup_Model extends ORM
 			"AND `id` IN (".$obj_ids.") ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).$limit_str;
+				$sql = implode(' UNION ', $query).' ORDER BY servicegroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
 			"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
 			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) ".
-			"AND `id` IN (".$obj_ids.") ".$limit_str;
+			"AND `id` IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
