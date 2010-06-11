@@ -242,7 +242,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Service Description'),
 					$t->_('Max. Check Attempts'),
 					$t->_('Normal Check Interval'),
-					$t->_('Retry Check Interal'),
+					$t->_('Retry Check Interval'),
 					$t->_('Check Command'),
 					$t->_('Check Period'),
 					$t->_('Parallelize'),
@@ -283,7 +283,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= '<a name="'.$row->service_description.'"></a>'.$row->service_description;
 						$result[$i][]= $row->max_check_attempts;
 						$result[$i][]= time::to_string($row->check_interval*60);
-						$result[$i][]= time::to_string($row->retry_interval);
+						$result[$i][]= time::to_string($row->retry_interval*60);
 						$result[$i][]= $row->check_command;
 						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
 						$result[$i][]= $row->parallelize_check == 1 ? $t->_('Yes') : $t->_('No');
