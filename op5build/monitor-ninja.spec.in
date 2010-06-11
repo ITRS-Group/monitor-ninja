@@ -40,6 +40,10 @@ sed -i \
 
 cp op5build/login.png \
 	%buildroot%prefix/application/views/themes/default/css/default/images
+cp op5build/favicon.ico
+	%buildroot%prefix/application/views/themes/default/icons/16x16/
+cp op5build/icon.png
+	%buildroot%prefix/application/views/themes/default/icons/
 
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
