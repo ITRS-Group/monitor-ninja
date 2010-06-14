@@ -257,24 +257,24 @@ class Service_Model extends Model
 				$val = '%'.$val.'%';
 				$query[] = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
 			"FROM `service` AS `s`, `host` AS `h` ".
-			"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($val).")".
+			"WHERE ((LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($val).")".
-			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($val).")".
-			" AND s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` ";
+			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($val)."))".
+			" AND (s.host_name=h.host_name)".
+			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id` ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY s.host_name, s.service_description '.$limit_str;
+				$sql = implode(' UNION ', $query).$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
 			"FROM `service` AS `s`, `host` AS `h` ".
-			"WHERE (LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
+			"WHERE ((LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value).")".
-			" AND s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.") GROUP BY `s`.`id` ORDER BY s.host_name, s.service_description ".$limit_str;
+			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value)."))".
+			" AND (s.host_name=h.host_name)".
+			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id` ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
