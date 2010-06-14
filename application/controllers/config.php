@@ -174,7 +174,7 @@ class Config_Controller extends Authenticated_Controller {
 					    }
 						$result[$i][]= $row->max_check_attempts;
 						$result[$i][]= time::to_string($row->check_interval*60);
-						$result[$i][]= time::to_string($row->retry_interval);
+						$result[$i][]= time::to_string($row->retry_interval*60);
 						$result[$i][]= html::anchor(Router::$controller.'/?type=commands#'.$row->check_command, $row->check_command);
 						$result[$i][]= html::anchor(Router::$controller.'/?type=timeperiods#'.$row->check_period, $row->check_period);
 						$result[$i][]= $row->obsess_over_host == 1 ? $t->_('Yes') : $t->_('No');
