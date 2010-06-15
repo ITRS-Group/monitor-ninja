@@ -51,20 +51,21 @@ $img_url = Kohana::config('config.site_domain').$this->add_path('css/default/ima
 	ul.thumbnails li a.view img,
 	ul.thumbnails li a.view2 img,
 	ul.thumbnails li a.create img {
-		padding: 0px 3px;
+		padding: 3px;
 		display: block;
 	}
 	ul.thumbnails li a.delete,
 	ul.thumbnails li a.edit {
 		position: relative;
 		float: right;
-		left: -16px;
-		margin-top: 3px;
+		left: -17px;
+		top: 4px;
+		margin-top: 0px;
 		margin-bottom: -15px;
 		z-index: 100;
 	}
 	ul.thumbnails li a.delete {
-		left: 9px;
+		left: -3px;
 	}
 	ul.thumbnails li.create form {
 		padding: 10px 5px;
