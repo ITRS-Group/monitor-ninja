@@ -16,6 +16,14 @@ class Program_status_Model extends Model
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
+	public function list_program_status()
+	{
+		$db = new Database();
+		$sql = "SELECT instance_name, last_alive, is_running FROM program_status order by instance_name";
+		$res = $db->query($sql);
+		return (!$res || count($res) == 0) ? false : $res;
+	}
+
 	/**
 	*	Check last_alive from program_status
 	*	to detect when data was updated
