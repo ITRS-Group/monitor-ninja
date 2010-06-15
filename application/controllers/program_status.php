@@ -1,6 +1,6 @@
 	<?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Config controller
+ * Program status controller
  * Requires authentication
  *
  * @package	NINJA
