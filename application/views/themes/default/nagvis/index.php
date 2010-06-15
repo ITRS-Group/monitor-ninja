@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $site = Kohana::config('config.site_domain');
-$img_url = $this->add_path('css/default/images');
+$img_url = Kohana::config('config.site_domain').$this->add_path('css/default/images');
 ?>
 
 <iframe id="nagvis" name="nagvis" src="/nagvis/nagvis/" style="display: none;"></iframe>
@@ -51,7 +51,7 @@ $img_url = $this->add_path('css/default/images');
 	ul.thumbnails li a.view img,
 	ul.thumbnails li a.view2 img,
 	ul.thumbnails li a.create img {
-		padding: 3px;
+		padding: 0px 3px;
 		display: block;
 	}
 	ul.thumbnails li a.delete,
@@ -67,7 +67,7 @@ $img_url = $this->add_path('css/default/images');
 		left: 9px;
 	}
 	ul.thumbnails li.create form {
-		margin: 10px 5px;
+		padding: 10px 5px;
 	}
 	ul.thumbnails li span.create {
 		display: block;
