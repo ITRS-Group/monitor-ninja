@@ -332,7 +332,7 @@ class Status_Controller extends Authenticated_Controller {
 		# build header links array
 		foreach ($header_link_fields as $fields) {
 			if (sizeof($fields) > 1) {
-				$header_links[] = $this->header_links('service', $name, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props);
+				$header_links[] = $this->header_links('service', $name, $fields['title'], Router::$method, $fields['sort_field_db'], $fields['sort_field_str'], $hoststatustypes, $servicestatustypes, $service_props,$hostprops);
 			} else {
 				$header_links[] = $this->header_links('service', $name, $fields['title']);
 			}
@@ -1503,7 +1503,8 @@ $label_view_for = $this->translate->_('For this service group');
 			$sort_field_str=false,
 			$host_status=false,
 			$service_status=false,
-			$service_props=false)
+			$service_props=false,
+			$host_props=false)
 	{
 
 		$type = trim($type);
@@ -1532,10 +1533,10 @@ $label_view_for = $this->translate->_('For this service group');
 			case 'service':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
-					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$sort_field_db;
+					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&hostprops='.(int)$host_props.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$sort_field_db;
 					$header['img_asc'] = $this->img_sort_up;
 					$header['alt_asc'] = $lable_sort_by.' '.$lable_last.' '.$sort_field_str.' ('.$lable_ascending.')';
-					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$sort_field_db;
+					$header['url_desc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&hostprops='.(int)$host_props.'&servicestatustypes='.$service_status.'&service_props='.(int)$service_props.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$sort_field_db;
 					$header['img_desc'] = $this->img_sort_down;
 					$header['alt_desc'] = $lable_sort_by.' '.$sort_field_str.' ('.$lable_descending.')';
 				}
