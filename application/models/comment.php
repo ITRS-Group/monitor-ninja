@@ -33,7 +33,7 @@ class Comment_Model extends Model {
 			: " AND c.service_description=".$db->escape($service);
 
 		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false ? "" : " LIMIT " . $offset.", ".$num_per_page;
+		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
@@ -108,7 +108,7 @@ class Comment_Model extends Model {
 			: " AND c.service_description!='' ";
 
 		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false ? "" : " LIMIT " . $offset.", ".$num_per_page;
+		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
 		if ($host_query === true) {
 			# don't use auth_host fields etc since

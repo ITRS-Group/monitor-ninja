@@ -28,12 +28,9 @@ class Scheduling_queue_Model extends Model {
 
 			# only use LIMIT when NOT counting
 			if ($offset !== false)
-				$offset_limit = $count!==false ? "" : " LIMIT " . $offset.", ".$num_per_page;
+				$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 			else
 				$offset_limit = '';
-				//$offset_limit = $count!==false ? "" : " LIMIT ".$num_per_page;
-
-			//echo 'offset_limit: '.$offset_limit;
 
 			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled
 							FROM service

@@ -192,7 +192,7 @@ class Service_Model extends Model
 		}
 		$obj_ids = self::authorized_services();
 		$db = new Database();
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		$value = '%' . $value . '%';
 		$sql = "SELECT * FROM service WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
 		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
@@ -216,7 +216,7 @@ class Service_Model extends Model
 		#$sql = "SELECT * FROM service WHERE ";
 		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
 		"FROM `service` AS `s`, `host` AS `h` WHERE ";
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
 		foreach ($host_name as $host) {
 			$host = '%' . $host . '%';
@@ -249,7 +249,7 @@ class Service_Model extends Model
 		if (empty($obj_ids))
 			return false;
 
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;

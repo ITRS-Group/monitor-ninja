@@ -145,7 +145,7 @@ class Host_Model extends Model {
 			$auth_hosts = $this->auth->get_authorized_hosts();
 		}
 		$host_ids = array_keys($auth_hosts);
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
 			$db = new Database();
 		} else {
@@ -171,7 +171,7 @@ class Host_Model extends Model {
 			return false;
 
 		$host_ids = implode(',', $host_ids);
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 
 		if (is_array($value) && !empty($value)) {
 			$query = false;
@@ -624,7 +624,7 @@ class Host_Model extends Model {
 
 		}
 		if ($this->count == false && $this->num_per_page !== false && $this->offset !== false) {
-			$sql .= ' LIMIT '.$this->offset.', '.$this->num_per_page;
+			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 		}
 		$result = $this->db->query($sql);
 		if ($this->count === true) {

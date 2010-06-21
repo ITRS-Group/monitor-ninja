@@ -29,7 +29,7 @@ class Notifications_Model extends Model {
 
 			# only use LIMIT when NOT counting
 			if ($offset !== false)
-				$offset_limit = $count!==false ? "" : " LIMIT " . $offset.", ".$num_per_page;
+				$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 			else
 				$offset_limit = '';
 				//$offset_limit = $count!==false ? "" : " LIMIT ".$num_per_page;

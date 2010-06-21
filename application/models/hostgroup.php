@@ -61,7 +61,7 @@ class Hostgroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		$value = '%' . $value . '%';
 		$sql = "SELECT * FROM hostgroup WHERE LCASE(".$field.") LIKE LCASE(".$this->db->escape($value).") ".
 		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
@@ -83,7 +83,7 @@ class Hostgroup_Model extends ORM
 		$obj_ids = array_keys($auth_objects);
 
 		$obj_ids = implode(',', $obj_ids);
-		$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		$limit_str = sql::limit_parse($limit);
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
