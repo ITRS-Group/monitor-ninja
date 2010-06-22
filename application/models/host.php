@@ -491,7 +491,12 @@ class Host_Model extends Model {
 				$auth_service_field_host = 'auth_service';
 				$auth_host_field_host = $host_query_parts['host_field'];
 				# match authorized services against service.host_name
-				$auth_where_host = " WHERE ".sprintf($host_query_parts['where'], $auth_service_field_host.'.host_name');
+				if (isset($host_str) && !empty($host_str)) {
+					$auth_where_xtra = $auth_host_field_host.".id IN(".$host_str.") AND ";
+				} else {
+					$auth_where_xtra = '';
+				}
+				$auth_where_host = " WHERE ".$auth_where_xtra.sprintf($host_query_parts['where'], $auth_service_field_host.'.host_name');
 			} else {
 				$auth_service_field_host = 's';
 				$auth_host_field_host = 'h';
