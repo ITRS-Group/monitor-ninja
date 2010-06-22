@@ -247,6 +247,12 @@ class Group_Model extends Model
 				return false;
 		}
 
+		$db = new Database();
+		$all_sql = $name != 'all' ? "sg.".$type."group_name=".$db->escape($name)." AND" : '';
+
+		# we need to match against different field depending on if host- or servicegroup
+		$member_match = $type == 'service' ? " s.id=ssg.".$type." AND " : " h.id=ssg.".$type." AND ";
+
 		# check for authentication
 		if ($id !== false) {
 			# we have an ID
@@ -275,5 +281,118 @@ class Group_Model extends Model
 		$db = new Database();
 		$result = $db->query($sql);
 		return $result;
+	}
+
+	/**
+	* Fetch state breakdown for host- or servicegroup
+	* Using contact_access to solve access rights
+	* @param $grouptype str host|service
+	* @param $what str host|service
+	* @param $name str 'all'|group name
+	*/
+	public function state_breakdown($grouptype='host', $what='host', $name=false)
+	{
+		$name = trim($name);
+		$auth = new Nagios_auth_Model();
+
+		$name = empty($name) ? 'all' : $name;
+		$db = new Database();
+		$contact_id = $auth->get_contact_id();
+		$all_sql = $name != 'all' ? "sg.".$grouptype."group_name=".$db->escape($name)." AND " : '';
+
+		$auth_control = '';
+
+		if ($grouptype == 'host') {
+			if (!$auth->view_hosts_root) {
+				$auth_control = "AND ".
+				"ca.contact=".(int)$contact_id." AND ".
+				"h.id=ca.host ";
+			}
+
+			switch ($what) {
+				case 'host':
+					$sql = "SELECT
+						COUNT(DISTINCT h.id) AS cnt,h.current_state ".
+						"FROM ".
+						"host h, ".
+						$grouptype."group sg, ".
+						$grouptype."_".$grouptype."group ssg, ".
+						"contact_access ca ".
+						"WHERE ".$all_sql.
+						"ssg.".$grouptype."group = sg.id AND ".
+						"h.id=ssg.host ".$auth_control.
+						"GROUP BY ".
+						"h.current_state ".
+						"ORDER BY ".
+						"h.current_state;";
+					break;
+				case 'service':
+					$sql = "SELECT
+						COUNT(DISTINCT s.id) AS cnt, s.current_state ".
+						"FROM ".
+						"service s, ".
+						"host h, ".
+						$grouptype."group sg, ".
+						$grouptype."_".$grouptype."group ssg, ".
+						"contact_access ca ".
+						"WHERE ".$all_sql.
+						"ssg.".$grouptype."group = sg.id AND ".
+						"h.id=ssg.host AND ".
+						"h.host_name=s.host_name ".$auth_control.
+						"GROUP BY ".
+						"s.current_state ".
+						"ORDER BY ".
+						"s.current_state;";
+					break;
+			}
+		} elseif ($grouptype == 'service') {
+			if ($auth->view_hosts_root || $auth->view_services_root) {
+				$auth_control = " AND ca.contact=".(int)$contact_id." AND ".
+				"s.id=ca.service ";
+			}
+
+			switch ($what) {
+				case 'host':
+					$sql = "SELECT
+						COUNT(DISTINCT h.id) AS cnt,h.current_state ".
+						"FROM ".
+						"host h, ".
+						"service s, ".
+						$grouptype."group sg, ".
+						$grouptype."_".$grouptype."group ssg, ".
+						"contact_access ca ".
+						"WHERE ".$all_sql.
+						"ssg.".$grouptype."group = sg.id AND ".
+						"s.id=ssg.service AND ".
+						"h.host_name=s.host_name ".$auth_control.
+						"GROUP BY ".
+						"h.current_state ".
+						"ORDER BY ".
+						"h.current_state;";
+					break;
+				case 'service':
+					$sql = "SELECT
+						COUNT(DISTINCT s.id) AS cnt, s.current_state ".
+						"FROM ".
+						"service s, ".
+						"host h, ".
+						$grouptype."group sg, ".
+						$grouptype."_".$grouptype."group ssg, ".
+						"contact_access ca ".
+						"WHERE ".$all_sql.
+						"ssg.".$grouptype."group = sg.id AND ".
+						"s.id=ssg.service AND ".
+						"h.host_name=s.host_name AND ".
+						"s.id=ca.service ".$auth_control.
+						"GROUP BY ".
+						"s.current_state ".
+						"ORDER BY ".
+						"s.current_state;";
+					break;
+			}
+		}
+		#echo $sql."<br />";
+		$result = $db->query($sql);
+		return count($result)>0 ? $result : false;
 	}
 }
