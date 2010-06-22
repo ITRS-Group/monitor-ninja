@@ -33,7 +33,7 @@
 			<?php	 $i++; } ?>
 			<tr>
 				<td class="status icon" style="padding: 4px 7px"><?php echo html::image($this->add_path('icons/12x12/shield-info.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px')); ?></td>
-				<td><?php echo html::anchor('status/'.$target_method.'/'.$host, html::specialchars($total_hosts.' Hosts')) ?></td>
+				<td><?php echo html::anchor('status/'.$target_method.'/'.$host.$grouptype_arg, html::specialchars($total_hosts.' Hosts')) ?></td>
 				<td class="status icon" style="padding: 4px 7px">
 					<?php
 						if ($total_problems > 0)
@@ -42,7 +42,7 @@
 							echo html::image($this->add_path('icons/12x12/shield-not-warning.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
 					?>
 				</td>
-				<td><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), html::specialchars($total_problems.' Problems')) ?></td>
+				<td><?php echo html::anchor('status/host/'.$host.'/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).$grouptype_arg, html::specialchars($total_problems.' Problems')) ?></td>
 			</tr>
 		</table>
 
@@ -61,7 +61,7 @@
 			<?php echo ($i%2 == 1) ? '</tr>' : ''; ?>
 			<?php  $i++; } ?>
 				<td class="status icon" style="padding: 4px 7px"><?php echo html::image($this->add_path('icons/12x12/shield-info.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px')); ?></td>
-				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state, html::specialchars($svc_total_services.' Services')) ?></td>
+				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state.$grouptype_arg, html::specialchars($svc_total_services.' Services')) ?></td>
 			</tr>
 			<tr>
 				<td class="status icon" style="padding: 4px 7px">
@@ -72,7 +72,7 @@
 							echo html::image($this->add_path('icons/12x12/shield-not-warning.png'),array('title' => $row['status'], 'alt' => $row['status'], 'style' => 'margin-bottom: -2px'));
 					?>
 				</td>
-				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL), html::specialchars($svc_total_problems.' Problems')) ?></td>
+				<td><?php echo html::anchor('status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.(nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL).$grouptype_arg, html::specialchars($svc_total_problems.' Problems')) ?></td>
 				<td colspan="2">&nbsp;</td>
 			</tr>
 		</table>
