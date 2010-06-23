@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+ <?php defined('SYSPATH') OR die('No direct access allowed.');
 $label_na = $this->translate->_('N/A');
 ?>
 
@@ -8,11 +8,12 @@ $label_na = $this->translate->_('N/A');
 <?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong>';
 # show host data if available
 if (isset($host_result) ) { ?>
-
+<?php echo form::open('command/multi_action'); ?>
 <table id="host_table">
-	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?></caption>
+	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
 	<tr>
 		<th class="header">&nbsp;</th>
+		<th class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="no-sort"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
@@ -22,9 +23,8 @@ if (isset($host_result) ) { ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="bl icon">
-			<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($host->current_state)).'.png'),array('alt' => Current_status_Model::status_text($host->current_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($host->current_state))); ?>
-		</td>
+		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state)); ?>">&nbsp;</td>
+		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></div>
 			<?php	$host_comments = Comment_Model::count_comments($host->host_name);
@@ -81,18 +81,35 @@ if (isset($host_result) ) { ?>
 		<td><?php echo $host->display_name ?></td>
 	</tr>
 <?php	$i++; } ?>
-</table><br /><?php
+</table><br />
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'host'); ?>
+	<?php echo form::close(); ?><br /><br /><?php
 }
 
 # show service data if available
 if (isset($service_result) ) { ?>
-
+<?php echo form::open('command/multi_action'); ?>
 <table>
-<caption><?php echo $this->translate->_('Service results for').': &quot;'.$query.'&quot'; ?></caption>
+<caption><?php echo $this->translate->_('Service results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a></caption>
 	<tr>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="header">&nbsp;</th>
+		<th class="item_select_service"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
 		<th class="header"><?php echo $this->translate->_('Service'); ?></th>
 		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
@@ -110,7 +127,8 @@ if (isset($service_result) ) { ?>
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
-		<td class="icon"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->current_state, 'service')).'.png'),array('alt' => Current_status_Model::status_text($service->current_state, 'service'), 'title' => $this->translate->_('Service status').': '.Current_status_Model::status_text($service->current_state, 'service'))); ?></td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, 'service')); ?>">&nbsp;</td>
+		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
 		<td>
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
 		</td>
@@ -141,7 +159,23 @@ if (isset($service_result) ) { ?>
 <?php	$i++;
 	$prev_host = $service->host_name;
 	} ?>
-</table><br /><?php
+</table><br />
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable Service Notifications'),
+			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
+			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'service'); ?>
+	<?php echo form::close(); ?>
+<?php
 }
 
 # show servicegroup data if available
