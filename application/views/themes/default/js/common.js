@@ -182,7 +182,6 @@ $(document).ready(function() {
 
 	$('#multi_action_select').bind('change', function() {
 		multi_action_select($(this).find('option:selected').val());
-
 	});
 
 	$('#select_multiple_items').click(function() {
@@ -206,6 +205,30 @@ $(document).ready(function() {
 			}
 		}
 		$('.item_select').toggle();
+		return false;
+	});
+
+	$('#select_multiple_service_items').click(function() {
+		if (!refresh_is_paused) {
+			if (!$('.item_select_service').is(':visible')) {
+				// pausing and un-pausing refresh might be
+				// irritating for users that already has selected
+				// to pause refresh
+
+				// save previous refresh rate
+				// to be able to restore it later
+				old_refresh = current_interval;
+				$('#ninja_refresh_lable').css('font-weight', 'bold');
+				ninja_refresh(0);
+				$("#ninja_refresh_control").attr('checked', true);
+			} else {
+				// restore previous refresh rate
+				ninja_refresh(old_refresh);
+				$("#ninja_refresh_control").attr('checked', false);
+				$('#ninja_refresh_lable').css('font-weight', '');
+			}
+		}
+		$('.item_select_service').toggle();
 		return false;
 	});
 
