@@ -265,7 +265,7 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'assumeinitialstates', $this->assume_initial_states) ? 'checked="checked"' : '';
 		$assume_states_during_not_running_checked =
 			arr::search($_REQUEST, 'assumestatesduringnotrunning', $this->assume_states_during_not_running) ? 'checked="checked"' : '';
-		$include_soft_states_checked = 'checked="checked"';
+		$include_soft_states_checked = '';//'checked="checked"';
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 		$this->report_id =
