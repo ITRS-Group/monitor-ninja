@@ -965,6 +965,27 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$offset = $pagination->sql_offset;
 
 		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $items_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $items_per_page, $offset);
+
+		$i = 0;
+		foreach ($comment_data as $row) {
+			$comment[$i]['host_name'] = $row->host_name;
+			$comment[$i]['service_description'] = $row->service_description;
+			$comment[$i]['entry_time'] = $row->entry_time;
+			$comment[$i]['author_name'] = $row->author_name;
+			$comment[$i]['entry_time'] = $row->entry_time;
+			$comment[$i]['comment_id'] = $row->comment_id;
+			$comment[$i]['persistent'] = $row->persistent;
+			$comment[$i]['entry_type'] = $row->entry_type;
+			$comment[$i]['expires'] = $row->expires;
+			$comment[$i]['expire_time'] = $row->expire_time;
+			$comment[$i]['comment'] = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
+			$tmp = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
+			foreach($tmp as $test) {
+				$comment[$i]['comment'] = empty($test->comment_data) ? $row->comment_data : $test->comment_data;
+			}
+			$i++;
+		}
+
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
@@ -989,7 +1010,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->label_type = $t->_('Type');
 		$comments->label_expires = $t->_('Expires');
 		$comments->label_actions = $t->_('Actions');
-		$comments->data = $comment_data;
+
+		$comments->data = $comment;//$comment_data;
 		$nagios_config = System_Model::parse_config_file('nagios.cfg');
 		$comments->label_yes = $t->_('YES');
 		$comments->label_no = $t->_('NO');
