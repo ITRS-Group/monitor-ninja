@@ -41,22 +41,24 @@
 			</thead>
 			<tbody>
 	<?php
-		if ($data!==false && $data->count()) {
+		if ($data!==false && !empty($data)) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<?php if (Router::$method == 'show_comments') { ?>
-				<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
-				<?php if (isset($row->service_description) && !empty($row->service_description)) { ?>
-				<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
+				<td><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
+				<?php if (isset($row['service_description']) && !empty($row['service_description'])) { ?>
+				<td><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
 				<?php }
 				} ?>
-				<td><?php echo !empty($row->entry_time) ? date($date_format_str, $row->entry_time) : '' ?></td>
-				<td><?php echo $row->author_name ?></td>
-				<td style="white-space:normal"><?php echo $row->comment_data ?></td>
-				<td><?php echo $row->comment_id ?></td>
-				<td><?php echo $row->persistent ? $label_yes : $label_no ?></td>
+				<td><?php echo !empty($row['entry_time']) ? date($date_format_str, $row['entry_time']) : '' ?></td>
+				<td><?php echo $row['author_name'] ?></td>
+				<td style="white-space:normal">
+					<?php echo $row['comment']; ?>
+				</td>
+				<td><?php echo $row['comment_id'] ?></td>
+				<td><?php echo $row['persistent'] ? $label_yes : $label_no ?></td>
 				<td>
-					<?php	switch ($row->entry_type) {
+					<?php	switch ($row['entry_type']) {
 						case Comment_Model::USER_COMMENT:
 							echo $label_type_user;
 							break;
@@ -73,9 +75,9 @@
 							echo '?';
 					} ?>
 				</td>
-				<td><?php echo $row->expires ? date($date_format_str, $row_>expire_time) : $na_str ?></td>
+				<td><?php echo $row['expires'] ? date($date_format_str, $row['expire_time']) : $na_str ?></td>
 				<td class="icon">
-					<?php echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row->comment_id,
+					<?php echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row['comment_id'],
 					html::image($this->add_path('icons/16x16/delete-comment.png'), array('alt' => $label_delete, 'title' => $label_delete)),array('style' => 'border: 0px')) ?>
 				</td>
 			</tr>
