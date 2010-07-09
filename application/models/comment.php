@@ -82,6 +82,30 @@ class Comment_Model extends Model {
 		return $result->count() ? $result->result(): false;
 	}
 
+	public function fetch_all_comment_types($entry_type, $host_name, $service_description) {
+
+		$db = new Database();
+		switch ($entry_type) {
+			case 1: // user comment
+				$type = 'comment';
+				break;
+			case 2: // downtime
+				$type = 'scheduled_downtime';
+				break;
+			case 3: // flapping
+				$type = 'comment';
+				break;
+			case 4: // acknowledged
+				$type = 'comment';
+				break;
+		}
+		$and = empty($service_description) ? '' : " AND service_description='".$service_description."'";
+		$sql = "SELECT comment_data from ".$type." where host_name = '".$host_name."'".$and."";
+		$result = $db->query($sql);
+
+		return $result->count() ? $result->result() : false;
+	}
+
 	/**
 	*	Wrapper method to fetch nr of comments for host or service
 	*/
