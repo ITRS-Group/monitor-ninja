@@ -77,73 +77,74 @@ class Ninja_Controller extends Template_Controller {
 		if (Auth::instance()->logged_in()) {
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 			$this->template->links = array(
+				$this->translate->_('About') => array(
+					$this->translate->_('op5 Portal') 					=> array('http://'.$_SERVER['HTTP_HOST'], 'portal',2),
+					$this->translate->_('op5 Monitor manual') 		=> array('http://'.$_SERVER['HTTP_HOST'].'/monitor/manual', 'manual',2),
+					$this->translate->_('op5 Support portal') 		=> array('http://www.op5.com/support', 'support',2),
+					$this->translate->_('The Ninja project') 			=> array('http://op5.org/community/projects/ninja', 'ninja',3),
+					$this->translate->_('The Merlin project') 		=> array('http://op5.org/community/projects/merlin', 'merlin',3),
+					$this->translate->_('Project documentation') 	=> array('https://wiki.op5.org', 'eventlog',3),
+				),
 				$this->translate->_('Monitoring') => array(
-					$this->translate->_('op5 Portal') 						=> array('/', 'portal'),
-					$this->translate->_('Tactical overview') 			=> array('/tac', 'tac'),
-					$this->translate->_('Host detail') 						=> array('/status/host/all', 'host'),
-					$this->translate->_('Service detail') 				=> array('/status/service/all', 'service'),
-					//'hr1' 																				=> array('', ''),
-					$this->translate->_('Hostgroup summary') 			=> array('/status/hostgroup_summary', 'hostgroupsummary'),
-					$this->translate->_('Hostgroup overview') 		=> array('/status/hostgroup', 'hostgroup'),
-					$this->translate->_('Hostgroup grid') 				=> array('/status/hostgroup_grid', 'hostgroupgrid'),
-					//'hr2'																					=> array('', ''),
-					$this->translate->_('Servicegroup summary') 	=> array('/status/servicegroup_summary', 'servicegroupsummary'),
-					$this->translate->_('Servicegroup overview') 	=> array('/status/servicegroup', 'servicegroup'),
-					$this->translate->_('Servicegroup grid') 			=> array('/status/servicegroup_grid', 'servicegroupgrid'),
-					//'hr3' 																				=> array('', ''),
-					$this->translate->_('Network outages') 				=> array('/outages', 'outages'),
-					$this->translate->_('Host problems') 					=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems'),
-					$this->translate->_('Service problems') 			=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems'),
-					$this->translate->_('Unhandled problems') 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems'),
-					//'hr5' 																				=> array('', ''),
-					$this->translate->_('Comments') 							=> array('/extinfo/show_comments', 'comments'),
-					$this->translate->_('Schedule downtime') 			=> array('/extinfo/scheduled_downtime', 'scheduledowntime'),
-					$this->translate->_('Process info') 					=> array('/extinfo/show_process_info', 'processinfo'),
-					$this->translate->_('Performance info') 			=> array('/extinfo/performance', 'performanceinfo'),
-					$this->translate->_('Scheduling queue') 			=> array('/extinfo/scheduling_queue', 'schedulingqueue'),
-					//'hr6' 																				=> array('', ''),
+					$this->translate->_('Tactical overview') 			=> array('/tac', 'tac',0),
+					$this->translate->_('Host detail') 					=> array('/status/host/all', 'host',0),
+					$this->translate->_('Service detail') 				=> array('/status/service/all', 'service',0),
+					//'hr1' 														=> array('', ''),
+					$this->translate->_('Hostgroup summary') 			=> array('/status/hostgroup_summary', 'hostgroupsummary',0),
+					$this->translate->_('Hostgroup overview') 		=> array('/status/hostgroup', 'hostgroup',0),
+					$this->translate->_('Hostgroup grid') 				=> array('/status/hostgroup_grid', 'hostgroupgrid',0),
+					//'hr2'														=> array('', ''),
+					$this->translate->_('Servicegroup summary') 		=> array('/status/servicegroup_summary', 'servicegroupsummary',0),
+					$this->translate->_('Servicegroup overview') 	=> array('/status/servicegroup', 'servicegroup',0),
+					$this->translate->_('Servicegroup grid') 			=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
+					//'hr3' 														=> array('', ''),
+					$this->translate->_('Network outages') 			=> array('/outages', 'outages',0),
+					$this->translate->_('Host problems') 				=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
+					$this->translate->_('Service problems') 			=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN), 'serviceproblems',0),
+					$this->translate->_('Unhandled problems') 		=> array('/status/service/all?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING).'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED).'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED).'&hoststatustypes='.$all_host_status_types, 'problems',0),
+					//'hr5' 														=> array('', ''),
+					$this->translate->_('Comments') 						=> array('/extinfo/show_comments', 'comments',0),
+					$this->translate->_('Schedule downtime') 			=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
+					$this->translate->_('Process info') 				=> array('/extinfo/show_process_info', 'processinfo',0),
+					$this->translate->_('Performance info') 			=> array('/extinfo/performance', 'performanceinfo',0),
+					$this->translate->_('Scheduling queue') 			=> array('/extinfo/scheduling_queue', 'schedulingqueue',0),
 				),
 				$this->translate->_('Reporting') => array(
-					$this->translate->_('Trends') 								=> array('/trends', 'trends'),
-					//$this->translate->_('Histogram') 							=> array('histogram', 'histogram'),
-					$this->translate->_('Alert history') 					=> array('/showlog/alert_history', 'alerthistory'),
-					$this->translate->_('Alert summary') 					=> array('/summary', 'alertsummary'),
-					$this->translate->_('Notifications') 					=> array('/notifications', 'notifications'),
-					$this->translate->_('Event log') 							=> array('/showlog/showlog', 'eventlog'),
+					$this->translate->_('Trends') 						=> array('/trends', 'trends',0),
+					//$this->translate->_('Histogram') 					=> array('histogram', 'histogram',0),
+					$this->translate->_('Alert history') 				=> array('/showlog/alert_history', 'alerthistory',0),
+					$this->translate->_('Alert summary') 				=> array('/summary', 'alertsummary',0),
+					$this->translate->_('Notifications') 				=> array('/notifications', 'notifications',0),
+					$this->translate->_('Event log') 					=> array('/showlog/showlog', 'eventlog',0),
 				),
 				$this->translate->_('Configuration') => array(
-					$this->translate->_('View config') 						=> array('/config', 'viewconfig'),
-					$this->translate->_('Change password') 				=> array('/change_password', 'password'),
-					$this->translate->_('Backup/Restore')					=> array('/backup', 'backup'),
+					$this->translate->_('View config') 					=> array('/config', 'viewconfig',0),
+					$this->translate->_('Change password') 			=> array('/change_password', 'password',0),
+					$this->translate->_('Backup/Restore')				=> array('/backup', 'backup',0),
 				)
 			);
 			if (Kohana::config('auth.driver') == 'LDAP')
 				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('/reports/?type=avail', 'availability');
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('/reports/?type=sla', 'sla');
-
-			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('/reports?show_schedules', 'schedulereports');
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Availability')] = array('/reports/?type=avail', 'availability',0);
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('SLA Reporting')] = array('/reports/?type=sla', 'sla',0);
+			$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Schedule reports')] = array('/reports?show_schedules', 'schedulereports',0);
 
 			if (Kohana::config('config.cacti_path')) # @@@FIXME: Create a specific cacti logo, now re-using trends
-				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Statistics')] = array('statistics', 'statistics');
+				$this->template->links[$this->translate->_('Reporting')][$this->translate->_('Statistics')] = array('statistics', 'statistics',1);
 
 			# Add NACOMA link only if enabled in config
-			if (nacoma::link()===true) {
-				$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('/configuration/configure','nacoma');
-			}
+			if (nacoma::link()===true)
+				$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('/configuration/configure','nacoma',0);
 
 			$auth = new Nagios_auth_Model();
-			if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('config.hypermap_path') !== false) {
-				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('Hyper Map')] = array('/hypermap', 'hypermap');
-			}
+			if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('config.hypermap_path') !== false)
+				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('Hyper Map')] = array('/hypermap', 'hypermap',0);
 			unset($auth);
 
-			if (Kohana::config('config.nagvis_path') !== false) {
-				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('/nagvis/index', 'nagvis');
-			}
+			if (Kohana::config('config.nagvis_path') !== false)
+				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('/nagvis/index', 'nagvis',0);
 		}
-
 		$this->registry->set('Zend_Translate', $this->translate);
 		$this->_addons();
 		$this->_is_alive();
