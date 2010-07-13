@@ -68,6 +68,7 @@ if (isset($this->template->js_header))
 				var _success_header = '<?php echo $this->translate->_('Success'); ?>';
 				var _error_header = '<?php echo $this->translate->_('ERROR'); ?>';
 				var _ninja_menu_state = '<?php echo $ninja_menu_state ?>';
+				var _ninja_menusection_About = '<?php echo config::get('ninja_menusection_About', '/', false, true) ?>';
 				var _ninja_menusection_Monitoring = '<?php echo config::get('ninja_menusection_Monitoring', '/', false, true) ?>';
 				var _ninja_menusection_Reporting = '<?php echo config::get('ninja_menusection_Reporting', '/', false, true) ?>';
 				var _ninja_menusection_Configuration = '<?php echo config::get('ninja_menusection_Configuration', '/', false, true) ?>';
@@ -146,47 +147,57 @@ if (isset($this->template->js_header))
 			if (isset($links))
 				foreach ($links as $header => $link):
 						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')">
-							<cite class="menusection">'.html::specialchars($header).'</cite>
-							<em>'.substr(html::specialchars($header),0,1).'</em>
-						</li>'."\n";
+									<cite class="menusection">'.html::specialchars($header).'</cite>
+									<em>'.substr(html::specialchars($header),0,1).'</em>
+								</li>'."\n";
 						foreach ($link as $title => $url):
-							$query_string = explode('&',Router::$query_string);
-							$unhandled_string = array(
-								'?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
-								'?hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED),
-								'?service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED),
-								'?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)
-							);
+							// internal links
+							if ($url[2] == 0) {
+								$query_string = explode('&',Router::$query_string);
+								$unhandled_string = array(
+									'?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
+									'?hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED),
+									'?service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED),
+									'?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)
+								);
 
-							if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
-								echo '<li class="'.html::specialchars($header).'">'.
-									html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-									html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
+									echo '<li class="'.html::specialchars($header).'">'.
+											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 
-							elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
-								echo '<li class="'.html::specialchars($header).'">'.
-									html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-									html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
+									echo '<li class="'.html::specialchars($header).'">'.
+											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 
-							elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
-								echo '<li class="'.html::specialchars($header).'">'.
-									html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-									html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-							elseif (Kohana::config('config.site_domain') == '/monitor/' && $url[1] == 'portal') {
-								$title = $this->translate->_('op5 Portal');
-								echo '<li class="'.html::specialchars($header).'">'.
-									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::image($this->add_path('icons/menu/portal.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-									html::anchor('http://'.$_SERVER['HTTP_HOST'], html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
-								}
-							elseif ($url[0] == 'statistics') {
-								$title = $this->translate->_('Statistics');
-								echo '<li class="'.html::specialchars($header).'"><a href="/'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/trends.png'),array('title' => html::specialchars($title),
-								'alt' => html::specialchars($title))).'</a> <a href="/'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+								elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
+									echo '<li class="'.html::specialchars($header).'">'.
+											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+								else
+									echo '<li class="'.html::specialchars($header).'">'.
+											html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+											html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
 							}
-							elseif ($url[1] != 'portal' && $url[0] != 'statistics')
+							// common external links
+							elseif($url[2] == 1) {
 								echo '<li class="'.html::specialchars($header).'">'.
-									html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-									html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
+									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+							}
+							// local external links
+							elseif($url[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
+								echo '<li class="'.html::specialchars($header).'">'.
+									  '<a href="'.$url[0].'"'.($url[1] == 'manual' ? '' : ' target="_blank"').'>'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
+									  '<a href="'.$url[0].'"'.($url[1] == 'manual' ? '' : ' target="_blank"').' class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+							}
+							// ninja external links
+							elseif ($url[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
+								echo '<li class="'.html::specialchars($header).'">'.
+									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
+									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+							}
 						endforeach;
 					endforeach;
 				?>
