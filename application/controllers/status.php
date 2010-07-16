@@ -1248,7 +1248,7 @@ class Status_Controller extends Authenticated_Controller {
 				}
 				$service_states[$host->host_name][$host->service_state] = array(
 					'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
-					'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.ucfirst(strtolower($this->current->status_text($host->service_state, 'service'))))),
+					'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.ucfirst(strtolower($this->current->status_text($host->service_state, 'service')))), array('class' => 'status-'.$this->current->status_text($host->service_state,'service'))),
 					'extinfo_link' => html::anchor('extinfo/details/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ),
 					'svc_status_link' => html::anchor('status/service/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ),
 					'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') ),
@@ -1279,7 +1279,7 @@ class Status_Controller extends Authenticated_Controller {
 					'action_link' => $action_link,
 					'notes_link' => $notes_link,
 					'host_icon' => $host_icon
-					);
+				);
 			}
 			$content->service_states = $service_states;
 			$content->hostinfo = $hostinfo;
