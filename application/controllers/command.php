@@ -146,6 +146,13 @@ class Command_Controller extends Authenticated_Controller
 			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
 			$param['_services-too'] = $this->cb($en_dis . ' checks for services too');
 			break;
+
+		 case 'ENABLE_HOST_SVC_NOTIFICATIONS':
+		 case 'DISABLE_HOST_SVC_NOTIFICATIONS':
+			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
+			$param['_host-too'] = $this->cb($en_dis . ' notifications for host too');
+			break;
+
 		}
 		$info['params'] = $param;
 
@@ -251,6 +258,15 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_services-too']))
 				$nagios_commands = $this->_build_command($xcmd, $param);
 			break;
+
+		 case 'ENABLE_HOST_SVC_NOTIFICATIONS':
+		 case 'DISABLE_HOST_SVC_NOTIFICATIONS':
+			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
+			$xcmd .= '_HOST_NOTIFICATIONS';
+			if (!empty($param['_host-too']))
+				$nagios_commands = $this->_build_command($xcmd, $param);
+			break;
+
 		}
 
 		$nagios_commands = $this->_build_command($cmd, $param, $nagios_commands);
