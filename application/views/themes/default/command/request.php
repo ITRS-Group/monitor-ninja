@@ -63,7 +63,7 @@ foreach ($params as $pname => $ary) {
 			}
 			# fallthrough
 		case 'bool':
-			echo form::checkbox($form_name, $dflt, 'class="checkbox"');
+			echo form::checkbox($form_name, $dflt, false, 'class="checkbox"');
 			break;
 		case 'float':
 		case 'int':
