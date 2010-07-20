@@ -197,7 +197,8 @@ $c=0;
 			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable Service Notifications'),
 			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
 			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks')
+			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
