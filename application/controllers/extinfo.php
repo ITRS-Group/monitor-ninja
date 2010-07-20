@@ -982,7 +982,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$comment[$i]['expires'] = $row->expires;
 				$comment[$i]['expire_time'] = $row->expire_time;
 				$comment[$i]['comment'] = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
-				//$tmp = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
+				$tmp = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
 				foreach($tmp as $test) {
 					$comment[$i]['comment'] = empty($test->comment_data) ? $row->comment_data : $test->comment_data;
 				}
