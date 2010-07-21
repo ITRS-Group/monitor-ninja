@@ -101,7 +101,6 @@ function get_ninja_menu_state()
 		data: data,
 		success: function(data) {
 			if (data.ninja_menu_state != false) {
-				collapse_menu(data.ninja_menu_state);
 				ret_val = data.ninja_menu_state;
 			}
 			return ret_val;
