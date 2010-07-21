@@ -37,6 +37,8 @@ class Ninja_Controller extends Template_Controller {
 	public $js_strings = false;
 	public $stale_data = false;
 	public $run_tests = false;
+	public $notifications_disabled = false;
+	public $checks_disabled = false;
 
 	public function __construct()
 	{
@@ -148,6 +150,7 @@ class Ninja_Controller extends Template_Controller {
 		$this->registry->set('Zend_Translate', $this->translate);
 		$this->_addons();
 		$this->_is_alive();
+		$this->_global_notification_checks();
 	}
 
 	/**
@@ -163,6 +166,20 @@ class Ninja_Controller extends Template_Controller {
 			$this->stale_data = $diff;
 			$this->inline_js .= "$('#infobar-sml').show();";
 			$this->template->inline_js = "$('#infobar-sml').show();";
+		}
+	}
+
+	/**
+	*	Check if notifications and/or active checks has
+	*	been globally disabled.
+	*/
+	public function _global_notification_checks()
+	{
+		$data = Program_status_Model::notifications_checks();
+		if ($data !== false) {
+			$data = $data->current();
+			$this->notifications_disabled = !$data->notifications_enabled;
+			$this->checks_disabled = !$data->active_service_checks_enabled;
 		}
 	}
 

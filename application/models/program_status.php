@@ -35,4 +35,16 @@ class Program_status_Model extends Model
 		$res = $db->query($sql);
 		return (!$res || count($res) == 0) ? false : $res->current()->last_alive;
 	}
+
+	/**
+	*	Fetch current global settings for notifications
+	*	and active_service_checks
+	*/
+	public function notifications_checks()
+	{
+		$db = new Database();
+		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status";
+		$res = $db->query($sql);
+		return (!$res || count($res) == 0) ? false : $res;
+	}
 }
