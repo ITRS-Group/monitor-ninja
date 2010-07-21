@@ -204,6 +204,9 @@ class Showlog_Controller extends Authenticated_Controller
 			if (!is_array($obj_name)) {
 				if (strstr($obj_name, ';') !== false || !empty($service)) {
 					$obj_type = 'service';
+					$this->options['host_state_options'] = array();
+					$this->options['hide_downtime'] = true;
+					$this->options['hide_logrotation'] = true;
 				}
 				$obj_name = !empty($service) ? $obj_name.';'.$service : $obj_name;
 				$obj_name = array($obj_name);
