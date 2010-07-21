@@ -83,7 +83,7 @@ class showlog_Core
 		# Add the proper image url for this theme. Screw the user if he/she
 		# uses a non-standard theme which lacks the images we need
 		$cmd .= " --image-url=" . url::base(false) .
-			'/application/views/' .
+			'application/views/' .
 			zend::instance('Registry')->get('theme_path') .
 			'/icons/16x16/';
 
