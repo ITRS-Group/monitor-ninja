@@ -706,7 +706,7 @@ function validate_form(formData, jqForm, options) {
 
 	var err_str = "";
 	var errors = 0;
-	if (interval[0] == '' || !interval[0]) {
+	if (interval == '' || !interval) {
 		err_str += _reports_schedule_interval_error + "<br />";
 		errors++;
 	}
