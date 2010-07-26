@@ -173,6 +173,16 @@ class htpasswd_importer
 				$this->add_user_role($this->sql_insert_id($result));
 			}
 		}
+
+		# check for users that has been removed
+		foreach ($this->existing_ary as $old => $skip) {
+			if (!array_key_exists($old, $this->passwd_ary)) {
+				# delete this user as it is no longer available in
+				# the received list of users
+				$this->sql_exec_query("DELETE FROM ".$this->db_table.
+					" WHERE username='".$this->sql_escape_string($old)."'");
+			}
+		}
 	}
 
 	public function import_hashes($htpasswd_file = false)
