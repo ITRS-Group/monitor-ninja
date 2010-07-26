@@ -13,6 +13,7 @@ class htpasswd_importer
 	private $db_table = "users";
 	private $db_type = "mysql";
 	private $db = false;
+	private $DEBUG = false;
 
 	public function __construct($htpasswd_file = false)
 	{
