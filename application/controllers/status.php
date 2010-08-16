@@ -578,7 +578,7 @@ class Status_Controller extends Authenticated_Controller {
 				return $this->service($group, $hoststatustypes, $servicestatustypes, $serviceprops, false, false, $grouptype.'group', $hostprops);
 				break;
 			case 'summary':
-				return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
+				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 				break;
 		}
 		$group_details = false;
