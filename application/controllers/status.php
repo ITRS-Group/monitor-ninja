@@ -701,8 +701,8 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'service';
-		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 		$this->template->title = $this->translate->_('Servicegroup » Summary');
+		return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
 
 	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
@@ -713,11 +713,15 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'host';
-		return $this->group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
+		return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
 
-	public function group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
+	/**
+	*	Create group summary page
+	*/
+	public function _group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -746,22 +750,31 @@ class Status_Controller extends Authenticated_Controller {
 		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
 		$this->template->content->widgets = $this->widgets;
 		$this->template->js_header->js = $this->xtra_js;
-		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$group_details = false;
+		$auth_groups = false;
+		$group_info_res = false;
 		if (strtolower($group) == 'all') {
-			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
-			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
-			if (!empty($group_info_res)) {
-				foreach ($group_info_res as $group_res) {
-					$groupname_tmp = $group_res->{$grouptype.'group_name'};
-					$tmp_data = $this->_show_group_totals_summary($grouptype, $groupname_tmp);
-					if (!empty($tmp_data))
-						$group_details[] = $tmp_data;
-				}
+			$auth = new Nagios_auth_Model();
+			if ($grouptype == 'host') {
+				$auth_groups = $auth->get_authorized_hostgroups();
+			} else {
+				$auth_groups = $auth->get_authorized_servicegroups();
 			}
+			$tot = count($auth_groups);
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $items_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+			$content->pagination = $pagination;
+
+			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::summary($group, $items_per_page, $offset) : Hostgroup_Model::summary($group, $items_per_page, $offset);
 		} else {
-			# make sure we have the correct servicegroup
+			# make sure we have the correct group
 			$group_info_res = $grouptype == 'service' ?
 				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
 				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
@@ -775,12 +788,12 @@ class Status_Controller extends Authenticated_Controller {
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
 			$content->lable_header = $label_header."'".$group."'";
-			$tmp_data = $this->_show_group_totals_summary($grouptype, $group);
-			if (!empty($tmp_data))
-				$group_details[] = $tmp_data;
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::summary($group) : Hostgroup_Model::summary($group);
+		}
+		if (count($group_info_res)) {
+			$content->group_details = $group_info_res;
 		}
 
-		# since we don't use these values yet we define a default value
 		$hostproperties = false;
 		$serviceproperties = false;
 
@@ -807,8 +820,6 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_unknown = $t->_('UNKNOWN');
 		$content->label_critical = $t->_('CRITICAL');
 		$content->label_no_servicedata = $t->_('No matching services');
-
-		$content->group_details = $group_details;
 
 		if ($grouptype == 'host') {
 			$content->label_group_name = $t->_('Host Group');
@@ -857,7 +868,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_grid = $this->translate->_('Service status grid');
 				$label_group_status_summary = $this->translate->_('Status summary for All service groups');
-$label_view_for = $this->translate->_('For this service group');
+				$label_view_for = $this->translate->_('For this service group');
 				$page_links = array(
 						$label_service_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 						$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
