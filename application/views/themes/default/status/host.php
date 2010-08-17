@@ -142,7 +142,7 @@ foreach ($result as $row) {
 					if ($row->current_state == Current_status_Model::HOST_PENDING)
 						echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
 					else {
-						$output = nl2br($row->output.' '.$row->long_output);
+						$output = $row->output;
 						echo str_replace('','', $output);
 					}
 					?>

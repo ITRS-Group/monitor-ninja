@@ -174,8 +174,9 @@ $c=0;
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
 				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
 			} else {
-				$output = nl2br($row->service_output.' '.$row->service_long_output);
-				echo str_replace('','', $output);
+				$output = $row->service_output;
+				$output = str_replace('','', $output);
+				echo str_replace('\n','<br />', $output);
 			}
 			?>
 		</td>

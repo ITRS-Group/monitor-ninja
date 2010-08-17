@@ -72,7 +72,7 @@ if (isset($host_result) ) { ?>
 					echo '</a>';
 				}
 
-				$output = nl2br($host->output.' '.$host->long_output);
+				$output = $host->output;
 			?>
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
@@ -153,7 +153,7 @@ if (isset($service_result) ) { ?>
 			?>
 		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
-		<td><?php echo nl2br($service->output . ' ' . $service->long_output) ?></td>
+		<td><?php echo $service->output ?></td>
 		<td><?php echo $service->display_name ?></td>
 	</tr>
 <?php	$i++;

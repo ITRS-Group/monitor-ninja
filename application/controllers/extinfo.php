@@ -233,7 +233,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->host_address = $result->address;
 		$content->icon_image = $result->icon_image;
 		$content->icon_image_alt = $result->icon_image_alt;
-		$content->status_info = nl2br($result->output.' '.$result->long_output);
+		$content->status_info = $result->output.'<br />'.str_replace('\n', '<br />', nl2br($result->long_output));
 		$content->lable_perf_data = $t->_('Performance Data');
 		$content->perf_data = $result->perf_data;
 		$content->lable_current_attempt = $t->_('Current Attempt');
