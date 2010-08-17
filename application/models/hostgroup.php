@@ -33,18 +33,24 @@ class Hostgroup_Model extends ORM
 	/**
 	 * Fetch info on all defined hostgroups
 	 */
-	public function get_all()
+	public function get_all($items_per_page = false, $offset=false)
 	{
+		$limit_str = "";
+		if (!empty($items_per_page)) {
+			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+		}
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root) {
-			$data = ORM::factory('hostgroup')->find_all();
+			$sql = "SELECT * FROM hostgroup ".$limit_str;
 		} else {
 			$auth_objects = $auth->get_authorized_hostgroups();
 			$auth_ids = array_keys($auth_objects);
 			if (empty($auth_ids))
 				return false;
-			$data = ORM::factory('hostgroup')->in('id', $auth_ids)->find_all();
+			$sql = "SELECT * FROM hostgroup WHERE id IN (".implode($auth_ids).") ".$limit_str;
 		}
+		$db = new Database();
+		$data = $db->query($sql);
 		return count($data)>0 ? $data : false;
 	}
 

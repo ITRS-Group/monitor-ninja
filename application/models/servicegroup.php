@@ -35,17 +35,22 @@ class Servicegroup_Model extends ORM
 	/**
 	 * Fetch info on all defined servicegroups
 	 */
-	public function get_all()
+	public function get_all($items_per_page = false, $offset = false)
 	{
+		$limit_str = "";
+		if (!empty($items_per_page)) {
+			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+		}
+
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
 
-		$data = ORM::factory('servicegroup')
-			->in('id', $obj_ids)
-			->find_all();
+		$sql = "SELECT * FROM servicegroup WHERE id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$db = new Database();
+		$data = $db->query($sql);
 		return count($data)>0 ? $data : false;
 	}
 
