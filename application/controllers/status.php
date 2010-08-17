@@ -548,6 +548,7 @@ class Status_Controller extends Authenticated_Controller {
 
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -584,7 +585,24 @@ class Status_Controller extends Authenticated_Controller {
 		$group_details = false;
 		$groupname_tmp = false;
 		if ($group == 'all') {
-			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
+			$auth = new Nagios_auth_Model();
+			if ($grouptype == 'host') {
+				$auth_groups = $auth->get_authorized_hostgroups();
+			} else {
+				$auth_groups = $auth->get_authorized_servicegroups();
+			}
+
+			$tot = count($auth_groups);
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $items_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+			$this->template->content->pagination = $pagination;
+
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
 			if (!empty($group_info_res)) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
@@ -1309,6 +1327,7 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function group_grid($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false)
 	{
+		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -1341,8 +1360,25 @@ class Status_Controller extends Authenticated_Controller {
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
+			$auth = new Nagios_auth_Model();
+			if ($grouptype == 'host') {
+				$auth_groups = $auth->get_authorized_hostgroups();
+			} else {
+				$auth_groups = $auth->get_authorized_servicegroups();
+			}
+
+			$tot = count($auth_groups);
+			$pagination = new Pagination(
+				array(
+					'total_items'=> $tot,
+					'items_per_page' => $items_per_page
+				)
+			);
+			$offset = $pagination->sql_offset;
+			$content->pagination = $pagination;
+
 			$content->label_header = $grouptype == 'service' ? $t->_('Status Grid For All Service Groups') : $t->_('Status Grid For All Host Groups');
-			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all() : Hostgroup_Model::get_all();
+			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
 			if (!empty($group_info_res) && count($group_info_res)>0) {
 				foreach ($group_info_res as $group_res) {
 					$groupname_tmp = $group_res->{$grouptype.'group_name'};
