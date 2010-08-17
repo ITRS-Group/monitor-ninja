@@ -34,7 +34,7 @@ $t = $this->translate; ?>
 </div>
 
 <div class="widget left w98" id="status_group-grid">
-<?php
+<?php echo (isset($pagination)) ? $pagination : '';
 if (!empty($group_details))
 	foreach ($group_details as $details) {
 ?>
@@ -133,5 +133,5 @@ else { ?>
 	</table>
 	<?php
 }
-?>
+echo (isset($pagination)) ? $pagination : ''; ?>
 </div>

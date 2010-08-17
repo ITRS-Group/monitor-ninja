@@ -33,8 +33,8 @@
 
 <div class="widget left w98" id="status_group-overview">
 <?php if (nacoma::link()===true)
-	echo sprintf($this->translate->_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf($this->translate->_('Add new %sgroup'), $grouptype));?>
-<?php
+	echo sprintf($this->translate->_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf($this->translate->_('Add new %sgroup'), $grouptype));
+	echo (isset($pagination)) ? $pagination : '';
 	$j = 0;
 	# make sure we have something to iterate over
 	if (!empty($group_details))
@@ -106,4 +106,5 @@
 		</table>
 
 <?php } ?>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
