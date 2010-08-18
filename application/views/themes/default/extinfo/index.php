@@ -62,7 +62,7 @@ if (!empty($widgets)) {
 		<?php } ?>
 		<tr>
 			<td class="white"><strong><?php echo $lable_member_of ?></strong></td>
-			<td class="white"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
+			<td class="white" style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
 		</tr>
 		<tr>
 			<td class="white"><strong><?php echo $label_notifies_to ?></strong></td>
