@@ -1,4 +1,6 @@
-<?php $t = $this->translate; ?>
+<?php $t = $this->translate;
+echo '<div style="display:none" id="link_container"></div>';
+?>
 <div style="position: relative; top: -33px; right: 118px; float: right">
 <?php if ($type == 'avail') { ?>
 	<?php if (!$report_id) { ?>
@@ -13,6 +15,18 @@
 	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 </span>
 	<a id="old_avail_link" style="border: 0px; margin-left: 4px;<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
+<?php
+if (Session::instance()->get('main_report_params', false)
+	!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
+	# we have main_report_params and we are NOT showing the report (i.e we are showing a sub report)
+	# => show backlink
+	echo html::anchor('reports/generate?'.Session::instance()->get('main_report_params'), $t->_('Back'), array('title' => $t->_('Back to original report')));
+}
+if (Session::instance()->get('current_report_params', false)) {
+	# make it possible to get the link (GET) to the current report
+	echo html::anchor('reports/generate?'.Session::instance()->get('current_report_params'), $t->_('Direct link'), array('id' => 'current_report_params', 'title' => $t->_('Direct link to this report. Right click to copy or click to view.')));
+}
+?>
 </div>
 <span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
 

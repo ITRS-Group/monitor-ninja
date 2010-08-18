@@ -156,6 +156,14 @@ input.i160 {
 	margin-bottom: -1px;
 	margin-left: 0px;
 }
+input.wide {
+	border: 0px;
+	outline: 0px;
+	font: 11px arial,sans-serif;
+	width: 900px;
+	margin-bottom: -1px;
+	margin-left: 0px;
+}
 select {
 	font: 11px arial,sans-serif;
 	border: 1px solid #ffffff;

@@ -80,6 +80,31 @@ $(document).ready(function() {
 		$("select[id$=_tmp] option").show();
 		$('#filter_field').focus();
 	});
+
+	var direct_link_visible = false;
+	$('#current_report_params').click(function() {
+		// make sure we always empty the field
+		$('#link_container').html('');
+		// .html('<form><input type="text" size="200" value="' + $('#current_report_params').attr('href') + '"></form>')
+		if (!direct_link_visible) {
+			$('#link_container')
+				.html(_label_direct_link
+					+ ': <form><input class="wide" type="text" value="'
+					+ document.location.protocol + '//'
+					+ document.location.host
+					+ $('#current_report_params').attr('href')
+					+ '"></form>')
+				.css('position', 'absolute')
+				.css('top', 2)
+				.css('left', 200)
+				.show();
+				direct_link_visible = true;
+		} else {
+			$('#link_container').hide();
+			direct_link_visible = false;
+		}
+		return false;
+	});
 });
 
 function fancybox_datepicker()
