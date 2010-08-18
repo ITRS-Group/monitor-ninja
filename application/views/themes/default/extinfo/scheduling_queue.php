@@ -30,7 +30,7 @@
 		?>
 		<tr class="<?php echo $i%2 == 0 ? 'odd' : 'even'; ?>">
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name); ?></td>
-			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, $row->service_description); ?>&nbsp;</td>
+			<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, $row->service_description); ?>&nbsp;</td>
 			<td><?php echo date('Y-m-d H:i:s',$row->last_check); ?></td>
 			<td><?php echo date('Y-m-d H:i:s',$row->next_check); ?></td>
 			<td>
