@@ -626,12 +626,19 @@ function check_form_values()
 				return false;
 			}
 		}
+
+		if (curval_starttime) {
+			curval_starttime = ' ' + curval_starttime;
+		}
+		if (curval_endtime) {
+			curval_endtime = ' ' + curval_endtime;
+		}
 		if ($('#fancy_content').is(':visible')) {
-			$('#fancy_content #start_time').attr('value', $('#fancy_content #cal_start').attr('value') + ' ' + curval_starttime);
-			$('#fancy_content #end_time').attr('value', $('#fancy_content #cal_end').attr('value') + ' ' + curval_endtime);
+			$('#fancy_content #start_time').attr('value', $('#fancy_content #cal_start').attr('value') + curval_starttime);
+			$('#fancy_content #end_time').attr('value', $('#fancy_content #cal_end').attr('value') + curval_endtime);
 		} else {
-			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + ' ' + curval_starttime);
-			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + ' ' + curval_endtime);
+			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + curval_starttime);
+			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + curval_endtime);
 		}
 		$('#response').hide();
 		return true;
