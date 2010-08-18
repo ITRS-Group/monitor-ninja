@@ -232,6 +232,11 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->disable_refresh = true;
 
+		# reset current_report_params and main_report_params
+		# just to be sure they're not left behind
+		Session::instance()->set('current_report_params', null);
+		Session::instance()->set('main_report_params', null);
+
 		# 	The following basically means:
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
@@ -742,6 +747,8 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		$this->template->disable_refresh = true;
+
+		$this->_stash_params();
 
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
@@ -1918,6 +1925,55 @@ class Reports_Controller extends Authenticated_Controller
 
 		//$this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
+	}
+
+	/**
+	*	Stash parameters from setup form to be used
+	*	for re-generating report.
+	*/
+	public function _stash_params()
+	{
+		$input = false;
+		$data = false;
+		if (!empty($_POST)) {
+			$input = $_POST;
+		} elseif (!empty($_GET)) {
+			$input = $_GET;
+		}
+
+		if (empty($input)) {
+			return false;
+		}
+
+		Session::instance()->set('current_report_params', null);
+
+		$skip_keys = array(
+			'saved_report_id',
+			'time_start',
+			'time_end',
+			'cal_start',
+			'cal_end'
+		);
+		foreach ($input as $key => $val) {
+			if ($val == '' || in_array($key, $skip_keys)) {
+				continue;
+			}
+			if (is_array($val)) {
+				foreach ($val as $v) {
+					$data[] = $key.'[]='.$v;
+				}
+			} else {
+				$data[] = $key.'='.$val;
+			}
+		}
+		if (!empty($data)) {
+			if (array_key_exists('new_report_setup', $input)) {
+				# directly from setup form - keep data for backlink
+				Session::instance()->set('main_report_params', implode('&', $data));
+			}
+
+			Session::instance()->set('current_report_params', implode('&', $data));
+		}
 	}
 
 	/**
