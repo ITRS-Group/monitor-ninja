@@ -105,7 +105,7 @@ $label_next = html::image(
 <form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
 		<fieldset>
 		<?php //echo $this->translate->_('Show') ?>
-		<select class="items_per_page" name="items_per_page" onchange="this.form.submit()">
+		<select class="items_per_page" name="items_per_page" onchange="preserve_get_params();this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
 			?>
