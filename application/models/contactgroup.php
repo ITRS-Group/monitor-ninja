@@ -46,7 +46,7 @@ class Contactgroup_Model extends Model
 				"h.host_name = ".$db->escape($host);
 		} else {
 			if ($view_hosts_root === false) {
-				if (!in_array('authorized_for_all_services', $access)) {
+				if (is_array($access) && !in_array('authorized_for_all_services', $access)) {
 					$sql_auth_str = " c.contact_name = ".$db->escape($user)." AND ";
 				} else {
 					$sql_auth_str = false;
