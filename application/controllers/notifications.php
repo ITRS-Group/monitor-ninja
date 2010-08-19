@@ -125,7 +125,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->selected_val = $type;
 	}
 
-	public function host($host_name = false, $service = false, $sort_field='host_name', $sort_order='ASC', $query_type = nagstat::FIND_HOST)
+	public function host($host_name = false, $service = false, $sort_field='start_time', $sort_order='DESC', $query_type = nagstat::FIND_HOST)
 	{
 		$type = urldecode($this->input->get('type', false));
 		$noheader = urldecode($this->input->get('noheader', false));
