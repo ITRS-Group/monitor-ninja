@@ -182,21 +182,21 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-					    $cg_link = "";
-					    $c_link = "";
+					    $cg_link = false;
+					    $c_link = false;
 					    if(isset($row->contactgroup_name)) {
 							$tmp = explode(",", $row->contactgroup_name);
 							foreach($tmp as $cg){
-								$cg_link= $cg_link . " " .html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+								$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
 							}
 					    }
 					    if(isset($row->contact_name)){
 							$tmp = explode(",", $row->contact_name);
 							foreach($tmp as $c){
-								$c_link= $c_link . " " .html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 							}
 					    }
-					    $result[$i][]= $c_link . " " . $cg_link;
+					    $result[$i][] = (($c_link !== false) ? implode(', ', $c_link).', ' : '').(($cg_link !== false) ? implode(', ', $cg_link) : '');
 
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 						$result[$i][]= time::to_string($row->first_notification_delay);
@@ -273,6 +273,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Icon image alt'),
 					$t->_('Retention Options'),
 				);
+
 				$data = $config_model->list_config($this->type);
 				if ($data!==false) {
 					$i = 0;
@@ -294,21 +295,21 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
 
-					    $cg_link = "";
-					    $c_link = "";
+					    $cg_link = false;
+					    $c_link = false;
 					    if(isset($row->contactgroup_name)) {
 							$tmp = explode(",", $row->contactgroup_name);
 							foreach($tmp as $cg){
-								$cg_link= $cg_link . " " .html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+								$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
 							}
 					    }
 					    if(isset($row->contact_name)){
 							$tmp = explode(",", $row->contact_name);
 							foreach($tmp as $c){
-								$c_link= $c_link . " " .html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 							}
 					    }
-					    $result[$i][]= $c_link . " " . $cg_link;
+					    $result[$i][] = (($c_link !== false) ? implode(', ', $c_link).', ' : '').(($cg_link !== false) ? implode(', ', $cg_link) : '');
 
 						$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
