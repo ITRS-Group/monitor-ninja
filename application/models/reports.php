@@ -2758,6 +2758,27 @@ class Reports_Model extends Model
 			}
 		}
 
+		# recent hard alerts doesn't select any hosts
+		# or services so we have to figure this out here
+		if (empty($hosts) && empty($services)) {
+			$auth = new Nagios_auth_Model();
+			$auth->get_authorized_hosts();
+			$host_list = $auth->hosts_r;
+			if (!empty($host_list)) {
+				foreach ($host_list as $h => $v) {
+					$hosts[$h] = $h;
+				}
+			}
+
+			$auth->get_authorized_services();
+			$svc_list = $auth->services_r;
+			if (!empty($svc_list)) {
+				foreach ($svc_list as $s => $v) {
+					$services[$s] = $s;
+				}
+			}
+		}
+
 		$object_selection = false;
 		if ($services) {
 			if ($hosts) {
