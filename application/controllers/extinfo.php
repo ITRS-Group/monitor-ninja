@@ -85,6 +85,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+		$this->js_strings .= "var _pnp_web_path = '".Kohana::config('config.pnp4nagios_path')."';\n";
+		$this->template->js_strings = $this->js_strings;
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 		$this->template->js_header->js = $this->xtra_js;
 
@@ -197,11 +199,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$url = url::site() . 'pnp/?host=' . urlencode($host);
 			if ($type ===  'service') {
 				$url .= '&srv=' . urlencode($service);
+			} else {
+				$url .= '&srv=_HOST_';
 			}
 			$xaction[$label] = array
 				('url' => $url,
 				 'img' => url::base(false) . $this->img_path('icons/16x16/pnp.png'),
-				 'alt' => $label
+				 'alt' => $label,
+				 'id' => 'pnp_inline_graph',
+				 'title' => $t->_('Click link to view last 24 hours or icon to switch to the PNP view.')
 				 );
 		}
 		$content->extra_action_links = $xaction;
