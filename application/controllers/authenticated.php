@@ -47,7 +47,7 @@ class Authenticated_Controller extends Ninja_Controller {
 		} else {
 			if (!$authentic->logged_in()) {
 				# store requested uri in session for later redirect
-				$this->session->set('requested_uri', url::current());
+				$this->session->set('requested_uri', url::current(true));
 				url::redirect(Kohana::config('routes.log_in_form'));
 			} else {
 				$this->user = Auth::instance()->get_user();
