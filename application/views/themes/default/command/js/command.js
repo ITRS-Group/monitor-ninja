@@ -31,7 +31,7 @@ $(document).ready(function() {
 						empty++;
 					}
 				} else {
-					if ( (typeof val == 'string' && $.trim(val) == '') || (typeof val == 'object' && !val.length) ) {
+					if ( key_str != '_perfdata' && (typeof val == 'string' && $.trim(val) == '') || (typeof val == 'object' && !val.length) ) {
 						err_str += ' - ' + sprintf(_command_empty_field, $("#" + key_str).text())+"\n";
 						empty++;
 					}
