@@ -151,11 +151,7 @@
 
 							if ($details->services_unknown > 0) {
 								echo html::image($this->add_path('icons/12x12/shield-unknown.png'), array('alt' => $label_unknown, 'title' => $label_unknown, 'style' => 'margin-bottom: -2px')).' &nbsp;';
-<<<<<<< HEAD
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_unknown.' '.$label_unknown).': ';
-=======
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_unknown.' '.$label_unknown, array('class' => 'status-unknown')).': ';
->>>>>>> status group pages - added classed for status links
+								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_unknown.' '.$label_unknown, array('class' => 'status-unknown')).': ';
 
 								$c = 0;
 								if ($details->services_unknown_unhandled > 0) {
@@ -183,11 +179,7 @@
 
 							if ($details->services_critical > 0) {
 								echo html::image($this->add_path('icons/12x12/shield-critical.png'), array('alt' => $label_critical, 'title' => $label_critical, 'style' => 'margin-bottom: -2px')).' &nbsp;';
-<<<<<<< HEAD
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_critical.' '.$label_critical).': ';
-=======
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_critical.' '.$label_critical, array('class' => 'status-critical')).': ';
->>>>>>> status group pages - added classed for status links
+								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_critical.' '.$label_critical, array('class' => 'status-critical')).': ';
 
 								$c = 0;
 								if ($details->services_critical_unhandled > 0) {
@@ -215,11 +207,7 @@
 
 							if ($details->services_pending > 0) {
 								echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
-<<<<<<< HEAD
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_pending.' '.$label_pending);
-=======
-								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $service_data->services_pending.' '.$label_pending, array('class' => 'status-pending'));
->>>>>>> status group pages - added classed for status links
+								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_pending.' '.$label_pending, array('class' => 'status-pending'));
 							}
 
 							if (($details->services_ok + $details->services_warning + $details->services_unknown + $details->services_critical + $details->services_pending) == 0) {
