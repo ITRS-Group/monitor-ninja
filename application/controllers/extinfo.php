@@ -206,8 +206,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				('url' => $url,
 				 'img' => url::base(false) . $this->img_path('icons/16x16/pnp.png'),
 				 'alt' => $label,
-				 'id' => 'pnp_inline_graph',
-				 'title' => $t->_('Click link to view last 24 hours or icon to switch to the PNP view.')
 				 );
 		}
 		$content->extra_action_links = $xaction;
