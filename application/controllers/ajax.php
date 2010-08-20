@@ -349,5 +349,21 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 		echo $return;
 	}
+
+	/**
+	*	Fetch PNP image from supplied params
+	*/
+	public function pnp_image()
+	{
+		$param = urldecode($this->input->post('param', false));
+		$pnp_path = Kohana::config('config.pnp4nagios_path');
+
+		if ($pnp_path != '') {
+			$pnp_path .= '?'.$param.'&source=1&view=1&display=image';
+		}
+
+		echo '<img src="'.$pnp_path.'" />';
+		#echo $pnp_path;
+	}
 }
 

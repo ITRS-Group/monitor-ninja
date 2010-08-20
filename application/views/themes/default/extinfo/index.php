@@ -116,8 +116,11 @@ if (!empty($widgets)) {
 						echo '<a target="_blank" href="'.$notes_url.'">'.$label_notes_url.'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
+						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';
 						echo '&nbsp; <a href="'.$ary['url'].'" style="border: 0px">';
 						if (!empty($ary['img']))
+							echo '<img src="'.$ary['img'].'" alt="" '.$img_class.' /></a> ';
+						echo '<a href="'.$ary['url'].'">'.$label.'</a>'."\n";
 					}
 				?><div id="pnp_area" style="display:none"></div>
 			</td>

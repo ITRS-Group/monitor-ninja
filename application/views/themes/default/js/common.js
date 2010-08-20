@@ -128,6 +128,58 @@ $(document).ready(function() {
 		fadeOut: 25
 	});
 
+	$('.pnp_graph_icon').each(function() {
+		//$(this).mouseover(function() {
+			var pnp_link = $(this).parent().attr('href');
+			var link_parts = pnp_link.split('?');
+			if (!link_parts.length) {
+				return false;
+			}
+			// ex: host=myhost&srv=PING
+			pnp_link = link_parts[1];
+
+			var loading_img = '/application/media/images/loading.gif';
+
+			$(this).qtip({
+			content: {
+				url: _site_domain + _index_page + "/ajax/pnp_image/",
+				data: {param: pnp_link},
+				method: 'post',
+				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
+			},
+			position: {
+				corner: {
+				target: 'bottomMiddle', // Position the tooltip above the link
+				tooltip: 'topLeft'
+			},
+				adjust: {
+					screen: true // Keep the tooltip on-screen at all times
+				}
+			},
+			show: {
+				when: 'mouseover',
+				solo:true
+			},
+			hide: {
+				effect: 'slide',
+				when: {
+					event: 'unfocus',
+					delay:2000
+				}
+			},
+			style: {
+				width: 620,
+				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
+					border: {
+					width: 0,
+					radius: 4
+				},
+				name: 'light' // Use the default light style
+			}
+		});
+		//});
+	});
+
 	$(".helptext_target").each(function(){
 
 		// split the id into controller, key
