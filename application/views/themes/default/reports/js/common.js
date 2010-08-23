@@ -88,15 +88,14 @@ $(document).ready(function() {
 		// .html('<form><input type="text" size="200" value="' + $('#current_report_params').attr('href') + '"></form>')
 		if (!direct_link_visible) {
 			$('#link_container')
-				.html(_label_direct_link
-					+ ': <form><input class="wide" type="text" value="'
+				.html('<form class="directlink">'+_label_direct_link+' <input class="wide" type="text" value="'
 					+ document.location.protocol + '//'
 					+ document.location.host
 					+ $('#current_report_params').attr('href')
 					+ '"></form>')
 				.css('position', 'absolute')
-				.css('top', 2)
-				.css('left', 200)
+				.css('top', 20)
+				.css('left', '1%')
 				.show();
 				direct_link_visible = true;
 		} else {
