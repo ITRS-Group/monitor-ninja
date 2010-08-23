@@ -72,14 +72,14 @@ foreach($report_data as $i =>  $report) {
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
 
-		<table style="margin-bottom: 20px; margin-top: 15px">
-			<caption><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '.$this->translate->_('Group members');?></caption>
+		<table style="margin-bottom: 20px;">
+			<caption style="margin-top: 15px;"><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '.$this->translate->_('Group members');?></caption>
 			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : $this->translate->_('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
 				foreach($report['member_links'] as $member_link) {
 					$x++;
-					echo "<tr class=\"".($x%2 == 0 ? 'odd' : 'even')."\"><td>".$member_link."</td></tr>\n";
+					echo "<tr class=\"".($x%2 == 0 ? 'odd' : 'even')."\"><td style=\" border-right: 1px solid #dcdcdc\">".$member_link."</td></tr>\n";
 				}
 				?>
 			</table>
