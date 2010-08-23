@@ -83,11 +83,33 @@ input#recipients {
 	outline: 0px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 1px;
 	width: 378px;
 	margin-top: 3px;
 	margin-left: 0px;
 	margin-bottom: 15px;
+}
+
+input.wide {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	padding: 2px 4px;
+	width: 460px;
+	margin: 0px;
+	margin-top: 3px;
+
+}
+
+form.directlink {
+	display: inline;
+	padding: 10px;
+	background-color: #eeeeee;
+	border: 1px solid #dcdcdc;
 }
 
 select { width: 382px}
