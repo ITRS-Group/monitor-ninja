@@ -108,7 +108,7 @@ input.wide {
 form.directlink {
 	display: inline;
 	padding: 10px;
-	background-color: #eeeeee;
+	background: #cdcdcd url(bg.png) repeat-x;
 	border: 1px solid #dcdcdc;
 }
 
