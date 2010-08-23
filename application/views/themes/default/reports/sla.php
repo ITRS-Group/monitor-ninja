@@ -20,7 +20,7 @@ foreach($report_data as $i =>  $report) {
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo ((!$create_pdf) ? help::render('sla_graph') : '').' '.$str_source; ?></h2>
 		<?php
 		if (!$create_pdf) { ?>
-		<a href="<?php echo $report['avail_links'];?>" style="border: 0px"><img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /></a><?php
+		<a href="<?php echo $report['avail_links'];?>" style="border: 0px"><img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="" title="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /></a><?php
 		} else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
@@ -59,8 +59,8 @@ foreach($report_data as $i =>  $report) {
 					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
 						<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 								array(
-								//'alt' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
-								//'title' => (($value[0][0] < $value[0][1]) ? $t->('Below SLA') : $t->('OK')),
+								'alt' => '',
+								'title' => $value[0][0] < $value[0][1] ? $t->_('Below SLA') : $t->_('OK'),
 								'style' => 'width: 11px; height: 12px'));
 						?></td>
 					<?php } ?>
