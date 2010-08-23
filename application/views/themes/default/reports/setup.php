@@ -343,11 +343,11 @@ if (isset($report_info)) {
 		<br />
 
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
-			<table style="width: 742px">
-				<caption style="margin-left: 5px"><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
+			<table style="width: 810px">
+				<caption><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
 				<tr>
 					<?php foreach ($months as $key => $month) { ?>
-					<td style="width: 30px">
+					<td style="padding-left: 0px">
 						<?php echo html::image($this->add_path('icons/16x16/copy.png'),
 							array(
 								'id' => 'month_'.($key+1),
@@ -357,7 +357,7 @@ if (isset($report_info)) {
 								'class' => 'autofill')
 							) ?>
 						<?php echo $month ?><br />
-						<input type="text" size="2" style="background: #fafafa;width: 30px; border: 1px solid #cccccc; outline: 0px; -moz-border-radius: 4px; -webkit-border-radius: 4px; padding: 1px 3px;" name="month_<?php echo ($key+1) ?>"
+						<input type="text" size="2" class="sla_month" name="month_<?php echo ($key+1) ?>"
 								value="<?php echo arr::search($report_info, 'month_'.($key + 1))!==false ? $report_info['month_'.($key + 1)] : "" ?>" maxlength="6" /> %
 					</td>
 					<?php	} ?>

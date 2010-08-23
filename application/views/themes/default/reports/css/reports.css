@@ -90,6 +90,15 @@ input#recipients {
 	margin-left: 0px;
 	margin-bottom: 15px;
 }
+input.sla_month {
+	background: #fafafa;
+	width: 30px;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 1px 3px;
+}
 
 input.wide {
 	background: #fafafa;
@@ -139,6 +148,7 @@ input[type=checkbox] {
 	margin-top: 0px;
 	margin-left: 0px;
 	margin-bottom: 5px;
+	border: 0px;
 }
 
 input[type=reset],
