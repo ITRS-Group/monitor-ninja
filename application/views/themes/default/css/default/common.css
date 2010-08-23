@@ -970,6 +970,11 @@ th.item_select {
  border-right: 0px !important;
 }
 
+#group_summary_table {
+	margin-top: 30px;
+	margin-bottom: 10px
+}
+
 /* widget thihngys  *******************************************************************************/
 #widget-tac_hosts table tr th,
 #widget-tac_services table tr th,
