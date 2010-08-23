@@ -20,7 +20,7 @@ if (Session::instance()->get('main_report_params', false)
 	!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
 	# we have main_report_params and we are NOT showing the report (i.e we are showing a sub report)
 	# => show backlink
-	echo html::anchor('reports/generate?'.Session::instance()->get('main_report_params'), $t->_('Back'), array('title' => $t->_('Back to original report')));
+	echo '&nbsp;'.html::anchor('reports/generate?'.Session::instance()->get('main_report_params'), html::image($this->add_path('/icons/32x32/square-back.png'), array('title' => $t->_('Back'), 'alt' => '')), array('title' => $t->_('Back to original report'), 'style' => 'border: 0px')).'&nbsp;';
 }
 if (Session::instance()->get('current_report_params', false)) {
 	# make it possible to get the link (GET) to the current report
