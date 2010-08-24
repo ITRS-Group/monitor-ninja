@@ -83,8 +83,8 @@ class Ninja_Controller extends Template_Controller {
 					$this->translate->_('op5 Portal') 					=> array('http://'.$_SERVER['HTTP_HOST'], 'portal',2),
 					$this->translate->_('op5 Monitor manual') 		=> array('http://'.$_SERVER['HTTP_HOST'].'/monitor/manual', 'manual',2),
 					$this->translate->_('op5 Support portal') 		=> array('http://www.op5.com/support', 'support',2),
-					$this->translate->_('The Ninja project') 			=> array('http://op5.org/community/projects/ninja', 'ninja',3),
-					$this->translate->_('The Merlin project') 		=> array('http://op5.org/community/projects/merlin', 'merlin',3),
+					$this->translate->_('The Ninja project') 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/ninja', 'ninja',3),
+					$this->translate->_('The Merlin project') 		=> array('http://www.op5.org/community/plugin-inventory/op5-projects/merlin', 'merlin',3),
 					$this->translate->_('Project documentation') 	=> array('https://wiki.op5.org', 'eventlog',3),
 				),
 				$this->translate->_('Monitoring') => array(
