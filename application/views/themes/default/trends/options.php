@@ -2,7 +2,7 @@
 <a href="#options" class="fancybox">
 	<?php
 		echo html::image($this->add_path('icons/32x32/square-edit.png'),
-		array('alt' => $label_edit_settings, 'title' => $label_edit_settings, 'style' => 'position: absolute; right: 0px; top: 10px'))
+		array('alt' => $label_edit_settings, 'title' => $label_edit_settings, 'style' => 'position: absolute; right: 1%; top: 10px'))
 	?>
 </a>
 

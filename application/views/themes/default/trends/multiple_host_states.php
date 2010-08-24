@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
+<br />
 <?php
 	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; margin-bottom: -4px; display: block; float: left'));
 	echo html::anchor('reports/generate?type=avail&report_type='.$report_type.$selected_objects.$get_vars, $this->translate->_('View corresponding Availability report'));
 ?>
-<div class="host_breakdown wide" style="margin-top: 5px;">
+<div class="host_breakdown wide" style="margin-top: 15px;">
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo $t->_('Host state breakdown') ?>" id="multiple_hosts" border="1">
 			<tr>

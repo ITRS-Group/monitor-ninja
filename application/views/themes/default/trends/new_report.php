@@ -5,14 +5,14 @@ if (!isset($object_data) || empty($object_data)) {
 $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 ?>
 <br />
-<br />
 <div id="trend_event_display"></div>
 <?php if (!isset($is_avail)) { ?>
-<p style="margin-top: -13px; margin-bottom: 10px"><?php echo $title ?><br />
-	<?php echo $str_start_date ?> - <?php echo $str_end_date ?><br />
-	<?php echo $label_report_period ?>: <?php echo $rpttimeperiod	 ?>
-	(<?php echo $label_duration ?>: <?php echo $duration ?>)
-</p><br />
+<h1 style="margin-top: 0px"><?php echo $title ?></h1>
+<p style="margin-top: -13px;">
+	<?php echo $label_report_period ?>: <?php echo $rpttimeperiod	?>
+	<?php //echo $label_duration.': '.$duration ?>
+	(<?php echo $str_start_date.' '.$this->translate->_('to').' '.$str_end_date ?>)
+</p>
 
 <?php
 }
@@ -21,7 +21,7 @@ $cell_height = isset($avail_height) ? $avail_height: 50;
 $title_str = $this->translate->_('Start: %s, End: %s, Duration: %s, Output: %s');
 foreach ($object_data as $obj => $data) {
 	$cnt = 0; ?>
-	<table style="width:100%;padding:0" cellpadding="0" cellspacing="0">
+	<table style="width:100%;padding:0; border-spacing: 0px; border-collapse: collapse; margin-top: 14px">
 		<tr>
 			<?php foreach ($data as $event) {
 				$width = 0;
@@ -61,7 +61,7 @@ foreach ($object_data as $obj => $data) {
 				</table>
 			</td>
 		</tr>
-	</table><br />
+	</table>
 	<?php
 }
 ?>
