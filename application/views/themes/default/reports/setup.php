@@ -25,7 +25,7 @@ if (isset($report_info)) {
 	</ul>
 	<div id="report-tab">
 
-<div class="report-page-setup">
+<div class="report-page-setup availsla">
 	<div id="response"></div>
 	<div class="setup-table">
 
