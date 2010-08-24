@@ -260,7 +260,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
-		$this->xtra_css[] = $this->add_path('trends/css/trends');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header->css = $this->xtra_css;
 
@@ -515,7 +515,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('trends/css/trends');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->css_header->css = $this->xtra_css;

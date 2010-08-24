@@ -331,7 +331,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
-		$this->xtra_css[] = $this->add_path('reports/css/reports');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$t = $this->translate;
@@ -869,7 +869,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('reports/css/reports');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -1618,7 +1618,7 @@ class Reports_Controller extends Authenticated_Controller
 						}
 
 						$template->trends_graph = $this->add_view('trends/new_report');
-						$this->xtra_css[] = $this->add_path('trends/css/trends');
+						$this->xtra_css[] = $this->add_path('css/default/reports');
 						$this->xtra_js[] = $this->add_path('trends/js/trends');
 						$template->trends_graph->object_data = $trends_data;
 						$template->trends_graph->start = $report_start;
