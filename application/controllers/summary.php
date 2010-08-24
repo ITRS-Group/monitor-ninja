@@ -124,7 +124,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('summary/css/summary');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
