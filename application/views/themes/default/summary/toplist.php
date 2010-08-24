@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 
 <div class="widget left w98">
-	<h2><?php echo $this->translate->_('Top hard alert producers'); ?></h2>
-	<?php $this->_print_duration($options['start_time'], $options['end_time']); ?>
+	<h1><?php echo $this->translate->_('Top hard alert producers'); ?></h1>
+	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table>
 		<tr>
 			<th class="headerNone left"><?php echo $label_rank; ?></th>
