@@ -668,6 +668,9 @@ class Reports_Controller extends Authenticated_Controller
 					case 'sla':
 						$defined_report_types[$rpt_type->identifier] = $t->_('SLA Report');
 						break;
+					case 'summary':
+						$defined_report_types[$rpt_type->identifier] = $t->_('Alert Summary Report');
+						break;
 				}
 			}
 		}
@@ -676,6 +679,7 @@ class Reports_Controller extends Authenticated_Controller
 		$new_schedule->label_report_type = $t->_('Select report type');
 		$avail_reports = Saved_reports_Model::get_saved_reports('avail');
 		$sla_reports = Saved_reports_Model::get_saved_reports('sla');
+		$summary_reports = Saved_reports_Model::get_saved_reports('summary');
 
 		$new_schedule->saved_reports = $avail_reports;
 		$new_schedule->label_select_report = $t->_('Select report');
@@ -686,10 +690,12 @@ class Reports_Controller extends Authenticated_Controller
 		$available_schedules->label_no_schedules = $t->_('There are no scheduled reports');
 		$available_schedules->avail_header = $t->_('Availability Reports');
 		$available_schedules->sla_header = $t->_('SLA Reports');
+		$available_schedules->summary_header = $t->_('Alert Summary Reports');
 
-		# fetch ALL schedules (avail + SLA)
+		# fetch ALL schedules (avail + SLA + Alert Summary)
 		$available_schedules->avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail');
 		$available_schedules->sla_schedules = Scheduled_reports_Model::get_scheduled_reports('sla');
+		$available_schedules->summary_schedules = Scheduled_reports_Model::get_scheduled_reports('summary');
 
 		# re-use parent template's translations
 		$available_schedules->label_sch_interval = $template->label_sch_interval;
@@ -704,11 +710,17 @@ class Reports_Controller extends Authenticated_Controller
 
 		$available_schedules->avail_reports = $avail_reports;
 		$available_schedules->sla_reports = $sla_reports;
+		$available_schedules->summary_reports = $summary_reports;
 
 		# we need some data available as json for javascript
 		$avail_reports_arr = false;
 		foreach ($avail_reports as $rep) {
 			$avail_reports_arr[$rep->id] = $rep->report_name;
+		}
+
+		$sumary_reports_arr = false;
+		foreach ($summary_reports as $rep) {
+			$summary_reports_arr[$rep->id] = $rep->report_name;
 		}
 
 		$sla_reports_arr = false;
@@ -719,6 +731,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _report_types_json = '(".json::encode($report_types).")';\n";
 		$this->js_strings .= "var _saved_avail_reports = '(".json::encode($avail_reports_arr).")';\n";
 		$this->js_strings .= "var _saved_sla_reports = '(".json::encode($sla_reports_arr).")';\n";
+		$this->js_strings .= "var _saved_summary_reports = '(".json::encode($summary_reports_arr).")';\n";
 		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
@@ -775,7 +788,7 @@ class Reports_Controller extends Authenticated_Controller
 		#
 		# NOTE:
 		# Passing a schedule_id to this method will ignore all other data passed
-		# in $_REQUEST as data from _cli_report will overwrite it
+		# in $_REQUEST as data from _scheduled_report() will overwrite it
 		if ($this->schedule_id !== false) {
 			$_REQUEST = $this->_scheduled_report();
 		}
@@ -2428,6 +2441,20 @@ class Reports_Controller extends Authenticated_Controller
 
 		$return = false;
 		$return[] = array('optionValue' => '', 'optionText' => ' - '.$this->translate->_('Select saved report') . ' - ');
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$field_name = 'report_name';
+				break;
+			case 'sla':
+				$field_name = 'sla_name';
+				break;
+		}
+
+		if (!isset($field_name)) {
+			return false;
+		}
+
 		foreach ($saved_reports as $info) {
 			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
 			if (in_array($info->id, $scheduled_ids)) {
@@ -2435,7 +2462,7 @@ class Reports_Controller extends Authenticated_Controller
 			} else {
 				$sched_str = "";
 			}
-			$return[] = array('optionValue' => $info->id, 'optionText' =>($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str);
+			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->{$field_name}.$sched_str);
 		}
 
 		if ($schedules !== false) {
@@ -3980,6 +4007,8 @@ class Reports_Controller extends Authenticated_Controller
 			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
 			'filename' => $translate->_("This field lets you select a custom filename for the report"),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
+			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
+			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar).")
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
@@ -4152,7 +4181,9 @@ class Reports_Controller extends Authenticated_Controller
 						if (count($saved_reports)!=0) {
 							foreach ($saved_reports as $report) {
 								if ($report->id == $new_value) {
-									echo $report_type == 'avail' ? $report->report_name : $report->sla_name;
+									echo $report_type == 'avail' || $report_type == 'summary'
+										? $report->report_name
+										: $report->sla_name;
 									break;
 								}
 							}
@@ -4262,10 +4293,81 @@ class Reports_Controller extends Authenticated_Controller
 
 		$return = false;
 		foreach ($res as $row) {
-			$return[] = $this->generate($row->identifier, $row->id);
+			if ($row->identifier == 'summary') {
+				$summary = new Summary_Controller();
+				$return[] = $summary->generate($row->id);
+			} else {
+				$return[] = $this->generate($row->identifier, $row->id);
+			}
 		}
 
 		return $return;
+	}
+
+	public function _print_duration($start_time, $end_time)
+	{
+		$fmt = "Y-m-d H:i:s";
+		echo date($fmt, $start_time) . " to " .
+			date($fmt, $end_time) . "<br />\n";
+		$duration = $end_time - $start_time;
+		$days = $duration / 86400;
+		$hours = ($duration % 86400) / 3600;
+		$minutes = ($duration % 3600) / 60;
+		$seconds = ($duration % 60);
+		printf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
+			   $days, $hours, $minutes, $seconds);
+
+		# we needan extra break in case of PDF
+		if ($this->create_pdf) {
+			echo "<br />";
+		}
+	}
+
+	/**
+	 * Print one alert totals table. Since they all look more or
+	 * less the same, we can re-use the same function for all of
+	 * them, provided we get the statenames (OK, UP etc) from the
+	 * caller, along with the array of state totals.
+	 */
+	public function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
+	{
+		$spacer = '';
+		$table_border = '';
+		if ($this->create_pdf) {
+			$spacer = "<br />";
+			$table_border = ' border="1"';
+		}
+
+		$t = $this->translate;
+		echo "<br /><table class=\"host_alerts\"><tr>\n";
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>".$spacer;
+		echo "<th class=\"headerNone\">" . $t->_('State') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Soft Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Hard Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . $t->_('Total Alerts') . "</th>\n";
+		echo "</tr>\n";
+
+		$total = array(0, 0); # soft and hard
+		$i = 0;
+		foreach ($ary as $state_id => $sh) {
+			if (!isset($state_names[$state_id]))
+				continue;
+			$i++;
+			echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\">\n";
+			echo "<td>" . $state_names[$state_id] . "</td>\n"; # topic
+			echo "<td>" . $sh[0] . "</td>\n"; # soft
+			echo "<td>" . $sh[1] . "</td>\n"; # hard
+			$tot = $sh[0] + $sh[1];
+			echo "<td>" . $tot . "</td>\n"; # soft + hard
+			echo "</tr>\n";
+		}
+		$i++;
+		echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\"><td>Total</td>\n";
+		echo "<td>" . $totals['soft'] . "</td>\n";
+		echo "<td>" . $totals['hard'] . "</td>\n";
+		$tot = $totals['soft'] + $totals['hard'];
+		echo "<td>" . $tot . "</td>\n";
+		echo "</tr></table><br />\n";
 	}
 
 	/**
