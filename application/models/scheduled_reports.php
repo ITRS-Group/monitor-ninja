@@ -21,7 +21,7 @@ class Scheduled_reports_Model extends Model
 	public function delete_all_scheduled_reports($type='avail',$id=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary'	)
 			return false;
 		$db = new Database(self::db_name);
 
@@ -52,9 +52,23 @@ class Scheduled_reports_Model extends Model
 	public function get_scheduled_reports($type='avail')
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
-		$fieldname = $type == 'avail' ? 'report_name' : 'sla_name';
+
+		$fieldname = false;
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$fieldname = 'report_name';
+				break;
+			case 'sla':
+				$fieldname = 'sla_name';
+				break;
+		}
+		if (empty($fieldname)) {
+			return false;
+		}
+
 		$sql = "SELECT
 				sr.*,
 				rp.periodname,
@@ -86,7 +100,7 @@ class Scheduled_reports_Model extends Model
 	public function report_is_scheduled($type='avail', $id=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
 		$id = (int)$id;
@@ -320,6 +334,12 @@ class Scheduled_reports_Model extends Model
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";
 				break;
+			case 'summary':
+				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+					"scheduled_reports sr, summary_config c ".
+					"WHERE sr.id=".$schedule_id." AND ".
+					"c.id=sr.report_id";
+				break;
 			default: return false;
 		}
 
@@ -331,7 +351,7 @@ class Scheduled_reports_Model extends Model
 			$id = $return['id'];
 			$object_info = Saved_reports_Model::get_config_objects($type, $id);
 			$objects = false;
-			if (count($object_info) != 0) {
+			if ($object_info !== false && count($object_info) != 0) {
 				foreach ($object_info as $row) {
 					$objects[] = $row->name;
 				}
