@@ -1,9 +1,12 @@
-<?php defined('SYSPATH') OR die("No direct access allowed");?>
+<?php defined('SYSPATH') OR die("No direct access allowed");
+if (isset($schedules)) {
+	echo $schedules;
+}
+?>
 
 <div class="widget left w98">
 	<h1><?php echo $label_overall_totals ?></h1>
 	<p style="margin-top:-10px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
-
 		<?php
 		foreach ($result as $service_name => $ary) {
 			$foo = explode(';', $service_name);

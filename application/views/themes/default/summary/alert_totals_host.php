@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') OR die("No direct access allowed");?>
+<?php defined('SYSPATH') OR die("No direct access allowed");
+if (isset($schedules)) {
+	echo $schedules;
+}
+?>
 
 <div class="widget left w98">
 	<h1><?php echo $label_overall_totals ?></h1>
