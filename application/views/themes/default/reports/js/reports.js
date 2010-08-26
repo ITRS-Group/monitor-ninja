@@ -32,20 +32,6 @@ $(document).ready(function() {
 		}
 	});
 
-	$(".send_report_now").click(function() {
-		var type_id = $(this).attr('id');
-		type_id = type_id.replace('send_now_', '');
-		type_id = type_id.split('_');
-		var type = type_id[0];
-		var id = type_id[1];
-		send_report_now(type, id);
-	});
-
-	// delete the report (and all the schedules if any)
-	$("#delete_report").click(function() {
-		confirm_delete_report($("#report_id").attr('value'));
-	});
-	$(".deleteimg").css('cursor', 'pointer');
 
 	// delete single schedule
 	$(".delete_schedule").each(function() {
@@ -55,6 +41,9 @@ $(document).ready(function() {
 			} else {
 				if ($(this).attr('class').indexOf('sla_del') > -1) {
 					_schedule_remove = 'sla';
+				}
+				if ($(this).attr('class').indexOf('summary_del') > -1) {
+					_schedule_remove = 'summary';
 				}
 			}
 			if (!_schedule_remove) {
@@ -252,40 +241,6 @@ function show_sla_saveresponse(responseText, statusText)
 	$(".fancybox").fancybox.close();
 }
 
-function trigger_schedule_save(f)
-{
-	// ajax post form options
-	show_progress('progress', _wait_str);
-	// fetch values from form
-	var report_id = 0; // new schedule has no ID
-	var rep_type = $('input[name=type]').attr('value');
-	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
-	var period = $('#fancy_content #period').attr('value');
-	var period_str = $('#fancy_content #period option:selected').text();
-	var recipients = $('#fancy_content #recipients').attr('value');
-	var filename = $('#fancy_content #filename').attr('value');
-	var description = $('#fancy_content #description').attr('value');
-
-	$.ajax({
-		url:_site_domain + _index_page + '/reports/schedule',
-		type: 'POST',
-		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
-		success: function(data) {
-			if (isNaN(data)) { // error!
-				jgrowl_message(data, _reports_error);
-			} else {
-				$('#schedule_report_table').append(create_new_schedule_rows(data));
-				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-				$(".fancybox").fancybox.close();
-				$('#show_schedule').show(); // show the link to view available schedules
-			}
-		}
-	});
-
-	setTimeout('delayed_hide_progress()', 1000);
-	return false;
-}
-
 function ajax_submit(f)
 {
 	show_progress('progress', _wait_str);
@@ -343,27 +298,6 @@ function ajax_submit(f)
 	});
 	setTimeout('delayed_hide_progress()', 1000);
 	return false;
-}
-
-function send_report_now(type, id)
-{
-	if (type=='' || id =='') {
-		// missing info
-		return false;
-	}
-	$.ajax({
-		url:_site_domain + _index_page + '/reports/generate',
-		type: 'POST',
-		data: {type: type, schedule_id: id},
-		success: function(data) {
-			if (data == '') {
-				jgrowl_message(_reports_schedule_send_ok, _reports_success);
-			} else {
-				jgrowl_message(_reports_schedule_send_error, _reports_error);
-			}
-		}
-	});
-
 }
 
 /**
@@ -614,13 +548,6 @@ function setup_hide_content(d) {
 
 function hide_response() {setup_hide_content('response');}
 
-function toggle_label_weight(val, the_id)
-{
-	var val_str = val ? 'bold' : 'normal';
-	$('#' + the_id).css('font-weight', val_str);
-	$('#fancy_content #' + the_id).css('font-weight', val_str);
-}
-
 function show_state_options(val)
 {
 	if (val) {
@@ -723,21 +650,6 @@ function expand_and_populate(data)
 	// wait for lists to populate
 	setTimeout("remove_duplicates();", 500);
 }
-
-function format_date_str(date) {
-	var YY = date.getFullYear();
-	var MM = date.getMonth() + 1;
-	var DD = date.getDate();
-	var hh = date.getHours();
-	var mm = date.getMinutes();
-	MM = MM<10 ? '0' + MM :MM;
-	DD = DD<10 ? '0' + DD : DD;
-	hh = hh<10 ? '0' + hh : hh;
-	mm = mm<10 ? '0' + mm : mm;
-	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
-	return ret_val;
-}
-
 
 function set_initial_state(what, val)
 {
@@ -856,61 +768,6 @@ function set_initial_state(what, val)
 }
 
 
-/**
-*	Remove duplicate entries
-*	We need to check that we don't have items in the
-*	left (available) list that is added to the to the right (selected)
-'	Also, we need to check that the right list doesn't have items that are
-*	removed from the configuration.
-*/
-function remove_duplicates()
-{
-	if (!current_obj_type) {
-		return false;
-	}
-	if (!is_populated) {
-		// check if lists has been populated before trying
-		// to remove duplicates and removed objects.
-		// Call self if not ready yet
-		setTimeout("remove_duplicates();", 500);
-		return false;
-	}
-	setup_hide_content('progress');
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	var field_str = current_obj_type;
-	var field = field_obj.map[field_str]+'[]'
-	var tmp_field = tmp_fields.map[field_str]+ '[]';
-	var removed_items = new Array();
-	var i = 0;
-
-	$("select[name='" + field + "'] option").each(function() {
-		var this_item = $(this).val();
-		if ($("select[name='" + tmp_field + "']").containsOption(this_item)) {
-			$("select[name='" + tmp_field + "']").removeOption($(this).val());
-		} else {
-			//$("select[name='" + field + "']").removeOption(this_item);
-			removed_items[i++] = this_item;
-		}
-	});
-	if (removed_items.length) {
-		var info_str = _reports_missing_objects + ": ";
-		info_str += "<ul><li><img src=\"" + _site_domain + _theme_path + "icons/arrow-right.gif" + "\" /> " + removed_items.join('</li><li><img src="' + _site_domain + _theme_path + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
-		info_str += _reports_missing_objects_pleaseremove;
-		info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + _theme_path + '' + 'icons/12x12/cross.gif" /></a>';
-		$('#response')
-			.css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
-			.css("position", "relative")
-			.css('top', '0px')
-			.css('width','748px')
-			.css('left', '0px')
-			.css('padding','15px 2px 5px 50px')
-			.css('margin-left','5px')
-			.html(info_str);
-	}
-}
-
-
 function confirm_delete_report(the_val)
 {
 	var the_path = self.location.href;
@@ -965,48 +822,6 @@ function show_response(responseText, statusText)
 	setTimeout('hide_response()', time);
 }
 
-// used from options template
-function create_new_schedule_rows(id)
-{
-	var return_str = '';
-	var rep_type = $('input[name=type]').attr('value');
-
-	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
-	if (saved_report_id == '')
-		saved_report_id = $('#saved_report_id').attr('value');
-
-	var period = $('#fancy_content #period').attr('value');
-	if (period == '')
-		period = $('#period').attr('value');
-
-	var period_str = $('#fancy_content #period option:selected').text();
-	if (period_str == '')
-		period_str = $('#period option:selected').text();
-
-	var recipients = $('#fancy_content #recipients').attr('value');
-	if (recipients == '')
-		recipients = $('#recipients').attr('value');
-
-	var filename = $('#fancy_content #filename').attr('value');
-	if (filename == '')
-		filename = $('#filename').attr('value');
-
-	var description = $('#fancy_content #description').attr('value');
-	if (description == '')
-		description = $('#description').attr('value');
-	if (description == '')
-		description = '&nbsp;';
-
-	return_str += '<tr id="report-' + id + '" class="odd">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type + '\', ' + id + ')"></form></td>';
-	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></td></tr>';
-	update_visible_schedules(false);
-	return return_str;
-}
 
 // used from setup
 function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id)
@@ -1035,155 +850,6 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	return true;
 }
 
-var avail_schedules = 0;
-var sla_schedules = 0;
-function update_visible_schedules(count)
-{
-	if ($('#avail_scheduled_reports_table').is(':visible')) {
-		avail_schedules = $('#avail_scheduled_reports_table tbody tr:visible').not('.no-result').length;
-		if (count) {
-			avail_schedules--;
-		}
-	}
-
-	if ($('#sla_scheduled_reports_table').is(':visible')) {
-		sla_schedules = $('#sla_scheduled_reports_table tbody tr:visible').not('.no-result').length;
-		if (count) {
-			sla_schedules--;
-		}
-	}
-
-	if ($('#schedule_report_table').is(':visible')) {
-		// setup and options templates
-		if ($('#fancy_content').is(':visible')) {
-			// check the fancybox layer (options template)
-			nr_of_scheduled_instances = $('#fancy_content #schedule_report_table tr').not('#schedule_header').length;
-		} else {
-			nr_of_scheduled_instances = $('#schedule_report_table tr').not('#schedule_header').length;
-		}
-		if (count) {
-			nr_of_scheduled_instances--;
-		}
-	}
-}
-
-function schedule_delete(id, remove_type)
-{
-	if (!confirm(_reports_confirm_delete_schedule)) {
-		return false;
-	}
-
-	// clean input id from prefix (from setup template)
-	if (isNaN(id)) {
-		id = id.replace('delid_', '');  // from single report listing
-		id = id.replace('alldel_', ''); // from all schedules list
-	}
-
-	var time = 6000;
-
-	$.ajax({
-		url:_site_domain + _index_page + '/reports/delete_schedule?id=' + id,
-		success: function(data) {
-			if (data == 'OK') {
-				// item deleted
-				remove_schedule(id, remove_type);
-			} else {
-				jgrowl_message(data, _reports_error);
-				setTimeout('hide_response()', time);
-			}
-		}
-	});
-}
-
-function remove_schedule(id, remove_type)
-{
-	var time = 3000;
-
-	update_visible_schedules(true);
-
-	// remove row for deleted ID (both in fancybox and in original table)
-	$('#report-' + id).remove();
-	$('#fancy_content #report-' + id).remove();
-	if (nr_of_scheduled_instances == 0) {
-		// last item deleted
-		$('#schedule_report').hide(); // hide entire table/div
-		$('#show_schedule').hide(); // remove 'View schedules' button
-		$('#is_scheduled').remove();
-		if ($('#report_id')) {
-			var chk_text = '';
-			chk_text = $('#report_id option:selected').text();
-			chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
-			$('#report_id option:selected').text(chk_text);
-		}
-		if ($(".fancybox").is(':visible')) {
-			$(".fancybox").fancybox.close();
-		}
-	}
-
-	if (remove_type!='' && remove_type != 'undefined') {
-		if ($('#' + remove_type + '_scheduled_reports_table tbody').not('.no-result').length == 0) {
-			$('#' + remove_type + '_headers').hide();
-			$('#' + remove_type + '_no_result').show();
-		}
-	}
-
-	jgrowl_message(_reports_schedule_deleted, _reports_success);
-	setTimeout('hide_response()', time);
-}
-
-function setup_editable(mode)
-{
-	var mode_str = '';
-	if (mode == 'fancy') {
-		var mode_str = '#fancy_content ';
-	}
-	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
-	$(mode_str +".iseditable").editable(save_url, {
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'text',
-		event : 'dblclick',
-		width : 'auto',
-		height : '14px',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".period_select").editable(save_url, {
-		data : $('#autoreport_periods').text(),
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : _ok_str,
-		cancel : _cancel_str
-	});
-	$(mode_str +".iseditable_txtarea").editable(save_url, {
-		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'textarea',
-		event : 'dblclick',
-		rows: '3',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		cssclass: "txtarea",
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".report_name").editable(save_url, {
-		data : function (){
-			return fetch_report_data(this.id);
-		},
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : 'OK',
-		cancel : 'cancel'
-	});
-
-}
-
 var is_visible = false;
 function toggle_edit() {
 	var $tabs = $('#report-tabs').tabs();
@@ -1205,6 +871,9 @@ function fetch_report_data(id)
 			break;
 		case 'sla':
 			return eval(_saved_sla_reports);
+			break;
+		case 'summary':
+			return eval(_saved_summary_reports);
 			break;
 		default:
 			return false;
