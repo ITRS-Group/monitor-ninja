@@ -11,11 +11,20 @@ class Saved_reports_Model extends Model
 	public function get_saved_reports($type='avail', $user=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 		$db = new Database(self::db_name);
 		$auth = new Nagios_auth_Model();
-		$name_field = ($type == 'avail') ? 'report_name' : 'sla_name';
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$name_field = 'report_name';
+				break;
+			case 'sla':
+				$name_field = 'sla_name';
+				break;
+		}
+
 		$sql = "SELECT id, ".$name_field." FROM ".$type."_config ";
 		if (!$auth->view_hosts_root) {
 			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
@@ -32,14 +41,22 @@ class Saved_reports_Model extends Model
 	{
 		$update = false;
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
-		if (empty($options) || empty($objects)) {
+		if (empty($options) || ($type!= 'summary' && empty($objects)) ) {
 			return false;
 		}
 
-		$name_field = ($type == 'avail') ? 'report_name' : 'sla_name';
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$name_field = 'report_name';
+				break;
+			case 'sla':
+				$name_field = 'sla_name';
+				break;
+		}
 		$db = new Database(self::db_name);
 
 		# check options for start_time or end_time
@@ -72,15 +89,24 @@ class Saved_reports_Model extends Model
 			}
 		}
 		if (!$update) {
-			$sql = "INSERT INTO ".$type."_config (user, ".implode(', ', array_keys($options)).") VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".implode('\',\'', array_values($options))."')";
-		} else {
-			$sql = "UPDATE ".$type."_config SET ";
-			foreach ($options as $key => $value) {
-				$a_sql[] = $key." = ".$db->escape($value);
+			if ($type == 'summary') {
+				$sql = "INSERT INTO ".$type."_config (user, ".$name_field.", setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".$options['report_name']."', '".serialize($options)."')";
+			} else {
+				$sql = "INSERT INTO ".$type."_config (user, ".implode(', ', array_keys($options)).") VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".implode('\',\'', array_values($options))."')";
 			}
-			$sql .= implode(', ', $a_sql);
-			$sql .= ", updated = now()";
-			$sql .= " WHERE id=".$id;
+		} else {
+			if ($type == 'summary') {
+				$sql = "UPDATE ".$type."_config SET report_name = ".$db->escape($options['report_name']).", ".
+					"setting=".$db->escape(serialize($options))." WHERE id=".$id;
+			} else {
+				$sql = "UPDATE ".$type."_config SET ";
+				foreach ($options as $key => $value) {
+					$a_sql[] = $key." = ".$db->escape($value);
+				}
+				$sql .= implode(', ', $a_sql);
+				$sql .= ", updated = now()";
+				$sql .= " WHERE id=".$id;
+			}
 		}
 		#echo $sql;
 		$res = $db->query($sql);
@@ -89,7 +115,7 @@ class Saved_reports_Model extends Model
 		if (!$update) $id = (int)$res->insert_id();
 
 		// insert/update <type>_config_objects
-		if (!self::save_config_objects($type, $id, $objects)) {
+		if ($type!= 'summary' && !self::save_config_objects($type, $id, $objects)) {
 			return false;
 		}
 
@@ -141,7 +167,7 @@ class Saved_reports_Model extends Model
 	public function save_config_objects($type = 'avail', $id=false, $objects=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
 		if (empty($objects) || empty($id)) return false;
@@ -175,13 +201,17 @@ class Saved_reports_Model extends Model
 	public function delete_report($type='avail', $id)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
 		if (empty($id)) return false;
 		$err = false;
-		$sql[] = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
-		$sql[] = "DELETE FROM ".$type."_config WHERE id=".$id;
+		if ($type == 'summary') {
+			$sql[] = 'DELETE FROM summary_config WHERE id='.$id;
+		} else {
+			$sql[] = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
+			$sql[] = "DELETE FROM ".$type."_config WHERE id=".$id;
+		}
 		if ($type == 'sla') {
 			$sql[] = "DELETE FROM sla_periods WHERE sla_id=".$id;
 		}
@@ -209,11 +239,20 @@ class Saved_reports_Model extends Model
 	public function get_all_report_names($type='avail')
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
 		$db = new Database(self::db_name);
-		$name_field = ($type == 'avail') ? 'report_name' : 'sla_name';
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$name_field = 'report_name';
+				break;
+			case 'sla':
+				$name_field = 'sla_name';
+				break;
+		}
+
 		$sql = "SELECT ".$name_field." FROM ".$type."_config WHERE user=".$db->escape(Auth::instance()->get_user()->username).
 			" ORDER BY ".$name_field;
 		$res = $db->query($sql);
@@ -238,7 +277,7 @@ class Saved_reports_Model extends Model
 	public function get_report_info($type='avail', $id=false)
 	{
 		$type = strtolower($type);
-		if ($type != 'avail' && $type != 'sla')
+		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
 		if (empty($id)) return false;
