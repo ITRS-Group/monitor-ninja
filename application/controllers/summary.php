@@ -32,13 +32,25 @@ class Summary_Controller extends Authenticated_Controller
 	private $day_names = false;
 	private $abbr_day_names = false;
 	private $first_day_of_week = 1;
+	private $report_id = false;
+	private $create_pdf = false;
+	private $pdf_data = false;
+	private $pdf_filename = false;
+	private $pdf_recipients = false; # when sending reports by email
+	private $pdf_savepath = false;	# when saving pdf to a path
+	private $schedule_id = false;
+	private $type = 'summary';
 
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->reports_model = new Reports_Model();
-		$this->xajax = get_xajax::instance();
+
+		if (PHP_SAPI !== "cli") {
+			$this->xajax = get_xajax::instance();
+		}
+
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
 			$this->translate->_('Feb'),
@@ -106,15 +118,92 @@ class Summary_Controller extends Authenticated_Controller
 
 		$this->xajax->processRequest();
 
+		# delete report?
+		$del_id = arr::search($_REQUEST, 'del_id', false);
+		$del_ok = $del_result = $del_msg = null;
+		if (arr::search($_REQUEST, 'del_report', false) !== false && $del_id !== false) {
+			$del_ok = Saved_reports_Model::delete_report($this->type, $del_id);
+			if ($del_ok != '') {
+				$del_msg = $this->translate->_('Report was deleted successfully.');
+				$del_result = 'ok';
+			} else {
+				$del_msg = $this->translate->_('An error occurred while trying to delete the report.');
+				$del_result = 'error';
+			}
+		}
+
+		# what scheduled reports are there?
+		$scheduled_ids = array();
+		$scheduled_periods = null;
+		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($this->type);
+		if ($scheduled_res && count($scheduled_res)!=0) {
+			foreach ($scheduled_res as $sched_row) {
+				$scheduled_ids[] = $sched_row->report_id;
+				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
+			}
+		}
+
 		$this->template->disable_refresh = true;
 		$t = $this->translate;
 		$this->template->content = $this->add_view('summary/setup');
 		$template = $this->template->content;
 
+		$this->report_id = arr::search($_REQUEST, 'report_id', false);
+
+		# get all saved reports for user
+		$scheduled_info = false;
+		$report_info = false;
+		$report_setting = false;
+		$summary_items = 25;
+		$report_name = '';
+		$standardreport = true;
+		$sel_alerttype = false;
+		$sel_reportperiod = false;
+		$sel_statetype = false;
+		$sel_hoststate = false;
+		$sel_svcstate = false;
+		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		if ($this->report_id) {
+			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
+			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+			$template->is_scheduled = empty($scheduled_info) ? false: true;
+			if ($report_info) {
+				$report_setting = unserialize($report_info['setting']);
+				$summary_items = $report_setting['summary_items'];
+				$json_report_info = json::encode($report_setting);
+				$this->inline_js .= "set_selection('".$report_setting['obj_type']."', 'false');\n";
+				$this->inline_js .= "expand_and_populate(" . $json_report_info . ");\n";
+				$standardreport = arr::search($report_setting, 'standardreport', false);
+				$report_name = $report_setting['report_name'];
+				$sel_alerttype = $report_setting['alert_types'];
+				$sel_reportperiod = $report_setting['report_period'];
+				$sel_statetype = $report_setting['state_types'];
+				$sel_hoststate = $report_setting['host_states'];
+				$sel_svcstate = $report_setting['service_states'];
+			}
+		}
+		$scheduled_label = $t->_('Scheduled');
+		$this->js_strings .= "var report_id = ".(int)$this->report_id.";\n";
+
+		$json_periods = false;
+		$periods = array();
+		$periods_res = Scheduled_reports_Model::get_available_report_periods();
+		if ($periods_res) {
+			foreach ($periods_res as $period_row) {
+				$periods[$period_row->id] = $period_row->periodname;
+			}
+			if (!empty($periods)) {
+				$json_periods = json::encode($periods);
+			}
+		}
+
+		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		#$this->xtra_js[] = 'application/media/js/jquery.timePicker';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		#$this->xtra_js[] = $this->add_path('summary/js/json');
 		$this->xtra_js[] = $this->add_path('summary/js/move_options');
 		$this->xtra_js[] = $this->add_path('reports/js/common');
@@ -128,6 +217,20 @@ class Summary_Controller extends Authenticated_Controller
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
+		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
+		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
 		$template->label_create_new = $this->translate->_('Alert Summary Report');
 		$template->label_standardreport = $this->translate->_('Standard Reports');
@@ -135,6 +238,39 @@ class Summary_Controller extends Authenticated_Controller
 		$template->label_report_mode = $this->translate->_('Report Mode');
 		$template->label_report_mode_standard = $this->translate->_('Standard');
 		$template->label_report_mode_custom = $this->translate->_('Custom');
+		$template->label_new = $t->_('New');
+		$template->new_saved_title = sprintf($t->_('Create new saved %s report'), $t->_('Summary'));
+		$template->label_delete = $t->_('Delete report');
+		$template->scheduled_label = $scheduled_label;
+		$template->title_label = $t->_('schedule');
+		$template->is_scheduled_report = $t->_('This is a scheduled report');
+		$template->is_scheduled_clickstr = $t->_("This report has been scheduled. Click the icons below to change settings");
+		$template->json_periods = $json_periods;
+		$template->type = $this->type;
+		$template->report_id = $this->report_id;
+		$template->report_info = $report_info;
+		$template->old_config_names_js = $old_config_names_js;
+		$template->old_config_names = $old_config_names;
+		$template->scheduled_ids = $scheduled_ids;
+		$template->scheduled_periods = $scheduled_periods;
+		$template->sel_alerttype = $sel_alerttype;
+		$template->sel_reportperiod = $sel_reportperiod;
+		$template->sel_statetype = $sel_statetype;
+		$template->sel_hoststate = $sel_hoststate;
+		$template->sel_svcstate = $sel_svcstate;
+		$template->available_schedule_periods = $periods;
+		$template->label_interval = $t->_('Report Interval');
+		$template->label_recipients = $t->_('Recipients');
+		$template->label_filename = $t->_('Filename');
+		$template->label_description = $t->_('Description');
+		$template->label_save = $t->_('Save');
+		$template->label_clear = $t->_('Clear');
+		$template->label_view_schedule = $t->_('View schedule');
+		$template->scheduled_info = $scheduled_info;
+		$template->lable_schedules = $t->_('Schedules for this report');
+		$template->label_dblclick = $t->_('Double click to edit');
+
+		$template->saved_reports = $saved_reports;
 
 		# fetch users date format in PHP style so we can use it
 		# in date() below
@@ -159,6 +295,16 @@ class Summary_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_day_of_week."\n";
 		$this->inline_js .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
+		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+
+		if (!is_null($del_ok) && !is_null($del_result)) {
+			$this->inline_js .= "show_message('".$del_result."', '".$del_msg."');\n";
+		}
+
+		if (!$standardreport) {
+			$this->inline_js .= "set_report_mode('custom');\n";
+			$this->inline_js .= "$('#report_mode_custom').attr('checked', true);\n";
+		}
 
 		$template->standardreport = array(
 			1 => $t->_("Most Recent Hard Alerts"),
@@ -169,7 +315,7 @@ class Summary_Controller extends Authenticated_Controller
 			6 => $t->_("Top Hard Service Alert Producers"),
 		);
 		$template->label_show_items = $t->_('Items to show');
-		$template->label_default_show_items = 25;
+		$template->label_default_show_items = $summary_items;
 		$template->label_customreport_options = $t->_('Custom Report Options');
 		$template->label_rpttimeperiod = $t->_('Report Period');
 		$template->label_inclusive = $t->_('Inclusive');
@@ -191,6 +337,11 @@ class Summary_Controller extends Authenticated_Controller
 		$template->label_services = $t->_('Services');
 		$template->label_available = $t->_('Available');
 		$template->label_selected = $t->_('Selected');
+		$template->report_id = $this->report_id;
+		$template->label_save_report = $t->_('Save report');
+		$template->label_saved_reports = $t->_('Saved reports');
+		$template->report_name = $report_name;
+		$template->label_new_schedule = $t->_('New schedule');
 
 
 		# displaytype
@@ -292,10 +443,17 @@ class Summary_Controller extends Authenticated_Controller
 	 */
 	public function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
 	{
+		$spacer = '';
+		$table_border = '';
+		if ($this->create_pdf) {
+			$spacer = "<br />";
+			$table_border = ' border="1"';
+		}
+
 		$t = $this->translate;
-		echo "<table class=\"host_alerts\"><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>";
-		echo "<th class=\"headerNone\" style=\"width: 70%\">" . $t->_('State') . "</th>\n";
+		echo "<br /><table class=\"host_alerts\"><tr>\n";
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>".$spacer;
+		echo "<th class=\"headerNone\">" . $t->_('State') . "</th>\n";
 		echo "<th class=\"headerNone\">" . $t->_('Soft Alerts') . "</th>\n";
 		echo "<th class=\"headerNone\">" . $t->_('Hard Alerts') . "</th>\n";
 		echo "<th class=\"headerNone\">" . $t->_('Total Alerts') . "</th>\n";
@@ -321,7 +479,7 @@ class Summary_Controller extends Authenticated_Controller
 		echo "<td>" . $totals['hard'] . "</td>\n";
 		$tot = $totals['soft'] + $totals['hard'];
 		echo "<td>" . $tot . "</td>\n";
-		echo "</tr></table>\n";
+		echo "</tr></table><br />\n";
 	}
 
 	public function _print_duration($start_time, $end_time)
@@ -336,12 +494,17 @@ class Summary_Controller extends Authenticated_Controller
 		$seconds = ($duration % 60);
 		printf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
 			   $days, $hours, $minutes, $seconds);
+
+		# we needan extra break in case of PDF
+		if ($this->create_pdf) {
+			echo "<br />";
+		}
 	}
 
 	/**
 	 * Generates an alert summary report
 	 */
-	public function generate()
+	public function generate($schedule_id=false)
 	{
 		$valid_options = array
 			('summary_items', 'alert_types', 'state_types',
@@ -349,10 +512,59 @@ class Summary_Controller extends Authenticated_Controller
 			 'report_period', 'host_name', 'service_description',
 			 'hostgroup', 'servicegroup');
 
+		$report_options = $this->_report_settings();
+
+		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+
+		# Handle call from cron or GUI to generate PDF report and send by email
+		#
+		# NOTE:
+		# Passing a schedule_id to this method will ignore all other data passed
+		# in $_REQUEST as data from _scheduled_report() will overwrite it
+		if ($this->schedule_id !== false) {
+			$_REQUEST = $this->_scheduled_report();
+		}
+
+		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
+		if ($this->create_pdf) {
+			$this->auto_render=false;
+		}
+
 		$t = $this->translate;
 		$this->template->disable_refresh = true;
+		$this->xtra_js[] = 'application/media/js/date';
+		$this->xtra_js[] = $this->add_path('reports/js/common');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+		$this->xtra_js[] = $this->add_path('summary/js/summary');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('summary/css/summary');
+		$this->template->css_header->css = $this->xtra_css;
+
+		$date_format = cal::get_calendar_format(true);
+
+		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
+		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
+		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
+		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
+		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
+		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
+		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
+
+		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
+		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
+
+		$this->inline_js .= "\n".$js_month_names."\n";
+		$this->inline_js .= $js_abbr_month_names."\n";
+		$this->inline_js .= $js_day_names."\n";
+		$this->inline_js .= $js_abbr_day_names."\n";
+		$this->inline_js .= $js_day_of_week."\n";
+		$this->inline_js .= $js_date_format."\n";
+		$this->inline_js .= $js_start_date."\n";
+		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+
 		$rpt = new Reports_Model();
 		// cgi compatibility variables
 		// Start dates
@@ -369,6 +581,63 @@ class Summary_Controller extends Authenticated_Controller
 		$ehour 	= (int)arr::search($_REQUEST, 'ehour');
 		$emin 	= (int)arr::search($_REQUEST, 'emin');
 		$esec 	= (int)arr::search($_REQUEST, 'esec');
+
+
+		# what scheduled reports are there?
+		$scheduled_ids = array();
+		$scheduled_periods = null;
+		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($this->type);
+		if ($scheduled_res && count($scheduled_res)!=0) {
+			foreach ($scheduled_res as $sched_row) {
+				$scheduled_ids[] = $sched_row->report_id;
+				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
+			}
+		}
+
+		# get all saved reports for user
+		$scheduled_info = false;
+		$report_info = false;
+		$report_setting = false;
+		$summary_items = 25;
+		$report_name = '';
+		$standardreport = true;
+		$sel_alerttype = false;
+		$sel_reportperiod = false;
+		$sel_statetype = false;
+		$sel_hoststate = false;
+		$sel_svcstate = false;
+		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		if ($this->report_id) {
+			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
+			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+			$template->is_scheduled = empty($scheduled_info) ? false: true;
+			if ($report_info) {
+				$report_setting = unserialize($report_info['setting']);
+				$summary_items = $report_setting['summary_items'];
+				$json_report_info = json::encode($report_setting);
+				$standardreport = arr::search($report_setting, 'standardreport', false);
+				$report_name = $report_setting['report_name'];
+				$sel_alerttype = $report_setting['alert_types'];
+				$sel_reportperiod = $report_setting['report_period'];
+				$sel_statetype = $report_setting['state_types'];
+				$sel_hoststate = $report_setting['host_states'];
+				$sel_svcstate = $report_setting['service_states'];
+			}
+		}
+		$scheduled_label = $t->_('Scheduled');
+		$this->js_strings .= "var report_id = ".(int)$this->report_id.";\n";
+
+		$json_periods = false;
+		$periods = array();
+		$periods_res = Scheduled_reports_Model::get_available_report_periods();
+		if ($periods_res) {
+			foreach ($periods_res as $period_row) {
+				$periods[$period_row->id] = $period_row->periodname;
+			}
+			if (!empty($periods)) {
+				$json_periods = json::encode($periods);
+			}
+		}
 
 		if (isset($_REQUEST['displaytype'])) {
 			$_REQUEST['report_type'] = $_REQUEST['displaytype'];
@@ -420,6 +689,13 @@ class Summary_Controller extends Authenticated_Controller
 				die;
 				break;
 			}
+		}
+
+		$save_report_settings = arr::search($_REQUEST, 'save_report_settings', false);
+		if ($save_report_settings) {
+			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options);
+			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
+			$msg_type = $this->report_id ? "ok" : "";
 		}
 
 		$used_options = array();
@@ -475,6 +751,38 @@ class Summary_Controller extends Authenticated_Controller
 		$content->label_soft_alerts = $t->_('Soft Alerts');
 		$content->label_hard_alerts = $t->_('Hard Alerts');
 		$content->label_total_alerts = $t->_('Total Alerts');
+
+		$this->template->content->schedules = $this->add_view('summary/schedule');
+		$template = $this->template->content->schedules;
+		$template->json_periods = $json_periods;
+		$template->create_pdf = $this->create_pdf;
+		$template->type = $this->type;
+		$template->report_id = $this->report_id;
+		$template->report_info = $report_info;
+		$template->old_config_names_js = $old_config_names_js;
+		$template->old_config_names = $old_config_names;
+		$template->scheduled_ids = $scheduled_ids;
+		$template->scheduled_periods = $scheduled_periods;
+		$template->sel_alerttype = $sel_alerttype;
+		$template->sel_reportperiod = $sel_reportperiod;
+		$template->sel_statetype = $sel_statetype;
+		$template->sel_hoststate = $sel_hoststate;
+		$template->sel_svcstate = $sel_svcstate;
+		$template->available_schedule_periods = $periods;
+		$template->label_interval = $t->_('Report Interval');
+		$template->label_recipients = $t->_('Recipients');
+		$template->label_filename = $t->_('Filename');
+		$template->label_description = $t->_('Description');
+		$template->label_save = $t->_('Save');
+		$template->label_clear = $t->_('Clear');
+		$template->label_view_schedule = $t->_('View schedule');
+		$template->scheduled_info = $scheduled_info;
+		$template->lable_schedules = $t->_('Schedules for this report');
+		$template->label_dblclick = $t->_('Double click to edit');
+		$template->label_new_schedule = $t->_('New schedule');
+
+		$template->saved_reports = $saved_reports;
+
 		$content->host_state_names = array
 			(Reports_Model::HOST_UP => $t->_('UP'),
 			 Reports_Model::HOST_DOWN => $t->_('DOWN'),
@@ -519,6 +827,20 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->js_strings .= reports::js_strings();
+		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
+		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		$this->template->js_strings = $this->js_strings;
 
 		$content->result = $result;
@@ -526,6 +848,16 @@ class Summary_Controller extends Authenticated_Controller
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
+		if ($this->create_pdf) {
+			$this->pdf_data['content'] = $content->render();
+			$retval = $this->_pdf();
+			if (PHP_SAPI == "cli") {
+				echo $retval;
+			}
+			return $retval;
+		}
+
+		$this->template->inline_js = $this->inline_js;
 	}
 
 	/**
@@ -557,5 +889,226 @@ class Summary_Controller extends Authenticated_Controller
 			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
 	}
 
+	/**
+	*	Fetch all input params, filter out unneeded
+	*	and return as array
+	*/
+	public function _report_settings()
+	{
+		$input = false;
+		$data = false;
+		if (!empty($_POST)) {
+			$input = $_POST;
+		} elseif (!empty($_GET)) {
+			$input = $_GET;
+		}
+
+		if (empty($input)) {
+			return false;
+		}
+
+		$skip_keys = array(
+			'create_report',
+			'new_report_setup',
+			'old_report_name',
+			'save_report_settings'
+		);
+		foreach ($input as $key => $val) {
+			if ($val == '' || in_array($key, $skip_keys)) {
+				continue;
+			}
+			$data[$key] = $val;
+		}
+		if (isset($data['hostgroup'])) {
+			$data['objects'] = $data['hostgroup'];
+			$data['obj_type'] = 'hostgroups';
+		} elseif (isset($data['servicegroup'])) {
+			$data['objects'] = $data['servicegroup'];
+			$data['obj_type'] = 'servicegroups';
+		} elseif (isset($data['service_description'])) {
+			$data['objects'] = $data['service_description'];
+			$data['obj_type'] = 'services';
+		} elseif (isset($data['host_name'])) {
+			$data['objects'] = $data['host_name'];
+			$data['obj_type'] = 'hosts';
+		}
+
+		if (isset($data['cal_start']) && isset($data['start_time']) && isset($data['time_start'])) {
+			$data['start_time'] = strtotime($data['start_time'].' '.$data['time_start']);
+		}
+		if (isset($data['cal_end']) && isset($data['end_time']) && isset($data['time_end'])) {
+			$data['end_time'] = strtotime($data['end_time'].' '.$data['time_end']);
+		}
+		return $data;
+	}
+
+	/**
+	*	Fetch informaton on a sheduled report and
+	* 	return all data in an array that will replace
+	* 	$_REQUEST.
+	*
+	* 	If called through a call from the commandline, the script will
+	* 	be authorized as the owner of the current schedule.
+	*/
+	public function _scheduled_report()
+	{
+		# Fetch info on the scheduled report
+		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
+		if ($report_data == false) {
+			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
+		}
+
+		$this->pdf_filename = $report_data['filename'];
+		$this->pdf_recipients = $report_data['recipients'];
+
+		$request['create_pdf'] = 1;
+		$request['new_report_setup'] = 1;
+
+		$settings = unserialize($report_data['setting']);
+		unset($report_data['setting']);
+		unset($report_data['objects']);
+		unset($report_data['filename']);
+		unset($report_data['recipients']);
+
+		if (PHP_SAPI !== "cli") {
+			# set current user to the owner of the report
+			# this should only be done when called through PHP CLI
+			Auth::instance()->force_login($report_data['user']);
+		}
+		return array_merge($request, $settings, $report_data);
+	}
+
+	/**
+	*	Create pdf
+	* 	Will also send the generated PDF as an attachment
+	* 	if $this->pdf_recipients is set.
+	* 	@@@FIXME: Break reports_controller::_pdf() and summary_controller::_pdf() into helper?
+	*/
+	public function _pdf()
+	{
+		# include necessary files for PDF creation
+		pdf::start();
+		$this->auto_render=false;
+
+		global $l; # required for tcpdf
+
+		if (isset($l['w_page'])) { # use ninja translation
+			$l['w_page'] = $this->translate->_('page');
+		}
+
+		$type = $this->type;
+		$filename = $this->pdf_filename;
+		$save_path = $this->pdf_savepath;
+
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : $this->translate->_('Ninja PDF Report');
+		// set document information
+		$pdf->SetCreator(PDF_CREATOR);
+		$pdf->SetAuthor('Ninja4Nagios');
+		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
+		$pdf->SetSubject($title);
+		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
+
+		// set default header data
+		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+		// set header and footer fonts
+		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+		// set default monospaced font
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+		//set margins
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		//set auto page breaks
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+		//set image scale factor
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		//set some language-dependent strings
+		$pdf->setLanguageArray($l);
+
+		// ---------------------------------------------------------
+
+		// set font
+		$pdf->SetFont('helvetica', 'B', 10);
+
+		// add a page
+		$pdf->AddPage();
+
+		// set color for filler
+		$pdf->SetFillColor(255, 255, 0);
+
+		// ---------------------------------------------------------
+
+		if (PHP_SAPI == 'cli') {
+			$site = Kohana::config('config.site_domain');
+			$path = realpath(dirname(__FILE__).'/../../').'/';
+			$cont = $this->pdf_data['content'];
+			$this->pdf_data['content'] = str_replace($site, $path, $cont);
+		}
+
+		$images = array();
+
+		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
+		$filename = trim($filename);
+		if (strtolower(substr($filename, -4, 4))!='.pdf') {
+			$filename .= '.pdf';
+		}
+
+		# Close and output PDF document
+		# change last parameter to 'F' to save generated file to a path ($filename)
+		# 'I' is default and pushes the file to browser for download
+		$action = 'I';
+		$send_by_mail = false;
+		if (!empty($this->pdf_recipients)) {
+			$action = 'F';
+			$filename = K_PATH_CACHE.$filename;
+			$send_by_mail = true;
+		}
+
+		$pdf->Output($filename, $action);
+		$mail_sent = 0;
+		if ($send_by_mail) {
+			# send file as email to recipients
+			$to = $this->pdf_recipients;
+
+			$config = Kohana::config('reports');
+			$mail_sender_address = $config['from_email'];
+
+			if (!empty($mail_sender_address)) {
+				$from = $mail_sender_address;
+			} else {
+				$hostname = exec('hostname --long');
+				$from = !empty($config['from']) ? $config['from'] : Kohana::config('config.product_name');
+				$from = str_replace(' ', '', trim($from));
+				if (empty($hostname) && $hostname != '(none)') {
+					// unable to get a valid hostname
+					$from = $from . '@localhost';
+				} else {
+					$from = $from . '@'.$hostname;
+				}
+			}
+
+			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
+			$subject = $this->translate->_('Scheduled report').": ".basename($filename);
+
+			# $mail_sent will contain the nr of mail sent - not used at the moment
+			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
+
+			# remove file from cache folder
+			unlink($filename);
+			return $mail_sent;
+		}
+
+		return true;
+	}
 
 }
