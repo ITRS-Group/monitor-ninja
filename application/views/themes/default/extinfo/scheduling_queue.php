@@ -24,7 +24,7 @@
 		</tr>
 		<?php
 			$i = 0;
-			if ($data!==false && $data->count()) {
+			if ($data!==false && count($data)) {
 				foreach ($data as $row) {
 					$i++;
 		?>
