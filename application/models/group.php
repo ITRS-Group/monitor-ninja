@@ -33,87 +33,63 @@ class Group_Model extends Model
 		$filter_sql = '';
 		$state_filter = false;
 		if (!empty($hoststatus)) {
-			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
+			$filter_sql .= " AND 1 << host.current_state & $hoststatus ";
 		}
 		$service_filter = false;
 		$servicestatus = trim($servicestatus);
+		$svc_field = '';
+		$svc_groupby = '';
+		$svc_where = '';
 		if ($servicestatus!==false && !empty($servicestatus)) {
-			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
+			$filter_sql .= " AND 1 << service.current_state & $servicestatus ";
+			$svc_groupby = " GROUP BY ".$grouptype."group_name, host.host_name";
+			$svc_where = " AND service.host_name=host.host_name ";
 		}
 
 		$db = new Database();
-		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
+		$all_sql = $groupname != 'all' ? " ".$grouptype."group_name=".$db->escape($groupname)." " : '1';
 
 		# we need to match against different field depending on if host- or servicegroup
-		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+		$member_match = $grouptype == 'service' ? " service.id=service_servicegroup.".$grouptype." AND " : " host.id=host_hostgroup.".$grouptype." AND ";
 
-		if ($auth->view_hosts_root) {
-			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
-				FROM
-					service s,
-					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
-				WHERE
-					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
-				ORDER BY
-					h.host_name,
-					s.current_state;";
-		} elseif ($auth->view_services_root && $grouptype == 'service') {
-			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
-				FROM
-					service s,
-					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
-				WHERE
-					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
-				ORDER BY
-					h.host_name,
-					s.current_state;";
-		} else {
+		if (!$auth->view_hosts_root && !($auth->view_services_root && $grouptype == 'service')) {
 			$hostlist_str = implode(',', $hostlist);
-
-			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
-				FROM
-					service s,
-					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
-				WHERE
-					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name AND
-					h.id IN (".$hostlist_str.") ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
-				ORDER BY
-					h.host_name,
-					s.current_state;";
+			$filter_sql = " AND host.id IN (".$hostlist_str.") ".$filter_sql;
 		}
+
+		switch ($grouptype) {
+			case 'host':
+				$base_query = "SELECT COUNT(*) FROM service ".
+						    "INNER JOIN host ON host.host_name = service.host_name ".
+						    "WHERE service.current_state = %s ".
+						    "AND host.id=host_hostgroup.host";
+				$base_from = sprintf("FROM hostgroup, host, host_hostgroup %s ".
+						"WHERE %s ".
+						"AND host_hostgroup.hostgroup=hostgroup.id ".
+						"AND host.id=host_hostgroup.host %s %s %s", $svc_field, $all_sql, $svc_where, $filter_sql, $svc_groupby);
+				break;
+			case 'service':
+				$base_query = "SELECT COUNT(*) FROM service ".
+						    "INNER JOIN service_servicegroup ON service.id=service_servicegroup.service ".
+						    "WHERE service.current_state = %s ".
+						    "AND myhost = service.host_name ".
+						    "AND service_servicegroup.servicegroup=servicegroup.id";
+				$base_from = sprintf("FROM ".$grouptype."group, host, ".$grouptype."_".$grouptype."group %s, service ".
+						"WHERE %s ".
+						"AND ".$grouptype."_".$grouptype."group.".$grouptype."group=".$grouptype."group.id ".
+						"AND service.id = service_servicegroup.service ".
+						"AND host.host_name=service.host_name %s %s %s", $svc_field, $all_sql, $svc_where, $filter_sql, $svc_groupby);
+						break;
+			default: return false;
+		}
+
+		$sql = "SELECT ".$grouptype."group_name, host.*, host.host_name as myhost, (".
+			sprintf($base_query, Current_status_Model::SERVICE_OK ).") AS services_ok,(".
+			sprintf($base_query, Current_status_Model::SERVICE_WARNING ).") AS services_warning,(".
+			sprintf($base_query, Current_status_Model::SERVICE_CRITICAL ).") AS services_critical,(".
+			sprintf($base_query, Current_status_Model::SERVICE_UNKNOWN ).") AS services_unknown,(".
+			sprintf($base_query, Current_status_Model::SERVICE_PENDING ).") AS services_pending ".
+			$base_from.' GROUP BY myhost ORDER BY host.host_name';
 		$result = $db->query($sql);
 		#echo $sql."<hr />";
 		return $result;
