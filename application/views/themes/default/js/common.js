@@ -131,6 +131,9 @@ $(document).ready(function() {
 	$('.pnp_graph_icon').each(function() {
 		//$(this).mouseover(function() {
 			var pnp_link = $(this).parent().attr('href');
+			if (!pnp_link) {
+				pnp_link = $(this).attr('src');
+			}
 			var link_parts = pnp_link.split('?');
 			if (!link_parts.length) {
 				return false;
