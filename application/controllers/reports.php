@@ -3586,6 +3586,9 @@ class Reports_Controller extends Authenticated_Controller
 			# send file as email to recipients
 			#chmod($filename, 0777);
 			$to = $this->pdf_recipients;
+			if (strstr($to, ',')) {
+				$to = explode(',', $to);
+			}
 
 			$config = Kohana::config('reports');
 			$mail_sender_address = $config['from_email'];
