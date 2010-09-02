@@ -1024,7 +1024,7 @@ class Reports_Controller extends Authenticated_Controller
 		$report_class = $this->reports_model;
 		foreach (self::$options as $var => $new_var) {
 			if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, $this->_convert_yesno_int(arr::search($_REQUEST, $var)))."'<br />";
+				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var))."'<br />";
 			}
 		}
 
@@ -1120,7 +1120,7 @@ class Reports_Controller extends Authenticated_Controller
 		$get_vars = "&report_period=$report_period";
 
 		foreach (self::$options as $var => $new_var)
-			$get_vars .= '&'.$var.'='.$this->_convert_yesno_int(arr::search($_REQUEST, $var));
+			$get_vars .= '&'.$var.'='.arr::search($_REQUEST, $var);
 
 
 		# The following part is not needed when creating csv output
@@ -1732,16 +1732,16 @@ class Reports_Controller extends Authenticated_Controller
 						$t2 = $this->end_date;
 
 						# assume default values for the following
-						$assume_state_retention = $this->assume_state_retention ? 'yes' : 'no';
+						$assume_state_retention = $this->assume_state_retention ? 1 : 0;
 						$backtrack = 1;
 
 						$links = array();
 						$trends_img_params = '';
 						$trends_link_params = '';
-						$downtime       = $this->_convert_yesno_int($scheduled_downtime_as_uptime);
-						$assume_initial = $this->_convert_yesno_int($assume_initial_states);
-						$not_running    = $this->_convert_yesno_int($assume_states_during_not_running);
-						$soft_states    = $this->_convert_yesno_int($include_soft_states);
+						$downtime       = $scheduled_downtime_as_uptime;
+						$assume_initial = $assume_initial_states;
+						$not_running    = $assume_states_during_not_running;
+						$soft_states    = $include_soft_states;
 
 						// convert "First Real State" (-3) to value returned from report_class
 						// other values are converted to old cgi value equivalent
@@ -1777,9 +1777,9 @@ class Reports_Controller extends Authenticated_Controller
 												"&amp;t1=$t1".
 												"&amp;t2=$t2".
 												"&amp;assumestateretention=$assume_state_retention".
-												"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-												"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-												"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+												"&amp;assumeinitialstates=".$assume_initial_states.
+												"&amp;includesoftstates=".$include_soft_states.
+												"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 												"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 												"&amp;backtrack=$backtrack";
 
@@ -1789,9 +1789,9 @@ class Reports_Controller extends Authenticated_Controller
 															"&amp;t1=$t1".
 															"&amp;t2=$t2".
 															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;assumeinitialstates=".$assume_initial_states.
+															"&amp;includesoftstates=".$include_soft_states.
+															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 															"&amp;backtrack=$backtrack";
 
@@ -1800,9 +1800,9 @@ class Reports_Controller extends Authenticated_Controller
 															"&amp;t1=$t1".
 															"&amp;t2=$t2".
 															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;assumeinitialstates=".$assume_initial_states.
+															"&amp;includesoftstates=".$include_soft_states.
+															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 															"&amp;backtrack=$backtrack";
 
@@ -1849,9 +1849,9 @@ class Reports_Controller extends Authenticated_Controller
 												"&amp;t1=$t1".
 												"&amp;t2=$t2".
 												"&amp;assumestateretention=$assume_state_retention".
-												"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-												"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-												"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+												"&amp;assumeinitialstates=".$assume_initial_states.
+												"&amp;includesoftstates=".$include_soft_states.
+												"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 												"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 												"&amp;backtrack=$backtrack";
 
@@ -1862,9 +1862,9 @@ class Reports_Controller extends Authenticated_Controller
 															"&amp;t1=$t1".
 															"&amp;t2=$t2".
 															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;assumeinitialstates=".$assume_initial_states.
+															"&amp;includesoftstates=".$include_soft_states.
+															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 															"&amp;backtrack=$backtrack";
 
@@ -1874,9 +1874,9 @@ class Reports_Controller extends Authenticated_Controller
 															"&amp;t1=$t1".
 															"&amp;t2=$t2".
 															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-															"&amp;includesoftstates=".$this->_convert_yesno_int($include_soft_states, false).
-															"&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+															"&amp;assumeinitialstates=".$assume_initial_states.
+															"&amp;includesoftstates=".$include_soft_states.
+															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
 															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 															"&amp;backtrack=$backtrack";
 
@@ -2932,7 +2932,7 @@ class Reports_Controller extends Authenticated_Controller
 			foreach ($options as $var => $new_var) {
 				if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
 					$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
-						$new_var, $this->_convert_yesno_int(arr::search($_REQUEST, $var, false)))."'<br />";
+						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
 				}
 			}
 
@@ -3039,7 +3039,7 @@ class Reports_Controller extends Authenticated_Controller
 			foreach ($options as $var => $new_var) {
 				if (!$rpt_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
 					$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
-						$new_var, $this->_convert_yesno_int(arr::search($_REQUEST, $var, false)))."'<br />";
+						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
 				}
 			}
 			foreach ($dep_vars as $check => $set)
@@ -3686,7 +3686,7 @@ class Reports_Controller extends Authenticated_Controller
 				$report_class = new Reports_Model();
 				foreach (self::$options as $var => $new_var) {
 					if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-						$this->err_msg .= sprintf($this->translate->_("Could not set option '%s' to '%s'"), $new_var, $this->_convert_yesno_int(arr::search($_REQUEST, $var)));
+						$this->err_msg .= sprintf($this->translate->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var));
 					}
 				}
 				foreach (self::$dep_vars as $check => $set) {
