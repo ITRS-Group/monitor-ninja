@@ -180,6 +180,57 @@ $(document).ready(function() {
 		//});
 	});
 
+	$('.host_comment').each(function() {
+			var obj_name = $(this).attr('href');
+			var link_parts = obj_name.split('/');
+			if (!link_parts.length) {
+				return false;
+			}
+
+			obj_name = link_parts[link_parts.length-1];
+			obj_name = obj_name.replace('#comments', '');
+
+			var loading_img = '/application/media/images/loading.gif';
+
+			$(this).qtip({
+			content: {
+				url: _site_domain + _index_page + "/ajax/fetch_comments/",
+				data: {host: obj_name},
+				method: 'post',
+				text: '<img src="' + _site_domain + loading_img + '" alt="' + _loading_str + '" />'
+			},
+			position: {
+				corner: {
+				target: 'topMiddle', // Position the tooltip
+				tooltip: 'bottomLeft'
+			},
+			adjust: {
+				screen: true // Keep the tooltip on-screen at all times
+			}
+			},
+			show: {
+				when: 'mouseover',
+				solo:true
+			},
+			hide: {
+				effect: 'slide',
+				when: {
+					event: 'unfocus',
+					delay:2000
+				}
+			},
+			style: {
+				width: 500,
+				tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
+					border: {
+					width: 0,
+					radius: 4
+				},
+				name: 'light' // Use the default light style
+			}
+		});
+	});
+
 	$(".helptext_target").each(function(){
 
 		// split the id into controller, key

@@ -365,5 +365,39 @@ class Ajax_Controller extends Authenticated_Controller {
 		echo '<img src="'.$pnp_path.'" />';
 		#echo $pnp_path;
 	}
+
+	/**
+	*	Fetch comment for object
+	*/
+	public function fetch_comments()
+	{
+		#$obj_type = urldecode($this->input->post('obj_type', false));
+		$host = urldecode($this->input->post('host', false));
+		$service = false;
+		$data = false;
+		$model = new Comment_Model();
+		if (strstr($host, '?service=')) {
+			# we have a service - needs special handling
+			$parts = explode('?service=', $host);
+			if (sizeof($parts) == 2) {
+				$host = $parts[0];
+				$service = $parts[1];
+			}
+		}
+
+		$res = $model->fetch_comments($host, $service);
+		if ($res !== false) {
+			$data = "<table><tr><td><strong>".$this->translate->_('Author')."</strong></td><td><strong>".$this->translate->_('Comment')."</strong></td></tr>";
+			foreach ($res as $row) {
+				$data .= '<tr><td valign="top">'.$row->author_name.'</td><td width="400px">'.wordwrap($row->comment_data, '50', '<br />').'</td></tr>';
+			}
+		}
+
+		if (!empty($data)) {
+			echo $data.'</table>';
+		} else {
+			echo $this->translate->_('Found no data');
+		}
+	}
 }
 
