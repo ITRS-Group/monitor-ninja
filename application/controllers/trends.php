@@ -460,6 +460,9 @@ class Trends_Controller extends Authenticated_Controller {
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
 		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
 		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
+		if (arr::search($_REQUEST, 't2') && arr::search($_REQUEST, 't2')) {
+			$_REQUEST['report_period'] = 'custom';
+		}
 
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
