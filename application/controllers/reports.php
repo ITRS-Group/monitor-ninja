@@ -1704,6 +1704,9 @@ class Reports_Controller extends Authenticated_Controller
 								$content->hide_host = true;
 								$content->use_average = $use_average;
 								$content->use_alias = $use_alias;
+								$content->start_time = $this->start_date;
+								$content->end_time = $this->end_date;
+
 								$content->source = $data['source'];
 								$content->create_pdf = $this->create_pdf;
 								$content->report_time_formatted = $report_time_formatted;
