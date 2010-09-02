@@ -1663,7 +1663,7 @@ class Reports_Controller extends Authenticated_Controller
 						$template->trends_graph->length = ($report_end - $report_start);
 						$template->trends_graph->sub_type = $sub_type;
 						$template->trends_graph->is_avail = true;
-						$template->trends_graph->avail_height = 30;
+						$template->trends_graph->avail_height = 50;
 						$template->trends_graph->create_pdf = $this->create_pdf;
 						if ($this->create_pdf) {
 							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
