@@ -286,6 +286,9 @@ $(document).ready(function() {
 	$('#multi_action_select').bind('change', function() {
 		multi_action_select($(this).find('option:selected').val());
 	});
+	$('#multi_action_select_service').bind('change', function() {
+		multi_action_select($(this).find('option:selected').val(), 'service');
+	});
 
 	$('#select_multiple_items').click(function() {
 		if (!refresh_is_paused) {
@@ -350,6 +353,21 @@ $(document).ready(function() {
 			});
 		}
 	});
+	$('.select_all_items_service').live('click', function() {
+		if ($(this).attr('checked')) {
+			$('.select_all_items_service').attr('checked', true);
+			$(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
+				if (!$(this).attr('disabled')) {
+					$(this).attr('checked', true);
+				}
+			});
+		} else {
+			$('.select_all_items_service').attr('checked', false);
+			$(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
+				$(this).attr('checked', false);
+			});
+		}
+	});
 	// Handle show/hide of settings layer
 	$("#settings_icon").click(function() {
 		if ($("#page_settings").is(':hidden'))
@@ -373,11 +391,19 @@ $(document).ready(function() {
 /**
 *	Handle multi select of different actions
 */
-function multi_action_select(action)
+function multi_action_select(action, type)
 {
 	// start by enabling all checkboxes in case
 	// they have been previously disabled
-	$(".item_select input[type='checkbox']").attr('disabled', false);
+	var field = 'item_select';
+	var prop_field = 'obj_prop';
+	if (type == 'service') {
+		$(".item_select_service input[type='checkbox']").attr('disabled', false);
+		field = 'item_select_service';
+		prop_field = 'obj_prop_service';
+	} else {
+		$(".item_select input[type='checkbox']").attr('disabled', false);
+	}
 
 	if (action == '')
 		return false;
@@ -390,52 +416,52 @@ function multi_action_select(action)
 	switch (action) {
 		case 'ACKNOWLEDGE_HOST_PROBLEM':
 		case 'ACKNOWLEDGE_SVC_PROBLEM':
-			$('.obj_prop').each(function() {
+			$('.' + prop_field).each(function() {
 				if ($(this).text() & ACKNOWLEDGED || !($(this).text() & 16)) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 
 			break;
 		case 'REMOVE_HOST_ACKNOWLEDGEMENT':
 		case 'REMOVE_SVC_ACKNOWLEDGEMENT':
-			$('.obj_prop').each(function() {
+			$('.' + prop_field).each(function() {
 				if ( !($(this).text() & ACKNOWLEDGED) ) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 
 			break;
 		case 'DISABLE_HOST_NOTIFICATIONS':
 		case 'DISABLE_SVC_NOTIFICATIONS':
-			$('.obj_prop').each(function() {
+			$('.' + prop_field).each(function() {
 				if ($(this).text() & NOTIFICATIONS_ENABLED) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 
 			break;
 		case 'ENABLE_HOST_NOTIFICATIONS':
 		case 'ENABLE_SVC_NOTIFICATIONS':
-			$('.obj_prop').each(function() {
+			$('.' + prop_field).each(function() {
 				if ( !($(this).text() & NOTIFICATIONS_ENABLED) ) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 			break;
 		case 'ENABLE_HOST_CHECK':
 		case 'ENABLE_SVC_CHECK':
-			$('.obj_prop').each(function() {
-				if ($(this).text() & CHECKS_ENABLED) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+			$('.' + prop_field).each(function() {
+				if ( !($(this).text() & CHECKS_ENABLED)) {
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 			break;
 		case 'DISABLE_HOST_CHECK':
 		case 'DISABLE_SVC_CHECK':
-			$('.obj_prop').each(function() {
-				if ( !($(this).text() & CHECKS_ENABLED) ) {
-					$(this).closest('tr').find(".item_select input[type='checkbox']").attr('disabled', true);
+			$('.' + prop_field).each(function() {
+				if ($(this).text() & CHECKS_ENABLED) {
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});
 			break;

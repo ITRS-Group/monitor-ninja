@@ -37,22 +37,32 @@ if (isset($host_result) ) { ?>
 			</span>
 			<?php } ?>
 			<div style="float: right"><?php
+				$properties = 0;
 				if ($host->problem_has_been_acknowledged) {
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
+					$properties++;
 				}
 				if (empty($host->notifications_enabled)) {
+					$properties += 2;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 				}
 				if (!$host->active_checks_enabled) {
+					$properties += 4;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($host->is_flapping) && $host->is_flapping) {
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 				}
 				if ($host->scheduled_downtime_depth > 0) {
+					$properties += 8;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
-				} ?>
-			</div>
+				}
+				if ($host->current_state == Current_status_Model::SERVICE_CRITICAL || $host->current_state == Current_status_Model::SERVICE_UNKNOWN || $host->current_state == Current_status_Model::SERVICE_WARNING ) {
+					$properties += 16;
+				}
+
+				 ?>
+			</div><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td style="text-align: left">
 			<?php
@@ -109,7 +119,7 @@ if (isset($service_result) ) { ?>
 		<th class="header">&nbsp;</th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="header">&nbsp;</th>
-		<th class="item_select_service"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
+		<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
 		<th class="header"><?php echo $this->translate->_('Service'); ?></th>
 		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
@@ -119,6 +129,7 @@ if (isset($service_result) ) { ?>
 <?php
 	$i = 0;
 	$prev_host = false;
+	$comments = Comment_Model::count_comments_by_object(true);
 	foreach ($service_result as $service) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
@@ -129,8 +140,43 @@ if (isset($service_result) ) { ?>
 		<?php } ?>
 		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, 'service')); ?>">&nbsp;</td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
-		<td>
-			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?>
+		<td><span style="float: left">
+			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?></span>
+			<?php	if ($comments !== false && array_key_exists($service->host_name.';'.$service->service_description, $comments)) { ?>
+					<span style="float: right">
+						<?php echo html::anchor('extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description).'#comments',
+								html::image($this->add_path('icons/16x16/add-comment.png'),
+								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]),
+								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment')); ?>
+					</span>
+					<?php } ?>
+			</span>
+			<span style="float: right">
+			<?php
+			$properties = 0;
+			if ($service->problem_has_been_acknowledged) {
+				$properties++;
+				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
+			}
+			if (empty($service->notifications_enabled)) {
+				$properties += 2;
+				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
+			}
+			if (!$service->active_checks_enabled) {
+				$properties += 4;
+				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
+			}
+			if (isset($service->service_is_flapping) && $service->service_is_flapping) {
+				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
+			}
+			if ($service->scheduled_downtime_depth > 0) {
+				$properties += 8;
+				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px'));
+			}
+			if ($service->current_state == Current_status_Model::SERVICE_CRITICAL || $service->current_state == Current_status_Model::SERVICE_UNKNOWN || $service->current_state == Current_status_Model::SERVICE_WARNING ) {
+				$properties += 16;
+			}
+			?></span><span class="obj_prop_service" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td style="text-align: left">
 			<?php
@@ -160,7 +206,7 @@ if (isset($service_result) ) { ?>
 	$prev_host = $service->host_name;
 	} ?>
 </table><br />
-<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select'),
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
 		array(
 			'' => $this->translate->_('Select Action'),
 			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule Downtime'),
