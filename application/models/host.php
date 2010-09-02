@@ -1005,4 +1005,33 @@ class Host_Model extends Model {
 		$this->performance_data(1);	# generate active check performance data
 		$this->performance_data(0);	# generate passive check performance data
 	}
+
+	/**
+	*	Fetch host info from regexp query
+	*/
+	public function regexp_where($field=false, $regexp=false, $limit=false)
+	{
+		if (empty($field) || empty($regexp)) {
+			return false;
+		}
+		if (!isset($this->auth) || !is_object($this->auth)) {
+			$auth = new Nagios_auth_Model();
+			$auth_hosts = $auth->get_authorized_hosts();
+		} else {
+			$auth_hosts = $this->auth->get_authorized_hosts();
+		}
+		$host_ids = array_keys($auth_hosts);
+		$limit_str = sql::limit_parse($limit);
+		if (!isset($this->db) || !is_object($this->db)) {
+			$db = new Database();
+		} else {
+			$db = $this->db;
+		}
+
+		$sql = "SELECT * FROM host WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
+		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
+		$host_info = $db->query($sql);
+		return count($host_info)>0 ? $host_info : false;
+	}
+
 }

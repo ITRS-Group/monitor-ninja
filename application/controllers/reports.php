@@ -772,6 +772,14 @@ class Reports_Controller extends Authenticated_Controller
 					'type', $type)
 					)
 				);
+
+		$regexp = urldecode(
+			$this->input->post(
+				'regexp', $this->input->get(
+					'regexp', false)
+					)
+				);
+
 		$t = $this->translate;
 
 		$schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
@@ -869,6 +877,18 @@ class Reports_Controller extends Authenticated_Controller
 		$obj_field = $report_options['report_type'] !== false ? self::$map_type_field[$report_options['report_type']] : false;
 		$obj_value = arr::search($_REQUEST, $obj_field, array());
 		// obj_value is ALWAYS an array
+
+		if (!empty($regexp) && $report_options['report_type'] !== false) {
+			# remove last 's' from report_type to get object type
+			$obj_type = substr($report_options['report_type'], 0, -1);
+			$obj_name = ucfirst($obj_type).'_Model';
+			$obj = new $obj_name();
+			$obj_res = $obj->regexp_where($obj_type.'_name', $regexp);
+			unset(${'in_'.$obj_type});
+			foreach ($obj_res as $row) {
+				${'in_'.$obj_type}[] = $row->{$obj_type.'_name'};
+			}
+		}
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date';
@@ -1430,6 +1450,8 @@ class Reports_Controller extends Authenticated_Controller
 				$template->content->create_pdf = $this->create_pdf;
 				$template->content->use_average = $use_average;
 				$template->content->use_alias = $use_alias;
+				$template->content->start_time = $this->start_date;
+				$template->content->end_time = $this->end_date;
 				$template->content->report_time_formatted = $report_time_formatted;
 				if ($this->create_pdf) {
 					$content = $template->content;

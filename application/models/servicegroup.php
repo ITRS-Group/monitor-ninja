@@ -373,4 +373,32 @@ class Servicegroup_Model extends ORM
 		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
+
+	/**
+	*	Fetch info from regexp query
+	*/
+	public function regexp_where($field=false, $regexp=false, $limit=false)
+	{
+		if (empty($field) || empty($regexp)) {
+			return false;
+		}
+		if (!isset($this->auth) || !is_object($this->auth)) {
+			$auth = new Nagios_auth_Model();
+			$auth_obj = $auth->get_authorized_servicegroups();
+		} else {
+			$auth_obj = $this->auth->get_authorized_servicegroups();
+		}
+		$obj_ids = array_keys($auth_obj);
+		$limit_str = sql::limit_parse($limit);
+		if (!isset($this->db) || !is_object($this->db)) {
+			$db = new Database();
+		} else {
+			$db = $this->db;
+		}
+
+		$sql = "SELECT * FROM servicegroup WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
+		 "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$obj_info = $db->query($sql);
+		return count($obj_info)>0 ? $obj_info : false;
+	}
 }

@@ -481,4 +481,36 @@ class Service_Model extends Model
 		$this->performance_data(1);	# generate active check performance data
 		$this->performance_data(0);	# generate passive check performance data
 	}
+
+	/**
+	*	Fetch info from regexp query
+	*/
+	public function regexp_where($field=false, $regexp=false, $limit=false)
+	{
+		if (empty($field) || empty($regexp)) {
+			return false;
+		}
+		if ($field == 'service_name') {
+			$field = 'service_description';
+		}
+		if (!isset($this->auth) || !is_object($this->auth)) {
+			$auth = new Nagios_auth_Model();
+			$auth_obj = $auth->get_authorized_services();
+		} else {
+			$auth_obj = $this->auth->get_authorized_services();
+		}
+		$obj_ids = array_keys($auth_obj);
+		$limit_str = sql::limit_parse($limit);
+		if (!isset($this->db) || !is_object($this->db)) {
+			$db = new Database();
+		} else {
+			$db = $this->db;
+		}
+
+		$sql = "SELECT *, CONCAT(host_name,';', service_description) AS service_name FROM service WHERE ".
+			$field." REGEXP ".$db->escape($regexp)." ".
+		 	"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$obj_info = $db->query($sql);
+		return count($obj_info)>0 ? $obj_info : false;
+	}
 }
