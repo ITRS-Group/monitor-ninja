@@ -1888,7 +1888,7 @@ class Reports_Controller extends Authenticated_Controller
 
 								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('Availability report for this host');
 								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('Availability report for all services');
-								$links[$this->trend_link . "?" . $trends_params . "&amp;service=" . $service] = $t->_('Trends');
+								$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = $t->_('Trends');
 								$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('Alert histogram');
 								$links[$this->history_link . "?" . $history_params] 			= $t->_('Alert history');
 								$links[$this->notifications_link . "?" . $notifications_params] = $t->_('Notifications');
