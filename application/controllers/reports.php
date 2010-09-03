@@ -3612,7 +3612,13 @@ class Reports_Controller extends Authenticated_Controller
 			#chmod($filename, 0777);
 			$to = $this->pdf_recipients;
 			if (strstr($to, ',')) {
-				$to = explode(',', $to);
+				$recipients = explode(',', $to);
+				if (is_array($recipients) && !empty($recipients)) {
+					unset($to);
+					foreach ($recipients as $user) {
+						$to[$user] = $user;
+					}
+				}
 			}
 
 			$config = Kohana::config('reports');
