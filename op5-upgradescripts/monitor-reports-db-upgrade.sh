@@ -180,4 +180,12 @@ then
 	fi
 fi
 
+if [ "$sched_db_ver" = "1.0.0" ]
+then
+	echo "Upgrading scheduled reports"
+	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports_v2.sql"
+	run_sql_file $db_login_opts $upgrade_script
+	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" monitor_reports 2>/dev/null
+
+fi
 echo "Database upgrade complete."
