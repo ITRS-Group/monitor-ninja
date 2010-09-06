@@ -1034,4 +1034,27 @@ class Host_Model extends Model {
 		return count($host_info)>0 ? $host_info : false;
 	}
 
+	/**
+	*	Fetch all services for a single host
+	*/
+	public function get_services($host_name=false)
+	{
+		if (empty($host_name)) {
+			return false;
+		}
+		if (!isset($this->db) || !is_object($this->db)) {
+			$db = new Database();
+		} else {
+			$db = $this->db;
+		}
+		$auth = new Nagios_auth_Model();
+		$auth_svc = $auth->get_authorized_services();
+		$obj_ids = array_keys($auth_svc);
+
+		$sql = "SELECT service_description FROM service WHERE host_name = ".$db->escape($host_name).
+			" AND id IN(".implode(',', $obj_ids).") ORDER BY service_description";
+
+		$data = $db->query($sql);
+		return count($data)>0 ? $data : false;
+	}
 }
