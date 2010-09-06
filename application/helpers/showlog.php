@@ -33,7 +33,7 @@ class showlog_Core
 				if (isset($v['hard'])) {
 					$cmd .= ' --state-type=hard';
 				} elseif (isset($v['soft'])) {
-					$cmd .= ' -- state-type=soft';
+					$cmd .= ' --state-type=soft';
 				}
 				break;
 			 case 'first': case 'last':
