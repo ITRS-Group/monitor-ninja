@@ -820,6 +820,17 @@ class Summary_Controller extends Authenticated_Controller
 			$result = $rpt->alert_totals();
 			break;
 
+		case self::ALERT_TOTALS_SERVICE:
+			$content->label_overall_totals = $t->_('Overall Totals');
+			$services = $this->_populate_services($used_options);
+
+			if (!empty($services)) {
+				$rpt->set_option('service_description', $services);
+			}
+
+			$result = $rpt->alert_totals();
+			break;
+
 		 default:
 			echo Kohana::debug("Case fallthrough");
 			die;
@@ -858,6 +869,66 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->template->inline_js = $this->inline_js;
+	}
+
+	/**
+	*
+	*
+	*/
+	public function _populate_services($used_options=false)
+	{
+		if (empty($used_options)) {
+			return false;
+		}
+		$services = false;
+
+		if (empty($used_options['service_description'])) {
+			if (isset($used_options['host_name'])) {
+				foreach ($used_options['host_name'] as $host_name) {
+					$service_res = Host_Model::get_services($host_name);
+					if ($service_res !== false && count($service_res)) {
+						foreach ($service_res as $svc) {
+							$services[] = $host_name.';'.$svc->service_description;
+							$used_options['service_description'][] = $host_name.';'.$svc->service_description;
+						}
+					}
+				}
+			} elseif (isset($used_options['hostgroup'])) {
+				foreach ($used_options['hostgroup'] as $group) {
+					$hg = new Hostgroup_Model();
+					$hg_res = $hg->get_hosts_for_group($group);
+					if ($hg_res !== false && count($hg_res)) {
+						foreach ($hg_res as $row) {
+							$service_res = Host_Model::get_services($row->host_name);
+							if ($service_res !== false && count($service_res)) {
+								foreach ($service_res as $svc) {
+									$services[] = $row->host_name.';'.$svc->service_description;
+									$used_options['service_description'][] = $row->host_name.';'.$svc->service_description;
+								}
+							}
+						}
+					}
+				}
+			} elseif (isset($used_options['servicegroup'])) {
+				foreach ($used_options['servicegroup'] as $group) {
+					$sg = new Servicegroup_Model();
+					$sg_res = $sg->get_services_for_group($group);
+					if ($sg_res !== false && count($sg_res)) {
+						foreach ($sg_res as $row) {
+							$service_res = Host_Model::get_services($row->host_name);
+							if ($service_res !== false && count($service_res)) {
+								foreach ($service_res as $svc) {
+									$services[] = $row->host_name.';'.$svc->service_description;
+									$used_options['service_description'][] = $row->host_name.';'.$svc->service_description;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $services;
 	}
 
 	/**
