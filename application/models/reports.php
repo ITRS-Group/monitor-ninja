@@ -3178,10 +3178,10 @@ class Reports_Model extends Model
 			$result = $this->alert_totals_by_servicegroup($dbr);
 		} elseif ($this->hostgroup) {
 			$result = $this->alert_totals_by_hostgroup($dbr);
-		} elseif ($this->host_name) {
-			$result = $this->alert_totals_by_host($dbr);
 		} elseif ($this->service_description) {
 			$result = $this->alert_totals_by_service($dbr);
+		} elseif ($this->host_name) {
+			$result = $this->alert_totals_by_host($dbr);
 		}
 
 		$this->set_alert_total_totals($result);
