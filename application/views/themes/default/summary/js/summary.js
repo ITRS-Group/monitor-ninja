@@ -13,6 +13,8 @@ var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
+	set_report_mode('standard');
+
 	// handle standard/custom report switching
 	$("#td_std").click(function() {
 		$("#report_mode_standard").attr('checked', true);
