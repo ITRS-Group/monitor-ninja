@@ -718,7 +718,7 @@ class Reports_Controller extends Authenticated_Controller
 			$avail_reports_arr[$rep->id] = $rep->report_name;
 		}
 
-		$sumary_reports_arr = false;
+		$summary_reports_arr = false;
 		foreach ($summary_reports as $rep) {
 			$summary_reports_arr[$rep->id] = $rep->report_name;
 		}
