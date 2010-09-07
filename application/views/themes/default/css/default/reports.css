@@ -53,6 +53,7 @@
 
 /* id:s *********************************************************************/
 
+
 #options,
 #sla_options,
 #new_schedule_form_area,
@@ -393,6 +394,7 @@ textarea,
 input.wide,
 input.sla_month
 input#cal_end,
+input#report_name,
 input.datepick-end,
 input.datepick-start,
 input#cal_start,
