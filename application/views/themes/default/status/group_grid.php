@@ -10,7 +10,7 @@ $t = $this->translate; ?>
 				?>
 				<li><?php echo html::anchor($link, $label) ?></li>
 				<?php
-			}
+				}
 		}
 		?>
 		</ul>
@@ -34,8 +34,11 @@ $t = $this->translate; ?>
 </div>
 
 <div class="widget left w98" id="status_group-grid">
-<?php echo (isset($pagination)) ? $pagination : '';
-if (!empty($group_details))
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
+<?php echo form::open('command/multi_action'); ?>
+<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+
+<?php if (!empty($group_details))
 	foreach ($group_details as $details) {
 ?>
 
@@ -48,13 +51,13 @@ if (!empty($group_details))
 				echo '('.html::anchor('extinfo/details/'.$details->group_type.'group/'.$details->group_name, html::specialchars($details->group_name)).')';
 			?>
 		</caption>
-		<thead>
 		<tr>
-			<th class="no-sort"colspan="2"><?php echo $label_host ?></th>
+			<th class="no-sort">&nbsp;</th>
+			<th class="item_select">&nbsp;</th>
+			<th class="no-sort"><?php echo $label_host ?></th>
 			<th class="no-sort"><?php echo $label_services ?></th>
 			<th class="no-sort"><?php echo $label_actions ?></th>
 		</tr>
-		</thead>
 		<tbody>
 		<?php
 		$i = 0;
@@ -68,6 +71,7 @@ if (!empty($group_details))
 						echo html::anchor('extinfo/details/host/'.$host['host_name'], html::image('application/media/images/logos/'.$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
 					} ?>
 			</td>
+			<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host['host_name']); ?></td>
 			<td style="white-space: normal; width: 180px"><?php echo html::anchor('extinfo/details/host/'.$host['host_name'], html::specialchars($host['host_name'])) ?></td>
 			<td style="white-space: normal; line-height: 20px">
 			<?php
@@ -134,6 +138,23 @@ else { ?>
 		</tbody>
 	</table>
 	<?php
-}
-echo (isset($pagination)) ? $pagination : ''; ?>
+} ?>
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'host'); ?>
+	<?php echo form::close(); ?>
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
+
