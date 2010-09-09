@@ -82,7 +82,7 @@ $c=0;
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px'));
 						if (empty($row->host_notifications_enabled))
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification disabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
-						if (!$row->active_checks_enabled)
+						if (!$row->host_active_checks_enabled)
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 						if (isset($row->host_is_flapping) && $row->host_is_flapping)
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));

@@ -524,6 +524,7 @@ class Host_Model extends Model {
 					"<HOST_ALIAS>.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
 					"<HOST_ALIAS>.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
 					"<HOST_ALIAS>.notifications_enabled AS host_notifications_enabled,".
+					"<HOST_ALIAS>.active_checks_enabled AS host_active_checks_enabled,".
 					"<HOST_ALIAS>.action_url AS host_action_url,".
 					"<HOST_ALIAS>.icon_image AS host_icon_image,".
 					"<HOST_ALIAS>.icon_image_alt AS host_icon_image_alt,".
