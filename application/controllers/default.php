@@ -205,7 +205,7 @@ class Default_Controller extends Ninja_Controller  {
 
 	/**
 	 * Accept a call from cron to look for scheduled reports to send
-	 * @param string $period_str [Daily, Weekly, Monthly]
+	 * @param string $period_str [Daily, Weekly, Monthly, downtime]
 	 */
 	public function cron($period_str=false)
 	{
@@ -238,9 +238,13 @@ class Default_Controller extends Ninja_Controller  {
 			return false;
 		}
 
-		exec('/usr/bin/php '.$path.' reports/cron/'.$period_str.' '.$user, $return);
-		$sent_mail = array_sum($return);
-		$retval = !empty($sent_mail) ? 0:1;
+		if ($period_str === 'downtime') {
+			exec('/usr/bin/php '.$path.' recurring_downtime/check_schedules/ '.$user, $return);
+		} else {
+			exec('/usr/bin/php '.$path.' reports/cron/'.$period_str.' '.$user, $return);
+			$sent_mail = array_sum($return);
+			$retval = !empty($sent_mail) ? 0:1;
+		}
 		exit($retval);
 	}
 
