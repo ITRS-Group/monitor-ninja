@@ -419,7 +419,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->alias;
 
 						$travel = Contactgroup_Model::get_members($row->contactgroup_name);
-						if (count($travel) > 0) {
+						if ($travel!==false) {
 							$temp = false;
 							foreach ($travel as $trip) {
 								$temp[] = html::anchor(Router::$controller.'/?type=contacts#'.$trip->contact_name, $trip->contact_name);
