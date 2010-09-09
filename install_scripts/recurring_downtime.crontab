@@ -1,0 +1,1 @@
+50 23 * * * monitor /usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime >/dev/null 2>&1

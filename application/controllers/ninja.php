@@ -107,6 +107,7 @@ class Ninja_Controller extends Template_Controller {
 					//'hr5' 														=> array('', ''),
 					$this->translate->_('Comments') 						=> array('/extinfo/show_comments', 'comments',0),
 					$this->translate->_('Schedule downtime') 			=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
+					$this->translate->_('Recurring downtime') 			=> array('/recurring_downtime/', 'scheduledowntime',0),
 					$this->translate->_('Process info') 				=> array('/extinfo/show_process_info', 'processinfo',0),
 					$this->translate->_('Performance info') 			=> array('/extinfo/performance', 'performanceinfo',0),
 					$this->translate->_('Scheduling queue') 			=> array('/extinfo/scheduling_queue', 'schedulingqueue',0),
@@ -140,6 +141,10 @@ class Ninja_Controller extends Template_Controller {
 				$this->template->links[$this->translate->_('Configuration')][$this->translate->_('Configure')] = array('/configuration/configure','nacoma',0);
 
 			$auth = new Nagios_auth_Model();
+			if (!$auth->view_hosts_root) {
+				# only show the link when authorized for all hosts
+				unset($this->template->links[$this->translate->_('Monitoring')][$this->translate->_('Recurring downtime')]);
+			}
 			if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('config.hypermap_path') !== false)
 				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('Hyper Map')] = array('/hypermap', 'hypermap',0);
 			unset($auth);
