@@ -302,6 +302,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$str_enabled = $t->_('ENABLED');
 		$str_disabled = $t->_('DISABLED');
 		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
+		$content->active_checks_enabled_val = $result->active_checks_enabled ? true : false;
 		$content->passive_checks_enabled = $result->passive_checks_enabled ? $str_enabled : $str_disabled;
 		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
 		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;

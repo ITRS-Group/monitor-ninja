@@ -179,7 +179,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_next_scheduled_check ?></td>
-			<td><?php echo $next_check ? date($date_format_str, $next_check) : $na_str ?></td>
+			<td><?php echo $next_check && $active_checks_enabled_val ? date($date_format_str, $next_check) : $na_str ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_state_change ?></td>
