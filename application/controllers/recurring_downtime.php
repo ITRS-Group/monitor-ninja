@@ -30,6 +30,10 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 	public function __construct()
 	{
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root) {
+			url::redirect(Kohana::config('routes.logged_in_default'));
+		}
 		parent::__construct();
 		if (PHP_SAPI !== "cli") {
 			$this->xajax = get_xajax::instance();
