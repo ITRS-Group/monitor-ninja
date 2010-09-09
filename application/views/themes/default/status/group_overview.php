@@ -36,6 +36,10 @@
 	echo sprintf($this->translate->_('Add new %sgroup'), ucfirst($grouptype)).': &nbsp;'.nacoma::link('configuration/configure/'.$grouptype.'group/', 'icons/16x16/nacoma.png', sprintf($this->translate->_('Add new %sgroup'), $grouptype));
 	echo (isset($pagination)) ? $pagination : '';
 	$j = 0;
+
+	echo form::open('command/multi_action');
+	echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+	<?php
 	# make sure we have something to iterate over
 	if (!empty($group_details))
 	foreach ($group_details as $group) { ?>
@@ -47,19 +51,18 @@
 			<?php if (nacoma::link()===true)
 				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($group->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
-			<thead>
 			<tr>
 				<th>&nbsp;</th>
+				<th class="item_select">&nbsp;</th>
 				<th colspan="2"><?php echo $lable_host ?></th>
 				<th class="no-sort"><?php echo $lable_services ?></th>
 				<th class="no-sort"><?php echo $lable_actions ?></th>
 			</tr>
-			</thead>
-			<tbody>
 			<?php $i=0; if (!empty($group->hostinfo))
 				foreach ($group->hostinfo as $host => $details) { ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
 				<td class="icon bl <?php echo strtolower($details['state_str']); ?>">&nbsp;</td>
+				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host); ?></td>
 				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
 				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
 				<td>
@@ -86,7 +89,6 @@
 				</td>
 			</tr>
 			<?php $i++; } ?>
-			</tbody>
 		</table>
 
 <?php $j++; }
@@ -108,5 +110,21 @@
 		</table>
 
 <?php } ?>
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+		array(
+			'' => $this->translate->_('Select Action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			)
+		); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::hidden('obj_type', 'host'); ?>
+	<?php echo form::close(); ?>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
