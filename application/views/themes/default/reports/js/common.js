@@ -4,6 +4,8 @@ var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 var nr_of_scheduled_instances = 0;
+var is_populated = false; // flag list population when done
+var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
 	// handle the move-between-lists-button (> + <) and double click events
 	// hostgroups >
@@ -330,7 +332,9 @@ function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = new Date().addDays(1).asString();
-	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	if ($('.date-pick').is(':visible')) {
+		$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	}
 	$('#cal_start').bind(
 		'dpClosed',
 		function(e, selectedDates)
@@ -466,9 +470,20 @@ Image1.src = _site_domain + '/application/media/images/loading.gif';
 */
 function show_progress(the_id, info_str)
 {
-	$("#" + the_id)
-		.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
-		.show();
+	var position = $('#sel_report_type').offset();
+	if (position.left) {
+		// try to position progress image so it doesn't cover anything
+		$("#" + the_id)
+			.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
+			.css('position', 'absolute')
+			.css('left', position.left + 50 + 'px')
+			.css('top', position.top + 'px')
+			.show();
+	} else {
+		$("#" + the_id)
+			.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
+			.show();
+	}
 }
 
 function get_members(val, type, no_erase) {

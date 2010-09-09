@@ -5,8 +5,6 @@ var host_tmp = false;
 var host = false;
 var service_tmp = false;
 var service = false;
-var current_obj_type = false; // keep track of what we are viewing
-var is_populated = false; // flag list population when done
 
 //var _scheduled_label = '';
 var invalid_report_names = '';
