@@ -3,7 +3,6 @@
 <div class="widget w98 left">
 	<div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<?php echo form::open('notifications/'.Router::$method.(isset($host_name) ? '/'.$host_name : ''), array('method' => 'get', 'id' => 'notification_form')); ?>
-		<strong><?php echo $t->_('Detail level for all contacts');?></strong><br />
 		<?php echo form::dropdown(array('name' => 'type'), $select_strings, $selected_val); ?>
 		<input type="checkbox" name="sort_order" value="asc" /> <?php echo $t->_('Older Entries First');?> &nbsp;
 		<input type="submit" value="<?php echo $t->_('Update');?>" />
