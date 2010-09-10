@@ -136,7 +136,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports');
-		$this->xtra_css[] = $this->add_path('recurring_downtime/css/recurring_downtime');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$date_format = cal::get_calendar_format(true);
