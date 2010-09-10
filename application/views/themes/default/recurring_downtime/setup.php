@@ -116,18 +116,18 @@ if (!empty($widgets)) {
 					<table class="setup-tbl" style="width: 785px">
 						<tr>
 							<td colspan="3">
-								<?php echo $label_comment ?> *<br />
-								<textarea cols="40" rows="4" name="comment" style="width: 100%"><?php echo $comment ?></textarea>
+								<?php echo $label_comment ?> <em>*</em><br />
+								<textarea cols="40" rows="4" name="comment" style="width: 770px; padding: 5px;"><?php echo $comment ?></textarea>
 							</td>
 						</tr>
 						<tr>
 							<td style="width: 100px">
-								<?php echo $label_time ?> (hh:mm) *<br />
-								<input class="recurrence_input time-picker" type='text' name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'>
+								<?php echo $label_time ?> (hh:mm) <em>*</em><br />
+								<input class="recurrence_input time-picker" type='text' maxlength="5" name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'>
 							</td>
 							<td>
-								<?php echo $label_duration ?> (hh:mm) *<br />
-								<input class="recurrence_input time-picker" type='text' id="duration" name='duration' value='<?php echo $duration ?>'>
+								<?php echo $label_duration ?> (hh:mm) <em>*</em><br />
+								<input class="recurrence_input time-picker" type='text' maxlength="5" id="duration" name='duration' value='<?php echo $duration ?>'>
 							</td>
 							<td>&nbsp;</td>
 						</tr>
