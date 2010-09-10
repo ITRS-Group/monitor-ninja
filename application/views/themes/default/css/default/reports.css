@@ -124,8 +124,13 @@ img.deleteimg {
 	padding: 0px 1%;
 }
 
-.report-page-setup.availsla {
+.report-page-setup.availsla,
+.report-page-setup.recurring_dt_schedule {
 	padding: 0px;
+}
+
+.report-page-setup.recurring_dt_schedule {
+	margin: 0px -2px;
 }
 
 .pie-chart {
@@ -402,6 +407,8 @@ input#summary_items,
 input#filter_field,
 input#time_start,
 input#time_end,
+input#duration,
+input#time_input,
 input#filename,
 input#recipients {
 	background: #fafafa;
@@ -430,6 +437,8 @@ input.wide {
 	margin-top: 3px;
 }
 
+input#time_input,
+input#duration,
 input#cal_end,
 input#cal_start,
 input.datepick-end,
