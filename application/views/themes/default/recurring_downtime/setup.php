@@ -7,9 +7,11 @@ if (!empty($widgets)) {
 	}
 }
 ?>
+
 <div id="progress"></div>
 <div class="report-page-setup recurring_dt_schedule">
 	<div id="response"></div>
+
 	<div id="schedule-tabs-container">
 		<ul>
 			<li><a href="#create-tab" style="border: 0px"><?php echo $this->translate->_('Create new') ?></a></li>
@@ -111,63 +113,62 @@ if (!empty($widgets)) {
 				</div>
 
 				<div class="setup-table">
-					<table class="setup-tbl">
+					<table class="setup-tbl" style="width: 785px">
 						<tr>
-							<td>
-								<strong><?php echo $label_comment ?> *</strong><br />
-								<textarea cols="40" rows="3" name="comment"><?php echo $comment ?></textarea>
+							<td colspan="3">
+								<?php echo $label_comment ?> *<br />
+								<textarea cols="40" rows="4" name="comment" style="width: 100%"><?php echo $comment ?></textarea>
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<strong><?php echo $label_time ?> *</strong><br />
-								<input class="recurrence_input time-picker" type='text' name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'> (hh:mm)
+							<td style="width: 100px">
+								<?php echo $label_time ?> (hh:mm) *<br />
+								<input class="recurrence_input time-picker" type='text' name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'>
 							</td>
+							<td>
+								<?php echo $label_duration ?> (hh:mm) *<br />
+								<input class="recurrence_input time-picker" type='text' id="duration" name='duration' value='<?php echo $duration ?>'>
+							</td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
-							<td>
-								<strong><?php echo $label_duration ?> *</strong><br />
-								<input class="recurrence_input time-picker" type='text' id="duration" name='duration' value='<?php echo $duration ?>'>  (hh:mm) </td>
-						</tr>
-						<tr>
-							<td>
-								<strong><?php echo $label_days_of_week ?></strong><br />
-								<table>
+							<td colspan="2">
+								<?php echo $label_days_of_week ?><br />
+								<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
-								<?php for ($i=0;$i<=6;$i++) {
+										<?php for ($i=0;$i<=6;$i++) {
 										$checked = '';
 										if (isset($schedule_info['recurring_day']) && in_array($i, $schedule_info['recurring_day'])) {
 											$checked = 'checked=checked';
 										} ?>
 
-								<td><input type="checkbox" <?php echo $checked ?> name="recurring_day[]" value="<?php echo $i ?>"> <?php echo $day_names[$i] ?></td>
-								<?php	if ($i == 3) {
-											echo "</tr><tr>";
-										}
-									} ?>
+										<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_day[]" value="<?php echo $i ?>" id="<?php echo $day_names[$i];?>"> <label for="<?php echo $day_names[$i];?>"><?php echo $day_names[$i] ?></label></td>
+										<?php	} ?>
 									</tr>
 								</table>
+								<br>
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<strong><?php echo $label_months ?></strong><br />
-								<table>
+							<td colspan="2">
+								<?php echo $label_months ?><br />
+								<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
-						<?php 	$i = 0;
+									<?php 	$i = 0;
 								foreach($month_names as $month) {
 									$i++;
 									$checked = '';
 									if (isset($schedule_info['recurring_month']) && in_array($i, $schedule_info['recurring_month'])) {
 										$checked = 'checked=checked';
 									} ?>
-								<td><input type="checkbox" <?php echo $checked ?> name="recurring_month[]" value="<?php echo $i ?>"> <?php echo $month ?></td>
+								<td style="width: 80px"><input type="checkbox" <?php echo $checked ?> name="recurring_month[]" value="<?php echo $i ?>" id="<?php echo $month; ?>"> <label for="<?php echo $month; ?>"><?php echo $month ?></label></td>
 								<?php	if ($i == 6) {
 											echo "</tr><tr>";
 										}
 									} ?>
 									</tr>
 								</table>
+								<br>
 							</td>
 						</tr>
 					</table>
