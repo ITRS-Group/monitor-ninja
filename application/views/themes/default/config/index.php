@@ -1,6 +1,7 @@
-		<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
-<div class="widget w98 left">
+<div class="widget w98 left;" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
+	<div style="position: absolute; right: 200px"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
 	<form method="get" action="">
 	<?php echo $t->_('Object type'); ?>:
 	<select name="type" onchange="submit()">
@@ -21,9 +22,10 @@
 	</select>
 	<?php echo form::input(array('id' => 'filterbox', 'style' => 'color:grey'), $filter_string) ?>
 	</form>
-	<br /><br />
+</div>
+<div class="widget w98 left" style="margin-top: 40px">
 	<table id="config_table">
-		<caption><?php echo ucfirst(str_replace('_',' ',$type)); ?></caption>
+		<!--<caption><?php echo ucfirst(str_replace('_',' ',$type)); ?></caption>-->
 		<thead>
 		<tr>
 			<?php $i = 0; foreach ($header as $item) {
