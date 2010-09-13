@@ -46,6 +46,15 @@ class Config_Controller extends Authenticated_Controller {
 		$items_per_page = 20;
 		$config_model = new Config_Model($items_per_page, true, true);
 
+
+		$pagination = new Pagination(
+			array(
+				'total_items'=> $config_model->count_config($this->type),
+				'items_per_page' => $items_per_page
+			)
+		);
+		$offset = $pagination->sql_offset;
+
 		$auth = new Nagios_auth_Model();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
@@ -53,7 +62,7 @@ class Config_Controller extends Authenticated_Controller {
 
 		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View config');
 		$this->template->content = $this->add_view('config/index');
-		$data = $config_model->list_config($this->type);
+		$data = $config_model->list_config($this->type, $items_per_page, $offset);
 
 		$options['host'] = array(
 			'notification' => array(
@@ -691,6 +700,9 @@ class Config_Controller extends Authenticated_Controller {
 				}
 			break;
 		}
+
+
+
 		$filter_string = $this->translate->_('Enter text to filter');
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
 		$this->xtra_js[] = $this->add_path('config/js/config.js');
@@ -698,6 +710,7 @@ class Config_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _filter_label = '".$filter_string."';";
 		$this->template->js_strings = $this->js_strings;
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->header = $header;
 		$this->template->content->data = $data;
 		$this->template->content->filter_string = $this->translate->_('Enter text to filter');
