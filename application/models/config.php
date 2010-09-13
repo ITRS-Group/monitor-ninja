@@ -43,7 +43,7 @@ class Config_Model extends Model {
 							 h.event_handler_enabled, h.stalking_options, h.flap_detection_enabled, h.low_flap_threshold,
 							 h.high_flap_threshold, h.process_perf_data, h.failure_prediction_enabled,
 							 h.retain_status_information, h.retain_nonstatus_information
-							 FROM host as h ORDER BY h.host_name";
+							 FROM host as h ORDER BY h.host_name".$offset_limit;
 			                 /* Failure Prediction Options*/
 				break;
 
@@ -58,7 +58,7 @@ class Config_Model extends Model {
 									event_handler, event_handler_enabled, stalking_options, flap_detection_enabled,
 									low_flap_threshold, high_flap_threshold, process_perf_data, failure_prediction_enabled,
 									retain_status_information, retain_nonstatus_information
-									FROM service ORDER BY host_name, service_description";
+									FROM service ORDER BY host_name, service_description".$offset_limit;
 									/* Failure Prediction Options*/
 				break;
 
@@ -67,27 +67,27 @@ class Config_Model extends Model {
 									host_notification_options, service_notification_period, host_notification_period,
 									service_notification_commands, host_notification_commands,
 									retain_status_information, retain_nonstatus_information
-									FROM contact ORDER BY contact_name";
+									FROM contact ORDER BY contact_name".$offset_limit;
 				break;
 
 				case 'commands':
-					$sql = "SELECT command_name, command_line FROM command ORDER BY command_name";
+					$sql = "SELECT command_name, command_line FROM command ORDER BY command_name".$offset_limit;
 				break;
 
 				case 'timeperiods':
 					$sql = "SELECT timeperiod_name, alias, monday, tuesday, wednesday, thursday, friday,
 									saturday, sunday
-									FROM timeperiod ORDER BY timeperiod_name";
+									FROM timeperiod ORDER BY timeperiod_name".$offset_limit;
 				break;
 
 				case 'host_groups':
 					$sql = "SELECT hostgroup_name, alias, notes, notes_url, action_url
-									FROM hostgroup ORDER BY hostgroup_name";
+									FROM hostgroup ORDER BY hostgroup_name".$offset_limit;
 				break;
 
 				case 'service_groups':
 					$sql = "SELECT servicegroup_name, alias, notes, notes_url, action_url
-									FROM servicegroup ORDER BY servicegroup_name";
+									FROM servicegroup ORDER BY servicegroup_name".$offset_limit;
 				break;
 
 				case 'host_escalations':
@@ -95,7 +95,7 @@ class Config_Model extends Model {
 									he.escalation_period, he.escalation_options
 									FROM hostescalation as he, host as h, host_contactgroup as hc, contactgroup as cg
 									WHERE h.id = he.host_name AND hc.host = h.id
-									ORDER BY h.host_name";
+									ORDER BY h.host_name".$offset_limit;
 				break;
 
 				case 'service_escalations':
@@ -103,11 +103,11 @@ class Config_Model extends Model {
 									se.escalation_period, se.escalation_options, cg.contactgroup_name
 									FROM serviceescalation as se, service as s, service_contactgroup as sc, contactgroup as cg
 									WHERE s.id = se.service AND sc.service = s.id
-									ORDER BY s.service_description";
+									ORDER BY s.service_description".$offset_limit;
 				break;
 
 				case 'contact_groups':
-					$sql = "SELECT contactgroup_name, alias FROM contactgroup ORDER BY contactgroup_name";
+					$sql = "SELECT contactgroup_name, alias FROM contactgroup ORDER BY contactgroup_name".$offset_limit;
 				break;
 
 				case 'host_dependencies';
@@ -115,7 +115,7 @@ class Config_Model extends Model {
 									notification_failure_options
 									FROM hostdependency as hd, host as mh, host dh
 									WHERE hd.dependent_host_name = dh.id AND hd.host_name = mh.id
-									ORDER BY dh.host_name";
+									ORDER BY dh.host_name".$offset_limit;
 				break;
 
 				case 'service_dependencies';
@@ -124,7 +124,7 @@ class Config_Model extends Model {
 									dependency_period, execution_failure_options, notification_failure_options
 									FROM servicedependency as sd, service as ds, service as ms
 									WHERE ds.id = sd.dependent_service AND ms.id = sd.service
-									ORDER BY ds.service_description";
+									ORDER BY ds.service_description".$offset_limit;
 				break;
 			}
 
@@ -132,13 +132,13 @@ class Config_Model extends Model {
 
 			# We special case host/services since there are one to many relationships
 			# parents, contacts + contactgroups need to fetched separatly so we do this here
-		    if ($type === 'hosts') {
+		    if ($type === 'hosts' && $count == false) {
 				$parent_child = $db->query("select host.host_name, host2.host_name as parent from host left join host_parents on host.id=host_parents.host " .
-										   "left join host as host2 on host2.id=host_parents.parents");
+										   "left join host as host2 on host2.id=host_parents.parents".$offset_limit);
 				$contactgroups = $db->query("select host.host_name,contactgroup.contactgroup_name  from host left join host_contactgroup on host.id = host_contactgroup.host " .
-											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id");
+											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id".$offset_limit);
 				$contacts = $db->query("select host.host_name,contact.contact_name from host left join host_contact on host.id = host_contact.host " .
-									   "left join contact on host_contact.contact = contact.id");
+									   "left join contact on host_contact.contact = contact.id".$offset_limit);
 				foreach($parent_child as $row){
 					if (isset($parent_array[$row->host_name] )){
 						$parent_array[$row->host_name] = $parent_array[$row->host_name] . "," . $row->parent;
@@ -174,13 +174,13 @@ class Config_Model extends Model {
 				}
 				return $result_mod;
 		    }
-		    if ($type === 'services') {
+		    if ($type === 'services' && $count == false) {
 				$s_contactgroups = $db->query("select service.host_name, service.service_description, contactgroup.contactgroup_name " .
 											  "from service left join service_contactgroup on service.id = service_contactgroup.service " .
-											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id");
+											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id".$offset_limit);
 				$s_contacts = $db->query("select service.host_name, service.service_description, contact.contact_name " .
 										 "from service left join service_contact on service.id = service_contact.service " .
-										 "left join contact on service_contact.contact = contact.id");
+										 "left join contact on service_contact.contact = contact.id".$offset_limit);
 				foreach($s_contactgroups as $row){
 					if(isset($s_contactgroups_array[$row->host_name][$row->service_description])) {
 						$s_contactgroups_array[$row->host_name][$row->service_description] = $s_contactgroups_array[$row->host_name][$row->service_description] . "," . $row->contactgroup_name;
@@ -215,5 +215,10 @@ class Config_Model extends Model {
 		}
 		else
 			return false;
+	}
+
+	public function count_config($type)
+	{
+		return self::list_config($type, false, false, true);
 	}
 }
