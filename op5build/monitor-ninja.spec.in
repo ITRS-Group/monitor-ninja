@@ -76,7 +76,7 @@ fi
 %files
 %defattr(-,monitor,apache)
 %prefix
-/etc/cron.d/scheduled-reports
+/etc/cron.d/*
 /var/www/html/monitor
 
 %clean
