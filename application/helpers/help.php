@@ -30,7 +30,7 @@ class help_Core
 		# fetch current theme path from registry
 		# to make help icon to always be in current theme
 		$theme_path = zend::instance('Registry')->get('theme_path');
-		$img_rel_path = 'icons/12x12/shield-info.png';
+		$img_rel_path = 'icons/12x12/help.png';
 		$img_path = url::base(false).'application/views/'.$theme_path.$img_rel_path;
 
 		$translate = zend::instance('Registry')->get('Zend_Translate');
@@ -40,6 +40,6 @@ class help_Core
 		$id = 'help_'.rand(0, 10000).'|'.$controller.'|'.$key;
 
 		return '<a class="helptext_target" style="border:0" id="'.$id.'" href="#">'.
-		'<img src="'.$img_path.'" title="'.$translate->_('Click for help').'" alt="'.$translate->_('Click for help').'" /></a>';
+		'<img src="'.$img_path.'" title="'.$translate->_('Click for help').'" alt="'.$translate->_('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
 	}
 }
