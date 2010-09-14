@@ -337,7 +337,8 @@ div.time-picker li.selected {
 /***********************************************************************/
 
 input,
-select {
+select,
+textarea {
 	background: #fafafa;
 	border: 1px solid #cccccc;
 	outline: 0px;
@@ -422,6 +423,9 @@ input#recipients {
 	margin-bottom: 15px;
 }
 
+textarea {
+	width: 378px;
+}
 
 input.sla_month {
 	width: 30px;
@@ -454,7 +458,7 @@ input.send_report_now {
 	cursor: pointer;
 }
 
-select#period {
+select#period.popup {
 	margin-top: 3px;
 	width: 100px;
 }
