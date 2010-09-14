@@ -230,7 +230,7 @@ class Service_Model extends Model
 		if (!empty($query_parts)) {
 			$sql .= '( '.implode(') OR (', $query_parts) . ') ';
 			$sql .= " AND s.host_name = h.host_name";
-			$sql .= " AND s.id IN(".implode(',', $obj_ids).") ".$limit_str;
+			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
 			#echo $sql;
 			$obj_info = $db->query($sql);
 			return $obj_info;
@@ -261,7 +261,7 @@ class Service_Model extends Model
 			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($val)."))".
 			" AND (s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id` ";
+			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id`, h.host_name ";
 			}
 			if (!empty($query)) {
 				$sql = implode(' UNION ', $query).$limit_str;
@@ -274,7 +274,7 @@ class Service_Model extends Model
 			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value)."))".
 			" AND (s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id` ".$limit_str;
+			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id`, h.host_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
