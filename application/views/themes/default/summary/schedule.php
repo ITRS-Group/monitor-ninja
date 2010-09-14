@@ -16,7 +16,7 @@ if (!$create_pdf) {
 				<?php if (!empty($available_schedule_periods)) { ?>
 				<td>
 					<?php echo $label_interval ?><br>
-					<select name="period" id="period">
+					<select name="period" id="period" class="popup">
 					<?php	foreach ($available_schedule_periods as $id => $period) { ?>
 					<option value="<?php echo $id ?>"><?php echo $period ?></option>
 					<?php	} ?>
