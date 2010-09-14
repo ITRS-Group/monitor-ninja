@@ -29,7 +29,15 @@ make test docs
 %install
 rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
+
+# copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
+for d in test op5build monitor-ninja.spec \
+	install_old.php php2doxy.sh example.htaccess
+do
+	rm -rf %buildroot%prefix/$d
+done
+
 sed -i 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
 	%buildroot%prefix/application/controllers/authenticated.php
 sed -i \
