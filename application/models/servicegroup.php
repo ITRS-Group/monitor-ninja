@@ -183,12 +183,13 @@ class Servicegroup_Model extends ORM
 		return false;
 	}
 	/**
-	*	Create a query to find all the host and service
-	*	state breakdown in one single query.
-	*
-	* 	@param mixed $groups could either be a named group,
-	* 		'all' or a group ID.
-	*/
+	 * Create a query to find all the host and service
+	 * state breakdown in one single query.
+	 *
+	 * @param $groups A named group, a group ID or 'all'.
+	 * @param $items_per_page Items per page
+	 * @param $offset Item to start with
+	 */
 	public function summary($groups='all', $items_per_page=false, $offset=false)
 	{
 		$auth = new Nagios_auth_Model();
