@@ -20,4 +20,20 @@ class pdodb_Core {
 		$db = new PDO($type.':host='.$host.';dbname='.$database, $user, $pass);
 		return is_object($db) ? $db : false;
 	}
+
+	/**
+	 * Init database more like the way Kohana does it
+	 *
+	 * Will use default database configuration from config/database
+	 * if none given
+	 */
+	public function db($database=false)
+	{
+		$params = empty($database) ? Kohana::config('database.default') : Kohana::config('database.'.$database);
+		if (!empty($params)) {
+			$config = $params['connection'];
+			return pdodb::instance($config['type'], $config['database'], $config['user'], $config['pass'], $config['host']);
+		}
+		return false;
+	}
 }
