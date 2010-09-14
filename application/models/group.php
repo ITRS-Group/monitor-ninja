@@ -96,12 +96,17 @@ class Group_Model extends Model
 	}
 
 	/**
-	 * Finds all members of a host- or servicegroup
+	 * Finds all members of a host- or servicegroup, optionally filtering
+	 * on status.
 	 * Will return all info on the hosts but only service_description
 	 * and current_state for services
 	 *
 	 * @param $grouptype [host|service]
 	 * @param $groupname Name of the group
+	 * @param $hoststatus Host status filter
+	 * @param $servicestatus Service status filter
+	 * @param $service_props Service properties filter
+	 * @param $host_props Host properties filter
 	 * @return db result
 	 */
 	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false)
