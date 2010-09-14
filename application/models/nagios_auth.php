@@ -28,6 +28,9 @@ class Nagios_auth_Model extends Model
 		parent::__construct();
 		$this->session = Session::instance();
 
+		if (!Auth::instance()->logged_in()) {
+			return false;
+		}
 		$this->user = Auth::instance()->get_user()->username;
 		$this->check_rootness();
 
