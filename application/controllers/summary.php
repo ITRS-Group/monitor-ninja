@@ -171,15 +171,17 @@ class Summary_Controller extends Authenticated_Controller
 				$report_setting = unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
-				$this->inline_js .= "set_selection('".$report_setting['obj_type']."', 'false');\n";
+				if (isset($report_setting['obj_type'])) {
+					$this->inline_js .= "set_selection('".$report_setting['obj_type']."', 'false');\n";
+				}
 				$this->inline_js .= "expand_and_populate(" . $json_report_info . ");\n";
 				$standardreport = arr::search($report_setting, 'standardreport', false);
 				$report_name = $report_setting['report_name'];
-				$sel_alerttype = $report_setting['alert_types'];
-				$sel_reportperiod = $report_setting['report_period'];
-				$sel_statetype = $report_setting['state_types'];
-				$sel_hoststate = $report_setting['host_states'];
-				$sel_svcstate = $report_setting['service_states'];
+				$sel_alerttype = isset($report_setting['alert_types']) ? $report_setting['alert_types'] : false;
+				$sel_reportperiod = isset($report_setting['report_period']) ? $report_setting['report_period'] : false;
+				$sel_statetype = isset($report_setting['state_types']) ? $report_setting['state_types'] : false;
+				$sel_hoststate = isset($report_setting['host_states']) ? $report_setting['host_states'] : false;
+				$sel_svcstate = isset($report_setting['service_states']) ? $report_setting['service_states'] : false;
 			}
 		}
 		$scheduled_label = $t->_('Scheduled');
@@ -611,7 +613,7 @@ class Summary_Controller extends Authenticated_Controller
 			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
-			if ($report_info) {
+			if ($report_info && $report_setting) {
 				$report_setting = unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
