@@ -39,3 +39,12 @@ fi
 # import users and authorization data
 echo "Importing users from cgi.cfg"
 /usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
+
+# check if we should add recurring_downtime table
+if [ "$db_ver" = '1' ]
+then
+	# add table for recurring_downtime
+	echo "Installing database table for Recurring Downtime"
+	run_sql_file $db_login_opts "$prefix/install_scripts/recurring_downtime.sql"
+	mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" merlin 2>/dev/null
+fi
