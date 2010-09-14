@@ -5,37 +5,32 @@ if (!$create_pdf) {
 		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $this->translate->_('Add').' '. strtolower($label_new_schedule), 'title' => $this->translate->_('Add').' '. strtolower($label_new_schedule))); ?></a>
 		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 	</span>
+
 	<span id="autoreport_periods" style="display:none"><?php echo $json_periods ?></span>
 	<div id="new_schedule_form_area" style="display:none">
 	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form', 'onsubmit' => 'return trigger_schedule_save(this);'));
 		?>
 		<h1><?php echo $label_new_schedule ?></h1>
-		<table id="new_schedule_report_table" cellpadding="0" cellspacing="0" style="margin-left: -3px">
-			<?php if (!empty($available_schedule_periods)) { ?>
+		<table id="new_schedule_report_table" class="white-table">
 			<tr class="none">
-				<td><?php echo $label_interval ?></td>
-			</tr>
-			<tr class="none">
+				<?php if (!empty($available_schedule_periods)) { ?>
 				<td>
+					<?php echo $label_interval ?><br>
 					<select name="period" id="period">
 					<?php	foreach ($available_schedule_periods as $id => $period) { ?>
 					<option value="<?php echo $id ?>"><?php echo $period ?></option>
 					<?php	} ?>
 					</select>
 				</td>
-			</tr>
-			<?php } ?>
-			<tr class="none">
-				<td><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" /></td>
-			</tr>
-			<tr class="none">
-				<td><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /></td>
+				<?php } ?>
+				<td><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" style="width: 200px" /></td>
+				<td><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" style="width: 200px" /></td>
 			</tr>
 			<tr class="none">
-				<td><?php echo $label_description ?><br /><textarea cols="31" rows="3" id="description" name="description"></textarea></td>
+				<td colspan="<?php echo empty($available_schedule_periods) ? '2' : '3';?>"><?php echo $label_description ?><br /><textarea cols="31" rows="4" id="description" name="description" style="width: 540px;margin-top: 3px"></textarea></td>
 			</tr>
 			<tr class="none">
-				<td id="scheduled_btn_ctrl">
+				<td id="scheduled_btn_ctrl" colspan="<?php echo empty($available_schedule_periods) ? '2' : '3';?>">
 					<input type="submit" name="sched_subm" id="sched_subm" value="<?php echo $label_save ?>" />
 					<input type="reset" name="reset_frm" id="reset_frm" value="<?php echo $label_clear ?>" />
 				</td>
