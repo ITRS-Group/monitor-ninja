@@ -542,7 +542,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
-		$this->xtra_css[] = $this->add_path('summary/css/summary');
+		$this->xtra_css[] = $this->add_path('css/default/reports');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$date_format = cal::get_calendar_format(true);
