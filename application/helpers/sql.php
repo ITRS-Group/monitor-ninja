@@ -1,11 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
-* SQL Help class
-*
-* @package NINJA
-* @author op5 AB
-* @license GPL
-*/
+ * SQL Help class
+ */
 class sql_Core
 {
 	/**

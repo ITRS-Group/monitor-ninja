@@ -2,10 +2,6 @@
 /**
  * Help class for handling config items transparently,
  * i.e independent of storage location (file or database)
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class config_Core
 {

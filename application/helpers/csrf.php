@@ -1,12 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * CSRF helper class.
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
-
 class csrf_Core {
 
 	/**

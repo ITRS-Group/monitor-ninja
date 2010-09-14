@@ -2,10 +2,6 @@
 /**
  * Help class for handling PNP related stuff such as
  * checking if we should display a graph link or not.
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class pnp_Core
 {

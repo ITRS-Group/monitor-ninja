@@ -1,11 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Kohana loader class for PDO
- *
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
 class pdodb_Core {
 	public function instance($type='mysql', $database=false, $user=false, $pass=false, $host=false)

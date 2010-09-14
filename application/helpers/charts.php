@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
+/**
+ * Charts helper class
+ */
 class charts
 {
 	public static function load($type='pie')

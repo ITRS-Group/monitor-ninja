@@ -1,10 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Help class to provide links to render help texts
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class help_Core
 {

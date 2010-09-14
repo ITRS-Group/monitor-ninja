@@ -1,10 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Helper class for nagios status
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
 class nagstat_Core {
 	const CMD_ENABLE_FLAP_DETECTION = 61;

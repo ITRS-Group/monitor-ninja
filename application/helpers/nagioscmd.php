@@ -1,10 +1,6 @@
 <?php
 /**
  * Nagios FIFO command helper
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
 class nagioscmd_Core
 {

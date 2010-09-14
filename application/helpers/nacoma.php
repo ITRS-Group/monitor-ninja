@@ -2,9 +2,6 @@
 /**
  * Helper class for nacoma
  *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  * Copyright 2009 op5 AB
  *  op5, and the op5 logo are trademarks, servicemarks, registered servicemarks
  *  or registered trademarks of op5 AB.

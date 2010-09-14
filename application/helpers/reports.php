@@ -1,10 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Help class for reports
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class reports_Core
 {

@@ -1,12 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * widget helper class.
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
-
 class widget_Core
 {
 	public $result = false; 	# widget content result

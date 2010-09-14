@@ -1,11 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
-* Array Help class
-*
-* @package NINJA
-* @author op5 AB
-* @license GPL
-*/
+ * Array Help class
+ */
 class arr_Core
 {
 	# this just lets us safely access array variables

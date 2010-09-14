@@ -1,11 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Date help class
- *
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
 class cal_Core
 {

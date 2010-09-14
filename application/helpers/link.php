@@ -2,10 +2,6 @@
 /**
  * Help class for handling links that could contain
  * chars that would break Kohanas routing ('/')
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class link_Core
 {

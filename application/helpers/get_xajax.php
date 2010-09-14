@@ -1,11 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Kohana loader class for xajax
- *
- *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
  */
 class get_xajax_Core {
 	/**

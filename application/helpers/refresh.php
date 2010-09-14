@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
 /**
  * This helper is intended to be used to control
  * the page reload (refresh) using javascript

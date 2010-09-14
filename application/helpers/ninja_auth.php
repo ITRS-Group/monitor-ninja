@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This helper class provides various routines for authenticating
  * users against a database that stores passwords with multiple

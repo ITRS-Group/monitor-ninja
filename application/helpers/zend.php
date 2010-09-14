@@ -1,12 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Kohana loader class for Zend
- *
- * @package    NINJA
- * @author     op5 AB
  */
-class zend_Core {
-
+class zend_Core
+{
 	/**
 	 * Create and return instance of Zend class.
 	 * Takes a Zend component/class name as input and tries to find

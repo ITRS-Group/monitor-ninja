@@ -4,10 +4,6 @@
  * since we can't always know for sure that we have
  * the built-in PHP json_encode function and should
  * use ZEND_Json instead.
- *
- * @package NINJA
- * @author op5 AB
- * @license GPL
  */
 class json_Core
 {
