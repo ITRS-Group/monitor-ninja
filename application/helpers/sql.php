@@ -5,9 +5,9 @@
 class sql_Core
 {
 	/**
-	*	Parse the limit string and split into
-	*	more sql standard LIMIT <val> OFFSET <val>
-	*/
+	 * Parse the limit string and split into
+	 * more sql standard LIMIT (val) OFFSET (val)
+	 */
 	public function limit_parse($str)
 	{
 		$str = trim($str);
