@@ -35,6 +35,9 @@ class Notifications_Model extends Model {
 				//$offset_limit = $count!==false ? "" : " LIMIT ".$num_per_page;
 			//echo 'offset_limit: '.$offset_limit;
 
+			if (substr($this->where, 0, 4) == ' AND') {
+				$this->where = preg_replace('/^ AND/', '', $this->where);
+			}
 			$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
 
 			if (!empty($where_string)) {
