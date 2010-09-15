@@ -156,7 +156,7 @@ class Summary_Controller extends Authenticated_Controller
 		$report_setting = false;
 		$summary_items = 25;
 		$report_name = '';
-		$standardreport = true;
+		$standardreport = false;
 		$sel_alerttype = false;
 		$sel_reportperiod = false;
 		$sel_statetype = false;
@@ -175,7 +175,7 @@ class Summary_Controller extends Authenticated_Controller
 					$this->inline_js .= "set_selection('".$report_setting['obj_type']."', 'false');\n";
 				}
 				$this->inline_js .= "expand_and_populate(" . $json_report_info . ");\n";
-				$standardreport = arr::search($report_setting, 'standardreport', false);
+				$standardreport = arr::search($report_setting, 'report_period', false);
 				$report_name = $report_setting['report_name'];
 				$sel_alerttype = isset($report_setting['alert_types']) ? $report_setting['alert_types'] : false;
 				$sel_reportperiod = isset($report_setting['report_period']) ? $report_setting['report_period'] : false;
@@ -303,9 +303,11 @@ class Summary_Controller extends Authenticated_Controller
 			$this->inline_js .= "show_message('".$del_result."', '".$del_msg."');\n";
 		}
 
-		if (!$standardreport) {
+		if ($standardreport!==false) {
 			$this->inline_js .= "set_report_mode('custom');\n";
 			$this->inline_js .= "$('#report_mode_custom').attr('checked', true);\n";
+		} else {
+			$this->inline_js .= "set_report_mode('standard');\n";
 		}
 
 		$template->standardreport = array(
