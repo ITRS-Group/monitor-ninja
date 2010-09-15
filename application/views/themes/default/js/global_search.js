@@ -10,6 +10,22 @@ $(document).ready(function() {
     onSelect: function(value, data){ do_redirect(value, data); }
   });
 
+
+	var search_old_refresh = 0;
+	$('#query').focus(function() {
+		search_old_refresh = current_interval;
+		ninja_refresh(0);
+		$("#ninja_refresh_control").attr('checked', true);
+		$('#ninja_refresh_lable').css('font-weight', 'bold');
+	});
+
+	$('#query').blur(function() {
+		current_interval = search_old_refresh;
+		ninja_refresh(current_interval);
+		$("#ninja_refresh_control").attr('checked', false);
+		$('#ninja_refresh_lable').css('font-weight', '');
+	});
+
 });
 
 // function from http://forums.devshed.com/t39065/s84ded709f924610aa44fff827511aba3.html
