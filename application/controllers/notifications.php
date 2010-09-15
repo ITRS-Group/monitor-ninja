@@ -120,6 +120,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->noheader = $noheader;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
+		$this->template->content->service = false;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->select_strings = $this->select_strings;
 		$this->template->content->selected_val = $type;
