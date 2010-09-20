@@ -162,7 +162,7 @@ class Host_Model extends Model {
 	/**
 	*	Search through several fields for a specific value
 	*/
-	public function search($value=false, $limit=false)
+	public function search($value=false, $limit=false, $xtra_query = false)
 	{
 		if (empty($value)) return false;
 		$auth_hosts = $this->auth->get_authorized_hosts();
@@ -172,25 +172,53 @@ class Host_Model extends Model {
 
 		$host_ids = implode(',', $host_ids);
 		$limit_str = sql::limit_parse($limit);
+		$sql_xtra = false;
+		if (!empty($xtra_query)) {
+			if (is_array($xtra_query)) {
+				foreach ($xtra_query as $x) {
+					$sql_xtra[] = " AND LCASE(output) LIKE LCASE(".$this->db->escape($x).") ";
+				}
+			} else {
+				$sql_xtra[] = " AND LCASE(output) LIKE LCASE(".$this->db->escape($xtra_query).") ";
+			}
+			if (!empty($sql_xtra)) {
+				$sql_xtra = implode(' ', $sql_xtra);
+			}
+		}
 
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
 			foreach ($value as $val) {
+				$query_str = '';
 				$val = '%'.$val.'%';
-				$query[] = "(SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($val).")".
-				" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($val).")".
-				" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($val).")) AND `id` IN (".$host_ids.") )";
+				$query_str = "(SELECT DISTINCT * FROM host WHERE (LCASE(host_name)".
+				" LIKE LCASE(".$this->db->escape($val).")".
+				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
+				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
+				" OR LCASE(address) LIKE LCASE(".$this->db->escape($val).")";
+				if (!empty($sql_xtra)) {
+					$query_str = $query_str.') '. $sql_xtra;
+				} else {
+					$query_str .= " OR LCASE(output) LIKE LCASE(".$this->db->escape($val)."))";
+				}
+				$query_str .= " AND id IN (".$host_ids.") )";
+				$query[] = $query_str;
 			}
 			if (!empty($query)) {
 				$sql = implode(' UNION ', $query).' ORDER BY host_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM `host` WHERE (LCASE(`host_name`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).") OR LCASE(`display_name`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`address`) LIKE LCASE(".$this->db->escape($value).")) AND `id` IN (".$host_ids.") ORDER BY host_name ".$limit_str;
+			$sql = "SELECT DISTINCT * FROM host WHERE (LCASE(host_name)".
+			" LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
+			" AND id IN (".$host_ids.") ORDER BY host_name ".$limit_str;
 		}
+		#echo Kohana::debug($sql);
 		$host_info = $this->db->query($sql);
 		return $host_info;
 	}

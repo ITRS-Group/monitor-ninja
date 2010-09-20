@@ -204,7 +204,7 @@ class Service_Model extends Model
 	*
 	*
 	*/
-	public function multi_search($host_name=array(), $service=array(), $limit=false)
+	public function multi_search($host_name=array(), $service=array(), $xtra_query=false, $limit=false)
 	{
 		if (empty($host_name) || empty($service)) {
 			return false;
@@ -213,27 +213,39 @@ class Service_Model extends Model
 		$obj_ids = self::authorized_services();
 		$db = new Database();
 
-		#$sql = "SELECT * FROM service WHERE ";
-		$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
-		"FROM `service` AS `s`, `host` AS `h` WHERE ";
+		$sql = "SELECT DISTINCT s.*, h.current_state AS host_state ".
+		"FROM service AS s, host AS h WHERE ";
 		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
 		foreach ($host_name as $host) {
 			$host = '%' . $host . '%';
-			$query = "LCASE(`s`.`host_name`) LIKE LCASE(".$db->escape($host).") ";
+			$query = "LCASE(s.host_name) LIKE LCASE(".$db->escape($host).") ";
 			foreach ($service as $s) {
 				$s = '%' . $s . '%';
-				$query .= " AND LCASE(`s`.`service_description`) LIKE LCASE(".$db->escape($s).") ";
+				$query .= " AND LCASE(s.service_description) LIKE LCASE(".$db->escape($s).") ";
 			}
 			$query_parts[] = $query;
 		}
 		if (!empty($query_parts)) {
-			$sql .= '( '.implode(') OR (', $query_parts) . ') ';
+			$sql_xtra = false;
+			$sql .= '( ( '.implode(') OR (', $query_parts) . ') ) ';
 			$sql .= " AND s.host_name = h.host_name";
+			if (!empty($xtra_query) && is_array($xtra_query)) {
+				foreach ($xtra_query as $x) {
+					$x = '%' . $x . '%';
+					$sql_xtra[] = " LCASE(h.output) LIKE LCASE(".$db->escape($x).") OR ".
+						" LCASE(s.output) LIKE LCASE(".$db->escape($x).") ";
+				}
+				if (!empty($xtra_query) && is_array($xtra_query)) {
+					$sql .= " AND (";
+					$sql .= implode(' OR ', $sql_xtra);
+					$sql .= " )";
+				}
+			}
 			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
 			#echo $sql;
 			$obj_info = $db->query($sql);
-			return $obj_info;
+			return $obj_info && count($obj_info) > 0 ? $obj_info : false;
 		}
 		return false;
 	}
@@ -241,7 +253,7 @@ class Service_Model extends Model
 	/**
 	*	Search through several fields for a specific value
 	*/
-	public function search($value=false, $limit=false)
+	public function search($value=false, $limit=false, $xtra_query=false)
 	{
 		if (empty($value)) return false;
 		$auth_obj = self::authorized_services();
