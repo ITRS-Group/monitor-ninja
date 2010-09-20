@@ -220,9 +220,11 @@ class Group_Model extends Model
 		switch (strtolower($type)) {
 			case 'host':
 				$host_list = $auth->get_authorized_hosts();
+				$host_list_r = $auth->get_authorized_hosts_r();
 				break;
 			case 'service':
 				$service_list = $auth->get_authorized_services();
+				$service_list_r = $auth->get_authorized_services_r();
 				break;
 			default:
 				return false;
@@ -233,6 +235,12 @@ class Group_Model extends Model
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $type == 'service' ? " s.id=ssg.".$type." AND " : " h.id=ssg.".$type." AND ";
+
+		if ($id === false && !empty($name) && array_key_exists($name, ${$type.'_list_r'})) {
+			$id = ${$type.'_list_r'}[$name];
+		} else {
+			return false;
+		}
 
 		# check for authentication
 		if ($id !== false) {
@@ -250,10 +258,6 @@ class Group_Model extends Model
 				WHERE
 					g.".$type."=".$id." AND
 					gr.id=g.".$type."group;";
-		} elseif (!empty($name)) {
-			if (!in_array($name, ${$type.'_list'})) {
-				return false;
-			}
 		} else {
 			# abort if both id and name are empty
 			return false;
