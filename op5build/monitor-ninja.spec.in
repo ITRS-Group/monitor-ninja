@@ -87,6 +87,7 @@ fi
 %prefix
 /etc/cron.d/*
 /var/www/html/monitor
+/var/www/html/ninja
 
 %clean
 rm -rf %buildroot
