@@ -68,6 +68,7 @@ done
 
 mkdir -p %buildroot/var/www/html
 ln -sfT %prefix %buildroot/var/www/html/monitor
+ln -sfT %prefix %buildroot/var/www/html/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ %buildroot%prefix/op5
 
