@@ -255,26 +255,28 @@ class Service_Model extends Model
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
-			"FROM `service` AS `s`, `host` AS `h` ".
-			"WHERE ((LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($val).")".
-			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($val).")".
-			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($val)."))".
+				$query[] = "SELECT DISTINCT s.*, h.current_state AS host_state ".
+			"FROM service AS s, host AS h ".
+			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
+			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
+			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
+			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))".
 			" AND (s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id`, h.host_name ";
+			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ";
 			}
 			if (!empty($query)) {
 				$sql = implode(' UNION ', $query).$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT `s`.*, `h`.`current_state` AS `host_state` ".
-			"FROM `service` AS `s`, `host` AS `h` ".
-			"WHERE ((LCASE(`s`.`host_name`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`s`.`service_description`) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(`s`.`display_name`) LIKE LCASE(".$this->db->escape($value)."))".
+			$sql = "SELECT DISTINCT s.*, h.current_state AS host_state ".
+			"FROM service AS s, host AS h ".
+			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
+			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
+			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))".
 			" AND (s.host_name=h.host_name)".
-			" AND `s`.`id` IN (".$obj_ids.")) GROUP BY `s`.`id`, h.host_name ".$limit_str;
+			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
