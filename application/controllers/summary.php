@@ -293,7 +293,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_day_of_week."\n";
 		$this->inline_js .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
-		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		if (!is_null($del_ok) && !is_null($del_result)) {
 			$this->inline_js .= "show_message('".$del_result."', '".$del_msg."');\n";
