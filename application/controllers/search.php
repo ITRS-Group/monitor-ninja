@@ -16,6 +16,7 @@ class Search_Controller extends Authenticated_Controller {
 	const DELIM_CHAR = ' and ';
 	const SEPARATOR = ' or ';
 	const LIMIT_STR = 'limit=';
+	public $xtra_query = false;
 
 	/**
 	*	Provide search functionality for all object types
@@ -45,16 +46,65 @@ class Search_Controller extends Authenticated_Controller {
 		# By combining this with the OR search we can create searches
 		# like: host:windows OR linux AND service:http OR web
 		$valid_multiobj = array('h' => 'hosts', 'host' => 'hosts', 's' => 'services', 'service' => 'services');
-		if (strstr(strtolower($query), self::DELIM_CHAR)) {
+		$extra_params = array('si', 'status');
+		if (strstr(strtolower($query), self::DELIM_CHAR)) { # AND => host AND service/status information
 			$options = explode(self::DELIM_CHAR, strtolower($query));
 
 			if (is_array($options)) {
 				foreach ($options as $opt) {
-					if (strstr($opt, self::FILTER_CHAR)) {
-						$obj_parts = explode(self::FILTER_CHAR, $opt);
-						if (is_array($obj_parts) && !empty($obj_parts) && array_key_exists($obj_parts[0], $valid_multiobj)) {
-							$obj_type[$obj_parts[0]] = trim($obj_parts[1]);
+					$tmp_obj = false;
+					if (strstr($opt, self::FILTER_CHAR)) { # :
+						if (strstr($opt, self::SEPARATOR)) { # or
+							$parts = explode(self::SEPARATOR, $opt);
+							foreach ($parts as $p) {
+								if (strstr($p, self::FILTER_CHAR)) {
+									$filter_p = explode(self::FILTER_CHAR, $p);
+									if (is_array($filter_p) && !empty($filter_p) && array_key_exists($filter_p[0], $valid_multiobj)) {
+										$obj_type[$filter_p[0]][] = trim($filter_p[1]);
+										$tmp_obj = $filter_p[0];
+									}
+								} elseif(!empty($tmp_obj) && array_key_exists($tmp_obj, $valid_multiobj)) {
+									$obj_type[$tmp_obj][] = trim($p);
+								}
+							}
+						} else {
+							$parts = explode(self::FILTER_CHAR, $opt);
+
+							if (is_array($parts) && !empty($parts) && array_key_exists($parts[0], $valid_multiobj)) {
+								$obj_type[$parts[0]][] = trim($parts[1]);
+							} elseif (is_array($parts) && in_array($parts[0], $extra_params)) {
+								# detected extra parameter (like si/status). Stash this
+								$xtra_query = trim($parts[1]);
+								if (strstr($xtra_query, self::SEPARATOR)) {
+									$this->xtra_query = explode(self::SEPARATOR, $xtra_query);
+								} else {
+									$this->xtra_query = array($xtra_query);
+								}
+							}
 						}
+					}
+				}
+			}
+		}
+
+		$or_search = false;
+		if (!is_array($obj_type) && strstr($query, self::SEPARATOR)) { # OR
+			# OR detected
+			$or_search = true;
+
+			$tmp_obj = false;
+			$options = explode(self::SEPARATOR, $query);
+			if (is_array($options) && !empty($options)) {
+				foreach ($options as $opt) {
+					if (strstr($opt, self::FILTER_CHAR)) {
+						$parts = explode(self::FILTER_CHAR, $opt);
+						if (is_array($parts) && sizeof($parts) == 2 && array_key_exists($parts[0], $valid_multiobj)) {
+							# only host or service objects supported
+							$tmp_obj = $parts[0];
+							$obj_type[$parts[0]][] = trim($parts[1]);
+						}
+					} elseif (!empty($tmp_obj) && array_key_exists($tmp_obj, $valid_multiobj)) {
+						$obj_type[$tmp_obj][] = trim($opt);
 					}
 				}
 			}
@@ -101,6 +151,8 @@ class Search_Controller extends Authenticated_Controller {
 						'path' => 'status/group_overview'
 					);
 					break;
+				case 'si':
+
 				default:
 					$settings = false;
 			}
@@ -108,17 +160,39 @@ class Search_Controller extends Authenticated_Controller {
 			$hosts = false;
 			$services = false;
 			foreach ($obj_type as $type => $obj) {
-				if (strstr(strtolower($obj), self::SEPARATOR)) {
-					$multi_obj = explode(self::SEPARATOR, strtolower($obj));
-					foreach ($multi_obj as $m) {
-						# assign found object to hosts or services array
-						# depending on if 'h' or 's'
-						${$valid_multiobj[$type]}[] = trim($m);
+				if (is_array($obj)) {
+					foreach ($obj as $o) {
+						if (strstr(strtolower($o), self::SEPARATOR)) {
+							$multi_obj = explode(self::SEPARATOR, strtolower($o));
+							foreach ($multi_obj as $m) {
+								# assign found object to hosts or services array
+								# depending on if 'h' or 's'
+								${$valid_multiobj[$type]}[] = trim($m);
+							}
+						} else {
+							${$valid_multiobj[$type]}[] = trim($o);
+						}
 					}
 				} else {
-					${$valid_multiobj[$type]}[] = trim($obj);
+					if (strstr(strtolower($obj), self::SEPARATOR)) {
+						$multi_obj = explode(self::SEPARATOR, strtolower($obj));
+						foreach ($multi_obj as $m) {
+							# assign found object to hosts or services array
+							# depending on if 'h' or 's'
+							${$valid_multiobj[$type]}[] = trim($m);
+						}
+					} else {
+						${$valid_multiobj[$type]}[] = trim($obj);
+					}
 				}
 			}
+			if (isset($obj_type['h'])) {
+				$hosts = $obj_type['h'];
+			}
+			if (isset($obj_type['s'])) {
+				$services = $obj_type['s'];
+			}
+
 		}
 
 		$this->template->content = $this->add_view('search/result');
@@ -158,16 +232,44 @@ class Search_Controller extends Authenticated_Controller {
 			} else {
 				$content->no_data = $this->translate->_('Nothing found');
 			}
-		} elseif ((isset($hosts) && !empty($hosts)) && (isset($services) && !empty($services)) ) {
+		} elseif ((isset($hosts) && !empty($hosts)) && (isset($services) && !empty($services)) && $or_search !== true) {
 			# AND search
 			$obj_class = new Service_Model();
-			$data = $obj_class->multi_search($hosts, $services, $limit);
+			$data = $obj_class->multi_search($hosts, $services, $this->xtra_query, $limit);
 
 			if ($data!==false) {
 				$content->service_result = $data;
 			} else {
 				$content->no_data = $this->translate->_('Nothing found');
 			}
+		} elseif ( ((isset($hosts) && !empty($hosts)) || ( (isset($services) && !empty($services)) ))
+			&& ( !empty($this->xtra_query) || $or_search === true ) ) {
+			# we end up here when searching for hosts OR services and
+			# an extra param like si/status was supplied OR we are performing an OR search
+			$empty = 0;
+			$cnt = 0;
+			if ( isset($hosts) && !empty($hosts) ) {
+				$hmodel = new Host_Model();
+				$data = $hmodel->search($hosts, $limit, $this->xtra_query);
+				if (count($data) > 0 && $data !== false) {
+					$content->host_result = $data;
+				} else {
+					$empty++;
+				}
+			}
+			if ( isset($services) && !empty($services) ) {
+				$Smodel = new Service_Model();
+				$data = $Smodel->search($services, $limit, $this->xtra_query);
+				if (count($data) > 0 && $data !== false) {
+					$content->service_result = $data;
+				} else {
+					$empty++;
+				}
+			}
+			if (!empty($empty)) {
+				$content->no_data = $this->translate->_('Nothing found');
+			}
+
 		} else {
 			# search through everything
 			$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model');
