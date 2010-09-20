@@ -3,10 +3,6 @@
  * History controller
  * Requires authentication
  *
- * @package    NINJA
- * @author     op5 AB
- * @license    GPL
- * @copyright 2009 op5 AB
  *  op5, and the op5 logo are trademarks, servicemarks, registered servicemarks
  *  or registered trademarks of op5 AB.
  *  All other trademarks, servicemarks, registered trademarks, and registered

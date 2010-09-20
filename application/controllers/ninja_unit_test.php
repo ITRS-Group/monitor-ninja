@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Unit_Test controller.
- *
- * @package    Unit_Test
  */
 class Ninja_unit_test_Controller extends Controller {
 
