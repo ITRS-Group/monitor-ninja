@@ -386,6 +386,7 @@ function show_calendar(val, update) {
 			});
 
 			init_timepicker();
+			init_datepicker();
 
 			if (update == '') {
 				$('input[name=start_time]').attr('value', '');
