@@ -208,9 +208,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->extra_action_links = $xaction;
 
 		$groups = false;
-		foreach ($group_info as $group_row) {
-			$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
-				html::specialchars($group_row->{$type.'group_name'}));
+		if ($group_info !== false && count($group_info) > 0) {
+			foreach ($group_info as $group_row) {
+				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
+					html::specialchars($group_row->{$type.'group_name'}));
+			}
 		}
 
 		if ($is_pending) {
