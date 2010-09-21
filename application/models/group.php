@@ -161,6 +161,7 @@ class Group_Model extends Model
 				h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
 				h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
 				h.notifications_enabled AS host_notifications_enabled,
+				h.active_checks_enabled AS host_active_checks_enabled,
 				h.action_url AS host_action_url,
 				h.icon_image AS host_icon_image,
 				h.icon_image_alt AS host_icon_image_alt,
