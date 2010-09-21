@@ -38,7 +38,7 @@ class Group_Model extends Model
 		$service_filter = false;
 		$servicestatus = trim($servicestatus);
 		$svc_field = '';
-		$svc_groupby = '';
+		$svc_groupby = ' GROUP BY myhost';
 		$svc_where = '';
 		if ($servicestatus!==false && !empty($servicestatus)) {
 			$filter_sql .= " AND 1 << service.current_state & $servicestatus ";
@@ -59,6 +59,7 @@ class Group_Model extends Model
 
 		switch ($grouptype) {
 			case 'host':
+				$svc_field = ',service';
 				$base_query = "SELECT COUNT(*) FROM service ".
 						    "INNER JOIN host ON host.host_name = service.host_name ".
 						    "WHERE service.current_state = %s ".
@@ -89,7 +90,7 @@ class Group_Model extends Model
 			sprintf($base_query, Current_status_Model::SERVICE_CRITICAL ).") AS services_critical,(".
 			sprintf($base_query, Current_status_Model::SERVICE_UNKNOWN ).") AS services_unknown,(".
 			sprintf($base_query, Current_status_Model::SERVICE_PENDING ).") AS services_pending ".
-			$base_from.' GROUP BY myhost ORDER BY host.host_name';
+			$base_from.' ORDER BY host.host_name';
 		$result = $db->query($sql);
 		#echo $sql."<hr />";
 		return $result;
