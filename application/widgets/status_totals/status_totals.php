@@ -149,12 +149,12 @@ class Status_totals_Widget extends widget_Core {
 			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
 		}
 
-		$grouptype_arg = $grouptype ? '&group_type='.$grouptype : '';
+		$grouptype_arg = $grouptype ? 'group_type='.$grouptype : '';
 		$host_header = array(
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UP.$grouptype_arg, 'lable' => $total_up, 'status' => $label_up, 'status_id' => nagstat::HOST_UP),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_DOWN.$grouptype_arg, 'lable' => $total_down, 'status' => $label_down, 'status_id' => nagstat::HOST_DOWN),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.$grouptype_arg, 'lable' => $total_unreachable, 'status' => $label_unreachable, 'status_id' => nagstat::HOST_UNREACHABLE),
-			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_PENDING.$grouptype_arg, 'lable' => $total_pending, 'status' => $label_pending, 'status_id' => nagstat::HOST_PENDING)
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $total_up, 'status' => $label_up, 'status_id' => nagstat::HOST_UP),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $total_down, 'status' => $label_down, 'status_id' => nagstat::HOST_DOWN),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $total_unreachable, 'status' => $label_unreachable, 'status_id' => nagstat::HOST_UNREACHABLE),
+			array('url' => 'status/'.$target_method.'/'.$host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $total_pending, 'status' => $label_pending, 'status_id' => nagstat::HOST_PENDING)
 		);
 
 		$svc_label_ok = $this->translate->_('Ok');
@@ -164,11 +164,11 @@ class Status_totals_Widget extends widget_Core {
 		$svc_label_pending = $this->translate->_('Pending');
 
 		$service_header = array(
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_OK.$grouptype_arg, 'lable' => $svc_total_ok, 'status' => $svc_label_ok, 'status_id' => nagstat::SERVICE_OK),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_WARNING.$grouptype_arg, 'lable' => $svc_total_warning, 'status' => $svc_label_warning, 'status_id' => nagstat::SERVICE_WARNING),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.$grouptype_arg, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown, 'status_id' => nagstat::SERVICE_UNKNOWN),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.$grouptype_arg, 'lable' => $svc_total_critical, 'status' => $svc_label_critical, 'status_id' => nagstat::SERVICE_CRITICAL),
-			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_PENDING.$grouptype_arg, 'lable' => $svc_total_pending, 'status' => $svc_label_pending, 'status_id' => nagstat::SERVICE_PENDING)
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $svc_total_ok, 'status' => $svc_label_ok, 'status_id' => nagstat::SERVICE_OK),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $svc_total_warning, 'status' => $svc_label_warning, 'status_id' => nagstat::SERVICE_WARNING),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown, 'status_id' => nagstat::SERVICE_UNKNOWN),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $svc_total_critical, 'status' => $svc_label_critical, 'status_id' => nagstat::SERVICE_CRITICAL),
+			array('url' => 'status/service/'.$host.'/?hoststatustypes='.$host_state.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $svc_total_pending, 'status' => $svc_label_pending, 'status_id' => nagstat::SERVICE_PENDING)
 		);
 
 		# let view template know if wrapping div should be hidden or not
