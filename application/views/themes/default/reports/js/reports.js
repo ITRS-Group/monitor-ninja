@@ -374,24 +374,28 @@ function remove_scheduled_str(in_str)
 
 function set_selection(val, no_erase) {
 	// start by hiding ALL rows
-	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla');
+	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla','display_service_status','display_host_status');
 	hide_rows(hide_these);
 	switch (val) {
 		case 'hostgroups':
 			get_members('', 'hostgroup', no_erase);
 			show_row('hostgroup_row');
+			show_row('display_host_status');
 			break;
 		case 'servicegroups':
 			get_members('', 'servicegroup', no_erase);
 			show_row('servicegroup_row');
+			show_row('display_service_status');
 			break;
 		case 'hosts':
 			get_members('', 'host', no_erase);
 			show_row('host_row_2');
+			show_row('display_host_status');
 			break;
 		case 'services':
 			get_members('', 'service', no_erase);
 			show_row('service_row_2');
+			show_row('display_service_status');
 			break;
 	}
 	show_row('settings_table');
