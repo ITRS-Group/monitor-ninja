@@ -101,6 +101,17 @@ if ($type == 'avail') { ?>
 								<input type="text" name="report_name" id="report_name" class="input-save-name"
 									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" maxlength="255" />
 							</span>
+
+							<input type="hidden" name="host_filter_status[0]" value="<?php echo $host_filter_status_up ?>" />
+							<input type="hidden" name="host_filter_status[1]" value="<?php echo $host_filter_status_down ?>" />
+							<input type="hidden" name="host_filter_status[2]" value="<?php echo $host_filter_status_unreachable ?>" />
+							<input type="hidden" name="host_filter_status[3]" value="<?php echo $host_filter_status_undetermined ?>" />
+							<input type="hidden" name="service_filter_status[0]" value="<?php echo $service_filter_status_ok ?>" />
+							<input type="hidden" name="service_filter_status[1]" value="<?php echo $service_filter_status_warning ?>" />
+							<input type="hidden" name="service_filter_status[2]" value="<?php echo $service_filter_status_unknown ?>" />
+							<input type="hidden" name="service_filter_status[3]" value="<?php echo $service_filter_status_critical ?>" />
+							<input type="hidden" name="service_filter_status[4]" value="<?php echo $service_filter_status_pending ?>" />
+
 							<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
 							<input type="hidden" name="old_report_name"
 									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" />
