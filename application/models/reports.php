@@ -498,7 +498,9 @@ class Reports_Model extends Model
 			 'saturday' => 'string',
 			 'sunday' => 'string',
 			 'exclude' => 'string',
-			 'use_average' => 'bool');
+			 'use_average' => 'bool',
+			 'host_filter_status' => 'array',
+			 'service_filter_status' => 'array');
 
 		# this will happen for timeperiod exceptions
 		if (!isset($vtypes[$name]))
