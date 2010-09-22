@@ -2,6 +2,20 @@
 <?php $t = $this->translate; ?>
 <div class="state_services">
 <?php
+	if ($service_filter_status_show !== false) {
+		echo $t->_('Showing services in state: ');
+			$j = 0; foreach($service_filter_status as $key => $value) {
+			if ($value == 1) {
+				echo ($j > 0) ? ', ' : '';
+				echo '<strong>'.$key.'</strong>';
+				$j++;
+
+			}
+		}
+	}
+	?>
+<?php
+	$sg_no = 0;
 	$prev_host = false;
 	$prev_group = false;
 	$prev_hostname = false;
@@ -28,7 +42,7 @@
 				if(!empty($data['groupname'])) {
 					echo $data['groupname'];
 				} else {
-					echo $t->_('Services on host') .': ';
+					echo '<strong>'.$t->_('Services on host') .'</strong>: ';
 					if (!$create_pdf)
 						echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">';
 					if (!$use_alias) {
@@ -50,14 +64,19 @@
 		<?php } ?>
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
-			<?php if (!$use_alias) { ?>
-				<td colspan="6" class="multiple label"><?php echo $t->_('Services on host') ?>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
-			<?php } else { ?>
-				<td colspan="6" class="multiple label"><?php echo $t->_('Services on host') ?>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+			<?php if (!$use_alias && $sg_no == 0) { ?>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+			<?php } elseif ($sg_no == 0) { ?>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
-			<?php $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
+			<?php $no = 0; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
+			<?php if (($data['ok'][$i] != 0 && $service_filter_status['ok'] == true) ||
+						 ($data['warning'][$i] != 0 && $service_filter_status['warning'] == true) ||
+						 ($data['unknown'][$i] != 0 && $service_filter_status['unknown'] == true) ||
+						 ($data['critical'][$i] != 0 && $service_filter_status['critical'] == true) ||
+						 ($data['undetermined'][$i] != 0 && $service_filter_status['pending'] == true)) { $no++;?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
 					<?php if ($create_pdf) { ?>
@@ -77,10 +96,10 @@
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
-			<?php	} } ?>
+			<?php	} } }  $sg_no = $sg_no + $no; ?>
 
 			<?php if (!empty($data['groupname'])) {
-					if ($use_average==0) { ?>
+					if ($use_average==0 && $sg_no == 0) { ?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $t->_('Average') ?></td>
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -96,6 +115,7 @@
 			</tr>
 			<?php } ?>
 			<?php $i++; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
+			<?php if ($sg_no == 0) { ?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -108,6 +128,22 @@
 							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="font-weight: bold; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+			</tr>
+			<?php } } ?>
+			<?php if ($sg_no > 0 && $no == 0) { ?>
+			<tr class="even">
+				<td colspan="6">
+					<?php echo $t->_('No service in this group in state: ');
+						$j = 0; foreach($service_filter_status as $key => $value) {
+						if ($value == 1) {
+							echo ($j > 0) ? $t->_(', ') : '';
+							echo '<strong>'.$key.'</strong>';
+							$j++;
+
+						}
+					}
+					?>
+				</td>
 			</tr>
 			<?php } ?>
 			<?php if (!$create_pdf) { ?>
