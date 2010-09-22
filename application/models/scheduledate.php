@@ -42,7 +42,7 @@ class ScheduleDate_Model extends Model
     public $matches = null;
     public $now = null;
 
-    public public function BuildDateArray($date) {
+    public function BuildDateArray($date) {
         $t = explode(',',strftime("%Y,%m,%d,%H,%M", strtotime($date)));
         $this->dateArray['year'] = $t[0];
         $this->dateArray['month'] = $t[1];
