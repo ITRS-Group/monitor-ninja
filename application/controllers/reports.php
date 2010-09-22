@@ -29,7 +29,16 @@ class Reports_Controller extends Authenticated_Controller
 		'includesoftstates' => 'include_soft_states',
 		'assumeinitialstates' => 'assume_initial_states',
 		'cluster_mode' => 'cluster_mode',
-		'use_average' =>'use_average'
+		'use_average' =>'use_average',
+		'host_filter_status_up' => 'host_filter_status_up',
+		'host_filter_status_down' => 'host_filter_status_down',
+		'host_filter_status_unreachable' => 'host_filter_status_unreachable',
+		'host_filter_status_undetermined' => 'host_filter_status_undetermined',
+		'service_filter_status_ok' => 'service_filter_status_ok',
+		'service_filter_status_warning' => 'service_filter_status_warning',
+		'service_filter_status_unknown' => 'service_filter_status_unknown',
+		'service_filter_status_critical' => 'service_filter_status_critical',
+		'service_filter_status_pending' => 'service_filter_status_pending',
 	);
 
 	public static $dep_vars = array(
@@ -55,7 +64,9 @@ class Reports_Controller extends Authenticated_Controller
 		'includesoftstates',
 		'use_average',
 		'cluster_mode',
-		'use_alias'
+		'use_alias',
+		'host_filter_status',
+		'service_filter_status'
 	);
 
 	public static $map_type_field = array(
@@ -121,6 +132,16 @@ class Reports_Controller extends Authenticated_Controller
 	private $assume_initial_states = true;
 	private $initial_assumed_host_state = -3;
 	private $initial_assumed_service_state = -3;
+
+	private $host_filter_status_up = 1;
+	private $host_filter_status_down = 1;
+	private $host_filter_status_unreachable = 1;
+	private $host_filter_status_undetermined = 1;
+	private $service_filter_status_ok = 1;
+	private $service_filter_status_warning = 1;
+	private $service_filter_status_unknown = 1;
+	private $service_filter_status_critical = 1;
+	private $service_filter_status_pending = 1;
 
 	private $use_average = 0;
 	private $use_alias = 0;
@@ -266,6 +287,17 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'assumeinitialstates', $this->assume_initial_states) ? 'checked="checked"' : '';
 		$assume_states_during_not_running_checked =
 			arr::search($_REQUEST, 'assumestatesduringnotrunning', $this->assume_states_during_not_running) ? 'checked="checked"' : '';
+
+		$host_filter_status_up_checked = arr::search($_REQUEST, 'host_filter_status[0]', $this->host_filter_status_up) ? 'checked="checked"' : '';
+		$host_filter_status_down_checked = arr::search($_REQUEST, 'host_filter_status[1]', $this->host_filter_status_down) ? 'checked="checked"' : '';
+		$host_filter_status_unreachable_checked =	arr::search($_REQUEST, 'host_filter_status[2]', $this->host_filter_status_unreachable) ? 'checked="checked"' : '';
+		$host_filter_status_undetermined_checked = arr::search($_REQUEST, 'host_filter_status[3]', $this->host_filter_status_undetermined) ? 'checked="checked"' : '';
+		$service_filter_status_ok_checked = arr::search($_REQUEST, 'service_filter_status[0]', $this->service_filter_status_ok) ? 'checked="checked"' : '';
+		$service_filter_status_warning_checked = arr::search($_REQUEST, 'service_filter_status[1]', $this->service_filter_status_warning) ? 'checked="checked"' : '';
+		$service_filter_status_unknown_checked = arr::search($_REQUEST, 'service_filter_status[2]', $this->service_filter_status_unknown) ? 'checked="checked"' : '';
+		$service_filter_status_critical_checked = arr::search($_REQUEST, 'service_filter_status[3]', $this->service_filter_status_critical) ? 'checked="checked"' : '';
+		$service_filter_status_pending_checked = arr::search($_REQUEST, 'service_filter_status[4]', $this->service_filter_status_pending) ? 'checked="checked"' : '';
+
 		$include_soft_states_checked = '';//'checked="checked"';
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
@@ -277,7 +309,6 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
 		$csv_output_checked =
 			arr::search($_REQUEST, 'csvoutput', $this->csv_output) ? 'checked="checked"' : '';
-
 		$use_alias  =
 			arr::search($_REQUEST, 'use_alias', $this->use_alias);
 		$use_alias_checked = $use_alias ? 'checked="checked"' : '';
@@ -397,6 +428,18 @@ class Reports_Controller extends Authenticated_Controller
 				$assume_states_during_not_running_checked = "checked='checked'";
 			else
 				$assume_states_during_not_running_checked = '';
+
+			$hostfilterstatus = unserialize($report_info['host_filter_status']);
+			$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? "checked='checked'" : '';
+			$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? "checked='checked'" : '';
+			$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? "checked='checked'" : '';
+			$host_filter_status_undetermined_checked = ($hostfilterstatus['undetermined'] != 0) ? "checked='checked'" : '';
+			$servicefilterstatus = unserialize($report_info['service_filter_status']);
+			$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? "checked='checked'" : '';
+			$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? "checked='checked'" : '';
+			$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? "checked='checked'" : '';
+			$service_filter_status_critical_checked = ($servicefilterstatus['critical'] != 0) ? "checked='checked'" : '';
+			$service_filter_status_pending_checked = ($servicefilterstatus['pending'] != 0) ? "checked='checked'" : '';
 
 			if($report_info["includesoftstates"] != 0)
 				$include_soft_states_checked = "checked='checked'";
@@ -586,6 +629,15 @@ class Reports_Controller extends Authenticated_Controller
 		$template->initial_assumed_host_states = self::$initial_assumed_host_states;
 		$template->initial_assumed_service_states = self::$initial_assumed_service_states;
 		$template->assume_states_during_not_running_checked = $assume_states_during_not_running_checked;
+		$template->host_filter_status_up_checked = $host_filter_status_up_checked;
+		$template->host_filter_status_down_checked = $host_filter_status_down_checked;
+		$template->host_filter_status_unreachable_checked = $host_filter_status_unreachable_checked;
+		$template->host_filter_status_undetermined_checked = $host_filter_status_undetermined_checked;
+		$template->service_filter_status_ok_checked = $service_filter_status_ok_checked;
+		$template->service_filter_status_warning_checked = $service_filter_status_warning_checked;
+		$template->service_filter_status_unknown_checked = $service_filter_status_unknown_checked;
+		$template->service_filter_status_critical_checked = $service_filter_status_critical_checked;
+		$template->service_filter_status_pending_checked = $service_filter_status_pending_checked;
 		$template->include_soft_states_checked = $include_soft_states_checked;
 		$template->label_includesoftstates = $t->_('Include soft states');
 		$template->label_sla_calc_method = $t->_('SLA calculation method');
@@ -600,6 +652,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->use_average_no_selected = $use_average_no_selected;
 		$template->initial_assumed_host_state_selected = $initial_assumed_host_state_selected;
 		$template->initial_assumed_service_state_selected = $initial_assumed_service_state_selected;
+
 		$template->csv_output_checked = $csv_output_checked;
 		$template->months = $this->abbr_month_names;
 		$template->is_scheduled_report = $t->_('This is a scheduled report');
@@ -750,6 +803,7 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function generate($type='avail', $schedule_id=false)
 	{
+
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
@@ -843,13 +897,23 @@ class Reports_Controller extends Authenticated_Controller
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
-				$report_options[$key] = $value;
+				if ($key == 'host_filter_status') {
+					$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
+					$host_filter_status = self::_create_filter_array($value,'host' );
+				}
+				elseif ($key == 'service_filter_status') {
+					$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
+					$service_filter_status = self::_create_filter_array($value,'service');
+				}
+				else
+					$report_options[$key] = $value;
 				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
 					if (is_numeric($value)) {
 						$_REQUEST[$key] = date("Y-m-d H:i", $value);
 					}
 				}
-			} else {
+
+			}  else {
 				if ($this->type == 'sla' && preg_match('/^month/', trim($key))) {
 					$id = (int)str_replace('month_', '', $key);
 					if (trim($value) == '') continue;
@@ -918,6 +982,7 @@ class Reports_Controller extends Authenticated_Controller
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
+			//print_r(unserialize($report_options['host_filter_status']));
 		}
 
 		if (!empty($this->report_id)) {
@@ -1019,6 +1084,7 @@ class Reports_Controller extends Authenticated_Controller
 		$err_msg = "";
 		$report_class = $this->reports_model;
 		foreach (self::$options as $var => $new_var) {
+			//echo $var.' '.$new_var."\n";
 			if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
 				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var))."'<br />";
 			}
@@ -1287,6 +1353,16 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
 				$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
 
+				$tpl_options->host_filter_status_up = $host_filter_status['up'];
+				$tpl_options->host_filter_status_down = $host_filter_status['down'];
+				$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
+				$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
+				$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
+				$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
+				$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
+				$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
+				$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
+
 				$tpl_options->label_save_report = $t->_('Save report');
 				$tpl_options->label_as = $t->_('as');
 				$tpl_options->label_new_schedule = $t->_('New schedule');
@@ -1445,6 +1521,9 @@ class Reports_Controller extends Authenticated_Controller
 				$template->content->hide_host = false;
 				$template->content->create_pdf = $this->create_pdf;
 				$template->content->use_average = $use_average;
+				$template->content->host_filter_status = $host_filter_status;
+				$template->content->service_filter_status = $service_filter_status;
+				$template->content->service_filter_status_show = true;
 				$template->content->use_alias = $use_alias;
 				$template->content->start_time = $this->start_date;
 				$template->content->end_time = $this->end_date;
@@ -1588,6 +1667,7 @@ class Reports_Controller extends Authenticated_Controller
 						$avail->report_time_formatted = $report_time_formatted;
 						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
+
 						$avail->header_string = ucfirst($this->report_type)." ".$t->_('state breakdown');
 						if ($this->create_pdf) {
 							$content = $avail;
@@ -1702,7 +1782,8 @@ class Reports_Controller extends Authenticated_Controller
 								$content->use_alias = $use_alias;
 								$content->start_time = $this->start_date;
 								$content->end_time = $this->end_date;
-
+								$content->service_filter_status = $service_filter_status;
+								$content->service_filter_status_show = false;
 								$content->source = $data['source'];
 								$content->create_pdf = $this->create_pdf;
 								$content->report_time_formatted = $report_time_formatted;
@@ -2032,7 +2113,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$report_options = false;
 		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
-
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
@@ -2044,7 +2124,15 @@ class Reports_Controller extends Authenticated_Controller
 						$report_options[$key] = strtotime($value);
 						$_REQUEST[$key] = $value;
 					}
-				} else {
+				} elseif (arr::search($_REQUEST, 'host_filter_status')) {
+					$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
+					$host_filter_status = self::_create_filter_array($value,'host' );
+				}
+				elseif (is_array(arr::search($_REQUEST, 'service_filter_status')) == true) {
+					$report_options[$key] = serialize(self::_create_filter_array($value, 'service'));
+					$service_filter_status = self::_create_filter_array($value,'service' );
+				}
+				 else  {
 					$report_options[$key] = $value;
 				}
 			} else {
@@ -2738,7 +2826,7 @@ class Reports_Controller extends Authenticated_Controller
 			// host
 			$sum_up = $sum_down = $sum_unreachable = $sum_undetermined = 0;
 			foreach ($data_arr as $k => $data) {
-				if (!reports::is_proper_report_item($k, $data))
+			if (!reports::is_proper_report_item($k, $data))
 					continue;
 				$host_name = $data['states']['HOST_NAME'];
 				$return['host_link'][] = $php_self . "&host_name[]=". $host_name. "&report_type=hosts" .
@@ -4473,5 +4561,25 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			echo 'error';
 		}
+	}
+
+	public function _create_filter_array($array, $type = 'host') {
+
+		$new_array = false;
+
+		if ($type == 'host') {
+			$new_array['up'] = (!array_key_exists(0, $array) || $array[0] == 0)  ? 0 : 1;
+			$new_array['down'] = (!array_key_exists(1, $array) || $array[1] == 0)? 0 : 1;
+			$new_array['unreachable'] = (!array_key_exists(2, $array) || $array[2] == 0) ? 0 : 1;
+			$new_array['undetermined'] = (!array_key_exists(3, $array) || $array[3] == 0) ? 0 : 1;
+		} else {
+			$new_array['ok'] = (!array_key_exists(0, $array) || $array[0] == 0) ? 0 : 1;
+			$new_array['warning'] = (!array_key_exists(1, $array) || $array[1] == 0) ? 0 : 1;
+			$new_array['unknown'] = (!array_key_exists(2, $array) || $array[2] == 0) ? 0 : 1;
+			$new_array['critical'] = (!array_key_exists(3, $array) || $array[3] == 0) ? 0 : 1;
+			$new_array['pending'] = (!array_key_exists(4, $array) || $array[4] == 0) ? 0 : 1;
+		}
+
+		return $new_array;
 	}
 }
