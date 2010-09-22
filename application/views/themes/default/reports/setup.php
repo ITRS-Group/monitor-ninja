@@ -107,7 +107,7 @@ if (isset($report_info)) {
 				</tr>
 				<tr id="filter_row">
 					<td colspan="3">
-						<?php echo $this->translate->_('Filter:') ?><br />
+						<?php echo help::render('filter').' '.$this->translate->_('Filter') ?><br />
 						<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
 						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>">
 					</td>
@@ -234,19 +234,38 @@ if (isset($report_info)) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="3">
+					<td>
 						<?php echo help::render('use_average').' '.$label_sla_calc_method ?><br />
 						<select name='use_average'>
 							<option value='0' <?php print $use_average_no_selected ?>><?php echo $label_avg_sla ?></option>
 							<option value='1' <?php print $use_average_yes_selected ?>><?php echo $label_avg ?></option>
 						</select>
 					</td>
+					<td>&nbsp;</td>
+					<td<?php echo ($type == 'sla') ? ' style="display:none"' : ''?>>
+						<?php echo help::render('status_to_display') ?>
+						<?php echo $this->translate->_('Status to display'); ?><br>
+						<div id="display_host_status">
+							<?php //print_r($host_filter_status); ?>
+							<input type="checkbox" name="host_filter_status[0]" id="up" value="1" <?php echo $host_filter_status_up_checked ?> style="margin-top: 4px; margin-left: 14px"> <label for="up">Up</label>
+							<input type="checkbox" name="host_filter_status[1]" id="down" value="1" <?php echo $host_filter_status_down_checked ?> style="margin-top: 4px"> <label for="down">Down</label>
+							<input type="checkbox" name="host_filter_status[2]" id="unreachable" value="1" <?php echo $host_filter_status_unreachable_checked ?> style="margin-top: 4px"> <label for="unreachable">Unreachable</label>
+							<input type="checkbox" name="host_filter_status[3]" id="undetermined" value="1" <?php echo $host_filter_status_undetermined_checked ?> style="margin-top: 4px"> <label for="undetermined">Undetermined</label>
+						</div>
+						<div id="display_service_status">
+							<input type="checkbox" name="service_filter_status[0]" id="ok" value="1" <?php echo $service_filter_status_ok_checked ?> style="margin-top: 4px; margin-left: 14px"> <label for="ok">OK</label>
+							<input type="checkbox" name="service_filter_status[1]" id="warning" value="1" <?php echo $service_filter_status_warning_checked ?> style="margin-top: 4px"> <label for="warning">Warning</label>
+							<input type="checkbox" name="service_filter_status[2]" id="unknown" value="1" <?php echo $service_filter_status_unknown_checked ?> style="margin-top: 4px"> <label for="unknown">Unknown</label>
+							<input type="checkbox" name="service_filter_status[3]" id="critical" value="1" <?php echo $service_filter_status_critical_checked ?> style="margin-top: 4px"> <label for="critical">Critical</label>
+							<input type="checkbox" name="service_filter_status[4]" id="pending" value="1" <?php echo $service_filter_status_pending_checked ?> style="margin-top: 4px"> <label for="pending">Pending</label>
+						</div>
+					</td>
 				</tr>
 				<tr>
 					<td>
 						<?php echo help::render('scheduled_downtime') ?>
 						<input type="checkbox" class="checkbox" value="1" id="scheduleddowntimeasuptime" name="scheduleddowntimeasuptime"
-								onchange="toggle_label_weight(this.checked, 'sched_downt')" <?php echo $scheduled_downtime_as_uptime_checked ?> />
+							onchange="toggle_label_weight(this.checked, 'sched_downt')" <?php echo $scheduled_downtime_as_uptime_checked ?> />
 						<label for="scheduleddowntimeasuptime" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label>
 					</td>
 					<td>&nbsp;</td>
@@ -265,16 +284,13 @@ if (isset($report_info)) {
 						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo $label_assumestatesduringnotrunning ?></label>
 					</td>
 					<td>&nbsp;</td>
-					<td id="csv_cell">
-						<?php echo help::render('csv_format') ?>
-						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
-								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
-						<label for="csvoutput" id="csvout"><?php echo $label_csvoutput ?></label>
+					<td style="vertical-align:top">
+						<?php echo help::render('include_soft_states') ?>
+						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
+								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
+						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
 					</td>
 				</tr>
-
-
-
 				<tr>
 					<td>
 						<?php echo help::render('initial_states') ?>
@@ -284,10 +300,10 @@ if (isset($report_info)) {
 					</td>
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
-						<?php echo help::render('include_soft_states') ?>
-						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
-								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
-						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
+						<?php echo help::render('cluster_mode') ?>
+						<input type="checkbox" class="checkbox" value="0" id="cluster_mode" name="cluster_mode"
+								onchange="toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
+						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
 					</td>
 				</tr>
 				<tr id="assumed_host_state">
@@ -331,17 +347,17 @@ if (isset($report_info)) {
 						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
 					</td>
 					<td>&nbsp;</td>
-					<td style="vertical-align:top">
-						<?php echo help::render('cluster_mode') ?>
-						<input type="checkbox" class="checkbox" value="0" id="cluster_mode" name="cluster_mode"
-								onchange="toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
-						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
+					<td id="csv_cell" style="vertical-align: top">
+						<?php echo help::render('csv_format') ?>
+						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
+								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
+						<label for="csvoutput" id="csvout"><?php echo $label_csvoutput ?></label>
 					</td>
 				</tr>
 			</table>
 		</div>
 		<br />
-
+		<?php //$test = array('1','2'); echo serialize($test); ?>
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
 				<caption><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
@@ -357,8 +373,7 @@ if (isset($report_info)) {
 								'class' => 'autofill')
 							) ?>
 						<?php echo $month ?><br />
-						<input type="text" size="2" class="sla_month" name="month_<?php echo ($key+1) ?>"
-								value="<?php echo arr::search($report_info, 'month_'.($key + 1))!==false ? $report_info['month_'.($key + 1)] : "" ?>" maxlength="6" /> %
+						<input type="text" size="2" class="sla_month" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($report_info, 'month_'.($key + 1))!==false ? $report_info['month_'.($key + 1)] : "" ?>" maxlength="6" /> %
 					</td>
 					<?php	} ?>
 				</tr>
