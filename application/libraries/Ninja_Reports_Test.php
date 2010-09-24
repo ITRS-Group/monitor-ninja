@@ -274,7 +274,7 @@ class Ninja_Reports_Test_Core
 
 		echo "Using db table '".$this->table_name."'\n";
 		$cached = true;
-		$db = new Database($this->db_name);
+		$db = new Database();
 		try {
 			$db->query("DESCRIBE ".$this->table_name);
 		}
