@@ -36,7 +36,7 @@ function preserve_get_params()
 	// make sure we don't loose GET variables from current query string
 	if ($.query.keys) {
 		for (var key in $.query.keys) {
-			if (key != 'items_per_page' && key!= 'custom_pagination_field') {
+			if (key != 'items_per_page' && key!= 'custom_pagination_field' && key!='result') {
 				$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + $.query.keys[key] + '">');
 			}
 		}

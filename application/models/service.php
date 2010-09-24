@@ -219,11 +219,16 @@ class Service_Model extends Model
 		$query_parts = false;
 		foreach ($host_name as $host) {
 			$host = '%' . $host . '%';
-			$query = "LCASE(s.host_name) LIKE LCASE(".$db->escape($host).") ";
+			$query = "LCASE(s.host_name) LIKE LCASE(".$db->escape($host).") AND (";
+			$svc_query = array();
 			foreach ($service as $s) {
 				$s = '%' . $s . '%';
-				$query .= " AND LCASE(s.service_description) LIKE LCASE(".$db->escape($s).") ";
+				$svc_query[] = " LCASE(s.service_description) LIKE LCASE(".$db->escape($s).") ";
 			}
+			if (!empty($svc_query)) {
+				$query .= implode(' OR ', $svc_query);
+			}
+			$query .= ') ';
 			$query_parts[] = $query;
 		}
 		if (!empty($query_parts)) {

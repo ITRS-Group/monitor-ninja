@@ -25,6 +25,7 @@ class Search_Controller extends Authenticated_Controller {
 	{
 		$obj_type = urldecode($this->input->get('obj_type', $obj_type));
 		$query = urldecode($this->input->get('query', $query));
+		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model');
 
 		# check if we have limit information
 		# should be in the form of limit=100
@@ -197,8 +198,27 @@ class Search_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('search/result');
 		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = $this->add_path('search/js/search');
+		$this->template->js_header->js = $this->xtra_js;
+
 		$content = $this->template->content;
-		$limit = !isset($in_limit) ? Kohana::config('config.search_limit') : $in_limit;
+		$limit = !empty($in_limit) ? $in_limit : false;
+		$items_per_page = urldecode($this->input->get('items_per_page', false));
+		$custom_limit = urldecode($this->input->get('custom_pagination_field', false));
+		$limit = empty($limit) ? Kohana::config('pagination.default.items_per_page') : $limit;
+		$items_per_page = !empty($custom_limit) ? $custom_limit : $items_per_page;
+
+		foreach ($objects as $obj => $discard) {
+			${$obj.'_items_per_page'} =  $limit;
+		}
+
+		$result_type = $this->input->get('result', false);
+
+		if (!empty($result_type)) {
+			${$result_type.'_items_per_page'} = !empty($items_per_page) ? $items_per_page : $limit;
+		}
+
+		$pagination_type = 'punbb';
 		$content->query = $query;
 		$content->limit_str = !empty($limit)
 			? sprintf($this->translate->_('Search result limited to %s rows'), $limit)
@@ -225,7 +245,25 @@ class Search_Controller extends Authenticated_Controller {
 				$query = explode(self::SEPARATOR, strtolower($query)) ;
 			}
 
+			${$obj_type.'_pagination'} = false;
+			$tot = false;
 			# find requested object
+			if (!empty($limit)) {
+				$data_cnt = $obj_class->search($query, 0);
+				$tot = count($data_cnt);
+				${$obj_type.'_pagination'} = new Pagination(
+					array(
+						'total_items'=> $tot,
+						'style' => $pagination_type,
+						'items_per_page' => ${$obj_type.'_items_per_page'},
+						'query_string' => $obj_type.'_page'
+					)
+				);
+				$offset = ${$obj_type.'_pagination'}->sql_offset;
+				$limit = !empty($offset) ? $offset.','.$limit : $limit;
+			}
+
+			$content->{$obj_type.'_pagination'} = ${$obj_type.'_pagination'};
 			$data = $obj_class->search($query, $limit);
 			if ($data!==false) {
 				$content->{$obj_type.'_result'} = $data;
@@ -234,7 +272,25 @@ class Search_Controller extends Authenticated_Controller {
 			}
 		} elseif ((isset($hosts) && !empty($hosts)) && (isset($services) && !empty($services)) && $or_search !== true) {
 			# AND search
+			$service_pagination = false;
+			$tot = false;
+			# find requested object
 			$obj_class = new Service_Model();
+			if (!empty($limit)) {
+				$data_cnt = $obj_class->multi_search($hosts, $services, $this->xtra_query, 0);
+				$tot = count($data_cnt);
+				$service_pagination = new Pagination(
+					array(
+						'total_items'=> $tot,
+						'style' => $pagination_type,
+						'items_per_page' => $service_items_per_page,
+						'query_string' => 'service_page'
+					)
+				);
+				$offset = $service_pagination->sql_offset;
+				$limit = !empty($offset) ? $offset.','.$limit : $limit;
+				$content->service_pagination = $service_pagination;
+			}
 			$data = $obj_class->multi_search($hosts, $services, $this->xtra_query, $limit);
 
 			if ($data!==false) {
@@ -272,7 +328,6 @@ class Search_Controller extends Authenticated_Controller {
 
 		} else {
 			# search through everything
-			$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model');
 			$empty = 0;
 			if (strstr(strtolower($query), self::SEPARATOR)) {
 				$query = explode(self::SEPARATOR, strtolower($query)) ;
@@ -281,7 +336,26 @@ class Search_Controller extends Authenticated_Controller {
 			foreach ($objects as $obj => $model) {
 				$obj_class_name = $model;
 				$obj_class = new $obj_class_name();
-				$data = $obj_class->search($query, $limit);
+				if (!empty(${$obj.'_items_per_page'})) {
+					${$obj.'_limit'} = $limit;
+					$data_cnt = $obj_class->search($query, 0);
+					$tot = count($data_cnt);
+					${$obj.'_pagination'} = new Pagination(
+						array(
+							'total_items'=> $tot,
+							'items_per_page' => ${$obj.'_items_per_page'},
+							'style'          => $pagination_type,
+							'query_string' => $obj.'_page'
+						)
+					);
+
+					$offset = ${$obj.'_pagination'}->sql_offset;
+					${$obj.'_limit'} = !empty($offset) ? $offset.','.${$obj.'_items_per_page'} : ${$obj.'_items_per_page'};
+					$content->{$obj.'_pagination'} = ${$obj.'_pagination'};
+				} else {
+					${$obj.'_limit'} = $limit;
+				}
+				$data = $obj_class->search($query, ${$obj.'_limit'});
 				$obj_info = false;
 
 				if (count($data) > 0 && $data !== false) {
@@ -307,13 +381,14 @@ class Search_Controller extends Authenticated_Controller {
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'search_help' => $translate->_("The search result is by default limited to 10 rows (for each object type).
+			'search_help' => sprintf($translate->_("The search result is by default limited to %s rows (for each object type).
 					<br />Use limit=&lt;number&gt; (e.g limit=100) to change this or limit=0 to disable the limit entirely.<br /><br />
 					You may also perform an AND search on hosts and services: 'h:web AND s:ping' will search for
 					all services called something like ping on hosts called something like web.<br />
 					Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail
 					in any of the searchable fields.<br />
-					Combine AND with OR: 'h:web OR mail AND s:ping OR http'")
+					Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br />
+					Use si:some_status to search for Status Information like some_status"), Kohana::config('pagination.default.items_per_page'))
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

@@ -7,7 +7,8 @@ $label_na = $this->translate->_('N/A');
 <?php echo help::render('search_help') ?>&nbsp;
 <?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong>';
 # show host data if available
-if (isset($host_result) ) { ?>
+if (isset($host_result) ) {
+	if (isset($host_pagination)) {?><div id="host_pagination"><?php echo $host_pagination ?></div><?php } ?>
 <?php echo form::open('command/multi_action'); ?>
 <table id="host_table">
 	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
@@ -111,7 +112,8 @@ if (isset($host_result) ) { ?>
 }
 
 # show service data if available
-if (isset($service_result) ) { ?>
+if (isset($service_result) ) {
+	if (isset($service_pagination)) {?><div id="service_pagination"><?php echo $service_pagination ?></div><?php } ?>
 <?php echo form::open('command/multi_action'); ?>
 <table>
 <caption><?php echo $this->translate->_('Service results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a></caption>
@@ -225,7 +227,8 @@ if (isset($service_result) ) { ?>
 }
 
 # show servicegroup data if available
-if (isset($servicegroup_result) ) { ?>
+if (isset($servicegroup_result) ) {
+	if (isset($servicegroup_pagination)) {?><div id="servicegroup_pagination"><?php echo $servicegroup_pagination ?></div><?php } ?>
 <table>
 <caption><?php echo $this->translate->_('Servicegroup results for').': &quot;'.$query.'&quot'; ?></caption>
 	<tr>
@@ -249,7 +252,8 @@ if (isset($servicegroup_result) ) { ?>
 }
 
 # show hostgroup data if available
-if (isset($hostgroup_result) ) { ?>
+if (isset($hostgroup_result) ) {
+	if (isset($hostgroup_pagination)) { ?><div id="hostgroup_pagination"><?php echo $hostgroup_pagination ?></div><?php } ?>
 <table>
 <caption><?php echo $this->translate->_('Hostgroup results for').': &quot;'.$query.'&quot'; ?></caption>
 	<tr>
