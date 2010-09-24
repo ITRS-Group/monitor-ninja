@@ -3,7 +3,7 @@
 if (!($db = mysql_connect('localhost'))) {
 	echo "failed to connect: " . mysql_error() . "\n";
 }
-$ret = mysql_select_db('monitor_reports', $db);
+$ret = mysql_select_db('merlin', $db);
 var_dump($ret);
 $result = mysql_query('SHOW TABLES', $db);
 var_dump($result);
