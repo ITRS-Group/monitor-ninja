@@ -6,7 +6,7 @@
  */
 class Saved_reports_Model extends Model
 {
-	const db_name = 'monitor_reports';
+	const db_name = 'merlin';
 
 	public function get_saved_reports($type='avail', $user=false)
 	{

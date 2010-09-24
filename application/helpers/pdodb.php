@@ -5,7 +5,7 @@
 class pdodb_Core {
 	public function instance($type='mysql', $database=false, $user=false, $pass=false, $host=false)
 	{
-		$params = Kohana::config('database.monitor_reports');
+		$params = Kohana::config('database.default');
 		$config = $params['connection'];
 		$type = !empty($type) ? $type : $config['type'];
 		$database = !empty($database) ? $database : $config['database'];

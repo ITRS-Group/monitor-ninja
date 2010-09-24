@@ -34,17 +34,32 @@ then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
 	run_sql_file $db_login_opts "$prefix/install_scripts/ninja.sql"
+
+	# import users and authorization data
+	echo "Importing users from cgi.cfg"
+	/usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
 fi
 
-# import users and authorization data
-echo "Importing users from cgi.cfg"
-/usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
+db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
 
 # check if we should add recurring_downtime table
+# and if old monitor_reports tables should be moved to merlin
 if [ "$db_ver" = '1' ]
 then
 	# add table for recurring_downtime
 	echo "Installing database table for Recurring Downtime"
 	run_sql_file $db_login_opts "$prefix/install_scripts/recurring_downtime.sql"
-	mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" merlin 2>/dev/null
+
+	# check if we should import data fr monitor_reports
+	is_old_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" merlin 2>/dev/null)
+	if [ $? -ne 0 ]
+	then
+		# doesn't exist - make sure we upgrade if necessary
+		echo "Old monitor_reports database doesn't seem to exist"
+		sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
+
+		# move old data from monitor_reports -> merlin
+		/usr/bin/env php $prefix/op5-upgradescripts/move_reports_tables.php $prefix db_user db_pass
+		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" merlin 2>/dev/null
+	fi
 fi

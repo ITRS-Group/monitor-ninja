@@ -2276,9 +2276,8 @@ class Reports_Controller extends Authenticated_Controller
 		$this->template->content = $this->add_view('reports/reports_module');
 		$template = $this->template->content;
 		$template->error_msg  = $this->translate->_('Some parts in your setup is apparently missing.');
-		$template->label_missing_objects = $this->translate->_('Please check that you have successfully installed the following');
-		$template->info = $this->translate->_("Reports Module (http://git.op5.org/git/?p=nagios/reports-module.git).<br />
-			Database config:  Validate that you have a valid configuration section in config/database.php :\$config['monitor_reports'].");
+		$template->label_missing_objects = false;
+		$template->info = $this->translate->_("make sure you install the latest version of merlin");
 	}
 
 	/**

@@ -97,7 +97,7 @@ class Ninja_Reports_Test_Core
 			return -1;
 
 		$this->sub_reports = 0;
-		$rpt = new Reports_Model('monitor_reports', $this->table_name);
+		$rpt = new Reports_Model('merlin', $this->table_name);
 		foreach ($params as $k => $v) {
 			if (!$this->sub_reports && is_array($v)) {
 				if ($k === 'host_name' || $k === 'service_description')

@@ -25,9 +25,9 @@ class Ninja_unit_test_Controller extends Controller {
 		#Auth::instance()->force_login($user);
 
 		$test_results = array();
-		$db_name = 'monitor_reports';
-		$db_user = 'monitor';
-		$db_pass = 'monitor';
+		$db_name = 'merlin';
+		$db_user = 'merlin';
+		$db_pass = 'merlin';
 		$importer = '/opt/monitor/op5/reports/module/import';
 		$test_file = array();
 		$argv = isset($argv) ? $argv : $GLOBALS['argv'];

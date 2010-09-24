@@ -132,8 +132,8 @@ class Reports_Model extends Model
 	public $service_description = false;
 	public $servicegroup = false;
 	public $hostgroup = false;
-	public $db_name = 'monitor_reports';
-	const db_name = 'monitor_reports';
+	public $db_name = 'merlin';
+	const db_name = 'merlin';
 	public $db_table = 'report_data';
 	const db_table = 'report_data';
 	public $sub_reports = array();
@@ -149,7 +149,7 @@ class Reports_Model extends Model
 	 * @param $db_table Database name
 	 * @param $db Connected PDO object
 	 */
-	public function __construct($db_name='monitor_reports', $db_table='report_data', $db = false)
+	public function __construct($db_name='merlin', $db_table='report_data', $db = false)
 	{
 		if (self::DEBUG === true) {
 			assert_options(ASSERT_ACTIVE, 1);
@@ -3341,7 +3341,7 @@ class Reports_Model extends Model
 	 */
 	public static function print_db_lines($prefix, $table = 'report_data', $test, $db_start_time, $db_end_time)
 	{
-		$db = pdodb::instance('mysql', 'monitor_reports');
+		$db = pdodb::instance('mysql', 'merlin');
 		$return_str = '';
 		$start = $db_start_time;
 		$stop = $db_end_time;
