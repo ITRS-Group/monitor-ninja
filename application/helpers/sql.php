@@ -21,8 +21,9 @@ class sql_Core
 				$offset = $limit_parts[0];
 				$limit_str = " LIMIT ".$limit." OFFSET ".$offset;
 			}
-		} else
-			$limit_str = !empty($limit) ? ' LIMIT '.$limit : '';
+		} elseif(is_numeric($str)) {
+			$limit_str = !empty($str) ? ' LIMIT '.(int)$str : '';
+		}
 
 		return $limit_str;
 	}
