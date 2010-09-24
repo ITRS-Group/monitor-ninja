@@ -23,6 +23,7 @@ class Hypermap_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
+		$this->template->disable_refresh = true;
 		$auth = new Nagios_auth_Model();
 		if (!$auth->view_hosts_root || !$auth->view_services_root) {
 			$this->template->content = $this->add_view('unauthorized');
