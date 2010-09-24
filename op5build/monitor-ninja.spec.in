@@ -9,7 +9,7 @@ Summary: op5 monitor ninja
 Group: op5/Monitor
 Prefix: /opt/monitor/op5/ninja
 Requires: monitor-gui-core
-Requires: merlin, monitor-reports-module >= 2.0.6
+Requires: merlin-apps >= 0.8.0
 Requires: op5auth >= 1.2.0
 Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
