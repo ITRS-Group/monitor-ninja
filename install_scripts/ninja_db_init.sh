@@ -61,5 +61,15 @@ then
 		# move old data from monitor_reports -> merlin
 		/usr/bin/env php $prefix/op5-upgradescripts/move_reports_tables.php $prefix db_user db_pass
 		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" merlin 2>/dev/null
+
+		# let's check this once more to be sure
+		is_old_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" merlin 2>/dev/null)
+		if [ $? -ne 0 ]
+		then
+			echo "Ooops - this is bad. All the info from old monitor_reports should have been transferred"
+			echo "but this doesn't seem to be the case."
+		else
+			mysql $db_login_opts -Be "DROP database monitor_reports" 2>/dev/null
+		fi
 	fi
 fi
