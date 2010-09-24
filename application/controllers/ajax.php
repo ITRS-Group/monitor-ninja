@@ -292,6 +292,23 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	*	Accepts call from a widget to save custom settings for a user
+	* 	The POST data should contain fieldname and fieldvalue
+	*/
+	public function save_dynamic_widget_setting()
+	{
+		$page = urldecode($this->input->post('page', false));
+		$widget = urldecode($this->input->post('widget', false));
+		$fieldname = $this->input->post('fieldname', false);
+		$fieldvalue = $this->input->post('fieldvalue', false);
+		$data = false;
+		$data[$fieldname] = $fieldvalue;
+		if (empty($widget) || empty($data) || empty($page))
+			return false;
+		Ninja_widget_Model::save_widget_setting($page, $widget, $data);
+	}
+
+	/**
 	*	fetch specific setting
 	*/
 	public function get_setting()
