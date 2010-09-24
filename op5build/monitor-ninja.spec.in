@@ -75,8 +75,6 @@ ln -s ../ %buildroot%prefix/op5
 %post
 sh %prefix/install_scripts/ninja_db_init.sh
 
-sh %prefix/op5-upgradescripts/monitor-reports-db-upgrade.sh /opt/monitor
-
 # Set driver to LDAP if ad or ldap is configured
 if [ -f /opt/op5sys/etc/ldapserver ]; then
   sed -i "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/" %prefix/application/config/auth.php
