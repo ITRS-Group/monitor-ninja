@@ -127,6 +127,13 @@ function sprintf()
 
 function do_redirect(value, data)
 {
+	// if user clicked on information message about
+	// nr of rows returned, we shouldn't do anything
+	if (data[0] == '') {
+		$('#query').val('');
+		return false;
+	}
+
 	var match = value.split(';');
 	if (match.length) {
 		value = match[1];

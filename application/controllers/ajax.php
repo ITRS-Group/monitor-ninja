@@ -37,6 +37,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			# we handle queries by trying to locate wanted filtering options separated by colon (:)
 			$q = $this->input->get('query', $q);
 			$q = urldecode($q);
+			$divider_str = '========================================';
 			if (strstr($q, self::FILTER_CHAR)) {
 				# some extra filtering option detected
 				$options = explode(self::FILTER_CHAR, $q);
@@ -93,14 +94,32 @@ class Ajax_Controller extends Authenticated_Controller {
 					$obj_class_name = $settings['class'];
 					$obj_class = new $obj_class_name();
 					# find requested object
-					$limit = Kohana::config('config.search_limit');
+					$limit = 0;
 					$data = $obj_class->get_where($settings['name_field'], $obj_name, $limit);
 					$obj_info = false;
+					$max_rows = Kohana::config('config.autocomplete_limit');
+					$cnt = 0;
+					$found_rows = 0;
+					$found_str = '';
 					if ($data!==false) {
+						$found_rows = count($data);
+						if ($found_rows > $max_rows) {
+							$found_str = sprintf($this->translate->_('Search returned %s rows total'), $found_rows);
+						}
 						foreach ($data as $row) {
+							if ($cnt++ > $max_rows) {
+								break;
+							}
 							$obj_info[] = $obj_type == 'service' ? $row->{$settings['data']} . ';' . $row->{$settings['name_field']} : $row->{$settings['name_field']};
 							$obj_data[] = array($settings['path'], $row->{$settings['data']});
 						}
+						if (!empty($obj_data) && !empty($found_str)) {
+							$obj_info[] = $divider_str;
+							$obj_data[] = array('', $divider_str);
+							$obj_info[] = $found_str;
+							$obj_data[] = array('', $found_str);
+						}
+
 					} else {
 						$host_info = $this->translate->_('Nothing found');
 					}
@@ -114,14 +133,31 @@ class Ajax_Controller extends Authenticated_Controller {
 			} else {
 				# assuming we want host data
 				$host_model = new Host_Model();
-				$limit = Kohana::config('config.search_limit');
+				$limit = 0;
 				$data = $host_model->get_where('host_name', $q, $limit);
 				$host_info = false;
 				$host_data = false;
+				$max_rows = Kohana::config('config.autocomplete_limit');
+				$cnt = 0;
+				$found_rows = 0;
+				$found_str = '';
 				if ($data!==false) {
+					$found_rows = count($data);
+					if ($found_rows > $max_rows) {
+						$found_str = sprintf($this->translate->_('Search returned %s rows total'),$found_rows);
+					}
 					foreach ($data as $row) {
+						if ($cnt++ > $max_rows) {
+							break;
+						}
 						$host_info[] = $row->host_name;
 						$host_data[] = array('/status/service/%s', $row->host_name);
+					}
+					if (!empty($host_data) && !empty($found_str)) {
+						$host_info[] = $divider_str;
+						$host_data[] = array('', $divider_str);
+						$host_info[] = $found_str;
+						$host_data[] = array('', $found_str);
 					}
 				} else {
 					$host_info = array($this->translate->_('Nothing found'));
