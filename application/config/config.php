@@ -247,6 +247,11 @@ $config['cli_access'] = true;
 $config['search_limit'] = 10;
 
 /**
+* Nr of items returned for autocomplete search
+*/
+$config['autocomplete_limit'] = 10;
+
+/**
 * 	Nr of seconds while we still are considering
 * 	merlin to be alive.
 */
