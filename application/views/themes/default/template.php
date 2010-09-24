@@ -119,7 +119,13 @@ if (isset($this->template->js_header))
 					}
 					?>
 					</ul>
+					<?php
+					$query = arr::search($_REQUEST, 'query');
+					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
+					<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
+					<? } else { ?>
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
+			<?php	} ?>
 					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
 				</div>
 			</form>
