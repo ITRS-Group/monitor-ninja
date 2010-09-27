@@ -55,7 +55,7 @@ then
 	if [ $? -ne 0 ]
 	then
 		# doesn't exist - make sure we upgrade if necessary
-		echo "Old monitor_reports database doesn't seem to exist"
+		echo "Report tables doesn't seem to exist in merlin - installing"
 		sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
 
 		# move old data from monitor_reports -> merlin
