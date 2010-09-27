@@ -10,7 +10,7 @@ class Scheduled_reports_Model extends Model
 		$id = (int)$id;
 		if (empty($id)) return false;
 		$sql = "DELETE FROM scheduled_reports WHERE id=".$id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$db->query($sql);
 		return true;
 	}
@@ -23,7 +23,7 @@ class Scheduled_reports_Model extends Model
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary'	)
 			return false;
-		$db = new Database(self::db_name);
+		$db = new Database();
 
 		# what report_type_id do we have?
 		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($type);
@@ -85,7 +85,7 @@ class Scheduled_reports_Model extends Model
 				sr.report_id=r.id
 			ORDER BY
 				reportname";
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		return $res ? $res : false;
 	}
@@ -126,7 +126,7 @@ class Scheduled_reports_Model extends Model
 	public function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		return (!$res || count($res)==0) ? false : $res;
 	}
@@ -137,7 +137,7 @@ class Scheduled_reports_Model extends Model
 		$type = trim($type);
 		if (empty($type) || empty($id)) return false;
 		$sql = "SELECT * FROM scheduled_reports WHERE id=".$id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		if (!$res || count($res) == 0) {
 			return false;
@@ -167,7 +167,7 @@ class Scheduled_reports_Model extends Model
 			return $objResponse;
 		}
 		$sql = "DELETE FROM scheduled_reports WHERE id=".$id;
-		$db = new Database;(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		$objResponse->call('hide_progress');
 		switch ($context) {
@@ -183,7 +183,7 @@ class Scheduled_reports_Model extends Model
 
 	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='')
 	{
-		$db 			= new Database(self::db_name);
+		$db 			= new Database();
 		$id 			= (int)$id;
 		$rep_type 		= (int)$rep_type;
 		$saved_report_id = (int)$saved_report_id;
@@ -243,7 +243,7 @@ class Scheduled_reports_Model extends Model
 		$id = (int)$id;
 		$field = trim($field);
 		$value = trim($value);
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$sql = "UPDATE scheduled_reports SET `".$field."`= ".$db->escape($value)." WHERE id=".$id;
 		try {
 			$res = $db->query($sql);
@@ -263,7 +263,7 @@ class Scheduled_reports_Model extends Model
 	{
 		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
 			"sr.id=".(int)$id." AND t.id=sr.report_type_id";
-		$db = new Database(self::db_name);
+		$db = new Database();
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
@@ -281,7 +281,7 @@ class Scheduled_reports_Model extends Model
 	 */
 	public function get_report_type_id($identifier=false)
 	{
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($identifier).";";
 		try {
 			$res = $db->query($sql);
@@ -298,7 +298,7 @@ class Scheduled_reports_Model extends Model
 	*/
 	public function get_all_report_types()
 	{
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$sql = "SELECT * FROM scheduled_report_types ORDER BY id";
 		$res = $db->query($sql);
 		return count($res) != 0 ? $res : false;
@@ -343,7 +343,7 @@ class Scheduled_reports_Model extends Model
 			default: return false;
 		}
 
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		$return = false;
 		if (count($res) != 0) {
@@ -391,7 +391,7 @@ class Scheduled_reports_Model extends Model
 	public function get_period_schedules($period_str=false)
 	{
 		$period_str = trim(ucfirst($period_str));
-		$db = new Database(self::db_name);
+		$db = new Database();
 
 		$sql = "SELECT rt.identifier, r.id FROm scheduled_report_types rt, scheduled_reports r, scheduled_report_periods p ".
 			"WHERE p.periodname=".$db->escape($period_str)." AND r.period_id=p.id AND rt.id=r.report_type_id";

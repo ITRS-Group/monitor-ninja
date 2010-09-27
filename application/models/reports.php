@@ -186,7 +186,7 @@ class Reports_Model extends Model
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
-			$db = new Database(self::db_name);
+			$db = new Database();
 		} catch (Kohana_Database_Exception $e) {
 			return false;
 		}

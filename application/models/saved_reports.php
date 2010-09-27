@@ -13,7 +13,7 @@ class Saved_reports_Model extends Model
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$auth = new Nagios_auth_Model();
 		switch ($type) {
 			case 'avail':
@@ -57,7 +57,7 @@ class Saved_reports_Model extends Model
 				$name_field = 'sla_name';
 				break;
 		}
-		$db = new Database(self::db_name);
+		$db = new Database();
 
 		# check options for start_time or end_time
 		# and convert to timestamp before save
@@ -138,7 +138,7 @@ class Saved_reports_Model extends Model
 
 		// remove old records (if any)
 		$sql = "DELETE FROM sla_periods WHERE sla_id=".(int)$sla_id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$db->query($sql);
 		unset($sql);
 
@@ -174,7 +174,7 @@ class Saved_reports_Model extends Model
 
 		// remove old records (if any)
 		$sql = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$db->query($sql);
 
 		$_sql = "INSERT INTO ".$type."_config_objects (".$type."_id, name) VALUES(";
@@ -215,7 +215,7 @@ class Saved_reports_Model extends Model
 		if ($type == 'sla') {
 			$sql[] = "DELETE FROM sla_periods WHERE sla_id=".$id;
 		}
-		$db = new Database(self::db_name);
+		$db = new Database();
 		foreach ($sql as $query) {
 			try {
 				$db->query($query);
@@ -242,7 +242,7 @@ class Saved_reports_Model extends Model
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
-		$db = new Database(self::db_name);
+		$db = new Database();
 		switch ($type) {
 			case 'avail':
 			case 'summary':
@@ -283,7 +283,7 @@ class Saved_reports_Model extends Model
 		if (empty($id)) return false;
 
 		$sql = "SELECT * FROM ".$type."_config WHERE id=".(int)$id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 		if (!$res || count($res)==0)
 			return false;
@@ -331,7 +331,7 @@ class Saved_reports_Model extends Model
 			return false;
 
 		$sql = "SELECT * FROM sla_periods WHERE sla_id=".(int)$sla_id." ORDER BY id";
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 
 		return (!$res || count($res)==0) ? false : $res;
@@ -351,7 +351,7 @@ class Saved_reports_Model extends Model
 			return false;
 
 		$sql = "SELECT * FROM ".$type."_config_objects WHERE ".$type."_id=".(int)$id;
-		$db = new Database(self::db_name);
+		$db = new Database();
 		$res = $db->query($sql);
 
 		return (!$res || count($res)==0) ? false : $res;
