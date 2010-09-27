@@ -143,6 +143,11 @@ then
 	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports.sql"
 	run_sql_file $db_login_opts $upgrade_script
 
+	echo "Installing scheduled summary reports"
+	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports_v2.sql"
+	run_sql_file $db_login_opts $upgrade_script
+	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" merlin 2>/dev/null
+
 	# check if old tables exists
 	old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
 
@@ -154,12 +159,4 @@ then
 	fi
 fi
 
-if [ "$sched_db_ver" = "1.0.0" ]
-then
-	echo "Installing scheduled summary reports"
-	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports_v2.sql"
-	run_sql_file $db_login_opts $upgrade_script
-	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" merlin 2>/dev/null
-
-fi
 echo "Database upgrade complete."
