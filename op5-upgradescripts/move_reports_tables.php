@@ -13,7 +13,7 @@ $db_opt['old_database'] = 'monitor_reports';
 $db_opt['new_database'] = 'merlin';
 $db_opt['persistent'] = true;	# set to false if you're using php-cgi
 
-$DEBUG = true;
+$DEBUG = false;
 
 $prefix = isset($argv[1]) ? $argv[1] : false;
 
@@ -31,8 +31,6 @@ class old_reports
 		'avail_config',
 		'avail_config_objects',
 		'avail_db_version',
-		'db_version',
-		'report_data',
 		'scheduled_report_periods',
 		'scheduled_report_types',
 		'scheduled_reports',
@@ -231,7 +229,7 @@ class ninja_report_import
 }
 
 $old_reports = new old_reports($db_opt);
-
+echo "Moving data from monitor_reports to merlin\n";
 foreach ($old_reports->tables_to_convert as $table) {
 	$sql = "SELECT * FROM ".$db_opt['old_database'].".".$table;
 	$old_res = $old_reports->sql_exec_query($sql);
@@ -241,16 +239,21 @@ foreach ($old_reports->tables_to_convert as $table) {
 		while ($row = $old_reports->sql_fetch_array($old_res)) {
 			$sql[] = "INSERT INTO ".$db_opt['new_database'].".".$table." (".implode(',', array_keys($row)).") VALUES ('".implode("', '", array_values($row))."')";
 		}
+		unset($old_reports);
 		if (!empty($sql)) {
-			unset($old_reports);
 			$merlin = new ninja_report_import();
 			$merlin->prefix = $prefix;
+			echo "Moving data for $table\n";
+			$merlin->sql_exec_query("TRUNCATE $table");
 			foreach ($sql as $query) {
 				$merlin->sql_exec_query($query);
 			}
 			unset($merlin);
 		}
+		$old_reports = new old_reports($db_opt);
 	}
 }
 
+unset($old_reports);
+echo "Done moving data from monitor_reports to merlin\n";
 ?>
