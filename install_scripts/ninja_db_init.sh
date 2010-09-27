@@ -59,7 +59,7 @@ then
 		sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
 
 		# move old data from monitor_reports -> merlin
-		/usr/bin/env php $prefix/op5-upgradescripts/move_reports_tables.php $prefix db_user db_pass
+		/usr/bin/env php $prefix/op5-upgradescripts/move_reports_tables.php $prefix $db_user $db_pass
 		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" merlin 2>/dev/null
 
 		# let's check this once more to be sure
