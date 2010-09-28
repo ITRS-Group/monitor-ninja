@@ -1,6 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
 <div class="host_breakdown wide" style="margin-top: 0px;">
+<?php
+	if (!isset($host_filter_status)) {
+			$host_filter_status = array(
+				'up' => 1,
+				'down' => 1,
+				'unreachable' => 1,
+				'undetermined' => 1
+			);
+	}
+?>
+
 <?php echo $t->_('Showing hosts in state: ');
 		$j = 0; foreach($host_filter_status as $key => $value) {
 		if ($value == 1) {
