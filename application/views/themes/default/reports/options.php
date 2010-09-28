@@ -102,15 +102,15 @@ if ($type == 'avail') { ?>
 									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" maxlength="255" />
 							</span>
 
-							<input type="hidden" name="host_filter_status[0]" value="<?php echo $host_filter_status_up ?>" />
-							<input type="hidden" name="host_filter_status[1]" value="<?php echo $host_filter_status_down ?>" />
-							<input type="hidden" name="host_filter_status[2]" value="<?php echo $host_filter_status_unreachable ?>" />
-							<input type="hidden" name="host_filter_status[3]" value="<?php echo $host_filter_status_undetermined ?>" />
-							<input type="hidden" name="service_filter_status[0]" value="<?php echo $service_filter_status_ok ?>" />
-							<input type="hidden" name="service_filter_status[1]" value="<?php echo $service_filter_status_warning ?>" />
-							<input type="hidden" name="service_filter_status[2]" value="<?php echo $service_filter_status_unknown ?>" />
-							<input type="hidden" name="service_filter_status[3]" value="<?php echo $service_filter_status_critical ?>" />
-							<input type="hidden" name="service_filter_status[4]" value="<?php echo $service_filter_status_pending ?>" />
+							<input type="hidden" name="host_filter_status[0]" value="<?php echo isset($host_filter_status_up) ? $host_filter_status_up : 1 ?>" />
+							<input type="hidden" name="host_filter_status[1]" value="<?php echo isset($host_filter_status_down) ? $host_filter_status_down : 1 ?>" />
+							<input type="hidden" name="host_filter_status[2]" value="<?php echo isset($host_filter_status_unreachable) ? $host_filter_status_unreachable : 1 ?>" />
+							<input type="hidden" name="host_filter_status[3]" value="<?php echo isset($host_filter_status_undetermined) ? $host_filter_status_undetermined : 1 ?>" />
+							<input type="hidden" name="service_filter_status[0]" value="<?php echo isset($service_filter_status_ok) ? $service_filter_status_ok : 1 ?>" />
+							<input type="hidden" name="service_filter_status[1]" value="<?php echo isset($service_filter_status_warning) ? $service_filter_status_warning : 1 ?>" />
+							<input type="hidden" name="service_filter_status[2]" value="<?php echo isset($service_filter_status_unknown) ? $service_filter_status_unknown : 1 ?>" />
+							<input type="hidden" name="service_filter_status[3]" value="<?php echo isset($service_filter_status_critical) ? $service_filter_status_critical : 1 ?>" />
+							<input type="hidden" name="service_filter_status[4]" value="<?php echo isset($service_filter_status_pending) ? $service_filter_status_pending : 1 ?>" />
 
 							<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
 							<input type="hidden" name="old_report_name"
@@ -139,22 +139,16 @@ if ($type == 'avail') { ?>
 	<h1><?php echo $t->_('Save report') ?></h1>
 	<table style="width: 350px">
 		<tr class="none">
-			<td>
-				<label for="save_report_settings" id="save_report_label"><?php echo $label_save_report ?></label>
-				<div id="report_setup">
+			<td style="vertical-align:middle"><label for="report_name" id="save_report_label"><?php echo $t->_('Save as') ?></label></td>
+			<td><div id="report_setup">
 						<input type="text" name="report_name" id="report_name" class="input-save-name"
-						value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" maxlength="255" />
+						value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" maxlength="255" style="margin: 0px" />
 					<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
 					<input type="hidden" name="sla_save" value="1" />
 					<input type="hidden" name="save_report_settings" value="1" />
-					<input type="hidden" name="old_report_name"
-						value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" />
+					<input type="hidden" name="old_report_name" value="<?php echo isset($report_info['sla_name']) && !empty($report_info['sla_name']) ? $report_info['sla_name'] : '' ?>" />
+					<input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />
 				</div>
-			</td>
-		</tr>
-		<tr class="none">
-			<td>
-				<input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />
 			</td>
 		</tr>
 
