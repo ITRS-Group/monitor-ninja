@@ -89,6 +89,7 @@ class old_reports
 
 	# execute an SQL query with error handling
 	public function sql_exec_query($query) {
+		global $DEBUG;
 		if(empty($query)) return(false);
 
 		if($this->dbh === false) {
@@ -256,4 +257,3 @@ foreach ($old_reports->tables_to_convert as $table) {
 
 unset($old_reports);
 echo "Done moving data from monitor_reports to merlin\n";
-?>
