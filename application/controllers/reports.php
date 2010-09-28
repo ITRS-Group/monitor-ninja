@@ -2173,6 +2173,8 @@ class Reports_Controller extends Authenticated_Controller
 		if ($this->type == 'sla') {
 			$report_name = arr::search($_REQUEST, 'report_name', false);
 			unset($report_options['report_name']);
+			unset($report_options['host_filter_status']);
+			unset($report_options['service_filter_status']);
 			$report_options['sla_name'] = $report_name;
 		}
 
