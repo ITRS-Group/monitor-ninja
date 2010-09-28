@@ -80,21 +80,6 @@ do
 		fi
 		break
 		;;
-	5)
-		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v5_to_v6.sql"
-		echo -n "Upgrading avail tables to v6 ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file $db_login_opts $upgrade_script
-			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '6'" merlin 2>/dev/null
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		break
-		;;
 	esac
 
 	(( sla_ver++ ))
@@ -136,6 +121,21 @@ do
 		then
 			run_sql_file $db_login_opts $upgrade_script
 			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '5'" merlin 2>/dev/null
+			echo "done."
+		else
+			echo "SCRIPT MISSING."
+			echo "Tried to use $upgrade_script"
+		fi
+		break
+		;;
+	5)
+		# upgrade to latest
+		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v5_to_v6.sql"
+		echo -n "Upgrading avail tables to v6 ... "
+		if [ -r "$upgrade_script" ]
+		then
+			run_sql_file $db_login_opts $upgrade_script
+			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '6'" merlin 2>/dev/null
 			echo "done."
 		else
 			echo "SCRIPT MISSING."
