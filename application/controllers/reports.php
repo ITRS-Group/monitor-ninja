@@ -410,56 +410,56 @@ class Reports_Controller extends Authenticated_Controller
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 
 			if(isset($report_info["assume_initial_states"]) && $report_info["assume_initial_states"] != 0)
-				$assume_initial_states_checked = "checked='checked'";
+				$assume_initial_states_checked = 'checked="checked"';
 			else
 				$assume_initial_states_checked = '';
 
 			if($report_info["initialassumedhoststate"] != 0)
-				$initial_assumed_host_state_selected = "checked='checked'";
+				$initial_assumed_host_state_selected = 'checked="checked"';
 			else
 				$initial_assumed_host_state_selected = '';
 
 			if($report_info["initialassumedservicestate"] != 0)
-				$initial_assumed_service_state_selected = "checked='checked'";
+				$initial_assumed_service_state_selected = 'checked="checked"';
 			else
 				$initial_assumed_service_state_selected = '';
 
 			if($report_info["assumestatesduringnotrunning"] != 0)
-				$assume_states_during_not_running_checked = "checked='checked'";
+				$assume_states_during_not_running_checked = 'checked="checked"';
 			else
 				$assume_states_during_not_running_checked = '';
 
 			if (!empty($report_info['host_filter_status'])) {
 				$hostfilterstatus = unserialize($report_info['host_filter_status']);
-				$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? "checked='checked'" : '';
-				$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? "checked='checked'" : '';
-				$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? "checked='checked'" : '';
-				$host_filter_status_undetermined_checked = ($hostfilterstatus['undetermined'] != 0) ? "checked='checked'" : '';
+				$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? 'checked="checked"' : '';
+				$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? 'checked="checked"' : '';
+				$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? 'checked="checked"' : '';
+				$host_filter_status_undetermined_checked = ($hostfilterstatus['undetermined'] != 0) ? 'checked="checked"' : '';
 			}
 			else {
-				$host_filter_status_up_checked = "checked='checked'";
-				$host_filter_status_down_checked = "checked='checked'";
-				$host_filter_status_unreachable_checked = "checked='checked'";
-				$host_filter_status_undetermined_checked = "checked='checked'";
+				$host_filter_status_up_checked = 'checked="checked"';
+				$host_filter_status_down_checked = 'checked="checked"';
+				$host_filter_status_unreachable_checked = 'checked="checked"';
+				$host_filter_status_undetermined_checked = 'checked="checked"';
 			}
 			if (!empty($report_info['service_filter_status'])) {
 				$servicefilterstatus = unserialize($report_info['service_filter_status']);
-				$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? "checked='checked'" : '';
-				$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? "checked='checked'" : '';
-				$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? "checked='checked'" : '';
-				$service_filter_status_critical_checked = ($servicefilterstatus['critical'] != 0) ? "checked='checked'" : '';
-				$service_filter_status_pending_checked = ($servicefilterstatus['pending'] != 0) ? "checked='checked'" : '';
+				$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? 'checked="checked"' : '';
+				$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? 'checked="checked"' : '';
+				$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? 'checked="checked"' : '';
+				$service_filter_status_critical_checked = ($servicefilterstatus['critical'] != 0) ? 'checked="checked"' : '';
+				$service_filter_status_pending_checked = ($servicefilterstatus['pending'] != 0) ? 'checked="checked"' : '';
 			}
 			else {
-				$service_filter_status_ok_checked = "checked='checked'";
-				$service_filter_status_warning_checked = "checked='checked'";
-				$service_filter_status_unknown_checked = "checked='checked'";
-				$service_filter_status_critical_checked = "checked='checked'";
-				$service_filter_status_pending_checked = "checked='checked'";
+				$service_filter_status_ok_checked = 'checked="checked"';
+				$service_filter_status_warning_checked = 'checked="checked"';
+				$service_filter_status_unknown_checked = 'checked="checked"';
+				$service_filter_status_critical_checked = 'checked="checked"';
+				$service_filter_status_pending_checked = 'checked="checked"';
 			}
 
 			if($report_info["includesoftstates"] != 0)
-				$include_soft_states_checked = "checked='checked'";
+				$include_soft_states_checked = 'checked="checked"';
 			else
 				$include_soft_states_checked = '';
 
@@ -474,7 +474,7 @@ class Reports_Controller extends Authenticated_Controller
 			$use_alias_checked = (isset($report_info["use_alias"]) && $report_info["use_alias"] != 0) ? 'checked="checked"' : '';
 
 			if(isset($report_info["scheduledowntimeasuptime"]) && $report_info["scheduledowntimeasuptime"] != 0)
-				$scheduled_downtime_as_uptime_checked = "checked='checked'";
+				$scheduled_downtime_as_uptime_checked = 'checked="checked"';
 			else
 				$scheduled_downtime_as_uptime_checked = '';
 
@@ -948,6 +948,8 @@ class Reports_Controller extends Authenticated_Controller
 			$report_name = arr::search($_REQUEST, 'report_name', false);
 			unset($report_options['report_name']);
 			$report_options['sla_name'] = $report_name;
+			unset($report_options['host_filter_status']);
+			unset($report_options['service_filter_status']);
 		}
 
 		$this->report_options = $report_options;
@@ -1370,15 +1372,17 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
 				$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
 
-				$tpl_options->host_filter_status_up = $host_filter_status['up'];
-				$tpl_options->host_filter_status_down = $host_filter_status['down'];
-				$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
-				$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
-				$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
-				$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
-				$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
-				$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
-				$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
+				if ($this->type == 'avail') {
+					$tpl_options->host_filter_status_up = $host_filter_status['up'];
+					$tpl_options->host_filter_status_down = $host_filter_status['down'];
+					$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
+					$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
+					$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
+					$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
+					$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
+					$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
+					$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
+				}
 
 				$tpl_options->label_save_report = $t->_('Save report');
 				$tpl_options->label_as = $t->_('as');
@@ -4599,3 +4603,4 @@ class Reports_Controller extends Authenticated_Controller
 		return $new_array;
 	}
 }
+
