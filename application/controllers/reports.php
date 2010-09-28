@@ -1372,7 +1372,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
 				$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
 
-				if ($this->type == 'avail') {
+				if (isset($host_filter_status)) {
 					$tpl_options->host_filter_status_up = $host_filter_status['up'];
 					$tpl_options->host_filter_status_down = $host_filter_status['down'];
 					$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
@@ -1542,8 +1542,10 @@ class Reports_Controller extends Authenticated_Controller
 				$template->content->hide_host = false;
 				$template->content->create_pdf = $this->create_pdf;
 				$template->content->use_average = $use_average;
-				$template->content->host_filter_status = $host_filter_status;
-				$template->content->service_filter_status = $service_filter_status;
+				if (isset($host_filter_status)) {
+					$template->content->host_filter_status = $host_filter_status;
+					$template->content->service_filter_status = $service_filter_status;
+				}
 				$template->content->service_filter_status_show = true;
 				$template->content->use_alias = $use_alias;
 				$template->content->start_time = $this->start_date;
