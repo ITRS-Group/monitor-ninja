@@ -126,7 +126,6 @@ do
 			echo "SCRIPT MISSING."
 			echo "Tried to use $upgrade_script"
 		fi
-		break
 		;;
 	5)
 		# upgrade to latest
