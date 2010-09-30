@@ -2,6 +2,16 @@
 <?php $t = $this->translate; ?>
 <div class="state_services">
 <?php
+	if (!isset($service_filter_status)) {
+			$service_filter_status = array(
+				'ok' => 1,
+				'warning' => 1,
+				'unknown' => 1,
+				'critical' => 1,
+				'pending' => 1
+			);
+	}
+
 	if ($service_filter_status_show !== false) {
 		echo $t->_('Showing services in state: ');
 			$j = 0; foreach($service_filter_status as $key => $value) {
