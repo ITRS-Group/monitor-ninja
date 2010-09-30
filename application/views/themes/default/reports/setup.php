@@ -17,7 +17,6 @@ if (isset($report_info)) {
 }
 ?>
 
-<div id="progress"></div>
 <div id="report-tabs">
 	<ul>
 		<li><a href="#report-tab" style="border: 0px"><?php echo $this->translate->_('Reports') ?></a></li>
@@ -103,6 +102,7 @@ if (isset($report_info)) {
 							<option value="services"><?php echo $label_services ?></option>
 						</select>
 						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="filter_row">
@@ -357,7 +357,6 @@ if (isset($report_info)) {
 			</table>
 		</div>
 		<br />
-		<?php //$test = array('1','2'); echo serialize($test); ?>
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
 				<caption><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
