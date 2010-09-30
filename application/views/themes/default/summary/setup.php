@@ -11,6 +11,11 @@ if (!empty($widgets)) {
 <div id="progress"></div>
 
 <div class="widget w98 left">
+		<span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?> style="float: right; right: 1%; top: 0px;">
+		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $this->translate->_('Add').' '. strtolower($label_new_schedule), 'title' => $this->translate->_('Add').' '. strtolower($label_new_schedule))); ?></a>
+		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
+	</span>
+
 		<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
 			echo form::open('summary/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
 		 ?>
@@ -48,10 +53,7 @@ if (!empty($widgets)) {
 		</div>
 		<?php echo form::close(); } ?>
 
-	<span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?>>
-		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $this->translate->_('Add').' '. strtolower($label_new_schedule), 'title' => $this->translate->_('Add').' '. strtolower($label_new_schedule))); ?></a>
-		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
-	</span>
+
 
 	<h1><?php echo $label_create_new ?></h1>
 
