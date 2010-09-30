@@ -2,7 +2,8 @@
 
 #progress{
 	float: right;
-	margin-right: 265px;
+	margin-right: 260px;
+	margin-top: -42px; /* looks ok in firefox, but not in chrome */
 }
 
 #progress em,
@@ -10,7 +11,7 @@
 	float: left;
 }
 #progress em {
-	display: block;
+	/*display: block;*/
 	margin-top: 12px;
 }
 
