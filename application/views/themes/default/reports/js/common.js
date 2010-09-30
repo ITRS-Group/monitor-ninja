@@ -476,9 +476,6 @@ function show_progress(the_id, info_str)
 		// try to position progress image so it doesn't cover anything
 		$("#" + the_id)
 			.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
-			.css('position', 'absolute')
-			.css('left', position.left + 50 + 'px')
-			.css('top', position.top + 'px')
 			.show();
 	} else {
 		$("#" + the_id)
