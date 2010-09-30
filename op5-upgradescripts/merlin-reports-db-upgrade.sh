@@ -161,16 +161,16 @@ then
 	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports_v2.sql"
 	run_sql_file $db_login_opts $upgrade_script
 	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" merlin 2>/dev/null
+fi
 
-	# check if old tables exists
-	old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
+# check if old tables exists and should be imported
+old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
 
-	if [ "$old_sched_db_ver" != "" ]
-	then
-		# import old schedules if any
-		echo "Importing old scheduled reports"
-		/usr/bin/env php "$prefix/op5/ninja/op5-upgradescripts/import_schedules.php"
-	fi
+if [ "$old_sched_db_ver" != "" ]
+then
+	# import old schedules if any
+	echo "Importing old scheduled reports"
+	/usr/bin/env php "$prefix/op5/ninja/op5-upgradescripts/import_schedules.php"
 fi
 
 echo "Database upgrade complete."
