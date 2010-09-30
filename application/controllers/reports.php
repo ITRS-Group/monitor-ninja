@@ -1805,7 +1805,8 @@ class Reports_Controller extends Authenticated_Controller
 								$content->use_alias = $use_alias;
 								$content->start_time = $this->start_date;
 								$content->end_time = $this->end_date;
-								$content->service_filter_status = $service_filter_status;
+								if (isset($service_filter_status))
+									$content->service_filter_status = $service_filter_status;
 								$content->service_filter_status_show = false;
 								$content->source = $data['source'];
 								$content->create_pdf = $this->create_pdf;
