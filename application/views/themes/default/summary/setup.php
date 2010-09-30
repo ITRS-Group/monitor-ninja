@@ -8,7 +8,6 @@ if (!empty($widgets)) {
 }
 ?>
 <div id="response"></div>
-<div id="progress"></div>
 
 <div class="widget w98 left">
 		<span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?> style="float: right; right: 1%; top: 0px;">
@@ -113,7 +112,7 @@ if (!empty($widgets)) {
 							<option value="servicegroups"><?php echo $label_servicegroups ?></option>
 							<option value="services"><?php echo $label_services ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo $label_select ?>" /><div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="filter_row">
