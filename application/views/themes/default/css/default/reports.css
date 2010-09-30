@@ -1,10 +1,8 @@
 /* progress bar ****************************************************************/
 
 #progress{
-	position: absolute;
-	top:175px; /* 107px; trends */
-	left:450px; /* 410px; trends */
-	display: none;
+	float: right;
+	margin-right: 265px;
 }
 
 #progress em,
