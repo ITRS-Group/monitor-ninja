@@ -8,7 +8,6 @@ if (!empty($widgets)) {
 }
 ?>
 <div id="response"></div>
-<div id="progress"></div>
 
 <div class="report-page-setup">
 	<div class="setup-table">
@@ -31,6 +30,7 @@ if (!empty($widgets)) {
 							<option value="services"><?php echo $label_services ?></option>
 						</select>
 						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="filter_row">
