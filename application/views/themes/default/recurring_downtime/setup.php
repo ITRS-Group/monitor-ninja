@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div id="progress"></div>
+
 <div class="report-page-setup recurring_dt_schedule">
 	<div id="response"></div>
 
@@ -36,6 +36,7 @@ if (!empty($widgets)) {
 									<option value="services"><?php echo $label_services ?></option>
 								</select>
 								<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+								<div id="progress"></div>
 							</td>
 						</tr>
 						<tr id="filter_row">
@@ -186,19 +187,17 @@ if (isset($saved_info) && !empty($saved_info)) {
 		if (!isset($saved_info[$dt_type])) {
 			continue;
 		} ?>
-	<table class="recurrence_table" id="table_<?php echo $dt_type ?>" cellspacing="2">
+	<h1><?php echo sprintf($this->translate->_('Recurring %s Downtime'), $translated); ?></h1>
+	<table class="recurrence_table" id="table_<?php echo $dt_type ?>" style="margin-top: -5px">
 		<tr>
-			<td colspan="8"><h1><?php echo sprintf($this->translate->_('Recurring %s Downtime'), $translated); ?></h1></td>
-		</tr>
-		<tr>
-			<th><?php echo sprintf($this->translate->_('%s Name'), $translated); ?></th>
-			<th><?php echo $this->translate->_('Author'); ?></th>
-			<th><?php echo $this->translate->_('Comment'); ?></th>
-			<th><?php echo $this->translate->_('Time'); ?></th>
-			<th><?php echo $this->translate->_('Duration'); ?></th>
-			<th><?php echo $this->translate->_('Weekdays'); ?></th>
-			<th><?php echo $this->translate->_('Months'); ?></th>
-			<th>&nbsp;</th>
+			<th class="headerNone left"><?php echo sprintf($this->translate->_('%s Name'), $translated); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Author'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Comment'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Time'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Duration'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Weekdays'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Months'); ?></th>
+			<th class="headerNone left" style="width: 40px"><?php echo $this->translate->_('Actions'); ?></th>
 		</tr>
 	<?php	foreach ($saved_info[$dt_type] as $data) {
 				$days = isset($data['data']['recurring_day']) ? $data['data']['recurring_day'] : '';
@@ -218,7 +217,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 					}
 					$month_list = implode(', ', $month_list);
 				} ?>
-		<tr class="scheduled_<?php echo $dt_type ?>" id="schedule_<?php echo $data['id'] ?>">
+		<tr class="scheduled_<?php echo $dt_type ?> <?php echo $i%2 == 0 ? 'even' : 'odd'?>" id="schedule_<?php echo $data['id'] ?>">
 			<td><?php
 				# limit output but enable possibility to view all
 				$max_objlist_len = 60;
@@ -243,12 +242,10 @@ if (isset($saved_info) && !empty($saved_info)) {
 			<td><?php echo $data['data']['time'] ?></td>
 			<td><?php echo $data['data']['duration'] ?></td>
 			<td><?php echo $weekdays ?></td>
-			<td><?php echo $month_list ?>
-			</td>
-			<td style="float:right">
-					<?php echo html::anchor('recurring_downtime/index/'.$data['id'], '['.$this->translate->_('edit').']') ?>
-					<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], '['.$this->translate->_('delete').']',
-						array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete')) ?>
+			<td><?php echo $month_list ?></td>
+			<td style="text-align: center">
+				<?php echo html::anchor('recurring_downtime/index/'.$data['id'], html::image($this->add_path('/icons/16x16/edit.png'), array('title' => $this->translate->_('Edit'), 'alt' => '', 'style' => 'margin-bottom: -2px')),array('style' => 'border: 0px')); ?>
+				<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], html::image($this->add_path('/icons/16x16/delete-doc.png'), array('title' => $this->translate->_('Delte'), 'alt' => '', 'style' => 'margin-bottom: -2px')), array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete', 'style' => 'border: 0px')); ?>
 			</td>
 		</tr>
 	<?php 	} ?>
