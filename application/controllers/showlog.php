@@ -112,6 +112,12 @@ class Showlog_Controller extends Authenticated_Controller
 			 'service_state_options' =>
 			 array('r' => true, 'w' => true, 'c' => true, 'u' => true),
 			 );
+
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_system_information) {
+			$this->options['hide_process'] = 1;
+			$this->options['hide_commands'] = 1;
+		}
 	}
 
 	public function _show_log_entries()
@@ -212,6 +218,12 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->options['hide_initial'] = true;
 		$this->options['hide_commands'] = true;
 		$this->options['hide_notifications'] = true;
+
+		if ($auth->authorized_for_system_information) {
+			$is_authorized = true;
+		}
+
+		$this->template->content->is_authorized = $is_authorized;
 		$this->template->content->options = $this->options;
 	}
 
@@ -220,6 +232,14 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Event Log");
 		$this->options['hide_initial'] = true;
+
+		$auth = new Nagios_auth_Model();
+		$is_authorized = false;
+		if ($auth->authorized_for_system_information) {
+			$is_authorized = true;
+		}
+
+		$this->template->content->is_authorized = $is_authorized;
 		$this->template->content->options = $this->options;
 	}
 }
