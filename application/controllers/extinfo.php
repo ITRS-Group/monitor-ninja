@@ -970,6 +970,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $items_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $items_per_page, $offset);
 
+		$comment = false;
 		$i = 0;
 
 		if (!empty($comment_data)) {
