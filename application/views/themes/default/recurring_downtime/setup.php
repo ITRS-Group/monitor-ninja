@@ -213,7 +213,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 				$month_list = '';
 				if (!empty($months)) {
 					foreach ($months as $m) {
-						$month_list[] = $abbr_month_names[$m+1];
+						$month_list[] = $abbr_month_names[$m-1];
 					}
 					$month_list = implode(', ', $month_list);
 				} ?>

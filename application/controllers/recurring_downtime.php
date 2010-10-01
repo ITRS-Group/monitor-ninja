@@ -167,9 +167,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					$saved_data['author'] = $row->author;
 					$saved_data['downtime_type'] = $row->downtime_type;
 					$saved_data['last_update'] = date($date_format, $row->last_update);
-					$data = unserialize($row->data);
+					$schedule_data = unserialize($row->data);
 					unset($data['report_type']);
-					$saved_data['data'] = $data;
+					$saved_data['data'] = $schedule_data;
 
 					$saved_info[$type][] = $saved_data;
 				}
