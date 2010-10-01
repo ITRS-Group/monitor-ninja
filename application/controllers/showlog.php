@@ -219,6 +219,8 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->options['hide_commands'] = true;
 		$this->options['hide_notifications'] = true;
 
+		$auth = new Nagios_auth_Model();
+		$is_authorized = false;
 		if ($auth->authorized_for_system_information) {
 			$is_authorized = true;
 		}
