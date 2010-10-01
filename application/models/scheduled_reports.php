@@ -69,6 +69,14 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
+		$db = new Database();
+
+		$sql_xtra = '';
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root) {
+			$sql_xtra = ' AND sr.user='.$db->escape(Auth::instance()->get_user()->username).' ';
+		}
+
 		$sql = "SELECT
 				sr.*,
 				rp.periodname,
@@ -82,10 +90,10 @@ class Scheduled_reports_Model extends Model
 				rt.identifier='".$type."' AND
 				sr.report_type_id=rt.id AND
 				rp.id=sr.period_id AND
-				sr.report_id=r.id
+				sr.report_id=r.id".$sql_xtra."
 			ORDER BY
 				reportname";
-		$db = new Database();
+
 		$res = $db->query($sql);
 		return $res ? $res : false;
 	}
