@@ -79,7 +79,7 @@ $(document).ready(function() {
 		var right = $(window).width();
 
 		var x_offset = e.pageX-195;
-		var y_offset = e.pageY-170;
+		var y_offset = e.pageY-175;
 		if ((x_offset + 455) > right) {
 			x_offset = right - 455;
 		}
