@@ -364,8 +364,37 @@ class Status_Controller extends Authenticated_Controller {
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
 				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops);
+				$tot = $result !== false ? count($result) : 0;
+				unset($result);
+				$pagination = new Pagination(
+					array(
+						'total_items'=> $tot,
+						'items_per_page' => $items_per_page
+					)
+				);
+				$limit = $pagination->sql_limit;
+				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops, $limit);
 				$this->template->content->is_svc_details = true;
 			} else {
+				$host_model->num_per_page = false;
+				$host_model->offset = false;
+				$host_model->count = true;
+
+				$host_model->set_host_list($name);
+				$result_cnt = $host_model->get_host_status();
+
+				$tot = $result_cnt !== false ? $result_cnt : 0;
+				$pagination = new Pagination(
+					array(
+						'total_items'=> $tot,
+						'items_per_page' => $items_per_page
+					)
+				);
+				$offset = $pagination->sql_offset;
+				$host_model->count = false;
+				$host_model->num_per_page = $items_per_page;
+				$host_model->offset = $offset;
+
 				$host_model->set_host_list($group_hosts);
 				$result = $host_model->get_host_status();
 			}

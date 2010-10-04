@@ -110,7 +110,7 @@ class Group_Model extends Model
 	 * @param $host_props Host properties filter
 	 * @return db result
 	 */
-	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false)
+	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false, $limit=false)
 	{
 		$groupname = trim($groupname);
 		if (empty($groupname)) {
@@ -127,6 +127,7 @@ class Group_Model extends Model
 			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
 		}
 
+		$limit_str = !empty($limit) ? $limit : '';
 		$hostlist = Host_Model::authorized_hosts();
 
 		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
@@ -201,7 +202,7 @@ class Group_Model extends Model
 			ORDER BY
 				h.host_name,
 				s.service_description,
-				s.current_state;";
+				s.current_state ".$limit_str.";";
 #echo $sql;
 		$result = $db->query($sql);
 		return $result;
