@@ -300,7 +300,7 @@ if (!empty($widgets)) {
 			</tr>
 		</table>
 		<div><input type="hidden" name="saved_report_id" id="saved_report_id" value="<?php echo $report_id ?>" />
-		<input type="hidden" name="rep_type" value="summary" />
+		<input type="hidden" name="type" value="summary" />
 		<input type="hidden" name="module_save" id="module_save" value="1" /></div>
 		</form>
 	</div>
