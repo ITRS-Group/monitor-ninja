@@ -7,10 +7,18 @@
 		<title><?php echo Kohana::config('config.product_name').' '.$this->translate->_('login'); ?></title>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css') ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
+		<?php echo html::script('application/media/js/jquery.min.js'); ?>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
+				$(document).ready(function() {
+					$('#login_form').bind('submit', function() {
+						$('#loading').show();
+						$('#login').attr('disabled', true);
+						$('#login').attr('value', '<?php echo $this->translate->_('Please wait...') ?>');
+					});
+				});
 			//-->
 		</script>
 		<?php echo (!empty($js_header)) ? $js_header : '' ?>
@@ -19,7 +27,7 @@
 	<body>
 		<div id="login-table">
 			<?php if (isset($error_msg)) echo $error_msg; ?>
-			<?php echo form::open('default/do_login'); ?>
+			<?php echo form::open('default/do_login', array('id' => 'login_form')); ?>
 			<table border="1">
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
@@ -37,7 +45,10 @@
 						<?php
 							echo csrf::form_field();
 							echo form::submit('login', $login_btn_txt, 'style="margin-left: 5px"');
-						?>
+						?><br /><br />
+						<div id="loading" style="display:none;">
+							<?php echo html::image('application/media/images/loading.gif') ?>
+						</div>
 					</td>
 				</tr>
 			</table>
