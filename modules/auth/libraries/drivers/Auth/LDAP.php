@@ -9,7 +9,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 
 		if (!is_object($user)) {
 			$username = $user;
-			$user = ORM::factory('user', $username);
+			$user = ORM::factory('user')->where('username', $username)->find();
 			// the line below is required because ORM::factory doesn't fill username for LDAP users
 			$user->username = $username;
 		}
