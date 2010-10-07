@@ -54,32 +54,9 @@ class Service_Model extends Model
 	 *              hostname;service_description
 	 * @return Service object on success, false on errors
 	 */
-	public function get_serviceinfo($id=false, $name=false)
+	public function get($host_name=false, $service_description=false)
 	{
-		$id = (int)$id;
-		$name = trim($name);
-
-		$auth_services = self::authorized_services();
-		$service_info = false;
-
-		if (!empty($id)) {
-			if (!array_key_exists($id, $auth_services)) {
-				return false;
-			} else {
-				$service_info = $this->db->getwhere('service', array('id' => $id));
-			}
-		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $this->auth->services_r)) {
-				return false;
-			} else {
-				$service_info = $this->db->query
-					("SELECT  * FROM service s" .
-					 "WHERE CONCAT(s.host_name, ';', s.service_description)=".
-					 $this->db->escape($name));
-			}
-		}
-
-		return $service_info !== false ? $service_info->current() : false;
+		return Host_Model::object_status($host_name, $service_description);
 	}
 
 	/**
