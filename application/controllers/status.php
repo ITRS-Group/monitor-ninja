@@ -1254,34 +1254,34 @@ class Status_Controller extends Authenticated_Controller {
 				# decide status_link host- and servicestate parameters
 				$hst_status_type = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 				$svc_status_type = false;
-				$result_fields = array(
-					'ok' => nagstat::SERVICE_OK,
-					'warning' => nagstat::SERVICE_WARNING,
-					'critical' => nagstat::SERVICE_CRITICAL,
-					'unknown' => nagstat::SERVICE_UNKNOWN,
-					'pending' => nagstat::SERVICE_PENDING
-				);
-				$states = array(
-					nagstat::SERVICE_OK => Current_status_Model::SERVICE_OK,
-					nagstat::SERVICE_WARNING => Current_status_Model::SERVICE_WARNING,
-					nagstat::SERVICE_CRITICAL => Current_status_Model::SERVICE_CRITICAL,
-					nagstat::SERVICE_UNKNOWN => Current_status_Model::SERVICE_UNKNOWN,
-					nagstat::SERVICE_PENDING => Current_status_Model::SERVICE_PENDING
-				);
 
-				foreach ($result_fields as $field => $state) {
-					$service_states[$host->host_name][$states[$state]] = array(
-						'class_name' => 'miniStatus' . $this->current->status_text($states[$state], 'service'),
-						'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$state.'&style=detail', html::specialchars($host->{'services_'.$field}.' '.ucfirst(strtolower($this->current->status_text($states[$state], 'service')))), array('class' => 'status-'.$this->current->status_text($states[$state],'service'))),
-						'extinfo_link' => html::anchor('extinfo/details/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ),
-						'svc_status_link' => html::anchor('status/service/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ),
-						'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') ),
-						'nacoma_link' => $nacoma_link,
-						'pnp_link' => $pnp_link,
-						'state_cnt' => $host->{'services_'.$field}
-						);
-
+				switch ($host->service_state) {
+				    case Current_status_Model::SERVICE_OK:
+				        $svc_status_type = nagstat::SERVICE_OK;
+				        break;
+				    case Current_status_Model::SERVICE_WARNING:
+				        $svc_status_type = nagstat::SERVICE_WARNING;
+				        break;
+				    case Current_status_Model::SERVICE_UNKNOWN:
+				        $svc_status_type = nagstat::SERVICE_UNKNOWN;
+				        break;
+				    case Current_status_Model::SERVICE_CRITICAL:
+				        $svc_status_type = nagstat::SERVICE_CRITICAL;
+				        break;
+				    case Current_status_Model::SERVICE_PENDING:
+				        $svc_status_type = nagstat::SERVICE_PENDING;
+				        break;
 				}
+
+				$service_states[$host->host_name][$host->service_state] = array(
+				    'class_name' => 'miniStatus' . $this->current->status_text($host->service_state, 'service'),
+				    'status_link' => html::anchor('status/'.$grouptype.'group/'.urlencode($group).'?hoststatustypes='.$hst_status_type.'&servicestatustypes='.$svc_status_type.'&style=detail', html::specialchars($host->state_count.' '.ucfirst(strtolower($this->current->status_text($host->service_state, 'service')))), array('class' => 'status-'.$this->current->status_text($host->service_state,'service'))),
+				    'extinfo_link' => html::anchor('extinfo/details/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ),
+				    'svc_status_link' => html::anchor('status/service/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ),
+				    'statusmap_link' => html::anchor('statusmap/host/'.urlencode($host->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') ),
+				    'nacoma_link' => $nacoma_link,
+				    'pnp_link' => $pnp_link
+				    );
 
 				$action_link = false;
 				if (!is_null($host->action_url)) {
@@ -1308,6 +1308,52 @@ class Status_Controller extends Authenticated_Controller {
 					'host_icon' => $host_icon
 				);
 			}
+
+			# check if any of the hosts in current hostgroup doesn't have any services
+			# and this to output if we find one
+			# This check is only done for hostgroups since it doesn't make sense when
+			# checking servicegroups
+			if ($grouptype == 'host') {
+				$hosts = Host_Model::get_hosts_for_group($group);
+				if ($hosts !== false && count($hosts)) {
+					# only check if nr of found hosts differ from what we found earlier
+					if (count($hosts) != count($hostinfo)) {
+						foreach ($hosts as $h) {
+							$check = Service_Model::get_where('host_name', $h->host_name, 1, true);
+							if ($check === false || count($check) == 0) {
+								$action_link = false;
+								if (!is_null($h->action_url)) {
+									$lable_host_action = $t->_('Perform Extra Host Actions');
+									$action_link = '<a href="'.nagstat::process_macros($h->action_url, $h).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+								}
+								$notes_link = false;
+								if (!is_null($h->notes_url)) {
+									$lable_host_notes = $t->_('View Extra Host Notes');
+									$notes_link = '<a href="'.nagstat::process_macros($h->notes_url, $h).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+								}
+
+								$host_icon = false;
+								# logos_path
+								if (!empty($h->icon_image)) {
+									$host_icon = html::image('application/media/images/logos/'.$h->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $h->icon_image_alt, 'title' => $h->icon_image_alt));
+								}
+
+								$hostinfo[$h->host_name] = array(
+										'state_str' => $this->current->status_text($h->current_state, 'host'),
+										'class_name' => 'statusHOST' . $this->current->status_text($h->current_state, 'host'),
+										'status_link' => html::anchor('status/service/'.urlencode($h->host_name).'?hoststatustypes='.$hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($h->host_name), array('title' => $h->address)),
+										'action_link' => $action_link,
+										'notes_link' => $notes_link,
+										'host_icon' => $host_icon
+									);
+							}
+						}
+					}
+				}
+			}
+
+
+			ksort($hostinfo);
 			$content->service_states = $service_states;
 			$content->hostinfo = $hostinfo;
 			$content->hoststatustypes = $hoststatustypes;

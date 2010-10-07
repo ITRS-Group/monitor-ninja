@@ -68,9 +68,6 @@
 				<td>
 					<?php if (!empty($group->service_states[$host]))
 						foreach ($group->service_states[$host] as $svc_state) {
-							if (!$svc_state['state_cnt']) {
-								continue;
-							}
 							echo html::image($this->add_path('icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png'), array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'style' => 'margin-bottom: -2px'));
 							echo '&nbsp; '.strtolower(ucfirst($svc_state['status_link'])).' &nbsp; ';
 						}
@@ -80,9 +77,9 @@
 					<?php
 						echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
 						echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'].'&nbsp;' : '';
-						echo $svc_state['extinfo_link'].'&nbsp;';
-						echo $svc_state['statusmap_link'].'&nbsp;';
-						echo $svc_state['svc_status_link'].'&nbsp;';
+						echo !empty($svc_state['extinfo_link']) ? $svc_state['extinfo_link'].'&nbsp;' : '';
+						echo !empty($svc_state['statusmap_link']) ? $svc_state['statusmap_link'].'&nbsp;' : '';
+						echo !empty($svc_state['svc_status_link']) ? $svc_state['svc_status_link'].'&nbsp;' : '';
 						echo !empty($details['action_link']) ? $details['action_link'].'&nbsp;' : '';
 						echo !empty($details['notes_link']) ? $details['notes_link'].'&nbsp;' : '';
 					?>
