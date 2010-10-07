@@ -133,7 +133,7 @@ class Host_Model extends Model {
 	*
 	*	Fetch host info filtered on specific field and value
 	*/
-	public function get_where($field=false, $value=false, $limit=false)
+	public function get_where($field=false, $value=false, $limit=false, $exact=false)
 	{
 		if (empty($field) || empty($value)) {
 			return false;
@@ -152,9 +152,13 @@ class Host_Model extends Model {
 			$db = $this->db;
 		}
 
-		$value = '%' . $value . '%';
-		$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
-		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
+		if (!$exact) {
+			$value = '%' . $value . '%';
+			$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+		} else {
+			$sql = "SELECT * FROM host WHERE ".$field." = ".$db->escape($value)." ";
+		}
+		$sql .= "AND id IN(".implode(',', $host_ids).") ".$limit_str;
 		$host_info = $db->query($sql);
 		return count($host_info)>0 ? $host_info : false;
 	}

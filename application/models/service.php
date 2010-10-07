@@ -185,7 +185,7 @@ class Service_Model extends Model
 	*
 	*	Fetch service info filtered on specific field and value
 	*/
-	public function get_where($field=false, $value=false, $limit=false)
+	public function get_where($field=false, $value=false, $limit=false, $exact=false)
 	{
 		if (empty($field) || empty($value)) {
 			return false;
@@ -193,9 +193,13 @@ class Service_Model extends Model
 		$obj_ids = self::authorized_services();
 		$db = new Database();
 		$limit_str = sql::limit_parse($limit);
-		$value = '%' . $value . '%';
-		$sql = "SELECT * FROM service WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
-		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		if (!$exact) {
+			$value = '%' . $value . '%';
+			$sql = "SELECT * FROM service WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+		} else {
+			$sql = "SELECT * FROM service WHERE ".$field." = ".$db->escape($value)." ";
+		}
+		$sql .= "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
 		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
