@@ -18,7 +18,7 @@ class Ninja_setting_Model extends ORM
 		$type = trim($type);
 		$page = trim($page);
 		$value = trim($value);
-		if (empty($type) || empty($value))
+		if (empty($type))
 			return false;
 
 		$setting = ORM::factory('ninja_setting');
