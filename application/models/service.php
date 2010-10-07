@@ -131,6 +131,7 @@ class Service_Model extends Model
 		}
 		$auth_hosts = Host_Model::authorized_hosts();
 		$host_str = implode(', ', array_values($auth_hosts));
+		$db = new Database();
 		switch ($type) {
 			case 'servicegroup':
 				$sql = "SELECT
@@ -141,7 +142,7 @@ class Service_Model extends Model
 					servicegroup sg,
 					service_servicegroup ssg
 				WHERE
-					sg.servicegroup_name=".$this->db->escape($group)." AND
+					sg.servicegroup_name=".$db->escape($group)." AND
 					ssg.servicegroup = sg.id AND
 					s.id=ssg.service AND
 					h.host_name=s.host_name AND
@@ -152,7 +153,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-			$result = $this->db->query($sql);
+			$result = $db->query($sql);
 			return $result;
 		}
 		return false;
