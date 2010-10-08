@@ -27,7 +27,7 @@ $label_next = html::image(
 <p class="pagination">
 	<?php $url = str_replace('&','&amp;',$url);	?>
 	<?php if ($previous_page): ?>
-		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="img"><?php echo $label_previous ?></a>
+		<a href="<?php echo str_replace('{page}', $previous_page, $url) ?>" class="img prevpage"><?php echo $label_previous ?></a>
 	<?php else: ?>
 		<?php echo $label_previous ?>
 	<?php endif ?>
@@ -93,7 +93,7 @@ $label_next = html::image(
 
 
 	<?php if ($next_page): ?>
-		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>" class="img"><?php echo $label_next ?></a>
+		<a href="<?php echo str_replace('{page}', $next_page, $url) ?>" class="img nextpage"><?php echo $label_next ?></a>
 	<?php else: ?>
 		<?php echo $label_next ?>
 	<?php endif ?>

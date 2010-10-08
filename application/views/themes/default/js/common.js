@@ -389,7 +389,73 @@ $(document).ready(function() {
 		$('#page_settings').hide();
 	});
 
+	// are we using keyboard commands or not
+	if (_keycommands_active) {
+		if (typeof _keycommand_forward != 'undefined' && _keycommand_forward != '') {
+			jQuery(document).bind('keydown', _keycommand_forward, function (evt){
+				if (typeof $('.nextpage').attr('href') != 'undefined') {
+					self.location.href=$('.nextpage').attr('href');
+				}
+				return false;
+			});
+		}
+
+		if (typeof _keycommand_back != 'undefined' && _keycommand_back != '') {
+			jQuery(document).bind('keydown', _keycommand_back, function (evt){
+				if (typeof $('.prevpage').attr('href') != 'undefined') {
+					self.location.href=$('.prevpage').attr('href');
+				}
+				return false;
+			});
+		}
+
+		if (typeof _keycommand_search != 'undefined' && _keycommand_search != '') {
+			jQuery(document).bind('keydown', _keycommand_search, function (evt){$('#query').focus(); return false; });
+		}
+
+		if (typeof _keycommand_pause != 'undefined' && _keycommand_pause != '') {
+			jQuery(document).bind('keydown', _keycommand_pause, function (evt){
+				toggle_refresh();
+				return false;
+			});
+		}
+	}
+
+	/**
+	*	Toggle page refresh and show a jGrowl message to user about state
+	*/
+	function toggle_refresh()
+	{
+		if ($("#ninja_refresh_control").attr('checked')) {
+			// restore previous refresh rate
+			ninja_refresh(old_refresh);
+			refresh_is_paused = false;
+			$('#ninja_refresh_lable').css('font-weight', '');
+			$("#ninja_refresh_control").attr('checked', false);
+
+			// inform user
+			$.jGrowl(_refresh_unpaused_msg, { header: _success_header });
+		} else {
+			// Prevent message from showing up when no pause is available
+			if ($("#ninja_page_refresh").html() == null) {
+				return false;
+			}
+
+			$("#ninja_refresh_control").attr('checked', true);
+			// save previous refresh rate
+			// to be able to restore it later
+			old_refresh = current_interval;
+			$('#ninja_refresh_lable').css('font-weight', 'bold');
+			ninja_refresh(0);
+			refresh_is_paused = true;
+
+			// inform user
+			$.jGrowl(_refresh_paused_msg, { header: _success_header });
+		}
+	}
+
 });
+
 
 /**
 *	Handle multi select of different actions

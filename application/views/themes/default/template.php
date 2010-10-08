@@ -38,6 +38,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.jgrowl.js');
 			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script('application/media/js/jquery.qtip.min.js');
+			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script($this->add_path('js/collapse_menu.js'));
 			echo html::script($this->add_path('js/global_search.js'));
 			echo html::script($this->add_path('js/pagination.js'));
@@ -76,6 +77,19 @@ if (isset($this->template->js_header))
 				var _command_empty_field = '<?php echo $this->translate->_("Field \'%s\' is required but empty"); ?>';
 				var _loading_str = '<?php echo $this->translate->_("Loading..."); ?>';
 				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
+				var _refresh_paused_msg='<?php echo $this->translate->_('Page refresh has been paused.') ?>';
+				var _refresh_unpaused_msg='<?php echo $this->translate->_('Page refresh has been restored.') ?>';
+			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
+
+					var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';
+					var _keycommand_search='<?php echo config::get('keycommands.search', '*', true); ?>';
+					var _keycommand_pause='<?php echo config::get('keycommands.pause', '*', true); ?>';
+					var _keycommand_forward='<?php echo config::get('keycommands.forward', '*', true); ?>';
+					var _keycommand_back='<?php echo config::get('keycommands.back', '*', true); ?>';
+			<?php 	} else { ?>
+					var _keycommands_active='0';
+			<?php 	} ?>
+
 				<?php
 					if (!empty($js_strings)) {
 						echo $js_strings;
