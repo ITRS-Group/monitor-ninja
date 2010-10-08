@@ -64,7 +64,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$type = urldecode($this->input->get('type', $type));
 		$noheader = urldecode($this->input->get('noheader', false));
 
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$note_model = new Notifications_Model();
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
@@ -126,7 +126,7 @@ class Notifications_Controller extends Authenticated_Controller {
 	{
 		$type = urldecode($this->input->get('type', false));
 		$noheader = urldecode($this->input->get('noheader', false));
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$note_model = new Notifications_Model($items_per_page, true, true);
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));

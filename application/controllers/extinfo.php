@@ -944,7 +944,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function _comments($host=false, $service=false, $type=false, $all=false, $items_per_page=false)
 	{
-		$items_per_page = !empty($items_per_page) ? $items_per_page : Kohana::config('pagination.default.items_per_page');
+		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
 		$host = trim($host);
 		$service = trim($service);
 		$type = trim($type);
@@ -1048,7 +1048,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function show_comments()
 	{
-		$items_per_page = $this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$this->template->content = $this->add_view('extinfo/all_comments');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -1280,7 +1280,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function scheduling_queue($sort_field='next_check', $sort_order='ASC')
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$back_link = '/extinfo/scheduling_queue/';
 
 		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);

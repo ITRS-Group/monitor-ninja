@@ -205,7 +205,7 @@ class Search_Controller extends Authenticated_Controller {
 		$limit = !empty($in_limit) ? $in_limit : false;
 		$items_per_page = urldecode($this->input->get('items_per_page', false));
 		$custom_limit = urldecode($this->input->get('custom_pagination_field', false));
-		$limit = empty($limit) ? Kohana::config('pagination.default.items_per_page') : $limit;
+		$limit = empty($limit) ? config::get('pagination.default.items_per_page', '*') : $limit;
 		$items_per_page = !empty($custom_limit) ? $custom_limit : $items_per_page;
 
 		foreach ($objects as $obj => $discard) {
@@ -377,18 +377,18 @@ class Search_Controller extends Authenticated_Controller {
 	{
 		$translate = zend::instance('Registry')->get('Zend_Translate');
 
-		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'search_help' => sprintf($translate->_("The search result is by default limited to %s rows (for each object type).
-					<br />Use limit=&lt;number&gt; (e.g limit=100) to change this or limit=0 to disable the limit entirely.<br /><br />
+			'search_help' => sprintf($translate->_("The search result is currently limited to %s rows (for each object type).
+					<br />To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to
+					disable the limit entirely.<br /><br />
 					You may also perform an AND search on hosts and services: 'h:web AND s:ping' will search for
 					all services called something like ping on hosts called something like web.<br />
 					Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail
 					in any of the searchable fields.<br />
 					Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br />
-					Use si:some_status to search for Status Information like some_status"), Kohana::config('pagination.default.items_per_page'))
+					Use si:some_status to search for Status Information like some_status"), config::get('pagination.default.items_per_page', '*'))
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

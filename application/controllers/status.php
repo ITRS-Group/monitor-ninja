@@ -44,7 +44,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = urldecode($this->input->get('host', $host));
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
@@ -244,7 +244,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = urldecode($this->input->get('name', $name));
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
 		$service_props = urldecode($this->input->get('serviceprops', $service_props));
@@ -573,7 +573,7 @@ class Status_Controller extends Authenticated_Controller {
 
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -764,7 +764,7 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function _group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
@@ -1400,7 +1400,7 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public function group_grid($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false)
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', Kohana::config('pagination.default.items_per_page'))); # @@@FIXME: should be configurable from GUI
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
 		$group = urldecode($this->input->get('group', $group));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
