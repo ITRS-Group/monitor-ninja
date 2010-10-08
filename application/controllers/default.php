@@ -234,6 +234,7 @@ class Default_Controller extends Ninja_Controller  {
 			return false;
 		}
 
+		$retval = 0;
 		if ($period_str === 'downtime') {
 			exec('/usr/bin/php '.$path.' recurring_downtime/check_schedules/ '.$user, $return);
 		} else {
