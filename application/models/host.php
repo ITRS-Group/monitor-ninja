@@ -661,7 +661,7 @@ class Host_Model extends Model {
 			$sql = $sql." ORDER BY ".$this->sort_field." ".$this->sort_order;
 
 		}
-		if ($this->count == false && $this->num_per_page !== false && $this->offset !== false) {
+		if ($this->count == false && !empty($this->num_per_page) && $this->offset !== false) {
 			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 		}
 		$result = $this->db->query($sql);
