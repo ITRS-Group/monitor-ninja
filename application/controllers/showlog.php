@@ -214,10 +214,13 @@ class Showlog_Controller extends Authenticated_Controller
 			}
 			$this->options[$obj_type] = $obj_name;
 		}
-		$this->options['hide_process'] = true;
-		$this->options['hide_initial'] = true;
-		$this->options['hide_commands'] = true;
-		$this->options['hide_notifications'] = true;
+
+		if (!isset($this->options['have_options'])) {
+			$this->options['hide_process'] = true;
+			$this->options['hide_initial'] = true;
+			$this->options['hide_commands'] = true;
+			$this->options['hide_notifications'] = true;
+		}
 
 		$auth = new Nagios_auth_Model();
 		$is_authorized = false;
