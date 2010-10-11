@@ -154,14 +154,18 @@ class Ninja_Controller extends Template_Controller {
 		$this->_global_notification_checks();
 
 		$items_per_page = arr::search($_GET, 'items_per_page');
-		$_GET['items_per_page'] = ($items_per_page !== false && $items_per_page < 0)
-			? ($items_per_page * -1)
-			: $items_per_page;
+		if ($items_per_page !== false) {
+			$_GET['items_per_page'] = ($items_per_page !== false && $items_per_page < 0)
+				? ($items_per_page * -1)
+				: $items_per_page;
+		}
 
 		$custom_per_page = arr::search($_GET, 'custom_pagination_field');
-		$_GET['custom_pagination_field'] = ($custom_per_page !== false && $custom_per_page < 0)
-			? ($custom_per_page * -1)
-			: $custom_per_page;
+		if ($custom_per_page !== false) {
+			$_GET['custom_pagination_field'] = ($custom_per_page !== false && $custom_per_page < 0)
+				? ($custom_per_page * -1)
+				: $custom_per_page;
+		}
 	}
 
 	/**
