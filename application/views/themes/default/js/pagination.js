@@ -74,6 +74,9 @@ function pagination_add_option(val)
 	if (isNaN(val)) {
 		return false;
 	}
+	if (val < 0) {
+		val = val*-1;
+	}
 	var entries_str = $('.pagination_entries_str').html();
 	$('.items_per_page').each(function() {
 		$(this).addOption(val, val + ' ' + entries_str);
