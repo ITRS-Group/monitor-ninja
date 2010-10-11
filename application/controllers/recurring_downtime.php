@@ -139,6 +139,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $id);
 
 		$schedule_info = false;
+		$data = false;
 		if ($this->schedule_id) {
 			# fetch info on current schedule
 			$schedule_res = ScheduleDate_Model::get_schedule_data($this->schedule_id);
