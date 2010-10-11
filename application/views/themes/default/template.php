@@ -247,7 +247,7 @@ if (isset($this->template->js_header))
 
 					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
 					if (is_array($settings_widgets)) {
-						echo '<li class="header">'.$this->translate->_('Availiable Widgets').'</li>'."\n";
+						echo '<li class="header">'.$this->translate->_('Available Widgets').'</li>'."\n";
 						foreach($settings_widgets as $id => $widget) {
 							if (isset($user_widgets) && is_array($user_widgets)) {
 								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
