@@ -83,7 +83,7 @@ fi
 %files
 %defattr(-,monitor,apache)
 %prefix
-/etc/cron.d/*
+%attr(644,root,root) /etc/cron.d/*
 /var/www/html/monitor
 /var/www/html/ninja
 
