@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS summary_config (
   PRIMARY KEY (id),
   KEY user (user)
 );
+
+INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');
