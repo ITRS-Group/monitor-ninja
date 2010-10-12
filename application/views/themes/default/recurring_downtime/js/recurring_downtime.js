@@ -17,7 +17,6 @@ $(document).ready(function() {
 		var nr_of_schedules = $('#table_' + type + ' tr').length - 2;
 
 		if (confirm(_confirm_delete_schedule)) {
-			alert('should delete id:' + this_id);
 			$.ajax({
 				url:_site_domain + _index_page + '/recurring_downtime/delete',
 				type: 'POST',
@@ -34,8 +33,6 @@ $(document).ready(function() {
 					}
 				}
 			});
-		} else {
-			alert('will not do anything with id: ' + this_id);
 		}
 		return false;
 	});
