@@ -87,8 +87,16 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * cache directory for temporary files (full path)
 	 */
-	define ('K_PATH_CACHE', '/tmp/');
+	# get a temporary name
+	$tempname = tempnam('/tmp', 'report');
 
+	# remove file created tempfile
+	unlink($tempname);
+
+	# create directory in /tmp with this name
+	exec('mkdir '.$tempname, $o);
+
+	define ('K_PATH_CACHE', $tempname);
 	/**
 	 * cache directory for temporary files (url path)
 	 */

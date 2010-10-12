@@ -3748,16 +3748,18 @@ class Reports_Controller extends Authenticated_Controller
 			}
 
 			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-			$subject = $this->translate->_('Scheduled report').": ".basename($filename);
+			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE, '', $filename);
 
 			# $mail_sent will contain the nr of mail sent - not used at the moment
 			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
 
 			# remove file from cache folder
 			unlink($filename);
+			rmdir(K_PATH_CACHE);
 			return $mail_sent;
 		}
 
+		rmdir(K_PATH_CACHE);
 		return true;
 	}
 
