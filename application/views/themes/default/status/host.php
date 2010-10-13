@@ -52,7 +52,7 @@
 							echo ($n == 3 ? '<th class="no-sort">'.$t->_('Actions').'</th>' : '')."\n";
 							echo '<th '.($row['title'] == 'Host' ? 'colspan="2"' : '').' class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
 								'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? str_replace('&','&amp;',$row['url_desc']) : ((isset($row['url_asc']) && $order == 'DESC') ? str_replace('&','&amp;',$row['url_asc']) : '')).'\'">'."\n";
-							echo ($n == 1 ? '' : $row['title']);
+							echo ($n == 1 ? '<em>'.$row['title'].'</em>' : $row['title']);
 							echo '</th>'."\n";
 						}
 					}
@@ -74,7 +74,7 @@ foreach ($result as $row) {
 	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?>">&nbsp;</td>
+				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?> small"><em><?php echo Current_status_Model::status_text($row->current_state); ?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)); ?></div>
