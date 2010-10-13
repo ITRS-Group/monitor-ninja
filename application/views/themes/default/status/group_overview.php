@@ -52,7 +52,7 @@
 				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($group->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
 			<tr>
-				<th>&nbsp;</th>
+				<th><em><?php echo $this->translate->_('Status');?></em></th>
 				<th class="item_select">&nbsp;</th>
 				<th colspan="2"><?php echo $lable_host ?></th>
 				<th class="no-sort"><?php echo $lable_services ?></th>
@@ -61,7 +61,7 @@
 			<?php $i=0; if (!empty($group->hostinfo))
 				foreach ($group->hostinfo as $host => $details) { ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl <?php echo strtolower($details['state_str']); ?>">&nbsp;</td>
+				<td class="icon bl <?php echo strtolower($details['state_str']); ?>"><em><?php echo $details['state_str'];?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host); ?></td>
 				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
 				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
@@ -92,12 +92,12 @@
 	else { ?>
 		<table class="group_overview_table">
 			<thead>
-			<tr>
-				<th>&nbsp;</th>
-				<th><?php echo $lable_host ?></th>
-				<th class="no-sort"><?php echo $lable_services ?></th>
-				<th class="no-sort"><?php echo $lable_actions ?></th>
-			</tr>
+				<tr>
+					<th>&nbsp;</th>
+					<th><?php echo $lable_host ?></th>
+					<th class="no-sort"><?php echo $lable_services ?></th>
+					<th class="no-sort"><?php echo $lable_actions ?></th>
+				</tr>
 			</thead>
 			<tbody>
 			<tr class="even">
