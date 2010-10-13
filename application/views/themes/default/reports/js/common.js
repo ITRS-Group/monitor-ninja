@@ -469,19 +469,8 @@ Image1.src = _site_domain + '/application/media/images/loading.gif';
 *	Show a progress indicator to inform user that something
 *	is happening...
 */
-function show_progress(the_id, info_str)
-{
-	var position = $('#sel_report_type').offset();
-	if (position.left) {
-		// try to position progress image so it doesn't cover anything
-		$("#" + the_id)
-			.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
-			.show();
-	} else {
-		$("#" + the_id)
-			.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
-			.show();
-	}
+function show_progress(the_id, info_str) {
+	$("#" + the_id).html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>').show();
 }
 
 function get_members(val, type, no_erase) {
