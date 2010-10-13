@@ -3,9 +3,8 @@ $label_na = $this->translate->_('N/A');
 ?>
 
 <div class="widget left w98" id="search_result">
-	<!--<p><strong><?php echo $this->translate->_('Search result for'); ?> &quot;<?php echo $query ?>&quot;</strong>:</p>-->
 <?php echo help::render('search_help') ?>&nbsp;
-<?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong>';
+<?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong><br><br>';
 # show host data if available
 if (isset($host_result) ) {
 	if (isset($host_pagination)) {?><div id="host_pagination"><?php echo $host_pagination ?></div><?php } ?>
@@ -13,7 +12,7 @@ if (isset($host_result) ) {
 <table id="host_table">
 	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
 	<tr>
-		<th class="header">&nbsp;</th>
+		<th class="header"><em><?php echo $this->translate->_('Status'); ?></em></th>
 		<th class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="no-sort"><?php echo $this->translate->_('Actions'); ?></th>
@@ -24,7 +23,7 @@ if (isset($host_result) ) {
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
-		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state)); ?>">&nbsp;</td>
+		<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($host->current_state)); ?>"><em><?php echo Current_status_Model::status_text($host->current_state); ?></em></td>
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$host->host_name, $host->host_name) ?></div>
@@ -135,12 +134,12 @@ if (isset($service_result) ) {
 	foreach ($service_result as $service) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
-		<td class="bl icon"><?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($service->host_state)).'.png'),array('alt' => Current_status_Model::status_text($service->host_state), 'title' => $this->translate->_('Host status').': '.Current_status_Model::status_text($service->host_state))); ?></td>
+		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state); ?></em></td>
 		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, 'service')); ?>">&nbsp;</td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($service->current_state, 'service')); ?>"><em><?php echo Current_status_Model::status_text($service->current_state, 'service'); ?></em></td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
 		<td><span style="float: left">
 			<?php echo html::anchor('/extinfo/details/service/'.$service->host_name.'?service='.urlencode($service->service_description), $service->service_description) ?></span>
