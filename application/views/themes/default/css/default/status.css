@@ -40,7 +40,44 @@ tr.odd td.pending em {
 	display: none
 }
 
+/* extinfo etc. **************************************************************/
+
+span.status-up,
+span.status-ok,
+.active,
+.enabled,
+.downtime-no,
+.flap-no,
+.yes {
+	background: url(../../icons/12x12/shield-ok.png) no-repeat; /* shield-green */
+	padding-left: 15px;
+}
+
+span.status-down,
+span.status-critical,
+.no
+.flap-yes,
+.downtime-yes,
+.disabled,
+.passive {
+	background: url(../../icons/12x12/shield-down.png) no-repeat; /* shield-red */
+	padding-left: 15px;
+}
+
+span.status-warning,
+span.status-unreachable {
+	background: url(../../icons/12x12/shield-warning.png) no-repeat; /* shield-yellow */
+	padding-left: 15px;
+}
+
+span.status-unknown {
+	background: url(../../icons/12x12/shield-unknown.png) no-repeat; /* shield-yellow */
+	padding-left: 15px;
+}
+
+
 /* 12x12 *******************************************************************/
+
 td.status.icon.ok,
 td.status.icon.up,
 tr.even td.small,
