@@ -834,6 +834,11 @@ tr.odd td.w80 { width: 80px; border-right: 0px;  }
 	text-decoration: none;
 	border-bottom: 1px dotted #777777;
 }
+tr.no-result td {
+	background: none;
+	font-style: italic;
+	padding: 0px;
+}
 th a { border-bottom: 0px; }
 img { border-bottom: 0px; }
 a > img { border: 0px; }
@@ -975,7 +980,7 @@ th.item_select {
 	margin-bottom: 10px
 }
 
-/* widget thihngys  *******************************************************************************/
+/* widget thingy  ********************************************************************************/
 #widget-tac_hosts table tr th,
 #widget-tac_services table tr th,
 #widget-tac_monfeat table tr th {
@@ -1520,6 +1525,14 @@ select {
 	position: relative;
 	float: right;
 	margin-bottom: -2px;
+}
+
+hr {
+	border: 0px;
+	height: 1px;
+	background-color: #cdcdcd;
+	color: #cdcdcd;
+	margin-bottom: 15px;
 }
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
