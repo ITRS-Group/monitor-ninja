@@ -196,3 +196,8 @@ tr.even td.pending.large,
 tr.odd td.pending.large {
 	background-image: url(../../icons/32x32/shield-pending.png); /* shield-grey */
 }
+
+.status-default {
+	margin-bottom: -2px;
+	margin-right: 5px;
+}
