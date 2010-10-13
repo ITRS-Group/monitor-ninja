@@ -975,6 +975,12 @@ th.item_select {
  border-right: 0px !important;
 }
 
+/* the tabled within the help pop-ups */
+.qtip tr td {
+	background: none;
+	vertical-align: top;
+}
+
 #group_summary_table {
 	margin-top: 30px;
 	margin-bottom: 10px
