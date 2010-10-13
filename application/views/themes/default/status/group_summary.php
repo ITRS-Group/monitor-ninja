@@ -58,13 +58,13 @@
 					<?php
 						if ($details->hosts_up > 0) {
 							# @@@FIXME: host_properties?
-							echo html::image($this->add_path('icons/12x12/shield-up.png'), array('alt' => $label_up, 'title' => $label_up, 'style' => 'margin-bottom: -2px'));
-							echo ' &nbsp;'.html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?hoststatustypes='.nagstat::HOST_UP.'&hostprops=0&style=detail', $details->hosts_up.' '.$label_up, array('class' => 'status-up')).'<br />';
+							echo html::image($this->add_path('icons/12x12/shield-up.png'), array('alt' => $label_up, 'title' => $label_up, 'class' => 'status-default'));
+							echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?hoststatustypes='.nagstat::HOST_UP.'&hostprops=0&style=detail', $details->hosts_up.' '.$label_up, array('class' => 'status-up')).'<br />';
 						}
 						if($details->hosts_down > 0) {
 							# @@@FIXME: host_properties?
-							echo html::image($this->add_path('icons/12x12/shield-down.png'), array('alt' => $label_down, 'title' => $label_down, 'style' => 'margin-bottom: -2px'));
-							echo ' &nbsp;'.html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_down.' '.$label_down, array('class' => 'status-down')).': ';
+							echo html::image($this->add_path('icons/12x12/shield-down.png'), array('alt' => $label_down, 'title' => $label_down, 'class' => 'status-default'));
+							echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_down.' '.$label_down, array('class' => 'status-down')).': ';
 							$c = 0;
 							if ($details->hosts_down_unhandled > 0) {
 								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_down_unhandled.' '.$label_unhandled);
@@ -87,8 +87,8 @@
 
 						if($details->hosts_unreachable > 0){
 							# @@@FIXME: host_properties?
-							echo html::image($this->add_path('icons/12x12/shield-unreachable.png'), array('alt' => $label_unreachable, 'title' => $label_unreachable, 'style' => 'margin-bottom: -2px'));
-							echo ' &nbsp;'.html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_unreachable.' '.$label_unreachable, array('class' => 'status-unreachable')).': ';
+							echo html::image($this->add_path('icons/12x12/shield-unreachable.png'), array('alt' => $label_unreachable, 'title' => $label_unreachable, 'class' => 'status-default'));
+							echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_DOWN, $details->hosts_unreachable.' '.$label_unreachable, array('class' => 'status-unreachable')).': ';
 							$c = 0;
 							if ($details->hosts_unreachable_unhandled > 0) {
 								echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED), $details->hosts_unreachable_unhandled.' '.$label_unhandled);
@@ -111,7 +111,7 @@
 
 						if($details->hosts_pending > 0) {
 							# @@@FIXME: host_properties?
-							echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+							echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => $label_pending, 'title' => $label_pending, 'class' => 'status-default'));
 							echo html::anchor('status/'.$grouptype.'/'.urlencode($details->groupname).'?group_type='.$grouptype.'group&style=detail&hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED, $details->hosts_pending.' '.$label_pending, array('class' => 'status-pending'));
 						} ?>
 					</td>
@@ -119,12 +119,14 @@
 					<td style="line-height: 20px; white-space: normal">
 						<?php
 							if ($details->services_ok > 0) {
-								echo html::image($this->add_path('icons/12x12/shield-ok.png'), array('alt' => $label_ok, 'title' => $label_ok, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+								echo html::image($this->add_path('icons/12x12/shield-ok.png'), array('alt' => $label_ok, 'title' => $label_ok, 'class' => 'status-default'));
 								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties.'&style=detail', $details->services_ok.' '.$label_ok, array('class' => 'status-ok')).'<br />';
 							}
 
 							if ($details->services_warning > 0) {
-								echo html::image($this->add_path('icons/12x12/shield-warning.png'), array('alt' => $label_warning, 'title' => $label_warning, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+								echo html::image($this->add_path('icons/12x12/shield-warning.png'), array('alt' => $label_warning, 'title' => $label_warning, 'class' => 'status-default'));
+								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_warning.' '.$label_warning, array('class' => 'status-warning')).': ';
+
 								$c = 0;
 								if ($details->services_warning_unhandled > 0) {
 									echo ($c != 0 ? ', ' : '').html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=detail&servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&serviceprops='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED), $details->services_warning_unhandled.' '.$label_unhandled);
@@ -150,7 +152,7 @@
 							}
 
 							if ($details->services_unknown > 0) {
-								echo html::image($this->add_path('icons/12x12/shield-unknown.png'), array('alt' => $label_unknown, 'title' => $label_unknown, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+								echo html::image($this->add_path('icons/12x12/shield-unknown.png'), array('alt' => $label_unknown, 'title' => $label_unknown, 'class' => 'status-default'));
 								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_unknown.' '.$label_unknown, array('class' => 'status-unknown')).': ';
 
 								$c = 0;
@@ -178,7 +180,7 @@
 							}
 
 							if ($details->services_critical > 0) {
-								echo html::image($this->add_path('icons/12x12/shield-critical.png'), array('alt' => $label_critical, 'title' => $label_critical, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+								echo html::image($this->add_path('icons/12x12/shield-critical.png'), array('alt' => $label_critical, 'title' => $label_critical, 'class' => 'status-default'));
 								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&serviceprops='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_critical.' '.$label_critical, array('class' => 'status-critical')).': ';
 
 								$c = 0;
@@ -206,7 +208,7 @@
 							}
 
 							if ($details->services_pending > 0) {
-								echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => $label_pending, 'title' => $label_pending, 'style' => 'margin-bottom: -2px')).' &nbsp;';
+								echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => $label_pending, 'title' => $label_pending, 'class' => 'status-default'));
 								echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=detail&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&serviceproperties='.$serviceproperties.'&hostproperties='.$hostproperties, $details->services_pending.' '.$label_pending, array('class' => 'status-pending'));
 							}
 
