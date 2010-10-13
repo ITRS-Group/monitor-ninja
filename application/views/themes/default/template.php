@@ -209,8 +209,8 @@ if (isset($this->template->js_header))
 							// local external links
 							elseif($url[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
 								echo '<li class="'.html::specialchars($header).'">'.
-									  '<a href="'.$url[0].'"'.($url[1] == 'manual' ? '' : ' target="_blank"').'>'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
-									  '<a href="'.$url[0].'"'.($url[1] == 'manual' ? '' : ' target="_blank"').' class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
+									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
+									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
 							}
 							// ninja external links
 							elseif ($url[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
