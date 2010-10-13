@@ -1,3 +1,5 @@
+td.status.icon.ok,
+td.status.icon.up,
 tr.even td.ok,
 tr.odd td.ok,
 tr.even td.up,
@@ -18,13 +20,37 @@ tr.odd td.pending {
 	background-repeat: no-repeat;
 }
 
+tr th em,
+tr.even td.ok em,
+tr.odd td.ok em,
+tr.even td.up em,
+tr.odd td.up em,
+tr.even td.critical em,
+tr.odd td.critical em,
+tr.even td.down em,
+tr.odd td.down em,
+tr.even td.warning em,
+tr.odd td.warning em,
+tr.even td.unreachable em,
+tr.odd td.unreachable em,
+tr.even td.unknown em,
+tr.odd td.unknown em,
+tr.even td.pending em,
+tr.odd td.pending em {
+	display: none
+}
+
 /* 12x12 *******************************************************************/
+td.status.icon.ok,
+td.status.icon.up,
 tr.even td.small,
 tr.odd td.small {
 	height: 16px;
 	width: 12px;
 }
 
+td.status.icon.ok,
+td.status.icon.up,
 tr.even td.ok.small,
 tr.odd td.ok.small,
 tr.even td.up.small,
@@ -56,6 +82,9 @@ tr.odd td.pending.small {
 	background-image: url(../../icons/12x12/shield-pending.png); /* shield-grey */
 }
 
+td.status.icon.info {
+	background-image: url(../../icons/12x12/shield-info.png); /* shield-blue */
+}
 
 /* 16x16 *******************************************************************/
 
