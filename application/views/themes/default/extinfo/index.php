@@ -145,8 +145,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($current_status_str).'.png'), array('alt' => $current_status_str, 'style' => 'margin-bottom: -2px; margin-right: 2px'));?>
-				<?php echo ucfirst(strtolower($current_status_str)) ?>
+				<span class="status-<?php echo strtolower($current_status_str) ?>"><?php echo ucfirst(strtolower($current_status_str)) ?></span>
 				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : $na_str ?>)
 			</td>
 		</tr>
@@ -169,8 +168,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td class="dark"><?php echo $lable_check_type ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($check_type).'.png'),array('alt' => $check_type, 'style' => 'margin-bottom: -2px; margin-right: 2px'));?>
-				<?php echo ucfirst(strtolower($check_type)) ?>
+				<span class="<?php echo strtolower($check_type) ?>"><?php echo ucfirst(strtolower($check_type)) ?></span>
 			</td>
 		</tr>
 		<tr>
@@ -192,15 +190,13 @@ if (!empty($widgets)) {
 		<tr>
 			<td class="dark"><?php echo $lable_flapping ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/flapping-'.str_replace('/','',strtolower($flap_value)).'.png'),$flap_value);?>
-				<?php echo ucfirst(strtolower($flap_value)).' '.$percent_state_change_str; ?>
+				<span class="flap-<?php echo strtolower($flap_value); ?>"><?php echo ucfirst(strtolower($flap_value)).'</span> '.$percent_state_change_str; ?>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_in_scheduled_dt ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/sched-downtime-'.strtolower($scheduled_downtime_depth).'.png'),$scheduled_downtime_depth);?>
-				<?php echo ucfirst(strtolower($scheduled_downtime_depth)) ?>
+				<span class="downtime-<?php echo strtolower($scheduled_downtime_depth); ?>"><?php echo ucfirst(strtolower($scheduled_downtime_depth)) ?></span>
 			</td>
 		</tr>
 		<tr>
@@ -210,43 +206,37 @@ if (!empty($widgets)) {
 		<tr>
 			<td  class="dark" style="width: 160px"><?php echo $lable_active_checks ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($active_checks_enabled).'.png'),$active_checks_enabled);?>
-				<?php echo ucfirst(strtolower($active_checks_enabled)) ?>
+				<span class="<?php echo strtolower($active_checks_enabled); ?>"><?php echo ucfirst(strtolower($active_checks_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_passive_checks ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($passive_checks_enabled).'.png'),$passive_checks_enabled);?>
-				<?php echo ucfirst(strtolower($passive_checks_enabled)) ?>
+				<span class="<?php echo strtolower($passive_checks_enabled); ?>"><?php echo ucfirst(strtolower($passive_checks_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_obsessing ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($obsessing).'.png'),$obsessing);?>
-				<?php echo ucfirst(strtolower($obsessing)) ?>
+				<span class="<?php echo strtolower($obsessing); ?>"><?php echo ucfirst(strtolower($obsessing)) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_notifications ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($notifications_enabled).'.png'),$notifications_enabled);?>
-				<?php echo ucfirst(strtolower($notifications_enabled)) ?>
+				<span class="<?php echo strtolower($notifications_enabled); ?>"><?php echo ucfirst(strtolower($notifications_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_event_handler ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($event_handler_enabled).'.png'),$event_handler_enabled);?>
-				<?php echo ucfirst(strtolower($event_handler_enabled)) ?>
+				<span class="<?php echo strtolower($event_handler_enabled); ?>"><?php echo ucfirst(strtolower($event_handler_enabled)) ?></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_flap_detection ?></td>
 			<td>
-				<?php echo html::image($this->add_path('icons/12x12/shield-'.strtolower($flap_detection_enabled).'.png'),$flap_detection_enabled);?>
-				<?php echo ucfirst(strtolower($flap_detection_enabled)) ?>
+				<span class="<?php echo strtolower($flap_detection_enabled); ?>"><?php echo ucfirst(strtolower($flap_detection_enabled)) ?></span>
 			</td>
 		</tr>
 	</table>
