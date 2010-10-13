@@ -5,7 +5,7 @@
 		<caption><?php echo $title ?></caption>
 		<thead>
 			<tr>
-				<th class="headerNone">&nbsp;</th>
+				<th class="headerNone"><em>Status</em></th>
 				<th class="headerNone"><?php echo $label_host ?></th>
 				<th class="headerNone" style="width: 57px"><?php echo $label_notes ?></th>
 				<th class="headerNone"><?php echo $label_severity ?></th>
@@ -24,7 +24,7 @@
 			?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 				<td class="icon <?php echo strtolower(Current_status_Model::status_text($details['current_state'])); ?>">
-					&nbsp;<?php //echo html::image($this->add_path('icons/16x16/shield-'.strtolower(Current_status_Model::status_text($details['current_state'])).'.png'),array('alt' => Current_status_Model::status_text($details['current_state']), 'title' => Current_status_Model::status_text($details['current_state']))) ?>
+					<em><?php echo Current_status_Model::status_text($details['current_state']) ?></em>
 				</td>
 				<td><?php echo html::anchor('extinfo/details/host/'.$host, $host) ?></td>
 				<td class="icon">
