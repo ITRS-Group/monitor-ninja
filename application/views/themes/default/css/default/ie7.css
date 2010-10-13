@@ -30,3 +30,9 @@ select {
 p.pagination { padding-top: 3px;}
 #extinfo_info,#nagios_commands { padding-left: 1%;}
 #filters{height: 130px;}
+
+#page_links {
+	margin-top: 1px;
+	margin-left: -1%;
+	width: 101%;
+}
