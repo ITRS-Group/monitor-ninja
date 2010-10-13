@@ -68,8 +68,8 @@
 				<td>
 					<?php if (!empty($group->service_states[$host]))
 						foreach ($group->service_states[$host] as $svc_state) {
-							echo html::image($this->add_path('icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png'), array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'style' => 'margin-bottom: -2px'));
-							echo '&nbsp; '.strtolower(ucfirst($svc_state['status_link'])).' &nbsp; ';
+							echo html::image($this->add_path('icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png'), array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'class' => 'status-default'));
+							echo strtolower(ucfirst($svc_state['status_link'])).' &nbsp; ';
 						}
 					?>
 				</td>
