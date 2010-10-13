@@ -30,36 +30,31 @@
 	<tr>
 		<td class="dark"><?php echo $lable_notifications_enabled ?></td>
 		<td>
-			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($notifications_str).'.png'),$notifications_str);?>
-			<?php echo ucfirst(strtolower($notifications_str)) ?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($notifications_str).'.png'), array('title' => $notifications_str, 'alt' => '', 'class' => 'status-default'));?><span class="<?php echo strtolower($notifications_str); ?>"><?php echo ucfirst(strtolower($notifications_str)) ?></span>
 		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_service_checks ?> </td>
 		<td>
-			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($servicechecks_str).'.png'),$servicechecks_str);?>
-			<?php echo ucfirst(strtolower($servicechecks_str)) ?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($servicechecks_str).'.png'), array('title' => $servicechecks_str, 'alt' => '', 'class' => 'status-default'));?><span class="<?php echo strtolower($servicechecks_str); ?>"><?php echo ucfirst(strtolower($servicechecks_str)) ?></span>
 		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_service_checks_passive ?></td>
 		<td>
-			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_servicechecks_str).'.png'),$passive_servicechecks_str);?>
-			<?php echo ucfirst(strtolower($passive_servicechecks_str)) ?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_servicechecks_str).'.png'), array('title' => $passive_servicechecks_str, 'alt' => '', 'class' => 'status-default'));?><span class="<?php echo strtolower($passive_servicechecks_str); ?>"><?php echo ucfirst(strtolower($passive_servicechecks_str)) ?></span>
 		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_host_checks ?></td>
 		<td>
-			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($hostchecks_str).'.png'),$hostchecks_str);?>
-			<?php echo ucfirst(strtolower($hostchecks_str)) ?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($hostchecks_str).'.png'), array('title' => $hostchecks_str, 'alt' => '', 'class' => 'status-default'));?><span class="<?php echo strtolower($hostchecks_str); ?>"><?php echo ucfirst(strtolower($hostchecks_str)) ?></span>
 		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_host_checks_passive ?></td>
 		<td>
-			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_hostchecks_str).'.png'),$passive_hostchecks_str);?>
-			<?php echo ucfirst(strtolower($passive_hostchecks_str)) ?>
+			<?php echo html::image($this->add_path('icons/12x12/'.strtolower($passive_hostchecks_str).'.png'), array('title' => $passive_hostchecks_str, 'alt' => '', 'class' => 'status-default'));?><span class="<?php echo strtolower($passive_hostchecks_str); ?>"><?php echo ucfirst(strtolower($passive_hostchecks_str)) ?></span>
 		</td>
 	</tr>
 	<tr>

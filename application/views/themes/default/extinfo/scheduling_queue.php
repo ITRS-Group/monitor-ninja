@@ -47,12 +47,7 @@
 					}
 				?>
 			</td>
-			<td>
-				<?php
-					echo html::image($this->add_path('icons/16x16/shield-'.($row->active_checks_enabled == true ? 'ok' : 'error').'.png'), array('alt' => 'Enabled', 'title' => 'Enabled', 'style' => 'float: left')).' &nbsp;';
-					echo $row->active_checks_enabled == true ? $this->translate->_('ENABLED') : $this->translate->_('DISABLED');
-				?>
-			</td>
+			<td><span class="<?php echo ($row->active_checks_enabled == true ? 'enabled' : 'disabled');?>"><?php	echo $row->active_checks_enabled == true ? $this->translate->_('ENABLED') : $this->translate->_('DISABLED');?></span></td>
 			<td class="icon">
 				<?php
 					if ($row->active_checks_enabled == true)
