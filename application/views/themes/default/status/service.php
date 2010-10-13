@@ -40,7 +40,7 @@
 <table style="margin-bottom: 2px" id="service_table">
 <caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a></caption>
 		<tr>
-			<th>&nbsp;</th>
+			<th><em><?php echo $this->translate->_('Status'); ?></em></th>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
@@ -54,7 +54,7 @@
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
 							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'\'">';
 
-						echo ($n == 2 ? '' : $row['title']);
+						echo ($n == 2 ? '<em>'.$row['title'].'</em>' : $row['title']);
 						echo '</th>';
 					}
 				}
@@ -72,7 +72,7 @@ $c=0;
 			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>>&nbsp;</td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>><em><?php echo Current_status_Model::status_text($row->host_state); ?></em></td>
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name)) ?></span>
@@ -100,7 +100,7 @@ $c=0;
 		<?php } else { $c = 0;?>
 			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>">&nbsp;</td>
+		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>"><em><?php echo Current_status_Model::status_text($row->current_state, 'service'); ?></em></td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></td>
 		<td style="white-space: normal">
 			<span style="float: left">
