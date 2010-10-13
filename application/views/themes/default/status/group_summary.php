@@ -45,8 +45,8 @@
 		<tbody>
 			<?php $i=0; foreach ($group_details as $details) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'?>">
-				<td class="bl">
-					<?php echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=overview', $details->alias) ?>
+				<td class="bl" style="white-space: normal">
+					<?php echo html::anchor('status/'.$grouptype.'group/'.urlencode($details->groupname).'?style=overview', $details->alias) ?><br />
 					(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.urlencode($details->groupname), $details->groupname) ?>)
 				</td>
 				<td class="icon">
@@ -54,7 +54,7 @@
 						echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($details->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));
 					?>
 				</td>
-				<td style="line-height: 20px">
+				<td style="line-height: 20px; white-space: normal">
 					<?php
 						if ($details->hosts_up > 0) {
 							# @@@FIXME: host_properties?
@@ -116,7 +116,7 @@
 						} ?>
 					</td>
 
-					<td style="line-height: 20px">
+					<td style="line-height: 20px; white-space: normal">
 						<?php
 							if ($details->services_ok > 0) {
 								echo html::image($this->add_path('icons/12x12/shield-ok.png'), array('alt' => $label_ok, 'title' => $label_ok, 'style' => 'margin-bottom: -2px')).' &nbsp;';
