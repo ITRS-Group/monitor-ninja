@@ -611,3 +611,25 @@ input#summary_items{
 tr.none td#scheduled_btn_ctrl {
 	padding-top: 7px;
 }
+
+.iseditable_txtarea {
+	width: 80%;
+}
+
+td.iseditable input {
+	width: auto;
+	display: block;
+	margin-bottom: 5px;
+}
+
+td.report_name select,
+td.period_select select {
+	width: auto;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.txtarea textarea {
+	display: block;
+	margin-bottom: 5px;
+}
