@@ -44,6 +44,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = urldecode($this->input->get('host', $host));
+		$page = urldecode($this->input->get('page', false));
 		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
@@ -224,6 +225,9 @@ class Status_Controller extends Authenticated_Controller {
 		# fetch all comments to be able to detect if we should display comment icon
 		$host_comments = Comment_Model::count_comments_by_object();
 		$this->template->content->host_comments = $host_comments;
+		$this->template->content->items_per_page = $items_per_page;
+		$this->template->content->page = $page;
+
 
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
@@ -244,6 +248,7 @@ class Status_Controller extends Authenticated_Controller {
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = urldecode($this->input->get('name', $name));
+		$page = urldecode($this->input->get('page', false));
 		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
 		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
@@ -513,6 +518,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		$svc_comments = Comment_Model::count_comments_by_object(true);
 		$this->template->content->comments = $svc_comments;
+		$this->template->content->items_per_page = $items_per_page;
+		$this->template->content->page = $page;
 
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
