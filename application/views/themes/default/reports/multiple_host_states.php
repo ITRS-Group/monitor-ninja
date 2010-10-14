@@ -22,8 +22,9 @@
 		}
 	}
 	?>
+<?php echo ($create_pdf) ? '<p>&nbsp;</p>' : '';?>
 <?php foreach ($multiple_states as $data) { ?>
-		<table summary="<?php echo $t->_('Host state breakdown') ?>" id="multiple_hosts"<?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : '';?>>
+		<table summary="<?php echo $t->_('Host state breakdown') ?>" id="multiple_hosts"<?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd;" cellpadding="5"' : '';?>>
 			<tr>
 				<th <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 90%"';?>><?php echo ((!$create_pdf) ? help::render('hostgroup_breakdown') : '').' '.(!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
 				<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Up') ?></th>

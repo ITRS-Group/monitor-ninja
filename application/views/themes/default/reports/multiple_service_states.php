@@ -24,6 +24,7 @@
 		}
 	}
 	?>
+	<?php echo ($create_pdf) ? '<p>&nbsp;</p>' : '';?>
 <?php
 	$sg_no = 0;
 	$prev_host = false;
