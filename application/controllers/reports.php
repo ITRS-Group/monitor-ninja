@@ -915,12 +915,24 @@ class Reports_Controller extends Authenticated_Controller
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
 				if ($key == 'host_filter_status') {
-					$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
-					$host_filter_status = self::_create_filter_array($value,'host' );
+					if (!is_array($value)) { // if already serialized
+						$report_options[$key] = $value;
+						$host_filter_status = unserialize($value);
+					}
+					else {
+						$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
+						$host_filter_status = self::_create_filter_array($value,'host' );
+					}
 				}
 				elseif ($key == 'service_filter_status') {
-					$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
-					$service_filter_status = self::_create_filter_array($value,'service');
+					if (!is_array($value)) { // if already serialized
+						$report_options[$key] = $value;
+						$service_filter_status = unserialize($value);
+					}
+					else {
+						$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
+						$service_filter_status = self::_create_filter_array($value,'service');
+					}
 				}
 				else
 					$report_options[$key] = $value;
