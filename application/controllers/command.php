@@ -99,7 +99,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			$param['_force'] = $this->cb('Force Check');
+			$param['_force'] = $this->cb($this->translate->_('Force Check'));
 			break;
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
@@ -107,46 +107,46 @@ class Command_Controller extends Authenticated_Controller
 			$param['_perfdata'] = array
 				('type' => 'string',
 				 'size' => 100,
-				 'name' => 'Performance data');
+				 'name' => $this->translate->_('Performance data'));
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
 			$param['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
-				 ('none' => 'Do nothing',
-				  'triggered' => 'Schedule triggered downtime',
-				  'fixed' => 'Schedule fixed downtime'),
+				 ('none' => $this->translate->_('Do nothing'),
+				  'triggered' => $this->translate->_('Schedule triggered downtime'),
+				  'fixed' => $this->translate->_('Schedule fixed downtime')),
 				 'default' => 'triggered',
-				 'name' => 'Child Hosts');
+				 'name' => $this->translate->_('Child Hosts'));
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			$param['_services-too'] = $this->cb('Schedule downtime for services too');
+			$param['_services-too'] = $this->cb($this->translate->_('Schedule downtime for services too'));
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
 		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
-			$param['_broadcast'] = $this->cb('Broadcast');
-			$param['_force'] = $this->cb('Force notification');
-			$param['_increment'] = $this->cb('Increment notification number');
+			$param['_broadcast'] = $this->cb($this->translate->_('Broadcast'));
+			$param['_force'] = $this->cb($this->translate->_('Force notification'));
+			$param['_increment'] = $this->cb($this->translate->_('Increment notification number'));
 			break;
 
 		 case 'ENABLE_HOST_SVC_CHECKS':
 		 case 'DISABLE_HOST_SVC_CHECKS':
-			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
-			$param['_host-too'] = $this->cb($en_dis . ' checks for host too');
+			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
+			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis));
 			break;
 
 		 case 'ENABLE_HOST_CHECK':
 		 case 'DISABLE_HOST_CHECK':
-			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
-			$param['_services-too'] = $this->cb($en_dis . ' checks for services too');
+			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
+			$param['_services-too'] = $this->cb(sprintf($this->translate->_('%s checks for services too'), $en_dis));
 			break;
 
 		 case 'ENABLE_HOST_SVC_NOTIFICATIONS':
 		 case 'DISABLE_HOST_SVC_NOTIFICATIONS':
-			$en_dis = $cmd{0} === 'E' ? 'Enable' : 'Disable';
-			$param['_host-too'] = $this->cb($en_dis . ' notifications for host too');
+			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
+			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis));
 			break;
 
 		}
