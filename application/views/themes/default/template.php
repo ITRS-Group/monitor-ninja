@@ -10,6 +10,8 @@ if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 
+# fetch info on current skin
+$current_skin = config::get('config.current_skin', '*', true);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -17,9 +19,9 @@ if (isset($this->template->js_header))
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'common.css') ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'status.css') ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.Kohana::config('config.current_skin').'print.css') ?>" media="print" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'common.css') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'status.css') ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'print.css') ?>" media="print" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css') ?>" />
