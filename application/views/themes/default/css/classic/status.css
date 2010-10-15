@@ -1,0 +1,157 @@
+td.status.icon.ok,
+td.status.icon.up,
+td.status.icon.critical,
+td.status.icon.down,
+td.status.icon.warning,
+td.status.icon.info,
+td.status.icon.unreachable,
+td.status.icon.unknown,
+td.status.icon.pending,
+tr.even td.ok,
+tr.odd td.ok,
+tr.even td.up,
+tr.odd td.up,
+tr.even td.critical,
+tr.odd td.critical,
+tr.even td.down,
+tr.odd td.down,
+tr.even td.warning,
+tr.odd td.warning,
+tr.even td.unreachable,
+tr.odd td.unreachable,
+tr.even td.unknown,
+tr.odd td.unknown,
+tr.even td.pending,
+tr.odd td.pending {
+	color: #ffffff;
+	text-align: left;
+	background-image: url(images/bg-dark.png);
+	background-repeat: repeat-x;
+}
+
+.active,
+.enabled,
+.flap-no,
+.downtime-no,
+.yes,
+.status-ok,
+.status-up,
+td.status.icon.ok,
+td.status.icon.up,
+tr.even td.ok,
+tr.odd td.ok,
+tr.even td.up,
+tr.odd td.up {
+	background-color: #55a600; /* green */
+}
+
+.passive,
+.disabled,
+.flap-yes,
+.downtime-yes,
+.no,
+.status-critical,
+.status-down,
+.status-outages,
+td.status.icon.critical,
+td.status.icon.down,
+tr.even td.critical,
+tr.odd td.critical,
+tr.even td.down,
+tr.odd td.down {
+	background-color: #e01806; /* red */
+}
+
+.status-warning,
+.status-unreachable,
+td.status.icon.warning,
+td.status.icon.unreachable,
+tr.even td.warning,
+tr.odd td.warning,
+tr.even td.unreachable,
+tr.odd td.unreachable {
+	background-color: #fed306; /* yellow */
+	color: #444444;
+}
+
+.status-unknown,
+td.status.icon.unknown,
+tr.even td.unknown,
+tr.odd td.unknown {
+	background-color: #fd8f0c; /* orange */
+}
+
+.status-pending,
+td.status.icon.pending,
+tr.even td.pending,
+tr.odd td.pending {
+	background-color: #908471; /* grey */
+}
+
+.status-total {
+	background-color: lightblue; /* blue */
+	border-bottom: 0px !important;
+}
+
+.active,
+.passive,
+.enabled,
+.disabled,
+.downtime-no,
+.downtime-yes,
+.flap-no,
+.flap-yes,
+.yes,
+.no,
+.status-ok,
+.status-up,
+.status-critical,
+.status-down,
+.status-warning,
+.status-outages,
+.status-unreachable,
+.status-unknown,
+.status-pending {
+	color: #ffffff;
+	padding: 0px 4px;
+	border: 0px !important;
+}
+
+.status-default {
+	display: none;
+}
+
+td.status-ok,
+td.status-up,
+td.status-critical,
+td.status-down,
+td.status-warning,
+td.status-outages,
+td.status-unreachable,
+td.status-unknown,
+td.status-pending {
+	color: #ffffff;
+	background-image: url(images/bg-dark.png);
+}
+
+td.status-ok a,
+td.status-up a,
+td.status-critical a,
+td.status-down a,
+td.status-warning a,
+td.status-outages a,
+td.status-unreachable a,
+td.status-unknown a,
+td.status-pending a {
+	color: #ffffff;
+	border-bottom: 1px dotted #ffffff !important;
+}
+
+.status-warning,
+.status-unreachable,
+td.status-warning,
+td.status-unreachable,
+td.status-warning a,
+td.status-unreachable a {
+	color: #444444;
+}
