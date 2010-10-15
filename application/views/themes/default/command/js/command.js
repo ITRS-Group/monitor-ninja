@@ -46,4 +46,33 @@ $(document).ready(function() {
 		return true;
 	});
 
+	if ($('#field_fixed').is(':checked')) {
+		showhide_some_fields(new Array('duration', 'trigger_id'), 0);
+	}
+
+	$('#field_fixed').click(function() {
+		if ($('#field_fixed').is(':checked')) {
+			showhide_some_fields(new Array('duration', 'trigger_id'), 0);
+		} else {
+			showhide_some_fields(new Array('duration', 'trigger_id'), 1);
+		}
+	})
+
 });
+
+
+function showhide_some_fields(fieldarr, state)
+{
+	if (!fieldarr.length) {
+		return false;
+	}
+	if (!state) {
+		for (field in fieldarr) {
+			$('#' + fieldarr[field]).closest('tr').hide();
+		}
+	} else {
+		for (field in fieldarr) {
+			$('#' + fieldarr[field]).closest('tr').show();
+		}
+	}
+}

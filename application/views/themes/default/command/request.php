@@ -43,14 +43,14 @@ foreach ($params as $pname => $ary) {
 				if ($dflt && array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
-				echo form::dropdown($form_name, $ary['options'], $dflt);
+				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname), $ary['options'], $dflt);
 			} else {
 				if (!empty($dflt)) {
 					$tmp_obj = false;
 					foreach($dflt as $tmp) {
 						$tmp_obj[$tmp] = $tmp;
 					}
-					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple'), $tmp_obj);
+					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname), $tmp_obj);
 				}
 			}
 			break;
@@ -63,11 +63,13 @@ foreach ($params as $pname => $ary) {
 			}
 			# fallthrough
 		case 'bool':
-			echo form::checkbox($form_name, $dflt, false, 'class="checkbox"');
+			$default_checked = array('fixed', '_services-too');
+			$checked = in_array($pname, $default_checked) ? true : false;
+			echo form::checkbox(array('name' => $form_name, 'id' => 'field_'.$pname), $dflt, $checked, 'class="checkbox"');
 			break;
 		case 'float':
 		case 'int':
-			echo form::input($form_name, $dflt, 'size="10"');
+			echo form::input(array('name' => $form_name, 'id' => 'field_'.$pname), $dflt, 'size="10"');
 			break;
 		case 'immutable':
 			echo form::hidden($form_name, $dflt);
@@ -78,7 +80,7 @@ foreach ($params as $pname => $ary) {
 			if ($form_name == 'cmd_param[comment]')
 				echo form::textarea(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 350px; height: 70px'), $dflt, '');
 			else
-				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field')), $dflt, '');
+				echo form::input(array('name' => $form_name, 'id' => 'field_'.$pname, 'title' => $this->translate->_('Required field')), $dflt, '');
 			break;
 	}
 
