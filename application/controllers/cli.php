@@ -152,6 +152,14 @@ class Cli_Controller extends Authenticated_Controller {
 		User_Model::truncate_auth_data();
 
 		$config_data = self::get_cgi_config();
+
+		if ($auth_type === 'LDAP' && isset($config_data['user_list']) && !empty($config_data['user_list'])) {
+			# We need to make sure LDAP/AD users exists in merlin.users
+			foreach ($config_data['user_list'] as $user) {
+				User_Model::add_user(array('username' => $user));
+			}
+		}
+
 		# All db fields that should be set
 		# according to data in cgi.cfg
 		$auth_fields = Ninja_user_authorization_Model::$auth_fields;

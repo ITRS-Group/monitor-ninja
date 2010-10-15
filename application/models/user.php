@@ -237,4 +237,41 @@ class User_Model extends Auth_User_Model {
 		}
 		return $users;
 	}
+
+	/**
+	*	Add a user to db
+	* 	A login role will be created for new users
+	* 	Checks are made that the user doesn't exist
+	*/
+	public function add_user($data=false)
+	{
+		if (empty($data)) {
+			return false;
+		}
+		$username = isset($data['username']) ? $data['username'] : false;
+		$password = isset($data['password']) ? $data['password'] : false;
+		$password_algo = isset($data['password_algo']) ? $data['password_algo'] : false;
+
+		$user = self::get_user($username);
+		if ($user !== false) {
+			# update
+			$user->password = $password;
+			$user->password_algo = $password_algo;
+		} else {
+			# create new
+			$user = ORM::factory('user');
+			$user->password = $password;
+			$user->username = $username;
+			$user->password_algo = $password_algo;
+
+			# create login role
+			$user->add(ORM::factory('role', 'login'));
+		}
+
+		if (is_object($user)) {
+			$user->save();
+			return true;
+		}
+		return false;
+	}
 }
