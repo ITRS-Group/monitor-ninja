@@ -39,7 +39,7 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-critical' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '')).'.png'),$icon[1]);
 									?>
 								</td>
-								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td <?php echo ($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'class="status-critical"' : ''; ?> style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
@@ -59,11 +59,11 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-warning' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '')).'.png'),$icon[1]);
 									?>
 								</td>
-								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td <?php echo ($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'class="status-warning"' : ''; ?> style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
-								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-warning.png'),$this->translate->_('Critical')) ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-warning.png'),$this->translate->_('Warning')) ?></td>
 								<td><?php echo html::anchor($default_links['warning'], $this->translate->_('N/A') )?></td>
 							</tr>
 							<?php } ?>
@@ -79,11 +79,11 @@
 										echo html::image($this->add_path('icons/16x16/'.(($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'shield-unknown' : strtolower($icon[1]).($icon[1] == 'Scheduled' ? '-downtime' : '')).'.png'),$icon[1]);
 									?>
 								</td>
-								<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
+								<td <?php echo ($icon[1] == 'Unhandled' || $icon[1] == 'on') ? 'class="status-unknown"' : ''; ?> style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 							</tr>
 							<?php } } else { ?>
 							<tr>
-								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-unknown.png'),$this->translate->_('Critical')) ?></td>
+								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-unknown.png'),$this->translate->_('Unknown')) ?></td>
 								<td><?php echo html::anchor($default_links['unknown'], $this->translate->_('N/A')) ?></td>
 							</tr>
 							<?php } ?>
@@ -94,7 +94,7 @@
 							<?php	if ($current_status->services_ok > 0) { ?>
 							<tr>
 								<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-ok.png'),$this->translate->_('OK')) ?></td>
-								<td style="white-space:normal"><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
+								<td class="status-ok" style="white-space:normal"><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '.$this->translate->_('OK'))) ?></td>
 							</tr>
 							<?php }	if (count($services_ok_disabled) > 0) { foreach ($services_ok_disabled as $url => $title) { ?>
 							<tr>
