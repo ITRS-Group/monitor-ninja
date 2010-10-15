@@ -66,21 +66,40 @@ class User_Controller extends Authenticated_Controller {
 		$settings['checks'] = array(
 			$t->_('Show Passive as Active') => array('checks.show_passive_as_active', self::$var_types['checks.show_passive_as_active'])
 		);
-		#'config.date_format'
+
 		$skins = glob(APPPATH.'views/'.$this->theme_path.'css/*', GLOB_ONLYDIR);
 
 		$settings['config'] = false;
 		$available_skins = false;
+		$required_css = array('common.css', 'status.css', 'reports.css');
 		if (count($skins) > 1) {
 			foreach ($skins as $skin) {
+
+				# make sure we have all requred css
+				$missing_css = false;
+				foreach ($required_css as $css) {
+					if (glob($skin.'/'.$css) == false) {
+						$missing_css = true;
+						continue;
+					}
+				}
+				if ($missing_css !== false) {
+					continue;
+				}
+
+				# all required css files seems to be exist
 				$skinparts = explode('/', $skin);
 				if (is_array($skinparts) && !empty($skinparts)) {
 					$available_skins[$skinparts[sizeof($skinparts)-1]] = $skinparts[sizeof($skinparts)-1];
 				}
 			}
-			$settings['config'] = array(
-				$t->_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
-			);
+			if (count($available_skins) > 1) {
+				$settings['config'] = array(
+					$t->_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
+				);
+			} else {
+				unset($available_setting_sections[$t->_('Config')]);
+			}
 		} else {
 			unset($available_setting_sections[$t->_('Config')]);
 		}
