@@ -12,6 +12,9 @@ if (isset($this->template->js_header))
 
 # fetch info on current skin
 $current_skin = config::get('config.current_skin', '*', true);
+if (!substr($current_skin, -1, 1) != '/') {
+	$current_skin .= '/';
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
