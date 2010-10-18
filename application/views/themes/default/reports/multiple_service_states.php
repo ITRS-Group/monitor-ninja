@@ -2,7 +2,7 @@
 <?php $t = $this->translate; ?>
 <div class="state_services">
 <?php
-	if (!isset($service_filter_status)) {
+	if (!isset($service_filter_status) || $service_filter_status == false) {
 			$service_filter_status = array(
 				'ok' => 1,
 				'warning' => 1,

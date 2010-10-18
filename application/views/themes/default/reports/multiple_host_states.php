@@ -2,7 +2,7 @@
 <?php $t = $this->translate; ?>
 <div class="host_breakdown wide" style="margin-top: 0px;">
 <?php
-	if (!isset($host_filter_status)) {
+	if (!isset($host_filter_status) || $host_filter_status == false) {
 			$host_filter_status = array(
 				'up' => 1,
 				'down' => 1,
