@@ -56,29 +56,45 @@
 					<?php echo $row['comment']; ?>
 				</td>
 				<td><?php echo $row['comment_id'] ?></td>
-				<td><?php echo $row['persistent'] ? $label_yes : $label_no ?></td>
+				<td><?php
+					if ($row['persistent'] === false) {
+						echo $na_str;
+					} else {
+						echo $row['persistent'] ? $label_yes : $label_no;
+					}
+					?></td>
 				<td>
 					<?php	switch ($row['entry_type']) {
 						case Comment_Model::USER_COMMENT:
-							echo $label_type_user;
+							$entry_type = $label_type_user;
 							break;
 						case Comment_Model::DOWNTIME_COMMENT:
-							echo $label_type_downtime;
+							$entry_type = $label_type_downtime;
 							break;
 						case Comment_Model::FLAPPING_COMMENT:
-							echo $label_type_flapping;
+							$entry_type = $label_type_flapping;
 							break;
 						case Comment_Model::ACKNOWLEDGEMENT_COMMENT:
-							echo $label_type_acknowledgement;
+							$entry_type = $label_type_acknowledgement;
 							break;
 						default:
-							echo '?';
-					} ?>
+							$entry_type =  '?';
+					}
+
+					if ($row['comment_type'] == 'downtime') {
+						$entry_type = $label_type_downtime.' ('.$label_type_user.')';
+					}
+					echo $entry_type; ?>
 				</td>
 				<td><?php echo $row['expires'] ? date($date_format_str, $row['expire_time']) : $na_str ?></td>
 				<td class="icon">
-					<?php echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row['comment_id'],
-					html::image($this->add_path('icons/16x16/delete-comment.png'), array('alt' => $label_delete, 'title' => $label_delete)),array('style' => 'border: 0px')) ?>
+			<?php 	if ($row['comment_type'] == 'downtime') {
+						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_downtime.'&downtime_id='.$row['comment_id'],
+						html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $label_delete_downtime, 'title' => $label_delete_downtime)),array('style' => 'border: 0px'));
+					} else {
+						echo html::anchor('command/submit?cmd_typ='.$cmd_delete_comment.'&com_id='.$row['comment_id'],
+						html::image($this->add_path('icons/16x16/delete-comment.png'), array('alt' => $label_delete, 'title' => $label_delete)),array('style' => 'border: 0px'));
+					} ?>
 				</td>
 			</tr>
 			<?php	} } else { # print message - no comments available ?>

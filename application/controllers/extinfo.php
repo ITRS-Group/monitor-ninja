@@ -969,10 +969,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$offset = $pagination->sql_offset;
 
 		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $items_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $items_per_page, $offset);
+		$schedule_downtime_comments = $all ? Downtime_Model::fetch_all_comments($host, $service, $items_per_page, $offset) : Downtime_Model::fetch_comments($host, $service, $items_per_page, $offset);;
 
 		$comment = false;
 		$i = 0;
 
+		$comment_type = 'comment';
 		if (!empty($comment_data)) {
 			foreach ($comment_data as $row) {
 				$comment[$i]['host_name'] = $row->host_name;
@@ -986,16 +988,41 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$comment[$i]['entry_type'] = $row->entry_type;
 				$comment[$i]['expires'] = $row->expires;
 				$comment[$i]['expire_time'] = $row->expire_time;
-				$comment[$i]['comment'] = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
-				$tmp = Comment_Model::fetch_all_comment_types($row->entry_type, $row->host_name, $row->service_description);
-				foreach($tmp as $test) {
-					$comment[$i]['comment'] = empty($test->comment_data) ? $row->comment_data : $test->comment_data;
-				}
+				$comment[$i]['comment'] = $row->comment_data;
+				$comment[$i]['comment_type'] = $comment_type;
 				$i++;
 			}
 		}
-		else
+		else {
 			$comment = $comment_data;
+		}
+
+		$comment_type = 'downtime';
+		if (!empty($schedule_downtime_comments) && count($schedule_downtime_comments) > 0) {
+			foreach ($schedule_downtime_comments as $row) {
+				if (empty($row->comment_data)) {
+					continue;
+				}
+				$comment[$i]['host_name'] = $row->host_name;
+				if (isset($row->service_description))
+					$comment[$i]['service_description'] = $row->service_description;
+				$comment[$i]['entry_time'] = $row->entry_time;
+				$comment[$i]['author_name'] = $row->author_name;
+				$comment[$i]['entry_time'] = $row->entry_time;
+				$comment[$i]['comment_id'] = $row->downtime_id;
+				$comment[$i]['persistent'] = false;
+				$comment[$i]['entry_type'] = $row->downtime_type;
+				$comment[$i]['expires'] = false;
+				$comment[$i]['expire_time'] = false;
+				$comment[$i]['comment'] = $row->comment_data;
+				$comment[$i]['comment_type'] = $comment_type;
+				$i++;
+			}
+		}
+
+		if (!$all) {
+			array_multisort($comment, SORT_ASC, SORT_REGULAR, $comment);
+		}
 
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		$t = $this->translate;
@@ -1022,7 +1049,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->label_expires = $t->_('Expires');
 		$comments->label_actions = $t->_('Actions');
 
-		$comments->data = $comment;//$comment_data;
+		$comments->data = $comment;
 		$nagios_config = System_Model::parse_config_file('nagios.cfg');
 		$comments->label_yes = $t->_('YES');
 		$comments->label_no = $t->_('NO');
@@ -1032,9 +1059,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->label_type_acknowledgement = $t->_('Acknowledgement');
 		$comments->na_str = $t->_('N/A');
 		$comments->label_delete = $t->_('Delete This Comment');
+		$comments->label_delete_downtime = $t->_('Delete This Downtime');
 		$comments->cmd_delete_comment =
 			$type=='host' ? nagioscmd::command_id('DEL_HOST_COMMENT')
 			: nagioscmd::command_id('DEL_SVC_COMMENT');
+		$comments->cmd_delete_downtime =
+			$type=='host' ? nagioscmd::command_id('DEL_HOST_DOWNTIME')
+			: nagioscmd::command_id('DEL_SVC_DOWNTIME');
 
 		$comments->date_format_str = nagstat::date_format($nagios_config['date_format']);
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
