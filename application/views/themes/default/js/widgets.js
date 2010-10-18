@@ -282,6 +282,17 @@ function widget(name, content_area, no_edit)
 		$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
 	};
 
+	/*
+	*	Save custom widget setting
+	*/
+	this.save_custom_val = function(newval, fieldname) {
+		var ajax_url = _site_domain + _index_page + '/ajax/';
+		var url = ajax_url + "save_dynamic_widget_setting/";
+		var data = {page: _current_uri, fieldvalue: newval, fieldname:fieldname, widget: self.name};
+		$.post(url, data);
+		$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
+	};
+
 	/**
 	*	Get saved settings for widget
 	*	So far only refresh_interval is handled
