@@ -48,8 +48,21 @@ class Netw_health_Widget extends widget_Core {
 		$this->host_val = $current_status->percent_host_health;
 		$this->service_val = $current_status->percent_service_health;
 
+		$this->health_warning_percentage =
+			isset($arguments['health_warning_percentage'])
+			? $arguments['health_warning_percentage']
+			: $this->health_warning_percentage;
+
+		$this->health_critical_percentage =
+			isset($arguments['health_critical_percentage'])
+			? $arguments['health_critical_percentage']
+			: $this->health_critical_percentage;
+
 		# format data according to current values
 		$this->format_health_data();
+
+		$health_warning_percentage = $this->health_warning_percentage;
+		$health_critical_percentage = $this->health_critical_percentage;
 
 		# assign variables to widget
 		$widget_id = $this->widgetname;
