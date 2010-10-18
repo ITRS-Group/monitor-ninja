@@ -915,7 +915,11 @@ class Reports_Controller extends Authenticated_Controller
 		foreach ($_REQUEST as $key => $value) {
 			if (in_array($key, self::$setup_keys)) {
 				if ($key == 'host_filter_status') {
-					if (!is_array($value)) { // if already serialized
+					if ($value == NULL) { // for old reports without host_filter_status values defined
+						$report_options[$key] = false;
+						$host_filter_status = false;
+					}
+					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
 						$host_filter_status = unserialize($value);
 					}
@@ -925,7 +929,11 @@ class Reports_Controller extends Authenticated_Controller
 					}
 				}
 				elseif ($key == 'service_filter_status') {
-					if (!is_array($value)) { // if already serialized
+					if ($value == NULL) { // for old reports without service_filter_status values defined
+						$report_options[$key] = false;
+						$service_filter_status = false;
+					}
+					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
 						$service_filter_status = unserialize($value);
 					}
