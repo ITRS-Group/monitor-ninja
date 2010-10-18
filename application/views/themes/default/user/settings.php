@@ -7,35 +7,34 @@ if (!empty($widgets)) {
 	}
 }
 
-echo '<div class="" style="margin:15px">';
+echo '<div class="w98 left">';
 if (!empty($updated_str)) {
-	echo '<div id="saved_msg">'.$updated_str.'</div><br />';
+	echo '<div id="saved_msg">'.html::image($this->add_path('/icons/16x16/shield-ok.png'),array('alt' => '', 'style' => 'margin-bottom: -3px; margin-right: 4px')).$updated_str.'</div><br />';
 }
-echo html::anchor('change_password', $t->_('Change Password'));
-echo "<br /><br />";
+echo '<div style="float: right">'.html::anchor('change_password', $t->_('Change Password')).'</div>';
 if (!empty($available_setting_sections)) {
 
 	echo "<h1>".$title."</h1>";
 	echo form::open('user/save', array('id' => 'user_settings'));
 	foreach ($available_setting_sections as $name => $setting_key) { ?>
 		<div id="settings_<?php echo $name ?>">
-			<fieldset style="border:1px solid silver;width:20%;padding:10px">
-			<legend><strong><?php echo $name ?></strong></legend>
+			<table>
+			<tr><th colspan="2" class="headerNone"><?php echo $name ?></th></tr>
 			<?php
+				$i = 0;
 				foreach ($settings[$setting_key] as $setting_name => $cfgkey) {
-					echo help::render($cfgkey[0]).' &nbsp;';
-					echo $setting_name.'<br />';
+					$i++;
+					echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'"><td style="width: 200px">'.help::render($cfgkey[0]).' &nbsp;';
+					echo $setting_name.'</td><td>';
 
 					$fieldname = str_replace('.', '_99_', $cfgkey[0]);
 					switch($cfgkey[1]) {
 						case 'int': case 'string':
-							echo form::input($fieldname, $current_values[$cfgkey[0]]).'<br /><br />';
+							echo form::input($fieldname, $current_values[$cfgkey[0]]);
 							break;
 						case 'bool':
-							echo $t->_('ON').': '.form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false);
-							echo " &nbsp; ";
-							echo $t->_('OFF').': '.form::radio($fieldname, 0, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? false:true);
-							echo "<br /><br />";
+							echo form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false, 'id="radio_on_'.$fieldname.'"').' <label for="radio_on_'.$fieldname.'">'.$t->_('On').'</label> &nbsp;';
+							echo form::radio($fieldname, 0, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? false:true, 'id="radio_off_'.$fieldname.'"').' <label for="radio_off_'.$fieldname.'">'.$t->_('Off').'</label>';
 							break;
 
 						case 'select':
@@ -44,10 +43,10 @@ if (!empty($available_setting_sections)) {
 							}
 							break;
 					}
+					echo '</td></tr>';
 				}
 			?>
-			</fieldset><br />
-
+			</table><br />
 		</div>
 	<?php
 	}
