@@ -3721,7 +3721,7 @@ class Reports_Controller extends Authenticated_Controller
 		$send_by_mail = false;
 		if (!empty($this->pdf_recipients)) {
 			$action = 'F';
-			$filename = K_PATH_CACHE.$filename;
+			$filename = K_PATH_CACHE.'/'.$filename;
 			$send_by_mail = true;
 		}
 
@@ -3760,7 +3760,7 @@ class Reports_Controller extends Authenticated_Controller
 			}
 
 			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE, '', $filename);
+			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE.'/', '', $filename);
 
 			# $mail_sent will contain the nr of mail sent - not used at the moment
 			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
