@@ -3775,13 +3775,9 @@ class Reports_Controller extends Authenticated_Controller
 			# $mail_sent will contain the nr of mail sent - not used at the moment
 			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
 
-			# remove file from cache folder
-			unlink($filename);
-			rmdir(K_PATH_CACHE);
 			return $mail_sent;
 		}
 
-		rmdir(K_PATH_CACHE);
 		return true;
 	}
 
@@ -4465,10 +4461,16 @@ class Reports_Controller extends Authenticated_Controller
 				$summary = new Summary_Controller();
 				$return[] = $summary->generate($row->id);
 			} else {
-				$return[] = $this->generate($row->identifier, $row->id);
+				$report = new Reports_Controller();
+				$return[] = $report->generate($row->identifier, $row->id);
+				unset($report);
 			}
 		}
 
+		# remove temp files
+		if (defined('K_PATH_CACHE')) {
+			exec('rm -rf /tmp/report*');
+		}
 		return $return;
 	}
 
