@@ -1,6 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+$current_skin = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+
+	# fetch info on current skin
+	$current_skin = config::get('config.current_skin', '*', true);
+	if (!substr($current_skin, -1, 1) != '/') {
+		$current_skin .= '/';
+	}
 }
 if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 	$ninja_menu_state = $ninja_menu_setting->setting;
@@ -9,12 +16,6 @@ if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 }
 if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
-
-# fetch info on current skin
-$current_skin = config::get('config.current_skin', '*', true);
-if (!substr($current_skin, -1, 1) != '/') {
-	$current_skin .= '/';
-}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
