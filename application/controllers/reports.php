@@ -4468,8 +4468,14 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		# remove temp files
-		if (defined('K_PATH_CACHE')) {
-			exec('rm -rf /tmp/report*');
+		$tmpfiles = glob('/tmp/report*', GLOB_ONLYDIR);
+		if (is_array($tmpfiles) && !empty($tmpfiles)) {
+			foreach ($tmpfiles as $file) {
+				# only remove files older than or equal to 1 day
+				if (time() - filemtime($file) >= 86400) {
+					exec('rm -rf '.$file);
+				}
+			}
 		}
 		return $return;
 	}
