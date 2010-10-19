@@ -968,8 +968,10 @@ class Reports_Controller extends Authenticated_Controller
 			$report_name = arr::search($_REQUEST, 'report_name', false);
 			unset($report_options['report_name']);
 			$report_options['sla_name'] = $report_name;
-			unset($report_options['host_filter_status']);
-			unset($report_options['service_filter_status']);
+			if (isset($report_options['host_filter_status']))
+				unset($report_options['host_filter_status']);
+			if (isset($report_options['service_filter_status']))
+				unset($report_options['service_filter_status']);
 		}
 
 		$this->report_options = $report_options;
@@ -4418,7 +4420,8 @@ class Reports_Controller extends Authenticated_Controller
 		foreach (self::$setup_keys as $k) {
 			if ($type === 'sla' && $k === 'report_name')
 				$k = 'sla_name';
-			$request[$k] = $report_data[$k];
+			if ($k != 'host_filter_status' && $k != 'service_filter_status')
+				$request[$k] = $report_data[$k];
 		}
 		if (!empty($report_data['objects'])) {
 			$var_name = self::$map_type_field[$report_data['report_type']];
