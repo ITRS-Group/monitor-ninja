@@ -23,7 +23,9 @@ foreach ($object_data as $obj => $data) {
 	$cnt = 0; ?>
 	<table style="width:100%;padding:0; border-spacing: 0px; border-collapse: collapse; margin-top: 14px">
 		<tr>
-			<?php foreach ($data as $event) {
+			<?php
+			if (is_array($data) && !empty($data))
+				foreach ($data as $event) {
 				$width = 0;
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if (isset($event['duration']) && $event['duration']>0) {
