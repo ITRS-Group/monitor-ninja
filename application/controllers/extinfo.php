@@ -1020,7 +1020,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 		}
 
-		if (!$all) {
+		if (!$all && is_array($comment)) {
 			array_multisort($comment, SORT_ASC, SORT_REGULAR, $comment);
 		}
 
