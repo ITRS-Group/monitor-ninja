@@ -171,6 +171,11 @@ select {
 	padding: 0px;
 	margin-left: 3px;
 }
+
+input.textbox {
+	color: #414141 !important;
+}
+
 /* login ****************************************************************************************/
 #login-table {
 	position: relative;
