@@ -72,7 +72,7 @@ class Ninja_Controller extends Template_Controller {
 			$this->translate = zend::translate('gettext', $this->defaultlanguage, $this->defaultlanguage);
 		}
 
-		if (Auth::instance()->logged_in()) {
+		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 			$this->template->links = array(
 				$this->translate->_('About') => array(
