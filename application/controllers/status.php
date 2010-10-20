@@ -57,7 +57,8 @@ class Status_Controller extends Authenticated_Controller {
 		$group_type = urldecode(strtolower($group_type));
 
 		$host = trim($host);
-		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
+		$hoststatustypes = strtolower($hoststatustypes);
+		$hoststatustypes = $hoststatustypes ==='false' || $hoststatustypes ==='true' ? false : $hoststatustypes;
 
 		$replace = array(
 			1  => $this->translate->_('UP'),
@@ -262,8 +263,11 @@ class Status_Controller extends Authenticated_Controller {
 		$group_type = strtolower($group_type);
 
 		$name = trim($name);
-		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
-		$servicestatustypes = strtolower($servicestatustypes)==='false' ? false : $servicestatustypes;
+		$hoststatustypes = strtolower($hoststatustypes);
+		$hoststatustypes = $hoststatustypes ==='false' || $hoststatustypes ==='true' ? false : $hoststatustypes;
+
+		$servicestatustypes = strtolower($servicestatustypes);
+		$servicestatustypes = $servicestatustypes ==='false' || $servicestatustypes==='true' ? false : $servicestatustypes;
 
 		$srv_replace = array(
 			1  => $this->translate->_('OK'),
