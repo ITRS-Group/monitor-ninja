@@ -2679,8 +2679,8 @@ class Reports_Model extends Model
 	{
 		$sql = "SELECT MIN(timestamp) AS min_date, ".
 				"MAX(timestamp) AS max_date ".
-			"FROM ".$this->db_table;
-		$db = new Database($this->db_name);
+			"FROM ".self::db_table;
+		$db = new Database();
 		$res = $db->query($sql);
 
 		if (!$res)
