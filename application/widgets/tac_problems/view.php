@@ -43,7 +43,7 @@
 			<?php for ($i = 0; $i < count($problem); $i++) { ?>
 				<tr>
 					<td class="dark"><?php echo html::image($this->add_path('icons/24x24/shield-'.strtolower($problem[$i]['status']).'.png'), array('alt' => $problem[$i]['status'])) ?></td>
-					<td style="white-space: normal;backgroud:<?php echo $problem[$i]['bgcolor']?>"  class="status-<?php echo strtolower($problem[$i]['status']); ?>" id="<?php echo $problem[$i]['html_id']?>">
+					<td style="white-space: normal;background:<?php echo $problem[$i]['bgcolor']?>"  class="status-<?php echo strtolower($problem[$i]['status']); ?>" id="<?php echo $problem[$i]['html_id']?>">
 						<strong><?php echo strtoupper($problem[$i]['type']).' '.strtoupper($problem[$i]['status']) ?></strong><br />
 						<?php
 							echo html::anchor($problem[$i]['url'],$problem[$i]['title']);
