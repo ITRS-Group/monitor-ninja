@@ -90,7 +90,7 @@ class User_Controller extends Authenticated_Controller {
 				# all required css files seems to be exist
 				$skinparts = explode('/', $skin);
 				if (is_array($skinparts) && !empty($skinparts)) {
-					$available_skins[$skinparts[sizeof($skinparts)-1]] = $skinparts[sizeof($skinparts)-1];
+					$available_skins[$skinparts[sizeof($skinparts)-1].'/'] = $skinparts[sizeof($skinparts)-1];
 				}
 			}
 			if (count($available_skins) > 1) {
