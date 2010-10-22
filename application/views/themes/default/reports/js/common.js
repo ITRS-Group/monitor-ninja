@@ -279,11 +279,6 @@ function remove_schedule(id, remove_type)
 
 function fancybox_datepicker()
 {
-	// check if datePicker Jquery plugin exists
-	// skip if it doesn't
-	if(typeof window.datePicker == "undefined") {
-		return false;
-	}
 	var datepicker_enddate = new Date().addDays(1).asString();
 	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 
@@ -949,7 +944,11 @@ function init_timepicker()
 	if ($("#time_start").is(':visible')) {
 		$("#time_start, #time_end").timePicker();
 	} else {
-		return false;
+		if ($("#fancy_content #time_start").is(':visible')) {
+			$("#fancy_content #time_start, #fancy_content #time_end").timePicker();
+		} else {
+			return false;
+		}
 	}
 
 	// Store time used by duration.
