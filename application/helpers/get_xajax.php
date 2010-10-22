@@ -59,7 +59,9 @@ class get_xajax_Core {
 				#$res = get_host_servicegroups($type);
 				$res = $auth->{'get_authorized_'.$type.'s'}();
 				if (!$res) {
-					return false;
+					$objResponse = new xajaxResponse();
+					$objResponse->call("delayed_hide_progress");
+					return $objResponse;
 				}
 				foreach ($res as $name) {
 					$items[] = $name;
