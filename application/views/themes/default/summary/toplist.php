@@ -17,6 +17,7 @@ if (isset($schedules)) {
 		</tr>
 		<?php
 		$i=0;
+	if (count($result)>0 && !empty($result)) {
 		foreach ($result as $rank => $ary) {
 			$i++;
 			echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'">';
@@ -34,7 +35,8 @@ if (isset($schedules)) {
 			<td><?php echo $ary['service_description']; ?></td>
 			<td><?php echo $ary['total_alerts']; ?></td>
 		</tr>
-		<?php } ?>
+		<?php }
+	}?>
 	</table>
 </div>
 

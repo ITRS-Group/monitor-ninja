@@ -17,7 +17,8 @@ if (isset($schedules)) {
 			<th class="headerNone left"><?php echo $label_information; ?></th>
 		</tr>
 		<?php
-			$i = 0;
+		$i = 0;
+		if (count($result)>0 && !empty($result)) {
 			foreach ($result as $ary) {
 				$i++;
 				echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'">';
@@ -42,7 +43,8 @@ if (isset($schedules)) {
 			<td><?php echo $softhard; ?></td>
 			<td><?php echo $ary['output']; ?></td>
 		</tr>
-		<?php } ?>
+		<?php }
+		} ?>
 	</table>
 </div>
 <?php // printf("Report completed in %.3f seconds<br />\n", $completion_time); ?>

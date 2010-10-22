@@ -2781,6 +2781,11 @@ class Reports_Model extends Model
 			}
 		}
 
+		# still empty?
+		if (empty($hosts) && empty($services)) {
+			return false;
+		}
+
 		$object_selection = false;
 		if ($services) {
 			if ($hosts) {
@@ -2928,8 +2933,7 @@ class Reports_Model extends Model
 
 		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
-			echo Kohana::debug($db->errorinfo(), explode("\n", $query));
-			die;
+			return false;
 		}
 		$result = array();
 		$pstate = array();
@@ -3200,6 +3204,11 @@ class Reports_Model extends Model
 	{
 		$this->completion_time = microtime(true);
 		$query = $this->build_alert_summary_query('*');
+
+		if ($query === false) {
+			return false;
+		}
+
 		$query .= " ORDER BY timestamp DESC";
 		if ($this->summary_items > 0) {
 			$query .= " LIMIT " . $this->summary_items;
