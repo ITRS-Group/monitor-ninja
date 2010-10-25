@@ -88,6 +88,24 @@ ul.commands li img {
 	height: 14px;
 }
 
+dl {
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+dt {
+	font-weight: bold;
+	clear: both;
+	float: left;
+	width: 85px;
+	padding: 2px 0px;
+}
+
+dd {
+	float: left;
+	padding: 2px 0px;
+}
 h1 {
 	font-size: 15px;
 	font-weight: normal;
