@@ -78,7 +78,7 @@
 			<?php if (!$use_alias && $sg_no == 0) { ?>
 				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } elseif ($sg_no == 0) { ?>
-				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
