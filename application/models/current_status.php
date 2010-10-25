@@ -806,7 +806,7 @@ class Current_status_Model extends Model
 		$sql = false;
 		$db = New Database();
 		$sql = "SELECT COUNT(*) as total FROM $table";
-		if ($iid != false) {
+		if ($iid !== false) {
 			$sql.= " WHERE instance_id = $iid";
 		}
 
