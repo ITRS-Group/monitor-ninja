@@ -761,6 +761,11 @@ class Current_status_Model extends Model
 		return false;
 	}
 
+	/**
+	 * Fetch information regarding the various merlin nodes
+	 * @param $host Unused
+	 * @return Array with various info elements
+	 */
 	public function get_merlin_node_status($host=null)
 	{
 		$sql = false;
@@ -789,6 +794,13 @@ class Current_status_Model extends Model
 		return $result_set;
 	}
 
+	/**
+	 * Fetch the number of checks performed by a specific merlin node
+	 *
+	 * @param $table The table to use ('host' or 'service')
+	 * @param $iid The instance id we want to check for
+	 * @return Number of checks executed by the node with iid $iid
+	 */
 	public function get_merlin_num_checks($table, $iid=false)
 	{
 		$sql = false;
@@ -807,6 +819,14 @@ class Current_status_Model extends Model
 		return false;
 	}
 
+	/**
+	 * Get min, average and max values from a random table
+	 *
+	 * @param $table Usually 'host' or 'service', though table will work
+	 * @param $column The column to get values from. Must be numerical
+	 * @param $iid instance_id of the Merlin node we're interested in
+	 * @return A string in the format "min / avg / max"
+	 */
 	public function get_merlin_min_max_avg($table, $column, $iid=false)
 	{
 		$sql = false;
