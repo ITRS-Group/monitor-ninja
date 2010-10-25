@@ -761,4 +761,71 @@ class Current_status_Model extends Model
 		return false;
 	}
 
+	public function get_merlin_node_status($host=null)
+	{
+		$sql = false;
+		$db = New Database();
+		$cols = array('instance_name' => false, 'instance_id' => false,
+				'is_running' => false, 'last_alive' => false);
+		$sql = "SELECT " . implode(',', array_keys($cols)) . " FROM program_status ORDER BY instance_name";
+
+		$result = $db->query($sql);
+		$result_set = array();
+
+		foreach ($result as $row) {
+			$result_set[$row->instance_id]['instance_name'] = $row->instance_name;
+			$result_set[$row->instance_id]['instance_id'] = $row->instance_id;
+			$result_set[$row->instance_id]['is_running'] = $row->is_running;
+			$result_set[$row->instance_id]['last_alive'] = $row->last_alive;
+			$result_set[$row->instance_id]['host']['checks'] = Current_status_Model::get_merlin_num_checks("host", $row->instance_id);
+			$result_set[$row->instance_id]['host']['latency'] = Current_status_Model::get_merlin_min_max_avg('host', 'latency' , $row->instance_id);
+			$result_set[$row->instance_id]['host']['exectime'] = Current_status_Model::get_merlin_min_max_avg('host', 'execution_time' , $row->instance_id);
+			$result_set[$row->instance_id]['service']['checks'] = Current_status_Model::get_merlin_num_checks("service", $row->instance_id);
+			$result_set[$row->instance_id]['service']['latency'] = Current_status_Model::get_merlin_min_max_avg('service', 'latency' , $row->instance_id);
+			$result_set[$row->instance_id]['service']['exectime'] = Current_status_Model::get_merlin_min_max_avg('service', 'execution_time' , $row->instance_id);
+
+		}
+
+		return $result_set;
+	}
+
+	public function get_merlin_num_checks($table, $iid=false)
+	{
+		$sql = false;
+		$db = New Database();
+		$sql = "SELECT COUNT(*) as total FROM $table";
+		if ($iid != false) {
+			$sql.= " WHERE instance_id = $iid";
+		}
+
+		if (!empty($sql)){
+			$result = $db->query($sql);
+			foreach ($result as $row) {
+				return (int)$row->total;
+			}
+		}
+		return false;
+	}
+
+	public function get_merlin_min_max_avg($table, $column, $iid=false)
+	{
+		$sql = false;
+		$db = New Database();
+
+		$sql = "SELECT min($column) as min, avg($column) as avg, max($column) as max FROM $table";
+		if ($iid != false) {
+			$sql.= " WHERE instance_id = $iid";
+		}
+
+		if (!empty($sql)) {
+			$result = $db->query($sql);
+			foreach ($result as $row) {
+				return number_format($row->min, 3) . " / " . number_format($row->avg, 3) . " / " . number_format($row->max, 3);
+			}
+		}
+		return false;
+
+
+	}
+
 }
