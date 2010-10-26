@@ -54,7 +54,7 @@ class Group_Model extends Model
 
 		if (!$auth->view_hosts_root && !($auth->view_services_root && $grouptype == 'service')) {
 			$hostlist_str = implode(',', $hostlist);
-			$filter_sql = " AND host.id IN (".$hostlist_str.") ".$filter_sql;
+			$filter_sql = " AND h.id IN (".$hostlist_str.") ".$filter_sql;
 		}
 
 		if ($auth->view_hosts_root) {
