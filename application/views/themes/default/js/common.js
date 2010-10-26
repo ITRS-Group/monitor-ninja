@@ -596,7 +596,7 @@ $(window).resize(function() {
 function scroll_control()
 {
 	if ($('#menu').width() < 51) {
-		var menuwidth = (parseInt($('#menu ul').css('height')+68) > document.documentElement.clientHeight) ? 50 : 37;
+		var menuwidth = (parseInt($('#menu ul').css('height')) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
 		$('#content').css('margin-left', (menuwidth+2)+'px');
 	}
