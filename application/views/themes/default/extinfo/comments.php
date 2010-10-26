@@ -33,10 +33,10 @@
 				<th><?php echo $label_author ?></th>
 				<th><?php echo $label_comment ?></th>
 				<th style="white-space: nowrap"><?php echo $this->translate->_('ID') ?></th>
-				<th style="width: 80px"><?php echo $label_persistent ?></th>
+				<th><?php echo $label_persistent ?></th>
 				<th><?php echo $label_type ?></th>
-				<th style="width: 65px"><?php echo $label_expires ?></th>
-				<th style="width: 25px" class="no-sort"><?php echo $label_actions ?></th>
+				<th colspan="2"><?php echo $label_expires ?></th>
+				<!--<th style="widt: 25px" class="no-sort"><?php //echo $label_actions ?></th>-->
 			</tr>
 			</thead>
 			<tbody>
@@ -45,13 +45,13 @@
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<?php if (Router::$method == 'show_comments') { ?>
-				<td><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
+				<td style="white-space: nowrap"><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
 				<?php if (isset($row['service_description']) && !empty($row['service_description'])) { ?>
-				<td><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
+				<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
 				<?php }
 				} ?>
-				<td><?php echo !empty($row['entry_time']) ? date($date_format_str, $row['entry_time']) : '' ?></td>
-				<td><?php echo $row['author_name'] ?></td>
+				<td style="white-space: normal"><?php echo !empty($row['entry_time']) ? date($date_format_str, $row['entry_time']) : '' ?></td>
+				<td style="white-space: normal"><?php echo $row['author_name'] ?></td>
 				<td style="white-space:normal">
 					<?php echo $row['comment']; ?>
 				</td>
@@ -63,7 +63,7 @@
 						echo $row['persistent'] ? $label_yes : $label_no;
 					}
 					?></td>
-				<td>
+				<td style="white-space: normal">
 					<?php	switch ($row['entry_type']) {
 						case Comment_Model::USER_COMMENT:
 							$entry_type = $label_type_user;
