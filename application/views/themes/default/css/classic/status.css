@@ -155,3 +155,9 @@ td.status-warning a,
 td.status-unreachable a {
 	color: #444444;
 }
+
+tr.even td.white,
+tr.odd td.white {
+	color: #ffffff;
+	visibility: hidden;
+}
