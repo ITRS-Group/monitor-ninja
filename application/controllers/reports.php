@@ -1756,6 +1756,20 @@ class Reports_Controller extends Authenticated_Controller
 									$time += 86400;
 								}
 								break;
+							case ($days > 90) :
+								$prev = '';
+								while ($time < $report_end) {
+									$h = date('M', $time);
+									if ($prev != $h) {
+										$resolution_names[] = $h;
+									} else {
+										$resolution_names[] = ' &nbsp;';
+									}
+									$time += 86400;
+									$prev = $h;
+								}
+
+								break;
 							case ($days > 7) :
 								while ($time < $report_end) {
 									$h = date('d', $time);
