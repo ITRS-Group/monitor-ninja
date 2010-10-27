@@ -166,6 +166,17 @@ class Ninja_Controller extends Template_Controller {
 				? ($custom_per_page * -1)
 				: $custom_per_page;
 		}
+
+		# convert test params to $_REQUEST to enable more
+		# parameters to different controllers (reports for one)
+		if (PHP_SAPI == "cli" && $this->run_tests !== false
+		&& !empty($_SERVER['argc']) && isset($_SERVER['argv'][1])) {
+			$params = $_SERVER['argv'][1];
+			if (strstr($params, '?')) {
+				$params = explode('?', $params);
+				parse_str($params[1], $_REQUEST);
+			}
+		}
 	}
 
 	/**
