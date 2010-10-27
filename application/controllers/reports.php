@@ -3509,7 +3509,11 @@ class Reports_Controller extends Authenticated_Controller
 		#$default_action_url = 'http://192.168.1.29/html2ps/html2ps.php';
 		$default_action_url = 'reports/generate';
 
-		$url = $_SERVER['SERVER_ADDR'].$_SERVER['PHP_SELF'];
+		if (PHP_SAPI != "cli") {
+			# never try to use $_SERVER variables when
+			# called from commandline (test and such)
+			$url = $_SERVER['SERVER_ADDR'].$_SERVER['PHP_SELF'];
+		}
 
 		if($user_url)
 			$url = $user_url;
