@@ -58,7 +58,6 @@ class Config_Controller extends Authenticated_Controller {
 
 		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View config');
 		$this->template->content = $this->add_view('config/index');
-		$data = $config_model->list_config($this->type, $items_per_page, $offset);
 
 		$options['host'] = array(
 			'notification' => array(
@@ -160,7 +159,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Icon image alt'),
 					$t->_('Retention Options')
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -279,7 +278,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Retention Options'),
 				);
 
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -368,7 +367,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Host Notification Commands'),
 					$t->_('Retention Options'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -416,7 +415,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Description'),
 					$t->_('Contact Members'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -469,7 +468,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					$hgm = new Hostgroup_Model;
@@ -504,7 +503,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Dependency Period'),
 					$t->_('Dependency Failure Options'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -549,7 +548,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Escalation Period'),
 					$t->_('Escalation Options'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -582,7 +581,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Notes URL'),
 					$t->_('Action URL'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					$sgm = new Servicegroup_Model;
@@ -621,7 +620,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Dependency Period'),
 					$t->_('Dependency Failure Options'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
@@ -672,7 +671,7 @@ class Config_Controller extends Authenticated_Controller {
 					$t->_('Escalation Period'),
 					$t->_('Escalation Options'),
 				);
-				$data = $config_model->list_config($this->type);
+				$data = $config_model->list_config($this->type, $items_per_page, $offset);
 				if ($data!==false) {
 					$i = 0;
 					foreach($data as $row) {
