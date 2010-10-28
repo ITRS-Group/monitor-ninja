@@ -437,6 +437,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->result = $result;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->logos_path = $this->logos_path;
+		$this->template->content->style = 'detail';
 		if (empty($group_type)) {
 			if ($name == 'all') {
 				$label_host_history = $this->translate->_('History');
