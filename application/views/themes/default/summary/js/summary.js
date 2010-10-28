@@ -103,7 +103,7 @@ function confirm_delete_report(the_val)
 function expand_and_populate(data)
 {
 	set_initial_state('report_type', data['obj_type']);
-	if (!is_populated) {
+	if (!is_populated && data['obj_type']) {
 		setTimeout(function() {expand_and_populate(data);}, 1000);
 		return;
 	}
