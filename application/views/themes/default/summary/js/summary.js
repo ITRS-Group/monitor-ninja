@@ -122,6 +122,17 @@ function expand_and_populate(data)
 		moveAndSort(from_id, to_id);
 	}
 
+	if (data['standardreport']) {
+		var val = data['standardreport'][0];
+		if ($('#standardreport').is(':visible')) {
+			$('#standardreport option').each(function() {
+				if ($(this).val() == val) {
+					$(this).attr('selected', true);
+				}
+			});
+		}
+	}
+
 	set_initial_state('report_type', reportObj['report_type']);
 	show_calendar(reportObj['report_period']);
 
