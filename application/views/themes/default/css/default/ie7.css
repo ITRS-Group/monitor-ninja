@@ -36,3 +36,19 @@ p.pagination { padding-top: 3px;}
 	margin-left: -1%;
 	width: 101%;
 }
+
+table.ext {
+	border-collapse: separate;
+}
+
+th.enabled_monfeat cite {
+	float: left;
+}
+
+th.item_select {
+ border-right: 0px !important;
+}
+
+.widget-header {
+	height: 14px;
+}
