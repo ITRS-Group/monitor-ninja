@@ -344,9 +344,10 @@ $(document).ready(function() {
 		}
 
 		if ($('.item_select_service').is(':hidden'))
-			$(	'.item_select_service').show();
+			$('.item_select_service').show();
 		else
-			$(	'.item_select_service').hide();
+			$('.item_select_service').hide();
+
 		return false;
 	});
 
