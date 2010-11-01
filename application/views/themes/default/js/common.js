@@ -313,7 +313,12 @@ $(document).ready(function() {
 				$('#ninja_refresh_lable').css('font-weight', '');
 			}
 		}
-		$('.item_select').toggle();
+
+		if ($('.item_select').is(':hidden'))
+			$(	'.item_select').show();
+		else
+			$(	'.item_select').hide();
+
 		return false;
 	});
 
@@ -337,7 +342,11 @@ $(document).ready(function() {
 				$('#ninja_refresh_lable').css('font-weight', '');
 			}
 		}
-		$('.item_select_service').toggle();
+
+		if ($('.item_select_service').is(':hidden'))
+			$(	'.item_select_service').show();
+		else
+			$(	'.item_select_service').hide();
 		return false;
 	});
 
