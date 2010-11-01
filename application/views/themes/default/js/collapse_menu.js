@@ -2,11 +2,9 @@ var default_menu_state = 'show';
 function collapse_menu(action) {
 
 	if (action == 'hide') {
-		//var menuwidth = ($('#menu').css('height') > parseInt(document.documentElement.clientHeight - 67)+'px') ? 50 : 37;
-		var menuwidth = (parseInt($('#menu ul').css('height')+68) > document.documentElement.clientHeight) ? 50 : 37;
+		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
 		$('#content').css('margin-left', parseInt(menuwidth+2)+'px');
-		//$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
 		$('#close-menu').hide();
 		$('#show-menu').show();
 		$('.ninja_menu_links').hide();
@@ -17,7 +15,6 @@ function collapse_menu(action) {
 	if (action == 'show') {
 		$('#menu').css('width', '185px');
 		$('#content').css('margin-left', '187px');
-		//$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
