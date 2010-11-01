@@ -1,7 +1,7 @@
 <div class="widget w98 left">
 	<?php //echo (isset($pagination)) ? $pagination : ''; ?>
+	<h2><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></h2>
 	<table id="host_table">
-		<caption><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></caption>
 		<tr>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';

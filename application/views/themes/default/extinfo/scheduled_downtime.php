@@ -1,15 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div class="widget left w98">
-	<h2><?php echo $title ?></h2>
 
-	<?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).
-				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text) ?><div style="clear:both"></div>
+	<h2><?php echo $host_title_str ?></h2>
+	<span style="float: right; margin-top: -30px"><?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).
+				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text) ?><div style="clear:both"></div></span>
+
+
+
 	<?php if (!empty($host_data)) { ?>
-
 	<table id="scheduled_host_downtime">
-		<caption>
+		<!--<caption>
 			<?php echo $host_title_str ?>
-		</caption>
+		</caption>-->
 		<thead>
 			<tr>
 				<th class="headerNone"><?php echo $label_host_name ?></th>
@@ -43,14 +45,15 @@
 	</table>
 	<br />
 	<br />
+	<?php } else { echo $this->translate->_('No hosts scheduled for downtime'); }
 
-	<?php }
-
-	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',$service_link_text)."<br />";
+	echo '<h2>'.$service_title_str.'</h2><span style="float: right; margin-top: -30px; ">';
+	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',$service_link_text)."</span>";
 
 	if (!empty($service_data)) { ?>
-	<table id="scheduled_service_downtime">
-		<caption><?php echo $service_title_str ?></caption>
+
+	<table id="scheduled_service_downtime" style="margin-bottom: 15px">
+		<!--<caption><?php echo $service_title_str ?></caption>-->
 		<thead>
 			<tr>
 				<th class="headerNone"><?php echo $label_host_name ?></th>
