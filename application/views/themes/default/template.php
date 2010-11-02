@@ -157,8 +157,7 @@ if (isset($this->template->js_header))
 				<ul>
 					<?php
 						echo ($this->notifications_disabled == true) ? '<li>'.$this->translate->_('Notifications are disabled').'</li>' : '';
-						//echo ($this->checks_disabled == true) ? '<li>'.$this->translate->_('Service checks are disabled').'</li>' : '';
-						echo '<li>'.$this->translate->_('Service checks are disabled').'</li>';
+						echo ($this->checks_disabled == true) ? '<li>'.$this->translate->_('Service checks are disabled').'</li>' : '';
 					?>
 				</ul>
 			</div>
