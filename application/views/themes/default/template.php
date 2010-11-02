@@ -152,7 +152,19 @@ if (isset($this->template->js_header))
 		</div>
 
 		<div id="quickbar">
+		<?php	if ($this->notifications_disabled || $this->checks_disabled) {	?>
+			<div id="notification_checks">
+				<ul>
+					<?php
+						echo ($this->notifications_disabled == true) ? '<li>'.$this->translate->_('Notifications are disabled').'</li>' : '';
+						//echo ($this->checks_disabled == true) ? '<li>'.$this->translate->_('Service checks are disabled').'</li>' : '';
+						echo '<li>'.$this->translate->_('Service checks are disabled').'</li>';
+					?>
+				</ul>
+			</div>
+		<?php } ?>
 			<div id="quicklinks">
+
 			</div>
 			<div id="icons">
 				<ul>
@@ -294,14 +306,6 @@ if (isset($this->template->js_header))
 		</div>
 
 		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
-		<?php	if ($this->notifications_disabled || $this->checks_disabled) {	?>
-			<div id="notification_checks" style="padding-left:10px;padding-top:2px;color:darkred;">
-				<ul>
-					<?php if ($this->notifications_disabled) { ?><li>- Notifications are disabled</li><?php } ?>
-					<?php if ($this->checks_disabled) { ?><li>- Service Checks are disabled</li><?php } ?>
-				</ul>
-			</div>
-		<?php 	} ?>
 
 			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); }?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
