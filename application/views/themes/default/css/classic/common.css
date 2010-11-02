@@ -327,10 +327,16 @@ input.textbox {
 	float: left;
 	background: #ffdd00 url(images/bg.png) repeat-x;
 }
+#notification_checks ul li,
 #quicklinks ul li {
 	display: inline;
 	padding: 0px 10px 0px 5px;
 	font-weight: bold;
+}
+#notification_checks {
+	padding: 10px 0px 10px 10px;
+	font-weight: bold;
+	background: yellow url(images/bg-dark.png) repeat-x;
 }
 #icons {
 	position: absolute;

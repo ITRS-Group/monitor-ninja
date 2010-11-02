@@ -346,10 +346,20 @@ input.textbox {
 	float: left;
 	background: #ffdd00 url(images/bg.png) repeat-x;
 }
+#notification_checks ul li,
 #quicklinks ul li {
 	display: inline;
 	padding: 0px 10px 0px 5px;
 	font-weight: bold;
+}
+#notification_checks {
+	padding: 10px 0px 4px 10px;
+	font-weight: bold;
+}
+#notification_checks ul li {
+	padding-left: 20px;
+	padding-bottom: 3px;
+	background: url(/ninja/application/views/themes/default/icons/16x16/shield-warning.png) no-repeat 0px 0px;
 }
 #icons {
 	position: absolute;
