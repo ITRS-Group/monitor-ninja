@@ -337,4 +337,24 @@ class Ninja_widget_Model extends ORM
 		}
 		return $widget_order;
 	}
+
+	/**
+	*	Add a new widget to ninja_widgets table
+	*/
+	public function add_widget($page=false, $name=false, $friendly_name=false)
+	{
+		if (empty($name) || empty($friendly_name)) {
+			return false;
+		}
+
+		if (Ninja_widget_Model::get_widget($page, $name) !== false) {
+			# widget already exists
+			return false;
+		}
+		$db = new Database();
+		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
+			"VALUES(".$db->escape($name).", ".$db->escape($page).", ".$db->escape($friendly_name).")";
+		$return = $db->query($sql);
+		return $return;
+	}
 }
