@@ -47,7 +47,7 @@ class Hostgroup_Model extends ORM
 			$auth_ids = array_keys($auth_objects);
 			if (empty($auth_ids))
 				return false;
-			$sql = "SELECT * FROM hostgroup WHERE id IN (".implode($auth_ids).") ".$limit_str;
+			$sql = "SELECT * FROM hostgroup WHERE id IN (".implode(',', $auth_ids).") ".$limit_str;
 		}
 		$db = new Database();
 		$data = $db->query($sql);
