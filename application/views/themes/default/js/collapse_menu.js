@@ -86,6 +86,12 @@ function save_menu_section_state(section, state)
 
 function get_ninja_menu_state()
 {
+	// don't use ajax call if already
+	// defined in master template
+	if (typeof _ninja_menu_state != 'undefined') {
+		return _ninja_menu_state;
+	}
+
 	var url = _site_domain + _index_page + "/ajax/get_setting/";
 	var page_name = '/';
 	var data = {page: escape(page_name), type: 'ninja_menu_state'};
