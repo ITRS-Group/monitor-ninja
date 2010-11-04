@@ -233,7 +233,7 @@ class Downtime_Model extends Model
 
 			if (!$service) { # host comments
 				# comments via host_contactgroup
-				$sql = "SELECT d.* FROM scheduled_downtime c ".$auth_from." WHERE".
+				$sql = "SELECT d.* FROM scheduled_downtime d ".$auth_from." WHERE".
 					" d.host_name!='' ".$svc_selection.$auth_where;
 
 				# comments via host_contact
