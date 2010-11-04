@@ -16,8 +16,19 @@
  */
 class Upload_Controller extends Authenticated_Controller
 {
+	public function __construct()
+	{
+		parent::__construct();
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root) {
+			# redirect to default start page if not
+			# properly authorized
+			url::redirect(Kohana::config('routes.logged_in_default'));
+		}
+	}
+
 	/**
-	*	INdex method
+	*	Index method
 	*/
 	public function index()
 	{
