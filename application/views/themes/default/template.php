@@ -1,7 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $current_skin = false;
+$authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
+
+	$auth = new Nagios_auth_Model();
+	if ($auth->view_hosts_root) {
+		$authorized = true;
+	}
 
 	# fetch info on current skin
 	$current_skin = config::get('config.current_skin', '*', true);
@@ -280,6 +286,9 @@ if (isset($this->template->js_header))
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
+						if ($authorized === true) {
+							echo '<li onclick="widget_upload();">'.$this->translate->_('Upload new widget').'</li>'."\n";
+						}
 					}
 				?>
 			</ul>

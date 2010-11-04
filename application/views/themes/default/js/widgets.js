@@ -5,6 +5,11 @@ $(document).ready(function() {
 	});
 });
 
+function widget_upload()
+{
+	self.location.href=_site_domain + _index_page + "/upload/";
+}
+
 function init_easywidgets(){
 	$.fn.EasyWidgets({
 		behaviour : {
