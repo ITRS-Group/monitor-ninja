@@ -224,19 +224,12 @@ class Current_status_Model extends Model
 		if ($auth->view_hosts_root) {
 			$sql = "SELECT * FROM host";
 		} else {
-			$sql = "SELECT auth_host.* FROM ".
-			"host AS auth_host, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, ".
-			"host_contactgroup AS auth_host_contactgroup ".
-			"WHERE auth_host.id = auth_host_contactgroup.host
-				AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
-				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=".
-				$this->db->escape(Auth::instance()->get_user()->username);
-			$sql2 = "SELECT host.* FROM host, ".
-			"contact, host_contact ".
-			"WHERE host.id = host_contact.host ".
-			"AND host_contact.contact=contact.id ".
-			"AND contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username);
-			$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
+			$sql = "SELECT h.* ".
+				"FROM host AS h, contact, contact_access ca ".
+				"WHERE contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
+				" AND ca.contact=contact.id ".
+				"AND ca.service IS null ".
+				"AND ca.host=h.id";
 		}
 
 		$result = $this->db->query($sql);

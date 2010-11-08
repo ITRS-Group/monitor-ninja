@@ -122,6 +122,7 @@ class Comment_Model extends Model {
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
+
 		if ($host_query === true) {
 			# don't use auth_host fields etc since
 			# user is authenticated_for_all_hosts
@@ -139,42 +140,22 @@ class Comment_Model extends Model {
 			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
 
 			if (!$service) { # host comments
-				# comments via host_contactgroup
-				$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
-					" c.host_name!='' ".$svc_selection.$auth_where;
-
-				# comments via host_contact
-				$from = "FROM comment c, host AS auth_host, contact AS auth_contact, host_contact AS auth_host_contact";
-				# via host_contact
-				$sql2 = "SELECT c.* ".$from." WHERE".
-					" c.host_name!='' ".$svc_selection." AND auth_contact.contact_name=".
+				$sql = "SELECT DISTINCT c.* FROM comment c, contact_access ca, contact, host h ".
+					"WHERE contact.contact_name=".
 					$db->escape(Auth::instance()->get_user()->username).
-					" AND auth_host_contact.contact=auth_contact.id ".
-					"AND auth_host.id=auth_host_contact.host ".
-					"AND auth_host.host_name=c.host_name";
-				$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
-
+					" AND ca.contact=contact.id ".
+					"AND c.host_name=h.host_name ".
+					"AND (c.service_description='' OR c.service_description is null) ".
+					"AND ca.host=h.id AND ca.service is null ";
 			} else { # service comments
 				if ($service_query !== true) {
-
-					# comments via service_contactgroup
-					$from = ','.$service_query['from'];
-					$sql = "SELECT c.* FROM comment c".$from." WHERE ".
-						"(c.service_description!='' AND c.service_description is NOT null) AND ".
-						$service_query['where']." AND c.service_description=".$service_query['service_field'].".service_description ".
-						"AND c.host_name=".$service_query['service_field'].".host_name";
-
-					# comments via service_contact
-					$from = "FROM comment c, host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ";
-					$sql2 = "SELECT c.* ".$from." WHERE ".
-						"(c.service_description!='' AND c.service_description is NOT null) ".
-						"AND auth_service.id=auth_servicecontact.service ".
-						"AND auth_servicecontact.contact=auth_contact.id ".
-						"AND auth_contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
-						" AND auth_service.host_name=auth_host.host_name ".
-						"AND c.service_description=auth_service.service_description ".
-						"AND c.host_name=auth_service.host_name";
-					$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
+					$sql = "SELECT DISTINCT c.* FROM comment c, contact_access ca, contact, host h, service s
+						WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
+						" AND ca.contact=contact.id ".
+						"AND c.host_name=h.host_name ".
+						"AND s.host_name=c.host_name ".
+						"AND ca.service=s.id ".
+						"AND (c.service_description!='' AND c.service_description is NOT null) ";
 				} else {
 					$sql = "SELECT * FROM comment WHERE (service_description!='' OR service_description is NOT null) ";
 				}
