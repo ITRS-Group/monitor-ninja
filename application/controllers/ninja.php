@@ -103,7 +103,7 @@ class Ninja_Controller extends Template_Controller {
 					//'hr5' 														=> array('', ''),
 					$this->translate->_('Comments') 						=> array('/extinfo/show_comments', 'comments',0),
 					$this->translate->_('Schedule downtime') 			=> array('/extinfo/scheduled_downtime', 'scheduledowntime',0),
-					$this->translate->_('Recurring downtime') 			=> array('/recurring_downtime/', 'scheduledowntime',0),
+					//$this->translate->_('Recurring downtime') 			=> array('/recurring_downtime/', 'scheduledowntime',0),
 					$this->translate->_('Process info') 				=> array('/extinfo/show_process_info', 'processinfo',0),
 					$this->translate->_('Performance info') 			=> array('/extinfo/performance', 'performanceinfo',0),
 					$this->translate->_('Scheduling queue') 			=> array('/extinfo/scheduling_queue', 'schedulingqueue',0),
