@@ -110,6 +110,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->disable_refresh = true;
 		$xajax = $this->xajax;
 
+		$this->template->title = $this->translate->_('Monitoring » Scheduled downtime » Recurring downtime');
+
 		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
 		$this->xajax->processRequest();
 		$this->template->content = $this->add_view('recurring_downtime/setup');
@@ -184,7 +186,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		'servicegroups' => 'servicegroup',
 		'services' => 'service_description'
 	);
-
 
 		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
 		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
