@@ -3,7 +3,11 @@
 
 	<h2><?php echo $host_title_str ?></h2>
 	<span style="float: right; margin-top: -30px"><?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).
-				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text) ?><div style="clear:both"></div></span>
+				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text).' &nbsp; ';
+				  echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
+	echo html::anchor('recurring_downtime', 'Schedule recurring downtime');
+	?>
+				  <div style="clear:both"></div></span>
 
 
 
@@ -38,7 +42,12 @@
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php echo empty($row->trigger_id) ? $na_str : $row->trigger_id ?></td>
-			<td style="text-align: center"><?php echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')) ?></td>
+			<td style="text-align: center">
+				<?php
+					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('recurring_downtime?host='.$row->host_name, html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
+				?>
+			</td>
 		</tr>
 		<?php } ?>
 		</tbody>
@@ -48,9 +57,13 @@
 	<?php } else { echo $this->translate->_('No hosts scheduled for downtime'); }
 
 	echo '<h2>'.$service_title_str.'</h2><span style="float: right; margin-top: -30px; ">';
-	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',$service_link_text)."</span>";
+	echo html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).html::anchor('command/submit?cmd_typ=SCHEDULE_SVC_DOWNTIME',$service_link_text).' &nbsp; ';
+	echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
+	echo html::anchor('recurring_downtime', 'Schedule recurring downtime');
+	?>
+	</span>
 
-	if (!empty($service_data)) { ?>
+	<?php if (!empty($service_data)) { ?>
 
 	<table id="scheduled_service_downtime" style="margin-bottom: 15px">
 		<!--<caption><?php echo $service_title_str ?></caption>-->
@@ -82,7 +95,12 @@
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php echo empty($row->trigger_id) ? $na_str : $row->trigger_id ?></td>
-			<td style="text-align: center"><?php echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')) ?></td>
+			<td style="text-align: center">
+				<?php
+					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
+					echo html::anchor('recurring_downtime?host='.$row->host_name.'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px'));
+				?>
+			</td>
 		</tr>
 		<?php } ?>
 		</tbody>
