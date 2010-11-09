@@ -1,10 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div style="margin: 0 14px; padding: 14px 0;">
-	<object	type="application/x-shockwave-flash" data="<?php echo url::site('/nagvis/netmap/shell.swf');?>"
+	<object	type="application/x-shockwave-flash" data="/nagvis/netmap/shell.swf"
 		id="geomap" width="100%" height="625">
-		<param name="base" value="<?php echo url::site('/nagvis/netmap');?>" />
-		<param name="movie" value="<?php echo url::site('/nagvis/netmap/shell.swf');?>" />
+		<param name="base" value="/nagvis/netmap" />
+		<param name="movie" value="/nagvis/netmap/shell.swf" />
 		<param name="bgcolor" value="#ffffff" />
 		<param name="wmode" value="opaque" />
 		<param name="allowScriptAccess" value="sameDomain" />
