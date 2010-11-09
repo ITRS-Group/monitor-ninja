@@ -31,7 +31,7 @@ function highlight(){
 }
 </script>
 <div style="margin-left: 1px;">
-	<iframe name="nagvis" id="nagvis" src="/nagvis/nagvis/index.php?automap=1" width="100%" onload="highlight();">
+	<iframe name="nagvis" id="nagvis" src="<?php echo url::site('/nagvis/nagvis/index.php?automap=1');?>" width="100%" onload="highlight();">
 		Error : Can not load NagVis.
 	</iframe>
 </div>
