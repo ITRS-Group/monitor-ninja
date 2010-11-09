@@ -274,8 +274,6 @@ class Group_Model extends Model
 
 		if ($id === false && !empty($name) && array_key_exists($name, ${$type.'_list_r'})) {
 			$id = ${$type.'_list_r'}[$name];
-		} else {
-			return false;
 		}
 
 		# check for authentication
