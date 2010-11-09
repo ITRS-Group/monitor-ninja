@@ -27,6 +27,25 @@ if (!empty($widgets)) {
 				echo form::open('recurring_downtime/generate', array('id' => 'setup_form')); ?>
 					<input type="hidden" name="new_recurring_setup" value="1" />
 					<table summary="Select object type" class="setup-tbl">
+
+					<?php if (isset($_GET['host'])) { ?>
+						<tr>
+							<td colspan="3">
+								<input type="hidden" name="host_name[]" value="<?php echo $_GET['host'];?>" />
+								<?php
+									if (isset($_GET['service'])) {
+										echo '<h2>'.$this->translate->_('Schedule downtime for service').' <strong>'.$_GET['service'].'</strong> on host <strong>'.$_GET['host'].'</strong></h2>';
+										echo '<input type="hidden" name="report_type" id="report_type" value="services">';
+										echo '<input type="hidden" name="service_description[]" value="'.$_GET['host'].';'.$_GET['service'].'" />';
+									}
+									else {
+										echo '<h2>'.$this->translate->_('Schedule downtime for host').' <strong>'.$_GET['host'].'</strong></h2>';
+										echo '<input type="hidden" name="report_type" id="report_type" value="hosts">';
+									}
+								?>
+							</td>
+						</tr>
+						<?php } else { ?>
 						<tr>
 							<td colspan="3">
 								<select name="report_type" id="report_type" onchange="set_selection(this.value);">
@@ -37,6 +56,7 @@ if (!empty($widgets)) {
 								</select>
 								<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
 								<div id="progress"></div>
+								&nbsp;
 							</td>
 						</tr>
 						<tr id="filter_row">
@@ -111,6 +131,7 @@ if (!empty($widgets)) {
 							</td>
 						</tr>
 					</table>
+					<?php } ?>
 				</div>
 
 				<div class="setup-table">
