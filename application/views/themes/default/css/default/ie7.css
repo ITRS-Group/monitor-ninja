@@ -33,8 +33,8 @@ p.pagination { padding-top: 3px;}
 
 #page_links {
 	margin-top: 1px;
-	margin-left: -1%;
-	width: 101%;
+	/*margin-left: -1%;/*evil*/
+	width: 99%;
 }
 
 table.ext {
