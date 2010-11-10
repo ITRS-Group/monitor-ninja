@@ -20,3 +20,9 @@ $config['csrf_timestamp'] = 'csrf_timestamp';
  * For how long to we trust the csrf token?
  */
 $config['csrf_lifetime']  = 5400;
+
+# check for custom config files that
+# won't be overwritten on upgrade
+if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
+	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
+}

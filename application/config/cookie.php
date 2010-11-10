@@ -30,3 +30,9 @@ $config['secure'] = FALSE;
  * secure protocol. This option is only available in PHP 5.2 and above.
  */
 if (version_compare(PHP_VERSION, '5.2', '>=')) $config['httponly'] = FALSE;
+
+# check for custom config files that
+# won't be overwritten on upgrade
+if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
+	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
+}

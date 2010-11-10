@@ -45,3 +45,9 @@ $config['regenerate'] = 0;
  * Percentage probability that the gc (garbage collection) routine is started.
  */
 $config['gc_probability'] = 2;
+
+# check for custom config files that
+# won't be overwritten on upgrade
+if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
+	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
+}

@@ -1,0 +1,2 @@
+Place any custom config files here with the same name as the original file.
+Any variables added will override the default but won't be overwritten on upgrade.

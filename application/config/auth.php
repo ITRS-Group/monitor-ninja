@@ -55,3 +55,9 @@ $config['min_username_chars'] = 2;
  * http://$site/default/do_login?username=<username>&password=<password>
  */
 $config['use_get_auth'] = false;
+
+# check for custom config files that
+# won't be overwritten on upgrade
+if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
+	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
+}

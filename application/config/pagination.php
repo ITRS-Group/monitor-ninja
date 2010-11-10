@@ -26,3 +26,9 @@ $config['default'] = array
 # step is used to generate drop-down for
 # nr of items per page to show
 $config['paging_step'] = 100;
+
+# check for custom config files that
+# won't be overwritten on upgrade
+if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
+	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
+}
