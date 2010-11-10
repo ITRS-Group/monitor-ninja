@@ -1091,4 +1091,22 @@ class Host_Model extends Model {
 		$data = $db->query($sql);
 		return count($data)>0 ? $data : false;
 	}
+
+	/**
+	*	Create an associative array with IP/Address => host_name
+	*/
+	public function addr_name()
+	{
+		$hosts = self::authorized_hosts();
+		$hostlist = false;
+		$db = new Database();
+		$sql = "SELECT host_name, address FROM host WHERE id IN (".implode(',', $hosts).")";
+		$data = $db->query($sql);
+		if (count($data)>0) {
+			foreach ($data as $row) {
+				$hostlist[$row->host_name] = $row->address;
+			}
+		}
+		return $hostlist;
+	}
 }
