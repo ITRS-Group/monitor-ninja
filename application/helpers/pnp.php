@@ -87,4 +87,27 @@ class pnp_Core
 	{
 		return preg_replace('/[ :\/\\\]/', "_", $string);
 	}
+
+	/**
+	 * Creates a pnp url for a host or service
+	 *
+	 * @param $host The host
+	 * @param $service The service
+	 * @return A url usable from Ninja to get the desired pnp page
+	 */
+	public static function url($host, $service=false)
+	{
+		$base = config::get('config.pnp4nagios_path');
+		# luls hackish
+		if (!$base)
+			return 'PNP_seems_to_be_improperly_configured';
+
+		$host = urlencode(pnp::clean($host));
+		if ($service !== false) {
+			$service = urlencode(pnp::clean($service));
+		} else {
+			$service = '_HOST_';
+		}
+		return $base . "/graph?host=$host&srv=$service";
+	}
 }
