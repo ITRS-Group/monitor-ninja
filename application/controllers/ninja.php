@@ -35,6 +35,7 @@ class Ninja_Controller extends Template_Controller {
 	public $run_tests = false;
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
+	public $global_notifications = false;
 
 	public function __construct()
 	{
@@ -196,17 +197,27 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	*	Check if notifications and/or active checks has
-	*	been globally disabled.
+	*	Check for notifications to be displayed to user
+	* 	Each notification should be an array with (text, link)
 	*/
 	public function _global_notification_checks()
 	{
 		$data = Program_status_Model::notifications_checks();
+		$notifications = false;
 		if ($data !== false) {
 			$data = $data->current();
 			$this->notifications_disabled = !$data->notifications_enabled;
+			if ($this->notifications_disabled == true) {
+				$notifications[] = array($this->translate->_('Notifications are disabled'), false);
+			}
+
 			$this->checks_disabled = !$data->active_service_checks_enabled;
+			if ($this->checks_disabled == true) {
+				$notifications[] = array($this->translate->_('Service checks are disabled'), false);
+			}
 		}
+
+		$this->global_notifications = $notifications;
 	}
 
 	/**

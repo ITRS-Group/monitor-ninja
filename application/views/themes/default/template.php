@@ -158,12 +158,17 @@ if (isset($this->template->js_header))
 		</div>
 
 		<div id="quickbar">
-		<?php	if ($this->notifications_disabled || $this->checks_disabled) {	?>
+		<?php	if (!empty($this->global_notifications)) {	?>
 			<div id="notification_checks">
 				<ul>
 					<?php
-						echo ($this->notifications_disabled == true) ? '<li>'.$this->translate->_('Notifications are disabled').'</li>' : '';
-						echo ($this->checks_disabled == true) ? '<li>'.$this->translate->_('Service checks are disabled').'</li>' : '';
+					foreach ($this->global_notifications as $notification) {
+						if (isset($notification[1]) && !empty($notification[1])) {
+							echo '<li>'.html::anchor($notification[1], $notification[0]).'</li>';
+						} else {
+							echo '<li>'.$notification[0].'</li>';
+						}
+					}
 					?>
 				</ul>
 			</div>
