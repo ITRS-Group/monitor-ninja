@@ -194,6 +194,8 @@ class Servicegroup_Model extends ORM
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
+		$auth_services = $auth->services;
+		$auth_service_ids = array_keys($auth_services);
 		$auth_ids = array_keys($auth_objects);
 		if (empty($auth_ids) || empty($groups))
 			return false;
@@ -224,15 +226,17 @@ class Servicegroup_Model extends ORM
 			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
 		}
 
+		$service_match = $auth->view_hosts_root || $auth->view_services_root ? '' : " AND service.id IN(".implode(',', $auth_service_ids).") ";
+
 		$base_query = "SELECT COUNT(DISTINCT host.id) ".
 			    "FROM service_servicegroup ".
 			    "INNER JOIN service ON service.id = service_servicegroup.service ".
 			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE servicegroup.id = service_servicegroup.servicegroup ";
+			    "WHERE servicegroup.id = service_servicegroup.servicegroup ".$service_match;
 		$base_svc_query = "SELECT COUNT(*) from service_servicegroup ".
 			    "INNER JOIN service ON service.id = service_servicegroup.service ".
 			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE service_servicegroup.servicegroup = servicegroup.id ";
+			    "WHERE service_servicegroup.servicegroup = servicegroup.id ".$service_match;
 
 		$sql = "SELECT servicegroup.id,servicegroup_name AS groupname, servicegroup.alias,".
 			"(".$base_query.

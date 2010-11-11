@@ -194,6 +194,8 @@ class Hostgroup_Model extends ORM
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_hostgroups();
+		$auth_hosts = $auth->get_authorized_hosts();
+		$auth_host_ids = array_keys($auth_hosts);
 		$auth_ids = array_keys($auth_objects);
 		if (empty($auth_ids) || empty($groups))
 			return false;
@@ -224,13 +226,14 @@ class Hostgroup_Model extends ORM
 			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
 		}
 
+		$host_match = $auth->view_hosts_root ? '' : " AND host.id IN(".implode(',', $auth_host_ids).") ";
 		$base_query = "SELECT COUNT(*) from host_hostgroup ".
 				    "INNER JOIN host ON host.id = host_hostgroup.host ".
-				    "WHERE host_hostgroup.hostgroup = hostgroup.id ";
+				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match;
 		$base_svc_query = "SELECT COUNT(*) FROM host_hostgroup ".
 				    "INNER JOIN host ON host.id = host_hostgroup.host ".
 				    "INNER JOIN service ON service.host_name = host.host_name ".
-				    "WHERE host_hostgroup.hostgroup = hostgroup.id ";
+				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match;
 		$sql = "SELECT id,hostgroup_name AS groupname,alias,".
 				"(".$base_query.
 				    "AND current_state = ".Current_status_Model::HOST_UP.
