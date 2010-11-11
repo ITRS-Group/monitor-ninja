@@ -409,6 +409,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function pnp_image()
 	{
 		$param = urldecode($this->input->post('param', false));
+		$param = pnp::clean($param);
 		$pnp_path = Kohana::config('config.pnp4nagios_path');
 
 		if ($pnp_path != '') {

@@ -77,4 +77,14 @@ class pnp_Core
 		}
 		return empty($key) ? $conf : $conf[$key];
 	}
+
+	/**
+	 * Cleanses a string for use as a pnp object reference
+	 * @param $string The string to cleanse
+	 * @return The mangled string
+	 */
+	public static function clean($string)
+	{
+		return preg_replace('/[ :\/\\\]/', "_", $string);
+	}
 }
