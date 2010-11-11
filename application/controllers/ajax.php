@@ -412,7 +412,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$pnp_path = Kohana::config('config.pnp4nagios_path');
 
 		if ($pnp_path != '') {
-			$pnp_path .= '/image?'.$param.'&source=1&view=1&display=image';
+			$pnp_path .= '/image?'.$param.'&source=0&view=1&display=image';
 		}
 
 		echo '<img src="'.$pnp_path.'" />';
