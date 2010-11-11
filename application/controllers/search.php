@@ -197,9 +197,6 @@ class Search_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content = $this->add_view('search/result');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = $this->add_path('search/js/search');
-		$this->template->js_header->js = $this->xtra_js;
 
 		$content = $this->template->content;
 		$limit = !empty($in_limit) ? $in_limit : false;
