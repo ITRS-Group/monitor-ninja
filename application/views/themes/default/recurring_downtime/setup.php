@@ -24,7 +24,10 @@ if (!empty($widgets)) {
 					echo '&nbsp'.html::anchor('recurring_downtime/', $this->translate->_('Add New Downtime Schedule')).'<br /><br />';
 				}
 
-				echo form::open('recurring_downtime/generate', array('id' => 'setup_form')); ?>
+				echo form::open('recurring_downtime/generate', array('id' => 'setup_form'));
+				if (isset($schedule_id) && !empty($schedule_id)) {?>
+				<input type="hidden" name="schedule_id" value="<?php echo $schedule_id ?>" />
+				<?php }?>
 					<input type="hidden" name="new_recurring_setup" value="1" />
 					<table summary="Select object type" class="setup-tbl">
 
@@ -197,7 +200,7 @@ if (!empty($widgets)) {
 				</div>
 
 				<div class="setup-table">
-					<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_add_schedule ?>" class="button create-report" />
+					<input id="reports_submit_button" type="submit" name="" value="<?php echo $schedule_id ? $label_update_schedule : $label_add_schedule ?>" class="button create-report" />
 				</div>
 			</form>
 		</div>
@@ -266,7 +269,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 			<td><?php echo $month_list ?></td>
 			<td style="text-align: center">
 				<?php echo html::anchor('recurring_downtime/index/'.$data['id'], html::image($this->add_path('/icons/16x16/edit.png'), array('title' => $this->translate->_('Edit'), 'alt' => '', 'style' => 'margin-bottom: -2px')),array('style' => 'border: 0px')); ?>
-				<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], html::image($this->add_path('/icons/16x16/delete-doc.png'), array('title' => $this->translate->_('Delte'), 'alt' => '', 'style' => 'margin-bottom: -2px')), array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete', 'style' => 'border: 0px')); ?>
+				<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], html::image($this->add_path('/icons/16x16/delete-doc.png'), array('title' => $this->translate->_('Delete'), 'alt' => '', 'style' => 'margin-bottom: -2px')), array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete', 'style' => 'border: 0px')); ?>
 			</td>
 		</tr>
 	<?php 	} ?>

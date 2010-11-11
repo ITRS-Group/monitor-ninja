@@ -232,6 +232,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->label_available = $t->_('Available');
 		$template->label_selected = $t->_('Selected');
 		$template->label_add_schedule = $t->_('Add Schedule');
+		$template->label_update_schedule = $t->_('Update Schedule');
 		$template->label_comment = $t->_('Comment');
 		$template->label_time = $t->_('Start Time');
 		$template->label_duration = $t->_('Duration');

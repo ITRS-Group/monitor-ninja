@@ -427,7 +427,8 @@ class ScheduleDate_Model extends Model
 		if ((int)$id) {
 			# update schedule
 			$sql = "UPDATE recurring_downtime SET author = ".$db->escape(Auth::instance()->get_user()->username).
-				", data = ".$db->escape($data).", downtime_type=".$db->escape($downtime_type)." last_update=".time();
+				", data = ".$db->escape($data).", downtime_type=".$db->escape($downtime_type).", last_update=".time().
+				" WHERE id = ".(int)$id;
 		} else {
 			# new schedule
 			$sql = "INSERT INTO recurring_downtime (author, data, downtime_type, last_update) ".
