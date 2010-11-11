@@ -389,7 +389,7 @@ class Status_Controller extends Authenticated_Controller {
 				$host_model->offset = false;
 				$host_model->count = true;
 
-				$host_model->set_host_list($name);
+				$host_model->set_host_list($group_hosts);
 				$result_cnt = $host_model->get_host_status();
 
 				$tot = $result_cnt !== false ? $result_cnt : 0;
