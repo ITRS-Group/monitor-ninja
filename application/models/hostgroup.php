@@ -420,4 +420,65 @@ class Hostgroup_Model extends ORM
 		return count($obj_info)>0 ? $obj_info : false;
 	}
 
+	/**
+	*	Verify that user has access to a specific group
+	*	by comparing nr of authorized hosts with nr of
+	* 	hosts in a group.
+	*
+	* 	This will return true or false depending on if the
+	* 	numbers are equal or not.
+	*
+	* 	@return bool true/false
+	*/
+	public function check_group_access($groupname=false)
+	{
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root) {
+			return true;
+		}
+
+		if (empty($groupname)) {
+			return false;
+		}
+
+		$db = new Database();
+		$cnt_hosts = 0;
+		$cnt_hosts_in_group = 0;
+
+		$sql = "SELECT COUNT(hhg.host) AS cnt FROM hostgroup hg, host_hostgroup hhg ".
+			"WHERE hg.hostgroup_name=".$db->escape($groupname)." AND hhg.hostgroup=hg.id;";
+
+		$res = $db->query($sql);
+		if ($res && count($res)) {
+			$row = $res->current();
+			$cnt_hosts = $row->cnt;
+		} else {
+			return false;
+		}
+
+		$sql = "SELECT COUNT(hhg.host) AS cnt ".
+			"FROM hostgroup hg, ".
+				"host_hostgroup hhg, ".
+				"contact_access ca, ".
+				"contact c ".
+			"WHERE c.contact_name=".$db->escape(Auth::instance()->get_user()->username)." ".
+				"AND ca.contact=c.id ".
+				"AND ca.host = hhg.host ".
+				"AND ca.service IS null ".
+				"AND hg.hostgroup_name=".$db->escape($groupname)." ".
+				"AND hhg.hostgroup=hg.id";
+
+		$res = $db->query($sql);
+		if ($res && count($res)) {
+			$row = $res->current();
+			$cnt_hosts_in_group = $row->cnt;
+		} else {
+			return false;
+		}
+
+		if ($cnt_hosts!=0 && $cnt_hosts_in_group!=0 && $cnt_hosts == $cnt_hosts_in_group) {
+			return true;
+		}
+		return false;
+	}
 }

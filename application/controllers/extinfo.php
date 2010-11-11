@@ -855,6 +855,20 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$this->template->title = $this->translate->_('Monitoring » Group detail');
 
+		$authorized = false;
+		switch ($grouptype) {
+			case 'hostgroup':
+				$authorized = Hostgroup_Model::check_group_access($group);
+				break;
+			case 'servicegroup':
+				$authorized = Servicegroup_Model::check_group_access($group);
+				break;
+		}
+
+		if (!$authorized) {
+			url::redirect('extinfo/unauthorized/'.$grouptype);
+		}
+
 		$group_info_res = $grouptype == 'servicegroup' ?
 			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
 			Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
