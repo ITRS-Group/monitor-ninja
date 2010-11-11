@@ -340,24 +340,42 @@ class Nagios_auth_Model extends Model
 
 		$query = 'SELECT id, hostgroup_name FROM hostgroup';
 		$result = $this->db->query($query);
+		$see_all_hostgroups = Kohana::config('groups.see_partial_hostgroups');
 		foreach ($result as $ary) {
 			$id = $ary->id;
 			$name = $ary->hostgroup_name;
 			$query = "SELECT host FROM host_hostgroup WHERE hostgroup = $id";
 			$res = $this->db->query($query);
 			$ok = true;
+			$cnt = 0;
 			if (!$this->view_hosts_root) {
 				foreach ($res as $row) {
-					if (!isset($this->hosts[$row->host])) {
-						$ok = false;
-						break;
+					if ($see_all_hostgroups !== false) {
+						if (isset($this->hosts[$row->host])) {
+							$cnt++;
+							break;
+						}
+					} else {
+						if (!isset($this->hosts[$row->host])) {
+							$ok = false;
+							break;
+						}
 					}
 				}
 			}
 
-			if ($ok) {
-			$this->hostgroups[$id] = $name;
-			$this->hostgroups_r[$name] = $id;
+			if (!$this->view_hosts_root && $see_all_hostgroups !== false) {
+				# allow user to see partial groups
+				# if set in config/groups.php
+				if ($cnt > 0) {
+					$this->hostgroups[$id] = $name;
+					$this->hostgroups_r[$name] = $id;
+				}
+			} else {
+				if ($ok) {
+					$this->hostgroups[$id] = $name;
+					$this->hostgroups_r[$name] = $id;
+				}
 			}
 		}
 
@@ -378,24 +396,42 @@ class Nagios_auth_Model extends Model
 
 		$query = 'SELECT id, servicegroup_name FROM servicegroup';
 		$result = $this->db->query($query);
+		$see_all_servicegroups = Kohana::config('groups.see_partial_servicegroups');
 		foreach ($result as $ary) {
 			$id = $ary->id;
 			$name = $ary->servicegroup_name;
 			$query = "SELECT service FROM service_servicegroup WHERE servicegroup = $id";
 			$res = $this->db->query($query);
 			$ok = true;
+			$cnt = 0;
 			if (!$this->view_services_root && !$this->view_hosts_root) {
 				foreach ($res as $row) {
-					if (!isset($this->services[$row->service])) {
-						$ok = false;
-						break;
+					if ($see_all_servicegroups !== false) {
+						if (isset($this->services[$row->service])) {
+							$cnt++;
+							break;
+						}
+					} else {
+						if (!isset($this->services[$row->service])) {
+							$ok = false;
+							break;
+						}
 					}
 				}
 			}
 
-			if ($ok) {
-				$this->servicegroups[$id] = $name;
-				$this->servicegroups_r[$name] = $id;
+			if (!$this->view_hosts_root && $see_all_servicegroups !== false) {
+				# allow user to see partial groups
+				# if set in config/groups.php
+				if ($cnt > 0) {
+					$this->servicegroups[$id] = $name;
+					$this->servicegroups_r[$name] = $id;
+				}
+			} else {
+				if ($ok) {
+					$this->servicegroups[$id] = $name;
+					$this->servicegroups_r[$name] = $id;
+				}
 			}
 		}
 
