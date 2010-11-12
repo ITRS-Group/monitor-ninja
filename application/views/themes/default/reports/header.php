@@ -1,5 +1,5 @@
 <div id="header">
-<h1 style="margin-top: 0px;"><?php echo isset($title) ? $title : $this->translate->_('SLA Breakdown'); ?></h1>
+	<h1 style="margin-top: 0px !important;"><?php echo isset($title) ? $title : $this->translate->_('SLA Breakdown'); ?></h1>
 	<p>
 	<?php
 	echo $label_report_period.': '.$report_time_formatted;
