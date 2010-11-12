@@ -57,7 +57,7 @@ foreach ($object_data as $obj => $data) {
 				<table class="time_table">
 					<tr>
 				<?php	foreach ($resolution_names as $tm) {	?>
-						<td class="trend_time" title="<?php echo $tm ?>"><?php echo $tm ?></td>
+						<td class="trend_time" title="<?php echo $tm ?>" <?php echo ($create_pdf !== false) ? 'style="font-size: 0.8em"' : ''; ?>><?php echo $tm ?></td>
 				<?php 	} ?>
 					</tr>
 				</table>
@@ -69,3 +69,4 @@ foreach ($object_data as $obj => $data) {
 ?>
 <div style="clear:both"></div>
 <?php echo (isset($avail_template) && !empty($avail_template)) ? $avail_template : ''; ?>
+.
