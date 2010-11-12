@@ -105,7 +105,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 *images directory
 	 */
-	define ('K_PATH_IMAGES', K_PATH_MAIN.'images/');
+	define ('K_PATH_IMAGES', 'http://'.$_SERVER['HTTP_HOST'].url::file($this->add_path('icons').'/'));
 
 	/**
 	 * blank image
@@ -145,7 +145,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * image logo
 	 */
-	define ('PDF_HEADER_LOGO', 'tcpdf_logo.jpg');
+	define ('PDF_HEADER_LOGO', 'op5.gif');
 
 	/**
 	 * header logo image width [mm]
