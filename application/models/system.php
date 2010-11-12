@@ -119,11 +119,11 @@ class System_Model extends Model
 	 */
 	public function nagios_access($username=false)
 	{
-		$access = Session::instance()->get('nagios_access', false);
+		$access = Session::instance()->get('nagios_access', null);
 
 		$db = new Database();
 
-		if (empty($access)) {
+		if (is_null($access)) {
 			$access = Ninja_user_authorization_Model::get_auth_data($username);
 			Session::instance()->set('nagios_access', $access);
 		}
