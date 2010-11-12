@@ -57,11 +57,11 @@ class Group_Model extends Model
 			$filter_sql = " AND h.id IN (".$hostlist_str.") ".$filter_sql;
 		}
 
+		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image,';
 		if ($auth->view_hosts_root) {
 			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
+				SELECT ".$fields.
+					"s.current_state AS service_state,
 					COUNT(s.current_state) AS state_count
 				FROM
 					service s,
@@ -80,9 +80,8 @@ class Group_Model extends Model
 					s.current_state;";
 		} elseif ($auth->view_services_root && $grouptype == 'service') {
 			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
+				SELECT ".$fields.
+					"s.current_state AS service_state,
 					COUNT(s.current_state) AS state_count
 				FROM
 					service s,
@@ -103,9 +102,8 @@ class Group_Model extends Model
 			$hostlist_str = implode(',', $hostlist);
 
 			$sql = "
-				SELECT
-					h.*,
-					s.current_state AS service_state,
+				SELECT ".$fields.
+					"s.current_state AS service_state,
 					COUNT(s.current_state) AS state_count
 				FROM
 					service s,
@@ -116,8 +114,7 @@ class Group_Model extends Model
 					".$all_sql."
 					ssg.".$grouptype."group = sg.id AND
 					".$member_match."
-					h.host_name=s.host_name AND
-					h.id IN (".$hostlist_str.") ".$filter_sql."
+					h.host_name=s.host_name ".$filter_sql."
 				GROUP BY
 					h.id, s.current_state
 				ORDER BY
