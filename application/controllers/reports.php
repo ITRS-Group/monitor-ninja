@@ -3617,7 +3617,11 @@ class Reports_Controller extends Authenticated_Controller
 		global $l; # required for tcpdf
 
 		if (isset($l['w_page'])) { # use ninja translation
-			$l['w_page'] = $this->translate->_('page');
+			$l['w_page'] = $this->translate->_('Page');
+		}
+
+		if (isset($l['w_op5'])) { # use ninja translation
+			$l['w_op5'] = $this->translate->_('This report is produced by op5 AB.');
 		}
 
 		$type = $this->type;
@@ -3638,8 +3642,8 @@ class Reports_Controller extends Authenticated_Controller
 		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 		// set header and footer fonts
-		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		//$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_DATA));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_DATA));
 
 		// set default monospaced font
 		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -3661,13 +3665,14 @@ class Reports_Controller extends Authenticated_Controller
 		// ---------------------------------------------------------
 
 		// set font
-		$pdf->SetFont('helvetica', 'B', 10);
+		$pdf->SetFont('helvetica', '', 10);
 
 		// add a page
 		$pdf->AddPage();
 
 		// set color for filler
 		$pdf->SetFillColor(255, 255, 0);
+		//$pdf->SetLineStyle(array('color' => array(255, 255, 255)));
 
 		// ---------------------------------------------------------
 
@@ -3680,26 +3685,34 @@ class Reports_Controller extends Authenticated_Controller
 
 		$images = array();
 		if ($this->type == 'avail') {
-			$image_string = '<table border="1">';
+			$image_string = '';
 			# handle piechart data  - render images
 			if (isset($this->pdf_data['pie_data'])) {
 				if (is_array($this->pdf_data['pie_data'])) {
 					$data_str = $this->pdf_data['pie_data'];
 					for ($i = 0; $i < sizeof($data_str); $i++) {
+						$image_string .= ($i%2 == 0) ? '<table cellspacing="30"><tr><td>' : '<td>';
+						$image_string .= '<table border="1" cellpadding="5" style="width: 326px">';
 						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
 						$images[] = $img; # store absolute path to file for later removal
-						$image_string .= '<tr><td><b>'.strtoupper($this->translate->_('Status Overview').': '.$data_str[$i]['host']).
-							'</b></td></tr><tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
+						$image_string .= '<tr><td style="font-size: 0.9em; background-color: #f4f4f4; font-weight: bold">'.($this->translate->_('Status Overview').': '.$data_str[$i]['host']).'</td></tr>'.
+											  '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
+						$image_string .= '</table>';
+						$image_string .= ($i%2 == 0) ? '</td>' : '</td></tr></table>';
 					}
 				} else {
 					# generate image
 					$data_str = $this->pdf_data['pie_data'];
 					$img = $this->piechart($data_str, K_PATH_CACHE);
 					$images[] = $img;
-					$image_string .= '<tr><td><img style="width:300px; height:200px" src="'.$img.'" /></td></tr>';
+					$image_string .= '<table border="1" cellpadding="5" style="width: 326px">';
+					$image_string .= '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
+					$image_string .= '</table>';
 				}
 			}
-			$image_string .= '<table>';
+
+
+
 		} else {
 			# sla
 			$nr = 0;
