@@ -3700,6 +3700,8 @@ class Reports_Controller extends Authenticated_Controller
 						$image_string .= '</table>';
 						$image_string .= ($i%2 == 0) ? '</td>' : '</td></tr></table>';
 					}
+					if (sizeof($data_str)%2 == 1)
+						$image_string .= '</tr></table>';
 				} else {
 					# generate image
 					$data_str = $this->pdf_data['pie_data'];
