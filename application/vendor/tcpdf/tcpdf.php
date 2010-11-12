@@ -2625,7 +2625,7 @@ if (!class_exists('TCPDF', false)) {
 			$this->SetX($header_x);
 			$this->MultiCell(0, $cell_height, $headerdata['string'], 0, '', 0, 1, '', '', true, 0, false);
 			// print an ending header line
-			$this->SetLineStyle(array('width' => 0.85 / $this->getScaleFactor(), 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+			$this->SetLineStyle(array('width' => 0.85 / $this->getScaleFactor(), 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(255, 255, 255)));
 			$this->SetY((2.835 / $this->getScaleFactor()) + max($imgy, $this->GetY()));
 			if ($this->getRTL()) {
 				$this->SetX($ormargins['right']);
@@ -2646,7 +2646,7 @@ if (!class_exists('TCPDF', false)) {
 			$this->SetTextColor(0, 0, 0);
 			//set style for cell border
 			$line_width = 0.85 / $this->getScaleFactor();
-			$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+			$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(255, 255, 255)));
 			//print document barcode
 			$barcode = $this->getBarcode();
 			if (!empty($barcode)) {
@@ -2655,9 +2655,10 @@ if (!class_exists('TCPDF', false)) {
 				$this->write1DBarcode($barcode, 'C128B', $this->GetX(), $cur_y + $line_width, $barcode_width, (($this->getFooterMargin() / 3) - $line_width), 0.3, '', '');
 			}
 			if (empty($this->pagegroups)) {
-				$pagenumtxt = $this->l['w_page'].' '.$this->getAliasNumPage().' / '.$this->getAliasNbPages();
+				$pagenumtxt = '('.$this->l['w_page'].' '.$this->getAliasNumPage().' / '.$this->getAliasNbPages().')';
+
 			} else {
-				$pagenumtxt = $this->l['w_page'].' '.$this->getPageNumGroupAlias().' / '.$this->getPageGroupAlias();
+				$pagenumtxt = '('.$this->l['w_page'].' '.$this->getPageNumGroupAlias().' / '.$this->getPageGroupAlias().')';
 			}
 			$this->SetY($cur_y);
 			//Print page number
@@ -2666,7 +2667,9 @@ if (!class_exists('TCPDF', false)) {
 				$this->Cell(0, 0, $pagenumtxt, 'T', 0, 'L');
 			} else {
 				$this->SetX($ormargins['left']);
-				$this->Cell(0, 0, $pagenumtxt, 'T', 0, 'R');
+				$this->MultiCell(0, 0, $this->l['w_op5'], 'T', 'L');
+				$this->MultiCell(0, 0, $pagenumtxt, 'T', 'C', 0, 1, 30, -10);
+				$this->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, $this->GetX(), $cur_y-2, '12', 0, '', '', '', false, 300, 'R');
 			}
 		}
 
