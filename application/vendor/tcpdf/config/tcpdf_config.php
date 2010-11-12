@@ -170,22 +170,22 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * top margin
 	 */
-	define ('PDF_MARGIN_TOP', 27);
+	define ('PDF_MARGIN_TOP', 10);
 
 	/**
 	 * bottom margin
 	 */
-	define ('PDF_MARGIN_BOTTOM', 25);
+	define ('PDF_MARGIN_BOTTOM', 18);
 
 	/**
 	 * left margin
 	 */
-	define ('PDF_MARGIN_LEFT', 15);
+	define ('PDF_MARGIN_LEFT', 20);
 
 	/**
 	 * right margin
 	 */
-	define ('PDF_MARGIN_RIGHT', 15);
+	define ('PDF_MARGIN_RIGHT', 20);
 
 	/**
 	 * default main font name
@@ -220,17 +220,17 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * magnification factor for titles
 	 */
-	define('HEAD_MAGNIFICATION', 1.1);
+	define('HEAD_MAGNIFICATION', 1);
 
 	/**
 	 * height of cell repect font height
 	 */
-	define('K_CELL_HEIGHT_RATIO', 1.25);
+	define('K_CELL_HEIGHT_RATIO', 1);
 
 	/**
 	 * title magnification respect main font size
 	 */
-	define('K_TITLE_MAGNIFICATION', 1.3);
+	define('K_TITLE_MAGNIFICATION', 1);
 
 	/**
 	 * reduction factor for small font
