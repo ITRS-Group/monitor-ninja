@@ -1825,7 +1825,7 @@ class Reports_Model extends Model
 		if (!$this->assume_states_during_not_running)
 			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
 			" OR event_type=".self::PROCESS_START;
-		$sql .= ") ORDER BY id";
+		$sql .= ") ORDER BY timestamp";
 
 		return $this->db->query($sql);
 	}
@@ -1856,7 +1856,7 @@ class Reports_Model extends Model
 		if (!empty($service_description)) {
 			$sql .= "AND service_description=".$this->db->quote($service_description);
 		}
-		$sql .= " ORDER BY id DESC LIMIT 1";
+		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
 		$dbr = $this->db->query($sql);
 		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
@@ -1910,7 +1910,7 @@ class Reports_Model extends Model
 		$sql .= ' ';
 		$base_sql = $sql;
 		$sql .= "AND timestamp < " . $this->start_time .
-			" ORDER BY id DESC LIMIT 1";
+			" ORDER BY timestamp DESC LIMIT 1";
 
 		# first try to fetch the real initial state so
 		# we don't have to assume
@@ -1936,7 +1936,7 @@ class Reports_Model extends Model
 		# it's supported in the old cgi's, so we must keep this
 		# mouldering wreck of insanity alive...
 		if ($state == -1) {
-			$dbr = $this->db->query($base_sql . "ORDER BY id DESC LIMIT 1");
+			$dbr = $this->db->query($base_sql . "ORDER BY timestamp DESC LIMIT 1");
 		}
 
 		# Using the first real state found in the database as
@@ -1944,7 +1944,7 @@ class Reports_Model extends Model
 		# above black voodoo, as reports for last year will always
 		# look the same, no matter what the current state is.
 		elseif ($state == -3) {
-			$dbr = $this->db->query($base_sql . "ORDER BY id ASC LIMIT 1");
+			$dbr = $this->db->query($base_sql . "ORDER BY timestamp ASC LIMIT 1");
 		}
 
 		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
