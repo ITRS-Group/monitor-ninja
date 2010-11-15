@@ -33,6 +33,7 @@ class Configuration_Controller extends Authenticated_Controller {
 			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
 			return false;
 		}
+		$scan = urldecode($this->input->get('scan', null));
 		$type = urldecode($this->input->get('type', $type));
 		$name = urldecode($this->input->get('name', $name));
 		$service = urldecode($this->input->get('service', false));
@@ -55,6 +56,8 @@ class Configuration_Controller extends Authenticated_Controller {
 			}
 		} elseif (!empty($type)) {
 			$target_link = 'edit.php?obj_type='.$type;
+		} elseif (!is_null($scan)) {
+			$target_link = 'host_wizard.php';
 		}
 
 
