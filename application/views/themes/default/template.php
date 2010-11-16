@@ -185,8 +185,8 @@ if (isset($this->template->js_header))
 				</ul>
 			</div>
 		</div>
-		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide')"></div>
-		<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show')"></div>
+		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide', 1)"></div>
+		<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show', 1)"></div>
 		<div style="position: fixed; left: 0px; z-index:2">
 
 		<div id="menu" style="overflow-y:auto;">
@@ -194,7 +194,7 @@ if (isset($this->template->js_header))
 			<?php
 			if (isset($links))
 				foreach ($links as $header => $link):
-						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\')">
+						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\', 1)">
 									<cite class="menusection">'.html::specialchars($header).'</cite>
 									<em>'.substr(html::specialchars($header),0,1).'</em>
 								</li>'."\n";

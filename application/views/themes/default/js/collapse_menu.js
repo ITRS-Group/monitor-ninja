@@ -1,5 +1,5 @@
 var default_menu_state = 'show';
-function collapse_menu(action) {
+function collapse_menu(action, save) {
 
 	if (action == 'hide') {
 		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
@@ -10,7 +10,9 @@ function collapse_menu(action) {
 		$('.ninja_menu_links').hide();
 		$('li.header cite').hide();
 		$('li.header em').css('display','block');
-		save_ninja_menu_state('hide');
+		if (save) {
+			save_ninja_menu_state('hide');
+		}
 	}
 	if (action == 'show') {
 		$('#menu').css('width', '185px');
@@ -20,7 +22,9 @@ function collapse_menu(action) {
 		$('.ninja_menu_links').show();
 		$('li.header cite').show();
 		$('li.header em').hide();
-		save_ninja_menu_state('show');
+		if (save) {
+			save_ninja_menu_state('show');
+		}
 	}
 }
 
@@ -48,7 +52,7 @@ function show_info(action) {
 	}
 }
 
-function collapse_section(section){
+function collapse_section(section, save){
 	var is_visible = false;
 	$('.'+section).slideToggle(200,function(){
 		$(this).addClass(section + "_hidden");
@@ -56,15 +60,16 @@ function collapse_section(section){
 		$(this).removeClass(section + "_hidden");
 	});
 
-	// save menu section state
-	if ($('.' + section + "_hidden").text()) {
-		// save section state visible
-		save_menu_section_state(section, 1);
-	} else {
-		// save section state hidden
-		save_menu_section_state(section, 0);
+	if (save) {
+		// save menu section state
+		if ($('.' + section + "_hidden").text()) {
+			// save section state visible
+			save_menu_section_state(section, 1);
+		} else {
+			// save section state hidden
+			save_menu_section_state(section, 0);
+		}
 	}
-
 	// wait some for menu to get it's correct height
 	setTimeout("scroll_control()", 210)
 }
