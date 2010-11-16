@@ -217,10 +217,20 @@ class Ninja_Controller extends Template_Controller {
 			}
 		}
 
-		if (is_file("/opt/monitor/op5/nacoma/autoscan/result")) {
-			$target_list = unserialize(file_get_contents("/opt/monitor/op5/nacoma/autoscan/result"));
-			if (is_array($target_list) && count($target_list)) {
-				$notifications[] = array($this->translate->_('Autoscan complete. Found hosts : ') . count($target_list), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
+		# check permissions
+		$auth = new Nagios_auth_Model();
+		if ($auth->authorized_for_configuration_information && $auth->authorized_for_system_commands && $auth->view_hosts_root) {
+			if (is_file("/opt/monitor/op5/nacoma/autoscan/result")) {
+				#filter hosts
+				$target_list = unserialize(file_get_contents("/opt/monitor/op5/nacoma/autoscan/result"));
+				$source_list = Host_Model::addr_name();
+				if (is_array($target_list)) {
+					$filtered_list = array_diff($target_list, $source_list);
+					if (count($filtered_list)) {
+						# show notification
+						$notifications[] = array($this->translate->_('Autoscan complete. Found hosts : ') . count($filtered_list), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
+					}
+				}
 			}
 		}
 

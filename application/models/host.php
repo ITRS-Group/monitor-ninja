@@ -1104,7 +1104,7 @@ class Host_Model extends Model {
 		$data = $db->query($sql);
 		if (count($data)>0) {
 			foreach ($data as $row) {
-				$hostlist[$row->host_name] = $row->address;
+				$hostlist[$row->address] = $row->host_name;
 			}
 		}
 		return $hostlist;
