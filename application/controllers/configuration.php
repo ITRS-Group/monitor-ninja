@@ -56,10 +56,9 @@ class Configuration_Controller extends Authenticated_Controller {
 			}
 		} elseif (!empty($type)) {
 			$target_link = 'edit.php?obj_type='.$type;
-		} elseif (!is_null($scan)) {
-			$target_link = 'host_wizard.php';
+		} elseif (!empty($scan)) {
+			$target_link = 'host_wizard.php?action='.$scan;
 		}
-
 
 		# set the username so Nacoma can pick it up
 		$_SESSION['nacoma_user'] = user::session('username');

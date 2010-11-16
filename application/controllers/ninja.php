@@ -217,6 +217,13 @@ class Ninja_Controller extends Template_Controller {
 			}
 		}
 
+		if (is_file("/opt/monitor/op5/nacoma/autoscan/result")) {
+			$target_list = unserialize(file_get_contents("/opt/monitor/op5/nacoma/autoscan/result"));
+			if (is_array($target_list) && count($target_list)) {
+				$notifications[] = array($this->translate->_('Autoscan complete. Found hosts : ') . count($target_list), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
+			}
+		}
+
 		$this->global_notifications = $notifications;
 	}
 
