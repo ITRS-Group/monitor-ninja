@@ -767,6 +767,7 @@ class Trends_Controller extends Authenticated_Controller {
 				$template->error->label_missing_objects = $t->_('Missing objects');
 				$template->error->missing_objects = $objects;
 			}
+			return;
 		} else {
 			# ==========================================
 			# ========= REPORT STARTS HERE =============
