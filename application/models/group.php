@@ -57,7 +57,7 @@ class Group_Model extends Model
 			$filter_sql = " AND h.id IN (".$hostlist_str.") ".$filter_sql;
 		}
 
-		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image,';
+		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image, h.icon_image_alt,';
 		if ($auth->view_hosts_root) {
 			$sql = "
 				SELECT ".$fields.
