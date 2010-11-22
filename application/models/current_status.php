@@ -216,133 +216,106 @@ class Current_status_Model extends Model
 	 */
 	public function host_status()
 	{
-		$hostlist = Host_Model::authorized_hosts();
-		if (empty($hostlist)) {
-			return false;
-		}
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root) {
-			$sql = "SELECT * FROM host";
-		} else {
-			$sql = "SELECT h.* ".
-				"FROM host AS h, contact, contact_access ca ".
-				"WHERE contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-				" AND ca.contact=contact.id ".
-				"AND ca.service IS null ".
-				"AND ca.host=h.id";
 		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
+
+		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
+
+		$sql = "SELECT ".
+			"(SELECT COUNT(*) FROM host) AS total_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE flap_detection_enabled!=1) AS flap_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE is_flapping=1) AS flapping_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE notifications_enabled!=1) AS notification_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE event_handler_enabled!=1) AS event_handler_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE active_checks_enabled!=1) AS active_checks_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE passive_checks_enabled!=1) AS passive_checks_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." AND active_checks_enabled!=1 ) AS hosts_up_disabled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." ".$active_checks_condition." ) AS hosts_up_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." ) AS hosts_up, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND scheduled_downtime_depth>0 ) AS hosts_down_scheduled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND problem_has_been_acknowledged=1 ) AS hosts_down_acknowledged, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND active_checks_enabled!=1 ) AS hosts_down_disabled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_down_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN.") AS hosts_down, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth>0 ) AS hosts_unreachable_scheduled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND problem_has_been_acknowledged=1 ) AS hosts_unreachable_acknowledged, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND active_checks_enabled!=1 ) AS hosts_unreachable_disabled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_unreachable_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE.") AS hosts_unreachable, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_PENDING ." ".$active_checks_condition.") AS hosts_pending_disabled, ".
+			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_PENDING .") AS hosts_pending, ".
+			"(SELECT COUNT(*) FROM host WHERE check_type=".self::HOST_CHECK_ACTIVE.") AS total_active_host_checks, ".
+			"(SELECT COUNT(*) FROM host WHERE check_type>".self::HOST_CHECK_ACTIVE.") AS total_passive_host_checks, ".
+			"(SELECT MIN(latency) FROM host) AS min_host_latency, ".
+			"(SELECT MAX(latency) FROM host) AS max_host_latency, ".
+			"(SELECT SUM(latency) FROM host) AS total_host_latency, ".
+			"(SELECT MIN(execution_time) FROM host) AS min_host_execution_time, ".
+			"(SELECT MAX(execution_time) FROM host) AS max_host_execution_time, ".
+			"(SELECT SUM(execution_time) FROM host) AS total_host_execution_time";
+		if (!$auth->view_hosts_root) {
+			$sql .= " FROM host ".
+				"INNER JOIN contact_access ON host.id=contact_access.host ".
+				"WHERE contact_access.service IS NULL ".
+				"AND contact_access.contact=".$auth->id.
+				" GROUP BY contact_access.contact";
 		}
 
 		$result = $this->db->query($sql);
 
-		$show_passive_as_active = config::get('checks.show_passive_as_active');
-		/* check all hosts */
-		foreach ($result as $host){
-			$this->total_hosts++;
-
-			/******** CHECK FEATURES *******/
-
-			/* check flapping */
-			if(!$host->flap_detection_enabled)
-				$this->flap_disabled_hosts++;
-			else if ($host->is_flapping)
-				$this->flapping_hosts++;
-
-			/* check notifications */
-			if (!$host->notifications_enabled)
-				$this->notification_disabled_hosts++;
-
-			/* check event handler */
-			if(!$host->event_handler_enabled)
-				$this->event_handler_disabled_hosts++;
-
-			/* active check execution */
-			if(!$host->active_checks_enabled)
-				$this->active_checks_disabled_hosts++;
-
-			/* passive check acceptance */
-			if(!$host->passive_checks_enabled)
-				$this->passive_checks_disabled_hosts++;
-
-
-			/********* CHECK STATUS ********/
-			$this->problem = true;
-			switch ($host->current_state) {
-				case self::HOST_UP:
-					if (!$host->active_checks_enabled && !$show_passive_as_active)
-						$this->hosts_up_disabled++;
-					else
-						$this->hosts_up_unacknowledged++;
-					$this->hosts_up++;
-					break;
-				case self::HOST_DOWN:
-					if ($host ->scheduled_downtime_depth > 0) {
-						$this->hosts_down_scheduled++;
-						$this->problem = false;
-					}
-					if ($host->problem_has_been_acknowledged) {
-						$this->hosts_down_acknowledged++;
-						$this->problem = false;
-					}
-					if (!$host->active_checks_enabled && !$show_passive_as_active) {
-						$this->hosts_down_disabled++;
-						$this->problem = false;
-					}
-					if($this->problem == true)
-						$this->hosts_down_unacknowledged++;
-					$this->hosts_down++;
-					break;
-				case self::HOST_UNREACHABLE:
-					if ($host->scheduled_downtime_depth > 0) {
-						$this->hosts_unreachable_scheduled++;
-						$this->problem = false;
-					}
-					if ($host->problem_has_been_acknowledged) {
-						$this->hosts_unreachable_acknowledged++;
-						$this->problem = false;
-					}
-					if (!$host->active_checks_enabled && !$show_passive_as_active) {
-						$this->hosts_unreachable_disabled++;
-						$this->problem = false;
-					}
-					if ($this->problem == true)
-						$this->hosts_unreachable_unacknowledged++;
-					$this->hosts_unreachable++;
-					break;
-				case self::HOST_PENDING:
-					if(!$host->active_checks_enabled && !$show_passive_as_active)
-						$this->hosts_pending_disabled++;
-					$this->hosts_pending++;
-					break;
-			}
-
-			/* get health stats */
-			if($host->current_state == self::HOST_UP)
-				$this->total_host_health++;
-
-			if($host->current_state!=self::HOST_PENDING)
-				$this->potential_host_health++;
-
-			/* check type stats */
-			if($host->check_type == self::HOST_CHECK_ACTIVE){
-
-				$this->total_active_host_checks++;
-
-				if ($this->min_host_latency == -1.0 || $host->latency < $this->min_host_latency)
-					$this->min_host_latency = $host->latency;
-				if ($this->max_host_latency == -1.0 || $host->latency > $this->max_host_latency)
-					$this->max_host_latency = $host->latency;
-
-				if ($this->min_host_execution_time == -1.0 || $host->execution_time < $this->min_host_execution_time)
-					$this->min_host_execution_time = $host->execution_time;
-				if ($this->max_host_execution_time == -1.0 || $host->execution_time > $this->max_host_execution_time)
-					$this->max_host_execution_time = $host->execution_time;
-
-				$this->total_host_latency += $host->latency;
-				$this->total_host_execution_time += $host->execution_time;
-			} else
-				$this->total_passive_host_checks++;
+		$host = $result->current();
+		if ($result===false || !count($result)) {
+			return false;
 		}
+
+		$this->total_hosts = $host->total_hosts;
+		$this->flap_disabled_hosts = $host->flap_disabled_hosts;
+		$this->flapping_hosts = $host->flapping_hosts;
+		$this->notification_disabled_hosts = $host->notification_disabled_hosts;
+		$this->event_handler_disabled_hosts = $host->event_handler_disabled_hosts;
+		$this->active_checks_disabled_hosts = $host->active_checks_disabled_hosts;
+		$this->passive_checks_disabled_hosts = $host->passive_checks_disabled_hosts;
+
+		$this->hosts_up_disabled = $host->hosts_up_disabled;
+		$this->hosts_up_unacknowledged = $host->hosts_up_unacknowledged;
+		if ($show_passive_as_active) {
+			$this->hosts_up_unacknowledged += $this->hosts_up_disabled;
+			$this->hosts_up_disabled = 0;
+		}
+
+		$this->hosts_up = $host->hosts_up;
+		$this->hosts_down_scheduled = $host->hosts_down_scheduled;
+		$this->hosts_down_acknowledged = $host->hosts_down_acknowledged;
+
+		$this->hosts_down_disabled = $show_passive_as_active ? 0 : $host->hosts_down_disabled;
+
+		$this->hosts_down_unacknowledged = $host->hosts_down_unacknowledged;
+		$this->hosts_down = $host->hosts_down;
+		$this->hosts_down_acknowledged = $host->hosts_down_acknowledged;
+		$this->hosts_down_disabled = $host->hosts_down_disabled;
+		$this->hosts_down_unacknowledged = $host->hosts_down_unacknowledged;
+		$this->hosts_unreachable_scheduled = $host->hosts_unreachable_scheduled;
+		$this->hosts_unreachable_acknowledged = $host->hosts_unreachable_acknowledged;
+
+		$this->hosts_unreachable_disabled = $show_passive_as_active ? 0 : $host->hosts_unreachable_disabled;
+
+		$this->hosts_unreachable_unacknowledged = $host->hosts_unreachable_unacknowledged;
+		$this->hosts_unreachable = $host->hosts_unreachable;
+
+		$this->hosts_pending_disabled = $show_passive_as_active ? 0 : $host->hosts_pending_disabled;
+
+		$this->hosts_pending = $host->hosts_pending;
+
+		$this->total_host_health = $this->hosts_up;
+		$this->potential_host_health = ($this->hosts_up + $this->hosts_down + $this->hosts_unreachable);
+		$this->total_active_host_checks = $host->total_active_host_checks;
+		$this->min_host_latency = number_format($host->min_host_latency, 3);
+		$this->max_host_latency = number_format($host->max_host_latency, 3);
+		$this->min_host_execution_time = number_format($host->min_host_execution_time, 3);
+		$this->max_host_execution_time = number_format($host->max_host_execution_time, 3);
+		$this->total_host_latency = number_format($host->total_host_latency, 3);
+		$this->total_host_execution_time = number_format($host->total_host_execution_time, 3);
+		$this->total_passive_host_checks = $host->total_passive_host_checks;
+
 		$this->host_data_present = true;
 		return true;
 	}
@@ -353,153 +326,121 @@ class Current_status_Model extends Model
 	 */
 	public function service_status()
 	{
-		$svc = new Service_Model();
-		$result = $svc->service_status();
-		if (!$result)
+		$auth = new Nagios_auth_Model();
 		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
-			return false;
 
-		$show_passive_as_active = config::get('checks.show_passive_as_active');
-		/* check all services */
-		foreach ($result as $service) {
-			$this->total_services++;
+		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
 
-			/******** CHECK FEATURES *******/
-
-			/* check flapping */
-			if (!$service->flap_detection_enabled)
-				$this->flap_disabled_services++;
-			else if ($service->is_flapping)
-				$this->flapping_services++;
-
-			/* check notifications */
-			if (!$service->notifications_enabled)
-				$this->notification_disabled_services++;
-
-			/* check event handler */
-			if (!$service->event_handler_enabled)
-				$this->event_handler_disabled_services++;
-
-			/* active check execution */
-			if (!$service->active_checks_enabled)
-				$this->active_checks_disabled_services++;
-
-			/* passive check acceptance */
-			if (!$service->passive_checks_enabled)
-				$this->passive_checks_disabled_services++;
-
-
-			/********* CHECK STATUS ********/
-
-			$this->problem = true;
-			switch ($service->current_state) {
-				case self::SERVICE_OK:
-					if(!$service->active_checks_enabled && !$show_passive_as_active)
-						$this->services_ok_disabled++;
-					else
-						$this->services_ok_unacknowledged++;
-					$this->services_ok++;
-					break;
-				case self::SERVICE_WARNING:
-					if ($service->host_status == self::HOST_DOWN || $service->host_status == self::HOST_UNREACHABLE) {
-						$this->services_warning_host_problem++;
-						$this->problem = false;
-					}
-					if ($service->scheduled_downtime_depth > 0) {
-						$this->services_warning_scheduled++;
-						$this->problem = false;
-					}
-					if ($service->problem_has_been_acknowledged) {
-						$this->services_warning_acknowledged++;
-						$this->problem = false;
-					}
-					if (!$service->active_checks_enabled && !$show_passive_as_active) {
-						$this->services_warning_disabled++;
-						$this->problem = false;
-					}
-					if ($this->problem)
-						$this->services_warning_unacknowledged++;
-					$this->services_warning++;
-					break;
-				case self::SERVICE_UNKNOWN:
-					if ($service->host_status == self::HOST_DOWN || $service->host_status == self::HOST_UNREACHABLE) {
-						$this->services_unknown_host_problem++;
-						$this->problem = false;
-					}
-					if ($service->scheduled_downtime_depth > 0) {
-						$this->services_unknown_scheduled++;
-						$this->problem = false;
-					}
-					if ($service->problem_has_been_acknowledged) {
-						$this->services_unknown_acknowledged++;
-						$this->problem = false;
-					}
-					if (!$service->active_checks_enabled && !$show_passive_as_active) {
-						$this->services_unknown_disabled++;
-						$this->problem = false;
-					}
-					if($this->problem == true)
-						$this->services_unknown_unacknowledged++;
-					$this->services_unknown++;
-					break;
-				case self::SERVICE_CRITICAL:
-					if ($service->host_status == self::HOST_DOWN || $service->host_status == self::HOST_UNREACHABLE) {
-						$this->services_critical_host_problem++;
-						$this->problem = false;
-					}
-					if ($service->scheduled_downtime_depth > 0) {
-						$this->services_critical_scheduled++;
-						$this->problem = false;
-					}
-					if ($service->problem_has_been_acknowledged) {
-						$this->services_critical_acknowledged++;
-						$this->problem = false;
-					}
-					if (!$service->active_checks_enabled && !$show_passive_as_active) {
-						$this->services_critical_disabled++;
-						$this->problem = false;
-					}
-					if ($this->problem == true)
-						$this->services_critical_unacknowledged++;
-					$this->services_critical++;
-					break;
-				case self::SERVICE_PENDING:
-					if(!$service->active_checks_enabled && !$show_passive_as_active)
-						$this->services_pending_disabled++;
-					$this->services_pending++;
-					break;
-			}
-
-			/* get health stats */
-			if ($service->current_state == self::SERVICE_OK)
-				$this->total_service_health+=2;
-
-			else if ($service->current_state == self::SERVICE_WARNING || $service->current_state == self::SERVICE_UNKNOWN)
-				$this->total_service_health++;
-
-			if ($service->current_state != self::SERVICE_PENDING)
-				$this->potential_service_health+=2;
-
-
-			/* calculate execution time and latency stats */
-			if ($service->check_type == self::SERVICE_CHECK_ACTIVE) {
-				$this->total_active_service_checks++;
-
-				if ($this->min_service_latency == -1.0 || $service->latency < $this->min_service_latency)
-					$this->min_service_latency = $service->latency;
-				if ($this->max_service_latency == -1.0 || $service->latency > $this->max_service_latency)
-					$this->max_service_latency = $service->latency;
-
-				if ($this->min_service_execution_time == -1.0 || $service->execution_time < $this->min_service_execution_time)
-					$this->min_service_execution_time = $service->execution_time;
-				if ($this->max_service_execution_time == -1.0 || $service->execution_time > $this->max_service_execution_time)
-					$this->max_service_execution_time = $service->execution_time;
-
-				$this->total_service_latency += $service->latency;
-				$this->total_service_execution_time += $service->execution_time;
-			} else
-				$this->total_passive_service_checks++;
+		$sql = "SELECT ".
+			"(SELECT COUNT(*) FROM service) AS total_services, ".
+			"(SELECT COUNT(*) FROM service WHERE flap_detection_enabled!=1) AS flap_disabled_services, ".
+			"(SELECT COUNT(*) FROM service WHERE is_flapping=1) AS flapping_services, ".
+			"(SELECT COUNT(*) FROM service WHERE notifications_enabled!=1) AS notification_disabled_services, ".
+			"(SELECT COUNT(*) FROM service WHERE event_handler_enabled!=1) AS event_handler_disabled_services, ".
+			"(SELECT COUNT(*) FROM service WHERE active_checks_enabled!=1) AS active_checks_disabled_services, ".
+			"(SELECT COUNT(*) FROM service WHERE passive_checks_enabled!=1) AS passive_checks_disabled_services, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." AND active_checks_enabled!=1 ) AS services_ok_disabled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." ".$active_checks_condition." ) AS services_ok_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." ) AS services_ok, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_WARNING." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_warning_host_problem, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth>0 ) AS services_warning_scheduled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND problem_has_been_acknowledged=1 ) AS services_warning_acknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND active_checks_enabled!=1 ) AS services_warning_disabled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_warning_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING.") AS services_warning, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_CRITICAL." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_critical_host_problem, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth>0 ) AS services_critical_scheduled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND problem_has_been_acknowledged=1 ) AS services_critical_acknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND active_checks_enabled!=1 ) AS services_critical_disabled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_critical_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL.") AS services_critical, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_UNKNOWN." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_unknown_host_problem, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth>0 ) AS services_unknown_scheduled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND problem_has_been_acknowledged=1 ) AS services_unknown_acknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND active_checks_enabled!=1 ) AS services_unknown_disabled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_unknown_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN.") AS services_unknown, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_PENDING." AND active_checks_enabled!=1 ) AS services_pending_disabled, ".
+			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_PENDING.") AS services_pending, ".
+			"(SELECT COUNT(*) FROM service WHERE check_type=0) AS total_active_service_checks, ".
+			"(SELECT COUNT(*) FROM service WHERE check_type>0) AS total_passive_service_checks, ".
+			"(SELECT MIN(latency) FROM service) AS min_service_latency, ".
+			"(SELECT MAX(latency) FROM service) AS max_service_latency, ".
+			"(SELECT SUM(latency) FROM service) AS total_service_latency, ".
+			"(SELECT MIN(execution_time) FROM service) AS min_service_execution_time, ".
+			"(SELECT MAX(execution_time) FROM service) AS max_service_execution_time, ".
+			"(SELECT SUM(execution_time) FROM service) AS total_service_execution_time";
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$sql .= " FROM service ".
+				"INNER JOIN contact_access ON service.id=contact_access.service ".
+				"WHERE contact_access.service IS NOT NULL ".
+				"AND contact_access.contact=".$auth->id.
+				" GROUP BY contact_access.contact";
 		}
+
+		$result = $this->db->query($sql);
+
+		if ($result === false || !count($result)) {
+			return false;
+		}
+
+		$svc = $result->current();
+
+		$this->total_services = $svc->total_services;
+		$this->flap_disabled_services = $svc->flap_disabled_services;
+		$this->flapping_services = $svc->flapping_services;
+		$this->notification_disabled_services = $svc->notification_disabled_services;
+		$this->event_handler_disabled_services = $svc->event_handler_disabled_services;
+		$this->active_checks_disabled_services  = $svc->active_checks_disabled_services;
+		$this->passive_checks_disabled_services = $svc->passive_checks_disabled_services;
+
+		$this->services_ok_disabled = $svc->services_ok_disabled;
+		$this->services_ok_unacknowledged = $svc->services_ok_unacknowledged;
+		if ($show_passive_as_active) {
+			$this->services_ok_unacknowledged += $this->services_ok_disabled;
+			$this->services_ok_disabled = 0;
+		}
+
+		$this->services_ok = $svc->services_ok;
+		$this->services_warning_host_problem = $svc->services_warning_host_problem;
+		$this->services_warning_scheduled = $svc->services_warning_scheduled;
+		$this->services_warning_acknowledged = $svc->services_warning_acknowledged;
+
+		$this->services_warning_disabled = $show_passive_as_active ? 0 : $svc->services_warning_disabled;
+
+		$this->services_warning_unacknowledged = $svc->services_warning_unacknowledged;
+		$this->services_warning = $svc->services_warning;
+		$this->services_unknown_host_problem = $svc->services_unknown_host_problem;
+		$this->services_unknown_scheduled = $svc->services_unknown_scheduled;
+		$this->services_unknown_acknowledged = $svc->services_unknown_acknowledged;
+
+		$this->services_unknown_disabled = $show_passive_as_active ? 0 : $svc->services_unknown_disabled;
+
+		$this->services_unknown_unacknowledged = $svc->services_unknown_unacknowledged;
+		$this->services_unknown = $svc->services_unknown;
+		$this->services_critical_host_problem = $svc->services_critical_host_problem;
+		$this->services_critical_scheduled = $svc->services_critical_scheduled;
+		$this->services_critical_acknowledged = $svc->services_critical_acknowledged;
+		$this->services_critical_disabled = $svc->services_critical_disabled;
+		$this->services_critical_unacknowledged = $svc->services_critical_unacknowledged;
+		$this->services_critical = $svc->services_critical;
+
+		$this->services_pending_disabled = $show_passive_as_active ? 0 : $svc->services_pending_disabled;
+
+		$this->services_pending = $svc->services_pending;
+		$this->total_active_service_checks = $svc->total_active_service_checks;
+		$this->min_service_latency = number_format($svc->min_service_latency, 3);
+		$this->max_service_latency = number_format($svc->max_service_latency, 3);
+		$this->min_service_execution_time = number_format($svc->min_service_execution_time, 3);
+		$this->max_service_execution_time = number_format($svc->max_service_execution_time, 3);
+		$this->total_service_latency = number_format($svc->total_service_latency, 2);
+		$this->total_service_execution_time = number_format($svc->total_service_execution_time, 3);
+		$this->total_passive_service_checks = $svc->total_passive_service_checks;
+
+		$this->total_service_health = (2*$this->services_ok + $this->services_warning + $this->services_unknown);
+
+		$this->potential_service_health = 2*($this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown);
+
 		$this->service_data_present = true;
 		return true;
 	}
@@ -580,21 +521,13 @@ class Current_status_Model extends Model
 		if(!$this->auth->view_hosts_root)
 			return false;
 
-		# fetch hosts for current user
-		$hostlist = Host_Model::authorized_hosts();
-		if (empty($hostlist)) {
-			return false;
+		$xtra_sql = "";
+		if (!$this->auth->view_hosts_root) {
+			$xtra_sql = "id IN (SELECT host FROM contact_access WHERE service IS NULL AND contact=".$this->auth->id.") AND ";
 		}
-		$str_hostlist = implode(', ', $hostlist);
 
-		$sql = "
-			SELECT
-				*
-			FROM
-				host
-			WHERE
-				id IN (".$str_hostlist.") AND
-				(current_state!=".self::HOST_UP." AND current_state!=".self::HOST_PENDING.")";
+		$sql = "SELECT * FROM host WHERE ".$xtra_sql.
+				"(current_state!=".self::HOST_UP." AND current_state!=".self::HOST_PENDING.")";
 
 		$result = $this->db->query($sql);
 
@@ -620,21 +553,19 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		$query = "
-			SELECT
-				h.id,
-				h.host_name,
-				count(s.id) as service_cnt
-			FROM
-				host h,
-				host_parents hp,
-				service s
-			WHERE
-				hp.parents=".$host_id." AND
-				h.id=hp.host AND
-				s.host_name=h.host_name
-			GROUP BY
-				h.id";
+		$query = "SELECT ".
+				"h.id, ".
+				"h.host_name, ".
+				"count(s.id) as service_cnt ".
+			"FROM ".
+				"host h, ".
+				"host_parents hp, ".
+				"service s ".
+			"WHERE ".
+				"hp.parents=".$host_id." AND ".
+				"h.id=hp.host AND ".
+				"s.host_name=h.host_name ".
+			"GROUP BY h.id";
 		$result = $this->db->query($query);
 		if ($result->count()==0) {
 			return false;
