@@ -230,6 +230,7 @@ class Current_status_Model extends Model
 				" AND ca.contact=contact.id ".
 				"AND ca.service IS null ".
 				"AND ca.host=h.id";
+		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 		}
 
 		$result = $this->db->query($sql);
@@ -355,6 +356,7 @@ class Current_status_Model extends Model
 		$svc = new Service_Model();
 		$result = $svc->service_status();
 		if (!$result)
+		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 			return false;
 
 		$show_passive_as_active = config::get('checks.show_passive_as_active');
