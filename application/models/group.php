@@ -317,12 +317,14 @@ class Group_Model extends Model
 		$all_sql = $name != 'all' ? "sg.".$grouptype."group_name=".$db->escape($name)." AND " : '';
 
 		$auth_control = '';
+		$ca_table = '';
 
 		if ($grouptype == 'host') {
 			if (!$auth->view_hosts_root) {
 				$auth_control = "AND ".
 				"ca.contact=".(int)$contact_id." AND ".
 				"h.id=ca.host ";
+				$ca_table = ",contact_access ca ";
 			}
 
 			switch ($what) {
@@ -332,8 +334,7 @@ class Group_Model extends Model
 						"FROM ".
 						"host h, ".
 						$grouptype."group sg, ".
-						$grouptype."_".$grouptype."group ssg, ".
-						"contact_access ca ".
+						$grouptype."_".$grouptype."group ssg ".$ca_table.
 						"WHERE ".$all_sql.
 						"ssg.".$grouptype."group = sg.id AND ".
 						"h.id=ssg.host ".$auth_control.
@@ -349,8 +350,7 @@ class Group_Model extends Model
 						"service s, ".
 						"host h, ".
 						$grouptype."group sg, ".
-						$grouptype."_".$grouptype."group ssg, ".
-						"contact_access ca ".
+						$grouptype."_".$grouptype."group ssg ".$ca_table.
 						"WHERE ".$all_sql.
 						"ssg.".$grouptype."group = sg.id AND ".
 						"h.id=ssg.host AND ".
@@ -362,9 +362,10 @@ class Group_Model extends Model
 					break;
 			}
 		} elseif ($grouptype == 'service') {
-			if ($auth->view_hosts_root || $auth->view_services_root) {
+			if (!$auth->view_hosts_root && !$auth->view_services_root) {
 				$auth_control = " AND ca.contact=".(int)$contact_id." AND ".
 				"s.id=ca.service ";
+				$ca_table = ",contact_access ca ";
 			}
 
 			switch ($what) {
@@ -375,8 +376,7 @@ class Group_Model extends Model
 						"host h, ".
 						"service s, ".
 						$grouptype."group sg, ".
-						$grouptype."_".$grouptype."group ssg, ".
-						"contact_access ca ".
+						$grouptype."_".$grouptype."group ssg ".$ca_table.
 						"WHERE ".$all_sql.
 						"ssg.".$grouptype."group = sg.id AND ".
 						"s.id=ssg.service AND ".
@@ -393,14 +393,12 @@ class Group_Model extends Model
 						"service s, ".
 						"host h, ".
 						$grouptype."group sg, ".
-						$grouptype."_".$grouptype."group ssg, ".
-						"contact_access ca ".
+						$grouptype."_".$grouptype."group ssg ".$ca_table.
 						"WHERE ".$all_sql.
 						"ssg.".$grouptype."group = sg.id AND ".
 						"s.id=ssg.service AND ".
-						"h.host_name=s.host_name AND ".
-						"s.id=ca.service ".$auth_control.
-						"GROUP BY ".
+						"h.host_name=s.host_name ".$auth_control.
+						" GROUP BY ".
 						"s.current_state ".
 						"ORDER BY ".
 						"s.current_state;";
@@ -408,6 +406,121 @@ class Group_Model extends Model
 			}
 		}
 		#echo $sql."<br />";
+		$result = $db->query($sql);
+		return count($result)>0 ? $result : false;
+	}
+
+	/**
+	*	Fetch group overview data
+	* 	Expects group type (host/service) and group name
+	*/
+	public function group_overview($type='service', $group=false)
+	{
+		$auth = new Nagios_auth_Model();
+		$auth_objects = array();
+		if ($type == 'service') {
+			$auth_objects = $auth->get_authorized_servicegroups();
+		} elseif ($type == 'host') {
+			$auth_objects = $auth->get_authorized_hostgroups();
+		}
+
+		$contact = $auth->id;
+		$auth_ids = array_keys($auth_objects);
+		if (empty($auth_ids) || empty($group)) {
+			return false;
+		}
+
+		$db = new Database();
+		#$db = pdodb::instance();
+
+		if (empty($group)) {
+			return false;
+		}
+
+		# make sure we don't show info on services that
+		# an authorized contact shouldn't see
+		$service_match = $auth->view_hosts_root || $auth->view_services_root ? ''
+			: "  AND service.id IN (SELECT service FROM contact_access WHERE contact=".(int)$contact." AND service IS NOT NULL) ";
+
+		switch ($type) {
+			case 'host':
+				# restrict host access for authorized contacts
+				if (!$auth->view_hosts_root) {
+					$hostgroups = $auth->hostgroups_r;
+					if (!is_array($hostgroups) || !array_key_exists($group, $hostgroups)) {
+						# user doesn't have access
+						return false;
+					}
+				}
+				$host_match = $auth->view_hosts_root ? ''
+					: "  AND h.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
+
+				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = h.host_name ".
+					"AND current_state = %s ".$service_match;
+
+				$sql = "SELECT h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image,h.icon_image_alt,".
+					"h.display_name, h.current_attempt, h.max_check_attempts, (".
+					sprintf($svc_query, Current_status_Model::SERVICE_OK).") AS services_ok,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_WARNING).") AS services_warning,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_CRITICAL).") AS services_critical,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
+					"FROM hostgroup hg, host h, host_hostgroup hhg ".
+					"WHERE hhg.hostgroup=hg.id AND h.id=hhg.host ".
+					"AND hg.hostgroup_name=".$db->escape($group);
+				break;
+			case 'service':
+				if (!$auth->view_hosts_root && !$auth->view_services_root) {
+					$servicegroups = $auth->servicegroups_r;
+					if (!is_array($servicegroups) || !array_key_exists($group, $servicegroups)) {
+						# user doesn't have access
+						return false;
+					}
+				}
+
+				$host_join = '';
+				$host_where = '';
+				if (!$auth->view_hosts_root) {
+					$host_join = ' INNER JOIN contact_access ON contact_access.host = host.id ';
+					$host_where = ' AND contact_access.contact='.$contact.' AND contact_access.service IS NULL ';
+				}
+				$host_match = $auth->view_hosts_root ? ''
+					: "  AND host.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
+
+				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = host.host_name AND current_state = %s";
+
+				/*$sql = "SELECT host.host_name, host.current_state, host.address, host.action_url, ".
+					"host.notes_url, host.icon_image, host.icon_image_alt,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_OK).") AS services_ok,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_WARNING).") AS services_warning,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_CRITICAL).") AS services_critical,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
+					"FROM host WHERE host_name IN(SELECT DISTINCT host.host_name FROM host ".
+					"INNER JOIN service ON service.host_name = host.host_name ".
+					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
+					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".$host_join.
+					"WHERE servicegroup.servicegroup_name = ".$db->escape($group).$service_match.$host_where.") ORDER BY host_name";
+					*/
+				$sql = "SELECT host.host_name, host.current_state, host.address, host.action_url, ".
+					"host.notes_url, host.icon_image, host.icon_image_alt, host.display_name, ".
+					"host.current_attempt, host.max_check_attempts, (".
+					sprintf($svc_query, Current_status_Model::SERVICE_OK).") AS services_ok,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_WARNING).") AS services_warning,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_CRITICAL).") AS services_critical,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
+					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
+					"FROM host ".
+					"INNER JOIN service ON service.host_name = host.host_name ".
+					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
+					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
+					"WHERE servicegroup.servicegroup_name = ".$db->escape($group).
+					" GROUP BY host.host_name;";
+					break;
+			default:
+				return false;
+		}
+
 		$result = $db->query($sql);
 		return count($result)>0 ? $result : false;
 	}

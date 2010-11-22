@@ -582,7 +582,6 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $servicestatustypes
 	 * @param $style
 	 */
-
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
 		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
@@ -628,7 +627,6 @@ class Status_Controller extends Authenticated_Controller {
 			} else {
 				$auth_groups = $auth->get_authorized_servicegroups();
 			}
-
 			$tot = count($auth_groups);
 			$pagination = new Pagination(
 				array(
@@ -638,22 +636,11 @@ class Status_Controller extends Authenticated_Controller {
 			);
 			$offset = $pagination->sql_offset;
 			$this->template->content->pagination = $pagination;
-
-			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
-			if (!empty($group_info_res)) {
-				foreach ($group_info_res as $group_res) {
-					$groupname_tmp = $group_res->{$grouptype.'group_name'}; # different db field depending on host- or servicegroup
-					$details_tmp = $this->_show_group($grouptype, $groupname_tmp, $style);
-					if (!empty($details_tmp) && count($details_tmp) > 0) {
-						$group_details[] = $details_tmp;
-					}
-				}
-			}
+			$group_details = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
 		} else {
-			$details_tmp = $this->_show_group($grouptype, $group, $style);
-			if (!empty($details_tmp) && count($details_tmp) > 0) {
-				$group_details[] = $details_tmp;
-			}
+			$group_details = $grouptype == 'service' ?
+				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
+				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -674,6 +661,8 @@ class Status_Controller extends Authenticated_Controller {
 		$content->lable_services = $t->_('Services');
 		$content->lable_actions = $t->_('Actions');
 		$content->grouptype = $grouptype;
+		$content->hoststatustypes = $hoststatustypes;
+		$content->servicestatustypes = $servicestatustypes;
 		if (empty($group_details)) {
 			$this->template->content->error_message = $t->_("No data found");
 		}

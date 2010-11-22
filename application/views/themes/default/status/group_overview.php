@@ -27,6 +27,10 @@
 	if (isset($filters) && !empty($filters)) {
 		echo $filters;
 	}
+
+	$pnp4nagios_path = Kohana::config('config.pnp4nagios_path');
+	$nacoma_link = nacoma::link();
+	$t = $this->translate;
 	?>
 	</div>
 </div>
@@ -41,15 +45,18 @@
 	echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
 	<?php
 	# make sure we have something to iterate over
+	$check = false;
+	$i = 0;
 	if (!empty($group_details))
-	foreach ($group_details as $group) { ?>
-
+	foreach ($group_details as $group_info) {
+		$groupname = $group_info->{$grouptype.'group_name'};
+		$group_res = Group_Model::group_overview($grouptype, $groupname); ?>
 		<table class="group_overview_table">
 			<caption>
-			<?php echo html::anchor('status/'.$grouptype.'group/'.$group->groupname.'?style=detail', $group->group_alias) ?>
-			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$group->groupname, $group->groupname) ?>)
-			<?php if (nacoma::link()===true)
-				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($group->groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
+			<?php echo html::anchor('status/'.$grouptype.'group/'.$groupname.'?style=detail', $group_info->alias) ?>
+			(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$groupname, $groupname) ?>)
+			<?php if ($nacoma_link===true)
+				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
 			<tr>
 				<th><em><?php echo $this->translate->_('Status');?></em></th>
@@ -58,36 +65,81 @@
 				<th class="no-sort"><?php echo $lable_services ?></th>
 				<th class="no-sort"><?php echo $lable_actions ?></th>
 			</tr>
-			<?php $i=0; if (!empty($group->hostinfo))
-				foreach ($group->hostinfo as $host => $details) { ?>
+			<?php
+			foreach ($group_res as $group ) {
+				if ($group === false) {
+					continue;
+				}
+				$host_icon = false;
+				if (!empty($group->icon_image)) {
+					$host_icon = html::image('application/media/images/logos/'.$group->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $group->icon_image_alt, 'title' => $group->icon_image_alt));
+				} ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl <?php echo strtolower($details['state_str']); ?>"><em><?php echo $details['state_str'];?></em></td>
-				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host); ?></td>
-				<td style="width: 180px"><?php echo $details['status_link'] ?></td>
-				<td class="icon"><?php echo !empty($details['host_icon']) ? $details['host_icon'] : '' ?></td>
-				<td>
-					<?php if (!empty($group->service_states[$host]))
-						foreach ($group->service_states[$host] as $svc_state) {
-							echo html::image($this->add_path('icons/12x12/shield-'.strtolower(str_replace('miniStatus','',$svc_state['class_name'])).'.png'), array('alt' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'title' => strtolower(str_replace('miniStatus','',$svc_state['class_name'])), 'class' => 'status-default'));
-							echo strtolower(ucfirst($svc_state['status_link'])).' &nbsp; ';
-						}
-					?>
+				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($group->current_state, 'host')); ?>"><em><?php echo Current_status_Model::status_text($group->current_state, 'host');?></em></td>
+				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $group->host_name); ?></td>
+				<td style="width: 180px"><?php echo html::anchor('status/service/'.urlencode($group->host_name).'?hoststatustypes='.$hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($group->host_name), array('title' => $group->address)) ?></td>
+				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
+				<td><?php
+					if (!empty($group->services_ok)) {
+						echo $group->services_ok.' '.html::image($this->add_path('icons/12x12/shield-ok.png'),
+							array('alt' => $this->translate->_('OK'), 'title' => $this->translate->_('OK'), 'class' => 'status-default'));
+						echo $this->translate->_('OK').' &nbsp; ';
+					}
+					if (!empty($group->services_warning)) {
+						echo $group->services_warning.' '.html::image($this->add_path('icons/12x12/shield-warning.png'),
+							array('alt' => $this->translate->_('Warning'), 'title' => $this->translate->_('Warning'), 'class' => 'status-default'));
+						echo $this->translate->_('Warning').' &nbsp; ';
+					}
+					if (!empty($group->services_critical)) {
+						echo $group->services_critical.' '.html::image($this->add_path('icons/12x12/shield-critical.png'),
+							array('alt' => $this->translate->_('Critical'), 'title' => $this->translate->_('Critical'), 'class' => 'status-default'));
+						echo $this->translate->_('Critical').' &nbsp; ';
+					}
+					if (!empty($group->services_unknown)) {
+						echo $group->services_unknown.' '.html::image($this->add_path('icons/12x12/shield-unknown.png'),
+							array('alt' => $this->translate->_('Unknown'), 'title' => $this->translate->_('Unknown'), 'class' => 'status-default'));
+						echo $this->translate->_('Unknown').' &nbsp; ';
+					}
+					if (!empty($group->services_pending)) {
+						echo $group->services_pending.' '.html::image($this->add_path('icons/12x12/shield-pending.png'),
+							array('alt' => $this->translate->_('Pending'), 'title' => $this->translate->_('Pending'), 'class' => 'status-default'));
+						echo $this->translate->_('Pending').' &nbsp; ';
+					} ?>
 				</td>
 				<td style="text-align: left; width: 133px">
 					<?php
-						echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
-						echo !empty($svc_state['pnp_link']) ? $svc_state['pnp_link'].'&nbsp;' : '';
-						echo !empty($svc_state['extinfo_link']) ? $svc_state['extinfo_link'].'&nbsp;' : '';
-						echo !empty($svc_state['statusmap_link']) ? $svc_state['statusmap_link'].'&nbsp;' : '';
-						echo !empty($svc_state['svc_status_link']) ? $svc_state['svc_status_link'].'&nbsp;' : '';
-						echo !empty($details['action_link']) ? $details['action_link'].'&nbsp;' : '';
-						echo !empty($details['notes_link']) ? $details['notes_link'].'&nbsp;' : '';
-					?>
+					echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
+					if ($nacoma_link===true) {
+						$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
+						echo html::anchor('configuration/configure/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px'));
+					}
+
+					if ($pnp4nagios_path!==false && pnp::has_graph($group->host_name)) {
+						echo '<a href="'.url::base(true) . 'pnp/?host='.urlencode($group->host_name).'&srv=_HOST_" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a>';
+					}
+
+					$lable_extinfo_host = $t->_('View Extended Information For This Host');
+					echo html::anchor('extinfo/details/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') );
+
+					$lable_statusmap = $t->_('Locate Host On Map');
+					echo html::anchor('statusmap/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') );
+
+					$lable_svc_status = $t->_('View Service Details For This Host');
+					echo html::anchor('status/service/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') );
+
+					if (!is_null($group->action_url)) {
+						$lable_host_action = $t->_('Perform Extra Host Actions');
+						echo '<a href="'.nagstat::process_macros($group->action_url, $group).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+					}
+
+					if (!is_null($group->notes_url)) {
+						$lable_host_notes = $t->_('View Extra Host Notes');
+						echo '<a href="'.nagstat::process_macros($group->notes_url, $group).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+					} ?>
 				</td>
 			</tr>
-			<?php $i++; } ?>
+			<?php $i++;	} ?>
 		</table>
-
 <?php $j++; }
 	else { ?>
 		<table class="group_overview_table">
