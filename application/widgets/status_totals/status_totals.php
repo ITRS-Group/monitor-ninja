@@ -31,11 +31,9 @@ class Status_totals_Widget extends widget_Core {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$tjobba = '--';
 		if (is_object($arguments[0])) {
 			$current_status = $arguments[0];
 			array_shift($arguments);
-			$tjobba = implode(',', $arguments);
 			$_SESSION['grouptype'] = isset($arguments[3]) ? str_replace('group', '', $arguments[3]) : false;
 			$_SESSION['name'] = isset($arguments[0]) ? $arguments[0] : 'all';
 		}
@@ -43,12 +41,18 @@ class Status_totals_Widget extends widget_Core {
 		if (isset($_SESSION['grouptype']) && !empty($_SESSION['grouptype']) && $_SESSION['name'] != 'all') {
 			$host_data = Group_Model::state_breakdown($_SESSION['grouptype'], 'host', $_SESSION['name']);
 			$service_data = Group_Model::state_breakdown($_SESSION['grouptype'], 'service', $_SESSION['name']);
-			$apa = "using session";
 		} else {
-			$apa = "NO SESS";
-			$current_status = new Current_status_Model();
-			$current_status->host_status();
-			$current_status->service_status();
+			if (!isset($current_status) || !is_object($current_status)) {
+				$current_status = new Current_status_Model();
+			}
+
+			if ($current_status->host_data_present !== true) {
+				$current_status->host_status();
+			}
+
+			if ($current_status->service_data_present !== true) {
+				$current_status->service_status();
+			}
 		}
 
 		$grouptype = !empty($_SESSION['grouptype']) ? $_SESSION['grouptype'].'group' : false;

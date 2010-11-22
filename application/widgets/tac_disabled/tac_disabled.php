@@ -29,6 +29,8 @@ class Tac_disabled_Widget extends widget_Core {
 			array_shift($arguments);
 		} else {
 			$current_status = new Current_status_Model();
+		}
+		if (!$current_status->data_present()) {
 			$current_status->analyze_status_data();
 		}
 

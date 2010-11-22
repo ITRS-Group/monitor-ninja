@@ -29,8 +29,10 @@ class Monitoring_performance_Widget extends widget_Core {
 			array_shift($arguments);
 		} else {
 			$current_status = new Current_status_Model();
-			$current_status->host_status();
-			$current_status->service_status();
+		}
+
+		if (!$current_status->data_present()) {
+			$current_status->analyze_status_data();
 		}
 
 		$widget_id = $this->widgetname;
