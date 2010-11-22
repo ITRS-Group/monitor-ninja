@@ -664,6 +664,30 @@ class Host_Model extends Model {
 		if ($this->count == false && !empty($this->num_per_page) && $this->offset !== false) {
 			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 		}
+
+		if ($this->count === true && empty($filter_sql) && empty($hostprops_sql)
+			&& empty($serviceprops_sql)) {
+			# this is one of the most common queries for this method
+			# so we try to speed up this by making special case.
+			# We are only interested in how many hosts or services there are (for this user)
+			if (!$this->show_services) {
+				$sql = "SELECT COUNT(*) AS cnt FROM host";
+				if (!$this->auth->view_hosts_root) {
+					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
+						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
+				}
+			} else {
+				$sql = "SELECT COUNT(*) AS cnt FROM service";
+				if (!$this->auth->view_hosts_root && !$this->auth->view_services_root) {
+					$sql .= " INNER JOIN contact_access ca ON service.id=ca.service ".
+						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NOT NULL";
+				}
+			}
+
+			$result = $this->db->query($sql);
+			return $result ? $result->current()->cnt : 0;
+		}
+
 		$result = $this->db->query($sql);
 		if ($this->count === true) {
 			return $result ? count($result) : 0;
