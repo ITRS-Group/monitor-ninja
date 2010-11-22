@@ -22,10 +22,10 @@
 			</tr>
 			<tr>
 				<td><?php echo $this->translate->_('Host Unreachable') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_unreachable" id="col_hosts_unreachable" value="<?php echo $col_service_critical ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_unreachable" id="col_hosts_unreachable" value="<?php echo $col_host_unreachable ?>" style="height:10px;width:10px;"></td>
 				<td style="width:10px"></td>
 				<td><?php echo $this->translate->_('Service Critical') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_critical" id="col_services_critical" value="<?php echo $col_host_unreachable ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_critical" id="col_services_critical" value="<?php echo $col_service_critical ?>" style="height:10px;width:10px;"></td>
 			</tr>
 			<tr>
 				<td><?php echo $this->translate->_('Service Warning') ?></td>
