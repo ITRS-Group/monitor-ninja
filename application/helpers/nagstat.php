@@ -135,7 +135,7 @@ class nagstat_Core {
 	/**
 	 * Process macros for host- or service objects
 	 */
-	public function process_macros($string=false, $obj=false)
+	public function process_macros($string=false, &$obj=false)
 	{
 		if (empty($string) || empty($obj)) {
 			return false;
