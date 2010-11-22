@@ -17,11 +17,11 @@ class Contactgroup_Model extends Model
 		$service = trim($service);
 		$db = new Database();
 		$user = Auth::instance()->get_user()->username;
-		$access = System_Model::nagios_access(Auth::instance()->get_user()->username);
 		$view_hosts_root = false;
 		$sql_auth_str = false;
 
-		if (is_array($access) && in_array('authorized_for_all_hosts', $access)) {
+		$auth = new Nagios_auth_Model();
+		if ($auth->view_hosts_root) {
 			$view_hosts_root = true;
 		} else {
 			$sql_auth_str = " c.contact_name = ".$db->escape($user)." AND ";
@@ -46,7 +46,7 @@ class Contactgroup_Model extends Model
 				"h.host_name = ".$db->escape($host);
 		} else {
 			if ($view_hosts_root === false) {
-				if (is_array($access) && !in_array('authorized_for_all_services', $access)) {
+				if (!$auth->view_services_root) {
 					$sql_auth_str = " c.contact_name = ".$db->escape($user)." AND ";
 				} else {
 					$sql_auth_str = false;
