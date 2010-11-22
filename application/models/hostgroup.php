@@ -160,8 +160,13 @@ class Hostgroup_Model extends ORM
 		foreach ($group as $g) {
 			$hg[$g] = $this->db->escape($g);
 		}
-		$auth_hosts = Host_Model::authorized_hosts();
-		$host_str = implode(', ', array_values($auth_hosts));
+		$auth = new Nagios_auth_Model();
+		$contact = $auth->id;
+
+		$ca_access = '';
+		if (!$auth->view_hosts_root) {
+			$ca_access = "AND h.id IN(SELECT host from contact_access where contact=".(int)$contact." and service is null)";
+		}
 		$sql = "SELECT
 			DISTINCT h.*
 		FROM
@@ -171,8 +176,7 @@ class Hostgroup_Model extends ORM
 		WHERE
 			hg.hostgroup_name IN (" . join(', ', $hg) . ") AND
 			hhg.hostgroup = hg.id AND
-			h.id=hhg.host AND
-			h.id IN(".$host_str.")
+			h.id=hhg.host ".$ca_access."
 		ORDER BY
 			h.host_name";
 		if (!empty($sql)) {
@@ -387,8 +391,13 @@ class Hostgroup_Model extends ORM
 				    " AND service.active_checks_enabled=0 ".
 				    "GROUP BY service.current_state,host_hostgroup.hostgroup ".
 				") AS services_critical_disabled ".
-				"FROM hostgroup ".
-				"WHERE hostgroup.id IN(".implode(',', $groups_to_find).") ".$limit_str;
+				"FROM hostgroup ";
+		if ($groups === 'all' && !$auth->view_hosts_root) {
+			$sql .= " WHERE hostgroup.id IN(".implode(',', $groups_to_find).") ";
+		} elseif ($groups != 'all') {
+			$sql .= " WHERE hostgroup.id IN(".implode(',', $groups_to_find).") ";
+		}
+		$sql .= $limit_str;
 		#echo $sql."<br />";
 		$db = new Database();
 		$obj_info = $db->query($sql);
