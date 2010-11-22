@@ -161,7 +161,8 @@ foreach ($result as $row) {
 			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
 			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
 			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks'),
+			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
