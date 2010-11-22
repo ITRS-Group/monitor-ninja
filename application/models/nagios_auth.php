@@ -149,28 +149,17 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hosts()
 	{
+		#$this->hosts = Session::instance()->get('auth_hosts', false);
+		#$this->hosts_r = Session::instance()->get('auth_hosts_r', false);
+
 		if (!empty($this->hosts))
 			return $this->hosts;
 
 		if (empty($this->id) && !$this->view_hosts_root)
 			return array();
 
-		# host_contactgroup
-		$query =
-			'SELECT DISTINCT host.id, host.host_name from host, ' .
-			'contact_contactgroup, contact, host_contactgroup ' .
-			'WHERE host.id = host_contactgroup.host ' .
-			'AND host_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
-			'AND contact_contactgroup.contact = "' . $this->id.'"';
-
-		# host_contact
-		$query_contact = "SELECT DISTINCT host.id, host.host_name FROM host, ".
-			"contact, host_contact ".
-			"WHERE host.id = host_contact.host ".
-			"AND host_contact.contact=contact.id ".
-			"AND contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username);
-
-		$query = '(' . $query . ') UNION (' . $query_contact . ')';
+		$query = "SELECT h.id, h.host_name FROM contact_access AS ca, host AS h WHERE ca.contact=".$this->id.
+			" AND ca.service IS NULL AND h.id=ca.host";
 
 		if ($this->view_hosts_root)
 			$query = 'SELECT id, host_name from host';
@@ -182,6 +171,10 @@ class Nagios_auth_Model extends Model
 			$this->hosts[$id] = $name;
 			$this->hosts_r[$name] = $id;
 		}
+
+		#Session::instance()->set('auth_hosts', $this->hosts);
+		#Session::instance()->set('auth_hosts_r', $this->hosts_r);
+
 		return $this->hosts;
 	}
 
@@ -254,43 +247,14 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_services_root && !$this->view_hosts_root)
 			return array();
 
-		# contact <-> service_contactgroup relation
-		$query =
-			'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
-			'FROM host, service, contact, contact_contactgroup, service_contactgroup ' .
-			'WHERE service.id = service_contactgroup.service ' .
-			'AND service_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
-			'AND contact_contactgroup.contact = ' . $this->id." AND host.host_name=service.host_name";
+		#$this->services = Session::instance()->get('auth_services', false);
+		#$this->services_r = Session::instance()->get('auth_services_r', false);
+		if (!empty($this->services))
+			return $this->services;
 
-		# contact <-> service_contact relation
-		$query_contact = "SELECT DISTINCT s.id, h.host_name, s.service_description ".
-			"FROM host h, service s, contact c, service_contact sc ".
-			"WHERE s.id=sc.service AND c.id=sc.contact ".
-			"AND sc.contact=c.id ".
-			"AND c.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-			" AND h.host_name=s.host_name";
-
-		# check for services that user is authenticated via authenticated hosts
-		# could be both via host_contact and host_contactgroup
-		$query_host_contact = "SELECT DISTINCT s.id, h.host_name, s.service_description FROM host h, ".
-			"contact c, host_contact hc, service s ".
-			"WHERE h.id = hc.host ".
-			"AND hc.contact=c.id ".
-			"AND c.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-			" AND s.host_name = h.host_name";
-
-		$query_host_contactgroup = "SELECT DISTINCT s.id, h.host_name, s.service_description FROM host h, ".
-			"host_contactgroup hc, service s, contact_contactgroup cc ".
-			"WHERE h.id = hc.host ".
-			"AND hc.contactgroup=cc.contactgroup ".
-			"AND cc.contact=".$this->db->escape($this->id).
-			"AND s.host_name = h.host_name";
-
-		$query = '(' . $query . ') UNION (' . $query_contact . ') UNION (' . $query_host_contact . ') UNION (' . $query_host_contactgroup . ')';
-
+		$query = "SELECT s.id, s.host_name, s.service_description FROM contact_access AS ca, service AS s WHERE ca.contact=".$this->id." AND ca.service IS NOT NULL AND s.id=ca.service";
 		if ($this->view_services_root || $this->view_hosts_root) {
-			$query = 'SELECT DISTINCT service.id, host.host_name, service.service_description ' .
-			'FROM host, service WHERE host.host_name = service.host_name';
+			$query = 'SELECT id, host_name, service_description FROM service';
 		}
 		$result = $this->db->query($query);
 		$front = $back = array();
@@ -300,6 +264,9 @@ class Nagios_auth_Model extends Model
 			$this->services[$id] = $name;
 			$this->services_r[$name] = $id;
 		}
+
+		#Session::instance()->set('auth_services', $this->services);
+		#Session::instance()->set('auth_services_r', $this->services_r);
 
 		return $this->services;
 	}
@@ -335,46 +302,60 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->hostgroups))
 			return $this->hostgroups;
 
-		if (empty($this->hosts))
-			$this->get_authorized_hosts();
-
-		$query = 'SELECT id, hostgroup_name FROM hostgroup';
-		$result = $this->db->query($query);
-		$see_all_hostgroups = Kohana::config('groups.see_partial_hostgroups');
-		foreach ($result as $ary) {
-			$id = $ary->id;
-			$name = $ary->hostgroup_name;
-			$query = "SELECT host FROM host_hostgroup WHERE hostgroup = $id";
-			$res = $this->db->query($query);
-			$ok = true;
-			$cnt = 0;
-			if (!$this->view_hosts_root) {
-				foreach ($res as $row) {
-					if ($see_all_hostgroups !== false) {
-						if (isset($this->hosts[$row->host])) {
-							$cnt++;
-							break;
-						}
-					} else {
-						if (!isset($this->hosts[$row->host])) {
-							$ok = false;
-							break;
-						}
-					}
+		if ($this->view_hosts_root) {
+			$query = 'SELECT id, hostgroup_name FROM hostgroup';
+			$result = $this->db->query($query);
+			if (count($result)) {
+				foreach ($result as $row) {
+					$this->hostgroups[$row->id] = $row->hostgroup_name;
+					$this->hostgroups_r[$row->hostgroup_name] = $row->id;
 				}
 			}
+		} else {
+			# fetch all hostgroups with host count on each
+			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
+				'hostgroup hg, host_hostgroup hhg '.
+				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id';
+			$result = $this->db->query($query);
 
-			if (!$this->view_hosts_root && $see_all_hostgroups !== false) {
-				# allow user to see partial groups
-				# if set in config/groups.php
-				if ($cnt > 0) {
-					$this->hostgroups[$id] = $name;
-					$this->hostgroups_r[$name] = $id;
+			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
+				"hostgroup hg, host_hostgroup hhg ".
+				"INNER JOIN contact_access ON contact_access.host=hhg.host ".
+				"WHERE hg.id=hhg.hostgroup ".
+				"AND contact_access.contact=".$this->id.
+				" GROUP BY hg.id";
+			$user_result = $this->db->query($query2);
+			if (!count($user_result) || !count($result)) {
+				return false;
+			}
+			$see_all_hostgroups = Kohana::config('groups.see_partial_hostgroups');
+
+			if ($see_all_hostgroups !== false) {
+				foreach ($user_result as $ary) {
+					if ($ary->cnt !=0) {
+						$this->hostgroups[$ary->id] = $ary->groupname;
+						$this->hostgroups_r[$ary->groupname] = $ary->id;
+					}
 				}
 			} else {
-				if ($ok) {
-					$this->hostgroups[$id] = $name;
-					$this->hostgroups_r[$name] = $id;
+				$available_groups = false;
+				$user_groups = false;
+				$user_groupnames = false;
+				foreach ($result as $row) {
+					$available_groups[$row->id] = $row->cnt;
+				}
+				foreach ($user_result as $row) {
+					$user_groups[$row->id] = $row->cnt;
+					$user_groupnames[$row->id] = $row->groupname;
+				}
+
+				if (!empty($user_groups) && !empty($available_groups)) {
+					foreach ($user_groups as $gid => $gcnt) {
+						if (isset($available_groups[$gid]) && $available_groups[$gid] == $gcnt && isset($user_groupnames[$gid])) {
+							$this->hostgroups[$gid] = $user_groupnames[$gid];
+							$this->hostgroups_r[$user_groupnames[$gid]] = $gid;
+						}
+					}
 				}
 			}
 		}
@@ -391,46 +372,62 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->servicegroups))
 			return $this->servicegroups;
 
-		if (empty($this->services))
-			$this->get_authorized_services();
-
-		$query = 'SELECT id, servicegroup_name FROM servicegroup';
-		$result = $this->db->query($query);
-		$see_all_servicegroups = Kohana::config('groups.see_partial_servicegroups');
-		foreach ($result as $ary) {
-			$id = $ary->id;
-			$name = $ary->servicegroup_name;
-			$query = "SELECT service FROM service_servicegroup WHERE servicegroup = $id";
-			$res = $this->db->query($query);
-			$ok = true;
-			$cnt = 0;
-			if (!$this->view_services_root && !$this->view_hosts_root) {
-				foreach ($res as $row) {
-					if ($see_all_servicegroups !== false) {
-						if (isset($this->services[$row->service])) {
-							$cnt++;
-							break;
-						}
-					} else {
-						if (!isset($this->services[$row->service])) {
-							$ok = false;
-							break;
-						}
-					}
+		if ($this->view_hosts_root || $this->view_services_root) {
+			$query = 'SELECT id, servicegroup_name FROM servicegroup';
+			$result = $this->db->query($query);
+			if (count($result)) {
+				foreach ($result as $row) {
+					$this->servicegroups[$row->id] = $row->servicegroup_name;
+					$this->servicegroups_r[$row->servicegroup_name] = $row->id;
 				}
 			}
+		} else {
 
-			if (!$this->view_hosts_root && $see_all_servicegroups !== false) {
-				# allow user to see partial groups
-				# if set in config/groups.php
-				if ($cnt > 0) {
-					$this->servicegroups[$id] = $name;
-					$this->servicegroups_r[$name] = $id;
+			# fetch all servicegroups with service count on each
+			$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.
+				'servicegroup sg, service_servicegroup ssg '.
+				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id';
+			$result = $this->db->query($query);
+
+			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
+				"servicegroup sg, service_servicegroup ssg ".
+				"INNER JOIN contact_access ON contact_access.service=ssg.service ".
+				"WHERE sg.id=ssg.servicegroup ".
+				"AND ssg.service IS NOT NULL ".
+				"AND contact_access.contact=".$this->id.
+				" GROUP BY sg.id";
+			$user_result = $this->db->query($query2);
+			if (!count($user_result) || !count($result)) {
+				return false;
+			}
+			$see_all_servicegroups = Kohana::config('groups.see_partial_servicegroups');
+
+			if ($see_all_servicegroups !== false) {
+				foreach ($user_result as $ary) {
+					if ($ary->cnt !=0) {
+						$this->servicegroups[$ary->id] = $ary->groupname;
+						$this->servicegroups_r[$ary->groupname] = $ary->id;
+					}
 				}
 			} else {
-				if ($ok) {
-					$this->servicegroups[$id] = $name;
-					$this->servicegroups_r[$name] = $id;
+				$available_groups = false;
+				$user_groups = false;
+				$user_groupnames = false;
+				foreach ($result as $row) {
+					$available_groups[$row->id] = $row->cnt;
+				}
+				foreach ($user_result as $row) {
+					$user_groups[$row->id] = $row->cnt;
+					$user_groupnames[$row->id] = $row->groupname;
+				}
+
+				if (!empty($user_groups) && !empty($available_groups)) {
+					foreach ($user_groups as $gid => $gcnt) {
+						if (isset($available_groups[$gid]) && $available_groups[$gid] == $gcnt && isset($user_groupnames[$gid])) {
+							$this->servicegroups[$gid] = $user_groupnames[$gid];
+							$this->servicegroups_r[$user_groupnames[$gid]] = $gid;
+						}
+					}
 				}
 			}
 		}
