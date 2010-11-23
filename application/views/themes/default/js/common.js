@@ -129,7 +129,10 @@ $(document).ready(function() {
 	});
 
 	$('.pnp_graph_icon').each(function() {
-		//$(this).mouseover(function() {
+			if (typeof _use_popups == 'undefined' || !_use_popups) {
+				return;
+			}
+
 			var pnp_link = $(this).parent().attr('href');
 			if (!pnp_link) {
 				pnp_link = $(this).attr('src');
@@ -161,12 +164,13 @@ $(document).ready(function() {
 			},
 			show: {
 				when: 'mouseover',
-				solo:true
+				solo:true,
+				delay:_popup_delay
 			},
 			hide: {
 				effect: 'slide',
 				when: {
-					event: 'unfocus',
+					event: 'mouseout',
 					delay:2000
 				}
 			},
@@ -184,6 +188,9 @@ $(document).ready(function() {
 	});
 
 	$('.host_comment').each(function() {
+			if (typeof _use_popups == 'undefined' || !_use_popups) {
+				return;
+			}
 			var obj_name = $(this).attr('href');
 			var link_parts = obj_name.split('/');
 			if (!link_parts.length) {
@@ -213,12 +220,13 @@ $(document).ready(function() {
 			},
 			show: {
 				when: 'mouseover',
-				solo:true
+				solo:true,
+				delay:_popup_delay
 			},
 			hide: {
 				effect: 'slide',
 				when: {
-					event: 'unfocus',
+					event: 'maouseout',
 					delay:2000
 				}
 			},

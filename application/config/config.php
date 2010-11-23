@@ -257,6 +257,17 @@ $config['autocomplete_limit'] = 10;
 */
 $config['stale_data_limit'] = 60;
 
+/**
+* Control the use oof pop-ups for PNP graphs and comments
+*/
+$config['use_popups'] = true;
+
+/**
+* Pop-up delay
+* Milliseconds before the pop-up is shown
+*/
+$config['popup_delay'] = 1500;
+
 # check for custom config files that
 # won't be overwritten on upgrade
 if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
