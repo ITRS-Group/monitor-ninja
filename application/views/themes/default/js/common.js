@@ -226,7 +226,7 @@ $(document).ready(function() {
 			hide: {
 				effect: 'slide',
 				when: {
-					event: 'maouseout',
+					event: 'mouseout',
 					delay:2000
 				}
 			},
