@@ -773,7 +773,6 @@ class Trends_Controller extends Authenticated_Controller {
 			# ========= REPORT STARTS HERE =============
 			# ==========================================
 			$html_options[] = array('hidden', 'report_type', $this->report_type);
-			$html_options[] = array('hidden', 'rpttimeperiod', $rpttimeperiod);
 			if($include_soft_states)
 				$html_options[] = array('hidden', 'includesoftstates', $include_soft_states);
 
@@ -821,7 +820,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
 			$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
 			$this->inline_js .= "set_initial_state('assumestatesduringnotrunning', '".$assume_states_during_not_running."');\n";
-			$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 			$this->inline_js .= "show_calendar('".$report_period."');\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
