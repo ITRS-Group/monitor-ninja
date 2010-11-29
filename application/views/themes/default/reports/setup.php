@@ -301,7 +301,7 @@ if (isset($report_info)) {
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
 						<?php echo help::render('cluster_mode') ?>
-						<input type="checkbox" class="checkbox" value="0" id="cluster_mode" name="cluster_mode"
+						<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
 								onchange="toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
 						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
 					</td>
