@@ -69,6 +69,33 @@ class User_Model extends Auth_User_Model {
 		# cache nagios_access session information
 		System_Model::nagios_access();
 
+		# Check that user has access to view some objects
+		# or logout with a message
+		$access = Session::instance()->get('nagios_access', false);
+		if (empty($access)) {
+			# not any authorized_for_ variables set so lets check
+			# if user is authorized for any objects
+			$auth = new Nagios_auth_Model();
+			$hosts = $auth->get_authorized_hosts();
+
+			$redirect = false;
+			if (empty($hosts)) {
+				$redirect = true;
+			} else {
+				$services = $auth->get_authorized_services();
+				if (empty($services)) {
+					$redirect = true;
+				}
+			}
+
+			if ($redirect !== false) {
+				$this->session->set_flash('error_msg',
+					$this->translate->_("You have been denied access since you aren't authorized for any objects."));
+				url::redirect('default/show_login');
+			}
+		}
+
+
 		# make sure we don't end up in infinite loop
 		# if user managed to request show_login
 		if ($requested_uri == Kohana::config('routes.log_in_form')) {
