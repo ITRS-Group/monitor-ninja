@@ -104,6 +104,8 @@ class Reports_Controller extends Authenticated_Controller
 		'servicegroups' => 'PERCENT_TOTAL_TIME_OK'
 	);
 
+	public $template_prefix = false;
+
 	private $state_values = false;
 
 	private $initialassumedhoststate = -1;
@@ -123,7 +125,7 @@ class Reports_Controller extends Authenticated_Controller
 	private $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
 	private $create_pdf = false;
-	private $pdf_data = false;
+	public $pdf_data = false;
 	private $pdf_filename = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
@@ -147,7 +149,6 @@ class Reports_Controller extends Authenticated_Controller
 	private $use_alias = 0;
 
 	private $type = false;
-	private $xajax = false;
 	private $report_id = false;
 	private $data_arr = false;
 	private $report_type = false;
@@ -159,9 +160,10 @@ class Reports_Controller extends Authenticated_Controller
 	private $history_link = "showlog/alert_history";
 	private $notifications_link = "notifications/host";
 
-	private $reports_model = false;
+	public $reports_model = false;
 	public $start_date = false;
 	public $end_date = false;
+	public $mashing = false;
 	private $report_options = false;
 	private $in_months = false;
 
@@ -171,9 +173,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->reports_model = new Reports_Model();
 
-		if (PHP_SAPI !== "cli") {
-			$this->xajax = get_xajax::instance();
-		}
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
 			$this->translate->_('Feb'),
@@ -247,6 +246,9 @@ class Reports_Controller extends Authenticated_Controller
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
+		if ($this->mashing) {
+			$this->auto_render=false;
+		}
 		$this->template->disable_refresh = true;
 
 		# reset current_report_params and main_report_params
@@ -325,18 +327,7 @@ class Reports_Controller extends Authenticated_Controller
 			: $this->translate->_('SLA');
 		#html2ps::instance();
 
-		$xajax = $this->xajax;
-		#$filters = 1;
-
-		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
-		$this->xajax->registerFunction(array('get_report_periods',$this,'_get_report_periods'));
-		$this->xajax->registerFunction(array('get_saved_reports',$this,'_get_saved_reports'));
-		$this->xajax->registerFunction(array('get_date_ranges',$this,'_get_date_ranges'));
-		#$xajax->registerFunction('fetch_scheduled_field_value');
-		#$xajax->registerFunction('delete_schedule_ajax');
-		$this->xajax->processRequest();
-
-		$this->template->content = $this->add_view('reports/setup');
+		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'setup');
 		$template = $this->template->content;
 		#$this->template->content->noheader = $noheader;
 
@@ -582,8 +573,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
-
 		$template->type = $this->type;
 		$template->scheduled_label = $scheduled_label;
 		$template->title_label = $t->_('schedule');
@@ -708,7 +697,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->report_periods = $report_periods;
 		$template->selected = $report_period_strings["selected"];
 
-		$new_schedule = $this->add_view('reports/new_schedule');
+		$new_schedule = $this->add_view('reports/'.$this->template_prefix.'new_schedule');
 		$new_schedule->label_new_schedule = $t->_('Add new schedule');
 		$new_schedule->available_schedule_periods = $periods;
 		$new_schedule->label_interval = $t->_('Report Interval');
@@ -751,7 +740,7 @@ class Reports_Controller extends Authenticated_Controller
 		$new_schedule->label_select_report = $t->_('Select report');
 		$new_schedule->label_select_saved_report = $t->_('Select saved report');
 
-		$template->available_schedules = $this->add_view('reports/schedules');
+		$template->available_schedules = $this->add_view('reports/'.$this->template_prefix.'schedules');
 		$available_schedules = $template->available_schedules;
 		$available_schedules->label_no_schedules = $t->_('There are no scheduled reports');
 		$available_schedules->avail_header = $t->_('Availability Reports');
@@ -813,12 +802,16 @@ class Reports_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Setup');
+
+		if ($this->mashing) {
+			return $template->render();
+		}
 	}
 
 	/**
 	*	Generate (availability) report from parameters set in index()
 	*/
-	public function generate($type='avail', $schedule_id=false)
+	public function generate($type='avail', $schedule_id=false, $input=false)
 	{
 
 		# check if we have all required parts installed
@@ -826,9 +819,15 @@ class Reports_Controller extends Authenticated_Controller
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
+		if (!empty($input) && is_array($input)) {
+			$_REQUEST = $input;
+		}
+
 		$this->template->disable_refresh = true;
 
-		$this->_stash_params();
+		if (!$this->create_pdf && !$this->mashing) {
+			$this->_stash_params();
+		}
 
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
@@ -870,9 +869,11 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
-		if ($this->create_pdf) {
+
+		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
 		}
+
 		$in_host 			= arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
 			$in_host 		= arr::search($_REQUEST, 'host_name', false);
@@ -1011,7 +1012,7 @@ class Reports_Controller extends Authenticated_Controller
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
-		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
+		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
 		$status_msg = false;
@@ -1310,7 +1311,7 @@ class Reports_Controller extends Authenticated_Controller
 			# what objects were submitted?
 			$template->report_header = $t->_('Empty report');
 
-			$template->error = $this->add_view('reports/error');
+			$template->error = $this->add_view('reports/'.$this->template_prefix.'error');
 
 			$template->error->error_msg = sprintf($t->_("The selected objects for this %s report doesn't seem to exist anymore.%s
 			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->report_type, 0, strlen($this->report_type)-1)), '<br />');
@@ -1368,7 +1369,7 @@ class Reports_Controller extends Authenticated_Controller
 			$report_periods['custom'] = "* " . $label_custom_period . " *";
 
 			if (!$this->create_pdf) {
-				$this->template->content->report_options = $this->add_view('reports/options');
+				$this->template->content->report_options = $this->add_view('reports/'.$this->template_prefix.'options');
 				$tpl_options = $this->template->content->report_options;
 
 				$tpl_options->label_report_period = $label_report_period;
@@ -1521,7 +1522,7 @@ class Reports_Controller extends Authenticated_Controller
 
 			# hostgroups / servicegroups
 			if ($this->type == 'avail' && isset($this->data_arr[0])) {
-				$template->header = $this->add_view('reports/header');
+				$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
 				$header = $template->header;
 				$header->report_time_formatted = $report_time_formatted;
 				$template->header->create_pdf = $this->create_pdf;
@@ -1559,7 +1560,7 @@ class Reports_Controller extends Authenticated_Controller
 						$this->_reorder_by_host_and_service($template_values[$i], $this->report_type);
 					}
 
-				$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
+				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
 				$template->content->multiple_states = $template_values;
 				$template->content->hide_host = false;
 				$template->content->create_pdf = $this->create_pdf;
@@ -1577,7 +1578,7 @@ class Reports_Controller extends Authenticated_Controller
 					$content = $template->content;
 				}
 
-				$template->pie = $this->add_view('reports/pie_chart');
+				$template->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
 				$template->pie->label_status = $t->_('Status overview');
 
 				// ===== SETUP PIECHART VALUES =====
@@ -1593,7 +1594,7 @@ class Reports_Controller extends Authenticated_Controller
 				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
 					$tmp_title = ucfirst($sub_type).$t->_('group breakdown');
 					$template->header->title = $tmp_title;
-					if ($this->create_pdf) {
+					if ($this->create_pdf || $this->mashing) {
 						$this->pdf_data['title'] = $tmp_title;
 					}
 					foreach($this->data_arr as $data) { # for every group
@@ -1618,7 +1619,7 @@ class Reports_Controller extends Authenticated_Controller
 					$added_group = false;
 					$tmp_title = ucfirst($sub_type).' '.$t->_('state breakdown');
 					$template->header->title = $tmp_title;
-					if ($this->create_pdf) {
+					if ($this->create_pdf || $this->mashing) {
 						$this->pdf_data['title'] = $tmp_title;
 					}
 					if (is_array($this->data_arr['states'])) {
@@ -1658,7 +1659,7 @@ class Reports_Controller extends Authenticated_Controller
 
 					$template->pie->data_str = $data_str;
 					$template->pie->image_data = $image_data;
-					if ($this->create_pdf) {
+					if ($this->create_pdf || $this->mashing) {
 						$this->pdf_data['pie_data'] = $data_str;
 					}
 				}
@@ -1668,9 +1669,9 @@ class Reports_Controller extends Authenticated_Controller
 				$data_str = '';
 				if (!empty($this->data_arr)) {
 					$data = $this->data_arr;
-					$template->content = $this->add_view('reports/'.$this->type);
+					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
 					$template->content->create_pdf = $this->create_pdf;
-					$template->header = $this->add_view('reports/header');
+					$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->str_start_date = $str_start_date;
 					$template->header->str_end_date = $str_end_date;
@@ -1804,7 +1805,7 @@ class Reports_Controller extends Authenticated_Controller
 							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
 						}
 
-						$avail->pie = $this->add_view('reports/pie_chart');
+						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
 						$avail->pie->label_status = $t->_('Status overview');
 						$avail->pie->report_time_formatted = $report_time_formatted;
 
@@ -1832,7 +1833,7 @@ class Reports_Controller extends Authenticated_Controller
 							if ($service_states !== false) {
 								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->start_date, $this->end_date, $this->type);
 								$header_str = $t->_("Service state breakdown");
-								$template->svc_content = $this->add_view('reports/multiple_service_states');
+								$template->svc_content = $this->add_view('reports/'.$this->template_prefix.'multiple_service_states');
 								$content = $template->svc_content;
 								$content->header_string = $header_str;
 								$content->multiple_states = $template_values;
@@ -1855,7 +1856,7 @@ class Reports_Controller extends Authenticated_Controller
 						$log = arr::search($data, 'log');
 						if ($log !== false) {
 							$label_entries = $t->_("Log Entries for");
-							$template->log_content = $this->add_view('reports/log');
+							$template->log_content = $this->add_view('reports/'.$this->template_prefix.'log');
 							$log_template = $template->log_content;
 							$log_template->log = $log;
 							$log_template->type = $sub_type;
@@ -2058,10 +2059,17 @@ class Reports_Controller extends Authenticated_Controller
 
 				} # end if not empty. Display message to user?
 			}
-			# skip the rest if pdf
-			if ($this->create_pdf) {
+			# skip the rest if pdf or mashing
+			if ($this->create_pdf || $this->mashing) {
 				$this->pdf_data['content'] = $template->content->render();
 				$this->pdf_data['header'] = $template->header->render();
+
+				if ($this->create_pdf && $this->mashing) {
+					return $this->pdf_data;
+				} elseif ($this->mashing) {
+					return $template->render();
+				}
+
 				$retval = $this->_pdf();
 				if (PHP_SAPI == "cli") {
 					echo $retval;
@@ -2542,123 +2550,6 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		return array('report_period_strings' => $report_periods, 'selected' => $selected);
-	}
-
-	/**
-	*	Fetch available report periods for selected report type
-	*	This method will be called through an ajax call via xajax
-	*/
-	public function _get_report_periods($type='avail')
-	{
-		if (empty($type))
-			return false;
-
-		// Instantiate the xajaxResponse object
-		$xajax = $this->xajax;
-		$objResponse = new xajaxResponse();
-
-		$objResponse->call("show_progress", "progress", $this->translate->_('Please wait'));
-		$report_periods = $this->_report_period_strings($type);
-		$periods = false;
-		if (!empty($report_periods)) {
-			foreach ($report_periods['report_period_strings'] as $periodval => $periodtext) {
-				$periods[] = array('optionValue' => $periodval, 'optionText' => $periodtext);
-			}
-		} else {
-			return false;
-		}
-		# add custom period
-		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . $this->translate->_('CUSTOM REPORT PERIOD') . " *");
-
-		# empty report_period
-		$objResponse->call("empty_list", 'report_period');
-		//$objResponse->call("log", json::encode($report_periods));
-		$objResponse->call("populate_report_periods", json::encode($periods));
-		$objResponse->call("set_selected_period", $report_periods['selected']);
-
-		//return the  xajaxResponse object
-		return $objResponse;
-	}
-
-	/**
-	*	Fetch saved reports through xajax call when switching report type
-	*
-	*/
-	public function _get_saved_reports($type='avail', $schedules=false)
-	{
-		if (empty($type))
-			return false;
-
-		// Instantiate the xajaxResponse object
-		$xajax = $this->xajax;
-		$objResponse = new xajaxResponse();
-
-		$saved_reports = Saved_reports_Model::get_saved_reports($type);
-		if (count($saved_reports) == 0)
-			return false;
-
-		$objResponse->call("show_progress", "progress", $this->translate->_('Please wait'));
-		$scheduled_label = $this->translate->_('Scheduled');
-		$scheduled_ids = array();
-		$scheduled_periods = null;
-		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($type);
-		if ($scheduled_res && count($scheduled_res)!=0) {
-			foreach ($scheduled_res as $sched_row) {
-				$scheduled_ids[] = $sched_row->report_id;
-				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
-			}
-		}
-
-		$return = false;
-		$return[] = array('optionValue' => '', 'optionText' => ' - '.$this->translate->_('Select saved report') . ' - ');
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$field_name = 'report_name';
-				break;
-			case 'sla':
-				$field_name = 'sla_name';
-				break;
-		}
-
-		if (!isset($field_name)) {
-			return false;
-		}
-
-		foreach ($saved_reports as $info) {
-			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
-			if (in_array($info->id, $scheduled_ids)) {
-				$sched_str = " ( *".$scheduled_label."* )";
-			} else {
-				$sched_str = "";
-			}
-			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->{$field_name}.$sched_str);
-		}
-
-		if ($schedules !== false) {
-			# empty saved_report_id (saved reports)
-			$objResponse->call("empty_list", 'saved_report_id');
-			$objResponse->call("populate_saved_reports", json::encode($return), 'saved_report_id');
-
-		} else {
-			# empty report_id (saved reports)
-			$objResponse->call("empty_list", 'report_id');
-			$objResponse->call("populate_saved_reports", json::encode($return), 'report_id');
-		}
-
-
-		//return the  xajaxResponse object
-		return $objResponse;
-	}
-
-	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned through xajax helper to javascript function populate_options()
-	*/
-	public function _get_group_member($input=false, $type=false, $erase=true)
-	{
-		$xajax = $this->xajax;
-		return get_xajax::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**
@@ -3521,7 +3412,7 @@ class Reports_Controller extends Authenticated_Controller
 			'create_pdf' => true
 		);
 		#$default_action_url = 'http://192.168.1.29/html2ps/html2ps.php';
-		$default_action_url = 'reports/generate';
+		$default_action_url = $this->template_prefix.'reports/generate';
 
 		if (PHP_SAPI != "cli") {
 			# never try to use $_SERVER variables when
@@ -4577,63 +4468,6 @@ class Reports_Controller extends Authenticated_Controller
 		$tot = $totals['soft'] + $totals['hard'];
 		echo "<td>" . $tot . "</td>\n";
 		echo "</tr></table><br />\n";
-	}
-
-	/**
-	*
-	*
-	*/
-	public function _get_date_ranges($the_year, $type='start', $item='year')
-	{
-		// Instantiate the xajaxResponse object
-		$xajax = $this->xajax;
-		$objResponse = new xajaxResponse();
-		$date_ranges = reports::get_date_ranges();
-
-		if (empty($date_ranges)) return false;
-
-		$start_date 	= $date_ranges[0]; 	// first date in db
-		$end_date 		= $date_ranges[1];	// last date in db
-		$type 			= trim($type);
-		$item 			= trim($item);
-		$the_year 		= (int)$the_year;
-		$start_year 	= date('Y', $start_date);
-		$current_year	= date('Y');
-		$current_month	= date('m');
-		$end_year 		= date('Y', $end_date);
-		$start_month 	= date('m', $start_date);
-		$end_month 		= date('m', $end_date);
-
-		#$objResponse->call("log", "Current: $current_year, Start year: $start_year, End Year = $end_year, Start month = $start_month");
-
-		if (empty($type)) {
-			// Print all years
-			for ($i=$start_year;$i<=$end_year;$i++) {
-				$objResponse->call("addSelectOption", "start_year", $i, $i);
-				$objResponse->call("addSelectOption", "end_year", $i, $i);
-			}
-		} else {
-			// empty month list
-			$objResponse->call("empty_list", $type."_month");
-			if (!empty($the_year)) {
-				// end month should always be 12 unless we only
-				// have data for a single year
-				if ($start_year == $end_year) {
-					$end_num = ($end_month == 1) ? 11 : $end_month-1;
-					$start_num = $start_month;
-				} else {
-					$end_num = $the_year == $current_year ? $current_month: 12;
-					$start_num = $the_year == $start_year ? $start_month : 1;
-					$objResponse->call("log","end_num: $end_num, current_year: $current_year, current_month: $current_month");
-				}
-			} else {
-				return $objResponse;
-			}
-			for ($i=$start_num;$i<=$end_num;$i++) {
-				$objResponse->call("addSelectOption", $type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
-			}
-		}
-		return $objResponse;
 	}
 
 	/**

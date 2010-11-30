@@ -116,9 +116,6 @@ if (isset($this->template->js_header))
 				}?>
 			//-->
 		</script>
-	<?php	# use xajax if controller needs it
-			if (isset($xajax_js)) echo $xajax_js; ?>
-
 		<?php echo html::script($this->add_path('js/common.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 

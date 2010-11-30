@@ -21,8 +21,7 @@ class Summary_Controller extends Authenticated_Controller
 	const ALERT_TOTALS_SERVICE = 6;
 	const ALERT_TOTALS_SG = 7;
 
-	private $xajax = false;
-	private $reports_model = false;
+	public $reports_model = false;
 	private $abbr_month_names = false;
 	private $month_names = false;
 	private $day_names = false;
@@ -31,6 +30,8 @@ class Summary_Controller extends Authenticated_Controller
 	private $report_id = false;
 	private $create_pdf = false;
 	private $pdf_data = false;
+	public $mashing = false;
+	public $template_prefix = false;
 	private $pdf_filename = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
@@ -38,13 +39,14 @@ class Summary_Controller extends Authenticated_Controller
 	private $type = 'summary';
 
 
-	public function __construct()
+	public function __construct($mashing=false, $obj=false)
 	{
 		parent::__construct();
-		$this->reports_model = new Reports_Model();
-
-		if (PHP_SAPI !== "cli") {
-			$this->xajax = get_xajax::instance();
+		$this->mashing = $mashing;
+		if (!empty($obj) && is_object($obj)) {
+			$this->reports_model = $obj;
+		} else {
+			$this->reports_model = new Reports_Model();
 		}
 
 		$this->abbr_month_names = array(
@@ -108,11 +110,9 @@ class Summary_Controller extends Authenticated_Controller
 			url::redirect('reports/invalid_setup');
 		}
 
-		$xajax = $this->xajax;
-
-		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
-
-		$this->xajax->processRequest();
+		if ($this->mashing) {
+			$this->auto_render=false;
+		}
 
 		# delete report?
 		$del_id = arr::search($_REQUEST, 'del_id', false);
@@ -405,10 +405,14 @@ class Summary_Controller extends Authenticated_Controller
 			8 => $t->_("Service Unknown States"),
 		);
 
-		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = $this->translate->_("Reporting » Alert summary » Setup");
+
+		if ($this->mashing) {
+			return $template->render();
+		}
+
 	}
 
 	/**
@@ -504,7 +508,7 @@ class Summary_Controller extends Authenticated_Controller
 	/**
 	 * Generates an alert summary report
 	 */
-	public function generate($schedule_id=false)
+	public function generate($schedule_id=false, $input=false)
 	{
 		$valid_options = array
 			('summary_items', 'alert_types', 'state_types',
@@ -512,6 +516,9 @@ class Summary_Controller extends Authenticated_Controller
 			 'report_period', 'host_name', 'service_description',
 			 'hostgroup', 'servicegroup');
 
+		if (!empty($input) && is_array($input)) {
+			$_REQUEST = $input;
+		}
 		$report_options = $this->_report_settings();
 
 		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
@@ -527,7 +534,7 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
-		if ($this->create_pdf) {
+		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
 		}
 
@@ -755,7 +762,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->template->content->schedules = $this->add_view('summary/schedule');
 		$template = $this->template->content->schedules;
 		$template->json_periods = $json_periods;
-		$template->create_pdf = $this->create_pdf;
+		$template->create_pdf = ($this->create_pdf || $this->mashing) ? true : false;
 		$template->type = $this->type;
 		$template->report_id = $this->report_id;
 		$template->report_info = $report_info;
@@ -866,6 +873,8 @@ class Summary_Controller extends Authenticated_Controller
 				echo $retval;
 			}
 			return $retval;
+		} elseif ($this->mashing) {
+			return $content->render();
 		}
 
 		$this->template->inline_js = $this->inline_js;
@@ -929,16 +938,6 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		return $services;
-	}
-
-	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned through xajax helper to javascript function populate_options()
-	*/
-	public function _get_group_member($input=false, $type=false, $erase=true)
-	{
-		$xajax = $this->xajax;
-		return get_xajax::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**

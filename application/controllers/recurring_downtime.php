@@ -13,7 +13,6 @@
  */
 class recurring_downtime_Controller extends Authenticated_Controller {
 
-	private $xajax = false;
 	public static $week = array('sun','mon','tue','wed','thu','fri','sat');
 	private $abbr_month_names = false;
 	private $month_names = false;
@@ -31,9 +30,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 		parent::__construct();
-		if (PHP_SAPI !== "cli") {
-			$this->xajax = get_xajax::instance();
-		}
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -108,12 +104,9 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	public function index($id=false)
 	{
 		$this->template->disable_refresh = true;
-		$xajax = $this->xajax;
 
 		$this->template->title = $this->translate->_('Monitoring » Scheduled downtime » Recurring downtime');
 
-		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
-		$this->xajax->processRequest();
 		$this->template->content = $this->add_view('recurring_downtime/setup');
 		$template = $this->template->content;
 
@@ -221,8 +214,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->js_strings .= "var _confirm_delete_schedule = '".$t->_('Are you sure that you would like to delete this schedule.\nPlease note that already scheuled downtime won\"t be affected by this and will have to be deleted manually.\nThis action can\"t be undone.')."';\n";
 		$this->js_strings .= "var _form_field_time = '".$t->_("time")."';\n";
 		$this->js_strings .= "var _form_field_duration = '".$t->_("duration")."';\n";
-
-		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 
 		$template->label_select = $t->_('Select');
 		$template->label_hostgroups = $t->_('Hostgroups');
@@ -444,16 +435,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			}
 			#echo "<hr />";
 		}
-	}
-
-	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned through xajax helper to javascript function populate_options()
-	*/
-	public function _get_group_member($input=false, $type=false, $erase=true)
-	{
-		$xajax = $this->xajax;
-		return get_xajax::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**

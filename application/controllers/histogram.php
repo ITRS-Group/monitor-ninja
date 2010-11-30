@@ -21,7 +21,6 @@ class Histogram_Controller extends Authenticated_Controller
 	const ALERT_TOTALS_SERVICE = 6;
 	const ALERT_TOTALS_SG = 7;
 
-	private $xajax = false;
 	private $reports_model = false;
 	private $abbr_month_names = false;
 	private $month_names = false;
@@ -46,7 +45,6 @@ class Histogram_Controller extends Authenticated_Controller
 	{
 		parent::__construct();
 		$this->reports_model = new Reports_Model();
-		$this->xajax = get_xajax::instance();
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
 			$this->translate->_('Feb'),
@@ -142,12 +140,6 @@ class Histogram_Controller extends Authenticated_Controller
 			url::redirect('reports/invalid_setup');
 		}
 
-		$xajax = $this->xajax;
-
-		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
-
-		$this->xajax->processRequest();
-
 		$this->template->disable_refresh = true;
 		$t = $this->translate;
 		$this->template->content = $this->add_view('histogram/setup');
@@ -234,7 +226,6 @@ class Histogram_Controller extends Authenticated_Controller
 		$template->servicestates = $this->servicestates;
 		$template->breakdown = $this->breakdown;
 
-		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = $this->translate->_('Reporting » Histogram » Setup');
@@ -669,16 +660,6 @@ class Histogram_Controller extends Authenticated_Controller
 		}
 		return $return;
 
-	}
-
-	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned through xajax helper to javascript function populate_options()
-	*/
-	public function _get_group_member($input=false, $type=false, $erase=true)
-	{
-		$xajax = $this->xajax;
-		return get_xajax_Core::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**

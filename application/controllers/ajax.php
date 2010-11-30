@@ -453,5 +453,204 @@ class Ajax_Controller extends Authenticated_Controller {
 			echo $this->translate->_('Found no data');
 		}
 	}
+
+	/**
+	*	Fetch requested items for a user depending on type (host, service or groups)
+	* 	Found data is returned as json data
+	*/
+	public function group_member($input=false, $type=false)
+	{
+		$input = urldecode($this->input->post('input', false));
+		$type = urldecode($this->input->post('type', false));
+
+		$auth = new Nagios_auth_Model();
+		if (empty($type)) {
+			return false;
+		}
+
+		$return = false;
+		$items = false;
+		switch ($type) {
+			case 'hostgroup': case 'servicegroup':
+				$field_name = $type."_tmp";
+				$empty_field = $type;
+				#$res = get_host_servicegroups($type);
+				$res = $auth->{'get_authorized_'.$type.'s'}();
+				if (!$res) {
+					return false;
+				}
+				foreach ($res as $name) {
+					$items[] = $name;
+				}
+				break;
+			case 'host':
+				$field_name = "host_tmp";
+				$empty_field = 'host_name';
+				$items = $auth->get_authorized_hosts();
+				break;
+			case 'service':
+				$field_name = "service_tmp";
+				$empty_field = 'service_description';
+				$items = $auth->get_authorized_services();
+				break;
+		}
+
+		sort($items);
+		$return_data = false;
+		foreach ($items as $k => $item) {
+			$return_data[] = array('optionValue' => $item, 'optionText' => $item);
+		}
+		$json_val = json::encode($return_data);
+
+		echo $json_val;
+	}
+
+	/**
+	*	Fetch available report periods for selected report type
+	*/
+	public function get_report_periods()
+	{
+		$type = urldecode($this->input->post('type', 'avail'));
+		if (empty($type))
+			return false;
+
+		$report_periods = Reports_Controller::_report_period_strings($type);
+		$periods = false;
+		if (!empty($report_periods)) {
+			foreach ($report_periods['report_period_strings'] as $periodval => $periodtext) {
+				$periods[] = array('optionValue' => $periodval, 'optionText' => $periodtext);
+			}
+		} else {
+			return false;
+		}
+
+		# add custom period
+		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . $this->translate->_('CUSTOM REPORT PERIOD') . " *");
+
+		echo json::encode($periods);
+	}
+
+	/**
+	*	Fetch saved reports when switching report type
+	*/
+	public function get_saved_reports()
+	{
+		$type = urldecode($this->input->post('type', 'avail'));
+		if (empty($type))
+			return false;
+
+		$saved_reports = Saved_reports_Model::get_saved_reports($type);
+		if (count($saved_reports) == 0) {
+			echo '';
+			return false;
+		}
+
+		$scheduled_label = $this->translate->_('Scheduled');
+		$scheduled_ids = array();
+		$scheduled_periods = null;
+		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($type);
+		if ($scheduled_res && count($scheduled_res)!=0) {
+			foreach ($scheduled_res as $sched_row) {
+				$scheduled_ids[] = $sched_row->report_id;
+				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
+			}
+		}
+
+		$return = false;
+		$return[] = array('optionValue' => '', 'optionText' => ' - '.$this->translate->_('Select saved report') . ' - ');
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+				$field_name = 'report_name';
+				break;
+			case 'sla':
+				$field_name = 'sla_name';
+				break;
+		}
+
+		if (!isset($field_name)) {
+			return false;
+		}
+
+		foreach ($saved_reports as $info) {
+			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
+			if (in_array($info->id, $scheduled_ids)) {
+				$sched_str = " ( *".$scheduled_label."* )";
+			} else {
+				$sched_str = "";
+			}
+			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->{$field_name}.$sched_str);
+		}
+
+		echo json::encode($return);
+		return true;
+	}
+
+	/**
+	*	Fetch date ranges for reports
+	*/
+	public function get_date_ranges()
+	{
+		$the_year = urldecode($this->input->post('the_year', false));
+		$type = urldecode($this->input->post('type', 'start'));
+		$item = urldecode($this->input->post('item', 'year'));
+		$date_ranges = Reports_Model::get_date_ranges();
+
+		if (empty($date_ranges)) return false;
+
+		$start_date 	= $date_ranges[0]; 	// first date in db
+		$end_date 		= $date_ranges[1];	// last date in db
+		$type 			= trim($type);
+		$item 			= trim($item);
+		$the_year 		= (int)$the_year;
+		$start_year 	= date('Y', $start_date);
+		$current_year	= date('Y');
+		$current_month	= date('m');
+		$end_year 		= date('Y', $end_date);
+		$start_month 	= date('m', $start_date);
+		$end_month 		= date('m', $end_date);
+
+		$arr_end = false;
+		$arr_start = false;
+		$type_item = false;
+		$end_num = 0;
+		$start_num = 0;
+		if (empty($type)) {
+			// Print all years
+			for ($i=$start_year;$i<=$end_year;$i++) {
+				#$objResponse->call("addSelectOption", "start_year", $i, $i);
+				#$objResponse->call("addSelectOption", "end_year", $i, $i);
+				$arr_start[] = $i;
+				$arr_end[] = $i;
+			}
+		} else {
+			// empty month list
+			#$objResponse->call("empty_list", $type."_month");
+			if (!empty($the_year)) {
+				// end month should always be 12 unless we only
+				// have data for a single year
+				if ($start_year == $end_year) {
+					$end_num = ($end_month == 1) ? 11 : $end_month-1;
+					$start_num = $start_month;
+				} else {
+					$end_num = $the_year == $current_year ? $current_month: 12;
+					$start_num = $the_year == $start_year ? $start_month : 1;
+					#$objResponse->call("log","end_num: $end_num, current_year: $current_year, current_month: $current_month");
+				}
+			} else {
+				return false;
+			}
+
+			for ($i=$start_num;$i<=$end_num;$i++) {
+				#$objResponse->call("addSelectOption", $type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
+				$type_item[] = array($type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
+				echo $i."\n";
+			}
+		}
+
+		$return = array('start_year' => $arr_start, 'end_year' => $arr_end, 'type_item' => $type_item);
+		echo json::encode($return);
+		return true;
+	}
 }
 

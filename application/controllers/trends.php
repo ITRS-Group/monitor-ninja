@@ -106,7 +106,6 @@ class Trends_Controller extends Authenticated_Controller {
 	private $use_average = 0;
 
 	private $type = 'avail';
-	private $xajax = false;
 	private $report_id = false;
 	private $data_arr = false;
 	private $report_type = false;
@@ -130,7 +129,6 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->reports_model = new Reports_Model();
 
-		$this->xajax = get_xajax::instance();
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
 			$this->translate->_('Feb'),
@@ -225,16 +223,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$use_average_yes_selected = 'selected="selected"';
 		else
 			$use_average_no_selected = 'selected="selected"';
-
-		$xajax = $this->xajax;
-		#$filters = 1;
-
-		$this->xajax->registerFunction(array('get_group_member',$this,'_get_group_member'));
-		$this->xajax->registerFunction(array('get_report_periods',$this,'_get_report_periods'));
-		$this->xajax->registerFunction(array('get_saved_reports',$this,'_get_saved_reports'));
-		#$xajax->registerFunction('fetch_scheduled_field_value');
-		#$xajax->registerFunction('delete_schedule_ajax');
-		$this->xajax->processRequest();
 
 		$this->template->content = $this->add_view('trends/setup');
 		$template = $this->template->content;
@@ -342,7 +330,6 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->xajax_js = $xajax->getJavascript(get_xajax::web_path());
 		$template->type = $this->type;
 		$template->scheduled_label = $scheduled_label;
 		$template->title_label = $t->_('schedule');
@@ -1080,16 +1067,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = $this->translate->_('Reporting » Trends » Report');
-	}
-
-	/**
-	*	Fetch requested items for a user depending on type (host, service or groups)
-	* 	Found data is returned through xajax helper to javascript function populate_options()
-	*/
-	public function _get_group_member($input=false, $type=false, $erase=true)
-	{
-		$xajax = $this->xajax;
-		return get_xajax::group_member($input, $type, $erase, $xajax);
 	}
 
 	/**

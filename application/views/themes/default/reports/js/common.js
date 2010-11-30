@@ -471,21 +471,81 @@ function show_progress(the_id, info_str) {
 function get_members(val, type, no_erase) {
 	if (type=='') return;
 	is_populated = false;
-	xajax_get_group_member(val, type, no_erase);
+	show_progress('progress', _wait_str);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "group_member/";
+	var data = {input: val, type: type};
+	var field_name = false;
+	var empty_field = false;
+
+	switch(type) {
+		case 'hostgroup': case 'servicegroup':
+			field_name = type + "_tmp";
+			empty_field = type;
+			break;
+			case 'host':
+				field_name = "host_tmp";
+				empty_field = 'host_name';
+				break;
+			case 'service':
+				field_name = "service_tmp";
+				empty_field = 'service_description';
+				break;
+	}
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_options(field_name, empty_field, data);
+				if(no_erase == '') {
+					empty_list(field_name);
+					empty_list(empty_field);
+				}
+			} else {
+				// error
+				jgrowl_message('Unable to fetch objects...', _reports_error);
+			}
+		}
+	});
+
+
 	sel_str = type;
 	$('#settings_table').show();
 	$('#submit_button').show();
 }
 
 /**
-*	Let xajax fetch the report periods for
-*	selected report type.
+*	Fetch the report periods for selected report type.
 *
 *	Result will be returned to populate_report_periods() below.
 */
 function get_report_periods(type)
 {
-	xajax_get_report_periods(type);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "get_report_periods/";
+	var data = {type: type};
+	empty_list('report_period');
+	set_selected_period(type);
+
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_report_periods(data);
+			} else {
+				// error
+				jgrowl_message('Unable to fetch report periods...', _reports_error);
+			}
+		}
+	});
 }
 
 function empty_list(field) {

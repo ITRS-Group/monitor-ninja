@@ -102,10 +102,51 @@ function hide_rows(input) {
 function get_members(val, type, no_erase) {
 	if (type=='') return;
 	is_populated = false;
-	xajax_get_group_member(val, type, no_erase);
+	show_progress('progress', _wait_str);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "group_member/";
+	var data = {input: val, type: type};
+	var field_name = false;
+	var empty_field = false;
+
+	switch(type) {
+		case 'hostgroup': case 'servicegroup':
+			field_name = type + "_tmp";
+			empty_field = type;
+			break;
+			case 'host':
+				field_name = "host_tmp";
+				empty_field = 'host_name';
+				break;
+			case 'service':
+				field_name = "service_tmp";
+				empty_field = 'service_description';
+				break;
+	}
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_options(field_name, empty_field, data);
+				if(no_erase == '') {
+					empty_list(field_name);
+					empty_list(empty_field);
+				}
+			} else {
+				// error
+				jgrowl_message('Unable to fetch objects...', _reports_error);
+			}
+		}
+	});
+
+
 	sel_str = type;
-	show_row('settings_table');
-	show_row('submit_button');
+	$('#settings_table').show();
+	$('#submit_button').show();
 }
 
 function show_row(the_id) {

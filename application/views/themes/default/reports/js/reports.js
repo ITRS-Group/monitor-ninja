@@ -114,7 +114,7 @@ $(document).ready(function() {
 
 	$("#rep_type").change(function() {
 		var rep_type_val = $(this).fieldValue();
-		xajax_get_saved_reports(rep_type_val[0], true);
+		get_saved_reports(rep_type_val[0], true);
 	});
 
 	$("#saved_report_id").change(function() {
@@ -155,8 +155,55 @@ $(document).ready(function() {
 
 function js_print_date_ranges(the_year, type, item)
 {
-	show_progress('progress', _wait_str);
-	xajax_get_date_ranges(the_year, type, item);
+		show_progress('progress', _wait_str);
+	the_year = typeof the_year == 'undefined' ? 0 : the_year;
+	type = typeof type == 'undefined' ? '' : type;
+	item = typeof item == 'undefined' ? '' : item;
+
+//	console.log('the_year: '+ the_year + ', type: ' + type + ', item: ' + item);
+	//get_date_ranges(the_year, type, item);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "get_date_ranges/";
+	var data = {the_year: the_year, type: type, item: item};
+
+	if (type !='') {
+		empty_list(type + '_month');
+	}
+
+	set_selected_period(type);
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, continue
+				data = eval( "(" + data + ")" );
+				//console.dir(data);
+				if (data['start_year']) {
+					//console.dir(data['start_year']);
+					for (i in data['start_year']) {
+						//console.log(data['start_year'][i]);
+						addSelectOption('start_year', data['start_year'][i], data['start_year'][i]);
+					}
+				}
+
+				if (data['end_year']) {
+					//console.dir(data['end_year']);
+					for (i in data['end_year']) {
+						//console.log(data['end_year'][i]);
+						addSelectOption('end_year', data['end_year'][i], data['end_year'][i]);
+					}
+				}
+
+			} else {
+				// error
+				jgrowl_message('Unable to fetch date ranges...', _reports_error);
+			}
+		}
+	});
+
 	setTimeout('check_custom_months()', 1000);
 }
 
@@ -338,11 +385,39 @@ function switch_report_type()
 	$("#single_schedules").remove();
 	$("#display").hide();
 	get_report_periods(other_report);
-	xajax_get_saved_reports(other_report);
+	get_saved_reports(other_report);
 
 	// reset saved_report_id
 	$('input[name=saved_report_id]').val(0);
 	$('input[name=report_name]').val('');
+}
+
+function get_saved_reports(type, schedules)
+{
+	show_progress('progress', _wait_str);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "get_saved_reports/";
+	var data = {type: type};
+	var field = false;
+
+	field = schedules == true ? 'saved_report_id' : 'report_id';
+	empty_list(field);
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_saved_reports(data, field);
+			} else {
+				// error
+				jgrowl_message('Unable to fetch saved reports...', _reports_error);
+			}
+		}
+	});
+
 }
 
 function create_filename()
@@ -442,21 +517,80 @@ function show_progress(the_id, info_str)
 function get_members(val, type, no_erase) {
 	if (type=='') return;
 	is_populated = false;
-	xajax_get_group_member(val, type, no_erase);
+	show_progress('progress', _wait_str);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "group_member/";
+	var data = {input: val, type: type}
+	var field_name = false;
+	var empty_field = false;
+
+	switch(type) {
+		case 'hostgroup': case 'servicegroup':
+			field_name = type + "_tmp";
+			empty_field = type;
+			break;
+			case 'host':
+				field_name = "host_tmp";
+				empty_field = 'host_name';
+				break;
+			case 'service':
+				field_name = "service_tmp";
+				empty_field = 'service_description';
+				break;
+	}
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_options(field_name, empty_field, data);
+				if(no_erase == '') {
+					empty_list(field_name);
+					empty_list(empty_field);
+				}
+			} else {
+				// error
+				jgrowl_message('Unable to fetch objects...', _reports_error);
+			}
+		}
+	});
+
+
 	sel_str = type;
-	show_row('settings_table');
-	show_row('submit_button');
+	$('#settings_table').show();
+	$('#submit_button').show();
 }
 
 /**
-*	Let xajax fetch the report periods for
-*	selected report type.
+*	Fetch the report periods for selected report type.
 *
 *	Result will be returned to populate_report_periods() below.
 */
 function get_report_periods(type)
 {
-	xajax_get_report_periods(type);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "get_report_periods/";
+	var data = {type: type};
+	empty_list('report_period');
+	set_selected_period(type);
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_report_periods(data);
+			} else {
+				// error
+				jgrowl_message('Unable to fetch report periods...', _reports_error);
+			}
+		}
+	});
 }
 
 function show_row(the_id) {
