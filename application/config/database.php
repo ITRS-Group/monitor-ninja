@@ -44,6 +44,27 @@ $config['default'] = array
 	'escape'        => TRUE
 );
 
+$config['nacoma'] = array
+(
+        'benchmark'     => TRUE,
+        'persistent'    => FALSE,
+        'connection'    => array
+        (
+                'type'     => 'mysql',
+                'user'     => 'nacoma',
+                'pass'     => 'nacoma',
+                'host'     => 'localhost',
+                'port'     => FALSE,
+                'socket'   => FALSE,
+                'database' => 'nacoma'
+        ),
+        'character_set' => 'utf8',
+        'table_prefix'  => '',
+        'object'        => TRUE,
+        'cache'         => FALSE,
+        'escape'        => TRUE
+);
+
 # check for custom config files that
 # won't be overwritten on upgrade
 if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {

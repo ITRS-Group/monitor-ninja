@@ -220,17 +220,12 @@ class Ninja_Controller extends Template_Controller {
 		# check permissions
 		$auth = new Nagios_auth_Model();
 		if ($auth->authorized_for_configuration_information && $auth->authorized_for_system_commands && $auth->view_hosts_root) {
-			if (is_file("/opt/monitor/op5/nacoma/autoscan/result")) {
-				#filter hosts
-				$target_list = unserialize(file_get_contents("/opt/monitor/op5/nacoma/autoscan/result"));
-				$source_list = Host_Model::addr_name();
-				if (is_array($target_list)) {
-					$filtered_list = array_diff($target_list, $source_list);
-					if (count($filtered_list)) {
-						# show notification
-						$notifications[] = array($this->translate->_('Autoscan complete. Found hosts : ') . count($filtered_list), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
-					}
-				}
+			$nacoma = new Database('nacoma');
+			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results');
+			$query->result(false);
+			$row = $query->current();
+			if ($row !== false && $row['cnt'] > 0) {
+				$notifications[] = array($row['cnt'] . $this->translate->_(' unmonitored hosts present.'), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
 			}
 		}
 
