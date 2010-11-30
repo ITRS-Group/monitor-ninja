@@ -1149,6 +1149,15 @@ class Summary_Controller extends Authenticated_Controller
 		if ($send_by_mail) {
 			# send file as email to recipients
 			$to = $this->pdf_recipients;
+			if (strstr($to, ',')) {
+				$recipients = explode(',', $to);
+				if (is_array($recipients) && !empty($recipients)) {
+					unset($to);
+					foreach ($recipients as $user) {
+						$to[$user] = $user;
+					}
+				}
+			}
 
 			$config = Kohana::config('reports');
 			$mail_sender_address = $config['from_email'];
