@@ -8,11 +8,11 @@
 
 <p class="pagination">
 
-	<?php echo Kohana::lang('pagination.pages') ?>:
+	<?php echo Kohana::lang('pagination.pages') ?> &nbsp;
 
 	<?php if ($current_page > 3): ?>
 		<a href="<?php echo str_replace('{page}', 1, $url) ?>">1</a>
-		<?php if ($current_page != 4) echo '&hellip;' ?>
+		<?php if ($current_page != 4) echo '&hellip; &nbsp;' ?>
 	<?php endif ?>
 
 
@@ -30,7 +30,7 @@
 
 
 	<?php if ($current_page <= $total_pages - 3): ?>
-		<?php if ($current_page != $total_pages - 3) echo '&hellip;' ?>
+		<?php if ($current_page != $total_pages - 3) echo '&hellip; &nbsp;' ?>
 		<a href="<?php echo str_replace('{page}', $total_pages, $url) ?>"><?php echo $total_pages ?></a>
 	<?php endif ?>
 
