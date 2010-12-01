@@ -27,7 +27,11 @@ select {
 #service_table tr.odd td.service_hostname.w80.bt {
 	border: 1px solid #d0d0d0;
 }
-p.pagination { padding-top: 3px;}
+#content p.pagination {
+	padding-top: 3px;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+}
 #extinfo_info,#nagios_commands { padding-left: 1%;}
 #filters{height: 130px;}
 
