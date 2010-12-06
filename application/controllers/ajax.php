@@ -404,6 +404,15 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	*	Return current time to be used to update in GUI
+	*/
+	public function current_time()
+	{
+		$time = date(nagstat::date_format());
+		echo $time;
+	}
+
+	/**
 	*	Fetch PNP image from supplied params
 	*/
 	public function pnp_image()

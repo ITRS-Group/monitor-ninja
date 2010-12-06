@@ -63,7 +63,19 @@ class refresh_Core {
 							}
 						}
 					});
-					setTimeout('check_alive()', _stale_check_interval * 1000);
+
+					var url = _site_domain + _index_page + "/ajax/current_time/";
+					$.ajax({
+						url: url,
+						type: 'GET',
+						success: function(data) {
+							if (data !='') {
+								$('#page_last_updated').html(data);
+							} // don't touch in case of error
+						}
+					});
+
+ 					setTimeout('check_alive()', _stale_check_interval * 1000);
 				}
 			//-->
 			</script>
