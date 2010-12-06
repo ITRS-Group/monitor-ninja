@@ -400,7 +400,7 @@ class Reports_Controller extends Authenticated_Controller
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 
-			if(isset($report_info["assume_initial_states"]) && $report_info["assume_initial_states"] != 0)
+			if(isset($report_info["assumeinitialstates"]) && $report_info["assumeinitialstates"] != 0)
 				$assume_initial_states_checked = 'checked="checked"';
 			else
 				$assume_initial_states_checked = '';
