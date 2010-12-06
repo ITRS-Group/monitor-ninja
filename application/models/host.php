@@ -740,9 +740,9 @@ class Host_Model extends Model {
 		if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK)
 			$ret_str .= ' AND '.$table_alias.'check_type='.Current_status_Model::SERVICE_CHECK_ACTIVE.' ';
 		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
-			$ret_str .= ' AND '.$table_alias.'check_type=1 ';
+			$ret_str .= ' AND '.$table_alias.'state_type=1 ';
 		if ($serviceprops & nagstat::SERVICE_SOFT_STATE)
-			$ret_str .= ' AND '.$table_alias.'check_type=0 ';
+			$ret_str .= ' AND '.$table_alias.'state_type=0 ';
 
 		return $ret_str;
 	}
