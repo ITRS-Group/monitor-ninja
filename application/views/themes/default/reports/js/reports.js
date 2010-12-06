@@ -150,6 +150,7 @@ $(document).ready(function() {
 			set_initial_state('assumeinitialstates', assumeinitialstates);
 			set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
 		}
+		set_initial_state('cluster_mode', cluster_mode);
 	});
 });
 
@@ -853,6 +854,19 @@ function set_initial_state(what, val)
 			} else {
 				//f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', false);
+				}
+			}
+			break;
+		case 'cluster_mode':
+			if (val!='0') {
+				toggle_label_weight(1, 'cluster_mode');
+				if ($('#fancy_content').is(':visible')) {
+					$('input[name=' + what + ']').attr('checked', true);
+				}
+			} else {
+				toggle_label_weight(0, 'cluster_mode');
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
