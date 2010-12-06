@@ -322,7 +322,7 @@ class Ninja_Controller extends Template_Controller {
 		# assume rel_path is relative from current theme
 		$path = url::base(false).'application/views/'.$this->theme_path.$rel_path;
 		# make sure we didn't mix up start/end slashes
-		$path = str_replace('//', '/', $path);
+		$path = text::reduce_slashes($path);
 		return $path;
 	}
 }
