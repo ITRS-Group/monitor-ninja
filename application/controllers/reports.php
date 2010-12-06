@@ -126,8 +126,8 @@ class Reports_Controller extends Authenticated_Controller
 	private $csv_output = false;
 	private $create_pdf = false;
 	public $pdf_data = false;
-	private $pdf_filename = false;
-	private $pdf_recipients = false; # when sending reports by email
+	public $pdf_filename = false;
+	public $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
 	private $schedule_id = false;
 
@@ -149,8 +149,8 @@ class Reports_Controller extends Authenticated_Controller
 	private $use_alias = 0;
 
 	private $type = false;
-	private $report_id = false;
-	private $data_arr = false;
+	public $report_id = false;
+	public $data_arr = false;
 	private $report_type = false;
 	private $object_varname = false;
 
@@ -164,7 +164,7 @@ class Reports_Controller extends Authenticated_Controller
 	public $start_date = false;
 	public $end_date = false;
 	public $mashing = false;
-	private $report_options = false;
+	public $report_options = false;
 	private $in_months = false;
 
 	public function __construct()
@@ -1678,6 +1678,8 @@ class Reports_Controller extends Authenticated_Controller
 					$data = $this->data_arr;
 					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
 					$template->content->create_pdf = $this->create_pdf;
+					$template->content->start_time = $this->start_date;
+					$template->content->end_time = $this->end_date;
 					$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->str_start_date = $str_start_date;
@@ -2066,6 +2068,37 @@ class Reports_Controller extends Authenticated_Controller
 
 				} # end if not empty. Display message to user?
 			}
+
+			if (!$this->create_pdf) {
+				# fetch users date format in PHP style so we can use it
+				# in date() below
+				$date_format = $this->_get_date_format(true);
+
+				$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
+				$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
+				$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
+				$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
+				$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
+				$js_date_format = "Date.format = '".$this->_get_date_format()."';";
+				$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
+
+				# inline js should be the
+				# var host =
+				# var service =
+				# 	etc...
+				$this->js_strings .= "\n".$js_month_names."\n";
+				$this->js_strings .= $js_abbr_month_names."\n";
+				$this->js_strings .= $js_day_names."\n";
+				$this->js_strings .= $js_abbr_day_names."\n";
+				$this->js_strings .= $js_day_of_week."\n";
+				$this->js_strings .= $js_date_format."\n";
+				$this->js_strings .= $js_start_date."\n";
+
+				$this->template->inline_js = $this->inline_js;
+				$this->template->js_strings = $this->js_strings;
+				$this->template->css_header->css = $this->xtra_css;
+			}
+
 			# skip the rest if pdf or mashing
 			if ($this->create_pdf || $this->mashing) {
 				$this->pdf_data['content'] = $template->content->render();
@@ -2084,34 +2117,6 @@ class Reports_Controller extends Authenticated_Controller
 				return $retval;
 			}
 		}
-
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = $this->_get_date_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".$this->_get_date_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->js_strings .= "\n".$js_month_names."\n";
-		$this->js_strings .= $js_abbr_month_names."\n";
-		$this->js_strings .= $js_day_names."\n";
-		$this->js_strings .= $js_abbr_day_names."\n";
-		$this->js_strings .= $js_day_of_week."\n";
-		$this->js_strings .= $js_date_format."\n";
-		$this->js_strings .= $js_start_date."\n";
-
-		$this->template->inline_js = $this->inline_js;
-		$this->template->js_strings = $this->js_strings;
-		$this->template->css_header->css = $this->xtra_css;
 
 		//$this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
