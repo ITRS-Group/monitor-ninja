@@ -464,7 +464,7 @@ class Reports_Controller extends Authenticated_Controller
 
 			$use_alias_checked = (isset($report_info["use_alias"]) && $report_info["use_alias"] != 0) ? 'checked="checked"' : '';
 
-			if(isset($report_info["scheduledowntimeasuptime"]) && $report_info["scheduledowntimeasuptime"] != 0)
+			if(isset($report_info["scheduleddowntimeasuptime"]) && $report_info["scheduleddowntimeasuptime"] != 0)
 				$scheduled_downtime_as_uptime_checked = 'checked="checked"';
 			else
 				$scheduled_downtime_as_uptime_checked = '';
