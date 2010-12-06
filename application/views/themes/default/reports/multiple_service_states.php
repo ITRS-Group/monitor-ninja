@@ -168,7 +168,6 @@
 <br />
 <div class="state_services">
 <?php }  ?>
-<?php if (empty($data['groupname'])) { ?>
 	<table summary="<?php echo $t->_('State breakdown for host services') ?>" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : 'class="multiple_services" style="margin-bottom: 15px"';?>>
 		<tr>
 			<th <?php echo ($create_pdf) ? 'style="width: 222px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 90%"';?>><?php echo ((!$create_pdf) ? help::render('average_and_sla') : '').' '.$t->_('Average and Group availability for all selected services') ?></th>
@@ -208,5 +207,4 @@
 						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
 		</tr>
 	</table>
-<?php } ?>
 </div>
