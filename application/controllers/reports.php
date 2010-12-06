@@ -410,6 +410,11 @@ class Reports_Controller extends Authenticated_Controller
 			else
 				$initial_assumed_host_state_selected = '';
 
+			if($report_info["cluster_mode"] != 0)
+				$cluster_mode_checked = 'checked="checked"';
+			else
+				$cluster_mode_checked = '';
+
 			if($report_info["initialassumedservicestate"] != 0)
 				$initial_assumed_service_state_selected = 'checked="checked"';
 			else
@@ -1193,6 +1198,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$scheduled_downtime_as_uptime     = arr::search($_REQUEST, 'scheduleddowntimeasuptime');
 		$assume_initial_states            = arr::search($_REQUEST, 'assumeinitialstates');
+		$cluster_mode            = arr::search($_REQUEST, 'cluster_mode');
 		$assume_states_during_not_running = arr::search($_REQUEST, 'assumestatesduringnotrunning');
 		$include_soft_states              = arr::search($_REQUEST, 'includesoftstates');
 		$this->initial_assumed_host_state = arr::search($_REQUEST, 'initialassumedhoststate', $this->initial_assumed_host_state);
@@ -1467,6 +1473,7 @@ class Reports_Controller extends Authenticated_Controller
 					$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
 				}
 
+				$this->js_strings .= "var cluster_mode = '".$cluster_mode."';\n";
 				$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
 				$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
 
