@@ -2,6 +2,9 @@
 if (isset($schedules)) {
 	echo $schedules;
 }
+
+# workaround for _print_alert_totals_table() below
+$this->create_pdf = $create_pdf;
 ?>
 
 <div class="widget left w98">

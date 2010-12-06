@@ -6,15 +6,15 @@ if (isset($schedules)) {
 <div class="widget w98 left">
 	<h1><?php echo $this->translate->_('Most recent hard alerts'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
-	<table>
+	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>
 		<tr>
-			<th class="headerNone left"><?php //echo $label_state; ?></th>
-			<th class="headerNone left"><?php echo $label_time; ?></th>
-			<th class="headerNone left"><?php echo $label_alert_type; ?></th>
-			<th class="headerNone left"><?php echo $label_host; ?></th>
-			<th class="headerNone left"><?php echo $label_service; ?></th>
-			<th class="headerNone left"><?php echo $label_state_type; ?></th>
-			<th class="headerNone left"><?php echo $label_information; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em; width:20px"' : 'class="headerNone left"') ?>><?php //echo $label_state; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo $label_time; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo $label_alert_type; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo $label_host; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo $label_service; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;width:70px"' : 'class="headerNone left"') ?>><?php echo $label_state_type; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo $label_information; ?></th>
 		</tr>
 		<?php
 		$i = 0;
@@ -33,15 +33,15 @@ if (isset($schedules)) {
 				}
 				$softhard = $ary['hard'] == 1 ? $label_hard : $label_soft;
 		?>
-			<td class="icon status">
+			<td <?php echo ($create_pdf ? 'style="width:20px"' : 'class="icon status"') ?>>
 				<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($state).'.png'), array('title' => $state, 'alt' => $state)); ?>
 			</td>
-			<td><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
-			<td><?php echo $alert_type; ?></td>
-			<td><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
-			<td><?php echo $ary['service_description']; ?></td>
-			<td><?php echo $softhard; ?></td>
-			<td><?php echo $ary['output']; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $alert_type; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['service_description']; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px' : '' ?>><?php echo $softhard; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['output']; ?></td>
 		</tr>
 		<?php }
 		} ?>

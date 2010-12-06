@@ -28,8 +28,8 @@ class Summary_Controller extends Authenticated_Controller
 	private $abbr_day_names = false;
 	private $first_day_of_week = 1;
 	private $report_id = false;
-	private $create_pdf = false;
-	private $pdf_data = false;
+	public $create_pdf = false;
+	public $pdf_data = false;
 	public $mashing = false;
 	public $template_prefix = false;
 	private $pdf_filename = false;
@@ -455,12 +455,12 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$t = $this->translate;
-		echo "<br /><table class=\"host_alerts\"><tr>\n";
+		echo "<br /><table class=\"host_alerts\"".($this->create_pdf ? 'style="margin-top: 15px" border="1"' : '')."><tr>\n";
 		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>".$spacer;
-		echo "<th class=\"headerNone\">" . $t->_('State') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Soft Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Hard Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Total Alerts') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('State') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Soft Alerts') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Hard Alerts') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Total Alerts') . "</th>\n";
 		echo "</tr>\n";
 
 		$total = array(0, 0); # soft and hard
@@ -758,11 +758,12 @@ class Summary_Controller extends Authenticated_Controller
 		$content->label_soft_alerts = $t->_('Soft Alerts');
 		$content->label_hard_alerts = $t->_('Hard Alerts');
 		$content->label_total_alerts = $t->_('Total Alerts');
+		$content->create_pdf = $this->create_pdf;
 
 		$this->template->content->schedules = $this->add_view('summary/schedule');
 		$template = $this->template->content->schedules;
 		$template->json_periods = $json_periods;
-		$template->create_pdf = ($this->create_pdf || $this->mashing) ? true : false;
+		$template->create_pdf = $this->create_pdf;
 		$template->type = $this->type;
 		$template->report_id = $this->report_id;
 		$template->report_info = $report_info;
@@ -866,15 +867,20 @@ class Summary_Controller extends Authenticated_Controller
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
-		if ($this->create_pdf) {
+		if ($this->create_pdf || $this->mashing) {
 			$this->pdf_data['content'] = $content->render();
+
+			if ($this->create_pdf && $this->mashing) {
+				return $this->pdf_data;
+			} elseif ($this->mashing) {
+				return $content->render();
+			}
+
 			$retval = $this->_pdf();
 			if (PHP_SAPI == "cli") {
 				echo $retval;
 			}
 			return $retval;
-		} elseif ($this->mashing) {
-			return $content->render();
 		}
 
 		$this->template->inline_js = $this->inline_js;
