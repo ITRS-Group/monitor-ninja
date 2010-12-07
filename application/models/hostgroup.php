@@ -23,11 +23,11 @@ class Hostgroup_Model extends ORM
 			return false;
 		}
 		$obj_ids = array_keys($auth_objects);
-		$data = ORM::factory('hostgroup')
-			->where($field, $value)
-			->in('id', $obj_ids)
-			->find();
-		return $data->loaded ? $data : false;
+		$db = new Database();
+		$sql = "SELECT * FROM hostgroup WHERE $field=".$db->escape($value).' AND '.
+			'id IN('.implode(',', $obj_ids).')';
+		$data = $db->query($sql);
+		return count($data)>0 ? $data : false;
 	}
 
 	/**

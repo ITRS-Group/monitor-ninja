@@ -25,11 +25,11 @@ class Servicegroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$data = ORM::factory('servicegroup')
-			->where($field, $value)
-			->in('id', $obj_ids)
-			->find();
-		return $data->loaded ? $data : false;
+		$db = new Database();
+		$sql = "SELECT * FROM servicegroup WHERE $field=".$db->escape($value).' AND '.
+			'id IN('.implode(',', $obj_ids).')';
+		$data = $db->query($sql);
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
