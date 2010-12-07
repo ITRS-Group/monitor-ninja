@@ -283,8 +283,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$scheduled_downtime_as_uptime_checked  =
 			arr::search($_REQUEST, 'scheduleddowntimeasuptime', $this->scheduled_downtime_as_uptime) ? 'checked="checked"' : '';
-		$cluster_mode_checked =
-			arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode) ? 'checked="checked"' : '';
+
+		$cluster_mode = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
+		$cluster_mode_checked =	!empty($cluster_mode) ? 'checked="checked"' : '';
 		$assume_initial_states_checked =
 			arr::search($_REQUEST, 'assumeinitialstates', $this->assume_initial_states) ? 'checked="checked"' : '';
 		$assume_states_during_not_running_checked =
@@ -1088,7 +1089,7 @@ class Reports_Controller extends Authenticated_Controller
 		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period		= arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
 		$rpttimeperiod 		= arr::search($_REQUEST, 'rpttimeperiod', '');
-		$cluster_mode       = arr::search($_REQUEST, 'cluster_mode', '');
+		$cluster_mode       = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
 		$hostgroup			= false;
 		$hostname			= false;
 		$servicegroup		= false;
@@ -1198,7 +1199,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$scheduled_downtime_as_uptime     = arr::search($_REQUEST, 'scheduleddowntimeasuptime');
 		$assume_initial_states            = arr::search($_REQUEST, 'assumeinitialstates');
-		$cluster_mode            = arr::search($_REQUEST, 'cluster_mode');
 		$assume_states_during_not_running = arr::search($_REQUEST, 'assumestatesduringnotrunning');
 		$include_soft_states              = arr::search($_REQUEST, 'includesoftstates');
 		$this->initial_assumed_host_state = arr::search($_REQUEST, 'initialassumedhoststate', $this->initial_assumed_host_state);
@@ -1473,7 +1473,7 @@ class Reports_Controller extends Authenticated_Controller
 					$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
 				}
 
-				$this->js_strings .= "var cluster_mode = '".$cluster_mode."';\n";
+				$this->js_strings .= "var cluster_mode = '".(int)$cluster_mode."';\n";
 				$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
 				$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
 
