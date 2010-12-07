@@ -108,7 +108,6 @@
 				</td>
 				<td style="text-align: left; width: 133px">
 					<?php
-					echo !empty($svc_state['nacoma_link']) ? $svc_state['nacoma_link'].'&nbsp;' : '';
 					if ($nacoma_link===true) {
 						$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
 						echo html::anchor('configuration/configure/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px'));
