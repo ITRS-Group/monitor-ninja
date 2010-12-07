@@ -75,7 +75,7 @@ if ($type == 'avail') { ?>
 				</tr>
 				<tr class="none">
 					<td>
-						<input type="checkbox" value="0" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" />
+						<input type="checkbox" value="1" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" />
 						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
 					</td>
 				</tr>
