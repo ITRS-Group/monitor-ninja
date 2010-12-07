@@ -35,6 +35,9 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
+		$this->session->delete('auth_user');
+		$this->session->delete('nagios_access');
+		$this->session->delete('contact_id');
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
 		$this->template->form_title =$this->translate->_('Login');
