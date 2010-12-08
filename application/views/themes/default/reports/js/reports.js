@@ -653,6 +653,16 @@ function populate_saved_reports(json_data, field_name)
 	setTimeout('delayed_hide_progress()', 1000);
 }
 
+function populate_saved_sla_data(json_data) {
+	json_data = eval(json_data);
+	for (var i = 0; i < json_data.length; i++) {
+		var j = i+1;
+		if (document.getElementById("sla_month_"+j).style.backgroundColor != 'rgb(205, 205, 205)')
+			$("#sla_month_"+j).attr('value',json_data[i]);
+	}
+	setTimeout('delayed_hide_progress()', 1000);
+}
+
 /**
 *	Set selected report period to default
 *	(and disable sla fields out of scope if sla)
@@ -1077,4 +1087,28 @@ function check_email(mail_str)
 		}
 	}
 	return result;
+}
+
+function get_sla_values() {
+	var sla_id = $('#sla_report_id').attr('value');
+
+	show_progress('progress', _wait_str);
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	var url = ajax_url + "get_sla_from_saved_reports/";
+	var data = {sla_id: sla_id}
+
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		success: function(data) {
+			if (data != '') {
+				// OK, populate
+				populate_saved_sla_data(data);
+			} else {
+				// error
+				jgrowl_message('Unable to fetch saved sla values...', _reports_error);
+			}
+		}
+	});
 }
