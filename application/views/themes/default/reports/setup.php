@@ -364,7 +364,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
 				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
-					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> Use SLA-values from saved report</td>
+					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> <?php echo $this->translate->_('Use SLA-values from saved report') ?></td>
 				</tr>
 				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
 					<td style="padding-left: 0px" colspan="12">
