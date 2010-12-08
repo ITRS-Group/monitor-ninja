@@ -63,11 +63,14 @@ class Config_Model extends Model {
 				break;
 
 				case 'contacts':
-					$sql = "SELECT contact_name, alias, email, pager, service_notification_options,
-									host_notification_options, service_notification_period, host_notification_period,
-									service_notification_commands, host_notification_commands,
-									retain_status_information, retain_nonstatus_information
-									FROM contact ORDER BY contact_name".$offset_limit;
+					$sql = "SELECT c.contact_name, c.alias, c.email, c.pager, c.service_notification_options,
+									c.host_notification_options, c.service_notification_period, c.host_notification_period,
+									c.service_notification_commands, c.host_notification_commands,
+									c.retain_status_information, c.retain_nonstatus_information,
+									h_n.timeperiod_name as h_notification_period, s_n.timeperiod_name as s_notification_period
+									FROM contact as c, timeperiod as h_n, timeperiod as s_n
+									WHERE h_n.id = c.host_notification_period AND s_n.id = c.service_notification_period
+									ORDER BY c.contact_name".$offset_limit;
 				break;
 
 				case 'commands':
