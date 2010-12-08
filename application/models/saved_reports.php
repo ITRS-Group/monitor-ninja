@@ -37,6 +37,7 @@ class Saved_reports_Model extends Model
 		return $res ? $res : false;
 	}
 
+
 	public function edit_report_info($type='avail', $id=false, $options=false, $objects=false, $months=false)
 	{
 		$update = false;
@@ -356,4 +357,20 @@ class Saved_reports_Model extends Model
 
 		return (!$res || count($res)==0) ? false : $res;
 	}
+
+	public function get_sla_from_saved_reports($sla_id, $user=false)
+	{
+		$db = new Database();
+		$auth = new Nagios_auth_Model();
+
+		$sql = "SELECT value FROM sla_periods WHERE sla_id = '".$sla_id."'";
+		if (!$auth->view_hosts_root) {
+			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
+			$sql .= " AND user=".$db->escape($user)." OR user=''";
+		}
+
+		$res = $db->query($sql);
+		return $res ? $res : false;
+	}
+
 }
