@@ -595,6 +595,27 @@ class Ajax_Controller extends Authenticated_Controller {
 		return true;
 	}
 
+	public function get_sla_from_saved_reports()
+	{
+
+		$sla_id = urldecode($this->input->post('sla_id', false));
+		if (empty($sla_id))
+			return false;
+
+		$saved_sla = Saved_reports_Model::get_sla_from_saved_reports($sla_id);
+		if (count($saved_sla) == 0) {
+			echo '';
+			return false;
+		}
+
+		foreach ($saved_sla as $info) {
+			$return[] = $info->value;
+		}
+
+		echo json::encode($return);
+		return true;
+	}
+
 	/**
 	*	Fetch date ranges for reports
 	*/
