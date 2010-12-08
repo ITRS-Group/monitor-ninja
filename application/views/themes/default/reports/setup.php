@@ -359,7 +359,32 @@ if (isset($report_info)) {
 		<br />
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
-				<caption><?php echo help::render('enter-sla').' '.$label_enter_sla ?></caption>
+				<tr>
+					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> Use SLA-values from saved report</td>
+				</tr>
+				<tr>
+					<td style="padding-left: 0px" colspan="12">
+						<select name="sla_report_id" id="sla_report_id" onchange="get_sla_values()">
+							<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
+							<?php	$sched_str = "";
+							foreach ($saved_reports as $info) {
+								$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
+								if (in_array($info->id, $scheduled_ids)) {
+									$sched_str = " ( *".$scheduled_label."* )";
+									$title_str = $scheduled_periods[$info->id]." ".$title_label;
+								} else {
+									$sched_str = "";
+									$title_str = "";
+								}
+								echo '<option title="'.$title_str.'" '.(($report_id == $info->id) ? 'selected="selected"' : '').
+									' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
+							}  ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-left: 0px" colspan="12"><?php echo help::render('enter-sla').' '.$label_enter_sla ?></td>
+				</tr>
 				<tr>
 					<?php foreach ($months as $key => $month) { ?>
 					<td style="padding-left: 0px">
@@ -372,7 +397,7 @@ if (isset($report_info)) {
 								'class' => 'autofill')
 							) ?>
 						<?php echo $month ?><br />
-						<input type="text" size="2" class="sla_month" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($report_info, 'month_'.($key + 1))!==false ? $report_info['month_'.($key + 1)] : "" ?>" maxlength="6" /> %
+						<input type="text" size="2" class="sla_month" id="sla_month_<?php echo ($key+1) ?>" name="month_<?php echo ($key+1) ?>" value="<?php echo arr::search($report_info, 'month_'.($key + 1))!==false ? $report_info['month_'.($key + 1)] : "" ?>" maxlength="6" /> %
 					</td>
 					<?php	} ?>
 				</tr>
