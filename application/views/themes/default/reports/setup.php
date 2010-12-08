@@ -15,6 +15,11 @@ if (isset($report_info)) {
 		$report_name = $report_info['sla_name'];
 	}
 }
+
+$saved_reports_exists = false;
+if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
+	$saved_reports_exists = true;
+}
 ?>
 
 <div id="report-tabs">
@@ -46,27 +51,26 @@ if (isset($report_info)) {
 				</a>
 			</div><br />
 
-			<?php if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) {
-			echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;'));
-		 ?>
-			<div style="width: 100%; padding-left: 0px">
-				<!--	onchange="check_and_submit(this.form)"	-->
+	<?php echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;')); ?>
+			<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
 				<?php echo help::render('saved_reports') ?> <?php echo $label_saved_reports ?><br />
 				<select name="report_id" id="report_id">
 					<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
 					<?php	$sched_str = "";
-					foreach ($saved_reports as $info) {
-						$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
-						if (in_array($info->id, $scheduled_ids)) {
-							$sched_str = " ( *".$scheduled_label."* )";
-							$title_str = $scheduled_periods[$info->id]." ".$title_label;
-						} else {
-							$sched_str = "";
-							$title_str = "";
+					if ($saved_reports_exists) {
+						foreach ($saved_reports as $info) {
+							$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
+							if (in_array($info->id, $scheduled_ids)) {
+								$sched_str = " ( *".$scheduled_label."* )";
+								$title_str = $scheduled_periods[$info->id]." ".$title_label;
+							} else {
+								$sched_str = "";
+								$title_str = "";
+							}
+							echo '<option title="'.$title_str.'" '.(($report_id == $info->id) ? 'selected="selected"' : '').
+								' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
 						}
-						echo '<option title="'.$title_str.'" '.(($report_id == $info->id) ? 'selected="selected"' : '').
-							' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
-					}  ?>
+					} ?>
 				</select>
 				<input type="hidden" name="type" value="<?php echo $type ?>" />
 				<input type="submit" class="button select" value="<?php echo $label_select ?>" name="fetch_report" />
@@ -82,7 +86,7 @@ if (isset($report_info)) {
 				</div>
 			<?php	} ?>
 		</div>
-		<?php echo form::close(); } ?>
+		<?php echo form::close();?>
 	</div>
 
 	<!--<h1><?php echo $label_create_new ?></h1>-->
@@ -359,10 +363,10 @@ if (isset($report_info)) {
 		<br />
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
-				<tr>
+				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
 					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> Use SLA-values from saved report</td>
 				</tr>
-				<tr>
+				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
 					<td style="padding-left: 0px" colspan="12">
 						<select name="sla_report_id" id="sla_report_id" onchange="get_sla_values()">
 							<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>

@@ -412,9 +412,14 @@ function get_saved_reports(type, schedules)
 			if (data != '') {
 				// OK, populate
 				populate_saved_reports(data, field);
+				$('#saved_reports_display').show();
+				$('.sla_values').show();
 			} else {
 				// error
-				jgrowl_message('Unable to fetch saved reports...', _reports_error);
+				// suppressed since this is not always an error - they maybe doesn't exist yet
+				//jgrowl_message('Unable to fetch saved reports...', _reports_error);
+				$('#saved_reports_display').hide();
+				$('.sla_values').hide();
 			}
 		}
 	});
@@ -648,6 +653,8 @@ function populate_saved_reports(json_data, field_name)
 		var val = json_data[i].optionValue;
 		var txt = json_data[i].optionText;
 		$("#" + field_name).addOption(val, txt, false);
+		$('.sla_values').show();
+		$('#sla_report_id').addOption(val, txt, false);
 		invalid_report_names[i] = txt;
 	}
 	setTimeout('delayed_hide_progress()', 1000);
@@ -1097,6 +1104,10 @@ function check_email(mail_str)
 function get_sla_values() {
 	var sla_id = $('#sla_report_id').attr('value');
 
+	if (!sla_id) {
+		// don't try to fetch sla values when we have no id
+		return;
+	}
 	show_progress('progress', _wait_str);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "get_sla_from_saved_reports/";
@@ -1110,6 +1121,7 @@ function get_sla_values() {
 			if (data != '') {
 				// OK, populate
 				populate_saved_sla_data(data);
+				$('.sla_values').show();
 			} else {
 				// error
 				jgrowl_message('Unable to fetch saved sla values...', _reports_error);
