@@ -3423,7 +3423,7 @@ class Reports_Controller extends Authenticated_Controller
 		(
 			'create_pdf' => true
 		);
-		$default_action_url = $this->template_prefix.'reports/generate';
+		$default_action_url = Kohana::config('reports.reports_link').'/generate';
 
 		if (PHP_SAPI != "cli") {
 			# never try to use $_SERVER variables when
@@ -3948,7 +3948,7 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	private function _generate_sla_member_link($member)
 	{
-		$return = "<a href='".url::site().Kohana::config('reports.reports_link')."/generate?type=sla&amp;{$this->object_varname}[]=$member";
+		$return = '<a href="'.url::site().Kohana::config('reports.reports_link').'/generate?type=sla&amp;'.$this->object_varname.'[]='.$member;
 		foreach($this->report_options as $key => $val) {
 			switch ($key) {
 				case 'report_type':
@@ -3965,7 +3965,7 @@ class Reports_Controller extends Authenticated_Controller
 			$return .= "&amp;$key=$val";
 		}
 		foreach($this->in_months as $month => $sla) {
-			$return .= "&amp;month_$month=$sla";
+			$return .= '&amp;month_'.$month.'='.$sla;
 		}
 		$host_alias = '';
 		$service_description = '';
@@ -3986,7 +3986,7 @@ class Reports_Controller extends Authenticated_Controller
 				$member = $host_alias.' (' . $member . ')';
 			}
 		}
-		$return .= "'>$member</a>";
+		$return .= '">'.$member.'</a>';
 
 		return $return;
 	}
