@@ -655,10 +655,15 @@ function populate_saved_reports(json_data, field_name)
 
 function populate_saved_sla_data(json_data) {
 	json_data = eval(json_data);
+	for (var i = 1; i <= 12; i++) {
+		$("#sla_month_"+i).attr('value','');
+	}
 	for (var i = 0; i < json_data.length; i++) {
 		var j = i+1;
-		if (document.getElementById("sla_month_"+j).style.backgroundColor != 'rgb(205, 205, 205)')
-			$("#sla_month_"+j).attr('value',json_data[i]);
+		var name = json_data[i].name;
+		var value = json_data[i].value;
+		if (document.getElementById("sla_"+name).style.backgroundColor != 'rgb(205, 205, 205)')
+			$("#sla_"+name).attr('value',value);
 	}
 	setTimeout('delayed_hide_progress()', 1000);
 }
