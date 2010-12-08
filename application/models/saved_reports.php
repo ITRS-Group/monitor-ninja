@@ -363,7 +363,7 @@ class Saved_reports_Model extends Model
 		$db = new Database();
 		$auth = new Nagios_auth_Model();
 
-		$sql = "SELECT value FROM sla_periods WHERE sla_id = '".$sla_id."'";
+		$sql = "SELECT name, value FROM sla_periods WHERE sla_id = '".$sla_id."'";
 		if (!$auth->view_hosts_root) {
 			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
 			$sql .= " AND user=".$db->escape($user)." OR user=''";
