@@ -1094,8 +1094,7 @@ function disable_sla_fields(report_period)
 		default:
 			for (i=1;i<=12;i++)
 			{
-				document.forms['report_form'].elements['month_' + i].disabled=false;
-				document.forms['report_form'].elements['month_' + i].style.backgroundColor=sla_month_enabled_color;
+				$('#month_' + i).attr('disabled', false).css('bgcolor', sla_month_enabled_color);
 			}
 	}
 }
