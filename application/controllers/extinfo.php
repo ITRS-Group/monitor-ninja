@@ -495,7 +495,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					 $label_host_alert_history => 'showlog/alert_history/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
-					 $label_host_avail => 'reports/generate/?type=avail&host_name[]='.$host,
+					 $label_host_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&host_name[]='.$host,
 					 $label_host_notifications => '/notifications/host/'.$host
 				);
 				break;
@@ -514,7 +514,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_service_alert_history => 'showlog/alert_history/'.$host.'?service='.urlencode($service),
 					$label_service_trends => 'trends/host/'.$host.'?service='.urlencode($service),
 					$label_service_histogram => 'histogram/host/'.$host.'?service='.urlencode($service),
-					$label_service_avail => 'reports/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
+					$label_service_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					$label_service_notifications => '/notifications/host/'.$host.'?service='.urlencode($service)
 				);
 
@@ -929,7 +929,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
-					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
+					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
 			case 'hostgroup':
@@ -942,7 +942,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
-					$label_avail => 'reports/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
+					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
 				);
 				break;
 		}

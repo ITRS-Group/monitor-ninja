@@ -890,7 +890,7 @@ class Trends_Controller extends Authenticated_Controller {
 				$notification_link = url::site().'notifications/host/';
 
 				$host_name = $avail_data['values']['HOST_NAME'];
-				$avail_link = url::site().'reports/generate?type=avail'.
+				$avail_link = url::site().'/generate?type=avail'.
 				"&host_name[]=". $host_name .
 				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
 				$avail_link_icon = 'availability';

@@ -831,7 +831,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->disable_refresh = true;
 
-		if (!$this->create_pdf && !$this->mashing) {
+		if (!$this->create_pdf) {
 			$this->_stash_params();
 		}
 
@@ -2739,7 +2739,7 @@ class Reports_Controller extends Authenticated_Controller
 		$start_time = date($date_format, $start_time);
 		$end_time = date($date_format, $end_time);
 		$prev_host = '';
-		$php_self = url::site().'reports/generate?type='.$type;
+		$php_self = url::site().Kohana::config('reports.reports_link').'/generate?type='.$type;
 		if (array_key_exists('states', $data_arr) && !empty($data_arr['states']))
 			$group_averages = $data_arr['states'];
 
@@ -3212,7 +3212,7 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$path = addslashes(trim($path));
 		$params = addslashes(trim($params));
-		$return = form::open('reports/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
+		$return = form::open(Kohana::config('reports.reports_link').'/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
 		$return .= "<div>\n";
 		$url_params = '';
 		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
@@ -3423,7 +3423,6 @@ class Reports_Controller extends Authenticated_Controller
 		(
 			'create_pdf' => true
 		);
-		#$default_action_url = 'http://192.168.1.29/html2ps/html2ps.php';
 		$default_action_url = $this->template_prefix.'reports/generate';
 
 		if (PHP_SAPI != "cli") {
@@ -3949,7 +3948,7 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	private function _generate_sla_member_link($member)
 	{
-		$return = "<a href='".url::site()."reports/generate?type=sla&amp;{$this->object_varname}[]=$member";
+		$return = "<a href='".url::site().Kohana::config('reports.reports_link')."/generate?type=sla&amp;{$this->object_varname}[]=$member";
 		foreach($this->report_options as $key => $val) {
 			switch ($key) {
 				case 'report_type':
@@ -3999,7 +3998,7 @@ class Reports_Controller extends Authenticated_Controller
 	private function _generate_avail_member_link($members)
 	{
 		$objects = '';
-		$return = url::site().'reports/generate?type=avail&amp;';
+		$return = url::site().Kohana::config('reports.reports_link').'/generate?type=avail&amp;';
 		if (is_array($members)) {
 			$objects .= implode('&amp;'.$this->object_varname.'[]=',$members);
 		} else {

@@ -70,7 +70,7 @@
 					<?php } ?>
 				</td>
 				<td class="data">
-					<?php echo html::anchor('reports/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('Availability report for this service'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor(Kohana::config('reports.reports_link').'/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => $this->translate->_('Availability report for this service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/alert-history.png'), array('title' => $this->translate->_('Alert History for this Service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i]."?service=".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => $this->translate->_('Notifications for this Service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('trends/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/trends.png'), array('title' => $this->translate->_('Trends for this Host'))), array('style' => 'border: 0px')) ?>

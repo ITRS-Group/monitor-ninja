@@ -20,11 +20,11 @@ if (Session::instance()->get('main_report_params', false)
 	!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
 	# we have main_report_params and we are NOT showing the report (i.e we are showing a sub report)
 	# => show backlink
-	echo '&nbsp;'.html::anchor('reports/generate?'.Session::instance()->get('main_report_params'), html::image($this->add_path('/icons/32x32/square-back.png'), array('title' => $t->_('Back'), 'alt' => '')), array('title' => $t->_('Back to original report'), 'style' => 'border: 0px')).'&nbsp;';
+	echo '&nbsp;'.html::anchor(Kohana::config('reports.reports_link').'/generate?'.Session::instance()->get('main_report_params'), html::image($this->add_path('/icons/32x32/square-back.png'), array('title' => $t->_('Back'), 'alt' => '')), array('title' => $t->_('Back to original report'), 'style' => 'border: 0px')).'&nbsp;';
 }
 if (Session::instance()->get('current_report_params', false)) {
 	# make it possible to get the link (GET) to the current report
-	echo '&nbsp;'.html::anchor('reports/generate?'.Session::instance()->get('current_report_params'), html::image($this->add_path('/icons/32x32/square-link.png'),array('alt' => '','title' => $t->_('Direct link'))), array('id' => 'current_report_params', 'title' => $t->_('Direct link to this report. Right click to copy or click to view.'),'style' => 'border: 0px'));
+	echo '&nbsp;'.html::anchor(Kohana::config('reports.reports_link').'/generate?'.Session::instance()->get('current_report_params'), html::image($this->add_path('/icons/32x32/square-link.png'),array('alt' => '','title' => $t->_('Direct link'))), array('id' => 'current_report_params', 'title' => $t->_('Direct link to this report. Right click to copy or click to view.'),'style' => 'border: 0px'));
 }
 ?>
 </div>
@@ -33,7 +33,7 @@ if (Session::instance()->get('current_report_params', false)) {
 <?php
 if ($type == 'avail') { ?>
 <div id="options">
-<?php	echo form::open('reports/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
+<?php	echo form::open(Kohana::config('reports.reports_link').'/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
 			<h1><?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
@@ -135,7 +135,7 @@ if ($type == 'avail') { ?>
 # SLA form - only save report. No "update"
 } else { ?>
 <div id="sla_options">
-<?php	echo form::open('reports/save', array('id' => 'report_form_sla', 'onsubmit' => 'return trigger_ajax_save(this);'));?>
+<?php	echo form::open(Kohana::config('reports.reports_link').'/save', array('id' => 'report_form_sla', 'onsubmit' => 'return trigger_ajax_save(this);'));?>
 	<h1><?php echo $t->_('Save report') ?></h1>
 	<table style="width: 350px">
 		<tr class="none">
