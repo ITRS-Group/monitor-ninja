@@ -608,8 +608,9 @@ class Ajax_Controller extends Authenticated_Controller {
 			return false;
 		}
 
+		$return = false;
 		foreach ($saved_sla as $info) {
-			$return[] = $info->value;
+			$return[] = array('name' => $info->name, 'value' => $info->value);
 		}
 
 		echo json::encode($return);
