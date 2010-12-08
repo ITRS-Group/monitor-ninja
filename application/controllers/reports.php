@@ -4097,6 +4097,7 @@ class Reports_Controller extends Authenticated_Controller
 			'sla_group_members' => $translate->_("Members of the selected group that the report is generated for. All members are links to individual reports."),
 			'trends' => $translate->_("Shows trends during selected report period"),
 			'saved_reports' => $translate->_("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
+			'use-sla-values' => $translate->_("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 
 			// new scheduled report
 			'report-type-save' => $translate->_("Select what type of report you would like to schedule the creation of"),
