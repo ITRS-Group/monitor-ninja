@@ -78,4 +78,6 @@ then
 			mysql $db_login_opts -Be "DROP database monitor_reports" 2>/dev/null
 		fi
 	fi
+else
+	sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
 fi
