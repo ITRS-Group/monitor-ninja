@@ -639,6 +639,7 @@ function populate_report_periods(json_data)
 		var txt = json_data[i].optionText;
 		$("#" + field_name).addOption(val, txt, false);
 	}
+	disable_sla_fields($('#report_period option:selected').val());
 	setTimeout('delayed_hide_progress()', 1000);
 }
 
