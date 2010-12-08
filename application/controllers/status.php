@@ -382,7 +382,8 @@ class Status_Controller extends Authenticated_Controller {
 					)
 				);
 				$limit = $pagination->sql_limit;
-				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes, $servicestatustypes, $service_props, $hostprops, $limit);
+				$result = Group_Model::get_group_info($grouptype, $name, $hoststatustypes,
+					$servicestatustypes, $service_props, $hostprops, $limit, $sort_field, $sort_order);
 				$this->template->content->is_svc_details = true;
 			} else {
 				$host_model->num_per_page = false;
@@ -405,6 +406,9 @@ class Status_Controller extends Authenticated_Controller {
 				$host_model->offset = $offset;
 
 				$host_model->set_host_list($group_hosts);
+				$host_model->set_sort_field($sort_field);
+				$host_model->set_sort_order($sort_order);
+
 				$result = $host_model->get_host_status();
 			}
 		} else {
@@ -425,6 +429,9 @@ class Status_Controller extends Authenticated_Controller {
 			$host_model->count = false;
 			$host_model->num_per_page = $items_per_page;
 			$host_model->offset = $offset;
+
+			$host_model->set_sort_field($sort_field);
+			$host_model->set_sort_order($sort_order);
 
 			$host_model->set_host_list($name);
 			$result = $host_model->get_host_status();

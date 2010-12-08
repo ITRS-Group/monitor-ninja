@@ -140,7 +140,7 @@ class Group_Model extends Model
 	 * @param $host_props Host properties filter
 	 * @return db result
 	 */
-	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false, $limit=false)
+	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false, $limit=false, $sort_field=false, $sort_order='DESC')
 	{
 		$groupname = trim($groupname);
 		if (empty($groupname)) {
@@ -167,6 +167,13 @@ class Group_Model extends Model
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+
+		$sort_string = "";
+		if (empty($sort_field)) {
+			$sort_string = "h.host_name, s.service_description,s.current_state ".$sort_order;
+		} else {
+			$sort_string = $sort_field.' '.$sort_order;
+		}
 
 		$service_props_sql = Host_Model::build_service_props_query($service_props, 's.');
 		$host_props_sql = Host_Model::build_host_props_query($host_props, 'h.');
@@ -229,10 +236,7 @@ class Group_Model extends Model
 				h.host_name=s.host_name ".$auth_str." ".$filter_sql.$service_props_sql.$host_props_sql.
 			" GROUP BY
 				h.host_name, s.id
-			ORDER BY
-				h.host_name,
-				s.service_description,
-				s.current_state ".$limit_str.";";
+			ORDER BY ".$sort_string." ".$limit_str.";";
 #echo $sql;
 		$result = $db->query($sql);
 		return $result;
