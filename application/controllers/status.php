@@ -830,6 +830,7 @@ class Status_Controller extends Authenticated_Controller {
 				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
 				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 			if ($group_info_res) {
+				$group_info_res = $group_info_res->current();
 				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
 			} else {
 				# overwrite previous view with the error view, add some text and bail out
@@ -1476,6 +1477,7 @@ class Status_Controller extends Authenticated_Controller {
 				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
 				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
 			if ($group_info_res) {
+				$group_info_res = $group_info_res->current();
 				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
 			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Grid For Service Group ') : $t->_('Status Grid For Host Group ');

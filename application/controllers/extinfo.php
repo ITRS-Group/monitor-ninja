@@ -877,6 +877,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = sprintf($t->_("The requested %s ('%s') wasn't found"), $grouptype, $group);
 			return;
+		} else {
+			$group_info_res = $group_info_res->current();
 		}
 
 		# check if nagios is running, will affect wich template to use
