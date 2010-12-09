@@ -1041,6 +1041,8 @@ th.item_select {
 .group_grid_table th.header,
 .group_overview_table th.header,
 .comments_table th.header,
+th.headerSortUp,
+th.headerSortDown,
 #group_summary_table th.header,
 #service_table th.header,
 #host_table th.header,
