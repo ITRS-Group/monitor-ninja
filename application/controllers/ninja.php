@@ -118,7 +118,7 @@ class Ninja_Controller extends Template_Controller {
 					$this->translate->_('Event log') 					=> array('/showlog/showlog', 'eventlog',0),
 				),
 				$this->translate->_('Configuration') => array(
-					$this->translate->_('View config') 					=> array('/config?items_per_page=20', 'viewconfig',0),
+					$this->translate->_('View config') 					=> array('/config', 'viewconfig',0),
 					$this->translate->_('My Account') 			=> array('/user', 'password',0),
 					$this->translate->_('Backup/Restore')				=> array('/backup', 'backup',0),
 				)
