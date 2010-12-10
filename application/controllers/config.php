@@ -374,7 +374,7 @@ class Config_Controller extends Authenticated_Controller {
 					foreach($data as $row) {
 						$result[$i][]= '<a name="'.$row->contact_name.'"></a>'.$row->contact_name;
 						$result[$i][]= $row->alias;
-						$result[$i][]= html::anchor('mailto:'.$row->email, $row->email);
+						$result[$i][]= '<a href="mailto:'.$row->email.'">'.$row->email.'</a>';
 						$result[$i][]= $row->pager;
 
 						$s_notification_options = explode(',',$row->service_notification_options);
