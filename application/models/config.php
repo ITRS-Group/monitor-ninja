@@ -94,10 +94,10 @@ class Config_Model extends Model {
 				break;
 
 				case 'host_escalations':
-					$sql = "SELECT h.host_name, cg.contactgroup_name, he.first_notification, he.last_notification, he.notification_interval,
-									he.escalation_period, he.escalation_options
-									FROM hostescalation as he, host as h, host_contactgroup as hc, contactgroup as cg
-									WHERE h.id = he.host_name AND hc.host = h.id
+					$sql = "SELECT h.host_name, he.first_notification, he.last_notification, he.notification_interval,
+									he.escalation_period, he.escalation_options, he.id as he_id
+									FROM hostescalation as he, host as h
+									WHERE h.id = he.host_name
 									ORDER BY h.host_name".$offset_limit;
 				break;
 
