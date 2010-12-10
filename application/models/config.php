@@ -103,9 +103,9 @@ class Config_Model extends Model {
 
 				case 'service_escalations':
 					$sql = "SELECT s.host_name, s.service_description, se.first_notification, se.last_notification, se.notification_interval,
-									se.escalation_period, se.escalation_options, cg.contactgroup_name
-									FROM serviceescalation as se, service as s, service_contactgroup as sc, contactgroup as cg
-									WHERE s.id = se.service AND sc.service = s.id
+									se.escalation_period, se.escalation_options, se.id as se_id
+									FROM serviceescalation as se, service as s
+									WHERE s.id = se.service
 									ORDER BY s.service_description".$offset_limit;
 				break;
 
