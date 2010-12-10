@@ -298,7 +298,7 @@ class Reports_Model extends Model
 						# have both include and exclude
 						$include        = $this->tp_parse_day($includes[$weekday]);
 						$exclude_ranges = $this->tp_parse_day($exclude_ranges);
-						$this->report_timeperiod[$i] = subtract_timerange_sets($include, $exclude_ranges);
+						$this->report_timeperiod[$i] = $this->subtract_timerange_sets($include, $exclude_ranges);
 					}
 				}
 			}
