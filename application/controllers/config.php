@@ -556,7 +556,21 @@ class Config_Controller extends Authenticated_Controller {
 					$i = 0;
 					foreach($data as $row) {
 						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->host_name, $row->host_name);
-						$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
+
+						$travel = Contact_Model::get_contacts_from_escalation('host',$row->he_id);
+						if ($travel!==false) {
+							$temp = false;
+							foreach ($travel as $trip) {
+								if (isset($trip->contactgroup_name))
+									$temp[] = html::anchor(Router::$controller.'/?type=contactgroups#'.$trip->contactgroup_name, $trip->contactgroup_name);
+								elseif (isset($trip->contact_name))
+									$temp[] = html::anchor(Router::$controller.'/?type=contacts#'.$trip->contact_name, $trip->contact_name);
+							}
+							$result[$i][]= implode(', ',$temp);
+						}
+						else
+							$result[$i][]= '';
+
 						$result[$i][]= $row->first_notification;
 						$result[$i][]= $row->last_notification;
 						$result[$i][]= time::to_string($row->notification_interval*60);
@@ -680,7 +694,22 @@ class Config_Controller extends Authenticated_Controller {
 					foreach($data as $row) {
 						$result[$i][]= html::anchor(Router::$controller.'/?type=hosts#'.$row->host_name, $row->host_name);
 						$result[$i][]= html::anchor(Router::$controller.'/?type=services#'.$row->service_description, $row->service_description);
-						$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
+
+						$travel = Contact_Model::get_contacts_from_escalation('service',$row->se_id);
+						if ($travel!==false) {
+							$temp = false;
+							foreach ($travel as $trip) {
+								if (isset($trip->contactgroup_name))
+									$temp[] = html::anchor(Router::$controller.'/?type=contactgroups#'.$trip->contactgroup_name, $trip->contactgroup_name);
+								elseif (isset($trip->contact_name))
+									$temp[] = html::anchor(Router::$controller.'/?type=contacts#'.$trip->contact_name, $trip->contact_name);
+							}
+							$result[$i][]= implode(', ',$temp);
+						}
+						else
+							$result[$i][]= '';
+
+						//$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
 						$result[$i][]= $row->first_notification;
 						$result[$i][]= $row->last_notification;
 						$result[$i][]= time::to_string($row->notification_interval*60);
