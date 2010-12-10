@@ -30,4 +30,30 @@ class Contact_Model extends Model
 		$result = $db->query($sql);
 		return $result->count() ? $result: false;
 	}
+
+	public function get_contacts_from_escalation($type = 'host', $id = false) {
+		$sql = false;
+		$db = new Database();
+		if (empty($id)){
+			return false;
+		} else {
+			$sql1 = "SELECT c.contact_name
+					 FROM ".$type."escalation_contact as hc, ".$type."escalation as he, contact as c
+					 WHERE he.id = '".$id."' AND he.id = hc.".$type."escalation AND hc.contact = c.id";
+
+			$sql2 = "SELECT cg.contactgroup_name
+					 FROM ".$type."escalation_contactgroup as hcg, ".$type."escalation as he, contactgroup as cg
+					 WHERE he.id = '".$id."' AND he.id = hcg.".$type."escalation AND hcg.contactgroup = cg.id";
+
+			$sql = $sql1." UNION ".$sql2;
+
+		}
+		if (empty($sql)) {
+			return false;
+		}
+
+		$result = $db->query($sql);
+		return $result->count() ? $result: false;
+	}
+
 }
