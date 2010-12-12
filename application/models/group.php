@@ -418,7 +418,7 @@ class Group_Model extends Model
 	*	Fetch group overview data
 	* 	Expects group type (host/service) and group name
 	*/
-	public function group_overview($type='service', $group=false)
+	public function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = array();
@@ -446,6 +446,25 @@ class Group_Model extends Model
 		$service_match = $auth->view_hosts_root || $auth->view_services_root ? ''
 			: "  AND service.id IN (SELECT service FROM contact_access WHERE contact=".(int)$contact." AND service IS NOT NULL) ";
 
+		$host_match = false;
+		if (!empty($hostprops)) {
+			$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
+		}
+
+		$service_match = false;
+		if (!empty($serviceprops)) {
+			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.');
+		}
+
+		$filter_host_sql = false;
+		$filter_service_sql = false;
+		if (!empty($hoststatustypes)) {
+			$filter_host_sql = " AND 1 << h.current_state & ".$hoststatustypes." ";
+		}
+		if (!empty($servicestatustypes)) {
+			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+		}
+
 		switch ($type) {
 			case 'host':
 				# restrict host access for authorized contacts
@@ -460,7 +479,7 @@ class Group_Model extends Model
 					: "  AND h.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
 
 				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = h.host_name ".
-					"AND current_state = %s ".$service_match;
+					"AND current_state = %s ".$service_match.$filter_service_sql;
 
 				$sql = "SELECT h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image,h.icon_image_alt,".
 					"h.display_name, h.current_attempt, h.max_check_attempts, (".
@@ -471,7 +490,7 @@ class Group_Model extends Model
 					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
 					"FROM hostgroup hg, host h, host_hostgroup hhg ".
 					"WHERE hhg.hostgroup=hg.id AND h.id=hhg.host ".
-					"AND hg.hostgroup_name=".$db->escape($group);
+					"AND hg.hostgroup_name=".$db->escape($group).$filter_host_sql.Host_Model::build_host_props_query($hostprops, 'h.');
 				break;
 			case 'service':
 				if (!$auth->view_hosts_root && !$auth->view_services_root) {
@@ -491,21 +510,15 @@ class Group_Model extends Model
 				$host_match = $auth->view_hosts_root ? ''
 					: "  AND host.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
 
-				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = host.host_name AND current_state = %s";
+				if (!empty($hostprops)) {
+					$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
+				}
 
-				/*$sql = "SELECT host.host_name, host.current_state, host.address, host.action_url, ".
-					"host.notes_url, host.icon_image, host.icon_image_alt,(".
-					sprintf($svc_query, Current_status_Model::SERVICE_OK).") AS services_ok,(".
-					sprintf($svc_query, Current_status_Model::SERVICE_WARNING).") AS services_warning,(".
-					sprintf($svc_query, Current_status_Model::SERVICE_CRITICAL).") AS services_critical,(".
-					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
-					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
-					"FROM host WHERE host_name IN(SELECT DISTINCT host.host_name FROM host ".
-					"INNER JOIN service ON service.host_name = host.host_name ".
-					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
-					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".$host_join.
-					"WHERE servicegroup.servicegroup_name = ".$db->escape($group).$service_match.$host_where.") ORDER BY host_name";
-					*/
+				if (!empty($hoststatustypes)) {
+					$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+				}
+
+				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = host.host_name AND current_state = %s ".$service_match;
 				$sql = "SELECT host.host_name, host.current_state, host.address, host.action_url, ".
 					"host.notes_url, host.icon_image, host.icon_image_alt, host.display_name, ".
 					"host.current_attempt, host.max_check_attempts, (".
@@ -518,7 +531,7 @@ class Group_Model extends Model
 					"INNER JOIN service ON service.host_name = host.host_name ".
 					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
 					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
-					"WHERE servicegroup.servicegroup_name = ".$db->escape($group).
+					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql.
 					" GROUP BY host.host_name;";
 					break;
 			default:
