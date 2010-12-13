@@ -69,7 +69,6 @@ class Upload_Controller extends Authenticated_Controller
 
 		# assumes upload directory exists with read/write permissions
 		$savepath = Kohana::config('upload.directory');
-		$savepath = '/opt/monitor/op5/ninja/upload/';
 		upload::save($file, $file['name'], $savepath);
 
 		$widget_name = false;
@@ -209,8 +208,7 @@ class Upload_Controller extends Authenticated_Controller
 			return;
 		}
 
-		$custom_dir = '/opt/monitor/op5/ninja/application/'.Kohana::config('widget.custom_dirname');
-		#$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
+		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
 		if (!is_writable($custom_dir)) {
 			sprintf($this->translate->_('Widget custom dir (%s) is not writable - please modify and try again'), $custom_dir);
