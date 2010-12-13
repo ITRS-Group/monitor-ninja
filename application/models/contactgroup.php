@@ -96,4 +96,22 @@ class Contactgroup_Model extends Model
 		$result = $db->query($sql);
 		return count($result) ? $result : false;
 	}
+
+	public function get_contactgroups_from_escalation($type = 'host', $id = false) {
+		$sql = false;
+		$db = new Database();
+		if (empty($id)){
+			return false;
+		} else {
+			$sql = "SELECT cg.contactgroup_name ".
+					 "FROM ".$type."escalation_contactgroup as hcg, ".$type."escalation as he, contactgroup as cg ".
+					 "WHERE he.id = '".$id."' AND he.id = hcg.".$type."escalation AND hcg.contactgroup = cg.id";
+		}
+		if (empty($sql)) {
+			return false;
+		}
+
+		$result = $db->query($sql);
+		return $result->count() ? $result: false;
+	}
 }

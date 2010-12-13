@@ -190,7 +190,7 @@ class Servicegroup_Model extends ORM
 	 * @param $items_per_page Items per page
 	 * @param $offset Item to start with
 	 */
-	public function summary($groups='all', $items_per_page=false, $offset=false)
+	public function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
@@ -228,15 +228,33 @@ class Servicegroup_Model extends ORM
 
 		$service_match = $auth->view_hosts_root || $auth->view_services_root ? '' : " AND service.id IN(".implode(',', $auth_service_ids).") ";
 
+		$host_match = false;
+		if (!empty($hostprops)) {
+			$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
+		}
+
+		if (!empty($serviceprops)) {
+			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.');
+		}
+
+		$filter_host_sql = false;
+		$filter_service_sql = false;
+		if (!empty($hoststatustypes)) {
+			$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+		}
+		if (!empty($servicestatustypes)) {
+			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+		}
+
 		$base_query = "SELECT COUNT(DISTINCT host.id) ".
 			    "FROM service_servicegroup ".
 			    "INNER JOIN service ON service.id = service_servicegroup.service ".
 			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE servicegroup.id = service_servicegroup.servicegroup ".$service_match;
+			    "WHERE servicegroup.id = service_servicegroup.servicegroup ".$service_match.$host_match.$filter_host_sql;
 		$base_svc_query = "SELECT COUNT(*) from service_servicegroup ".
 			    "INNER JOIN service ON service.id = service_servicegroup.service ".
 			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE service_servicegroup.servicegroup = servicegroup.id ".$service_match;
+			    "WHERE service_servicegroup.servicegroup = servicegroup.id ".$service_match.$filter_service_sql;
 
 		$sql = "SELECT servicegroup.id,servicegroup_name AS groupname, servicegroup.alias,".
 			"(".$base_query.

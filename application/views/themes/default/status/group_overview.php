@@ -50,7 +50,7 @@
 	if (!empty($group_details))
 	foreach ($group_details as $group_info) {
 		$groupname = $group_info->{$grouptype.'group_name'};
-		$group_res = Group_Model::group_overview($grouptype, $groupname); ?>
+		$group_res = Group_Model::group_overview($grouptype, $groupname, $this->hostprops, $this->serviceprops, $this->hoststatustypes, $this->servicestatustypes); ?>
 		<table class="group_overview_table">
 			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$groupname.'?style=detail', $group_info->alias) ?>
@@ -66,6 +66,7 @@
 				<th class="no-sort"><?php echo $lable_actions ?></th>
 			</tr>
 			<?php
+		if ($group_res !== false)
 			foreach ($group_res as $group ) {
 				if ($group === false) {
 					continue;

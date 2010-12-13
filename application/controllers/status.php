@@ -823,7 +823,9 @@ class Status_Controller extends Authenticated_Controller {
 			$content->pagination = $pagination;
 
 			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
-			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::summary($group, $items_per_page, $offset) : Hostgroup_Model::summary($group, $items_per_page, $offset);
+			$group_info_res = $grouptype == 'service'
+				? Servicegroup_Model::summary($group, $items_per_page, $offset, $hostprops, $serviceprops, $hoststatustypes, $servicestatustypes)
+				: Hostgroup_Model::summary($group, $items_per_page, $offset, $hostprops, $serviceprops, $hoststatustypes, $servicestatustypes);
 		} else {
 			# make sure we have the correct group
 			$group_info_res = $grouptype == 'service' ?

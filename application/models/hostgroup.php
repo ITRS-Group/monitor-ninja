@@ -194,7 +194,7 @@ class Hostgroup_Model extends ORM
 	 * @param $items_per_page Items per page
 	 * @param $offset Item to start with
 	 */
-	public function summary($groups='all', $items_per_page=false, $offset=false)
+	public function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_hostgroups();
@@ -231,13 +231,33 @@ class Hostgroup_Model extends ORM
 		}
 
 		$host_match = $auth->view_hosts_root ? '' : " AND host.id IN(".implode(',', $auth_host_ids).") ";
+
+		if (!empty($hostprops)) {
+			$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
+		}
+
+		$service_match = false;
+		if (!empty($serviceprops)) {
+			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.');
+		}
+
+		$filter_host_sql = false;
+		$filter_service_sql = false;
+		if (!empty($hoststatustypes)) {
+			$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+		}
+		if (!empty($servicestatustypes)) {
+			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+		}
+
+
 		$base_query = "SELECT COUNT(*) from host_hostgroup ".
 				    "INNER JOIN host ON host.id = host_hostgroup.host ".
-				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match;
+				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match.$filter_host_sql;
 		$base_svc_query = "SELECT COUNT(*) FROM host_hostgroup ".
 				    "INNER JOIN host ON host.id = host_hostgroup.host ".
 				    "INNER JOIN service ON service.host_name = host.host_name ".
-				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match;
+				    "WHERE host_hostgroup.hostgroup = hostgroup.id ".$host_match.$service_match.$filter_service_sql;
 		$sql = "SELECT id,hostgroup_name AS groupname,alias,".
 				"(".$base_query.
 				    "AND current_state = ".Current_status_Model::HOST_UP.

@@ -17,7 +17,7 @@
 &lt;!-- Manifest file for widget to be used in Ninja4Nagios  --&gt;
 &lt;widget_content&gt;
 	&lt;author&gt;Your name&lt;/author&gt;
-	&lt;version&gt;1.0&gt;/version&lt;
+	&lt;version&gt;1.0&lt;/version&gt;
 	&lt;Friendly_name&gt;Display name of the widget&lt;/Friendly_name&gt;
 	&lt;description&gt;Some info about your widget&lt;/description&gt; &lt;!-- (This info is not shown anywhere today) --&gt;
 	&lt;page&gt;tac/index&lt;/page&gt; &lt;!-- (only tac/index supported as of now) --&gt;
