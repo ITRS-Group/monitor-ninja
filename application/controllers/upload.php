@@ -216,9 +216,6 @@ class Upload_Controller extends Authenticated_Controller
 			sprintf($this->translate->_('Widget custom dir (%s) is not writable - please modify and try again'), $custom_dir);
 		}
 
-		# make writable
-		chmod($custom_dir, 0777);
-
 		exec('cp -av '.$savepath.$widget_name.'/ '.$custom_dir, $output, $retval);
 
 		if ($retval != 0) {
@@ -227,8 +224,6 @@ class Upload_Controller extends Authenticated_Controller
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		}
-		# restore directory mode
-		chmod($custom_dir.$widget_name, 0755);
 
 		unlink($savepath.$file['name']);
 		self::_rrmdir($savepath.$widget_name);
