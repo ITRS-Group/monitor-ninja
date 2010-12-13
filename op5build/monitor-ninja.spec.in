@@ -29,6 +29,7 @@ make test docs
 %install
 rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
+mkdir -p -m 775 %buildroot%prefix/upload
 
 # copy everything and then remove what we don't want to ship
 cp -r * %buildroot%prefix
