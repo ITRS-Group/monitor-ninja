@@ -68,6 +68,9 @@ for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
 	chmod 755 %buildroot%prefix/$f
 done
 
+# The custom_widgets dir need to be writable by the apache user
+chmod 775 %buildroot%prefix/application/custom_widgets
+
 mkdir -p %buildroot/var/www/html
 ln -sfT %prefix %buildroot/var/www/html/monitor
 ln -sfT %prefix %buildroot/var/www/html/ninja
