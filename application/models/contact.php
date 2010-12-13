@@ -37,15 +37,9 @@ class Contact_Model extends Model
 		if (empty($id)){
 			return false;
 		} else {
-			$sql1 = "SELECT c.contact_name
-					 FROM ".$type."escalation_contact as hc, ".$type."escalation as he, contact as c
-					 WHERE he.id = '".$id."' AND he.id = hc.".$type."escalation AND hc.contact = c.id";
-
-			$sql2 = "SELECT cg.contactgroup_name
-					 FROM ".$type."escalation_contactgroup as hcg, ".$type."escalation as he, contactgroup as cg
-					 WHERE he.id = '".$id."' AND he.id = hcg.".$type."escalation AND hcg.contactgroup = cg.id";
-
-			$sql = $sql1." UNION ".$sql2;
+			$sql = "SELECT c.contact_name ".
+				 "FROM ".$type."escalation_contact as hc, ".$type."escalation as he, contact as c ".
+				 "WHERE he.id = '".$id."' AND he.id = hc.".$type."escalation AND hc.contact = c.id";
 
 		}
 		if (empty($sql)) {
