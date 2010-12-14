@@ -848,14 +848,11 @@ class Status_Controller extends Authenticated_Controller {
 			$content->group_details = $group_info_res;
 		}
 
-		$hostproperties = false;
-		$serviceproperties = false;
-
 		$content->grouptype = $grouptype;
 		$content->hoststatustypes = $hoststatustypes;
-		$content->hostproperties = $hostproperties;
+		$content->hostproperties = $hostprops;
 		$content->servicestatustypes = $servicestatustypes;
-		$content->serviceproperties = $serviceproperties;
+		$content->serviceproperties = $serviceprops;
 		$content->label_group_name = $t->_('Service Group');
 		$content->label_host_summary = $t->_('Host Status Summary');
 		$content->label_service_summary = $t->_('Service Status Summary');
