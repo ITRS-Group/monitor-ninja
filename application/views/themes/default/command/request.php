@@ -78,9 +78,9 @@ foreach ($params as $pname => $ary) {
 		case 'string':
 		default:
 			if ($form_name == 'cmd_param[comment]')
-				echo form::textarea(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 350px; height: 70px'), $dflt, '');
+				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 280px'), $dflt, '');
 			else
-				echo form::input(array('name' => $form_name, 'id' => 'field_'.$pname, 'title' => $this->translate->_('Required field')), $dflt, '');
+				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'id' => 'field_'.$pname), $dflt, '');
 			break;
 	}
 
