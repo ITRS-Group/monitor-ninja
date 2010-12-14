@@ -38,8 +38,7 @@ class old_reports
 		'sla_config',
 		'sla_config_objects',
 		'sla_db_version',
-		'sla_periods',
-		'summary_config'
+		'sla_periods'
 	);
 
 
