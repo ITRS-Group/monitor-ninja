@@ -82,29 +82,24 @@
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
 				<td><?php
 					if (!empty($group->services_ok)) {
-						echo $group->services_ok.' '.html::image($this->add_path('icons/12x12/shield-ok.png'),
-							array('alt' => $this->translate->_('OK'), 'title' => $this->translate->_('OK'), 'class' => 'status-default'));
-						echo $this->translate->_('OK').' &nbsp; ';
+						echo html::anchor('status/service/'.urlencode($group->services_ok).'?servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$hostproperties.'&serviceprops='.$serviceproperties,
+							$group->services_unknown.' '.$this->translate->_('OK'), array('class' => 'status-ok')).' &nbsp; ';
 					}
 					if (!empty($group->services_warning)) {
-						echo $group->services_warning.' '.html::image($this->add_path('icons/12x12/shield-warning.png'),
-							array('alt' => $this->translate->_('Warning'), 'title' => $this->translate->_('Warning'), 'class' => 'status-default'));
-						echo $this->translate->_('Warning').' &nbsp; ';
+						echo html::anchor('status/service/'.urlencode($group->services_warning).'?servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$hostproperties.'&serviceprops='.$serviceproperties,
+							$group->services_unknown.' '.$this->translate->_('Warning'), array('class' => 'status-warning')).' &nbsp; ';
 					}
 					if (!empty($group->services_critical)) {
-						echo $group->services_critical.' '.html::image($this->add_path('icons/12x12/shield-critical.png'),
-							array('alt' => $this->translate->_('Critical'), 'title' => $this->translate->_('Critical'), 'class' => 'status-default'));
-						echo $this->translate->_('Critical').' &nbsp; ';
+						echo html::anchor('status/service/'.urlencode($group->services_critical).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$hostproperties.'&serviceprops='.$serviceproperties,
+							$group->services_unknown.' '.$this->translate->_('Critical'), array('class' => 'status-critical')).' &nbsp; ';
 					}
 					if (!empty($group->services_unknown)) {
-						echo $group->services_unknown.' '.html::image($this->add_path('icons/12x12/shield-unknown.png'),
-							array('alt' => $this->translate->_('Unknown'), 'title' => $this->translate->_('Unknown'), 'class' => 'status-default'));
-						echo $this->translate->_('Unknown').' &nbsp; ';
+						echo html::anchor('status/service/'.urlencode($group->services_unknown).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$hostproperties.'&serviceprops='.$serviceproperties,
+							$group->services_unknown.' '.$this->translate->_('Unknown'), array('class' => 'status-unknown')).' &nbsp; ';
 					}
 					if (!empty($group->services_pending)) {
-						echo $group->services_pending.' '.html::image($this->add_path('icons/12x12/shield-pending.png'),
-							array('alt' => $this->translate->_('Pending'), 'title' => $this->translate->_('Pending'), 'class' => 'status-default'));
-						echo $this->translate->_('Pending').' &nbsp; ';
+						echo html::anchor('status/service/'.urlencode($group->services_pending).'?servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$hostproperties.'&serviceprops='.$serviceproperties,
+							$group->services_unknown.' '.$this->translate->_('Pending'), array('class' => 'status-pending')).' &nbsp; ';
 					} ?>
 				</td>
 				<td style="text-align: left; width: 133px">
