@@ -35,6 +35,16 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
+		if (Kohana::config('auth.driver') == 'apache') {
+			if (isset($_SESSION['username'])) {
+				Auth::instance()->driver->login($_SESSION['username'], false, false);
+				$this->apache_login();
+			} else {
+				header('location: ' . Kohana::config('auth.apache_login'));
+			}
+			exit;
+		}
+
 		$this->session->delete('auth_user');
 		$this->session->delete('nagios_access');
 		$this->session->delete('contact_id');
@@ -167,7 +177,29 @@ class Default_Controller extends Ninja_Controller  {
 	public function logout()
 	{
 		User_Model::logout_user();
+		if (Kohana::config('auth.driver') == 'apache') {
+			# unset some session variables
+			$this->session->delete('username');
+			$this->session->delete('auth_user');
+			$this->session->delete('nagios_access');
+			$this->session->delete('contact_id');
+			$this->template = $this->add_view('logged_out');
+			return;
+		}
 		url::redirect('default/');
+	}
+
+	/**
+	*	Finalize login using the apache driver
+	*/
+	public function apache_login()
+	{
+		if (empty($_SESSION['username']) || !Auth::instance()->logged_in()) {
+			die('Error!');
+		}
+
+		$user_data = ORM::factory('user')->where('username', $_SESSION['username'])->find();
+		User_Model::complete_login($user_data);
 	}
 
 	/**

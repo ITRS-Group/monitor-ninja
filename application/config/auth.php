@@ -6,6 +6,14 @@
 $config['driver'] = 'Ninja'; // db
 
 /**
+* 	By switching to the apache driver above and creating
+* 	a small php file in the area protected by apache basic auth,
+* 	it is possible to let apache take care of the authentication
+* 	for us. This NUST be a valid script or things will fail.
+*/
+$config['apache_login'] = '';
+
+/**
  * Type of hash to use for passwords. Any algorithm supported by the hash function
  * can be used here.
  * @see http://php.net/hash
