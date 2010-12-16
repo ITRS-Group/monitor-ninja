@@ -159,7 +159,9 @@ $(document).ready(function() {
 				tooltip: 'topLeft'
 			},
 				adjust: {
-					screen: true // Keep the tooltip on-screen at all times
+					screen: true, // Keep the tooltip on-screen at all times
+					x: 10,
+					y: -5
 				}
 			},
 			show: {
@@ -211,12 +213,14 @@ $(document).ready(function() {
 			},
 			position: {
 				corner: {
-				target: 'topMiddle', // Position the tooltip
+				target: 'rightTop', // Position the tooltip
 				tooltip: 'bottomLeft'
 			},
 			adjust: {
-				screen: true // Keep the tooltip on-screen at all times
-			}
+					screen: true, // Keep the tooltip on-screen at all times
+					x: 10,
+					y: -5
+				}
 			},
 			show: {
 				when: 'mouseover',
