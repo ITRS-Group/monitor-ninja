@@ -309,6 +309,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('status/service');
 		$this->template->content->noheader = $noheader;
 		$this->template->content->filters = $filters;
+		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 

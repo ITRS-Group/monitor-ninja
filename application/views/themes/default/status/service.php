@@ -54,7 +54,7 @@ $style = isset($style) ? $style : false;
 							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
 						echo ($n == 3 ? '<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="'.$this->translate->_('Click to select/unselect all').'"></th>' : '');
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
-							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'&items_per_page='.$items_per_page.'&page='.$page.'&style='.$style.'\'">';
+							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'&items_per_page='.$items_per_page.'&page='.$page.'&style='.$style.'&group_type='.$group_type.'\'">';
 
 						echo ($n == 2 ? '<em>'.$row['title'].'</em>' : $row['title']);
 						echo '</th>';
