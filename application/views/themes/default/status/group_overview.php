@@ -84,17 +84,17 @@
 					if (!empty($group->services_ok)) {
 						echo html::image($this->add_path('icons/12x12/shield-ok.png'), array('alt' => '', 'title' => $this->translate->_('OK'), 'class' => 'status-default'));
 						echo html::anchor('status/service/'.urlencode($group->services_ok).'?servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
-							$group->services_unknown.' '.$this->translate->_('OK'), array('class' => 'status-ok')).' &nbsp; ';
+							$group->services_ok.' '.$this->translate->_('OK'), array('class' => 'status-ok')).' &nbsp; ';
 					}
 					if (!empty($group->services_warning)) {
 						echo html::image($this->add_path('icons/12x12/shield-warning.png'), array('alt' => '', 'title' => $this->translate->_('Warning'), 'class' => 'status-default'));
 						echo html::anchor('status/service/'.urlencode($group->services_warning).'?servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
-							$group->services_unknown.' '.$this->translate->_('Warning'), array('class' => 'status-warning')).' &nbsp; ';
+							$group->services_warning.' '.$this->translate->_('Warning'), array('class' => 'status-warning')).' &nbsp; ';
 					}
 					if (!empty($group->services_critical)) {
 						echo html::image($this->add_path('icons/12x12/shield-critical.png'), array('alt' => '', 'title' => $this->translate->_('Critical'), 'class' => 'status-default'));
 						echo html::anchor('status/service/'.urlencode($group->services_critical).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
-							$group->services_unknown.' '.$this->translate->_('Critical'), array('class' => 'status-critical')).' &nbsp; ';
+							$group->services_critical.' '.$this->translate->_('Critical'), array('class' => 'status-critical')).' &nbsp; ';
 					}
 					if (!empty($group->services_unknown)) {
 						echo html::image($this->add_path('icons/12x12/shield-unknown.png'), array('alt' => '', 'title' => $this->translate->_('Unknown'), 'class' => 'status-default'));
@@ -104,7 +104,7 @@
 					if (!empty($group->services_pending)) {
 						echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => '', 'title' => $this->translate->_('Pending'), 'class' => 'status-default'));
 						echo html::anchor('status/service/'.urlencode($group->services_pending).'?servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$hoststatustypes.'&group_type='.$grouptype.'group&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
-							$group->services_unknown.' '.$this->translate->_('Pending'), array('class' => 'status-pending')).' &nbsp; ';
+							$group->services_pending.' '.$this->translate->_('Pending'), array('class' => 'status-pending')).' &nbsp; ';
 					} ?>
 				</td>
 				<td style="text-align: left; width: 133px">
