@@ -38,6 +38,11 @@ class Geomap_Widget extends widget_Core {
 			$choosen_map = $arguments['map'];
 		}
 
+		$height = 400;
+		if (isset($arguments['height']) && (((int) $arguments['height']) > 0)) {
+			$height = $arguments['height'];
+		}
+
 		$mapmodel = new Nagvis_Maps_Model;
 		$map_array = $mapmodel->get_list();
 		foreach ($map_array as $map) {
@@ -51,7 +56,6 @@ class Geomap_Widget extends widget_Core {
 
 		# set required extra resources
 		$this->js = array('/js/geomap');
-		$this->css = array('/css/geomap');
 
 		# fetch widget content
 		require_once($view_path);
