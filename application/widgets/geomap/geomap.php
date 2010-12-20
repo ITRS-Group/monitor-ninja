@@ -33,6 +33,19 @@ class Geomap_Widget extends widget_Core {
 			$title = $arguments['widget_title'];
 		}
 
+		$choosen_map = 'geomap';
+		if (isset($arguments['map'])) {
+			$choosen_map = $arguments['map'];
+		}
+
+		$mapmodel = new Nagvis_Maps_Model;
+		$map_array = $mapmodel->get_list();
+		foreach ($map_array as $map) {
+			$all_maps[$map] = $map;
+		}
+		$all_maps['geomap'] = 'geomap';
+		$all_maps['automap'] = 'automap';
+
 		# let view template know if wrapping div should be hidden or not
 		$ajax_call = request::is_ajax() ? true : false;
 
