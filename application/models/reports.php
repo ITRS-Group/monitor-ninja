@@ -3117,7 +3117,7 @@ class Reports_Model extends Model
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
 			}
-			$state = $this->comparable_state[$row];
+			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
 				continue;
 			}
