@@ -221,37 +221,46 @@ class Current_status_Model extends Model
 
 		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
 
+		$access_check = '';
+		$access_check_xtra = ' WHERE ';
+		if (!$auth->view_hosts_root && $auth->id) {
+			$access_check = "INNER JOIN contact_access ON host.id=contact_access.host ".
+				"WHERE contact_access.service IS NULL ".
+				"AND contact_access.contact=".$auth->id;
+			$access_check_xtra = ' AND ';
+		}
+
 		$sql = "SELECT ".
-			"(SELECT COUNT(*) FROM host) AS total_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE flap_detection_enabled!=1) AS flap_disabled_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE is_flapping=1) AS flapping_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE notifications_enabled!=1) AS notification_disabled_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE event_handler_enabled!=1) AS event_handler_disabled_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE active_checks_enabled!=1) AS active_checks_disabled_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE passive_checks_enabled!=1) AS passive_checks_disabled_hosts, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." AND active_checks_enabled!=1 ) AS hosts_up_disabled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." ".$active_checks_condition." ) AS hosts_up_unacknowledged, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UP." ) AS hosts_up, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND scheduled_downtime_depth>0 ) AS hosts_down_scheduled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND problem_has_been_acknowledged=1 ) AS hosts_down_acknowledged, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND active_checks_enabled!=1 ) AS hosts_down_disabled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_down_unacknowledged, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_DOWN.") AS hosts_down, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth>0 ) AS hosts_unreachable_scheduled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND problem_has_been_acknowledged=1 ) AS hosts_unreachable_acknowledged, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND active_checks_enabled!=1 ) AS hosts_unreachable_disabled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_unreachable_unacknowledged, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_UNREACHABLE.") AS hosts_unreachable, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_PENDING ." ".$active_checks_condition.") AS hosts_pending_disabled, ".
-			"(SELECT COUNT(*) FROM host WHERE current_state=".self::HOST_PENDING .") AS hosts_pending, ".
-			"(SELECT COUNT(*) FROM host WHERE check_type=".self::HOST_CHECK_ACTIVE.") AS total_active_host_checks, ".
-			"(SELECT COUNT(*) FROM host WHERE check_type>".self::HOST_CHECK_ACTIVE.") AS total_passive_host_checks, ".
-			"(SELECT MIN(latency) FROM host) AS min_host_latency, ".
-			"(SELECT MAX(latency) FROM host) AS max_host_latency, ".
-			"(SELECT SUM(latency) FROM host) AS total_host_latency, ".
-			"(SELECT MIN(execution_time) FROM host) AS min_host_execution_time, ".
-			"(SELECT MAX(execution_time) FROM host) AS max_host_execution_time, ".
-			"(SELECT SUM(execution_time) FROM host) AS total_host_execution_time";
+			"(SELECT COUNT(*) FROM host ".$access_check.") AS total_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." flap_detection_enabled!=1) AS flap_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." is_flapping=1) AS flapping_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." notifications_enabled!=1) AS notification_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." event_handler_enabled!=1) AS event_handler_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." active_checks_enabled!=1) AS active_checks_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." passive_checks_enabled!=1) AS passive_checks_disabled_hosts, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UP." AND active_checks_enabled!=1 ) AS hosts_up_disabled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UP." ".$active_checks_condition." ) AS hosts_up_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UP." ) AS hosts_up, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_DOWN." AND scheduled_downtime_depth>0 ) AS hosts_down_scheduled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_DOWN." AND problem_has_been_acknowledged=1 ) AS hosts_down_acknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_DOWN." AND active_checks_enabled!=1 ) AS hosts_down_disabled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_DOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_down_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_DOWN.") AS hosts_down, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth>0 ) AS hosts_unreachable_scheduled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND problem_has_been_acknowledged=1 ) AS hosts_unreachable_acknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND active_checks_enabled!=1 ) AS hosts_unreachable_disabled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_unreachable_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE.") AS hosts_unreachable, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_PENDING ." ".$active_checks_condition.") AS hosts_pending_disabled, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_PENDING .") AS hosts_pending, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." check_type=".self::HOST_CHECK_ACTIVE.") AS total_active_host_checks, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." check_type>".self::HOST_CHECK_ACTIVE.") AS total_passive_host_checks, ".
+			"(SELECT MIN(latency) FROM host ".$access_check.") AS min_host_latency, ".
+			"(SELECT MAX(latency) FROM host ".$access_check.") AS max_host_latency, ".
+			"(SELECT SUM(latency) FROM host ".$access_check.") AS total_host_latency, ".
+			"(SELECT MIN(execution_time) FROM host ".$access_check.") AS min_host_execution_time, ".
+			"(SELECT MAX(execution_time) FROM host ".$access_check.") AS max_host_execution_time, ".
+			"(SELECT SUM(execution_time) FROM host ".$access_check.") AS total_host_execution_time";
 		if (!$auth->view_hosts_root && $auth->id) {
 			$sql .= " FROM host ".
 				"INNER JOIN contact_access ON host.id=contact_access.host ".
@@ -331,46 +340,56 @@ class Current_status_Model extends Model
 
 		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
 
+		$access_check = '';
+		$access_check_xtra = ' WHERE ';
+		if (!$auth->view_hosts_root && !$auth->view_services_root && $auth->id) {
+			$access_check = "INNER JOIN contact_access ON service.id=contact_access.service ".
+				"WHERE contact_access.service IS NOT NULL ".
+				"AND contact_access.contact=".$auth->id;
+			$access_check_xtra = ' AND ';
+		}
+
+
 		$sql = "SELECT ".
-			"(SELECT COUNT(*) FROM service) AS total_services, ".
-			"(SELECT COUNT(*) FROM service WHERE flap_detection_enabled!=1) AS flap_disabled_services, ".
-			"(SELECT COUNT(*) FROM service WHERE is_flapping=1) AS flapping_services, ".
-			"(SELECT COUNT(*) FROM service WHERE notifications_enabled!=1) AS notification_disabled_services, ".
-			"(SELECT COUNT(*) FROM service WHERE event_handler_enabled!=1) AS event_handler_disabled_services, ".
-			"(SELECT COUNT(*) FROM service WHERE active_checks_enabled!=1) AS active_checks_disabled_services, ".
-			"(SELECT COUNT(*) FROM service WHERE passive_checks_enabled!=1) AS passive_checks_disabled_services, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." AND active_checks_enabled!=1 ) AS services_ok_disabled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." ".$active_checks_condition." ) AS services_ok_unacknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_OK ." ) AS services_ok, ".
-			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_WARNING." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_warning_host_problem, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth>0 ) AS services_warning_scheduled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND problem_has_been_acknowledged=1 ) AS services_warning_acknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND active_checks_enabled!=1 ) AS services_warning_disabled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_warning_unacknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_WARNING.") AS services_warning, ".
-			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_CRITICAL." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_critical_host_problem, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth>0 ) AS services_critical_scheduled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND problem_has_been_acknowledged=1 ) AS services_critical_acknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND active_checks_enabled!=1 ) AS services_critical_disabled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_critical_unacknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_CRITICAL.") AS services_critical, ".
-			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name WHERE service.current_state=".self::SERVICE_UNKNOWN." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_unknown_host_problem, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth>0 ) AS services_unknown_scheduled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND problem_has_been_acknowledged=1 ) AS services_unknown_acknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND active_checks_enabled!=1 ) AS services_unknown_disabled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_unknown_unacknowledged, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_UNKNOWN.") AS services_unknown, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_PENDING." AND active_checks_enabled!=1 ) AS services_pending_disabled, ".
-			"(SELECT COUNT(*) FROM service WHERE current_state=".self::SERVICE_PENDING.") AS services_pending, ".
-			"(SELECT COUNT(*) FROM service WHERE check_type=0) AS total_active_service_checks, ".
-			"(SELECT COUNT(*) FROM service WHERE check_type>0) AS total_passive_service_checks, ".
-			"(SELECT MIN(latency) FROM service) AS min_service_latency, ".
-			"(SELECT MAX(latency) FROM service) AS max_service_latency, ".
-			"(SELECT SUM(latency) FROM service) AS total_service_latency, ".
-			"(SELECT MIN(execution_time) FROM service) AS min_service_execution_time, ".
-			"(SELECT MAX(execution_time) FROM service) AS max_service_execution_time, ".
-			"(SELECT SUM(execution_time) FROM service) AS total_service_execution_time";
-		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			"(SELECT COUNT(*) FROM service ".$access_check.") AS total_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." flap_detection_enabled!=1) AS flap_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." is_flapping=1) AS flapping_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." notifications_enabled!=1) AS notification_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." event_handler_enabled!=1) AS event_handler_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." active_checks_enabled!=1) AS active_checks_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." passive_checks_enabled!=1) AS passive_checks_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_OK ." AND active_checks_enabled!=1 ) AS services_ok_disabled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_OK ." ".$active_checks_condition." ) AS services_ok_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_OK ." ) AS services_ok, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name ".$access_check.$access_check_xtra." service.current_state=".self::SERVICE_WARNING." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_warning_host_problem, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth>0 ) AS services_warning_scheduled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND problem_has_been_acknowledged=1 ) AS services_warning_acknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND active_checks_enabled!=1 ) AS services_warning_disabled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_warning_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING.") AS services_warning, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name ".$access_check.$access_check_xtra." service.current_state=".self::SERVICE_CRITICAL." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_critical_host_problem, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth>0 ) AS services_critical_scheduled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND problem_has_been_acknowledged=1 ) AS services_critical_acknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND active_checks_enabled!=1 ) AS services_critical_disabled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_critical_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL.") AS services_critical, ".
+			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name ".$access_check.$access_check_xtra." service.current_state=".self::SERVICE_UNKNOWN." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_unknown_host_problem, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth>0 ) AS services_unknown_scheduled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND problem_has_been_acknowledged=1 ) AS services_unknown_acknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND active_checks_enabled!=1 ) AS services_unknown_disabled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND NOT scheduled_downtime_depth AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_unknown_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN.") AS services_unknown, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_PENDING." AND active_checks_enabled!=1 ) AS services_pending_disabled, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_PENDING.") AS services_pending, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." check_type=0) AS total_active_service_checks, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." check_type>0) AS total_passive_service_checks, ".
+			"(SELECT MIN(latency) FROM service ".$access_check.") AS min_service_latency, ".
+			"(SELECT MAX(latency) FROM service ".$access_check.") AS max_service_latency, ".
+			"(SELECT SUM(latency) FROM service ".$access_check.") AS total_service_latency, ".
+			"(SELECT MIN(execution_time) FROM service ".$access_check.") AS min_service_execution_time, ".
+			"(SELECT MAX(execution_time) FROM service ".$access_check.") AS max_service_execution_time, ".
+			"(SELECT SUM(execution_time) FROM service ".$access_check.") AS total_service_execution_time";
+		if (!$auth->view_hosts_root && !$auth->view_services_root && $auth->id) {
 			$sql .= " FROM service ".
 				"INNER JOIN contact_access ON service.id=contact_access.service ".
 				"WHERE contact_access.service IS NOT NULL ".
