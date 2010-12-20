@@ -102,7 +102,7 @@ if (isset($this->template->js_header))
 					var _keycommands_active='0';
 			<?php 	} ?>
 
-				var _use_popups='<?php echo config::get('config.use_popups', '*', true); ?>';
+				var _use_popups=<?php echo (int)config::get('config.use_popups', '*', true); ?>;
 				var _popup_delay='<?php echo config::get('config.popup_delay', '*', true); ?>';
 				<?php
 					if (!empty($js_strings)) {

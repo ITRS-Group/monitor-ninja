@@ -260,7 +260,7 @@ $config['stale_data_limit'] = 60;
 /**
 * Control the use oof pop-ups for PNP graphs and comments
 */
-$config['use_popups'] = true;
+$config['use_popups'] = 0;
 
 /**
 * Pop-up delay
