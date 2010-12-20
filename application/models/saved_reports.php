@@ -7,6 +7,7 @@
 class Saved_reports_Model extends Model
 {
 	const db_name = 'merlin';
+	const USERFIELD = 'user';
 
 	public function get_saved_reports($type='avail', $user=false)
 	{
@@ -28,7 +29,7 @@ class Saved_reports_Model extends Model
 		$sql = "SELECT id, ".$name_field." FROM ".$type."_config ";
 		if (!$auth->view_hosts_root) {
 			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
-			$sql .= "WHERE user=".$db->escape($user)." OR user=''";
+			$sql .= "WHERE ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
 		}
 
 		$sql .= " ORDER BY ".$name_field;
@@ -91,9 +92,9 @@ class Saved_reports_Model extends Model
 		}
 		if (!$update) {
 			if ($type == 'summary') {
-				$sql = "INSERT INTO ".$type."_config (user, ".$name_field.", setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".$options['report_name']."', '".serialize($options)."')";
+				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", ".$name_field.", setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".$options['report_name']."', '".serialize($options)."')";
 			} else {
-				$sql = "INSERT INTO ".$type."_config (user, ".implode(', ', array_keys($options)).") VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".implode('\',\'', array_values($options))."')";
+				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", ".implode(', ', array_keys($options)).") VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".implode('\',\'', array_values($options))."')";
 			}
 		} else {
 			if ($type == 'summary') {
@@ -254,7 +255,7 @@ class Saved_reports_Model extends Model
 				break;
 		}
 
-		$sql = "SELECT ".$name_field." FROM ".$type."_config WHERE user=".$db->escape(Auth::instance()->get_user()->username).
+		$sql = "SELECT ".$name_field." FROM ".$type."_config WHERE ".self::USERFIELD."=".$db->escape(Auth::instance()->get_user()->username).
 			" ORDER BY ".$name_field;
 		$res = $db->query($sql);
 		if (!$res || count($res)==0)
@@ -366,7 +367,7 @@ class Saved_reports_Model extends Model
 		$sql = "SELECT name, value FROM sla_periods WHERE sla_id = '".$sla_id."'";
 		if (!$auth->view_hosts_root) {
 			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
-			$sql .= " AND user=".$db->escape($user)." OR user=''";
+			$sql .= " AND ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
 		}
 
 		$res = $db->query($sql);

@@ -4371,7 +4371,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (PHP_SAPI === "cli") {
 			# set current user to the owner of the report
 			# this should only be done when called through PHP CLI
-			Auth::instance()->force_login($report_data['user']);
+			Auth::instance()->force_login($report_data[Saved_reports_Model::USERFIELD]);
 		}
 		return $request;
 	}

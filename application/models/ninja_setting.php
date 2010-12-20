@@ -5,6 +5,7 @@
  */
 class Ninja_setting_Model extends ORM
 {
+	const USERFIELD = 'user';
 	/**
 	 * Save page setting for a user
 	 *
@@ -28,12 +29,12 @@ class Ninja_setting_Model extends ORM
 		# by just trying to load setting for current user, page and type
 		# we will get an object that will be updated or inserted when calling
 		# save() below
-		$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find();
+		$setting->where(array(self::USERFIELD => $user, 'page' => $page, 'type' => $type))->find();
 
 		if (empty($user))
 			return false; # saving global widget settings not allowed by this return
 
-		$setting->user = $user;
+		$setting->{self::USERFIELD} = $user;
 		if (!empty($page))
 			$setting->page = $page;
 
@@ -61,13 +62,13 @@ class Ninja_setting_Model extends ORM
 		$user = Auth::instance()->get_user()->username;
 		if ($default === true) {
 			# We have a request for default value
-			$setting->where(array('user'=> '', 'page' => $page, 'type' => $type))->find();
+			$setting->where(array(self::USERFIELD => '', 'page' => $page, 'type' => $type))->find();
 		} else {
 			# first, try user setting
-			$setting->where(array('user'=> $user, 'page' => $page, 'type' => $type))->find();
+			$setting->where(array(self::USERFIELD => $user, 'page' => $page, 'type' => $type))->find();
 			if (!$setting->loaded) {
 				# try default if nothing found
-				$setting->where(array('user'=> '', 'page' => $page, 'type' => $type))->find();
+				$setting->where(array(self::USERFIELD => '', 'page' => $page, 'type' => $type))->find();
 			}
 		}
 		return $setting->loaded ? $setting : false;

@@ -5,6 +5,8 @@
  */
 class Ninja_widget_Model extends ORM
 {
+	const USERFIELD = 'user';
+
 	/**
 	*	Fetch all available widgets for a page
 	*
@@ -16,11 +18,11 @@ class Ninja_widget_Model extends ORM
 		$widgets = ORM::factory('ninja_widget');
 		$user = Auth::instance()->get_user()->username;
 		if ($all===true) {
-			$result = $widgets->where(array('page' => $page, 'user'=> ''))
+			$result = $widgets->where(array('page' => $page, self::USERFIELD => ''))
 				->orderby('friendly_name', 'ASC')
 				->find_all();
 		} else {
-			$result = $widgets->where(array('page' => $page, 'user' => $user))
+			$result = $widgets->where(array('page' => $page, self::USERFIELD => $user))
 				->orderby('friendly_name', 'ASC')
 				->find_all();
 		}
@@ -40,10 +42,10 @@ class Ninja_widget_Model extends ORM
 			# fetch customized widget for user
 			# i.e a user has saved settings
 			$user = Auth::instance()->get_user()->username;
-			$result = $handle->where(array('page' => $page, 'user'=> $user, 'name' => $widget))->find();
+			$result = $handle->where(array('page' => $page, self::USERFIELD => $user, 'name' => $widget))->find();
 		} else {
 			# fetch default widget settings
-			$result = $handle->where(array('page' => $page, 'user'=> '', 'name' => $widget))->find();
+			$result = $handle->where(array('page' => $page, self::USERFIELD => '', 'name' => $widget))->find();
 		}
 		return $result->loaded ? $result : false;
 	}
@@ -58,10 +60,10 @@ class Ninja_widget_Model extends ORM
 		$page = trim($page);
 		$user = Auth::instance()->get_user()->username;
 		$setting = ORM::factory('ninja_widget');
-		$check = $setting->where(array('user'=> $user, 'page' => $page))->find_all();
+		$check = $setting->where(array(self::USERFIELD => $user, 'page' => $page))->find_all();
 		if (!count($check)) {
 			# copy all under users' name
-			$result = $setting->where(array('user'=> '', 'page' => $page))->find_all();
+			$result = $setting->where(array(self::USERFIELD => '', 'page' => $page))->find_all();
 			foreach ($result as $row) {
 				# copy widget setting to user
 				self::copy_to_user($row);
@@ -81,7 +83,7 @@ class Ninja_widget_Model extends ORM
 		}
 		$user = Auth::instance()->get_user()->username;
 		$add = ORM::factory('ninja_widget');
-		$add->user = $user;
+		$add->{self::USERFIELD} = $user;
 		$add->page = $old_widget->page;
 		$add->name = $old_widget->name;
 		$add->friendly_name = $old_widget->friendly_name;
@@ -124,7 +126,7 @@ class Ninja_widget_Model extends ORM
 						array
 						(
 							'name' => $widget,
-							'user' => $user,
+							self::USERFIELD => $user,
 							'page' => $page
 						)
 					)->find();
@@ -142,7 +144,7 @@ class Ninja_widget_Model extends ORM
 						array
 						(
 							'name' => $widget,
-							'user' => $user,
+							self::USERFIELD => $user,
 							'page' => $page
 						)
 					)->find();

@@ -14,6 +14,8 @@ class Comment_Model extends Model {
 	const FLAPPING_COMMENT = 3;
 	const ACKNOWLEDGEMENT_COMMENT = 4;
 
+	const TABLE_NAME = 'comment';
+
 	/**
 	*	Fetch saved comments for host or service
 	*
@@ -50,14 +52,14 @@ class Comment_Model extends Model {
 		$num_per_page = (int)$num_per_page;
 
 		if (!$auth->view_hosts_root) {
-			$sql = "SELECT DISTINCT c.* FROM comment c, contact_access ca, contact, host h ".
+			$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 				"WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 				" AND ca.contact=contact.id ".$svc_selection.
 				" AND c.host_name=".$db->escape($host).
 				"AND ca.host=h.id ".
 				" AND ca.service is null ";
 		} else {
-			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE c.host_name=".$db->escape($host).
+			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE c.host_name=".$db->escape($host).
 				$svc_selection.$auth_where;
 		}
 
@@ -75,16 +77,16 @@ class Comment_Model extends Model {
 		$db = new Database();
 		switch ($entry_type) {
 			case 1: // user comment
-				$type = 'comment';
+				$type = self::TABLE_NAME;
 				break;
 			case 2: // downtime
 				$type = 'scheduled_downtime';
 				break;
 			case 3: // flapping
-				$type = 'comment';
+				$type = self::TABLE_NAME;
 				break;
 			case 4: // acknowledged
-				$type = 'comment';
+				$type = self::TABLE_NAME;
 				break;
 		}
 		$and = empty($service_description) ? '' : " AND service_description='".$service_description."'";
@@ -129,7 +131,7 @@ class Comment_Model extends Model {
 			$auth_host_alias = 'h';
 			$auth_from = ', host AS '.$auth_host_alias;
 			$auth_where = ' AND '.$auth_host_alias . ".host_name = c.host_name";
-			$sql = "SELECT c.* FROM comment c ".$auth_from." WHERE".
+			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE".
 				" c.host_name!='' ".$svc_selection.$auth_where;
 		} else {
 			# we only make this check if user isn't authorized_for_all_hosts as above
@@ -140,7 +142,7 @@ class Comment_Model extends Model {
 			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
 
 			if (!$service) { # host comments
-				$sql = "SELECT DISTINCT c.* FROM comment c, contact_access ca, contact, host h ".
+				$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 					"WHERE contact.contact_name=".
 					$db->escape(Auth::instance()->get_user()->username).
 					" AND ca.contact=contact.id ".
@@ -149,7 +151,7 @@ class Comment_Model extends Model {
 					"AND ca.host=h.id AND ca.service is null ";
 			} else { # service comments
 				if ($service_query !== true) {
-					$sql = "SELECT DISTINCT c.* FROM comment c, contact_access ca, contact, host h, service s
+					$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
 						WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 						" AND ca.contact=contact.id ".
 						"AND c.host_name=h.host_name ".
@@ -157,7 +159,7 @@ class Comment_Model extends Model {
 						"AND ca.service=s.id ".
 						"AND (c.service_description!='' AND c.service_description is NOT null) ";
 				} else {
-					$sql = "SELECT * FROM comment WHERE (service_description!='' OR service_description is NOT null) ";
+					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description!='' OR service_description is NOT null) ";
 				}
 			}
 		}
@@ -189,11 +191,11 @@ class Comment_Model extends Model {
 	public function count_comments_by_object($service=false)
 	{
 		if ($service === false) { # only host comments
-			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM comment WHERE ".
+			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".self::TABLE_NAME." WHERE ".
 			"service_description = '' OR service_description is NULL ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		} else { # service comments
-			$sql = "SELECT COUNT(*) as cnt, CONCAT(host_name, ';', service_description) AS obj_name FROM comment WHERE ".
+			$sql = "SELECT COUNT(*) as cnt, CONCAT(host_name, ';', service_description) AS obj_name FROM ".self::TABLE_NAME." WHERE ".
 			"service_description != '' OR service_description is not NULL ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		}

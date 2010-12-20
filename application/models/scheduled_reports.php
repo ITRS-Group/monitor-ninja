@@ -4,6 +4,7 @@ class Scheduled_reports_Model extends Model
 {
 	public $db_name = 'merlin';
 	const db_name = 'merlin';
+	const USERFIELD = 'user';
 
 	public function delete_scheduled_report($id=false)
 	{
@@ -74,7 +75,7 @@ class Scheduled_reports_Model extends Model
 		$sql_xtra = '';
 		$auth = new Nagios_auth_Model();
 		if (!$auth->view_hosts_root) {
-			$sql_xtra = ' AND sr.user='.$db->escape(Auth::instance()->get_user()->username).' ';
+			$sql_xtra = ' AND sr.'.self::USERFIELD.'='.$db->escape(Auth::instance()->get_user()->username).' ';
 		}
 
 		$sql = "SELECT
@@ -218,10 +219,10 @@ class Scheduled_reports_Model extends Model
 
 		if ($id) {
 			// UPDATE
-			$sql = "UPDATE scheduled_reports SET user=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.",
+			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.",
 				recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." WHERE id=".$id;
 		} else {
-			$sql = "INSERT INTO scheduled_reports (user, report_type_id, report_id, recipients, period_id, filename, description)
+			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description)
 				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).");";
 		}
 
@@ -331,19 +332,19 @@ class Scheduled_reports_Model extends Model
 
 		switch ($type) {
 			case 'avail':
-				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
 					"scheduled_reports sr, avail_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";
 				break;
 			case 'sla':
-				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
 					"scheduled_reports sr, sla_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";
 				break;
 			case 'summary':
-				$sql = "SELECT sr.user, sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
 					"scheduled_reports sr, summary_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";

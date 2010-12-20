@@ -8,6 +8,8 @@ class Config_Model extends Model {
 	public $num_per_page = false;
 	public $offset = false;
 	public $count = false;
+	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
+	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
 
 	/**
 	*	Fetch host info
@@ -65,7 +67,7 @@ class Config_Model extends Model {
 				case 'contacts':
 					$sql = "SELECT c.contact_name, c.alias, c.email, c.pager, c.service_notification_options,
 									c.host_notification_options, c.service_notification_period, c.host_notification_period,
-									c.service_notification_commands, c.host_notification_commands,
+									c.".self::SERVICE_NOTIFICATION_COMMANDS.", c.".self::HOST_NOTIFICATION_COMMANDS.",
 									c.retain_status_information, c.retain_nonstatus_information,
 									h_n.timeperiod_name as h_notification_period, s_n.timeperiod_name as s_notification_period
 									FROM contact as c, timeperiod as h_n, timeperiod as s_n
