@@ -252,7 +252,7 @@ class Current_status_Model extends Model
 			"(SELECT MIN(execution_time) FROM host) AS min_host_execution_time, ".
 			"(SELECT MAX(execution_time) FROM host) AS max_host_execution_time, ".
 			"(SELECT SUM(execution_time) FROM host) AS total_host_execution_time";
-		if (!$auth->view_hosts_root) {
+		if (!$auth->view_hosts_root && $auth->id) {
 			$sql .= " FROM host ".
 				"INNER JOIN contact_access ON host.id=contact_access.host ".
 				"WHERE contact_access.service IS NULL ".
