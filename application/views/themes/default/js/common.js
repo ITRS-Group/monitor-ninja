@@ -83,7 +83,7 @@ $(document).ready(function() {
 	$('cite.menusection').each(function() {
 		var section = $(this).text();
 		var section_state = window['_ninja_menusection_'+ section];
-		if (section_state.length) {
+		if (typeof section_state != 'undefined' && section_state!='') {
 			// hide the sections set to 'hide'
 			if (section_state=='hide') {
 				// using collapse_section() from
