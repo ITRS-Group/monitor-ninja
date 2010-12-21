@@ -156,11 +156,14 @@ $(document).ready(function() {
 
 function js_print_date_ranges(the_year, type, item)
 {
-		show_progress('progress', _wait_str);
+	show_progress('progress', _wait_str);
 	the_year = typeof the_year == 'undefined' ? 0 : the_year;
 	type = typeof type == 'undefined' ? '' : type;
 	item = typeof item == 'undefined' ? '' : item;
 
+	if (!the_year && type!='' && item!='') {
+		return false;
+	}
 //	console.log('the_year: '+ the_year + ', type: ' + type + ', item: ' + item);
 	//get_date_ranges(the_year, type, item);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
@@ -195,6 +198,12 @@ function js_print_date_ranges(the_year, type, item)
 					for (i in data['end_year']) {
 						//console.log(data['end_year'][i]);
 						addSelectOption('end_year', data['end_year'][i], data['end_year'][i]);
+					}
+				}
+
+				if (data['type_item']) {
+					for (i in data['type_item']) {
+						addSelectOption(data['type_item'][i][0], data['type_item'][i][1], data['type_item'][i][1]);
 					}
 				}
 

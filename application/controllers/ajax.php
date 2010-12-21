@@ -673,9 +673,11 @@ class Ajax_Controller extends Authenticated_Controller {
 			}
 
 			for ($i=$start_num;$i<=$end_num;$i++) {
+				$arr_start = $type == 'start' ? $the_year : false;
+				$arr_end = $type == 'end' ? $the_year : false;
 				#$objResponse->call("addSelectOption", $type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
 				$type_item[] = array($type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
-				echo $i."\n";
+				#echo $i."\n";
 			}
 		}
 
