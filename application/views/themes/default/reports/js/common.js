@@ -1105,8 +1105,8 @@ function disable_months(start, end)
 	var disabled_state 		= false;
 	var not_disabled_state 	= false;
 	var col 				= false;
-	start 	= eval(start);
-	end 	= eval(end);
+	start 	= Number(start);
+	end 	= Number(end);
 	for (i=1;i<=12;i++) {
 		if (start>end) {
 			if ( i >= start || i <= end) {
