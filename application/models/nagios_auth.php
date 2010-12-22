@@ -140,7 +140,7 @@ class Nagios_auth_Model extends Model
 			Session::instance()->set('contact_id', $contact_id);
 		}
 		$this->id = $contact_id;
-		return $this->id;
+		return (int)$this->id;
 	}
 
 	/**
