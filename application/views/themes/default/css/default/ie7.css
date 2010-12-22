@@ -56,3 +56,6 @@ th.item_select {
 .widget-header {
 	height: 14px;
 }
+.ie-pag-config {
+	margin-top: -68px;
+}
