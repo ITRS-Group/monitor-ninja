@@ -216,7 +216,7 @@ class Servicegroup_Model extends ORM
 				$groups_to_find = $auth_ids;
 			}
 		}
-		if (empty($groups_to_find)) {
+		if (empty($groups_to_find) || empty($auth_service_ids)) {
 			# no access
 			return false;
 		}
