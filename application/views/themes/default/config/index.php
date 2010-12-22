@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
-<div class="widget w98 left;" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
-	<div style="position: absolute; right: 200px"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
+<div class="widget w98 left" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
+	<div class="ie-pag-config" style="position: absolute; right: 235px;"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
 	<form method="get" action="">
 	<?php echo $t->_('Object type'); ?>:
 	<select name="type" onchange="submit()">
