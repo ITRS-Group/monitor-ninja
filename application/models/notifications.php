@@ -23,41 +23,62 @@ class Notifications_Model extends Model {
 		$auth = new Nagios_auth_Model();
 
 		$host_query = $auth->authorized_host_query();
-		if ($host_query === true) {
+		$num_per_page = (int)$num_per_page;
 
-			$num_per_page = (int)$num_per_page;
+		# only use LIMIT when NOT counting
+		if ($offset !== false)
+			$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
+		else
+			$offset_limit = '';
 
-			# only use LIMIT when NOT counting
-			if ($offset !== false)
-				$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-			else
-				$offset_limit = '';
-				//$offset_limit = $count!==false ? "" : " LIMIT ".$num_per_page;
-			//echo 'offset_limit: '.$offset_limit;
-
-			if (substr($this->where, 0, 4) == ' AND') {
-				$this->where = preg_replace('/^ AND/', '', $this->where);
-			}
-			$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
-
-			if (!empty($where_string)) {
-				$where_string .= "\nAND ";
-			} else {
-				$where_string .= "\nWHERE ";
-			}
-			$where_string .= "contact_name != ''\n";
-			$sql = "SELECT host_name, service_description, start_time, end_time, reason_type, state,
-							contact_name, notification_type, output, command_name
-							FROM notification ".$where_string."
-							ORDER BY ".$this->sort_field." ".$this->sort_order.
-							$offset_limit;
-
-			$result = $db->query($sql);
-			if ($count === true) {
-				return count($result);
-			}
-			return $result->count() ? $result->result(): false;
+		if (substr($this->where, 0, 4) == ' AND') {
+			$this->where = preg_replace('/^ AND/', '', $this->where);
 		}
+		$where_string = (!empty($this->where)) ? 'WHERE '.$this->where : '';
+
+		if (!empty($where_string)) {
+			$where_string .= " AND ";
+		} else {
+			$where_string .= " WHERE ";
+		}
+
+		$where_string .= " contact_name IS NOT NULL AND notification.command_name IS NOT NULL ";
+
+		$fields = " notification.host_name, notification.service_description, notification.start_time, ".
+			"notification.end_time, notification.reason_type, notification.state, notification.contact_name, ".
+			"notification.notification_type, notification.output, notification.command_name ";
+
+		$where_order = " ORDER BY ".$this->sort_field." ".$this->sort_order.$offset_limit;
+
+		$sql = "SELECT ".$fields." FROM notification ".$where_string;
+
+		# query for limited contact
+		# make joins with contact_access to get all notifications
+		# for user's hosts and services
+		if ($host_query !== true) {
+			$sql_host = "SELECT ".$fields." FROM notification ".
+				"INNER JOIN host ON host.host_name=notification.host_name ".
+				"INNER JOIN contact_access ON contact_access.host=host.id ".
+				"WHERE contact_access.contact=".$auth->id." AND ".
+				"contact_access.service IS NULL AND notification.service_description='' ".
+				"AND notification.command_name IS NOT NULL";
+
+			$sqlsvc = "SELECT ".$fields." FROM notification ".
+				"INNER JOIN host ON host.host_name=notification.host_name ".
+				"INNER JOIN service ON service.host_name=host.host_name ".
+				"INNER JOIN contact_access ON contact_access.service=service.id ".
+				"WHERE contact_access.contact=".$auth->id." AND ".
+				"contact_access.service IS NOT NULL AND notification.service_description!='' ".
+				"AND notification.command_name IS NOT NULL";
+			$sql = "(".$sql_host.") UNION (".$sqlsvc.") ";
+		}
+
+		$sql .= $where_order;
+		$result = $db->query($sql);
+		if ($count === true) {
+			return count($result);
+		}
+		return $result->count() ? $result->result(): false;
 	}
 
 	/**
