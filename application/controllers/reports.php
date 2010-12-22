@@ -3453,7 +3453,7 @@ class Reports_Controller extends Authenticated_Controller
 		# start of deprecated code needed for old pdf backend:
 
 		#$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
-		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: 0px; right: 39px;'));
+		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: -1px; right: 39px;'));
 		$form .= '<div>';
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
 		$url_params = '';
