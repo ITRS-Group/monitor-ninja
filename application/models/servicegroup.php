@@ -194,7 +194,7 @@ class Servicegroup_Model extends ORM
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_servicegroups();
-		$auth_services = $auth->services;
+		$auth_services = $auth->get_authorized_services();
 		$auth_service_ids = array_keys($auth_services);
 		$auth_ids = array_keys($auth_objects);
 		if (empty($auth_ids) || empty($groups))
