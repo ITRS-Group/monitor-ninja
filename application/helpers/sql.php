@@ -27,4 +27,23 @@ class sql_Core
 
 		return $limit_str;
 	}
+
+	/**
+	*	Concatenate arguments for use in sql query
+	*	Since we are using 3 arguments, this method
+	* 	handles just this and nothing else.
+	* 	Arguments 1 and 3 are assumed to be field names
+	* 	and argument 2 i assumed to be a string.
+	*/
+	public function concat($arg1, $arg2, $arg3)
+	{
+		switch (Kohana::config('database.default.connection.type'))
+		{
+			case 'mysql':
+				return " CONCAT(".$arg1.", '".$arg2."', ".$arg3.") ";
+				break;
+			default:
+				return " ".$arg1."||'".$arg2."'||".$arg3." ";
+		}
+	}
 }

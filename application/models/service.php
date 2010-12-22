@@ -508,7 +508,7 @@ class Service_Model extends Model
 			$db = $this->db;
 		}
 
-		$sql = "SELECT *, CONCAT(host_name,';', service_description) AS service_name FROM service WHERE ".
+		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service WHERE ".
 			$field." REGEXP ".$db->escape($regexp)." ".
 		 	"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
 		$obj_info = $db->query($sql);
