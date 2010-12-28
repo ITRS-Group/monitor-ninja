@@ -11,6 +11,8 @@ $(document).ready(function() {
 		if (value > 0) {
 			$('#nagvis').css('height', value);
 			geomap.save_custom_val(this.value, 'height');
+		} else {
+			$.jGrowl("Invalid height value", _error_header);
 		}
 	});
 });
