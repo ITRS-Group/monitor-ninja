@@ -12,7 +12,14 @@ $(document).ready(function() {
 			$('#nagvis').css('height', value);
 			geomap.save_custom_val(this.value, 'height');
 		} else {
-			$.jGrowl("Invalid height value", _error_header);
+			if ($('iframe#nagvis').length) {
+				var innerHeight = $('#nagvis').get(0).contentDocument.height;
+				geomap.save_custom_val(innerHeight, 'height');
+				this.value = innerHeight;
+				$('#nagvis').css('height', innerHeight);
+			} else {
+				$.jGrowl("Invalid height value", _error_header);
+			}
 		}
 	});
 });
