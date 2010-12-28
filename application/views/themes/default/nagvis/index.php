@@ -3,7 +3,7 @@ $site = Kohana::config('config.site_domain');
 $img_url = Kohana::config('config.site_domain').$this->add_path('css/default/images');
 ?>
 
-<iframe id="nagvis" name="nagvis" src="<?php echo url::site('/nagvis/nagvis/');?>" style="display: none;"></iframe>
+<iframe id="nagvis" name="nagvis" src="/nagvis/nagvis/" style="display: none;"></iframe>
 
 <style type="text/css">
 
