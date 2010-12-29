@@ -4,8 +4,6 @@ class Nagvis_Maps_Model extends Model
 {
 	public function get_list()
 	{
-		if (empty($this->auth->id))
-			return array();
 		if (Kohana::config('config.nagvis_path') !== false)
 		{
 			$maps = array();
