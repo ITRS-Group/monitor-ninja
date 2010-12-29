@@ -55,7 +55,7 @@ class Notifications_Model extends Model {
 		# query for limited contact
 		# make joins with contact_access to get all notifications
 		# for user's hosts and services
-		if ($host_query !== true) {
+		if ($host_query !== true && !empty($auth->id)) {
 			$sql_host = "SELECT ".$fields." FROM notification ".
 				"INNER JOIN host ON host.host_name=notification.host_name ".
 				"INNER JOIN contact_access ON contact_access.host=host.id ".

@@ -666,7 +666,7 @@ class Host_Model extends Model {
 		}
 
 		if ($this->count === true && empty($filter_sql) && empty($hostprops_sql)
-			&& empty($serviceprops_sql)) {
+			&& empty($serviceprops_sql) && !empty($this->auth->id)) {
 			# this is one of the most common queries for this method
 			# so we try to speed up this by making special case.
 			# We are only interested in how many hosts or services there are (for this user)

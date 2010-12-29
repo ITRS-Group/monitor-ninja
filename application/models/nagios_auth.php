@@ -312,6 +312,9 @@ class Nagios_auth_Model extends Model
 				}
 			}
 		} else {
+			if (empty($this->id))
+				return false;
+
 			# fetch all hostgroups with host count on each
 			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
 				'hostgroup hg, host_hostgroup hhg '.
@@ -382,6 +385,9 @@ class Nagios_auth_Model extends Model
 				}
 			}
 		} else {
+
+			if (empty($this->id))
+				return false;
 
 			# fetch all servicegroups with service count on each
 			$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.

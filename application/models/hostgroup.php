@@ -44,6 +44,8 @@ class Hostgroup_Model extends ORM
 			$sql = "SELECT * FROM hostgroup ".$limit_str;
 		} else {
 			$auth_objects = $auth->get_authorized_hostgroups();
+			if (!is_array($auth_objects))
+				return false;
 			$auth_ids = array_keys($auth_objects);
 			if (empty($auth_ids))
 				return false;
@@ -199,6 +201,8 @@ class Hostgroup_Model extends ORM
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_hostgroups();
 		$auth_hosts = $auth->get_authorized_hosts();
+		if (!is_array($auth_objects))
+			return false;
 		$auth_host_ids = array_keys($auth_hosts);
 		$auth_ids = array_keys($auth_objects);
 		if (empty($auth_ids) || empty($groups))
