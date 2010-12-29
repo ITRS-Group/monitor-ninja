@@ -78,6 +78,7 @@ if (isset($this->template->js_header))
 				var _widget_settings_error = '<?php echo $this->translate->_('Unable to fetch setting for widget %s'); ?>';
 				var _widget_notfound_error = '<?php echo $this->translate->_('Unable to find widget %s'); ?>';
 				var _page_refresh_msg = '<?php echo $this->translate->_('Updated page refresh rate to %s seconds'); ?>';
+				var _settings_msg = '<?php echo $this->translate->_('The settings were updated'); ?>';
 				var _success_header = '<?php echo $this->translate->_('Success'); ?>';
 				var _error_header = '<?php echo $this->translate->_('ERROR'); ?>';
 				var _ninja_menu_state = '<?php echo $ninja_menu_state ?>';

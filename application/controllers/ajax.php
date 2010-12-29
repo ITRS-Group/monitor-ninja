@@ -422,11 +422,44 @@ class Ajax_Controller extends Authenticated_Controller {
 		$pnp_path = Kohana::config('config.pnp4nagios_path');
 
 		if ($pnp_path != '') {
-			$pnp_path .= '/image?'.$param.'&source=0&view=1&display=image';
+			$pnp_path .= '/image?'.$param;
+
+			$source = Ninja_setting_Model::fetch_page_setting('source', $pnp_path);
+			$view = Ninja_setting_Model::fetch_page_setting('view', $pnp_path);
+
+			if ($source)
+				$pnp_path .= '&source='.$source->setting;
+			else
+				$pnp_path .= '&source=0';
+
+			if ($view)
+				$pnp_path .= '&view='.$view->setting;
+			else
+				$pnp_path .= '&view=1';
+
+			$pnp_path .= '&display=image';
 		}
 
 		echo '<img src="'.$pnp_path.'" />';
 		#echo $pnp_path;
+	}
+
+	/**
+	 *	Save prefered graph for a specific param
+	 */
+	public function pnp_default()
+	{
+		$param = urldecode($this->input->post('param', false));
+		$param = pnp::clean($param);
+		$pnp_path = Kohana::config('config.pnp4nagios_path');
+
+		if ($pnp_path != '') {
+			$source = intval($this->input->post('source', false));
+			$view = intval($this->input->post('view', false));
+
+			Ninja_setting_Model::save_page_setting('source', $pnp_path.'/image?'.$param, $source);
+			Ninja_setting_Model::save_page_setting('view', $pnp_path.'/image?'.$param, $view);
+		}
 	}
 
 	/**
