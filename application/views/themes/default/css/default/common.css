@@ -488,7 +488,7 @@ input.textbox {
 	border: 1px solid #e9e9e0;
 	background-color: #f5f5ef;
 	display: none;
-	z-index: 9999;
+	z-index: 10000;
 }
 #version_info ul,
 #page_settings ul {
