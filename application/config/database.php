@@ -29,13 +29,19 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysql',
+		'type'     =>
+                            #'pdogeneric'
+                            'mysql'
+                ,
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
-		'database' => 'merlin'
+		'database' => 'merlin',
+                'dsn' =>
+                           'mysql:host=localhost;dbname=merlin'
+                           #'sqlite:pdo.sqlite'
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',
