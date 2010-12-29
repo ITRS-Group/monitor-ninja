@@ -1,18 +1,26 @@
 #!/usr/bin/php
 <?php
-if (!($db = mysql_connect('localhost'))) {
-	echo "failed to connect: " . mysql_error() . "\n";
+
+require(dirname(__FILE__).'/../../../NinjaPDO.inc.php');
+
+$db = NinjaPDO::db();
+/**
+ FIXME: SHOW TABLES is not SQL-standard. i have no idea how we might do this
+ portably!
+ */
+$res = $db->query('SHOW TABLES');
+if( ! $res ) {
+    throw new Exception("SHOW TABLES query failed!");
 }
-$ret = mysql_select_db('merlin', $db);
-var_dump($ret);
-$result = mysql_query('SHOW TABLES', $db);
-var_dump($result);
-while ($row = mysql_fetch_array($result)) {
-	$table = $row[0];
-	if (strlen($table) >= 45) {
-		echo "Dropping table $table\n";
-		if (!mysql_query("drop table $table"))
-			echo "Failed to drop table $table:" . mysql_error() . "\n";
-	}
+while( ($row = $res->fetch(PDO::FETCH_NUM)) ) {
+    $table = $row[0];
+    #echo "Checking table $table...\n";
+    if (strlen($table) >= 40) {
+        echo "Dropping table $table...\n";
+            if (!$db->query("drop table $table")) {
+                $errinf = $db->errorInfo();
+                echo "Failed to drop table $table:" . $errinf[2] . "\n";
+            }
+    }
 }
 ?>
