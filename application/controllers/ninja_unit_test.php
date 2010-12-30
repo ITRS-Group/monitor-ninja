@@ -28,7 +28,7 @@ class Ninja_unit_test_Controller extends Controller {
 		$db_name = 'merlin';
 		$db_user = 'merlin';
 		$db_pass = 'merlin';
-		$importer = '/opt/monitor/op5/merlin/import';
+		$importer = 'mon log import';
 		$test_file = array();
 		$argv = isset($argv) ? $argv : $GLOBALS['argv'];
 		$argc = isset($argc) ? $argc : $GLOBALS['argc'];
