@@ -69,6 +69,6 @@ pkgtrans -s $tmpdir/$product `pwd`/$PKG-$version-$ARCH.pkg $PKG
 echo "Package ready: $PKG-$version-$ARCH.pkg"
 
 echo "Performing cleanup..."
-#rm -rf $working_dir/temp
+rm -rf $working_dir/temp
 rm -rf $tmpdir
 echo "Done"
