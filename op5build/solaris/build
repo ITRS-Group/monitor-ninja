@@ -1,0 +1,67 @@
+#!/bin/bash
+basedir=`pwd`
+tempdir=$basedir'/temp'
+prefix='/opt/monitor/op5/ninja'
+
+echo $tempdir
+rm -rf $tempdir
+mkdir -p $tempdir$prefix
+
+pushd ninja
+pushd cli-helpers
+	make clean
+	make
+popd
+#make test docs
+
+# copy everything and then remove what we don't want to ship
+cp -r * $tempdir$prefix
+for d in test op5build monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
+do
+	rm -rf $tempdir$prefix/$d
+done
+
+sed -e 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
+	$tempdir$prefix/application/controllers/authenticated.php > $tempdir$prefix/application/controllers/authenticated_temp.php
+mv $tempdir$prefix/application/controllers/authenticated_temp.php $tempdir$prefix/application/controllers/authenticated.php
+
+sed \
+	-e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
+	-e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
+	-e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
+	$tempdir$prefix/application/config/config.php > $tempdir$prefix/application/config/config_temp.php
+mv $tempdir$prefix/application/config/config_temp.php $tempdir$prefix/application/config/config.php
+
+echo IMAGES:
+cp op5build/login.png 	$tempdir$prefix/application/views/themes/default/css/default/images
+cp op5build/favicon.ico $tempdir$prefix/application/views/themes/default/icons/16x16/
+cp op5build/icon.png $tempdir$prefix/application/views/themes/default/icons/
+
+find $tempdir -exec 'chmod a+r' {} \;
+find $tempdir -type d -exec 'chmod {}' \;
+
+mkdir -p $tempdir/etc/cron.d/
+ls install_scripts
+install -m 644 -c $tempdir/etc/cron.d/ install_scripts/scheduled_reports.crontab
+install -m 644 -c $tempdir/etc/cron.d/ install_scripts/recurring_downtime.crontab
+
+sed -e 's/default\/cron/cron\/cron/' \
+	$tempdir/etc/cron.d/scheduled_reports.crontab >> $tempdir/etc/cron.d/scheduled_reports_temp.crontab
+mv $tempdir/etc/cron.d/scheduled_reports_temp.crontab $tempdir/etc/cron.d/scheduled_reports.crontab
+
+# executables
+for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php install_scripts/ninja_db_init.sh;
+do
+	chmod 755 $tempdir$prefix/$f
+done
+
+# The custom_widgets dir need to be writable by the apache user
+chmod 775 $tempdir$prefix/application/custom_widgets
+
+mkdir -p $tempdir/var/www/html
+ln -sf $prefix $tempdir/var/www/html/monitor
+ln -sf $prefix $tempdir/var/www/html/ninja
+# recursive symbolic link, so must be after all 'find' stuff above
+#ln -s ../ $buildroot$prefix/op5
+
+popd

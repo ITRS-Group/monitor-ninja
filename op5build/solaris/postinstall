@@ -1,0 +1,12 @@
+#!/bin/sh
+prefix='/opt/monitor/op5/ninja'
+
+sh $prefix/install_scripts/ninja_db_init.sh
+
+# Set driver to LDAP if ad or ldap is configured
+if [ -f /opt/op5sys/etc/ldapserver ]; then
+        sed -e "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/"\
+                $prefix/application/config/auth.php > $prefix/application/config/auth_temp.php
+        mv $prefix/application/config/auth_temp.php $prefix/application/config/auth.php
+fi
+
