@@ -47,6 +47,22 @@ class Service_Model extends Model
 		$this->auth = new Nagios_auth_Model();
 	}
 
+        /**
+         Workaround for PDO queries: runs $db->query($sql), copies
+         the resultset to an array, closes the resultset, and returns
+         the array.
+         */
+        private function query($db,$sql)
+        {
+            $res = $db->query($sql);
+            $rc = array();
+            foreach($res as $row) {
+                $rc[] = $row;
+            }
+            unset($res);
+            return $rc;
+        }
+
 	/**
 	 * Fetch info on a specific service by either id or name
 	 * @param $id Id of the service
@@ -114,7 +130,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-			$result = $this->db->query($sql);
+                        $result = $this->query($db,$sql);
 			return count($result) > 0 ? $result : false;
 		}
 		return false;
@@ -153,7 +169,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-			$result = $db->query($sql);
+                    $result = $this->query($db,$sql);
 			return $result;
 		}
 		return false;
@@ -178,7 +194,7 @@ class Service_Model extends Model
 			$sql = "SELECT * FROM service WHERE ".$field." = ".$db->escape($value)." ";
 		}
 		$sql .= "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $db->query($sql);
+		$obj_info = $this->query($db,$sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
 
@@ -231,7 +247,7 @@ class Service_Model extends Model
 			}
 			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
 			#echo $sql;
-			$obj_info = $db->query($sql);
+			$obj_info = $this->query($db,$sql);
 			return $obj_info && count($obj_info) > 0 ? $obj_info : false;
 		}
 		return false;
@@ -277,7 +293,7 @@ class Service_Model extends Model
 			" AND (s.host_name=h.host_name)".
 			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ".$limit_str;
 		}
-		$obj_info = $this->db->query($sql);
+		$obj_info = $this->query($this->db,$sql);
 		return $obj_info;
 	}
 
@@ -336,7 +352,7 @@ class Service_Model extends Model
 					"s.host_name = h.host_name " . $where;
 		}
 
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		return count($result) ? $result : false;
 	}
 
@@ -377,7 +393,7 @@ class Service_Model extends Model
 			"FROM ".$this->table." ".
 			"WHERE active_checks_enabled=".$checks_state." ".$where;
 
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		if (count($result)) {
 			foreach ($result as $row) {
 				if ($checks_state == 1) { # active checks
@@ -465,7 +481,7 @@ class Service_Model extends Model
 		}
 		$class_var = $active_passive.'_'.$this->table.'_checks_'.$class_var;
 
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		if (count($result)) {
 			foreach ($result as $row) {
 				$this->{$class_var} = !is_null($row->cnt) ? $row->cnt : 0;
@@ -511,7 +527,7 @@ class Service_Model extends Model
 		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service WHERE ".
 			$field." REGEXP ".$db->escape($regexp)." ".
 		 	"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $db->query($sql);
+		$obj_info = $this->query($db,$sql);
 		return count($obj_info)>0 ? $obj_info : false;
 	}
 }

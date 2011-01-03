@@ -26,7 +26,17 @@ class Ninja_widget_Model extends ORM
 				->orderby('friendly_name', 'ASC')
 				->find_all();
 		}
-		return !empty($result) ? $result : false;
+                if( empty($result) ) return false;
+                else
+                {
+                    $rc = array();
+                    foreach( $result as $row )
+                    {
+                        $rc[] = $row;
+                    }
+                    unset($result);
+                    return $rc;
+                }
 	}
 
 	/**

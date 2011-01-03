@@ -12,6 +12,25 @@ class Config_Model extends Model {
 	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
 
 	/**
+	 Workaround for PDO queries: runs $db->query($sql), copies
+	 the resultset to an array, closes the resultset, and returns
+	 the array.
+	 */
+	private function query($db,$sql)
+	{
+		$res = $db->query($sql);
+		if (!$res)
+			return NULL;
+
+		$rc = array();
+		foreach($res as $row) {
+			$rc[] = $row;
+		}
+		unset($res);
+		return $rc;
+	}
+
+	/**
 	*	Fetch host info
 	*
 	*/
@@ -133,16 +152,16 @@ class Config_Model extends Model {
 				break;
 			}
 
-			$result = $db->query($sql);
+			$result = $this->query($db,$sql);
 
 			# We special case host/services since there are one to many relationships
 			# parents, contacts + contactgroups need to fetched separatly so we do this here
 		    if ($type === 'hosts' && $count == false) {
-				$parent_child = $db->query("select host.host_name, host2.host_name as parent from host left join host_parents on host.id=host_parents.host " .
+				$parent_child = $this->query($db, "select host.host_name, host2.host_name as parent from host left join host_parents on host.id=host_parents.host " .
 										   "left join host as host2 on host2.id=host_parents.parents ORDER BY host.host_name ".$offset_limit);
-				$contactgroups = $db->query("select host.host_name,contactgroup.contactgroup_name  from host left join host_contactgroup on host.id = host_contactgroup.host " .
+				$contactgroups = $this->query($db, "select host.host_name,contactgroup.contactgroup_name  from host left join host_contactgroup on host.id = host_contactgroup.host " .
 											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id ORDER BY host.host_name ".$offset_limit);
-				$contacts = $db->query("select host.host_name,contact.contact_name from host left join host_contact on host.id = host_contact.host " .
+				$contacts = $this->query($db, "select host.host_name,contact.contact_name from host left join host_contact on host.id = host_contact.host " .
 									   "left join contact on host_contact.contact = contact.id ORDER BY host.host_name ".$offset_limit);
 				foreach($parent_child as $row){
 					if (isset($parent_array[$row->host_name] )){
@@ -180,10 +199,10 @@ class Config_Model extends Model {
 				return $result_mod;
 		    }
 		    if ($type === 'services' && $count == false) {
-				$s_contactgroups = $db->query("select service.host_name, service.service_description, contactgroup.contactgroup_name " .
+                        $s_contactgroups = $this->query($db,"select service.host_name, service.service_description, contactgroup.contactgroup_name " .
 											  "from service left join service_contactgroup on service.id = service_contactgroup.service " .
 											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id ORDER BY service.host_name, service.service_description ".$offset_limit);
-				$s_contacts = $db->query("select service.host_name, service.service_description, contact.contact_name " .
+				$s_contacts = $this->query($db, "select service.host_name, service.service_description, contact.contact_name " .
 										 "from service left join service_contact on service.id = service_contact.service " .
 										 "left join contact on service_contact.contact = contact.id ORDER BY service.host_name, service.service_description ".$offset_limit);
 				foreach($s_contactgroups as $row){
