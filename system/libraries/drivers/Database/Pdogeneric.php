@@ -72,7 +72,8 @@ class Database_Pdogeneric_Driver extends Database_Driver {
         $this->dsn = $dsn;
         try
         {
-            $attr = array(PDO::ATTR_CASE => PDO::CASE_NATURAL);
+            $attr = array(PDO::ATTR_CASE => PDO::CASE_NATURAL,
+                          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
             if( $this->isSqlite() )
             {
                 $attr[PDO::ATTR_PERSISTENT] = $this->db_config['persistent'];
