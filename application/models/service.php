@@ -52,7 +52,7 @@ class Service_Model extends Model
          the resultset to an array, closes the resultset, and returns
          the array.
          */
-        private function query($db,$sql)
+        private static function query($db,$sql)
         {
             $res = $db->query($sql);
             $rc = array();
@@ -130,7 +130,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-                        $result = $this->query($db,$sql);
+                        $result = self::query($db,$sql);
 			return count($result) > 0 ? $result : false;
 		}
 		return false;
@@ -169,7 +169,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-                    $result = $this->query($db,$sql);
+                    $result = self::query($db,$sql);
 			return $result;
 		}
 		return false;
@@ -194,7 +194,7 @@ class Service_Model extends Model
 			$sql = "SELECT * FROM service WHERE ".$field." = ".$db->escape($value)." ";
 		}
 		$sql .= "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $this->query($db,$sql);
+		$obj_info = self::query($db,$sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
 
@@ -247,7 +247,7 @@ class Service_Model extends Model
 			}
 			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
 			#echo $sql;
-			$obj_info = $this->query($db,$sql);
+			$obj_info = self::query($db,$sql);
 			return $obj_info && count($obj_info) > 0 ? $obj_info : false;
 		}
 		return false;
@@ -527,7 +527,7 @@ class Service_Model extends Model
 		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service WHERE ".
 			$field." REGEXP ".$db->escape($regexp)." ".
 		 	"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $this->query($db,$sql);
+		$obj_info = self::query($db,$sql);
 		return count($obj_info)>0 ? $obj_info : false;
 	}
 }

@@ -196,6 +196,7 @@ class Config_Model extends Model {
 					}
 					$result_mod[] = $row;
 				}
+                                unset($result);
 				return $result_mod;
 		    }
 		    if ($type === 'services' && $count == false) {
@@ -228,6 +229,7 @@ class Config_Model extends Model {
 					}
 					$result_mod[] = $row;
 				}
+                                unset($result);
 				return $result_mod;
 		    }
 			# End host/service special casing #
@@ -235,7 +237,8 @@ class Config_Model extends Model {
 		    if ($count !== false) {
 				return $result ? count($result) : 0;
 		    }
-		    return $result->count() ? $result->result(): false;
+		    return count($result) ? $result : false;
+                        //$result->count() ? $result->result(): false;
 		}
 		else
 			return false;
