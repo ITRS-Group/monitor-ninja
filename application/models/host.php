@@ -62,6 +62,22 @@ class Host_Model extends Model {
 		$this->auth = new Nagios_auth_Model();
 	}
 
+        /**
+         Workaround for PDO queries: runs $db->query($sql), copies
+         the resultset to an array, closes the resultset, and returns
+         the array.
+         */
+        private static function query($db,$sql)
+        {
+            $res = $db->query($sql);
+            $rc = array();
+            foreach($res as $row) {
+                $rc[] = $row;
+            }
+            unset($res);
+            return $rc;
+        }
+
 	/**
 	 * Fetch all onfo on a host. The returned object
 	 * will contain all database fields for the host object.
@@ -160,7 +176,7 @@ class Host_Model extends Model {
 			$sql = "SELECT * FROM host WHERE ".$field." = ".$db->escape($value)." ";
 		}
 		$sql .= "AND id IN(".implode(',', $host_ids).") ".$limit_str;
-		$host_info = $db->query($sql);
+		$host_info = $this->query($db,$sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
 
@@ -224,7 +240,7 @@ class Host_Model extends Model {
 			" AND id IN (".$host_ids.") ORDER BY host_name ".$limit_str;
 		}
 		#echo Kohana::debug($sql);
-		$host_info = $this->db->query($sql);
+		$host_info = $this->query($this->db,$sql);
 		return $host_info;
 	}
 
@@ -254,7 +270,7 @@ class Host_Model extends Model {
 				$auth_host_alias . ".id=hp.host " . $auth_where .
 				" AND parent.id=hp.parents " .
 			"ORDER BY parent.host_name";
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db, $sql);
 		return $result;
 	}
 
@@ -638,12 +654,13 @@ class Host_Model extends Model {
 					}
 				}
 			}
-			$result = $this->db->query($sql);
-                        $rc = $result ? $result->current()->cnt : 0;
-                        unset($result);
+
+			$result = $this->query($this->db,$sql);
+			$rc = $result ? $result[0]->cnt : 0;
+			unset($result);
 			return $rc;
 		}
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		if ($this->count === true) {
                     $rc = $result ? count($result) : 0;
                     unset($result);
@@ -862,7 +879,7 @@ class Host_Model extends Model {
 					s.host_name=h.host_name AND
 					s.service_description=".$db->escape($service_description);
 		}
-		$result = $db->query($sql);
+		$result = self::query($db,$sql);
 		#echo $sql;
 		return $result;
 	}
@@ -904,7 +921,7 @@ class Host_Model extends Model {
 			"FROM ".$this->table." ".
 			"WHERE active_checks_enabled=".$checks_state." ".$where;
 
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		if (count($result)) {
 			foreach ($result as $row) {
 				if ($checks_state == 1) { # active checks
@@ -991,7 +1008,7 @@ class Host_Model extends Model {
 		}
 		$class_var = $active_passive.'_'.$this->table.'_checks_'.$class_var;
 
-		$result = $this->db->query($sql);
+		$result = $this->query($this->db,$sql);
 		if (count($result)) {
 			foreach ($result as $row) {
 				$this->{$class_var} = !is_null($row->cnt) ? $row->cnt : 0;
@@ -1013,7 +1030,7 @@ class Host_Model extends Model {
 			"AND hhg.hostgroup = hg.id AND h.id = hhg.host " .
 			"AND h.id IN(" . $host_str . ")";
 
-		return $db->query($sql);
+		return $this->query($db,$sql);
 	}
 
 
@@ -1051,7 +1068,7 @@ class Host_Model extends Model {
 
 		$sql = "SELECT * FROM host WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
 		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
-		$host_info = $db->query($sql);
+		$host_info = self::query($db,$sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
 
@@ -1075,7 +1092,7 @@ class Host_Model extends Model {
 		$sql = "SELECT service_description FROM service WHERE host_name = ".$db->escape($host_name).
 			" AND id IN(".implode(',', $obj_ids).") ORDER BY service_description";
 
-		$data = $db->query($sql);
+		$data = self::query($db,$sql);
 		return count($data)>0 ? $data : false;
 	}
 
@@ -1088,7 +1105,7 @@ class Host_Model extends Model {
 		$hostlist = false;
 		$db = new Database();
 		$sql = "SELECT host_name, address FROM host WHERE id IN (".implode(',', $hosts).")";
-		$data = $db->query($sql);
+		$data = self::query($db,$sql);
 		if (count($data)>0) {
 			foreach ($data as $row) {
 				$hostlist[$row->address] = $row->host_name;
