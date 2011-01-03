@@ -297,6 +297,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
             {
                 $list[] = current($row);
             }
+            unset($res);
             $tables = $list;
             return $tables;
         }
@@ -361,6 +362,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
             {
                 $cols[] = $row;
             }
+            unset($res);
             return $columns[$table] = $cols;
         }
         else if( $this->isSqlite() )
@@ -389,6 +391,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
                     $obj->Extra = NULL;
                     $cols[] = $obj;
                 }
+                unset($res);
                 return $columns[$table] = $cols;
         }
         else
