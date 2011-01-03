@@ -72,15 +72,29 @@ class Database_Pdogeneric_Driver extends Database_Driver {
         $this->dsn = $dsn;
         try
         {
-            $this->link = new PDO($this->dsn, $user, $pass);
-            $this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+            $attr = array(PDO::ATTR_CASE => PDO::CASE_NATURAL);
             if( $this->isSqlite() )
             {
-                $this->link->setAttribute(PDO::ATTR_PERSISTENT, $this->db_config['persistent'])
+                $attr[PDO::ATTR_PERSISTENT] = $this->db_config['persistent'];
                     /* why is this needed? It was taken from the Pdosqlite driver. */
                     ;
+            }
+            else if( $this->isMysql() )
+            {
+                $attr[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
+                /* To work around recursive query problems. However, this has
+                   no effect on the server i'm on (CentOS5).
+                */
+            }
+            $this->link = new PDO($this->dsn, $user, $pass,$attr);
+            if( $this->isSqlite() )
+            {
                 $this->link->query('PRAGMA count_changes=1;');
             }
+#            else if( $this->isMysql() )
+#            {
+#                $this->link->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+#            }
             if( ($charset = $this->db_config['character_set']) )
             {
                 $this->set_charset($charset);

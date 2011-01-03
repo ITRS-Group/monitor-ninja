@@ -67,7 +67,14 @@ class Comment_Model extends Model {
 
 		$result = $db->query($sql);
 		if ($count !== false) {
-			return $result ? count($result) : 0;
+                    if( $result ) {
+                        $count = count($result);
+                        unset($result);
+                    }
+                    else {
+                        $count = 0;
+                    }
+                    return $count;
 		}
 		return $result->count() ? $result->result(): false;
 	}

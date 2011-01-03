@@ -513,9 +513,15 @@ class Current_status_Model extends Model
 		if (empty($result)) {
 			return false;
 		}
+                $hosts = array();
+		foreach ($result as $host){
+                    $hosts[] = $host;
+                }
+                unset($result);
+
 		/* check all hosts */
 		$outages = false;
-		foreach ($result as $host){
+		foreach ($hosts as $host){
 			$children = false; # reset children
 			$outages[] = $host->host_name;
 
@@ -601,7 +607,12 @@ class Current_status_Model extends Model
 		if ($result->count()==0) {
 			return false;
 		}
+                $hosts = array();
 		foreach ($result as $host) {
+                    $hosts[] = $host;
+                }
+                unset($result);
+                foreach( $hosts as $host ) {
 			$children[$host->id] = $host->host_name;
 			$this->children_services[$host->id] = $host->service_cnt;
 			$this->get_child_hosts($host->id, $children); # RECURSIVE

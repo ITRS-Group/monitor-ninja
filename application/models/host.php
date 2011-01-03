@@ -639,14 +639,23 @@ class Host_Model extends Model {
 				}
 			}
 			$result = $this->db->query($sql);
-			return $result ? $result->current()->cnt : 0;
+                        $rc = $result ? $result->current()->cnt : 0;
+                        unset($result);
+			return $rc;
 		}
-
 		$result = $this->db->query($sql);
 		if ($this->count === true) {
-			return $result ? count($result) : 0;
+                    $rc = $result ? count($result) : 0;
+                    unset($result);
+                    return $rc;
 		}
-		return $result;
+                $rc = array();
+                foreach( $result as $row )
+                {
+                    $rc[] = $row;
+                }
+                unset($result);
+		return $rc;
 	}
 
 	/**

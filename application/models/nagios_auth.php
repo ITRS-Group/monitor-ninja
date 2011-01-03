@@ -137,6 +137,7 @@ class Nagios_auth_Model extends Model
 
 			$result = $this->db->query($query);
 			$contact_id = $result->count() ? $result->current()->id : false;
+                        unset($result);
 			Session::instance()->set('contact_id', $contact_id);
 		}
 		$this->id = $contact_id;
@@ -171,7 +172,7 @@ class Nagios_auth_Model extends Model
 			$this->hosts[$id] = $name;
 			$this->hosts_r[$name] = $id;
 		}
-
+                unset($result);
 		#Session::instance()->set('auth_hosts', $this->hosts);
 		#Session::instance()->set('auth_hosts_r', $this->hosts_r);
 
@@ -264,7 +265,7 @@ class Nagios_auth_Model extends Model
 			$this->services[$id] = $name;
 			$this->services_r[$name] = $id;
 		}
-
+                unset($result);
 		#Session::instance()->set('auth_services', $this->services);
 		#Session::instance()->set('auth_services_r', $this->services_r);
 
@@ -311,6 +312,7 @@ class Nagios_auth_Model extends Model
 					$this->hostgroups_r[$row->hostgroup_name] = $row->id;
 				}
 			}
+                        unset($result);
 		} else {
 			if (empty($this->id))
 				return false;
@@ -319,7 +321,12 @@ class Nagios_auth_Model extends Model
 			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
 				'hostgroup hg, host_hostgroup hhg '.
 				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id';
-			$result = $this->db->query($query);
+			$result1 = $this->db->query($query);
+                        $result = array();
+                        foreach( $result1 as $row) {
+                            $result[] = $row;
+                        }
+                        unset($result1);
 
 			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
 				"hostgroup hg, host_hostgroup hhg ".
@@ -361,6 +368,7 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			}
+                        unset($user_result);
 		}
 
 		return $this->hostgroups;
