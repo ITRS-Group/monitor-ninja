@@ -1075,6 +1075,10 @@ function disable_sla_fields(report_period)
 		case 'last6months':
 			disable_last_months(6);
 			break;
+		case 'lastyear':
+		case 'last12months':
+			disable_months(0, 12);
+			break;
 		case 'lastquarter':
 			if(this_month <= 3){
 				from = 10;
