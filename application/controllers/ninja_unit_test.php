@@ -57,12 +57,6 @@ class Ninja_unit_test_Controller extends Controller {
 				$test_file[] = $argv[$i];
 			}
 		}
-
-		if (!(mysql_connect('localhost', $db_user, $db_pass)))
-			$this->reports_test_crash("mysql_connect() failed: " . mysql_error());
-		if (!(mysql_select_db($db_name)))
-			$this->reports_test_crash("mysql_select_db() failed: " . mysql_error());
-		#exit(0);
 		$passed = 0;
 		$failed = 0;
 		foreach ($test_file as $tfile) {
@@ -101,4 +95,25 @@ class Ninja_unit_test_Controller extends Controller {
 		exit(1);
 	}
 
+        /**
+         Drops all tables in Database() which "appear to be"
+         test data.
+        */
+        public function wipe_tables()
+        {
+            $db = new Database();
+            $tlist = $db->list_tables();
+            if( !count($tlist) ) {
+                throw new Exception("Query failed!");
+            }
+            foreach( $tlist as $table ) {
+                #echo "Checking table $table...\n";
+                if (strlen($table) >= 40) {
+                    echo "Dropping table $table...\n";
+                    if (!$db->query("drop table $table")) {
+                        echo "Failed to drop table $table:" . $db->error_message() . "\n";
+                    }
+                }
+            }
+        }
 }

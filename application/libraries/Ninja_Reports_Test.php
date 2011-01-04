@@ -276,18 +276,11 @@ class Ninja_Reports_Test_Core
 		$cached = true;
 		$db = new Database();
 		try {
-			$db->query("DESCRIBE ".$this->table_name);
+                    $db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}
 		catch (Kohana_Database_Exception $e) {
-			$cached = false;
+                    $cached = false;
 		}
-
-		#if (!$db->query("DESCRIBE ".$this->table_name)) {
-		#if (!mysql_query("DESCRIBE ".$this->db_name.".".$this->table_name)) {
-		#	if (mysql_errno() !== 1146 && mysql_errno() !== 1046)
-		#		$this->crash("mysql_query error: " . mysql_error() . " " . mysql_errno());
-		#	$cached = false;
-		#}
 
 		if ($cached) {
 			echo "Data is cached\n";
@@ -297,8 +290,17 @@ class Ninja_Reports_Test_Core
 				echo "\t$this->importer\nis not a program I can run.\n\n";
 				return -1;
 			}
-			if (!mysql_query("CREATE TABLE $table_name LIKE report_data")) {
-				$this->crash("mysql_query_error: " . mysql_error() . " " . mysql_errno());
+                        # FIXME: CREATE TABLE LIKE is not portable, but
+                        # CREATE TABLE X AS SELECT ... FROM Y supposedly is.
+                        $sql =
+                            // CREATE TABLE LIKE is not portable, but CREATE TABLE AS SELECT
+                            // (which "should" be the same?) causes the tests to fail???
+                            "CREATE TABLE $table_name LIKE report_data" // not portable
+                            //"CREATE TABLE $table_name AS SELECT * FROM report_data"
+                            ;
+                        echo "Building table [$table_name]. This might take a moment or three...\n";
+			if( ! $db->query($sql)) {
+                            $this->crash("Error creating table $table_name: ".$db->error_message());
 			}
 			echo "Importing $lfiles to '$table_name'\n";
 			$cmd = $this->importer .
@@ -309,13 +311,15 @@ class Ninja_Reports_Test_Core
 				join(" ", $this->logfiles);
 			#	echo "$cmd\n";
 			#	exit(0);
+                        #echo "Running command: $cmd\n";
 			system($cmd, $retval);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
 				echo $cmd."\n";
-				mysql_query("DROP TABLE ".$this->table_name);
+                                $db->query("DROP TABLE ".$this->table_name);
 				return -1;
 			}
+                        #echo "Import finished :).\n";
 		}
 
 		return true;
