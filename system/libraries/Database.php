@@ -227,6 +227,21 @@ class Database_Core {
 		}
 	}
 
+        /**
+         Returns the last error message available from the underlying
+         driver, or an unspecified non-empty string if this object has
+         no driver.
+
+        @return string
+         */
+        public function error_message()
+        {
+            return $this->driver
+                ? $this->driver->show_error()
+                : "No driver loaded - no error information available."
+                ;
+        }
+
 	/**
 	 * Runs a query into the driver and returns the result.
 	 *
