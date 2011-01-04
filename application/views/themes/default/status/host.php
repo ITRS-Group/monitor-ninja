@@ -70,6 +70,7 @@ if (empty($result)) {
 	$result = array();
 }
 $a = 0;
+$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 foreach ($result as $row) {
 	$a++;
 		?>
@@ -89,7 +90,7 @@ foreach ($result as $row) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $t->_('Notification disabled'), 'title' => $t->_('Notification disabled'))), array('style' => 'border: 0px'));
 							$properties += 2;
 						}
-						if (!$row->active_checks_enabled) {
+						if (!$row->active_checks_enabled && !$show_passive_as_active) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $t->_('Active checks enabled'), 'title' => $t->_('Active checks disabled'))), array('style' => 'border: 0px'));
 							$properties += 4;
 						}

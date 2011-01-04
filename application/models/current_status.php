@@ -219,7 +219,7 @@ class Current_status_Model extends Model
 		$auth = new Nagios_auth_Model();
 		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 
-		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
+		$active_checks_condition = ' AND active_checks_enabled=1';
 
 		$access_check = '';
 		$access_check_xtra = ' WHERE ';
@@ -338,7 +338,7 @@ class Current_status_Model extends Model
 		$auth = new Nagios_auth_Model();
 		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 
-		$active_checks_condition = $show_passive_as_active ? '' : ' AND active_checks_enabled=1';
+		$active_checks_condition = ' AND active_checks_enabled=1';
 
 		$access_check = '';
 		$access_check_xtra = ' WHERE ';
