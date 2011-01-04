@@ -41,6 +41,10 @@ class PDOProvider
      $c['host'] = ...;
      ...
 
+     If $c['dsn'] is set then the host/port/dbname parameters are
+     ignored, and are assumed to be encoded in the DSN (if they are
+     needed at all).
+
      Then:
 
      $db = PDOProvider::db('someDbIdentifier');
@@ -52,20 +56,25 @@ class PDOProvider
      a new connection to be established (and cached for future calls
      to this function). It's not yet clear if we need that capability.
 
+
     */
     public static function db($key = 'default'/* not yet used*/)
     {
         if( NULL != self::$db ) return self::$db;
         // reminder: the globals here will go away once PDO is completely in place.
         $c =& self::config($key);
-        $dsn = $c['type']
-            .':host='.$c['host']
-            ;
-        $port = @$c['port'];
-        if( $port ) {
-            $dsn .= ';port='.$c['port'];
+        $dsn = @$c['dsn'];
+        if( ! $dsn )
+        {
+            $dsn = $c['type']
+                .':host='.$c['host']
+                ;
+            $port = @$c['port'];
+            if( $port ) {
+                $dsn .= ';port='.$c['port'];
+            }
+            $dsn .= ';dbname='.$c['database'];
         }
-        $dsn .= ';dbname='.$c['database'];
         self::$db = new PDO($dsn, $c['user'], $c['passwd']);
         return self::$db;
     }
