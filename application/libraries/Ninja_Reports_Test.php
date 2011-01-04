@@ -290,13 +290,9 @@ class Ninja_Reports_Test_Core
 				echo "\t$this->importer\nis not a program I can run.\n\n";
 				return -1;
 			}
-                        # FIXME: CREATE TABLE LIKE is not portable, but
-                        # CREATE TABLE X AS SELECT ... FROM Y supposedly is.
                         $sql =
-                            // CREATE TABLE LIKE is not portable, but CREATE TABLE AS SELECT
-                            // (which "should" be the same?) causes the tests to fail???
-                            "CREATE TABLE $table_name LIKE report_data" // not portable
-                            //"CREATE TABLE $table_name AS SELECT * FROM report_data"
+                            //"CREATE TABLE $table_name LIKE report_data" // not portable
+                            "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0"
                             ;
                         echo "Building table [$table_name]. This might take a moment or three...\n";
 			if( ! $db->query($sql)) {
