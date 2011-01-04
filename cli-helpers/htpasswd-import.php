@@ -1,5 +1,5 @@
 <?php
-require dirname(__FILE__).'/../NinjaPDO.inc.php';
+require_once dirname(__FILE__).'/../NinjaPDO.inc.php';
 
 class htpasswd_importer
 {
