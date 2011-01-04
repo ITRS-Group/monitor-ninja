@@ -75,7 +75,8 @@ class PDOProvider
             }
             $dsn .= ';dbname='.$c['database'];
         }
-        self::$db = new PDO($dsn, $c['user'], $c['passwd']);
+        $attr = array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION);
+        self::$db = new PDO($dsn, $c['user'], $c['passwd'], $attr);
         return self::$db;
     }
 
