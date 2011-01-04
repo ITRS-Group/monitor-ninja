@@ -1,5 +1,7 @@
 #!/usr/bin/php -q
 <?php
+require_once dirname(__FILE__).'/../NinjaPDO.inc.php';
+
 /**
  * Import existing authorization settings from cgi.cfg to
  * mysql database for all users.
@@ -91,39 +93,17 @@ class ninja_auth_import
 	 */
 	public function db_connect()
 	{
-		if($this->db_type !== 'mysql') {
-			die("Only mysql is supported as of yet.\n");
-		}
-
-		$this->db = mysql_connect
-			($this->db_host, $this->db_user, $this->db_pass);
-
-		if ($this->db === false)
-			return(false);
-
-		if ($this->DEBUG) echo "  Successfully connected to database\n";
-		return mysql_select_db($this->db_database);
-	}
-
-	/**
-	*	Fetch a single row as an object
-	*/
-	public function sql_fetch_object($resource=false)
-	{
-		return mysql_fetch_object($resource);
-	}
-
-	/**
-	* Return nr of rows returned from a query
-	*/
-	public function sql_num_rows($resource=false)
-	{
-		return mysql_num_rows($resource);
-	}
-
-	public function sql_escape_string($string)
-	{
-		return mysql_real_escape_string($string);
+            if( is_object($this->db) ) return;
+            $key = 'auth-import';
+            $c =& PDOProvider::config($key);
+            $c['user'] = $this->db_user;
+            $c['passwd'] = $this->db_pass;
+            $c['dsn'] = $this->db_type.':'
+                .'host='.$this->db_host
+                .';dbname='.$this->db_database;
+            $this->db = PDOProvider::db($key);
+            if ($this->DEBUG) echo "  Successfully connected to database\n";
+            return $this->db;
 	}
 
 	# execute an SQL query with error handling
@@ -134,16 +114,10 @@ class ninja_auth_import
 
 		# workaround for now
 		if($this->db === false) {
-			$this->gui_db_connect();
+                    $this->db_connect();
 		}
 
-		$result = mysql_query($query, $this->db);
-		if($result === false) {
-			echo "SQL query failed with the following error message;<br />\n" .
-			mysql_error() . "<br />\n";
-			if($this->DEBUG) echo "Query was;<br />\n<b>$query</b><br />\n";
-		}
-
+		$result = $this->db->query($query);
 		return($result);
 	}
 
@@ -321,14 +295,17 @@ class ninja_auth_import
 		}
 
 		$sql = "SELECT * FROM ".$this->db_database.".users WHERE";
-		$sql .= " username='".$this->sql_escape_string($username)."'";
+		$sql .= " username=".$this->db->quote($username);
 		$res = $this->sql_exec_query($sql);
-		if ($res !== false && $this->sql_num_rows($res)) {
+                $rows = array();
+                foreach($res as $row) { $rows[] = $row; }
+                unset($res);
+		if (count($rows)) {
 			if ($this->DEBUG) echo "  Found user '$username' in database, continuing with auth data\n";
 			# user found in db
 			# does authorization data exist for this user?
-			$user = $this->sql_fetch_object($res);
-			$result = $this->insert_user_auth_data($user->id, $auth_options);
+			$user = $rows[0];
+			$result = $this->insert_user_auth_data($user['id'], $auth_options);
 			if ($this->DEBUG && $result === false) echo "-->  SQL error in insert_user_auth_data\n";
 		} else {
 			# this should never happen
@@ -355,33 +332,35 @@ class ninja_auth_import
 		$sql = "SELECT * FROM ".$this->db_database.".ninja_user_authorization";
 		$sql .= " WHERE user_id=".(int)$user_id;
 		$res = $this->sql_exec_query($sql);
-		if ($res !== false && $this->sql_num_rows($res)) {
-			# user exists, update authorization data
-			if ($this->DEBUG) echo "  user ID '$user_id' exists in ninja_user_authorization, updating authorization data\n";
-			$sql = "UPDATE ".$this->db_database.".ninja_user_authorization SET ";
-			$sql_upd = false;
-			foreach	($options as $field => $value) {
+                $rows = array();
+                foreach($res as $row) { $rows[] = $row; }
+                unset($res);
+		if( count($rows) ) {
+# user exists, update authorization data
+                    if ($this->DEBUG) echo "  user ID '$user_id' exists in ninja_user_authorization, updating authorization data\n";
+                    $sql = "UPDATE ".$this->db_database.".ninja_user_authorization SET ";
+                    $sql_upd = false;
+                    foreach	($options as $field => $value) {
 				$sql_upd[] = $field .' = '.(int)$value . ' ';
-			}
-			if (!empty($sql_upd)) {
-				$sql .= implode(', ', $sql_upd);
-				$sql .= " WHERE user_id = ".$user_id;
-			} else {
-				return false;
-			}
+                    }
+                    if (!empty($sql_upd)) {
+                        $sql .= implode(', ', $sql_upd);
+                        $sql .= " WHERE user_id = ".$user_id;
+                    } else {
+                        return false;
+                    }
 		} else {
-			# create new record
-			if ($this->DEBUG) echo "  Creating new authorization record for user ID $user_id\n";
-			$sql = "INSERT INTO ".$this->db_database.".ninja_user_authorization";
-			$sql .= " (user_id, `".implode('`,`', array_keys($options))."`) ";
-			$values = array_values($options);
-			$ok_values = false;
-			foreach ($values as $val) {
-				$ok_values[] = (int)$val;
-			}
-			$sql .= "VALUES(".$user_id.", ".implode(',', $ok_values).")";
+# create new record
+                    if ($this->DEBUG) echo "  Creating new authorization record for user ID $user_id\n";
+                    $sql = "INSERT INTO ".$this->db_database.".ninja_user_authorization";
+                    $sql .= " (user_id, `".implode('`,`', array_keys($options))."`) ";
+                    $values = array_values($options);
+                    $ok_values = false;
+                    foreach ($values as $val) {
+                        $ok_values[] = (int)$val;
+                    }
+                    $sql .= "VALUES(".$user_id.", ".implode(',', $ok_values).")";
 		}
-
 		# done, save it
 		if ($this->DEBUG) echo "  Executing query for user ID $user_id and returning from insert_user_auth_data()\n";
 		return $this->sql_exec_query($sql);
