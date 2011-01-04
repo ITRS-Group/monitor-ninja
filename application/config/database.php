@@ -30,8 +30,8 @@ $config['default'] = array
 	'connection'    => array
 	(
 		'type'     =>
-                            #'pdogeneric'
-                            'mysql'
+                            'pdogeneric'
+                            #'mysql'
                 ,
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
@@ -56,13 +56,15 @@ $config['nacoma'] = array
         'persistent'    => FALSE,
         'connection'    => array
         (
-                'type'     => 'mysql',
+                'type'     => #'mysql',
+                              'pdogeneric',
                 'user'     => 'nacoma',
                 'pass'     => 'nacoma',
                 'host'     => 'localhost',
                 'port'     => FALSE,
                 'socket'   => FALSE,
-                'database' => 'nacoma'
+                'database' => 'nacoma',
+                'dsn' => 'mysql:host=localhost;dbname=nacoma'
         ),
         'character_set' => 'latin1',
         'table_prefix'  => '',
