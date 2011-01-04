@@ -1,4 +1,6 @@
 <?php
+require dirname(__FILE__).'/../NinjaPDO.inc.php';
+
 class htpasswd_importer
 {
 	private $htpasswd_file = "/opt/monitor/etc/htpasswd.users";
@@ -39,51 +41,28 @@ class htpasswd_importer
 		$query = 'SELECT username, password_algo, password ' .
 			'FROM ' . $this->db_table;
 		$result = $this->sql_exec_query($query);
-		while ($ary = $this->sql_fetch_array($result)) {
-			$this->existing_ary[$ary['username']] = array
-				('hash' => $ary['password'], 'algo' => $ary['password_algo']);
+                foreach( $result as $ary )
+                {
+                    $this->existing_ary[$ary['username']] = array
+                        ('hash' => $ary['password'], 'algo' => $ary['password_algo']);
 		}
 	}
 
 	# connects to and selects database. false on error, true on success
 	public function db_connect()
 	{
-		switch ($this->db_type)
-		{
-			case 'mysql':
-				$this->db = mysql_connect
-					($this->db_host, $this->db_user, $this->db_pass);
-
-				if ($this->db === false)
-					return(false);
-
-				return mysql_select_db($this->db_name);
-				break;
-			case 'pgsql':
-				$this->db = pg_connect('host='.$this->db_host.' dbname='.$this->db_name.' user='.$this->db_user.' password='.$this->db_pass);
-				if ($this->db === false)
-					return(false);
-				return $this->db;
-				break;
-			default:
-				die("Only mysql and postgres are supported as of yet.<br />\n");
-		}
+            if( is_object($this->db) ) return;
+            $key = 'passwd-import';
+            $c =& PDOProvider::config($key);
+            $c['user'] = $this->db_user;
+            $c['passwd'] = $this->db_pass;
+            $c['dsn'] = $this->db_type.':'
+                .'host='.$this->db_host
+                .';dbname='.$this->db_name;
+            $this->db = PDOProvider::db($key);
 	}
 
 	# fetch a single row to associative array
-	public function sql_fetch_array($resource) {
-		switch ($this->db_type)
-		{
-			case 'mysql':
-				return(mysql_fetch_array($resource, MYSQL_ASSOC));
-				break;
-			case 'pgsql':
-				return pg_fetch_assoc($resource);
-				break;
-			default: return false;
-		}
-	}
-
 	# execute an SQL query with error handling
 	public function sql_exec_query($query)
 	{
@@ -94,39 +73,17 @@ class htpasswd_importer
 		if($this->db === false) {
 			$this->db_connect();
 		}
-		$error = false;
-		switch ($this->db_type)
-		{
-			case 'mysql':
-				$result = mysql_query($query, $this->db);
-				$error = mysql_error();
-				break;
-			case 'pgsql':
-				$result = pg_query($this->db, $query);
-				$error = pg_last_error();
-				break;
-			default: return false;
-		}
-		if($result === false) {
-			echo "SQL query failed with the following error message:<br />\n" .
-				$error . "<br />\n";
-			if($this->DEBUG) echo "Query was:<br />\n<b>$query</b><br />\n";
-		}
-
-		return($result);
-	}
-
-	public function sql_escape_string($string)
-	{
-		switch ($this->db_type)
-		{
-			case 'mysql':
-				return mysql_real_escape_string($string);
-				break;
-			case 'pgsql':
-				return pg_escape_string($string);
-				break;
-			default: return false;
+                try
+                {
+                    return $this->db->query($query);
+                }
+                catch(Exception $ex)
+                {
+                    $error = $ex->getMessage();
+                    echo "SQL query failed with the following error message:<br />\n" .
+                        $error . "<br />\n";
+                    if($this->DEBUG) echo "Query was:<br />\n<b>$query</b><br />\n";
+                    return false;
 		}
 	}
 
@@ -156,21 +113,22 @@ class htpasswd_importer
 				}
 
 				$query = "UPDATE $this->db_table SET " .
-					"password_algo = '" . $this->sql_escape_string($algo) . "', " .
-					"password = '" . $this->sql_escape_string($hash) . "' " .
-					"WHERE username = '" . $this->sql_escape_string($user) . "'";
+					"password_algo = " . $this->db->quote($algo) . ", " .
+					"password = " . $this->db->quote($hash) . " " .
+					"WHERE username = " . $this->db->quote($user);
 			} else {
 				$query = 'INSERT INTO ' . $this->db_table .
 					'(username, password_algo, password) VALUES(' .
-					"'" . $this->sql_escape_string($user) . "', '" .
-					$this->sql_escape_string($algo) . "', '" .
-					$this->sql_escape_string($hash) . "')";
+					$this->db->quote($user) . ", " .
+					$this->db->quote($algo) . ", " .
+					$this->db->quote($hash) . ")";
 					$is_new = true; # mark this as new user
 			}
 
 			$result = $this->sql_exec_query($query);
 			if ($result !== false) {
-				$this->add_user_role($this->sql_insert_id($result));
+				$this->add_user_role($this->db->lastInsertId());
+                                unset($result);
 			}
 		}
 
@@ -180,7 +138,7 @@ class htpasswd_importer
 				# delete this user as it is no longer available in
 				# the received list of users
 				$this->sql_exec_query("DELETE FROM ".$this->db_table.
-					" WHERE username='".$this->sql_escape_string($old)."'");
+					" WHERE username=".$this->db->quote($old));
 			}
 		}
 	}
@@ -232,25 +190,6 @@ class htpasswd_importer
 		}
 
 		return $this->passwd_ary;
-	}
-
-	/**
-	*	Return last inserted ID
-	*/
-	public function sql_insert_id($resource=false)
-	{
-		switch ($this->db_type)
-		{
-			case 'mysql':
-				return mysql_insert_id();
-				break;
-			case 'pgsql':
-				$insert = pg_fetch_row($resource);
-				return $insert[0];
-				break;
-			default: return false;
-		}
-
 	}
 
 	/**
