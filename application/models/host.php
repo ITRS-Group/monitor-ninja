@@ -3,6 +3,7 @@
 class Host_Model extends Model {
 	private $auth = false;
 	private $host_list = false; # List of hosts to get status for
+	private $service_host_list = false;
 	private $table = "host";
 
 	public $total_host_execution_time = 0;
@@ -314,32 +315,79 @@ class Host_Model extends Model {
 		if (empty($host_names)) {
 			return false;
 		}
-		# fetch available hosts for user
-		$hosts = $this->auth->get_authorized_hosts();
-		$host_r = $this->auth->hosts_r; # flipped array => host_names are keys, ID is value
 		$retval = false;
-		if (is_array($host_names)) {
-			foreach ($host_names as $temp_host) {
-				if (array_key_exists($temp_host, $host_r)) {
-					$retval[] = $host_r[$temp_host];
+		if (!$this->show_services) {
+			# fetch available hosts for user
+			$hosts = $this->auth->get_authorized_hosts();
+			$host_r = $this->auth->hosts_r; # flipped array => host_names are keys, ID is value
+
+			if (is_array($host_names)) {
+				foreach ($host_names as $temp_host) {
+					$temp_host = trim($temp_host);
+					if (array_key_exists($temp_host, $host_r)) {
+						$retval[] = $host_r[$temp_host];
+					}
+				}
+			} else {
+				if (strtolower($host_names) === 'all') {
+					# return all to fetch all relations
+					# via contact and contactgroups
+					$retval = 'all';
+				} elseif (array_key_exists($host_names, $host_r)) {
+					$retval[] = $host_r[$host_names];
 				}
 			}
 		} else {
-			if (strtolower($host_names) === 'all') {
-				# return all to fetch all relations
-				# via contact and contactgroups
-				$retval = 'all';
-			} elseif (array_key_exists($host_names, $host_r)) {
-				$retval[] = $host_r[$host_names];
+			$services = $this->get_host_on_services();
+			if (!empty($services) && is_array($services)) {
+				if (is_array($host_names)) {
+					foreach ($host_names as $temp_host) {
+						$temp_host = trim($temp_host);
+						if (in_array($temp_host, $services)) {
+							$this->service_host_list[] = $this->db->escape($temp_host);
+						}
+					}
+				} else {
+					if (strtolower($host_names) === 'all') {
+						# return all to fetch all relations
+						# via contact and contactgroups
+						$retval = 'all';
+					} elseif (in_array($host_names, $services)) {
+						$this->service_host_list[] = $this->db->escape($host_names);
+					}
+				}
 			}
 		}
 		$this->host_list = $retval;
 	}
 
 	/**
+	*	Fetch info on what hosts current user
+	* 	has services.
+	*/
+	public function get_host_on_services()
+	{
+		$services = $this->auth->get_authorized_services();
+
+		if (empty($services)) {
+			return false;
+		}
+
+		$service_hosts = array();
+		foreach ($services as $s) {
+			$parts = explode(';', $s);
+			if (!empty($parts)) {
+				if (!in_array($parts[0], $service_hosts)) {
+					$service_hosts[] = $parts[0];
+				}
+			}
+		}
+		return !empty($service_hosts) ? $service_hosts : false;
+	}
+
+	/**
 	 * Fetch status data for a subset of hosts
 	 * (and their related services if show_services is set to true).
-	 * FIXME: rewrite me please!
 	 */
 	public function get_host_status()
 	{
@@ -349,8 +397,9 @@ class Host_Model extends Model {
 		$filter_sql = '';
 		$filter_host_sql = false;
 		$filter_service_sql = false;
-		$h = $this->show_services ? 'auth_host.' : '';
-		$s = !$this->show_services ? '' : 'auth_service.';
+		$where_str = false;
+		$from = 'host, service ';
+
 		if (!empty($this->state_filter)) {
 			$filter_host_sql = " AND 1 << %scurrent_state & ".$this->state_filter." ";
 		}
@@ -358,186 +407,93 @@ class Host_Model extends Model {
 			$filter_service_sql = " AND 1 << %scurrent_state & $this->service_filter ";
 		}
 
-		# host query part
-		$host_query_parts = $this->auth->authorized_host_query();
-		$auth_from_host = '';
-		$auth_where_host = '';
-		if ($host_query_parts !== true) {
-			# build sql query when user isn't authorized_for_all_hosts
-			$auth_from_host = $host_query_parts['from'];
-
-			$auth_host_field_host = $host_query_parts['host_field'];
-
-			$auth_where_host = "WHERE auth_host.id = auth_host_contactgroup.host ".
-				"AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup ".
-				"AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=".
-				$this->db->escape(Auth::instance()->get_user()->username);
-		} else {
-			$auth_service_field_host = 's';
-			$auth_host_field_host = 'h';
-			$auth_from_host = ' host '.$auth_host_field_host;
-			$auth_where_host = 'WHERE 1 ';
-		}
-
 		if (!$this->show_services) {
+			# host query part
+			if (!$this->auth->view_hosts_root) {
+				$from .= ', contact_access AS ca ';
+				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
+			} else {
+				$where = 'WHERE 1 ';
+			}
+
 			if (!empty($filter_host_sql)) {
-				$filter_sql .= sprintf($filter_host_sql, $auth_host_field_host.'.');
+				$filter_sql .= sprintf($filter_host_sql, 'host.');
 			}
 			if (!empty($filter_service_sql)) {
-				$filter_sql .= sprintf($filter_service_sql, '');
+				$filter_sql .= sprintf($filter_service_sql, 'service.');
 			}
-			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $s);
-			$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field_host.'.');
-			$this->sort_field = empty($this->sort_field) ? 'host_name' : $this->sort_field;
+			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
+			$hostprops_sql = $this->build_host_props_query($this->hostprops, 'host.');
 
-			# make sure we have 'WHERE' in sql query if we have
-			# filter or host/service props
-			if (
-				(
-					!empty($filter_sql) ||
-					!empty($hostprops_sql) ||
-					!empty($serviceprops_sql)
-				)
-					&& $auth_where_host == ''
-			) {
-				$auth_where_host = ' WHERE 1 ';
-			}
+			# remove possible table aliases just to be on the safe side here
+			# should never happen but if users copy/paste an URL from a service
+			# listing (changing status/service to status/host) we might run into trouble
+			$this->sort_field = str_replace('s.', '',$this->sort_field);
+			$this->sort_field = str_replace('h.', '',$this->sort_field);
+
+			$this->sort_field = empty($this->sort_field) ? 'host_name' : $this->sort_field;
 
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
 			if ($this->host_list !== 'all' && !empty($host_str)) {
-				$auth_where_host .= empty($auth_where_host) ?  " " : " AND ";
-				$auth_where_host .= $auth_host_field_host.".id IN(".$host_str.") ";
+				$where .= empty($where) ?  "" : " AND ";
+				$where .= "host.id IN(".$host_str.") ";
 			}
 
 			# only host listing
-			$sql = "
-				SELECT
-					".$auth_host_field_host.".id AS host_id,
-					".$auth_host_field_host.".host_name,
-					".$auth_host_field_host.".address,
-					".$auth_host_field_host.".alias,
-					".$auth_host_field_host.".current_state,
-					".$auth_host_field_host.".last_check,
-					".$auth_host_field_host.".next_check,
-					".$auth_host_field_host.".should_be_scheduled,
-					".$auth_host_field_host.".notes_url,
-					".$auth_host_field_host.".notifications_enabled,
-					".$auth_host_field_host.".active_checks_enabled,
-					".$auth_host_field_host.".icon_image,
-					".$auth_host_field_host.".icon_image_alt,
-					".$auth_host_field_host.".is_flapping,
-					".$auth_host_field_host.".action_url,
-					(UNIX_TIMESTAMP() - ".$auth_host_field_host.".last_state_change) AS duration,
-					UNIX_TIMESTAMP() AS cur_time,
-					".$auth_host_field_host.".current_attempt,
-					".$auth_host_field_host.".max_check_attempts,
-					".$auth_host_field_host.".problem_has_been_acknowledged,
-					".$auth_host_field_host.".scheduled_downtime_depth,
-					".$auth_host_field_host.".output,
-					".$auth_host_field_host.".long_output
-				FROM ".$auth_from_host."
-					".$auth_where_host."
-					".$filter_sql.$hostprops_sql.$serviceprops_sql;
+			$sql = "SELECT DISTINCT ".
+					"host.instance_id AS host_instance_id,".
+					"host.id AS host_id,".
+					"host.host_name, ".
+					"host.address, ".
+					"host.alias, ".
+					"host.current_state, ".
+					"host.last_check,".
+					"host.next_check,".
+					"host.should_be_scheduled,".
+					"host.notes_url,".
+					"host.notifications_enabled,".
+					"host.active_checks_enabled,".
+					"host.icon_image,".
+					"host.icon_image_alt,".
+					"host.is_flapping,".
+					"host.action_url,".
+					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration,".
+					"UNIX_TIMESTAMP() AS cur_time,".
+					"host.current_attempt,".
+					"host.max_check_attempts,".
+					"host.problem_has_been_acknowledged,".
+					"host.scheduled_downtime_depth,".
+					"host.output,".
+					"host.long_output ".
+				"FROM ".$from.$where.
+					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			$order = " ORDER BY ".$this->sort_field." ".$this->sort_order;
 
-			# take into account that users might be authenticated
-			# directly through contact - host_contact
-			$from_contact = " host AS auth_host, ".
-			"contact AS auth_contact, ".
-			"host_contact AS auth_host_contact, ".
-			"service AS auth_service ";
-			$where_contact = "	auth_host.id = auth_host_contact.host ".
-			"AND auth_host_contact.contact=auth_contact.id ".
-			"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-			" AND auth_service.host_name = auth_host.host_name";
-
-			$sql2 = "
-				SELECT
-					".$auth_host_field_host.".id AS host_id,
-					".$auth_host_field_host.".host_name,
-					".$auth_host_field_host.".address,
-					".$auth_host_field_host.".alias,
-					".$auth_host_field_host.".current_state,
-					".$auth_host_field_host.".last_check,
-					".$auth_host_field_host.".next_check,
-					".$auth_host_field_host.".should_be_scheduled,
-					".$auth_host_field_host.".notes_url,
-					".$auth_host_field_host.".notifications_enabled,
-					".$auth_host_field_host.".active_checks_enabled,
-					".$auth_host_field_host.".icon_image,
-					".$auth_host_field_host.".icon_image_alt,
-					".$auth_host_field_host.".is_flapping,
-					".$auth_host_field_host.".action_url,
-					(UNIX_TIMESTAMP() - ".$auth_host_field_host.".last_state_change) AS duration,
-					UNIX_TIMESTAMP() AS cur_time,
-					".$auth_host_field_host.".current_attempt,
-					".$auth_host_field_host.".max_check_attempts,
-					".$auth_host_field_host.".problem_has_been_acknowledged,
-					".$auth_host_field_host.".scheduled_downtime_depth,
-					".$auth_host_field_host.".output,
-					".$auth_host_field_host.".long_output
-				FROM ".$from_contact."
-				WHERE
-					".$where_contact."
-					".$filter_sql.$hostprops_sql.$serviceprops_sql;
-
-			if (!$this->auth->view_hosts_root) {
-				$sql = '('.$sql.') UNION ('.$sql2.') ';
-			}
 			$sql .= $order;
 
 		} else {
-			$auth_query_parts = $this->auth->authorized_service_query();
-			$auth_from = '';
-			$auth_where = '';
-			if ($auth_query_parts !== true && !$this->auth->view_hosts_root) {
-				$auth_from = $auth_query_parts['from'];
+			$where = '';
+			if (!$this->auth->view_hosts_root || !$this->auth->view_services_root) {
+				$from .= ', contact_access AS ca ';
 
 				# match authorized services against service.host_name
-				$auth_where = $auth_query_parts['where'].' AND ';
-
-				# what aliases are used for host and service field
-				$auth_service_field = $auth_query_parts['service_field'];
-				$auth_host_field = $auth_query_parts['host_field'];
+				$where = ' WHERE ca.contact='.$this->auth->id.' AND service.host_name=host.host_name'.
+					' AND ca.host IS NULL AND ca.service=service.id ';
 			} else {
-				$auth_service_field = 's';
-				$auth_host_field = 'h';
-				$auth_from = ' host '.$auth_host_field.', service '.$auth_service_field;
-				$auth_where = '';
+				$where = ' WHERE service.host_name=host.host_name ';
 			}
+
 			if (!empty($filter_host_sql)) {
-				$filter_sql .= sprintf($filter_host_sql, $auth_host_field.'.');
+				$filter_sql .= sprintf($filter_host_sql, 'host.');
 			}
 			if (!empty($filter_service_sql)) {
-				$filter_sql .= sprintf($filter_service_sql, $auth_service_field.'.');
+				$filter_sql .= sprintf($filter_service_sql, 'service.');
 			}
 
-			$auth_from_host = '';
-			$auth_where_host = '';
-			if ($host_query_parts !== true) {
-				$auth_from_host = $host_query_parts['from'].', service AS auth_service';
-
-				# what aliases are used for host and service field
-				$auth_service_field_host = 'auth_service';
-				$auth_host_field_host = $host_query_parts['host_field'];
-				# match authorized services against service.host_name
-				if (isset($host_str) && !empty($host_str)) {
-					$auth_where_xtra = $auth_host_field_host.".id IN(".$host_str.") AND ";
-				} else {
-					$auth_where_xtra = '';
-				}
-				$auth_where_host = " WHERE ".$auth_where_xtra.sprintf($host_query_parts['where'], $auth_service_field_host.'.host_name');
-			} else {
-				$auth_service_field_host = 's';
-				$auth_host_field_host = 'h';
-				$auth_from_host = ' host '.$auth_host_field_host.', service '.$auth_service_field_host;
-				$auth_where_host = '';
-			}
-
-			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $auth_service_field.'.');
-			$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field.'.');
+			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
+			$hostprops_sql = $this->build_host_props_query($this->hostprops, 'host.');
 
 			if (empty($this->sort_field)) {
 				$this->sort_field = 'host_name, service_description';
@@ -546,144 +502,134 @@ class Host_Model extends Model {
 				$this->sort_field = str_replace('h.', '',$this->sort_field);
 			}
 
-			# build list of fields to fetch, to be used in several queries
-			# using UNION we must have the same fields or it won't work
-			$field_list = "<HOST_ALIAS>.id AS host_id,".
-					"<HOST_ALIAS>.host_name,".
-					"<HOST_ALIAS>.address,".
-					"<HOST_ALIAS>.alias,".
-					"<HOST_ALIAS>.current_state AS host_state,".
-					"<HOST_ALIAS>.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
-					"<HOST_ALIAS>.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
-					"<HOST_ALIAS>.notifications_enabled AS host_notifications_enabled,".
-					"<HOST_ALIAS>.active_checks_enabled AS host_active_checks_enabled,".
-					"<HOST_ALIAS>.action_url AS host_action_url,".
-					"<HOST_ALIAS>.icon_image AS host_icon_image,".
-					"<HOST_ALIAS>.icon_image_alt AS host_icon_image_alt,".
-					"<HOST_ALIAS>.is_flapping AS host_is_flapping,".
-					"<HOST_ALIAS>.notes_url AS host_nots_url,".
-					"<SERVICE_ALIAS>.id AS service_id,".
-					"<SERVICE_ALIAS>.service_description,".
-					"<SERVICE_ALIAS>.current_state,".
-					"<SERVICE_ALIAS>.last_check,".
-					"<SERVICE_ALIAS>.next_check,".
-					"<SERVICE_ALIAS>.should_be_scheduled,".
-					"<SERVICE_ALIAS>.notifications_enabled,".
-					"<SERVICE_ALIAS>.active_checks_enabled,".
-					"<SERVICE_ALIAS>.action_url,".
-					"<SERVICE_ALIAS>.notes_url,".
-					"<SERVICE_ALIAS>.icon_image,".
-					"<SERVICE_ALIAS>.icon_image_alt,".
-					"<SERVICE_ALIAS>.passive_checks_enabled,".
-					"<SERVICE_ALIAS>.problem_has_been_acknowledged,".
-					"<SERVICE_ALIAS>.scheduled_downtime_depth,".
-					"<SERVICE_ALIAS>.is_flapping as service_is_flapping,".
-					"(UNIX_TIMESTAMP() - <SERVICE_ALIAS>.last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
-					"<SERVICE_ALIAS>.current_attempt,".
-					"<SERVICE_ALIAS>.max_check_attempts,".
-					"<SERVICE_ALIAS>.output,".
-					"<SERVICE_ALIAS>.long_output,".
-					"<SERVICE_ALIAS>.output AS service_output,".
-					"<SERVICE_ALIAS>.long_output AS service_long_output";
-
-			# service query part
-			# replace table aliases for next query
-			$field_list_tmp = preg_replace('/<HOST_ALIAS>/', $auth_host_field, $field_list);
-			$field_list_tmp = preg_replace('/<SERVICE_ALIAS>/', $auth_service_field, $field_list_tmp);
+			# build list of fields to fetch
+			$field_list = "host.id AS host_id,".
+					"host.instance_id AS host_instance_id,".
+					"host.host_name,".
+					"host.address,".
+					"host.alias,".
+					"host.current_state AS host_state,".
+					"host.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
+					"host.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
+					"host.notifications_enabled AS host_notifications_enabled,".
+					"host.active_checks_enabled AS host_active_checks_enabled,".
+					"host.action_url AS host_action_url,".
+					"host.icon_image AS host_icon_image,".
+					"host.icon_image_alt AS host_icon_image_alt,".
+					"host.is_flapping AS host_is_flapping,".
+					"host.notes_url AS host_nots_url,".
+					"service.id AS service_id,".
+					"service.instance_id AS service_instance_id,".
+					"service.service_description,".
+					"service.current_state,".
+					"service.last_check,".
+					"service.next_check,".
+					"service.should_be_scheduled,".
+					"service.notifications_enabled,".
+					"service.active_checks_enabled,".
+					"service.action_url,".
+					"service.notes_url,".
+					"service.icon_image,".
+					"service.icon_image_alt,".
+					"service.passive_checks_enabled,".
+					"service.problem_has_been_acknowledged,".
+					"service.scheduled_downtime_depth,".
+					"service.is_flapping as service_is_flapping,".
+					"(UNIX_TIMESTAMP() - service.last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
+					"service.current_attempt,".
+					"service.max_check_attempts,".
+					"service.output,".
+					"service.long_output,".
+					"service.output AS service_output,".
+					"service.long_output AS service_long_output ";
 
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
 			if ($this->host_list !== 'all' && !empty($host_str)) {
-				$auth_where .= empty($auth_where) ?  "" : " ";
-				$auth_where .= $auth_host_field.".id IN(".$host_str.") AND ";
+				$where .= empty($where) ?  "" : " AND ";
+				$where .= "host.id IN(".$host_str.") ";
 			}
-			$sql = "SELECT ".$field_list_tmp.
-				" FROM ".
-					$auth_from.
-				" WHERE ".
-					$auth_where.
-					$auth_service_field.".host_name = ".$auth_host_field.".host_name ".
+
+			$sql = "SELECT ".$field_list." FROM ".
+					$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
-			# host query part using UNION (only needed if not authorized_for_all_hosts)
-			if (!$this->auth->view_hosts_root) {
-
-				# replace table aliases for next query
-				$field_list_tmp = preg_replace('/<HOST_ALIAS>/', $auth_host_field_host, $field_list);
-				$field_list_tmp = preg_replace('/<SERVICE_ALIAS>/', $auth_service_field_host, $field_list_tmp);
-				$filter_sql = '';
-				if (!empty($filter_host_sql)) {
-					$filter_sql .= sprintf($filter_host_sql, $auth_host_field_host.'.');
+			if (is_array($this->host_list)) {
+				$host_list = false;
+				$hosts = $this->auth->get_authorized_hosts();
+				if (!empty($this->host_list) && is_array($this->host_list)) {
+					foreach ($this->host_list as $host) {
+						if (array_key_exists($host, $hosts)) {
+							$host_list[] = $this->db->escape($hosts[$host]);
+						}
+					}
 				}
-				if (!empty($filter_service_sql)) {
-					$filter_sql .= sprintf($filter_service_sql, $auth_service_field_host.'.');
-				}
-
-				# build new {host,service}props query part for new table aliases
-				$serviceprops_sql = $this->build_service_props_query($this->serviceprops, $auth_service_field_host.'.');
-				$hostprops_sql = $this->build_host_props_query($this->hostprops, $auth_host_field_host.'.');
-
-				$sql2 = "SELECT ".$field_list_tmp.
-					" FROM ".
-						$auth_from_host.
-						$auth_where_host.
-						$filter_sql.$hostprops_sql.$serviceprops_sql;
-
-				if ($this->host_list !== 'all' && !empty($host_str)) {
-					$auth_where = $auth_host_field.".id IN(".$host_str.") AND ";
-				} else {
-					$auth_where = '';
-				}
-				# query hosts and services through contact -> host
-				$sql_contact = "SELECT ".$field_list_tmp.
-					" FROM host AS auth_host, contact AS auth_contact, host_contact AS auth_hostcontact, service AS auth_service ".
-						"WHERE ".$auth_where." auth_host.id=auth_hostcontact.host ".
-						"AND auth_hostcontact.contact=auth_contact.id ".
-						"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-						"AND auth_service.host_name=auth_host.host_name".
-						$filter_sql.$hostprops_sql.$serviceprops_sql;
-
-				# query hosts and services through contact -> service
-				$sql_svc_contact = "SELECT ".$field_list_tmp.
-					" FROM host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ".
-						"WHERE ".$auth_where." auth_service.id=auth_servicecontact.service ".
-						"AND auth_servicecontact.contact=auth_contact.id ".
-						"AND auth_contact.contact_name=".$this->db->escape(Auth::instance()->get_user()->username).
-						"AND auth_service.host_name=auth_host.host_name".
-						$filter_sql.$hostprops_sql.$serviceprops_sql;
-
-				# join service and host queries with UNION()
-				# to fetch all services for an authenticated contact
-				$sql = '('.$sql.') UNION ('.$sql2.') UNION (' . $sql_contact . ') UNION (' . $sql_svc_contact . ') ';
 			}
 
-			# add order query part
-			$sql = $sql." ORDER BY ".$this->sort_field." ".$this->sort_order;
+			if (!empty($host_list) && is_array($host_list)) {
+				$where_str = ' service.host_name IN ('.implode(',', $host_list).')';
+			} elseif (is_array($this->service_host_list)) {
+				$where_str = ' service.host_name IN ('.implode(',', $this->service_host_list).')';
+			}
+
+			if (!empty($where_str)) {
+				$sql .= ' AND '.$where_str;
+			}
+
+			$sql .= " ORDER BY ".$this->sort_field." ".$this->sort_order;
 
 		}
+
 		if ($this->count == false && !empty($this->num_per_page) && $this->offset !== false) {
 			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 		}
 
 		if ($this->count === true && empty($filter_sql) && empty($hostprops_sql)
 			&& empty($serviceprops_sql) && !empty($this->auth->id)) {
+
+			$where_str = false;
+
 			# this is one of the most common queries for this method
 			# so we try to speed up this by making special case.
 			# We are only interested in how many hosts or services there are (for this user)
 			if (!$this->show_services) {
+
+				if (is_array($this->host_list)) {
+					#$hosts = $this->auth->get_authorized_hosts();
+					$host_ids = implode(',', $this->host_list);
+					$where_str = ' id IN('.$host_ids.')';
+				}
 				$sql = "SELECT COUNT(*) AS cnt FROM host";
 				if (!$this->auth->view_hosts_root) {
 					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
 						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
+					if (!empty($where_str)) {
+						$sql .= ' AND '.$where_str;
+					}
+				} else {
+					if (!empty($where_str)) {
+						$sql .= ' WHERE '.$where_str;
+					}
 				}
 			} else {
+				if (!empty($host_list) && is_array($host_list)) {
+					$where_str = ' host_name IN ('.implode(',', $host_list).')';
+				} elseif (is_array($this->service_host_list)) {
+					$where_str = ' host_name IN ('.implode(',', $this->service_host_list).')';
+				}
 				$sql = "SELECT COUNT(*) AS cnt FROM service";
 				if (!$this->auth->view_hosts_root && !$this->auth->view_services_root) {
 					$sql .= " INNER JOIN contact_access ca ON service.id=ca.service ".
 						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NOT NULL";
+					if (!empty($where_str)) {
+						$sql .= ' AND '.$where_str;
+					}
+				} else {
+					if (!empty($where_str)) {
+						$sql .= ' WHERE '.$where_str;
+					}
 				}
 			}
-
 			$result = $this->db->query($sql);
 			return $result ? $result->current()->cnt : 0;
 		}
