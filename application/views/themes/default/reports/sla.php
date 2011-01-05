@@ -26,48 +26,46 @@ foreach($report_data as $i =>  $report) {
 		} ?>
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
-	<?php  if (!empty($report['table_data'])) { ?>
-	<div class="sla_table">
-			<?php $h = 0; foreach ($report['table_data'] as $source => $data) { if ($h == 0) { $h++;?>
-			<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
-			<table class="auto" border="1">
+	<?php  if (!empty($report['table_data'][$report['source']])) {
+		$data = $report['table_data'][$report['source']]; ?>
+		<div class="sla_table">
+		<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
+		<table class="auto" border="1">
 
-				<tr>
-					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
-					<?php
-						$n = 0;
-						foreach ($data as $month => $values) {
-						$n++;
-					?>
-					<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $month ?></th>
-					<?php } ?>
-				</tr>
-				<tr class="even">
-					<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo $t->_('SLA') ?></td><?php
-					$j = 0;
-					foreach ($data as $month => $value) {
-						$j++; ?>
-					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo reports::format_report_value($value[0][1]) ?> %</td>
-					<?php
-					} ?>
-				</tr>
-				<tr class="odd">
-					<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo $t->_('Real') ?></td><?php
-					$y = 0;
-					foreach ($data as $month => $value) {
-						$y++;?>
-					<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
-						<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
-								array(
-								'alt' => '',
-								'title' => $value[0][0] < $value[0][1] ? $t->_('Below SLA') : $t->_('OK'),
-								'style' => 'width: 11px; height: 12px'));
-						?></td>
-					<?php } ?>
-				</tr>
-			</table>
-			<?php }
-			 } ?>
+			<tr>
+				<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
+				<?php
+					$n = 0;
+					foreach ($data as $month => $values) {
+					$n++;
+				?>
+				<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $month ?></th>
+				<?php } ?>
+			</tr>
+			<tr class="even">
+				<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo $t->_('SLA') ?></td><?php
+				$j = 0;
+				foreach ($data as $month => $value) {
+					$j++; ?>
+				<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo reports::format_report_value($value[0][1]) ?> %</td>
+				<?php
+				} ?>
+			</tr>
+			<tr class="odd">
+				<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo $t->_('Real') ?></td><?php
+				$y = 0;
+				foreach ($data as $month => $value) {
+					$y++;?>
+				<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
+					<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
+							array(
+							'alt' => '',
+							'title' => $value[0][0] < $value[0][1] ? $t->_('Below SLA') : $t->_('OK'),
+							'style' => 'width: 11px; height: 12px'));
+					?></td>
+				<?php } ?>
+			</tr>
+		</table>
 	</div>
 	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
 	<div class="setup-table members">
