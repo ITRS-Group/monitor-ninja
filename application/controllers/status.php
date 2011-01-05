@@ -143,6 +143,10 @@ class Status_Controller extends Authenticated_Controller {
 			$host_model->set_host_list($group_members);
 
 		} else {
+			if (strstr($host, ',')) {
+				$host = explode(',', $host);
+			}
+
 			$host_model->set_host_list($host);
 		}
 
@@ -416,6 +420,10 @@ class Status_Controller extends Authenticated_Controller {
 			$host_model->num_per_page = false;
 			$host_model->offset = false;
 			$host_model->count = true;
+
+			if (strstr($name, ',')) {
+				$name = explode(',', $name);
+			}
 
 			$host_model->set_host_list($name);
 			$result_cnt = $host_model->get_host_status();
