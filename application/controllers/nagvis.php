@@ -138,9 +138,26 @@ class Nagvis_Controller extends Authenticated_Controller {
 		if (!$this->can_use_nagvis())
 			return;
 
+		$querystring = '';
+		if (isset($_GET['renderMode']))
+			$querystring .= '&renderMode=' . $_GET['renderMode'];
+		if (isset($_GET['root']))
+			$querystring .= '&root=' . $_GET['root'];
+		if (isset($_GET['maxLayers']))
+			$querystring .= '&maxLayers=' . $_GET['maxLayers'];
+		if (isset($_GET['width']))
+			$querystring .= '&width=' . $_GET['width'];
+		if (isset($_GET['height']))
+			$querystring .= '&height=' . $_GET['height'];
+		if (isset($_GET['ignoreHosts']))
+			$querystring .= '&ignoreHosts=' . $_GET['ignoreHosts'];
+		if (isset($_GET['filterGroup']))
+			$querystring .= '&filterGroup=' . $_GET['filterGroup'];
+
 		$this->template->content = $this->add_view('nagvis/automap');
 		$this->template->content->mark_object_type = $object_type;
 		$this->template->content->mark_object_name = $object_name;
+		$this->template->content->querystring = $querystring;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
