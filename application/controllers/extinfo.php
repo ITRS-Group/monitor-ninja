@@ -37,9 +37,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
-		$type = urldecode($this->input->get('type', $type));
-		$host = urldecode($this->input->get('host', $host));
-		$service = urldecode($this->input->get('service', $service));
+		// If customers have non-utf8 service names, $this->input
+		// will not contain a usefull name. Workaround.
+		$type = getparams::get_raw_param('type', $type);
+		$host = getparams::get_raw_param('host', $host);
+		$service = getparams::get_raw_param('service', $service);
 
 		$this->template->title = 'Monitoring » Extinfo';
 

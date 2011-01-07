@@ -37,7 +37,7 @@ $config['default'] = array
 		'socket'   => FALSE,
 		'database' => 'merlin'
 	),
-	'character_set' => 'utf8',
+	'character_set' => 'latin1',
 	'table_prefix'  => '',
 	'object'        => TRUE,
 	'cache'         => FALSE,
@@ -58,7 +58,7 @@ $config['nacoma'] = array
                 'socket'   => FALSE,
                 'database' => 'nacoma'
         ),
-        'character_set' => 'utf8',
+        'character_set' => 'latin1',
         'table_prefix'  => '',
         'object'        => TRUE,
         'cache'         => FALSE,

@@ -29,7 +29,7 @@ class html_Core {
 		// Do encode existing HTML entities (default)
 		if ($double_encode === TRUE)
 		{
-			$str = htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+			$str = htmlspecialchars($str, ENT_QUOTES, 'ISO-8859-15');
 		}
 		else
 		{
