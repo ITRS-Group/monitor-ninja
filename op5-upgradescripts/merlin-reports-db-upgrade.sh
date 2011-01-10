@@ -163,6 +163,13 @@ then
 	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" merlin 2>/dev/null
 fi
 
+# make sure we have enabled scheduled summary reports
+summary_schedules=$(mysql $db_login_opts -Be "SELECT identifier FROM scheduled_report_types WHERE identifier='summary'" merlin 2>/dev/null | sed -n \$p)
+if [ "$summary_schedules" = "" ]
+then
+	mysql $db_login_opts -Be "INSERT INTO scheduled_report_types (name, identifier) VALUES('Alert Summary Reports', 'summary');" merlin 2>/dev/null
+fi
+
 # check if old tables exists and should be imported
 old_sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM auto_reports_db_version" monitor_gui 2>/dev/null | sed -n \$p)
 
