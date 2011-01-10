@@ -15,8 +15,8 @@ class Config_Controller extends Authenticated_Controller {
 	public $current = false;
 	public $logos_path = '';
 	public $type = 'hosts';
-	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
-	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
+	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_cmds';
+	const HOST_NOTIFICATION_COMMANDS = 'host_notification_cmds';
 
 	public function __construct()
 	{

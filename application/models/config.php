@@ -8,8 +8,8 @@ class Config_Model extends Model {
 	public $num_per_page = false;
 	public $offset = false;
 	public $count = false;
-	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
-	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
+	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_cmds';
+	const HOST_NOTIFICATION_COMMANDS = 'host_notification_cmds';
 
 	/**
 	 Workaround for PDO queries: runs $db->query($sql), copies

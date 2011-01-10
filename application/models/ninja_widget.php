@@ -5,7 +5,7 @@
  */
 class Ninja_widget_Model extends ORM
 {
-	const USERFIELD = 'user';
+	const USERFIELD = 'username';
 
 	/**
 	*	Fetch all available widgets for a page

@@ -4,7 +4,7 @@ class Scheduled_reports_Model extends Model
 {
 	public $db_name = 'merlin';
 	const db_name = 'merlin';
-	const USERFIELD = 'user';
+	const USERFIELD = 'username';
 
 	public function delete_scheduled_report($id=false)
 	{

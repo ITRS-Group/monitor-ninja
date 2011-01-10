@@ -7,7 +7,7 @@
 class Saved_reports_Model extends Model
 {
 	const db_name = 'merlin';
-	const USERFIELD = 'user';
+	const USERFIELD = 'username';
 
 	public function get_saved_reports($type='avail', $user=false)
 	{

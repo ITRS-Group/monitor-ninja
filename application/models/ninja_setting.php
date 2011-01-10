@@ -5,7 +5,7 @@
  */
 class Ninja_setting_Model extends ORM
 {
-	const USERFIELD = 'user';
+	const USERFIELD = 'username';
 	/**
 	 * Save page setting for a user
 	 *

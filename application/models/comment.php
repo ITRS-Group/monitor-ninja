@@ -14,7 +14,7 @@ class Comment_Model extends Model {
 	const FLAPPING_COMMENT = 3;
 	const ACKNOWLEDGEMENT_COMMENT = 4;
 
-	const TABLE_NAME = 'comment';
+	const TABLE_NAME = 'comment_tbl';
 
 	/**
 	*	Fetch saved comments for host or service
