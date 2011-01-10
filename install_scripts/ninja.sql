@@ -82,13 +82,13 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 DROP TABLE IF EXISTS `ninja_settings`;
 CREATE TABLE IF NOT EXISTS `ninja_settings` (
   `id` int(11) NOT NULL auto_increment,
-  `user` varchar(200) NOT NULL,
+  `username` varchar(200) NOT NULL,
   `page` varchar(200) NOT NULL,
   `type` varchar(200) NOT NULL,
   `setting` text NOT NULL,
   `widget_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  KEY `user` (`user`),
+  KEY `username` (`username`),
   KEY `page` (`page`),
   KEY `widget_id` (`widget_id`)
 );
@@ -105,42 +105,42 @@ INSERT INTO `ninja_settings` (`page`, `type`, `setting`)
 DROP TABLE IF EXISTS `ninja_widgets`;
 CREATE TABLE IF NOT EXISTS `ninja_widgets` (
   `id` int(11) NOT NULL auto_increment,
-  `user` varchar(200) NOT NULL,
+  `username` varchar(200) NOT NULL,
   `page` varchar(200) NOT NULL,
   `name` varchar(255) NOT NULL,
   `friendly_name` varchar(255) NOT NULL,
   `setting` text NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `user` (`user`)
+  KEY `username` (`username`)
 );
 
 --
 -- Data for table `ninja_widgets`
 --
 
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(2, '', 'tac/index', 'netw_health', 'Network health', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(3, '', 'tac/index', 'tac_scheduled', 'Scheduled downtime', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(4, '', 'tac/index', 'tac_acknowledged', 'Acknowledged problems', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(5, '', 'tac/index', 'tac_disabled', 'Disabled checks', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(6, '', 'tac/index', 'netw_outages', 'Network outages', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(7, '', 'tac/index', 'tac_hosts', 'Hosts', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(8, '', 'tac/index', 'tac_services', 'Services', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(9, '', 'tac/index', 'tac_monfeat', 'Monitoring features', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(10, '', 'status', 'status_totals', 'Status Totals', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(11, '', 'tac/index', 'monitoring_performance', 'Monitoring Performance', '');
-INSERT INTO `ninja_widgets` (`id`, `user`, `page`, `name`, `friendly_name`, `setting`) VALUES \
+INSERT INTO `ninja_widgets` (`id`, `username`, `page`, `name`, `friendly_name`, `setting`) VALUES \
 	(12, '', 'tac/index', 'geomap', 'Geomap', '');
 
 --
