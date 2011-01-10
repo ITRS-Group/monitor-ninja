@@ -40,10 +40,10 @@
 		$prev_group = $data['groupname'];
 
 		if ($j != 1) { ?>
-	</table>
+	<!--</table>
 
 </div>
-<div class="state_services">
+<div class="state_services">-->
 	<?php } ?>
 		<table summary="<?php echo $t->_('State breakdown for host services') ?>" class="multiple_services" style="margin-top: 15px" border="1" <?php echo ($create_pdf) ? 'cellpadding="5"' : ''; ?>>
 			<tr>
@@ -79,6 +79,8 @@
 				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } elseif ($sg_no == 0) { ?>
 				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+			<?php } else { ?>
+				<td colspan="6">&nbsp;</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
