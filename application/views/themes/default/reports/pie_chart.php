@@ -7,7 +7,7 @@ if (isset($data_str)) {
 		<div class="pie-chart">
 			<table>
 				<tr><th class="headerNone left"><?php echo help::render('piechart').' '.$label_status ?> <?php echo ($data_str[$i]['host'] != '') ? ': '.$data_str[$i]['host'] : ''; ?></th></tr>
-				<tr class="even"><td><img src="<?echo url::site() ?>reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" /></td></tr>
+				<tr class="even"><td><img src="<?php echo url::site() ?>reports/piechart/<?php echo $data_str[$i]['img'] ?>" alt="<?php echo $this->translate->_('Uptime');?>" id="pie" /></td></tr>
 			</table>
 		</div>
 		<?php

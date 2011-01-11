@@ -52,8 +52,8 @@
 		</tr>
 		<tr class="even">
 			<th class="headerNone left" style="border-top: 0px"><?php echo $label_all ?></th>
-			<td class="data"><? echo time::to_string($avail_data['tot_time']) ?></td>
-			<td class="data"><? echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>
+			<td class="data"><?php echo time::to_string($avail_data['tot_time']) ?></td>
+			<td class="data"><?php echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>
 		</tr>
 	</table>
 </div>

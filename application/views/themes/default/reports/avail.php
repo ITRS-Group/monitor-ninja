@@ -75,8 +75,8 @@
 		<tr class="even total">
 			<th <?php echo ($create_pdf) ? 'style=" font-weight: bold;width: 110px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left" style="border-top: 0px"'; ?>><?php echo $label_all ?></th>
 			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $label_total ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><? echo time::to_string($avail_data['tot_time']) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><? echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo time::to_string($avail_data['tot_time']) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>
 		</tr>
 		<?php if (!$create_pdf) { ?>
 		<tr id="pdf-hide">

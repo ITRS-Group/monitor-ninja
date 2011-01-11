@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die("No direct access allowed");
 if (!$create_pdf) {
 ?>
-	<span id="view_add_schedule"<? if (!$report_id) {?> style="display: none;"<?php } ?> style="position: absolute; right: 1%; top: 11px">
+	<span id="view_add_schedule"<?php if (!$report_id) {?> style="display: none;"<?php } ?> style="position: absolute; right: 1%; top: 11px">
 		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $this->translate->_('Add').' '. strtolower($label_new_schedule), 'title' => $this->translate->_('Add').' '. strtolower($label_new_schedule))); ?></a>
 		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 	</span>
