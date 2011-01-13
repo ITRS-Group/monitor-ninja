@@ -118,9 +118,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			'index.php/nagvis/index">NagVis</a> » ' .
 			$this->translate->_('Automap');
 
-		if (!$this->can_use_nagvis())
-			return;
-
 		$querystring = '';
 		if (isset($_GET['renderMode']))
 			$querystring .= '&renderMode=' . $_GET['renderMode'];
