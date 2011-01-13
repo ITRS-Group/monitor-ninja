@@ -48,7 +48,7 @@
 			<tr class="odd">
 				<td><?php echo $label_check_latency ?></td>
 				<td><?php echo $min_service_latency ?> <?php echo $label_sec ?></td>
-				<td><?php echo $min_service_latency ?> <?php echo $label_sec ?></td>
+				<td><?php echo $max_service_latency ?> <?php echo $label_sec ?></td>
 				<td><?php echo $average_service_latency ?> <?php echo $label_sec ?></td>
 			</tr>
 			<tr class="even">
