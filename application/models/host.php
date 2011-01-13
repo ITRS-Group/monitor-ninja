@@ -398,7 +398,7 @@ class Host_Model extends Model {
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		$where_str = false;
-		$from = 'host, service ';
+		$from = 'host ';
 
 		if (!empty($this->state_filter)) {
 			$filter_host_sql = " AND 1 << %scurrent_state & ".$this->state_filter." ";
@@ -474,6 +474,7 @@ class Host_Model extends Model {
 			$sql .= $order;
 
 		} else {
+			$from .= ', service';
 			$where = '';
 			if (!$this->auth->view_hosts_root || !$this->auth->view_services_root) {
 				$from .= ', contact_access AS ca ';
