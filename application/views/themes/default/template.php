@@ -41,6 +41,7 @@ if (isset($this->template->js_header))
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 		<![endif]-->
 		<?php
+			$use_contextmenu = false;
 			echo (!empty($css_header)) ? $css_header : '';
 			echo html::script('application/media/js/jquery.min.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
@@ -55,6 +56,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			if (Router::$controller == 'status') {
+				$use_contextmenu = true;
 				# only required for status controller so no need to always include it
 				echo html::script('application/media/js/jquery.contextMenu.js');
 			}
@@ -99,6 +101,7 @@ if (isset($this->template->js_header))
 				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo $this->translate->_('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo $this->translate->_('Page refresh has been restored.') ?>';
+				var _use_contextmenu=<?php echo $use_contextmenu === true ? 1 : 0; ?>;
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
 					var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';

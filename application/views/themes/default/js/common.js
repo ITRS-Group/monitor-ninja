@@ -25,19 +25,21 @@ $(document).ready(function() {
 		}
 	}
 
-	$(".obj_properties").contextMenu({
-			menu: 'property_menu', use_prop:true
-		},
-		function(action, elem){
-			object_action(action, elem.attr('id'));
-	});
+	if (_use_contextmenu) {
+		$(".obj_properties").contextMenu({
+				menu: 'property_menu', use_prop:true
+			},
+			function(action, elem){
+				object_action(action, elem.attr('id'));
+		});
 
-	$(".svc_obj_properties").contextMenu({
-			menu: 'svc_property_menu', use_prop:true
-		},
-		function(action, elem){
-			object_action(action, elem.attr('id'));
-	});
+		$(".svc_obj_properties").contextMenu({
+				menu: 'svc_property_menu', use_prop:true
+			},
+			function(action, elem){
+				object_action(action, elem.attr('id'));
+		});
+	}
 
 	/**
 	*	Bind some functionality to the checkbox state change event
