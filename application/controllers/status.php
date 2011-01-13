@@ -206,12 +206,12 @@ class Status_Controller extends Authenticated_Controller {
 					 $label_host_status_grid => Router::$controller.'/hostgroup_grid/all'
 				);
 			} else {
-				$label_host_history = $this->translate->_('History');
+				$label_host_history = $this->translate->_('Alert history');
 				$label_host_notifications = $this->translate->_('Notifications');
 				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_history => 'showlog/showlog/'.$host,
+					 $label_host_history => 'showlog/alert_history/'.$host,
 					 $label_host_notifications => 'notifications/host/'.$host,
 					 $label_host_status_details => Router::$controller.'/service/all'
 				);
@@ -476,22 +476,22 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->style = 'detail';
 		if (empty($group_type)) {
 			if ($name == 'all') {
-				$label_host_history = $this->translate->_('History');
+				$label_host_history = $this->translate->_('Alert history');
 				$label_host_notifications = $this->translate->_('Notifications');
 				$label_host_status_details = $this->translate->_('Host status detail');
 				$label_view_for = $this->translate->_('for all hosts');
 				$page_links = array(
-					 $label_host_history => 'showlog/showlog/',
+					 $label_host_history => 'showlog/alert_history/',
 					 $label_host_notifications => 'notifications/host/'.$name,
 					 $label_host_status_details => Router::$controller.'/host/all'
 				);
 			} else {
-				$label_host_history = $this->translate->_('History');
+				$label_host_history = $this->translate->_('Alert history');
 				$label_host_notifications = $this->translate->_('Notifications');
 				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_history => 'showlog/showlog/'.$name,
+					 $label_host_history => 'showlog/alert_history/'.$name,
 					 $label_host_notifications => 'notifications/host/'.$name,
 					 $label_host_status_details => Router::$controller.'/service/all',
 				);
