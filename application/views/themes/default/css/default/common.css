@@ -783,9 +783,9 @@ table.extinfo tr td.status.icon img {
 	margin-left: 1%;
 	width: 32%;
 	float: left;
-	min-height: 200px;
+	min-height: 5px;
 	height: auto !important;
-	height: 200px;
+	height: 5px;
 }
 .widget-place.w98{
 	width: 98%;
