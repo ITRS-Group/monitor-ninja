@@ -422,6 +422,13 @@ class Host_Model extends Model {
 			if (!empty($filter_service_sql)) {
 				$filter_sql .= sprintf($filter_service_sql, 'service.');
 			}
+
+			# this should never happen but added just to be on the safe side
+			if ($this->serviceprops !== false) {
+				$from .= ', service ';
+				$where .= ' AND service.host_name=host.host_name ';
+			}
+
 			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
 			$hostprops_sql = $this->build_host_props_query($this->hostprops, 'host.');
 
