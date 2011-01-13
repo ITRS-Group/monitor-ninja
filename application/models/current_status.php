@@ -174,38 +174,50 @@ class Current_status_Model extends Model
 			$this->percent_service_health = 0.0;
 		else
 			# weird calculation to match accuracy by Nagios
-			$this->percent_service_health = number_format((floor(($this->total_service_health/$this->potential_service_health)*1000)/10), 1);
+			$this->percent_service_health = $this->potential_service_health!=0
+				? number_format((floor(($this->total_service_health/$this->potential_service_health)*1000)/10), 1)
+				: 0;
 
 			# $host_status = number_format(($up/$total)*100, 1);
 		/* calculate host health */
 		if ($this->potential_host_health == 0)
 			$this->percent_host_health = 0.0;
 		else
-			$this->percent_host_health = number_format(($this->total_host_health/$this->potential_host_health)*100, 1);
+			$this->percent_host_health = $this->potential_host_health!=0
+				? number_format(($this->total_host_health/$this->potential_host_health)*100, 1)
+				: 0;
 
 		/* calculate service latency */
 		if ($this->total_service_latency == 0)
 			$this->average_service_latency = 0.0;
 		else
-			$this->average_service_latency = number_format($this->total_service_latency /$this->total_active_service_checks, 1);
+			$this->average_service_latency = $this->total_active_service_checks!=0
+				? number_format($this->total_service_latency /$this->total_active_service_checks, 1)
+				: 0;
 
 		/* calculate host latency */
 		if ($this->total_host_latency == 0)
 			$this->average_host_latency = 0.0;
 		else
-			$this->average_host_latency = number_format($this->total_host_latency/$this->total_active_host_checks, 1);
+			$this->average_host_latency = $this->total_active_host_checks!=0
+				? number_format($this->total_host_latency/$this->total_active_host_checks, 1)
+				: 0;
 
 		/* calculate service execution time */
 		if ($this->total_service_execution_time == 0.0)
 			$this->average_service_execution_time = 0.0;
 		else
-			$this->average_service_execution_time = number_format($this->total_service_execution_time/$this->total_active_service_checks, 1);
+			$this->average_service_execution_time = $this->total_active_service_checks!=0
+				? number_format($this->total_service_execution_time/$this->total_active_service_checks, 1)
+				: 0;
 
 		/* calculate host execution time */
 		if ($this->total_host_execution_time == 0.0)
 			$this->average_host_execution_time = 0.0;
 		else
-			$this->average_host_execution_time = number_format($this->total_host_execution_time/$this->total_active_host_checks, 1);
+			$this->average_host_execution_time = $this->total_active_host_checks!=0
+			? number_format($this->total_host_execution_time/$this->total_active_host_checks, 1)
+			: 0;
 
 		return true;
 	}
