@@ -19,6 +19,9 @@ class Status_Controller extends Authenticated_Controller {
 	public $servicestatustypes = false;
 	public $hostprops = false;
 	public $serviceprops = false;
+	public $cmd_ok = false;
+	public $cmd_host_ok = false;
+	public $cmd_svc_ok = false;
 
 	public function __construct()
 	{
@@ -30,6 +33,23 @@ class Status_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$this->logos_path = Kohana::config('config.logos_path');
+
+		# decide what kind of commands
+		# that the current user is authorized for
+		$contact = Contact_Model::get_contact();
+		if (!empty($contact)) {
+			$contact = $contact->current();
+			$this->cmd_ok = $contact->can_submit_commands;
+		}
+		unset($contact);
+
+		$auth = new Nagios_auth_Model();
+		$this->cmd_host_ok = $auth->command_hosts_root;
+		$this->cmd_svc_ok = $auth->command_services_root;
+		unset($auth);
+
+		# add context menu items (hidden in html body)
+		$this->template->context_menu = $this->add_view('status/context_menu');
 	}
 
 	/**

@@ -25,6 +25,20 @@ $(document).ready(function() {
 		}
 	}
 
+	$(".obj_properties").contextMenu({
+			menu: 'property_menu', use_prop:true
+		},
+		function(action, elem){
+			object_action(action, elem.attr('id'));
+	});
+
+	$(".svc_obj_properties").contextMenu({
+			menu: 'svc_property_menu', use_prop:true
+		},
+		function(action, elem){
+			object_action(action, elem.attr('id'));
+	});
+
 	/**
 	*	Bind some functionality to the checkbox state change event
 	*	This involves setting the correct value for the noheader GET parameter
@@ -478,6 +492,60 @@ $(document).ready(function() {
 
 });
 
+function object_action(action,the_id)
+{
+	var parts = the_id.split('|');
+	var type = false;
+	var name = false;
+	var service = false;
+	switch(parts.length) {
+		case 0: case 1: return false;
+			break;
+		case 2: // host or groups
+			name = parts[1];
+			break;
+		case 3: // service
+			name = parts[1];
+			service = parts[2];
+			break;
+		case 4: // service
+			name = parts[1];
+			service = parts[3];
+			break;
+	}
+
+	type = parts[0];
+
+	var cmd = false;
+	switch(action) {
+		case 'schedule_host_downtime':
+		case 'acknowledge_host_problem':
+		case 'acknowledge_svc_problem':
+		case 'disable_host_svc_notifications':
+		case 'disable_host_check':
+		case 'disable_svc_check':
+		case 'enable_host_check':
+		case 'enable_svc_check':
+		case 'schedule_host_check':
+			cmd = action.toUpperCase();
+			break;
+		case 'remove_acknowledgement':
+			cmd = type == 'host' ? 'REMOVE_HOST_ACKNOWLEDGEMENT' : 'REMOVE_SVC_ACKNOWLEDGEMENT';
+			break;
+		case 'disable_notifications':
+			cmd = type == 'host' ? 'DISABLE_HOST_NOTIFICATIONS' : 'DISABLE_SVC_NOTIFICATIONS';
+			break;
+		case 'enable_notifications':
+			cmd = type == 'host' ? 'ENABLE_HOST_NOTIFICATIONS' : 'ENABLE_SVC_NOTIFICATIONS';
+			break;
+	}
+
+	var target = _site_domain + _index_page + '/command/submit?cmd_typ=' + cmd + '&host_name=' + name;
+	if (service != false) {
+		target += '&service=' + service;
+	}
+	self.location.href = target;
+}
 
 /**
 *	Handle multi select of different actions

@@ -408,10 +408,10 @@
 /* Generic context menu styles */
 .contextMenu {
 	position: absolute;
-	width: 120px;
+	width: 250px;
 	z-index: 99999;
 	border: solid 1px #CCC;
-	background: #EEE;
+	background: #FFF;
 	padding: 0px;
 	margin: 0px;
 	display: none;
@@ -460,10 +460,12 @@
 	You can add icons to the context menu by adding
 	classes to the respective LI element(s)
 */
-
-.contextMenu LI.edit A { background-image: url(default/images/page_white_edit.png); }
-.contextMenu LI.cut A { background-image: url(default/images/cut.png); }
-.contextMenu LI.copy A { background-image: url(default/images/page_white_copy.png); }
-.contextMenu LI.paste A { background-image: url(default/images/page_white_paste.png); }
-.contextMenu LI.delete A { background-image: url(default/images/page_white_delete.png); }
-.contextMenu LI.quit A { background-image: url(default/images/door.png); }
+.contextMenu LI.schedule_downtime A { background-image: url(../../icons/16x16/scheduled-downtime.png); }
+.contextMenu LI.acknowledge_problem A { background-image: url(../../icons/16x16/acknowledged.png); }
+.contextMenu LI.remove_acknowledgement A { background-image: url(../../icons/16x16/acknowledged.png); }
+.contextMenu LI.disable_notifications A { background-image: url(../../icons/16x16/notify-disabled.png); }
+.contextMenu LI.enable_notifications A { background-image: url(../../icons/16x16/notify-send.png); }
+.contextMenu LI.disable_host_svc_notifications A { background-image: url(../../icons/16x16/notify-disabled.png); }
+.contextMenu LI.disable_check A { background-image: url(../../icons/16x16/disabled.png); }
+.contextMenu LI.enable_check A { background-image: url(../../icons/16x16/enabled.png); }
+.contextMenu LI.schedule_check A { background-image: url(../../icons/16x16/re-schedule.png); }

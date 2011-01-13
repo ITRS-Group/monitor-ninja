@@ -32,7 +32,10 @@ if (isset($this->template->js_header))
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'common.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'status.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'print.css') ?>" media="print" />
-		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
+		<?php if (Router::$controller == 'status') { ?>
+		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/jquery-ui-custom.css') ?>" />
+		<?php }
+			echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css') ?>" />
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
@@ -51,6 +54,10 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
+			if (Router::$controller == 'status') {
+				# only required for status controller so no need to always include it
+				echo html::script('application/media/js/jquery.contextMenu.js');
+			}
 			echo html::script($this->add_path('js/collapse_menu.js'));
 			echo html::script($this->add_path('js/global_search.js'));
 			echo html::script($this->add_path('js/pagination.js'));
@@ -123,6 +130,7 @@ if (isset($this->template->js_header))
 	</head>
 
 	<body>
+	<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
 			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
 		</div>

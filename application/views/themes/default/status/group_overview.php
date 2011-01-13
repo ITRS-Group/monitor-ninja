@@ -76,7 +76,7 @@
 					$host_icon = html::image('application/media/images/logos/'.$group->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $group->icon_image_alt, 'title' => $group->icon_image_alt));
 				} ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
-				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($group->current_state, 'host')); ?>"><em><?php echo Current_status_Model::status_text($group->current_state, 'host');?></em></td>
+				<td class="icon bl <?php if ($this->cmd_ok && $this->cmd_host_ok) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($group->current_state, 'host')); ?>" id="<?php echo 'host|'.$group->host_name ?>"><em><?php echo Current_status_Model::status_text($group->current_state, 'host');?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $group->host_name); ?></td>
 				<td style="width: 180px"><?php echo html::anchor('status/service/'.urlencode($group->host_name).'?hoststatustypes='.$this->hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($group->host_name), array('title' => $group->address)) ?></td>
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>

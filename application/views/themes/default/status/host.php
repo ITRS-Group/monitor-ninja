@@ -75,7 +75,7 @@ foreach ($result as $row) {
 	$a++;
 		?>
 			<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-				<td class="icon bl <?php echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?>"><em><?php echo Current_status_Model::status_text($row->current_state); ?></em></td>
+				<td class="icon bl <?php if ($this->cmd_ok && $this->cmd_host_ok) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->current_state, Router::$method)); ?>" id="<?php echo 'host|'.$row->host_name ?>"><em><?php echo Current_status_Model::status_text($row->current_state); ?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name); ?></td>
 				<td>
 					<div style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name), array('title' => $row->address)); ?></div>
@@ -109,7 +109,7 @@ foreach ($result as $row) {
 						if ($row->current_state == Current_status_Model::HOST_DOWN || $row->current_state == Current_status_Model::HOST_UNREACHABLE) {
 							$properties += 16;
 						}
-					?><span class="obj_prop" style="display:none"><?php echo $properties ?></span>
+					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $properties ?></span>
 					</div>
 				</td>
 				<td class="icon">

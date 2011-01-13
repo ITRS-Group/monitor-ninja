@@ -67,7 +67,9 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 <?php
 	$curr_host = false;
 	$a = 0;
-$c=0;
+	$c=0;
+	$auth = new Nagios_auth_Model();
+	$auth_hosts = $auth->get_authorized_hosts();
 	if (!empty($result)) {
 		foreach ($result as $row) {
 		$a++;
@@ -75,35 +77,47 @@ $c=0;
 			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?>><em><?php echo Current_status_Model::status_text($row->host_state); ?></em></td>
+		<td class="icon <?php if ($this->cmd_ok && $this->cmd_host_ok && array_key_exists($row->host_name, $auth->hosts_r)) { ?>obj_properties <?php } ?> <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?> id="<?php echo 'host|'.$row->host_name ?>"><em><?php echo Current_status_Model::status_text($row->host_state); ?></em></td>
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/host/'.$row->host_name, html::specialchars($row->host_name), array('title' => $row->address)) ?></span>
 				<span style="float: right">
 					<?php
-						if ($row->hostproblem_is_acknowledged)
+						$host_props = 0;
+						if ($row->hostproblem_is_acknowledged) {
 							echo html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px')).'&nbsp; ';
-						if (empty($row->host_notifications_enabled))
+							$host_props++;
+						}
+						if (empty($row->host_notifications_enabled)) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification disabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
-						if (!$row->host_active_checks_enabled && !$show_passive_as_active)
+							$host_props += 2;
+						}
+						if (!$row->host_active_checks_enabled && !$show_passive_as_active) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
+							$host_props += 4;
+						}
 						if (isset($row->host_is_flapping) && $row->host_is_flapping)
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
-						if ($row->hostscheduled_downtime_depth > 0)
+						if ($row->hostscheduled_downtime_depth > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
+							$host_props += 8;
+						}
 						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name.'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
 								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
 								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment')).'&nbsp; ';
 						}
-					?>
+						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
+							$host_props += 16;
+						}
+					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
 				</span>
 		</td>
 		<?php } else { $c = 0;?>
 			<td class="service_hostname white" style="white-space: normal; border-right: 1px solid #dcdcdc;">&nbsp;</td>
 		<?php } ?>
-		<td class="icon <?php echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>"><em><?php echo Current_status_Model::status_text($row->current_state, 'service'); ?></em></td>
+		<td class="icon <?php if ($this->cmd_ok && $this->cmd_svc_ok) { ?>svc_obj_properties <?php } echo strtolower(Current_status_Model::status_text($row->current_state, 'service')); ?>" id="<?php echo 'service|'.$row->host_name.'|'.(str_replace(' ', '_', $row->service_description).'|'.$row->service_description) ?>"><em><?php echo Current_status_Model::status_text($row->current_state, 'service'); ?></em></td>
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $row->host_name.';'.$row->service_description); ?></td>
 		<td style="white-space: normal">
 			<span style="float: left">
@@ -142,7 +156,7 @@ $c=0;
 					$properties += 16;
 				}
 			?>
-			</span><span class="obj_prop_service" style="display:none"><?php echo $properties ?></span>
+			</span><span class="obj_prop_service _<?php echo $row->host_name.'__'.(str_replace(' ', '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td>
 			<?php
