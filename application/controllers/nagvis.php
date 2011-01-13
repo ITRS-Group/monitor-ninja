@@ -21,9 +21,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis';
 		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » NagVis';
-		if (!$this->can_use_nagvis())
-			return;
-
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
 		$this->template->content->pools = $pools->get_list();
@@ -48,10 +45,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('View') . ' » ' . $map;
-
-		if (!$this->can_use_nagvis())
-			return;
-
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
 
@@ -75,10 +68,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Edit') . ' » ' . $map;
-
-		if (!$this->can_use_nagvis())
-			return;
-
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
 		$this->template->disable_refresh = true;
@@ -94,9 +83,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function create()
 	{
-		if (!$this->can_use_nagvis())
-			return;
-
 		$_SESSION['nagvis_user'] = user::session('username');
 
 		$map = isset($_POST['name']) ? $_POST['name'] : 'new_map';
@@ -112,9 +98,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 	public function delete($map)
 	{
-		if (!$this->can_use_nagvis())
-			return;
-
 		$_SESSION['nagvis_user'] = user::session('username');
 
 		$maps = new Nagvis_Maps_Model;
@@ -178,10 +161,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Geomap');
-
-		if (!$this->can_use_nagvis())
-			return false;
-
 		$this->template->content = $this->add_view('nagvis/geomap');
 		$this->template->content->mark_object_type = $object_type;
 		$this->template->content->mark_object_name = $object_name;
@@ -204,10 +183,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Rotate') . ' » ' . $pool;
-
-		if (!$this->can_use_nagvis())
-			return;
-
 		$this->template->content = $this->add_view('nagvis/rotate');
 		$this->template->content->pool = $pool;
 		$this->template->content->first_map = $first_map;
@@ -232,10 +207,6 @@ class Nagvis_Controller extends Authenticated_Controller {
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
 			. $this->translate->_('Configure');
-
-		if (!$this->can_use_nagvis())
-			return;
-
 		$this->template->content = $this->add_view('nagvis/configure');
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -245,26 +216,5 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
 		$this->template->js_header->js = $this->xtra_js;
-	}
-
-	/**
-	 * When a user isn't a contact, (s)he isn't allowed to use anything in
-	 * nagvis. As ninja extracts data from nagvis behind its back, this helps
-	 * us be consistent.
-	 */
-	private function can_use_nagvis()
-	{
-		$res = true;
-		$auth = new Nagios_auth_Model();
-		if (!$auth->id)
-			$res = false;
-
-		if (!$res) {
-			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
-			$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to access nagvis');
-		}
-
-		return $res;
 	}
 }
