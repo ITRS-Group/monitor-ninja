@@ -45,19 +45,19 @@
 			<tr>
 				<td class="dark"><?php echo html::image($this->add_path('icons/20x20/share.png'),'')?></td>
 				<td>
-					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $label_active_host_svc_check.':') ?><br />
-					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_host_checks) ?>
+					<?php echo html::anchor('status/service/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $label_active_host_svc_check.':') ?><br />
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::HOST_ACTIVE_CHECK, $total_active_host_checks) ?>
 					/
-					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_service_checks) ?>
+					<?php echo html::anchor('status/service/?serviceprops='.nagstat::SERVICE_ACTIVE_CHECK, $total_active_service_checks) ?>
 				</td>
 			</tr>
 			<tr>
 				<td class="dark"><?php echo html::image($this->add_path('icons/20x20/share2.png'),'')?></td>
 				<td>
-					<?php echo html::anchor('status/host/?serviceprops='.nagstat::SERVICE_PASSIVE_CHECK, $label_passive_host_svc_check.':') ?><br />
-					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_host_checks) ?>
+					<?php echo html::anchor('status/service/?serviceprops='.nagstat::SERVICE_PASSIVE_CHECK, $label_passive_host_svc_check.':') ?><br />
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::HOST_PASSIVE_CHECK, $total_passive_host_checks) ?>
 					/
-					<?php echo html::anchor('status/host/?hostprops='.nagstat::SERVICE_PASSIVE_CHECK, $total_passive_service_checks) ?>
+					<?php echo html::anchor('status/host/?hostprops='.nagstat::HOST_PASSIVE_CHECK, $total_passive_service_checks) ?>
 				</td>
 			</tr>
 		</table>
