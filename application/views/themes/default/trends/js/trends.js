@@ -70,7 +70,9 @@ $(document).ready(function() {
 	$('.fancybox').click(function() {
 		// set initial states
 		set_initial_state('assumeinitialstates', assumeinitialstates);
-		set_initial_state('assumestatesduringnotrunning', assumestatesduringnotrunning);
+		if (typeof assumestatesduringnotrunning != 'undefined') {
+			set_initial_state('assumestatesduringnotrunning', assumestatesduringnotrunning);
+		}
 		show_state_options(assumeinitialstates=='1' ? true:false);
 	});
 
