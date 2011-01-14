@@ -139,11 +139,11 @@ class Config_Model extends Model {
 			# parents, contacts + contactgroups need to fetched separatly so we do this here
 		    if ($type === 'hosts' && $count == false) {
 				$parent_child = $db->query("select host.host_name, host2.host_name as parent from host left join host_parents on host.id=host_parents.host " .
-										   "left join host as host2 on host2.id=host_parents.parents".$offset_limit);
+										   "left join host as host2 on host2.id=host_parents.parents ORDER BY host.host_name ".$offset_limit);
 				$contactgroups = $db->query("select host.host_name,contactgroup.contactgroup_name  from host left join host_contactgroup on host.id = host_contactgroup.host " .
-											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id".$offset_limit);
+											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id ORDER BY host.host_name ".$offset_limit);
 				$contacts = $db->query("select host.host_name,contact.contact_name from host left join host_contact on host.id = host_contact.host " .
-									   "left join contact on host_contact.contact = contact.id".$offset_limit);
+									   "left join contact on host_contact.contact = contact.id ORDER BY host.host_name ".$offset_limit);
 				foreach($parent_child as $row){
 					if (isset($parent_array[$row->host_name] )){
 						$parent_array[$row->host_name] = $parent_array[$row->host_name] . "," . $row->parent;
@@ -182,10 +182,10 @@ class Config_Model extends Model {
 		    if ($type === 'services' && $count == false) {
 				$s_contactgroups = $db->query("select service.host_name, service.service_description, contactgroup.contactgroup_name " .
 											  "from service left join service_contactgroup on service.id = service_contactgroup.service " .
-											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id".$offset_limit);
+											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id ORDER BY service.host_name, service.service_description ".$offset_limit);
 				$s_contacts = $db->query("select service.host_name, service.service_description, contact.contact_name " .
 										 "from service left join service_contact on service.id = service_contact.service " .
-										 "left join contact on service_contact.contact = contact.id".$offset_limit);
+										 "left join contact on service_contact.contact = contact.id ORDER BY service.host_name, service.service_description ".$offset_limit);
 				foreach($s_contactgroups as $row){
 					if(isset($s_contactgroups_array[$row->host_name][$row->service_description])) {
 						$s_contactgroups_array[$row->host_name][$row->service_description] = $s_contactgroups_array[$row->host_name][$row->service_description] . "," . $row->contactgroup_name;
