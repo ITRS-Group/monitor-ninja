@@ -355,6 +355,7 @@ input.textbox {
 #notification_checks {
 	padding: 10px 0px 4px 10px;
 	font-weight: bold;
+	float: left;
 }
 #notification_checks ul li {
 	padding-left: 20px;
@@ -362,7 +363,7 @@ input.textbox {
 	background: url(/ninja/application/views/themes/default/icons/16x16/shield-warning.png) no-repeat 0px 0px;
 }
 #icons {
-	position: absolute;
+	float: right;
 	right: 0px;
 	top: 0px;
 	z-index: 9999;
