@@ -69,4 +69,3 @@ foreach ($object_data as $obj => $data) {
 ?>
 <div style="clear:both"></div>
 <?php echo (isset($avail_template) && !empty($avail_template)) ? $avail_template : ''; ?>
-.
