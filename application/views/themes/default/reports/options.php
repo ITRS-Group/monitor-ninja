@@ -64,19 +64,13 @@ if ($type == 'avail') { ?>
 				<tr class="none">
 					<td>
 						<input type="checkbox" value="1" class="checkbox" id="count" name="scheduleddowntimeasuptime" onchange="toggle_label_weight(this.checked, 'sched_downt')" />
-						<label for="count" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label>
+						<label for="count" id="sched_downt" onclick="toggle_state('count');"><?php echo $label_scheduleddowntimeasuptime ?></label>
 					</td>
 				</tr>
 				<tr class="none">
 					<td>
 						<input type="checkbox" value="1" class="checkbox" id="assume" name="assumeinitialstates" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
-						<label for="assume" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
-					</td>
-				</tr>
-				<tr class="none">
-					<td>
-						<input type="checkbox" value="1" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'cluster_mode');" />
-						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
+						<label for="assume" id="assume_initial" onclick="toggle_state('assume');"><?php echo $label_assumeinitialstates ?></label>
 					</td>
 				</tr>
 				<tr id="state_options" class="none">
@@ -92,9 +86,15 @@ if ($type == 'avail') { ?>
 				</tr>
 				<tr class="none">
 					<td>
+						<input type="checkbox" value="1" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="toggle_label_weight(this.checked, 'cluster_mode');" />
+						<label for="cluster_mode" id="cluster_mode_label" onclick="toggle_state('cluster_mode');"><?php echo $label_cluster_mode ?></label>
+					</td>
+				</tr>
+				<tr class="none">
+					<td>
 						<div class="save-report">
 							<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
-							<label for="save_report_settings" id="save_report_label"><?php echo $label_save_report ?></label>
+							<label for="save_report_settings" id="save_report_label" onclick="toggle_state('save_report_settings');"><?php echo $label_save_report ?></label>
 						</div>
 						<div id="report_setup">
 							<span id="report_save_information">

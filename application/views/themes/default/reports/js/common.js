@@ -655,10 +655,16 @@ function edit_state_options(val)
 }
 
 function toggle_field_visibility(val, theId) {
+	var fancy_str = '';
+
+	if ($('#fancy_content').is(':visible')) {
+		fancy_str = '#fancy_content ';
+	}
+
 	if (val) {
-		$('#' + theId).show();
+		$(fancy_str + '#' + theId).show();
 	} else {
-		$('#' + theId).hide();
+		$(fancy_str + '#' + theId).hide();
 	}
 }
 
@@ -834,7 +840,7 @@ function check_form_values()
 		var report_name 	= $("input[name=report_name]").attr('value');
 		report_name = $.trim(report_name);
 		var saved_report_id = $("input[name=saved_report_id]").attr('value');
-		var do_save_report 	= $('input[name=save_report_settings]').attr('checked') ? 1 : 0;
+		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').attr('checked') ? 1 : 0;
 
 		/*
 		*	Only perform checks if:
@@ -864,6 +870,7 @@ function check_form_values()
 				// trying to save a report without a name
 				errors++;
 				err_str += "<li>" + _reports_name_empty + "</li>";
+				jgrowl_message(_reports_name_empty, _error_header);
 			}
 		}
 	}

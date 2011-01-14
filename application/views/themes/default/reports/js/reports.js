@@ -226,13 +226,19 @@ function validate_report_form(f)
 	var errors = 0;
 	var err_str = '';
 	var jgrowl_err_str = '';
+
+	var fancy_str = '';
+	if ($('#fancy_content').is(':visible')) {
+		fancy_str = '#fancy_content ';
+	}
+
 	// only run this part if report should be saved
-	if ($("#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
+	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
 		var report_name = $.trim($('input[name=report_name]').attr('value'));
 		if (report_name == '') {
 			// fancybox is stupid and copies the form so we have to force
 			// this script to check the form in the fancybox_content div
-			report_name = $('#fancy_content #report_name').attr('value');
+			report_name = $(fancy_str + '#report_name').attr('value');
 		}
 
 		// these 2 fields should be the same no matter where on the
@@ -734,19 +740,23 @@ function edit_state_options(val)
 		return;
 
 	if (val) {
-		$('#state_options').show();
+		$('#fancy_content #state_options').show();
 	} else {
-		$('#state_options').hide();
+		$('#fancy_content #state_options').hide();
 	}
 }
 
 function toggle_field_visibility(val, theId) {
+	var fancy_str = '';
+
+	if ($('#fancy_content').is(':visible')) {
+		fancy_str = '#fancy_content ';
+	}
+
 	if (val) {
-		$('#' + theId).show();
-		$('#fancy_content #' + theId).show();
+		$(fancy_str + '#' + theId).show();
 	} else {
-		$('#' + theId).hide();
-		$('#fancy_content #' + theId).hide();
+		$(fancy_str + '#' + theId).hide();
 	}
 }
 
@@ -1138,4 +1148,19 @@ function get_sla_values() {
 			}
 		}
 	});
+}
+
+function toggle_state(the_id)
+{
+	var fancy_str = '';
+
+	if ($('#fancy_content').is(':visible')) {
+		fancy_str = '#fancy_content ';
+	}
+
+	if ($(fancy_str + '#' + the_id).attr('checked') ) {
+		$(fancy_str + '#' + the_id).attr('checked', false);
+	} else {
+		$(fancy_str + '#' + the_id).attr('checked', true);
+	}
 }
