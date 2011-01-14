@@ -1975,6 +1975,10 @@ class Reports_Controller extends Authenticated_Controller
 								list($host, $service) = explode(';',$service[0]);
 
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
+								if (isset($template->content)) {
+									$template->content->host = $host;
+									$template->content->service = $service;
+								}
 								$avail_params = "&show_log_entries".
 											 "&amp;t1=$t1".
 											 "&amp;t2=$t2".
