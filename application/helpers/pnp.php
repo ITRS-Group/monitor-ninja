@@ -17,8 +17,7 @@ class pnp_Core
 		if (!self::is_enabled()) {
 			return false;
 		}
-		$host = trim($host);
-		$service = trim($service);
+		$host = self::clean($host);
 		$rrdbase = self::pnp_config('rrdbase');
 		if (empty($rrdbase)) {
 			# config missing or some other error
@@ -38,7 +37,7 @@ class pnp_Core
 			# replace some strings in service name
 			# like PNP does
 			$service = urldecode($service);
-			$service = preg_replace('/[ :\/\\\\]/', "_", $service);
+			$service = self::clean($service);
 		}
 
 		$path = $rrdbase . $host . '/' . $service . '.rrd';
@@ -85,6 +84,7 @@ class pnp_Core
 	 */
 	public static function clean($string)
 	{
+		$string = trim($string);
 		return preg_replace('/[ :\/\\\]/', "_", $string);
 	}
 
