@@ -544,6 +544,11 @@ function object_action(action,the_id)
 			break;
 	}
 
+	// return if we couldn't figure out what command to run
+	if (cmd == false) {
+		return false;
+	}
+
 	var target = _site_domain + _index_page + '/command/submit?cmd_typ=' + cmd + '&host_name=' + name;
 	if (service != false) {
 		target += '&service=' + service;
