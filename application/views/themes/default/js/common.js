@@ -521,6 +521,7 @@ function object_action(action,the_id)
 	var cmd = false;
 	switch(action) {
 		case 'schedule_host_downtime':
+		case 'schedule_svc_downtime':
 		case 'acknowledge_host_problem':
 		case 'acknowledge_svc_problem':
 		case 'disable_host_svc_notifications':
@@ -529,6 +530,7 @@ function object_action(action,the_id)
 		case 'enable_host_check':
 		case 'enable_svc_check':
 		case 'schedule_host_check':
+		case 'schedule_svc_check':
 			cmd = action.toUpperCase();
 			break;
 		case 'remove_acknowledgement':
