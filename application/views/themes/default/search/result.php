@@ -194,7 +194,7 @@ if (isset($service_result) ) {
 					echo '</a> &nbsp;';
 				}
 				if (!empty($service->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).' style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).'" style="border: 0px">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
 					echo '</a> &nbsp;';
 				}
