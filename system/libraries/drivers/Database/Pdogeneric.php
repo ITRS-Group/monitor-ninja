@@ -500,7 +500,8 @@ class Pdogeneric_Result extends Database_Result {
             }
             elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql))
             {
-                $this->insert_id  = $link->lastInsertId();
+                # completely broken, but I don't care
+                $this->insert_id  = 0;
             }
         }
         else
