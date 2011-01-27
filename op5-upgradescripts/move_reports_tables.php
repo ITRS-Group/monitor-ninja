@@ -244,7 +244,7 @@ foreach ($old_reports->tables_to_convert as $table) {
 			$merlin = new ninja_report_import();
 			$merlin->prefix = $prefix;
 			echo "Moving data for $table\n";
-			$merlin->sql_exec_query("TRUNCATE $table");
+			$merlin->sql_exec_query("TRUNCATE TABLE $table");
 			foreach ($sql as $query) {
 				$merlin->sql_exec_query($query);
 			}

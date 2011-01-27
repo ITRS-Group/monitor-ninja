@@ -179,7 +179,7 @@ function compare_and_truncate()
 			if ($cnt_new >= $cnt_old) {
 				# at least the same nr of schedules exists
 				# go ahead and empty the old table
-				$sql = "TRUNCATE ".$gui_db_opt['database'].".auto_reports_scheduled";
+				$sql = "TRUNCATE TABLE ".$gui_db_opt['database'].".auto_reports_scheduled";
 				sql_exec_query($sql);
 				return true;
 			}
