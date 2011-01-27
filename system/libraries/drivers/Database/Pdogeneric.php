@@ -1,4 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once( dirname(__FILE__)."/merlin_get_kohana_db_field_metadata.php" );
+
 /*
  * Class: Database_Pdogeneric_Driver
  *  Provides PDO-based access to MySQL and SQLite3 databases. It is
@@ -354,6 +357,14 @@ class Database_Pdogeneric_Driver extends Database_Driver {
         if( !empty($columns[$table] ) ) {
             return $columns[$table];
         }
+
+	// UGLY FUGLY HACK: return pre-generated field data. We only need this for Oracle,
+	// but since we generate this data from MySQL, we can use it for the MySQL
+	// back-end as well (and save ourselves a few queries to find the information
+	// server-side).
+	$columns = merlin_get_kohana_db_field_metadata();
+	return $columns[$table];
+
         if( $this->isMysql() )
         {
             $sql = 'SHOW COLUMNS FROM '.$this->escape_table($table);
