@@ -60,6 +60,14 @@ class htpasswd_importer
                 .'host='.$this->db_host
                 .';dbname='.$this->db_name;
             $this->db = PDOProvider::db($key);
+
+	private function db_quote($str)
+	{
+		$qstr = $this->db->quote($str);
+		if ($qstr) {
+			return $qstr;
+		}
+		return "'" . str_replace("'", "''", $str) . "'";
 	}
 
 	# fetch a single row to associative array
@@ -113,21 +121,21 @@ class htpasswd_importer
 				}
 
 				$query = "UPDATE $this->db_table SET " .
-					"password_algo = " . $this->db->quote($algo) . ", " .
-					"password = " . $this->db->quote($hash) . " " .
-					"WHERE username = " . $this->db->quote($user);
+					"password_algo = " . $this->db_quote($algo) . ", " .
+					"password = " . $this->db_quote($hash) . " " .
+					"WHERE username = " . $this->db_quote($user);
 			} else {
 				$query = 'INSERT INTO ' . $this->db_table .
 					'(username, password_algo, password) VALUES(' .
-					$this->db->quote($user) . ", " .
-					$this->db->quote($algo) . ", " .
-					$this->db->quote($hash) . ")";
+					$this->db_quote($user) . ", " .
+					$this->db_quote($algo) . ", " .
+					$this->db_quote($hash) . ")";
 					$is_new = true; # mark this as new user
 			}
 
 			$result = $this->sql_exec_query($query);
 			if ($result !== false) {
-				$user_res = $this->sql_exec_query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db->quote($user));
+				$user_res = $this->sql_exec_query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db_quote($user));
 				if ($user_res != false) {
 					foreach( $result as $ary ) { $this->add_user_role($ary['id']);}
 				}
@@ -142,7 +150,7 @@ class htpasswd_importer
 				# delete this user as it is no longer available in
 				# the received list of users
 				$this->sql_exec_query("DELETE FROM ".$this->db_table.
-					" WHERE username=".$this->db->quote($old));
+					" WHERE username=".$this->db_quote($old));
 			}
 		}
 	}
