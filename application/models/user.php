@@ -312,7 +312,7 @@ class User_Model extends Auth_User_Model {
 				$user_id = $user_data->id;
 
 				# add login role for user
-				$sql = "INSERT INTO user_roles(user_id, role_id) VALUES(".(int)$user_id.", 1)";
+				$sql = "INSERT INTO roles_users(user_id, role_id) VALUES(".(int)$user_id.", 1)";
 				unset($res);
 				$db->query($sql);
 				return true;
