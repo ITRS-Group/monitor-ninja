@@ -277,7 +277,6 @@ if (PHP_SAPI === 'cli' && !isset($no_auto_import)) {
 		} else {
 			pw_import_usage("Option $arg requires an argument");
 		}
-		exit(0);
 
 		$pwi_arg = str_replace("-", "_", substr($arg, 2));
 		if (!$pwi->set_option($pwi_arg, $opt)) {
