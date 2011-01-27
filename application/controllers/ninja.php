@@ -204,8 +204,8 @@ class Ninja_Controller extends Template_Controller {
 	{
 		$data = Program_status_Model::notifications_checks();
 		$notifications = false;
+		$data = $data ? $data->current() : false;
 		if ($data !== false) {
-			$data = $data->current();
 			$this->notifications_disabled = !$data->notifications_enabled;
 			if ($this->notifications_disabled == true) {
 				$notifications[] = array($this->translate->_('Notifications are disabled'), false);
