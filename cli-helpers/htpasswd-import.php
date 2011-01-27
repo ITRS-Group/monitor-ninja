@@ -64,6 +64,7 @@ class htpasswd_importer
                 .'host='.$this->db_host
                 .';dbname='.$this->db_name;
             $this->db = PDOProvider::db($key);
+	}
 
 	private function db_quote($str)
 	{
