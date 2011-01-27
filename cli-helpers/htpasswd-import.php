@@ -127,8 +127,12 @@ class htpasswd_importer
 
 			$result = $this->sql_exec_query($query);
 			if ($result !== false) {
-				$this->add_user_role($this->db->lastInsertId());
-                                unset($result);
+				$user_res = $this->sql_exec_query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db->quote($user));
+				if ($user_res != false) {
+					foreach( $result as $ary ) { $this->add_user_role($ary['id']);}
+				}
+				unset($result);
+				unset($user_res);
 			}
 		}
 
