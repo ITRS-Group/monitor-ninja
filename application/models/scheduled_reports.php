@@ -261,11 +261,9 @@ class Scheduled_reports_Model extends Model
 			' AND period_id='.(int)$period_id.' AND recipients='.$db->escape($recipients).
 			' AND filename='.$db->escape($filename).' AND description='.$db->escape($description);
 		$res = $db->query($sql);
-		if ($res !== false) {
-			# @@@FIXME: workaround for broken db->current() in PDO
-			foreach ($res as $row) {
-				$id = $row->id;
-			}
+		if (count($res)>0) {
+			$cur = $res->current();
+			$id = $cur->id;
 		}
 		unset($res);
 		return $id;

@@ -140,11 +140,9 @@ class Saved_reports_Model extends Model
 			$db->escape(Auth::instance()->get_user()->username).' AND '.
 			$name_field.'='.$db->escape($name);
 		$res = $db->query($sql);
-		if ($res !== false) {
-			# @@@FIXME: workaround for broken db->current() in PDO
-			foreach ($res as $row) {
-				$id = $row->id;
-			}
+		if (count($res)>0) {
+			$cur = $res->current();
+			$id = $cur->id;
 		}
 		unset($res);
 		return $id;
