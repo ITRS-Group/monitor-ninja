@@ -3,7 +3,7 @@
 /**
  *	Handle page data - saving and fetching
  */
-class Ninja_widget_Model extends ORM
+class Ninja_widget_Model extends Model
 {
 	const USERFIELD = 'username';
 
@@ -15,28 +15,27 @@ class Ninja_widget_Model extends ORM
 	{
 		if (empty($page) && $all !== true)
 			return false;
-		$widgets = ORM::factory('ninja_widget');
 		$user = Auth::instance()->get_user()->username;
+		$db = new Database();
+		$sql = "SELECT * FROM ninja_widgets ";
 		if ($all===true) {
-			$result = $widgets->where(array('page' => $page, self::USERFIELD => ''))
-				->orderby('friendly_name', 'ASC')
-				->find_all();
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."='' ".
+				"ORDER BY friendly_name";
 		} else {
-			$result = $widgets->where(array('page' => $page, self::USERFIELD => $user))
-				->orderby('friendly_name', 'ASC')
-				->find_all();
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user).
+				"ORDER BY friendly_name";
 		}
-                if( empty($result) ) return false;
-                else
-                {
-                    $rc = array();
-                    foreach( $result as $row )
-                    {
-                        $rc[] = $row;
-                    }
-                    unset($result);
-                    return $rc;
-                }
+		$result = $db->query($sql);
+        if (count($result) == 0) {
+		return false;
+        } else {
+            $rc = array();
+            foreach ( $result as $row ) {
+                $rc[] = $row;
+            }
+            unset($result);
+            return $rc;
+        }
 	}
 
 	/**
@@ -47,17 +46,22 @@ class Ninja_widget_Model extends ORM
 	{
 		if (empty($page) || empty($widget))
 			return false;
-		$handle = ORM::factory('ninja_widget');
+		$db = new Database();
+		$sql = "SELECT * FROM ninja_widgets ";
 		if ($get_user === true) {
 			# fetch customized widget for user
 			# i.e a user has saved settings
 			$user = Auth::instance()->get_user()->username;
-			$result = $handle->where(array('page' => $page, self::USERFIELD => $user, 'name' => $widget))->find();
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".
+				$db->escape($user)." AND name=".$db->escape($widget);
 		} else {
 			# fetch default widget settings
-			$result = $handle->where(array('page' => $page, self::USERFIELD => '', 'name' => $widget))->find();
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=''".
+				" AND name=".$db->escape($widget);
 		}
-		return $result->loaded ? $result : false;
+		$result = $db->query($sql);
+
+		return count($result)!=0 ? $result->current() : false;
 	}
 
 	/**
@@ -69,15 +73,20 @@ class Ninja_widget_Model extends ORM
 			return false;
 		$page = trim($page);
 		$user = Auth::instance()->get_user()->username;
-		$setting = ORM::factory('ninja_widget');
-		$check = $setting->where(array(self::USERFIELD => $user, 'page' => $page))->find_all();
-		if (!count($check)) {
+		$db = new Database();
+		$sql_base = "SELECT * FROM ninja_widgets ";
+		$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user);
+		$res = $db->query($sql);
+		if (!count($res)) {
+			unset($res);
 			# copy all under users' name
-			$result = $setting->where(array(self::USERFIELD => '', 'page' => $page))->find_all();
-			foreach ($result as $row) {
+			$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=''";
+			$res = $db->query($sql);
+			foreach ($res as $row) {
 				# copy widget setting to user
 				self::copy_to_user($row);
 			}
+			unset($res);
 		}
 	}
 
@@ -92,13 +101,11 @@ class Ninja_widget_Model extends ORM
 			return false;
 		}
 		$user = Auth::instance()->get_user()->username;
-		$add = ORM::factory('ninja_widget');
-		$add->{self::USERFIELD} = $user;
-		$add->page = $old_widget->page;
-		$add->name = $old_widget->name;
-		$add->friendly_name = $old_widget->friendly_name;
-		$add->setting = $old_widget->setting;
-		$add->save();
+		$db = new Database();
+		$sql = "INSERT INTO ninja_widgets (".self::USERFIELD.", page, name, friendly_name, setting) ".
+			"VALUES(".$db->escape($user).", ".$db->escape($old_widget->page).", ".$db->escape($old_widget->name).
+			",".$db->escape($old_widget->friendly_name).", ".$db->escape($old_widget->setting).")";
+		$db->query($sql);
 	}
 
 	/**
@@ -128,45 +135,37 @@ class Ninja_widget_Model extends ORM
 
 		# all widgets for current page should exist under users name
 
+		$db = new Database();
+		$sql_base = "SELECT * FROM ninja_widgets ";
+		$sql = $sql_base." WHERE name=".$db->escape($widget).
+			" AND ".self::USERFIELD."=".$db->escape($user).
+			" AND page=".$db->escape($page);
+
+		$res = $db->query($sql);
+		$setting = array();
+		if (count($res)!=0) {
+			$cur = $res->current();
+			$setting = $cur->setting;
+			$id = $cur->id;
+			unset($res);
+			unset($cur);
+		}
+
 		switch ($method) {
 			case 'hide': case 'close':
-				# mark current widget as hidden for user and page
-				$fetch = ORM::factory('ninja_widget')
-					->where(
-						array
-						(
-							'name' => $widget,
-							self::USERFIELD => $user,
-							'page' => $page
-						)
-					)->find();
-				if ($fetch->loaded) {
-					$setting = ORM::factory('ninja_widget', $fetch->id);
-					$setting->setting = self::merge_settings($fetch->setting, array('status' => 'hide'));
-					$setting->save();
-				}
+				$setting = self::merge_settings($setting, array('status' => 'hide'));
 				break;
 			case 'show': case 'add':
-				# user added a widget to current page
-				# merge settings with previous settings
-				$fetch_clean = ORM::factory('ninja_widget')
-					->where(
-						array
-						(
-							'name' => $widget,
-							self::USERFIELD => $user,
-							'page' => $page
-						)
-					)->find();
-				if ($fetch_clean->loaded) {
-					$add = ORM::factory('ninja_widget', $fetch_clean->id);
-					$new_setting = self::merge_settings($fetch_clean->setting, array('status' => 'show'));
-					$add->setting = $new_setting;
-					$add->save();
-				}
-
+				$setting = self::merge_settings($setting, array('status' => 'show'));
 				break;
 		}
+		if (!empty($setting)) {
+			$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
+				"id=".(int)$id;
+			$db->query($sql);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -206,18 +205,17 @@ class Ninja_widget_Model extends ORM
 		# fetch current setting for widget and merge settings with new
 		# merge/replace new settings with the old
 		$current_widget = self::get_widget($page, $widget, true);
-		$current_settings = false;
 		if ($current_widget !== false) {
-			$user = Auth::instance()->get_user()->username;
-			$new_state = ORM::factory('ninja_widget', $current_widget->id);
-			$new_state->setting = self::merge_settings($current_widget->setting, $data);
-			$new_state->save();
-			return $new_state->saved;
+			$db = new Database();
+			$setting = self::merge_settings($current_widget->setting, $data);
+			$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
+				"id=".(int)$current_widget->id;
+			$db->query($sql);
 		} else {
 			self::copy_to_user(self::get_widget($page, $widget));
 			self::save_widget_setting($page, $widget, $data);
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -313,12 +311,11 @@ class Ninja_widget_Model extends ORM
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
-				$edit = ORM::factory('ninja_widget', $widget->id);
-				$edit->setting = self::merge_settings($widget->setting, $new_setting);
-				$edit->save();
-				if ($edit->saved == false) {
-					return false;
-				}
+				$db = new Database();
+				$setting = self::merge_settings($widget->setting, $new_setting);
+				$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
+					"id=".(int)$widget->id;
+				$db->query($sql);
 			}
 			return true;
 		}
