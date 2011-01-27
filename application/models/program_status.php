@@ -33,7 +33,8 @@ class Program_status_Model extends Model
 		$db = new Database();
 		$sql = "SELECT last_alive FROM program_status";
 		$res = $db->query($sql);
-		return (!$res || count($res) == 0) ? false : $res->current()->last_alive;
+		$cur = ($res && count($res)) ? $res->current() : false;
+		return $cur ? $cur->last_alive : false;
 	}
 
 	/**
