@@ -4,11 +4,8 @@
  * This model takes care of the ninja authorization data
  * Insert/update/fetch
  */
-class Ninja_user_authorization_Model extends ORM
+class Ninja_user_authorization_Model extends Model
 {
-	protected $table_names_plural = false;
-	protected $primary_key = 'id';
-	protected $has_many = array('users');
 	public static $auth_fields = array(
 				'system_information',
 				'configuration_information',
@@ -32,23 +29,28 @@ class Ninja_user_authorization_Model extends ORM
 		$user_id = (int)$user_id;
 
 		# check if we already have any data
-		$auth = ORM::factory('ninja_user_authorization')->where('user_id', $user_id)->find();
-		if ($auth->loaded) {
+		$db = new Database();
+		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".(int)$user_id;
+		$res = $db->query($sql);
+
+		if (count($res)!=0) {
 			# user exists, update authorization data
+			$sql = "UPDATE ninja_user_authorization SET ";
+			$updates = false;
 			foreach	($options as $field => $value) {
-				$auth->{$field} = $value;
+				$updates[] = $field.'='.$value;
 			}
+			$sql .= implode(',', $updates);
 		} else {
 			# create new record
-			$auth->user_id = $user_id;
-			foreach	($options as $field => $value) {
-				$auth->{$field} = $value;
-			}
+			$sql = "INSERT INTO ninja_user_authorization(".implode(',', array_keys($options)).", user_id) ".
+				"VALUES(".implode(',', array_values($options)).", ".$user_id.")";
 		}
 
+		unset($res);
 		# done, save it
-		$auth->save();
-		return $auth->saved;
+		$db->query($sql);
+		return true;
 	}
 
 	/**
@@ -65,8 +67,8 @@ class Ninja_user_authorization_Model extends ORM
 			# fetch user_id
 			if (empty($username))
 				return false;
-			$user = ORM::factory('user')->where('username', $username)->find();
-			if ($user->loaded) {
+			$user = User_Model::get_user($username);
+			if ($user != false) {
 				$user_id = $user->id;
 			} else
 				return false;
@@ -74,14 +76,18 @@ class Ninja_user_authorization_Model extends ORM
 		$auth_data = false;
 
 		# fetch auth data for the user_id
-		$auth = ORM::factory('ninja_user_authorization')->where('user_id', $user_id)->find();
-		if ($auth->loaded) {
+		$db = new Database();
+		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".(int)$user_id;
+		$res = $db->query($sql);
+		if (count($res)!=0) {
 			$auth_fields = self::$auth_fields;
+			$auth = $res->current();
 			foreach ($auth_fields as $field) {
 				if ($auth->{$field}) {
 					$auth_data['authorized_for_'.$field] = $auth->{$field};
 				}
 			}
+			unset($res);
 			return $auth_data;
 		}
 		return false;
