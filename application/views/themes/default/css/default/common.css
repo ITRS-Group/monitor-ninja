@@ -238,7 +238,7 @@ input.textbox {
 #infobar-sml {
 	cursor: pointer;
 	position: fixed;
-	width: 100%;
+	width: 60%;
 	float: left;
 	background: #ffff00 url(images/licensebarbg.png);
 	z-index: 99999;
