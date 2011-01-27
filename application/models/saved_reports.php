@@ -82,13 +82,8 @@ class Saved_reports_Model extends Model
 		if (!empty($id))
 			$update = true;
 		else {
-			$sql = "SELECT id FROM ".$type."_config WHERE ".$name_field." = ".$db->escape($options[$name_field]);
-			$res = $db->query($sql);
-			if(count($res)) {
-				$row = $res->current();
-				$id = $row->id;
-				$update = true;
-			}
+			$id = self::insert_id($type, $options[$name_field], $name_field);
+			$update = $id !== false ? true : false;
 		}
 		if (!$update) {
 			if ($type == 'summary') {
@@ -113,8 +108,9 @@ class Saved_reports_Model extends Model
 		#echo $sql;
 		$res = $db->query($sql);
 
+		unset($res);
 		// continue with objects
-		if (!$update) $id = (int)$res->insert_id();
+		if (!$update) $id = (int)self::insert_id($type, $options[$name_field], $name_field);
 
 		// insert/update <type>_config_objects
 		if ($type!= 'summary' && !self::save_config_objects($type, $id, $objects)) {
@@ -126,6 +122,31 @@ class Saved_reports_Model extends Model
 			return false;
 		}
 
+		return $id;
+	}
+
+	/**
+	*	Fetch the ID of a saved report
+	*/
+	public function insert_id($type='avail', $name=false, $name_field='report_name')
+	{
+		$name = trim($name);
+		if (empty($name)) {
+			return false;
+		}
+		$id = false;
+		$db = new Database();
+		$sql = 'SELECT id FROM '.$type.'_config WHERE '.self::USERFIELD.'='.
+			$db->escape(Auth::instance()->get_user()->username).' AND '.
+			$name_field.'='.$db->escape($name);
+		$res = $db->query($sql);
+		if ($res !== false) {
+			# @@@FIXME: workaround for broken db->current() in PDO
+			foreach ($res as $row) {
+				$id = $row->id;
+			}
+		}
+		unset($res);
 		return $id;
 	}
 
