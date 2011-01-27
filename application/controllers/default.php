@@ -198,8 +198,7 @@ class Default_Controller extends Ninja_Controller  {
 			die('Error!');
 		}
 
-		$user_data = ORM::factory('user')->where('username', $_SESSION['username'])->find();
-		User_Model::complete_login($user_data);
+		User_Model::complete_login();
 	}
 
 	/**
