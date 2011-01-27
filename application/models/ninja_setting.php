@@ -3,7 +3,7 @@
 /**
  *	Handle page data - saving and fetching
  */
-class Ninja_setting_Model extends ORM
+class Ninja_setting_Model extends Model
 {
 	const USERFIELD = 'username';
 	/**
@@ -19,28 +19,28 @@ class Ninja_setting_Model extends ORM
 		$type = trim($type);
 		$page = trim($page);
 		$value = trim($value);
-		if (empty($type))
+		$user = Auth::instance()->get_user()->username;
+		if (empty($type) || empty($user))
 			return false;
 
-		$setting = ORM::factory('ninja_setting');
-		$user = Auth::instance()->get_user()->username;
+		$db = new Database();
+
+		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$db->escape($user).
+			" AND page=".$db->escape($page)." AND type=".$db->escape($type);
 
 		# does this setting exist? (i.e should we do insert or update)
-		# by just trying to load setting for current user, page and type
-		# we will get an object that will be updated or inserted when calling
-		# save() below
-		$setting->where(array(self::USERFIELD => $user, 'page' => $page, 'type' => $type))->find();
-
-		if (empty($user))
-			return false; # saving global widget settings not allowed by this return
-
-		$setting->{self::USERFIELD} = $user;
-		if (!empty($page))
-			$setting->page = $page;
-
-		$setting->type = $type;
-		$setting->setting = $value;
-		$setting->save();
+		$res = $db->query($sql);
+		if (count($res)!=0) {
+			$sql = "UPDATE ninja_settings SET setting=".$db->escape($value).
+				" WHERE ".self::USERFIELD."=".$db->escape($user)." AND type=".
+				$db->escape($type)." AND page=".$db->escape($page);
+		} else {
+			$sql = "INSERT INTO ninja_settings(page, type, setting, ".self::USERFIELD.") ".
+				"VALUES(".$db->escape($page).", ".$db->escape($type).", ".$db->escape($value).
+				", ".$db->escape($user).")";
+		}
+		unset($res);
+		$db->query($sql);
 		return true;
 	}
 
@@ -58,19 +58,28 @@ class Ninja_setting_Model extends ORM
 		if (empty($type))
 			return false;
 
-		$setting = ORM::factory('ninja_setting');
+		$db = new Database();
+		$res = false;
+		$sql_base = "SELECT * FROM ninja_settings";
 		$user = Auth::instance()->get_user()->username;
 		if ($default === true) {
 			# We have a request for default value
-			$setting->where(array(self::USERFIELD => '', 'page' => $page, 'type' => $type))->find();
+			$sql = $sql_base." WHERE ".self::USERFIELD."='' AND page=".$db->escape($page)." AND type=".
+				$db->escape($type);
 		} else {
 			# first, try user setting
-			$setting->where(array(self::USERFIELD => $user, 'page' => $page, 'type' => $type))->find();
-			if (!$setting->loaded) {
+			$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
+				" AND type=".$db->escape($type);
+
+			$res = $db->query($sql);
+			if (count($res)==0) {
 				# try default if nothing found
-				$setting->where(array(self::USERFIELD => '', 'page' => $page, 'type' => $type))->find();
+				$sql = $sql_base." WHERE ".self::USERFIELD."='' AND page=".$db->escape($page)." AND type=".
+					$db->escape($type);
+				$res = false;
 			}
 		}
-		return $setting->loaded ? $setting : false;
+		$result = ($res!== false && count($res)) ? $res : $db->query($sql);
+		return count($result) !=0 ? $result->current() : false;
 	}
 }
