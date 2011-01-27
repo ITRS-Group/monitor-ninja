@@ -41,10 +41,14 @@ class htpasswd_importer
 		$query = 'SELECT username, password_algo, password ' .
 			'FROM ' . $this->db_table;
 		$result = $this->sql_exec_query($query);
-                foreach( $result as $ary )
-                {
-                    $this->existing_ary[$ary['username']] = array
-                        ('hash' => $ary['password'], 'algo' => $ary['password_algo']);
+
+		while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+			$ary = array();
+			foreach ($row as $k => $v) {
+				$ary[strtolower($k)] = $v;
+			}
+			$this->existing_ary[$ary['username']] = array
+				('hash' => $ary['password'], 'algo' => $ary['password_algo']);
 		}
 	}
 
@@ -137,7 +141,8 @@ class htpasswd_importer
 			if ($result !== false) {
 				$user_res = $this->sql_exec_query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db_quote($user));
 				if ($user_res != false) {
-					foreach( $result as $ary ) { $this->add_user_role($ary['id']);}
+					$ary = $user_res->fetch(PDO::FETCH_BOTH);
+					$this->add_user_role($ary[0]);
 				}
 				unset($result);
 				unset($user_res);
