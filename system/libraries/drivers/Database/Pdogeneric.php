@@ -79,7 +79,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
         $this->dsn = $dsn;
         try
         {
-            $attr = array(PDO::ATTR_CASE => PDO::CASE_NATURAL,
+            $attr = array(PDO::ATTR_CASE => PDO::CASE_LOWER,
                           PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
             if( $this->isSqlite() )
             {
@@ -95,6 +95,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
                 */
             }
             $this->link = new PDO($this->dsn, $user, $pass,$attr);
+            $this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
             if( $this->isSqlite() )
             {
                 $this->link->query('PRAGMA count_changes=1;');
@@ -444,6 +445,26 @@ class Pdogeneric_Result extends Database_Result {
     // Data fetching types
     protected $fetch_type  = PDO::FETCH_OBJ;
     protected $return_type = PDO::FETCH_ASSOC;
+    protected $latest_row = null;
+
+    public function current()
+    {
+        return $this->latest_row;
+    }
+
+    public function next()
+    {
+        $this->latest_row = $this->result->fetch(PDO::FETCH_OBJ);
+        $this->current_row++;
+        return $this;
+    }
+
+    public function valid()
+    {
+        if ($this->current_row >= $this->total_rows)
+            return false;
+        return true;
+    }
 
     /**
      * Sets up the result variables.
@@ -475,6 +496,7 @@ class Pdogeneric_Result extends Database_Result {
                 $this->total_rows = $this->pdo_row_count();
 
                 $this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
+                $this->latest_row = $this->result->fetch($this->fetch_type);
             }
             elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql))
             {
