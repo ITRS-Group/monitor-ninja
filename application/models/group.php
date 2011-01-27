@@ -170,7 +170,7 @@ class Group_Model extends Model
 
 		$sort_string = "";
 		if (empty($sort_field)) {
-			$sort_string = "h.host_name, s.service_description,s.current_state ".$sort_order;
+			$sort_string = "h.host_name,s.current_state, s.service_description ".$sort_order;
 		} else {
 			$sort_string = $sort_field.' '.$sort_order;
 		}
