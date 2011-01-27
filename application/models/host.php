@@ -155,13 +155,14 @@ class Host_Model extends Model {
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		if (!isset($this->auth) || !is_object($this->auth)) {
-			$auth = new Nagios_auth_Model();
-			$auth_hosts = $auth->get_authorized_hosts();
-		} else {
-			$auth_hosts = $this->auth->get_authorized_hosts();
+
+		$auth = new Nagios_auth_Model();
+		$sql_join = false;
+		if (!$auth->view_hosts_root) {
+			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
+			$sql_join .= ' INNER JOIN host ON host.id=contact_access.host ';
 		}
-		$host_ids = array_keys($auth_hosts);
+
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
 			$db = new Database();
@@ -171,12 +172,12 @@ class Host_Model extends Model {
 
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM host WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
 		} else {
-			$sql = "SELECT * FROM host WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
 		}
-		$sql .= "AND id IN(".implode(',', $host_ids).") ".$limit_str;
-		$host_info = $this->query($db,$sql);
+		$sql .= $sql_join.$limit_str;
+		$host_info = $db->query($sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
 

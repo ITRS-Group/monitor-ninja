@@ -184,17 +184,24 @@ class Service_Model extends Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$obj_ids = self::authorized_services();
+		$auth = new Nagios_auth_Model();
+		$sql_join = false;
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$obj_ids = self::authorized_services();
+			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
+			$sql_join .= ' INNER JOIN service ON service.id=contact_access.service ';
+		}
+
 		$db = new Database();
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM service WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
 		} else {
-			$sql = "SELECT * FROM service WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
 		}
-		$sql .= "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = self::query($db,$sql);
+		$sql .= $limit_str;
+		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
 
