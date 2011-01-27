@@ -1051,35 +1051,16 @@ class Status_Controller extends Authenticated_Controller {
 
 			$content->label_header = $grouptype == 'service' ? $t->_('Status Grid For All Service Groups') : $t->_('Status Grid For All Host Groups');
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
-			if (!empty($group_info_res) && count($group_info_res)>0) {
-				foreach ($group_info_res as $group_res) {
-					$groupname_tmp = $group_res->{$grouptype.'group_name'};
-					$details_tmp = $this->_show_grid($grouptype, $groupname_tmp);
-					if (!empty($details_tmp)) {
-						$details_tmp->group_alias = $group_res->alias;
-						$group_details[] = $details_tmp;
-					}
-				}
-			}
 		} else {
 			# make sure we have the correct servicegroup
 			$group_info_res = $grouptype == 'service' ?
 				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
 				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
-			if ($group_info_res) {
-				$group_info_res = $group_info_res->current();
-				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
-			}
 			$label_header = $grouptype == 'service' ? $t->_('Status Grid For Service Group ') : $t->_('Status Grid For Host Group ');
 			$content->label_header = $label_header."'".$group."'";
-			$details_tmp = $this->_show_grid($grouptype, $group);
-			if (!empty($details_tmp)) {
-				$details_tmp->group_alias = $group_info_res->alias;
-				$group_details[] = 	$details_tmp;
-			}
 		}
 
-		$content->group_details = $group_details;
+		$content->group_details = $group_info_res;
 		$content->error_message = sprintf($t->_('No %s group data found'), $grouptype);
 		$content->grouptype = $grouptype;
 		$content->logos_path = $this->logos_path;
