@@ -238,13 +238,22 @@ class User_Model extends Auth_User_Model {
 	*/
 	public function get_user($username=false)
 	{
+		$db = new Database();
 		if (!empty($username)) {
 			$username = trim($username);
-			$user = ORM::factory('user')->where('username', $username)->find();
+			$sql = 'SELECT * FROM users WHERE username='.$db->escape($username);
 		} else {
-			$user = ORM::factory('user')->with('role:login')->find();
+			$sql = 'SELECT * FROM users'.
+				' INNER JOIN roles_users ON roles_users.user_id=users.id'.
+				' INNER JOIN roles ON roles.id=1'.
+				' WHERE roles_users.user_id=users.id';
 		}
-		return $user->loaded ? $user : false;
+		$user = $db->query($sql);
+		if (count($user)>0) {
+			$cur = $res->current();
+			return $cur;
+		}
+		return false;
 	}
 
 	/**
@@ -253,7 +262,9 @@ class User_Model extends Auth_User_Model {
 	*/
 	public function get_all_usernames()
 	{
-		$user_res = ORM::factory('user')->find_all();
+		$db = new Database();
+		$query = 'SELECT * FROM users';
+		$user_res = $db->query($query);
 
 		if (count($user_res)==0) {
 			return false;
@@ -284,20 +295,28 @@ class User_Model extends Auth_User_Model {
 			# update
 			$user->password = $password;
 			$user->password_algo = $password_algo;
+			$sql = "UPDATE users SET password=".$db->escape($password).", password_algo=".$db->escape($password_algo);
+			$db->query($sql);
 		} else {
+			$db = new Database();
 			# create new
-			$user = ORM::factory('user');
-			$user->password = $password;
-			$user->username = $username;
-			$user->password_algo = $password_algo;
+			$sql = "INSERT INTO users(password, username, password_algo) ".
+				"VALUES(".$db->escape($password).", ".$db->escape($username).
+				", ".$db->escape($password_algo).")";
+			$res = $db->query($sql);
 
-			# create login role
-			$user->add(ORM::factory('role', 'login'));
-		}
+			# fetch id of inserted user
+			$user_id = false;
+			$user_data = self::get_user($username);
+			if (count($user_data)!=0) {
+				$user_id = $user_data->id;
 
-		if (is_object($user)) {
-			$user->save();
-			return true;
+				# add login role for user
+				$sql = "INSERT INTO user_roles(user_id, role_id) VALUES(".(int)$user_id.", 1)";
+				unset($res);
+				$db->query($sql);
+				return true;
+			}
 		}
 		return false;
 	}
