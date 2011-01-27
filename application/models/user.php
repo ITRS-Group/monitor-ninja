@@ -59,9 +59,10 @@ class User_Model extends Auth_User_Model {
 		# set logged_in to current timestamp if db
 		$auth_type = Kohana::config('auth.driver');
 		if ($auth_type == 'db' || $auth_type === 'Ninja' || $auth_type === 'LDAP' || $auth_type == 'apache') {
-			$user = ORM::factory('user')->where('username', Auth::instance()->get_user()->username)->find();
-			$user->last_login = time();
-			$user->save();
+			$db = new Database();
+			$sql = "UPDATE users SET last_login=".time()." WHERE username=".
+				$db->escape(Auth::instance()->get_user()->username);
+			$db->query($sql);
 		}
 
 		$requested_uri = Session::instance()->get('requested_uri', false);
@@ -182,16 +183,14 @@ class User_Model extends Auth_User_Model {
 		}
 
 		$db = new Database();
-		if (!$db->table_exists(self::$auth_table)) {
-			# make sure we have the ninja_user_authorization table
-			self::create_auth_table();
-		}
-
-		$user = ORM::factory('user')->where('username', $username)->find();
-		if ($user->loaded) {
+		$sql = "SELECT * FROM users WHERE username=".$db->escape($username);
+		$res = $db->query($sql);
+		if (count($res)!=0) {
 			# user found in db
 			# does authorization data exist for this user?
+			$user = $res->current();
 			$result = ninja_user_authorization_Model::insert_user_auth_data($user->id, $auth_options);
+			unset($user);
 		} else {
 			# this should never happen
 			$result = "Tried to save authorization data for a non existing user.\n";
@@ -250,7 +249,7 @@ class User_Model extends Auth_User_Model {
 		}
 		$user = $db->query($sql);
 		if (count($user)>0) {
-			$cur = $res->current();
+			$cur = $user->current();
 			return $cur;
 		}
 		return false;
