@@ -467,7 +467,7 @@ class Pdogeneric_Result extends Database_Result {
                 throw new Kohana_Database_Exception('database.error', $e->getMessage());
             }
 
-            if (preg_match('/^SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN/i', $sql))
+            if (preg_match('/^(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql))
             {
                 $this->result = $result;
                 $this->current_row = 0;
@@ -476,7 +476,7 @@ class Pdogeneric_Result extends Database_Result {
 
                 $this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
             }
-            elseif (preg_match('/^DELETE|INSERT|UPDATE/i', $sql))
+            elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql))
             {
                 $this->insert_id  = $link->lastInsertId();
             }
