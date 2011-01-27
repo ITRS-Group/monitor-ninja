@@ -62,6 +62,10 @@ class Database_Pdogeneric_Driver extends Database_Driver {
     {
         return FALSE !== stristr($this->dsn,'mysql');
     }
+	private function isOracle()
+	{
+		return strpos($this->dsn, 'oci') === 0;
+	}
 
     public function connect()
     {
@@ -142,8 +146,12 @@ class Database_Pdogeneric_Driver extends Database_Driver {
                 ;
             $this->link->query('SET NAMES '.$this->escape_str($charset));
         }
-        else
+        else if ($this->isOracle())
         {
+			# does oracle need this? if so, how?
+		}
+		else {
+			# does oracle/pgsql/whatever have ways of doing this?
             throw new Kohana_Database_Exception('database.not_implemented',
                                                 __FUNCTION__);
         }
@@ -287,6 +295,9 @@ class Database_Pdogeneric_Driver extends Database_Driver {
         {
             $sql = 'SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database']);
         }
+		elseif ($this->isOracle()) {
+			$sql = 'SELECT * FROM ALL_TABLES';
+		}
         else
         {
             throw new Kohana_Database_Exception('database.not_implemented',
@@ -406,7 +417,7 @@ class Database_Pdogeneric_Driver extends Database_Driver {
                 unset($res);
                 return $columns[$table] = $cols;
         }
-        else
+		else
         {
             throw new Kohana_Database_Exception('database.not_implemented',
                                                 __FUNCTION__);
