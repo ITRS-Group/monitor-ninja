@@ -445,7 +445,7 @@ class Pdogeneric_Result extends Database_Result {
     // Data fetching types
     protected $fetch_type  = PDO::FETCH_OBJ;
     protected $return_type = PDO::FETCH_ASSOC;
-    protected $latest_row = null;
+    /*protected $latest_row = null;
 
     public function current()
     {
@@ -465,6 +465,7 @@ class Pdogeneric_Result extends Database_Result {
             return false;
         return true;
     }
+    */
 
     /**
      * Sets up the result variables.
@@ -496,7 +497,7 @@ class Pdogeneric_Result extends Database_Result {
                 $this->total_rows = $this->pdo_row_count();
 
                 $this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
-                $this->latest_row = $this->result->fetch($this->fetch_type);
+                #$this->latest_row = $this->result->fetch($this->fetch_type);
             }
             elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql))
             {
