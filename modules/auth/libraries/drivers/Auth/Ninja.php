@@ -8,7 +8,7 @@ class Auth_Ninja_Driver extends Auth_ORM_Driver
 
 		if (!is_object($user)) {
 			$username = $user;
-			$user = ORM::factory('user')->where('username', $username)->find();
+			$user = User_Model::get_user($username);
 		} else {
 			$username = $user->username;
 		}

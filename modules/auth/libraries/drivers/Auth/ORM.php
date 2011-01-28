@@ -25,7 +25,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 		// Get the user from the session
 		$user = $this->session->get($this->config['session_key']);
 
-		if (is_object($user) AND $user instanceof User_Model AND $user->loaded)
+		if (is_object($user) AND count($user))
 		{
 			// Everything is okay so far
 			$status = TRUE;
@@ -211,16 +211,23 @@ class Auth_ORM_Driver extends Auth_Driver {
 	 * @param   object   user model object
 	 * @return  void
 	 */
-	protected function complete_login(User_Model $user)
+	protected function complete_login($user)
 	{
+		if (empty($user)) {
+			return false;
+		}
+		$db = new Database();
+
+		$sql = "UPDATE users SET logins=".($user->logins+1).", last_login=".time();
 		// Update the number of logins
-		$user->logins += 1;
+		#$user->logins += 1;
 
 		// Set the last login date
-		$user->last_login = time();
+		#$user->last_login = time();
 
 		// Save the user
-		$user->save();
+		#$user->save();
+		$db->query($sql);
 
 		return parent::complete_login($user);
 	}
