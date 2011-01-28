@@ -99,6 +99,7 @@ class Database_Pdogeneric_Driver extends Database_Driver
 			}
 			$this->link = new PDO($this->dsn, $user, $pass,$attr);
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+			$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
 			if( $this->isSqlite() )
 			{
 				$this->link->query('PRAGMA count_changes=1;');
