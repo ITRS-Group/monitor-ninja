@@ -69,6 +69,9 @@ class Database_Pdogeneric_Driver extends Database_Driver
 
 	public function connect()
 	{
+		if (is_resource($this->link))
+			return $this->link;
+
 		// Import the connect variables
 		extract($this->db_config['connection']);
 		if( ! $dsn )
