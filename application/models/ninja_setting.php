@@ -5,7 +5,7 @@
  */
 class Ninja_setting_Model extends Model
 {
-	const USERFIELD = 'username';
+	const USERFIELD = 'user_col';
 	/**
 	 * Save page setting for a user
 	 *
@@ -64,7 +64,7 @@ class Ninja_setting_Model extends Model
 		$user = Auth::instance()->get_user()->username;
 		if ($default === true) {
 			# We have a request for default value
-			$sql = $sql_base." WHERE ".self::USERFIELD."='' AND page=".$db->escape($page)." AND type=".
+			$sql = $sql_base." WHERE ".self::USERFIELD."=' ' AND page=".$db->escape($page)." AND type=".
 				$db->escape($type);
 		} else {
 			# first, try user setting
@@ -74,7 +74,7 @@ class Ninja_setting_Model extends Model
 			$res = $db->query($sql);
 			if (count($res)==0) {
 				# try default if nothing found
-				$sql = $sql_base." WHERE ".self::USERFIELD."='' AND page=".$db->escape($page)." AND type=".
+				$sql = $sql_base." WHERE ".self::USERFIELD."=' ' AND page=".$db->escape($page)." AND type=".
 					$db->escape($type);
 				$res = false;
 			}

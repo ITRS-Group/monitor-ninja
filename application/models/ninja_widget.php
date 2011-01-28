@@ -5,7 +5,7 @@
  */
 class Ninja_widget_Model extends Model
 {
-	const USERFIELD = 'username';
+	const USERFIELD = 'user_col';
 
 	/**
 	*	Fetch all available widgets for a page
@@ -19,7 +19,7 @@ class Ninja_widget_Model extends Model
 		$db = new Database();
 		$sql = "SELECT * FROM ninja_widgets ";
 		if ($all===true) {
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."='' ".
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' ' ".
 				"ORDER BY friendly_name";
 		} else {
 			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user).
@@ -56,7 +56,7 @@ class Ninja_widget_Model extends Model
 				$db->escape($user)." AND name=".$db->escape($widget);
 		} else {
 			# fetch default widget settings
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=''".
+			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' '".
 				" AND name=".$db->escape($widget);
 		}
 		$result = $db->query($sql);
@@ -80,7 +80,7 @@ class Ninja_widget_Model extends Model
 		if (!count($res)) {
 			unset($res);
 			# copy all under users' name
-			$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=''";
+			$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' '";
 			$res = $db->query($sql);
 			foreach ($res as $row) {
 				# copy widget setting to user
@@ -229,7 +229,7 @@ class Ninja_widget_Model extends Model
 		$settings = false;
 		if (!empty($all_widgets)) {
 			foreach ($all_widgets as $row) {
-				$settings[$row->name] = unserialize($row->setting);
+				$settings[$row->name] = unserialize(trim($row->setting));
 				if (!empty($settings[$row->name]) && is_array($settings[$row->name])) {
 					# if we have settings we should add this
 					# model to the start of the arguments array
