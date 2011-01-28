@@ -146,24 +146,22 @@ class System_Model extends Model
 			return false;
 		}
 
-		$buf = file_get_contents($file);
-		if($buf === false)
+		$fh = fopen($file, "r");
+		if (!$fh)
 			return false;
-		$lines = explode("\n", $buf);
-		$block = false;
-		$pushed_blocks = array();
-		$pushed_names = array();
-		$block_name = false;
-		$num_line = 0;
 		$found_section = false;
-		$data = false;
-		foreach ($lines as $raw_line) {
-			$num_line++;
+		while ($raw_line = fgets($fh)) {
 			$line = trim($raw_line);
 			if (!strlen($line) || $line{0} === '#')
 				continue;
 
-			if (strstr($line, $section.' {')) {
+			# this routine is only ever read to get one
+			# section, so we can bail early when we've
+			# found it and the section is done with
+			if ($found_section && $line{0} === '}')
+				break;
+
+			if (!strcmp($line, $section.' {')) {
 				$found_section = true;
 				continue;
 			}
@@ -175,6 +173,7 @@ class System_Model extends Model
 				}
 			}
 		}
+		fclose($fh);
 
 		return $data;
 	}
