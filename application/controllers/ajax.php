@@ -201,7 +201,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$page = (!empty($page) && $page == 'tac') ? $page.'/index' : $page;
 			if (!empty($page)) {
 				$data = Ninja_widget_Model::get_widget($page, $widget, true);
-				$arguments = $data!==false ? unserialize($data->setting) : false;
+				$arguments = $data!==false ? unserialize(trim($data->setting)) : false;
 				$arguments[0] = false;
 			}
 		}
