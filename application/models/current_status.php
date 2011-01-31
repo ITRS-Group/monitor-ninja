@@ -26,7 +26,7 @@ class Current_status_Model extends Model
 
 	public $flapping_services = 0;
 	public $notification_disabled_services = 0;
-	public $event_handler_disabled_services = 0;
+	public $event_handler_disabled_svcs = 0;
 	public $active_checks_disabled_services = 0;
 	public $passive_checks_disabled_services = 0;
 
@@ -367,7 +367,7 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." flap_detection_enabled!=1) AS flap_disabled_services, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." is_flapping=1) AS flapping_services, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." notifications_enabled!=1) AS notification_disabled_services, ".
-			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." event_handler_enabled!=1) AS event_handler_disabled_services, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." event_handler_enabled!=1) AS event_handler_disabled_svcs, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." active_checks_enabled!=1) AS active_checks_disabled_services, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." passive_checks_enabled!=1) AS passive_checks_disabled_services, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_OK ." AND active_checks_enabled!=1 ) AS services_ok_disabled, ".
@@ -421,7 +421,7 @@ class Current_status_Model extends Model
 		$this->flap_disabled_services = $svc->flap_disabled_services;
 		$this->flapping_services = $svc->flapping_services;
 		$this->notification_disabled_services = $svc->notification_disabled_services;
-		$this->event_handler_disabled_services = $svc->event_handler_disabled_services;
+		$this->event_handler_disabled_svcs = $svc->event_handler_disabled_svcs;
 		$this->active_checks_disabled_services  = $svc->active_checks_disabled_services;
 		$this->passive_checks_disabled_services = $svc->passive_checks_disabled_services;
 
