@@ -147,12 +147,12 @@ class Pdooracle_Result extends Pdogeneric_Result {
 			try {
 				$result->execute();
 			} catch (PDOException $e) {
-				$info = $link->errorInfo();
 				// code 923 means no FROM found
 				// this workaround sometimes works
-				if (isset($info[1]) && $info[1] == 923) {
-					$sql .= ' FROM dual';
+				if ($e->errorInfo[1] == 923) {
+					$sql .= "\nFROM DUAL";
 					try {
+						$result = $link->prepare($sql);
 						$result->execute();
 					} catch (PDOException $e) {
 						throw new Kohana_Database_Exception('database.error', $e->getMessage());
