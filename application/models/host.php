@@ -430,7 +430,7 @@ class Host_Model extends Model {
 				$from .= ', contact_access AS ca ';
 				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
 			} else {
-				$where = 'WHERE 1 ';
+				$where = 'WHERE 1=1 ';
 			}
 
 			if (!empty($filter_host_sql)) {
