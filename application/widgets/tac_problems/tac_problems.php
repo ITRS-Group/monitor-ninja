@@ -88,11 +88,11 @@ class Tac_problems_Widget extends widget_Core {
 			$i++;
 		}
 
-		if ($current_status->hosts_unreachable_unacknowledged) {
+		if ($current_status->hosts_unreach_unacknowledged) {
 			$problem[$i]['type'] = $this->translate->_('Host');
 			$problem[$i]['status'] = $this->translate->_('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|(config::get('checks.show_passive_as_active')?0:nagstat::HOST_CHECKS_ENABLED));
-			$problem[$i]['title'] = $current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled problems');
+			$problem[$i]['title'] = $current_status->hosts_unreach_unacknowledged.' '.$this->translate->_('Unhandled problems');
 			$problem[$i]['html_id'] = 'id_host_unreachable';
 			$problem[$i]['bgcolor'] = $col_host_unreachable;
 			$problem[$i]['no'] = 0;

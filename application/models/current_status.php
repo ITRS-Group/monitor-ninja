@@ -93,7 +93,7 @@ class Current_status_Model extends Model
 	public $hosts_unreachable_scheduled = 0;
 	public $hosts_unreachable_acknowledged = 0;
 	public $hosts_unreachable_disabled = 0;
-	public $hosts_unreachable_unacknowledged = 0;
+	public $hosts_unreach_unacknowledged = 0;
 	public $hosts_unreachable = 0;
 
 	public $hosts_pending_disabled = 0;
@@ -261,7 +261,7 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth>0 ) AS hosts_unreachable_scheduled, ".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND problem_has_been_acknowledged=1 ) AS hosts_unreachable_acknowledged, ".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND active_checks_enabled!=1 ) AS hosts_unreachable_disabled, ".
-			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_unreachable_unacknowledged, ".
+			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS hosts_unreach_unacknowledged, ".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_UNREACHABLE.") AS hosts_unreachable, ".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_PENDING ." ".$active_checks_condition.") AS hosts_pending_disabled, ".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_PENDING .") AS hosts_pending, ".
@@ -319,7 +319,7 @@ class Current_status_Model extends Model
 
 		$this->hosts_unreachable_disabled = $show_passive_as_active ? 0 : $host->hosts_unreachable_disabled;
 
-		$this->hosts_unreachable_unacknowledged = $host->hosts_unreachable_unacknowledged;
+		$this->hosts_unreach_unacknowledged = $host->hosts_unreach_unacknowledged;
 		$this->hosts_unreachable = $host->hosts_unreachable;
 
 		$this->hosts_pending_disabled = $show_passive_as_active ? 0 : $host->hosts_pending_disabled;
