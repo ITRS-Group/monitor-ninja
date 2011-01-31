@@ -38,7 +38,7 @@ class Current_status_Model extends Model
 	public $services_warning_scheduled = 0;
 	public $services_warning_acknowledged = 0;
 	public $services_warning_disabled = 0;
-	public $services_warning_unacknowledged = 0;
+	public $svcs_warning_unacknowledged = 0;
 	public $services_warning = 0;
 
 	public $services_unknown_host_problem = 0;
@@ -377,7 +377,7 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth>0 ) AS services_warning_scheduled, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND problem_has_been_acknowledged=1 ) AS services_warning_acknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND active_checks_enabled!=1 ) AS services_warning_disabled, ".
-			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_warning_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS svcs_warning_unacknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_WARNING.") AS services_warning, ".
 			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name ".$access_check.$access_check_xtra." service.current_state=".self::SERVICE_CRITICAL." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_critical_host_problem, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth>0 ) AS services_critical_scheduled, ".
@@ -439,7 +439,7 @@ class Current_status_Model extends Model
 
 		$this->services_warning_disabled = $show_passive_as_active ? 0 : $svc->services_warning_disabled;
 
-		$this->services_warning_unacknowledged = $svc->services_warning_unacknowledged;
+		$this->svcs_warning_unacknowledged = $svc->svcs_warning_unacknowledged;
 		$this->services_warning = $svc->services_warning;
 		$this->services_unknown_host_problem = $svc->services_unknown_host_problem;
 		$this->services_unknown_scheduled = $svc->services_unknown_scheduled;

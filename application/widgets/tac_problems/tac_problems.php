@@ -99,11 +99,11 @@ class Tac_problems_Widget extends widget_Core {
 			$i++;
 		}
 
-		if ($current_status->services_warning_unacknowledged) {
+		if ($current_status->svcs_warning_unacknowledged) {
 			$problem[$i]['type'] = $this->translate->_('Service');
 			$problem[$i]['status'] = $this->translate->_('Warning');
 			$problem[$i]['url'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_WARNING.'&service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|(config::get('checks.show_passive_as_active')?0:nagstat::SERVICE_CHECKS_ENABLED));
-			$problem[$i]['title'] = $current_status->services_warning_unacknowledged.' '.$this->translate->_('Unhandled problems');
+			$problem[$i]['title'] = $current_status->svcs_warning_unacknowledged.' '.$this->translate->_('Unhandled problems');
 			$problem[$i]['no'] = $current_status->services_warning_host_problem;
 			$problem[$i]['onhost'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.nagstat::SERVICE_WARNING;
 			$problem[$i]['title2'] = $current_status->services_warning_host_problem.' '.$this->translate->_('on problem hosts');

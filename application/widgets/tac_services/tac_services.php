@@ -90,9 +90,9 @@ class Tac_services_Widget extends widget_Core {
 		$services_warning = array();
 		# HOST_UP|HOST_PENDING
 		# SERVICE_NO_SCHEDULED_DOWNTIME|SERVICE_STATE_UNACKNOWLEDGED|SERVICE_CHECKS_ENABLED
-		if ($current_status->services_warning_unacknowledged) {
+		if ($current_status->svcs_warning_unacknowledged) {
 			$services_warning['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_WARNING.'&service_props='.$service_fiiter] =
-				$current_status->services_warning_unacknowledged.' '.$this->translate->_('Unhandled Problems');
+				$current_status->svcs_warning_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_warning_host_problem) {
