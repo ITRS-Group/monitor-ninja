@@ -365,7 +365,7 @@ class Pdogeneric_Result extends Database_Result {
 		$this->sql = $sql;
 	}
 
-	private function pdo_row_count()
+	protected function pdo_row_count()
 	{
 		$count = 0;
 		while ($this->result->fetch()) {

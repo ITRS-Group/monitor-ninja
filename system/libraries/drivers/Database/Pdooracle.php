@@ -128,8 +128,59 @@ class Pdooracle_Result extends Pdogeneric_Result {
 
 	public function __construct($result, $link, $object=true, $sql)
 	{
-		parent::__construct($result, $link, $object=true, $sql);
-		if ($this->valid())
-			$this->latest_row = $this->result->fetch($this->fetch_type);
+		// Rewrite LIMIT/OFFSET to oracle compatible thingies
+		$matches = false;
+		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/', $sql, $matches)) {
+			$offset = isset($matches[4]) ? $matches[4] : 0;
+			$limit = $matches[2] + $offset;
+			if ($limit) {
+				$sql = "SELECT foo.*, rownum rnum FROM ({$matches[1]}) foo WHERE rownum <= $limit";
+				if ($offset)
+					$sql = "SELECT bar.* FROM ($sql) bar WHERE rnum > $offset";
+			}
+		}
+		// Rewrite UNIX_TIMESTAMP
+		$sql = preg_replace('/UNIX_TIMESTAMP\(\)/', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
+
+		if (is_object($result) OR $result = $link->prepare($sql)) {
+			try {
+				$result->execute();
+			} catch (PDOException $e) {
+				$info = $link->errorInfo();
+				// code 923 means no FROM found
+				// this workaround sometimes works
+				if (isset($info[1]) && $info[1] == 923) {
+					$sql .= ' FROM dual';
+					try {
+						$result->execute();
+					} catch (PDOException $e) {
+						throw new Kohana_Database_Exception('database.error', $e->getMessage());
+					}
+
+				}
+			}
+
+			if (preg_match('/^(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
+				$this->result = $result;
+				$this->current_row = 0;
+
+				$this->total_rows = $this->pdo_row_count();
+
+				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
+				if ($this->valid())
+					$this->latest_row = $this->result->fetch($this->fetch_type);
+			} elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql)) {
+				# completely broken, but I don't care
+				$this->insert_id  = 0;
+			}
+		} else {
+			// SQL error
+			$err = $link->errorInfo();
+			throw new Kohana_Database_Exception
+				('database.error', $err[2].' - SQL=['.$sql.']');
+		}
+
+		$this->result($object);
+		$this->sql = $sql;
 	}
 }
