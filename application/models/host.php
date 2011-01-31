@@ -442,8 +442,7 @@ class Host_Model extends Model {
 
 			# this should never happen but added just to be on the safe side
 			if ($this->serviceprops !== false) {
-				$from .= ', service ';
-				$where .= ' AND service.host_name=host.host_name ';
+				$from .= 'INNER JOIN service ON service.host_name=host.host_name ';
 			}
 
 			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
@@ -465,30 +464,30 @@ class Host_Model extends Model {
 			}
 
 			# only host listing
-			$sql = "SELECT DISTINCT ".
-					"host.instance_id AS host_instance_id,".
-					"host.id AS host_id,".
+			$sql = "SELECT ".
+					"host.instance_id AS host_instance_id, ".
+					"host.id AS host_id, ".
 					"host.host_name, ".
 					"host.address, ".
 					"host.alias, ".
 					"host.current_state, ".
-					"host.last_check,".
-					"host.next_check,".
-					"host.should_be_scheduled,".
-					"host.notes_url,".
-					"host.notifications_enabled,".
-					"host.active_checks_enabled,".
-					"host.icon_image,".
-					"host.icon_image_alt,".
-					"host.is_flapping,".
-					"host.action_url,".
-					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration,".
-					"UNIX_TIMESTAMP() AS cur_time,".
-					"host.current_attempt,".
-					"host.max_check_attempts,".
-					"host.problem_has_been_acknowledged,".
-					"host.scheduled_downtime_depth,".
-					"host.output,".
+					"host.last_check, ".
+					"host.next_check, ".
+					"host.should_be_scheduled, ".
+					"host.notes_url, ".
+					"host.notifications_enabled, ".
+					"host.active_checks_enabled, ".
+					"host.icon_image, ".
+					"host.icon_image_alt, ".
+					"host.is_flapping, ".
+					"action_url, ".
+					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration, ".
+					"UNIX_TIMESTAMP() AS cur_time, ".
+					"host.current_attempt, ".
+					"host.max_check_attempts, ".
+					"host.problem_has_been_acknowledged, ".
+					"host.scheduled_downtime_depth, ".
+					"host.output, ".
 					"host.long_output ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
@@ -624,7 +623,7 @@ class Host_Model extends Model {
 					$host_ids = implode(',', $this->host_list);
 					$where_str = ' id IN('.$host_ids.')';
 				}
-				$sql = "SELECT COUNT(*) AS cnt FROM host";
+				$sql = "SELECT COUNT(1) AS cnt FROM host";
 				if (!$this->auth->view_hosts_root) {
 					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
 						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
