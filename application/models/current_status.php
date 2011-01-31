@@ -52,7 +52,7 @@ class Current_status_Model extends Model
 	public $services_critical_scheduled = 0;
 	public $services_critical_acknowledged = 0;
 	public $services_critical_disabled = 0;
-	public $services_critical_unacknowledged = 0;
+	public $svcs_critical_unacknowledged = 0;
 	public $services_critical = 0;
 
 	public $services_pending_disabled = 0;
@@ -383,7 +383,7 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth>0 ) AS services_critical_scheduled, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND problem_has_been_acknowledged=1 ) AS services_critical_acknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND active_checks_enabled!=1 ) AS services_critical_disabled, ".
-			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_critical_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS svcs_critical_unacknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_CRITICAL.") AS services_critical, ".
 			"(SELECT COUNT(*) FROM service INNER JOIN host ON service.host_name=host.host_name ".$access_check.$access_check_xtra." service.current_state=".self::SERVICE_UNKNOWN." AND (host.current_state=".self::HOST_DOWN." OR host.current_state=".self::HOST_UNREACHABLE." )) AS services_unknown_host_problem, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth>0 ) AS services_unknown_scheduled, ".
@@ -453,7 +453,7 @@ class Current_status_Model extends Model
 		$this->services_critical_scheduled = $svc->services_critical_scheduled;
 		$this->services_critical_acknowledged = $svc->services_critical_acknowledged;
 		$this->services_critical_disabled = $svc->services_critical_disabled;
-		$this->services_critical_unacknowledged = $svc->services_critical_unacknowledged;
+		$this->svcs_critical_unacknowledged = $svc->svcs_critical_unacknowledged;
 		$this->services_critical = $svc->services_critical;
 
 		$this->services_pending_disabled = $show_passive_as_active ? 0 : $svc->services_pending_disabled;

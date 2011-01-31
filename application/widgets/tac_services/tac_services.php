@@ -64,9 +64,9 @@ class Tac_services_Widget extends widget_Core {
 
 		# SERVICES CRITICAL
 		$services_critical = array();
-		if ($current_status->services_critical_unacknowledged) {
+		if ($current_status->svcs_critical_unacknowledged) {
 			$services_critical['status/service/all/?hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&service_props='.$service_fiiter] =
-				$current_status->services_critical_unacknowledged.' '.$this->translate->_('Unhandled Problems');
+				$current_status->svcs_critical_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_critical_host_problem) {
