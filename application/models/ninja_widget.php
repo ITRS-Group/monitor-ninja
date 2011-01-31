@@ -19,8 +19,8 @@ class Ninja_widget_Model extends Model
 		$db = new Database();
 		$sql = "SELECT * FROM ninja_widgets ";
 		if ($all===true) {
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' ' ".
-				"ORDER BY friendly_name";
+			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
+				self::USERFIELD."=' ') ORDER BY friendly_name";
 		} else {
 			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user).
 				"ORDER BY friendly_name";
@@ -56,8 +56,8 @@ class Ninja_widget_Model extends Model
 				$db->escape($user)." AND name=".$db->escape($widget);
 		} else {
 			# fetch default widget settings
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' '".
-				" AND name=".$db->escape($widget);
+			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
+				self::USERFIELD ."=' ') AND name=".$db->escape($widget);
 		}
 		$result = $db->query($sql);
 
@@ -80,7 +80,7 @@ class Ninja_widget_Model extends Model
 		if (!count($res)) {
 			unset($res);
 			# copy all under users' name
-			$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=' '";
+			$sql = $sql_base." WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".self::USERFIELD."=' ')";
 			$res = $db->query($sql);
 			foreach ($res as $row) {
 				# copy widget setting to user
@@ -176,7 +176,8 @@ class Ninja_widget_Model extends Model
 	private function merge_settings($old_setting=false, $new_setting=false)
 	{
 		if (!empty($old_setting)) {
-			$old_setting = unserialize($old_setting);
+			$old_setting = trim($old_setting);
+			$old_setting = !empty($old_setting) ? unserialize(trim($old_setting)) : array();
 			$new_setting = serialize(array_merge($old_setting, $new_setting));
 		} else {
 			$new_setting = serialize($new_setting);
@@ -251,7 +252,7 @@ class Ninja_widget_Model extends Model
 		$user_widgets = false;
 		if (!empty($widgets)) {
 			foreach ($widgets as $w) {
-				$user_settings = unserialize($w->setting);
+				$user_settings = unserialize(trim($w->setting));
 				if (isset($settings[$w->name]) && is_array($settings[$row->name])) {
 					# replace default settings with user settings if available
 					if (!empty($user_settings) && is_array($user_settings)) {
