@@ -30,7 +30,7 @@ $config['default'] = array
 	'connection'    => array
 	(
 		'type'     =>
-                            'pdogeneric'
+                            'pdomysql'
                             #'mysql'
                 ,
 		'user'     => 'merlin',
@@ -57,7 +57,7 @@ $config['nacoma'] = array
         'connection'    => array
         (
                 'type'     => #'mysql',
-                              'pdogeneric',
+                              'pdomysql',
                 'user'     => 'nacoma',
                 'pass'     => 'nacoma',
                 'host'     => 'localhost',

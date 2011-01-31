@@ -32,7 +32,7 @@ require_once( dirname(__FILE__)."/merlin_get_kohana_db_field_metadata.php" );
  *  license   - <no>
  */
 
-class Database_Pdogeneric_Driver extends Database_Driver
+abstract class Database_Pdogeneric_Driver extends Database_Driver
 {
 	// Database connection link
 	protected $link;
@@ -50,78 +50,6 @@ class Database_Pdogeneric_Driver extends Database_Driver
 	public function __construct($config)
 	{
 		$this->db_config = $config;
-
-		Kohana::log('debug', 'PDO:Sqlite Database Driver Initialized');
-	}
-
-	private function isSqlite()
-	{
-		return FALSE !== stristr($this->dsn,'sqlite');
-	}
-	private function isMysql()
-	{
-		return FALSE !== stristr($this->dsn,'mysql');
-	}
-	private function isOracle()
-	{
-		return strpos($this->dsn, 'oci') === 0;
-	}
-
-	public function connect()
-	{
-		if (is_resource($this->link))
-			return $this->link;
-
-		// Import the connect variables
-		extract($this->db_config['connection']);
-		if( ! $dsn )
-		{
-			throw new Kohana_Database_Exception('database.error',
-												"This driver (".__CLASS__.") requires the dsn property to be set.");
-		}
-		$this->dsn = $dsn;
-		try
-		{
-			$attr = array(PDO::ATTR_CASE => PDO::CASE_LOWER,
-						  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
-			if( $this->isSqlite() )
-			{
-				$attr[PDO::ATTR_PERSISTENT] = $this->db_config['persistent'];
-				/* why is this needed? It was taken from the Pdosqlite driver. */
-				;
-			}
-			else if( $this->isMysql() )
-			{
-				$attr[PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = true;
-				/* To work around recursive query problems. However, this has
-				 no effect on the server i'm on (CentOS5).
-				 */
-			}
-			$this->link = new PDO($this->dsn, $user, $pass,$attr);
-			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-			$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
-			if( $this->isSqlite() )
-			{
-				$this->link->query('PRAGMA count_changes=1;');
-			}
-			#else if( $this->isMysql() )
-			#{
-			#	this->link->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-			#}
-			if( ($charset = $this->db_config['character_set']) )
-			{
-				$this->set_charset($charset);
-			}
-		}
-		catch (PDOException $e)
-		{
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-		}
-
-		// Clear password after successful connect
-		$this->db_config['connection']['pass'] = NULL;
-
-		return $this->link;
 	}
 
 	public function query($sql)
@@ -140,22 +68,9 @@ class Database_Pdogeneric_Driver extends Database_Driver
 
 	public function set_charset($charset)
 	{
-		if ($this->isSqlite()) {
-			$this->link->query('PRAGMA encoding = '.$this->escape_str($charset));
-		}
-		else if ($this->isMysql()) {
-			/* Remove '-' from UTF-X b/c mysql doesn't like it. */
-			$charset = str_replace('-','', $charset);
-			$this->link->query('SET NAMES '.$this->escape_str($charset));
-		}
-		else if ($this->isOracle()) {
-			# does oracle need this? if so, how?
-		}
-		else {
-			# does oracle/pgsql/whatever have ways of doing this?
-			throw new Kohana_Database_Exception('database.not_implemented',
-												__FUNCTION__);
-		}
+		# does oracle/pgsql/whatever have ways of doing this?
+		throw new Kohana_Database_Exception('database.not_implemented',
+		                                    __FUNCTION__);
 	}
 
 	public function escape_table($table)
@@ -202,10 +117,8 @@ class Database_Pdogeneric_Driver extends Database_Driver
 		return $column;
 	}
 
-	public function limit($limit, $offset = 0)
-	{
-		return 'LIMIT '.$offset.', '.$limit;
-	}
+	// This *can't* be implemented properly for oracle. Stupid oracle.
+	public function limit($limit, $offset = 0) {}
 
 	public function compile_select($database)
 	{
@@ -246,55 +159,15 @@ class Database_Pdogeneric_Driver extends Database_Driver
 
 		if (is_numeric($database['limit'])) {
 			$sql .= "\n";
-			$sql .= $this->limit($database['limit'], $database['offset']);
+			$sql = $this->limit($sql, $database['limit'], $database['offset']);
 		}
 
 		return $sql;
 	}
 
-	public function escape_str($str)
-	{
-		if ( ! $this->db_config['escape'])
-			return $str;
-
-		if (function_exists('sqlite_escape_string')) {
-			$res = sqlite_escape_string($str);
-		} else {
-			$res = str_replace("'", "''", $str);
-		}
-		return $res;
-	}
-
 	public function list_tables(Database $db)
 	{
-		// Caching this plays havoc with unit tests.
-		//static $tables = NULL;
-		//if( $tables ) return $tables;
-		$sql = FALSE;
-		if ($this->isSqlite()) {
-			$sql = "SELECT `name` FROM `sqlite_master` WHERE `type`='table' ORDER BY `name`;";
-		} elseif ($this->isMysql()) {
-			$sql = 'SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database']);
-		} elseif ($this->isOracle()) {
-			$sql = 'SELECT * FROM ALL_TABLES';
-		} else {
-			throw new Kohana_Database_Exception
-				('database.not_implemented', __FUNCTION__);
-		}
-
-		try {
-			$res = $db->query($sql);
-			$list = array();
-			foreach ($res->result(FALSE) as $row) {
-				$list[] = current($row);
-			}
-
-			unset($res);
-			$tables = $list;
-			return $tables;
-		} catch (PDOException $e) {
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
-		}
+		throw new Kohana_Database_Exception ('database.not_implemented', __FUNCTION__);
 	}
 
 	public function show_error()
@@ -407,7 +280,7 @@ class Database_Pdogeneric_Driver extends Database_Driver
 } // End Database_PdoSqlite_Driver Class
 
 /*
- * PDO-sqlite Result
+ * PDO Result
  */
 class Pdogeneric_Result extends Database_Result {
 
