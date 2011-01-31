@@ -200,10 +200,10 @@ class Comment_Model extends Model {
 		if ($service === false) { # only host comments
 			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".self::TABLE_NAME." WHERE ".
 			"service_description = '' OR service_description is NULL ".
-			"GROUP BY obj_name ORDER BY obj_name";
+			"GROUP BY host_name ORDER BY host_name";
 		} else { # service comments
-			$sql = "SELECT COUNT(*) as cnt, ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
-			"service_description != '' OR service_description is not NULL ".
+			$sql = "SELECT * FROM (SELECT COUNT(*) as cnt, ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
+			"service_description != '' OR service_description is not NULL) ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		}
 
