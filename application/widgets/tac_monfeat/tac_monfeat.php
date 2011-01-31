@@ -101,7 +101,7 @@ class Tac_monfeat_Widget extends widget_Core {
 		$event_handler_disabled_svcs = $current_status->event_handler_disabled_svcs;
 		$event_handler_disabled_hosts = $current_status->event_handler_disabled_hosts;
 
-		$active_checks_disabled_services = $current_status->active_checks_disabled_services;
+		$active_checks_disabled_svcs = $current_status->active_checks_disabled_svcs;
 		$active_checks_disabled_hosts = $current_status->active_checks_disabled_hosts;
 
 		$passive_checks_disabled_services = $current_status->passive_checks_disabled_services;
