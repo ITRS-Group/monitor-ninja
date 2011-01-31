@@ -43,16 +43,16 @@ class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
 	public function query($sql)
 	{
 		// FIXME: add caching
-		try
-		{
+		#try
+		#{
 			$sth = $this->link->prepare($sql);
 			return new Pdooracle_Result($sth, $this->link, $this->db_config['object'], $sql);
-		}
-		catch (PDOException $e)
-		{
-			throw new Kohana_Database_Exception('database.error',
-			                                    $e->getMessage());
-		}
+		#}
+		#catch (PDOException $e)
+		#{
+		#	throw new Kohana_Database_Exception('database.error',
+		#	                                    $e->getMessage());
+		#}
 	}
 
 	public function set_charset($charset)
