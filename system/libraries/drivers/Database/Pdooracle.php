@@ -25,6 +25,7 @@ class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
 			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
 			$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
 			$this->link->setAttribute(PDO::ATTR_ORACLE_NULLS, TRUE);
+			$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			if( ($charset = $this->db_config['character_set']) )
 			{
 				$this->set_charset($charset);
