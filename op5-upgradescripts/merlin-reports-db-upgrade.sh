@@ -90,7 +90,7 @@ avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merl
 
 if [ "$avail_ver" = "" ]
 then
-	echo "Installing database tables for avail report configuration"
+	echo "Installing database tables for AVAIL report configuration"
 	run_sql_file $db_login_opts "$prefix/op5/ninja/op5-upgradescripts/avail_v1.sql"
 	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merlin 2>/dev/null | sed -n \$p)
 fi
@@ -103,7 +103,7 @@ do
 		new_ver=`expr $avail_ver + 1 `
 		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v${avail_ver}_to_v${new_ver}.sql"
 
-		echo -n "Upgrading Avail tables from v${avail_ver} to v${new_ver} ... "
+		echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
 		if [ -r "$upgrade_script" ]
 		then
 			run_sql_file $db_login_opts $upgrade_script
@@ -130,7 +130,7 @@ do
 	5)
 		# upgrade to latest
 		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v5_to_v6.sql"
-		echo -n "Upgrading avail tables to v6 ... "
+		echo -n "Upgrading AVAIL tables to v6 ... "
 		if [ -r "$upgrade_script" ]
 		then
 			run_sql_file $db_login_opts $upgrade_script
