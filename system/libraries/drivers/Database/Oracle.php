@@ -1,9 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
+class Database_Oracle_Driver extends Database_Driver {
+	protected $link;
+
 	public function __construct($config)
 	{
-		parent::__construct($config);
+		$this->db_config = $config;
+
 		Kohana::log('debug', 'PDO Oracle driver initialized');
 	}
 
@@ -17,15 +20,11 @@ class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
 		if (!$dsn)
 			throw new Kohana_Database_Exception('database.error',
 				"This driver (".__CLASS__.") requires the dsn property to be set.");
-		$this->dsn = $dsn;
 		// Do not even try to set properties in the last PDO argument - PDO_OCI
 		// is busted.
 		try {
-			$this->link = new PDO($this->dsn, $user, $pass);
-			$this->link->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-			$this->link->setAttribute(PDO::ATTR_AUTOCOMMIT, TRUE);
-			$this->link->setAttribute(PDO::ATTR_ORACLE_NULLS, TRUE);
-			$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->link = oci_connect($user, $pass, "//$host/$database");
+
 			if( ($charset = $this->db_config['character_set']) )
 			{
 				$this->set_charset($charset);
@@ -42,17 +41,8 @@ class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
 
 	public function query($sql)
 	{
-		// FIXME: add caching
-		#try
-		#{
-			$sth = $this->link->prepare($sql);
-			return new Pdooracle_Result($sth, $this->link, $this->db_config['object'], $sql);
-		#}
-		#catch (PDOException $e)
-		#{
-		#	throw new Kohana_Database_Exception('database.error',
-		#	                                    $e->getMessage());
-		#}
+		$sth = oci_parse($this->link, $sql);
+		return new Oracle_Result($sth, $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function set_charset($charset)
@@ -95,36 +85,84 @@ class Database_Pdooracle_Driver extends Database_Pdogeneric_Driver {
 			throw new Kohana_Database_Exception('database.error', $e->getMessage());
 		}
 	}
+
+	public function show_error()
+	{
+		$err = oci_error();
+		return isset($err['message']) ? $err['message'] : 'Unknown error';
+	}
+
+	# unimplemented an unused
+	public function escape_table($table)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function escape_column($column)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function limit($limit, $offset = 0)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function compile_select($database)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function list_fields($table)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function field_data($table)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
 }
 
-class Pdooracle_Result extends Pdogeneric_Result {
+class Oracle_Result extends Database_Result {
 	public function current()
 	{
-		// evil hack to force oracle to not have a bunch of open [BC]LOBs, as
-		// those create segfaults
-		// FIXME: I belong in PDB-OCI - will someone help me move?
+		$obj = new StdClass();
 		$vars = get_object_vars($this->latest_row);
-		if ($vars) foreach ($vars as $key => $val) {
-			if (is_resource($val)) {
-				$this->latest_row->$key = stream_get_contents($val);
-				fclose($val);
+		if ($vars) foreach($vars as $key => $var) {
+			$name = strtolower($key);
+			if (is_object($var)) {
+				$val = $var->load();
+				$var->close();
+				$var = $val;
 			}
+			$obj->$name = $var;
 		}
-		return $this->latest_row;
+		return $obj;
 	}
 
 	public function next()
 	{
-		$this->latest_row = $this->result->fetch($this->fetch_type);
+		$this->latest_row = oci_fetch_object($this->result);
 		$this->current_row++;
 		return $this;
 	}
 
 	public function valid()
 	{
-		if ($this->current_row >= $this->total_rows)
-			return false;
-		return true;
+		return ($this->current_row < $this->total_rows);
+	}
+
+	protected function pdo_row_count()
+	{
+		$count = 0;
+		while (oci_fetch_row($this->result)) {
+			$count++;
+		}
+
+		// The query must be re-fetched now.
+		oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+		return $count;
 	}
 
 	public function __construct($result, $link, $object=true, $sql)
@@ -132,32 +170,33 @@ class Pdooracle_Result extends Pdogeneric_Result {
 		// Rewrite LIMIT/OFFSET to oracle compatible thingies
 		$matches = false;
 		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/', $sql, $matches)) {
+			$query = trim($matches[1]);
 			$offset = isset($matches[4]) ? $matches[4] : 0;
 			$limit = $matches[2] + $offset;
 			if ($limit) {
-				$sql = "SELECT foo.*, rownum rnum FROM ({$matches[1]}) foo WHERE rownum <= $limit";
+				$sql = "SELECT foo.*, rownum AS rnum FROM ({$matches[1]}) AS foo WHERE rownum <= $limit";
 				if ($offset)
 					$sql = "SELECT bar.* FROM ($sql) bar WHERE rnum > $offset";
 			}
+			$sql = $query;
 		}
 		// Rewrite UNIX_TIMESTAMP
 		$sql = preg_replace('/UNIX_TIMESTAMP\(\)/', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
 
-		if (is_object($result) OR $result = $link->prepare($sql)) {
-			try {
-				$result->execute();
-			} catch (PDOException $e) {
+		if ($result = oci_parse($link, $sql)) {
+			if (!@oci_execute($result, OCI_COMMIT_ON_SUCCESS)) {
+				$e = oci_error($result);
 				// code 923 means no FROM found
 				// this workaround sometimes works
-				if ($e->errorInfo[1] == 923) {
+				if ($e['code'] == 923) {
 					$sql .= "\nFROM DUAL";
-					try {
-						$result = $link->prepare($sql);
-						$result->execute();
-					} catch (PDOException $e) {
+					$result = oci_parse($link, $sql);
+					if (!@oci_execute($result, OCI_COMMIT_ON_SUCCESS))
 						throw new Kohana_Database_Exception('database.error', $e->getMessage());
-					}
 
+				}
+				else {
+					throw new Kohana_Database_Exception('database.error', $e['message'].' - SQL=['.$sql.']');
 				}
 			}
 
@@ -169,19 +208,39 @@ class Pdooracle_Result extends Pdogeneric_Result {
 
 				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
 				if ($this->valid())
-					$this->latest_row = $this->result->fetch($this->fetch_type);
+					$this->latest_row = oci_fetch_object($this->result);
 			} elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql)) {
 				# completely broken, but I don't care
 				$this->insert_id  = 0;
 			}
 		} else {
 			// SQL error
-			$err = $link->errorInfo();
+			$err = oci_error();
 			throw new Kohana_Database_Exception
-				('database.error', $err[2].' - SQL=['.$sql.']');
+				('database.error', $err['message'].' - SQL=['.$sql.']');
 		}
 
-		$this->result($object);
 		$this->sql = $sql;
+	}
+
+	# unimplemented and unused
+	public function result($object = true, $type = false)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function result_array($object = null, $type = false)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function list_fields()
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+	}
+
+	public function seek($offset)
+	{
+		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
 }
