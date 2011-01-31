@@ -202,7 +202,7 @@ class Comment_Model extends Model {
 			"service_description = '' OR service_description is NULL ".
 			"GROUP BY host_name ORDER BY host_name";
 		} else { # service comments
-			$sql = "SELECT * FROM (SELECT COUNT(*) as cnt, ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
+			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
 			"service_description != '' OR service_description is not NULL) ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		}
