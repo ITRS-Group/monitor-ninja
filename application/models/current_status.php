@@ -45,7 +45,7 @@ class Current_status_Model extends Model
 	public $services_unknown_scheduled = 0;
 	public $services_unknown_acknowledged = 0;
 	public $services_unknown_disabled = 0;
-	public $services_unknown_unacknowledged = 0;
+	public $svcs_unknown_unacknowledged = 0;
 	public $services_unknown = 0;
 
 	public $services_critical_host_problem = 0;
@@ -389,7 +389,7 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth>0 ) AS services_unknown_scheduled, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND problem_has_been_acknowledged=1 ) AS services_unknown_acknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND active_checks_enabled!=1 ) AS services_unknown_disabled, ".
-			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS services_unknown_unacknowledged, ".
+			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN." AND scheduled_downtime_depth != 0 AND problem_has_been_acknowledged!=1 ".$active_checks_condition.") AS svcs_unknown_unacknowledged, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_UNKNOWN.") AS services_unknown, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_PENDING." AND active_checks_enabled!=1 ) AS services_pending_disabled, ".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_PENDING.") AS services_pending, ".
@@ -447,7 +447,7 @@ class Current_status_Model extends Model
 
 		$this->services_unknown_disabled = $show_passive_as_active ? 0 : $svc->services_unknown_disabled;
 
-		$this->services_unknown_unacknowledged = $svc->services_unknown_unacknowledged;
+		$this->svcs_unknown_unacknowledged = $svc->svcs_unknown_unacknowledged;
 		$this->services_unknown = $svc->services_unknown;
 		$this->services_critical_host_problem = $svc->services_critical_host_problem;
 		$this->services_critical_scheduled = $svc->services_critical_scheduled;

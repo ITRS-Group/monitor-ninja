@@ -114,9 +114,9 @@ class Tac_services_Widget extends widget_Core {
 
 		# SERVICES UNKNOWN
 		$services_unknown = array();
-		if ($current_status->services_unknown_unacknowledged) {
+		if ($current_status->svcs_unknown_unacknowledged) {
 			$services_unknown['status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_UP|nagstat::HOST_PENDING).'&service_props='.$service_fiiter] =
-				$current_status->services_unknown_unacknowledged.' '.$this->translate->_('Unhandled Problems');
+				$current_status->svcs_unknown_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->services_unknown_host_problem) {
