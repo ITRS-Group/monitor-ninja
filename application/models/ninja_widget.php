@@ -20,7 +20,7 @@ class Ninja_widget_Model extends Model
 		$sql = "SELECT * FROM ninja_widgets ";
 		if ($all===true) {
 			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
-				self::USERFIELD."=' ') ORDER BY friendly_name";
+				self::USERFIELD." IS NULL) ORDER BY friendly_name";
 		} else {
 			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user).
 				"ORDER BY friendly_name";
@@ -57,7 +57,7 @@ class Ninja_widget_Model extends Model
 		} else {
 			# fetch default widget settings
 			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
-				self::USERFIELD ."=' ') AND name=".$db->escape($widget);
+				self::USERFIELD ." IS NULL) AND name=".$db->escape($widget);
 		}
 		$result = $db->query($sql);
 
@@ -80,7 +80,7 @@ class Ninja_widget_Model extends Model
 		if (!count($res)) {
 			unset($res);
 			# copy all under users' name
-			$sql = $sql_base." WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".self::USERFIELD."=' ')";
+			$sql = $sql_base." WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL)";
 			$res = $db->query($sql);
 			foreach ($res as $row) {
 				# copy widget setting to user
