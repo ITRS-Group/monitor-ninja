@@ -78,7 +78,7 @@ class Notifications_Model extends Model {
 		if ($count === true) {
 			return count($result);
 		}
-		return $result->count() ? $result->result(): false;
+		return $result->count() ? $result: false;
 	}
 
 	/**
