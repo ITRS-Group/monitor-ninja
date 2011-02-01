@@ -137,7 +137,7 @@ class Htpasswd_importer_Model extends Model
 				$user_res = $this->db->query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db_quote($user));
 				if ($user_res != false) {
 					$ary = $user_res->current();
-					$this->add_user_role($ary[0]);
+					$this->add_user_role($ary->id);
 				}
 				unset($result);
 				unset($user_res);
