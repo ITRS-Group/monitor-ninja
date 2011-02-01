@@ -480,7 +480,7 @@ class Host_Model extends Model {
 					"host.icon_image, ".
 					"host.icon_image_alt, ".
 					"host.is_flapping, ".
-					"action_url, ".
+					"host.action_url, ".
 					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration, ".
 					"UNIX_TIMESTAMP() AS cur_time, ".
 					"host.current_attempt, ".
