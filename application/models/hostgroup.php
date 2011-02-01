@@ -482,7 +482,7 @@ class Hostgroup_Model extends ORM
 		$cnt_hosts_in_group = 0;
 
 		$sql = "SELECT COUNT(hhg.host) AS cnt FROM hostgroup hg, host_hostgroup hhg ".
-			"WHERE hg.hostgroup_name=".$db->escape($groupname)." AND hhg.hostgroup=hg.id;";
+			"WHERE hg.hostgroup_name=".$db->escape($groupname)." AND hhg.hostgroup=hg.id";
 
 		$res = $db->query($sql);
 		if ($res && count($res)) {

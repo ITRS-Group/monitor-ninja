@@ -77,7 +77,7 @@ class Group_Model extends Model
 					h.id, s.current_state
 				ORDER BY
 					h.host_name,
-					s.current_state;";
+					s.current_state";
 		} elseif ($auth->view_services_root && $grouptype == 'service') {
 			$sql = "
 				SELECT ".$fields.
@@ -97,7 +97,7 @@ class Group_Model extends Model
 					h.id, s.current_state
 				ORDER BY
 					h.host_name,
-					s.current_state;";
+					s.current_state";
 		} else {
 			$hostlist_str = implode(',', $hostlist);
 
@@ -119,7 +119,7 @@ class Group_Model extends Model
 					h.id, s.current_state
 				ORDER BY
 					h.host_name,
-					s.current_state;";
+					s.current_state";
 		}
 		$result = $db->query($sql);
 		#echo $sql."<hr />";
@@ -236,7 +236,7 @@ class Group_Model extends Model
 				h.host_name=s.host_name ".$auth_str." ".$filter_sql.$service_props_sql.$host_props_sql.
 			" GROUP BY
 				h.host_name, s.id
-			ORDER BY ".$sort_string." ".$limit_str.";";
+			ORDER BY ".$sort_string." ".$limit_str;
 #echo $sql;
 		$result = $db->query($sql);
 		return $result;
@@ -292,7 +292,7 @@ class Group_Model extends Model
 					".$type."group gr
 				WHERE
 					g.".$type."=".$id." AND
-					gr.id=g.".$type."group;";
+					gr.id=g.".$type."group";
 		} else {
 			# abort if both id and name are empty
 			return false;
@@ -345,7 +345,7 @@ class Group_Model extends Model
 						"GROUP BY ".
 						"h.current_state ".
 						"ORDER BY ".
-						"h.current_state;";
+						"h.current_state";
 					break;
 				case 'service':
 					$sql = "SELECT
@@ -362,7 +362,7 @@ class Group_Model extends Model
 						"GROUP BY ".
 						"s.current_state ".
 						"ORDER BY ".
-						"s.current_state;";
+						"s.current_state";
 					break;
 			}
 		} elseif ($grouptype == 'service') {
@@ -388,7 +388,7 @@ class Group_Model extends Model
 						"GROUP BY ".
 						"h.current_state ".
 						"ORDER BY ".
-						"h.current_state;";
+						"h.current_state";
 					break;
 				case 'service':
 					$sql = "SELECT
@@ -405,7 +405,7 @@ class Group_Model extends Model
 						" GROUP BY ".
 						"s.current_state ".
 						"ORDER BY ".
-						"s.current_state;";
+						"s.current_state";
 					break;
 			}
 		}
@@ -532,7 +532,7 @@ class Group_Model extends Model
 					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
 					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
 					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql.
-					" GROUP BY host.host_name;";
+					" GROUP BY host.host_name";
 					break;
 			default:
 				return false;
