@@ -171,7 +171,7 @@ class Comment_Model extends Model {
 			}
 		}
 
-		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
+		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
 		#echo $sql."<br />";
 
 		$result = $db->query($sql);
@@ -179,7 +179,7 @@ class Comment_Model extends Model {
 			return $result ? count($result) : 0;
 		}
 
-		return $result->result();
+		return $result;
 	}
 
 	/**

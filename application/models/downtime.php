@@ -274,7 +274,7 @@ class Downtime_Model extends Model
 			}
 		}
 
-		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
+		$sql .= " ORDER BY d.entry_time, d.host_name ".$offset_limit;
 		#echo $sql."<br />";
 
 		$result = $db->query($sql);
@@ -282,6 +282,6 @@ class Downtime_Model extends Model
 			return $result ? count($result) : 0;
 		}
 
-		return $result->result();
+		return $result;
 	}
 }
