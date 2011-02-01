@@ -23,7 +23,6 @@ class db_Core {
 				$res .= ",".($bit+1);
 			}
 		}
-		print_r($res);
 		return substr($res, 1);
 	}
 }
