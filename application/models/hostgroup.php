@@ -248,10 +248,12 @@ class Hostgroup_Model extends ORM
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		if (!empty($hoststatustypes)) {
-			$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+			$bits = db::bitmask_to_string($hoststatustypes);
+			$filter_host_sql = " AND host.current_state IN ($bits) ";
 		}
 		if (!empty($servicestatustypes)) {
-			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+			$bits = db::bitmask_to_string($servicestatustypes);
+			$filter_service_sql = " AND service.current_state IN ($bits) ";
 		}
 
 

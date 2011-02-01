@@ -33,7 +33,8 @@ class Group_Model extends Model
 		$filter_sql = '';
 		$state_filter = false;
 		if (!empty($hoststatus)) {
-			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
+			$bits = db::bitmask_to_string($hoststatus);
+			$filter_sql .= " AND h.current_state IN ($bits) ";
 		}
 		$service_filter = false;
 		$servicestatus = trim($servicestatus);
@@ -41,7 +42,8 @@ class Group_Model extends Model
 		#$svc_groupby = ' GROUP BY myhost';
 		#$svc_where = '';
 		if ($servicestatus!==false && !empty($servicestatus)) {
-			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
+			$bits = db::bitmask_to_string($servicestatus);
+			$filter_sql .= " AND s.current_state IN ($bits) ";
 			#$svc_groupby = " GROUP BY ".$grouptype."group_name, host.host_name";
 			#$svc_where = " AND service.host_name=host.host_name ";
 		}
@@ -113,6 +115,7 @@ class Group_Model extends Model
 		return $result;
 	}
 
+
 	/**
 	 * Finds all members of a host- or servicegroup, optionally filtering
 	 * on status.
@@ -136,12 +139,14 @@ class Group_Model extends Model
 		$filter_sql = '';
 		$state_filter = false;
 		if (!empty($hoststatus)) {
-			$filter_sql .= " AND 1 << h.current_state & $hoststatus ";
+			$bits = db::bitmask_to_string($hoststatus);
+			$filter_sql .= " AND h.current_state IN ($bits) ";
 		}
 		$service_filter = false;
 		$servicestatus = trim($servicestatus);
 		if ($servicestatus!==false && !empty($servicestatus)) {
-			$filter_sql .= " AND 1 << s.current_state & $servicestatus ";
+			$bits = db::bitmask_to_string($servicestatus);
+			$filter_sql .= " AND s.current_state IN ($bits) ";
 		}
 
 		$limit_str = !empty($limit) ? $limit : '';
@@ -441,10 +446,12 @@ class Group_Model extends Model
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		if (!empty($hoststatustypes)) {
-			$filter_host_sql = " AND 1 << h.current_state & ".$hoststatustypes." ";
+			$bits = db::bitmask_to_string($hoststatustypes);
+			$filter_host_sql = " AND h.current_state IN ($bits) ";
 		}
 		if (!empty($servicestatustypes)) {
-			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+			$bits = db::bitmask_to_string($servicestatustypes);
+			$filter_service_sql = " AND service.current_state IN ($bits) ";
 		}
 
 		switch ($type) {
@@ -497,7 +504,8 @@ class Group_Model extends Model
 				}
 
 				if (!empty($hoststatustypes)) {
-					$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+					$bits = db::bitmask_to_string($hoststatustypes);
+					$filter_host_sql = " AND host.current_state IN ($bits) ";
 				}
 
 				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = host.host_name AND current_state = %s ".$service_match;

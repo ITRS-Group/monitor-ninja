@@ -418,10 +418,12 @@ class Host_Model extends Model {
 		$from = 'host ';
 
 		if (!empty($this->state_filter)) {
-			$filter_host_sql = " AND 1 << %scurrent_state & ".$this->state_filter." ";
+			$bits = db::bitmask_to_string($this->state_filter);
+			$filter_host_sql = " AND %scurrent_state IN ($bits) ";
 		}
 		if ($this->service_filter!==false && !empty($this->service_filter)) {
-			$filter_service_sql = " AND 1 << %scurrent_state & $this->service_filter ";
+			$bits = db::bitmask_to_string($this->service_filter);
+			$filter_service_sql = " AND %scurrent_state IN ($bits) ";
 		}
 
 		if (!$this->show_services) {
