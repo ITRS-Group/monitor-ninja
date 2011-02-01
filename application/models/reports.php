@@ -174,7 +174,7 @@ class Reports_Model extends Model
 			if (!empty($db_table))
 				$this->db_table = $db_table;
 
-			$this->db = pdodb::instance('mysql', $this->db_name);
+			$this->db = new Database();
 		}
 	}
 
@@ -1104,9 +1104,9 @@ class Reports_Model extends Model
 			$this->db_name.".".$this->db_table.
 			" WHERE timestamp <".$this->start_time.
 			" ORDER BY timestamp DESC LIMIT 1";
-		$dbr = $this->db->query($query);
+		$dbr = $this->db->query($query)->result(false);
 
-		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
+		if (!$dbr || !($row = $dbr->current()))
 			return false;
 
 		$this->register_db_time($row['timestamp']);
@@ -1680,7 +1680,8 @@ class Reports_Model extends Model
 	private function st_parse_all_rows($hostname = false, $servicename = false)
 	{
 		$dbr = $this->uptime_query($hostname, $servicename);
-		while ($row = $dbr->fetch(PDO::FETCH_ASSOC)) {
+		$dbr->result(false);
+		foreach ($dbr as $row) {
 			$this->st_parse_row($row);
 		}
 	}
@@ -1808,13 +1809,13 @@ class Reports_Model extends Model
 			$sql .= "AND (host_name IN ('" . join("', '", $hostname) . "') AND service_description = '') ";
 		}
 		elseif (is_array($servicename)) {
-			$sql .= "AND concat(host_name, ';', service_description) IN ('" .
+			$sql .= "AND concat(concat(host_name, ';'), service_description) IN ('" .
 				join("', '", $servicename) . "') ";
 		}
 		else {
 			if (empty($servicename)) $servicename = '';
-			$sql .= "AND host_name=".$this->db->quote($hostname)." " .
-			"AND service_description=".$this->db->quote($servicename)." ";
+			$sql .= "AND host_name=".$this->db->escape($hostname)." " .
+			"AND service_description=".$this->db->escape($servicename)." ";
 		}
 		if (!$this->include_soft_states)
 			$sql .= 'AND hard = 1 ';
@@ -1851,15 +1852,15 @@ class Reports_Model extends Model
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
-			" AND host_name = " . $this->db->quote($hostname);
+			" AND host_name = " . $this->db->escape($hostname);
 
 		if (!empty($service_description)) {
-			$sql .= "AND service_description=".$this->db->quote($service_description);
+			$sql .= "AND service_description=".$this->db->escape($service_description);
 		}
 		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
-		$dbr = $this->db->query($sql);
-		if (!$dbr || !($row = $dbr->fetch(PDO::FETCH_ASSOC)))
+		$dbr = $this->db->query($sql)->result(false);
+		if (!$dbr || !($row = $dbr->current()))
 			return false;
 
 		$this->register_db_time($row['timestamp']);
@@ -1893,8 +1894,8 @@ class Reports_Model extends Model
 		$service_description = $service_description === false ? '' : $service_description;
 		$sql = "SELECT timestamp, state FROM " .
 			$this->db_name . "." . $this->db_table .
-			" WHERE host_name = " . $this->db->quote($host_name) .
-			" AND service_description = " . $this->db->quote($service_description) .
+			" WHERE host_name = " . $this->db->escape($host_name) .
+			" AND service_description = " . $this->db->escape($service_description) .
 			" AND event_type = ";
 
 		if ($service_description !='' ) {
@@ -1914,8 +1915,8 @@ class Reports_Model extends Model
 
 		# first try to fetch the real initial state so
 		# we don't have to assume
-		$dbr = $this->db->query($sql);
-		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
+		$dbr = $this->db->query($sql)->result(false);
+		if ($dbr && ($row = $dbr->current())) {
 			$this->initial_state = $row['state'];
 			return $this->initial_state;
 		}
@@ -1947,7 +1948,7 @@ class Reports_Model extends Model
 			$dbr = $this->db->query($base_sql . "ORDER BY timestamp ASC LIMIT 1");
 		}
 
-		if ($dbr && ($row = $dbr->fetch(PDO::FETCH_ASSOC))) {
+		if ($dbr && ($row = $dbr->result(false)->current())) {
 			$state = $row['state'];
 		} else {
 			# this is only reached if there is no state at all
@@ -3350,7 +3351,7 @@ class Reports_Model extends Model
 	 */
 	public static function print_db_lines($prefix, $table = 'report_data', $test, $db_start_time, $db_end_time)
 	{
-		$db = pdodb::instance('mysql', 'merlin');
+		$db = new Database();
 		$return_str = '';
 		$start = $db_start_time;
 		$stop = $db_end_time;
@@ -3359,7 +3360,7 @@ class Reports_Model extends Model
 		if (!empty($test['service_description'])) {
 			$ignore_event = 801;
 			$objects = $test['service_description'];
-			$otype = 'concat(host_name, ";", service_description)';
+			$otype = 'concat(concat(host_name, ";"), service_description)';
 			if (!is_array($objects))
 				$objects = array($objects);
 			$objects[] = ';';
@@ -3390,7 +3391,7 @@ class Reports_Model extends Model
 					$return_str .= ",";
 				else
 					$first = false;
-				$return_str .= $db->quote($v);
+				$return_str .= $db->escape($v);
 			}
 			$return_str .= ");\n";
 		}

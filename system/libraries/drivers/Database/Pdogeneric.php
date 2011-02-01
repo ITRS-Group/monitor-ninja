@@ -287,37 +287,6 @@ class Pdogeneric_Result extends Database_Result {
 	// Data fetching types
 	protected $fetch_type  = PDO::FETCH_OBJ;
 	protected $return_type = PDO::FETCH_ASSOC;
-	protected $latest_row = null;
-
-
-	public function current()
-	{
-		// evil hack to force oracle to not have a bunch of open [BC]LOBs, as
-		// those create segfaults
-		// FIXME: I belong in PDB-OCI - will someone help me move?
-		$vars = get_object_vars($this->latest_row);
-		if ($vars) foreach ($vars as $key => $val) {
-			if (is_resource($val)) {
-				$this->latest_row->$key = stream_get_contents($val);
-				fclose($val);
-			}
-		}
-		return $this->latest_row;
-	}
-
-	public function next()
-	{
-		$this->latest_row = $this->result->fetch(PDO::FETCH_OBJ);
-		$this->current_row++;
-		return $this;
-	}
-
-	public function valid()
-	{
-		if ($this->current_row >= $this->total_rows)
-			return false;
-		return true;
-	}
 
 	/**
 	 * Sets up the result variables.
@@ -344,9 +313,6 @@ class Pdogeneric_Result extends Database_Result {
 				$this->total_rows = $this->pdo_row_count();
 
 				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
-				if ($this->valid())
-					$this->latest_row = $this->result->fetch($this->fetch_type);
-				#$this->latest_row = $this->result->fetch($this->fetch_type);
 			} elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql)) {
 				# completely broken, but I don't care
 				$this->insert_id  = 0;

@@ -422,7 +422,6 @@ class Group_Model extends Model
 		}
 
 		$db = new Database();
-		#$db = pdodb::instance();
 
 		if (empty($group)) {
 			return false;
