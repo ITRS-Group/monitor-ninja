@@ -17,15 +17,15 @@ class Downtime_Model extends Model
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
 			# don't use auth_host fields etc
-			$sql = "SELECT d.* FROM scheduled_downtime AS d WHERE d.downtime_type & " . $filter;
+			$sql = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type & " . $filter;
 		} else {
 			# hosts
 			$auth_host_alias = $host_query['host_field'];
 			$auth_from = ' ,'.$host_query['from'];
 			$auth_where = ' WHERE '.sprintf($host_query['where'], "d.host_name");
-			$sql = "SELECT d.* FROM scheduled_downtime AS d ".$auth_from.$auth_where." AND d.downtime_type & " . $filter;
+			$sql = "SELECT d.* FROM scheduled_downtime d ".$auth_from.$auth_where." AND d.downtime_type & " . $filter;
 
-			$query_contact = "SELECT d.* FROM scheduled_downtime AS d, host, ".
+			$query_contact = "SELECT d.* FROM scheduled_downtime d, host, ".
 			"contact, host_contact ".
 			"WHERE host.id = host_contact.host ".
 			"AND host_contact.contact=contact.id ".
@@ -35,14 +35,14 @@ class Downtime_Model extends Model
 
 			# services
 			$query_svc =
-				'SELECT d.* FROM scheduled_downtime AS d, host, service, contact, contact_contactgroup, service_contactgroup ' .
+				'SELECT d.* FROM scheduled_downtime d, host, service, contact, contact_contactgroup, service_contactgroup ' .
 				'WHERE service.id = service_contactgroup.service ' .
 				'AND service_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
 				'AND contact_contactgroup.contact = ' . (int)$auth->id." AND host.host_name=service.host_name ".
 				"AND d.host_name=service.host_name AND d.service_description=service.service_description AND d.downtime_type & " . $filter;
 
 			# contact <-> service_contact relation
-			$query_svc_contact = "SELECT d.* FROM scheduled_downtime AS d, host h, service s, contact c, service_contact sc ".
+			$query_svc_contact = "SELECT d.* FROM scheduled_downtime d, host h, service s, contact c, service_contact sc ".
 				"WHERE s.id=sc.service AND c.id=sc.contact ".
 				"AND sc.contact=c.id ".
 				"AND c.contact_name=".$db->escape(Auth::instance()->get_user()->username).
@@ -152,7 +152,7 @@ class Downtime_Model extends Model
 		if ($host_query === true) {
 			# don't use auth_host fields etc
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = d.host_name";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
@@ -219,7 +219,7 @@ class Downtime_Model extends Model
 			# don't use auth_host fields etc since
 			# user is authenticated_for_all_hosts
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND '.$auth_host_alias . ".host_name = d.host_name";
 			$sql = "SELECT d.* FROM scheduled_downtime d ".$auth_from." WHERE".
 				" d.host_name!='' ".$svc_selection.$auth_where;
@@ -237,7 +237,7 @@ class Downtime_Model extends Model
 					" d.host_name!='' ".$svc_selection.$auth_where;
 
 				# comments via host_contact
-				$from = "FROM scheduled_downtime d, host AS auth_host, contact AS auth_contact, host_contact AS auth_host_contact";
+				$from = "FROM scheduled_downtime d, host auth_host, contact auth_contact, host_contact auth_host_contact";
 				# via host_contact
 				$sql2 = "SELECT d.* ".$from." WHERE".
 					" d.host_name!='' ".$svc_selection." AND auth_contact.contact_name=".
@@ -258,7 +258,7 @@ class Downtime_Model extends Model
 						"AND d.host_name=".$service_query['service_field'].".host_name";
 
 					# comments via service_contact
-					$from = "FROM scheduled_downtime d, host AS auth_host, contact AS auth_contact, service_contact AS auth_servicecontact, service AS auth_service ";
+					$from = "FROM scheduled_downtime d, host auth_host, contact auth_contact, service_contact auth_servicecontact, service auth_service ";
 					$sql2 = "SELECT d.* ".$from." WHERE ".
 						"(d.service_description!='' AND d.service_description is NOT null) ".
 						"AND auth_service.id=auth_servicecontact.service ".
