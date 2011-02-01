@@ -32,14 +32,14 @@ class Scheduling_queue_Model extends Model {
 			else
 				$offset_limit = '';
 
-			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled
-							FROM service
-							WHERE should_be_scheduled=1
-							) UNION (
-							SELECT host_name, concat('') as service_description, next_check, last_check, check_type, active_checks_enabled
-							FROM host
-							WHERE should_be_scheduled=1
-							) ORDER BY ".$this->sort_field." ".$this->sort_order." ".$offset_limit;
+			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled ".
+							"FROM service ".
+							"WHERE should_be_scheduled=1".
+							") UNION (".
+							"SELECT host_name, CONCAT('', '') as service_description, next_check, last_check, check_type, active_checks_enabled ".
+							"FROM host ".
+							"WHERE should_be_scheduled=1".
+							") ORDER BY ".$this->sort_field." ".$this->sort_order." ".$offset_limit;
 
 			$result = $db->query($sql);
 
