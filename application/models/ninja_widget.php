@@ -5,7 +5,7 @@
  */
 class Ninja_widget_Model extends Model
 {
-	const USERFIELD = 'user_col';
+	const USERFIELD = 'username';
 
 	/**
 	*	Fetch all available widgets for a page

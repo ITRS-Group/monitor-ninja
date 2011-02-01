@@ -5,7 +5,7 @@
  */
 class Ninja_setting_Model extends Model
 {
-	const USERFIELD = 'user_col';
+	const USERFIELD = 'username';
 	/**
 	 * Save page setting for a user
 	 *
