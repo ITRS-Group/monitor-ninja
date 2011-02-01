@@ -441,7 +441,7 @@ class Host_Model extends Model {
 			}
 
 			# this should never happen but added just to be on the safe side
-			if ($this->serviceprops !== false) {
+			if ($this->serviceprops != false) {
 				$from .= 'INNER JOIN service ON service.host_name=host.host_name ';
 			}
 
