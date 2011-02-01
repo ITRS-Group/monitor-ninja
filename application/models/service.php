@@ -219,7 +219,7 @@ class Service_Model extends Model
 		$db = new Database();
 
 		$sql = "SELECT DISTINCT s.*, h.current_state AS host_state ".
-		"FROM service AS s, host AS h WHERE ";
+		"FROM service s, host h WHERE ";
 		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
 		foreach ($host_name as $host) {
@@ -462,10 +462,10 @@ class Service_Model extends Model
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." AS t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(unix_timestamp()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';

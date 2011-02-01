@@ -256,7 +256,7 @@ class Host_Model extends Model {
 		if ($host_query === true) {
 			# don't use auth_host fields etc
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = '" . $host_name . "'";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
@@ -265,8 +265,8 @@ class Host_Model extends Model {
 		}
 		$sql = "SELECT parent.* " .
 			"FROM " .
-				"host_parents AS hp, " .
-				"host AS parent " . $auth_from .
+				"host_parents hp, " .
+				"host parent " . $auth_from .
 			" WHERE ".
 				$auth_host_alias . ".id=hp.host " . $auth_where .
 				" AND parent.id=hp.parents " .
@@ -429,7 +429,7 @@ class Host_Model extends Model {
 		if (!$this->show_services) {
 			# host query part
 			if (!$this->auth->view_hosts_root) {
-				$from .= ', contact_access AS ca ';
+				$from .= ', contact_access ca ';
 				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
 			} else {
 				$where = 'WHERE 1=1 ';
@@ -502,7 +502,7 @@ class Host_Model extends Model {
 			$from .= ', service';
 			$where = '';
 			if (!$this->auth->view_hosts_root || !$this->auth->view_services_root) {
-				$from .= ', contact_access AS ca ';
+				$from .= ', contact_access ca ';
 
 				# match authorized services against service.host_name
 				$where = ' WHERE ca.contact='.$this->auth->id.' AND service.host_name=host.host_name'.
@@ -984,10 +984,10 @@ class Host_Model extends Model {
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." AS t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(unix_timestamp()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';
