@@ -41,7 +41,7 @@ class Comment_Model extends Model {
 		if ($host_query === true) {
 			# don't use auth_host fields etc
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
@@ -136,7 +136,7 @@ class Comment_Model extends Model {
 			# don't use auth_host fields etc since
 			# user is authenticated_for_all_hosts
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND '.$auth_host_alias . ".host_name = c.host_name";
 			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE".
 				" c.host_name!='' ".$svc_selection.$auth_where;
