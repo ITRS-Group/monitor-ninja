@@ -125,6 +125,7 @@ class Database_Oracle_Driver extends Database_Driver {
 }
 
 class Oracle_Result extends Database_Result {
+	protected $fetch_array = false;
 	public function current()
 	{
 		$obj = new StdClass();
@@ -138,6 +139,8 @@ class Oracle_Result extends Database_Result {
 			}
 			$obj->$name = $var;
 		}
+		if ($this->fetch_array)
+			return get_object_vars($obj);
 		return $obj;
 	}
 
@@ -226,7 +229,10 @@ class Oracle_Result extends Database_Result {
 	# unimplemented and unused
 	public function result($object = true, $type = false)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		if ($type == false) {
+			$this->fetch_array = true;
+		}
+		return $this;
 	}
 
 	public function result_array($object = null, $type = false)
