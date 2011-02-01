@@ -50,7 +50,7 @@ class Group_Model extends Model
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
-		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
 
 		if (!$auth->view_hosts_root && !($auth->view_services_root && $grouptype == 'service')) {
 			$hostlist_str = implode(',', $hostlist);
@@ -65,16 +65,11 @@ class Group_Model extends Model
 					COUNT(s.current_state) AS state_count
 				FROM
 					service s,
-					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
+				INNER JOIN host h ON s.host_name=h.host_name
+				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
+				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
-					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
+					{$all_sql} {$filter_sql}
 				ORDER BY
 					h.host_name,
 					s.current_state";
@@ -84,17 +79,13 @@ class Group_Model extends Model
 					"s.current_state AS service_state,
 					COUNT(s.current_state) AS state_count
 				FROM
-					service s,
 					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
+				INNER JOIN service s ON h.host_name=s.host_name
+				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
+				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
-					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
+					{$all_sql}
+					{$filter_sql}
 				ORDER BY
 					h.host_name,
 					s.current_state";
@@ -106,17 +97,13 @@ class Group_Model extends Model
 					"s.current_state AS service_state,
 					COUNT(s.current_state) AS state_count
 				FROM
-					service s,
-					host h,
-					".$grouptype."group sg,
-					".$grouptype."_".$grouptype."group ssg
+					host h
+				INNER JOIN service s ON h.host_name=s.host_name
+				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
+				INNER JOIN {$grouptype} sg ON sg.id = ssg.".$grouptype."group
 				WHERE
 					".$all_sql."
-					ssg.".$grouptype."group = sg.id AND
-					".$member_match."
-					h.host_name=s.host_name ".$filter_sql."
-				GROUP BY
-					h.id, s.current_state
+					".$filter_sql."
 				ORDER BY
 					h.host_name,
 					s.current_state";
@@ -166,7 +153,7 @@ class Group_Model extends Model
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
-		$member_match = $grouptype == 'service' ? " s.id=ssg.".$grouptype." AND " : " h.id=ssg.".$grouptype." AND ";
+		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
 
 		$sort_string = "";
 		if (empty($sort_field)) {
@@ -224,18 +211,13 @@ class Group_Model extends Model
 				s.next_check,
 				s.notifications_enabled,
 				s.service_description
-			FROM
-				service s,
-				host h,
-				".$grouptype."group sg,
-				".$grouptype."_".$grouptype."group ssg
+			FROM host h
+			INNER JOIN service s ON h.host_name=s.host_name
+			INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
+			INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group
 			WHERE
-				".$all_sql."
-				ssg.".$grouptype."group = sg.id AND
-				".$member_match."
-				h.host_name=s.host_name ".$auth_str." ".$filter_sql.$service_props_sql.$host_props_sql.
-			" GROUP BY
-				h.host_name, s.id
+				{$all_sql} {$auth_str} {$filter_sql} {$service_props_sql}
+				{$host_props_sql} 1 = 1
 			ORDER BY ".$sort_string." ".$limit_str;
 #echo $sql;
 		$result = $db->query($sql);
@@ -271,7 +253,7 @@ class Group_Model extends Model
 		$all_sql = $name != 'all' ? "sg.".$type."group_name=".$db->escape($name)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
-		$member_match = $type == 'service' ? " s.id=ssg.".$type." AND " : " h.id=ssg.".$type." AND ";
+		$member_match = $type == 'service' ? "s.id=ssg.".$type : "h.id=ssg.".$type;
 
 		if ($id === false && !empty($name) && array_key_exists($name, ${$type.'_list_r'})) {
 			$id = ${$type.'_list_r'}[$name];
@@ -531,8 +513,7 @@ class Group_Model extends Model
 					"INNER JOIN service ON service.host_name = host.host_name ".
 					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
 					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
-					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql.
-					" GROUP BY host.host_name";
+					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql;
 					break;
 			default:
 				return false;
