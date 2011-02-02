@@ -278,7 +278,7 @@ class Service_Model extends Model
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
 				$query[] = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service AS s, host AS h ".
+			"FROM service s, host h ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
@@ -292,7 +292,7 @@ class Service_Model extends Model
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service AS s, host AS h ".
+			"FROM service s, host h ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
