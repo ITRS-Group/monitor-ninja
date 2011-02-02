@@ -226,7 +226,7 @@ class Nagios_auth_Model extends Model
 			return true;
 		}
 		$query_parts = array(
-			'from' => ' host AS auth_host, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, host_contactgroup AS auth_host_contactgroup',
+			'from' => ' host auth_host, contact auth_contact, contact_contactgroup auth_contact_contactgroup, host_contactgroup auth_host_contactgroup',
 			'where' => " auth_host.id = auth_host_contactgroup.host
 				AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
 				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) . "
@@ -252,7 +252,7 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->services))
 			return $this->services;
 
-		$query = "SELECT s.id, s.host_name, s.service_description FROM contact_access AS ca, service AS s WHERE ca.contact=".$this->id." AND ca.service IS NOT NULL AND s.id=ca.service";
+		$query = "SELECT s.id, s.host_name, s.service_description FROM contact_access ca, service s WHERE ca.contact=".$this->id." AND ca.service IS NOT NULL AND s.id=ca.service";
 		if ($this->view_services_root || $this->view_hosts_root) {
 			$query = 'SELECT id, host_name, service_description FROM service';
 		}
@@ -283,7 +283,7 @@ class Nagios_auth_Model extends Model
 			return true;
 		}
 		$query_parts = array(
-			'from' => ' host AS auth_host, service AS auth_service, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, service_contactgroup AS auth_service_contactgroup',
+			'from' => ' host auth_host, service auth_service, contact auth_contact, contact_contactgroup auth_contact_contactgroup, service_contactgroup auth_service_contactgroup',
 			'where' => " auth_service.id = auth_service_contactgroup.service
 				AND auth_service_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
 				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username),
