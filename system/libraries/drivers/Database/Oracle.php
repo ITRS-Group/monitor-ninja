@@ -170,7 +170,7 @@ class Oracle_Result extends Database_Result {
 			$sql = $query;
 		}
 		// Rewrite UNIX_TIMESTAMP
-		$sql = preg_replace('/UNIX_TIMESTAMP\(\)/', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
+		$sql = str_replace('UNIX_TIMESTAMP()', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
 
 		if ($result = oci_parse($link, $sql)) {
 			if (!@oci_execute($result, OCI_COMMIT_ON_SUCCESS)) {
@@ -181,7 +181,7 @@ class Oracle_Result extends Database_Result {
 					$sql .= "\nFROM DUAL";
 					$result = oci_parse($link, $sql);
 					if (!@oci_execute($result, OCI_COMMIT_ON_SUCCESS))
-						throw new Kohana_Database_Exception('database.error', $e->getMessage());
+						throw new Kohana_Database_Exception('database.error', $e['message']);
 
 				}
 				else {
@@ -189,16 +189,15 @@ class Oracle_Result extends Database_Result {
 				}
 			}
 
-			if (preg_match('/^(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
+			if (preg_match('/^\s*(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
 				$this->result = $result;
 				$this->current_row = 0;
 
 				$this->total_rows = $this->pdo_row_count();
 
-				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
 				if ($this->valid())
 					$this->latest_row = oci_fetch_object($this->result);
-			} elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql)) {
+			} elseif (preg_match('/^\s*(DELETE|INSERT|UPDATE)/i', $sql)) {
 				# completely broken, but I don't care
 				$this->insert_id  = 0;
 			}
