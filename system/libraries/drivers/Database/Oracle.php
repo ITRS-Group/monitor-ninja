@@ -17,21 +17,17 @@ class Database_Oracle_Driver extends Database_Driver {
 
 		extract($this->db_config['connection']);
 
-		if (!$dsn)
-			throw new Kohana_Database_Exception('database.error',
-				"This driver (".__CLASS__.") requires the dsn property to be set.");
-		// Do not even try to set properties in the last PDO argument - PDO_OCI
-		// is busted.
-		try {
-			$this->link = oci_connect($user, $pass, "//$host/$database");
+		$this->link = @oci_connect($user, $pass, "//$host/$database");
 
-			if( ($charset = $this->db_config['character_set']) )
-			{
-				$this->set_charset($charset);
-			}
+		if( ($charset = $this->db_config['character_set']) )
+		{
+			$this->set_charset($charset);
 		}
-		catch (PDOException $e) {
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
+
+		if (!$this->link) {
+			throw new Kohana_Database_Exception('database.error', "Couldn't connect to database");
+		} else if (($e = oci_error($this->link))) {
+			throw new Kohana_Database_Exception('database.error', $e['message']);
 		}
 		// Clear password after successful connect
 		$this->db_config['connection']['pass'] = NULL;
@@ -50,16 +46,6 @@ class Database_Oracle_Driver extends Database_Driver {
 		// TODO: this should be implemented...
 	}
 
-	public function mylimit($sql, $limit, $offset = 0)
-	{
-		$limit = $limit + $offset;
-		$sql = "SELECT *, rownum AS rnum FROM ($sql) WHERE rnum <= $limit";
-		if ($offset != 0) {
-			$sql = "SELECT * FROM ($sql) WHERE rnum > $offset";
-		}
-		return $sql;
-	}
-
 	public function escape_str($str)
 	{
 		if (!$this->db_config['escape'])
@@ -71,21 +57,19 @@ class Database_Oracle_Driver extends Database_Driver {
 	public function list_tables(Database $db)
 	{
 		$sql = 'SELECT * FROM ALL_TABLES';
-		try {
-			$res = $db->query($sql);
-			$list = array();
-			foreach ($res->result(FALSE) as $row) {
-				$list[] = current($row);
-			}
-
-			unset($res);
-			$tables = $list;
-			return $tables;
-		} catch (PDOException $e) {
-			throw new Kohana_Database_Exception('database.error', $e->getMessage());
+		$res = $db->query($sql);
+		$list = array();
+		foreach ($res->result(FALSE) as $row) {
+			$list[] = current($row);
 		}
+
+		unset($res);
+		$tables = $list;
+		return $tables;
 	}
 
+	// Most errors are catched and thrown in Oracle_Result, so this will
+	// probably fail most of the time. It also appears to be unused, though.
 	public function show_error()
 	{
 		$err = oci_error();
