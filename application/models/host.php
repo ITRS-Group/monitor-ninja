@@ -62,21 +62,21 @@ class Host_Model extends Model {
 		$this->auth = new Nagios_auth_Model();
 	}
 
-        /**
-         Workaround for PDO queries: runs $db->query($sql), copies
-         the resultset to an array, closes the resultset, and returns
-         the array.
-         */
-        private static function query($db,$sql)
-        {
-            $res = $db->query($sql);
-            $rc = array();
-            foreach($res as $row) {
-                $rc[] = $row;
-            }
-            unset($res);
-            return $rc;
-        }
+	/**
+	 Workaround for O queries: runs $db->query($sql), copies
+	 the resultset to an array, closes the resultset, and returns
+	 the array.
+	 */
+	private static function query($db,$sql)
+	{
+		$res = $db->query($sql)->result();
+		$rc = array();
+		foreach($res as $row) {
+			$rc[] = $row;
+		}
+		unset($res);
+		return $rc;
+	}
 
 	/**
 	 * Fetch all onfo on a host. The returned object
