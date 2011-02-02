@@ -6,13 +6,7 @@ class Htpasswd_importer_Model extends Model
 	public $overwrite = false;
 	public $passwd_ary = array();
 	private $existing_ary = array();
-	#private $db_user = "merlin";
-	#private $db_pass = "merlin";
-	#private $db_name = "merlin";
-	#private $db_port = 3306;
-	#private $db_host = "localhost";
 	private $db_table = "users";
-	#private $db_type = "mysql";
 	protected $db = false;
 	private $DEBUG = false;
 
