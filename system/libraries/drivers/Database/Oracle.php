@@ -37,6 +37,22 @@ class Database_Oracle_Driver extends Database_Driver {
 
 	public function query($sql)
 	{
+		// Rewrite LIMIT/OFFSET to oracle compatible thingies
+		$matches = false;
+		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/', $sql, $matches)) {
+			$query = trim($matches[1]);
+			$offset = isset($matches[4]) ? $matches[4] : 0;
+			$limit = $matches[2] + $offset;
+			if ($limit) {
+				$sql = "SELECT foo.*, rownum AS rnum FROM ({$matches[1]}) AS foo WHERE rownum <= $limit";
+				if ($offset)
+					$sql = "SELECT bar.* FROM ($sql) bar WHERE rnum > $offset";
+			}
+			$sql = $query;
+		}
+		// Rewrite UNIX_TIMESTAMP
+		$sql = str_replace('UNIX_TIMESTAMP()', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
+
 		$sth = oci_parse($this->link, $sql);
 		return new Oracle_Result($sth, $this->link, $this->db_config['object'], $sql);
 	}
@@ -156,22 +172,6 @@ class Oracle_Result extends Database_Result {
 
 	public function __construct($result, $link, $object=true, $sql)
 	{
-		// Rewrite LIMIT/OFFSET to oracle compatible thingies
-		$matches = false;
-		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/', $sql, $matches)) {
-			$query = trim($matches[1]);
-			$offset = isset($matches[4]) ? $matches[4] : 0;
-			$limit = $matches[2] + $offset;
-			if ($limit) {
-				$sql = "SELECT foo.*, rownum AS rnum FROM ({$matches[1]}) AS foo WHERE rownum <= $limit";
-				if ($offset)
-					$sql = "SELECT bar.* FROM ($sql) bar WHERE rnum > $offset";
-			}
-			$sql = $query;
-		}
-		// Rewrite UNIX_TIMESTAMP
-		$sql = str_replace('UNIX_TIMESTAMP()', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
-
 		if ($result = oci_parse($link, $sql)) {
 			if (!@oci_execute($result, OCI_COMMIT_ON_SUCCESS)) {
 				$e = oci_error($result);
