@@ -267,7 +267,7 @@ class Service_Model extends Model
 	{
 		if (empty($value)) return false;
 		$auth_obj = self::authorized_services();
-		$obj_ids = implode(',',$auth_obj);
+		$obj_ids = is_array($auth_obj) ? implode(',',$auth_obj) : false;
 		if (empty($obj_ids))
 			return false;
 
