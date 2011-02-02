@@ -830,7 +830,7 @@ class Host_Model extends Model {
 					h.percent_state_change AS host_percent_state_change,
 					h.perf_data AS host_perf_data,
 					h.flap_detection_enabled AS host_flap_detection_enabled,
-					h.current_notification_number AS host_current_notification_number,
+					h.current_notification_number AS host_current_notification_num,
 					h.check_type AS host_check_type,
 					h.latency AS host_latency,
 					h.execution_time AS host_execution_time,
