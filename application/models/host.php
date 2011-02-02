@@ -800,7 +800,7 @@ class Host_Model extends Model {
 
 		$db = new Database();
 		if (empty($service_description)) {
-			$sql = "SELECT *, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
+			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
 			$service_list = $auth->get_authorized_services();
 			if (!in_array($host_name.';'.$service_description, $service_list)) {
