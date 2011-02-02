@@ -874,11 +874,11 @@ class Host_Model extends Model {
 					s.output,
 					s.long_output
 				FROM
-					host h,
-					service s
+					host h
+				INNER JOIN
+					service s ON h.host_name=s.host_name
 				WHERE
 					h.host_name=".$db->escape($host_name)." AND
-					s.host_name=h.host_name AND
 					s.service_description=".$db->escape($service_description);
 		}
 		$result = self::query($db,$sql);

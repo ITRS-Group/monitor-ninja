@@ -159,8 +159,7 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_hosts_root)
 			return array();
 
-		$query = "SELECT h.id, h.host_name FROM contact_access AS ca, host AS h WHERE ca.contact=".$this->id.
-			" AND ca.service IS NULL AND h.id=ca.host";
+		$query = "SELECT h.id, h.host_name FROM contact_access ca INNER JOIN host h ON h.id=ca.host WHERE ca.contact=".$this->id;
 
 		if ($this->view_hosts_root)
 			$query = 'SELECT id, host_name from host';
