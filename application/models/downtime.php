@@ -15,7 +15,7 @@ class Downtime_Model extends Model
 		$filter = empty($filter) ? 3 : $filter;
 		# don't use auth_host fields etc
 		$bitary = db::bitmask_to_array($filter);
-		$bits = ''
+		$bits = '';
 		foreach ($bitary as $bit => $is_set) {
 			if ($is_set) {
 				$bits .= ','.($bit+1);
