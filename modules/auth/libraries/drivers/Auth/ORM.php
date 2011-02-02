@@ -123,7 +123,10 @@ class Auth_ORM_Driver extends Auth_Driver {
 		if ( ! is_object($user))
 		{
 			// Load the user
-			$user = ORM::factory('user', $user);
+			$db = new Database();
+			$sql = "SELECT * FROM users WHERE username=".$db->escape($user);
+			$user_res = $db->query($sql);
+			$user = $user_res->current();
 		}
 
 		// Mark the session as forced, to prevent users from changing account information
