@@ -53,6 +53,9 @@ class Database_Oracle_Driver extends Database_Driver {
 		// Rewrite UNIX_TIMESTAMP
 		$sql = str_replace('UNIX_TIMESTAMP()', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
 
+		// LCASE is called LOWER
+		$sql = str_replace('LCASE', 'LOWER', $sql);
+
 		$sth = oci_parse($this->link, $sql);
 		return new Oracle_Result($sth, $this->link, $this->db_config['object'], $sql);
 	}
