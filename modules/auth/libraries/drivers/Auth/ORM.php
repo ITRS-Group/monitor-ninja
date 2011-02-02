@@ -218,15 +218,8 @@ class Auth_ORM_Driver extends Auth_Driver {
 		}
 		$db = new Database();
 
-		$sql = "UPDATE users SET logins=".($user->logins+1).", last_login=".time();
 		// Update the number of logins
-		#$user->logins += 1;
-
-		// Set the last login date
-		#$user->last_login = time();
-
-		// Save the user
-		#$user->save();
+		$sql = "UPDATE users SET logins=".($user->logins+1).", last_login=".time();
 		$db->query($sql);
 
 		return parent::complete_login($user);
