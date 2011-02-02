@@ -149,11 +149,12 @@ class Ninja_Controller extends Template_Controller {
 			if (Kohana::config('config.nagvis_path') !== false)
 				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('/nagvis/index', 'nagvis',0);
 
-			$this->registry->set('Zend_Translate', $this->translate);
 			$this->_addons();
 			$this->_is_alive();
 			$this->_global_notification_checks();
 		}
+
+		$this->registry->set('Zend_Translate', $this->translate);
 
 		$items_per_page = arr::search($_GET, 'items_per_page');
 		if ($items_per_page !== false) {
