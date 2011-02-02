@@ -13,17 +13,18 @@ class Downtime_Model extends Model
 	{
 		$db = new Database();
 		$filter = empty($filter) ? 3 : $filter;
+		# don't use auth_host fields etc
+		$bits = db::bitmask_to_string($filter);
 		$auth = new Nagios_auth_Model();
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
-			# don't use auth_host fields etc
-			$sql = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type & " . $filter;
+			$sql = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
 		} else {
 			# hosts
 			$auth_host_alias = $host_query['host_field'];
 			$auth_from = ' ,'.$host_query['from'];
 			$auth_where = ' WHERE '.sprintf($host_query['where'], "d.host_name");
-			$sql = "SELECT d.* FROM scheduled_downtime d ".$auth_from.$auth_where." AND d.downtime_type & " . $filter;
+			$sql = "SELECT d.* FROM scheduled_downtime d ".$auth_from.$auth_where." AND d.downtime_type IN ($bits)";
 
 			$query_contact = "SELECT d.* FROM scheduled_downtime d, host, ".
 			"contact, host_contact ".
@@ -31,7 +32,7 @@ class Downtime_Model extends Model
 			"AND host_contact.contact=contact.id ".
 			"AND contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 			" AND d.host_name=host.host_name ".
-			"AND d.downtime_type & " . $filter;
+			"AND d.downtime_type IN ($bits)";
 
 			# services
 			$query_svc =
@@ -39,14 +40,14 @@ class Downtime_Model extends Model
 				'WHERE service.id = service_contactgroup.service ' .
 				'AND service_contactgroup.contactgroup = contact_contactgroup.contactgroup ' .
 				'AND contact_contactgroup.contact = ' . (int)$auth->id." AND host.host_name=service.host_name ".
-				"AND d.host_name=service.host_name AND d.service_description=service.service_description AND d.downtime_type & " . $filter;
+				"AND d.host_name=service.host_name AND d.service_description=service.service_description AND d.downtime_type IN ($bits)";
 
 			# contact <-> service_contact relation
 			$query_svc_contact = "SELECT d.* FROM scheduled_downtime d, host h, service s, contact c, service_contact sc ".
 				"WHERE s.id=sc.service AND c.id=sc.contact ".
 				"AND sc.contact=c.id ".
 				"AND c.contact_name=".$db->escape(Auth::instance()->get_user()->username).
-				" AND h.host_name=s.host_name AND d.host_name=s.host_name AND d.service_description=s.service_description AND d.downtime_type &" . $filter;
+				" AND h.host_name=s.host_name AND d.host_name=s.host_name AND d.service_description=s.service_description AND d.downtime_type IN ($filter)";
 
 			$sql = '(' . $sql . ') UNION (' . $query_contact . ') UNION (' . $query_svc . ') UNION (' . $query_svc_contact . ')';
 		}
