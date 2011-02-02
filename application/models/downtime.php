@@ -14,7 +14,14 @@ class Downtime_Model extends Model
 		$db = new Database();
 		$filter = empty($filter) ? 3 : $filter;
 		# don't use auth_host fields etc
-		$bits = db::bitmask_to_string($filter);
+		$bitary = db::bitmask_to_array($filter);
+		$bits = ''
+		foreach ($bitary as $bit => $is_set) {
+			if ($is_set) {
+				$bits .= ','.($bit+1);
+			}
+		}
+		$bits = substr($bits, 1);
 		$auth = new Nagios_auth_Model();
 		$host_query = $auth->authorized_host_query();
 		if ($host_query === true) {
