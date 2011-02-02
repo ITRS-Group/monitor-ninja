@@ -319,7 +319,7 @@ class Nagios_auth_Model extends Model
 			# fetch all hostgroups with host count on each
 			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
 				'hostgroup hg, host_hostgroup hhg '.
-				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id';
+				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id, hg.hostgroup_name';
 			$result1 = $this->db->query($query);
                         $result = array();
                         foreach( $result1 as $row) {
@@ -332,7 +332,7 @@ class Nagios_auth_Model extends Model
 				"INNER JOIN contact_access ON contact_access.host=hhg.host ".
 				"WHERE hg.id=hhg.hostgroup ".
 				"AND contact_access.contact=".$this->id.
-				" GROUP BY hg.id";
+				" GROUP BY hg.id, hg.hostgroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result) || !count($result)) {
 				return false;
@@ -399,7 +399,7 @@ class Nagios_auth_Model extends Model
 			# fetch all servicegroups with service count on each
 			$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.
 				'servicegroup sg, service_servicegroup ssg '.
-				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id';
+				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id, sg.servicegroup_name';
 			$result = $this->db->query($query);
 
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
@@ -408,7 +408,7 @@ class Nagios_auth_Model extends Model
 				"WHERE sg.id=ssg.servicegroup ".
 				"AND ssg.service IS NOT NULL ".
 				"AND contact_access.contact=".$this->id.
-				" GROUP BY sg.id";
+				" GROUP BY sg.id, sg.servicegroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result) || !count($result)) {
 				return false;
