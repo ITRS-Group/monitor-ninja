@@ -23,7 +23,7 @@ class Downtime_Model extends Model
 		$bits = substr($bits, 1);
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root) {
-			$sql = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
+			$query = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
 		} else {
 			# hosts
 			$sql = "SELECT d.* FROM scheduled_downtime d, host ".
