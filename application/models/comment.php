@@ -52,12 +52,12 @@ class Comment_Model extends Model {
 		$num_per_page = (int)$num_per_page;
 
 		if (!$auth->view_hosts_root) {
-			$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
+			$sql = "SELECT * FROM ".self::TABLE_NAME." c WHERE id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 				"WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 				" AND ca.contact=contact.id ".$svc_selection.
 				" AND c.host_name=".$db->escape($host).
 				"AND ca.host=h.id ".
-				" AND ca.service is null ";
+				" AND ca.service is null) ";
 		} else {
 			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE c.host_name=".$db->escape($host).
 				$svc_selection.$auth_where;
