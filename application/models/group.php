@@ -155,7 +155,7 @@ class Group_Model extends Model
 		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
 
 		$db = new Database();
-		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
+		$all_sql = $groupname != 'all' ? "AND sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
@@ -179,51 +179,51 @@ class Group_Model extends Model
 				return false;
 			$auth_str = " AND h.id IN (".$hostlist_str.")";
 		}
-		$sql = "SELECT
-				h.host_name,
-				h.address,
-				h.alias,
-				h.current_state AS host_state,
-				(UNIX_TIMESTAMP() - h.last_state_change) AS duration,
-				UNIX_TIMESTAMP() AS cur_time,
-				h.output,
-				h.long_output,
-				h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
-				h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
-				h.notifications_enabled AS host_notifications_enabled,
-				h.active_checks_enabled AS host_active_checks_enabled,
-				h.action_url AS host_action_url,
-				h.icon_image AS host_icon_image,
-				h.icon_image_alt AS host_icon_image_alt,
-				h.is_flapping AS host_is_flapping,
-				h.notes_url AS host_notes_url,
-				s.id AS service_id,
-				s.current_state AS service_state,
-				(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,
-				UNIX_TIMESTAMP() AS service_cur_time,
-				s.active_checks_enabled,
-				s.current_state,
-				s.problem_has_been_acknowledged,
-				s.scheduled_downtime_depth,
-				s.last_check,
-				s.output AS service_output,
-				s.long_output AS service_long_output,
-				s.notes_url,
-				s.action_url,
-				s.current_attempt,
-				s.max_check_attempts,
-				s.should_be_scheduled,
-				s.next_check,
-				s.notifications_enabled,
-				s.service_description
-			FROM host h
-			INNER JOIN service s ON h.host_name=s.host_name
-			INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
-			INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group
-			WHERE
-				{$all_sql} {$auth_str} {$filter_sql} {$service_props_sql}
-				{$host_props_sql} 1 = 1
-			ORDER BY ".$sort_string." ".$limit_str;
+		$sql = "SELECT ".
+				"h.host_name,".
+				"h.address,".
+				"h.alias,".
+				"h.current_state AS host_state,".
+				"(UNIX_TIMESTAMP() - h.last_state_change) AS duration,".
+				"UNIX_TIMESTAMP() AS cur_time,".
+				"h.output,".
+				"h.long_output,".
+				"h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
+				"h.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
+				"h.notifications_enabled AS host_notifications_enabled,".
+				"h.active_checks_enabled AS host_active_checks_enabled,".
+				"h.action_url AS host_action_url,".
+				"h.icon_image AS host_icon_image,".
+				"h.icon_image_alt AS host_icon_image_alt,".
+				"h.is_flapping AS host_is_flapping,".
+				"h.notes_url AS host_notes_url,".
+				"s.id AS service_id,".
+				"s.current_state AS service_state,".
+				"(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,".
+				"UNIX_TIMESTAMP() AS service_cur_time,".
+				"s.active_checks_enabled,".
+				"s.current_state,".
+				"s.problem_has_been_acknowledged,".
+				"s.scheduled_downtime_depth,".
+				"s.last_check,".
+				"s.output AS service_output,".
+				"s.long_output AS service_long_output,".
+				"s.notes_url,".
+				"s.action_url,".
+				"s.current_attempt,".
+				"s.max_check_attempts,".
+				"s.should_be_scheduled,".
+				"s.next_check,".
+				"s.notifications_enabled,".
+				"s.service_description ".
+			"FROM host h ".
+			"INNER JOIN service s ON h.host_name=s.host_name ".
+			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
+			"INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group ".
+			"WHERE 1 = 1 ".
+				"{$all_sql} {$auth_str} {$filter_sql} {$service_props_sql} ".
+				"{$host_props_sql} ".
+			"ORDER BY ".$sort_string." ".$limit_str;
 #echo $sql;
 		$result = $db->query($sql);
 		return $result;
