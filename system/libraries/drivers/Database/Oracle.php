@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
+require_once( dirname(__FILE__)."/merlin_get_kohana_db_field_metadata.php" );
+
 class Database_Oracle_Driver extends Database_Driver {
 	protected $link;
 
@@ -95,6 +97,42 @@ class Database_Oracle_Driver extends Database_Driver {
 		return isset($err['message']) ? $err['message'] : 'Unknown error';
 	}
 
+	public function list_fields($table)
+	{
+		static $tables = array();
+
+		if (empty($tables[$table]))
+		{
+			foreach ($this->field_data($table) as $row)
+			{
+				// Make an associative array
+				$tables[$table][$row->Field] = $this->sql_type($row->Type);
+
+				if ($row->Key === 'PRI' AND $row->Extra === 'auto_increment') {
+					// For sequenced (AUTO_INCREMENT) tables
+					$tables[$table][$row->Field]['sequenced'] = TRUE;
+				}
+
+				if ($row->Null === 'YES') {
+					// Set NULL status
+					$tables[$table][$row->Field]['null'] = TRUE;
+				}
+			}
+		}
+
+		if (!isset($tables[$table]))
+			throw new Kohana_Database_Exception('database.table_not_found', $table);
+
+		return $tables[$table];
+	}
+
+	public function field_data($table)
+	{
+		# UGLY FUGLY HACK: return pre-generated field data.
+		$columns = merlin_get_kohana_db_field_metadata();
+		return $columns[$table];
+	}
+
 	# unimplemented an unused
 	public function escape_table($table)
 	{
@@ -112,16 +150,6 @@ class Database_Oracle_Driver extends Database_Driver {
 	}
 
 	public function compile_select($database)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function list_fields($table)
-	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
-	}
-
-	public function field_data($table)
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}

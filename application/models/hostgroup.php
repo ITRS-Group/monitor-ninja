@@ -107,10 +107,10 @@ class Hostgroup_Model extends ORM
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM `hostgroup` ".
-				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
-				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) AND ".
-				"`id` IN (".$obj_ids.") ORDER BY hostgroup_name ".$limit_str;
+			$sql = "SELECT DISTINCT * FROM hostgroup ".
+				"WHERE (LCASE(hostgroup_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+				"LCASE(alias) LIKE LCASE(".$this->db->escape($value).")) AND ".
+				"id IN (".$obj_ids.") ORDER BY hostgroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;

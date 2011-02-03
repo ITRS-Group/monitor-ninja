@@ -291,14 +291,14 @@ class Service_Model extends Model
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service s, host h ".
+			$sql = "SELECT s.*, h.current_state AS host_state, h.address ".
+			"FROM service s, host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
-			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))".
+			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value).")))) fnorb".
 			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ".$limit_str;
+			" AND s.id IN (".$obj_ids.") ".$limit_str;
 		}
 		$obj_info = $this->query($this->db,$sql);
 		return $obj_info;
