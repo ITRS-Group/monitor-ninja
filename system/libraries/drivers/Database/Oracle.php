@@ -41,7 +41,7 @@ class Database_Oracle_Driver extends Database_Driver {
 	{
 		// Rewrite LIMIT/OFFSET to oracle compatible thingies
 		$matches = false;
-		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/', $sql, $matches)) {
+		if (preg_match('/(.*) LIMIT (\d+)( OFFSET (\d+))?$/s', $sql, $matches)) {
 			$query = trim($matches[1]);
 			$offset = isset($matches[4]) ? $matches[4] : 0;
 			$limit = $matches[2] + $offset;
