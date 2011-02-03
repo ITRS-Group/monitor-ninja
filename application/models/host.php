@@ -158,9 +158,10 @@ class Host_Model extends Model {
 
 		$auth = new Nagios_auth_Model();
 		$sql_join = false;
+		$sql_where = false;
 		if (!$auth->view_hosts_root) {
-			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
-			$sql_join .= ' INNER JOIN host ON host.id=contact_access.host ';
+			$sql_join = ' INNER JOIN contact_access ON contact_access.host=host.id';
+			$sql_where = ' AND contact_access.contact='.(int)$auth->id;
 		}
 
 		$limit_str = sql::limit_parse($limit);
@@ -172,11 +173,11 @@ class Host_Model extends Model {
 
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
 		} else {
-			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ".$sql_where;
 		}
-		$sql .= $sql_join.$limit_str;
+		$sql .= $limit_str;
 		$host_info = $db->query($sql);
 		return count($host_info)>0 ? $host_info : false;
 	}

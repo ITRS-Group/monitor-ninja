@@ -186,19 +186,20 @@ class Service_Model extends Model
 		}
 		$auth = new Nagios_auth_Model();
 		$sql_join = false;
+		$sql_where = false;
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$obj_ids = self::authorized_services();
-			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
-			$sql_join .= ' INNER JOIN service ON service.id=contact_access.service ';
+			$sql_join = ' INNER JOIN contact_access ON contact_access.service=service.id';
+			$sql_where = ' AND contact_access.contact= '.(int)$auth->id;
 		}
 
 		$db = new Database();
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
 		} else {
-			$sql = "SELECT * FROM service ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ".$sql_where;
 		}
 		$sql .= $limit_str;
 		$obj_info = $db->query($sql);
