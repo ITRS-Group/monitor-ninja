@@ -296,7 +296,7 @@ class Service_Model extends Model
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
-			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value).")))) fnorb".
+			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".
 			" AND (s.host_name=h.host_name)".
 			" AND s.id IN (".$obj_ids.") ".$limit_str;
 		}

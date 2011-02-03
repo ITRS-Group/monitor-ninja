@@ -238,7 +238,7 @@ class Host_Model extends Model {
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
-			" AND id IN (".$host_ids.")) fnorb ORDER BY host_name ".$limit_str;
+			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
