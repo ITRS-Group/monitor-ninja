@@ -169,8 +169,8 @@ class Hostgroup_Model extends ORM
 		if (!$auth->view_hosts_root) {
 			$ca_access = "AND h.id IN(SELECT host from contact_access where contact=".(int)$contact." and service is null)";
 		}
-		$sql = "SELECT
-			DISTINCT h.*
+		$sql = "SELECT * FROM host WHERE id IN (SELECT
+			DISTINCT h.id
 		FROM
 			host h,
 			hostgroup hg,
@@ -178,9 +178,9 @@ class Hostgroup_Model extends ORM
 		WHERE
 			hg.hostgroup_name IN (" . join(', ', $hg) . ") AND
 			hhg.hostgroup = hg.id AND
-			h.id=hhg.host ".$ca_access."
+			h.id=hhg.host ".$ca_access.")
 		ORDER BY
-			h.host_name";
+			host_name";
 		if (!empty($sql)) {
 			$result = $this->db->query($sql);
 			return $result;
