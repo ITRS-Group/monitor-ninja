@@ -197,9 +197,9 @@ class Service_Model extends Model
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
+			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(service.".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
 		} else {
-			$sql = "SELECT * FROM service ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ".$sql_where;
+			$sql = "SELECT * FROM service ".$sql_join." WHERE service.".$field." = ".$db->escape($value)." ".$sql_where;
 		}
 		$sql .= $limit_str;
 		$obj_info = $db->query($sql);
