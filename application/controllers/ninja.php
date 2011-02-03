@@ -218,6 +218,7 @@ class Ninja_Controller extends Template_Controller {
 				$notifications[] = array($this->translate->_('Service checks are disabled'), false);
 			}
 		}
+		unset($data);
 
 		# check permissions
 		$auth = new Nagios_auth_Model();
