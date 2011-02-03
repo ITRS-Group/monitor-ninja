@@ -57,8 +57,7 @@ class Database_Oracle_Driver extends Database_Driver {
 		// LCASE is called LOWER
 		$sql = str_replace('LCASE', 'LOWER', $sql);
 
-		$sth = oci_parse($this->link, $sql);
-		return new Oracle_Result($sth, $this->link, $this->db_config['object'], $sql);
+		return new Oracle_Result(false, $this->link, $this->db_config['object'], $sql);
 	}
 
 	public function set_charset($charset)
@@ -161,16 +160,16 @@ class Oracle_Result extends Database_Result {
 	public function current()
 	{
 		$obj = new StdClass();
-		$vars = get_object_vars($this->latest_row);
-		if ($vars) foreach($vars as $key => $var) {
-			$name = strtolower($key);
-			if (is_object($var)) {
-				$val = $var->load();
-				$var->close();
-				$var = $val;
+		if ($this->latest_row)
+			foreach($this->latest_row as $key => $var) {
+				$name = strtolower($key);
+				if (is_object($var)) {
+					$val = $var->load();
+					$var->close();
+					$var = $val;
+				}
+				$obj->$name = $var;
 			}
-			$obj->$name = $var;
-		}
 		if ($this->fetch_array)
 			return get_object_vars($obj);
 		return $obj;
@@ -178,7 +177,7 @@ class Oracle_Result extends Database_Result {
 
 	public function next()
 	{
-		$this->latest_row = oci_fetch_object($this->result);
+		$this->latest_row = oci_fetch_assoc($this->result);
 		$this->current_row++;
 		return $this;
 	}
@@ -219,15 +218,15 @@ class Oracle_Result extends Database_Result {
 				}
 			}
 
-			if (preg_match('/^\s*(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
+			if (preg_match('/^\s*(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/is', $sql)) {
 				$this->result = $result;
 				$this->current_row = 0;
 
 				$this->total_rows = $this->pdo_row_count();
 
 				if ($this->valid())
-					$this->latest_row = oci_fetch_object($this->result);
-			} elseif (preg_match('/^\s*(DELETE|INSERT|UPDATE)/i', $sql)) {
+					$this->latest_row = oci_fetch_assoc($this->result);
+			} elseif (preg_match('/^\s*(DELETE|INSERT|UPDATE)/is', $sql)) {
 				# completely broken, but I don't care
 				$this->insert_id  = 0;
 			}
