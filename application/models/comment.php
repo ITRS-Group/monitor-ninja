@@ -149,22 +149,22 @@ class Comment_Model extends Model {
 			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
 
 			if (!$service) { # host comments
-				$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
+				$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 					"WHERE contact.contact_name=".
 					$db->escape(Auth::instance()->get_user()->username).
 					" AND ca.contact=contact.id ".
 					"AND c.host_name=h.host_name ".
 					"AND (c.service_description='' OR c.service_description is null) ".
-					"AND ca.host=h.id AND ca.service is null ";
+					"AND ca.host=h.id AND ca.service is null) ";
 			} else { # service comments
 				if ($service_query !== true) {
-					$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
+					$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
 						WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 						" AND ca.contact=contact.id ".
 						"AND c.host_name=h.host_name ".
 						"AND s.host_name=c.host_name ".
 						"AND ca.service=s.id ".
-						"AND (c.service_description is NOT null) ";
+						"AND (c.service_description is NOT null)) ";
 				} else {
 					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description is NOT null) ";
 				}

@@ -218,8 +218,8 @@ class Service_Model extends Model
 		$obj_ids = self::authorized_services();
 		$db = new Database();
 
-		$sql = "SELECT DISTINCT s.*, h.current_state AS host_state ".
-		"FROM service s, host h WHERE ";
+		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
+		"FROM service s WHERE ";
 		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
 		foreach ($host_name as $host) {
@@ -239,7 +239,6 @@ class Service_Model extends Model
 		if (!empty($query_parts)) {
 			$sql_xtra = false;
 			$sql .= '( ( '.implode(') OR (', $query_parts) . ') ) ';
-			$sql .= " AND s.host_name = h.host_name";
 			if (!empty($xtra_query) && is_array($xtra_query)) {
 				foreach ($xtra_query as $x) {
 					$x = '%' . $x . '%';
@@ -252,7 +251,7 @@ class Service_Model extends Model
 					$sql .= " )";
 				}
 			}
-			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
+			$sql .= " AND s.id IN(".implode(',', $obj_ids).")) ".$limit_str;
 			#echo $sql;
 			$obj_info = self::query($db,$sql);
 			return $obj_info && count($obj_info) > 0 ? $obj_info : false;

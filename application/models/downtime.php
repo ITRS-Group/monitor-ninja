@@ -250,7 +250,7 @@ class Downtime_Model extends Model
 					" AND auth_host_contact.contact=auth_contact.id ".
 					"AND auth_host.id=auth_host_contact.host ".
 					"AND auth_host.host_name=d.host_name";
-				$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
+				$sql = '(' . $sql . ') UNION ALL (' . $sql2 . ') ';
 
 			} else { # service comments
 				if ($service_query !== true) {
@@ -272,14 +272,14 @@ class Downtime_Model extends Model
 						" AND auth_service.host_name=auth_host.host_name ".
 						"AND d.service_description=auth_service.service_description ".
 						"AND d.host_name=auth_service.host_name";
-					$sql = '(' . $sql . ') UNION (' . $sql2 . ') ';
+					$sql = '(' . $sql . ') UNION ALL (' . $sql2 . ') ';
 				} else {
 					$sql = "SELECT * FROM scheduled_downtime WHERE (service_description!='' OR service_description is NOT null) ";
 				}
 			}
 		}
 
-		$sql .= " ORDER BY d.entry_time, d.host_name ".$offset_limit;
+		$sql .= $offset_limit;
 		#echo $sql."<br />";
 
 		$result = $db->query($sql);
