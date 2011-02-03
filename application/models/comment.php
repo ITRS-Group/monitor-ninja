@@ -67,14 +67,14 @@ class Comment_Model extends Model {
 
 		$result = $db->query($sql);
 		if ($count !== false) {
-                    if( $result ) {
-                        $count = count($result);
-                        unset($result);
-                    }
-                    else {
-                        $count = 0;
-                    }
-                    return $count;
+			if( $result ) {
+				$count = count($result);
+				unset($result);
+			}
+			else {
+				$count = 0;
+			}
+			return $count;
 		}
 		return $result->count() ? $result->result(): false;
 	}
@@ -125,8 +125,8 @@ class Comment_Model extends Model {
 		$host_query = $auth->authorized_host_query();
 
 		# service comments or not?
-		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
-			: " AND c.service_description!='' ";
+		$svc_selection = empty($service) ? " AND c.service_description IS NULL "
+			: " AND c.service_description IS NOT NULL ";
 
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
@@ -139,7 +139,7 @@ class Comment_Model extends Model {
 			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND '.$auth_host_alias . ".host_name = c.host_name";
 			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE".
-				" c.host_name!='' ".$svc_selection.$auth_where;
+				" c.host_name IS NOT NULL ".$svc_selection.$auth_where;
 		} else {
 			# we only make this check if user isn't authorized_for_all_hosts as above
 			$service_query = $auth->authorized_service_query();
@@ -164,9 +164,9 @@ class Comment_Model extends Model {
 						"AND c.host_name=h.host_name ".
 						"AND s.host_name=c.host_name ".
 						"AND ca.service=s.id ".
-						"AND (c.service_description!='' AND c.service_description is NOT null) ";
+						"AND (c.service_description is NOT null) ";
 				} else {
-					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description!='' OR service_description is NOT null) ";
+					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description is NOT null) ";
 				}
 			}
 		}
