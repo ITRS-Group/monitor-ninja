@@ -2977,9 +2977,10 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		$service_model = new Service_Model();
 		$res = $service_model->get_where('host_name', $host_name);
-		$res->result(false); # convert to array
-		$service_arr = array();
 		if (!empty($res)) {
+			$res->result(false); # convert to array
+			$service_arr = array();
+
 			$report_class = new Reports_Model();
 			foreach ($res as $row)
 				$service_arr[] = $host_name.";".$row['service_description'];
