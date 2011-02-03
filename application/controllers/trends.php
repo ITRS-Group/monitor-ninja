@@ -887,10 +887,10 @@ class Trends_Controller extends Authenticated_Controller {
 				$avail_template->label_insufficient_data = $t->_('Insufficient data');
 				$avail_template->label_all = $t->_('All');
 				$trend_links = false;
-				$notification_link = url::site().'notifications/host/';
+				$notification_link = 'notifications/host/';
 
 				$host_name = $avail_data['values']['HOST_NAME'];
-				$avail_link = url::site().'/generate?type=avail'.
+				$avail_link = '/reports/generate?type=avail'.
 				"&host_name[]=". $host_name .
 				'&start_time=' . $this->start_date . '&end_time=' . $this->end_date .$get_vars;
 				$avail_link_icon = 'availability';
