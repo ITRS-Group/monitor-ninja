@@ -37,7 +37,7 @@ class Hostgroup_Model extends ORM
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset." OFFSET ".$items_per_page;
+			$limit_str = " LIMIT ".$items_per_page." OFFSET ".$offset;
 		}
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root) {
@@ -231,7 +231,7 @@ class Hostgroup_Model extends ORM
 
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset." OFFSET ".$items_per_page;
+			$limit_str = " LIMIT ".$items_per_page." OFFSET ".$offset;
 		}
 
 		$host_match = $auth->view_hosts_root ? '' : " AND host.id IN(".implode(',', $auth_host_ids).") ";
