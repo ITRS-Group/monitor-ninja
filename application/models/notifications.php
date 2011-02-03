@@ -70,7 +70,7 @@ class Notifications_Model extends Model {
 				"WHERE contact_access.contact=".$auth->id." AND ".
 				"contact_access.service IS NOT NULL AND notification.service_description!='' ".
 				"AND notification.command_name IS NOT NULL";
-			$sql = "(".$sql_host.") UNION (".$sqlsvc.") ";
+			$sql = "(".$sql_host.") UNION ALL (".$sqlsvc.") ";
 		}
 
 		$sql .= $where_order;
