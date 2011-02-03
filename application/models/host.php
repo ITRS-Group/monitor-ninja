@@ -1026,11 +1026,11 @@ class Host_Model extends Model {
 		$auth_hosts = self::authorized_hosts();
 		$host_str = join(',', $auth_hosts);
 		$db = new Database();
-		$sql = "SELECT DISTINCT h.* " .
+		$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id " .
 			"FROM host h, hostgroup hg, host_hostgroup hhg " .
 			"WHERE hg.hostgroup_name = " . $db->escape($name) .
 			"AND hhg.hostgroup = hg.id AND h.id = hhg.host " .
-			"AND h.id IN(" . $host_str . ")";
+			"AND h.id IN(" . $host_str . "))";
 
 		return $this->query($db,$sql);
 	}
