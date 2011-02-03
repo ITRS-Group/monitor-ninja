@@ -182,7 +182,7 @@ class Downtime_Model extends Model
 				# @@@FIXME: handle direct relation contact -> {host,service}_contact
 				$sql2 = "SELECT d.* FROM scheduled_downtime d ".$from." WHERE d.host_name=".$db->escape($host).
 					$svc_selection.' AND '.$service_query['where'];
-				$sql = '(' . $sql . ') UNION (' . $sql2 . ')';
+				$sql = '(' . $sql . ') UNION ALL (' . $sql2 . ')';
 			} else {
 				$sql = "SELECT d.* FROM scheduled_downtime d WHERE d.host_name=".$db->escape($host).$svc_selection;
 			}
@@ -191,7 +191,7 @@ class Downtime_Model extends Model
 				$svc_selection.$auth_where;
 		}
 
-		$sql .= " ORDER BY d.entry_time, d.host_name ".$offset_limit;
+		$sql .= " ".$offset_limit;
 
 		$result = $db->query($sql);
 		if ($count !== false) {
