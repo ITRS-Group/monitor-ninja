@@ -665,16 +665,16 @@ class Host_Model extends Model {
 		}
 		$result = $this->query($this->db,$sql);
 		if ($this->count === true) {
-                    $rc = $result ? count($result) : 0;
-                    unset($result);
-                    return $rc;
+			$rc = $result ? count($result) : 0;
+			unset($result);
+			return $rc;
 		}
-                $rc = array();
-                foreach( $result as $row )
-                {
-                    $rc[] = $row;
-                }
-                unset($result);
+		$rc = array();
+		foreach( $result as $row )
+		{
+			$rc[] = $row;
+		}
+		unset($result);
 		return $rc;
 	}
 
