@@ -10,7 +10,7 @@ class Group_Model extends Model
 	/**
 	 * Finds all hosts that have services that are members of a specific host- or servicegroup
 	 * and that are in the specified state.
-	 * Called from get_servicegroup_hoststatus() and get_servicegroup_hoststatus()
+	 * Called from get_servicegroup_hoststatus() and get_hostgroup_hoststatus()
 	 *
 	 * @param $grouptype [host|service]
 	 * @param $groupname
@@ -49,66 +49,60 @@ class Group_Model extends Model
 		}
 
 		$db = new Database();
-		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." AND" : '';
+		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
 
 		if (!$auth->view_hosts_root && !($auth->view_services_root && $grouptype == 'service')) {
 			$hostlist_str = implode(',', $hostlist);
-			$filter_sql = " AND h.id IN (".$hostlist_str.") ".$filter_sql;
+			$filter_sql = "AND h.id IN (".$hostlist_str.") ".$filter_sql;
 		}
 
 		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image, h.icon_image_alt,';
 		if ($auth->view_hosts_root) {
 			$sql = "
 				SELECT ".$fields.
-					"s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
+					#"s.current_state AS service_state,
+					"(SELECT COUNT(s.current_state) FROM service s where s.host_name = h.host_name) AS state_count
 				FROM
-					service s,
-				INNER JOIN host h ON s.host_name=h.host_name
+					host h
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
 					{$all_sql} {$filter_sql}
 				ORDER BY
-					h.host_name,
-					s.current_state";
-		} elseif ($auth->view_services_root && $grouptype == 'service') {
+					h.host_name";
+		} elseif (!$auth->view_services_root && $grouptype == 'service') {
 			$sql = "
 				SELECT ".$fields.
-					"s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
+					#"s.current_state AS service_state,
+					"(SELECT COUNT(s.current_state) FROM service s WHERE s.host_name = h.host_name) AS state_count
 				FROM
-					host h,
-				INNER JOIN service s ON h.host_name=s.host_name
+					host h
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
 					{$all_sql}
 					{$filter_sql}
 				ORDER BY
-					h.host_name,
-					s.current_state";
+					h.host_name";
 		} else {
 			$hostlist_str = implode(',', $hostlist);
 
 			$sql = "
 				SELECT ".$fields.
-					"s.current_state AS service_state,
-					COUNT(s.current_state) AS state_count
+					#"s.current_state AS service_state,
+					"(SELECT COUNT(s.current_state) FROM service s WHERE h.host_name=s.host_name) AS state_count
 				FROM
 					host h
-				INNER JOIN service s ON h.host_name=s.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
-				INNER JOIN {$grouptype} sg ON sg.id = ssg.".$grouptype."group
+				INNER JOIN {$grouptype}group sg ON sg.id = ssg.".$grouptype."group
 				WHERE
 					".$all_sql."
 					".$filter_sql."
 				ORDER BY
-					h.host_name,
-					s.current_state";
+					h.host_name";
 		}
 		$result = $db->query($sql);
 		#echo $sql."<hr />";
