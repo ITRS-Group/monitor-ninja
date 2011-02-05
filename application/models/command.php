@@ -64,12 +64,12 @@ class Command_Model extends Model
 
 		if ($command_name != 'DEL_HOST_COMMENT') {
 			$objs = $this->auth->get_authorized_services_r();
-			$query = "SELECT comment_id, " .
-				"concat(host_name, ';', service_description) as objname " .
-				"FROM comment WHERE service_description != ''";
+			$query = "SELECT comment_id, ".
+				sql::concat('host_name', ';', 'service_description').
+				" AS obj_name FROM comment_tbl WHERE service_description != '' OR service_description is not NULL";
 		} else {
 			$objs = $this->auth->get_authorized_hosts_r();
-			$query = 'SELECT comment_id, host_name as objname FROM comment ' .
+			$query = 'SELECT comment_id, host_name as objname FROM comment_tbl ' .
 				"WHERE (service_description = '' OR service_description IS NULL)";
 		}
 
