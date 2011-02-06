@@ -9,7 +9,7 @@ class Database_Oracle_Driver extends Database_Driver {
 	{
 		$this->db_config = $config;
 
-		Kohana::log('debug', 'PDO Oracle driver initialized');
+		Kohana::log('debug', 'Oracle driver initialized');
 	}
 
 	public function connect()
@@ -182,6 +182,12 @@ class Oracle_Result extends Database_Result {
 		return $this;
 	}
 
+	public function rewind()
+	{
+		$this->current_row=0;
+		oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+	}
+
 	public function valid()
 	{
 		return ($this->current_row < $this->total_rows);
@@ -195,7 +201,7 @@ class Oracle_Result extends Database_Result {
 		}
 
 		// The query must be re-fetched now.
-		oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+		$this->rewind();
 		return $count;
 	}
 
