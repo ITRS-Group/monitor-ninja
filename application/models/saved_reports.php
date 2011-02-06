@@ -101,7 +101,7 @@ class Saved_reports_Model extends Model
 					$a_sql[] = $key." = ".$db->escape($value);
 				}
 				$sql .= implode(', ', $a_sql);
-				$sql .= ", updated = now()";
+				$sql .= ", updated = NOW()";
 				$sql .= " WHERE id=".$id;
 			}
 		}
