@@ -95,20 +95,20 @@ class Servicegroup_Model extends ORM
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
-			"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($val).") OR ".
-			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).")) ".
-			"AND `id` IN (".$obj_ids.") ";
+				$query[] = "SELECT DISTINCT * FROM servicegroup WHERE ".
+			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+			"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) ".
+			"AND id IN (".$obj_ids.") ";
 			}
 			if (!empty($query)) {
 				$sql = implode(' UNION ', $query).' ORDER BY servicegroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
-			"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
-			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) ".
-			"AND `id` IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
+			$sql = "SELECT DISTINCT * FROM servicegroup WHERE ".
+			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+			"LCASE(alias) LIKE LCASE(".$this->db->escape($value).")) ".
+			"AND id IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;

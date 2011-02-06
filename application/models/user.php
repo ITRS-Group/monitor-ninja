@@ -210,23 +210,24 @@ class User_Model extends Auth_User_Model {
 
 	/**
 	*	Create the ninja_user_authorization table if not exists
+	*	(this will totally break in anything that isn't mysql)
 	*
 	*/
 	public static function create_auth_table()
 	{
 		$db = new Database();
-		$sql = "CREATE TABLE IF NOT EXISTS `".self::$auth_table."` ( ".
-					"`id` int(11) NOT NULL auto_increment, ".
-					"`user_id` int(11) NOT NULL, ".
-					"`system_information` int(11) NOT NULL default '0', ".
-					"`configuration_information` int(11) NOT NULL default '0', ".
-					"`system_commands` int(11) NOT NULL default '0', ".
-					"`all_services` int(11) NOT NULL default '0', ".
-					"`all_hosts` int(11) NOT NULL default '0', ".
-					"`all_service_commands` int(11) NOT NULL default '0', ".
-					"`all_host_commands` int(11) NOT NULL default '0', ".
-					"PRIMARY KEY  (`id`), ".
-					"KEY `user_id` (`user_id`));";
+		$sql = "CREATE TABLE IF NOT EXISTS ".self::$auth_table." ( ".
+					"id int(11) NOT NULL auto_increment, ".
+					"user_id int(11) NOT NULL, ".
+					"system_information int(11) NOT NULL default '0', ".
+					"configuration_information int(11) NOT NULL default '0', ".
+					"system_commands int(11) NOT NULL default '0', ".
+					"all_services int(11) NOT NULL default '0', ".
+					"all_hosts int(11) NOT NULL default '0', ".
+					"all_service_commands int(11) NOT NULL default '0', ".
+					"all_host_commands int(11) NOT NULL default '0', ".
+					"PRIMARY KEY  (id), ".
+					"KEY user_id (user_id));";
 		$db->query($sql);
 	}
 

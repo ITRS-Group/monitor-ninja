@@ -97,10 +97,10 @@ class Hostgroup_Model extends ORM
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT * FROM `hostgroup` ".
-				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($val).") OR ".
-				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).")) AND ".
-				"`id` IN (".$obj_ids.")  ";
+				$query[] = "SELECT DISTINCT * FROM hostgroup ".
+				"WHERE (LCASE(hostgroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+				"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) AND ".
+				"id IN (".$obj_ids.")  ";
 			}
 			if (!empty($query)) {
 				$sql = implode(' UNION ', $query).' ORDER BY hostgroup_name '.$limit_str;

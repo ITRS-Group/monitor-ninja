@@ -4240,7 +4240,7 @@ class Reports_Controller extends Authenticated_Controller
 				break;
 			case 'filename': // remove spaces
 				if (strlen($new_value)>40) {
-					echo sprintf($this->translate->_('The enetered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
+					echo sprintf($this->translate->_('The entered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
 						$this->translate->_('Please').' <a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'.$this->translate->_('click here').'</a> '.$this->translate->_('to view saved value').'.';
 					exit;
 				}

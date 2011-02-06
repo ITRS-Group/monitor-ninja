@@ -253,10 +253,11 @@ class Scheduled_reports_Model extends Model
 		$field = trim($field);
 		$value = trim($value);
 		$db = new Database();
-		$sql = "UPDATE scheduled_reports SET `".$field."`= ".$db->escape($value)." WHERE id=".$id;
+		$sql = "UPDATE scheduled_reports SET ".$field."= ".$db->escape($value)." WHERE id=".$id;
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
+			print $e->getMessage();
 			return false;
 		}
 		return true;
