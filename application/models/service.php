@@ -277,17 +277,15 @@ class Service_Model extends Model
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service s, host h ".
-			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
+				$query[] = "SELECT id FROM service ".
+			"WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))".
-			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ";
+			" AND s.id IN (".$obj_ids.")";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).$limit_str;
+				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, HOST h WHERE s.id IN ('.implode(' UNION ', $query).') AND s.host_name=h.host_name'.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';

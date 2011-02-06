@@ -215,7 +215,7 @@ class Host_Model extends Model {
 			foreach ($value as $val) {
 				$query_str = '';
 				$val = '%'.$val.'%';
-				$query_str = "(SELECT DISTINCT * FROM host WHERE (LCASE(host_name)".
+				$query_str = "(SELECT id FROM host WHERE (LCASE(host_name)".
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
@@ -229,7 +229,7 @@ class Host_Model extends Model {
 				$query[] = $query_str;
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY host_name '.$limit_str;
+				$sql = 'SELECT * FROM host WHERE id IN ('.implode(' UNION ', $query).') ORDER BY host_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
@@ -243,6 +243,7 @@ class Host_Model extends Model {
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
+		print $sql."\n";
 		return $host_info;
 	}
 

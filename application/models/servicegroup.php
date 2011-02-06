@@ -95,13 +95,13 @@ class Servicegroup_Model extends ORM
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT * FROM servicegroup WHERE ".
+				$query[] = "SELECT DISTINCT id FROM servicegroup WHERE ".
 			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
 			"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) ".
 			"AND id IN (".$obj_ids.") ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY servicegroup_name '.$limit_str;
+				$sql = 'SELECT * FROM servicegroup WHERE id IN ('.implode(' UNION ', $query).') ORDER BY servicegroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
