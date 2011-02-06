@@ -51,6 +51,7 @@ class Database_Oracle_Driver extends Database_Driver {
 					$sql = "SELECT bar.* FROM ($sql) bar WHERE rnum > $offset";
 			}
 		}
+		$sql = str_replace('NOW()', 'SYSDATE', $sql);
 		// Rewrite UNIX_TIMESTAMP
 		$sql = str_replace('UNIX_TIMESTAMP()', "((sysdate - to_date('01-JAN-1970', 'DD-MON-YYYY')) * 86400)", $sql);
 
