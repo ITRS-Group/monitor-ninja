@@ -223,7 +223,7 @@ class Scheduled_reports_Model extends Model
 				recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." WHERE id=".$id;
 		} else {
 			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description)
-				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).");";
+				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).")";
 		}
 
 		try {
@@ -322,7 +322,7 @@ class Scheduled_reports_Model extends Model
 	public function get_report_type_id($identifier=false)
 	{
 		$db = new Database();
-		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($identifier).";";
+		$sql = "SELECT id FROM scheduled_report_types WHERE identifier=".$db->escape($identifier);
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
