@@ -229,43 +229,12 @@ class Scheduled_reports_Model extends Model
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
-			return $this->translate->_('DATABASE ERROR').": $sql";
+			return $this->translate->_('DATABASE ERROR').": {$e->getMessage()}; $sql";
 		}
 
 		if (!$id) {
-			$id = (int)self::insert_id($rep_type, $saved_report_id, $recipients, $period, $filename, $description);
+			$id = $res->insert_id();
 		}
-		return $id;
-	}
-
-	/**
-	*	Fetch the ID of a scheduled report
-	* 	Since a user could have several schedules
-	* 	for each report, we need to check all fields to be "sure"
-	* 	that we get the correct ID. Not entirely sure though since
-	* 	it is perfectly legal to create several identical schedules.
-	* 	This should, however, be quite rare.
-	*/
-	public function insert_id($report_type_id=false, $report_id=false, $recipients='',
-		$period_id=false, $filename='', $description='')
-	{
-		if (empty($report_type_id) || empty($report_id) ||empty($period_id)) {
-			return false;
-		}
-
-		$id = false;
-		$db = new Database();
-		$sql = 'SELECT id FROM scheduled_reports WHERE '.self::USERFIELD.'='.
-			$db->escape(Auth::instance()->get_user()->username).' AND '.
-			'report_type_id='.(int)$report_type_id.' AND report_id='.(int)$report_id.
-			' AND period_id='.(int)$period_id.' AND recipients='.$db->escape($recipients).
-			' AND filename='.$db->escape($filename).' AND description='.$db->escape($description);
-		$res = $db->query($sql);
-		if (count($res)>0) {
-			$cur = $res->current();
-			$id = $cur->id;
-		}
-		unset($res);
 		return $id;
 	}
 
