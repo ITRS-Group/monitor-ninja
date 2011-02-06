@@ -184,9 +184,10 @@ class Oracle_Result extends Database_Result {
 
 	public function rewind()
 	{
-		if ($this->total_rows) {
+		if ($this->total_rows && $this->current_row > 0) {
 			$this->current_row=0;
 			oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+			$this->latest_row = oci_fetch_assoc($this->result);
 		}
 	}
 
