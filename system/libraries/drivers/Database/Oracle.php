@@ -184,8 +184,10 @@ class Oracle_Result extends Database_Result {
 
 	public function rewind()
 	{
-		$this->current_row=0;
-		oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+		if ($this->total_rows) {
+			$this->current_row=0;
+			oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
+		}
 	}
 
 	public function valid()
@@ -201,7 +203,7 @@ class Oracle_Result extends Database_Result {
 		}
 
 		// The query must be re-fetched now.
-		$this->rewind();
+		oci_execute($this->result, OCI_COMMIT_ON_SUCCESS);
 		return $count;
 	}
 
