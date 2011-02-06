@@ -329,7 +329,12 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		return count($res)!=0 ? $res->current()->id : false;
+		$id = false;
+		if (count($res)!=0) {
+			$res = $res->current();
+			$id = $res->id;
+		}
+		return $id;
 	}
 
 	/**
