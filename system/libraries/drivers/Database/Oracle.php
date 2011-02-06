@@ -233,9 +233,15 @@ class Oracle_Result extends Database_Result {
 				if ($this->valid())
 					$this->latest_row = oci_fetch_assoc($this->result);
 			}
-			elseif (preg_match('/^\s*INSERT +INTO +([^ ]+)/is', $sql, $match)) {
-				$rowcount = new Oracle_Result(false, $link, $object, "SELECT {$match[1]}_id_SEQ.CURRVAL AS ID FROM DUAL");
-				$this->insert_id = (int)$rowcount->current()->id;
+			elseif (preg_match('/^\s*INSERT +INTO +([^ (,]+)/is', $sql, $match)) {
+				$tblname = $match[1].'_id_SEQ';
+				$tblname = substr($tblname, 0, 30);
+				try {
+					$rowcount = new Oracle_Result(false, $link, $object, "SELECT $tblname.CURRVAL AS ID FROM DUAL");
+					$this->insert_id = (int)$rowcount->current()->id;
+				} catch (Kohana_Database_Exception $e) {
+					$this->insert_id = 0;
+				}
 			}
 			elseif (preg_match('/^\s*(DELETE|INSERT|UPDATE)/is', $sql)) {
 				# completely broken, but I don't care
