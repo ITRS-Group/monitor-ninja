@@ -59,8 +59,8 @@ done
 chmod 775 $tempdir$prefix/application/custom_widgets
 
 mkdir -p $tempdir/var/www/html
-ln -sf $prefix $tempdir/var/www/html/monitor
-ln -sf $prefix $tempdir/var/www/html/ninja
+ln -sf $prefix $tempdir/opt/csw/apache2/share/htdocs/monitor
+ln -sf $prefix $tempdir/opt/csw/apache2/share/htdocs/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 #ln -s ../ $buildroot$prefix/op5
 
