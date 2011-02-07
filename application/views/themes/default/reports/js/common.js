@@ -188,7 +188,7 @@ function send_report_now(type, id)
 	// other controllers than the reports controller,
 	// we have to let the correct controller handle
 	// the actual creation and sending of the report.
-	var controller = 'reports';
+	var controller = (typeof _reports_link != 'undefined') ? _reports_link : 'reports';
 	if (type == 'summary') {
 		controller = 'summary';
 	}

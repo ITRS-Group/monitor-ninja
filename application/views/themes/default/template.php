@@ -102,6 +102,7 @@ if (isset($this->template->js_header))
 				var _refresh_paused_msg='<?php echo $this->translate->_('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo $this->translate->_('Page refresh has been restored.') ?>';
 				var _use_contextmenu=<?php echo $use_contextmenu === true ? 1 : 0; ?>;
+				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
 					var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';
