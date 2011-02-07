@@ -58,7 +58,7 @@ done
 # The custom_widgets dir need to be writable by the apache user
 chmod 775 $tempdir$prefix/application/custom_widgets
 
-mkdir -p $tempdir/var/www/html
+mkdir -p $tempdir/opt/csw/apache2/share/htdocs
 ln -sf $prefix $tempdir/opt/csw/apache2/share/htdocs/monitor
 ln -sf $prefix $tempdir/opt/csw/apache2/share/htdocs/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
