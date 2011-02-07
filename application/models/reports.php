@@ -2937,10 +2937,11 @@ class Reports_Model extends Model
 		$this->service_states = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
-		$dbr = $this->db->query($query)->result(false);
+		$dbr = $this->db->query($query);
 		if (!is_object($dbr)) {
 			return false;
 		}
+		$dbr = $dbr->result(false);
 		$result = array();
 		$pstate = array();
 		foreach ($dbr as $row) {
