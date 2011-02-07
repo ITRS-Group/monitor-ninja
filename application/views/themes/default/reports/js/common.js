@@ -65,7 +65,10 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		// check if we should re-initialize datepicker
-		fancybox_datepicker();
+		// NOT for alert summary as this will result in an error
+		if (_current_uri != 'summary/generate'){
+			fancybox_datepicker();
+		}
 		init_timepicker();
 	});
 
