@@ -19,7 +19,7 @@ class Database_Oracle_Driver extends Database_Driver {
 
 		extract($this->db_config['connection']);
 
-		$this->link = @oci_connect($user, $pass, "//$host/$database");
+		$this->link = oci_connect($user, $pass, "//$host/$database");
 
 		if( ($charset = $this->db_config['character_set']) )
 		{
