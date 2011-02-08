@@ -602,7 +602,7 @@ class Current_status_Model extends Model
 				"hp.parents=".$host_id." AND ".
 				"h.id=hp.host AND ".
 				"s.host_name=h.host_name ".
-			"GROUP BY h.id";
+			"GROUP BY h.id, h.host_name";
 		$result = $this->db->query($query);
 		if ($result->count()==0) {
 			return false;
