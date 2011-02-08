@@ -337,6 +337,7 @@ class Search_Controller extends Authenticated_Controller {
 					${$obj.'_limit'} = $limit;
 					$data_cnt = $obj_class->search($query, 0);
 					$tot = count($data_cnt);
+					unset($data_cnt);
 					${$obj.'_pagination'} = new Pagination(
 						array(
 							'total_items'=> $tot,
@@ -352,6 +353,7 @@ class Search_Controller extends Authenticated_Controller {
 				} else {
 					${$obj.'_limit'} = $limit;
 				}
+
 				$data = $obj_class->search($query, ${$obj.'_limit'});
 				$obj_info = false;
 
@@ -360,6 +362,7 @@ class Search_Controller extends Authenticated_Controller {
 				} else {
 					$empty++;
 				}
+				unset($data);
 			}
 			if (!empty($empty) && $empty==4) {
 				$content->no_data = $this->translate->_('Nothing found');

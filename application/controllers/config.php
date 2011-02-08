@@ -496,6 +496,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->notes_url;
 						$result[$i][]= $row->action_url;
 						$i++;
+						unset($travel);
 					}
 					$data = $result;
 				}
@@ -635,6 +636,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->notes_url;
 						$result[$i][]= $row->action_url;
 						$i++;
+						unset($travel);
 					}
 					$data = $result;
 				}
