@@ -321,11 +321,11 @@ class Nagios_auth_Model extends Model
 				'hostgroup hg, host_hostgroup hhg '.
 				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id, hg.hostgroup_name';
 			$result1 = $this->db->query($query);
-                        $result = array();
-                        foreach( $result1 as $row) {
-                            $result[] = $row;
-                        }
-                        unset($result1);
+			$result = array();
+			foreach( $result1 as $row) {
+			    $result[] = $row;
+			}
+			unset($result1);
 
 			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
 				"hostgroup hg, host_hostgroup hhg ".
@@ -335,6 +335,7 @@ class Nagios_auth_Model extends Model
 				" GROUP BY hg.id, hg.hostgroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result) || !count($result)) {
+				unset($user_result);
 				return false;
 			}
 			$see_all_hostgroups = Kohana::config('groups.see_partial_hostgroups');
@@ -367,7 +368,7 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			}
-                        unset($user_result);
+			unset($user_result);
 		}
 
 		return $this->hostgroups;
@@ -401,6 +402,16 @@ class Nagios_auth_Model extends Model
 				'servicegroup sg, service_servicegroup ssg '.
 				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id, sg.servicegroup_name';
 			$result = $this->db->query($query);
+			if (!count($result)) {
+				unset($result);
+				return false;
+			}
+
+			$available_groups = false;
+			foreach ($result as $row) {
+				$available_groups[$row->id] = $row->cnt;
+			}
+			unset($result);
 
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
 				"servicegroup sg, service_servicegroup ssg ".
@@ -410,7 +421,8 @@ class Nagios_auth_Model extends Model
 				"AND contact_access.contact=".$this->id.
 				" GROUP BY sg.id, sg.servicegroup_name";
 			$user_result = $this->db->query($query2);
-			if (!count($user_result) || !count($result)) {
+			if (!count($user_result)) {
+				unset($user_result);
 				return false;
 			}
 			$see_all_servicegroups = Kohana::config('groups.see_partial_servicegroups');
@@ -423,12 +435,9 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			} else {
-				$available_groups = false;
 				$user_groups = false;
 				$user_groupnames = false;
-				foreach ($result as $row) {
-					$available_groups[$row->id] = $row->cnt;
-				}
+
 				foreach ($user_result as $row) {
 					$user_groups[$row->id] = $row->cnt;
 					$user_groupnames[$row->id] = $row->groupname;
@@ -444,6 +453,7 @@ class Nagios_auth_Model extends Model
 				}
 			}
 		}
+		unset($user_result);
 
 		return $this->servicegroups;
 	}
