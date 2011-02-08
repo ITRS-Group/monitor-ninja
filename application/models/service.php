@@ -216,7 +216,10 @@ class Service_Model extends Model
 			return false;
 		}
 
-		$obj_ids = self::authorized_services();
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$obj_ids = self::authorized_services();
+		}
 		$db = new Database();
 
 		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
@@ -252,7 +255,10 @@ class Service_Model extends Model
 					$sql .= " )";
 				}
 			}
-			$sql .= " AND s.id IN(".implode(',', $obj_ids).")) ".$limit_str;
+			if (!$auth->view_hosts_root && !$auth->view_services_root) {
+				$sql .= " AND s.id IN(".implode(',', $obj_ids).") ";
+			}
+			$sql .= ' ) ORDER BY s.host_name, s.service_description '.$limit_str;
 			#echo $sql;
 			$obj_info = self::query($db,$sql);
 			return $obj_info && count($obj_info) > 0 ? $obj_info : false;
