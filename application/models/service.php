@@ -272,6 +272,7 @@ class Service_Model extends Model
 			return false;
 
 		$limit_str = sql::limit_parse($limit);
+		$order_str = ' ORDER BY s.host_name, s.service_description';
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
@@ -286,6 +287,7 @@ class Service_Model extends Model
 			}
 			if (!empty($query)) {
 				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, host h WHERE s.id IN ('.
+					implode(' UNION ALL ', $query).') AND s.host_name=h.host_name'.$order_str.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
@@ -296,7 +298,7 @@ class Service_Model extends Model
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".
 			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.") ".$limit_str;
+			" AND s.id IN (".$obj_ids.") ".$order_str.$limit_str;
 		}
 		$obj_info = $this->query($this->db,$sql);
 		return $obj_info;
