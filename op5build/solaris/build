@@ -49,6 +49,12 @@ sed -e 's/default\/cron/cron\/cron/' \
 	$tempdir/etc/cron.d/scheduled_reports.crontab >> $tempdir/etc/cron.d/scheduled_reports_temp.crontab
 mv $tempdir/etc/cron.d/scheduled_reports_temp.crontab $tempdir/etc/cron.d/scheduled_reports.crontab
 
+sed -e 's/\/usr\/bin\/php/\/opt\/csw\/php5\/bin\/php/' $tempdir/etc/cron.d/scheduled_reports.crontab >> $tempdir/etc/cron.d/scheduled_reports.crontab.temp
+mv $tempdir/etc/cron.d/scheduled_reports.crontab.temp $tempdir/etc/cron.d/scheduled_reports.crontab
+
+sed -e 's/\/usr\/bin\/php/\/opt\/csw\/php5\/bin\/php/' $tempdir/etc/cron.d/recurring_downtime.crontab >> $tempdir/etc/cron.d/recurring_downtime.crontab.temp
+mv $tempdir/etc/cron.d/recurring_downtime.crontab.temp $tempdir/etc/cron.d/recurring_downtime.crontab
+
 # executables
 for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php install_scripts/ninja_db_init.sh;
 do
