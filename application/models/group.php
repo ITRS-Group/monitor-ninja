@@ -49,7 +49,7 @@ class Group_Model extends Model
 		}
 
 		$db = new Database();
-		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
+		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." " : '1=1 ';
 
 		# we need to match against different field depending on if host- or servicegroup
 		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
