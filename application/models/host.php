@@ -243,7 +243,7 @@ class Host_Model extends Model {
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
-		print $sql."\n";
+		#print $sql."\n";
 		return $host_info;
 	}
 
