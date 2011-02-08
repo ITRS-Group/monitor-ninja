@@ -62,11 +62,12 @@ class Group_Model extends Model
 		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image, h.icon_image_alt,';
 		if ($auth->view_hosts_root) {
 			$sql = "
-				SELECT ".$fields.
-					#"s.current_state AS service_state,
-					"(SELECT COUNT(s.current_state) FROM service s where s.host_name = h.host_name) AS state_count
+				SELECT $fields
+					s.current_state AS service_state,
+					s.state_count AS state_count
 				FROM
-					host h
+					host h,
+				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
@@ -75,11 +76,13 @@ class Group_Model extends Model
 					h.host_name";
 		} elseif (!$auth->view_services_root && $grouptype == 'service') {
 			$sql = "
-				SELECT ".$fields.
-					#"s.current_state AS service_state,
-					"(SELECT COUNT(s.current_state) FROM service s WHERE s.host_name = h.host_name) AS state_count
+				SELECT $fields
+					s.current_state AS service_state,
+					s.state_count AS state_count
 				FROM
-					host h
+					host h,
+				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
+				INNER JOIN service s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
@@ -91,11 +94,12 @@ class Group_Model extends Model
 			$hostlist_str = implode(',', $hostlist);
 
 			$sql = "
-				SELECT ".$fields.
-					#"s.current_state AS service_state,
-					"(SELECT COUNT(s.current_state) FROM service s WHERE h.host_name=s.host_name) AS state_count
+				SELECT $fields
+					s.current_state AS service_state,
+					s.state_count AS state_count
 				FROM
-					host h
+					host h,
+				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON sg.id = ssg.".$grouptype."group
 				WHERE
@@ -143,7 +147,7 @@ class Group_Model extends Model
 			$filter_sql .= " AND s.current_state IN ($bits) ";
 		}
 
-		$limit_str = !empty($limit) ? $limit : '';
+		$limit_str = !empty($limit) ? trim($limit) : '';
 		$hostlist = Host_Model::authorized_hosts();
 
 		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
@@ -511,8 +515,8 @@ class Group_Model extends Model
 					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
 					"FROM host ".
-					"INNER JOIN service ON service.host_name = host.host_name ".
-					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
+					"INNER JOIN (SELECT MAX(id) AS id, host_name FROM service GROUP BY host_name) s ON host.host_name = s.host_name ".
+					"INNER JOIN service_servicegroup ON service_servicegroup.service = s.id ".
 					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
 					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql;
 					break;
