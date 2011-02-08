@@ -285,7 +285,7 @@ class Service_Model extends Model
 			" AND s.id IN (".$obj_ids.")";
 			}
 			if (!empty($query)) {
-				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, HOST h WHERE s.id IN ('.implode(' UNION ', $query).') AND s.host_name=h.host_name'.$limit_str;
+				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, host h WHERE s.id IN ('.
 			}
 		} else {
 			$value = '%'.$value.'%';
