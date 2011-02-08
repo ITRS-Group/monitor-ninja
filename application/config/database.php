@@ -30,7 +30,7 @@ $config['default'] = array
 	'connection'    => array
 	(
 		'type'     => 'pdomysql',
-		              #'oracle'
+		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
 		# these are only used by the oracle driver
