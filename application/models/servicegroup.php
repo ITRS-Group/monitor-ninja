@@ -39,7 +39,7 @@ class Servicegroup_Model extends ORM
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT $items_per_page OFFSET $offset";
 		}
 
 		$auth = new Nagios_auth_Model();
@@ -225,7 +225,7 @@ class Servicegroup_Model extends ORM
 
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT $items_per_page OFFSET $offset";
 		}
 
 		$service_match = $auth->view_hosts_root || $auth->view_services_root ? '' : " AND service.id IN(".implode(',', $auth_service_ids).") ";
