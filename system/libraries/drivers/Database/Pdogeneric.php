@@ -277,7 +277,46 @@ abstract class Database_Pdogeneric_Driver extends Database_Driver
 		return $this->link->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
 	}
 
-} // End Database_PdoSqlite_Driver Class
+	function stmt_prepare($sql = '')
+	{
+		is_object($this->link) or $this->connect();
+		return new Kohana_Pdogeneric_Statement($sql, $this->link);
+	}
+} // End Database_Pdogeneric_Driver Class
+
+/**
+ * Kohana's support for prepared statements seems to be less-than-well defined.
+ * This tries to stick to what Mysqli does (which is also what Pgsql does).
+ *
+ * Because I'm lazy, there's no support for binding output parameters, only
+ * input.
+ */
+class Kohana_Pdogeneric_Statement {
+	protected $link = null;
+	protected $stmt;
+	protected $params = array();
+
+	public function __construct($sql, $link)
+	{
+		$this->link = $link;
+		$this->stmt = $this->link->prepare($sql);
+	}
+
+	/**
+	 * The first param is for a "type hint string" used in other drivers
+	 * ("si" means "a string and an int"). We don't give a crap about that.
+	 */
+	public function bind_params($unused, $params)
+	{
+		$this->params = $params;
+	}
+
+	public function execute()
+	{
+		$this->stmt->execute($this->params);
+		return $this->stmt;
+	}
+}
 
 /*
  * PDO Result

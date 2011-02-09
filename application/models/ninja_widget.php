@@ -103,9 +103,10 @@ class Ninja_widget_Model extends Model
 		$user = Auth::instance()->get_user()->username;
 		$db = new Database();
 		$sql = "INSERT INTO ninja_widgets (".self::USERFIELD.", page, name, friendly_name, setting) ".
-			"VALUES(".$db->escape($user).", ".$db->escape($old_widget->page).", ".$db->escape($old_widget->name).
-			",".$db->escape($old_widget->friendly_name).", ".$db->escape($old_widget->setting).")";
-		$db->query($sql);
+			"VALUES(:username, :page, :name, :friendly, :setting)";
+		$stmt = $db->stmt_prepare($sql);
+		$stmt->bind_params(null, array(':username' => $user, ':page' => $old_widget->page, ':name' => $old_widget->name, ':friendly' => $old_widget->friendly_name, ':setting' => $old_widget->setting));
+		$stmt->execute();
 	}
 
 	/**
@@ -160,9 +161,10 @@ class Ninja_widget_Model extends Model
 				break;
 		}
 		if (!empty($setting)) {
-			$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
-				"id=".(int)$id;
-			$db->query($sql);
+			$sql = "UPDATE ninja_widgets SET setting=:setting WHERE id=:id";
+			$stmt = $db->stmt_prepare($sql);
+			$stmt->bind_params(null, array(':setting' => $setting, ':id' => $id));
+			$stmt->execute();
 			return true;
 		}
 		return false;
@@ -209,9 +211,10 @@ class Ninja_widget_Model extends Model
 		if ($current_widget !== false) {
 			$db = new Database();
 			$setting = self::merge_settings($current_widget->setting, $data);
-			$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
-				"id=".(int)$current_widget->id;
-			$db->query($sql);
+			$sql = "UPDATE ninja_widgets SET setting=:setting WHERE id=:id";
+			$stmt = $db->stmt_prepare($sql);
+			$stmt->bind_params('si', array(':setting' => $setting, ':id' => $current_widget->id));
+			$stmt->execute();
 		} else {
 			self::copy_to_user(self::get_widget($page, $widget));
 			self::save_widget_setting($page, $widget, $data);
@@ -314,9 +317,10 @@ class Ninja_widget_Model extends Model
 			foreach ($all_widgets as $widget) {
 				$db = new Database();
 				$setting = self::merge_settings($widget->setting, $new_setting);
-				$sql = "UPDATE ninja_widgets SET setting=".$db->escape($setting)." WHERE ".
-					"id=".(int)$widget->id;
-				$db->query($sql);
+				$sql = "UPDATE ninja_widgets SET setting=:setting WHERE id=:id";
+				$stmt = $this->link->stmt_prepare($sql);
+				$stmt->bind_params(null, array(':setting' => $setting, ':id' => $widget->id));
+				$stmt->execute();
 			}
 			return true;
 		}
@@ -362,9 +366,11 @@ class Ninja_widget_Model extends Model
 			return false;
 		}
 		$db = new Database();
-		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
-			"VALUES(".$db->escape($name).", ".$db->escape($page).", ".$db->escape($friendly_name).")";
-		$return = $db->query($sql);
+		$sql = "INSERT INTO ninja_widgets(".self::USERFIELD.", page, friendly_name) ".
+			"VALUES(:username, :page, :friendly_name)";
+		$stmt = $db->stmt_prepare($sql);
+		$stmt->bind_params(null, array(':username' => $name, ':page' => $page, ':friendly_name' => $friendly_name));
+		$return = $stmt->execute($sql);
 		return $return;
 	}
 }

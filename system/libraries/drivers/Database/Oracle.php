@@ -152,6 +152,51 @@ class Database_Oracle_Driver extends Database_Driver {
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
 	}
+
+	public function stmt_prepare($sql = '')
+	{
+		is_object($this->link) or $this->connect();
+		return new Kohana_Oracle_Statement($sql, $this->link);
+	}
+}
+
+/**
+ * Kohana's support for prepared statements seems to be less-than-well defined.
+ * This tries to stick to what Mysqli does (which is also what Pgsql does).
+ *
+ * Because I'm lazy, there's no support for binding output parameters, only
+ * input.
+ */
+class Kohana_Oracle_Statement {
+	protected $link = null;
+	protected $stmt;
+	protected $var_names = array();
+	protected $var_values = array();
+
+	public function __construct($sql, $link)
+	{
+		$this->link = $link;
+		$this->stmt = oci_parse($sql);
+	}
+
+	/**
+	 * The first param is for a "type hint string" used in other drivers
+	 * ("si" means "a string and an int"). We don't give a crap about that.
+	 */
+	public function bind_params($unused, $params)
+	{
+		$this->var_names = array_keys($params);
+		$this->var_values = array_values($params);
+		foreach ($params as $key => $val) {
+			oci_bind_by_name($this->stmt, $key, $params[$key]);
+		}
+	}
+
+	public function execute()
+	{
+		$this->stmt->execute();
+		return $this->stmt;
+	}
 }
 
 class Oracle_Result extends Database_Result {
