@@ -514,10 +514,8 @@ class Group_Model extends Model
 					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
 					"FROM host ".
-					"INNER JOIN (SELECT MAX(id) AS id, host_name FROM service GROUP BY host_name) s ON host.host_name = s.host_name ".
-					"INNER JOIN service_servicegroup ON service_servicegroup.service = s.id ".
-					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
-					"WHERE servicegroup.servicegroup_name = ".$db->escape($group)." ".$host_match.$filter_host_sql;
+					"INNER JOIN (SELECT host_name FROM service INNER JOIN service_servicegroup ON service_servicegroup.service = service.id INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup WHERE servicegroup.servicegroup_name = ".$db->escape($group)." GROUP BY host_name) s ON host.host_name = s.host_name ".
+					'WHERE 1=1 '.$host_match.$filter_host_sql;
 					break;
 			default:
 				return false;
