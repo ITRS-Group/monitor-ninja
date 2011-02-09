@@ -66,8 +66,8 @@ class Group_Model extends Model
 					s.current_state AS service_state,
 					s.state_count AS state_count
 				FROM
-					host h,
-				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
+					host h
+				INNER JOIN (SELECT current_state, COUNT(current_state) AS state_count, MAX(id) AS id, host_name FROM service GROUP BY host_name, current_state) s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
@@ -80,9 +80,8 @@ class Group_Model extends Model
 					s.current_state AS service_state,
 					s.state_count AS state_count
 				FROM
-					host h,
-				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
-				INNER JOIN service s ON s.host_name = h.host_name
+					host h
+				INNER JOIN (SELECT current_state, COUNT(current_state) AS state_count, MAX(id) AS id, host_name FROM service GROUP BY host_name, current_state) s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
 				WHERE
@@ -98,8 +97,8 @@ class Group_Model extends Model
 					s.current_state AS service_state,
 					s.state_count AS state_count
 				FROM
-					host h,
-				(SELECT MAX(current_state) AS current_state, COUNT(current_state) AS state_count, MAX(id) AS id FROM service WHERE service.host_name = h.host_name GROUP BY host_name) s
+					host h
+				INNER JOIN (SELECT current_state, COUNT(current_state) AS state_count, MAX(id) AS id, host_name FROM service GROUP BY host_name, current_state) s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON sg.id = ssg.".$grouptype."group
 				WHERE
