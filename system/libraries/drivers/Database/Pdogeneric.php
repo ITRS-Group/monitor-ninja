@@ -345,14 +345,14 @@ class Pdogeneric_Result extends Database_Result {
 				throw new Kohana_Database_Exception('database.error', $e->getMessage());
 			}
 
-			if (preg_match('/^(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
+			if (preg_match('/^\s*(SHOW|DESCRIBE|SELECT|PRAGMA|EXPLAIN)/i', $sql)) {
 				$this->result = $result;
 				$this->current_row = 0;
 
 				$this->total_rows = $this->pdo_row_count();
 
 				$this->fetch_type = ($object === TRUE) ? PDO::FETCH_OBJ : PDO::FETCH_ASSOC;
-			} elseif (preg_match('/^(DELETE|INSERT|UPDATE)/i', $sql)) {
+			} elseif (preg_match('/^\s*(DELETE|INSERT|UPDATE)/i', $sql)) {
 				# completely broken, but I don't care
 				$this->insert_id  = 0;
 			}
