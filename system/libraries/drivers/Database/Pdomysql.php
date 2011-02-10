@@ -55,10 +55,14 @@ class Database_Pdomysql_Driver extends Database_Pdogeneric_Driver {
 		if ( ! $this->db_config['escape'])
 			return $str;
 
-		if (function_exists('mysql_real_escape_string'))
-			return mysql_real_escape_string($str);
-
-		return str_replace("'", "''", $str);
+		$quoted = false;
+		if ($this->link)
+			$quoted = $this->link->quote($str);
+		# oci's quoter is unreliable, so keep fallback
+		if ($quoted)
+			return substr($quoted, 1, -1);
+		else
+			return str_replace("'", "''", $str);
 	}
 
 	public function list_tables(Database $db)
