@@ -29,7 +29,7 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'pdomysql',
+		'type'     => 'mysql',
 		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
@@ -38,7 +38,7 @@ $config['default'] = array
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'merlin',
-		# this is only used by the mysql driver
+		# this is only used by the pdomysql driver
 		'dsn' =>      'mysql:host=localhost;dbname=merlin'
 	),
 	'character_set' => 'latin1',
@@ -54,7 +54,7 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'pdomysql',
+		'type'     => 'mysql',
 		              #'oracle',
 		# these are only used by oracle
 		'user'     => 'nacoma',
