@@ -61,16 +61,15 @@ $t = $this->translate; ?>
 		$i = 0;
 		$result = Group_Model::get_group_info($grouptype, $details->{$grouptype.'group_name'});
 		$prev_host = false;
-		$prev_obj = false;
-		$prev = false;
 		$next = false;
 		$tmp = 0;
 		$j = 0;
 
 		if (count($result) && !empty($result))
-		foreach ($result as $host) {
-			$next = $result->next()->current();
-			$host = $result->prev()->current();
+		$next = $result->current();
+		while ($next) {
+			$host = $next;
+			$next = $result->next()->valid() ? $result->current() : false;
 			if ($host->host_name != $prev_host) {
 				$i++;
 				$j = 0;
@@ -136,19 +135,19 @@ $t = $this->translate; ?>
 			<td style="text-align: left; width: 133px">
 				<?php
 					if (isset($nacoma_path))
-						echo html::anchor('configuration/configure/host/'.$prev_obj->host_name, html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)),array('style' => 'border: 0px')).'&nbsp;';
-					if (isset($pnp_path) && pnp::has_graph($prev_obj->host_name))
-						echo '<a href="'.$pnp_path.'host='.$prev_obj->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp, 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
-					echo html::anchor('extinfo/details/host/'.$prev_obj->host_name, html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).'&nbsp;';
-					echo html::anchor('statusmap/host/'.$prev_obj->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).'&nbsp;';
-					echo html::anchor('status/host/'.$prev_obj->host_name, html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';
-					if (!empty($prev_obj->host_action_url)) {
-						echo '<a href="'.nagstat::process_macros($prev_obj->host_action_url, $prev_obj).'" style="border: 0px" target="_blank">';
+						echo html::anchor('configuration/configure/host/'.$host->host_name, html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)),array('style' => 'border: 0px')).'&nbsp;';
+					if (isset($pnp_path) && pnp::has_graph($host->host_name))
+						echo '<a href="'.$pnp_path.'host='.$host->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp, 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
+					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).'&nbsp;';
+					echo html::anchor('statusmap/host/'.$host->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).'&nbsp;';
+					echo html::anchor('status/host/'.$host->host_name, html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';
+					if (!empty($host->host_action_url)) {
+						echo '<a href="'.nagstat::process_macros($host->host_action_url, $host).'" style="border: 0px" target="_blank">';
 						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
 						echo '</a>&nbsp;';
 					}
-					if (!empty($prev_obj->host_notes_url)) {
-						echo '<a href="'.nagstat::process_macros($prev_obj->host_notes_url, $prev_obj).'" style="border: 0px" target="_blank">';
+					if (!empty($host->host_notes_url)) {
+						echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host).'" style="border: 0px" target="_blank">';
 						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
 						echo '</a>';
 					}
@@ -159,7 +158,6 @@ $t = $this->translate; ?>
 			<?php } ?>
 	<?php
 			$prev_host = $host->host_name;
-			$prev_obj = $host;
 		}	# end each host ?>
 		</tbody>
 	</table>

@@ -86,9 +86,9 @@ class Tac_hosts_Widget extends widget_Core {
 		# HOSTS UNREACHABLE
 		$hosts_unreachable = array();
 
-		if ($current_status->hosts_unreachable_unacknowledged) {
+		if ($current_status->hosts_unreach_unacknowledged) {
 			$hosts_unreachable['status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.$host_fiiter] =
-				$current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled Problems');
+				$current_status->hosts_unreach_unacknowledged.' '.$this->translate->_('Unhandled Problems');
 		}
 
 		if ($current_status->hosts_unreachable_scheduled) {

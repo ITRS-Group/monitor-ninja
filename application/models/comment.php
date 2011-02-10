@@ -41,7 +41,7 @@ class Comment_Model extends Model {
 		if ($host_query === true) {
 			# don't use auth_host fields etc
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
@@ -52,29 +52,29 @@ class Comment_Model extends Model {
 		$num_per_page = (int)$num_per_page;
 
 		if (!$auth->view_hosts_root) {
-			$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
+			$sql = "SELECT * FROM ".self::TABLE_NAME." c WHERE id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 				"WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 				" AND ca.contact=contact.id ".$svc_selection.
 				" AND c.host_name=".$db->escape($host).
 				"AND ca.host=h.id ".
-				" AND ca.service is null ";
+				" AND ca.service is null) ";
 		} else {
 			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE c.host_name=".$db->escape($host).
 				$svc_selection.$auth_where;
 		}
 
-		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
+		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
 
 		$result = $db->query($sql);
 		if ($count !== false) {
-                    if( $result ) {
-                        $count = count($result);
-                        unset($result);
-                    }
-                    else {
-                        $count = 0;
-                    }
-                    return $count;
+			if( $result ) {
+				$count = count($result);
+				unset($result);
+			}
+			else {
+				$count = 0;
+			}
+			return $count;
 		}
 		return $result->count() ? $result->result(): false;
 	}
@@ -125,8 +125,8 @@ class Comment_Model extends Model {
 		$host_query = $auth->authorized_host_query();
 
 		# service comments or not?
-		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
-			: " AND c.service_description!='' ";
+		$svc_selection = empty($service) ? " AND c.service_description IS NULL "
+			: " AND c.service_description IS NOT NULL ";
 
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
@@ -136,10 +136,10 @@ class Comment_Model extends Model {
 			# don't use auth_host fields etc since
 			# user is authenticated_for_all_hosts
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND '.$auth_host_alias . ".host_name = c.host_name";
 			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE".
-				" c.host_name!='' ".$svc_selection.$auth_where;
+				" c.host_name IS NOT NULL ".$svc_selection.$auth_where;
 		} else {
 			# we only make this check if user isn't authorized_for_all_hosts as above
 			$service_query = $auth->authorized_service_query();
@@ -149,29 +149,29 @@ class Comment_Model extends Model {
 			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
 
 			if (!$service) { # host comments
-				$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
+				$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
 					"WHERE contact.contact_name=".
 					$db->escape(Auth::instance()->get_user()->username).
 					" AND ca.contact=contact.id ".
 					"AND c.host_name=h.host_name ".
 					"AND (c.service_description='' OR c.service_description is null) ".
-					"AND ca.host=h.id AND ca.service is null ";
+					"AND ca.host=h.id AND ca.service is null) ";
 			} else { # service comments
 				if ($service_query !== true) {
-					$sql = "SELECT DISTINCT c.* FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
+					$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
 						WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
 						" AND ca.contact=contact.id ".
 						"AND c.host_name=h.host_name ".
 						"AND s.host_name=c.host_name ".
 						"AND ca.service=s.id ".
-						"AND (c.service_description!='' AND c.service_description is NOT null) ";
+						"AND (c.service_description is NOT null)) ";
 				} else {
-					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description!='' OR service_description is NOT null) ";
+					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description is NOT null) ";
 				}
 			}
 		}
 
-		$sql .= " ORDER BY entry_time, host_name ".$offset_limit;
+		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
 		#echo $sql."<br />";
 
 		$result = $db->query($sql);
@@ -179,7 +179,7 @@ class Comment_Model extends Model {
 			return $result ? count($result) : 0;
 		}
 
-		return $result->result();
+		return $result;
 	}
 
 	/**
@@ -200,10 +200,10 @@ class Comment_Model extends Model {
 		if ($service === false) { # only host comments
 			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".self::TABLE_NAME." WHERE ".
 			"service_description = '' OR service_description is NULL ".
-			"GROUP BY obj_name ORDER BY obj_name";
+			"GROUP BY host_name ORDER BY host_name";
 		} else { # service comments
-			$sql = "SELECT COUNT(*) as cnt, ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
-			"service_description != '' OR service_description is not NULL ".
+			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
+			"service_description != '' OR service_description is not NULL) tmpname ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		}
 

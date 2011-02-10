@@ -186,19 +186,20 @@ class Service_Model extends Model
 		}
 		$auth = new Nagios_auth_Model();
 		$sql_join = false;
+		$sql_where = false;
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$obj_ids = self::authorized_services();
-			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
-			$sql_join .= ' INNER JOIN service ON service.id=contact_access.service ';
+			$sql_join = ' INNER JOIN contact_access ON contact_access.service=service.id';
+			$sql_where = ' AND contact_access.contact= '.(int)$auth->id;
 		}
 
 		$db = new Database();
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE LCASE(service.".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
 		} else {
-			$sql = "SELECT * FROM service ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM service ".$sql_join." WHERE service.".$field." = ".$db->escape($value)." ".$sql_where;
 		}
 		$sql .= $limit_str;
 		$obj_info = $db->query($sql);
@@ -215,11 +216,14 @@ class Service_Model extends Model
 			return false;
 		}
 
-		$obj_ids = self::authorized_services();
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$obj_ids = self::authorized_services();
+		}
 		$db = new Database();
 
-		$sql = "SELECT DISTINCT s.*, h.current_state AS host_state ".
-		"FROM service AS s, host AS h WHERE ";
+		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
+		"FROM service s WHERE ";
 		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
 		foreach ($host_name as $host) {
@@ -239,7 +243,6 @@ class Service_Model extends Model
 		if (!empty($query_parts)) {
 			$sql_xtra = false;
 			$sql .= '( ( '.implode(') OR (', $query_parts) . ') ) ';
-			$sql .= " AND s.host_name = h.host_name";
 			if (!empty($xtra_query) && is_array($xtra_query)) {
 				foreach ($xtra_query as $x) {
 					$x = '%' . $x . '%';
@@ -252,7 +255,10 @@ class Service_Model extends Model
 					$sql .= " )";
 				}
 			}
-			$sql .= " AND s.id IN(".implode(',', $obj_ids).") GROUP BY s.id ".$limit_str;
+			if (!$auth->view_hosts_root && !$auth->view_services_root) {
+				$sql .= " AND s.id IN(".implode(',', $obj_ids).") ";
+			}
+			$sql .= ' ) ORDER BY s.host_name, s.service_description '.$limit_str;
 			#echo $sql;
 			$obj_info = self::query($db,$sql);
 			return $obj_info && count($obj_info) > 0 ? $obj_info : false;
@@ -267,38 +273,38 @@ class Service_Model extends Model
 	{
 		if (empty($value)) return false;
 		$auth_obj = self::authorized_services();
-		$obj_ids = implode(',',$auth_obj);
+		$obj_ids = is_array($auth_obj) ? implode(',',$auth_obj) : false;
 		if (empty($obj_ids))
 			return false;
 
 		$limit_str = sql::limit_parse($limit);
+		$order_str = ' ORDER BY s.host_name, s.service_description';
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service AS s, host AS h ".
-			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
+				$query[] = "SELECT id FROM service ".
+			"WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))".
-			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ";
+			" AND s.id IN (".$obj_ids.")";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).$limit_str;
+				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, host h WHERE s.id IN ('.
+					implode(' UNION ALL ', $query).') AND s.host_name=h.host_name'.$order_str.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT s.*, h.current_state AS host_state, h.address ".
-			"FROM service AS s, host AS h ".
+			$sql = "SELECT s.*, h.current_state AS host_state, h.address ".
+			"FROM service s, host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
-			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))".
+			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".
 			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.")) GROUP BY s.id, h.host_name ".$limit_str;
+			" AND s.id IN (".$obj_ids.") ".$order_str.$limit_str;
 		}
 		$obj_info = $this->query($this->db,$sql);
 		return $obj_info;
@@ -462,10 +468,10 @@ class Service_Model extends Model
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." AS t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(unix_timestamp()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';

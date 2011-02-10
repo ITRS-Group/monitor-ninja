@@ -37,7 +37,7 @@ class Hostgroup_Model extends ORM
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT ".$items_per_page." OFFSET ".$offset;
 		}
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root) {
@@ -97,20 +97,20 @@ class Hostgroup_Model extends ORM
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT * FROM `hostgroup` ".
-				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($val).") OR ".
-				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).")) AND ".
-				"`id` IN (".$obj_ids.")  ";
+				$query[] = "SELECT DISTINCT id FROM hostgroup ".
+				"WHERE (LCASE(hostgroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+				"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) AND ".
+				"id IN (".$obj_ids.")  ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY hostgroup_name '.$limit_str;
+				$sql = 'SELECT * FROM hostgroup WHERE id IN ('.implode(' UNION ', $query).') ORDER BY hostgroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM `hostgroup` ".
-				"WHERE (LCASE(`hostgroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
-				"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) AND ".
-				"`id` IN (".$obj_ids.") ORDER BY hostgroup_name ".$limit_str;
+			$sql = "SELECT DISTINCT * FROM hostgroup ".
+				"WHERE (LCASE(hostgroup_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+				"LCASE(alias) LIKE LCASE(".$this->db->escape($value).")) AND ".
+				"id IN (".$obj_ids.") ORDER BY hostgroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
@@ -169,8 +169,8 @@ class Hostgroup_Model extends ORM
 		if (!$auth->view_hosts_root) {
 			$ca_access = "AND h.id IN(SELECT host from contact_access where contact=".(int)$contact." and service is null)";
 		}
-		$sql = "SELECT
-			DISTINCT h.*
+		$sql = "SELECT * FROM host WHERE id IN (SELECT
+			DISTINCT h.id
 		FROM
 			host h,
 			hostgroup hg,
@@ -178,9 +178,9 @@ class Hostgroup_Model extends ORM
 		WHERE
 			hg.hostgroup_name IN (" . join(', ', $hg) . ") AND
 			hhg.hostgroup = hg.id AND
-			h.id=hhg.host ".$ca_access."
+			h.id=hhg.host ".$ca_access.")
 		ORDER BY
-			h.host_name";
+			host_name";
 		if (!empty($sql)) {
 			$result = $this->db->query($sql);
 			return $result;
@@ -231,7 +231,7 @@ class Hostgroup_Model extends ORM
 
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT ".$items_per_page." OFFSET ".$offset;
 		}
 
 		$host_match = $auth->view_hosts_root ? '' : " AND host.id IN(".implode(',', $auth_host_ids).") ";
@@ -248,10 +248,12 @@ class Hostgroup_Model extends ORM
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		if (!empty($hoststatustypes)) {
-			$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+			$bits = db::bitmask_to_string($hoststatustypes);
+			$filter_host_sql = " AND host.current_state IN ($bits) ";
 		}
 		if (!empty($servicestatustypes)) {
-			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+			$bits = db::bitmask_to_string($servicestatustypes);
+			$filter_service_sql = " AND service.current_state IN ($bits) ";
 		}
 
 
@@ -482,7 +484,7 @@ class Hostgroup_Model extends ORM
 		$cnt_hosts_in_group = 0;
 
 		$sql = "SELECT COUNT(hhg.host) AS cnt FROM hostgroup hg, host_hostgroup hhg ".
-			"WHERE hg.hostgroup_name=".$db->escape($groupname)." AND hhg.hostgroup=hg.id;";
+			"WHERE hg.hostgroup_name=".$db->escape($groupname)." AND hhg.hostgroup=hg.id";
 
 		$res = $db->query($sql);
 		if ($res && count($res)) {

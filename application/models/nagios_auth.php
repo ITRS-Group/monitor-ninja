@@ -159,8 +159,7 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_hosts_root)
 			return array();
 
-		$query = "SELECT h.id, h.host_name FROM contact_access AS ca, host AS h WHERE ca.contact=".$this->id.
-			" AND ca.service IS NULL AND h.id=ca.host";
+		$query = "SELECT h.id, h.host_name FROM contact_access ca INNER JOIN host h ON h.id=ca.host WHERE ca.contact=".$this->id;
 
 		if ($this->view_hosts_root)
 			$query = 'SELECT id, host_name from host';
@@ -227,11 +226,11 @@ class Nagios_auth_Model extends Model
 			return true;
 		}
 		$query_parts = array(
-			'from' => ' host AS auth_host, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, host_contactgroup AS auth_host_contactgroup',
-			'where' => " auth_host.id = auth_host_contactgroup.host
-				AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
-				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) . "
-				AND %s = auth_host.host_name",
+			'from' => ' host auth_host, contact auth_contact, contact_contactgroup auth_contact_contactgroup, host_contactgroup auth_host_contactgroup',
+			'where' => " auth_host.id = auth_host_contactgroup.host ".
+				"AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup ".
+				"AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) .
+				" AND %s = auth_host.host_name",
 			'host_field' => 'auth_host');
 		return $query_parts;
 	}
@@ -253,7 +252,7 @@ class Nagios_auth_Model extends Model
 		if (!empty($this->services))
 			return $this->services;
 
-		$query = "SELECT s.id, s.host_name, s.service_description FROM contact_access AS ca, service AS s WHERE ca.contact=".$this->id." AND ca.service IS NOT NULL AND s.id=ca.service";
+		$query = "SELECT s.id, s.host_name, s.service_description FROM contact_access ca, service s WHERE ca.contact=".$this->id." AND ca.service IS NOT NULL AND s.id=ca.service";
 		if ($this->view_services_root || $this->view_hosts_root) {
 			$query = 'SELECT id, host_name, service_description FROM service';
 		}
@@ -284,7 +283,7 @@ class Nagios_auth_Model extends Model
 			return true;
 		}
 		$query_parts = array(
-			'from' => ' host AS auth_host, service AS auth_service, contact AS auth_contact, contact_contactgroup AS auth_contact_contactgroup, service_contactgroup AS auth_service_contactgroup',
+			'from' => ' host auth_host, service auth_service, contact auth_contact, contact_contactgroup auth_contact_contactgroup, service_contactgroup auth_service_contactgroup',
 			'where' => " auth_service.id = auth_service_contactgroup.service
 				AND auth_service_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
 				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username),
@@ -320,22 +319,23 @@ class Nagios_auth_Model extends Model
 			# fetch all hostgroups with host count on each
 			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
 				'hostgroup hg, host_hostgroup hhg '.
-				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id';
+				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id, hg.hostgroup_name';
 			$result1 = $this->db->query($query);
-                        $result = array();
-                        foreach( $result1 as $row) {
-                            $result[] = $row;
-                        }
-                        unset($result1);
+			$result = array();
+			foreach( $result1 as $row) {
+			    $result[] = $row;
+			}
+			unset($result1);
 
 			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
 				"hostgroup hg, host_hostgroup hhg ".
 				"INNER JOIN contact_access ON contact_access.host=hhg.host ".
 				"WHERE hg.id=hhg.hostgroup ".
 				"AND contact_access.contact=".$this->id.
-				" GROUP BY hg.id";
+				" GROUP BY hg.id, hg.hostgroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result) || !count($result)) {
+				unset($user_result);
 				return false;
 			}
 			$see_all_hostgroups = Kohana::config('groups.see_partial_hostgroups');
@@ -368,7 +368,7 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			}
-                        unset($user_result);
+			unset($user_result);
 		}
 
 		return $this->hostgroups;
@@ -400,8 +400,18 @@ class Nagios_auth_Model extends Model
 			# fetch all servicegroups with service count on each
 			$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.
 				'servicegroup sg, service_servicegroup ssg '.
-				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id';
+				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id, sg.servicegroup_name';
 			$result = $this->db->query($query);
+			if (!count($result)) {
+				unset($result);
+				return false;
+			}
+
+			$available_groups = false;
+			foreach ($result as $row) {
+				$available_groups[$row->id] = $row->cnt;
+			}
+			unset($result);
 
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
 				"servicegroup sg, service_servicegroup ssg ".
@@ -409,9 +419,10 @@ class Nagios_auth_Model extends Model
 				"WHERE sg.id=ssg.servicegroup ".
 				"AND ssg.service IS NOT NULL ".
 				"AND contact_access.contact=".$this->id.
-				" GROUP BY sg.id";
+				" GROUP BY sg.id, sg.servicegroup_name";
 			$user_result = $this->db->query($query2);
-			if (!count($user_result) || !count($result)) {
+			if (!count($user_result)) {
+				unset($user_result);
 				return false;
 			}
 			$see_all_servicegroups = Kohana::config('groups.see_partial_servicegroups');
@@ -424,12 +435,9 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			} else {
-				$available_groups = false;
 				$user_groups = false;
 				$user_groupnames = false;
-				foreach ($result as $row) {
-					$available_groups[$row->id] = $row->cnt;
-				}
+
 				foreach ($user_result as $row) {
 					$user_groups[$row->id] = $row->cnt;
 					$user_groupnames[$row->id] = $row->groupname;
@@ -445,6 +453,7 @@ class Nagios_auth_Model extends Model
 				}
 			}
 		}
+		unset($user_result);
 
 		return $this->servicegroups;
 	}

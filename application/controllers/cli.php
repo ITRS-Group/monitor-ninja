@@ -124,9 +124,7 @@ class Cli_Controller extends Authenticated_Controller {
 		$auth_type = Kohana::config('auth.driver');
 		if ($auth_type !== 'LDAP') {
 			# first import new users from cgi.cfg if there is any
-			$path = realpath(APPPATH."../cli-helpers/htpasswd-import.php");
-			require_once($path);
-			$passwd_import = new htpasswd_importer();
+			$passwd_import = new Htpasswd_importer_Model();
 			$passwd_import->overwrite = true;
 			$base_path = System_Model::get_nagios_base_path();
 			$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';

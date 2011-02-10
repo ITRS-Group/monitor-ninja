@@ -15,8 +15,8 @@ class Config_Controller extends Authenticated_Controller {
 	public $current = false;
 	public $logos_path = '';
 	public $type = 'hosts';
-	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_cmds';
-	const HOST_NOTIFICATION_COMMANDS = 'host_notification_cmds';
+	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
+	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
 
 	public function __construct()
 	{
@@ -496,6 +496,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->notes_url;
 						$result[$i][]= $row->action_url;
 						$i++;
+						unset($travel);
 					}
 					$data = $result;
 				}
@@ -635,6 +636,7 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->notes_url;
 						$result[$i][]= $row->action_url;
 						$i++;
+						unset($travel);
 					}
 					$data = $result;
 				}

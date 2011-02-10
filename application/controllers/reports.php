@@ -48,7 +48,7 @@ class Reports_Controller extends Authenticated_Controller
 		)
 	);
 
-	public static $setup_keys = array(
+	public $setup_keys = array(
 		'report_name',
 		'info',
 		'rpttimeperiod',
@@ -901,7 +901,7 @@ class Reports_Controller extends Authenticated_Controller
 		$use_average_selected = arr::search($_REQUEST, 'use_average', $this->use_average);
 
 		$report_options = false;
-		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
 
 		if ($this->type == 'sla') {
 			// take care of start_year, end_year etc
@@ -920,7 +920,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
-			if (in_array($key, self::$setup_keys)) {
+			if (in_array($key, $this->setup_keys)) {
 				if ($key == 'host_filter_status') {
 					if ($value == NULL) { // for old reports without host_filter_status values defined
 						$report_options[$key] = false;
@@ -2196,10 +2196,10 @@ class Reports_Controller extends Authenticated_Controller
 		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 
 		$report_options = false;
-		foreach (self::$setup_keys as $k)	$report_options[$k] = false;
+		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
 		// store all variables in array for later use
 		foreach ($_REQUEST as $key => $value) {
-			if (in_array($key, self::$setup_keys)) {
+			if (in_array($key, $this->setup_keys)) {
 				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
 					if (is_numeric($value)) {
 						$report_options[$key] = $value;
@@ -2977,9 +2977,10 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		$service_model = new Service_Model();
 		$res = $service_model->get_where('host_name', $host_name);
-		$res->result(false); # convert to array
-		$service_arr = array();
 		if (!empty($res)) {
+			$res->result(false); # convert to array
+			$service_arr = array();
+
 			$report_class = new Reports_Model();
 			foreach ($res as $row)
 				$service_arr[] = $host_name.";".$row['service_description'];
@@ -4239,7 +4240,7 @@ class Reports_Controller extends Authenticated_Controller
 				break;
 			case 'filename': // remove spaces
 				if (strlen($new_value)>40) {
-					echo sprintf($this->translate->_('The enetered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
+					echo sprintf($this->translate->_('The entered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
 						$this->translate->_('Please').' <a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'.$this->translate->_('click here').'</a> '.$this->translate->_('to view saved value').'.';
 					exit;
 				}
@@ -4353,12 +4354,13 @@ class Reports_Controller extends Authenticated_Controller
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_recipients = $report_data['recipients'];
 		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
-		foreach (self::$setup_keys as $k) {
+		foreach ($this->setup_keys as $k) {
 			if ($type === 'sla' && $k === 'report_name')
 				$k = 'sla_name';
 			if ($k != 'host_filter_status' && $k != 'service_filter_status')
 				$request[$k] = $report_data[$k];
 		}
+
 		if (!empty($report_data['objects'])) {
 			$var_name = self::$map_type_field[$report_data['report_type']];
 			foreach ($report_data['objects'] as $obj) {

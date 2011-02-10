@@ -39,7 +39,7 @@ class Servicegroup_Model extends ORM
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT $items_per_page OFFSET $offset";
 		}
 
 		$auth = new Nagios_auth_Model();
@@ -95,20 +95,20 @@ class Servicegroup_Model extends ORM
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
-			"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($val).") OR ".
-			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($val).")) ".
-			"AND `id` IN (".$obj_ids.") ";
+				$query[] = "SELECT DISTINCT id FROM servicegroup WHERE ".
+			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+			"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) ".
+			"AND id IN (".$obj_ids.") ";
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY servicegroup_name '.$limit_str;
+				$sql = 'SELECT * FROM servicegroup WHERE id IN ('.implode(' UNION ', $query).') ORDER BY servicegroup_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM `servicegroup` WHERE ".
-			"(LCASE(`servicegroup_name`) LIKE LCASE(".$this->db->escape($value).") OR ".
-			"LCASE(`alias`) LIKE LCASE(".$this->db->escape($value).")) ".
-			"AND `id` IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
+			$sql = "SELECT DISTINCT * FROM servicegroup WHERE ".
+			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+			"LCASE(alias) LIKE LCASE(".$this->db->escape($value).")) ".
+			"AND id IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
 		}
 		$obj_info = $this->db->query($sql);
 		return $obj_info;
@@ -225,7 +225,7 @@ class Servicegroup_Model extends ORM
 
 		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT ".$offset.", ".$items_per_page;
+			$limit_str = " LIMIT $items_per_page OFFSET $offset";
 		}
 
 		$service_match = $auth->view_hosts_root || $auth->view_services_root ? '' : " AND service.id IN(".implode(',', $auth_service_ids).") ";
@@ -242,10 +242,12 @@ class Servicegroup_Model extends ORM
 		$filter_host_sql = false;
 		$filter_service_sql = false;
 		if (!empty($hoststatustypes)) {
-			$filter_host_sql = " AND 1 << host.current_state & ".$hoststatustypes." ";
+			$bits = db::bitmask_to_string($hoststatustypes);
+			$filter_host_sql = " AND host.current_state IN ($bits) ";
 		}
 		if (!empty($servicestatustypes)) {
-			$filter_service_sql = " AND 1 << service.current_state & $servicestatustypes ";
+			$bits = db::bitmask_to_string($servicestatustypes);
+			$filter_service_sql = " AND service.current_state IN ($bits) ";
 		}
 
 		$base_query = "SELECT COUNT(DISTINCT host.id) ".

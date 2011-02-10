@@ -62,21 +62,21 @@ class Host_Model extends Model {
 		$this->auth = new Nagios_auth_Model();
 	}
 
-        /**
-         Workaround for PDO queries: runs $db->query($sql), copies
-         the resultset to an array, closes the resultset, and returns
-         the array.
-         */
-        private static function query($db,$sql)
-        {
-            $res = $db->query($sql);
-            $rc = array();
-            foreach($res as $row) {
-                $rc[] = $row;
-            }
-            unset($res);
-            return $rc;
-        }
+	/**
+	 Workaround for O queries: runs $db->query($sql), copies
+	 the resultset to an array, closes the resultset, and returns
+	 the array.
+	 */
+	private static function query($db,$sql)
+	{
+		$res = $db->query($sql)->result();
+		$rc = array();
+		foreach($res as $row) {
+			$rc[] = $row;
+		}
+		unset($res);
+		return $rc;
+	}
 
 	/**
 	 * Fetch all onfo on a host. The returned object
@@ -158,9 +158,10 @@ class Host_Model extends Model {
 
 		$auth = new Nagios_auth_Model();
 		$sql_join = false;
+		$sql_where = false;
 		if (!$auth->view_hosts_root) {
-			$sql_join = ' INNER JOIN contact_access ON contact_access.contact='.(int)$auth->id;
-			$sql_join .= ' INNER JOIN host ON host.id=contact_access.host ';
+			$sql_join = ' INNER JOIN contact_access ON contact_access.host=host.id';
+			$sql_where = ' AND contact_access.contact='.(int)$auth->id;
 		}
 
 		$limit_str = sql::limit_parse($limit);
@@ -172,11 +173,11 @@ class Host_Model extends Model {
 
 		if (!$exact) {
 			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
 		} else {
-			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ";
+			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ".$sql_where;
 		}
-		$sql .= $sql_join.$limit_str;
+		$sql .= $limit_str;
 		$host_info = $db->query($sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
@@ -214,7 +215,7 @@ class Host_Model extends Model {
 			foreach ($value as $val) {
 				$query_str = '';
 				$val = '%'.$val.'%';
-				$query_str = "(SELECT DISTINCT * FROM host WHERE (LCASE(host_name)".
+				$query_str = "SELECT id FROM host WHERE (LCASE(host_name)".
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
@@ -224,24 +225,25 @@ class Host_Model extends Model {
 				} else {
 					$query_str .= " OR LCASE(output) LIKE LCASE(".$this->db->escape($val)."))";
 				}
-				$query_str .= " AND id IN (".$host_ids.") )";
+				$query_str .= " AND id IN (".$host_ids.") ";
 				$query[] = $query_str;
 			}
 			if (!empty($query)) {
-				$sql = implode(' UNION ', $query).' ORDER BY host_name '.$limit_str;
+				$sql = 'SELECT * FROM host WHERE id IN ('.implode(' UNION ALL ', $query).') ORDER BY host_name '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM host WHERE (LCASE(host_name)".
+			$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
 			" LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
-			" AND id IN (".$host_ids.") ORDER BY host_name ".$limit_str;
+			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
+		#print $sql."\n";
 		return $host_info;
 	}
 
@@ -256,7 +258,7 @@ class Host_Model extends Model {
 		if ($host_query === true) {
 			# don't use auth_host fields etc
 			$auth_host_alias = 'h';
-			$auth_from = ', host AS '.$auth_host_alias;
+			$auth_from = ', host '.$auth_host_alias;
 			$auth_where = ' AND ' . $auth_host_alias . ".host_name = '" . $host_name . "'";
 		} else {
 			$auth_host_alias = $host_query['host_field'];
@@ -265,8 +267,8 @@ class Host_Model extends Model {
 		}
 		$sql = "SELECT parent.* " .
 			"FROM " .
-				"host_parents AS hp, " .
-				"host AS parent " . $auth_from .
+				"host_parents hp, " .
+				"host parent " . $auth_from .
 			" WHERE ".
 				$auth_host_alias . ".id=hp.host " . $auth_where .
 				" AND parent.id=hp.parents " .
@@ -418,19 +420,21 @@ class Host_Model extends Model {
 		$from = 'host ';
 
 		if (!empty($this->state_filter)) {
-			$filter_host_sql = " AND 1 << %scurrent_state & ".$this->state_filter." ";
+			$bits = db::bitmask_to_string($this->state_filter);
+			$filter_host_sql = " AND %scurrent_state IN ($bits) ";
 		}
 		if ($this->service_filter!==false && !empty($this->service_filter)) {
-			$filter_service_sql = " AND 1 << %scurrent_state & $this->service_filter ";
+			$bits = db::bitmask_to_string($this->service_filter);
+			$filter_service_sql = " AND %scurrent_state IN ($bits) ";
 		}
 
 		if (!$this->show_services) {
 			# host query part
 			if (!$this->auth->view_hosts_root) {
-				$from .= ', contact_access AS ca ';
+				$from .= ', contact_access ca ';
 				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
 			} else {
-				$where = 'WHERE 1 ';
+				$where = 'WHERE 1=1 ';
 			}
 
 			if (!empty($filter_host_sql)) {
@@ -441,9 +445,8 @@ class Host_Model extends Model {
 			}
 
 			# this should never happen but added just to be on the safe side
-			if ($this->serviceprops !== false) {
-				$from .= ', service ';
-				$where .= ' AND service.host_name=host.host_name ';
+			if ($this->serviceprops != false) {
+				$from .= 'INNER JOIN service ON service.host_name=host.host_name ';
 			}
 
 			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
@@ -465,30 +468,30 @@ class Host_Model extends Model {
 			}
 
 			# only host listing
-			$sql = "SELECT DISTINCT ".
-					"host.instance_id AS host_instance_id,".
-					"host.id AS host_id,".
+			$sql = "SELECT ".
+					"host.instance_id AS host_instance_id, ".
+					"host.id AS host_id, ".
 					"host.host_name, ".
 					"host.address, ".
 					"host.alias, ".
 					"host.current_state, ".
-					"host.last_check,".
-					"host.next_check,".
-					"host.should_be_scheduled,".
-					"host.notes_url,".
-					"host.notifications_enabled,".
-					"host.active_checks_enabled,".
-					"host.icon_image,".
-					"host.icon_image_alt,".
-					"host.is_flapping,".
-					"host.action_url,".
-					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration,".
-					"UNIX_TIMESTAMP() AS cur_time,".
-					"host.current_attempt,".
-					"host.max_check_attempts,".
-					"host.problem_has_been_acknowledged,".
-					"host.scheduled_downtime_depth,".
-					"host.output,".
+					"host.last_check, ".
+					"host.next_check, ".
+					"host.should_be_scheduled, ".
+					"host.notes_url, ".
+					"host.notifications_enabled, ".
+					"host.active_checks_enabled, ".
+					"host.icon_image, ".
+					"host.icon_image_alt, ".
+					"host.is_flapping, ".
+					"host.action_url, ".
+					"(UNIX_TIMESTAMP() - "."host.last_state_change) AS duration, ".
+					"UNIX_TIMESTAMP() AS cur_time, ".
+					"host.current_attempt, ".
+					"host.max_check_attempts, ".
+					"host.problem_has_been_acknowledged, ".
+					"host.scheduled_downtime_depth, ".
+					"host.output, ".
 					"host.long_output ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
@@ -501,7 +504,7 @@ class Host_Model extends Model {
 			$from .= ', service';
 			$where = '';
 			if (!$this->auth->view_hosts_root || !$this->auth->view_services_root) {
-				$from .= ', contact_access AS ca ';
+				$from .= ', contact_access ca ';
 
 				# match authorized services against service.host_name
 				$where = ' WHERE ca.contact='.$this->auth->id.' AND service.host_name=host.host_name'.
@@ -624,7 +627,7 @@ class Host_Model extends Model {
 					$host_ids = implode(',', $this->host_list);
 					$where_str = ' id IN('.$host_ids.')';
 				}
-				$sql = "SELECT COUNT(*) AS cnt FROM host";
+				$sql = "SELECT COUNT(1) AS cnt FROM host";
 				if (!$this->auth->view_hosts_root) {
 					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
 						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
@@ -663,16 +666,16 @@ class Host_Model extends Model {
 		}
 		$result = $this->query($this->db,$sql);
 		if ($this->count === true) {
-                    $rc = $result ? count($result) : 0;
-                    unset($result);
-                    return $rc;
+			$rc = $result ? count($result) : 0;
+			unset($result);
+			return $rc;
 		}
-                $rc = array();
-                foreach( $result as $row )
-                {
-                    $rc[] = $row;
-                }
-                unset($result);
+		$rc = array();
+		foreach( $result as $row )
+		{
+			$rc[] = $row;
+		}
+		unset($result);
 		return $rc;
 	}
 
@@ -799,7 +802,7 @@ class Host_Model extends Model {
 
 		$db = new Database();
 		if (empty($service_description)) {
-			$sql = "SELECT *, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
+			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
 			$service_list = $auth->get_authorized_services();
 			if (!in_array($host_name.';'.$service_description, $service_list)) {
@@ -829,7 +832,7 @@ class Host_Model extends Model {
 					h.percent_state_change AS host_percent_state_change,
 					h.perf_data AS host_perf_data,
 					h.flap_detection_enabled AS host_flap_detection_enabled,
-					h.current_notification_number AS host_current_notification_number,
+					h.current_notification_number AS host_current_notification_num,
 					h.check_type AS host_check_type,
 					h.latency AS host_latency,
 					h.execution_time AS host_execution_time,
@@ -873,11 +876,11 @@ class Host_Model extends Model {
 					s.output,
 					s.long_output
 				FROM
-					host h,
-					service s
+					host h
+				INNER JOIN
+					service s ON h.host_name=s.host_name
 				WHERE
 					h.host_name=".$db->escape($host_name)." AND
-					s.host_name=h.host_name AND
 					s.service_description=".$db->escape($service_description);
 		}
 		$result = self::query($db,$sql);
@@ -983,10 +986,10 @@ class Host_Model extends Model {
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." AS t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(unix_timestamp()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';
@@ -1025,11 +1028,11 @@ class Host_Model extends Model {
 		$auth_hosts = self::authorized_hosts();
 		$host_str = join(',', $auth_hosts);
 		$db = new Database();
-		$sql = "SELECT DISTINCT h.* " .
+		$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id " .
 			"FROM host h, hostgroup hg, host_hostgroup hhg " .
 			"WHERE hg.hostgroup_name = " . $db->escape($name) .
 			"AND hhg.hostgroup = hg.id AND h.id = hhg.host " .
-			"AND h.id IN(" . $host_str . ")";
+			"AND h.id IN(" . $host_str . "))";
 
 		return $this->query($db,$sql);
 	}

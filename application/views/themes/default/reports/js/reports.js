@@ -575,6 +575,7 @@ function get_members(val, type, no_erase) {
 			} else {
 				// error
 				jgrowl_message('Unable to fetch objects...', _reports_error);
+				setup_hide_content('progress');
 			}
 		}
 	});

@@ -1,6 +1,9 @@
 #!/bin/sh
 prefix='/opt/monitor/op5/ninja'
 
+# We should not setup mysql 
+exit 0
+
 sh $prefix/install_scripts/ninja_db_init.sh
 
 # Set driver to LDAP if ad or ldap is configured

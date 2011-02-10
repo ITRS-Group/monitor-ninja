@@ -98,13 +98,13 @@ class Tac_monfeat_Widget extends widget_Core {
 		$notification_disabled_services = $current_status->notification_disabled_services;
 		$notification_disabled_hosts = $current_status->notification_disabled_hosts;
 
-		$event_handler_disabled_services = $current_status->event_handler_disabled_services;
+		$event_handler_disabled_svcs = $current_status->event_handler_disabled_svcs;
 		$event_handler_disabled_hosts = $current_status->event_handler_disabled_hosts;
 
-		$active_checks_disabled_services = $current_status->active_checks_disabled_services;
+		$active_checks_disabled_svcs = $current_status->active_checks_disabled_svcs;
 		$active_checks_disabled_hosts = $current_status->active_checks_disabled_hosts;
 
-		$passive_checks_disabled_services = $current_status->passive_checks_disabled_services;
+		$passive_checks_disabled_svcs = $current_status->passive_checks_disabled_svcs;
 		$passive_checks_disabled_hosts = $current_status->passive_checks_disabled_hosts;
 
 		$cmd_flap_status = ($enable_flap_detection ? 'enabled' : 'disabled').'_monfeat';

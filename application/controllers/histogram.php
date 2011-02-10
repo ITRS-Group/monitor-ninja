@@ -161,6 +161,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();
+		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
 
 		$template->label_create_new = $this->translate->_('Event History Report');
 		$template->label_standardreport = $this->translate->_('Standard Reports');

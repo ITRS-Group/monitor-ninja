@@ -29,19 +29,17 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     =>
-                            'pdogeneric'
-                            #'mysql'
-                ,
+		'type'     => 'pdomysql',
+		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
+		# these are only used by the oracle driver
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'merlin',
-                'dsn' =>
-                           'mysql:host=localhost;dbname=merlin'
-                           #'sqlite:pdo.sqlite'
+		# this is only used by the mysql driver
+		'dsn' =>      'mysql:host=localhost;dbname=merlin'
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',
@@ -52,25 +50,27 @@ $config['default'] = array
 
 $config['nacoma'] = array
 (
-        'benchmark'     => TRUE,
-        'persistent'    => FALSE,
-        'connection'    => array
-        (
-                'type'     => #'mysql',
-                              'pdogeneric',
-                'user'     => 'nacoma',
-                'pass'     => 'nacoma',
-                'host'     => 'localhost',
-                'port'     => FALSE,
-                'socket'   => FALSE,
-                'database' => 'nacoma',
-                'dsn' => 'mysql:host=localhost;dbname=nacoma'
-        ),
-        'character_set' => 'latin1',
-        'table_prefix'  => '',
-        'object'        => TRUE,
-        'cache'         => FALSE,
-        'escape'        => TRUE
+	'benchmark'     => TRUE,
+	'persistent'    => FALSE,
+	'connection'    => array
+	(
+		'type'     => 'pdomysql',
+		              #'oracle',
+		# these are only used by oracle
+		'user'     => 'nacoma',
+		'pass'     => 'nacoma',
+		'host'     => 'localhost',
+		'port'     => FALSE,
+		'socket'   => FALSE,
+		'database' => 'nacoma',
+		# this is only used by pdomysql
+		'dsn' => 'mysql:host=localhost;dbname=nacoma'
+	),
+	'character_set' => 'latin1',
+	'table_prefix'  => '',
+	'object'        => TRUE,
+	'cache'         => FALSE,
+	'escape'        => TRUE
 );
 
 # check for custom config files that

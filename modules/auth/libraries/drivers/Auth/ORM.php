@@ -123,7 +123,10 @@ class Auth_ORM_Driver extends Auth_Driver {
 		if ( ! is_object($user))
 		{
 			// Load the user
-			$user = ORM::factory('user', $user);
+			$db = new Database();
+			$sql = "SELECT * FROM users WHERE username=".$db->escape($user);
+			$user_res = $db->query($sql);
+			$user = $user_res->current();
 		}
 
 		// Mark the session as forced, to prevent users from changing account information
@@ -218,15 +221,8 @@ class Auth_ORM_Driver extends Auth_Driver {
 		}
 		$db = new Database();
 
-		$sql = "UPDATE users SET logins=".($user->logins+1).", last_login=".time();
 		// Update the number of logins
-		#$user->logins += 1;
-
-		// Set the last login date
-		#$user->last_login = time();
-
-		// Save the user
-		#$user->save();
+		$sql = "UPDATE users SET logins=(logins+1), last_login=".time()." WHERE id=".(int)$user->id;
 		$db->query($sql);
 
 		return parent::complete_login($user);

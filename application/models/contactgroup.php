@@ -32,11 +32,11 @@ class Contactgroup_Model extends Model
 				"cg.contactgroup_name, ".
 				"h.host_name ".
 			"FROM ".
-				"host as h, ".
-				"contact AS c, ".
-				"contactgroup AS cg, ".
-				"contact_contactgroup AS ccg,".
-				"host_contactgroup as hcg ".
+				"host h, ".
+				"contact c, ".
+				"contactgroup cg, ".
+				"contact_contactgroup ccg,".
+				"host_contactgroup hcg ".
 			"WHERE ".
 				"h.id = hcg.host AND ".
 				"hcg.contactgroup = cg.id AND ".
@@ -56,11 +56,11 @@ class Contactgroup_Model extends Model
 				"cg.contactgroup_name, ".
 				"s.service_description ".
 			"FROM ".
-				"service AS s, ".
-				"contact AS c, ".
-				"contactgroup AS cg, ".
-				"contact_contactgroup AS ccg, ".
-				"service_contactgroup AS scg ".
+				"service s, ".
+				"contact c, ".
+				"contactgroup cg, ".
+				"contact_contactgroup ccg, ".
+				"service_contactgroup scg ".
 			"WHERE ".
 				"s.id = scg.service AND ".
 				"scg.contactgroup = cg.id AND ".
@@ -104,7 +104,7 @@ class Contactgroup_Model extends Model
 			return false;
 		} else {
 			$sql = "SELECT cg.contactgroup_name ".
-					 "FROM ".$type."escalation_contactgroup as hcg, ".$type."escalation as he, contactgroup as cg ".
+					 "FROM ".$type."escalation_contactgroup hcg, ".$type."escalation he, contactgroup cg ".
 					 "WHERE he.id = '".$id."' AND he.id = hcg.".$type."escalation AND hcg.contactgroup = cg.id";
 		}
 		if (empty($sql)) {

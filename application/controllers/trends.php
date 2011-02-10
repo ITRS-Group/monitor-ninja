@@ -839,6 +839,12 @@ class Trends_Controller extends Authenticated_Controller {
 					array_multisort($this->data_arr);
 					$avail_data[] = Reports_Controller::_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 				}
+
+				if (!empty($avail_data) && count($avail_data))
+					for($i=0,$num_groups=count($avail_data)  ; $i<$num_groups ; $i++) {
+						Reports_Controller::_reorder_by_host_and_service($avail_data[$i], $this->report_type);
+					}
+
 				$multiple_items = true;
 				$avail_template->multiple_states = $avail_data;
 

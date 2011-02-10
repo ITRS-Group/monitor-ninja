@@ -56,7 +56,7 @@ pushd temp
         cp ../pkginfo pkginfo
         
 	sed -e "s/@@VERSION@@/$version/g" pkginfo > pkginfo1 && mv pkginfo1 pkginfo
-	arch=`uname -p`  
+	arch=`uname -p`
 	sed -e "s/ARCH.*/ARCH=\"$arch\"/g" pkginfo > pkginfo1 && mv pkginfo1 pkginfo
         
 	#pkgproto $(PACKDIR)=/ | sed -e "s|$(LOGNAME) $(GROUP)$$|root root|" | egrep -v "(s|d) none (/|/etc|/var|/usr|/usr/local) " >> Prototype        

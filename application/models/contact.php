@@ -38,7 +38,7 @@ class Contact_Model extends Model
 			return false;
 		} else {
 			$sql = "SELECT c.contact_name ".
-				 "FROM ".$type."escalation_contact as hc, ".$type."escalation as he, contact as c ".
+				 "FROM ".$type."escalation_contact hc, ".$type."escalation he, contact c ".
 				 "WHERE he.id = '".$id."' AND he.id = hc.".$type."escalation AND hc.contact = c.id";
 
 		}

@@ -115,10 +115,10 @@
 				<td class="white">
 					<table>
 						<?php	if ($enable_event_handlers) { ?>
-								<?php if ($event_handler_disabled_services > 0) { ?>
+								<?php if ($event_handler_disabled_svcs > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_EVENT_HANDLER_DISABLED, $event_handler_disabled_services.' '.($event_handler_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+									<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_EVENT_HANDLER_DISABLED, $event_handler_disabled_svcs.' '.($event_handler_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 								<?php } else { ?>
 									<tr>
@@ -148,10 +148,10 @@
 				<td class="white">
 					<table>
 						<?php	if ($execute_service_checks) { ?>
-							<?php if ($active_checks_disabled_services > 0) { ?>
+							<?php if ($active_checks_disabled_svcs > 0) { ?>
 								<tr>
 									<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-									<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_CHECKS_DISABLED, $active_checks_disabled_services.' '.($active_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+									<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_CHECKS_DISABLED, $active_checks_disabled_svcs.' '.($active_checks_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 								</tr>
 							<?php } else { ?>
 								<tr>
@@ -180,10 +180,10 @@
 				<td class="white">
 					<table>
 							<?php	if ($accept_passive_service_checks) { ?>
-								<?php if ($passive_checks_disabled_services > 0) { ?>
+								<?php if ($passive_checks_disabled_svcs > 0) { ?>
 									<tr>
 										<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
-										<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_services.' '.($passive_checks_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
+										<td style="white-space: normal"><?php echo html::anchor('/status/service/?service_props='.nagstat::SERVICE_PASSIVE_CHECKS_DISABLED, $passive_checks_disabled_svcs.' '.($passive_checks_disabled_svcs==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled) ?></td>
 									</tr>
 								<?php } else { ?>
 									<tr>
