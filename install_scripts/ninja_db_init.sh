@@ -34,10 +34,6 @@ then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
 	run_sql_file $db_login_opts "$prefix/install_scripts/ninja.sql"
-
-	# import users and authorization data
-	echo "Importing users from cgi.cfg"
-	/usr/bin/env php "$prefix/install_scripts/auth_import_mysql.php" $prefix
 fi
 
 db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)

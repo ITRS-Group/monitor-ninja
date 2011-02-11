@@ -59,7 +59,7 @@ sed -e 's/\/usr\/bin\/php/\/opt\/csw\/php5\/bin\/php/' $tempdir/opt/monitor/op5/
 mv $tempdir/opt/monitor/op5/ninja/application/controllers/default.php.temp $tempdir/opt/monitor/op5/ninja/application/controllers/default.php
 
 # executables
-for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php install_scripts/ninja_db_init.sh;
+for f in cli-helpers/apr_md5_validate install_scripts/ninja_db_init.sh;
 do
 	chmod 755 $tempdir$prefix/$f
 done
