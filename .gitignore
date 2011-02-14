@@ -9,3 +9,4 @@ generated/*
 *~
 Documentation
 application/widgets/cloudinfo
+*.swp
