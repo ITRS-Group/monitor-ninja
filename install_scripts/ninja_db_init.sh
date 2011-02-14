@@ -77,3 +77,10 @@ then
 else
 	sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
 fi
+
+if [ "$db_ver" = '2' ]
+then
+	echo "Renaming columns"
+	mysql -f $db_login_opts merlin < $prefix/op5-upgradescripts/ninja_db_upgrade.sql 2>/dev/null
+	mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=3" 2>/dev/null
+fi
