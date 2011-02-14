@@ -376,7 +376,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		foreach ($res as $row) {
 			$data = unserialize($row->data);
-			$data['author'] = $row->author;
+			$data['author'] = $row->author_name;
 
 			$pattern = $this->_create_pattern($data);
 			#echo Kohana::debug($pattern);
