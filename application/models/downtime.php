@@ -90,8 +90,20 @@ class Downtime_Model extends Model
 				break;
 			case 'hostgroups':
 				# find members
-				$members = Host_Model::get_hosts_for_group($name);
-				$found = false;
+				$membels = array();
+				if (PHP_SAPI == 'cli') {
+					# if using cli, get all hosts in host group
+					$sql = 'SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id ' .
+						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
+						'WHERE hg.hostgroup_name = '.$db->escape($name) .
+						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
+					$db  = new Database();
+					$members = $db->query($sql);
+				}
+				else {
+					$members = Host_Model::get_hosts_for_group($name);
+				}
+				$found = 0;
 				$member_cnt = count($members);
 				if (count($members)) {
 					foreach ($members as $member) {
@@ -108,9 +120,21 @@ class Downtime_Model extends Model
 				break;
 
 			case 'servicegroups':
-				$members = Service_Model::get_services_for_group($name, 'service');
+				$members = array();
+				if (PHP_SAPI == 'cli') {
+					# if using cli, get all hosts in host group
+					$sql = 'SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id ' .
+						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
+						'WHERE hg.hostgroup_name = '.$db->escape($name) .
+						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
+					$db  = new Database();
+					$members = $db->query($sql);
+				}
+				else {
+					$members = Service_Model::get_services_for_group($name, 'service');
+				}
 				$member_cnt = count($members);
-				$found = false;
+				$found = 0;
 				if (count($members)) {
 					foreach ($members as $member) {
 						if (self::check_if_scheduled('services', $member->host_name.';'.$member->service_description, $start_time, $duration)) {
