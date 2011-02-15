@@ -58,6 +58,9 @@ $(document).ready(function() {
 		}
 	})
 
+	$('#Commit').click(function() {
+		$(this).attr('disabled', true);
+	});
 });
 
 
