@@ -203,9 +203,11 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 	<?php
 			$curr_host = $row->host_name;
 		} ?>
-	</table>
 
-<?php } ?>
+<?php } else {
+		echo '<tr><td colspan=9>'.$this->translate->_('No services found for this host').'</td></tr>';
+		} ?>
+		</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
 		array(
 			'' => $this->translate->_('Select Action'),
