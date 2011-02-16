@@ -156,7 +156,7 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					$properties += 16;
 				}
 			?>
-			</span><span class="obj_prop_service _<?php echo $row->host_name.'__'.(str_replace(' ', '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
+			</span><span class="obj_prop_service _<?php echo str_replace('.', '_', $row->host_name).'__'.(preg_replace(array('/\./', '/ /'), '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td>
 			<?php

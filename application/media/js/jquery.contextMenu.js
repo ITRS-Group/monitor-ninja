@@ -72,6 +72,8 @@ if(jQuery)( function() {
 									name = name + '__' + svc;
 								}
 
+								name = name.replace(/\./g, '_');
+
 								var obj_prop = $('._' + name).text();
 
 								var OK = 0;
