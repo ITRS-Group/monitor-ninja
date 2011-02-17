@@ -45,7 +45,7 @@ function setDisabled(theID, textStr)
 *	cache the progress indicator image to show faster...
 */
 var Image1 = new Image(16,16);
-Image1.src = '/application/media/images/loading.gif';
+Image1.src = _site_domain + '/application/media/images/loading.gif';
 
 /**
 *	Show a progress indicator to inform user that something
