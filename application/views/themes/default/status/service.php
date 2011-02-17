@@ -111,6 +111,9 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
 						}
+						if (nacoma::link()===true) {
+							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
+						}
 					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
 				</span>
 		</td>

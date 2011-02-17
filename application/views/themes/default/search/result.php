@@ -136,7 +136,11 @@ if (isset($service_result) ) {
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
 		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state); ?></em></td>
-		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
+		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name);
+			if (nacoma::link()===true) {
+				echo '&nbsp;'.nacoma::link('configuration/configure/host/'.$service->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
+			} ?>
+		</td>
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
