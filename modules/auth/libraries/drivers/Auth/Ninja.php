@@ -13,6 +13,9 @@ class Auth_Ninja_Driver extends Auth_ORM_Driver
 			$username = $user->username;
 		}
 
+		if (!is_object($user)) {
+			return false;
+		}
 		if (ninja_auth::valid_password($password, $user->password, $user->password_algo) === true) {
 			$this->complete_login($user);
 			return true;
