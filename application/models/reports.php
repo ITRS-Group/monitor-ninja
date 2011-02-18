@@ -1821,7 +1821,7 @@ class Reports_Model extends Model
 				$hostname = array();
 				foreach ($servicename as $hst_srv) {
 					$ary = explode(';', $hst_srv, 2);
-					$hostname[] = $ary[0];
+					$hostname[$ary[0]] = $ary[0];
 				}
 			}
 			$sql .= " OR (host_name IN ('" . join("', '", $hostname) . "') AND (" .
