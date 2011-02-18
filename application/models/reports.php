@@ -1415,13 +1415,19 @@ class Reports_Model extends Model
 				$this->st_sub[$sub->st_real_state]--;
 				$this->st_sub[$sub->st_obj_state]++;
 			}
+
+			$dt_depth = intval(!!$row['downtime_depth']);
+			foreach ($this->sub_reports as $sr) {
+				$sr->st_dt_depth = $dt_depth;
+			}
+
 			if ($sub) {
 				# sub->st_dt_depth must be set before we get the
 				# common downtime depth here
-				$sub->st_dt_depth = intval(!!$row['downtime_depth']);
+				$sub->st_dt_depth = $dt_depth;
 				$this->st_dt_depth = $this->get_common_downtime_state();
 			} else {
-				$this->st_dt_depth = intval(!!$row['downtime_depth']);
+				$this->st_dt_depth = $dt_depth;
 			}
 			break;
 		 case self::DOWNTIME_STOP:
@@ -1804,18 +1810,29 @@ class Reports_Model extends Model
 		$sql .= " FROM ".$this->db_name.".".$this->db_table." " .
 			"WHERE timestamp >=".$this->start_time." " .
 			"AND timestamp <=".$this->end_time." ";
+
 		if (is_array($hostname) && empty($servicename)) {
 			$sql .= "AND (host_name IN ('" . join("', '", $hostname) . "') AND (service_description = '' OR service_description IS NULL)) ";
 		}
 		elseif (is_array($servicename)) {
-			$sql .= "AND concat(concat(host_name, ';'), service_description) IN ('" .
+			$sql .= "AND (concat(concat(host_name, ';'), service_description) IN ('" .
 				join("', '", $servicename) . "') ";
+			if (empty($hostname) || !is_array($hostname)) {
+				$hostname = array();
+				foreach ($servicename as $hst_srv) {
+					$ary = explode(';', $hst_srv, 2);
+					$hostname[] = $ary[0];
+				}
+			}
+			$sql .= " OR (host_name IN ('" . join("', '", $hostname) . "') AND (" .
+				"service_description = '' OR service_description IS NULL))) ";
 		}
 		else {
 			if (empty($servicename)) $servicename = '';
 			$sql .= "AND host_name=".$this->db->escape($hostname)." " .
-			"AND service_description=".$this->db->escape($servicename)." ";
+				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).") ";
 		}
+
 		if (!$this->include_soft_states)
 			$sql .= 'AND hard = 1 ';
 		$sql .= "AND ( " .
@@ -1825,7 +1842,9 @@ class Reports_Model extends Model
 		if (!$this->assume_states_during_not_running)
 			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
 			" OR event_type=".self::PROCESS_START;
-		$sql .= ") ORDER BY timestamp";
+		$sql .= ") ";
+
+		$sql .= 'ORDER BY timestamp';
 
 		return $this->db->query($sql)->result(false);
 	}
@@ -1854,7 +1873,9 @@ class Reports_Model extends Model
 			" AND host_name = " . $this->db->escape($hostname);
 
 		if (!empty($service_description)) {
-			$sql .= "AND service_description=".$this->db->escape($service_description);
+			$sql .= "AND (service_description IS NULL " .
+				"OR service_description=".$this->db->escape($service_description) .
+				")";
 		}
 		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
