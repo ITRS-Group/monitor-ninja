@@ -89,6 +89,14 @@ class url_Core {
 	 */
 	public static function site($uri = '', $protocol = FALSE)
 	{
+		// This function might get a relative path that contains all sorts of
+		// weird characters (colon is an interesting case) that causes
+		// parse_url to crash and burn as it tries to handle it as a complete
+		// URL. If that is the case, we might get away with prepending
+		// the domain to turn it into a complete URL.
+		if (@parse_url($uri) === false)
+			$uri = url::base(TRUE, 'http') . $uri;
+
 		if ($path = trim(parse_url($uri, PHP_URL_PATH), '/'))
 		{
 			// Add path suffix
