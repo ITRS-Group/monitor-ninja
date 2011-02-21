@@ -130,7 +130,7 @@ class Service_Model extends Model
 				break;
 		}
 		if (!empty($sql)) {
-                        $result = self::query($db,$sql);
+			$result = self::query($this->db,$sql);
 			return count($result) > 0 ? $result : false;
 		}
 		return false;
