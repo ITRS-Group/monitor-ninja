@@ -57,10 +57,6 @@ $(document).ready(function() {
 			showhide_some_fields(new Array('duration', 'trigger_id'), 1);
 		}
 	})
-
-	$('#Commit').click(function() {
-		$(this).attr('disabled', true);
-	});
 });
 
 
