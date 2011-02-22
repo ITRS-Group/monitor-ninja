@@ -784,6 +784,15 @@ function check_form_values()
 				$(".datepick-start").removeClass("time_error");
 				$(".datepick-end").removeClass("time_error");
 			}
+		} else {
+			// verify that we have years and month fields
+			if ($('#start_year').val() == '' || $('#start_month').val() == ''
+			|| $('#end_year').val() == '' || $('#end_month').val() == '') {
+				errors++;
+				//@@@Fixme: Add translated string
+				err_str += "<li>Please select year and month for both start and end. ";
+				err_str += "<br />Please note that SLA reports can only be generated for previous months</li>";
+			}
 		}
 	}
 
