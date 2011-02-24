@@ -289,6 +289,7 @@ class User_Model extends Auth_User_Model {
 		$username = isset($data['username']) ? $data['username'] : false;
 		$password = isset($data['password']) ? $data['password'] : false;
 		$password_algo = isset($data['password_algo']) ? $data['password_algo'] : false;
+		$db = new Database();
 
 		$user = self::get_user($username);
 		if ($user !== false) {
@@ -298,7 +299,6 @@ class User_Model extends Auth_User_Model {
 			$sql = "UPDATE users SET password=".$db->escape($password).", password_algo=".$db->escape($password_algo);
 			$db->query($sql);
 		} else {
-			$db = new Database();
 			# create new
 			$sql = "INSERT INTO users(password, username, password_algo) ".
 				"VALUES(".$db->escape($password).", ".$db->escape($username).
