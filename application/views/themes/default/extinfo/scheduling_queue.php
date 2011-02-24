@@ -1,5 +1,5 @@
 <div class="widget w98 left">
-	<?php //echo (isset($pagination)) ? $pagination : ''; ?>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<h2><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></h2>
 	<table id="host_table">
 		<tr>
@@ -65,6 +65,7 @@
 		</tr>
 		<?php } ?>
 	</table>
+	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
 
 <?php $this->session->set('back_extinfo',$back_link);?>

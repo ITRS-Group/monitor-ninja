@@ -1348,8 +1348,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
-		$result = $sq_model->show_scheduling_queue();
-
 		$pagination = new Pagination(
 			array(
 				'total_items'=> $sq_model->count_queue(),
@@ -1358,6 +1356,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 
 		$sq_model->offset = $pagination->sql_offset;
+		$result = $sq_model->show_scheduling_queue($items_per_page, $pagination->sql_offset);
 
 		$header_links = array(
 			array(
