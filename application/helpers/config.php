@@ -77,4 +77,15 @@ class config_Core
 		}
 		return $val;
 	}
+
+	public function get_version_info()
+	{
+		$file = Kohana::config('config.version_info');
+		if (file_exists($file)) {
+			$handle = fopen($file, 'r');
+			$contents = fread($handle, filesize($file));
+			fclose($handle);
+			return str_replace('VERSION=','',$contents);
+		}
+	}
 }

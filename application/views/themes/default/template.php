@@ -314,18 +314,7 @@ if (isset($this->template->js_header))
 		<div id="version_info">
 			<ul>
 				<li>
-					<?php
-					function get_version_info() {
-						$file = Kohana::config('config.version_info');
-						if (file_exists($file)) {
-							$handle = fopen($file, 'r');
-							$contents = fread($handle, filesize($file));
-							fclose($handle);
-							return str_replace('VERSION=','',$contents);
-							}
-						}
-				       echo  Kohana::config('config.product_name') . ":" . get_version_info();
-					?>
+				<?php echo  Kohana::config('config.product_name') . ":" . config::get_version_info(); ?>
 				</li>
 			</ul>
 		</div>
