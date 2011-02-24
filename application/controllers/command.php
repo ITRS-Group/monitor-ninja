@@ -133,6 +133,10 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'ENABLE_HOST_SVC_CHECKS':
 		 case 'DISABLE_HOST_SVC_CHECKS':
+		 case 'ENABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'DISABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'ENABLE_SERVICEGROUP_SVC_CHECKS':
+		 case 'DISABLE_SERVICEGROUP_SVC_CHECKS':
 			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
 			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis));
 			break;
