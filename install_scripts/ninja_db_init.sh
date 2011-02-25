@@ -33,7 +33,7 @@ if [ "$db_ver" = '' ]
 then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
-	run_sql_file $db_login_opts "$prefix/install_scripts/ninja.sql"
+	run_sql_file "$db_login_opts" "$prefix/install_scripts/ninja.sql"
 fi
 
 db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
@@ -44,7 +44,7 @@ if [ "$db_ver" = '1' ]
 then
 	# add table for recurring_downtime
 	echo "Installing database table for Recurring Downtime"
-	run_sql_file $db_login_opts "$prefix/install_scripts/recurring_downtime.sql"
+	run_sql_file "$db_login_opts" "$prefix/install_scripts/recurring_downtime.sql"
 
 	# check if we should import data fr monitor_reports
 	is_new_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" merlin 2>/dev/null)
