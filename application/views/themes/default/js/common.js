@@ -492,6 +492,12 @@ $(document).ready(function() {
 		}
 	}
 
+	$('#multi_object_submit').click(function() {
+		// check that we have any selected items
+		if (!$('input[name=object_select\\[\\]]').is(':checked')) {
+			return false;
+		}
+	});
 });
 
 function object_action(action,the_id)
