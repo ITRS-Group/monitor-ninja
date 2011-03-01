@@ -214,6 +214,7 @@ class Htpasswd_importer_Model extends Model
 		$sql = "SELECT * FROM roles_users WHERE user_id=".$user_id." AND role_id=".$login_role;
 		$res = $this->db->query($sql);
 		if (count($res) == 0) {
+			unset($res);
 			$sql = "INSERT INTO roles_users (user_id, role_id) ";
 			$sql .= "VALUES(".$user_id.", ".$login_role.")";
 			$this->db->query($sql);
