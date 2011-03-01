@@ -267,10 +267,10 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." current_state=".self::HOST_PENDING .") AS hosts_pending, \n".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." check_type=".self::HOST_CHECK_ACTIVE.") AS total_active_host_checks, \n".
 			"(SELECT COUNT(*) FROM host ".$access_check.$access_check_xtra." check_type>".self::HOST_CHECK_ACTIVE.") AS total_passive_host_checks, \n".
-			"(SELECT MIN(latency) FROM host ".$access_check.") AS min_host_latency, \n".
-			"(SELECT MAX(latency) FROM host ".$access_check.") AS max_host_latency, \n".
-			"(SELECT SUM(latency) FROM host ".$access_check.") AS total_host_latency, \n".
-			"(SELECT MIN(execution_time) FROM host ".$access_check.") AS min_host_execution_time, \n".
+			"(SELECT MIN(latency) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS min_host_latency, \n".
+			"(SELECT MAX(latency) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS max_host_latency, \n".
+			"(SELECT SUM(latency) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS total_host_latency, \n".
+			"(SELECT MIN(execution_time) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS min_host_execution_time, \n".
 			"(SELECT MAX(execution_time) FROM host ".$access_check.") AS max_host_execution_time, \n".
 			"(SELECT SUM(execution_time) FROM host ".$access_check.") AS total_host_execution_time";
 		if (!$auth->view_hosts_root && $auth->id) {
@@ -395,10 +395,10 @@ class Current_status_Model extends Model
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." current_state=".self::SERVICE_PENDING.") AS services_pending, \n".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." check_type=0) AS total_active_service_checks, \n".
 			"(SELECT COUNT(*) FROM service ".$access_check.$access_check_xtra." check_type>0) AS total_passive_service_checks, \n".
-			"(SELECT MIN(latency) FROM service ".$access_check.") AS min_service_latency, \n".
-			"(SELECT MAX(latency) FROM service ".$access_check.") AS max_service_latency, \n".
-			"(SELECT SUM(latency) FROM service ".$access_check.") AS total_service_latency, \n".
-			"(SELECT MIN(execution_time) FROM service ".$access_check.") AS min_service_execution_time, \n".
+			"(SELECT MIN(latency) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS min_service_latency, \n".
+			"(SELECT MAX(latency) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS max_service_latency, \n".
+			"(SELECT SUM(latency) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS total_service_latency, \n".
+			"(SELECT MIN(execution_time) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS min_service_execution_time, \n".
 			"(SELECT MAX(execution_time) FROM service ".$access_check.") AS max_service_execution_time, \n".
 			"(SELECT SUM(execution_time) FROM service ".$access_check.") AS total_service_execution_time\n";
 		if (!$auth->view_hosts_root && !$auth->view_services_root && $auth->id) {
