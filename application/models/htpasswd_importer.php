@@ -208,9 +208,16 @@ class Htpasswd_importer_Model extends Model
 		if (!$user_id)
 			return false;
 		$login_role = 1;
-		$sql = "INSERT INTO roles_users (user_id, role_id) ";
-		$sql .= "VALUES(".$user_id.", ".$login_role.")";
-		$this->db->query($sql);
+
+		# make sure that the user hasn't been assigned the login role
+		# already as this will result in duplicate ID error.
+		$sql = "SELECT * FROM roles_users WHERE user_id=".$user_id." AND role_id=".$login_role;
+		$res = $this->db->query($sql);
+		if (count($res) == 0) {
+			$sql = "INSERT INTO roles_users (user_id, role_id) ";
+			$sql .= "VALUES(".$user_id.", ".$login_role.")";
+			$this->db->query($sql);
+		}
 	}
 
 }
