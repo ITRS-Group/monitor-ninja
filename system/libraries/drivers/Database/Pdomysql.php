@@ -14,9 +14,24 @@ class Database_Pdomysql_Driver extends Database_Pdogeneric_Driver {
 
 		extract($this->db_config['connection']);
 
-		if (!$dsn)
-			throw new Kohana_Database_Exception('database.error',
-				"This driver (".__CLASS__.") requires the dsn property to be set.");
+		if (!isset($dsn) || !$dsn) {
+			$dsn = 'mysql:';
+			if (isset($host) && $host)
+				$dsn .= 'host='.$host;
+			elseif (isset($socket) && $socket)
+				$dsn .= 'unix_socket='.$socket;
+			else
+				throw new Kohana_Database_Exception('database.error',
+					"This driver (".__CLASS__.") requires either the host or the socket property to be set.");
+
+			if (isset($database) && $database)
+				$dsn .= ';dbname='.$database;
+			else
+				throw new Kohana_Database_Exception('database.error',
+					"This driver (".__CLASS__.") requires the database property to be set.");
+			if (isset($port) && $port)
+				$dsn .= ';port='.$port;
+		}
 		$this->dsn = $dsn;
 		try {
 			$attr = array(PDO::ATTR_CASE => PDO::CASE_NATURAL,

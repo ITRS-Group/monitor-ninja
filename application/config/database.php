@@ -29,17 +29,17 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysql',
+		'type'     => 'pdomysql',
 		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
-		# these are only used by the oracle driver
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'merlin',
-		# this is only used by the pdomysql driver
-		'dsn' =>      'mysql:host=localhost;dbname=merlin'
+		# this can be used with the pdomysql driver to specify a more specific
+		# dsn than the one auto-generated from the above values
+		'dsn' =>      FALSE
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',
@@ -54,17 +54,17 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysql',
+		'type'     => 'pdomysql',
 		              #'oracle',
-		# these are only used by oracle
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
 		'host'     => 'localhost',
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'nacoma',
-		# this is only used by pdomysql
-		'dsn' => 'mysql:host=localhost;dbname=nacoma'
+		# this can be used with the pdomysql driver to specify a more specific
+		# dsn than the one auto-generated from the above values
+		'dsn' => FALSE
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',

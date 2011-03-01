@@ -4,30 +4,14 @@ require_once( dirname(__FILE__)."/merlin_get_kohana_db_field_metadata.php" );
 
 /*
  * Class: Database_Pdogeneric_Driver
- *  Provides PDO-based access to MySQL and SQLite3 databases. It is
- *  currently untested with other PDO back-ends, and certain functions
- *  will throw with other backends because the requested operations
- *  cannot be done over plain PDO (e.g. list_tables()).
- *
- * Because we cannot generically build a PDO DSN based solely
- * Kohana-conventional connection parameters, this implementation
- * requires a new property in the $config[X]['connection'] block:
- *
- *  dsn must be a string usable as a PDO DSN. e.g.:
- *
- *  - "sqlite:/path/to/database.db"
- *  - "mysql:host=...;dbname=..."
- *
- * Some of the other login-related fields defined in the connection
- * config are ignored (e.g. host, port, socket) because they are
- * specified in the DSN string (or may be irrelevant for a given
- * back-end, e.g. host has no meaning for sqlite and the Oracle/OCI
- * driver can derive the host name internally from a
- * TNSNAMES-specified source named in the PDO DSN).
+ *  This base class implements most of the Kohana database API for PDO.
+ *  It's abstract, since there are some pieces that are required to end up with
+ *  a working Kohana backend that are completely backend specific.
  *
  * Version 1.0 alpha
  *  author    - Doutu, updated by gregmac. Ported from sqlite-only
- *  to mysql/sqlite by Stephan Beal (20101228).
+ *  to mysql/sqlite by Stephan Beal (20101228). Converted to a base class by
+ *  Robin Sonefors.
  *  copyright - (c) BSD
  *  license   - <no>
  */
@@ -37,7 +21,6 @@ abstract class Database_Pdogeneric_Driver extends Database_Driver
 	// Database connection link
 	protected $link;
 	protected $db_config;
-	protected $dsn;
 
 	/*
 	 * Constructor: __construct
