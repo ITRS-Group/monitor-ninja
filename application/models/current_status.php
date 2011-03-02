@@ -577,7 +577,7 @@ class Current_status_Model extends Model
 	 * @param $children Out variable
 	 * @return True on success, false on errors
 	 */
-	public function get_child_hosts($host_id=false, &$children=false)
+	public function get_child_hosts($host_id=false, &$children=false, $only_hosts=false)
 	{
 		$host_id = trim($host_id);
 		if (empty($host_id)) {
@@ -590,33 +590,46 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		$query = "SELECT ".
-				"h.id, ".
-				"h.host_name, ".
-				"count(s.id) as service_cnt ".
-			"FROM ".
-				"host h, ".
-				"host_parents hp, ".
-				"service s ".
-			"WHERE ".
-				"hp.parents=".$host_id." AND ".
-				"h.id=hp.host AND ".
-				"s.host_name=h.host_name ".
-			"GROUP BY h.id, h.host_name";
-		$result = $this->db->query($query);
-		if ($result->count()==0) {
-			return false;
+		if ($only_hosts !== false) {
+			$query = "SELECT ".
+				"h.id, h.host_name, 0 AS service_cnt ".
+				"FROM host h, host_parents hp ".
+				"WHERE ".
+				"hp.parents=".$host_id." AND h.id=hp.host GROUP BY h.id, h.host_name";
+		} else {
+			$query = "SELECT ".
+					"h.id, ".
+					"h.host_name, ".
+					"count(s.id) as service_cnt ".
+				"FROM ".
+					"host h, ".
+					"host_parents hp, ".
+					"service s ".
+				"WHERE ".
+					"hp.parents=".$host_id." AND ".
+					"h.id=hp.host AND ".
+					"s.host_name=h.host_name ".
+				"GROUP BY h.id, h.host_name";
 		}
-                $hosts = array();
+
+		$result = $this->db->query($query);
+		if ($result->count()==0 && $only_hosts == false) {
+			unset($result);
+			return $this->get_child_hosts($host_id, $children, true); # RECURSIVE
+		}
+
+		$hosts = array();
 		foreach ($result as $host) {
-                    $hosts[] = $host;
-                }
-                unset($result);
-                foreach( $hosts as $host ) {
+		$hosts[] = $host;
+		}
+
+		unset($result);
+		foreach( $hosts as $host ) {
 			$children[$host->id] = $host->host_name;
 			$this->children_services[$host->id] = $host->service_cnt;
 			$this->get_child_hosts($host->id, $children); # RECURSIVE
 		}
+
 		return sizeof($children);
 	}
 

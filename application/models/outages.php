@@ -79,6 +79,8 @@ class Outages_Model extends Model
 			}
 		}
 
+		$hosts = array_keys($status->unreachable_hosts);
+
 		$return = false;
 		foreach ($status->unreachable_hosts as $host => $data) {
 			if (!empty($data)) {
@@ -92,6 +94,13 @@ class Outages_Model extends Model
 					}
 				}
 				if (!isset($outages[$host]['duration'])) $outages[$host]['duration'] = 0;
+
+				foreach ($data as $h) {
+					if (in_array($h, $hosts) && isset($return[$h])) {
+						unset($return[$h]);
+					}
+				}
+
 				$return[$host] = $outages[$host];
 			}
 		}
