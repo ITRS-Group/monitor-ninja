@@ -214,6 +214,10 @@ class Showlog_Controller extends Authenticated_Controller
 				$obj_name = array($obj_name);
 			}
 			$this->options[$obj_type] = $obj_name;
+			$first = urldecode( $this->input->get('first', $this->input->post('first', false)));
+			if (empty($first)) {
+				$this->options['first'] = time() - (2419200 * 3);
+			}
 		}
 
 		if (!isset($this->options['have_options'])) {
