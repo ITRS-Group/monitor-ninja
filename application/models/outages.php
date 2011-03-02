@@ -82,7 +82,15 @@ class Outages_Model extends Model
 		$return = false;
 		foreach ($status->unreachable_hosts as $host => $data) {
 			if (!empty($data)) {
-				if (!isset($outages[$host]['current_state'])) $outages[$host]['current_state'] = 3;
+				if (!isset($outages[$host]['current_state'])) {
+					$hostinfo = Host_Model::get_where('host_name', $host, false, true);
+					if (count($hostinfo)) {
+						$hostinfo = $hostinfo->current();
+						$outages[$host]['current_state'] = $hostinfo->current_state;
+					} else {
+						$outages[$host]['current_state'] = Current_status_Model::HOST_UNREACHABLE;
+					}
+				}
 				if (!isset($outages[$host]['duration'])) $outages[$host]['duration'] = 0;
 				$return[$host] = $outages[$host];
 			}
