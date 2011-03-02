@@ -1,0 +1,10 @@
+<IfModule !mod_alias.c>
+        LoadModule alias_module libexec/mod_alias.so
+</IfModule>
+
+Alias /monitor /var/www/html/monitor
+<Directory "/var/www/html/monitor">
+        Order allow,deny
+        Allow from all
+        DirectoryIndex index.php
+</Directory>
