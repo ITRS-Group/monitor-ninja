@@ -1,5 +1,13 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
+if (!empty($command_result)) {
+	echo "<br />";
+	$img = $command_success ? 'shield-ok.png' : 'shield-not-ok.png';
+	echo '<div id="comment_del_msg" class="widget w32 left">'.
+		html::image($this->add_path('icons/16x16/'.$img, array('style' => 'margin-bottom: -4px'))).
+		$command_result.'<br /></div>'."\n";
+}
+?>
 
 <a name="comments"></a>
 <div class="widget left w98">
@@ -20,11 +28,18 @@
 			&nbsp;
 			<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 			<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $this->translate->_('Delete all'), array('style' => 'font-weight: normal')); ?>
+			<?php if (Router::$method == 'show_comments') {
+				echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_delete_<?php echo ($service == false ? 'host' : 'service') ?>" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+			<?php } ?>
 		</caption>
 		<thead>
 			<tr>
-			<?php if (Router::$method == 'show_comments') { ?>
-				<th style="white-space: nowrap"><?php echo $label_host_name ?></th>
+			<?php if (Router::$method == 'show_comments') {
+					echo form::open('extinfo/show_comments'); ?>
+				<th style="white-space: nowrap" colspan="2">
+					<?php echo form::checkbox(array('name' => 'selectall_'.($service == false ? 'host' : 'service'), 'class' => 'selectall_'.($service == false ? 'host' : 'service')), ''); ?>
+					<?php echo $label_host_name ?>
+				</th>
 				<?php if ($service) { ?>
 				<th style="white-space: nowrap"><?php echo $label_service ?></th>
 				<?php }
@@ -45,6 +60,7 @@
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<?php if (Router::$method == 'show_comments') { ?>
+				<td class="td_<?php echo ($service == false ? 'host' : 'service') ?>_checkbox" style="display_none"><?php echo form::checkbox(array('name' => 'del_'.$row['comment_type'].'[]', 'class' => 'deletecommentbox_'.($service == false ? 'host' : 'service')), $row['comment_id']); ?></td>
 				<td style="white-space: nowrap"><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
 				<?php if (isset($row['service_description']) && !empty($row['service_description'])) { ?>
 				<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
@@ -101,7 +117,14 @@
 			<tr class="even">
 				<td colspan="<?php echo $service ? 10 : 9 ?>"><?php echo $no_data ?></td>
 			</tr>
-		<?php } ?>
+		<?php }
+		if (Router::$method == 'show_comments') {
+			echo '<tr class="odd submit'.($service == false ? 'host' : 'service').'"><td colspan="'.($service ? 10 : 9).'">';
+			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), $this->translate->_('Delete Selected'));
+			echo '</td></tr>';
+			echo form::close();
+		}
+		?>
 		</tbody>
 	</table>
 

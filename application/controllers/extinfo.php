@@ -981,6 +981,62 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
+		$handling_commands = false;
+		$command_success = false;
+		$command_result_msg = false;
+		if (!empty($_POST)) {
+			$handling_commands = true;
+			$cmd = false;
+			$nagios_commands = array();
+			# bulk delete of comments?
+			if (isset($_POST['del_submithost'])) {
+				# host comments
+				$cmd = 'DEL_HOST_COMMENT';
+			} elseif (isset($_POST['del_submitservice'])) {
+				# service comments
+				$cmd = 'DEL_SVC_COMMENT';
+			}
+
+			if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+				url::redirect('command/unauthorized');
+			}
+
+			foreach ($_POST['del_comment'] as $param) {
+				$nagios_commands = Command_Controller::_build_command($cmd, array('comment_id' => $param), $nagios_commands);
+			}
+
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			$nagconfig = System_Model::parse_config_file("nagios.cfg");
+			if (isset($nagconfig['command_file'])) {
+				$pipe = $nagconfig['command_file'];
+			}
+
+			while ($ncmd = array_pop($nagios_commands)) {
+				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			}
+
+			if ($command_success === true) {
+				# everything was ok
+				$command_result_msg = sprintf($this->translate->_('Your commands were successfully submitted to %s.'),
+					Kohana::config('config.product_name'));
+			} else {
+				# errors encountered
+				$command_result_msg = sprintf($this->translate->_('There was an error submitting one or more of your commands to %s.'),
+					Kohana::config('config.product_name'));
+			}
+
+			$_SESSION['command_result_msg'] = $command_result_msg;
+			$_SESSION['command_success'] = $command_success;
+
+			# reload controller to prevent it from trying to submit
+			# the POST data on refresh
+			url::redirect(Router::$controller.'/'.Router::$method);
+		}
+
+		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
+		$command_success = $this->session->get('error_msg', $command_success);
+
 		if ($all === true) {
 			$tot = Comment_Model::fetch_all_comments($host, $service, false, false, true);
 		} else {
@@ -1054,6 +1110,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content->comments = $this->add_view('extinfo/comments');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+
+		$this->template->js_header->js = $this->xtra_js;
+
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
 		$comments->label_add_comment = $service ? $t->_('Add a new service comment') : $t->_('Add a new host comment');
@@ -1100,6 +1161,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		$comments->pagination = $pagination;
 		$this->template->title = $this->translate->_(sprintf('Monitoring » %s information', ucfirst($type)));
+		$comments->command_result = arr::search($_SESSION, 'command_result_msg');
+		$comments->command_success = arr::search($_SESSION, 'command_success');
+		unset($_SESSION['command_result_msg']);
+		unset($_SESSION['command_success']);
 		return $this->template->content->comments->render();
 	}
 
