@@ -39,11 +39,16 @@ foreach ($params as $pname => $ary) {
 
 	switch ($ary['type']) {
 		case 'select':
-			if (!is_array($dflt)) {
+			if (!is_array($dflt) && $requested_command != 'DEL_ALL_HOST_COMMENTS' && $requested_command != 'DEL_ALL_SVC_COMMENTS') {
 				if ($dflt && array_search($dflt, $ary['options'])) {
 					$dflt = array_search($dflt, $ary['options']);
 				}
 				echo form::dropdown(array('name' => $form_name, 'id' => 'field_'.$pname), $ary['options'], $dflt);
+			} elseif ($requested_command == 'DEL_ALL_SVC_COMMENTS' || $requested_command == 'DEL_ALL_HOST_COMMENTS') {
+				if ($dflt && array_search($dflt, $ary['options'])) {
+					$dflt = array_search($dflt, $ary['options']);
+				}
+				echo form::dropdown(array('name' => $form_name.'[]', 'id' => 'field_'.$pname, 'multiple' => 'multiple'), $ary['options'], $dflt);
 			} else {
 				if (!empty($dflt)) {
 					$tmp_obj = false;

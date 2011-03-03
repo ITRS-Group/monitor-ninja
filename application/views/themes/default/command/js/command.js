@@ -6,11 +6,16 @@ $(document).ready(function() {
 		 *	them all and prompt user in case they are empty.
 		 */
 
-		$('select').each(function() {
-			if ($(this).attr('multiple')) {
-				$(this).children(':option').attr('selected', true);
-			}
-		});
+		var requested_command = $('input[name=requested_command]').val();
+		if (requested_command != 'DEL_ALL_SVC_COMMENTS' && requested_command != 'DEL_ALL_HOST_COMMENTS') {
+			// don't select all options in multi-select if we are trying to delete
+			// service/host comments since we want to let the user choose objects
+			$('select').each(function() {
+				if ($(this).attr('multiple')) {
+					$(this).children(':option').attr('selected', true);
+				}
+			});
+		}
 		var inputs = $('#command_form :input');
 		$('select[type="select-multiple"]').each(function() {
 			$(this).children(':option').attr('selected', true);
