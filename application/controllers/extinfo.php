@@ -1110,10 +1110,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content->comments = $this->add_view('extinfo/comments');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
-
-		$this->template->js_header->js = $this->xtra_js;
+		if (!is_array($this->xtra_js) || !in_array('application/views/'.$this->theme_path.'extinfo/js/extinfo.js', $this->xtra_js)) {
+			$this->template->js_header = $this->add_view('js_header');
+			$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+			$this->template->js_header->js = $this->xtra_js;
+		}
 
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
