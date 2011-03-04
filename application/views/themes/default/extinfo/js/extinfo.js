@@ -70,6 +70,24 @@ $(document).ready(function() {
 		});
 	});
 
+	// check that user selected any checkboxes before submitting
+	$('#del_submithost').click(function() {
+		if (!$('.deletecommentbox_host').filter(':checked').length) {
+			$('.host_feedback').text('   Nothing selected...');
+			return false;
+		} else {
+			$('.host_feedback').text('');
+		}
+	});
+
+	$('#del_submitservice').click(function() {
+		if (!$('.deletecommentbox_service').filter(':checked').length) {
+			$('.service_feedback').text('   Nothing selected...');
+			return false;
+		} else {
+			$('.service_feedback').text('');
+		}
+	});
 });
 
 function hide_del_msg() {

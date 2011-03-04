@@ -984,7 +984,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$handling_commands = false;
 		$command_success = false;
 		$command_result_msg = false;
-		if (!empty($_POST)) {
+		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
 			$handling_commands = true;
 			$cmd = false;
 			$nagios_commands = array();
