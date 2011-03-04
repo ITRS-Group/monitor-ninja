@@ -8,10 +8,12 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			return false;
 
 		if (!is_object($user)) {
+			$db = new Database();
 			$username = $user;
-			$user = ORM::factory('user')->where('username', $username)->find();
-			// the line below is required because ORM::factory doesn't fill username for LDAP users
-			$user->username = $username;
+			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
+			if (!count($users))
+				return false;
+			$user = $users->current();
 		}
 
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
