@@ -29,7 +29,7 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'pdomysql',
+		'type'     => 'mysql',
 		              #'oracle',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
