@@ -121,7 +121,7 @@ if (!empty($command_result)) {
 		if (Router::$method == 'show_comments') {
 			echo '<tr class="odd submit'.($service == false ? 'host' : 'service').'"><td colspan="'.($service ? 10 : 9).'">';
 			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), $this->translate->_('Delete Selected'));
-			echo '</td></tr>';
+			echo '<span  class="'.($service == false ? 'host' : 'service').'_feedback"></span></td></tr>';
 			echo form::close();
 		}
 		?>
