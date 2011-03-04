@@ -22,9 +22,32 @@ $(document).ready(function() {
 	// restore left border for first cell of each row
 	$('table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
 	$('table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
+	// refresh helper code
 
+	var old_refresh = 0;
+	var refresh_is_paused = false;
 	var host_hidden = true;
 	$('#select_multiple_delete_host').click(function() {
+		if (!refresh_is_paused) {
+			if ($('.td_host_checkbox').is(':visible') || $('.td_service_checkbox').is(':visible')) {
+				// pausing and un-pausing refresh might be
+				// irritating for users that already has selected
+				// to pause refresh
+
+				// save previous refresh rate
+				// to be able to restore it later
+				old_refresh = current_interval;
+				$('#ninja_refresh_lable').css('font-weight', 'bold');
+				ninja_refresh(0);
+				$("#ninja_refresh_control").attr('checked', true);
+			} else {
+				// restore previous refresh rate
+				ninja_refresh(old_refresh);
+				$("#ninja_refresh_control").attr('checked', false);
+				$('#ninja_refresh_lable').css('font-weight', '');
+			}
+		}
+
 		if (!host_hidden) {
 			$('.deletecommentbox_host').hide();
 			$('.td_host_checkbox').hide();
@@ -43,6 +66,26 @@ $(document).ready(function() {
 
 	var svc_hidden = true;
 	$('#select_multiple_delete_service').click(function() {
+		if (!refresh_is_paused) {
+			if ($('.td_service_checkbox').is(':visible') || $('.td_host_checkbox').is(':visible')) {
+				// pausing and un-pausing refresh might be
+				// irritating for users that already has selected
+				// to pause refresh
+
+				// save previous refresh rate
+				// to be able to restore it later
+				old_refresh = current_interval;
+				$('#ninja_refresh_lable').css('font-weight', 'bold');
+				ninja_refresh(0);
+				$("#ninja_refresh_control").attr('checked', true);
+			} else {
+				// restore previous refresh rate
+				ninja_refresh(old_refresh);
+				$("#ninja_refresh_control").attr('checked', false);
+				$('#ninja_refresh_lable').css('font-weight', '');
+			}
+		}
+
 		if (!svc_hidden) {
 			$('.deletecommentbox_service').hide();
 			$('.td_service_checkbox').hide();
