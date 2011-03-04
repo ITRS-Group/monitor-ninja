@@ -3525,7 +3525,7 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		if (isset($l['w_op5'])) { # use ninja translation
-			$l['w_op5'] = $this->translate->_('This report is produced by op5 AB.');
+			$l['w_op5'] = $this->translate->_('This report is produced by op5 Monitor.');
 		}
 
 		$type = $this->type;
