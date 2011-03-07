@@ -55,7 +55,7 @@ class User_Model extends Auth_User_Model {
 	/**
 	 * Takes care of setting session variables etc
 	 */
-	public function complete_login($user_data)
+	public function complete_login($user_data=false)
 	{
 		if (!$this->session->get(Kohana::config('auth.session_key'), false)) {
 			url::redirect(Kohana::config('routes._default'));
