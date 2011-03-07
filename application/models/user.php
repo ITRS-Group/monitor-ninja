@@ -98,9 +98,13 @@ class User_Model extends Auth_User_Model {
 			}
 
 			if ($redirect !== false) {
-				$this->session->set_flash('error_msg',
-					$this->translate->_("You have been denied access since you aren't authorized for any objects."));
-				url::redirect('default/show_login');
+				if ($auth_type == 'apache') {
+					url::redirect('default/no_objects');
+				} else {
+					$this->session->set_flash('error_msg',
+						$this->translate->_("You have been denied access since you aren't authorized for any objects."));
+					url::redirect('default/show_login');
+				}
 			}
 		}
 
