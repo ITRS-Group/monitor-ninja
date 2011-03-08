@@ -201,7 +201,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$page = (!empty($page) && $page == 'tac') ? $page.'/index' : $page;
 			if (!empty($page)) {
 				$data = Ninja_widget_Model::get_widget($page, $widget, true);
-				$arguments = $data!==false ? unserialize(trim($data->setting)) : false;
+				$arguments = $data!==false ? i18n::unserialize(trim($data->setting)) : false;
 				$arguments[0] = false;
 			}
 		}
@@ -339,7 +339,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$widget = trim($widget);
 		$data = Ninja_widget_Model::get_widget($page, $widget, true);
 		$setting = $data!==false ? $data->setting : serialize(array(false));
-		echo json::encode(unserialize($setting));
+		echo json::encode(i18n::unserialize($setting));
 	}
 
 	/**

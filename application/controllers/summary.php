@@ -227,7 +227,7 @@ class Summary_Controller extends Authenticated_Controller
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 			if ($report_info) {
-				$report_setting = unserialize($report_info['setting']);
+				$report_setting = i18n::unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
 				if (isset($report_setting['obj_type'])) {
@@ -639,7 +639,7 @@ class Summary_Controller extends Authenticated_Controller
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 			if ($report_info && $report_setting) {
-				$report_setting = unserialize($report_info['setting']);
+				$report_setting = i18n::unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
 				$standardreport = arr::search($report_setting, 'standardreport', false);
@@ -1059,7 +1059,7 @@ class Summary_Controller extends Authenticated_Controller
 		$request['create_pdf'] = 1;
 		$request['new_report_setup'] = 1;
 
-		$settings = unserialize($report_data['setting']);
+		$settings = i18n::unserialize($report_data['setting']);
 		unset($report_data['setting']);
 		unset($report_data['objects']);
 		unset($report_data['filename']);

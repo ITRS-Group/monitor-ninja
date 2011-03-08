@@ -193,7 +193,7 @@ class Ninja_widget_Model extends Model
 	{
 		if (!empty($old_setting)) {
 			$old_setting = trim($old_setting);
-			$old_setting = !empty($old_setting) ? unserialize(trim($old_setting)) : array();
+			$old_setting = !empty($old_setting) ? i18n::unserialize(trim($old_setting)) : array();
 			$new_setting = serialize(array_merge($old_setting, $new_setting));
 		} else {
 			$new_setting = serialize($new_setting);
@@ -252,7 +252,7 @@ class Ninja_widget_Model extends Model
 		$settings = false;
 		if (!empty($all_widgets)) {
 			foreach ($all_widgets as $row) {
-				$settings[$row->name] = unserialize(trim($row->setting));
+				$settings[$row->name] = i18n::unserialize(trim($row->setting));
 				if (!empty($settings[$row->name]) && is_array($settings[$row->name])) {
 					# if we have settings we should add this
 					# model to the start of the arguments array
@@ -274,7 +274,7 @@ class Ninja_widget_Model extends Model
 		$user_widgets = false;
 		if (!empty($widgets)) {
 			foreach ($widgets as $w) {
-				$user_settings = unserialize(trim($w->setting));
+				$user_settings = i18n::unserialize(trim($w->setting));
 				if (isset($settings[$w->name]) && is_array($settings[$row->name])) {
 					# replace default settings with user settings if available
 					if (!empty($user_settings) && is_array($user_settings)) {

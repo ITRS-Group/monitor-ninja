@@ -427,7 +427,7 @@ class Reports_Controller extends Authenticated_Controller
 				$assume_states_during_not_running_checked = '';
 
 			if (!empty($report_info['host_filter_status'])) {
-				$hostfilterstatus = unserialize($report_info['host_filter_status']);
+				$hostfilterstatus = i18n::unserialize($report_info['host_filter_status']);
 				$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? 'checked="checked"' : '';
 				$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? 'checked="checked"' : '';
 				$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? 'checked="checked"' : '';
@@ -440,7 +440,7 @@ class Reports_Controller extends Authenticated_Controller
 				$host_filter_status_undetermined_checked = 'checked="checked"';
 			}
 			if (!empty($report_info['service_filter_status'])) {
-				$servicefilterstatus = unserialize($report_info['service_filter_status']);
+				$servicefilterstatus = i18n::unserialize($report_info['service_filter_status']);
 				$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? 'checked="checked"' : '';
 				$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? 'checked="checked"' : '';
 				$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? 'checked="checked"' : '';
@@ -928,7 +928,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
-						$host_filter_status = unserialize($value);
+						$host_filter_status = i18n::unserialize($value);
 					}
 					else {
 						$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
@@ -942,7 +942,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
-						$service_filter_status = unserialize($value);
+						$service_filter_status = i18n::unserialize($value);
 					}
 					else {
 						$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
@@ -2265,7 +2265,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function piechart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
-		$data = unserialize( base64_decode($in_data) );
+		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('Pie');
 		$graph = new PieChart(300, 200);
 		$graph->set_data($data, 'pie');
@@ -2301,7 +2301,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function barchart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
-		$data = unserialize( base64_decode($in_data) );
+		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('MultipleBar');
 		if (!$this->create_pdf) {
 			$graph = new MultipleBarChart(800, 600);

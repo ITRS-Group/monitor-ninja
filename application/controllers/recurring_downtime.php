@@ -146,7 +146,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 				$schedule_info['author'] = $row->author;
 				$schedule_info['downtime_type'] = $row->downtime_type;
 				$schedule_info['last_update'] = date($date_format, $row->last_update);
-				$data = unserialize($row->data);
+				$data = i18n::unserialize($row->data);
 				$this->inline_js .= "set_initial_state('report_type', '".$data['report_type']."');\n";
 				$this->inline_js .= "set_selection('".$data['report_type']."');\n";
 				$schedule_info = array_merge($schedule_info, $data);
@@ -165,7 +165,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					$saved_data['author'] = $row->author;
 					$saved_data['downtime_type'] = $row->downtime_type;
 					$saved_data['last_update'] = date($date_format, $row->last_update);
-					$schedule_data = unserialize($row->data);
+					$schedule_data = i18n::unserialize($row->data);
 					unset($data['report_type']);
 					$saved_data['data'] = $schedule_data;
 
@@ -375,7 +375,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		}
 
 		foreach ($res as $row) {
-			$data = unserialize($row->data);
+			$data = i18n::unserialize($row->data);
 			$data['author'] = $row->author_name;
 
 			$pattern = $this->_create_pattern($data);
