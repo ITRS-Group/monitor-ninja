@@ -31,7 +31,7 @@ class Program_status_Model extends Model
 	public function last_alive()
 	{
 		$db = new Database();
-		$sql = "SELECT last_alive FROM program_status";
+		$sql = "SELECT last_alive FROM program_status WHERE instance_name = 'Local Nagios/Merlin instance'";
 		$res = $db->query($sql);
 		$cur = ($res && count($res)) ? $res->current() : false;
 		return $cur ? $cur->last_alive : false;
