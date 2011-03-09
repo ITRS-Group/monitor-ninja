@@ -316,7 +316,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (empty($status) || !$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
@@ -589,7 +589,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$t = $this->translate;
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (!$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
@@ -641,7 +641,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status_res = Program_status_Model::get_all();
+		$status_res = Program_status_Model::get_local();
 
 		# --------------------------------------
 		# Fetch program version from status.log
@@ -895,7 +895,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		if (empty($status) || !$status->current()->is_running) {
 			$this->template->content = $this->add_view('extinfo/not_running');
 			$this->template->content->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));

@@ -18,6 +18,17 @@ class Program_status_Model extends Model
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
+	/**
+	 * Fetch all info for local node
+	 */
+	public function get_local()
+	{
+		$db = new Database();
+		$sql = "SELECT * FROM program_status WHERE instance_name = '".self::local_node_name."'";
+		$res = $db->query($sql);
+		return (!$res || count($res) == 0) ? false : $res;
+	}
+
 	public function list_program_status()
 	{
 		$db = new Database();
