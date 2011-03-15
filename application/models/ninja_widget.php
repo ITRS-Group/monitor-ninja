@@ -391,13 +391,13 @@ class Ninja_widget_Model extends Model
 		}
 		$db = new Database();
 		try {
-			$sql = "INSERT INTO ninja_widgets(".self::USERFIELD.", page, friendly_name) ".
-				"VALUES(:username, :page, :friendly_name)";
+			$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
+				"VALUES(:name, :page, :friendly_name)";
 			$stmt = $db->stmt_prepare($sql);
-			$stmt->bind_params(null, array(':username' => $name, ':page' => $page, ':friendly_name' => $friendly_name));
+			$stmt->bind_params(null, array(':name' => $name, ':page' => $page, ':friendly_name' => $friendly_name));
 			$return = $stmt->execute($sql);
 		} catch (Kohana_Database_Exception $e) {
-			$sql = "INSERT INTO ninja_widgets(".self::USERFIELD.", page, friendly_name) ".
+			$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
 				'VALUES('.$db->escape($name).', '.$db->escape($page).', '.$db->escape($friendly_name).')';
 			$return = $db->query($sql);
 		}
