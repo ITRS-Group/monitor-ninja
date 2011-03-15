@@ -92,6 +92,16 @@ class Ajax_Controller extends Authenticated_Controller {
 								'path' => '/status/servicegroup/%s'
 							);
 							break;
+						case 'comment': case 'c':
+							$obj_type = 'comment';
+							$settings = array(
+								'class' => 'Comment_Model',
+								'name_field' => 'comment_data',
+								'data' => 'host_name',
+								'path' => '/extinfo/details/host/%s'
+							);
+							break;
+
 						default:
 							return false;
 					}
