@@ -21,6 +21,7 @@ $(document).ready(function() {
 
 	// restore left border for first cell of each row
 	$('table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
+	$('table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
 	$('table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
 	// refresh helper code
 
