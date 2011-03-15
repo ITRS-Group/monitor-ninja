@@ -36,8 +36,10 @@ if (!empty($command_result)) {
 			<tr>
 			<?php if (Router::$method == 'show_comments') {
 					echo form::open('extinfo/show_comments'); ?>
-				<th style="white-space: nowrap" colspan="2">
+				<th class="td_<?php echo ($service == false ? 'host' : 'service') ?>_checkbox" style="display_none">
 					<?php echo form::checkbox(array('name' => 'selectall_'.($service == false ? 'host' : 'service'), 'class' => 'selectall_'.($service == false ? 'host' : 'service')), ''); ?>
+				</th>
+				<th style="white-space: nowrap">
 					<?php echo $label_host_name ?>
 				</th>
 				<?php if ($service) { ?>
@@ -119,7 +121,7 @@ if (!empty($command_result)) {
 			</tr>
 		<?php }
 		if (Router::$method == 'show_comments') {
-			echo '<tr class="odd submit'.($service == false ? 'host' : 'service').'"><td colspan="'.($service ? 10 : 9).'">';
+			echo '<tr class="odd submit'.($service == false ? 'host' : 'service').'"><td colspan="'.($service ? 11 : 10).'">';
 			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), $this->translate->_('Delete Selected'));
 			echo '<span  class="'.($service == false ? 'host' : 'service').'_feedback"></span></td></tr>';
 			echo form::close();
