@@ -180,12 +180,23 @@ function setup_editable(mode)
 
 }
 
+var loadimg = new Image(16,16);
+loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
+
 function send_report_now(type, id)
 {
 	if (type=='' || id =='') {
 		// missing info
 		return false;
 	}
+
+	var html_id = 'send_now_' + type + '_' + id;
+
+	$('#' + html_id)
+		.css('background', 'url(' + loadimg.src + ') no-repeat scroll 0 0 transparent')
+		.css('height', '16px')
+		.css('width', '16px')
+		.css('float', 'left');
 
 	// since we now support reports generated in
 	// other controllers than the reports controller,
@@ -203,8 +214,10 @@ function send_report_now(type, id)
 		success: function(data) {
 			if (data == '') {
 				jgrowl_message(_reports_schedule_send_ok, _reports_success);
+				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			} else {
 				jgrowl_message(_reports_schedule_send_error, _reports_error);
+				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			}
 		}
 	});
@@ -216,6 +229,11 @@ function schedule_delete(id, remove_type)
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
 	}
+
+	var img_src = $('#' + id + " img").attr('src');
+	var in_id = id;
+
+	$('#' + in_id + ' img').attr('src', loadimg.src);
 
 	// clean input id from prefix (from setup template)
 	if (isNaN(id)) {
@@ -234,9 +252,25 @@ function schedule_delete(id, remove_type)
 			} else {
 				jgrowl_message(data, _reports_error);
 				setTimeout('hide_response()', time);
+				setTimeout(function() {restore_delimg(in_id, img_src)}, 1000);
 			}
 		}
 	});
+}
+
+function restore_sendimg(id)
+{
+	var old_icon = _site_domain + _theme_path + "icons/16x16/send-report.png";
+	$('#' + id)
+		.css('background', 'url(' + old_icon + ') no-repeat scroll 0 0 transparent')
+		.css('height', '16px')
+		.css('width', '16px').css('float', 'left');
+
+}
+
+function restore_delimg(id, src)
+{
+	$('#' + id + ' img').attr('src', src);
 }
 
 function remove_schedule(id, remove_type)
@@ -461,7 +495,7 @@ function hide_rows(input) {
 *	cache the progress indicator image to show faster...
 */
 var Image1 = new Image(16,16);
-Image1.src = _site_domain + '/application/media/images/loading.gif';
+Image1.src = _site_domain + 'application/media/images/loading.gif';
 
 /**
 *	Show a progress indicator to inform user that something
