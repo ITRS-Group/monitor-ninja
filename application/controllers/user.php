@@ -16,6 +16,7 @@ class User_Controller extends Authenticated_Controller {
 	private static $var_types = array(
 		'pagination.default.items_per_page' => 'int',
 		'pagination.paging_step' => 'int',
+		'pagination.group_items_per_page' => 'int',
 		'keycommands.activated' => 'bool',
 		'keycommands.search' => 'string',
 		'keycommands.pause' => 'string',
@@ -57,7 +58,8 @@ class User_Controller extends Authenticated_Controller {
 
 		$settings['pagination'] = array(
 			$t->_('Pagination Limit') => array('pagination.default.items_per_page', self::$var_types['pagination.default.items_per_page']),
-			$t->_('Pagination Step') => array('pagination.paging_step', self::$var_types['pagination.paging_step'])
+			$t->_('Pagination Step') => array('pagination.paging_step', self::$var_types['pagination.paging_step']),
+			$t->_('Group Pagination Limit') => array('pagination.group_items_per_page', self::$var_types['pagination.group_items_per_page'])
 		);
 		$settings['keycommands'] = array(
 			$t->_('Keycommands') => array('keycommands.activated', self::$var_types['keycommands.activated']),
@@ -255,6 +257,7 @@ class User_Controller extends Authenticated_Controller {
 		$helptexts = array(
 			'pagination.default.items_per_page' => $t->_('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => $t->_('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
+			'pagination.group_items_per_page' => $t->_('This value is used for the initial items to show on host- and service group pages. Defaults to 10.'),
 			'checks.show_passive_as_active' => $t->_('This setting affects if to show passive checks as active in the GUI'),
 			'config.current_skin' => $t->_('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => $t->_('Switch keyboard commands ON or OFF. Default is OFF'),
