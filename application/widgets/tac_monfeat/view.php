@@ -34,6 +34,7 @@
 					<?php	if ($enable_flap_detection) { ?>
 						<?php if ($flap_disabled_services > 0) {?>
 						<tr>
+							<td class="dark"><?php echo html::image($this->add_path('icons/12x12/shield-disabled.png'),$this->translate->_('Disabled')) ?></td>
 							<td style="white-space: normal">
 								<?php echo $flap_disabled_services.' '.($flap_disabled_services==1 ? $lable_service_singular : $lable_service_plural).' '.$lable_disabled ?>
 							</td>
