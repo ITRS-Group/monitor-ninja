@@ -36,20 +36,26 @@ class widget_Core
 	 */
 	public function add($name=false, $arguments=false, &$master=false)
 	{
-		# first try custom path
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$name, $name, false);
-		if ($path === false) {
-			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$name, $name, true);
+
+		try {
+			# first try custom path
+			$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$name, $name, false);
+			if ($path === false) {
+				# try core path if not found in custom
+				$path = Kohana::find_file(Kohana::config('widget.dirname').$name, $name, true);
+			}
+			require_once($path);
+			$classname = $name.'_Widget';
+			$obj = new $classname;
+			# if we have a requested widget method - let's call it
+			# always call index method of widget
+			$widget_method = 'index';
+			return $obj->$widget_method($arguments, $master);
+		} catch (Exception $ex) {
+			print "<div id='widget-$name' class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";
+			return false;
 		}
 
-		require_once($path);
-		$classname = $name.'_Widget';
-		$obj = new $classname;
-		# if we have a requested widget method - let's call it
-		# always call index method of widget
-		$widget_method = 'index';
-		return $obj->$widget_method($arguments, $master);
 	}
 
 	/**
