@@ -150,7 +150,11 @@ class Ninja_Controller extends Template_Controller {
 			if (Kohana::config('config.nagvis_path') !== false)
 				$this->template->links[$this->translate->_('Monitoring')][$this->translate->_('NagVis')] = array('/nagvis/index', 'nagvis',0);
 
+			$this->xlinks = array();
 			$this->_addons();
+			foreach ($this->xlinks as $link)
+				$this->template->links[$link['category']][$link['title']] = $link['contents'];
+
 			$this->_is_alive();
 			$this->_global_notification_checks();
 		}
