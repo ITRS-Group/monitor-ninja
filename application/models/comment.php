@@ -31,36 +31,32 @@ class Comment_Model extends Model {
 		$auth = new Nagios_auth_Model();
 
 		# service comments or not?
-		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
-			: " AND c.service_description=".$db->escape($service);
+		$svc_selection = empty($service) ?
+			'AND c.service_description IS NULL' :
+			'AND c.service_description='.$db->escape($service);
 
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		$host_query = $auth->authorized_host_query();
-		if ($host_query === true) {
-			# don't use auth_host fields etc
-			$auth_host_alias = 'h';
-			$auth_from = ', host '.$auth_host_alias;
-			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
+		if ($auth->view_hosts_root) {
+			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c ' .
+			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		} else {
-			$auth_host_alias = $host_query['host_field'];
-			$auth_from = isset($host_query['from']) && !empty($host_query['from']) ? ' ,'.$host_query['from'] : '';
-			$auth_where = ' AND '.sprintf($host_query['where'], "c.host_name");
-		}
-
-		$num_per_page = (int)$num_per_page;
-
-		if (!$auth->view_hosts_root) {
-			$sql = "SELECT * FROM ".self::TABLE_NAME." c WHERE id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
-				"WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
-				" AND ca.contact=contact.id ".$svc_selection.
-				" AND c.host_name=".$db->escape($host).
-				"AND ca.host=h.id ".
-				" AND ca.service is null) ";
-		} else {
-			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE c.host_name=".$db->escape($host).
-				$svc_selection.$auth_where;
+			if (!empty($service)) {
+				$svc_from = ' INNER JOIN service s ' .
+				            'ON c.service_description = s.service_description ' .
+				            'AND c.host_name = s.host_name';
+				$by_ca = 'ca.host IS NULL AND ca.service = s.id';
+			} else {
+				$svc_from = '';
+				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
+			}
+			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
+			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
+			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
+			       'INNER JOIN contact ON ca.contact = contact.id ' .
+			       'AND contact.contact_name = '.$db->escape(Auth::instance()->get_user()->username).' ' .
+			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		}
 
 		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
