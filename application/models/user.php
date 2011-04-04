@@ -93,8 +93,6 @@ class User_Model extends Auth_User_Model {
 				if (empty($services)) {
 					$redirect = true;
 				}
-			} else {
-				$redirect = true;
 			}
 
 			if ($redirect !== false) {
