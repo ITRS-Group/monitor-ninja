@@ -89,12 +89,12 @@ class User_Model extends Auth_User_Model {
 
 			$redirect = false;
 			if (empty($hosts)) {
-				$redirect = true;
-			} else {
 				$services = $auth->get_authorized_services();
 				if (empty($services)) {
 					$redirect = true;
 				}
+			} else {
+				$redirect = true;
 			}
 
 			if ($redirect !== false) {
