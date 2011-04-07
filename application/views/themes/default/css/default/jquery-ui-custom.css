@@ -469,3 +469,4 @@
 .contextMenu LI.disable_check A { background-image: url(../../icons/16x16/disabled.png); }
 .contextMenu LI.enable_check A { background-image: url(../../icons/16x16/enabled.png); }
 .contextMenu LI.schedule_check A { background-image: url(../../icons/16x16/re-schedule.png); }
+.contextMenu LI.add_comment A { background-image: url(../../icons/16x16/add-comment.png); }

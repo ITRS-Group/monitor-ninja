@@ -537,6 +537,8 @@ function object_action(action,the_id)
 		case 'enable_svc_check':
 		case 'schedule_host_check':
 		case 'schedule_svc_check':
+		case 'add_host_comment':
+		case 'add_svc_comment':
 			cmd = action.toUpperCase();
 			break;
 		case 'remove_acknowledgement':
