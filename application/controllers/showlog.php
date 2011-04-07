@@ -194,7 +194,6 @@ class Showlog_Controller extends Authenticated_Controller
 	{
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Alert history");
-		$this->template->disable_refresh = true;
 		$obj_name = $this->input->get('host', $obj_name);
 		if ($obj_name) {
 			$obj_type = 'host';
