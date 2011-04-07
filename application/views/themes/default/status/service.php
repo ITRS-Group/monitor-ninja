@@ -221,7 +221,8 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
 			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks')
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
