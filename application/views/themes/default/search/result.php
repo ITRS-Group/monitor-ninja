@@ -51,6 +51,7 @@ if (isset($host_result) ) {
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($host->is_flapping) && $host->is_flapping) {
+					$properties += 32;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 				}
 				if ($host->scheduled_downtime_depth > 0) {
@@ -174,6 +175,7 @@ if (isset($service_result) ) {
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 			}
 			if (isset($service->service_is_flapping) && $service->service_is_flapping) {
+				$properties += 32;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 			}
 			if ($service->scheduled_downtime_depth > 0) {

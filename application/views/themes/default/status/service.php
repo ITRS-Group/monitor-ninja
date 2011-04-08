@@ -96,8 +96,10 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 4;
 						}
-						if (isset($row->host_is_flapping) && $row->host_is_flapping)
+						if (isset($row->host_is_flapping) && $row->host_is_flapping) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
+							$host_props += 32;
+						}
 						if ($row->hostscheduled_downtime_depth > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 8;
@@ -149,6 +151,7 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
+					$properties += 32;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if ($row->scheduled_downtime_depth > 0) {
