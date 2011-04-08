@@ -103,7 +103,8 @@ if (isset($host_result) ) {
 			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
 			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks')
+			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks'),
+			'ADD_HOST_COMMENT' => $this->translate->_('Add Host Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
@@ -222,7 +223,8 @@ if (isset($service_result) ) {
 			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
 			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks')
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
