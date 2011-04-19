@@ -283,7 +283,7 @@ class Comment_Model extends Model {
 	}
 
 	/**
-	*	Fetch service info filtered on specific field and value
+	*	Fetch comment info filtered on specific field and value
 	*/
 	public function get_where($field=false, $value=false, $limit=false)
 	{
@@ -302,10 +302,9 @@ class Comment_Model extends Model {
 		$where_svc = false;
 		if (!$auth->view_hosts_root) {
 			$join_host = "INNER JOIN contact_access ON host.id = contact_access.host ";
-			$where_host = "AND contact_access.contact = ".
-				"AND service.host_name = host.host_name ".$contact_id." ";
+			$where_host = "AND contact_access.contact = ".$contact_id;
 			$join_svc = "INNER JOIN contact_access ON service.id = contact_access.service ";
-			$where_svc = "AND contact_access.contact = ".$contact_id." ";
+			$where_svc = "AND contact_access.contact = ".$contact_id." AND service.host_name = host.host_name ";;
 		}
 
 		$limit_str = sql::limit_parse($limit);
