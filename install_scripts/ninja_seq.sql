@@ -128,9 +128,9 @@ CREATE SEQUENCE saved_searches_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
 
--- DROP TABLE saved_searches CASCADE CONSTRAINTS;
+-- DROP TABLE ninja_saved_searches CASCADE CONSTRAINTS;
 
-CREATE TABLE saved_searches (
+CREATE TABLE ninja_saved_searches (
 	id NUMBER(10,0) NOT NULL,
 	username VARCHAR2(255 CHAR) DEFAULT NULL,
 	search_name VARCHAR2(255 CHAR) NOT NULL,
@@ -140,8 +140,8 @@ CREATE TABLE saved_searches (
 	KEY username (username)
 );
 
-PROMPT Creating Primary Key Constraint PRIMARY_18 on table saved_searches ...
-ALTER TABLE saved_searches
+PROMPT Creating Primary Key Constraint PRIMARY_18 on table ninja_saved_searches ...
+ALTER TABLE ninja_saved_searches
 ADD CONSTRAINT PRIMARY_18 PRIMARY KEY
 (
   id
@@ -1274,7 +1274,7 @@ END;
 
 /
 
-CREATE OR REPLACE TRIGGER saved_searches_id_TRG BEFORE INSERT OR UPDATE ON saved_searches
+CREATE OR REPLACE TRIGGER saved_searches_id_TRG BEFORE INSERT OR UPDATE ON ninja_saved_searches
 FOR EACH ROW
 DECLARE
 v_newVal NUMBER(12) := 0;
@@ -1285,7 +1285,7 @@ BEGIN
     -- If this is the first time this table have been inserted into (sequence == 1)
     IF v_newVal = 1 THEN
       --get the max indentity value from the table
-      SELECT NVL(max(id),0) INTO v_newVal FROM saved_searches;
+      SELECT NVL(max(id),0) INTO v_newVal FROM ninja_saved_searches;
       v_newVal := v_newVal + 1;
       --set the sequence to that value
       LOOP

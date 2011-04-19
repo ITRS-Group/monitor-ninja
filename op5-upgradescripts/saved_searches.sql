@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS saved_searches (
+CREATE TABLE IF NOT EXISTS ninja_saved_searches (
 	id int(11) NOT NULL auto_increment,
 	username varchar(255) NOT NULL,
 	search_name varchar(255) NOT NULL,
