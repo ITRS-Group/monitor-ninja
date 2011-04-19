@@ -73,6 +73,8 @@ class Ninja_Controller extends Template_Controller {
 			$this->translate = zend::translate('gettext', $this->defaultlanguage, $this->defaultlanguage);
 		}
 
+		$saved_searches = false;
+
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			$group_items_per_page = config::get('pagination.group_items_per_page', '*', true);
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
@@ -153,6 +155,15 @@ class Ninja_Controller extends Template_Controller {
 			$this->_addons();
 			$this->_is_alive();
 			$this->_global_notification_checks();
+
+			# fetch info on saved searches and assign to master template
+			$this->template->saved_searches = $this->add_view('saved_searches');
+			$this->template->is_searches = false;
+			$searches = Saved_searches_Model::get_saved_searches();
+			if ($searches !== false && count($searches)) {
+				$this->template->saved_searches->searches = $searches;
+				$this->template->is_searches = true;
+			}
 		}
 
 		$this->registry->set('Zend_Translate', $this->translate);

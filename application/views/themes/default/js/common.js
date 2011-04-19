@@ -498,7 +498,220 @@ $(document).ready(function() {
 			return false;
 		}
 	});
+
+	// ======== Saved search handling ==========
+	var name = $("#search_name"),
+		query = $('#search_query'),
+		allFields = $([]).add(name).add(query),
+		tips = $(".validateTips"),
+		description = $('#search_description');
+
+
+	function check_save_search_fields(o, n, min, max)
+	{
+		if ( o.val.length > max || o.val().length < min ) {
+			o.addClass("ui-state-error");
+			updateTips(_search_save_error, n, min, max);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function updateTips(t, n, min, max) {
+		tips.text( sprintf(t, n, min, max) ).addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#save-search-form" ).dialog({
+		autoOpen: false,
+		height: 330,
+		width: 350,
+		closeOnEscape: true,
+		modal: true,
+		buttons: {
+			Cancel: function() {
+				$(this).dialog( "close" );
+			},
+			"Save this search": function() {
+				var bValid = true;
+				allFields.removeClass( "ui-state-error" );
+				bValid = bValid && check_save_search_fields(query, _search_string_field, 1, 100);
+				bValid = bValid && check_save_search_fields(name, _search_name_field, 1, 100);
+
+				if ( bValid ) {
+					// save form to db
+					$.ajax({
+						url:_site_domain + _index_page + '/' + '/ajax/save_search',
+						type: 'POST',
+						data: {name: name.val(), query: query.val(), description: description.val(), search_id: $('#search_id').val()},
+						success: function(data) {
+							data = parseInt(data);
+							if (!isNaN(data)) { // return value should be an integer if OK
+								jgrowl_message(_search_saved_ok, _search_save_ok);
+
+								// update/edit
+								if ($('#search_id').val() != 0 && $('#saved_searchrow_' + $('#search_id').val())) {
+									// update list of saved searches
+
+									$('#searchname_' + $('#search_id').val()).html(name.val());
+									$('#searchquery_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a>');
+									$('#searchqueryimg_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a>');
+									$('#searchdescription_' + $('#search_id').val()).html(description.val());
+
+								} else if($('#search_id').val() == 0) {
+									// created new search - add rows
+									var new_data = '<td class="edit_search_query" id="searchquery_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a></td>';
+									new_data += '<td class="edit_search_name" id="searchname_' + data + '">' + name.val() + '</td>';
+									new_data += '<td class="edit_search_description" id="searchdescription_' + data + '">' + description.val() + '</td>'; //_theme_path
+									new_data += '<td id="searchqueryimg_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a></td>';
+									new_data += '<td class="edit_search_item" id="editsearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/edit.png" id="editsearchimg_' + data + '" /></td>';
+									new_data += '<td class="remove_search_item" id="removesearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/remove.png" id="removesearchimg_' + data + '" /></td>';
+									$('#saved_searches_table').append('<tr id="saved_searchrow_' + data + '">' + new_data + '</tr>');
+									if (!$('#my_saved_searches').is(':visible')) {
+										$('#my_saved_searches').show();
+									}
+
+									$('#search_id').attr('value', data);
+								}
+							} else {
+								jgrowl_message(_search_saved_error, _search_save_error);
+							}
+						}
+					});
+				}
+
+				$(this).dialog("close");
+			}
+		}
+	});
+
+	$('.edit_search_item').css('cursor', 'pointer');
+	$('.remove_search_item').css('cursor', 'pointer');
+	$('#save_search').css('cursor', 'pointer');
+
+	$('#save_search').click(function() {
+		$( "#save-search-form" ).dialog("open");
+
+		// reset form
+		var old_query = query.val(); // stash current query
+		allFields.val('');
+		query.val(old_query);
+		$('#search_id').val(0);
+		description.val('');
+	});
+
+	// hide/show layer with saved searches
+	$('#my_saved_searches').click(function() {
+		// try to position the dialog box
+		if ($( "#saved_searches_table" ).is(':visible')) {
+			$('#saved_searches_table').dialog('close');
+		} else {
+			var x = $('#my_saved_searches_img').position().left;
+		var y = $(this).position().top + 69;
+			$( "#saved_searches_table" ).dialog('option', 'position', [x,y]);
+			$( "#saved_searches_table" ).dialog( "open" );
+		}
+	});
+
+	$("#saved_searches_table").dialog({
+		dialogClass: 'saved_searches',
+		autoOpen: false,
+		height: 'auto',
+		width: 'auto',
+		modal: false,
+		/*show: 'blind',
+		hide: 'blind',*/
+		open: function(event, ui) {
+			$("#saved_searches_table").parent()
+				.css('left', parseInt($('#my_saved_searches_img').position().left - $("#saved_searches_table").parent().width()));
+		},
+		resize: function(event, ui) {setTimeout('reposition_saved_searches()', 1000)},
+		buttons: {
+			Close: function() {
+				$(this).dialog( "close" );
+			}
+		}
+	});
+
+	// handle edit click for saved searches
+	$('.edit_search_item').live('click', function() {
+		var the_id = $(this).attr('id');
+		the_id = the_id.replace('editsearch_', '');
+		var original_img_src = $('#editsearchimg_' + the_id).attr('src');
+		switch_image('editsearchimg_' + the_id, loadimg_sml.src)
+
+		$.ajax({
+			url:_site_domain + _index_page + '/' + '/ajax/fetch_saved_search',
+			type: 'POST',
+			data: {search_id: the_id},
+			success: function(data) {
+				if (data == 'Error') {
+					jgrowl_message(_search_saved_error, _search_save_error);
+				} else {
+					data = eval( "(" + data + ")" );
+
+					// set fetched values to edit dialog
+					$('#saved_searches_table').dialog('close');
+					$( "#save-search-form" ).dialog('open');
+					$('#search_name').attr('value', data['search_name'])
+					$('#search_query').attr('value', data['search_query'])
+					$('#search_description').attr('value', data['search_description'])
+					$('#search_id').attr('value', data['search_id']);
+				}
+			}
+		});
+
+		// restore original image with a timeout
+		setTimeout(function() {switch_image('editsearchimg_' + the_id, original_img_src)}, 3000);
+	});
+
+	// handle remove click for saved searches
+	$('.remove_search_item').live('click', function() {
+		if (!confirm(_search_remove_confirm)) {
+			return false;
+		}
+
+		var the_id = $(this).attr('id');
+		the_id = the_id.replace('removesearch_', '');
+		var original_img_src = $('#removesearchimg_' + the_id).attr('src');
+		switch_image('removesearchimg_' + the_id, loadimg_sml.src)
+
+		$.ajax({
+			url:_site_domain + _index_page + '/' + '/ajax/remove_search',
+			type: 'POST',
+			data: {search_id: the_id},
+			success: function(data) {
+				if (data == 'OK') {
+					// remove row
+					$('#saved_searchrow_' + the_id).remove();
+					if ($('#saved_searches_table tr').length == 1) {
+						$('#saved_searches_table').dialog('close');
+						$('#my_saved_searches').hide();
+					}
+				}
+			}
+		});
+
+		// restore original image with a timeout
+		setTimeout(function() {switch_image('removesearchimg_' + the_id, original_img_src)}, 3000);
+	});
 });
+
+function reposition_saved_searches() {
+	$("#saved_searches_table").parent().css('left', parseInt($('#my_saved_searches_img').position().left - $("#saved_searches_table").width()));
+	$("#saved_searches_table").parent().css('top', parseInt($('#my_saved_searches').position().top + 69));
+}
+
+var loadimg_sml = new Image(16,16);
+loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
+
+function switch_image(html_id, src)
+{
+	$('#' + html_id).attr('src', src);
+}
 
 function object_action(action,the_id)
 {

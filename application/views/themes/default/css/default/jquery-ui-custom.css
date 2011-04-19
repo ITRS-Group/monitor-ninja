@@ -470,3 +470,16 @@
 .contextMenu LI.enable_check A { background-image: url(../../icons/16x16/enabled.png); }
 .contextMenu LI.schedule_check A { background-image: url(../../icons/16x16/re-schedule.png); }
 .contextMenu LI.add_comment A { background-image: url(../../icons/16x16/add-comment.png); }
+
+#save-search-form.label, #save-search-form.input { display:block; }
+input.texts, textarea.texts { margin-bottom:12px; width:95%; padding: .4em; }
+#save-search-form.fieldset { padding:0; border:0; margin-top:20px; }
+input.search_query {color:#AAA}
+
+.saved_searches .ui-dialog-content{
+	width:100%;
+}
+
+/*.saved_searches td {
+	line-height: 20px;
+}*/

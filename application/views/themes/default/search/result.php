@@ -1,10 +1,18 @@
- <?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 $label_na = $this->translate->_('N/A');
 ?>
 
 <div class="widget left w98" id="search_result">
 <?php echo help::render('search_help') ?>&nbsp;
-<?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong><br><br>';
+<?php echo isset($no_data) ? $no_data.'<br />' : '<strong>'.$limit_str.'</strong><br><br>';
+
+$save_id = isset($save_id) ? (int)$save_id : false;
+$save_label = $save_id ? $this->translate->_('Update this search') : $this->translate->_('Save this search');
+
+echo help::render('saved_search_help').'&nbsp';
+echo '<span id="save_search">'.
+	html::image($this->add_path('icons/24x24/add_save_search.png'), array('title' => $save_label)).'</span><br /><br />';
+
 # show host data if available
 if (isset($host_result) ) {
 	if (isset($host_pagination)) {?><div id="host_pagination"><?php echo $host_pagination ?></div><?php } ?>
@@ -349,3 +357,4 @@ if (isset($comment_result)) {
 	</table>
 	<?php
 }
+?>
