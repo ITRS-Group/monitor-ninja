@@ -123,6 +123,32 @@ PROMPT Creating Sequence summary_config_id_SEQ ...
 CREATE SEQUENCE  summary_config_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
+ PROMPT Creating Sequence saved_searches_id_SEQ ...
+CREATE SEQUENCE saved_searches_id_SEQ
+  MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
+
+
+-- DROP TABLE saved_searches CASCADE CONSTRAINTS;
+
+CREATE TABLE saved_searches (
+	id NUMBER(10,0) NOT NULL,
+	username VARCHAR2(255 CHAR) DEFAULT NULL,
+	search_name VARCHAR2(255 CHAR) NOT NULL,
+	search_query VARCHAR2(255 CHAR) NOT NULL,
+	search_description VARCHAR2(255 CHAR) NOT NULL,
+	PRIMARY KEY (id),
+	KEY username (username)
+);
+
+PROMPT Creating Primary Key Constraint PRIMARY_18 on table saved_searches ...
+ALTER TABLE saved_searches
+ADD CONSTRAINT PRIMARY_18 PRIMARY KEY
+(
+  id
+)
+ENABLE
+;
+
 -- DROP TABLE avail_config CASCADE CONSTRAINTS;
 
 
@@ -1237,6 +1263,34 @@ BEGIN
       LOOP
            EXIT WHEN v_incval>=v_newVal;
            SELECT summary_config_id_SEQ.nextval INTO v_incval FROM dual;
+      END LOOP;
+    END IF;
+    --used to emulate LAST_INSERT_ID()
+    --mysql_utilities.identity := v_newVal;
+   -- assign the value from the sequence to emulate the identity column
+   :new.id := v_newVal;
+  END IF;
+END;
+
+/
+
+CREATE OR REPLACE TRIGGER saved_searches_id_TRG BEFORE INSERT OR UPDATE ON saved_searches
+FOR EACH ROW
+DECLARE
+v_newVal NUMBER(12) := 0;
+v_incval NUMBER(12) := 0;
+BEGIN
+  IF INSERTING AND :new.id IS NULL THEN
+    SELECT saved_searches_id_SEQ.NEXTVAL INTO v_newVal FROM DUAL;
+    -- If this is the first time this table have been inserted into (sequence == 1)
+    IF v_newVal = 1 THEN
+      --get the max indentity value from the table
+      SELECT NVL(max(id),0) INTO v_newVal FROM saved_searches;
+      v_newVal := v_newVal + 1;
+      --set the sequence to that value
+      LOOP
+           EXIT WHEN v_incval>=v_newVal;
+           SELECT saved_searches_id_SEQ.nextval INTO v_incval FROM dual;
       END LOOP;
     END IF;
     --used to emulate LAST_INSERT_ID()
