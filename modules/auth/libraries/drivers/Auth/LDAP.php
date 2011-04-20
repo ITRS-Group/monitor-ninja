@@ -19,9 +19,6 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
 			return false;
 
-		$ldapbindpw = @file_get_contents('/opt/op5sys/etc/ldapbindpw');
-		$ldapbindpw = chop($ldapbindpw);
-		
 		$config = array();
 		foreach ($raw_config as $line)
 		{
@@ -52,20 +49,6 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			{
 				$this->complete_login($user);
 				return true;
-			} elseif (!empty($ldapbindpw)) {
-				if(@ldap_bind($ds,$config['LDAP_BIND_DN'],$ldapbindpw)) {
-					$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
-					if(@ldap_get_entries($ds,$search)) {
-						$this->complete_login($user);
-						return true;
-					}					
-				}
-			} else {
-			  $search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
-			  if(@ldap_get_entries($ds,$search)) {
-			    $this->complete_login($user);
-			    return true;
-			  }
 			}
 		}
 
