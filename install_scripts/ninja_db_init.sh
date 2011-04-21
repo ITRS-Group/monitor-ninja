@@ -87,7 +87,7 @@ then
 		mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=3" 2>/dev/null
 	fi
 
-	if [ "$db_ver" = '4' ]
+	if [ "$db_ver" -lt '4' ]
 	then
 		echo "Adding saved searches"
 		mysql -f $db_login_opts merlin < $prefix/op5-upgradescripts/saved_searches.sql 2>/dev/null
