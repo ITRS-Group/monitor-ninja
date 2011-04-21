@@ -38,7 +38,7 @@ class Comment_Model extends Model {
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		if ($auth->view_hosts_root) {
+		if ($auth->view_hosts_root || ($auth->view_services_root && !empty($service)) {
 			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c ' .
 			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		} else {
@@ -46,7 +46,7 @@ class Comment_Model extends Model {
 				$svc_from = ' INNER JOIN service s ' .
 				            'ON c.service_description = s.service_description ' .
 				            'AND c.host_name = s.host_name';
-				$by_ca = 'ca.host IS NULL AND ca.service = s.id';
+				$by_ca = 'ca.host = h.id OR ca.service = s.id';
 			} else {
 				$svc_from = '';
 				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
@@ -55,7 +55,7 @@ class Comment_Model extends Model {
 			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
 			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
 			       'INNER JOIN contact ON ca.contact = contact.id ' .
-			       'AND contact.contact_name = '.$db->escape(Auth::instance()->get_user()->username).' ' .
+			       "AND contact.contact_name = $auth->id " .
 			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		}
 
@@ -118,53 +118,32 @@ class Comment_Model extends Model {
 		$db = new Database();
 		$auth = new Nagios_auth_Model();
 
-		$host_query = $auth->authorized_host_query();
-
 		# service comments or not?
-		$svc_selection = empty($service) ? " AND c.service_description IS NULL "
-			: " AND c.service_description IS NOT NULL ";
+		$svc_selection = empty($service) ?
+			'WHERE c.service_description IS NULL' :
+			'WHERE c.service_description IS NOT NULL';
 
 		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
+		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-
-		if ($host_query === true) {
-			# don't use auth_host fields etc since
-			# user is authenticated_for_all_hosts
-			$auth_host_alias = 'h';
-			$auth_from = ', host '.$auth_host_alias;
-			$auth_where = ' AND '.$auth_host_alias . ".host_name = c.host_name";
-			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE".
-				" c.host_name IS NOT NULL ".$svc_selection.$auth_where;
+		if ($auth->view_hosts_root || ($auth->view_services_root && $service)) {
+			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c '.$svc_selection;
 		} else {
-			# we only make this check if user isn't authorized_for_all_hosts as above
-			$service_query = $auth->authorized_service_query();
-
-			$auth_host_alias = $host_query['host_field'];
-			$auth_from = ' ,'.$host_query['from'];
-			$auth_where = !empty($host_query['where']) ? ' AND '.sprintf($host_query['where'], "c.host_name") : '';
-
-			if (!$service) { # host comments
-				$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
-					"WHERE contact.contact_name=".
-					$db->escape(Auth::instance()->get_user()->username).
-					" AND ca.contact=contact.id ".
-					"AND c.host_name=h.host_name ".
-					"AND (c.service_description='' OR c.service_description is null) ".
-					"AND ca.host=h.id AND ca.service is null) ";
-			} else { # service comments
-				if ($service_query !== true) {
-					$sql = "SELECT c.* FROM ".self::TABLE_NAME." c WHERE c.id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h, service s
-						WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
-						" AND ca.contact=contact.id ".
-						"AND c.host_name=h.host_name ".
-						"AND s.host_name=c.host_name ".
-						"AND ca.service=s.id ".
-						"AND (c.service_description is NOT null)) ";
-				} else {
-					$sql = "SELECT * FROM ".self::TABLE_NAME." WHERE (service_description is NOT null) ";
-				}
+			if (!empty($service)) {
+				$svc_from = ' INNER JOIN service s ' .
+				            'ON c.service_description = s.service_description ' .
+				            'AND c.host_name = s.host_name';
+				$by_ca = 'ca.host = h.id OR ca.service = s.id';
+			} else {
+				$svc_from = '';
+				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
 			}
+			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
+			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
+			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
+			       'INNER JOIN contact ON ca.contact = contact.id ' .
+			       "AND contact.contact_name = $auth->id " .
+			       $svc_selection;
 		}
 
 		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
