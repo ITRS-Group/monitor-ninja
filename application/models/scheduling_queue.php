@@ -21,8 +21,7 @@ class Scheduling_queue_Model extends Model {
 		$db = new Database();
 		$auth = new Nagios_auth_Model();
 
-		$host_query = $auth->authorized_host_query();
-		if ($host_query === true) {
+		if ($auth->view_hosts_root) {
 
 			$num_per_page = (int)$num_per_page;
 
