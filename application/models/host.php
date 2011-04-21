@@ -254,25 +254,21 @@ class Host_Model extends Model {
 	{
 		if (empty($host_name))
 			return false;
-		$host_query = $this->auth->authorized_host_query();
-		if ($host_query === true) {
-			# don't use auth_host fields etc
-			$auth_host_alias = 'h';
-			$auth_from = ', host '.$auth_host_alias;
-			$auth_where = ' AND ' . $auth_host_alias . ".host_name = '" . $host_name . "'";
-		} else {
-			$auth_host_alias = $host_query['host_field'];
-			$auth_from = ' ,'.$host_query['from'];
-			$auth_where = ' AND '.sprintf($host_query['where'], "'".$host_name."'");
+
+		$sql_join = '';
+		$sql_where = '';
+		if (!$this->auth->view_hosts_root) {
+			$sql_join = "INNER JOIN contact_access ON contact_access.host=host_parents.host ";
+			$sql_where = "contact_access.contact=".$this->auth->id." AND ";
 		}
-		$sql = "SELECT parent.* " .
-			"FROM " .
-				"host_parents hp, " .
-				"host parent " . $auth_from .
-			" WHERE ".
-				$auth_host_alias . ".id=hp.host " . $auth_where .
-				" AND parent.id=hp.parents " .
-			"ORDER BY parent.host_name";
+
+		$sql = "SELECT host.* ".
+		"FROM host ".
+		"INNER JOIN host_parents ON host_parents.host = host.id ".$sql_join.
+		"WHERE ".$sql_where.
+		"host.host_name =".$this->db->escape($host_name).
+		" ORDER BY host.host_name";
+
 		$result = $this->query($this->db, $sql);
 		return $result;
 	}
