@@ -330,7 +330,7 @@ if (isset($this->template->js_header))
 
 		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
 
-			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); }?>
+			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 		<?php if (isset($saved_searches) && !empty($saved_searches)) {
