@@ -1414,8 +1414,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
 		$auth = new Nagios_auth_Model();
-		$host_query = $auth->authorized_host_query();
-		if ($host_query !== true) {
+		if ($auth->view_hosts_root) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
