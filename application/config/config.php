@@ -268,6 +268,11 @@ $config['use_popups'] = 0;
 */
 $config['popup_delay'] = 1500;
 
+/**
+* Control whether to show display_name or not
+*/
+$config['show_display_name'] = 1;
+
 # check for custom config files that
 # won't be overwritten on upgrade
 if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {

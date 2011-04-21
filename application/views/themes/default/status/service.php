@@ -62,7 +62,6 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					}
 				}
 			?>
-			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
 		</tr>
 <?php
 	$curr_host = false;
@@ -204,6 +203,9 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 			?>
 		</td>
 
+<?php	if ($show_display_name) { ?>
+		<td style="white-space: normal"><?php echo $row->service_display_name ?></td>
+<?php	} ?>
 	</tr>
 
 	<?php

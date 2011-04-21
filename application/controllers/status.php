@@ -356,8 +356,15 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
 			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 's.current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => $this->translate->_('Status Information'))
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'service.output', 'sort_field_str' => 'status information')
 		);
+
+		$show_display_name = config::get('config.show_display_name', '*');
+		if ($show_display_name) {
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'service.display_name', 'sort_field_str' => 'display name');
+		}
+
+		$this->template->content->show_display_name = $show_display_name;
 
 		# build header links array
 		foreach ($header_link_fields as $fields) {

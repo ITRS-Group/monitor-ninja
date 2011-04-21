@@ -488,7 +488,8 @@ class Host_Model extends Model {
 					"host.problem_has_been_acknowledged, ".
 					"host.scheduled_downtime_depth, ".
 					"host.output, ".
-					"host.long_output ".
+					"host.long_output, ".
+					"host.display_name AS host_display_name ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
@@ -542,6 +543,7 @@ class Host_Model extends Model {
 					"host.icon_image_alt AS host_icon_image_alt,".
 					"host.is_flapping AS host_is_flapping,".
 					"host.notes_url AS host_nots_url,".
+					"host.display_name AS host_display_name,".
 					"service.id AS service_id,".
 					"service.instance_id AS service_instance_id,".
 					"service.service_description,".
@@ -565,7 +567,8 @@ class Host_Model extends Model {
 					"service.output,".
 					"service.long_output,".
 					"service.output AS service_output,".
-					"service.long_output AS service_long_output ";
+					"service.long_output AS service_long_output, ".
+					"service.display_name AS service_display_name ";
 
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts

@@ -25,7 +25,8 @@ class User_Controller extends Authenticated_Controller {
 		'checks.show_passive_as_active' => 'bool',
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
-		'config.popup_delay' => 'int'
+		'config.popup_delay' => 'int',
+		'config.show_display_name' => 'bool'
 	);
 
 	/**
@@ -53,7 +54,8 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Checks') => 'checks',
 			$t->_('Config') => 'config',
 			$t->_('Keyboard Commands') => 'keycommands',
-			$t->_('Pop ups') => 'popups'
+			$t->_('Pop ups') => 'popups',
+			$t->_('Status Pages') => 'status'
 		);
 
 		$settings['pagination'] = array(
@@ -70,6 +72,10 @@ class User_Controller extends Authenticated_Controller {
 		);
 		$settings['checks'] = array(
 			$t->_('Show Passive as Active') => array('checks.show_passive_as_active', self::$var_types['checks.show_passive_as_active'])
+		);
+
+		$settings['status'] = array(
+			$t->_('Show display_name') => array('config.show_display_name', self::$var_types['config.show_display_name'])
 		);
 
 		$settings['popups'] = array(
@@ -266,12 +272,13 @@ class User_Controller extends Authenticated_Controller {
 			'keycommands.forward' => $t->_('Keyboard command to move forward in a paginated result (except search results). Defaults to Alt+Shift+right.').' '.$keyboard_help,
 			'keycommands.back' => $t->_('Keyboard command to move back in a paginated result (except search results). Defaults to Alt+Shift+left.').' '.$keyboard_help,
 			'config.use_popups' => $t->_('Enable or disable the use of pop-ups for PNP graphs and comments.'),
-			'config.popup_delay' => $t->_('Set the delay in milliseconds before the pop-ups (PNP graphs and comments) will be shown. Defaults to 1500ms (1.5s).')
+			'config.popup_delay' => $t->_('Set the delay in milliseconds before the pop-ups (PNP graphs and comments) will be shown. Defaults to 1500ms (1.5s).'),
+			'config.show_display_name' => $t->_('Use this setting to control whether to show display_name for your services on status/service or not.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		}
 		else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf($t->_("This helptext ('%s') is yet not translated"), $id);
 	}
 }
