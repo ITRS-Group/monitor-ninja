@@ -215,27 +215,6 @@ class Nagios_auth_Model extends Model
 	}
 
 	/**
-	*	Build host query parts for integration with other queries
-	* 	that needs to know what hosts a user is authenticated to see.
-	* 	These query parts doesn't assume anything like prior commas (from part)
-	* 	or AND (where part) so this will have to be handled by calling method.
-	*/
-	public function authorized_host_query()
-	{
-		if ($this->view_hosts_root) {
-			return true;
-		}
-		$query_parts = array(
-			'from' => ' host auth_host, contact auth_contact, contact_contactgroup auth_contact_contactgroup, host_contactgroup auth_host_contactgroup',
-			'where' => " auth_host.id = auth_host_contactgroup.host ".
-				"AND auth_host_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup ".
-				"AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username) .
-				" AND %s = auth_host.host_name",
-			'host_field' => 'auth_host');
-		return $query_parts;
-	}
-
-	/**
 	 * Fetch authorized services from db
 	 * for current user
 	 */
@@ -269,28 +248,6 @@ class Nagios_auth_Model extends Model
 		#Session::instance()->set('auth_services_r', $this->services_r);
 
 		return $this->services;
-	}
-
-	/**
-	*	Build service query parts for integration with other queries
-	* 	that needs to know what services a user is authenticated to see.
-	* 	These query parts doesn't assume anything like prior commas (from part)
-	* 	or AND (where part) so this will have to be handled by calling method.
-	*/
-	public function authorized_service_query()
-	{
-		if ($this->view_services_root) {
-			return true;
-		}
-		$query_parts = array(
-			'from' => ' host auth_host, service auth_service, contact auth_contact, contact_contactgroup auth_contact_contactgroup, service_contactgroup auth_service_contactgroup',
-			'where' => " auth_service.id = auth_service_contactgroup.service
-				AND auth_service_contactgroup.contactgroup = auth_contact_contactgroup.contactgroup
-				AND auth_contact_contactgroup.contact=auth_contact.id AND auth_contact.contact_name=" . $this->db->escape(Auth::instance()->get_user()->username),
-			'service_field' => 'auth_service',
-			'host_field' => 'auth_host',
-			);
-		return $query_parts;
 	}
 
 	/**
