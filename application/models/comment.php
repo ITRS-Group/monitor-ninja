@@ -38,7 +38,7 @@ class Comment_Model extends Model {
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		if ($auth->view_hosts_root || ($auth->view_services_root && !empty($service)) {
+		if ($auth->view_hosts_root || ($auth->view_services_root && !empty($service))) {
 			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c ' .
 			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		} else {
