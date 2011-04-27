@@ -166,6 +166,7 @@ class Reports_Controller extends Authenticated_Controller
 	public $mashing = false;
 	public $report_options = false;
 	private $in_months = false;
+	public $extra_template_data = false;
 
 	public function __construct()
 	{
@@ -233,6 +234,16 @@ class Reports_Controller extends Authenticated_Controller
 			'DOWN' => $this->translate->_('DOWN'),
 			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
 		);
+	}
+
+	public function add_view($view) {
+		$ret = parent::add_view($view);
+		if (is_array($this->extra_template_data)) {
+			foreach ($this->extra_template_data as $key => $val) {
+				$ret->$key = $val;
+			}
+		}
+		return $ret;
 	}
 
 
