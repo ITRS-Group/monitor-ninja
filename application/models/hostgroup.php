@@ -23,7 +23,7 @@ class Hostgroup_Model extends ORM
 			return false;
 		}
 		$obj_ids = array_keys($auth_objects);
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM hostgroup WHERE $field=".$db->escape($value).' AND '.
 			'id IN('.implode(',', $obj_ids).')';
 		$data = $db->query($sql);
@@ -51,7 +51,7 @@ class Hostgroup_Model extends ORM
 				return false;
 			$sql = "SELECT * FROM hostgroup WHERE id IN (".implode(',', $auth_ids).") ".$limit_str;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$data = $db->query($sql);
 		return count($data)>0 ? $data : false;
 	}
@@ -425,7 +425,7 @@ class Hostgroup_Model extends ORM
 		}
 		$sql .= $limit_str;
 		#echo $sql."<br />";
-		$db = new Database();
+		$db = Database::instance();
 		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
@@ -447,7 +447,7 @@ class Hostgroup_Model extends ORM
 		$obj_ids = array_keys($auth_obj);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -479,7 +479,7 @@ class Hostgroup_Model extends ORM
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$cnt_hosts = 0;
 		$cnt_hosts_in_group = 0;
 

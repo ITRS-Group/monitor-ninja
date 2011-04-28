@@ -27,7 +27,7 @@ class Comment_Model extends Model {
 		if (empty($host)) {
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		# service comments or not?
@@ -77,7 +77,7 @@ class Comment_Model extends Model {
 
 	public function fetch_all_comment_types($entry_type, $host_name, $service_description) {
 
-		$db = new Database();
+		$db = Database::instance();
 		switch ($entry_type) {
 			case 1: // user comment
 				$type = self::TABLE_NAME;
@@ -115,7 +115,7 @@ class Comment_Model extends Model {
 		$host = trim($host);
 		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		# service comments or not?
@@ -182,7 +182,7 @@ class Comment_Model extends Model {
 			"GROUP BY obj_name ORDER BY obj_name";
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$result = $db->query($sql);
 		if (!$result || count($result) == 0) {
 			return false;
@@ -202,7 +202,7 @@ class Comment_Model extends Model {
 	public function search($value=false, $limit=false)
 	{
 		if (empty($value)) return false;
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 		$contact_id = (int)$auth->id;
 		$limit_str = sql::limit_parse($limit);
@@ -269,7 +269,7 @@ class Comment_Model extends Model {
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 		$field = trim($field);
 		$value = trim($value);

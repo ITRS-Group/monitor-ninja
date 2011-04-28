@@ -17,7 +17,7 @@ class Ninja_Model extends ORM
 		parent::__construct();
 		$this->profiler = new Profiler;
 		# we will always need database and session
-		$this->db = new Database;
+		$this->db = Database::instance;
 		$this->session = Session::instance();
 	}
 }

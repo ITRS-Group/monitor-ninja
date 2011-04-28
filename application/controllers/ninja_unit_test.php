@@ -101,7 +101,7 @@ class Ninja_unit_test_Controller extends Controller {
         */
         public function wipe_tables()
         {
-            $db = new Database();
+            $db = Database::instance();
             $tlist = $db->list_tables();
             if( !count($tlist) ) {
                 throw new Exception("Query failed!");

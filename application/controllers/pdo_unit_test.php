@@ -19,7 +19,7 @@ class pdo_unit_test_Controller extends Controller {
 
     private function connect()
     {
-        $this->db = new Database();
+        $this->db = Database::instance();
     }
     private function try_list_tables($require=true,$verbose=false)
     {

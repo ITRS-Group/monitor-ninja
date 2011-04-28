@@ -16,7 +16,7 @@ class Ninja_widget_Model extends Model
 		if (empty($page) && $all !== true)
 			return false;
 		$user = Auth::instance()->get_user()->username;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM ninja_widgets ";
 		if ($all===true) {
 			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
@@ -47,7 +47,7 @@ class Ninja_widget_Model extends Model
 	{
 		if (empty($page) || empty($widget))
 			return false;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM ninja_widgets ";
 		if ($get_user === true) {
 			# fetch customized widget for user
@@ -75,7 +75,7 @@ class Ninja_widget_Model extends Model
 			return false;
 		$page = trim($page);
 		$user = Auth::instance()->get_user()->username;
-		$db = new Database();
+		$db = Database::instance();
 		$sql_base = "SELECT * FROM ninja_widgets ";
 		$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user);
 		$res = $db->query($sql);
@@ -104,7 +104,7 @@ class Ninja_widget_Model extends Model
 			return false;
 		}
 		$user = Auth::instance()->get_user()->username;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "INSERT INTO ninja_widgets (".self::USERFIELD.", page, name, friendly_name, setting) ".
 			'VALUES('.$db->escape($user).', '.$db->escape($old_widget->page).', '.$db->escape($old_widget->name).', '.$db->escape($old_widget->friendly_name).', '.$db->escape($old_widget->setting).')';
 		$db->query($sql);
@@ -137,7 +137,7 @@ class Ninja_widget_Model extends Model
 
 		# all widgets for current page should exist under users name
 
-		$db = new Database();
+		$db = Database::instance();
 		$sql_base = "SELECT * FROM ninja_widgets ";
 		$sql = $sql_base." WHERE name=".$db->escape($widget).
 			" AND ".self::USERFIELD."=".$db->escape($user).
@@ -208,7 +208,7 @@ class Ninja_widget_Model extends Model
 		# merge/replace new settings with the old
 		$current_widget = self::get_widget($page, $widget, true);
 		if ($current_widget !== false) {
-			$db = new Database();
+			$db = Database::instance();
 			$setting = self::merge_settings($current_widget->setting, $data);
 			$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($current_widget->id);
 			$db->query($sql);
@@ -312,7 +312,7 @@ class Ninja_widget_Model extends Model
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
-				$db = new Database();
+				$db = Database::instance();
 				$setting = self::merge_settings($widget->setting, $new_setting);
 				$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($widget->id);
 				$db->query($sql);
@@ -360,7 +360,7 @@ class Ninja_widget_Model extends Model
 			# widget already exists
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
 			'VALUES('.$db->escape($name).', '.$db->escape($page).', '.$db->escape($friendly_name).')';
 		$return = $db->query($sql);

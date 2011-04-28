@@ -166,7 +166,7 @@ class Host_Model extends Model {
 
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -803,7 +803,7 @@ class Host_Model extends Model {
 		# check credentials for host
 		$host_list = $auth->get_authorized_hosts();
 
-		$db = new Database();
+		$db = Database::instance();
 		if (empty($service_description)) {
 			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
@@ -1030,7 +1030,7 @@ class Host_Model extends Model {
 
 		$auth_hosts = self::authorized_hosts();
 		$host_str = join(',', $auth_hosts);
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id " .
 			"FROM host h, hostgroup hg, host_hostgroup hhg " .
 			"WHERE hg.hostgroup_name = " . $db->escape($name) .
@@ -1068,7 +1068,7 @@ class Host_Model extends Model {
 		$host_ids = array_keys($auth_hosts);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -1088,7 +1088,7 @@ class Host_Model extends Model {
 			return false;
 		}
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -1110,7 +1110,7 @@ class Host_Model extends Model {
 	{
 		$hosts = self::authorized_hosts();
 		$hostlist = false;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT host_name, address FROM host WHERE id IN (".implode(',', $hosts).")";
 		$data = self::query($db,$sql);
 		if (count($data)>0) {

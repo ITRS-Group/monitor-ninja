@@ -48,7 +48,7 @@ class Group_Model extends Model
 			#$svc_where = " AND service.host_name=host.host_name ";
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." " : '1=1 ';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -151,7 +151,7 @@ class Group_Model extends Model
 
 		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $groupname != 'all' ? "AND sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -251,7 +251,7 @@ class Group_Model extends Model
 				return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $name != 'all' ? "sg.".$type."group_name=".$db->escape($name)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -282,7 +282,7 @@ class Group_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$result = $db->query($sql);
 		return $result;
 	}
@@ -300,7 +300,7 @@ class Group_Model extends Model
 		$auth = new Nagios_auth_Model();
 
 		$name = empty($name) ? 'all' : $name;
-		$db = new Database();
+		$db = Database::instance();
 		$contact_id = $auth->get_contact_id();
 		$all_sql = $name != 'all' ? "sg.".$grouptype."group_name=".$db->escape($name)." AND " : '';
 
@@ -418,7 +418,7 @@ class Group_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 
 		if (empty($group)) {
 			return false;

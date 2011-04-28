@@ -30,7 +30,7 @@ class User_Test extends Unit_Test_Case {
 
 	public function table_users_exists_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'users';
 		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 		$this->assert_false_strict($db->table_exists('foo'));
@@ -38,7 +38,7 @@ class User_Test extends Unit_Test_Case {
 
 	public function users_exists_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'users';
 		$sql = "SELECT COUNT(*) as cnt FROM users";
 		$result = $db->query($sql);
@@ -48,7 +48,7 @@ class User_Test extends Unit_Test_Case {
 
 	public function table_ninja_settings_exists_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'ninja_settings';
 		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 	}
@@ -58,14 +58,14 @@ class User_Test extends Unit_Test_Case {
 	 */
 	public function table_ninja_user_authorization_exists_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'ninja_user_authorization';
 		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 	}
 
 	public function table_ninja_user_authorization_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'ninja_user_authorization';
 		#$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 		$sql = "SELECT * FROM ".$table;

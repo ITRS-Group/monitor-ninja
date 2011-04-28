@@ -23,7 +23,7 @@ class Ninja_setting_Model extends Model
 		if (empty($type) || empty($user))
 			return false;
 
-		$db = new Database();
+		$db = Database::instance();
 
 		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$db->escape($user).
 			" AND page=".$db->escape($page)." AND type=".$db->escape($type);
@@ -58,7 +58,7 @@ class Ninja_setting_Model extends Model
 		if (empty($type))
 			return false;
 
-		$db = new Database();
+		$db = Database::instance();
 		$res = false;
 		$sql_base = "SELECT * FROM ninja_settings";
 		$user = Auth::instance()->get_user()->username;

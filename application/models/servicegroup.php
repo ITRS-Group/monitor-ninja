@@ -25,7 +25,7 @@ class Servicegroup_Model extends ORM
 		if (empty($auth_objects))
 			return false;
 		$obj_ids = array_keys($auth_objects);
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM servicegroup WHERE $field=".$db->escape($value).' AND '.
 			'id IN('.implode(',', $obj_ids).')';
 		$data = $db->query($sql);
@@ -49,7 +49,7 @@ class Servicegroup_Model extends ORM
 		$obj_ids = array_keys($auth_objects);
 
 		$sql = "SELECT * FROM servicegroup WHERE id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$db = new Database();
+		$db = Database::instance();
 		$data = $db->query($sql);
 		return count($data)>0 ? $data : false;
 	}
@@ -396,7 +396,7 @@ class Servicegroup_Model extends ORM
 			"FROM servicegroup ".
 			"WHERE servicegroup.id IN(".implode(',', $groups_to_find).") ".$limit_str;
 		#echo $sql."<br />";
-		$db = new Database();
+		$db = Database::instance();
 		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
@@ -418,7 +418,7 @@ class Servicegroup_Model extends ORM
 		$obj_ids = array_keys($auth_obj);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -451,7 +451,7 @@ class Servicegroup_Model extends ORM
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$cnt_services = 0;
 		$cnt_services_in_group = 0;
 

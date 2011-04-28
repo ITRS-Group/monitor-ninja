@@ -19,7 +19,7 @@ class Notifications_Model extends Model {
 	public function show_notifications($num_per_page=false, $offset=false, $count=false)
 	{
 
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		$num_per_page = (int)$num_per_page;

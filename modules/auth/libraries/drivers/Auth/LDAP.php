@@ -8,7 +8,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			return false;
 
 		if (!is_object($user)) {
-			$db = new Database();
+			$db = Database::instance();
 			$username = $user;
 			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
 			if (!count($users))

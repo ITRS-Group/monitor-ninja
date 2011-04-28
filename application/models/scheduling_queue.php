@@ -18,7 +18,7 @@ class Scheduling_queue_Model extends Model {
 	public function show_scheduling_queue($num_per_page=false, $offset=false, $count=false)
 	{
 
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		if ($auth->view_hosts_root) {

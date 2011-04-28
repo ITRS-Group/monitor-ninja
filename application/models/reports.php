@@ -174,7 +174,7 @@ class Reports_Model extends Model
 			if (!empty($db_table))
 				$this->db_table = $db_table;
 
-			$this->db = new Database();
+			$this->db = Database::instance();
 		}
 	}
 
@@ -186,7 +186,7 @@ class Reports_Model extends Model
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
-			$db = new Database();
+			$db = Database::instance();
 		} catch (Kohana_Database_Exception $e) {
 			return false;
 		}
@@ -2704,7 +2704,7 @@ class Reports_Model extends Model
 		$sql = "SELECT MIN(timestamp) AS min_date, ".
 				"MAX(timestamp) AS max_date ".
 			"FROM ".self::db_table;
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 
 		if (!$res)
@@ -3378,7 +3378,7 @@ class Reports_Model extends Model
 	 */
 	public static function print_db_lines($prefix, $table = 'report_data', $test, $db_start_time, $db_end_time)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$return_str = '';
 		$start = $db_start_time;
 		$stop = $db_end_time;

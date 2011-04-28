@@ -51,7 +51,7 @@ class Htpasswd_importer_Model extends Model
 	# connects to and selects database. false on error, true on success
 	public function db_connect()
 	{
-		$this->db = new Database();
+		$this->db = Database::instance();
 	}
 
 	private function db_quote($str)

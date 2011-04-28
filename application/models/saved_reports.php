@@ -14,7 +14,7 @@ class Saved_reports_Model extends Model
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 		switch ($type) {
 			case 'avail':
@@ -59,7 +59,7 @@ class Saved_reports_Model extends Model
 				$name_field = 'sla_name';
 				break;
 		}
-		$db = new Database();
+		$db = Database::instance();
 
 		# check options for start_time or end_time
 		# and convert to timestamp before save
@@ -135,7 +135,7 @@ class Saved_reports_Model extends Model
 			return false;
 		}
 		$id = false;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = 'SELECT id FROM '.$type.'_config WHERE '.self::USERFIELD.'='.
 			$db->escape(Auth::instance()->get_user()->username).' AND '.
 			$name_field.'='.$db->escape($name);
@@ -159,7 +159,7 @@ class Saved_reports_Model extends Model
 
 		// remove old records (if any)
 		$sql = "DELETE FROM sla_periods WHERE sla_id=".(int)$sla_id;
-		$db = new Database();
+		$db = Database::instance();
 		$db->query($sql);
 		unset($sql);
 
@@ -195,7 +195,7 @@ class Saved_reports_Model extends Model
 
 		// remove old records (if any)
 		$sql = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
-		$db = new Database();
+		$db = Database::instance();
 		$db->query($sql);
 
 		$_sql = "INSERT INTO ".$type."_config_objects (".$type."_id, name) VALUES(";
@@ -236,7 +236,7 @@ class Saved_reports_Model extends Model
 		if ($type == 'sla') {
 			$sql[] = "DELETE FROM sla_periods WHERE sla_id=".$id;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		foreach ($sql as $query) {
 			try {
 				$db->query($query);
@@ -263,7 +263,7 @@ class Saved_reports_Model extends Model
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
-		$db = new Database();
+		$db = Database::instance();
 		switch ($type) {
 			case 'avail':
 			case 'summary':
@@ -304,7 +304,7 @@ class Saved_reports_Model extends Model
 		if (empty($id)) return false;
 
 		$sql = "SELECT * FROM ".$type."_config WHERE id=".(int)$id;
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 		if (!$res || count($res)==0)
 			return false;
@@ -352,7 +352,7 @@ class Saved_reports_Model extends Model
 			return false;
 
 		$sql = "SELECT * FROM sla_periods WHERE sla_id=".(int)$sla_id." ORDER BY id";
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 
 		return (!$res || count($res)==0) ? false : $res;
@@ -372,7 +372,7 @@ class Saved_reports_Model extends Model
 			return false;
 
 		$sql = "SELECT * FROM ".$type."_config_objects WHERE ".$type."_id=".(int)$id;
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 
 		return (!$res || count($res)==0) ? false : $res;
@@ -380,7 +380,7 @@ class Saved_reports_Model extends Model
 
 	public function get_sla_from_saved_reports($sla_id, $user=false)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		$sql = "SELECT name, value FROM sla_periods WHERE sla_id = '".$sla_id."'";

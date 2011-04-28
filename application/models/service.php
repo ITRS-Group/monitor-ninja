@@ -147,7 +147,7 @@ class Service_Model extends Model
 		}
 		$auth_hosts = Host_Model::authorized_hosts();
 		$host_str = implode(', ', array_values($auth_hosts));
-		$db = new Database();
+		$db = Database::instance();
 		switch ($type) {
 			case 'servicegroup':
 				$sql = "SELECT
@@ -193,7 +193,7 @@ class Service_Model extends Model
 			$sql_where = ' AND contact_access.contact= '.(int)$auth->id;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
@@ -220,7 +220,7 @@ class Service_Model extends Model
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$obj_ids = self::authorized_services();
 		}
-		$db = new Database();
+		$db = Database::instance();
 
 		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
 		"FROM service s WHERE ";
@@ -532,7 +532,7 @@ class Service_Model extends Model
 		$obj_ids = array_keys($auth_obj);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}

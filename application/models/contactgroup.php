@@ -15,7 +15,7 @@ class Contactgroup_Model extends Model
 		}
 		$host = trim($host);
 		$service = trim($service);
-		$db = new Database();
+		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$view_hosts_root = false;
 		$sql_auth_str = false;
@@ -81,7 +81,7 @@ class Contactgroup_Model extends Model
 		if (empty($group)) {
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$group = trim($group);
 		$sql = "SELECT ".
 				"c.* ".
@@ -99,7 +99,7 @@ class Contactgroup_Model extends Model
 
 	public function get_contactgroups_from_escalation($type = 'host', $id = false) {
 		$sql = false;
-		$db = new Database();
+		$db = Database::instance();
 		if (empty($id)){
 			return false;
 		} else {

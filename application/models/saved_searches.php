@@ -28,7 +28,7 @@ class Saved_searches_Model extends Model
 			return $id;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$sql = "INSERT INTO ".self::tablename." (username, search_name, search_query, search_description) ".
 			"VALUES(".$db->escape($user).", ".$db->escape($name).", ".$db->escape($query).", ".$db->escape($description).")";
@@ -42,7 +42,7 @@ class Saved_searches_Model extends Model
 	*/
 	public function update_search($id=false, $query=false, $name=false, $description=false)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$sql = "UPDATE ".self::tablename." SET username=".$db->escape($user).", search_name=".$db->escape($name).
 			", search_query=".$db->escape($query).", search_description=".$db->escape($description)." ".
@@ -62,7 +62,7 @@ class Saved_searches_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$sql = 'SELECT * FROM '.self::tablename.' WHERE id='.$id.' AND username = '.$db->escape($user);
 		$res = $db->query($sql);
@@ -74,7 +74,7 @@ class Saved_searches_Model extends Model
 	*/
 	public function get_saved_searches()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 
 		$sql = "SELECT * FROM ".self::tablename." WHERE username=".$db->escape($user)." ORDER BY search_name";
@@ -90,7 +90,7 @@ class Saved_searches_Model extends Model
 		$id = trim($id);
 		$id = (int)$id;
 		if (self::get_search_by_id($id) !== false) {
-			$db = new Database();
+			$db = Database::instance();
 			$user = Auth::instance()->get_user()->username;
 			$sql = "DELETE FROM ".self::tablename." WHERE id=".$id." AND username=".$db->escape($user);
 			$res = $db->query($sql);

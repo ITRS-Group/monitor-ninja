@@ -121,7 +121,7 @@ class System_Model extends Model
 	{
 		$access = Session::instance()->get('nagios_access', null);
 
-		$db = new Database();
+		$db = Database::instance();
 
 		if (is_null($access)) {
 			$access = Ninja_user_authorization_Model::get_auth_data($username);

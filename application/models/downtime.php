@@ -11,7 +11,7 @@ class Downtime_Model extends Model
 	*/
 	public function get_downtime_data($filter=3, $order_by='downtime_id')
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$filter = empty($filter) ? 3 : $filter;
 		$bitary = db::bitmask_to_array($filter);
 		$bits = '';
@@ -70,7 +70,7 @@ class Downtime_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$sql = false;
 		switch ($type) {
 			case 'hosts':
@@ -97,7 +97,7 @@ class Downtime_Model extends Model
 						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
 						'WHERE hg.hostgroup_name = '.$db->escape($name) .
 						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
-					$db  = new Database();
+					$db  = Database::instance();
 					$members = $db->query($sql);
 				}
 				else {
@@ -127,7 +127,7 @@ class Downtime_Model extends Model
 						'FROM host h, hostgroup hg, host_hostgroup hhg ' .
 						'WHERE hg.hostgroup_name = '.$db->escape($name) .
 						' AND hhg.hostgroup = hg.id AND h.id = hhg.host)';
-					$db  = new Database();
+					$db  = Database::instance();
 					$members = $db->query($sql);
 				}
 				else {
@@ -167,7 +167,7 @@ class Downtime_Model extends Model
 		if (empty($host)) {
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		$from = 'FROM scheduled_downtime d';
@@ -212,7 +212,7 @@ class Downtime_Model extends Model
 		$host = trim($host);
 		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
 		$sql = 'SELECT d.* FROM scheduled_downtime d';

@@ -14,7 +14,7 @@ class Timeperiod_Model extends Model
 	 */
 	public function get($period, $use_array=true)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$query = 'SELECT * FROM timeperiod ' .
 			'WHERE timeperiod_name = ' .$db->escape($period);
 		$res = $db->query($query);
@@ -38,7 +38,7 @@ class Timeperiod_Model extends Model
 		if (empty($timeperiod_id))
 			return false;
 		$timeperiod_id = (int)$timeperiod_id;
-		$db = new Database();
+		$db = Database::instance();
 		$query = "SELECT tp.* FROM timeperiod tp".
 				 " JOIN timeperiod_exclude ON exclude = id ".
 				 " WHERE timeperiod = $timeperiod_id";
@@ -59,7 +59,7 @@ class Timeperiod_Model extends Model
 	{
 		$return = "";
 		$sql = "SELECT timeperiod_name FROM timeperiod ORDER BY timeperiod_name";
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 		return $res ? $res : false;
 	}
