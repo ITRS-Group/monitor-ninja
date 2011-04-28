@@ -21,7 +21,6 @@ class Authenticated_Controller extends Ninja_Controller {
 	{
 		parent::__construct();
 		# make sure user is authenticated
-		$authentic = new Auth;
 
 		# Check if user is accessing through PHP CLI
 		if (PHP_SAPI === "cli") {
@@ -41,7 +40,7 @@ class Authenticated_Controller extends Ninja_Controller {
 				exit(1);
 			}
 		} else {
-			if (!$authentic->logged_in()) {
+			if (!Auth::instance()->logged_in()) {
 				# store requested uri in session for later redirect
 				$this->session->set('requested_uri', url::current(true));
 				url::redirect(Kohana::config('routes.log_in_form'));
