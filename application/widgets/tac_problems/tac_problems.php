@@ -51,9 +51,8 @@ class Tac_problems_Widget extends widget_Core {
 		# HOSTS DOWN / problems
 		$problem = array();
 		$i = 0;
-		$current_status->find_hosts_causing_outages();
 		$outages = new Outages_Model();
-		$outage_data = $outages->fetch_outage_data();
+		$outage_data = $outages->fetch_outage_data($current_status);
 
 		if (!empty($outage_data)) {
 			$problem[$i]['type'] = $this->translate->_('Network');
