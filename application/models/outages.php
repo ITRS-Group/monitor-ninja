@@ -12,27 +12,51 @@ class Outages_Model extends Model
 	}
 
 	/**
-	 * determine what hosts are causing network outages
-	 */
-	public function fetch_outage_data()
+	* determine what hosts are causing network outages
+	*/
+	public function fetch_outage_data(&$current_status_model=false)
 	{
 		/* user must be authorized for all hosts in order to see outages */
 		if(!$this->auth->view_hosts_root)
 			return;
 
-		$status = new Current_status_Model();
-		$status->find_hosts_causing_outages();
+		if (is_object($current_status_model)) {
+			$status = $current_status_model;
+			if (!$status->outage_data_present) {
+				$status->find_hosts_causing_outages();
+			}
+		} else {
+			$status = new Current_status_Model();
+			$status->find_hosts_causing_outages();
+		}
 		$outages = false;
 
 		$affected_hosts = $status->affected_hosts;
-		$unreachable_hosts = $status->unreachable_hosts;
+		$unreachable_hosts = false;
 		$children_services = $status->children_services;
-		if (!empty($status->hostoutage_list)) {
+
+		# we're only interested in hosts with children so let's filter them out
+		if (!empty($status->unreachable_hosts)) {
+			foreach ($status->unreachable_hosts as $host => $children) {
+				if (!empty($children)) {
+					$unreachable_hosts[$host] = $children;
+				}
+			}
+		} else {
+			# nothing to display
+			return false;
+		}
+
+		if (!empty($unreachable_hosts)) {
 			# loop over hosts causing outages
-			foreach ($status->hostoutage_list as $outage_host) {
+			foreach ($unreachable_hosts as $outage_host => $children) {
 				# fetch status of unreachable host
+
+				$hosts = array_values($children);
+				$hosts[] = $outage_host;
+
 				$host_model = new Host_Model();
-				$host_model->set_host_list($outage_host);
+				$host_model->set_host_list($hosts);
 				$host_model->show_services = true;
 
 				$host_data = $host_model->get_host_status();

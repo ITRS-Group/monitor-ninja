@@ -132,6 +132,7 @@ class Current_status_Model extends Model
 
 	public $host_data_present = false;
 	public $service_data_present = false;
+	public $outage_data_present = false;
 
 	public $base_path = '';
 	private $auth = false;
@@ -568,6 +569,7 @@ class Current_status_Model extends Model
 
 		$result = $this->db->query($sql);
 
+		$this->outage_data_present = true;
 		return $result;
 	}
 
