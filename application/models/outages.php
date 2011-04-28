@@ -72,22 +72,11 @@ class Outages_Model extends Model
 				}
 
 				$outages[$outage_host]['affected_hosts'] = $affected_hosts[$outage_host] +1;
-				if (isset($unreachable_hosts[$outage_host]) && !empty($unreachable_hosts[$outage_host])) {
-					foreach ($unreachable_hosts[$outage_host] as $host_id => $host_name) {
-						if (!isset($outages[$outage_host]['affected_services'])) {
-							$outages[$outage_host]['affected_services'] = 0;
-						}
 
-						$outages[$outage_host]['affected_services'] += $children_services[$host_id];
-					}
+				$outages[$outage_host]['affected_services'] = 0;
+				foreach ($children as $host_id => $host_name) {
+					$outages[$outage_host]['affected_services'] += $children_services[$host_id];
 				}
-
-				if (!isset($outages[$outage_host]['affected_services'])) {
-					$outages[$outage_host]['affected_services'] = 0;
-				}
-
-				# add services for the host causing the outage
-				$outages[$outage_host]['affected_services'] += sizeof($services);
 
 				# calculate severity
 				if (!isset($outages[$outage_host]['severity'])) {
@@ -103,8 +92,11 @@ class Outages_Model extends Model
 			}
 		}
 
-		$hosts = array_keys($status->unreachable_hosts);
-
+		/**
+		 * 	Remove hosts that is already calculated by being
+		 * 	a child to another host to prevent them from being
+		 * 	displayed twice.
+		 */
 		$return = false;
 		foreach ($status->unreachable_hosts as $host => $data) {
 			if (!empty($data)) {
@@ -128,6 +120,7 @@ class Outages_Model extends Model
 				$return[$host] = $outages[$host];
 			}
 		}
+
 		return $return;
 	}
 }
