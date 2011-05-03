@@ -209,6 +209,10 @@ class Host_Model extends Model {
 			}
 		}
 
+		$sql_notes = '';
+		if (config::get('config.show_notes', '*')) {
+			$sql_notes = " OR LCASE(notes) LIKE LCASE(%s)";
+		}
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
@@ -219,6 +223,7 @@ class Host_Model extends Model {
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
+				sprintf($sql_notes, $this->db->escape($val)).
 				" OR LCASE(address) LIKE LCASE(".$this->db->escape($val).")";
 				if (!empty($sql_xtra)) {
 					$query_str = $query_str.') '. $sql_xtra;
@@ -237,6 +242,7 @@ class Host_Model extends Model {
 			" LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
+			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
 			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
@@ -475,6 +481,7 @@ class Host_Model extends Model {
 					"host.next_check, ".
 					"host.should_be_scheduled, ".
 					"host.notes_url, ".
+					"host.notes, ".
 					"host.notifications_enabled, ".
 					"host.active_checks_enabled, ".
 					"host.icon_image, ".
@@ -543,6 +550,7 @@ class Host_Model extends Model {
 					"host.icon_image_alt AS host_icon_image_alt,".
 					"host.is_flapping AS host_is_flapping,".
 					"host.notes_url AS host_notes_url,".
+					"host.notes AS host_notes,".
 					"host.display_name AS host_display_name,".
 					"service.id AS service_id,".
 					"service.instance_id AS service_instance_id,".
@@ -555,6 +563,7 @@ class Host_Model extends Model {
 					"service.active_checks_enabled,".
 					"service.action_url,".
 					"service.notes_url,".
+					"service.notes,".
 					"service.icon_image,".
 					"service.icon_image_alt,".
 					"service.passive_checks_enabled,".

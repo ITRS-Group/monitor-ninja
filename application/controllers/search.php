@@ -235,6 +235,10 @@ class Search_Controller extends Authenticated_Controller {
 			:$this->translate->_('No search limit is active');
 		$this->template->title = $this->translate->_('Search » ')."'".$query."'";
 
+		$content->show_display_name = config::get('config.show_display_name', '*');
+		$content->show_notes = config::get('config.show_notes', '*');
+
+
 		/**
 		 * Modify config/config.php to enable NACOMA
 		 * and set the correct path in config/config.php,

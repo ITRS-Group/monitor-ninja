@@ -698,6 +698,25 @@ $(document).ready(function() {
 		// restore original image with a timeout
 		setTimeout(function() {switch_image('removesearchimg_' + the_id, original_img_src)}, 3000);
 	});
+
+	$('.notescontainer').qtip({
+		style: { name: 'light', tip: false },
+		position: {
+			corner: {
+				target: 'leftTop',
+				tooltip: 'bottomRight'
+			}
+		},
+		show: { when: { event: 'click' } },
+		hide: {
+				effect: 'slide',
+				when: {
+					event: 'unfocus',
+					delay:2000
+				}
+			}
+	});
+
 });
 
 function reposition_saved_searches() {

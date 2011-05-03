@@ -26,7 +26,9 @@ class User_Controller extends Authenticated_Controller {
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
 		'config.popup_delay' => 'int',
-		'config.show_display_name' => 'bool'
+		'config.show_display_name' => 'bool',
+		'config.show_notes' => 'bool',
+		'config.show_notes_chars' => 'int'
 	);
 
 	/**
@@ -75,7 +77,9 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		$settings['status'] = array(
-			$t->_('Show display_name') => array('config.show_display_name', self::$var_types['config.show_display_name'])
+			$t->_('Show display_name') => array('config.show_display_name', self::$var_types['config.show_display_name']),
+			$t->_('Show notes') => array('config.show_notes', self::$var_types['config.show_notes']),
+			$t->_('Note length') => array('config.show_notes_chars', self::$var_types['config.show_notes_chars'])
 		);
 
 		$settings['popups'] = array(
@@ -273,7 +277,9 @@ class User_Controller extends Authenticated_Controller {
 			'keycommands.back' => $t->_('Keyboard command to move back in a paginated result (except search results). Defaults to Alt+Shift+left.').' '.$keyboard_help,
 			'config.use_popups' => $t->_('Enable or disable the use of pop-ups for PNP graphs and comments.'),
 			'config.popup_delay' => $t->_('Set the delay in milliseconds before the pop-ups (PNP graphs and comments) will be shown. Defaults to 1500ms (1.5s).'),
-			'config.show_display_name' => $t->_('Use this setting to control whether to show display_name for your services on status/service or not.')
+			'config.show_display_name' => $t->_('Use this setting to control whether to show display_name for your hosts and services on status/service and search result pages or not.'),
+			'config.show_notes' => $t->_('Use this setting to control whether to show notes for your services on status/service and search result pages or not.'),
+			'config.show_notes_chars' => $t->_('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

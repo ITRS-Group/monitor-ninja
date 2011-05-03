@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $style = isset($style) ? $style : false;
 $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
+$notes_chars = config::get('config.show_notes_chars', '*');
 ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
@@ -205,7 +206,11 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 
 <?php	if ($show_display_name) { ?>
 		<td style="white-space: normal"><?php echo $row->service_display_name ?></td>
-<?php	} ?>
+<?php	}
+
+		if ($show_notes) { ?>
+		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes ?></td>
+<?php 	} ?>
 	</tr>
 
 	<?php

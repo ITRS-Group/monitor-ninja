@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate; ?>
+<?php $t = $this->translate;
+$notes_chars = config::get('config.show_notes_chars', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 <div class="widget left w32" id="page_links">
 		<ul>
@@ -57,7 +58,6 @@
 						}
 					}
 				?>
-				<th><?php echo $t->_('Status information') ?></th>
 			</tr>
 
 
@@ -150,6 +150,13 @@ foreach ($result as $row) {
 					}
 					?>
 				</td>
+			<?php	if ($show_display_name) { ?>
+				<td style="white-space: normal"><?php echo $row->host_display_name ?></td>
+			<?php 	}
+
+					if ($show_notes) { ?>
+				<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes ?></td>
+			<?php 	} ?>
 			</tr>
 			<?php	} ?>
 

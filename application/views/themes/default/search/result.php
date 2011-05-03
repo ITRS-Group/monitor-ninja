@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $label_na = $this->translate->_('N/A');
+$notes_chars = config::get('config.show_notes_chars', '*');
 ?>
 
 <div class="widget left w98" id="search_result">
@@ -27,7 +28,12 @@ if (isset($host_result) ) {
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
+	<?php if ($show_display_name) { ?>
 		<th class="header"><?php echo $this->translate->_('Display Name'); ?></th>
+	<?php }
+		 if ($show_notes) { ?>
+		<th class="header"><?php echo $this->translate->_('Notes'); ?></th>
+	<?php } ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
@@ -97,7 +103,12 @@ if (isset($host_result) ) {
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
 		<td style="white-space	: normal"><?php echo str_replace('','', $output) ?></td>
+	<?php if ($show_display_name) { ?>
 		<td><?php echo $host->display_name ?></td>
+	<?php }
+		 if ($show_notes) { ?>
+		<td <?php if (!empty($host->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $host->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($host->notes, $notes_chars, '...') : $host->notes ?></td>
+	<?php } ?>
 	</tr>
 <?php	$i++; } ?>
 </table><br />
@@ -136,7 +147,12 @@ if (isset($service_result) ) {
 		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
+	<?php if ($show_display_name) { ?>
 		<th class="header"><?php echo $this->translate->_('Display name'); ?></th>
+	<?php }
+		 if ($show_notes) { ?>
+		<th class="header"><?php echo $this->translate->_('Notes'); ?></th>
+	<?php } ?>
 	</tr>
 <?php
 	$i = 0;
@@ -217,7 +233,12 @@ if (isset($service_result) ) {
 		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
 		<td><?php echo $service->output ?></td>
+	<?php if ($show_display_name) { ?>
 		<td><?php echo $service->display_name ?></td>
+	<?php }
+		 if ($show_notes) { ?>
+		<td <?php if (!empty($service->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $service->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($service->notes, $notes_chars, '...') : $service->notes ?></td>
+	<?php } ?>
 	</tr>
 <?php	$i++;
 	$prev_host = $service->host_name;
