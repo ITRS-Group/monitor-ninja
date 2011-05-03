@@ -1,3 +1,4 @@
+
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Backup controller
@@ -183,6 +184,15 @@ class Backup_Controller extends Authenticated_Controller {
 		{
 			$this->template->status = true;
 			$this->template->message = "The configuration '{$file}' has been restored";
+			foreach($this->files2backup as $onefile){
+				$onefile = trim($onefile);
+				if(pathinfo($onefile, PATHINFO_EXTENSION) === "cfg") {
+					if(file_exists($onefile) && is_writable($onefile)) {
+						exec("touch $onefile");
+					}
+				}
+			}
+
 		}
 	}
 
