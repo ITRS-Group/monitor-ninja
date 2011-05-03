@@ -542,7 +542,7 @@ class Host_Model extends Model {
 					"host.icon_image AS host_icon_image,".
 					"host.icon_image_alt AS host_icon_image_alt,".
 					"host.is_flapping AS host_is_flapping,".
-					"host.notes_url AS host_nots_url,".
+					"host.notes_url AS host_notes_url,".
 					"host.display_name AS host_display_name,".
 					"service.id AS service_id,".
 					"service.instance_id AS service_instance_id,".
