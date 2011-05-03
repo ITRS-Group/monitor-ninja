@@ -51,6 +51,7 @@ install -m 644 -c $tempdir/etc/cron.d/ install_scripts/recurring_downtime.cronta
         $tempdir/etc/cron.d/recurring_downtime.crontab
 /opt/csw/bin/gsed -i -e 's/\/usr\/bin\/php/\/opt\/csw\/php5\/bin\/php/' \
         $tempdir/opt/monitor/op5/ninja/application/controllers/default.php
+/opt/csw/bin/gsed -i 's#tar tfz#/opt/csw/bin/gtar tfz#' $tempdir/opt/monitor/op5/ninja/application/controllers/backup.php
 
 # executables
 for f in cli-helpers/apr_md5_validate install_scripts/ninja_db_init.sh;
