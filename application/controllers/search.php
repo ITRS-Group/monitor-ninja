@@ -422,7 +422,7 @@ class Search_Controller extends Authenticated_Controller {
 				}
 				unset($data);
 			}
-			if (!empty($empty) && $empty==4) {
+			if (!empty($empty) && $empty==5) {
 				$content->no_data = $this->translate->_('Nothing found');
 			}
 		}
