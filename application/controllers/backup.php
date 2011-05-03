@@ -15,7 +15,8 @@ class Backup_Controller extends Authenticated_Controller {
 	public $model = false;
 	
 	private $files2backup = array(
-		'/opt/monitor/etc/*.cfg',
+		'/opt/monitor/etc/nagios.cfg',
+		'/opt/monitor/etc/cgi.cfg',						  
 		'/opt/monitor/etc/*.users',
 		'/opt/monitor/var/*.log',
 		'/opt/monitor/var/archives',
@@ -38,6 +39,20 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 		$this->template->disable_refresh = true;
+
+		$nagioscfg = "/opt/monitor/etc/nagios.cfg";
+		$handle = fopen($nagioscfg, 'r');
+		while($line=fgets($handle)) {
+			$cfg_file = preg_split('/^cfg_file[ \t]*=[ \t]*/', $line);
+			if(isset($cfg_file[1]))
+				$this->files2backup[]=trim($cfg_file[1]) . " ";
+			$resource_file = preg_split('/^resource_file[ \t]*=[ \t]*/', $line);
+			if(isset($resource_file[1]))
+				$this->files2backup[]=trim($resource_file[1]) . " ";
+			$cfg_dir = preg_split('/^cfg_dir[ \t]*=[ \t]*/', $line);
+			if(isset($cfg_dir[1]))
+				$this->files2backup[]=trim($cfg_dir[1]) . " ";
+		}
 
 		$auth = new Nagios_auth_Model();
 		if (!$auth->authorized_for_configuration_information || !$auth->authorized_for_system_commands) {
