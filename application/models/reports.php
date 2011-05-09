@@ -1833,11 +1833,14 @@ class Reports_Model extends Model
 				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).") ";
 		}
 
-		if (!$this->include_soft_states)
-			$sql .= 'AND hard = 1 ';
-		$sql .= "AND ( " .
-			"event_type=" . $event_type . ' ' .
-			"OR event_type=" . self::DOWNTIME_START . ' ' .
+		$sql .= "AND ( ";
+		if (!$this->include_soft_states) {
+			# only the primary event type should care about hard/soft
+			$sql .= '(event_type=' . $event_type . ' AND hard=1)';
+		} else {
+			$sql .= 'event_type=' . $event_type . ' ';
+		}
+		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
 			"OR event_type=" . self::DOWNTIME_STOP . ' ';
 		if (!$this->assume_states_during_not_running)
 			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
