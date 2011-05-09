@@ -214,14 +214,29 @@ class Upload_Controller extends Authenticated_Controller
 
 		$data = Ninja_widget_Model::get_widget($pagename, $widget_name);
 
-		if ($data !== false) {
+		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
+
+		$widget_ok = false;
+		if ($data === false) {
+			# widget already exists - compare versions
+			$check_xml = simplexml_load_file($custom_dir.$widget_name.'/'.$manifest);
+			if ($check_xml !== false) {
+				$old_version = $check_xml->version;
+				if ($version > $old_version) {
+					$widget_ok = true;
+				}
+			}
+		} else {
+			$widget_ok = true;
+		}
+
+		if (!$widget_ok) {
 			$ct->err_msg = $this->translate->_('Error: A widget by this name already exists');
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		}
 
-		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
 		if (!is_writable($custom_dir)) {
 			sprintf($this->translate->_('Widget custom dir (%s) is not writable - please modify and try again'), $custom_dir);
