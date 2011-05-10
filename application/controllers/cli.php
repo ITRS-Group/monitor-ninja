@@ -143,9 +143,6 @@ class Cli_Controller extends Authenticated_Controller {
 			}
 		}
 
-		# fetch all usernames from users table
-		$users = User_Model::get_all_usernames();
-
 		# don't assume any authorized users - start by removing all auth data
 		User_Model::truncate_auth_data();
 
@@ -156,6 +153,14 @@ class Cli_Controller extends Authenticated_Controller {
 			foreach ($config_data['user_list'] as $user) {
 				User_Model::add_user(array('username' => $user));
 			}
+		}
+
+		# fetch all usernames from users table
+		$users = User_Model::get_all_usernames();
+
+		# there are no users in db
+		if ($users == false) {
+			return false;
 		}
 
 		# All db fields that should be set

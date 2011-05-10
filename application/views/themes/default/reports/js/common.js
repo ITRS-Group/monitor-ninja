@@ -180,12 +180,23 @@ function setup_editable(mode)
 
 }
 
+var loadimg = new Image(16,16);
+loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
+
 function send_report_now(type, id)
 {
 	if (type=='' || id =='') {
 		// missing info
 		return false;
 	}
+
+	var html_id = 'send_now_' + type + '_' + id;
+
+	$('#' + html_id)
+		.css('background', 'url(' + loadimg.src + ') no-repeat scroll 0 0 transparent')
+		.css('height', '16px')
+		.css('width', '16px')
+		.css('float', 'left');
 
 	// since we now support reports generated in
 	// other controllers than the reports controller,
@@ -203,8 +214,10 @@ function send_report_now(type, id)
 		success: function(data) {
 			if (data == '') {
 				jgrowl_message(_reports_schedule_send_ok, _reports_success);
+				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			} else {
 				jgrowl_message(_reports_schedule_send_error, _reports_error);
+				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			}
 		}
 	});
@@ -216,6 +229,11 @@ function schedule_delete(id, remove_type)
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
 	}
+
+	var img_src = $('#' + id + " img").attr('src');
+	var in_id = id;
+
+	$('#' + in_id + ' img').attr('src', loadimg.src);
 
 	// clean input id from prefix (from setup template)
 	if (isNaN(id)) {
@@ -234,9 +252,25 @@ function schedule_delete(id, remove_type)
 			} else {
 				jgrowl_message(data, _reports_error);
 				setTimeout('hide_response()', time);
+				setTimeout(function() {restore_delimg(in_id, img_src)}, 1000);
 			}
 		}
 	});
+}
+
+function restore_sendimg(id)
+{
+	var old_icon = _site_domain + _theme_path + "icons/16x16/send-report.png";
+	$('#' + id)
+		.css('background', 'url(' + old_icon + ') no-repeat scroll 0 0 transparent')
+		.css('height', '16px')
+		.css('width', '16px').css('float', 'left');
+
+}
+
+function restore_delimg(id, src)
+{
+	$('#' + id + ' img').attr('src', src);
 }
 
 function remove_schedule(id, remove_type)
@@ -461,7 +495,7 @@ function hide_rows(input) {
 *	cache the progress indicator image to show faster...
 */
 var Image1 = new Image(16,16);
-Image1.src = _site_domain + '/application/media/images/loading.gif';
+Image1.src = _site_domain + 'application/media/images/loading.gif';
 
 /**
 *	Show a progress indicator to inform user that something
@@ -784,6 +818,15 @@ function check_form_values()
 				$(".datepick-start").removeClass("time_error");
 				$(".datepick-end").removeClass("time_error");
 			}
+		} else {
+			// verify that we have years and month fields
+			if ($('#start_year').val() == '' || $('#start_month').val() == ''
+			|| $('#end_year').val() == '' || $('#end_month').val() == '') {
+				errors++;
+				//@@@Fixme: Add translated string
+				err_str += "<li>Please select year and month for both start and end. ";
+				err_str += "<br />Please note that SLA reports can only be generated for previous months</li>";
+			}
 		}
 	}
 
@@ -841,7 +884,7 @@ function check_form_values()
 	*	can't use an already existing (saved) name.
 	*/
 	if(typeof window.jQuery != "undefined") {
-		var report_name 	= $("input[name=report_name]").attr('value');
+		var report_name 	= $(fancy_str + "input[name=report_name]").attr('value');
 		report_name = $.trim(report_name);
 		var saved_report_id = $("input[name=saved_report_id]").attr('value');
 		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').attr('checked') ? 1 : 0;

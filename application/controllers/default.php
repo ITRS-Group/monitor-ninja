@@ -202,6 +202,23 @@ class Default_Controller extends Ninja_Controller  {
 	}
 
 	/**
+	*	Display an error message about no available
+	* 	objects for a valid user. This page is used when
+	* 	we are using login through apache.
+	*/
+	public function no_objects()
+	{
+		# unset some session variables
+		$this->session->delete('username');
+		$this->session->delete('auth_user');
+		$this->session->delete('nagios_access');
+		$this->session->delete('contact_id');
+
+		$this->template = $this->add_view('no_objects');
+		$this->template->error_msg = $this->translate->_("You have been denied access since you aren't authorized for any objects.");
+	}
+
+	/**
 	*	If called by PHP CLI this will return a username
 	*	of the first user with login access. This is needed
 	* 	for the install script to be able to import authorization

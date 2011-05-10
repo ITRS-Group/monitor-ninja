@@ -43,8 +43,8 @@ class Change_Password_Controller extends Authenticated_Controller {
 			$user = Auth::instance()->get_user();
 			if ($user->password == ninja_auth::hash_password($current_password))
 			{
-				$user->password = $new_password;
-				$user->save();
+				$user->password = User_Model::update_password($user->username, $new_password);
+				User_Model::save_user($user);
 				$this->template->content->status_msg = $this->translate->_('The password has been changed.');
 			}
 			else

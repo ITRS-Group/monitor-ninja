@@ -14,7 +14,7 @@
 				array(
 					'alt' => $label_print,
 					'title' => $label_print,
-					'style' => 'position: absolute; top: 14px; right: 0px;',
+					'style' => 'position: absolute; top: 16px; right: 0px;',
 					'onclick' => 'window.print()'
 				)
 			)

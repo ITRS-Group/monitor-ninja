@@ -285,18 +285,13 @@ class Ninja_Reports_Test_Core
 		if ($cached) {
 			echo "Data is cached\n";
 		} else {
-			if (!is_file($this->importer) || !is_executable($this->importer)) {
-				echo "I need to use the importer program, but\n";
-				echo "\t$this->importer\nis not a program I can run.\n\n";
-				return -1;
-			}
-                        $sql =
-                            //"CREATE TABLE $table_name LIKE report_data" // not portable
-                            "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0"
-                            ;
-                        echo "Building table [$table_name]. This might take a moment or three...\n";
+			$sql =
+				//"CREATE TABLE $table_name LIKE report_data" // not portable
+				"CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0"
+				;
+			echo "Building table [$table_name]. This might take a moment or three...\n";
 			if( ! $db->query($sql)) {
-                            $this->crash("Error creating table $table_name: ".$db->error_message());
+				$this->crash("Error creating table $table_name: ".$db->error_message());
 			}
 			echo "Importing $lfiles to '$table_name'\n";
 			$cmd = $this->importer .
@@ -312,7 +307,7 @@ class Ninja_Reports_Test_Core
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
 				echo $cmd."\n";
-                                $db->query("DROP TABLE ".$this->table_name);
+				$db->query("DROP TABLE ".$this->table_name);
 				return -1;
 			}
                         #echo "Import finished :).\n";

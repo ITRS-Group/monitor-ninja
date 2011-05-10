@@ -4,11 +4,11 @@ Requirements
 ------------
 Ninja requieres the following softwares to be installed:
 
-php and php-cli 5.1.6+
+php, php-pdo and php-cli 5.1.6+
 MySQL 5+ (4 might also work but is not tested)
 Nagios 3.0.x+ (needs to run on the same server)
 Merlin
-op5 reports-module
+
 
 Installation
 ------------
@@ -27,12 +27,6 @@ Here is a longer and a bit more exact version on how to install it
    which is a Nagios module responsible for maintaining a database with Nagios
    status, similar to the objects.cache file. For more info about Merlin,
    check out http://www.op5.org/
-   You will also need the op5 reports-module, which is an eventbroker module
-   running inside Nagios. It's responsible for populating the report database
-   tables and allows you to produce availability, SLA, alert summary and a
-   whole bunch of other reports. For more info about op5 reports-module,
-   visit http://git.op5.org/git/?p=nagios/reports-module.git;a=summary where
-   you will also find the very latest code.
 
 2. download ninja from http://www.op5.org/
 

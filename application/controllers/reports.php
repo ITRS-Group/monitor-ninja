@@ -166,6 +166,7 @@ class Reports_Controller extends Authenticated_Controller
 	public $mashing = false;
 	public $report_options = false;
 	private $in_months = false;
+	public $extra_template_data = false;
 
 	public function __construct()
 	{
@@ -233,6 +234,16 @@ class Reports_Controller extends Authenticated_Controller
 			'DOWN' => $this->translate->_('DOWN'),
 			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
 		);
+	}
+
+	public function add_view($view) {
+		$ret = parent::add_view($view);
+		if (is_array($this->extra_template_data)) {
+			foreach ($this->extra_template_data as $key => $val) {
+				$ret->$key = $val;
+			}
+		}
+		return $ret;
 	}
 
 
@@ -427,7 +438,7 @@ class Reports_Controller extends Authenticated_Controller
 				$assume_states_during_not_running_checked = '';
 
 			if (!empty($report_info['host_filter_status'])) {
-				$hostfilterstatus = unserialize($report_info['host_filter_status']);
+				$hostfilterstatus = i18n::unserialize($report_info['host_filter_status']);
 				$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? 'checked="checked"' : '';
 				$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? 'checked="checked"' : '';
 				$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? 'checked="checked"' : '';
@@ -440,7 +451,7 @@ class Reports_Controller extends Authenticated_Controller
 				$host_filter_status_undetermined_checked = 'checked="checked"';
 			}
 			if (!empty($report_info['service_filter_status'])) {
-				$servicefilterstatus = unserialize($report_info['service_filter_status']);
+				$servicefilterstatus = i18n::unserialize($report_info['service_filter_status']);
 				$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? 'checked="checked"' : '';
 				$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? 'checked="checked"' : '';
 				$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? 'checked="checked"' : '';
@@ -928,7 +939,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
-						$host_filter_status = unserialize($value);
+						$host_filter_status = i18n::unserialize($value);
 					}
 					else {
 						$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
@@ -942,7 +953,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 					elseif (!is_array($value)) { // if already serialized
 						$report_options[$key] = $value;
-						$service_filter_status = unserialize($value);
+						$service_filter_status = i18n::unserialize($value);
 					}
 					else {
 						$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
@@ -2265,7 +2276,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function piechart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
-		$data = unserialize( base64_decode($in_data) );
+		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('Pie');
 		$graph = new PieChart(300, 200);
 		$graph->set_data($data, 'pie');
@@ -2301,7 +2312,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function barchart($in_data=false, $path=null)
 	{
 		$this->auto_render = false;
-		$data = unserialize( base64_decode($in_data) );
+		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('MultipleBar');
 		if (!$this->create_pdf) {
 			$graph = new MultipleBarChart(800, 600);
@@ -2739,9 +2750,6 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function _get_multiple_state_info(&$data_arr, $sub_type, $get_vars, $start_time, $end_time, $type)
 	{
-		$date_format = cal::get_calendar_format(true);
-		$start_time = date($date_format, $start_time);
-		$end_time = date($date_format, $end_time);
 		$prev_host = '';
 		$php_self = url::site().Kohana::config('reports.reports_link').'/generate?type='.$type;
 		if (array_key_exists('states', $data_arr) && !empty($data_arr['states']))
@@ -3528,7 +3536,7 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		if (isset($l['w_op5'])) { # use ninja translation
-			$l['w_op5'] = $this->translate->_('This report is produced by op5 AB.');
+			$l['w_op5'] = $this->translate->_('This report is produced by op5 Monitor.');
 		}
 
 		$type = $this->type;

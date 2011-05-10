@@ -1,4 +1,4 @@
-var sURL = unescape(window.location.pathname + location.search);
+var sURL = window.location.pathname + location.search;
 var _interval = 0;
 var _save_page_interval = 0;
 var current_interval = 0;
@@ -492,6 +492,12 @@ $(document).ready(function() {
 		}
 	}
 
+	$('#multi_object_submit').click(function() {
+		// check that we have any selected items
+		if (!$('input[name=object_select\\[\\]]').is(':checked')) {
+			return false;
+		}
+	});
 });
 
 function object_action(action,the_id)

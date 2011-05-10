@@ -41,6 +41,7 @@ class Ninja_user_authorization_Model extends Model
 				$updates[] = $field.'='.$value;
 			}
 			$sql .= implode(',', $updates);
+			$sql .= " WHERE user_id = $user_id";
 		} else {
 			# create new record
 			$sql = "INSERT INTO ninja_user_authorization(".implode(',', array_keys($options)).", user_id) ".

@@ -316,7 +316,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (empty($status) || !$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
@@ -589,7 +589,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$t = $this->translate;
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (!$is_running) {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
@@ -641,7 +641,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status_res = Program_status_Model::get_all();
+		$status_res = Program_status_Model::get_local();
 
 		# --------------------------------------
 		# Fetch program version from status.log
@@ -722,10 +722,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->hostchecks_str = $content->execute_host_checks ? $yes : $no;
 		$content->passive_hostchecks_class = $content->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
 		$content->passive_hostchecks_str = $content->accept_passive_host_checks ? $yes : $no;
+		$content->eventhandler_class = $content->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
 		$content->eventhandler_str = $content->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_services_class = $content->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
 		$content->obsess_services_str = $content->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_host_class = $content->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
 		$content->obsess_hosts_str = $content->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->flap_detection_class = $content->flap_detection_enabled ? 'checksENABLED' : 'checksDISABLED';
 		$content->flap_detection_str = $content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->performance_data_class = $content->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
 		$content->performance_data_str = $content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 
 		# Assign commands variables
@@ -890,7 +895,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_all();
+		$status = Program_status_Model::get_local();
 		if (empty($status) || !$status->current()->is_running) {
 			$this->template->content = $this->add_view('extinfo/not_running');
 			$this->template->content->info_message = sprintf($t->_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
@@ -976,6 +981,62 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
+		$handling_commands = false;
+		$command_success = false;
+		$command_result_msg = false;
+		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
+			$handling_commands = true;
+			$cmd = false;
+			$nagios_commands = array();
+			# bulk delete of comments?
+			if (isset($_POST['del_submithost'])) {
+				# host comments
+				$cmd = 'DEL_HOST_COMMENT';
+			} elseif (isset($_POST['del_submitservice'])) {
+				# service comments
+				$cmd = 'DEL_SVC_COMMENT';
+			}
+
+			if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+				url::redirect('command/unauthorized');
+			}
+
+			foreach ($_POST['del_comment'] as $param) {
+				$nagios_commands = Command_Controller::_build_command($cmd, array('comment_id' => $param), $nagios_commands);
+			}
+
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			$nagconfig = System_Model::parse_config_file("nagios.cfg");
+			if (isset($nagconfig['command_file'])) {
+				$pipe = $nagconfig['command_file'];
+			}
+
+			while ($ncmd = array_pop($nagios_commands)) {
+				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			}
+
+			if ($command_success === true) {
+				# everything was ok
+				$command_result_msg = sprintf($this->translate->_('Your commands were successfully submitted to %s.'),
+					Kohana::config('config.product_name'));
+			} else {
+				# errors encountered
+				$command_result_msg = sprintf($this->translate->_('There was an error submitting one or more of your commands to %s.'),
+					Kohana::config('config.product_name'));
+			}
+
+			$_SESSION['command_result_msg'] = $command_result_msg;
+			$_SESSION['command_success'] = $command_success;
+
+			# reload controller to prevent it from trying to submit
+			# the POST data on refresh
+			url::redirect(Router::$controller.'/'.Router::$method);
+		}
+
+		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
+		$command_success = $this->session->get('error_msg', $command_success);
+
 		if ($all === true) {
 			$tot = Comment_Model::fetch_all_comments($host, $service, false, false, true);
 		} else {
@@ -1049,6 +1110,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$this->template->content->comments = $this->add_view('extinfo/comments');
+		if (!is_array($this->xtra_js) || !in_array('application/views/'.$this->theme_path.'extinfo/js/extinfo.js', $this->xtra_js)) {
+			$this->template->js_header = $this->add_view('js_header');
+			$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+			$this->template->js_header->js = $this->xtra_js;
+		}
+
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
 		$comments->label_add_comment = $service ? $t->_('Add a new service comment') : $t->_('Add a new host comment');
@@ -1095,6 +1162,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$comments->no_data = $all ? $t->_('No comments found') : sprintf($t->_('This %s has no comments associated with it'), $type);
 		$comments->pagination = $pagination;
 		$this->template->title = $this->translate->_(sprintf('Monitoring » %s information', ucfirst($type)));
+		$comments->command_result = arr::search($_SESSION, 'command_result_msg');
+		$comments->command_success = arr::search($_SESSION, 'command_success');
+		unset($_SESSION['command_result_msg']);
+		unset($_SESSION['command_success']);
 		return $this->template->content->comments->render();
 	}
 
@@ -1348,8 +1419,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
-		$result = $sq_model->show_scheduling_queue();
-
 		$pagination = new Pagination(
 			array(
 				'total_items'=> $sq_model->count_queue(),
@@ -1358,6 +1427,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 
 		$sq_model->offset = $pagination->sql_offset;
+		$result = $sq_model->show_scheduling_queue($items_per_page, $pagination->sql_offset);
 
 		$header_links = array(
 			array(

@@ -598,6 +598,10 @@ class Host_Model extends Model {
 				$where_str = ' service.host_name IN ('.implode(',', $host_list).')';
 			} elseif (is_array($this->service_host_list)) {
 				$where_str = ' service.host_name IN ('.implode(',', $this->service_host_list).')';
+			} elseif ($this->host_list !== 'all') {
+				# should mean that we have a request for services
+				# on a host that doesn't have any services
+				return false;
 			}
 
 			if (!empty($where_str)) {

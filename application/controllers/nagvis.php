@@ -118,7 +118,14 @@ class Nagvis_Controller extends Authenticated_Controller {
 			'index.php/nagvis/index">NagVis</a> » ' .
 			$this->translate->_('Automap');
 
-		$querystring = '';
+		// Read from config and see if we have any default params set in nagvis.ini.php
+		$preset = nagvisconfig::get(Kohana::config("config.nagvis_real_path") . "etc/nagvis.ini.php");
+		if (isset($preset['automap']['defaultparams'])) {
+			$querystring = $preset['automap']['defaultparams'];
+		} else {
+			$querystring = '';
+		}
+
 		if (isset($_GET['renderMode']))
 			$querystring .= '&renderMode=' . $_GET['renderMode'];
 		if (isset($_GET['root']))

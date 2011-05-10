@@ -136,7 +136,11 @@ if (isset($service_result) ) {
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
 		<?php if ($prev_host != $service->host_name) { ?>
 		<td class="bl icon <?php echo strtolower(Current_status_Model::status_text($service->host_state)); ?>"><em><?php echo Current_status_Model::status_text($service->host_state); ?></em></td>
-		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name) ?></td>
+		<td><?php echo html::anchor('extinfo/details/host/'.$service->host_name, $service->host_name);
+			if (nacoma::link()===true) {
+				echo '&nbsp;'.nacoma::link('configuration/configure/host/'.$service->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
+			} ?>
+		</td>
 		<?php } else { ?>
 		<td colspan="2" class="white" style="background-color:#ffffff;border:0px; border-right: 1px solid #cdcdcd"></td>
 		<?php } ?>
@@ -275,4 +279,69 @@ if (isset($hostgroup_result) ) {
 	</tr>
 <?php $i++;	} ?>
 </table><?php
+}
+
+if (isset($comment_result)) {
+	$na_str = $this->translate->_('N/A');
+	$label_yes = $this->translate->_('YES');
+	$label_no = $this->translate->_('NO');
+	$label_type_user = $this->translate->_('User');
+	$label_type_downtime = $this->translate->_('Scheduled Downtime');
+	$label_type_flapping = $this->translate->_('Flap Detection');
+	$label_type_acknowledgement = $this->translate->_('Acknowledgement');
+
+	if (isset($comment_pagination)) { ?><br /><div id="comment_pagination"><?php echo $comment_pagination ?></div><?php } ?>
+	<table>
+	<caption><?php echo $this->translate->_('Comment results for').': &quot;'.$query.'&quot'; ?></caption>
+		<tr>
+			<th class="header"><?php echo $this->translate->_('Host'); ?></th>
+			<th class="header"><?php echo $this->translate->_('Service'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Entry time'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Author'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Comment'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('ID'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Persistent'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Type'); ?></th>
+			<th class="headerNone"><?php echo $this->translate->_('Expires'); ?></th>
+		</tr>
+	<?php
+		foreach ($comment_result as $row) {
+			#echo Kohana::debug($row);
+			switch ($row->entry_type) {
+				case Comment_Model::USER_COMMENT:
+					$entry_type = $label_type_user;
+					break;
+				case Comment_Model::DOWNTIME_COMMENT:
+					$entry_type = $label_type_downtime;
+					break;
+				case Comment_Model::FLAPPING_COMMENT:
+					$entry_type = $label_type_flapping;
+					break;
+				case Comment_Model::ACKNOWLEDGEMENT_COMMENT:
+					$entry_type = $label_type_acknowledgement;
+					break;
+				default:
+					$entry_type =  '?';
+			}
+			$i = 0; ?>
+		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
+			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
+			<td><?php echo !empty($row->service_description) ? html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) : '' ?></td>
+			<td style="white-space: normal"><?php echo !empty($row->entry_time) ? date(nagstat::date_format(), $row->entry_time) : '' ?></td>
+			<td style="white-space: normal"><?php echo $row->author_name ?></td>
+			<td style="white-space: normal"><?php echo $row->comment_data ?></td>
+			<td style="white-space: normal"><?php echo $row->comment_id ?></td>
+			<td style="white-space: normal"><?php
+			if ($row->persistent === false) {
+				echo $na_str;
+			} else {
+				echo $row->persistent ? $label_yes : $label_no;
+			}
+			?></td>
+			<td style="white-space: normal"><?php echo $entry_type ?></td>
+			<td style="white-space: normal"><?php echo $row->expires ? date(nagstat::date_format(), $row->expire_time) : $na_str ?></td>
+		</tr>
+	<?php $i++;	} ?>
+	</table>
+	<?php
 }

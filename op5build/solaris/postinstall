@@ -1,6 +1,27 @@
 #!/bin/sh
 prefix='/opt/monitor/op5/ninja'
 
+
+/usr/xpg4/bin/grep -q 'Include /etc/opt/csw/apache2/extra/ninja.conf' /etc/opt/csw/apache2/httpd.conf
+if [ $? -eq 1 ]; then
+        echo "Include /etc/opt/csw/apache2/extra/ninja.conf" >> \
+        /etc/opt/csw/apache2/httpd.conf
+fi
+
+test -c /opt/csw/mysql5/bin/mysql
+if [ $? -eq 1 ]; then
+        /opt/csw/mysql5/bin/mysql -e 'create database merlin;'
+	/opt/csw/mysql5/bin/mysql merlin < $prefix/install_scripts/ninja.sql
+	/opt/csw/mysql5/bin/mysql merlin < $prefix/install_scripts/reports.sql
+fi
+
+chown -R monitor:daemon /opt/monitor
+chown -R monitor:daemon /var/www/
+
+# svcadm restart  doesn't work, if service is not started
+svcadm disable svc:/network/http:cswapache2
+svcadm enable svc:/network/http:cswapache2
+
 # We should not setup mysql 
 exit 0
 

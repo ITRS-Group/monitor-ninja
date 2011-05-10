@@ -195,6 +195,7 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Alert history");
 		$this->template->disable_refresh = true;
+		$obj_name = $this->input->get('host', $obj_name);
 		if ($obj_name) {
 			$obj_type = 'host';
 			$service = urldecode( # check for service param passed in GET or POST
@@ -213,6 +214,10 @@ class Showlog_Controller extends Authenticated_Controller
 				$obj_name = array($obj_name);
 			}
 			$this->options[$obj_type] = $obj_name;
+			$first = urldecode( $this->input->get('first', $this->input->post('first', false)));
+			if (empty($first)) {
+				$this->options['first'] = time() - (2419200 * 3);
+			}
 		}
 
 		if (!isset($this->options['have_options'])) {

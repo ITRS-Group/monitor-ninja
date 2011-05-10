@@ -111,6 +111,9 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
 						}
+						if (nacoma::link()===true) {
+							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
+						}
 					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
 				</span>
 		</td>
@@ -156,7 +159,7 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					$properties += 16;
 				}
 			?>
-			</span><span class="obj_prop_service _<?php echo $row->host_name.'__'.(str_replace(' ', '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
+			</span><span class="obj_prop_service _<?php echo str_replace('.', '_', $row->host_name).'__'.(preg_replace(array('/\./', '/ /'), '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td>
 			<?php
@@ -203,9 +206,11 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 	<?php
 			$curr_host = $row->host_name;
 		} ?>
-	</table>
 
-<?php } ?>
+<?php } else {
+		echo '<tr><td colspan=9>'.$this->translate->_('No services found for this host').'</td></tr>';
+		} ?>
+		</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
 		array(
 			'' => $this->translate->_('Select Action'),

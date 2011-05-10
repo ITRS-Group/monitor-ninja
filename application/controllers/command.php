@@ -66,7 +66,7 @@ class Command_Controller extends Authenticated_Controller
 	 * @param $name The requested command to run
 	 * @param $parameters The parameters (host_name etc) for the command
 	 */
-	public function submit($cmd = false)
+	public function submit($cmd = false, $inparams=false)
 	{
 		$this->init_page('command/request');
 		$this->xtra_js[] = $this->add_path('command/js/command.js');
@@ -77,7 +77,11 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$params = array();
-		foreach ($_GET as $k => $v) {
+		if ($inparams === false) {
+			$inparams = $_GET;
+		}
+
+		foreach ($inparams as $k => $v) {
 			switch ($k) {
 			 case 'host':
 			 case 'hostgroup':
@@ -133,6 +137,10 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'ENABLE_HOST_SVC_CHECKS':
 		 case 'DISABLE_HOST_SVC_CHECKS':
+		 case 'ENABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'DISABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'ENABLE_SERVICEGROUP_SVC_CHECKS':
+		 case 'DISABLE_SERVICEGROUP_SVC_CHECKS':
 			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
 			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis));
 			break;
@@ -349,7 +357,7 @@ class Command_Controller extends Authenticated_Controller
 			if ($auth->command_hosts_root) {
 				return true;
 			}
-		} elseif (strstr($cmd, '_SVC_') !== false) {
+		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
 			if ($auth->command_services_root) {
 				return true;
 			}
@@ -428,25 +436,22 @@ class Command_Controller extends Authenticated_Controller
 		$param_name = false;
 		switch ($this->obj_type) {
 			case 'host':
-				$param_name = 'host_name[]';
+				$param_name = 'host_name';
 				break;
 			case 'service':
-				$param_name = 'service[]';
+				$param_name = 'service';
 				break;
 		}
 
 		$params = false;
 
 		foreach ($this->objects as $obj) {
-			$params[] = $param_name.'='.$obj;
+			$params[$param_name][] = $obj;
 		}
 
-		$param_str = '';
-		if (is_array($params) && !empty($params)) {
-			$param_str = implode('&', $params);
-		}
-		if (!empty($param_str) && !empty($cmd_typ)) {
-			url::redirect(Router::$controller.'/submit?cmd_typ='.$cmd_typ.'&'.$param_str);
+		if (!empty($params) && !empty($cmd_typ)) {
+			$params['cmd_typ'] = $cmd_typ;
+			return $this->submit($cmd_typ, $params);
 		}
 
 		$this->template->content = $this->add_view('error');

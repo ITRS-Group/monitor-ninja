@@ -59,23 +59,33 @@
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_event_handlers ?></td>
-		<td><?php echo $eventhandler_str ?></td>
+		<td>
+			<span class="<?php echo strtolower($eventhandler_str); ?>"><?php echo ucfirst(strtolower($eventhandler_str)) ?></span>
+		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_obsess_services ?></td>
-		<td><?php echo $obsess_services_str ?></td>
+		<td>
+			<span class="<?php echo strtolower($obsess_services_str); ?>"><?php echo ucfirst(strtolower($obsess_services_str)) ?></span>
+		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_obsess_hosts ?></td>
-		<td><?php echo $obsess_hosts_str ?></td>
+		<td>
+			<span class="<?php echo strtolower($obsess_hosts_str); ?>"><?php echo ucfirst(strtolower($obsess_hosts_str)) ?></span>
+		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_flap_enabled ?></td>
-		<td><?php echo $flap_detection_str ?></td>
+		<td>
+			<span class="<?php echo strtolower($flap_detection_str); ?>"><?php echo ucfirst(strtolower($flap_detection_str)) ?></span>
+		</td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_performance_data ?></td>
-		<td><?php echo $performance_data_str ?></td>
+		<td>
+			<span class="<?php echo strtolower($performance_data_str); ?>"><?php echo ucfirst(strtolower($performance_data_str)) ?></span>
+		</td>
 	</tr>
 </table>
 </div>

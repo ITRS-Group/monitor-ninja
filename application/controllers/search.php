@@ -25,7 +25,7 @@ class Search_Controller extends Authenticated_Controller {
 	{
 		$obj_type = urldecode($this->input->get('obj_type', $obj_type));
 		$query = urldecode($this->input->get('query', $query));
-		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model');
+		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model', 'comment' => 'Comment_Model');
 
 		# check if we have limit information
 		# should be in the form of limit=100
@@ -46,7 +46,7 @@ class Search_Controller extends Authenticated_Controller {
 		# *http* on hosts called *windows*
 		# By combining this with the OR search we can create searches
 		# like: host:windows OR linux AND service:http OR web
-		$valid_multiobj = array('h' => 'hosts', 'host' => 'hosts', 's' => 'services', 'service' => 'services');
+		$valid_multiobj = array('h' => 'hosts', 'host' => 'hosts', 's' => 'services', 'service' => 'services', 'c' => 'comment', 'comment' => 'comment');
 		$extra_params = array('si', 'status');
 		if (strstr(strtolower($query), self::DELIM_CHAR)) { # AND => host AND service/status information
 			$options = explode(self::DELIM_CHAR, strtolower($query));
@@ -150,6 +150,13 @@ class Search_Controller extends Authenticated_Controller {
 					$settings = array(
 						'class' => 'Servicegroup_Model',
 						'path' => 'status/group_overview'
+					);
+					break;
+				case 'comment': case 'c':
+					$obj_type = 'comment';
+					$settings = array(
+						'class' => 'Comment_Model',
+						'path' => 'extinfo/show_comments'
 					);
 					break;
 				case 'si':
@@ -323,6 +330,51 @@ class Search_Controller extends Authenticated_Controller {
 				$content->no_data = $this->translate->_('Nothing found');
 			}
 
+		} elseif ($or_search === true && isset($obj_type) && !empty($obj_type) && !isset($settings)) {
+			# or search - try to figure out object type
+			$empty = 0;
+			$obj_class = false;
+			$value = false;
+			foreach ($obj_type as $o => $parts) {
+				if (array_key_exists($o, $valid_multiobj)) {
+					$obj_class[] = $valid_multiobj[$o];
+					$value[$valid_multiobj[$o]] = $parts;
+				}
+			}
+			if (!empty($obj_class) && !empty($value)) {
+				foreach ($obj_class as $class_name) {
+					$objclass_name = ucfirst($class_name).'_Model';
+					$obj = new $objclass_name;
+
+					if (!empty(${$class_name.'_items_per_page'})) {
+						${$class_name.'_limit'} = $limit;
+						$data_cnt = $obj->search($value[$class_name], 0);
+						$tot = count($data_cnt);
+						unset($data_cnt);
+						${$class_name.'_pagination'} = new Pagination(
+							array(
+								'total_items'=> $tot,
+								'items_per_page' => ${$class_name.'_items_per_page'},
+								'style'          => $pagination_type,
+								'query_string' => $class_name.'_page'
+							)
+						);
+
+						$offset = ${$class_name.'_pagination'}->sql_offset;
+						${$class_name.'_limit'} = !empty($offset) ? $offset.','.${$class_name.'_items_per_page'} : ${$class_name.'_items_per_page'};
+						$content->{$class_name.'_pagination'} = ${$class_name.'_pagination'};
+					} else {
+						${$class_name.'_limit'} = $limit;
+					}
+					$data = $obj->search($value[$class_name], ${$class_name.'_limit'});
+					if (count($data) > 0 && $data !== false) {
+						$content->{$class_name.'_result'} = $data;
+					} else {
+						$empty++;
+					}
+					unset($data);
+				}
+			}
 		} else {
 			# search through everything
 			$empty = 0;

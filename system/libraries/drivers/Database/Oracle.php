@@ -19,7 +19,9 @@ class Database_Oracle_Driver extends Database_Driver {
 
 		extract($this->db_config['connection']);
 
-		$this->link = oci_connect($user, $pass, "//$host".($port?":$port":'')."/$database");
+		$connect = ($this->db_config['persistent'] == TRUE) ? 'oci_pconnect' : 'oci_connect';
+
+		$this->link = $connect($user, $pass, "//$host".($port?":$port":'')."/$database");
 
 		if( ($charset = $this->db_config['character_set']) )
 		{

@@ -5,7 +5,7 @@ body {
 #response {
 	margin-left:0px;
 	padding-top:0px;
-	background: #f9f9f5 url(../images/response.png) repeat-x;
+	background: #f9f9f5 url(../../reports/images/response.png) repeat-x;
 }
 
 #response h1 {
@@ -83,7 +83,7 @@ input[type=checkbox] {
 input[type=reset],
 input[type=submit],
 input[type=button] {
-	background: #cdcdcd url(bg.png) repeat-x;
+	background: #cdcdcd url(../../histogram/css/bg.png) repeat-x;
 	border: 1px solid #cccccc;
 	outline: 0px;
 	-moz-border-radius: 4px;

@@ -104,6 +104,7 @@ class Upload_Controller extends Authenticated_Controller
 		$erray = false;
 		$classfile = false;
 		if (!empty($folders)) {
+			# if zipfile is v 1
 			foreach ($folders as $f) {
 				$level++;
 				foreach ($files as $c) {
@@ -128,7 +129,19 @@ class Upload_Controller extends Authenticated_Controller
 					}
 				}
 			}
-		}
+		} else {
+			# if zipfile is v 2
+            $widget_name = strtolower($file['name']);
+            $widget_name = str_replace('.zip', '', $widget_name);
+            foreach($files as $c) {
+                if ($c == $widget_name.'/'.$widget_name.'.php') {
+                    $classfile = $widget_name.'.php';
+                }
+                if($c == $widget_name.'/manifest.xml') {
+                    $manifest = 'manifest.xml';
+                }
+            }
+        }
 
 		if (empty($manifest)) {
 			$errors++;

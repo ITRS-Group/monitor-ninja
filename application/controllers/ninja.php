@@ -74,6 +74,7 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
+			$group_items_per_page = config::get('pagination.group_items_per_page', '*', true);
 			$all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 			$this->template->links = array(
 				$this->translate->_('About') => array(
@@ -89,13 +90,13 @@ class Ninja_Controller extends Template_Controller {
 					$this->translate->_('Host detail') 					=> array('/status/host/all', 'host',0),
 					$this->translate->_('Service detail') 				=> array('/status/service/all', 'service',0),
 					//'hr1' 														=> array('', ''),
-					$this->translate->_('Hostgroup summary') 			=> array('/status/hostgroup_summary?items_per_page=10', 'hostgroupsummary',0),
-					$this->translate->_('Hostgroup overview') 		=> array('/status/hostgroup?items_per_page=10', 'hostgroup',0),
-					$this->translate->_('Hostgroup grid') 				=> array('/status/hostgroup_grid?items_per_page=10', 'hostgroupgrid',0),
+					$this->translate->_('Hostgroup summary') 			=> array('/status/hostgroup_summary?items_per_page='.$group_items_per_page, 'hostgroupsummary',0),
+					$this->translate->_('Hostgroup overview') 		=> array('/status/hostgroup?items_per_page='.$group_items_per_page, 'hostgroup',0),
+					$this->translate->_('Hostgroup grid') 				=> array('/status/hostgroup_grid?items_per_page='.$group_items_per_page, 'hostgroupgrid',0),
 					//'hr2'														=> array('', ''),
-					$this->translate->_('Servicegroup summary') 		=> array('/status/servicegroup_summary?items_per_page=10', 'servicegroupsummary',0),
-					$this->translate->_('Servicegroup overview') 	=> array('/status/servicegroup?items_per_page=10', 'servicegroup',0),
-					$this->translate->_('Servicegroup grid') 			=> array('/status/servicegroup_grid?items_per_page=10', 'servicegroupgrid',0),
+					$this->translate->_('Servicegroup summary') 		=> array('/status/servicegroup_summary?items_per_page='.$group_items_per_page, 'servicegroupsummary',0),
+					$this->translate->_('Servicegroup overview') 	=> array('/status/servicegroup?items_per_page='.$group_items_per_page, 'servicegroup',0),
+					$this->translate->_('Servicegroup grid') 			=> array('/status/servicegroup_grid?items_per_page='.$group_items_per_page, 'servicegroupgrid',0),
 					//'hr3' 														=> array('', ''),
 					$this->translate->_('Network outages') 			=> array('/outages', 'outages',0),
 					$this->translate->_('Host problems') 				=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),

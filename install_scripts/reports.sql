@@ -4,7 +4,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE IF NOT EXISTS `avail_config` (
   `id` int(11) NOT NULL auto_increment,
-  `user` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `report_name` varchar(255) NOT NULL,
   `info` text NOT NULL,
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `avail_config` (
   `use_alias` TINYINT(1) DEFAULT 0,
   `cluster_mode` INT NOT NULL DEFAULT 0,
   PRIMARY KEY  (`id`),
-  KEY `user` (`user`)
+  KEY `username` (`username`)
 ) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS avail_config_objects (
@@ -43,7 +43,7 @@ INSERT INTO avail_db_version VALUES(1);
 
 CREATE TABLE IF NOT EXISTS `scheduled_reports` (
   `id` int(11) NOT NULL auto_increment,
-  `user` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `report_type_id` int(11) NOT NULL default '0',
   `report_id` int(11) NOT NULL default '0',
   `recipients` TEXT NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `scheduled_reports` (
   `filename` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `report_type_id` (`report_type_id`),
-  KEY `user` (`user`)
+  KEY `username` (`username`)
 ) COLLATE latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `scheduled_report_types` (
@@ -89,7 +89,7 @@ INSERT INTO `scheduled_report_periods` (`id`, `periodname`) VALUES
 
 CREATE TABLE IF NOT EXISTS sla_config (
  `id` int(11) NOT NULL auto_increment,
- `user` varchar(255) NOT NULL,
+ `username` varchar(255) NOT NULL,
  `sla_name` varchar(255) NOT NULL,
  `info` text NOT NULL,
  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,

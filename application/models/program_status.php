@@ -16,6 +16,17 @@ class Program_status_Model extends Model
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
+	/**
+	 * Fetch all info for local node
+	 */
+	public function get_local()
+	{
+		$db = new Database();
+		$sql = "SELECT * FROM program_status WHERE instance_id = 0";
+		$res = $db->query($sql);
+		return (!$res || count($res) == 0) ? false : $res;
+	}
+
 	public function list_program_status()
 	{
 		$db = new Database();
@@ -31,7 +42,7 @@ class Program_status_Model extends Model
 	public function last_alive()
 	{
 		$db = new Database();
-		$sql = "SELECT last_alive FROM program_status";
+		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
 		$res = $db->query($sql);
 		$cur = ($res && count($res)) ? $res->current() : false;
 		return $cur ? $cur->last_alive : false;
@@ -44,7 +55,7 @@ class Program_status_Model extends Model
 	public function notifications_checks()
 	{
 		$db = new Database();
-		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status";
+		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";
 		$res = $db->query($sql);
 		return (!$res || count($res) == 0) ? false : $res;
 	}

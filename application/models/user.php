@@ -9,45 +9,53 @@
 class User_Model extends Auth_User_Model {
 	public static $auth_table = 'ninja_user_authorization';
 
-	public function __set($key, $value)
+	public function update_password($username, $password)
 	{
-		if ($key === 'password')
+		$password = ninja_auth::hash_password($password);
+
+		$etc_path = Kohana::config('config.nagios_etc_path')?
+			Kohana::config('config.nagios_etc_path')
+			: System_Model::get_nagios_base_path() . '/etc';
+		$htpasswd_path = $etc_path . '/htpasswd.users';
+		$htpasswd = @file($htpasswd_path);
+		if ($htpasswd === false)
+			throw new Exception("Could not read {$htpasswd_path}");
+
+		$found = false;
+		foreach($htpasswd as $n => $line)
 		{
-			$value = ninja_auth::hash_password($value);
-
-			$etc_path = Kohana::config('config.nagios_etc_path')?
-				Kohana::config('config.nagios_etc_path')
-				: System_Model::get_nagios_base_path() . '/etc';
-			$htpasswd_path = $etc_path . '/htpasswd.users';
-			$htpasswd = @file($htpasswd_path);
-			if ($htpasswd === false)
-				throw new Exception("Could not read {$htpasswd_path}");
-
-			$found = false;
-			foreach($htpasswd as $n => $line)
+			$uname = strtok($line, ':');
+			if ($uname !== false && $uname == $username)
 			{
-				$username = strtok($line, ':');
-				if ($username !== false && $username == $this->username)
-				{
-					$htpasswd[$n] = $this->username . ':{SHA}' . $value . "\n";
-					$found = true;
-					break;
-				}
+				$htpasswd[$n] = $username . ':{SHA}' . $password . "\n";
+				$found = true;
+				break;
 			}
-			if (!$found)
-				$htpasswd[] = $this->username . ':{SHA}' . $value . "\n";
-
-			if (@file_put_contents($htpasswd_path, $htpasswd) === false)
-				throw new Exception("Could not write {$htpasswd_path}");;
 		}
+		if (!$found)
+			$htpasswd[] = $username . ':{SHA}' . $password . "\n";
 
-		ORM::__set($key, $value);
+		if (@file_put_contents($htpasswd_path, $htpasswd) === false)
+			throw new Exception("Could not write {$htpasswd_path}");;
+
+		return $password;
+	}
+
+	public function save_user($user_obj)
+	{
+		$db = new Database();
+		$ary = array();
+		foreach ($user_obj as $key => $val) {
+			$ary[] = "$key = {$db->escape($val)}";
+		}
+		$str = implode(', ', $ary);
+		$db->query("UPDATE users SET {$str} WHERE id={$db->escape($user_obj->id)}");
 	}
 
 	/**
 	 * Takes care of setting session variables etc
 	 */
-	public function complete_login($user_data)
+	public function complete_login($user_data=false)
 	{
 		if (!$this->session->get(Kohana::config('auth.session_key'), false)) {
 			url::redirect(Kohana::config('routes._default'));
@@ -90,9 +98,13 @@ class User_Model extends Auth_User_Model {
 			}
 
 			if ($redirect !== false) {
-				$this->session->set_flash('error_msg',
-					$this->translate->_("You have been denied access since you aren't authorized for any objects."));
-				url::redirect('default/show_login');
+				if ($auth_type == 'apache') {
+					url::redirect('default/no_objects');
+				} else {
+					$this->session->set_flash('error_msg',
+						$this->translate->_("You have been denied access since you aren't authorized for any objects."));
+					url::redirect('default/show_login');
+				}
 			}
 		}
 
@@ -289,6 +301,7 @@ class User_Model extends Auth_User_Model {
 		$username = isset($data['username']) ? $data['username'] : false;
 		$password = isset($data['password']) ? $data['password'] : false;
 		$password_algo = isset($data['password_algo']) ? $data['password_algo'] : false;
+		$db = new Database();
 
 		$user = self::get_user($username);
 		if ($user !== false) {
@@ -298,7 +311,6 @@ class User_Model extends Auth_User_Model {
 			$sql = "UPDATE users SET password=".$db->escape($password).", password_algo=".$db->escape($password_algo);
 			$db->query($sql);
 		} else {
-			$db = new Database();
 			# create new
 			$sql = "INSERT INTO users(password, username, password_algo) ".
 				"VALUES(".$db->escape($password).", ".$db->escape($username).

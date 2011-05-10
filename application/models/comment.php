@@ -31,36 +31,32 @@ class Comment_Model extends Model {
 		$auth = new Nagios_auth_Model();
 
 		# service comments or not?
-		$svc_selection = empty($service) ? " AND (c.service_description='' OR c.service_description is null) "
-			: " AND c.service_description=".$db->escape($service);
+		$svc_selection = empty($service) ?
+			'AND c.service_description IS NULL' :
+			'AND c.service_description='.$db->escape($service);
 
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		$host_query = $auth->authorized_host_query();
-		if ($host_query === true) {
-			# don't use auth_host fields etc
-			$auth_host_alias = 'h';
-			$auth_from = ', host '.$auth_host_alias;
-			$auth_where = ' AND ' . $auth_host_alias . ".host_name = c.host_name";
+		if ($auth->view_hosts_root) {
+			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c ' .
+			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		} else {
-			$auth_host_alias = $host_query['host_field'];
-			$auth_from = isset($host_query['from']) && !empty($host_query['from']) ? ' ,'.$host_query['from'] : '';
-			$auth_where = ' AND '.sprintf($host_query['where'], "c.host_name");
-		}
-
-		$num_per_page = (int)$num_per_page;
-
-		if (!$auth->view_hosts_root) {
-			$sql = "SELECT * FROM ".self::TABLE_NAME." c WHERE id IN (SELECT DISTINCT c.id FROM ".self::TABLE_NAME." c, contact_access ca, contact, host h ".
-				"WHERE contact.contact_name=".$db->escape(Auth::instance()->get_user()->username).
-				" AND ca.contact=contact.id ".$svc_selection.
-				" AND c.host_name=".$db->escape($host).
-				"AND ca.host=h.id ".
-				" AND ca.service is null) ";
-		} else {
-			$sql = "SELECT c.* FROM ".self::TABLE_NAME." c ".$auth_from." WHERE c.host_name=".$db->escape($host).
-				$svc_selection.$auth_where;
+			if (!empty($service)) {
+				$svc_from = ' INNER JOIN service s ' .
+				            'ON c.service_description = s.service_description ' .
+				            'AND c.host_name = s.host_name';
+				$by_ca = 'ca.host IS NULL AND ca.service = s.id';
+			} else {
+				$svc_from = '';
+				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
+			}
+			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
+			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
+			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
+			       'INNER JOIN contact ON ca.contact = contact.id ' .
+			       'AND contact.contact_name = '.$db->escape(Auth::instance()->get_user()->username).' ' .
+			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		}
 
 		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
@@ -220,4 +216,112 @@ class Comment_Model extends Model {
 		}
 		return $data;
 	}
+
+		/**
+	*	Search through several fields for a specific value
+	*/
+	public function search($value=false, $limit=false)
+	{
+		if (empty($value)) return false;
+		$db = new Database();
+		$auth = new Nagios_auth_Model();
+		$contact_id = (int)$auth->id;
+		$limit_str = sql::limit_parse($limit);
+		$join_host = false;
+		$where_host = false;
+		$join_svc = false;
+		$where_svc = false;
+		if (!$auth->view_hosts_root) {
+			$join_host = "INNER JOIN contact_access ON host.id = contact_access.host ";
+			$where_host = "AND contact_access.contact = ".$contact_id." ";
+			$join_svc = "INNER JOIN contact_access ON service.id = contact_access.service ";
+			$where_svc = "AND contact_access.contact = ".$contact_id." ".
+				"AND service.host_name = host.host_name ";
+		}
+		if (is_array($value) && !empty($value)) {
+			$query = false;
+			$sql = false;
+			foreach ($value as $val) {
+				$val = '%'.$val.'%';
+				$query[] = "SELECT c.id FROM ".self::TABLE_NAME." c ".
+				" INNER JOIN host on host.host_name = c.host_name ".$join_host.
+				" WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($val).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($val).") ) ".
+				" AND c.service_description IS NULL ".$where_host.
+				" UNION ".
+				"SELECT c.id FROM ".self::TABLE_NAME." c ".
+				"INNER JOIN host on host.host_name = c.host_name ".
+				"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
+				" WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($val).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+				"LCASE(c.service_description) LIKE LCASE(".$db->escape($val).") ) ".
+				" AND c.service_description IS NOT NULL ".
+				"AND service.host_name = host.host_name ".$where_svc;
+			}
+			if (!empty($query)) {
+				$sql = 'SELECT * FROM '.self::TABLE_NAME.' WHERE id IN ('.implode(' UNION ', $query).') ORDER BY host_name, service_description, entry_time '.$limit_str;
+			}
+		} else {
+			$value = '%'.$value.'%';
+			$sql = "(SELECT c.* FROM ".self::TABLE_NAME." c ".
+				" INNER JOIN host on host.host_name = c.host_name ".$join_host.
+				"WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($value).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($value).") )".
+				" AND c.service_description IS NULL ".$where_host.
+				") UNION ALL (".
+				"SELECT c.* FROM ".self::TABLE_NAME." c ".
+				"INNER JOIN host on host.host_name = c.host_name ".
+				"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
+				"WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($value).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+				"LCASE(c.service_description) LIKE LCASE(".$db->escape($value).") ) ".
+				"AND c.service_description IS NOT NULL ".
+				"AND service.host_name = host.host_name ".$where_svc." )".$limit_str;
+		}
+		$obj_info = $db->query($sql);
+		return $obj_info;
+	}
+
+	/**
+	*	Fetch comment info filtered on specific field and value
+	*/
+	public function get_where($field=false, $value=false, $limit=false)
+	{
+		if (empty($field) || empty($value)) {
+			return false;
+		}
+		$db = new Database();
+		$auth = new Nagios_auth_Model();
+		$field = trim($field);
+		$value = trim($value);
+		$contact_id = (int)$auth->id;
+		$limit_str = sql::limit_parse($limit);
+		$join_host = false;
+		$where_host = false;
+		$join_svc = false;
+		$where_svc = false;
+		if (!$auth->view_hosts_root) {
+			$join_host = "INNER JOIN contact_access ON host.id = contact_access.host ";
+			$where_host = "AND contact_access.contact = ".$contact_id;
+			$join_svc = "INNER JOIN contact_access ON service.id = contact_access.service ";
+			$where_svc = "AND contact_access.contact = ".$contact_id." AND service.host_name = host.host_name ";;
+		}
+
+		$limit_str = sql::limit_parse($limit);
+		$value = '%' . $value . '%';
+		$sql = "(SELECT c.* FROM ".self::TABLE_NAME." c ".
+			" INNER JOIN host on host.host_name = c.host_name ".$join_host.
+			"WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).")".
+			" AND c.service_description IS NULL ".$where_host.
+			") UNION ALL (".
+			"SELECT c.* FROM ".self::TABLE_NAME." c ".
+			"INNER JOIN host on host.host_name = c.host_name ".
+			"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
+			"WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
+			"AND c.service_description IS NOT NULL ".
+			"AND service.host_name = host.host_name ".$where_svc." )".$limit_str;
+		$obj_info = $this->db->query($sql);
+		return count($obj_info) > 0 ? $obj_info : false;
+	}
+
 }

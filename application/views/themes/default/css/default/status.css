@@ -55,7 +55,7 @@ span.status-ok,
 
 span.status-down,
 span.status-critical,
-.no
+.no,
 .flap-yes,
 .downtime-yes,
 .disabled,

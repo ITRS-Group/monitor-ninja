@@ -63,7 +63,7 @@ install -m 644 install_scripts/recurring_downtime.crontab %buildroot/etc/cron.d/
 sed -i 's/default\/cron/cron\/cron/' %buildroot/etc/cron.d/scheduled-reports
 
 # executables
-for f in cli-helpers/apr_md5_validate cli-helpers/htpasswd-import.php \
+for f in cli-helpers/apr_md5_validate \
 		install_scripts/ninja_db_init.sh; do
 	chmod 755 %buildroot%prefix/$f
 done

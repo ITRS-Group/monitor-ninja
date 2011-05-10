@@ -37,6 +37,12 @@ class Summary_Controller extends Authenticated_Controller
 	private $pdf_savepath = false;	# when saving pdf to a path
 	private $schedule_id = false;
 	private $type = 'summary';
+	public $report_types = false;
+	public $report_periods = false;
+	public $alerttypes = false;
+	public $statetypes = false;
+	public $hoststates = false;
+	public $servicestates = false;
 
 
 	public function __construct($mashing=false, $obj=false)
@@ -48,6 +54,7 @@ class Summary_Controller extends Authenticated_Controller
 		} else {
 			$this->reports_model = new Reports_Model();
 		}
+		$t = $this->translate;
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -97,6 +104,62 @@ class Summary_Controller extends Authenticated_Controller
 			$this->translate->_('Thursday'),
 			$this->translate->_('Friday'),
 			$this->translate->_('Saturday')
+		);
+				# displaytype
+		$this->report_types = array
+			(self::RECENT_ALERTS => $t->_("Most Recent Alerts"),
+			 self::ALERT_TOTALS => $t->_("Alert Totals"),
+			 self::TOP_ALERT_PRODUCERS => $t->_("Top Alert Producers"),
+			 self::ALERT_TOTALS_HG => $t->_("Alert Totals By Hostgroup"),
+			 self::ALERT_TOTALS_HOST => $t->_("Alert Totals By Host"),
+			 self::ALERT_TOTALS_SG => $t->_("Alert Totals By Servicegroup"),
+			 self::ALERT_TOTALS_SERVICE => $t->_("Alert Totals By Service"),
+		);
+
+		# timeperiod
+		$this->report_periods = array(
+			"today" => $t->_('Today'),
+			"last24hours" => $t->_('Last 24 Hours'),
+			"yesterday" => $t->_('Yesterday'),
+			"thisweek" => $t->_('This Week'),
+			"last7days" => $t->_('Last 7 Days'),
+			"lastweek" => $t->_('Last Week'),
+			"thismonth" => $t->_('This Month'),
+			"last31days" => $t->_('Last 31 Days'),
+			"lastmonth"	=> $t->_('Last Month'),
+			"thisyear" => $t->_('This Year'),
+			"lastyear" => $t->_('Last Year'),
+			"custom" => '* ' . $t->_('CUSTOM REPORT PERIOD'). ' *'
+		);
+
+		#alerttypes
+		$this->alerttypes = array(
+			3 => $t->_("Host and Service Alerts"),
+			1 => $t->_("Host Alerts"),
+			2 => $t->_("Service Alerts")
+		);
+
+		$this->statetypes = array(
+			3 => $t->_("Hard and Soft States"),
+			2 => $t->_("Hard States"),
+			1 => $t->_("Soft States")
+		);
+
+		$this->hoststates = array(
+			7 => $t->_("All Host States"),
+			6 => $t->_("Host Problem States"),
+			1 => $t->_("Host Up States"),
+			2 => $t->_("Host Down States"),
+			4 => $t->_("Host Unreachable States")
+		);
+
+		$this->servicestates = array(
+			15 => $t->_("All Service States"),
+			14 => $t->_("Service Problem States"),
+			1 => $t->_("Service Ok States"),
+			2 => $t->_("Service Warning States"),
+			4 => $t->_("Service Critical States"),
+			8 => $t->_("Service Unknown States"),
 		);
 	}
 
@@ -164,7 +227,7 @@ class Summary_Controller extends Authenticated_Controller
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 			if ($report_info) {
-				$report_setting = unserialize($report_info['setting']);
+				$report_setting = i18n::unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
 				if (isset($report_setting['obj_type'])) {
@@ -345,65 +408,22 @@ class Summary_Controller extends Authenticated_Controller
 
 
 		# displaytype
-		$template->report_types = array
-			(self::RECENT_ALERTS => $t->_("Most Recent Alerts"),
-			 self::ALERT_TOTALS => $t->_("Alert Totals"),
-			 self::TOP_ALERT_PRODUCERS => $t->_("Top Alert Producers"),
-			 self::ALERT_TOTALS_HG => $t->_("Alert Totals By Hostgroup"),
-			 self::ALERT_TOTALS_HOST => $t->_("Alert Totals By Host"),
-			 self::ALERT_TOTALS_SG => $t->_("Alert Totals By Servicegroup"),
-			 self::ALERT_TOTALS_SERVICE => $t->_("Alert Totals By Service"),
-		);
+		$template->report_types = $this->report_types;
 
 		# timeperiod
-		$template->report_periods = array(
-			"today" => $t->_('Today'),
-			"last24hours" => $t->_('Last 24 Hours'),
-			"yesterday" => $t->_('Yesterday'),
-			"thisweek" => $t->_('This Week'),
-			"last7days" => $t->_('Last 7 Days'),
-			"lastweek" => $t->_('Last Week'),
-			"thismonth" => $t->_('This Month'),
-			"last31days" => $t->_('Last 31 Days'),
-			"lastmonth"	=> $t->_('Last Month'),
-			"thisyear" => $t->_('This Year'),
-			"lastyear" => $t->_('Last Year'),
-			"custom" => '* ' . $t->_('CUSTOM REPORT PERIOD'). ' *'
-
-		);
+		$template->report_periods = $this->report_periods;
 
 		#alerttypes
-		$template->alerttypes = array(
-			3 => $t->_("Host and Service Alerts"),
-			1 => $t->_("Host Alerts"),
-			2 => $t->_("Service Alerts")
-		);
+		$template->alerttypes = $this->alerttypes;
 
 		#statetypes
-		$template->statetypes = array(
-			3 => $t->_("Hard and Soft States"),
-			2 => $t->_("Hard States"),
-			1 => $t->_("Soft States")
-		);
+		$template->statetypes = $this->statetypes;
 
 		#hoststates
-		$template->hoststates = array(
-			7 => $t->_("All Host States"),
-			6 => $t->_("Host Problem States"),
-			1 => $t->_("Host Up States"),
-			2 => $t->_("Host Down States"),
-			4 => $t->_("Host Unreachable States")
-		);
+		$template->hoststates = $this->hoststates;
 
 		#servicestates
-		$template->servicestates = array(
-			15 => $t->_("All Service States"),
-			14 => $t->_("Service Problem States"),
-			1 => $t->_("Service Ok States"),
-			2 => $t->_("Service Warning States"),
-			4 => $t->_("Service Critical States"),
-			8 => $t->_("Service Unknown States"),
-		);
+		$template->servicestates = $this->servicestates;
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -619,7 +639,7 @@ class Summary_Controller extends Authenticated_Controller
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 			if ($report_info && $report_setting) {
-				$report_setting = unserialize($report_info['setting']);
+				$report_setting = i18n::unserialize($report_info['setting']);
 				$summary_items = $report_setting['summary_items'];
 				$json_report_info = json::encode($report_setting);
 				$standardreport = arr::search($report_setting, 'standardreport', false);
@@ -1039,7 +1059,7 @@ class Summary_Controller extends Authenticated_Controller
 		$request['create_pdf'] = 1;
 		$request['new_report_setup'] = 1;
 
-		$settings = unserialize($report_data['setting']);
+		$settings = i18n::unserialize($report_data['setting']);
 		unset($report_data['setting']);
 		unset($report_data['objects']);
 		unset($report_data['filename']);
@@ -1048,7 +1068,7 @@ class Summary_Controller extends Authenticated_Controller
 		if (PHP_SAPI === "cli") {
 			# set current user to the owner of the report
 			# this should only be done when called through PHP CLI
-			Auth::instance()->force_login($report_data['user']);
+			Auth::instance()->force_login($report_data[Saved_reports_Model::USERFIELD]);
 		}
 		return array_merge($request, $settings, $report_data);
 	}
@@ -1145,7 +1165,7 @@ class Summary_Controller extends Authenticated_Controller
 		$send_by_mail = false;
 		if (!empty($this->pdf_recipients)) {
 			$action = 'F';
-			$filename = K_PATH_CACHE.$filename;
+			$filename = K_PATH_CACHE.'/'.$filename;
 			$send_by_mail = true;
 		}
 
@@ -1182,7 +1202,7 @@ class Summary_Controller extends Authenticated_Controller
 			}
 
 			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-			$subject = $this->translate->_('Scheduled report').": ".basename($filename);
+			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE.'/', '', basename($filename));
 
 			# $mail_sent will contain the nr of mail sent - not used at the moment
 			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));

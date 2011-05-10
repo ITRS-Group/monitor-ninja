@@ -136,12 +136,12 @@ class Nagios_auth_Model extends Model
 				$this->db->escape($this->user);
 
 			$result = $this->db->query($query);
-			$contact_id = $result->count() ? $result->current()->id : false;
-                        unset($result);
+			$contact_id = $result->count() ? $result->current()->id : -1;
+			unset($result);
 			Session::instance()->set('contact_id', $contact_id);
 		}
-		$this->id = $contact_id;
-		return (int)$this->id;
+		$this->id = (int)$contact_id;
+		return $this->id;
 	}
 
 	/**

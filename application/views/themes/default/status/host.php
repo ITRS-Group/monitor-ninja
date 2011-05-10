@@ -109,7 +109,7 @@ foreach ($result as $row) {
 						if ($row->current_state == Current_status_Model::HOST_DOWN || $row->current_state == Current_status_Model::HOST_UNREACHABLE) {
 							$properties += 16;
 						}
-					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $properties ?></span>
+					?><span class="obj_prop _<?php echo str_replace(".", '_', $row->host_name) ?>" style="display:none"><?php echo $properties ?></span>
 					</div>
 				</td>
 				<td class="icon">
