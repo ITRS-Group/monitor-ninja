@@ -37,6 +37,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$type = $this->input->get('type', $type);
 		$name = $this->input->get('name', $name);
 		$service = $this->input->get('service', false);
+		$page = $this->input->get('page', false);
 		if (Kohana::config('config.nacoma_path')===false) {
 			return false;
 		}
@@ -44,6 +45,9 @@ class Configuration_Controller extends Authenticated_Controller {
 		$name = trim($name);
 
 		$target_link = 'configure.php';
+
+		if ($page)
+			$target_link = $page;
 		if (!empty($type) && !empty($name)) {
 			if (strstr($type, 'group')) {
 				$target_link = 'edit.php?obj_type='.$type.'&obj_name='.urlencode($name);
@@ -67,7 +71,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Configuration » Configure');
 		$this->template->nacoma = true;
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'), $this->add_path('/js/nacoma-urls.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
 }
