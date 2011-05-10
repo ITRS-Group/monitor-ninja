@@ -54,7 +54,7 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'pdomysql',
+		'type'     => 'mysql',
 		              #'oracle',
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
