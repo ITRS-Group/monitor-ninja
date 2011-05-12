@@ -3,7 +3,7 @@ basedir=`pwd`
 tempdir=$basedir/temp
 prefix='/opt/monitor/op5/ninja'
 PATH_DEF=`echo $PATH`
-PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin
+PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin:/usr/ccs/bin
 
 echo $tempdir
 rm -rf $tempdir
