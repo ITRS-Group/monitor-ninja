@@ -429,12 +429,10 @@ class Host_Model extends Model {
 		}
 
 		if (!$this->show_services) {
+			$where = false;
 			# host query part
 			if (!$this->auth->view_hosts_root) {
-				$from .= ', contact_access ca ';
-				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
-			} else {
-				$where = 'WHERE 1=1 ';
+				$from .= ' INNER JOIN contact_access ca ON ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id';
 			}
 
 			if (!empty($filter_host_sql)) {
@@ -463,7 +461,7 @@ class Host_Model extends Model {
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
 			if ($this->host_list !== 'all' && !empty($host_str)) {
-				$where .= empty($where) ?  "" : " AND ";
+				$where .= empty($where) ?  " WHERE " : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
 			}
 
@@ -501,16 +499,10 @@ class Host_Model extends Model {
 			$sql .= $order;
 
 		} else {
-			$from .= ', service';
+			$from .= ' INNER JOIN service ON service.host_name=host.host_name ';
 			$where = '';
 			if (!$this->auth->view_hosts_root || !$this->auth->view_services_root) {
-				$from .= ', contact_access ca ';
-
-				# match authorized services against service.host_name
-				$where = ' WHERE ca.contact='.$this->auth->id.' AND service.host_name=host.host_name'.
-					' AND ca.host IS NULL AND ca.service=service.id ';
-			} else {
-				$where = ' WHERE service.host_name=host.host_name ';
+				$from .= ' INNER JOIN contact_access ca ON ca.contact='.$this->auth->id.' AND ca.host IS NULL AND ca.service=service.id ';
 			}
 
 			if (!empty($filter_host_sql)) {
@@ -574,7 +566,7 @@ class Host_Model extends Model {
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
 			if ($this->host_list !== 'all' && !empty($host_str)) {
-				$where .= empty($where) ?  "" : " AND ";
+				$where .= empty($where) ?  " WHERE " : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
 			}
 
