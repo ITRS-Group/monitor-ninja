@@ -55,7 +55,7 @@ class Notifications_Model extends Model {
 		# make joins with contact_access to get all notifications
 		# for user's hosts and services
 		if (!$auth->view_hosts_root) {
-			$sql_host = "SELECT ".$fields." FROM notification ".
+			$sql_host = "SELECT notification.id FROM notification ".
 				"INNER JOIN host ON host.host_name=notification.host_name ".
 				"INNER JOIN contact_access ON contact_access.host=host.id ".
 				"WHERE contact_access.contact=".$auth->id." AND ".
@@ -63,15 +63,15 @@ class Notifications_Model extends Model {
 				"AND notification.command_name IS NOT NULL";
 
 			if (!$auth->view_services_root)
-				$sqlsvc = "SELECT ".$fields." FROM notification ".
+				$sqlsvc = "SELECT notification.id FROM notification ".
 					"INNER JOIN host ON host.host_name=notification.host_name ".
 					"INNER JOIN service ON service.host_name=notification.host_name AND service.service_description=notification.service_description ".
 					"INNER JOIN contact_access ON contact_access.service=service.id OR contact_access.host=host.id ".
 					"WHERE contact_access.contact=".$auth->id." AND ".
 					"notification.command_name IS NOT NULL";
 			else
-				$sqlsvc = 'SELECT '.$fields.' FROM notification WHERE notification.service_description IS NOT NULL';
-			$sql = "(".$sql_host.") UNION ALL (".$sqlsvc.") ";
+				$sqlsvc = 'SELECT notification.id FROM notification WHERE notification.service_description IS NOT NULL';
+			$sql = "SELECT $fields FROM notification WHERE id IN ($sql_host) OR id IN ($sqlsvc)";
 		}
 
 		$sql .= $where_order;
