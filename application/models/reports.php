@@ -1865,7 +1865,7 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT id, timestamp, event_type, downtime_depth FROM " .
+		$sql = "SELECT timestamp, event_type, downtime_depth FROM " .
 			$this->db_name . "." . $this->db_table . " " .
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
