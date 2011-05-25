@@ -307,6 +307,7 @@ abstract class Database_Driver {
 		switch (gettype($value))
 		{
 			case 'string':
+			case 'integer':
 				$value = '\''.$this->escape_str($value).'\'';
 			break;
 			case 'boolean':
