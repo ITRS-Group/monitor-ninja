@@ -194,6 +194,7 @@ class Group_Model extends Model
 				"h.icon_image_alt AS host_icon_image_alt,".
 				"h.is_flapping AS host_is_flapping,".
 				"h.notes_url AS host_notes_url,".
+				"h.display_name AS host_display_name,".
 				"s.id AS service_id,".
 				"s.current_state AS service_state,".
 				"(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,".
@@ -212,7 +213,8 @@ class Group_Model extends Model
 				"s.should_be_scheduled,".
 				"s.next_check,".
 				"s.notifications_enabled,".
-				"s.service_description ".
+				"s.service_description,".
+				"s.display_name AS service_display_name ".
 			"FROM host h ".
 			"INNER JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
