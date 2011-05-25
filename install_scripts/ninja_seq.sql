@@ -135,9 +135,7 @@ CREATE TABLE ninja_saved_searches (
 	username VARCHAR2(255 CHAR) DEFAULT NULL,
 	search_name VARCHAR2(255 CHAR) NOT NULL,
 	search_query VARCHAR2(255 CHAR) NOT NULL,
-	search_description VARCHAR2(255 CHAR) NOT NULL,
-	PRIMARY KEY (id),
-	KEY username (username)
+	search_description VARCHAR2(255 CHAR) NOT NULL
 );
 
 PROMPT Creating Primary Key Constraint PRIMARY_18 on table ninja_saved_searches ...
@@ -147,6 +145,12 @@ ADD CONSTRAINT PRIMARY_18 PRIMARY KEY
   id
 )
 ENABLE
+;
+
+CREATE INDEX n_s_s_username ON ninja_saved_searches
+(
+	username
+)
 ;
 
 -- DROP TABLE avail_config CASCADE CONSTRAINTS;
