@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $label_na = $this->translate->_('N/A');
 $notes_chars = config::get('config.show_notes_chars', '*');
+$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 ?>
 
 <div class="widget left w98" id="search_result">
@@ -60,7 +61,7 @@ if (isset($host_result) ) {
 					$properties += 2;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 				}
-				if (!$host->active_checks_enabled) {
+				if (!$host->active_checks_enabled && !$show_passive_as_active) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
@@ -194,7 +195,7 @@ if (isset($service_result) ) {
 				$properties += 2;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 			}
-			if (!$service->active_checks_enabled) {
+			if (!$service->active_checks_enabled && !$show_passive_as_active) {
 				$properties += 4;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 			}
