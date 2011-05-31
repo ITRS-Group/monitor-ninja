@@ -699,10 +699,18 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged!=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
-		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
-		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=0 AND .'.$table_alias.'passive_checks_enabled=0) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
+		}
+		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=1 OR '.$table_alias.'passive_checks_enabled=1) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		}
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED)
 			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED)
@@ -751,10 +759,18 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=1 ';
 		if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED)
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
-		if ($hostprops & nagstat::HOST_CHECKS_DISABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
-		if ($hostprops & nagstat::HOST_CHECKS_ENABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=0 AND .'.$table_alias.'passive_checks_enabled=0) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
+		}
+		if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=1 OR '.$table_alias.'passive_checks_enabled=1) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		}
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED)
 			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED)

@@ -1466,11 +1466,11 @@ class Status_Controller extends Authenticated_Controller {
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Active Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf($t->_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Active Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf($t->_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED) {
