@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 # setup the db tables required for Ninja
 
