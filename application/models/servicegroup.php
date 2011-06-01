@@ -250,6 +250,18 @@ class Servicegroup_Model extends ORM
 			$filter_service_sql = " AND service.current_state IN ($bits) ";
 		}
 
+		if (config::get('checks.show_passive_as_active', '*')) {
+			$host_check_enabled = ' AND (host.active_checks_enabled=1 OR host.passive_checks_enabled=1) ';
+			$host_check_disabled = ' AND (host.active_checks_enabled=0 AND host.passive_checks_enabled=0) ';
+			$service_check_enabled = ' AND (service.active_checks_enabled=1 OR service.passive_checks_enabled=1) ';
+			$service_check_disabled = ' AND (service.active_checks_enabled=0 AND service.passive_checks_enabled=0) ';
+		} else {
+			$host_check_enabled = ' AND host.active_checks_enabled=1 ';
+			$host_check_disabled = ' AND host.active_checks_enabled=0 ';
+			$service_check_enabled = ' AND service.active_checks_enabled=1 ';
+			$service_check_disabled = ' AND service.active_checks_enabled=0 ';
+		}
+
 		$base_query = "SELECT COUNT(DISTINCT host.id) ".
 			    "FROM service_servicegroup ".
 			    "INNER JOIN service ON service.id = service_servicegroup.service ".
@@ -269,9 +281,9 @@ class Servicegroup_Model extends ORM
 			") AS hosts_down,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			   	" AND host.problem_has_been_acknowledged = 0 ".
-			   	"AND host.scheduled_downtime_depth=0 ".
-			    "AND host.active_checks_enabled=1".
+			    " AND host.problem_has_been_acknowledged = 0 ".
+			    "AND host.scheduled_downtime_depth=0 ".
+			    $host_check_enabled.
 			") AS hosts_down_unhandled,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
@@ -283,28 +295,28 @@ class Servicegroup_Model extends ORM
 			") AS hosts_down_acknowledged,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			    " AND host.active_checks_enabled=0".
+			    $host_check_disabled.
 			") AS hosts_down_disabled,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
 			") AS hosts_unreachable,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			   	" AND host.problem_has_been_acknowledged = 0 ".
-			   	"AND host.scheduled_downtime_depth=0 ".
-			    "AND host.active_checks_enabled=1".
+			    " AND host.problem_has_been_acknowledged = 0 ".
+			    "AND host.scheduled_downtime_depth=0 ".
+			    $host_check_enabled.
 			") AS hosts_unreachable_unhandled,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			   	" AND host.scheduled_downtime_depth=1".
+			    " AND host.scheduled_downtime_depth=1".
 			") AS hosts_unreachable_scheduled,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			   	" AND host.problem_has_been_acknowledged = 1".
+			    " AND host.problem_has_been_acknowledged = 1".
 			") AS hosts_unreachable_acknowledged,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			   	" AND host.active_checks_enabled=0".
+			    $host_check_disabled.
 			") AS hosts_unreachable_disabled,".
 			"(".$base_query.
 			    "AND host.current_state = ".Current_status_Model::HOST_PENDING.
@@ -320,7 +332,7 @@ class Servicegroup_Model extends ORM
 			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
 			    "AND service.scheduled_downtime_depth=0 ".
 			    "AND service.problem_has_been_acknowledged=0 ".
-			    "AND service.active_checks_enabled=1".
+			    $service_check_enabled.
 			") AS services_warning_unhandled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
@@ -336,7 +348,7 @@ class Servicegroup_Model extends ORM
 			") AS services_warning_acknowledged,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    " AND service.active_checks_enabled=0".
+			    $service_check_disabled.
 			") AS services_warning_disabled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
@@ -346,7 +358,7 @@ class Servicegroup_Model extends ORM
 			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
 			    "AND service.scheduled_downtime_depth=0 ".
 			    "AND service.problem_has_been_acknowledged=0 ".
-			    "AND service.active_checks_enabled=1".
+			    $service_check_enabled.
 			") AS services_unknown_unhandled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
@@ -362,7 +374,7 @@ class Servicegroup_Model extends ORM
 			") AS services_unknown_acknowledged,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    " AND service.active_checks_enabled=0".
+			    $service_check_disabled.
 			") AS services_unknown_disabled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
@@ -372,7 +384,7 @@ class Servicegroup_Model extends ORM
 			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
 			    " AND service.scheduled_downtime_depth=0 ".
 			    "AND service.problem_has_been_acknowledged=0 ".
-			    "AND service.active_checks_enabled=1".
+			    $service_check_enabled.
 			") AS services_critical_unhandled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
@@ -388,7 +400,7 @@ class Servicegroup_Model extends ORM
 			") AS services_critical_acknowledged,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    " AND service.active_checks_enabled=0".
+			    $service_check_disabled.
 			") AS services_critical_disabled,".
 			"(".$base_svc_query.
 			    "AND service.current_state = ".Current_status_Model::SERVICE_PENDING.
