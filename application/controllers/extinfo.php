@@ -932,6 +932,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_notes_url = $t->_('Extra Notes');
 		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res) : false;
 		$content->label_action_url = $t->_('Extra Actions');
+		$content->label_notes = $t->_('Notes');
+		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res) : false;
 
 		switch ($grouptype) {
 			case 'servicegroup':

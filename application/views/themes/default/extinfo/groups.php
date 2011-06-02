@@ -25,7 +25,12 @@
 			<?php echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')))?></a>
 <br />
 <strong><?php echo $label_notes_url ?></strong>
-<?php } ?>
+<?php }
+
+if (!empty($notes)) {?>
+	<br /><strong><?php echo $label_notes ?></strong>: <?php echo $notes;
+}
+?>
 
 <div class="widget left w98">
 <table style="border-spacing: 1px; background-color: #dcdccd">
