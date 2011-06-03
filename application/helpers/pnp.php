@@ -40,7 +40,7 @@ class pnp_Core
 			$service = self::clean($service);
 		}
 
-		$path = $rrdbase . $host . '/' . $service . '.rrd';
+		$path = $rrdbase . $host . '/' . $service . '.xml';
 
 		return posix_access($path, POSIX_R_OK);
 	}
