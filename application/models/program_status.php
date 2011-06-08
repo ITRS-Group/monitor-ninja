@@ -56,7 +56,11 @@ class Program_status_Model extends Model
 	{
 		$db = Database::instance();
 		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";
-		$res = $db->query($sql);
+		try {           
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			/* FIXME: This should be logged to file perhaps? */
+		}
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 }
