@@ -3,6 +3,7 @@
 </IfModule>
 
 Alias /monitor /var/www/html/monitor
+Alias /ninja /var/www/html/monitor
 <Directory "/var/www/html/monitor">
         Order allow,deny
         Allow from all
