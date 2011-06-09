@@ -43,7 +43,11 @@ class Program_status_Model extends Model
 	{
 		$db = new Database();
 		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
-		$res = $db->query($sql);
+		try {
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			/* FIXME: This should be logged to file perhaps? */
+		}
 		$cur = ($res && count($res)) ? $res->current() : false;
 		return $cur ? $cur->last_alive : false;
 	}
