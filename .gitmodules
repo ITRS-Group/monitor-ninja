@@ -1,0 +1,3 @@
+[submodule "application/vendor/phptap"]
+	path = application/vendor/phptap
+	url = git://git.op5.org/php-tools.git
