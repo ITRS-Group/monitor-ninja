@@ -27,7 +27,7 @@ class Authenticated_Controller extends Ninja_Controller {
 			$cli_access = Kohana::config('config.cli_access');
 			if ($cli_access !== false) {
 				if ($cli_access === true) {
-					# username should be passed as argv[1]
+					# username should be passed as argv[2]
 					if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
 						Auth::instance()->force_login($_SERVER['argv'][2]);
 					}
