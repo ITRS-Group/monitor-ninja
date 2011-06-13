@@ -3,6 +3,9 @@ test: test-reports
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
+test-coverage:
+	@php test/all_coverage.php .
+
 docs: Documentation
 
 Documentation: ninja.doxy application/models/*.php application/helpers/*.php
