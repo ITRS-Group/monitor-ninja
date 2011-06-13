@@ -47,7 +47,7 @@ class Program_status_Model extends Model
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
 			/* FIXME: This should be logged to file perhaps? */
-			openlog("ninja", LOG_PID | LOG_PERROR, LOG_USER);
+			openlog("ninja", LOG_PID, LOG_USER);
 			syslog(LOG_ERR, "last_alive failed: ");
 			closelog();
 		}
@@ -67,7 +67,7 @@ class Program_status_Model extends Model
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
 			/* FIXME: This should be logged to file perhaps? */
-			openlog("ninja", LOG_PID | LOG_PERROR, LOG_USER);
+			openlog("ninja", LOG_PID, LOG_USER);
 			syslog(LOG_ERR, "notifications_checks failed: ");
 			closelog();
 		}
