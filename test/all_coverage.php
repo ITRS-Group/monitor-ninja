@@ -25,7 +25,6 @@ function runTest($line)
 	$test = escapeshellarg($data[0]);
 	$user = escapeshellarg($data[1]);
 	exec("/usr/bin/php ".dirname(__FILE__)."/testcoverage.php $test $user", $output, $code);
-	$errors += $code;
 	eval('$test_coverage = '.implode(" ", $output).';');
 	foreach ($test_coverage as $file => $lines) {
 		if (!isset($coverage[$file])) {
@@ -44,7 +43,6 @@ function runTest($line)
 
 # first, report tests
 exec("/usr/bin/php $prefix/test/testcoverage.php ninja_unit_test/reports modules/unit_test/reports/*.tst", $output, $code);
-$errors += $code;
 eval('$coverage = '.implode(' ', $output).';');
 
 # ci tests
@@ -57,4 +55,4 @@ foreach ($files as $file) {
 	}
 }
 
-exit(generate_coverage($coverage) + $errors);
+exit(generate_coverage($coverage));
