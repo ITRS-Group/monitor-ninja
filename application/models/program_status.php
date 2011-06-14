@@ -43,6 +43,7 @@ class Program_status_Model extends Model
 	{
 		$db = new Database();
 		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
+		$res = false;
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
@@ -63,6 +64,7 @@ class Program_status_Model extends Model
 	{
 		$db = new Database();
 		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";
+		$res = false;
 		try {           
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
