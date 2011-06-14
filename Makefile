@@ -4,12 +4,12 @@ test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
 test-ci-prepare:
-	# get default config
+	@# get default config
 	@service monitor stop
 	@cp test/configs/all-host_service-states/etc/* /opt/monitor/etc/
 	@cp test/configs/all-host_service-states/var/status.sav /opt/monitor/var/
 	@service monitor start
-	# make sure users are imported to db:
+	@# make sure users are imported to db:
 	@php index.php 'cli/insert_user_data'
 
 test-coverage: test-ci-prepare
