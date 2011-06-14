@@ -5,10 +5,10 @@ test-reports:
 
 test-ci-prepare:
 	@# get default config
-	@service monitor stop
+	@service monitor stop &> /dev/null || :
 	@cp test/configs/all-host_service-states/etc/* /opt/monitor/etc/
 	@cp test/configs/all-host_service-states/var/status.sav /opt/monitor/var/
-	@service monitor start
+	@service monitor start &> /dev/null
 	@# make sure users are imported to db:
 	@php index.php 'cli/insert_user_data'
 
