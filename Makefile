@@ -10,7 +10,7 @@ test-ci-prepare:
 	@cp test/configs/all-host_service-states/var/status.sav /opt/monitor/var/
 	@service monitor start
 	# make sure users are imported to db:
-	@php ninja/index.php 'cli/insert_user_data'
+	@php index.php 'cli/insert_user_data'
 
 test-coverage: test-ci-prepare
 	@php test/all_coverage.php $$(pwd)
