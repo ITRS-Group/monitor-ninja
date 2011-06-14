@@ -48,7 +48,7 @@ class Group_Model extends Model
 			#$svc_where = " AND service.host_name=host.host_name ";
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $groupname != 'all' ? "sg.".$grouptype."group_name=".$db->escape($groupname)." " : '1=1 ';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -151,7 +151,7 @@ class Group_Model extends Model
 
 		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $groupname != 'all' ? "AND sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -194,6 +194,7 @@ class Group_Model extends Model
 				"h.icon_image_alt AS host_icon_image_alt,".
 				"h.is_flapping AS host_is_flapping,".
 				"h.notes_url AS host_notes_url,".
+				"h.display_name AS host_display_name,".
 				"s.id AS service_id,".
 				"s.current_state AS service_state,".
 				"(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,".
@@ -212,7 +213,8 @@ class Group_Model extends Model
 				"s.should_be_scheduled,".
 				"s.next_check,".
 				"s.notifications_enabled,".
-				"s.service_description ".
+				"s.service_description,".
+				"s.display_name AS service_display_name ".
 			"FROM host h ".
 			"INNER JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
@@ -251,7 +253,7 @@ class Group_Model extends Model
 				return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$all_sql = $name != 'all' ? "sg.".$type."group_name=".$db->escape($name)." AND" : '';
 
 		# we need to match against different field depending on if host- or servicegroup
@@ -282,7 +284,7 @@ class Group_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$result = $db->query($sql);
 		return $result;
 	}
@@ -300,7 +302,7 @@ class Group_Model extends Model
 		$auth = new Nagios_auth_Model();
 
 		$name = empty($name) ? 'all' : $name;
-		$db = new Database();
+		$db = Database::instance();
 		$contact_id = $auth->get_contact_id();
 		$all_sql = $name != 'all' ? "sg.".$grouptype."group_name=".$db->escape($name)." AND " : '';
 
@@ -418,7 +420,7 @@ class Group_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 
 		if (empty($group)) {
 			return false;

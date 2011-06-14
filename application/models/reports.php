@@ -174,7 +174,7 @@ class Reports_Model extends Model
 			if (!empty($db_table))
 				$this->db_table = $db_table;
 
-			$this->db = new Database();
+			$this->db = Database::instance();
 		}
 	}
 
@@ -186,7 +186,7 @@ class Reports_Model extends Model
 		try {
 			# this will result in error if db_name section
 			# isn't set in config/database.php
-			$db = new Database();
+			$db = Database::instance();
 		} catch (Kohana_Database_Exception $e) {
 			return false;
 		}
@@ -1833,11 +1833,14 @@ class Reports_Model extends Model
 				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).") ";
 		}
 
-		if (!$this->include_soft_states)
-			$sql .= 'AND hard = 1 ';
-		$sql .= "AND ( " .
-			"event_type=" . $event_type . ' ' .
-			"OR event_type=" . self::DOWNTIME_START . ' ' .
+		$sql .= "AND ( ";
+		if (!$this->include_soft_states) {
+			# only the primary event type should care about hard/soft
+			$sql .= '(event_type=' . $event_type . ' AND hard=1)';
+		} else {
+			$sql .= 'event_type=' . $event_type . ' ';
+		}
+		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
 			"OR event_type=" . self::DOWNTIME_STOP . ' ';
 		if (!$this->assume_states_during_not_running)
 			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
@@ -1865,7 +1868,7 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT id, timestamp, event_type, downtime_depth FROM " .
+		$sql = "SELECT timestamp, event_type, downtime_depth FROM " .
 			$this->db_name . "." . $this->db_table . " " .
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
@@ -2704,7 +2707,7 @@ class Reports_Model extends Model
 		$sql = "SELECT MIN(timestamp) AS min_date, ".
 				"MAX(timestamp) AS max_date ".
 			"FROM ".self::db_table;
-		$db = new Database();
+		$db = Database::instance();
 		$res = $db->query($sql);
 
 		if (!$res)
@@ -3378,7 +3381,7 @@ class Reports_Model extends Model
 	 */
 	public static function print_db_lines($prefix, $table = 'report_data', $test, $db_start_time, $db_end_time)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$return_str = '';
 		$start = $db_start_time;
 		$stop = $db_end_time;

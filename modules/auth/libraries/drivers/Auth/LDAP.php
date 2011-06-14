@@ -8,7 +8,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			return false;
 
 		if (!is_object($user)) {
-			$db = new Database();
+			$db = Database::instance();
 			$username = $user;
 			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
 			if (!count($users))
@@ -52,20 +52,22 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			{
 				$this->complete_login($user);
 				return true;
-			} elseif (!empty($ldapbindpw)) {
-				if(@ldap_bind($ds,$config['LDAP_BIND_DN'],$ldapbindpw)) {
-					$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
-					if(@ldap_get_entries($ds,$search)) {
-						$this->complete_login($user);
-						return true;
-					}					
-				}
 			} else {
-			  $search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
-			  if(@ldap_get_entries($ds,$search)) {
-			    $this->complete_login($user);
-			    return true;
-			  }
+				if(!empty($ldapbindpw)) {
+					if(!@ldap_bind($ds,$config['LDAP_BIND_DN'],$ldapbindpw)) {
+						return false;
+					}
+				}
+				$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=inetOrgPerson)(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
+				if($entries = ldap_get_entries($ds,$search)) {
+					unset($entries["count"]);
+					foreach ($entries as $entry) {
+						if(@ldap_bind($ds, $entry["dn"], $password)) {
+							$this->complete_login($user);
+							return true;
+						}
+					}
+				}
 			}
 		}
 

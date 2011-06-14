@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+  <title>Test Suite</title>
+</head>
+<body>
+<table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
+<tr><td><b>Test Suite</b></td></tr>
+<tr><td><a href="./login">Login</a></td></tr>
+<tr><td><a href="./host_detail">Host_Details</a></td></tr>
+<tr><td><a href="./service_detail">Service_details</a></td></tr>
+<tr><td><a href="./extinfo">Extinfo</a></td></tr>
+<tr><td><a href="./hostgroup_overview">Hostgroup_Overview</a></td></tr>
+<tr><td><a href="./hostgroup_grid">Hostgroup_Grid</a></td></tr>
+<tr><td><a href="./hostgroup_summary">Hostgroup_Summary</a></td></tr>
+<tr><td><a href="./servicegroup_overview">Servicegroup_Overview</a></td></tr>
+<tr><td><a href="./servicegroup_grid">Servicegroup_Grid</a></td></tr>
+<tr><td><a href="./servicegroup_summary">Servicegroup_Summary</a></td></tr>
+<tr><td><a href="./network_outages">Network_outages</a></td></tr>
+<tr><td><a href="./host_problems">Host_Problems</a></td></tr>
+<tr><td><a href="./service_problems">Service_Problems</a></td></tr>
+<tr><td><a href="./unhandled_problems">Unhandled_Problems</a></td></tr>
+<tr><td><a href="./scheduled_downtime">Scheduled_downtime</a></td></tr>
+<tr><td><a href="./process_info">Process_info</a></td></tr>
+<tr><td><a href="./performance_info">Performance_info</a></td></tr>
+<tr><td><a href="./scheduling_queue">Scheduling_queue</a></td></tr>
+</tbody></table>
+</body>
+</html>

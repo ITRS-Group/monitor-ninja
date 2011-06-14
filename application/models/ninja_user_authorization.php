@@ -29,7 +29,7 @@ class Ninja_user_authorization_Model extends Model
 		$user_id = (int)$user_id;
 
 		# check if we already have any data
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".(int)$user_id;
 		$res = $db->query($sql);
 
@@ -77,7 +77,7 @@ class Ninja_user_authorization_Model extends Model
 		$auth_data = false;
 
 		# fetch auth data for the user_id
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".(int)$user_id;
 		$res = $db->query($sql);
 		if (count($res)!=0) {

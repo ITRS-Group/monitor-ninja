@@ -419,7 +419,7 @@ class ScheduleDate_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 
 		$downtime_type = $data['report_type'];
 		$data = serialize($data);
@@ -445,7 +445,7 @@ class ScheduleDate_Model extends Model
 	 */
 	public function get_schedule_data($id = false, $type=false)
 	{
-		$db = new Database();
+		$db = Database::instance();
 
 		$sql = "SELECT * FROM recurring_downtime ";
 
@@ -534,7 +534,7 @@ class ScheduleDate_Model extends Model
 			return false;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 
 		$sql = "DELETE FROM recurring_downtime WHERE id=".(int)$id;
 		if (!$db->query($sql)) {

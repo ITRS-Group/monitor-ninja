@@ -1550,6 +1550,14 @@ hr {
 	color: #cdcdcd;
 	margin-bottom: 15px;
 }
+
+#my_saved_searches_img{
+	margin-top: -9px;
+}
+
+#save_search img{
+	margin-bottom: -7px;
+}
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/

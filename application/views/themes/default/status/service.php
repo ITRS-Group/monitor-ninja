@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $style = isset($style) ? $style : false;
 $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
+$notes_chars = config::get('config.show_notes_chars', '*');
 ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
@@ -62,7 +63,6 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					}
 				}
 			?>
-			<th class="no-sort"><?php echo $this->translate->_('Status Information') ?></th>
 		</tr>
 <?php
 	$curr_host = false;
@@ -96,8 +96,10 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 4;
 						}
-						if (isset($row->host_is_flapping) && $row->host_is_flapping)
+						if (isset($row->host_is_flapping) && $row->host_is_flapping) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
+							$host_props += 32;
+						}
 						if ($row->hostscheduled_downtime_depth > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 8;
@@ -149,6 +151,7 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
+					$properties += 32;
 					echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if ($row->scheduled_downtime_depth > 0) {
@@ -201,6 +204,13 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 			?>
 		</td>
 
+<?php	if ($show_display_name) { ?>
+		<td style="white-space: normal"><?php echo $row->service_display_name ?></td>
+<?php	}
+
+		if ($show_notes) { ?>
+		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes ?></td>
+<?php 	} ?>
 	</tr>
 
 	<?php
@@ -221,7 +231,8 @@ $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
 			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks')
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>

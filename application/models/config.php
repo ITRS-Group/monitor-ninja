@@ -37,11 +37,10 @@ class Config_Model extends Model {
 	public function list_config($type = 'hosts', $num_per_page=false, $offset=false, $count=false)
 	{
 
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
-		$host_query = $auth->authorized_host_query();
-		if ($host_query === true) {
+		if ($auth->view_hosts_root) {
 
 			$num_per_page = (int)$num_per_page;
 

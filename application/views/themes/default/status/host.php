@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate; ?>
+<?php $t = $this->translate;
+$notes_chars = config::get('config.show_notes_chars', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 <div class="widget left w32" id="page_links">
 		<ul>
@@ -57,7 +58,6 @@
 						}
 					}
 				?>
-				<th><?php echo $t->_('Status information') ?></th>
 			</tr>
 
 
@@ -94,8 +94,10 @@ foreach ($result as $row) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $t->_('Active checks enabled'), 'title' => $t->_('Active checks disabled'))), array('style' => 'border: 0px'));
 							$properties += 4;
 						}
-						if (isset($row->is_flapping) && $row->is_flapping)
+						if (isset($row->is_flapping) && $row->is_flapping) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+							$properties += 32;
+						}
 						if ($row->scheduled_downtime_depth > 0) {
 							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/scheduled-downtime.png'),array('alt' => $t->_('Scheduled downtime'), 'title' => $t->_('Scheduled downtime'))), array('style' => 'border: 0px'));
 							$properties += 8;
@@ -148,6 +150,13 @@ foreach ($result as $row) {
 					}
 					?>
 				</td>
+			<?php	if ($show_display_name) { ?>
+				<td style="white-space: normal"><?php echo $row->host_display_name ?></td>
+			<?php 	}
+
+					if ($show_notes) { ?>
+				<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes ?></td>
+			<?php 	} ?>
 			</tr>
 			<?php	} ?>
 
@@ -163,7 +172,8 @@ foreach ($result as $row) {
 			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
 			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks')
+			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks'),
+			'ADD_HOST_COMMENT' => $this->translate->_('Add Host Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>

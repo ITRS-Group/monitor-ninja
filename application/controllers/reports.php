@@ -166,6 +166,7 @@ class Reports_Controller extends Authenticated_Controller
 	public $mashing = false;
 	public $report_options = false;
 	private $in_months = false;
+	public $extra_template_data = false;
 
 	public function __construct()
 	{
@@ -233,6 +234,16 @@ class Reports_Controller extends Authenticated_Controller
 			'DOWN' => $this->translate->_('DOWN'),
 			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
 		);
+	}
+
+	public function add_view($view) {
+		$ret = parent::add_view($view);
+		if (is_array($this->extra_template_data)) {
+			foreach ($this->extra_template_data as $key => $val) {
+				$ret->$key = $val;
+			}
+		}
+		return $ret;
 	}
 
 
@@ -4125,17 +4136,11 @@ class Reports_Controller extends Authenticated_Controller
 		$str = str_replace(' ', '_', $str);
 		$str = str_replace('"', '', $str);
 		$str = str_replace('/', '_', $str);
-		$str = utf8_decode($str);
-		for ($i=0;$i<strlen($str);$i++) {
-			if (ord($str[$i]) > 245) {
-				$str[$i] = 'o';
-			} elseif (ord($str[$i])>122) {
-				$str[$i] = 'a';
-			} else {
-				$str[$i] = $str[$i];
-			}
-			$return_str .= $str[$i];
-		}
+		$return_str = iconv('utf-8', 'us-ascii//TRANSLIT', $str);
+		// If your system is buggy, you'll just get to keep your utf-8
+		// Don't want it? Don't put it there!
+		if ($return_str === false)
+			$return_str = $str;
 		return $return_str;
 	}
 

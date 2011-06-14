@@ -5,14 +5,12 @@
  */
 class Program_status_Model extends Model
 {
-	const local_node_name = 'Local Nagios/Merlin instance';
-
 	/**
 	 * Fetch all info from program_status table
 	 */
 	public function get_all()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM program_status";
 		$res = $db->query($sql);
 		return (!$res || count($res) == 0) ? false : $res;
@@ -23,15 +21,15 @@ class Program_status_Model extends Model
 	 */
 	public function get_local()
 	{
-		$db = new Database();
-		$sql = "SELECT * FROM program_status WHERE instance_name = '".self::local_node_name."'";
+		$db = Database::instance();
+		$sql = "SELECT * FROM program_status WHERE instance_id = 0";
 		$res = $db->query($sql);
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
 	public function list_program_status()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT instance_name, last_alive, is_running FROM program_status order by instance_name";
 		$res = $db->query($sql);
 		return (!$res || count($res) == 0) ? false : $res;
@@ -43,8 +41,8 @@ class Program_status_Model extends Model
 	*/
 	public function last_alive()
 	{
-		$db = new Database();
-		$sql = "SELECT last_alive FROM program_status WHERE instance_name = '".self::local_node_name."'";
+		$db = Database::instance();
+		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
 		$res = $db->query($sql);
 		$cur = ($res && count($res)) ? $res->current() : false;
 		return $cur ? $cur->last_alive : false;
@@ -56,9 +54,13 @@ class Program_status_Model extends Model
 	*/
 	public function notifications_checks()
 	{
-		$db = new Database();
-		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_name = '".self::local_node_name."'";
-		$res = $db->query($sql);
+		$db = Database::instance();
+		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";
+		try {           
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			/* FIXME: This should be logged to file perhaps? */
+		}
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 }

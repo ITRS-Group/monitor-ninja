@@ -932,6 +932,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_notes_url = $t->_('Extra Notes');
 		$content->action_url =$group_info_res->action_url !='' ? nagstat::process_macros($group_info_res->action_url, $group_info_res) : false;
 		$content->label_action_url = $t->_('Extra Actions');
+		$content->label_notes = $t->_('Notes');
+		$content->notes = $group_info_res->notes !='' ? nagstat::process_macros($group_info_res->notes, $group_info_res) : false;
 
 		switch ($grouptype) {
 			case 'servicegroup':
@@ -1414,8 +1416,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
 		$auth = new Nagios_auth_Model();
-		$host_query = $auth->authorized_host_query();
-		if ($host_query !== true) {
+		if (!$auth->view_hosts_root) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 

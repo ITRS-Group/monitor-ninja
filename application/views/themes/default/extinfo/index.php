@@ -132,7 +132,7 @@ if (!empty($widgets)) {
 
 
 <div style="clear:both"></div>
-<div class="widget left" id="extinfo_current" style="width: 495px">
+<div class="widget left" id="extinfo_current" style="width: 650px">
 	<?php
 	if (isset($pending_msg)) {
 		echo $title."<br /><br />";

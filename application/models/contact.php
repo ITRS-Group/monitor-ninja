@@ -11,7 +11,7 @@ class Contact_Model extends Model
 	public function get_contact($id = false, $username=false)
 	{
 		$sql = false;
-		$db = new Database();
+		$db = Database::instance();
 		if (empty($id) && empty($username)) {
 			$sql = "SELECT * FROM contact WHERE contact_name = " .
 				$db->escape(Auth::instance()->get_user()->username);
@@ -33,7 +33,7 @@ class Contact_Model extends Model
 
 	public function get_contacts_from_escalation($type = 'host', $id = false) {
 		$sql = false;
-		$db = new Database();
+		$db = Database::instance();
 		if (empty($id)){
 			return false;
 		} else {

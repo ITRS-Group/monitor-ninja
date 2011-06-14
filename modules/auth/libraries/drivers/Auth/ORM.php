@@ -123,7 +123,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 		if ( ! is_object($user))
 		{
 			// Load the user
-			$db = new Database();
+			$db = Database::instance();
 			$sql = "SELECT * FROM users WHERE username=".$db->escape($user);
 			$user_res = $db->query($sql);
 			$user = $user_res->current();
@@ -219,7 +219,7 @@ class Auth_ORM_Driver extends Auth_Driver {
 		if (empty($user)) {
 			return false;
 		}
-		$db = new Database();
+		$db = Database::instance();
 
 		// Update the number of logins
 		$sql = "UPDATE users SET logins=(logins+1), last_login=".time()." WHERE id=".(int)$user->id;

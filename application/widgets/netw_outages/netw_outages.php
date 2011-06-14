@@ -27,9 +27,15 @@ class Netw_outages_Widget extends widget_Core {
 
 		$auth = new Nagios_auth_Model();
 
+		$current_status = false;
+		if (is_object($arguments[0])) {
+			$current_status = $arguments[0];
+			array_shift($arguments);
+		}
+
 		# fetch info on outages
 		$outages = new Outages_Model();
-		$outage_data = $outages->fetch_outage_data();
+		$outage_data = $outages->fetch_outage_data($current_status);
 
 		# assign variables for our view
 

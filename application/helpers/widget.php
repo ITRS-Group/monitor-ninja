@@ -52,8 +52,7 @@ class widget_Core
 			$widget_method = 'index';
 			return $obj->$widget_method($arguments, $master);
 		} catch (Exception $ex) {
-			print "<div id='widget-$name' class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";
-			return false;
+			$master->widgets[] = "<div id=\"widget-$name\" class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";
 		}
 
 	}

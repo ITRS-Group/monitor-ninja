@@ -73,11 +73,9 @@ $(document).ready(function() {
 	});
 
 	$('#filter_field').keyup(function() {
-		var val = $(this).attr('value').toLowerCase();
+		if ($(this).attr('value') == '') return;
 		$("select[id$=_tmp] option").show(); // show all
-		$("select[id$=_tmp] option").filter(function(index) {
-			return $(this).val().toLowerCase().indexOf(val) == -1;
-		}).hide();
+		$("select[id$=_tmp] option").not(":regex(" + $(this).attr('value') + ")").hide();
 	});
 
 	$('#clear_filter').click(function() {
@@ -1437,3 +1435,12 @@ function update_visible_schedules(count)
 		}
 	}
 }
+
+jQuery.extend(
+	jQuery.expr[':'], {
+		regex: function(a, i, m, r) {
+			var r = new RegExp(m[3], 'i');
+			return r.test(jQuery(a).text());
+		}
+	}
+);

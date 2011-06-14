@@ -37,9 +37,9 @@ $config['default'] = array
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'merlin',
-		# this can be used with the pdomysql driver to specify a more specific
-		# dsn than the one auto-generated from the above values
-		'dsn' =>      FALSE
+		# some database backends allow you to specify a custom connection string
+		# that overrides the options above here:
+		'conn_str' => FALSE
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',
@@ -54,7 +54,7 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'pdomysql',
+		'type'     => 'mysql',
 		              #'oracle',
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
@@ -62,9 +62,9 @@ $config['nacoma'] = array
 		'port'     => FALSE,
 		'socket'   => FALSE,
 		'database' => 'nacoma',
-		# this can be used with the pdomysql driver to specify a more specific
-		# dsn than the one auto-generated from the above values
-		'dsn' => FALSE
+		# some database backends allow you to specify a custom connection string
+		# that overrides the options above here:
+		'conn_str' => FALSE
 	),
 	'character_set' => 'latin1',
 	'table_prefix'  => '',

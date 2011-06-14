@@ -274,7 +274,7 @@ class Ninja_Reports_Test_Core
 
 		echo "Using db table '".$this->table_name."'\n";
 		$cached = true;
-		$db = new Database();
+		$db = Database::instance();
 		try {
                     $db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}

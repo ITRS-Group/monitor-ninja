@@ -26,6 +26,7 @@ class Search_Controller extends Authenticated_Controller {
 		$obj_type = urldecode($this->input->get('obj_type', $obj_type));
 		$query = urldecode($this->input->get('query', $query));
 		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model', 'comment' => 'Comment_Model');
+		$query_str = trim($query); # stash query string for later use when saving search
 
 		# check if we have limit information
 		# should be in the form of limit=100
@@ -205,6 +206,10 @@ class Search_Controller extends Authenticated_Controller {
 
 		$this->template->content = $this->add_view('search/result');
 
+		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
+		$this->template->css_header->css = $this->xtra_css;
+
 		$content = $this->template->content;
 		$limit = !empty($in_limit) ? $in_limit : false;
 		$items_per_page = urldecode($this->input->get('items_per_page', false));
@@ -224,10 +229,15 @@ class Search_Controller extends Authenticated_Controller {
 
 		$pagination_type = 'punbb';
 		$content->query = $query;
+		$this->template->query_str = $query_str;
 		$content->limit_str = !empty($limit)
 			? sprintf($this->translate->_('Search result limited to %s rows'), $limit)
 			:$this->translate->_('No search limit is active');
 		$this->template->title = $this->translate->_('Search » ')."'".$query."'";
+
+		$content->show_display_name = config::get('config.show_display_name', '*');
+		$content->show_notes = config::get('config.show_notes', '*');
+
 
 		/**
 		 * Modify config/config.php to enable NACOMA
@@ -416,7 +426,7 @@ class Search_Controller extends Authenticated_Controller {
 				}
 				unset($data);
 			}
-			if (!empty($empty) && $empty==4) {
+			if (!empty($empty) && $empty==5) {
 				$content->no_data = $this->translate->_('Nothing found');
 			}
 		}
@@ -440,7 +450,9 @@ class Search_Controller extends Authenticated_Controller {
 					Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail
 					in any of the searchable fields.<br />
 					Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br />
-					Use si:some_status to search for Status Information like some_status"), config::get('pagination.default.items_per_page', '*'))
+					Use si:some_status to search for Status Information like some_status"), config::get('pagination.default.items_per_page', '*')),
+			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the
+			icon just below the search field at the top of the page.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

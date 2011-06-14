@@ -357,7 +357,7 @@ class Command_Controller extends Authenticated_Controller
 			if ($auth->command_hosts_root) {
 				return true;
 			}
-		} elseif (strstr($cmd, '_SVC_') !== false) {
+		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
 			if ($auth->command_services_root) {
 				return true;
 			}

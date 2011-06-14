@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 # setup the db tables required for Ninja
 
@@ -86,4 +86,12 @@ then
 		mysql -f $db_login_opts merlin < $prefix/op5-upgradescripts/ninja_db_upgrade.sql 2>/dev/null
 		mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=3" 2>/dev/null
 	fi
+
+	if [ "$db_ver" -lt '4' ]
+	then
+		echo "Adding saved searches"
+		mysql -f $db_login_opts merlin < $prefix/op5-upgradescripts/saved_searches.sql 2>/dev/null
+		mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=4" 2>/dev/null
+	fi
 fi
+

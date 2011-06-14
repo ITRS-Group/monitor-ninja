@@ -147,7 +147,7 @@ class Service_Model extends Model
 		}
 		$auth_hosts = Host_Model::authorized_hosts();
 		$host_str = implode(', ', array_values($auth_hosts));
-		$db = new Database();
+		$db = Database::instance();
 		switch ($type) {
 			case 'servicegroup':
 				$sql = "SELECT
@@ -193,7 +193,7 @@ class Service_Model extends Model
 			$sql_where = ' AND contact_access.contact= '.(int)$auth->id;
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$limit_str = sql::limit_parse($limit);
 		if (!$exact) {
 			$value = '%' . $value . '%';
@@ -220,7 +220,7 @@ class Service_Model extends Model
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$obj_ids = self::authorized_services();
 		}
-		$db = new Database();
+		$db = Database::instance();
 
 		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
 		"FROM service s WHERE ";
@@ -279,6 +279,12 @@ class Service_Model extends Model
 
 		$limit_str = sql::limit_parse($limit);
 		$order_str = ' ORDER BY s.host_name, s.service_description';
+
+		$sql_notes = '';
+		if (config::get('config.show_notes', '*')) {
+			$sql_notes = " OR LCASE(s.notes) LIKE LCASE(%s)";
+		}
+
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
@@ -288,6 +294,7 @@ class Service_Model extends Model
 			"WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
+			sprintf($sql_notes, $this->db->escape($val)).
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))".
 			" AND s.id IN (".$obj_ids.")";
 			}
@@ -302,6 +309,7 @@ class Service_Model extends Model
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
+			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".
 			" AND (s.host_name=h.host_name)".
 			" AND s.id IN (".$obj_ids.") ".$order_str.$limit_str;
@@ -532,7 +540,7 @@ class Service_Model extends Model
 		$obj_ids = array_keys($auth_obj);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}

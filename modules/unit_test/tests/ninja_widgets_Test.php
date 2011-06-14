@@ -11,7 +11,7 @@ class Ninja_widgets_Test extends Unit_Test_Case {
 
 	public function table_ninja_widgets_table_exists_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'ninja_widgets';
 		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 	}
@@ -22,7 +22,7 @@ class Ninja_widgets_Test extends Unit_Test_Case {
 	 */
 	public function widgets_db_settings_test()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$table = 'ninja_widgets';
 		$widget_list = array();
 		$missing = array();

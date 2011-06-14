@@ -728,5 +728,53 @@ class Ajax_Controller extends Authenticated_Controller {
 		echo json::encode($return);
 		return true;
 	}
+
+	/**
+	*	Save a search for later use
+	*/
+	public function save_search()
+	{
+		$search_name = urldecode($this->input->post('name', false));
+		$search_query = urldecode($this->input->post('query', false));
+		$search_description = urldecode($this->input->post('description', false));
+		$search_id = urldecode($this->input->post('search_id', false));
+
+		$res = Saved_searches_Model::save_search($search_query, $search_name, $search_description, $search_id);
+
+		echo ((int)$res != 0) ? (int)$res : 'Error';
+	}
+
+	/**
+	*	Remove a saved search
+	*/
+	public function remove_search()
+	{
+		$search_id = urldecode($this->input->post('search_id', false));
+		$res = Saved_searches_Model::remove_search($search_id);
+
+		echo $res != false ? 'OK' : 'Error';
+	}
+
+	/**
+	*	Fetch a saved search by ID
+	*/
+	public function fetch_saved_search()
+	{
+		$search_id = urldecode($this->input->post('search_id', false));
+		$search_id = (int)$search_id;
+		if (empty($search_id)) {
+			echo "Error";
+			return false;
+		}
+
+		$res = Saved_searches_Model::get_search_by_id($search_id);
+		if ($res != false) {
+			$result = $res->current();
+			echo json::encode(array('search_name' => $result->search_name, 'search_query' => $result->search_query, 'search_description' => $result->search_description, 'search_id' => $result->id));
+			return true;
+		}
+		echo "Error";
+		return false;
+	}
 }
 

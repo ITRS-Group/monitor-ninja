@@ -1,5 +1,8 @@
 description = count scheduled service downtime as uptime
 logfile = scheddownasup_service.log
+global_vars {
+	include_soft_states = 0
+}
 
 scheduled service downtime as uptime {
 	start_time = 1202684400

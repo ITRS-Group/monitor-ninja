@@ -118,8 +118,20 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Status Information'))
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'host.output', 'sort_field_str' => 'status information')
 		);
+
+		$show_display_name = config::get('config.show_display_name', '*');
+		if ($show_display_name) {
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'host.display_name', 'sort_field_str' => 'display name');
+		}
+		$this->template->content->show_display_name = $show_display_name;
+
+		$show_notes = config::get('config.show_notes', '*');
+		if ($show_notes) {
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+		}
+		$this->template->content->show_notes = $show_notes;
 
 		# build header links array
 		foreach ($header_link_fields as $fields) {
@@ -356,8 +368,21 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
 			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 's.current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => $this->translate->_('Status Information'))
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'service.output', 'sort_field_str' => 'status information')
 		);
+
+		$show_display_name = config::get('config.show_display_name', '*');
+		if ($show_display_name) {
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'service.display_name', 'sort_field_str' => 'display name');
+		}
+		$this->template->content->show_display_name = $show_display_name;
+
+		$show_notes = config::get('config.show_notes', '*');
+		if ($show_notes) {
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+		}
+		$this->template->content->show_notes = $show_notes;
+
 
 		# build header links array
 		foreach ($header_link_fields as $fields) {
@@ -391,9 +416,10 @@ class Status_Controller extends Authenticated_Controller {
 			$grouptype = str_replace('group', '', $group_type);
 			$hostlist = Group_Model::get_group_hoststatus($grouptype, $name, $hoststatustypes, $servicestatustypes);
 			$group_hosts = false;
-			foreach ($hostlist as $host_info) {
-				$group_hosts[] = $host_info->host_name;
-			}
+			if ($hostlist !== false)
+				foreach ($hostlist as $host_info) {
+					$group_hosts[] = $host_info->host_name;
+				}
 
 			# servicegroups should only show services in the group
 			if ($group_type == 'servicegroup') {
@@ -1466,11 +1492,11 @@ class Status_Controller extends Authenticated_Controller {
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Active Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf($t->_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Active Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf($t->_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED) {

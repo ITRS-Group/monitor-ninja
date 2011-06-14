@@ -123,7 +123,6 @@ function expand_and_populate(data)
 		// select report objects
 		for (prop in reportObj[field_obj.map[field_str]]) {
 			$('#' + from_id).selectOptions(reportObj[field_obj.map[field_str]][prop]);
-			console.log(reportObj[field_obj.map[field_str]][prop]);
 		}
 		// move selected options from left -> right
 		moveAndSort(from_id, to_id);

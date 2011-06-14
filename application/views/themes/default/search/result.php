@@ -1,10 +1,20 @@
- <?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 $label_na = $this->translate->_('N/A');
+$notes_chars = config::get('config.show_notes_chars', '*');
+$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 ?>
 
 <div class="widget left w98" id="search_result">
 <?php echo help::render('search_help') ?>&nbsp;
-<?php echo isset($no_data) ? $no_data : '<strong>'.$limit_str.'</strong><br><br>';
+<?php echo isset($no_data) ? $no_data.'<br />' : '<strong>'.$limit_str.'</strong><br><br>';
+
+$save_id = isset($save_id) ? (int)$save_id : false;
+$save_label = $save_id ? $this->translate->_('Update this search') : $this->translate->_('Save this search');
+
+echo help::render('saved_search_help').'&nbsp';
+echo '<span id="save_search">'.
+	html::image($this->add_path('icons/24x24/add_save_search.png'), array('title' => $save_label)).'</span><br /><br />';
+
 # show host data if available
 if (isset($host_result) ) {
 	if (isset($host_pagination)) {?><div id="host_pagination"><?php echo $host_pagination ?></div><?php } ?>
@@ -19,7 +29,12 @@ if (isset($host_result) ) {
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
 		<th class="header" style="width: 70px"><?php echo $this->translate->_('Address'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
+	<?php if ($show_display_name) { ?>
 		<th class="header"><?php echo $this->translate->_('Display Name'); ?></th>
+	<?php }
+		 if ($show_notes) { ?>
+		<th class="header"><?php echo $this->translate->_('Notes'); ?></th>
+	<?php } ?>
 	</tr>
 <?php	$i = 0; foreach ($host_result as $host) { ?>
 	<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
@@ -46,11 +61,12 @@ if (isset($host_result) ) {
 					$properties += 2;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 				}
-				if (!$host->active_checks_enabled) {
+				if (!$host->active_checks_enabled && !$show_passive_as_active) {
 					$properties += 4;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 				}
 				if (isset($host->is_flapping) && $host->is_flapping) {
+					$properties += 32;
 					echo html::anchor('extinfo/details/host/'.$host->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
 				}
 				if ($host->scheduled_downtime_depth > 0) {
@@ -88,7 +104,12 @@ if (isset($host_result) ) {
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
 		<td style="white-space	: normal"><?php echo str_replace('','', $output) ?></td>
+	<?php if ($show_display_name) { ?>
 		<td><?php echo $host->display_name ?></td>
+	<?php }
+		 if ($show_notes) { ?>
+		<td <?php if (!empty($host->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $host->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($host->notes, $notes_chars, '...') : $host->notes ?></td>
+	<?php } ?>
 	</tr>
 <?php	$i++; } ?>
 </table><br />
@@ -103,7 +124,8 @@ if (isset($host_result) ) {
 			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
 			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks')
+			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks'),
+			'ADD_HOST_COMMENT' => $this->translate->_('Add Host Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
@@ -126,7 +148,12 @@ if (isset($service_result) ) {
 		<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Last Check'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Status Information'); ?></th>
+	<?php if ($show_display_name) { ?>
 		<th class="header"><?php echo $this->translate->_('Display name'); ?></th>
+	<?php }
+		 if ($show_notes) { ?>
+		<th class="header"><?php echo $this->translate->_('Notes'); ?></th>
+	<?php } ?>
 	</tr>
 <?php
 	$i = 0;
@@ -168,11 +195,12 @@ if (isset($service_result) ) {
 				$properties += 2;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px'));
 			}
-			if (!$service->active_checks_enabled) {
+			if (!$service->active_checks_enabled && !$show_passive_as_active) {
 				$properties += 4;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px'));
 			}
 			if (isset($service->service_is_flapping) && $service->service_is_flapping) {
+				$properties += 32;
 				echo html::anchor('extinfo/details/service/'.$service->host_name.'/?service='.urlencode($service->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px'));
 			}
 			if ($service->scheduled_downtime_depth > 0) {
@@ -206,7 +234,12 @@ if (isset($service_result) ) {
 		</td>
 		<td><?php echo $service->last_check ? date('Y-m-d H:i:s',$service->last_check) : $label_na ?></td>
 		<td><?php echo $service->output ?></td>
+	<?php if ($show_display_name) { ?>
 		<td><?php echo $service->display_name ?></td>
+	<?php }
+		 if ($show_notes) { ?>
+		<td <?php if (!empty($service->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $service->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($service->notes, $notes_chars, '...') : $service->notes ?></td>
+	<?php } ?>
 	</tr>
 <?php	$i++;
 	$prev_host = $service->host_name;
@@ -222,7 +255,8 @@ if (isset($service_result) ) {
 			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
 			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
 			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks')
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
@@ -345,3 +379,4 @@ if (isset($comment_result)) {
 	</table>
 	<?php
 }
+?>

@@ -19,10 +19,9 @@ class Notifications_Model extends Model {
 	public function show_notifications($num_per_page=false, $offset=false, $count=false)
 	{
 
-		$db = new Database();
+		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
 
-		$host_query = $auth->authorized_host_query();
 		$num_per_page = (int)$num_per_page;
 
 		# only use LIMIT when NOT counting
@@ -55,22 +54,24 @@ class Notifications_Model extends Model {
 		# query for limited contact
 		# make joins with contact_access to get all notifications
 		# for user's hosts and services
-		if ($host_query !== true && !empty($auth->id)) {
-			$sql_host = "SELECT ".$fields." FROM notification WHERE id IN (SELECT DISTINCT notification.id FROM notification ".
+		if (!$auth->view_hosts_root) {
+			$sql_host = "SELECT notification.id FROM notification ".
 				"INNER JOIN host ON host.host_name=notification.host_name ".
 				"INNER JOIN contact_access ON contact_access.host=host.id ".
 				"WHERE contact_access.contact=".$auth->id." AND ".
-				"contact_access.service IS NULL AND notification.service_description='' ".
-				"AND notification.command_name IS NOT NULL)";
+				"notification.service_description IS NULL ".
+				"AND notification.command_name IS NOT NULL";
 
-			$sqlsvc = "SELECT ".$fields." FROM notification WHERE id IN (SELECT DISTINCT notification.id FROM notification ".
-				"INNER JOIN host ON host.host_name=notification.host_name ".
-				"INNER JOIN service ON service.host_name=host.host_name ".
-				"INNER JOIN contact_access ON contact_access.service=service.id ".
-				"WHERE contact_access.contact=".$auth->id." AND ".
-				"contact_access.service IS NOT NULL AND notification.service_description!='' ".
-				"AND notification.command_name IS NOT NULL)";
-			$sql = "(".$sql_host.") UNION ALL (".$sqlsvc.") ";
+			if (!$auth->view_services_root)
+				$sqlsvc = "SELECT notification.id FROM notification ".
+					"INNER JOIN host ON host.host_name=notification.host_name ".
+					"INNER JOIN service ON service.host_name=notification.host_name AND service.service_description=notification.service_description ".
+					"INNER JOIN contact_access ON contact_access.service=service.id OR contact_access.host=host.id ".
+					"WHERE contact_access.contact=".$auth->id." AND ".
+					"notification.command_name IS NOT NULL";
+			else
+				$sqlsvc = 'SELECT notification.id FROM notification WHERE notification.service_description IS NOT NULL';
+			$sql = "SELECT $fields FROM notification WHERE id IN ($sql_host) OR id IN ($sqlsvc)";
 		}
 
 		$sql .= $where_order;

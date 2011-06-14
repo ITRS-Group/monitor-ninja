@@ -14,6 +14,7 @@ if (Auth::instance()->logged_in()) {
 	if (!substr($current_skin, -1, 1) != '/') {
 		$current_skin .= '/';
 	}
+
 }
 if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 	$ninja_menu_state = $ninja_menu_setting->setting;
@@ -32,10 +33,8 @@ if (isset($this->template->js_header))
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'common.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'status.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'print.css') ?>" media="print" />
-		<?php if (Router::$controller == 'status') { ?>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/jquery-ui-custom.css') ?>" />
-		<?php }
-			echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
+		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css') ?>" />
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
@@ -103,6 +102,15 @@ if (isset($this->template->js_header))
 				var _refresh_unpaused_msg='<?php echo $this->translate->_('Page refresh has been restored.') ?>';
 				var _use_contextmenu=<?php echo $use_contextmenu === true ? 1 : 0; ?>;
 				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
+				var _search_save_error = '<?php echo $this->translate->_("Length of \'%s\' must be between %s and %s characters.") ?>';
+				var _search_string_field = '<?php echo $this->translate->_('Search string') ?>';
+				var _search_remove_confirm = '<?php echo $this->translate->_('Are you sure that you wish to remove this saved search?') ?>';
+				var _search_name_field = '<?php echo $this->translate->_('Name') ?>';
+				var _search_save_ok = '<?php echo $this->translate->_('OK') ?>';
+				var _search_save_error = '<?php echo $this->translate->_('ERROR') ?>';
+				var _search_saved_ok = '<?php echo $this->translate->_('Your search was successfully saved.') ?>';
+				var _search_saved_error = '<?php echo $this->translate->_('An error occured when trying to save your search.') ?>';
+
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
 					var _keycommands_active='<?php echo config::get('keycommands.activated', '*', true); ?>';
@@ -194,6 +202,7 @@ if (isset($this->template->js_header))
 					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo html::image($this->add_path('icons/16x16/refresh.png'),array('alt' => $this->translate->_('Refresh page'), 'title' => $this->translate->_('Refresh page'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
+					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image($this->add_path('icons/24x24/save_search.png'), array('title' => $this->translate->_('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
 				</ul>
 			</div>
 		</div>
@@ -321,8 +330,28 @@ if (isset($this->template->js_header))
 
 		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
 
-			<?php if (isset($content)) { echo $content; } else { url::redirect('tac'); }?>
+			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
 			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
+		</div>
+		<?php if (isset($saved_searches) && !empty($saved_searches)) {
+			echo $saved_searches;
+		} else {
+
+		}
+		 ?>
+		<div id="save-search-form" title="<?php echo $this->translate->_('Save search') ?>" style="display:none">
+			<form>
+			<p class="validateTips"></p>
+			<fieldset>
+				<label for="search_query"><?php echo $this->translate->_('Search string') ?></label>
+				<input type="text" name="search_query" id="search_query" value="<?php echo isset($query_str) ? $query_str : '' ?>" class="texts search_query ui-widget-content ui-corner-all" />
+				<label for="search_name"><?php echo $this->translate->_('Name') ?></label>
+				<input type="text" name="search_name" id="search_name" class="texts ui-widget-content ui-corner-all" />
+				<label for="search_description"><?php echo $this->translate->_('Description') ?></label>
+				<textarea cols="30" rows="3" name="search_description" id="search_description" class="texts ui-widget-content ui-corner-all"></textarea>
+				<input type="hidden" name="search_id" id="search_id" value="0">
+			</fieldset>
+			</form>
 		</div>
 	</body>
 </html>

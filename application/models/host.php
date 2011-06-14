@@ -166,7 +166,7 @@ class Host_Model extends Model {
 
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -209,6 +209,10 @@ class Host_Model extends Model {
 			}
 		}
 
+		$sql_notes = '';
+		if (config::get('config.show_notes', '*')) {
+			$sql_notes = " OR LCASE(notes) LIKE LCASE(%s)";
+		}
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
@@ -219,6 +223,7 @@ class Host_Model extends Model {
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
+				sprintf($sql_notes, $this->db->escape($val)).
 				" OR LCASE(address) LIKE LCASE(".$this->db->escape($val).")";
 				if (!empty($sql_xtra)) {
 					$query_str = $query_str.') '. $sql_xtra;
@@ -237,6 +242,7 @@ class Host_Model extends Model {
 			" LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
+			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
 			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
@@ -254,25 +260,21 @@ class Host_Model extends Model {
 	{
 		if (empty($host_name))
 			return false;
-		$host_query = $this->auth->authorized_host_query();
-		if ($host_query === true) {
-			# don't use auth_host fields etc
-			$auth_host_alias = 'h';
-			$auth_from = ', host '.$auth_host_alias;
-			$auth_where = ' AND ' . $auth_host_alias . ".host_name = '" . $host_name . "'";
-		} else {
-			$auth_host_alias = $host_query['host_field'];
-			$auth_from = ' ,'.$host_query['from'];
-			$auth_where = ' AND '.sprintf($host_query['where'], "'".$host_name."'");
+
+		$sql_join = '';
+		$sql_where = '';
+		if (!$this->auth->view_hosts_root) {
+			$sql_join = "INNER JOIN contact_access ON contact_access.host=host_parents.host ";
+			$sql_where = "contact_access.contact=".$this->auth->id." AND ";
 		}
-		$sql = "SELECT parent.* " .
-			"FROM " .
-				"host_parents hp, " .
-				"host parent " . $auth_from .
-			" WHERE ".
-				$auth_host_alias . ".id=hp.host " . $auth_where .
-				" AND parent.id=hp.parents " .
-			"ORDER BY parent.host_name";
+
+		$sql = "SELECT host.* ".
+		"FROM host ".
+		"INNER JOIN host_parents ON host_parents.host = host.id ".$sql_join.
+		"WHERE ".$sql_where.
+		"host.host_name =".$this->db->escape($host_name).
+		" ORDER BY host.host_name";
+
 		$result = $this->query($this->db, $sql);
 		return $result;
 	}
@@ -479,6 +481,7 @@ class Host_Model extends Model {
 					"host.next_check, ".
 					"host.should_be_scheduled, ".
 					"host.notes_url, ".
+					"host.notes, ".
 					"host.notifications_enabled, ".
 					"host.active_checks_enabled, ".
 					"host.icon_image, ".
@@ -492,7 +495,8 @@ class Host_Model extends Model {
 					"host.problem_has_been_acknowledged, ".
 					"host.scheduled_downtime_depth, ".
 					"host.output, ".
-					"host.long_output ".
+					"host.long_output, ".
+					"host.display_name AS host_display_name ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
@@ -545,7 +549,9 @@ class Host_Model extends Model {
 					"host.icon_image AS host_icon_image,".
 					"host.icon_image_alt AS host_icon_image_alt,".
 					"host.is_flapping AS host_is_flapping,".
-					"host.notes_url AS host_nots_url,".
+					"host.notes_url AS host_notes_url,".
+					"host.notes AS host_notes,".
+					"host.display_name AS host_display_name,".
 					"service.id AS service_id,".
 					"service.instance_id AS service_instance_id,".
 					"service.service_description,".
@@ -557,6 +563,7 @@ class Host_Model extends Model {
 					"service.active_checks_enabled,".
 					"service.action_url,".
 					"service.notes_url,".
+					"service.notes,".
 					"service.icon_image,".
 					"service.icon_image_alt,".
 					"service.passive_checks_enabled,".
@@ -569,7 +576,8 @@ class Host_Model extends Model {
 					"service.output,".
 					"service.long_output,".
 					"service.output AS service_output,".
-					"service.long_output AS service_long_output ";
+					"service.long_output AS service_long_output, ".
+					"service.display_name AS service_display_name ";
 
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
@@ -699,10 +707,18 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged!=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
-		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
-		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=0 AND .'.$table_alias.'passive_checks_enabled=0) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
+		}
+		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=1 OR '.$table_alias.'passive_checks_enabled=1) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		}
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED)
 			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED)
@@ -751,10 +767,18 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=1 ';
 		if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED)
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged=0 ';
-		if ($hostprops & nagstat::HOST_CHECKS_DISABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
-		if ($hostprops & nagstat::HOST_CHECKS_ENABLED)
-			$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=0 AND .'.$table_alias.'passive_checks_enabled=0) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=0 ';
+		}
+		if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret_str .= ' AND ('.$table_alias.'active_checks_enabled=1 OR '.$table_alias.'passive_checks_enabled=1) ';
+			else
+				$ret_str .= ' AND '.$table_alias.'active_checks_enabled=1 ';
+		}
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED)
 			$ret_str .= ' AND '.$table_alias.'event_handler_enabled=0 ';
 		if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED)
@@ -804,7 +828,7 @@ class Host_Model extends Model {
 		# check credentials for host
 		$host_list = $auth->get_authorized_hosts();
 
-		$db = new Database();
+		$db = Database::instance();
 		if (empty($service_description)) {
 			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
@@ -1031,7 +1055,7 @@ class Host_Model extends Model {
 
 		$auth_hosts = self::authorized_hosts();
 		$host_str = join(',', $auth_hosts);
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id " .
 			"FROM host h, hostgroup hg, host_hostgroup hhg " .
 			"WHERE hg.hostgroup_name = " . $db->escape($name) .
@@ -1069,7 +1093,7 @@ class Host_Model extends Model {
 		$host_ids = array_keys($auth_hosts);
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -1089,7 +1113,7 @@ class Host_Model extends Model {
 			return false;
 		}
 		if (!isset($this->db) || !is_object($this->db)) {
-			$db = new Database();
+			$db = Database::instance();
 		} else {
 			$db = $this->db;
 		}
@@ -1111,7 +1135,7 @@ class Host_Model extends Model {
 	{
 		$hosts = self::authorized_hosts();
 		$hostlist = false;
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT host_name, address FROM host WHERE id IN (".implode(',', $hosts).")";
 		$data = self::query($db,$sql);
 		if (count($data)>0) {

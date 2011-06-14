@@ -43,7 +43,7 @@ class User_Model extends Auth_User_Model {
 
 	public function save_user($user_obj)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$ary = array();
 		foreach ($user_obj as $key => $val) {
 			$ary[] = "$key = {$db->escape($val)}";
@@ -67,7 +67,7 @@ class User_Model extends Auth_User_Model {
 		# set logged_in to current timestamp if db
 		$auth_type = Kohana::config('auth.driver');
 		if ($auth_type == 'db' || $auth_type === 'Ninja' || $auth_type === 'LDAP' || $auth_type == 'apache') {
-			$db = new Database();
+			$db = Database::instance();
 			$sql = "UPDATE users SET last_login=".time()." WHERE username=".
 				$db->escape(Auth::instance()->get_user()->username);
 			$db->query($sql);
@@ -89,8 +89,6 @@ class User_Model extends Auth_User_Model {
 
 			$redirect = false;
 			if (empty($hosts)) {
-				$redirect = true;
-			} else {
 				$services = $auth->get_authorized_services();
 				if (empty($services)) {
 					$redirect = true;
@@ -194,7 +192,7 @@ class User_Model extends Auth_User_Model {
 			$auth_options[$auth_fields[$i]] = $options[$i];
 		}
 
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "SELECT * FROM users WHERE username=".$db->escape($username);
 		$res = $db->query($sql);
 		if (count($res)!=0) {
@@ -215,7 +213,7 @@ class User_Model extends Auth_User_Model {
 	*/
 	public function truncate_auth_data()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "TRUNCATE TABLE ninja_user_authorization";
 		$db->query($sql);
 	}
@@ -227,7 +225,7 @@ class User_Model extends Auth_User_Model {
 	*/
 	public static function create_auth_table()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$sql = "CREATE TABLE IF NOT EXISTS ".self::$auth_table." ( ".
 					"id int(11) NOT NULL auto_increment, ".
 					"user_id int(11) NOT NULL, ".
@@ -250,7 +248,7 @@ class User_Model extends Auth_User_Model {
 	*/
 	public function get_user($username=false)
 	{
-		$db = new Database();
+		$db = Database::instance();
 		if (!empty($username)) {
 			$username = trim($username);
 			$sql = 'SELECT * FROM users WHERE username='.$db->escape($username);
@@ -274,7 +272,7 @@ class User_Model extends Auth_User_Model {
 	*/
 	public function get_all_usernames()
 	{
-		$db = new Database();
+		$db = Database::instance();
 		$query = 'SELECT * FROM users';
 		$user_res = $db->query($query);
 
@@ -301,7 +299,7 @@ class User_Model extends Auth_User_Model {
 		$username = isset($data['username']) ? $data['username'] : false;
 		$password = isset($data['password']) ? $data['password'] : false;
 		$password_algo = isset($data['password_algo']) ? $data['password_algo'] : false;
-		$db = new Database();
+		$db = Database::instance();
 
 		$user = self::get_user($username);
 		if ($user !== false) {
