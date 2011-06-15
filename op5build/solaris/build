@@ -1,5 +1,6 @@
 #!/bin/bash
-basedir=`pwd`
+curdir=`pwd`
+basedir=`dirname $curdir`
 tempdir=$basedir/temp
 prefix='/opt/monitor/op5/ninja'
 PATH_DEF=`echo $PATH`
@@ -9,7 +10,6 @@ echo $tempdir
 rm -rf $tempdir
 mkdir -p $tempdir$prefix
 
-pushd ninja
 pushd cli-helpers
         make clean
         make
@@ -71,7 +71,6 @@ ln -s ../ $tempdir$prefix/op5
 mkdir -p $tempdir/etc/opt/csw/apache2/extra/
 cp ../ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
 
-popd
 
 PATH=$PATH_DEF
 
