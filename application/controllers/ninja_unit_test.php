@@ -74,17 +74,15 @@ class Ninja_unit_test_Controller extends Controller {
 			$failed += $test->failed;
 		}
 		if ($failed) {
-			echo "Passed: $passed\n";
-			echo "Failed: $failed\n";
 			echo "Failed test-cases:\n";
 			foreach ($all as $test) {
 				if (!empty($test->failed))
 					echo "    " . $test->test_file . ", '" . $test->description . "'\n";
 			}
-			exit(1);
 		}
-
-		echo "All $passed tests passed. Hooray!\n";
+		echo "$passed/".($passed+$failed)." tests passed.".($failed==0?" Hooray!":"")."\n";
+		if ($failed)
+			exit(1);
 
 
 	}
