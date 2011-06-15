@@ -69,7 +69,7 @@ ln -sf $prefix $tempdir/var/www/html/ninja
 ln -s ../ $tempdir$prefix/op5
 
 mkdir -p $tempdir/etc/opt/csw/apache2/extra/
-cp ../ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
+cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
 
 
 PATH=$PATH_DEF
