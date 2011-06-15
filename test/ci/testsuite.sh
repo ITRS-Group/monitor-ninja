@@ -8,6 +8,7 @@
 #
 
 errors=0
+ntests=0
 
 if [ $# -ge 1 ]
 then
@@ -47,18 +48,21 @@ while read -r line
 do
 	# use $line variable to process line in runTest() function
 	runTest $line
+	ntests=$(($ntests+1))
 done
 exec 0<&3
 
 # restore $IFS which was used to determine what the field separators are
 IFS=$BAKIFS
 
+echo "Executed $ntests tests"
+
 if [ $errors -eq 0 ]
 then
 	echo "OK"
 	exit 0
 else
-	echo "FAIL"
+	echo "FAIL ($errors)"
 	exit 1
 fi
 echo
