@@ -48,7 +48,7 @@ eval('$coverage = '.implode(' ', $output).';');
 # ci tests
 $files = array('test/ci/ninjatests.txt', 'test/ci/limited_tests.txt');
 foreach ($files as $file) {
-	$h = fopen($file, 'rb');
+	$h = fopen("$prefix/$file", 'rb');
 	while ($line = fgets($h)) {
 		$line = trim($line);
 		runTest($line);
