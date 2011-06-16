@@ -6,7 +6,7 @@ function on_exit() {
 	var_export(xdebug_get_code_coverage());
 }
 
-register_shutdown_function(on_exit);
+register_shutdown_function('on_exit');
 
 ob_start();
 require_once(dirname(__FILE__)."/../index.php");
