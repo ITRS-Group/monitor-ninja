@@ -55,4 +55,4 @@ foreach ($files as $file) {
 	}
 }
 
-exit(generate_coverage($coverage));
+exit(generate_coverage($coverage, array('/opt', 'system', 'modules', 'test', 'application/views/tests', 'application/vendor')));
