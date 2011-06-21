@@ -18,7 +18,6 @@ class per_page_control(BaseTestCase):
         sel.type("//div[@id='status_host']/form[3]/fieldset/input", "5")
         sel.key_press("//div[@id='status_host']/form[3]/fieldset/input", "\\13")
         sel.wait_for_page_to_load("30000")
-        sel.click("host|beta.int.op5.se")
         try: self.assertEqual("6", sel.get_css_count("css=#host_table tbody tr"))
         except AssertionError, e: self.verificationErrors.append(str(e))
         try: self.assertEqual("5", sel.get_value("css=.items_per_page"))
