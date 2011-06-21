@@ -3,12 +3,13 @@ import unittest, time, re
 from base_test import BaseTestCase
 
 class per_page_control(BaseTestCase):
-   def setUp(self):
-       self.verificationErrors = []
-       self.createContext()
+    def setUp(self):
+        self.verificationErrors = []
+        self.createContext()
 
-   def test_per_page_control(self):
-       sel = self.selenium        sel.open("/")
+    def test_per_page_control(self):
+        sel = self.selenium
+        sel.open("/")
         sel.click("css=img[alt=op5 Monitor: Log in]")
         sel.wait_for_page_to_load("30000")
         sel.click("link=Host detail")
