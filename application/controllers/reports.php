@@ -3314,6 +3314,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function mktest($desc='auto-created test')
 	{
 		$this->auto_render=false;
+		Kohana::close_buffers(FALSE);
 		$test = array();
 		$correct = array();
 
@@ -3350,8 +3351,8 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		if (PHP_SAPI !== 'cli') {
-			header("Content-disposition: attachment; filename=report-test.txt");
-			header("Content-type: text");
+			header("Content-Type: text/plain");
+			header("Content-Disposition: attachment; filename=report-test.txt");
 		}
 
 		$retcode = 0;
