@@ -1875,11 +1875,13 @@ class Reports_Model extends Model
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
 			" AND host_name = " . $this->db->escape($hostname);
 
-		if (!empty($service_description)) {
-			$sql .= "AND (service_description IS NULL " .
+		if (empty($service_description))
+			$sql .= " AND service_description IS NULL OR service_description = '' ";
+		else
+			$sql .= " AND (service_description IS NULL OR service_description = '' " .
 				"OR service_description=".$this->db->escape($service_description) .
 				")";
-		}
+		
 		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
 		$dbr = $this->db->query($sql)->result(false);
