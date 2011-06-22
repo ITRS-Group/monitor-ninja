@@ -48,3 +48,15 @@ host in scheduled downtime, service as uptime, 2 services {
 		TIME_WARNING_UNSCHEDULED = 7200
 	}
 }
+
+host in dt before report_period starts, service never in dt {
+	start_time = 1202684400
+	end_time = 1202770800
+	host_name = testhost3
+	service_description = PING
+	scheduled_downtime_as_uptime = 1
+	correct {
+		TIME_OK_SCHEDULED = 2100
+		TIME_CRITICAL_UNSCHEDULED = 84300
+	}
+}
