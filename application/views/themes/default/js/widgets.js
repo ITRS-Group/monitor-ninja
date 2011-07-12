@@ -58,6 +58,9 @@ function init_easywidgets(){
 	});
 }
 
+// Global variable to keep track of when user decides to reload the interface.
+// This is needed since we want to prevent the spawning of additional ajax calls.
+var _is_refreshing = false;
 
 var _global_save = 0; 		// timeout handler variable
 var global_refresh = 60;	// keeps track of the refresh rate set by slider
@@ -106,6 +109,8 @@ function update_save_interval()
 */
 function set_widget_refresh()
 {
+	_is_refreshing = true;
+
 	var url = _site_domain + _index_page + "/ajax/set_widget_refresh/";
 	var page_name = _current_uri;
 	var value = global_refresh;
@@ -227,6 +232,7 @@ function widget(name, content_area, no_edit)
 	this.current_uri = _current_uri;
 	this.content_area = false;
 	this.no_edit = no_edit;
+	this.is_updating = false;
 
 	/*
 	*	Initialize some internal values.
@@ -267,12 +273,23 @@ function widget(name, content_area, no_edit)
 	*	Fetch current widget state through AJAX call
 	*/
 	this.update_display = function() {
-		if (this.content_area != false) {
+		if (this.content_area != false && $('#widget-' + self.name).is(':visible')) {
+			if (self.is_updating || _is_refreshing) {
+				/**
+				* Prevent multiple instances of the same widget
+				* from trying to fetch data at the same time as this
+				* will possibly hog the system. Also prevent new
+				* ajax calls when user has decided to reload the page
+				*/
+				return;
+			}
+			self.is_updating = true;
 			$.ajax({
 				url: ajax_url + "widget/" + self.name + "/index/",
 				dataType:'json',
 				success: function(data) {
 					$("#" + self.widget_id + ' .' + self.content_area).html(data);
+					self.is_updating = false;
 				}
 			});
 		}

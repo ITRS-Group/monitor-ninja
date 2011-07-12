@@ -25,6 +25,10 @@ $(document).ready(function() {
 		}
 	}
 
+	// stop widgets from trying to reload once user clicked
+	// on a menu
+	$('#menu a').click(function() {_is_refreshing = true;});
+
 	if (_use_contextmenu) {
 		$(".obj_properties").contextMenu({
 				menu: 'property_menu', use_prop:true
