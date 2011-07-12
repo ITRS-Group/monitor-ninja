@@ -38,6 +38,15 @@
 					<td><?php echo $password ?></td>
 					<td><?php echo form::password('password','','class="i160"') ?></td>
 				</tr>
+				<?php
+				$auth_methods = Kohana::config('auth.auth_methods');
+				if (!empty($auth_methods) && is_array($auth_methods)) {	?>
+				<tr>
+					<td><?php echo $this->translate->_('Login method') ?></td>
+					<td><?php echo form::dropdown('auth_method', $auth_methods) ?></td>
+				</tr>
+				<?php
+				}?>
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
 					<td>&nbsp;</td>

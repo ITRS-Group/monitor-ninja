@@ -48,6 +48,7 @@ class Default_Controller extends Ninja_Controller  {
 		$this->session->delete('auth_user');
 		$this->session->delete('nagios_access');
 		$this->session->delete('contact_id');
+		$this->session->delete('auth_method');
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
 		$this->template->form_title =$this->translate->_('Login');
@@ -112,6 +113,11 @@ class Default_Controller extends Ninja_Controller  {
 				$error_msg = $this->translate->_("Request forgery attack detected");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
+			}
+
+			$auth_method = $this->input->post('auth_method', false);
+			if (!empty($auth_method)) {
+					$_SESSION['auth_method'] = $auth_method;
 			}
 
 			# check if new authorization data is available in cgi.cfg

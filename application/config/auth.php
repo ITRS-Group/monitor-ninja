@@ -1,9 +1,39 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
+* 	Define multiple auth methods in case
+* 	we want to be able to use fallbacks for authentication.
+* 	The first option will be the default login method.
+*
+* 	Example:
+* 	$config['auth_methods'] = array('Ninja' => 'Ninja local', 'apache' => 'Apache');
+*
+* 	If this array is empty, the $config['driver'] option below will be used
+*
+*/
+$config['auth_methods'] = array();
+
+/**
  * Type of authentication method
  */
-$config['driver'] = 'Ninja'; // db
+
+# auth method fallback handling
+if (!empty($config['auth_methods'])) {
+	# check if auth method is already set in session or in POST (when logging in)
+	$auth_method = arr::search($_SESSION, 'auth_method', arr::search($_POST, 'auth_method'));
+	if (!empty($auth_method) && array_key_exists($auth_method, $config['auth_methods'])) {
+		$config['driver'] = $auth_method;
+	}
+	if (isset($config['driver']) && $config['driver'] == 'LDAP') {
+		$_SESSION['allow_nacoma_accessrights'] = true;
+	}
+} else {
+	# =======================================================
+	# Set this to your authentication method if you don't
+	# want to use fallbacks defined above
+	# =======================================================
+	$config['driver'] = 'Ninja';
+}
 
 /**
 * 	By switching to the apache driver above and creating
