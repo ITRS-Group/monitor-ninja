@@ -72,15 +72,18 @@ $(document).ready(function() {
 		init_timepicker();
 	});
 
+	init_regexpfilter();
 	$('#filter_field').keyup(function() {
-		if ($(this).attr('value') == '') return;
-		$("select[id$=_tmp] option").show(); // show all
-		$("select[id$=_tmp] option").not(":regex(" + $(this).attr('value') + ")").hide();
+		if ($(this).attr('value') == '') {
+			MyRegexp.resetFilter($("select[id$=_tmp]:visible").attr('id'));
+			return;
+		}
+		MyRegexp.selectFilter($("select[id$=_tmp]:visible").attr('id'), this.value);
 	});
 
 	$('#clear_filter').click(function() {
 		$('#filter_field').attr('value', '');
-		$("select[id$=_tmp] option").show();
+		MyRegexp.resetFilter($("select[id$=_tmp]:visible").attr('id'));
 		$('#filter_field').focus();
 	});
 
@@ -716,15 +719,15 @@ function loopElements(f) {
 	// select all elements that doesn't contain the nosave_suffix
 	$('.multiple:not([name*=' + nosave_suffix + '])').each(function() {
 		if ($(this).is(':visible')) {
-			$(this).children(':option').attr('selected', 'selected');
+			$(this).children('option').attr('selected', 'selected');
 		} else {
-			$(this).children(':option').attr('selected', false);
+			$(this).children('option').attr('selected', false);
 		}
 	});
 
 	// unselect the rest
 	$('.multiple[name*=' + nosave_suffix + ']').each(function() {
-		$(this).children(':option').attr('selected', false);
+		$(this).children('option').attr('selected', false);
 	});
 }
 
@@ -1444,3 +1447,36 @@ jQuery.extend(
 		}
 	}
 );
+
+/**
+*	Regexp filter that (hopefully) works for all browsers
+*	and not just FF
+*/
+function init_regexpfilter() {
+	MyRegexp = new Object();
+	MyRegexp.selectFilterData = new Object();
+	MyRegexp.selectFilter = function(selectId, filter) {
+		var list = document.getElementById(selectId);
+		if(!MyRegexp.selectFilterData[selectId]) { //if we don't have a list of all the options, cache them now'
+			MyRegexp.selectFilterData[selectId] = new Array();
+			for(var i = 0; i < list.options.length; i++) MyRegexp.selectFilterData[selectId][i] = list.options[i];
+		}
+		list.options.length = 0;   //remove all elements from the list
+		var r = new RegExp(filter, 'i');
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+			var o = MyRegexp.selectFilterData[selectId][i];
+			//if(o.text.toLowerCase().indexOf(filter.toLowerCase()) >= 0) list.add(o, null);
+			if(r.test(o.text)) list.add(o, null);
+		}
+	}
+	MyRegexp.resetFilter = function(selectId) {
+		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length) return;
+		var list = document.getElementById(selectId);
+		list.options.length = 0;   //remove all elements from the list
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+			var o = MyRegexp.selectFilterData[selectId][i];
+			list.add(o, null);
+		}
+
+	};
+}
