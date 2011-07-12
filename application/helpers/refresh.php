@@ -30,7 +30,6 @@ class refresh_Core {
 		//-->
 		</script>
 		<script type="text/javascript" language="JavaScript1.1"><!-- function refresh() {window.location.replace( sURL );} //--></script>
-		<script type="text/javascript" language="JavaScript1.2"><!-- function refresh() {window.location.reload( false );} //--></script>
 		<?php
 	}
 
