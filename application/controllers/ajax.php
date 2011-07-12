@@ -418,8 +418,14 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function current_time()
 	{
-		$time = date(nagstat::date_format());
-		echo $time;
+		if (Auth::instance()->logged_in()) {
+			$time = date(nagstat::date_format());
+			echo $time;
+		} else { ?>
+			<script type="text/javascript">
+				window.location.replace('<?php echo Kohana::config('config.site_domain')?>');
+			</script><?php
+		}
 	}
 
 	/**
