@@ -41,7 +41,7 @@ if (!empty($config['auth_methods'])) {
 * 	it is possible to let apache take care of the authentication
 * 	for us. This NUST be a valid script or things will fail.
 */
-$config['apache_login'] = '';
+$config['apache_login'] = '/monitor.old/ninja_login.php';
 
 /**
  * Type of hash to use for passwords. Any algorithm supported by the hash function
