@@ -45,7 +45,7 @@ class refresh_Core {
 			<!--
 				var _stale_check_interval = <?php echo $interval ?>;
 				$(document).ready(function() {
-					check_alive();
+					setTimeout('check_alive()', 1200);
 				});
 
 				function check_alive()
