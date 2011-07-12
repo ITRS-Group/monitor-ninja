@@ -57,6 +57,38 @@ class Ninja_Controller extends Template_Controller {
 		# If no session data exists, a new session is automatically started
 		$this->session = Session::instance();
 
+		/**
+		* check for generic sort parameters in GET and store in session
+		*/
+		# use e.g status/host/all to store sort settings
+		# this will lead to specific sort order for
+		# every <host_name> e.g status/host/<host_name>
+		$sort_key = Router::$current_uri;
+
+		# The following will instead make all calls to e.g status/host
+		# to behave the same
+		# $sort_key = Router::$controller.'/'.Router::$method;
+
+		if ($this->input->get('sort_field', false)) {
+			$cur_data = array(
+				'sort_field' => urldecode($this->input->get('sort_field', false)),
+				'sort_order' => urldecode($this->input->get('sort_order', false))
+				);
+			$session_sort[$sort_key] = $cur_data;
+			$sort_options = $this->session->get('sort_options', false);
+
+			$_SESSION['sort_options'][$sort_key] = $cur_data;
+		}
+
+		# check for sort options in session and use those if found
+		$sort_options = $this->session->get('sort_options', false);
+
+		if (!empty($sort_options) && isset($_SESSION['sort_options'][$sort_key])) {
+			# found sort options in session for requested page
+			$_GET['sort_field'] = $_SESSION['sort_options'][$sort_key]['sort_field'];
+			$_GET['sort_order'] = $_SESSION['sort_options'][$sort_key]['sort_order'];
+		}
+
 		$this->max_attempts =  Kohana::config('auth.max_attempts');
 
 		$this->locale = zend::instance('locale');
