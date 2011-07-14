@@ -14,13 +14,10 @@ if (Auth::instance()->logged_in()) {
 	if (!substr($current_skin, -1, 1) != '/') {
 		$current_skin .= '/';
 	}
+	$this->session->set('use_noc', true);
+}
+$ninja_menu_state = 'hide';
 
-}
-if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
-	$ninja_menu_state = $ninja_menu_setting->setting;
-} else {
-	$ninja_menu_state = 'show';
-}
 if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 ?>
@@ -34,11 +31,42 @@ if (isset($this->template->js_header))
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'status.css') ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'print.css') ?>" media="print" />
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/jquery-ui-custom.css') ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base(false).'application/media/css/jmenu.css' ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/ie7.css') ?>" />
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 		<![endif]-->
+		<style type="text/css">
+			#version_info {
+				top: 35px;
+			}
+			#logo_container{
+				position:absolute;
+				top:5px;
+				left:5px;
+				background: url(<?php echo $this->add_template_path('icons/icon.png'); ?>) no-repeat;
+				width:19px;
+				height:35px;
+				z-index:999;
+			}
+			#jmenu {
+				position: absolute;
+				left:150px;
+				padding-left:130px;
+			}
+			#jmenu_container {
+				width:200px;
+				top:0;
+				left:140px;
+				/*background:#ffffff;*/
+			}
+
+			#infobar-sml{
+				top:35px;
+				z-index:100;
+			}
+		</style>
 		<?php
 			$use_contextmenu = false;
 			echo (!empty($css_header)) ? $css_header : '';
@@ -54,6 +82,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
+			echo html::script('application/media/js/jmenu.js');
 			if (Router::$controller == 'status') {
 				$use_contextmenu = true;
 				# only required for status controller so no need to always include it
@@ -110,6 +139,8 @@ if (isset($this->template->js_header))
 				var _search_save_error = '<?php echo $this->translate->_('ERROR') ?>';
 				var _search_saved_ok = '<?php echo $this->translate->_('Your search was successfully saved.') ?>';
 				var _search_saved_error = '<?php echo $this->translate->_('An error occured when trying to save your search.') ?>';
+				var _no_menu_refresh = true;
+				var _is_noc_template = true;
 
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
@@ -129,166 +160,136 @@ if (isset($this->template->js_header))
 						echo $js_strings;
 					}
 				}
-				if (!empty($inline_js)) {
-					echo "$(document).ready(function() {";
-					echo $inline_js;
-					echo "});";
-				}?>
+				echo "$(document).ready(function() {"; ?>
+				<?php
+				echo isset($inline_js) ? $inline_js : '';
+				echo "});";
+				?>
 			//-->
 		</script>
 		<?php echo html::script($this->add_path('js/common.js')); ?>
-		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
+		<?php echo (!empty($js_header)) ? $js_header : '';
+		echo html::script($this->add_path('noc/js/noc'));?>
 
 	</head>
 
-	<body>
-	<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
-		<div id="infobar-sml">
-			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
-		</div>
-		<div id="top-bar">
-			<?php echo html::image($this->add_path('icons/icon.png'),''); ?>
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
-				<div id="navigation">
-					<ul>
-					<?php
-					if (isset($breadcrumb) && !empty($breadcrumb)){
-						$link = explode(' » ',$breadcrumb);
-						for($i = 0; $i < count($link); $i++) {
-							echo '<li>'.$link[$i].'</li>';
-						}
-					} elseif (isset($title)) {
-						$link = explode(' » ',$title);
-						for($i = 0; $i < count($link); $i++) {
-							echo '<li>'.$link[$i].'</li>';
-						}
-					}
-					?>
-					</ul>
-					<?php
-					$query = arr::search($_REQUEST, 'query');
-					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
-					<?php } else { ?>
-					<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
-			<?php	} ?>
-					<p><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?></p>
-				</div>
-			</form>
-		</div>
 
-		<div id="quickbar">
-		<?php	if (!empty($this->global_notifications)) {	?>
-			<div id="notification_checks">
-				<ul>
-					<?php
-					foreach ($this->global_notifications as $notification) {
-						if (isset($notification[1]) && !empty($notification[1])) {
-							echo '<li>'.html::anchor($notification[1], $notification[0]).'</li>';
-						} else {
-							echo '<li>'.$notification[0].'</li>';
-						}
-					}
+	<body>
+		<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
+		<div id="infobar-sml">
+			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
+		</div>
+		<div id="top-bar"></div>
+		<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
+		<div id="quickbar" style="top:0">
+			<div id="logo_container"></div>
+			<div id="jmenu_container" style="display:block">
+				<ul id="jmenu">
+				<?php
+				if (isset($links))
+					foreach ($links as $header => $link):
+							echo '<li class="">
+										<a href="#">'.html::specialchars($header).'</a>';
+							echo "<ul>";
+							foreach ($link as $title => $url):
+								// internal links
+								if ($url[2] == 0) {
+									$query_string = explode('&',Router::$query_string);
+									$unhandled_string = array(
+										'?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
+										'?hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED),
+										'?service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED),
+										'?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)
+									);
+
+									if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
+										echo '<li class="'.html::specialchars($header).'">'.
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+
+									elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
+										echo '<li class="'.html::specialchars($header).'">'.
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+
+									elseif($url[0] == '/'.Router::$current_uri.'?items_per_page=10')
+										echo '<li class="'.html::specialchars($header).'">'.
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+
+									elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
+										echo '<li class="'.html::specialchars($header).'">'.
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+									else
+										echo '<li class="'.html::specialchars($header).'">'.
+												html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+								}
+								// common external links
+								elseif($url[2] == 1) {
+									echo '<li class="'.html::specialchars($header).'">'.
+										  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span></a></li>';
+								}
+								// local external links
+								elseif($url[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
+									echo '<li class="'.html::specialchars($header).'">'.
+										  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span></a></li>';
+								}
+								// ninja external links
+								elseif ($url[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
+									echo '<li class="'.html::specialchars($header).'">'.
+										  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span></a></li>';
+								}
+
+							endforeach;
+							echo "</ul>";
+							echo "</li>";
+						endforeach;
 					?>
 				</ul>
-			</div>
-		<?php } ?>
-			<div id="quicklinks">
-
 			</div>
 			<div id="icons">
 				<ul>
 					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
-					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
-					<li onclick="window.location.reload()"><?php echo html::image($this->add_path('icons/16x16/refresh.png'),array('alt' => $this->translate->_('Refresh page'), 'title' => $this->translate->_('Refresh page'))) ?></li>
+					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('id' => 'info_icon', 'alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
 					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image($this->add_path('icons/24x24/save_search.png'), array('title' => $this->translate->_('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
 				</ul>
 			</div>
-		</div>
-		<div id="close-menu" title="<?php echo $this->translate->_('Mimimize menu') ?>" onclick="collapse_menu('hide', 1)"></div>
-		<div id="show-menu" title="<?php echo $this->translate->_('Expand menu') ?>" onclick="collapse_menu('show', 1)"></div>
-		<div style="position: fixed; left: 0px; z-index:2">
-
-		<div id="menu" style="overflow-y:auto;">
-			<ul>
+			<p align="right" style="padding-top:10px;"><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?> &nbsp; </p>
+			<div id="navigation" style="padding-right:450px;padding-top:10px">
 			<?php
-			if (isset($links))
-				foreach ($links as $header => $link):
-						echo '<li class="header" onclick="collapse_section(\''.html::specialchars($header).'\', 1)">
-									<cite class="menusection">'.html::specialchars($header).'</cite>
-									<em>'.substr(html::specialchars($header),0,1).'</em>
-								</li>'."\n";
-						foreach ($link as $title => $url):
-							// internal links
-							if ($url[2] == 0) {
-								$query_string = explode('&',Router::$query_string);
-								$unhandled_string = array(
-									'?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
-									'?hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED),
-									'?service_props='.(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED),
-									'?hoststatustypes='.(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE)
-								);
+			$query = arr::search($_REQUEST, 'query');
+			if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo $query ?>" />
+			<?php } else { ?>
+			<input type="text" name="query" id="query" class="textbox" value="<?php echo $this->translate->_('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo $this->translate->_('Search')?>'" />
+	<?php	} ?>
+			</div>
+			<div id="version_info">
+				<ul>
+					<li>
+					<?php echo  Kohana::config('config.product_name') . ":" . config::get_version_info(); ?>
+					</li>
+				</ul>
+			</div>
 
-								if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
-									echo '<li class="'.html::specialchars($header).'">'.
-											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-
-								elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
-									echo '<li class="'.html::specialchars($header).'">'.
-											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-
-								elseif($url[0] == '/'.Router::$current_uri.'?items_per_page=10')
-									echo '<li class="'.html::specialchars($header).'">'.
-											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-
-								elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
-									echo '<li class="'.html::specialchars($header).'">'.
-											html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-											html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-								else
-									echo '<li class="'.html::specialchars($header).'">'.
-											html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-											html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
-							}
-							// common external links
-							elseif($url[2] == 1) {
-								echo '<li class="'.html::specialchars($header).'">'.
-									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
-									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
-							}
-							// local external links
-							elseif($url[2] == 2 && Kohana::config('config.site_domain') == '/monitor/') {
-								echo '<li class="'.html::specialchars($header).'">'.
-									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
-									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
-							}
-							// ninja external links
-							elseif ($url[2] == 3 && Kohana::config('config.site_domain') != '/monitor/') {
-								echo '<li class="'.html::specialchars($header).'">'.
-									  '<a href="'.$url[0].'" target="_blank">'.html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).'</a> '.
-									  '<a href="'.$url[0].'" target="_blank" class="ninja_menu_links">'.html::specialchars($title).'</a></li>'."\n";
-							}
-						endforeach;
-					endforeach;
-				?>
-			</ul>
 		</div>
+		</form>
+		<div style="top:30px;margin-left:0" id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
+
+			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
+			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
-		<div id="page_settings">
+
+		<div id="page_settings" style="top:35px">
 			<ul>
 				<li id="menu_global_settings" class="header"<?php	if (isset($disable_refresh) && $disable_refresh !== false) { ?> style="display:none"<?php } ?>><?php echo $this->translate->_('Global Settings') ?></li>
 				<li id="noheader_ctrl" style="display:none">
 					<input type="checkbox" id="noheader_chbx" value="1" /><label id="noheader_label" for="noheader_chbx"> <?php echo $this->translate->_('Hide page header')?></label>
 				</li>
 				<li id="ninja_use_noc">
-					<input type="checkbox" id="ninja_noc_control" />
+					<?php echo form::checkbox(array('id' => 'ninja_noc_control'), '', $this->session->get('use_noc', false)) ?>
 					<label id="ninja_noc_lable" for="ninja_noc_control"> <?php echo $this->translate->_('Use noc (experimental)') ?></label>
 				</li>
-		<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
+
+				<?php	if (!isset($disable_refresh) || $disable_refresh === false) { ?>
 				<li id="ninja_page_refresh">
 					<input type="checkbox" id="ninja_refresh_control" />
 					<label id="ninja_refresh_lable" for="ninja_refresh_control"> <?php echo $this->translate->_('Pause refresh') ?></label>
@@ -323,24 +324,8 @@ if (isset($this->template->js_header))
 				?>
 			</ul>
 		</div>
-
-		<div id="version_info">
-			<ul>
-				<li>
-				<?php echo  Kohana::config('config.product_name') . ":" . config::get_version_info(); ?>
-				</li>
-			</ul>
-		</div>
-
-		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
-
-			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
-			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
-		</div>
-		<?php if (isset($saved_searches) && !empty($saved_searches)) {
+<?php 	if (isset($saved_searches) && !empty($saved_searches)) {
 			echo $saved_searches;
-		} else {
-
 		}
 		 ?>
 		<div id="save-search-form" title="<?php echo $this->translate->_('Save search') ?>" style="display:none">

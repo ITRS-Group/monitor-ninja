@@ -25,6 +25,39 @@ $(document).ready(function() {
 		}
 	}
 
+	if (_current_uri == 'noc/index') {
+		$('#ninja_noc_control').attr('checked', true);
+	}
+	$('#ninja_noc_control').click(function() {
+		var new_url = $.query;
+		new_url = $.query.REMOVE('d');
+
+		var noheader_val= $('#noheader_chbx').attr('checked') ? 1 : 0;
+		/*
+		if (!$.query.get('noc')) {
+			new_url = $.query.set('noc', true).set('noheader', noheader_val);
+		} else {
+			new_url = $.query.set('noc', false).set('noheader', noheader_val);
+
+			// adding dummy param to be able to reload page without ?noc
+			new_url = $.query.set('d', true).set('noheader', noheader_val);
+		}
+		*/
+		var noc_val = $('#ninja_noc_control').attr('checked') ? 1 : 0;
+		new_url = $.query.set('noc', noc_val).set('noheader', noheader_val);
+
+		// special handling for tac and noc
+		if (_current_uri == 'tac/index') {
+			if ($('#ninja_noc_control').attr('checked')) {
+				new_url = _site_domain + _index_page + '/noc';
+			}
+		} else if (_current_uri == 'noc/index') {
+			new_url = _site_domain + _index_page + '/tac/index';
+		}
+
+		window.location.href = new_url.toString();
+	});
+
 	// stop widgets from trying to reload once user clicked
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
@@ -415,9 +448,14 @@ $(document).ready(function() {
 	});
 	// Handle show/hide of settings layer
 	$("#settings_icon").click(function() {
-		if ($("#page_settings").is(':hidden'))
+		if ($("#page_settings").is(':hidden')) {
 			$("#page_settings").show();
-		else{
+			if ($('#infobar').is(':visible')) {
+				var top = 125;
+				$('#version_info').css('top', (top + 3) + 'px');
+				$('#page_settings').css('top', (top + 3) + 'px');
+			}
+		} else {
 			$("#page_settings").hide();
 		}
 		return false;
@@ -614,7 +652,10 @@ $(document).ready(function() {
 			$('#saved_searches_table').dialog('close');
 		} else {
 			var x = $('#my_saved_searches_img').position().left;
-		var y = $(this).position().top + 69;
+			var y = $(this).position().top + 69;
+			if (typeof _is_noc_template != 'undefined' && _is_noc_template) {
+				y = y-32;
+			}
 			$( "#saved_searches_table" ).dialog('option', 'position', [x,y]);
 			$( "#saved_searches_table" ).dialog( "open" );
 		}
@@ -938,6 +979,12 @@ $(window).resize(function() {
 */
 function scroll_control()
 {
+	// check if the master template wants to prevent
+	// the menu from moving parts of the page
+	if (typeof _no_menu_refresh != 'undefined' && _no_menu_refresh) {
+		return;
+	}
+
 	if ($('#menu').width() < 51) {
 		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');

@@ -98,15 +98,18 @@ class Ninja_widget_Model extends Model
 	*	Assuming that checks has already been made that the user doesn't
 	* 	already have the widget.
 	*/
-	public static function copy_to_user($old_widget=false)
+	public static function copy_to_user($old_widget=false, $page=false)
 	{
 		if (empty($old_widget)) {
 			return false;
 		}
 		$user = Auth::instance()->get_user()->username;
 		$db = Database::instance();
+		if ($page === false) {
+			$page = $old_widget->page;
+		}
 		$sql = "INSERT INTO ninja_widgets (".self::USERFIELD.", page, name, friendly_name, setting) ".
-			'VALUES('.$db->escape($user).', '.$db->escape($old_widget->page).', '.$db->escape($old_widget->name).', '.$db->escape($old_widget->friendly_name).', '.$db->escape($old_widget->setting).')';
+			'VALUES('.$db->escape($user).', '.$db->escape($page).', '.$db->escape($old_widget->name).', '.$db->escape($old_widget->friendly_name).', '.$db->escape($old_widget->setting).')';
 		$db->query($sql);
 	}
 
@@ -132,7 +135,7 @@ class Ninja_widget_Model extends Model
 		# Could've been added later
 		$current_widget = self::get_widget($page, $widget, true);
 		if ($current_widget === false) {
-			self::copy_to_user(self::get_widget($page, $widget));
+			self::copy_to_user(self::get_widget($page, $widget), $page);
 		}
 
 		# all widgets for current page should exist under users name
@@ -145,6 +148,7 @@ class Ninja_widget_Model extends Model
 
 		$res = $db->query($sql);
 		$setting = array();
+		$id = false;
 		if (count($res)!=0) {
 			$cur = $res->current();
 			$setting = $cur->setting;
@@ -161,7 +165,7 @@ class Ninja_widget_Model extends Model
 				$setting = self::merge_settings($setting, array('status' => 'show'));
 				break;
 		}
-		if (!empty($setting)) {
+		if (!empty($setting) && !empty($id)) {
 			$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($id);
 			$db->query($sql);
 			return true;
@@ -274,7 +278,7 @@ class Ninja_widget_Model extends Model
 		}
 
 		$inline_js = false;
-		if (!empty($user_widgets)) {
+		if (!empty($user_widgets) && !empty($settings_widgets)) {
 			# customized settings detected
 			# some widgets should possibly be hidden
 			foreach ($settings_widgets as $id => $w) {

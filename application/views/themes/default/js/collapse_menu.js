@@ -1,6 +1,11 @@
 var default_menu_state = 'show';
 function collapse_menu(action, save) {
 
+	// check if the master template wants to prevent
+	// the menu from moving parts of the page
+	if (typeof _no_menu_refresh != 'undefined' && _no_menu_refresh) {
+		return;
+	}
 	if (action == 'hide') {
 		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
 		$('#menu').css('width', menuwidth+'px');
@@ -41,14 +46,14 @@ function settings(action) {
 }
 
 function show_info(action) {
-	if (action == 'hide') {
-		document.getElementById('version_info').style.display = 'none';
-	}
-	else {
-		if (document.getElementById('version_info').style.display == 'block')
-			document.getElementById('version_info').style.display = 'none';
-		else
-			document.getElementById('version_info').style.display = 'block';
+	if ($('#version_info').is(':visible')) {
+		$('#version_info').hide();
+	} else {
+		if ($('#infobar').is(':visible')) {
+			var top = 125;
+			$('#version_info').css('top', (top + 3) + 'px');
+		}
+		$('#version_info').show();
 	}
 }
 
