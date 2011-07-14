@@ -245,6 +245,12 @@ function widget(name, content_area, no_edit)
 			return false;
 		this.current_interval = $('input[name=' + name + '_refresh]').val();
 		this.title =  $('#' + self.name + '_title').text();
+		if (_current_uri == 'external_widget/show_widget') {
+			$('.widget-menu .widget-collapselink').hide();
+			$('.widget-menu .widget-closelink').hide();
+			$('#' + self.name + '_title').removeClass(self.name + '_editable');
+		}
+
 		return true;
 	}
 
