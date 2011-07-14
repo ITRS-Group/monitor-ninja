@@ -595,6 +595,40 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	*	Wrapper for Unhandled Problems link in menu
+	* 	Equivalent to :
+	* 		/status/service/all/?hoststatustypes=71&servicestatustypes=78&hostprops=10&service_props=10
+	*/
+	public function unhandled_problems()
+	{
+		return $this->service('all',
+			(nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE),
+			(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_PENDING),
+			(nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED), null, null, null,
+			(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED));
+	}
+
+	/**
+	*	Wrapper for Service problems link in menu
+	* 	Equivalent to:
+	* 		/status/service/all?servicestatustypes=14
+	*/
+	public function service_problems()
+	{
+		return $this->service('all', null, (nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN));
+	}
+
+	/**
+	*	Wrapper for Host problems link in menu
+	* 	Equivalent to:
+	* 		/status/host/all/6
+	*/
+	public function host_problems()
+	{
+		return $this->host('all', (nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE));
+	}
+
+	/**
 	 * Show servicegroup status, wrapper for group('service', ...)
 	 * @param $group
 	 * @param $hoststatustypes
@@ -1246,7 +1280,7 @@ class Status_Controller extends Authenticated_Controller {
 		$lable_sort_by = $this->translate->_('Sort by');
 		$lable_last = $this->translate->_('last');
 		switch ($type) {
-			case 'host':
+			case 'host': case 'host_problems':
 				$header['title'] = $title;
 				if (!empty($method) &&!empty($filter_object) && !empty($sort_field_db)) {
 					$header['url_asc'] = Router::$controller.'/'.$method.'/'.$filter_object.'?hoststatustypes='.$host_status.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$sort_field_db;
