@@ -41,6 +41,10 @@ class External_widget_Controller extends Ninja_Controller {
 
 		if (is_null($name)) {
 			$name = Kohana::config('external_widget.widget_name');
+			if (empty($name)) {
+				die($this->translate->_("Don't know what widget to show since no ".
+					"default widget is specified in config file (config/external_widget.php)."));
+			}
 		}
 
 		$this->template->content = $this->add_view('single_widget');
