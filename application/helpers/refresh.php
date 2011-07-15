@@ -64,9 +64,12 @@ class refresh_Core {
 					});
 
 					var url = _site_domain + _index_page + "/ajax/current_time/";
+					sURL = (typeof sURL != 'undefined' ? sURL : false);
+					var data = {sURL: escape(sURL)};
 					$.ajax({
 						url: url,
-						type: 'GET',
+						data: data,
+						type: 'POST',
 						success: function(data) {
 							if (data !='') {
 								$('#page_last_updated').html(data);

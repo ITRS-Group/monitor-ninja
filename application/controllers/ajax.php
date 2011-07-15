@@ -418,10 +418,14 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function current_time()
 	{
+		$sURL = urldecode($this->input->post('sURL', false));
 		if (Auth::instance()->logged_in()) {
 			$time = date(nagstat::date_format());
 			echo $time;
-		} else { ?>
+		} else {
+			if (!empty($sURL)) {
+				$this->session->set('requested_uri', $sURL);
+			}?>
 			<script type="text/javascript">
 				window.location.replace('<?php echo Kohana::config('config.site_domain')?>');
 			</script><?php
