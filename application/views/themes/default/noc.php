@@ -66,6 +66,13 @@ if (isset($this->template->js_header))
 				top:35px;
 				z-index:100;
 			}
+			.config_header{
+				top:20px !important;
+				position:fixed;
+			}
+			.ie-pag-config {
+				right:100px !important;
+			}
 		</style>
 		<?php
 			$use_contextmenu = false;
