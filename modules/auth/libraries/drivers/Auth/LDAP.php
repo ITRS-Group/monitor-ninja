@@ -16,6 +16,8 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			$user = $users->current();
 		}
 
+		$username = $this->ldap_escape($user->username);
+
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
 			return false;
 
@@ -37,7 +39,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
 			&& isset($config['LDAP_UPNSUFFIX']))
 		{
-			if (@ldap_bind($ds, "{$user->username}@{$config['LDAP_UPNSUFFIX']}", $password))
+			if (@ldap_bind($ds, "{$username}@{$config['LDAP_UPNSUFFIX']}", $password))
 			{
 				$this->complete_login($user);
 				return true;
@@ -48,7 +50,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			if (!isset($config['LDAP_USERS']) || !isset($config['LDAP_USERKEY']))
 				return false;
 
-			if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$user->username},{$config['LDAP_USERS']}", $password))
+			if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$username},{$config['LDAP_USERS']}", $password))
 			{
 				$this->complete_login($user);
 				return true;
@@ -58,7 +60,7 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 						return false;
 					}
 				}
-				$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=inetOrgPerson)(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$user->username}))");
+				$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=inetOrgPerson)(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$username}))");
 				if($entries = ldap_get_entries($ds,$search)) {
 					unset($entries["count"]);
 					foreach ($entries as $entry) {
@@ -77,5 +79,42 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 	public function password($user)
 	{
 		return NULL;
+	}
+
+	# rfc4514 3 kind of tells us how to escape DN:s.
+	# rfc4515 3 tells us how to escape search filters.
+	# AD does whatever it feels like doing, which isn't related to those two at all.
+	# copied from op5auth
+	private function ldap_escape($str, $from_dn = false)
+	{
+		$dn_ccodes = array(0x5c, 0x20, 0x22, 0x23, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x3b, 0x3c, 0x3e);
+		$ccodes = array();
+		foreach ($dn_ccodes as $ccode) {
+			if ($from_dn)
+				$ccodes['\\'.chr($ccode)] = $ccode;
+			else
+				$ccodes[chr($ccode)] = $ccode;
+		}
+
+		for ($i = 0; $i < 0x20; $i++) {
+			if ($from_dn)
+				$ccodes['\\'.chr($i)] = $i;
+			else
+				$ccodes[chr($i)] = $i;
+		}
+
+		foreach ($ccodes as $chr => $val) {
+			if ($from_dn)
+				$str = str_replace($chr, '\\'.$chr, $str);
+			else
+				$str = str_replace($chr, sprintf('\%02X', $val), $str);
+		}
+
+		$sf_ccodes = array(chr(0) => 0, chr(0x2a) => 0x2a, chr(0x28) => 0x28, chr(0x29) => 0x29);
+
+		foreach ($sf_ccodes as $chr => $val)
+			$str = str_replace($chr, sprintf('\%02X', $val), $str);
+
+		return $str;
 	}
 }
