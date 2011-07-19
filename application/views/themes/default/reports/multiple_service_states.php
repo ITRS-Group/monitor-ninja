@@ -184,7 +184,7 @@
 		</tr>
 		<?php if ($use_average==0) {  ?>
 		<tr class="even">
-			<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: #ffffff' : ''; ?>><?php echo $t->_('Average');?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: #ffffff"' : ''; ?>><?php echo $t->_('Average');?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; "' : 'class="data"'; ?>><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
 						array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),

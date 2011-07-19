@@ -36,12 +36,12 @@ if (isset($schedules)) {
 			<td <?php echo ($create_pdf ? 'style="width:20px"' : 'class="icon status"') ?>>
 				<?php echo html::image($this->add_path('icons/16x16/shield-'.strtolower($state).'.png'), array('title' => $state, 'alt' => $state)); ?>
 			</td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $alert_type; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/?type=host&host='.urlencode($ary['host_name']), $ary['host_name']) ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['service_description']; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px' : '' ?>><?php echo $softhard; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo htmlspecialchars($ary['output']); ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;"' : '' ?>><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;"' : '' ?>><?php echo $alert_type; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;"' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/?type=host&host='.urlencode($ary['host_name']), $ary['host_name']) ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;"' : '' ?>><?php echo $ary['service_description']; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px"' : '' ?>><?php echo $softhard; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;"' : '' ?>><?php echo htmlspecialchars($ary['output']); ?></td>
 		</tr>
 		<?php }
 		} ?>
