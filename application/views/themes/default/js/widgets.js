@@ -5,6 +5,17 @@ $(document).ready(function() {
 	});
 });
 
+// create array prototype to sole the lack of in_array() in javascript
+Array.prototype.has = function(value) {
+	var i;
+	for (var i = 0, loopCnt = this.length; i < loopCnt; i++) {
+		if (this[i] === value) {
+			return true;
+		}
+	}
+	return false;
+};
+
 function widget_upload()
 {
 	self.location.href=_site_domain + _index_page + "/upload/";
@@ -219,6 +230,8 @@ function trim(str) {
 	return str.replace(/^\s+|\s+$/g,"");
 }
 
+var loaded_widgets = new Array();
+
 /**
 *	Ninja widget class
 */
@@ -233,12 +246,19 @@ function widget(name, content_area, no_edit)
 	this.content_area = false;
 	this.no_edit = no_edit;
 	this.is_updating = false;
+	this.instance_id = false;
 
 	/*
 	*	Initialize some internal values.
 	*/
 	this.init_widget = function(name) {
 		self.set_name(name);
+
+		// check that widget isn't already loaded
+		if (loaded_widgets.has(self.name)) {
+			return;
+		}
+
 		if (this.name !== false)
 			this.set_widget_id(name);
 		if (!$('#' + self.widget_id).text())
@@ -251,6 +271,7 @@ function widget(name, content_area, no_edit)
 			$('#' + self.name + '_title').removeClass(self.name + '_editable');
 		}
 
+		loaded_widgets.push(self.name);
 		return true;
 	}
 
@@ -264,11 +285,15 @@ function widget(name, content_area, no_edit)
 		this.name = (name == null) ? false : name;
 	}
 
+	this.set_instance_id = function(instance_id) {
+		this.instance_id = (instance_id == null) ? false : instance_id;
+	}
+
 	/**
 	*	Set the ID of the area that should be updated through the AJAX call.
 	*/
 	this.set_content_area = function(area) {
-		this.content_area = (area == null) ? false : area;
+		this.content_area = (area == null) ? 'widget-content' : area;
 	}
 
 	this.set_widget_id = function(name) {
@@ -290,8 +315,12 @@ function widget(name, content_area, no_edit)
 				return;
 			}
 			self.is_updating = true;
+
+			// clean up widget name before trying to refresh
+			var cleaned_name = self.name;
+			cleaned_name = cleaned_name.replace(self.instance_id, '');
 			$.ajax({
-				url: ajax_url + "widget/" + self.name + "/index/",
+				url: ajax_url + "widget/" + cleaned_name + "/index/?instance_id=" + self.instance_id + '&widget_name=' + cleaned_name,
 				dataType:'json',
 				success: function(data) {
 					$("#" + self.widget_id + ' .' + self.content_area).html(data);

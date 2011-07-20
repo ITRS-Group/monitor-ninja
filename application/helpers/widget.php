@@ -11,6 +11,8 @@ class widget_Core
 	public $widget_full_path = false;
 	public $master_obj = false;
 	public $widgetname = false;
+	private $widget_basename = false;
+	private $instance_id = false;
 	public $translate = false;
 
 	public function __construct()
@@ -23,6 +25,17 @@ class widget_Core
 		# fetch our translation instance
 		$this->translate = zend::instance('Registry')->get('Zend_Translate');
 
+		# check for instance id via GET (widget ajax update)
+		$instance_id = arr::search($_GET, 'instance_id');
+		if ($instance_id) {
+			$this->instance_id = $instance_id;
+		}
+
+		$widget_name = arr::search($_GET, 'widget_name');
+		if ($widget_name) {
+			$this->set_instance_vars($widget_name, $instance_id);
+		}
+
 		# suppress output until widget is done
 		ob_implicit_flush(0);
 		ob_start();
@@ -34,7 +47,7 @@ class widget_Core
 	 * @param $arguments array: Widget arguments
 	 * @param $master ?
 	 */
-	public function add($name=false, $arguments=false, &$master=false)
+	public function add($name=false, $arguments=false, &$master=false, $instance_id=false)
 	{
 
 		try {
@@ -46,10 +59,17 @@ class widget_Core
 			}
 			require_once($path);
 			$classname = $name.'_Widget';
+
 			$obj = new $classname;
+
+			# set instance variables to make it possible with multiple instances
+			$obj->set_instance_vars($name, $instance_id);
+
 			# if we have a requested widget method - let's call it
 			# always call index method of widget
 			$widget_method = 'index';
+			$master->inline_js .= "var ".$name.$instance_id." = new widget('".$name.$instance_id."');";
+			$master->inline_js .= $name.$instance_id.".set_instance_id('".$instance_id."');";
 			return $obj->$widget_method($arguments, $master);
 		} catch (Exception $ex) {
 			$master->widgets[] = "<div id=\"widget-$name\" class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";
@@ -70,10 +90,10 @@ class widget_Core
 
 		$this->widgetname = strtolower(str_replace('_Widget', '',$input));
 
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widgetname, $this->widgetname, false);
+		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widget_basename, $this->widget_basename, false);
 		if ($path === false) {
 			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widgetname, $this->widgetname, false);
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widget_basename, $this->widget_basename, false);
 		}
 
 		if (strstr($path, Kohana::config('widget.custom_dirname'))) {
@@ -81,7 +101,8 @@ class widget_Core
 			$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.custom_dirname');
 		}
 
-		$this->widget_full_path = $this->widget_base_path.$this->widgetname;
+		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
+		$this->widget_full_path = $this->widget_base_path.$widget;
 		return true;
 	}
 
@@ -95,11 +116,12 @@ class widget_Core
 		if (empty($view))
 			return false;
 
+		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
 		# first try custom path
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widgetname, $view, false);
+		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widget_basename, $view, false);
 		if ($path === false) {
 			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widgetname, $view, true);
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widget_basename, $view, true);
 		}
 
 		return $path;
@@ -146,7 +168,7 @@ class widget_Core
 		$type = strtolower($type);
 		$files = false;
 		foreach ($in_files as $file) {
-			$files[] = $this->widget_base_path.$this->widgetname.$file;
+			$files[] = $this->widget_base_path.$this->widget_basename.$file;
 		}
 		switch ($type) {
 		 case 'css':
@@ -178,5 +200,14 @@ class widget_Core
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
 		return $path;
+	}
+
+	/**
+	* set instance variables to make it possible with multiple instances
+	*/
+	public function set_instance_vars($widget_name=false, $instance_id=false) {
+		$this->instance_id = $instance_id;
+		$this->widgetname = $widget_name.$instance_id;
+		$this->widget_basename = $widget_name;
 	}
 }

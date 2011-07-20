@@ -191,6 +191,8 @@ class Ajax_Controller extends Authenticated_Controller {
 		// Disable auto-rendering
 		$this->auto_render = FALSE;
 
+		$instance_id = urldecode($this->input->get('instance_id', false));
+
 		# path to widget helper is somehow lost when doing ajax calls
 		# so let kohana find it for us
 		$widget_core_path = Kohana::find_file('helpers', 'widget', true);
@@ -210,7 +212,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$page = isset($page_parts[1]) ? $page_parts[1] : false;
 			$page = (!empty($page) && $page == 'tac') ? $page.'/index' : $page;
 			if (!empty($page)) {
-				$data = Ninja_widget_Model::get_widget($page, $widget, true);
+				$data = Ninja_widget_Model::get_widget($page, $widget.$instance_id, true);
 				$arguments = $data!==false ? i18n::unserialize(trim($data->setting)) : false;
 				$arguments[0] = false;
 			}
@@ -219,6 +221,10 @@ class Ajax_Controller extends Authenticated_Controller {
 		require_once($path);
 		$classname = $widget.'_Widget';
 		$obj = new $classname;
+
+		# set instance variables to make it possible with multiple instances
+		$obj->set_instance_vars($widget, $instance_id);
+
 		# if we have a requested widget method - let's call it
 		if (!empty($method)) {
 			if (method_exists($obj, $method)) {
