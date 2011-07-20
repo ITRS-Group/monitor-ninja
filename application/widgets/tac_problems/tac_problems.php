@@ -41,12 +41,12 @@ class Tac_problems_Widget extends widget_Core {
 			$title = $arguments['widget_title'];
 		}
 
-		$col_outages = isset($arguments['col_outages']) ? $arguments['col_outages'] : '#ffffff';
-		$col_host_down = isset($arguments['col_host_down']) ? $arguments['col_host_down'] : '#ffffff';
-		$col_service_critical = isset($arguments['col_service_critical']) ? $arguments['col_service_critical'] : '#ffffff';
-		$col_host_unreachable = isset($arguments['col_host_unreachable']) ? $arguments['col_host_unreachable'] : '#ffffff';
-		$col_service_warning = isset($arguments['col_service_warning']) ? $arguments['col_service_warning'] : '#ffffff';
-		$col_service_unknown = isset($arguments['col_service_unknown']) ? $arguments['col_service_unknown'] : '#ffffff';
+		$col_outages = isset($arguments['col_outages'.$widget_id]) ? $arguments['col_outages'.$widget_id] : '#ffffff';
+		$col_host_down = isset($arguments['col_host_down'.$widget_id]) ? $arguments['col_host_down'.$widget_id] : '#ffffff';
+		$col_service_critical = isset($arguments['col_service_critical'.$widget_id]) ? $arguments['col_service_critical'.$widget_id] : '#ffffff';
+		$col_host_unreachable = isset($arguments['col_host_unreachable'.$widget_id]) ? $arguments['col_host_unreachable'.$widget_id] : '#ffffff';
+		$col_service_warning = isset($arguments['col_service_warning'.$widget_id]) ? $arguments['col_service_warning'.$widget_id] : '#ffffff';
+		$col_service_unknown = isset($arguments['col_service_unknown'.$widget_id]) ? $arguments['col_service_unknown'.$widget_id] : '#ffffff';
 
 		# HOSTS DOWN / problems
 		$problem = array();
@@ -60,7 +60,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['url'] = 'outages/index/';
 			$problem[$i]['title'] = count($outage_data).' '.$this->translate->_('Network outages');
 			$problem[$i]['no'] = 0;
-			$problem[$i]['html_id'] = 'id_outages';
+			$problem[$i]['html_id'] = 'id_outages'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_outages;
 			$i++;
 		}
@@ -71,7 +71,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED);
 			$problem[$i]['title'] = $current_status->hosts_down_unacknowledged.' '.$this->translate->_('Unhandled problems');
 			$problem[$i]['no'] = 0;
-			$problem[$i]['html_id'] = 'id_host_down';
+			$problem[$i]['html_id'] = 'id_host_down'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_host_down;
 			$i++;
 		}
@@ -84,7 +84,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['no'] = $current_status->services_critical_host_problem;
 			$problem[$i]['onhost'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.nagstat::SERVICE_CRITICAL;
 			$problem[$i]['title2'] = $current_status->services_critical_host_problem.' '.$this->translate->_('on problem hosts');
-			$problem[$i]['html_id'] = 'id_service_critical';
+			$problem[$i]['html_id'] = 'id_service_critical'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_service_critical;
 			$i++;
 		}
@@ -94,7 +94,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['status'] = $this->translate->_('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED);
 			$problem[$i]['title'] = $current_status->hosts_unreach_unacknowledged.' '.$this->translate->_('Unhandled problems');
-			$problem[$i]['html_id'] = 'id_host_unreachable';
+			$problem[$i]['html_id'] = 'id_host_unreachable'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_host_unreachable;
 			$problem[$i]['no'] = 0;
 			$i++;
@@ -108,7 +108,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['no'] = $current_status->services_warning_host_problem;
 			$problem[$i]['onhost'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.nagstat::SERVICE_WARNING;
 			$problem[$i]['title2'] = $current_status->services_warning_host_problem.' '.$this->translate->_('on problem hosts');
-			$problem[$i]['html_id'] = 'id_service_warning';
+			$problem[$i]['html_id'] = 'id_service_warning'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_service_warning;
 			$i++;
 		}
@@ -121,7 +121,7 @@ class Tac_problems_Widget extends widget_Core {
 			$problem[$i]['no'] = $current_status->services_unknown_host_problem;
 			$problem[$i]['onhost'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE);
 			$problem[$i]['title2'] = $current_status->services_unknown_host_problem.' '.$this->translate->_('on problem hosts');
-			$problem[$i]['html_id'] = 'id_service_unknown';
+			$problem[$i]['html_id'] = 'id_service_unknown'.$widget_id;
 			$problem[$i]['bgcolor'] = $col_service_unknown;
 			$i++;
 		}
@@ -140,6 +140,9 @@ class Tac_problems_Widget extends widget_Core {
 			$this->js = array('/js/tac_problems');
 			$this->master_obj->xtra_js[] = 'application/media/js/mColorPicker.min.js';
 			$this->css = array('/css/tac_problems.css.php');
+			#$this->master_obj->inline_js .= "var ".$widget_id." = new widget('".$widget_id."');";
+			$this->master_obj->inline_js .= "init_tac_problems('".$widget_id."');";
+
 			# call parent helper to assign all
 			# variables to master controller
 			return $this->fetch();

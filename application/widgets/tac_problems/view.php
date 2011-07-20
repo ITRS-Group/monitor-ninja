@@ -15,24 +15,24 @@
 			</tr>
 			<tr>
 				<td><?php echo $this->translate->_('Network outages') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_outages" id="col_outages" value="<?php echo $col_outages ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_outages<?php echo $widget_id ?>" id="col_outages<?php echo $widget_id ?>" value="<?php echo $col_outages ?>" style="height:10px;width:10px;"></td>
 				<td style="width:10px"></td>
 				<td><?php echo $this->translate->_('Host Down') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_down" id="col_hosts_down" value="<?php echo $col_host_down ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_down<?php echo $widget_id ?>" id="col_hosts_down<?php echo $widget_id ?>" value="<?php echo $col_host_down ?>" style="height:10px;width:10px;"></td>
 			</tr>
 			<tr>
 				<td><?php echo $this->translate->_('Host Unreachable') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_unreachable" id="col_hosts_unreachable" value="<?php echo $col_host_unreachable ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_hosts_unreachable<?php echo $widget_id ?>" id="col_hosts_unreachable<?php echo $widget_id ?>" value="<?php echo $col_host_unreachable ?>" style="height:10px;width:10px;"></td>
 				<td style="width:10px"></td>
 				<td><?php echo $this->translate->_('Service Critical') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_critical" id="col_services_critical" value="<?php echo $col_service_critical ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_critical<?php echo $widget_id ?>" id="col_services_critical<?php echo $widget_id ?>" value="<?php echo $col_service_critical ?>" style="height:10px;width:10px;"></td>
 			</tr>
 			<tr>
 				<td><?php echo $this->translate->_('Service Warning') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_warning" id="col_services_warning" value="<?php echo $col_service_warning ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_warning<?php echo $widget_id ?>" id="col_services_warning<?php echo $widget_id ?>" value="<?php echo $col_service_warning ?>" style="height:10px;width:10px;"></td>
 				<td style="width:10px"></td>
 				<td><?php echo $this->translate->_('Service Unknown') ?></td>
-				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_unknown" id="col_services_unknown" value="<?php echo $col_service_unknown ?>" style="height:10px;width:10px;"></td>
+				<td><input type="color" data-text="hidden" data-hex="true" name="col_services_unknown<?php echo $widget_id ?>" id="col_services_unknown<?php echo $widget_id ?>" value="<?php echo $col_service_unknown ?>" style="height:10px;width:10px;"></td>
 			</tr>
 		</table>
 		<?php echo form::close() ?>
