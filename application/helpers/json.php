@@ -15,7 +15,7 @@ class json_Core
 	 */
 	public static function encode($var = false)
 	{
-		if (empty($var)) {
+		if (empty($var) && !is_array($var)) {
 			return false;
 		}
 		if (function_exists('json_encode')) {
