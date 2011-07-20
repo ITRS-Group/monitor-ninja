@@ -50,6 +50,10 @@ class refresh_Core {
 
 				function check_alive()
 				{
+					if (typeof _is_refreshing != 'undefined' && _is_refreshing) {
+						return;
+					}
+
 					var url = _site_domain + _index_page + "/ajax/is_alive/";
 					$.ajax({
 						url: url,
