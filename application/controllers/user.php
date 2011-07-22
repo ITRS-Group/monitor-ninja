@@ -48,6 +48,12 @@ class User_Controller extends Authenticated_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 
+		# check if user is an admin
+		$auth = new Nagios_auth_Model();
+		$is_admin = $auth->view_hosts_root ? true : false;
+		$template->is_admin = $is_admin;
+		unset($auth);
+
 		$this->template->content->widgets = $this->widgets;
 
 		$t = $this->translate;
@@ -279,12 +285,227 @@ class User_Controller extends Authenticated_Controller {
 			'config.popup_delay' => $t->_('Set the delay in milliseconds before the pop-ups (PNP graphs and comments) will be shown. Defaults to 1500ms (1.5s).'),
 			'config.show_display_name' => $t->_('Use this setting to control whether to show display_name for your hosts and services on status/service and search result pages or not.'),
 			'config.show_notes' => $t->_('Use this setting to control whether to show notes for your services on status/service and search result pages or not.'),
-			'config.show_notes_chars' => $t->_('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.')
+			'config.show_notes_chars' => $t->_('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.'),
+			'edit_menu' => $t->_('Edit menu item visibility for limited users.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		}
 		else
 			echo sprintf($t->_("This helptext ('%s') is yet not translated"), $id);
+	}
+
+	/**
+	*	Remove menu item by index
+	* 	Both section string ['about', 'monitoring', etc]
+	* 	and item string ['portal', 'manual', 'support', etc] are required.
+	* 	As a consequence, all menu items has to be explicitly removed before removing the section
+	*/
+	public function menu_remove(&$menu_links=false, &$menu_items=false, $section_str=false, $username=false,
+		$item_str=false, $save=true)
+	{
+		if (empty($menu_links) || empty($menu_items) || empty($section_str)) {
+			return false;
+		}
+
+		if (is_array($section_str)) {
+			if ($save === true) {
+				# call from menu_edit - save all in one call as serialized array
+				Ninja_setting_Model::save_page_setting('removed_menu_items', '*', serialize($section_str), $username);
+				#config::get('removed_menu_items', '*', true);
+				#Session::instance()->set('removed_menu_items.*', serialize($section_str));
+			}
+
+			# we have to make recursive calls
+			foreach ($section_str as $section => $items) {
+				foreach ($items as $item) {
+					$this->menu_remove($menu_links, $menu_items, $section, $item, $username);
+				}
+			}
+		} else {
+			if (empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]])
+				&& empty($menu_links[$menu_items['section_'.$section_str]])) {
+				# remove the section
+				unset($menu_links[$menu_items['section_'.$section_str]]);
+			} elseif (isset($menu_items[$item_str]) && !empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
+				unset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]]);
+			}
+		}
+	}
+
+	/**
+	* Add menu item
+	* $link_info should be an array containing the link info
+	*/
+	public function menu_add(&$menu_links=false, &$menu_items=false, $section_str=false,
+		$item_str=false, $link_info=false)
+	{
+		# check if current user is an admin
+		$auth = new Nagios_auth_Model();
+		$is_admin = $auth->view_hosts_root ? true : false;
+		unset($auth);
+
+		if (!$is_admin
+			|| empty($menu_links)
+			|| empty($menu_items)
+			|| empty($section_str)
+			|| empty($link_info)
+			|| !isset($menu_items['section_'.$section_str])
+			|| !is_array($link_info)) {
+			return false;
+		}
+
+		$menu_links[$menu_items['section_'.$section_str]][$item_str] = $link_info;
+	}
+
+	/**
+	*	Edit menu items
+	* 	Show form for editing menu items
+	*/
+	public function menu_edit()
+	{
+		$selected_user = $this->input->post('username', false);
+		$this->template->disable_refresh = true;
+
+		$this->template->content = $this->add_view('user/edit_menu');
+		$this->xtra_js[] = $this->add_path('user/js/user');
+		$this->template->js_header = $this->add_view('js_header');
+		$this->template->js_header->js = $this->xtra_js;
+		$content = $this->template->content;
+
+		# check if current user is an admin
+		$auth = new Nagios_auth_Model();
+		$is_admin = $auth->view_hosts_root ? true : false;
+		$content->is_admin = $is_admin;
+		unset($auth);
+
+		$content->noadmin_msg = $this->translate->_("You don't have access to this page. Only visible to administrators.");
+		$content->select_user_message = $this->translate->_("Select the user below to edit the menu for.");
+		$content->description = $this->translate->_("Check the menu items that the should not be visible to the selected user.");
+
+		# fetch all users that aren't admin (authorized_for_all_hosts)
+
+		$empty = array('' => $this->translate->_('Select user'));
+		$limited_users = User_Model::get_limited_users();
+		if (!empty($limited_users)) {
+			$limited_users = array_merge($empty, $limited_users);
+		}
+		$content->limited_users = $limited_users;
+
+		$remove_items = false;
+		$all_items = false;
+		if (!empty($selected_user)) {
+			#
+			#	We need to fetch auth info for the selcted user to
+			#	be able to get correct menu items
+			#	This could probably be done by fetch ninja_user_authorization
+			# 	data for the selected user and assign this to a $auth object
+			#	before including the menu
+			#
+
+			$user_auth = $this->_convert_user_auth($selected_user);
+
+			include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
+			$removed_items = Ninja_setting_Model::fetch_user_page_setting('removed_menu_items', '*', $selected_user);
+			if ($removed_items !== false) {
+				$remove_items = unserialize($removed_items->setting);
+			}
+
+			$all_items = $menu_base;
+			if (!empty($remove_items)) {
+				$this->menu_remove($menu_base, $menu_items, $remove_items, $selected_user, false, false);
+			}
+
+			$content->menu_base = $menu_base;
+			$content->menu_items = $menu_items;
+			$content->sections = $sections;
+			$content->menu = $menu;
+		}
+
+		$content->selected_user = $selected_user;
+
+		$content->remove_items = $remove_items;
+		$content->all_items = $all_items;
+
+		# protected menu items
+		$untouchable_items = array('my_account');
+		$content->untouchable_items = $untouchable_items;
+
+		$content->title = $this->translate->_('Edit menu');
+	}
+
+	/**
+	*	Convert info from ninja_user_authentication table into
+	*	an object that can hold the same info like in nagios_auth_model
+	*/
+	public function _convert_user_auth($username=false)
+	{
+		$user_access = Ninja_user_authorization_Model::get_auth_data($username);
+
+		$fields = array(
+			'authorized_for_all_hosts' => 'view_hosts_root',
+			'authorized_for_all_services' => 'view_services_root',
+			'authorized_for_system_information' => 'authorized_for_system_information',
+			'authorized_for_system_commands' => 'authorized_for_system_commands',
+			'authorized_for_all_service_commands' => 'authorized_for_all_service_commands',
+			'authorized_for_all_host_commands' => 'command_hosts_root',
+			'authorized_for_all_service_commands' => 'command_services_root',
+			'authorized_for_configuration_information' => 'authorized_for_configuration_information'
+		);
+
+		foreach ($fields as $f => $internal) {
+			if (array_key_exists($f, $user_access)) {
+				$access[$internal] = true;
+			} else {
+				$access[$internal] = false;
+			}
+		}
+
+		# special cased
+		if (in_array('authorized_for_configuration_information', $user_access)) {
+			$access['authorized_for_configuration_information'] = true;
+		}
+
+		# according to http://nagios.sourceforge.net/docs/3_0/configcgi.html
+		# regarding authorized_for_all_host_commands
+		# "Users in this list are also automatically authorized to
+		#  issue commands for all services."
+		if ($access['command_hosts_root']) {
+			$access['command_services_root'] = true;
+		}
+
+		return (object)$access;
+	}
+
+	/**
+	*	Update menu - save removed items to db
+	* 	and redirect to menu setup
+	*/
+	public function menu_update()
+	{
+		# check if current user is an admin
+		# and prevent access if not
+		$auth = new Nagios_auth_Model();
+		$is_admin = $auth->view_hosts_root ? true : false;
+		unset($auth);
+		if (!$is_admin) {
+			url::redirect(Router::$controller.'/index');
+		}
+		#die(Kohana::debug($_REQUEST));
+		$username = $this->input->post('username', false);
+		$remove_items = $this->input->post('remove_items', false);
+
+		include(APPPATH.'views/'.$this->theme_path.'menu/menu.php');
+
+		$all_items = $menu_base;
+		if (!empty($remove_items) && !empty($username)) {
+			$this->menu_remove($menu_base, $menu_items, $remove_items, $username);
+		} else {
+			# nothing to remove - set removed setting as false
+			Ninja_setting_Model::save_page_setting('removed_menu_items', '*', false, $username);
+			#config::get('removed_menu_items', '*', true, true);
+		}
+
+		url::redirect(Router::$controller.'/menu_edit');
 	}
 }

@@ -57,4 +57,11 @@ if (!empty($available_setting_sections)) {
 	echo form::submit('save_config', $t->_('Save'));
 	echo form::close();
 }?>
+<br />
+<?php
+if ($is_admin) {
+	echo '<div>'.help::render('edit_menu').' &nbsp;'.
+	html::anchor(Router::$controller.'/menu_edit', $this->translate->_('Edit user menu')).'</div>';
+}
+?>
 </div>

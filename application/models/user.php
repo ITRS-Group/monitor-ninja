@@ -287,6 +287,28 @@ class User_Model extends Auth_User_Model {
 	}
 
 	/**
+	*	Fetch all users that aren't suthorized_for_all_hosts,
+	*	i.e. limited users
+	*/
+	public function get_limited_users()
+	{
+		$db = Database::instance();
+		$query = 'SELECT u.username FROM users u, ninja_user_authorization nua '.
+			'WHERE nua.all_hosts=0 AND u.id=nua.user_id ORDER BY u.username;';
+		$user_res = $db->query($query);
+
+		if (count($user_res)==0) {
+			return false;
+		}
+		$users = false;
+		foreach ($user_res as $user) {
+			$users[$user->username] = $user->username;
+		}
+		return $users;
+
+	}
+
+	/**
 	*	Add a user to db
 	* 	A login role will be created for new users
 	* 	Checks are made that the user doesn't exist

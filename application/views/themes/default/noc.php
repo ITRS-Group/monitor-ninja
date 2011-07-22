@@ -195,6 +195,9 @@ if (isset($this->template->js_header))
 				<?php
 				if (isset($links))
 					foreach ($links as $header => $link):
+							if (empty($link)) {
+								continue;
+							}
 							echo '<li class="">
 										<a href="#">'.html::specialchars($header).'</a>';
 							echo "<ul>";
