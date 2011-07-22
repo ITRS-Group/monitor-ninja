@@ -34,7 +34,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<a id="old_avail_link" style="position: absolute; right: 1%; top: 54px;border: 0px; margin-left: 4px;<?php if ($type=='sla') {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
+			<a id="old_avail_link" style="position: absolute; right: 1%; top: 54px;border: 0px; margin-left: 4px;<?php if ($type=='sla' || Kohana::config('cgi.show_cgi_links') === false) {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
 
 			<div id="switcher" style="margin-top: -7gpx; padding-bottom: 15px;">
