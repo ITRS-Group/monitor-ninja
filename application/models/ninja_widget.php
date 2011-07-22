@@ -352,6 +352,83 @@ class Ninja_widget_Model extends Model
 	}
 
 	/**
+	*	Add a new widget to the widget_order string
+	* 	after validating that it dosesn't exist
+	*/
+	public function add_to_widget_order($page=false, $widget=false)
+	{
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+
+		if (empty($widget) || empty($page)) {
+			return false;
+		}
+
+		$widget_parts = $data->setting;
+		$widget_order = false;
+		$all_parts = false;
+		$all_widgets = array();
+		if (!empty($widget_parts)) {
+			$widget_parts = explode('|', $widget_parts);
+			if (!empty($widget_parts)) {
+				$all_parts = $widget_parts; # stash all sections for later use
+				foreach ($widget_parts as $part) {
+					$parts = explode('=', $part);
+					if (is_array($parts) && !empty($parts)) {
+						$widget_sublist = explode(',', $parts[1]);
+						if (is_array($widget_sublist) && !empty($widget_sublist)) {
+							$all_widgets = array_merge($widget_sublist, $all_widgets);
+						}
+					}
+				}
+			}
+		}
+
+		if (is_array($widget)) {
+			$first_container = false;
+			foreach ($widget as $w) {
+				$w = 'widget-'.$w;
+				if (!empty($all_widgets) && is_array($all_parts) && !empty($all_parts) && !in_array($w, $all_widgets)) {
+					# widget hasn't been added for current user so let's add it
+					$first_container = $all_parts[0]; # we will add the widget to the first div
+					$parts = explode('=', $first_container);
+					if (is_array($parts) && !empty($parts)) {
+						$container_id = $parts[0];
+						$widget_str = $parts[1];
+						$widget_str = $w.','.$widget_str; # insert the widget
+						$first_container = $container_id.'='.$widget_str;
+						$all_parts[0] = $first_container;
+					}
+				}
+			}
+
+			if (!empty($first_container)) {
+				$widget_order = implode('|', $all_parts);
+				# finally add to database
+				return Ninja_setting_Model::save_page_setting('widget_order', $page, $widget_order);
+			}
+		} else {
+			$widget = 'widget-'.$widget;
+			if (!empty($all_widgets) && is_array($all_parts) && !empty($all_parts) && !in_array($widget, $all_widgets)) {
+				# widget hasn't been added for current user so let's add it
+				$first_container = $all_parts[0]; # we will add the widget to the first div
+				$parts = explode('=', $first_container);
+				if (is_array($parts) && !empty($parts)) {
+					$container_id = $parts[0];
+					$widget_str = $parts[1];
+					$widget_str = $widget.','.$widget_str; # insert the widget
+					$first_container = $container_id.'='.$widget_str;
+					$all_parts[0] = $first_container;
+					$widget_order = implode('|', $all_parts);
+
+					# finally add to database
+					return Ninja_setting_Model::save_page_setting('widget_order', $page, $widget_order);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	*	Add a new widget to ninja_widgets table
 	*/
 	public function add_widget($page=false, $name=false, $friendly_name=false)
@@ -368,6 +445,9 @@ class Ninja_widget_Model extends Model
 		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
 			'VALUES('.$db->escape($name).', '.$db->escape($page).', '.$db->escape($friendly_name).')';
 		$return = $db->query($sql);
+
+		# add the new widget to the widget_order string
+		self::add_to_widget_order($page. $name);
 		return $return;
 	}
 }

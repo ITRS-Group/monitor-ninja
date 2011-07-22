@@ -98,6 +98,7 @@ class Noc_Controller extends Authenticated_Controller {
 		if (empty($widgets)) {
 			# nothing found so copy from tac
 
+			Ninja_setting_Model::copy_widget_order('tac/index', 'noc/index');
 			if (!Ninja_widget_Model::fetch_widgets('noc/index', true)) {
 				$default_widgets = Ninja_widget_Model::fetch_widgets('tac/index', true);
 				if (!empty($default_widgets)) {
@@ -110,9 +111,15 @@ class Noc_Controller extends Authenticated_Controller {
 			}
 
 			$widgets = Ninja_widget_Model::fetch_widgets('tac/index');
+			$widget_list = false;
 			if (!empty($widgets)) { # just to be on the safe side
 				foreach ($widgets as $w) {
 					Ninja_widget_Model::copy_to_user($w, 'noc/index');
+					$widget_list[] = $w->name;
+				}
+				if (!empty($widget_list)) {
+					# make last check that we have all widgets in the widget_order string
+					Ninja_widget_Model::add_to_widget_order('noc/index', $widget_list);
 				}
 			}
 		}
