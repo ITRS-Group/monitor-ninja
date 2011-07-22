@@ -247,6 +247,8 @@ function widget(name, content_area, no_edit)
 	this.no_edit = no_edit;
 	this.is_updating = false;
 	this.instance_id = false;
+	var loadimg = new Image(16,16);
+	loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
 
 	/*
 	*	Initialize some internal values.
@@ -316,6 +318,10 @@ function widget(name, content_area, no_edit)
 			}
 			self.is_updating = true;
 
+			// add a loading img to indicate update progress
+			$("#" + self.widget_id + ' .widget-header').append('<img src="' + loadimg.src + '" class="widget_loadimg" />');
+			$("#" + self.widget_id + ' .widget-header .widget_loadimg').css('opacity', 0.4).css('padding-left', '15px').css('width', '12px').css('height', '12px');
+
 			// clean up widget name before trying to refresh
 			var cleaned_name = self.name;
 			cleaned_name = cleaned_name.replace(self.instance_id, '');
@@ -325,6 +331,9 @@ function widget(name, content_area, no_edit)
 				success: function(data) {
 					$("#" + self.widget_id + ' .' + self.content_area).html(data);
 					self.is_updating = false;
+
+					// remove load image
+					$("#" + self.widget_id + ' .widget-header .widget_loadimg').remove();
 				}
 			});
 		}
