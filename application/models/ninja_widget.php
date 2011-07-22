@@ -332,6 +332,9 @@ class Ninja_widget_Model extends Model
 	public function fetch_widget_order($page=false)
 	{
 		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		if ($data === false || empty($data->setting)) {
+			return false;
+		}
 		$widget_parts = $data->setting;
 		$widget_order = false;
 		if (!empty($widget_parts)) {
