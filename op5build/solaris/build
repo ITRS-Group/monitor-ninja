@@ -29,6 +29,7 @@ done
 /opt/csw/bin/gsed -i \
         -e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
         -e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
+        -e 's/^\(.config..show_cgi_links.. = .\)true/\1false/' \
         -e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
         $tempdir$prefix/application/config/config.php
 
