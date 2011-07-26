@@ -250,7 +250,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'ENABLE_HOST_SVC_CHECKS':
 		 case 'DISABLE_HOST_SVC_CHECKS':
 			$xcmd = $cmd{0} === 'D' ? 'DISABLE' : 'ENABLE';
-			$xcmd .= '_HOST_CHECKS';
+			$xcmd .= '_HOST_CHECK';
 			if (!empty($param['_host-too']))
 				$nagios_commands = $this->_build_command($xcmd, $param);
 			break;
@@ -270,7 +270,22 @@ class Command_Controller extends Authenticated_Controller
 			if (!empty($param['_host-too']))
 				$nagios_commands = $this->_build_command($xcmd, $param);
 			break;
-
+		 case 'ENABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'DISABLE_HOSTGROUP_SVC_CHECKS':
+		 case 'ENABLE_SERVICEGROUP_SVC_CHECKS':
+		 case 'DISABLE_SERVICEGROUP_SVC_CHECKS':
+		 case 'ENABLE_HOSTGROUP_SVC_NOTIFICATIONS':
+		 case 'DISABLE_HOSTGROUP_SVC_NOTIFICATIONS':
+		 case 'ENABLE_SERVICEGROUP_SVC_NOTIFICATIONS':
+		 case 'DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS':
+		 case 'SCHEDULE_HOSTGROUP_SVC_DOWNTIME':
+		 case 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME':
+			if (!empty($param['_host-too'])) {
+				unset($param['_host-too']);
+				$xcmd = str_replace('SVC', 'HOST', $cmd);
+				$nagios_commands = $this->_build_command($xcmd, $param);
+			}
+			break;
 		}
 
 		$nagios_commands = $this->_build_command($cmd, $param, $nagios_commands);

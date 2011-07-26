@@ -924,7 +924,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_notifications_services = $t->_('Notifications For All Services In This');
 		$content->cmd_disable_notifications_services = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_NOTIFICATIONS');
 		$content->cmd_enable_notifications_services = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_NOTIFICATIONS');
-		$content->label_active_checks = $t->_('Active Checks Of All Services');
+		$content->label_active_checks = $t->_('Active Checks Of All Services In This');
 		$content->cmd_disable_active_checks = nagioscmd::command_id('DISABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
 		$content->cmd_enable_active_checks = nagioscmd::command_id('ENABLE_'.strtoupper($grouptype).'_SVC_CHECKS');
 
