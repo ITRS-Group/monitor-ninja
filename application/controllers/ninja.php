@@ -263,7 +263,7 @@ class Ninja_Controller extends Template_Controller {
 				$notifications[] = array($this->translate->_('Service checks are disabled'), false);
 			}
 		} else {
-			$notifications[] = array($this->translate->_('Unable to determin if notifications or service checks are disabled'), false);
+			$notifications[] = array($this->translate->_('Unable to determine if notifications or service checks are disabled'), false);
 		}
 		unset($data);
 
