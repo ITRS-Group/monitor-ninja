@@ -122,7 +122,10 @@ class Default_Controller extends Ninja_Controller  {
 
 			# check if new authorization data is available in cgi.cfg
 			# this enables incremental import
-			Cli_Controller::insert_user_data();
+			# we don't need it with LDAP, though, as we already run a cron
+			# script to import users which won't block the user's login
+			if (Kohana::config('auth.driver') !== 'LDAP' || Kohana::config('config.cli_access') === false)
+				Cli_Controller::insert_user_data();
 
 			$username = $this->input->post('username', false);
 			$password = $this->input->post('password', false);

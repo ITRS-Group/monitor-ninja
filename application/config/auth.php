@@ -18,7 +18,7 @@ $config['auth_methods'] = array();
  */
 
 # auth method fallback handling
-if (!empty($config['auth_methods'])) {
+if (!empty($config['auth_methods']) && PHP_SAPI !== 'cli') {
 	# check if auth method is already set in session or in POST (when logging in)
 	$auth_method = arr::search($_SESSION, 'auth_method', arr::search($_POST, 'auth_method'));
 	if (!empty($auth_method) && array_key_exists($auth_method, $config['auth_methods'])) {
