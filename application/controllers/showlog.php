@@ -105,7 +105,7 @@ class Showlog_Controller extends Authenticated_Controller
 
 		# set default if no options are found
 		$this->options = array
-			('detail' => array('service' => '15', 'host' => '7'),
+			(
 			 'state_type' => array('soft' => true, 'hard' => true),
 			 'host_state_options' =>
 			 array('r' => true, 'd' => true, 'u' => true),
@@ -132,7 +132,6 @@ class Showlog_Controller extends Authenticated_Controller
 	{
 		$x = $this->translate;
 
-		$this->template->content = $this->add_view('showlog/showlog');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -192,38 +191,29 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function alert_history($obj_name = false)
 	{
+		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$this->template->content = $this->add_view('showlog/alertlog');
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Alert history");
-		$obj_name = $this->input->get('host', $obj_name);
-		if ($obj_name) {
-			$obj_type = 'host';
+		$service = false;
+		$host = $this->input->get('host', $obj_name);
+		if ($host) {
 			$service = urldecode( # check for service param passed in GET or POST
 					$this->input->get('service',
 						$this->input->post('service', false)
 					)
 				);
-			if (!is_array($obj_name)) {
-				if (strstr($obj_name, ';') !== false || !empty($service)) {
-					$obj_type = 'service';
-					$this->options['host_state_options'] = array();
-					$this->options['hide_downtime'] = true;
-					$this->options['hide_logrotation'] = true;
-				}
-				$obj_name = !empty($service) ? $obj_name.';'.$service : $obj_name;
-				$obj_name = array($obj_name);
+			if ($service) {
+				$service = array($host.';'.$service);
+				$host = false;
 			}
-			$this->options[$obj_type] = $obj_name;
-			$first = urldecode( $this->input->get('first', $this->input->post('first', false)));
-			if (empty($first)) {
-				$this->options['first'] = time() - (2419200 * 3);
+			elseif (strstr($host, ';') !== false) {
+				$service = array($host);
+				$host = false;
 			}
-		}
-
-		if (!isset($this->options['have_options'])) {
-			$this->options['hide_process'] = true;
-			$this->options['hide_initial'] = true;
-			$this->options['hide_commands'] = true;
-			$this->options['hide_notifications'] = true;
+			else {
+				$host = array($host);
+			}
 		}
 
 		$auth = new Nagios_auth_Model();
@@ -232,12 +222,30 @@ class Showlog_Controller extends Authenticated_Controller
 			$is_authorized = true;
 		}
 
+		$log_model = new Alertlog_Model();
+		$this->options = array_merge($this->options, array(
+			'hosts' => $host,
+			'services' => $service
+		));
+		$cnt = $log_model->get_log_entries($this->options, false, false, true);
+
+		$pagination = new Pagination(
+			array(
+				'total_items' => $cnt,
+				'items_per_page' => $items_per_page
+			));
+		$offset = $pagination->sql_offset;
+		$entries = $log_model->get_log_entries($this->options, $items_per_page, $offset);
+		$this->template->content->entries = $entries;
+		$this->template->content->pagination = $pagination;
+		$this->template->content->total_entries = $cnt;
 		$this->template->content->is_authorized = $is_authorized;
 		$this->template->content->options = $this->options;
 	}
 
 	public function showlog()
 	{
+		$this->template->content = $this->add_view('showlog/showlog');
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Event Log");
 		$this->options['hide_initial'] = true;
