@@ -470,8 +470,8 @@ function widget(name, content_area, no_edit)
 	this.set_content_area(content_area);
 
 	// only enable refresh and interval editing
-	// if we have a content_area
-	if (this.content_area) {
+	// if we have a content_area and there's a sider div
+	if (this.content_area && $("#" + this.name + "_slider").length) {
 		this.set_refresh_interval(true);
 		this.init_slider();
 	}
