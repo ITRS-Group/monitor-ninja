@@ -4,6 +4,33 @@
 <div id="response"></div>
 <?php echo form::open('showlog/'.Router::$method, array('id' => 'summary_form')); ?>
 <div class="widget left w98">
+<h1>Alert history
+<?php
+	$hosts_shown = true;
+	if (!empty($options['hosts'])) {
+		echo " for host " . $options['hosts'][0];
+		$remember_object = form::hidden('host', $options['hosts'][0]);
+	}
+	if (!empty($options['hostgroups'])) {
+		echo " for hostgroup " . $options['hostgroups'][0];
+		$remember_object = form::hidden('hostgroup', $options['hostgroups'][0]);
+	}
+	if (!empty($options['services'])) {
+		echo " for service " . $options['services'][0];
+		$remember_object = form::hidden('service', $options['services'][0]);
+		$hosts_shown = false;
+	}
+	if (!empty($options['servicegroups'])) {
+		echo " for servicegroup " . $options['servicegroups'][0];
+		$remember_object = form::hidden('servicegroup', $options['servicegroups'][0]);
+		$hosts_shown = false;
+	}
+?>
+</h1>
+<?php
+	if (isset($remember_object))
+		echo $remember_object;
+?>
 	<table class="showlog">
 		<tr>
 			<td>
@@ -17,11 +44,9 @@
 			$i = 0;
 			foreach ($host_state_options as $k => $v) {
 				$i++;
-				$set = isset($options['host_state_options'][$v]);
+				$set = $hosts_shown && isset($options['host_state_options'][$v]);
 				$name = 'host_state_options[' . $v . ']';
-				//echo ($i%2 == 0) ? '': '<tr>';
-				echo form::checkbox($name, 1, $set).' '.$k.'<br />';
-				//echo ($i%2 == 0) ? '</tr>': ''."\n";
+				echo form::checkbox($name, 1, $set, $hosts_shown ? false : 'disabled="disabled"').' '.$k.'<br />';
 			}
 		?>
 		</td><td>
@@ -32,9 +57,7 @@
 				$set = isset($options['service_state_options'][$v]);
 				$i++;
 				$name = 'service_state_options[' . $v . ']';
-				//echo ($i%2 == 0) ? '': '<tr>';
 				echo form::checkbox($name,1, $set).' '.$k.'<br />';
-				//echo ($i%2 == 0) ? '</tr>': ''."\n";
 			}
 		?>
 		</td><td>

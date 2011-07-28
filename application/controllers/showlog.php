@@ -196,9 +196,9 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Alert history");
 		$service = false;
-		$hostgroup = $this->input->get('hostgroup', false);
-		$servicegroup = $this->input->get('servicegroup', false);
-		$host = $this->input->get('host', $obj_name);
+		$hostgroup = $this->input->get('hostgroup', $this->input->post('hostgroup', false));
+		$servicegroup = $this->input->get('servicegroup', $this->input->post('servicegroup', false));
+		$host = $this->input->get('host', $this->input->post('host', $obj_name));
 		if ($host) {
 			$service = urldecode( # check for service param passed in GET or POST
 					$this->input->get('service',
@@ -228,8 +228,8 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->options = array_merge($this->options, array(
 			'hosts' => $host,
 			'services' => $service,
-			'hostgroups' => array($hostgroup),
-			'servicegroups' => array($servicegroup)
+			'hostgroups' => $hostgroup ? array($hostgroup) : false,
+			'servicegroups' => $servicegroup ? array($servicegroup) : false
 		));
 		$cnt = $log_model->get_log_entries($this->options, false, false, true);
 
