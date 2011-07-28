@@ -46,6 +46,24 @@ class Alertlog_Model extends Model
 			}
 			$sql_where[] = implode(' OR ', $svc_cond);
 		}
+		if (isset($options['hostgroups']) && !empty($options['hostgroups'])) {
+			$sql_join['host'] = 'host.host_name = report_data.host_name';
+			$sql_join['host_hostgroup'] = 'host.id = host_hostgroup.host';
+			$sql_join['hostgroup'] = 'hostgroup.id = host_hostgroup.hostgroup';
+			$hg_cond = array();
+			foreach ($options['hostgroups'] as $hostgroup)
+				$hg_cond[] = 'hostgroup.hostgroup_name = '.$db->escape($hostgroup);
+			$sql_where[] = implode(' OR ', $hg_cond);
+		}
+		if (isset($options['servicegroups']) && !empty($options['servicegroups'])) {
+			$sql_join['service'] = 'service.service_description = report_data.service_description AND service.host_name = report_data.host_name';
+			$sql_join['service_servicegroup'] = 'service.id = service_servicegroup.service';
+			$sql_join['servicegroup'] = 'servicegroup.id = service_servicegroup.servicegroup';
+			$hg_cond = array();
+			foreach ($options['servicegroups'] as $servicegroup)
+				$hg_cond[] = 'servicegroup.servicegroup_name = '.$db->escape($servicegroup);
+			$sql_where[] = implode(' OR ', $hg_cond);
+		}
 
 		if (isset($options['state_type'])) {
 			if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'] && isset($options['state_type']['hard']) && (int)$options['state_type']['hard'])

@@ -942,11 +942,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_group_status_grid = $t->_('Status grid');
 				$label_avail = $t->_('Availability');
 				$label_view_for = $t->_('for this servicegroup');
+				$label_alert_history = $t->_('Alert history');
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
-					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
+					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					$label_alert_history => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;
 			case 'hostgroup':
@@ -955,11 +957,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_group_status_grid = $t->_('Status grid');
 				$label_avail = $t->_('Availability');
 				$label_view_for = $t->_('for this hostgroup');
+				$label_alert_history = $t->_('Alert history');
 				$page_links = array(
 					$label_status_details => 'status/service/'.$group.'?group_type='.$grouptype,
 					$label_group_status_overview => 'status/'.$grouptype.'/'.$group,
 					$label_group_status_grid => 'status/'.$grouptype.'_grid/'.$group,
-					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group
+					$label_avail => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					$label_alert_history => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;
 		}
