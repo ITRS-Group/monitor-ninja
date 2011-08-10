@@ -3412,7 +3412,6 @@ class Reports_Model extends Model
 
 		$return_str .= "\tsql {\n";
 		foreach ($res as $row) {
-			unset($row['id']);
 			$return_str .= "\t\tINSERT INTO ".$table."(" . join(',', array_keys($row)) . ')';
 			$return_str .=" VALUES(";
 			$first = true;
