@@ -85,12 +85,12 @@
 				echo form::hidden('first', '');
 				echo form::hidden('last', '');
 				echo form::hidden('have_options', 1);
-				if (isset($options['host'])) {
-					foreach ($options['host'] as $h)
+				if (!empty($options['hosts'])) {
+					foreach ($options['hosts'] as $h)
 					echo form::hidden('host[]', $h);
 				}
-				if (isset($options['service'])) {
-					foreach ($options['service'] as $s) {
+				if (!empty($options['services'])) {
+					foreach ($options['services'] as $s) {
 						echo form::hidden('service[]', $s);
 					}
 				}
