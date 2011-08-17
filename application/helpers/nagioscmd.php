@@ -624,14 +624,14 @@ class nagioscmd_Core
 			 ),
 			 'ENABLE_HOSTGROUP_HOST_CHECKS' => array
 			 ('nagios_id' => 103,
-			  'description' => sprintf($t->_('This command is not implemented in %s.'), $prod_name),
-			  'brief' => $t->_('You are trying to execute an unsupported command.'),
+			  'description' => $t->_('This command is used to enable active checks of all hosts in the specified hostgroup. This <i>does not</i> enable active checks of the services in the hostgroup. '),
+			  'brief' => $t->_('You are trying to enable active checks of all hosts in a hostgroup'),
 			  'template' => 'ENABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name',
 			 ),
 			 'DISABLE_HOSTGROUP_HOST_CHECKS' => array
 			 ('nagios_id' => 104,
-			  'description' => sprintf($t->_('This command is not implemented in %s.'), $prod_name),
-			  'brief' => $t->_('You are trying to execute an unsupported command.'),
+			  'description' => $t->_('This command is used to disable active checks of all hosts in the specified hostgroup. This <i>does not</i> disable  active checks of the services in the hostgroup. '),
+			  'brief' => $t->_('You are trying to  enable active checks of all hosts in a hostgroup'),
 			  'template' => 'DISABLE_HOSTGROUP_HOST_CHECKS;hostgroup_name',
 			 ),
 			 'ENABLE_HOSTGROUP_PASSIVE_SVC_CHECKS' => array
@@ -696,14 +696,14 @@ class nagioscmd_Core
 			 ),
 			 'ENABLE_SERVICEGROUP_HOST_CHECKS' => array
 			 ('nagios_id' => 115,
-			  'description' => sprintf($t->_('This command is not implemented in %s.'), $prod_name),
-			  'brief' => $t->_('You are trying to execute an unsupported command.'),
+			  'description' => $t->_('This command is used to enable active checks of all hosts in the specified servicegroup.  This <i>does not</i> enable active checks of the services in the servicegroup. '),
+			  'brief' => $t->_('You are trying to enable active checks of all services in a servicegroup'),
 			  'template' => 'ENABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name',
 			 ),
 			 'DISABLE_SERVICEGROUP_HOST_CHECKS' => array
 			 ('nagios_id' => 116,
-			  'description' => sprintf($t->_('This command is not implemented in %s.'), $prod_name),
-			  'brief' => $t->_('You are trying to execute an unsupported command.'),
+			  'description' => $t->_('This command is used to disable active checks of all hosts in the specified servicegroup.  This <i>does not</i> disable checks of the services in the servicegroup.'),
+			  'brief' => $t->_('You are trying to disable active checks of all hosts in a servicegroup'),
 			  'template' => 'DISABLE_SERVICEGROUP_HOST_CHECKS;servicegroup_name',
 			 ),
 			 'ENABLE_SERVICEGROUP_PASSIVE_SVC_CHECKS' => array

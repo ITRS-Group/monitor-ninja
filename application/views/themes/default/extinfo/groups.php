@@ -88,18 +88,34 @@ if (!empty($notes)) {?>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => $label_enable.' '.$label_active_checks.' '.$label_grouptype, 'title' => $label_enable.' '.$label_active_checks.' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => $label_enable.' '.$label_active_host_checks.' '.$label_grouptype, 'title' => $label_enable.' '.$label_active_host_checks.' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_enable." ".$label_active_checks." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_host_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_enable." ".$label_active_host_checks." ".$label_grouptype); ?>
 	</td>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $label_disable.' '.$label_active_checks.' '.$label_grouptype, 'title' => $label_disable.' '.$label_active_checks.' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $label_disable.' '.$label_active_host_checks.' '.$label_grouptype, 'title' => $label_disable.' '.$label_active_host_checks.' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_active_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_disable." ".$label_active_checks." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_active_host_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_disable." ".$label_active_host_checks." ".$label_grouptype); ?>
+		</td>
+	</tr>
+	<tr>
+		<td class="status icon">
+			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => $label_enable.' '.$label_active_svc_checks.' '.$label_grouptype, 'title' => $label_enable.' '.$label_active_svc_checks.' '.$label_grouptype)); ?>
+		</td>
+		<td>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_svc_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_enable." ".$label_active_svc_checks." ".$label_grouptype); ?>
+	</td>
+	</tr>
+	<tr>
+		<td class="status icon">
+			<?php echo html::image($this->add_path('icons/16x16/disabled.png'), array('alt' => $label_disable.' '.$label_active_svc_checks.' '.$label_grouptype, 'title' => $label_disable.' '.$label_active_svc_checks.' '.$label_grouptype)); ?>
+		</td>
+		<td>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_disable_active_svc_checks.'&'.strtolower($label_grouptype).'='.$groupname, $label_disable." ".$label_active_svc_checks." ".$label_grouptype); ?>
 		</td>
 	</tr>
 </table>
