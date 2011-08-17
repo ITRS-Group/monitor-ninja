@@ -42,7 +42,7 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 
 <?php echo form::open('command/multi_action'); ?><br />
 <table style="margin-bottom: 2px" id="service_table">
-<caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a></caption>
+<caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select multiple items') ?></a></caption>
 		<tr>
 			<th><em><?php echo $this->translate->_('Status'); ?></em></th>
 			<?php
@@ -223,16 +223,16 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 		</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
 		array(
-			'' => $this->translate->_('Select Action'),
-			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'' => $this->translate->_('Select action'),
+			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
 			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
-			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable Service Notifications'),
-			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
-			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
-			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
+			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
+			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
+			'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
+			'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>

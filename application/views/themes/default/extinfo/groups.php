@@ -34,7 +34,7 @@ if (!empty($notes)) {?>
 
 <div class="widget left w98">
 <table style="border-spacing: 1px; background-color: #dcdccd">
-	<caption><?php echo $label_grouptype ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?>
+	<caption><?php echo ucfirst($label_grouptype) ?> <?php echo $label_commands.' '.$this->translate->_('for').': '.$group_alias.' ('.$groupname.')'; ?>
 		<?php if (nacoma::link()===true)
 			echo nacoma::link('configuration/configure/'.$grouptype.'/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 	</caption>

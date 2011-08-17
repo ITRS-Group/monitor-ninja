@@ -115,17 +115,17 @@ if (isset($host_result) ) {
 </table><br />
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
-			'' => $this->translate->_('Select Action'),
-			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'' => $this->translate->_('Select action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
 			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
-			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
-			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
-			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
-			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule Host Checks'),
-			'ADD_HOST_COMMENT' => $this->translate->_('Add Host Comment')
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks'),
+			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule host checks'),
+			'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
@@ -247,16 +247,16 @@ if (isset($service_result) ) {
 </table><br />
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
 		array(
-			'' => $this->translate->_('Select Action'),
-			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'' => $this->translate->_('Select action'),
+			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
 			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
-			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable Service Notifications'),
-			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable Service Notifications'),
-			'DISABLE_SVC_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_SVC_CHECK' => $this->translate->_('Enable Active Checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule Service Checks'),
-			'ADD_SVC_COMMENT' => $this->translate->_('Add Service Comment')
+			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
+			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
+			'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
+			'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
+			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
+			'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>

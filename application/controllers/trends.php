@@ -908,34 +908,34 @@ class Trends_Controller extends Authenticated_Controller {
 				if (isset($avail_data['values']['SERVICE_DESCRIPTION']) ) {
 					$service_description = $avail_data['values']['SERVICE_DESCRIPTION'];
 					$avail_link .= '&service_description[]=' . "$host_name;$service_description&report_type=services";
-					$avail_link_name = $t->_('Availability Report For This Service');
+					$avail_link_name = $t->_('Availability report for this service');
 
-					$notification_link_name = $t->_('Notifications For This Service');
+					$notification_link_name = $t->_('Notifications for this service');
 					$notification_link .= $host_name.'?service='.$service_description;
 
-					$histogram_link_name = $t->_('View Alert Histogram For This Service');
+					$histogram_link_name = $t->_('View alert histogram for this service');
 					$histogram_link = 'histogram/host/'.$host_name.'?service='.$service_description;
 
-					$trend_links[$t->_('View Trends For This Host')] = array('trends/host/'.$host_name, 'trends');
+					$trend_links[$t->_('View trends for this host')] = array('trends/host/'.$host_name, 'trends');
 
 					$alerthistory_link = 'showlog/alert_history/'.$host_name.';'.$service_description;
-					$alerthistory_link_name = $t->_('View Alert History For This Host');
+					$alerthistory_link_name = $t->_('View alert history for this host');
 				} else {
 					$service_description = false;
-					$avail_link_name = $t->_('Availability Report For This Host');
+					$avail_link_name = $t->_('Availability report for this host');
 					$avail_link .= "&report_type=hosts";
 
 					$statuslink = 'status/service?name='.$host_name;
-					$trend_links[$t->_('Status Detail For This Host')] = array($statuslink, $status_icon);
+					$trend_links[$t->_('Status detail for this host')] = array($statuslink, $status_icon);
 
-					$notification_link_name = $t->_('Notifications For This Host');
+					$notification_link_name = $t->_('Notifications for this host');
 					$notification_link .= $host_name;
 
-					$histogram_link_name = $t->_('View Alert Histogram For This Host');
+					$histogram_link_name = $t->_('View alert histogram for this host');
 					$histogram_link = 'histogram/host/'.$host_name;
 
 					$alerthistory_link = 'showlog/alert_history/'.$host_name;
-					$alerthistory_link_name = $t->_('View Alert History For This Host');
+					$alerthistory_link_name = $t->_('View alert history for this host');
 				}
 				$trend_links[$avail_link_name] = array($avail_link, $avail_link_icon);
 				$trend_links[$notification_link_name] = array($notification_link, $notification_icon);

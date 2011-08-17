@@ -161,15 +161,15 @@
 <?php } ?>
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
-			'' => $this->translate->_('Select Action'),
-			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule Downtime'),
+			'' => $this->translate->_('Select action'),
+			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
 			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove Problem Acknowledgement'),
-			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable Host Notifications'),
-			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable Host Notifications'),
-			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable Notifications For All Services'),
-			'DISABLE_HOST_CHECK' => $this->translate->_('Disable Active Checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable Active Checks')
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
+			'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
+			'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks')
 			)
 		); ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>

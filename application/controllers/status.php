@@ -220,7 +220,7 @@ class Status_Controller extends Authenticated_Controller {
 			} else {
 				$label_host_history = $this->translate->_('Alert history');
 				$label_host_notifications = $this->translate->_('Notifications');
-				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
+				$label_host_status_details = $this->translate->_('Service status detail for all hosts');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
 					 $label_host_history => 'showlog/alert_history/'.$host,
@@ -230,8 +230,8 @@ class Status_Controller extends Authenticated_Controller {
 			}
 		} else {
 			if ($group_type == 'hostgroup') {
-				$label_group_status_details_all = $this->translate->_('Host Status detail');
-				$label_group_status_details = $this->translate->_('Service Status detail');
+				$label_group_status_details_all = $this->translate->_('Host status detail');
+				$label_group_status_details = $this->translate->_('Service status detail');
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_summary = $this->translate->_('Status summary');
 				$label_group_status_grid = $this->translate->_('Status grid');
@@ -248,7 +248,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_summary = $this->translate->_('Status summary');
 				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_service_status_details = $this->translate->_('Service status detail for All service groups');
+				$label_service_status_details = $this->translate->_('Service status detail for all service groups');
 				$label_view_for = $this->translate->_('for this service group');
 				$page_links = array(
 					$label_group_status_overview => Router::$controller.'/'.$group_type.'group/'.$host,
@@ -319,10 +319,10 @@ class Status_Controller extends Authenticated_Controller {
 
 		$host_replace = array(
 			1  => $this->translate->_('Host OK'),
-			2  => $this->translate->_('Host Down'),
-			4  => $this->translate->_('Host Unreachable'),
+			2  => $this->translate->_('Host down'),
+			4  => $this->translate->_('Host unreachable'),
 			6  => $this->translate->_('All host problems'),
-			64 => $this->translate->_('Host Pending'),
+			64 => $this->translate->_('Host pending'),
 			65 => $this->translate->_('Non-problem hosts'),
 			71 => $this->translate->_('All hosts'),
 		);
@@ -395,7 +395,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = strtolower($name) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$name."'";
+		$shown = strtolower($name) == 'all' ? $this->translate->_('All hosts') : $this->translate->_('Host')." '".$name."'";
 
 		# handle host- or servicegroup details
 		$host_model = new Host_Model();
@@ -514,7 +514,7 @@ class Status_Controller extends Authenticated_Controller {
 			} else {
 				$label_host_history = $this->translate->_('Alert history');
 				$label_host_notifications = $this->translate->_('Notifications');
-				$label_host_status_details = $this->translate->_('Service status detail for All hosts');
+				$label_host_status_details = $this->translate->_('Service status detail for all hosts');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
 					 $label_host_history => 'showlog/alert_history/'.$name,
@@ -537,7 +537,7 @@ class Status_Controller extends Authenticated_Controller {
 						$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/all',
 					);
 				} else {
-					$label_group_status_details_all = $this->translate->_('Service status detail for All host groups');
+					$label_group_status_details_all = $this->translate->_('Service status detail for all host groups');
 					$label_group_status_details = $this->translate->_('Host status detail');
 					$label_group_status_overview = $this->translate->_('Status overview');
 					$label_group_status_summary = $this->translate->_('Status summary');
@@ -567,7 +567,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_overview = $this->translate->_('Status overview');
 					$label_group_status_summary = $this->translate->_('Status summary');
 					$label_group_status_grid = $this->translate->_('Service status grid');
-					$label_group_status_details = $this->translate->_('Service status detail for All service groups');
+					$label_group_status_details = $this->translate->_('Service status detail for all service groups');
 					$label_view_for = $this->translate->_('for this service group');
 					$page_links = array(
 						$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$name,
@@ -784,7 +784,7 @@ class Status_Controller extends Authenticated_Controller {
 				);
 			} else {
 
-				$label_group_status_overview_all = $this->translate->_('Status overview for All host groups');
+				$label_group_status_overview_all = $this->translate->_('Status overview for all host groups');
 				$label_group_status_service_details = $this->translate->_('Service status detail');
 				$label_group_status_host_details = $this->translate->_('Host status detail');
 				$label_group_status_summary = $this->translate->_('Status summary');
@@ -814,7 +814,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_summary = $this->translate->_('Status summary');
 				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_group_status_details = $this->translate->_('Service status detail for All service groups');
+				$label_group_status_details = $this->translate->_('Service status detail for all service groups');
 				$label_view_for = $this->translate->_('for this service groups');
 				$page_links = array(
 					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
@@ -976,7 +976,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_host_status_grid => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
-				$label_group_status_summary = $this->translate->_('Status summary for All host groups');
+				$label_group_status_summary = $this->translate->_('Status summary for all host groups');
 				$label_group_service_status_details = $this->translate->_('Service status detail');
 				$label_group_host_status_details = $this->translate->_('Host status detail');
 				$label_group_status_overview = $this->translate->_('Status overview');
@@ -1007,7 +1007,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_service_status_details = $this->translate->_('Service status detail');
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_group_status_summary = $this->translate->_('Status summary for All service groups');
+				$label_group_status_summary = $this->translate->_('Status summary for all service groups');
 				$label_view_for = $this->translate->_('For this service group');
 				$page_links = array(
 						$label_service_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
@@ -1163,7 +1163,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary'
 				);
 			} else {
-				$label_host_status_grid = $this->translate->_('Status grid for All host groups');
+				$label_host_status_grid = $this->translate->_('Status grid for all host groups');
 				$label_group_service_status_details = $this->translate->_('Service status detail');
 				$label_group_host_status_details = $this->translate->_('Host status detail');
 				$label_group_status_overview = $this->translate->_('Status overview');
@@ -1192,7 +1192,7 @@ class Status_Controller extends Authenticated_Controller {
 				$label_service_status_details = $this->translate->_('Service status detail');
 				$label_group_status_overview = $this->translate->_('Status overview');
 				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_host_status_grid = $this->translate->_('Service status grid for All service groups');
+				$label_host_status_grid = $this->translate->_('Service status grid for all service groups');
 				$label_view_for = $this->translate->_('for this service group');
 				$page_links = array(
 						$label_service_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
