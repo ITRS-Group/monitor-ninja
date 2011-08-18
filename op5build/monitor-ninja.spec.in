@@ -77,6 +77,10 @@ ln -sfT %prefix %buildroot/var/www/html/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ %buildroot%prefix/op5
 
+mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
+install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py
+
+
 %post
 sh %prefix/install_scripts/ninja_db_init.sh
 
@@ -91,6 +95,7 @@ fi
 %attr(644,root,root) /etc/cron.d/*
 /var/www/html/monitor
 /var/www/html/ninja
+/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py*
 
 %clean
 rm -rf %buildroot
