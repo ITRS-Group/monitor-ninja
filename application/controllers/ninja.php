@@ -272,7 +272,7 @@ class Ninja_Controller extends Template_Controller {
 		if (nacoma::link()===true && $auth->authorized_for_configuration_information
 			&& $auth->authorized_for_system_commands && $auth->view_hosts_root) {
 			$nacoma = Database::instance('nacoma');
-			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results');
+			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results WHERE visibility != 0');
 			$query->result(false);
 			$row = $query->current();
 			if ($row !== false && $row['cnt'] > 0) {
