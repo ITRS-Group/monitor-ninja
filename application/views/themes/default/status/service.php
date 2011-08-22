@@ -209,7 +209,7 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 <?php	}
 
 		if ($show_notes) { ?>
-		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes ?></td>
+		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer" title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes } ?></td>
 <?php 	} ?>
 	</tr>
 
