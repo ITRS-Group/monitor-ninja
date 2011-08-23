@@ -813,6 +813,7 @@ function object_action(action,the_id)
 		case 'enable_host_check':
 		case 'enable_svc_check':
 		case 'schedule_host_check':
+		case 'schedule_host_svc_checks':
 		case 'schedule_svc_check':
 		case 'add_host_comment':
 		case 'add_svc_comment':
