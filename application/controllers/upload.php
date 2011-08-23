@@ -217,7 +217,7 @@ class Upload_Controller extends Authenticated_Controller
 		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
 		$widget_ok = false;
-		if ($data === false) {
+		if ($data !== false) {
 			# widget already exists - compare versions
 			$check_xml = simplexml_load_file($custom_dir.$widget_name.'/'.$manifest);
 			if ($check_xml !== false) {
