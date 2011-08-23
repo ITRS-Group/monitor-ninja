@@ -116,7 +116,11 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 						if (nacoma::link()===true) {
 							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
 						}
-					?><span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
+
+						if (!empty($row->host_icon_image)) {
+							echo html::anchor('extinfo/details/host/'.$row->host_name,html::image('application/media/images/logos/'.$row->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->host_icon_image_alt, 'title' => $row->host_icon_image_alt)),array('style' => 'border: 0px'));
+						} ?>
+					<span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
 				</span>
 		</td>
 		<?php } else { $c = 0;?>
