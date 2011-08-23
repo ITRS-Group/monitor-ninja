@@ -157,10 +157,11 @@ class nagstat_Core {
 			'$SERVICEDISPLAYNAME$' => 'display_name',
 			'$SERVICEGROUPNAME$' => 'servicegroup_name',
 			'$SERVICESTATE$' => array("status_text[%s, service]", 'current_state'),
-			'$SERVICEGROUPALIAS$' => 'alias'
+			'$SERVICEGROUPALIAS$' => 'alias',
+			'$CURRENT_USER$' => array('current_user', 'host_name')
 		);
 
-		$regexp = '/\$[A-Z]*\$/';
+		$regexp = '/\$[A-Z_]*\$/';
 		$hits = preg_match_all($regexp, $string, $res);
 
 		if ($hits > 0 && !empty($res)) {
@@ -193,6 +194,7 @@ class nagstat_Core {
 	*/
 	public function do_callback(&$callback)
 	{
+		$args = false;
 		if (is_string($callback)) {
 			if (preg_match('/^([^\[]++)\[(.+)\]$/', $callback, $matches)) {
 				// Split the function and args
@@ -315,4 +317,12 @@ class nagstat_Core {
 function status_text($db_status=false, $type='host')
 {
 	return Current_status_Model::status_text($db_status, $type);
+}
+
+/**
+*	Callback to return username of current user
+*/
+function current_user()
+{
+	return Auth::instance()->get_user()->username;
 }
