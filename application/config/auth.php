@@ -1,39 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
-* 	Define multiple auth methods in case
-* 	we want to be able to use fallbacks for authentication.
-* 	The first option will be the default login method.
-*
-* 	Example:
-* 	$config['auth_methods'] = array('Ninja' => 'Ninja local', 'apache' => 'Apache');
-*
-* 	If this array is empty, the $config['driver'] option below will be used
-*
-*/
-$config['auth_methods'] = array();
-
-/**
  * Type of authentication method
- */
-
-# auth method fallback handling
-if (!empty($config['auth_methods']) && PHP_SAPI !== 'cli') {
-	# check if auth method is already set in session or in POST (when logging in)
-	$auth_method = arr::search($_SESSION, 'auth_method', arr::search($_POST, 'auth_method'));
-	if (!empty($auth_method) && array_key_exists($auth_method, $config['auth_methods'])) {
-		$config['driver'] = $auth_method;
-	}
-	if (isset($config['driver']) && $config['driver'] == 'LDAP') {
-		$_SESSION['allow_nacoma_accessrights'] = true;
-	}
-} else {
-	# =======================================================
-	# Set this to your authentication method if you don't
-	# want to use fallbacks defined above
-	# =======================================================
-	$config['driver'] = 'Ninja';
-}
+ *
+ * This can either be set to a string such as 'Ninja' or 'LDAP' to use that
+ * auth method, or it can be set to an array such as
+ *     array('Ninja' => 'Ninja local', 'apache' => 'Apache')
+ * to let the user choose. The array keys will be the auth method's name, and
+ * it's values will be the user-visible string Ninja will use.
+*/
+$config['auth_methods'] = 'Ninja';
 
 /**
 * 	By switching to the apache driver above and creating

@@ -121,26 +121,17 @@ class Cli_Controller extends Authenticated_Controller {
 	 */
 	public function insert_user_data()
 	{
-		$auth_type = Kohana::config('auth.driver');
-		if ($auth_type !== 'LDAP') {
-			# first import new users from cgi.cfg if there is any
-			$passwd_import = new Htpasswd_importer_Model();
-			$passwd_import->overwrite = true;
-			$base_path = System_Model::get_nagios_base_path();
-			$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-			if (substr($etc_path, -1, 1) != '/') {
-				$etc_path .= '/';
-			}
-			$passwd_import->import_hashes($etc_path.'htpasswd.users');
+		$auth_types = Kohana::config('auth.auth_methods');
+		if (!is_array($auth_types))
+			$auth_types = array($auth_types => $auth_types);
 
-
-			if (empty($passwd_import->passwd_ary)) {
-				# this is really bad since no users were found.
-				# It could mean that this system is using some other means of authorization
-				# (like LDAP?) but if we end up here something else in the configuration
-				# is terribly wrong.
-				return false;
-			}
+		// We *only* want LDAP auth, we aren't running this on CLI, and we do allow
+		// CLI access - we can skip this, and let update-users.php deal with it.
+		if (count($auth_types) === 1 && isset($auth_types['LDAP']) &&
+			Kohana::config('config.cli_access') !== false &&
+			PHP_SAPI !== 'cli')
+		{
+			return true;
 		}
 
 		# don't assume any authorized users - start by removing all auth data
@@ -148,12 +139,39 @@ class Cli_Controller extends Authenticated_Controller {
 
 		$config_data = self::get_cgi_config();
 
-		if ($auth_type === 'LDAP' && isset($config_data['user_list']) && !empty($config_data['user_list'])) {
-			# We need to make sure LDAP/AD users exists in merlin.users
-			foreach ($config_data['user_list'] as $user) {
-				User_Model::add_user(array('username' => $user));
+		$abort = true;
+		foreach ($auth_types as $auth_type => $_) {
+			if ($auth_type !== 'LDAP') {
+				# first import new users from cgi.cfg if there is any
+				$passwd_import = new Htpasswd_importer_Model();
+				$passwd_import->overwrite = true;
+				$base_path = System_Model::get_nagios_base_path();
+				$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
+				if (substr($etc_path, -1, 1) != '/') {
+					$etc_path .= '/';
+				}
+				$passwd_import->import_hashes($etc_path.'htpasswd.users');
+
+
+				if (empty($passwd_import->passwd_ary)) {
+					# this is really bad since no users were found.
+					# It could mean that this system is using some other means of authorization
+					# (like LDAP?) but if we end up here something else in the configuration
+					# is terribly wrong.
+					continue;
+				}
 			}
+			else if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
+				# We need to make sure LDAP/AD users exists in merlin.users
+				foreach ($config_data['user_list'] as $user) {
+					if ($user)
+						User_Model::add_user(array('username' => $user));
+				}
+			}
+			$abort = false;
 		}
+		if ($abort)
+			return false;
 
 		# fetch all usernames from users table
 		$users = User_Model::get_all_usernames();

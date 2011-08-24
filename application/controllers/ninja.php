@@ -128,6 +128,18 @@ class Ninja_Controller extends Template_Controller {
 
 		$saved_searches = false;
 
+		// set auth.driver to the currently used authentication method
+		$auth_methods = Kohana::config('auth.auth_methods');
+		if (Kohana::config('auth.driver') && !Kohana::config('auth.auth_methods'))
+			// probably an old user with old custom config - try not to break
+			Kohana::config_set('auth.auth_methods', Kohana::config('auth.driver'));
+		else if (isset($_SESSION['auth_method']))
+			Kohana::config_set('auth.driver', $_SESSION['auth_method']);
+		else if (is_array($auth_methods) && count($auth_methods) == 1)
+			Kohana::config_set('auth.driver', array_pop(array_keys($auth_methods)));
+		else if (!is_array($auth_methods))
+			Kohana::config_set('auth.driver', $auth_methods);
+
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# create the user menu
 			$this->template->links = $this->create_menu();

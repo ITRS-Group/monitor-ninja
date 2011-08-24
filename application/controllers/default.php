@@ -118,14 +118,13 @@ class Default_Controller extends Ninja_Controller  {
 			$auth_method = $this->input->post('auth_method', false);
 			if (!empty($auth_method)) {
 					$_SESSION['auth_method'] = $auth_method;
+					Kohana::config_set('auth.driver', $auth_method);
 			}
+			$auth = Auth::factory();
 
 			# check if new authorization data is available in cgi.cfg
 			# this enables incremental import
-			# we don't need it with LDAP, though, as we already run a cron
-			# script to import users which won't block the user's login
-			if (Kohana::config('auth.driver') !== 'LDAP' || Kohana::config('config.cli_access') === false)
-				Cli_Controller::insert_user_data();
+			Cli_Controller::insert_user_data();
 
 			$username = $this->input->post('username', false);
 			$password = $this->input->post('password', false);
@@ -136,11 +135,11 @@ class Default_Controller extends Ninja_Controller  {
 			# using the Ninja authenticator we must call the driver
 			# explicitly
 			if (Kohana::config('auth.driver') === 'Ninja') {
-				$result = Auth::instance()->driver->login($username, $password, false);
+				$result = $auth->driver->login($username, $password, false);
 			} elseif (Kohana::config('auth.driver') === 'LDAP') {
-				$result = Auth::instance()->driver->login($username, $password, false);
+				$result = $auth->driver->login($username, $password, false);
 			} else {
-				$result = Auth::instance()->login($username, $password);
+				$result = $auth->login($username, $password);
 			}
 			if (!$result) {
 				# increase login attempts counter
@@ -166,13 +165,13 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			$user_data = Auth::instance()->get_user()->last_login;
+			$user_data = $auth->get_user()->last_login;
 			User_Model::complete_login($user_data);
 		}
 
 		# trying to login without $_POST is not allowed and shouldn't
 		# even happen - redirecting to default routes
-		if (!Auth::instance()->logged_in()) {
+		if (!$auth->logged_in()) {
 			url::redirect($this->route_config['_default']);
 		} else {
 			url::redirect($this->route_config['logged_in_default']);
