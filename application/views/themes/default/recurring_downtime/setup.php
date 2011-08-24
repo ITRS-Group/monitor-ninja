@@ -161,7 +161,7 @@ if (!empty($widgets)) {
 								<?php echo $label_days_of_week ?><br />
 								<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
-										<?php for ($i=0;$i<=6;$i++) {
+										<?php foreach ($day_index as $i) {
 										$checked = '';
 										if (isset($schedule_info['recurring_day']) && in_array($i, $schedule_info['recurring_day'])) {
 											$checked = 'checked=checked';
