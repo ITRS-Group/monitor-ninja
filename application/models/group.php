@@ -426,17 +426,15 @@ class Group_Model extends Model
 			return false;
 		}
 
-		# make sure we don't show info on services that
-		# an authorized contact shouldn't see
-		$service_match = $auth->view_hosts_root || $auth->view_services_root ? ''
-			: "  AND service.id IN (SELECT service FROM contact_access WHERE contact=".(int)$contact." AND service IS NOT NULL) ";
-
-		$host_match = false;
+		$host_match = $auth->view_hosts_root ? ''
+			: "  AND h.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
 		if (!empty($hostprops)) {
 			$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
 		}
 
-		$service_match = false;
+		$service_match = $auth->view_hosts_root || $auth->view_services_root ? ''
+			: "  AND service.id IN (SELECT service FROM contact_access WHERE contact=".(int)$contact." AND service IS NOT NULL) ";
+
 		if (!empty($serviceprops)) {
 			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.');
 		}
@@ -462,8 +460,6 @@ class Group_Model extends Model
 						return false;
 					}
 				}
-				$host_match = $auth->view_hosts_root ? ''
-					: "  AND h.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
 
 				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = h.host_name ".
 					"AND current_state = %s ".$service_match.$filter_service_sql;
@@ -488,36 +484,25 @@ class Group_Model extends Model
 					}
 				}
 
-				$host_join = '';
-				$host_where = '';
-				if (!$auth->view_hosts_root) {
-					$host_join = ' INNER JOIN contact_access ON contact_access.host = host.id ';
-					$host_where = ' AND contact_access.contact='.$contact.' AND contact_access.service IS NULL ';
-				}
-				$host_match = $auth->view_hosts_root ? ''
-					: "  AND host.id IN (SELECT host FROM contact_access WHERE contact=".(int)$contact." AND service IS NULL) ";
-
-				if (!empty($hostprops)) {
-					$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
-				}
-
-				if (!empty($hoststatustypes)) {
-					$bits = db::bitmask_to_string($hoststatustypes);
-					$filter_host_sql = " AND host.current_state IN ($bits) ";
-				}
-
-				$svc_query = "SELECT COUNT(*) FROM service WHERE service.host_name = host.host_name AND current_state = %s ".$service_match;
-				$sql = "SELECT host.host_name, host.current_state, host.address, host.action_url, ".
-					"host.notes_url, host.icon_image, host.icon_image_alt, host.display_name, ".
-					"host.current_attempt, host.max_check_attempts, (".
+				$svc_query = "SELECT COUNT(*) FROM service ".
+					"INNER JOIN service_servicegroup ON service.id = service_servicegroup.service ".
+					"WHERE service.host_name = h.host_name ".
+					"AND service_servicegroup.servicegroup = servicegroup.id ".
+					"AND current_state = %s ".$service_match.$filter_service_sql;
+				$sql = "SELECT DISTINCT h.host_name, h.current_state, h.address, h.action_url, ".
+					"h.notes_url, h.icon_image, h.icon_image_alt, h.display_name, ".
+					"h.current_attempt, h.max_check_attempts, (".
 					sprintf($svc_query, Current_status_Model::SERVICE_OK).") AS services_ok,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_WARNING).") AS services_warning,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_CRITICAL).") AS services_critical,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_UNKNOWN).") AS services_unknown,(".
 					sprintf($svc_query, Current_status_Model::SERVICE_PENDING).") AS services_pending ".
-					"FROM host ".
-					"INNER JOIN (SELECT host_name FROM service INNER JOIN service_servicegroup ON service_servicegroup.service = service.id INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup WHERE servicegroup.servicegroup_name = ".$db->escape($group)." GROUP BY host_name) s ON host.host_name = s.host_name ".
-					'WHERE 1=1 '.$host_match.$filter_host_sql;
+					"FROM host h ".
+					"INNER JOIN service ON h.host_name = service.host_name " .
+					"INNER JOIN service_servicegroup ON service_servicegroup.service = service.id ".
+					"INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup ".
+					"WHERE servicegroup.servicegroup_name = ".$db->escape($group).
+					$host_match.$filter_host_sql;
 					break;
 			default:
 				return false;
