@@ -9,6 +9,7 @@
 		<li class="disable_check" id="_menu_disable_host_check"><a href="#disable_host_check"><?php echo $this->translate->_('Disable active checks') ?></a></li>
 		<li class="enable_check" id="_menu_enable_host_check"><a href="#enable_host_check"><?php echo $this->translate->_('Enable active checks') ?></a></li>
 		<li class="schedule_check" id="_menu_schedule_host_check"><a href="#schedule_host_check"><?php echo $this->translate->_('Reschedule host checks') ?></a></li>
+		<li class="schedule_check" id="_menu_schedule_host_svc_checks"><a href="#schedule_host_svc_checks"><?php echo $this->translate->_('Schedule a check of all services on this host') ?></a></li>
 		<li class="add_comment" id="_menu_add_host_comment"><a href="#add_host_comment"><?php echo $this->translate->_('Add host comment') ?></a></li>
 	</ul>
 	<ul id="svc_property_menu" class="contextMenu">

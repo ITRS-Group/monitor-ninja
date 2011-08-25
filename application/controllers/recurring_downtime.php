@@ -232,6 +232,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->label_days_of_week = $t->_('Days of week');
 		$template->label_months = $t->_('Months');
 		$template->day_names = $this->day_names;
+		$template->day_index = array(1, 2, 3, 4, 5, 6, 0);
 		$template->abbr_day_names = $this->abbr_day_names;
 		$template->month_names = $this->month_names;
 		$template->abbr_month_names = $this->abbr_month_names;

@@ -80,6 +80,8 @@ ln -s ../ %buildroot%prefix/op5
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py
 
+mkdir -p %buildroot%_sysconfdir/httpd/conf.d
+install -m 640 op5build/ninja.httpd-conf %buildroot/etc/httpd/conf.d/monitor-ninja.conf
 
 %post
 sh %prefix/install_scripts/ninja_db_init.sh
@@ -96,6 +98,7 @@ fi
 /var/www/html/monitor
 /var/www/html/ninja
 /opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py*
+%attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
 
 %clean
 rm -rf %buildroot

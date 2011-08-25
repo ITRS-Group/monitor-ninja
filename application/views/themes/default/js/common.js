@@ -3,8 +3,15 @@ var _interval = 0;
 var _save_page_interval = 0;
 var current_interval = 0;
 var edit_visible = 0;
+var _save_scroll = true;
 
 $(document).ready(function() {
+	// make scroll memory cookie to be reset
+	// when actively clicking on a link.
+	$('a').click(function() {
+		_save_scroll = false;
+	});
+
 	collapse_menu(_ninja_menu_state);
 	/**
 	*	Show the checkbox to show/hide "page header" if
@@ -474,6 +481,8 @@ $(document).ready(function() {
 		if (typeof _keycommand_forward != 'undefined' && _keycommand_forward != '') {
 			jQuery(document).bind('keydown', _keycommand_forward, function (evt){
 				if (typeof $('.nextpage').attr('href') != 'undefined') {
+					// reset scroll memory to start at top for next page
+					_save_scroll = false;
 					self.location.href=$('.nextpage').attr('href');
 				}
 				return false;
@@ -483,6 +492,8 @@ $(document).ready(function() {
 		if (typeof _keycommand_back != 'undefined' && _keycommand_back != '') {
 			jQuery(document).bind('keydown', _keycommand_back, function (evt){
 				if (typeof $('.prevpage').attr('href') != 'undefined') {
+					// reset scroll memory to start at top for previous page
+					_save_scroll = false;
 					self.location.href=$('.prevpage').attr('href');
 				}
 				return false;
@@ -813,6 +824,7 @@ function object_action(action,the_id)
 		case 'enable_host_check':
 		case 'enable_svc_check':
 		case 'schedule_host_check':
+		case 'schedule_host_svc_checks':
 		case 'schedule_svc_check':
 		case 'add_host_comment':
 		case 'add_svc_comment':
@@ -1007,5 +1019,82 @@ function jgrowl_message(message_str, header_str)
 {
 	if (message_str!='') {
 		$.jGrowl(message_str, { header: header_str });
+	}
+}
+
+
+// ===========================================================
+// code for remembering scroll position between page reloads
+// adapted from http://www.huntingground.freeserve.co.uk/main/mainfram.htm?../scripts/cookies/scrollpos.htm
+// ===========================================================
+
+cookieName = "page_scroll";
+expdays = 5;
+
+function setCookie(name, value, expires, path, domain, secure) {
+	if (!expires) {
+		expires = new Date();
+	}
+	document.cookie = name + "=" + escape(value) +
+	((expires == null) ? "" : "; expires=" + expires.toGMTString()) +
+	((path == null) ? "" : "; path=" + path) +
+	((domain == null) ? "" : "; domain=" + domain) +
+	((secure == null) ? "" : "; secure");
+}
+
+function getCookie(name) {
+	var arg = name + "=";
+	var alen = arg.length;
+	var clen = document.cookie.length;
+	var i = 0;
+	while (i < clen) {
+		var j = i + alen;
+		if (document.cookie.substring(i, j) == arg){
+			return getCookieVal(j);
+		}
+		i = document.cookie.indexOf(" ", i) + 1;
+		if (i == 0) {
+			break;
+		}
+	}
+	return null;
+}
+
+function getCookieVal(offset) {
+	var endstr = document.cookie.indexOf (";", offset);
+	if (endstr == -1) {
+		endstr = document.cookie.length;
+	}
+	return unescape(document.cookie.substring(offset, endstr));
+}
+
+function deleteCookie(name,path,domain) {
+	document.cookie = name + "=" + ((path == null) ? "" : "; path=" + path) + ((domain == null) ? "" : "; domain=" + domain) + "; expires=Thu, 01-Jan-00 00:00:01 GMT";
+}
+
+function saveScroll() {
+	var expdate = new Date();
+	expdate.setTime (expdate.getTime() + (expdays*24*60*60*1000)); // expiry date
+
+	if (!_save_scroll) {
+		// reset scroll memory to top
+		setCookie(cookieName,'0_0',expdate);
+		return;
+	}
+
+	var x = (document.pageXOffset?document.pageXOffset:document.body.scrollLeft);
+	var y = (document.pageYOffset?document.pageYOffset:document.body.scrollTop);
+	Data = x + "_" + y;
+	setCookie(cookieName,Data,expdate);
+}
+
+function loadScroll() { // added function
+	inf = getCookie(cookieName);
+	if(!inf) {
+		return;
+	}
+	var ar = inf.split("_");
+	if (ar.length == 2) {
+		window.scrollTo(parseInt(ar[0]), parseInt(ar[1]));
 	}
 }

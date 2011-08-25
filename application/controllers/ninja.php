@@ -281,6 +281,7 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		$this->global_notifications = $notifications;
+		$this->template->global_notifications = $notifications;
 	}
 
 	/**

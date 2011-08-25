@@ -90,18 +90,18 @@ class widget_Core
 
 		$this->widgetname = strtolower(str_replace('_Widget', '',$input));
 
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widget_basename, $this->widget_basename, false);
+		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
+		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget, $widget, false);
 		if ($path === false) {
 			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widget_basename, $this->widget_basename, false);
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget, $widget, false);
 		}
 
-		if (strstr($path, Kohana::config('widget.custom_dirname'))) {
+		if (strstr($path, Kohana::config('widget.custom_dirname')) !== false) {
 			# we have a custom_widget
 			$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.custom_dirname');
 		}
 
-		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
 		$this->widget_full_path = $this->widget_base_path.$widget;
 		return true;
 	}

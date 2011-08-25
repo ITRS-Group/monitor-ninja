@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');?>
 
 <div style="padding:30px">
-	<h1><?php echo $widget_name ?></h1>
+	<h1><?php echo isset($widget_name) ? $widget_name : ''; ?></h1>
 	<?php echo isset($err_msg) ? $err_msg : '' ?>
 	<?php echo isset($msg) ? $msg : '';
 

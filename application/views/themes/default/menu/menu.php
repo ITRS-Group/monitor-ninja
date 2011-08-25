@@ -7,69 +7,69 @@ if (isset($user_auth)) {
 
 # translate menu labels
 $menu_items = false;
-$menu_items['section_about'] = $this->translate->_('About');
-$menu_items['portal'] = $this->translate->_('op5 Portal');
-$menu_items['manual'] = $this->translate->_('op5 Monitor manual');
-$menu_items['support'] = $this->translate->_('op5 Support portal');
-$menu_items['ninja_project'] = $this->translate->_('The Ninja project');
-$menu_items['merlin_project'] = $this->translate->_('The Merlin project');
-$menu_items['project_documentation'] = $this->translate->_('Project documentation');
+$menu_items['section_about'] = _('About');
+$menu_items['portal'] = _('op5 Portal');
+$menu_items['manual'] = _('op5 Monitor manual');
+$menu_items['support'] = _('op5 Support portal');
+$menu_items['ninja_project'] = _('The Ninja project');
+$menu_items['merlin_project'] = _('The Merlin project');
+$menu_items['project_documentation'] = _('Project documentation');
 
-$menu_items['section_monitoring'] = $this->translate->_('Monitoring');
-$menu_items['tac'] = $this->translate->_('Tactical overview');
-$menu_items['host_detail'] = $this->translate->_('Host detail');
-$menu_items['service_detail'] = $this->translate->_('Service detail');
+$menu_items['section_monitoring'] = _('Monitoring');
+$menu_items['tac'] = _('Tactical overview');
+$menu_items['host_detail'] = _('Host detail');
+$menu_items['service_detail'] = _('Service detail');
 
-$menu_items['hostgroup_summary'] = $this->translate->_('Hostgroup summary');
-$menu_items['hostgroup_overview'] = $this->translate->_('Hostgroup overview');
-$menu_items['hostgroup_grid'] = $this->translate->_('Hostgroup grid');
+$menu_items['hostgroup_summary'] = _('Hostgroup summary');
+$menu_items['hostgroup_overview'] = _('Hostgroup overview');
+$menu_items['hostgroup_grid'] = _('Hostgroup grid');
 
-$menu_items['servicegroup_summary'] = $this->translate->_('Servicegroup summary');
-$menu_items['servicegroup_overview'] = $this->translate->_('Servicegroup overview');
-$menu_items['servicegroup_grid'] = $this->translate->_('Servicegroup grid');
+$menu_items['servicegroup_summary'] = _('Servicegroup summary');
+$menu_items['servicegroup_overview'] = _('Servicegroup overview');
+$menu_items['servicegroup_grid'] = _('Servicegroup grid');
 
-$menu_items['network_outages'] = $this->translate->_('Network outages');
-$menu_items['host_problems'] = $this->translate->_('Host problems');
-$menu_items['service_problems'] = $this->translate->_('Service problems');
-$menu_items['unhandled_problems'] = $this->translate->_('Unhandled problems');
+$menu_items['network_outages'] = _('Network outages');
+$menu_items['host_problems'] = _('Host problems');
+$menu_items['service_problems'] = _('Service problems');
+$menu_items['unhandled_problems'] = _('Unhandled problems');
 
-$menu_items['comments'] = $this->translate->_('Comments');
-$menu_items['schedule_downtime'] = $this->translate->_('Schedule downtime');
-$menu_items['process_info'] = $this->translate->_('Process info');
-$menu_items['performance_info'] = $this->translate->_('Performance info');
-$menu_items['scheduling_queue'] = $this->translate->_('Scheduling queue');
+$menu_items['comments'] = _('Comments');
+$menu_items['schedule_downtime'] = _('Schedule downtime');
+$menu_items['process_info'] = _('Process info');
+$menu_items['performance_info'] = _('Performance info');
+$menu_items['scheduling_queue'] = _('Scheduling queue');
 
 if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('config.hypermap_path') !== false) {
-	$menu_items['hyper_map'] = $this->translate->_('Hyper Map');
+	$menu_items['hyper_map'] = _('Hyper Map');
 }
 
 
 if (Kohana::config('config.nagvis_path') !== false) {
-	$menu_items['nagvis'] = $this->translate->_('Nagvis');
+	$menu_items['nagvis'] = _('Nagvis');
 }
 
-$menu_items['section_reporting'] = $this->translate->_('Reporting');
-$menu_items['trends'] = $this->translate->_('Trends');
-$menu_items['alert_history'] = $this->translate->_('Alert history');
-$menu_items['alert_summary'] = $this->translate->_('Alert summary');
-$menu_items['notifications'] = $this->translate->_('Notifications');
-$menu_items['event_log'] = $this->translate->_('Event log');
-$menu_items['availability'] = $this->translate->_('Availability');
-$menu_items['sla'] = $this->translate->_('SLA Reporting');
-$menu_items['schedule_reports'] = $this->translate->_('Schedule reports');
+$menu_items['section_reporting'] = _('Reporting');
+$menu_items['trends'] = _('Trends');
+$menu_items['alert_history'] = _('Alert history');
+$menu_items['alert_summary'] = _('Alert summary');
+$menu_items['notifications'] = _('Notifications');
+$menu_items['event_log'] = _('Event log');
+$menu_items['availability'] = _('Availability');
+$menu_items['sla'] = _('SLA Reporting');
+$menu_items['schedule_reports'] = _('Schedule reports');
 
 if (Kohana::config('config.cacti_path')) {
-	$menu_items['statistics'] = $this->translate->_('Statistics');
+	$menu_items['statistics'] = _('Statistics');
 }
 
 if ($auth->authorized_for_configuration_information || Kohana::config('config.nacoma_path')===false) {
-	$menu_items['configure'] = $this->translate->_('Configure');
+	$menu_items['configure'] = _('Configure');
 }
 
-$menu_items['section_configuration'] = $this->translate->_('Configuration');
-$menu_items['view_config'] = $this->translate->_('View config');
-$menu_items['my_account'] = $this->translate->_('My Account');
-$menu_items['backup_restore'] = $this->translate->_('Backup/Restore');
+$menu_items['section_configuration'] = _('Configuration');
+$menu_items['view_config'] = _('View config');
+$menu_items['my_account'] = _('My Account');
+$menu_items['backup_restore'] = _('Backup/Restore');
 
 # menu structure using array keys from translated labels above
 $menu = array(

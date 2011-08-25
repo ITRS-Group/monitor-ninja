@@ -59,16 +59,16 @@ class Upload_Controller extends Authenticated_Controller
 			url::redirect(Router::$controller.'/file_upload');
 		}
 
-		if (!upload::valid($_FILES['upload_file'])) {
+		# assumes upload directory exists with read/write permissions
+		$savepath = Kohana::config('upload.directory');
+
+		if (!upload::valid($_FILES['upload_file']) || !upload::type($_FILES['upload_file'], array('zip'))) {
 			$ct->err_msg = $this->translate->_("Uploaded file doesn't seem to be valid - aborting.");
-			unlink($savepath.$file['name']);
 			return;
 		}
 
 		$file = $_FILES['upload_file'];
 
-		# assumes upload directory exists with read/write permissions
-		$savepath = Kohana::config('upload.directory');
 		upload::save($file, $file['name'], $savepath);
 
 		$widget_name = false;
@@ -217,7 +217,7 @@ class Upload_Controller extends Authenticated_Controller
 		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
 		$widget_ok = false;
-		if ($data === false) {
+		if ($data !== false) {
 			# widget already exists - compare versions
 			$check_xml = simplexml_load_file($custom_dir.$widget_name.'/'.$manifest);
 			if ($check_xml !== false) {
