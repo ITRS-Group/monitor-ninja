@@ -181,7 +181,7 @@ if (isset($this->template->js_header))
 	</head>
 
 
-	<body>
+	<body onload="loadScroll()" onunload="saveScroll()">
 		<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
 			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
