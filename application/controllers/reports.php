@@ -889,6 +889,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
+			Kohana::close_buffers(FALSE);
 		}
 
 		$in_host 			= arr::search($_REQUEST, 'host', false);
@@ -1317,6 +1318,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		# AVAIL REPORT
 		if ($in_csvoutput) {
+			Kohana::close_buffers(FALSE);
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
 			die();
 			# if all went OK we have csv_status === true or we have an error string
