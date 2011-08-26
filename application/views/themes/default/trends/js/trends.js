@@ -78,15 +78,8 @@ $(document).ready(function() {
 
 	var class_rest = '';
 	$('.trend_event').mouseover(function(e) {
-		var right = $(window).width();
-
-		var x_offset = e.pageX-195;
-		var y_offset = e.pageY-175;
-		if ((x_offset + 455) > right) {
-			x_offset = right - 455;
-		}
-
-		y_offset = y_offset < 5 ? 5 : y_offset;
+		var x_offset = 300;
+		var y_offset = 119;
 
 		class_rest = $(this).attr('class');
 		class_rest = class_rest.replace('trend_event ', '');
