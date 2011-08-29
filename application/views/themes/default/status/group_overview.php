@@ -121,8 +121,10 @@
 					$lable_extinfo_host = $t->_('View Extended Information For This Host');
 					echo html::anchor('extinfo/details/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') );
 
-					$lable_statusmap = $t->_('Locate Host On Map');
-					echo html::anchor('statusmap/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') );
+					if ( Kohana::config('config.nagvis_path') ) {
+						$lable_statusmap = $t->_('Locate Host On Map');
+						echo html::anchor('statusmap/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') );
+					}
 
 					$lable_svc_status = $t->_('View Service Details For This Host');
 					echo html::anchor('status/service/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') );

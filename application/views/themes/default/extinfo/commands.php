@@ -8,7 +8,7 @@
 		</tr>
 		<?php # only for hosts!
 			$i =0;
-			if ($type == 'host') { # @@@FIXME check if we are using statusmap? USE_STATUSMAP
+			if ($type == 'host' && Kohana::config('config.nagvis_path')) {
 		?>
 		<tr>
 			<td class="dark">
