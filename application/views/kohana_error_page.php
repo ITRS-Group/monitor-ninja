@@ -16,6 +16,26 @@ $content .= '</div>';
 
 $css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
 
+if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
+	mkdir('/tmp/ninja-stacktraces/', 0700, true);
+	$file = tempnam('/tmp/ninja-stacktraces', date('Ymd-hi').'-');
+	$fd = fopen($file, 'w');
+	$error_data = "<html><head>$css_header</head><body>$content</body></html>";
+	$writeerror = false;
+	fwrite($fd, $error_data) or $writeerror = true;
+
+	fclose($fd);
+
+	$css_header = false;
+	$content = '<h3>There was an error rendering the page</h3>';
+	if (!$writeerror) {
+		$content .= '<p>Please contact your administrator. Debug information has been saved to "'.$file.'".</p>';
+	} else {
+		// by special casing this here once, we save some support time every time
+		// log data clobbers a customers hard drive
+		$content .= "<p>Additionally, there was an error when trying to save the debug information to \"$file\". Please check that your hard drive isn't full.</p>";
+	}
+}
 include('themes/default/menu/menu.php');
 $links = $menu_base;
 
