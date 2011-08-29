@@ -18,7 +18,7 @@ if [ $# -ge 1 ]
 then
 	prefix=$1
 else
-	prefix="/opt/monitor";
+	prefix="/opt/monitor/op5/ninja";
 fi
 
 run_sql_file () # (db_login_opts, sql_script_path)
@@ -43,7 +43,7 @@ sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" merlin 2
 if [ "$sla_ver" = "" ]
 then
 	echo "Installing database tables for SLA report configuration"
-	run_sql_file "$db_login_opts" "$prefix/op5/ninja/op5-upgradescripts/sla_v1.sql"
+	run_sql_file "$db_login_opts" "$prefix/op5-upgradescripts/sla_v1.sql"
 	sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version"   merlin 2>/dev/null | sed -n \$p)
 fi
 
@@ -53,7 +53,7 @@ do
 	case "$sla_ver" in
 	[1-3])
 		new_ver=`expr $sla_ver + 1 `
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/sla_v${sla_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/op5-upgradescripts/sla_v${sla_ver}_to_v${new_ver}.sql"
 
 		echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
 		if [ -r "$upgrade_script" ]
@@ -67,7 +67,7 @@ do
 		;;
 	4)
 		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/sla_v4_to_v5.sql"
+		upgrade_script="$prefix/op5-upgradescripts/sla_v4_to_v5.sql"
 		echo -n "Upgrading SLA tables to v5 ... "
 		if [ -r "$upgrade_script" ]
 		then
@@ -91,7 +91,7 @@ avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merl
 if [ "$avail_ver" = "" ]
 then
 	echo "Installing database tables for AVAIL report configuration"
-	run_sql_file "$db_login_opts" "$prefix/op5/ninja/op5-upgradescripts/avail_v1.sql"
+	run_sql_file "$db_login_opts" "$prefix/op5-upgradescripts/avail_v1.sql"
 	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merlin 2>/dev/null | sed -n \$p)
 fi
 
@@ -101,7 +101,7 @@ do
 	case "$avail_ver" in
 	1)
 		new_ver=`expr $avail_ver + 1 `
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v${avail_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/op5-upgradescripts/avail_v${avail_ver}_to_v${new_ver}.sql"
 
 		echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
 		if [ -r "$upgrade_script" ]
@@ -115,7 +115,7 @@ do
 		;;
 	4)
 		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v2_to_v5.sql"
+		upgrade_script="$prefix/op5-upgradescripts/avail_v2_to_v5.sql"
 		echo -n "Upgrading AVAIL tables to v5 ... "
 		if [ -r "$upgrade_script" ]
 		then
@@ -129,7 +129,7 @@ do
 		;;
 	5)
 		# upgrade to latest
-		upgrade_script="$prefix/op5/ninja/op5-upgradescripts/avail_v5_to_v6.sql"
+		upgrade_script="$prefix/op5-upgradescripts/avail_v5_to_v6.sql"
 		echo -n "Upgrading AVAIL tables to v6 ... "
 		if [ -r "$upgrade_script" ]
 		then
@@ -154,11 +154,11 @@ if [ "$sched_db_ver" = "" ]
 then
 	# old scheduled reports hasn't yet been moved into merlin
 	# from monitor_gui so let's do so and set the db_version properly
-	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports.sql"
+	upgrade_script="$prefix/op5-upgradescripts/scheduled_reports.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
 
 	echo "Installing scheduled summary reports"
-	upgrade_script="$prefix/op5/ninja/op5-upgradescripts/scheduled_reports_v2.sql"
+	upgrade_script="$prefix/op5-upgradescripts/scheduled_reports_v2.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
 	mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '2'" merlin 2>/dev/null
 fi
@@ -177,7 +177,7 @@ if [ "$old_sched_db_ver" != "" ]
 then
 	# import old schedules if any
 	echo "Importing old scheduled reports"
-	/usr/bin/env php "$prefix/op5/ninja/op5-upgradescripts/import_schedules.php"
+	/usr/bin/env php "$prefix/op5-upgradescripts/import_schedules.php"
 fi
 
 echo "Database upgrade complete."

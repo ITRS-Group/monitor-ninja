@@ -75,7 +75,7 @@ then
 		fi
 	fi
 else
-	sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh /opt/monitor
+	sh $prefix/op5-upgradescripts/merlin-reports-db-upgrade.sh $prefix
 fi
 
 if [ -n "$db_ver" ]
