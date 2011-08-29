@@ -516,6 +516,7 @@ select#period.popup {
 
 .trend_event{
 	padding:0;
+	border:1px solid white;
 }
 
 div#trend_event_display {
