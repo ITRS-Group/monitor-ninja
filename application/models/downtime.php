@@ -180,7 +180,7 @@ class Downtime_Model extends Model
 				         'AND d.service_description = s.service_description '.
 				         'INNER JOIN host h ON d.host_name = h.host_name '.
 				         'INNER JOIN contact_access ca '.
-				         'ON s.id = ca.service OR h.id = ca.host';
+				         'ON s.id = ca.service';
 				$where .= " AND ca.contact=$auth->id";
 			}
 		} else {
@@ -225,7 +225,7 @@ class Downtime_Model extends Model
 				        'INNER JOIN host h '.
 				        'ON h.host_name = d.host_name '.
 				        'INNER JOIN contact_access ca '.
-				        'ON s.id = ca.service OR h.id = ca.host';
+				        'ON s.id = ca.service';
 			$sql .= ' WHERE d.service_description IS NOT NULL';
 			if (!$auth->view_services_root)
 				$sql .= " AND ca.contact = {$auth->id}";

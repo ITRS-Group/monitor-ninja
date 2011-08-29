@@ -46,7 +46,7 @@ class Comment_Model extends Model {
 				$svc_from = ' INNER JOIN service s ' .
 				            'ON c.service_description = s.service_description ' .
 				            'AND c.host_name = s.host_name';
-				$by_ca = 'ca.host = h.id OR ca.service = s.id';
+				$by_ca = 'ca.service = s.id';
 			} else {
 				$svc_from = '';
 				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
@@ -133,7 +133,7 @@ class Comment_Model extends Model {
 				$svc_from = ' INNER JOIN service s ' .
 				            'ON c.service_description = s.service_description ' .
 				            'AND c.host_name = s.host_name';
-				$by_ca = 'ca.host = h.id OR ca.service = s.id';
+				$by_ca = 'ca.service = s.id';
 			} else {
 				$svc_from = '';
 				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
