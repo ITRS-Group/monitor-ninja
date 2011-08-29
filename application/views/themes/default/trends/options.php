@@ -7,6 +7,7 @@
 </a>
 
 
+<div style="display:none">
 <div id="options">
 <?php	echo form::open('trends/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);')); ?>
 			<h1> <?php echo $label_settings ?></h1>
@@ -68,3 +69,4 @@
 			<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
 		</div>
 	</form>
+</div>
