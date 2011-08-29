@@ -128,13 +128,13 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
-		$("#fancy_content .delete_schedule").each(function() {
+		$("#fancybox-content .delete_schedule").each(function() {
 			$(this).click(function() {
 				schedule_delete($(this).attr('id'));
 			});
 		});
 
-		$("#fancy_content .send_report_now").click(function() {
+		$("#fancybox-content .send_report_now").click(function() {
 			var type_id = $(this).attr('id');
 			type_id = type_id.replace('send_now_', '');
 			type_id = type_id.split('_');
@@ -228,8 +228,8 @@ function validate_report_form(f)
 	var jgrowl_err_str = '';
 
 	var fancy_str = '';
-	if ($('#fancy_content').is(':visible')) {
-		fancy_str = '#fancy_content ';
+	if ($('#fancybox-content').is(':visible')) {
+		fancy_str = '#fancybox-content ';
 	}
 
 	// only run this part if report should be saved
@@ -273,7 +273,7 @@ function trigger_ajax_save(f)
 {
 	// first we need to make sure we get the correct field information
 	// for report_name since fancybox is pretty stupid
-	$('input[name=report_name]').attr('value', $('#fancy_content #report_name').attr('value'));
+	$('input[name=report_name]').attr('value', $('#fancybox-content #report_name').attr('value'));
 
 	// ajax post form options for SLA save generated report
 	var sla_options = {
@@ -282,7 +282,7 @@ function trigger_ajax_save(f)
 		success:		show_sla_saveresponse,	// post-submit callback
 		dataType: 'json'
 	};
-	$('#fancy_content #report_form_sla').ajaxSubmit(sla_options);
+	$('#fancybox-content #report_form_sla').ajaxSubmit(sla_options);
 	return false;
 }
 
@@ -294,8 +294,8 @@ function show_sla_saveresponse(responseText, statusText)
 		// propagate new values to form
 		$('input[name=saved_report_id]').attr('value', responseText['report_id']);
 		$('input[name=report_id]').attr('value', responseText['report_id']);
-		$('input[name=report_name]').attr('value', $('#fancy_content #report_name').attr('value'));
-		$('#scheduled_report_name').text($('#fancy_content #report_name').attr('value'));
+		$('input[name=report_name]').attr('value', $('#fancybox-content #report_name').attr('value'));
+		$('#scheduled_report_name').text($('#fancybox-content #report_name').attr('value'));
 	}
 	$('#view_add_schedule').show();
 	$('#save_to_schedule').hide();
@@ -741,17 +741,17 @@ function edit_state_options(val)
 		return;
 
 	if (val) {
-		$('#fancy_content #state_options').show();
+		$('#fancybox-content #state_options').show();
 	} else {
-		$('#fancy_content #state_options').hide();
+		$('#fancybox-content #state_options').hide();
 	}
 }
 
 function toggle_field_visibility(val, theId) {
 	var fancy_str = '';
 
-	if ($('#fancy_content').is(':visible')) {
-		fancy_str = '#fancy_content ';
+	if ($('#fancybox-content').is(':visible')) {
+		fancy_str = '#fancybox-content ';
 	}
 
 	if (val) {
@@ -859,13 +859,13 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
 				f.elements['includesoftstates'].checked = true;
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
 				f.elements['includesoftstates'].checked = false;
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
@@ -875,12 +875,12 @@ function set_initial_state(what, val)
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
 				//f.elements['assumeinitialstates'].checked = true;
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				//f.elements['assumeinitialstates'].checked = false;
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 				edit_state_options(0);
@@ -891,13 +891,13 @@ function set_initial_state(what, val)
 			if (val!='0') {
 				toggle_label_weight(1, 'sched_downt');
 				//f.elements['scheduleddowntimeasuptime'].checked = true;
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				//f.elements['scheduleddowntimeasuptime'].checked = false;
 				toggle_label_weight(0, 'sched_downt');
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
@@ -905,12 +905,12 @@ function set_initial_state(what, val)
 		case 'cluster_mode':
 			if (val!='0') {
 				toggle_label_weight(1, 'cluster_mode');
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				toggle_label_weight(0, 'cluster_mode');
-				if ($('#fancy_content').is(':visible')) {
+				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
@@ -1089,7 +1089,7 @@ function fetch_field_value(type, id, elem_id)
 		url: _site_domain + _index_page + '/reports/fetch_field_value?id=' + id + '&type=' + type,
 		success: function(data) {
 			$('#' + elem_id).text(data);
-			$('#fancy_content #' + elem_id).text(data);
+			$('#fancybox-content #' + elem_id).text(data);
 		}
 	});
 }
@@ -1155,8 +1155,8 @@ function toggle_state(the_id)
 {
 	var fancy_str = '';
 
-	if ($('#fancy_content').is(':visible')) {
-		fancy_str = '#fancy_content ';
+	if ($('#fancybox-content').is(':visible')) {
+		fancy_str = '#fancybox-content ';
 	}
 
 	if ($(fancy_str + '#' + the_id).attr('checked') ) {

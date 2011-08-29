@@ -29,7 +29,7 @@ if (Session::instance()->get('current_report_params', false)) {
 ?>
 </div>
 <span id="save_to_schedule"><?php echo (!$report_id && $type != 'avail') ? '<em>'.$label_save_to_schedule.'</em>' : ''; ?></span>
-
+<div style="display: none;">
 <?php
 if ($type == 'avail') { ?>
 <div id="options">
@@ -161,8 +161,9 @@ if ($type == 'avail') { ?>
 	</form>
 </div>
 <?php } ?>
+
 	<span id="autoreport_periods"><?php echo $json_periods ?></span>
-	<div id="new_schedule_form_area">
+	<div id="new_schedule_form_area" style="padding-left:5px">
 	<?php	echo form::open('reports/schedule', array('id' => 'schedule_report_form', 'onsubmit' => 'return trigger_schedule_save(this);'));
 		?>
 		<h1><?php echo $label_new_schedule ?></h1>
@@ -233,4 +234,5 @@ if ($type == 'avail') { ?>
 			</tr>
 		<?php }	} ?>
 	</table>
+</div>
 </div>

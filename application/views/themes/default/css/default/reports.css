@@ -53,11 +53,6 @@
 /* id:s *********************************************************************/
 
 #display_service_status,
-#options,
-#sla_options,
-#new_schedule_form_area,
-#schedule_report,
-#report_save_information,
 #autoreport_periods {
 	display: none;
 }
@@ -521,7 +516,6 @@ select#period.popup {
 
 .trend_event{
 	padding:0;
-	border-top:1px solid white;
 }
 
 div#trend_event_display {

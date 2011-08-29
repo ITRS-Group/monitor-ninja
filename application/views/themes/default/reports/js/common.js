@@ -52,7 +52,6 @@ $(document).ready(function() {
 		'hideOnContentClick' : false,
 		'autoScale':true,
 		'autoDimensions': true,
-		'frameHeight' : 448,
 		'callbackOnShow': function() {
 			if ($("#report_period").val() == 'custom' && $('input[name=sla_save]').attr('value') == '') {
 				$(".fancydisplay").each(function() {
@@ -132,7 +131,7 @@ function setup_editable(mode)
 {
 	var mode_str = '';
 	if (mode == 'fancy') {
-		var mode_str = '#fancy_content ';
+		var mode_str = '#fancybox-content ';
 	}
 	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
 	$(mode_str +".iseditable").editable(save_url, {
@@ -282,11 +281,11 @@ function remove_schedule(id, remove_type)
 
 	// remove row for deleted ID (both in fancybox and in original table)
 	$('#report-' + id).remove();
-	$('#fancy_content #report-' + id).remove();
+	$('#fancybox-content #report-' + id).remove();
 
 	// fancybox workaound
-	if (remove_type == 'summary' && $('#fancy_content #schedule_report_table').is(':visible')) {
-		nr_of_scheduled_instances = $('#fancy_content #schedule_report_table tr').not('#schedule_header').length;
+	if (remove_type == 'summary' && $('#fancybox-content #schedule_report_table').is(':visible')) {
+		nr_of_scheduled_instances = $('#fancybox-content #schedule_report_table tr').not('#schedule_header').length;
 	}
 	if (nr_of_scheduled_instances == 0) {
 		// last item deleted
@@ -320,13 +319,13 @@ function fancybox_datepicker()
 	var datepicker_enddate = new Date().addDays(1).asString();
 	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 
-	if ($('#fancy_content #cal_start').attr('value')) {
-		var ds = Date.fromString($('#fancy_content #cal_start').attr('value'));
-		$('#fancy_content #cal_end').dpSetStartDate(ds.addDays(1).asString());
+	if ($('#fancybox-content #cal_start').attr('value')) {
+		var ds = Date.fromString($('#fancybox-content #cal_start').attr('value'));
+		$('#fancybox-content #cal_end').dpSetStartDate(ds.addDays(1).asString());
 	}
-	if ($('#fancy_content #cal_end').attr('value')) {
-		var ds = Date.fromString($('#fancy_content #cal_end').attr('value'));
-		$('#fancy_content #cal_start').dpSetEndDate(ds.addDays(1).asString());
+	if ($('#fancybox-content #cal_end').attr('value')) {
+		var ds = Date.fromString($('#fancybox-content #cal_end').attr('value'));
+		$('#fancybox-content #cal_start').dpSetEndDate(ds.addDays(1).asString());
 	}
 
 	$('.datepick-start').bind(
@@ -337,9 +336,9 @@ function fancybox_datepicker()
 			if (d) {
 				d = new Date(d);
 				startDate = d.asString();
-				$('#fancy_content #start_time').attr('value', d.asString());
+				$('#fancybox-content #start_time').attr('value', d.asString());
 				$("input[name=start_time]").attr('value', d.asString());
-				$('#fancy_content #cal_end').dpSetStartDate(d.addDays(1).asString());
+				$('#fancybox-content #cal_end').dpSetStartDate(d.addDays(1).asString());
 			}
 		}
 	);
@@ -352,9 +351,9 @@ function fancybox_datepicker()
 			if (d) {
 				d = new Date(d);
 				endDate = d.asString();
-				$('#fancy_content #end_time').attr('value', d.asString());
+				$('#fancybox-content #end_time').attr('value', d.asString());
 				$("input[name=end_time]").attr('value', d.addDays(1).asString());
-				$('#fancy_content #cal_start').dpSetEndDate(d.addDays(-1).asString());
+				$('#fancybox-content #cal_start').dpSetEndDate(d.addDays(-1).asString());
 			}
 		}
 	);
@@ -682,12 +681,12 @@ function edit_state_options(val)
 
 	if (val) {
 		$('#state_options').show();
-		if ($('#fancy_content').is(':visible')) {
+		if ($('#fancybox-content').is(':visible')) {
 			$('tr#state_options').show();
 		}
 	} else {
 		$('#state_options').hide();
-		if ($('#fancy_content').is(':visible')) {
+		if ($('#fancybox-content').is(':visible')) {
 			$('tr#state_options').hide();
 		}
 	}
@@ -696,8 +695,8 @@ function edit_state_options(val)
 function toggle_field_visibility(val, theId) {
 	var fancy_str = '';
 
-	if ($('#fancy_content').is(':visible')) {
-		fancy_str = '#fancy_content ';
+	if ($('#fancybox-content').is(':visible')) {
+		fancy_str = '#fancybox-content ';
 	}
 
 	if (val) {
@@ -758,8 +757,8 @@ function check_form_values()
 	var curval_starttime = '';
 	var curval_endtime = '';
 
-	if ($('#fancy_content').is(':visible')) {
-		fancy_str = '#fancy_content ';
+	if ($('#fancybox-content').is(':visible')) {
+		fancy_str = '#fancybox-content ';
 	}
 	var rpt_type = $("input[name=report_type]").val();
 	if (rpt_type == '' || rpt_type == undefined) {
@@ -942,9 +941,9 @@ function check_form_values()
 		if (curval_endtime) {
 			curval_endtime = ' ' + curval_endtime;
 		}
-		if ($('#fancy_content').is(':visible')) {
-			$('#fancy_content #start_time').attr('value', $('#fancy_content #cal_start').attr('value') + curval_starttime);
-			$('#fancy_content #end_time').attr('value', $('#fancy_content #cal_end').attr('value') + curval_endtime);
+		if ($('#fancybox-content').is(':visible')) {
+			$('#fancybox-content #start_time').attr('value', $('#fancybox-content #cal_start').attr('value') + curval_starttime);
+			$('#fancybox-content #end_time').attr('value', $('#fancybox-content #cal_end').attr('value') + curval_endtime);
 		} else {
 			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + curval_starttime);
 			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + curval_endtime);
@@ -1059,8 +1058,8 @@ function init_timepicker()
 	if ($("#time_start").is(':visible')) {
 		$("#time_start, #time_end").timePicker();
 	} else {
-		if ($("#fancy_content #time_start").is(':visible')) {
-			$("#fancy_content #time_start, #fancy_content #time_end").timePicker();
+		if ($("#fancybox-content #time_start").is(':visible')) {
+			$("#fancybox-content #time_start, #fancybox-content #time_end").timePicker();
 		} else {
 			return false;
 		}
@@ -1240,7 +1239,7 @@ function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
 	$('#' + the_id).css('font-weight', val_str);
-	$('#fancy_content #' + the_id).css('font-weight', val_str);
+	$('#fancybox-content #' + the_id).css('font-weight', val_str);
 }
 
 /**
@@ -1319,14 +1318,14 @@ function trigger_schedule_save(f)
 	var report_id = 0; // new schedule has no ID
 	var rep_type = $('input[name=type]').attr('value');
 	if (!rep_type) {
-		rep_type = $('#fancy_content input[name=type]').attr('value');
+		rep_type = $('#fancybox-content input[name=type]').attr('value');
 	}
-	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
-	var period = $('#fancy_content #period').attr('value');
-	var period_str = $('#fancy_content #period option:selected').text();
-	var recipients = $('#fancy_content #recipients').attr('value');
-	var filename = $('#fancy_content #filename').attr('value');
-	var description = $('#fancy_content #description').attr('value');
+	var saved_report_id = $('#fancybox-content #saved_report_id').attr('value');
+	var period = $('#fancybox-content #period').attr('value');
+	var period_str = $('#fancybox-content #period option:selected').text();
+	var recipients = $('#fancybox-content #recipients').attr('value');
+	var filename = $('#fancybox-content #filename').attr('value');
+	var description = $('#fancybox-content #description').attr('value');
 
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
@@ -1354,27 +1353,27 @@ function create_new_schedule_rows(id)
 	var return_str = '';
 	var rep_type = $('input[name=type]').attr('value');
 
-	var saved_report_id = $('#fancy_content #saved_report_id').attr('value');
+	var saved_report_id = $('#fancybox-content #saved_report_id').attr('value');
 	if (saved_report_id == '')
 		saved_report_id = $('#saved_report_id').attr('value');
 
-	var period = $('#fancy_content #period').attr('value');
+	var period = $('#fancybox-content #period').attr('value');
 	if (period == '')
 		period = $('#period').attr('value');
 
-	var period_str = $('#fancy_content #period option:selected').text();
+	var period_str = $('#fancybox-content #period option:selected').text();
 	if (period_str == '')
 		period_str = $('#period option:selected').text();
 
-	var recipients = $('#fancy_content #recipients').attr('value');
+	var recipients = $('#fancybox-content #recipients').attr('value');
 	if (recipients == '')
 		recipients = $('#recipients').attr('value');
 
-	var filename = $('#fancy_content #filename').attr('value');
+	var filename = $('#fancybox-content #filename').attr('value');
 	if (filename == '')
 		filename = $('#filename').attr('value');
 
-	var description = $('#fancy_content #description').attr('value');
+	var description = $('#fancybox-content #description').attr('value');
 	if (description == '')
 		description = $('#description').attr('value');
 	if (description == '')
@@ -1418,7 +1417,7 @@ function update_visible_schedules(count)
 	}
 
 	// special case for summary reports in fancybox
-	if ($('#fancy_content #summary_scheduled_reports_table').is(':visible')) {
+	if ($('#fancybox-content #summary_scheduled_reports_table').is(':visible')) {
 		summary_schedules = $('#summary_scheduled_reports_table tbody tr:visible').not('.no-result').length;
 		if (count) {
 			summary_schedules--;
@@ -1427,9 +1426,9 @@ function update_visible_schedules(count)
 
 	if ($('#schedule_report_table').is(':visible')) {
 		// setup and options templates
-		if ($('#fancy_content').is(':visible')) {
+		if ($('#fancybox-content').is(':visible')) {
 			// check the fancybox layer (options template)
-			nr_of_scheduled_instances = $('#fancy_content #schedule_report_table tr').not('#schedule_header').length;
+			nr_of_scheduled_instances = $('#fancybox-content #schedule_report_table tr').not('#schedule_header').length;
 		} else {
 			nr_of_scheduled_instances = $('#schedule_report_table tr').not('#schedule_header').length;
 		}
