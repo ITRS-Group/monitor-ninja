@@ -1,5 +1,17 @@
 <?php
 
+function sort_outages ($a, $b) {
+	// shouldn't happen, but let's not crash...
+	if (!isset($a['severity']))
+		return -1;
+	if (!isset($b['severity']))
+		return 1;
+	
+	if ($a['severity'] == $b['severity'])
+		return 0;
+	return ($a['severity'] < $b['severity']) ? 1 : -1;
+}
+
 class Outages_Model extends Model
 {
 	const SERVICE_SEVERITY_DIVISOR = 4;
@@ -120,6 +132,8 @@ class Outages_Model extends Model
 				$return[$host] = $outages[$host];
 			}
 		}
+
+		usort($return, 'sort_outages');
 
 		return $return;
 	}
