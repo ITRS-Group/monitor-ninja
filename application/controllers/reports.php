@@ -2494,7 +2494,15 @@ class Reports_Controller extends Authenticated_Controller
 					break;
 			}
 			header("Content-disposition: attachment; filename=".$filename);
-			header("Content-type: text/csv");
+			if (isset($_SERVER['HTTP_USER_AGENT']) &&
+				(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
+			{
+				header("Pragma: hack");
+				header("Content-Type: application/octet-stream");
+				header("Content-Transfer-Encoding: binary");
+			} else {
+				header("Content-type: text/csv");
+			}
 			$csv =  $this->_csv_header($sub_type);
 			// =========== GROUPS ===========
 			if ($group_name !== false) { // We have a host- or servicegroup
