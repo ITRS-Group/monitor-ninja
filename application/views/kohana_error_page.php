@@ -17,7 +17,7 @@ $content .= '</div>';
 $css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
 
 if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
-	mkdir('/tmp/ninja-stacktraces/', 0700, true);
+	@mkdir('/tmp/ninja-stacktraces/', 0700, true);
 	$file = tempnam('/tmp/ninja-stacktraces', date('Ymd-hi').'-');
 	$fd = fopen($file, 'w');
 	$error_data = "<html><head>$css_header</head><body>$content</body></html>";
