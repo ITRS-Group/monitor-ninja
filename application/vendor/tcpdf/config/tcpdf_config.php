@@ -105,11 +105,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 *images directory
 	 */
-	if (PHP_SAPI != 'cli') {
-		define ('K_PATH_IMAGES', 'http://'.$_SERVER['HTTP_HOST'].url::file($this->add_path('icons').'/'));
-	} else {
-		define ('K_PATH_IMAGES', dirname(APPPATH).'/'.$this->add_path('icons').'/');
-	}
+	define ('K_PATH_IMAGES', dirname(APPPATH).'/'.$this->add_path('icons').'/');
 
 	/**
 	 * blank image
