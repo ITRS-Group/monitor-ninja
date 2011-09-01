@@ -105,7 +105,6 @@ class Noc_Controller extends Authenticated_Controller {
 					# copy these widgets as default for all users
 					foreach ($default_widgets as $d) {
 						Ninja_widget_Model::add_widget('noc/index', $d->name, $d->friendly_name);
-						echo "Added ".$d->name."<br />";
 					}
 				}
 			}
