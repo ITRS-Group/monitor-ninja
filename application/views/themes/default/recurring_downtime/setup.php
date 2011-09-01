@@ -146,6 +146,17 @@ if (!empty($widgets)) {
 							</td>
 						</tr>
 						<tr>
+							<td colspan="3">
+								<input type="checkbox" name="fixed" id="checkbox_fixed" value="1"<?php if ($fixed) { ?> checked=checked<?php } ?>> <?php echo $label_fixed ?>
+							</td>
+						</tr>
+						<tr id="triggered_row" style="display:none">
+							<td colspan="3">
+								<?php echo $label_triggered_by ?><br />
+								<?php echo form::dropdown('triggered_by', ($current_dt_type == 'host' ? $host_downtime_ids : $svc_downtime_ids), $triggered_by) ?>
+							</td>
+						</tr>
+						<tr>
 							<td style="width: 100px">
 								<?php echo $label_time ?> (hh:mm) <em>*</em><br />
 								<input class="recurrence_input time-picker" type='text' maxlength="5" name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'>
@@ -219,6 +230,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 			<th class="headerNone left"><?php echo $this->translate->_('Comment'); ?></th>
 			<th class="headerNone left"><?php echo $this->translate->_('Time'); ?></th>
 			<th class="headerNone left"><?php echo $this->translate->_('Duration'); ?></th>
+			<th class="headerNone left"><?php echo $this->translate->_('Type'); ?></th>
 			<th class="headerNone left"><?php echo $this->translate->_('Weekdays'); ?></th>
 			<th class="headerNone left"><?php echo $this->translate->_('Months'); ?></th>
 			<th class="headerNone left" style="width: 40px"><?php echo $this->translate->_('Actions'); ?></th>
@@ -265,6 +277,12 @@ if (isset($saved_info) && !empty($saved_info)) {
 			<td><?php echo nl2br($data['data']['comment']) ?></td>
 			<td><?php echo $data['data']['time'] ?></td>
 			<td><?php echo $data['data']['duration'] ?></td>
+			<td><?php 	if (isset($data['data']['fixed'])) {
+							echo $data['data']['fixed'] ? $this->translate->_('Fixed') : $this->translate->_('Flexible');
+						} else {
+							echo $this->translate->_('Fixed');
+						}
+				?></td>
 			<td><?php echo $weekdays ?></td>
 			<td><?php echo $month_list ?></td>
 			<td style="text-align: center">

@@ -137,6 +137,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$schedule_info = false;
 		$data = false;
+		$current_dt_type = 'host'; # default
 		if ($this->schedule_id) {
 			# fetch info on current schedule
 			$schedule_res = ScheduleDate_Model::get_schedule_data($this->schedule_id);
@@ -147,11 +148,30 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 				$schedule_info['downtime_type'] = $row->downtime_type;
 				$schedule_info['last_update'] = date($date_format, $row->last_update);
 				$data = i18n::unserialize($row->data);
+				if (!isset($data['fixed'])) {
+					$data['fixed'] = 1;
+				}
+				switch ($schedule_info['downtime_type']) {
+					case 'hosts': case 'hostgroups':
+						$current_dt_type = 'host';
+						break;
+					case 'services': case 'servicegroups':
+						$current_dt_type = 'service';
+						break;
+				}
+
 				$this->inline_js .= "set_initial_state('report_type', '".$data['report_type']."');\n";
+
+				if (isset($data['fixed'])) {
+					# show triggered dropdown if not fixed
+					$this->inline_js .= "set_initial_state('triggered_row', '".$data['fixed']."');\n";
+				}
 				$this->inline_js .= "set_selection('".$data['report_type']."');\n";
 				$schedule_info = array_merge($schedule_info, $data);
 				$json_info = json::encode($schedule_info);
 			}
+		} else {
+			$data['fixed'] = 1;
 		}
 
 		$saved_info = false;
@@ -169,18 +189,22 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					unset($data['report_type']);
 					$saved_data['data'] = $schedule_data;
 
+					if (!isset($schedule_data['fixed'])) {
+						$saved_data['data']['fixed'] = 1;
+					}
+
 					$saved_info[$type][] = $saved_data;
 				}
 			}
 		}
 
 		$t = $this->translate;
-	$objfields = array(
-		'hosts' => 'host_name',
-		'hostgroups' => 'hostgroup',
-		'servicegroups' => 'servicegroup',
-		'services' => 'service_description'
-	);
+		$objfields = array(
+			'hosts' => 'host_name',
+			'hostgroups' => 'hostgroup',
+			'servicegroups' => 'servicegroup',
+			'services' => 'service_description'
+		);
 
 		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
 		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
@@ -204,10 +228,10 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		}
 		$this->js_strings .= reports::js_strings();
 
-		#ovverride
 		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";
 		$this->js_strings .= "var _form_err_empty_fields = '".$t->_("Please Enter valid values in all required fields (marked by *) ")."';\n";
 		$this->js_strings .= "var _form_err_bad_timeformat = '".$t->_("Please Enter a valid %s value (hh:mm)")."';\n";
+		$this->js_strings .= "var _form_err_no_trigger_id = '".$t->_("Please select an object to trigger your flexible downtime by.")."';\n";
 		$this->js_strings .= "var _schedule_error = '".$t->_("An error occurred when trying to delete this schedule")."';\n";
 
 		$this->js_strings .= "var _schedule_delete_ok = '".$t->_("OK")."';\n";
@@ -228,6 +252,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->label_update_schedule = $t->_('Update Schedule');
 		$template->label_comment = $t->_('Comment');
 		$template->label_time = $t->_('Start Time');
+		$template->label_fixed = $t->_('Fixed');
+		$template->label_triggered_by = $t->_('Triggered By');
 		$template->label_duration = $t->_('Duration');
 		$template->label_days_of_week = $t->_('Days of week');
 		$template->label_months = $t->_('Months');
@@ -236,6 +262,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->abbr_day_names = $this->abbr_day_names;
 		$template->month_names = $this->month_names;
 		$template->abbr_month_names = $this->abbr_month_names;
+		$template->current_dt_type = $current_dt_type;
+
 		$template->schedule_id = $this->schedule_id;
 		$template->schedule_info = $schedule_info;
 		$template->saved_info = $saved_info;
@@ -243,7 +271,18 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$template->objfields = $objfields;
 		$template->comment = isset($data) && $this->schedule_id ? $data['comment'] : '';
 		$template->duration = isset($data) && $this->schedule_id ? $data['duration'] : '2:00';
+		$template->fixed = isset($data) && $this->schedule_id && isset($data['fixed'])? (int)$data['fixed'] : 1;
+		$template->triggered_by = isset($data) && $this->schedule_id && isset($data['triggered_by'])? $data['triggered_by'] : 0;
 		$template->time = isset($data) && $this->schedule_id ? $data['time'] : '12:00';
+
+		# fetch info on existing downtime to be used when using flexible downtime
+		$command_model = new Command_Model();
+		$host_downtime_ids = $command_model->get_command_info('SCHEDULE_HOST_DOWNTIME', array('SCHEDULE_HOST_DOWNTIME'));
+		$svc_downtime_ids = $command_model->get_command_info('SCHEDULE_SVC_DOWNTIME', array('SCHEDULE_SVC_DOWNTIME'));
+		$template->host_downtime_ids = $host_downtime_ids['params']['trigger_id']['options'];
+		$template->svc_downtime_ids = $svc_downtime_ids['params']['trigger_id']['options'];
+		$this->js_strings .= "var host_downtime_ids = " . json::encode($template->host_downtime_ids) . ";\n";
+		$this->js_strings .= "var svc_downtime_ids = " . json::encode($template->svc_downtime_ids) . ";\n";
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
@@ -264,6 +303,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			'comment',
 			'time',
 			'duration',
+			'fixed',
+			'triggered_by',
 			'recurring_day',
 			'recurring_month'
 		);
@@ -271,7 +312,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$data = false;
 		foreach ($valid_fields as $field) {
 			$val = arr::search($_REQUEST, $field, null);
-			if (is_null($val)) {
+			if (is_null($val) && $field != 'fixed') {
 				continue;
 			}
 			$data[$field] = arr::search($_REQUEST, $field);
@@ -377,7 +418,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		foreach ($res as $row) {
 			$data = i18n::unserialize($row->data);
-			$data['author'] = $row->author_name;
+			$data['author'] = $row->author;
 
 			$pattern = $this->_create_pattern($data);
 			#echo Kohana::debug($pattern);

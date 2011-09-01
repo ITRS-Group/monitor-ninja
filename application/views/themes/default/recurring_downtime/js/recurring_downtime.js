@@ -45,7 +45,51 @@ $(document).ready(function() {
 		$('#objects_small_' + the_id).toggle();
 		$('#all_objects_' + the_id).toggle();
 	});
+
+	$('#checkbox_fixed').bind('change', function() {
+		if ($(this).attr('checked')) {
+			$('#triggered_row').hide();
+		} else {
+			$('#triggered_row').show();
+		}
+	});
+
+	$('#report_type').bind('change', function() {
+		switch($('#report_type').val()) {
+			case 'hosts': case 'hostgroups':
+				set_downtime_ids('host');
+				break;
+
+			case 'services': case 'servicegroups':
+				set_downtime_ids('service');
+				break;
+		}
+	});
+	$('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
+
 });
+
+function set_downtime_ids(what)
+{
+	var arr = false;
+	switch(what) {
+		case 'host':
+			arr = host_downtime_ids;
+			break;
+		case 'service':
+			arr = svc_downtime_ids;
+	}
+	if (typeof arr == 'undefined') {
+		// shouldn't happen but we should handle it
+		return false;
+	}
+
+	// start by emptying the dropdown
+	$("#triggered_by").removeOption(/./);
+	for (i in arr) {
+		$("#triggered_by").addOption(i, arr[i], false);
+	}
+}
 
 function check_setup()
 {
@@ -64,8 +108,9 @@ function check_setup()
 	var comment = $.trim($('textarea[name=comment]').val());
 	var time = $.trim($('input[name=time]').val());
 	var duration = $.trim($('input[name=duration]').val());
+	var fixed = $('#checkbox_fixed').attr('checked');
 
-	if (comment == '' || time == '' || duration == '') {
+	if (comment == '' || time == '' || (fixed && duration == '')) {
 		// required fields are empty
 		// _form_err_empty_fields
 		err_str += '<li>' + _form_err_empty_fields + '</li>';
@@ -90,6 +135,16 @@ function check_setup()
 				// bogus time format
 				err_str += '<li>' + sprintf(_form_err_bad_timeformat, _form_field_duration) + '</li>';
 			}
+		}
+
+		if (!fixed) {
+			if (!$('#triggered_by').val() || $('#triggered_by').val() == 0) {
+				// user selected triggered scheduled downtime but nothing to trigger by
+				err_str += '<li>' + _form_err_no_trigger_id + '</li>';
+			}
+		} else {
+			// force triggered by value to 0 when using fixed
+			$('#triggered_by').val(0);
 		}
 	}
 
@@ -139,6 +194,13 @@ function set_initial_state(what, val)
 	switch (what) {
 		case '':
 			item = '';
+			break;
+		case 'triggered_row':
+		if (val == 1) {
+			$('#triggered_row').hide();
+		} else {
+			$('#triggered_row').show();
+		}
 			break;
 		default:
 			item = what;

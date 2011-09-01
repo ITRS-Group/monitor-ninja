@@ -484,6 +484,8 @@ class ScheduleDate_Model extends Model
 		$obj_arr = $data[$objfields[$data['report_type']]];
 		$cmd = false;
 		$duration = $data['duration'];
+		$fixed = isset($data['fixed']) ? (int)$data['fixed'] : 1;
+		$triggered_by = isset($data['triggered_by']) && !$fixed ? (int)$data['triggered_by'] : 0;
 
 		if (strstr($duration, ':')) {
 			# we have hh::mm
@@ -516,7 +518,7 @@ class ScheduleDate_Model extends Model
 				fwrite(STDERR, "skipping");
 				continue;
 			}
-			$tmp_cmd = "$nagioscmd;$obj;$start_time;$end_time;1;0;$duration;$author;AUTO: $comment";
+			$tmp_cmd = "$nagioscmd;$obj;$start_time;$end_time;$fixed;$triggered_by;$duration;$author;AUTO: $comment";
 			$result = nagioscmd::submit_to_nagios($tmp_cmd, $pipe);
 			$cmd[] = $tmp_cmd.' :'.(int)$result;
 		}
