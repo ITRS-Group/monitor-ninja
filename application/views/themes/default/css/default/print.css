@@ -23,7 +23,7 @@ abbr, acronym, object, applet, table {
 }
 table {
 	/*border-collapse: collapse;*/
-	border-spacing: 0;
+	border-spacing: 10;
 }
 caption, th, td, center {
 	vertical-align: top;
