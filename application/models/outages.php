@@ -109,7 +109,7 @@ class Outages_Model extends Model
 		 * 	a child to another host to prevent them from being
 		 * 	displayed twice.
 		 */
-		$return = false;
+		$return = array();
 		foreach ($status->unreachable_hosts as $host => $data) {
 			if (!empty($data)) {
 				if (!isset($outages[$host]['current_state'])) {
