@@ -1002,7 +1002,7 @@ class Trends_Controller extends Authenticated_Controller {
 		switch ($days) {
 			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
 				while ($time < $report_end) {
-					$h = date('H:i', $time);
+					$h = date('H', $time);
 					$resolution_names[] = $h;
 					$time += (60*60);
 				}

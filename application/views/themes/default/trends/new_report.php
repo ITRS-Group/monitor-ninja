@@ -30,6 +30,7 @@ foreach ($object_data as $obj => $data) {
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if (isset($event['duration']) && $event['duration']>0) {
 					$width = number_format(($event['duration']/$length)*100, 2);
+					$width = ($width < 1 && $width != 0.00) ? '1px' : $width.'%';
 				} else {
 					continue;
 				}
@@ -45,9 +46,9 @@ foreach ($object_data as $obj => $data) {
 							$event['output'] ); ?>"
 					<?php }
 					if ($create_pdf !== false) { ?>
-				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background-color:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>;background-color:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
 					<?php } else { ?>
-				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background:url(<?php echo url::base(false).$this->add_path('trends/images/'.Trends_Controller::_translate_state_to_string($event['state'], $sub_type).'.png') ?>)"></td>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>;background:url(<?php echo url::base(false).$this->add_path('trends/images/'.Trends_Controller::_translate_state_to_string($event['state'], $sub_type).'.png') ?>)"></td>
 					<?php } ?>
 		<?php	$cnt++;
 			} ?>
