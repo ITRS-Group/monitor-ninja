@@ -109,6 +109,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_contacts = $t->_('Contacts');
 		$content->label_no_contacts = $t->_('No contacts');
 		$content->lable_contact_name = $t->_('Contact name');
+		$content->label_pager = $t->_('Pager');
 		$content->lable_contact_alias = $t->_('Alias');
 		$content->lable_contact_email = $t->_('Email');
 		$content->lable_click_to_view = $t->_('Click to view contacts');
