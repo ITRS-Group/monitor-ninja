@@ -33,6 +33,7 @@ function set_items_per_page()
 
 function preserve_get_params()
 {
+	propagate_val($('.custom_pagination_field').val());
 	// make sure we don't loose GET variables from current query string
 	if ($.query.keys) {
 		for (var key in $.query.keys) {
