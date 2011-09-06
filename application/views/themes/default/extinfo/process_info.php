@@ -17,7 +17,7 @@
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_last_external_cmd_check ?></td>
-		<td><?php echo $last_command_check != 0 ? date('Y-m-d H:m:i',$last_command_check) : $this->translate->_('N/A') ?></td>
+		<td><?php echo $last_command_check != 0 ? date('Y-m-d H:i:s',$last_command_check) : $this->translate->_('N/A') ?></td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_last_logfile_rotation ?></td>
