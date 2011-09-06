@@ -2,9 +2,10 @@
 $prod_name = Kohana::config('config.product_name');
 
 header('Content-Type: text/xml; charset=UTF-8');
-echo '<?xml version="1.0" encoding="UTF-8" ?>';
-echo '<GraphXML xmlns:xlink="http://www.w3.org/1999/xlink">';
-echo '<graph>'; ?>
+echo '<?xml version="1.0" encoding="UTF-8" ?>'; echo "\n"; ?>
+<!DOCTYPE GraphXML SYSTEM "<?php echo $dtd; ?>">
+<GraphXML xmlns:xlink="http://www.w3.org/1999/xlink">
+<graph>
 
 <style>
 	<line tag="node" class="main" colour="#ffffff"/>

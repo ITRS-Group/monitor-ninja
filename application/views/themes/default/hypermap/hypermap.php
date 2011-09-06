@@ -16,8 +16,7 @@ if (!isset($hyperapplet_path)) {
 </table>
 
 <a name="graph-section"></a>
-<applet code="hypergraph.applications.hexplorer.HExplorerApplet.class" archive="<?php echo $hyperapplet_path ?>" width="100%" height="100%" align="baseline">
+<applet code="hypergraph.applications.hexplorer.HExplorerApplet.class" archive="<?php echo $hyperapplet_path ?>" width="100%" height="100%" align="baseline" mayscript="mayscript">
 <param name="file" value="<?php echo $xml_path ?>">
 <param name="properties" value="<?php echo $nagios_prop ?>">
-</param>
 </applet>

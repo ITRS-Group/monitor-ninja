@@ -41,6 +41,8 @@ class Hypermap_Controller extends Authenticated_Controller {
 	{
 		$this->template->content = $this->add_view('hypermap/xml');
 		$content = $this->template->content;
+		$content->dtd = Kohana::config('config.site_domain')
+			.'application/'.Kohana::config('hypergraph.hyper_dtd');
 
 		$host_model = new Host_Model();
 		$host_model->show_services = false;
