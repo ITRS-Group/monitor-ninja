@@ -1,0 +1,24 @@
+; layout settings
+hypergraph.visualnet.layout.class=hypergraph.visualnet.AbstractGraphLayout
+hypergraph.visualnet.layout.expandingEnabled=false
+hypergraph.visualnet.layout.initiallyExpanded=2
+hypergraph.visualnet.TreeLayout.maxangle=200
+hypergraph.visualnet.TreeLayout.mindistance=0.8
+hypergraph.visualnet.TreeLayout.defaultSize=0.2
+; settings for the text.
+hypergraph.hyperbolic.text.fontName=Arial bold
+hypergraph.hyperbolic.text.size1=13
+hypergraph.hyperbolic.text.scale1=0.7
+hypergraph.hyperbolic.text.size2=10
+hypergraph.hyperbolic.text.scale2=0.3
+hypergraph.hyperbolic.text.size3=4
+hypergraph.hyperbolic.text.scale3=0.1
+hypergraph.hyperbolic.text.size4=0
+hypergraph.hyperbolic.line.color=#800000
+hypergraph.hyperbolic.text.color=#0F0F0F
+hypergraph.hyperbolic.text.backgroundColor=#ffffff
+hypergraph.hyperbolic.text.background=#ffffff
+hypergraph.hyperbolic.background.color=#f9f9f9
+; settings for HExplorerApplet
+hypergraph.examples.hexplorer.GraphPanel.target=_self
+;hypergraph.hyperbolic.ModelPanelUI=1

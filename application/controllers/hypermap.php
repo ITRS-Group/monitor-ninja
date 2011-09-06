@@ -23,25 +23,48 @@ class Hypermap_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
-		$this->template->disable_refresh = true;
-		$auth = new Nagios_auth_Model();
-		if (!$auth->view_hosts_root || !$auth->view_services_root) {
-			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the hypermap.");
-			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
-			return false;
-		}
-		$hypermap_path = Kohana::config('config.hypermap_path');
-		$service = urldecode($this->input->get('service', false));
-		if ($hypermap_path === false) {
-			return false;
+
+		$this->template->content = $this->add_view('hypermap/hypermap');
+		$content = $this->template->content;
+
+		$content->hyperapplet_path = Kohana::config('config.site_domain')
+			.'application/'. Kohana::config('hypergraph.hyperapplet_path');
+		$content->nagios_prop = Kohana::config('config.site_domain')
+			.'application/'. Kohana::config('hypergraph.nagios_props');
+		$content->xml_path = url::site().'hypermap/createxml';
+	}
+
+	/**
+	*	Create the xml data needed for hyperapplet
+	*/
+	public function createxml()
+	{
+		$this->template->content = $this->add_view('hypermap/xml');
+		$content = $this->template->content;
+
+		$host_model = new Host_Model();
+		$host_model->show_services = false;
+		$host_parents = false;
+		$no_parents = false;
+
+		$result = $host_model->get_host_status();
+		$content->result = $result;
+
+		foreach ($result as $host) {
+			$parent = $host_model->get_parents($host->host_name);
+			if ($parent != false) {
+				$parent = $parent[0];
+				$host_parents[$host->host_name] = $parent->host_name;
+			} else {
+				$no_parents[] = $host->host_name;
+			}
 		}
 
-		$this->template->content = '<iframe src="'.$hypermap_path.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
-		$this->template->title = $this->translate->_('Hypermap');
-		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
-		$this->xtra_js = array($this->add_path('hypermap/hypermap.js'));
-		$this->template->js_header->js = $this->xtra_js;
+		$content->data = $host_parents;
+		$content->no_parents = $no_parents;
+		echo $content->render();
+
+		# prevent ninja from displaying master template etc
+		die();
 	}
 }
