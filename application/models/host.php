@@ -270,9 +270,10 @@ class Host_Model extends Model {
 
 		$sql = "SELECT host.* ".
 		"FROM host ".
-		"INNER JOIN host_parents ON host_parents.host = host.id ".$sql_join.
+		"INNER JOIN host_parents ON host_parents.parents = host.id ".$sql_join.
+		"INNER JOIN host child ON host_parents.host = child.id ".
 		"WHERE ".$sql_where.
-		"host.host_name =".$this->db->escape($host_name).
+		"child.host_name =".$this->db->escape($host_name).
 		" ORDER BY host.host_name";
 
 		$result = $this->query($this->db, $sql);
