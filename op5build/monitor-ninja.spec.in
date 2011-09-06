@@ -97,7 +97,7 @@ fi
 %attr(644,root,root) /etc/cron.d/*
 /var/www/html/monitor
 /var/www/html/ninja
-/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py*
+/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py*
 %attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
 
 %clean
