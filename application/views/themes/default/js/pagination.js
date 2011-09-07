@@ -1,14 +1,24 @@
 $(document).ready(function() {
+	var focused_field = false;
 	$('.show_pagination').each(function() {
 		$(this).bind('click', function() {
 			set_items_per_page();
 		});
 	});
 
-	$('.custom_pagination_field').each(function() {
-		$(this).bind('change', function() {
-			propagate_val($(this).val());
-		});
+	$('#pagination_id_1').bind('focus', function() {
+		focused_field = $(this).attr('id');
+	});
+	$('#pagination_id_2').bind('focus', function() {
+		focused_field = $(this).attr('id');
+	});
+
+	$('#pagination_id_1').bind('change', function() {
+		propagate_val($(this).val());
+	});
+	$('#pagination_id_2').bind('change', function() {
+		focused_field = $(this).attr('id');
+		propagate_val($(this).val());
 	});
 
 	// check if we have a customized items_per_page
@@ -20,7 +30,7 @@ $(document).ready(function() {
 	}
 
 	$('.pagination_form').bind('submit', function() {
-		preserve_get_params();
+		preserve_get_params($('#' + focused_field).attr('value'));
 	});
 
 });
@@ -31,9 +41,16 @@ function set_items_per_page()
 	$('.pagination_form').trigger('submit');
 }
 
-function preserve_get_params()
+function preserve_get_params(custom_val, sel_id)
 {
-	propagate_val($('.custom_pagination_field').val());
+	if (custom_val != false && typeof custom_val != 'undefined' && custom_val != 'sel') {
+		propagate_val(custom_val);
+	} else {
+		if (custom_val == 'sel') {
+			propagate_val($('#' + sel_id).val());
+		}
+	}
+
 	// make sure we don't loose GET variables from current query string
 	if ($.query.keys) {
 		for (var key in $.query.keys) {
