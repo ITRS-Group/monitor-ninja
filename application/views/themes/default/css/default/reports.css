@@ -516,7 +516,8 @@ select#period.popup {
 
 .trend_event{
 	padding:0;
-	border:1px solid white;
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
 }
 
 div#trend_event_display {
@@ -530,7 +531,8 @@ div#trend_event_display {
 	display:none;
 }
 .trend_event_highlight {
-	border:1px solid #d0d0d0;
+	border-top: 1px solid #b0b0b0;
+	border-bottom: 1px solid #b0b0b0;
 }
 
 .trend_time{
