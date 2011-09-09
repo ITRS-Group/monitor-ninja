@@ -776,6 +776,9 @@ table.extinfo tr td.status.icon img {
 .widget-header span.widget-menu img {
 	margin-left: 3px;
 }
+span a img{
+	padding-left:2px;
+}
 .widget {
 	width: 100%;
 	margin-top: 11px;
