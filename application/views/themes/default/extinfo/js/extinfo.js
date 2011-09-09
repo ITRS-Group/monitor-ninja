@@ -23,8 +23,28 @@ $(document).ready(function() {
 	$('table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
 	$('table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
 	$('table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
-	// refresh helper code
 
+	$('#del_host_downtime_form').bind('submit', function() {
+		//return false;
+	});
+
+	$('#del_submithost_svc').click(function() {
+
+		$('.deletecommentbox_host').each(function() {
+			if ($(this).attr('checked')) {
+				var hostname = $(this).closest('tr').find('td:nth-child(2)').text();
+				$('#scheduled_service_downtime').find('tr td:nth-child(2)').each(function() {
+					if ($(this).text() == hostname) {
+						$(this).closest('tr').find('td:nth-child(1) input[type="checkbox"]').attr('checked', true);
+					}
+				});
+			}
+
+		});
+
+	});
+
+	// refresh helper code
 	var old_refresh = 0;
 	var refresh_is_paused = false;
 	var host_hidden = true;
@@ -54,6 +74,10 @@ $(document).ready(function() {
 			$('.td_host_checkbox').hide();
 			$('#selectall_host').hide();
 			$('.submithost').hide();
+
+			// uncheck all host checkboxes
+			$('.deletecommentbox_host').attr('checked', false);
+			$('.selectall_host').attr('checked', false);
 			host_hidden = true;
 		} else {
 			$('.deletecommentbox_host').show();
@@ -92,6 +116,11 @@ $(document).ready(function() {
 			$('.td_service_checkbox').hide();
 			$('#selectall_service').hide();
 			$('.submitservice').hide();
+
+			// uncheck all service checkboxes
+			$('.deletecommentbox_service').attr('checked', false);
+			$('.selectall_service').attr('checked', false);
+
 			svc_hidden = true;
 		} else {
 			$('.deletecommentbox_service').show();
@@ -118,6 +147,7 @@ $(document).ready(function() {
 	$('#del_submithost').click(function() {
 		if (!$('.deletecommentbox_host').filter(':checked').length) {
 			$('.host_feedback').text('   Nothing selected...');
+			setTimeout(function() {$('.host_feedback').hide();}, 5000);
 			return false;
 		} else {
 			$('.host_feedback').text('');
@@ -127,6 +157,7 @@ $(document).ready(function() {
 	$('#del_submitservice').click(function() {
 		if (!$('.deletecommentbox_service').filter(':checked').length) {
 			$('.service_feedback').text('   Nothing selected...');
+			setTimeout(function() {$('.service_feedback').hide();}, 5000);
 			return false;
 		} else {
 			$('.service_feedback').text('');

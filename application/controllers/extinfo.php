@@ -992,11 +992,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		$handling_commands = false;
+		$handling_deletes = false;
 		$command_success = false;
 		$command_result_msg = false;
 		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
-			$handling_commands = true;
+			$handling_deletes = true;
 			$cmd = false;
 			$nagios_commands = array();
 			# bulk delete of comments?
@@ -1493,6 +1493,83 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$handling_commands = false;
+		$command_success = false;
+		$command_result_msg = false;
+		if (!empty($_POST) && (!empty($_POST['del_host']) || !empty($_POST['del_service']))) {
+			$handling_commands = true;
+			$cmd = false;
+			$nagios_commands = array();
+			# bulk delete of comments?
+			if (isset($_POST['del_submithost']) || isset($_POST['del_submithost_svc'])) {
+				# host comments
+				$cmd = 'DEL_HOST_DOWNTIME';
+				foreach ($_POST['del_host'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+				}
+
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+					url::redirect('command/unauthorized');
+				}
+
+				if (!empty($_POST['del_service'])) {
+					# service comments
+					$cmd = 'DEL_SVC_DOWNTIME';
+						if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+							url::redirect('command/unauthorized');
+						}
+					foreach ($_POST['del_service'] as $param) {
+						$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+					}
+				}
+
+			} elseif (isset($_POST['del_submitservice'])) {
+				# service comments
+				$cmd = 'DEL_SVC_DOWNTIME';
+				foreach ($_POST['del_service'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+				}
+
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+					url::redirect('command/unauthorized');
+				}
+
+			}
+
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			$nagconfig = System_Model::parse_config_file("nagios.cfg");
+			if (isset($nagconfig['command_file'])) {
+				$pipe = $nagconfig['command_file'];
+			}
+
+			while ($ncmd = array_pop($nagios_commands)) {
+				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			}
+
+			if ($command_success === true) {
+				# everything was ok
+				$command_result_msg = sprintf($this->translate->_('Your commands were successfully submitted to %s.'),
+					Kohana::config('config.product_name'));
+			} else {
+				# errors encountered
+				$command_result_msg = sprintf($this->translate->_('There was an error submitting one or more of your commands to %s.'),
+					Kohana::config('config.product_name'));
+			}
+
+			$_SESSION['command_result_msg'] = $command_result_msg;
+			$_SESSION['command_success'] = $command_success;
+
+			# reload controller to prevent it from trying to submit
+			# the POST data on refresh
+			url::redirect(Router::$controller.'/'.Router::$method);
+		}
+
+		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
+		$command_success = $this->session->get('error_msg', $command_success);
+
+
+
 		$host_title_str = $this->translate->_('Scheduled host downtime');
 		$service_title_str = $this->translate->_('Scheduled service downtime');
 		$title = $this->translate->_('Scheduled downtime');
@@ -1516,6 +1593,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$this->template->content = $this->add_view('extinfo/scheduled_downtime');
 		$content = $this->template->content;
+
+		$this->template->js_header = $this->add_view('js_header');
+#		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->template->js_header->js = $this->xtra_js;
+
 
 		# table header fields
 		$content->label_host_name = $this->translate->_('Host name');
@@ -1545,6 +1628,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->service_data = $service_data;
 		$content->service_title_str = $service_title_str;
 		$this->template->title = $this->translate->_("Monitoring » Scheduled downtime");
+		$content->command_result = arr::search($_SESSION, 'command_result_msg');
+		$content->command_success = arr::search($_SESSION, 'command_success');
+		unset($_SESSION['command_result_msg']);
+		unset($_SESSION['command_success']);
+
 
 	}
 }
