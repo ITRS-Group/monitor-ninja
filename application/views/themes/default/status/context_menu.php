@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<ul id="property_menu" class="contextMenu">
 		<li class="schedule_downtime" id="_menu_schedule_host_downtime"><a href="#schedule_host_downtime"><?php echo $this->translate->_('Schedule downtime') ?></a></li>
+		<li class="removeschedule_downtime" id="_menu_removeschedule_host_downtime"><a href="#del_host_downtime"><?php echo $this->translate->_('Cancel Scheduled Downtime') ?></a></li>
 		<li class="acknowledge_problem" id="_menu_acknowledge_host_problem"><a href="#acknowledge_host_problem"><?php echo $this->translate->_('Acknowledge') ?></a></li>
 		<li class="remove_acknowledgement" id="_menu_remove_host_acknowledgement"><a href="#remove_acknowledgement"><?php echo $this->translate->_('Remove problem acknowledgement') ?></a></li>
 		<li class="disable_notifications" id="_menu_disable_host_notifications"><a href="#disable_notifications"><?php echo $this->translate->_('Disable host notifications') ?></a></li>
@@ -14,6 +15,7 @@
 	</ul>
 	<ul id="svc_property_menu" class="contextMenu">
 		<li class="schedule_downtime" id="_menu_schedule_svc_downtime"><a href="#schedule_svc_downtime"><?php echo $this->translate->_('Schedule downtime') ?></a></li>
+		<li class="removeschedule_downtime" id="_menu_removeschedule_svc_downtime"><a href="#del_svc_downtime"><?php echo $this->translate->_('Cancel Scheduled Downtime') ?></a></li>
 		<li class="acknowledge_problem" id="_menu_acknowledge_svc_problem"><a href="#acknowledge_svc_problem"><?php echo $this->translate->_('Acknowledge') ?></a></li>
 		<li class="remove_acknowledgement" id="_menu_remove_svc_acknowledgement"><a href="#remove_acknowledgement"><?php echo $this->translate->_('Remove problem acknowledgement') ?></a></li>
 		<li class="disable_notifications" id="_menu_disable_svc_notifications"><a href="#disable_notifications"><?php echo $this->translate->_('Disable service notifications') ?></a></li>

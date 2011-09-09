@@ -461,6 +461,7 @@
 	classes to the respective LI element(s)
 */
 .contextMenu LI.schedule_downtime A { background-image: url(../../icons/16x16/scheduled-downtime.png); }
+.contextMenu LI.removeschedule_downtime A { background-image: url(../../icons/16x16/delete-downtime.png); }
 .contextMenu LI.acknowledge_problem A { background-image: url(../../icons/16x16/acknowledged.png); }
 .contextMenu LI.remove_acknowledgement A { background-image: url(../../icons/16x16/acknowledged.png); }
 .contextMenu LI.disable_notifications A { background-image: url(../../icons/16x16/notify-disabled.png); }
