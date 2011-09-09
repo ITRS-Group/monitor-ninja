@@ -1142,7 +1142,7 @@ class Reports_Model extends Model
 			$cstate['TOTAL_TIME_ACTIVE'] += $duration;
 			$ary = explode(':', $s);
 			$is_running = intval($ary[0]);
-			$in_dt = $ary[1] == 1;
+			$in_dt = $ary[1] != 0;
 			$p3 = $in_dt ? '' : 'UN';
 			$p3 .= 'SCHEDULED';
 
@@ -1394,17 +1394,7 @@ class Reports_Model extends Model
 		switch($row['event_type']) {
 		 case self::DOWNTIME_START:
 			$row['output'] = $this->st_obj_type . ' has entered a period of scheduled downtime';
-			# Due to a bug in the nagios module (not the import
-			# program), DOWNTIME_START events sometimes have a
-			# downtime_depth of 0 in the database (which is clearly
-			# bogus). We work around it by making sure it's always
-			# at least 1.
-			if (!$row['downtime_depth'])
-				$row['downtime_depth'] = 1;
-			# For the same reason, we must save the dt depth for
-			# when we encounter the DOWNTIME_STOP event later, so
-			# we know which value it *should* have.
-			$this->st_last_dt_start_depth[$obj_name] = $row['downtime_depth'];
+			$dt_depth = ++$this->st_last_dt_start_depth[$obj_name];
 
 			# update this sub-object's status to OK if we're supposed
 			# to calculate scheduled downtime as uptime
@@ -1416,7 +1406,6 @@ class Reports_Model extends Model
 				$this->st_sub[$sub->st_obj_state]++;
 			}
 
-			$dt_depth = intval(!!$row['downtime_depth']);
 			foreach ($this->sub_reports as $sr) {
 				$sr->st_dt_depth = $dt_depth;
 			}
@@ -1433,24 +1422,19 @@ class Reports_Model extends Model
 		 case self::DOWNTIME_STOP:
 			$row['output'] = $this->st_obj_type . ' has exited a period of scheduled downtime';
 
-			# Similar to the fix above, we check the downtime
-			# depth of the last start event here to make sure
-			# it's decremented by one (unless it's already zero).
-			if ($row['downtime_depth']) {
-				if (!isset($this->st_last_dt_start_depth[$obj_name]))
-					$row['downtime_depth'] = 0;
-				elseif ($row['downtime_depth'] == $this->st_last_dt_start_depth[$obj_name]) {
-					$row['downtime_depth'] = --$this->st_last_dt_start_depth[$obj_name];
-				}
-			}
+			$dt_depth = 0;
+			# old merlin versions created more end events than start events, so never decrement
+			# if we're already at 0.
+			if ($this->st_last_dt_start_depth[$obj_name])
+				$dt_depth = --$this->st_last_dt_start_depth[$obj_name];
 
 			if ($sub) {
 				# sub->st_dt_depth must be set before we retrieve the
 				# common downtime depth
-				$sub->st_dt_depth = intval(!!$row['downtime_depth']);
+				$sub->st_dt_depth = $dt_depth;
 				$this->st_dt_depth = $this->get_common_downtime_state();
 			} else {
-				$this->st_dt_depth = intval(!!$row['downtime_depth']);
+				$this->st_dt_depth = $dt_depth;
 			}
 
 			# possibly restore the actual object state if
@@ -1800,8 +1784,7 @@ class Reports_Model extends Model
 		# want to get all state entries for a hosts services when
 		# we're only asking for uptime of the host
 		$sql = "SELECT host_name, service_description, " .
-			"state,timestamp AS the_time, hard, event_type, " .
-			"downtime_depth";
+			"state,timestamp AS the_time, hard, event_type";
 		# output is a TEXT field, so it needs an extra disk
 		# lookup to fetch and we don't always need it
 		if ($this->st_needs_log)
@@ -1868,7 +1851,7 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT timestamp, event_type, downtime_depth FROM " .
+		$sql = "SELECT timestamp, event_type FROM " .
 			$this->db_name . "." . $this->db_table . " " .
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
@@ -1889,7 +1872,7 @@ class Reports_Model extends Model
 			return false;
 
 		$this->register_db_time($row['timestamp']);
-		$this->initial_dt_depth = $row['downtime_depth'];
+		$this->initial_dt_depth = $row['event_type'] == self::DOWNTIME_START;
 		return $this->initial_dt_depth;
 	}
 
