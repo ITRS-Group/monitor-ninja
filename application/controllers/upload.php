@@ -219,11 +219,18 @@ class Upload_Controller extends Authenticated_Controller
 		$widget_ok = false;
 		if ($data !== false) {
 			# widget already exists - compare versions
-			$check_xml = simplexml_load_file($custom_dir.$widget_name.'/'.$manifest);
-			if ($check_xml !== false) {
-				$old_version = $check_xml->version;
-				if ($version > $old_version) {
-					$widget_ok = true;
+			$manifestpath = $custom_dir.$widget_name.'/'.$manifest;
+			if (!file_exists($manifestpath)) {
+				# actually, it appears to be gone/broken, so let's upgrade
+				$widget_ok = true;
+			}
+			else {
+				$check_xml = @simplexml_load_file($manifestpath);
+				if ($check_xml !== false) {
+					$old_version = $check_xml->version;
+					if ($version > $old_version) {
+						$widget_ok = true;
+					}
 				}
 			}
 		} else {
@@ -251,7 +258,8 @@ class Upload_Controller extends Authenticated_Controller
 			return;
 		}
 
-		unlink($savepath.$file['name']);
+		if (is_dir($savepath.$file['name']));
+			unlink($savepath.$file['name']);
 		self::_rrmdir($savepath.$widget_name);
 
 		$save = Ninja_widget_Model::add_widget($pagename, $widget_name, $friendly_name);
