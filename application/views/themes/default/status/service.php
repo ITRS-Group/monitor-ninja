@@ -229,6 +229,7 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 		array(
 			'' => $this->translate->_('Select action'),
 			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
+			'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
 			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
 			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
 			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
