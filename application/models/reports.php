@@ -1394,6 +1394,8 @@ class Reports_Model extends Model
 		switch($row['event_type']) {
 		 case self::DOWNTIME_START:
 			$row['output'] = $this->st_obj_type . ' has entered a period of scheduled downtime';
+			if (!isset($this->st_last_dt_start_depth[$obj_name]))
+				$this->st_last_dt_start_depth[$obj_name] = 0;
 			$dt_depth = ++$this->st_last_dt_start_depth[$obj_name];
 
 			# update this sub-object's status to OK if we're supposed
