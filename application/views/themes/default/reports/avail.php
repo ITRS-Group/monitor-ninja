@@ -36,6 +36,7 @@
 			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
 				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 11px')); ?>
+			<?php if ($scheduled_downtime_as_uptime && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
 			</td>
 		</tr>
 		<tr class="dark">

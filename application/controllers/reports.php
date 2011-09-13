@@ -1690,6 +1690,7 @@ class Reports_Controller extends Authenticated_Controller
 				if (!empty($this->data_arr)) {
 					$data = $this->data_arr;
 					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
+					$template->content->scheduled_downtime_as_uptime = $scheduled_downtime_as_uptime;
 					$template->content->create_pdf = $this->create_pdf;
 					$template->content->start_time = $this->start_date;
 					$template->content->end_time = $this->end_date;

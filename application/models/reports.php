@@ -71,7 +71,6 @@ class Reports_Model extends Model
 	var $st_sub_discrepancies = 0;
 	var $st_obj_type = '';
 	var $st_state_calculator = 'st_worst';
-	var $st_last_dt_start_depth = array();
 
 	/**
 	 * The calculated state of the object, taking such things
@@ -1132,6 +1131,7 @@ class Reports_Model extends Model
 		$cstate = array();
 		$cstate['TIME_UNDETERMINED_NO_DATA'] = 0;
 		$cstate['TIME_UNDETERMINED_NOT_RUNNING'] = 0;
+		$cstate['TIME_DOWN_COUNTED_AS_UP'] = 0;
 		$cstate['TOTAL_TIME_UNSCHEDULED'] = 0;
 		$cstate['TOTAL_TIME_SCHEDULED'] = 0;
 		$cstate['TOTAL_TIME_UNDETERMINED'] = 0;
@@ -1153,7 +1153,10 @@ class Reports_Model extends Model
 
 			# this is where we hack in scheduled downtime as uptime
 			if ($in_dt && $this->scheduled_downtime_as_uptime) {
+				$real_state = $conv[$ary[2]];
 				$p2 = $conv[0];
+				if ($real_state !== 'UP' && $real_state !== 'OK')
+					$cstate['TIME_DOWN_COUNTED_AS_UP'] += $duration;
 			}
 			elseif (isset($conv[$ary[2]])) {
 				$p2 = $conv[$ary[2]];
@@ -1256,6 +1259,8 @@ class Reports_Model extends Model
 			reports::percent($cstate['TIME_UNDETERMINED_NOT_RUNNING'], $div);
 		$cstate['PERCENT_TIME_UNDETERMINED_NO_DATA'] =
 			reports::percent($cstate['TIME_UNDETERMINED_NO_DATA'], $div);
+		$cstate['PERCENT_TIME_DOWN_COUNTED_AS_UP'] =
+			reports::percent($cstate['TIME_DOWN_COUNTED_AS_UP'], $div);
 
 		return $cstate;
 	}
@@ -1386,83 +1391,52 @@ class Reports_Model extends Model
 
 		# only update sub-reports on statechange
 		if ($is_running != $this->st_running) {
-			foreach ($this->sub_reports as $rpt)
-				$rpt->st_running = $is_running;
+			foreach ($this->sub_reports as $sr)
+				$sr->st_running = $is_running;
 			$this->st_running = $is_running;
 		}
 
 		switch($row['event_type']) {
 		 case self::DOWNTIME_START:
-			$row['output'] = $this->st_obj_type . ' has entered a period of scheduled downtime';
-			if (!isset($this->st_last_dt_start_depth[$obj_name]))
-				$this->st_last_dt_start_depth[$obj_name] = 0;
-			$dt_depth = ++$this->st_last_dt_start_depth[$obj_name];
+			$row['output'] = $rpt->st_obj_type . ' has entered a period of scheduled downtime';
+			$row['state'] = $rpt->st_real_state;
+			$rpt->st_dt_depth++;
 
-			# update this sub-object's status to OK if we're supposed
-			# to calculate scheduled downtime as uptime
-			if ($this->scheduled_downtime_as_uptime && $sub && $sub->st_obj_state != self::STATE_OK) {
-				$sub->st_dt_depth++;
-				$sub->calculate_object_state();
-				$sub->sub->st_obj_state = self::STATE_OK;
-				$this->st_sub[$sub->st_real_state]--;
-				$this->st_sub[$sub->st_obj_state]++;
+			if (!$sub) {
+				foreach ($this->sub_reports as $sr) {
+					$sr->st_update($row['the_time']);
+					$sr->st_dt_depth++;
+					$sr->calculate_object_state();
+				}
 			}
-
-			foreach ($this->sub_reports as $sr) {
-				$sr->st_dt_depth = $dt_depth;
-			}
-
-			if ($sub) {
-				# sub->st_dt_depth must be set before we get the
-				# common downtime depth here
-				$sub->st_dt_depth = $dt_depth;
-				$this->st_dt_depth = $this->get_common_downtime_state();
-			} else {
-				$this->st_dt_depth = $dt_depth;
-			}
+			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::DOWNTIME_STOP:
-			$row['output'] = $this->st_obj_type . ' has exited a period of scheduled downtime';
+			$row['output'] = $rpt->st_obj_type . ' has exited a period of scheduled downtime';
+			$row['state'] = $rpt->st_real_state;
 
-			$dt_depth = 0;
-			# old merlin versions created more end events than start events, so never decrement
-			# if we're already at 0.
-			if ($this->st_last_dt_start_depth[$obj_name])
-				$dt_depth = --$this->st_last_dt_start_depth[$obj_name];
+			# old merlin versions created more end events than start events, so
+			# never decrement if we're already at 0.
+			if ($rpt->st_dt_depth)
+				$rpt->st_dt_depth--;
 
-			if ($sub) {
-				# sub->st_dt_depth must be set before we retrieve the
-				# common downtime depth
-				$sub->st_dt_depth = $dt_depth;
-				$this->st_dt_depth = $this->get_common_downtime_state();
-			} else {
-				$this->st_dt_depth = $dt_depth;
-			}
-
-			# possibly restore the actual object state if
-			# scheduled downtime ends
-			if ($this->scheduled_downtime_as_uptime) {
-				if ($sub && !$sub->st_dt_depth && $sub->st_obj_state != $sub->st_real_state) {
-					$this->st_sub[$sub->st_obj_state]--;
-					$this->st_sub[$sub->st_real_state]++;
-					$sub->calculate_object_state();
+			if (!$sub) {
+				foreach ($this->sub_reports as $sr) {
+					$sr->st_update($row['the_time']);
+					if ($sr->st_dt_depth)
+						$sr->st_dt_depth--;
+					$sr->calculate_object_state();
 				}
-				else
-					$this->calculate_object_state();
 			}
+			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 
 		 case self::SERVICECHECK:
 		 case self::HOSTCHECK:
 			$state = $row['state'];
-			if ($sub && $sub->scheduled_downtime_as_uptime && $sub->st_dt_depth)
-				$state = self::STATE_OK;
 
 			# update the real state of the object
-			if ($sub)
-				$sub->st_real_state = $row['state'];
-			else
-				$this->st_real_state = $row['state'];
+			$rpt->st_real_state = $row['state'];
 
 			if ($sub && $sub->st_obj_state != $state) {
 				$this->st_sub[$sub->st_obj_state]--;
@@ -1489,6 +1463,9 @@ class Reports_Model extends Model
 		$this->st_update_log($sub, $row);
 		if ($sub)
 			$sub->st_update_log(false, $row);
+		else
+			foreach ($this->sub_reports as $sr)
+				$sr->st_update_log(false, $row);
 	}
 
 	public function st_worst()
@@ -1522,13 +1499,7 @@ class Reports_Model extends Model
 		if (!$state)
 			$state = $this->st_real_state;
 
-		# if we're counting scheduled downtime as uptime and
-		# we're in downtime, the calculated state is always OK
-		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth) {
-			$this->st_obj_state = self::STATE_OK;
-		} else {
-			$this->st_obj_state = $state;
-		}
+		$this->st_obj_state = $state;
 	}
 
 	/**
@@ -1589,7 +1560,7 @@ class Reports_Model extends Model
 			foreach ($this->st_text as $st => $discard)
 				$this->st_sub[$st] = 0;
 			foreach ($this->sub_reports as $rpt) {
-				$rpt->st_dt_depth = $rpt->initial_dt_depth;
+				$rpt->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
 				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state]++;
 			}
@@ -1700,12 +1671,14 @@ class Reports_Model extends Model
 		if ($sub) {
 			$output = $sub->id . ' went from ' . $sub->st_prev_row['state'] .
 				' to ' . $row['state'];
-			$row['state'] = $this->st_obj_state;
 			$row['hard'] = 1;
 			$row['output'] = $output;
 			unset($row['host_name']);
 			unset($row['service_description']);
 		}
+
+		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth)
+			$row['state'] = self::STATE_OK;
 
 		# don't save states without duration for master objects
 		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
