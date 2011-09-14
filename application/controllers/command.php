@@ -92,8 +92,9 @@ class Command_Controller extends Authenticated_Controller
 				$params[$k] = $v;
 			}
 		}
-		if (!$this->_is_authorized_for_command($params)) {
-			url::redirect(Router::$controller.'/unauthorized');
+		$auth_check = $this->_is_authorized_for_command($params);
+		if ($auth_check === false || $auth_check <0 ) {
+			url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
 		$command = new Command_Model;
@@ -181,8 +182,9 @@ class Command_Controller extends Authenticated_Controller
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
-		if (!$this->_is_authorized_for_command($param, $cmd)) {
-			url::redirect(Router::$controller.'/unauthorized');
+		$auth_check = $this->_is_authorized_for_command($param, $cmd);
+		if ($auth_check === false || $auth_check <0) {
+			url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
 		if (isset($param['comment']) && trim($param['comment'])=='') {
@@ -305,11 +307,34 @@ class Command_Controller extends Authenticated_Controller
 	/**
 	 * Display "You're not authorized" message
 	 */
-	public function unauthorized()
+	public function unauthorized($state=false)
 	{
 		$this->template->content = $this->add_view('command/unauthorized');
 		$this->template->content->error_message = $this->translate->_('You are not authorized to submit the specified command.');
-		$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
+		switch ($state) {
+			case -1:  # No command passed
+				$this->template->content->error_message = $this->translate->_('No command specified.');
+				$this->template->content->error_description = $this->translate->_('Please enter a valid '.
+					'command or use the available links in the GUI.');
+				break;
+
+			case -2:  # Contact can't submit commands
+				$this->template->content->error_description = $this->translate->_("Your account doesn't seem to configured ".
+					"to allow you to submit commands (i.e 'can_submit_commands' is not enabled). Please contact an administrator ".
+					"to enable this for you. ");
+				break;
+
+			case -3: # not authorized from cgi.cfg, and not a configured contact
+				$this->template->content->error_description = $this->translate->_("Your account doesn't seem to be ".
+					"configured properly. Please contact an administrator for assistance.");
+				break;
+
+			default: # fallthrough, not authorized for anything
+				$this->template->content->error_description = $this->translate->_('Read the section of the '.
+					'documentation that deals with authentication and authorization in the CGIs for more information.');
+
+		}
+
 		$this->template->content->return_link_lable = $this->translate->_('Return from whence you came');
 	}
 
@@ -343,13 +368,18 @@ class Command_Controller extends Authenticated_Controller
 	 * Check if user is authorized for the selected command
 	 * http://nagios.sourceforge.net/docs/3_0/configcgi.html controls
 	 * the correctness of this method
+	 * Return codes:
+	 *	-1:		No command passed
+	 *	-2:		Contact can't submit commands
+	 *	-3:		not authorized from cgi.cfg, and not a configured contact
+	 * false:		fallthrough, not authorized for anything
 	 */
 	public function _is_authorized_for_command($params = false, $cmd = false)
 	{
 		$cmd = isset($params['cmd_typ']) ? $params['cmd_typ'] : $cmd;
 
 		if (empty($cmd)) {
-			return false;
+			return -1;
 		}
 
 		# first see if this is a contact and, if so, if that contact
@@ -359,7 +389,7 @@ class Command_Controller extends Authenticated_Controller
 		if (!empty($contact)) {
 			$contact = $contact->current();
 			if (!$contact->can_submit_commands) {
-				return false;
+				return -2;
 			}
 		}
 
@@ -388,7 +418,7 @@ class Command_Controller extends Authenticated_Controller
 		# not authorized from cgi.cfg, and not a configured contact,
 		# so bail out early
 		if (empty($contact))
-			return false;
+			return -3;
 
 		$service = isset($params['service']) ? $params['service'] : false;
 		$host_name = isset($params['host_name']) ? $params['host_name'] : false;
