@@ -1120,15 +1120,22 @@ class Extinfo_Controller extends Authenticated_Controller {
 			array_multisort($comment, SORT_ASC, SORT_REGULAR, $comment);
 		}
 
+		$filter_string = $this->translate->_('Enter text to filter');
+
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		if (!is_array($this->xtra_js) || !in_array('application/views/'.$this->theme_path.'extinfo/js/extinfo.js', $this->xtra_js)) {
 			$this->template->js_header = $this->add_view('js_header');
+			$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
 			$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 			$this->template->js_header->js = $this->xtra_js;
 		}
 
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
+		$comments->filter_string = $filter_string;
 		$comments->label_add_comment = $service ? $t->_('Add a new service comment') : $t->_('Add a new host comment');
 		$comments->cmd_add_comment =
 			$type=='host' ? nagioscmd::command_id('ADD_HOST_COMMENT')
@@ -1462,9 +1469,19 @@ class Extinfo_Controller extends Authenticated_Controller {
 			)
 		);
 
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$filter_string = $this->translate->_('Enter text to filter');
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
+		$this->template->js_header->js = $this->xtra_js;
+
 		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $result;
+		$this->template->content->filter_string = $filter_string;
 		$this->template->content->back_link = $back_link;
 		$this->template->content->header_links = $header_links;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
@@ -1597,6 +1614,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 #		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$filter_string = $this->translate->_('Enter text to filter');
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
 		$this->template->js_header->js = $this->xtra_js;
 
 
@@ -1615,6 +1637,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_actions = $this->translate->_('Actions');
 
 		$content->title = $title;
+		$content->filter_string = $filter_string;
 		$content->fixed = $this->translate->_('Fixed');
 		$content->flexible = $this->translate->_('Flexible');
 		$content->na_str = $this->translate->_('N/A');

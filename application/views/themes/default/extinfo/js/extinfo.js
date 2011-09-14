@@ -1,4 +1,128 @@
 $(document).ready(function() {
+
+	$('.filterboxfield').focus(function() {
+		if (!$('#ninja_refresh_control').attr('checked')) {
+			// save previous refresh rate
+			// to be able to restore it later
+			old_refresh = current_interval;
+			$('#ninja_refresh_lable').css('font-weight', 'bold');
+			ninja_refresh(0);
+			$("#ninja_refresh_control").attr('checked', true);
+		}
+	});
+
+	$('.filterboxfield').blur(function() {
+		if ($(this).val() != '') {
+			// don't do anything if we have a current filter value
+			return;
+		}
+		if ($('#ninja_refresh_control').attr('checked')) {
+			// restore previous refresh rate
+			ninja_refresh(old_refresh);
+			$("#ninja_refresh_control").attr('checked', false);
+			$('#ninja_refresh_lable').css('font-weight', '');
+		}
+	});
+
+
+	/**
+		========================
+		comment filters
+		========================
+	*/
+	// host comments
+	$('#hostcomments_table').tablesorter({});
+
+	$('#clearhostsearch').click(function() {
+		$('#hostfilterbox').val('').trigger('keyup').trigger('blur');
+		return false;
+	});
+
+	$('#hostfilterbox').keyup(function(){
+		filter_table(this, 'hostcomments_table');})
+		.focus(function(){
+			if(this.value==_filter_label) {
+				this.value='';
+			}
+	})
+	.blur(function() {
+		if (this.value == '') {
+			this.value = _filter_label;
+		}
+	});
+
+	// service comments
+	$('#servicecomments_table').tablesorter({});
+
+	$('#clearservicesearch').click(function() {
+		$('#servicefilterbox').val('').trigger('keyup').trigger('blur');
+		return false;
+	});
+
+	$('#servicefilterbox').keyup(function(){
+		filter_table(this, 'servicecomments_table');})
+		.focus(function(){
+			if(this.value==_filter_label) {
+				this.value='';
+			}
+	})
+	.blur(function() {
+		if (this.value == '') {
+			this.value = _filter_label;
+		}
+	});
+
+
+	/**
+		========================
+		scheduled downtime filters
+		========================
+	*/
+	// host scheduled downtime
+	$('#scheduled_host_downtime').tablesorter({});
+
+	$('#clearhostsearch_sched').click(function() {
+		$('#hostfilterbox_sched').val('').trigger('keyup').trigger('blur');
+		return false;
+	});
+
+	$('#hostfilterbox_sched').keyup(function(){
+		filter_table(this, 'scheduled_host_downtime');})
+		.focus(function(){
+			if(this.value==_filter_label) {
+				this.value='';
+			}
+	})
+	.blur(function() {
+		if (this.value == '') {
+			this.value = _filter_label;
+		}
+	});
+
+
+	// service scheduled downtime
+	$('#scheduled_service_downtime').tablesorter({});
+
+	$('#clearservicesearch_sched').click(function() {
+		$('#servicefilterbox_sched').val('').trigger('keyup').trigger('blur');
+		return false;
+	});
+
+	$('#servicefilterbox_sched').keyup(function(){
+		filter_table(this, 'scheduled_service_downtime');})
+		.focus(function(){
+			if(this.value==_filter_label) {
+				this.value='';
+			}
+	})
+	.blur(function() {
+		if (this.value == '') {
+			this.value = _filter_label;
+		}
+	});
+
+
+
 	$('.extinfo_contactgroup').each(function() {
 		$(this).bind('click', function() {
 			var the_id = $(this).attr('id');
@@ -46,7 +170,7 @@ $(document).ready(function() {
 
 	// refresh helper code
 	var old_refresh = 0;
-	var refresh_is_paused = false;
+//	var refresh_is_paused = false;
 	var host_hidden = true;
 	$('#select_multiple_delete_host').click(function() {
 		if (!refresh_is_paused) {
@@ -168,3 +292,25 @@ $(document).ready(function() {
 function hide_del_msg() {
 	$('#comment_del_msg').hide('slow');
 }
+
+function filter_table (phrase, _id){
+	var words = phrase.value.toLowerCase().split(" ");
+	var table = document.getElementById(_id);
+	var ele;
+
+	for (var r = 1; r < table.rows.length; r++){
+		ele = table.rows[r].innerHTML.replace(/<[^>]+>/g,"");
+		var displayStyle = 'none';
+		if (table.rows[r].className.indexOf('submit') == -1) {
+			for (var i = 0; i < words.length; i++) {
+				if (ele.toLowerCase().indexOf(words[i])>=0)
+					displayStyle = '';
+				else {
+					displayStyle = 'none';
+					break;
+				}
+			}
+		}
+		table.rows[r].style.display = displayStyle;
+	}
+};
