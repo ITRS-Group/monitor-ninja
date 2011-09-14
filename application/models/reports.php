@@ -475,7 +475,7 @@ class Reports_Model extends Model
 			 'keep_logs' => 'bool',
 			 'keep_sub_logs' => 'bool',
 			 'report_timeperiod' => 'string',
-			 'scheduled_downtime_as_uptime' => 'bool',
+			 'scheduled_downtime_as_uptime' => 'int',
 			 'assume_initial_states' => 'bool',
 			 'assume_states_during_not_running' => 'bool',
 			 'initial_assumed_host_state' => 'string',

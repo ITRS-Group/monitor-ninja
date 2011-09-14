@@ -62,7 +62,9 @@ foreach($report_data as $i =>  $report) {
 							'alt' => '',
 							'title' => $value[0][0] < $value[0][1] ? $t->_('Below SLA') : $t->_('OK'),
 							'style' => 'width: 11px; height: 12px'));
-					?></td>
+					if (isset($value[0][2]) && $value[0][2] > 0) {
+						echo "<br />(" . reports::format_report_value($value[0][2]) ."% in other states)";
+					}?></td>
 				<?php } ?>
 			</tr>
 		</table>
