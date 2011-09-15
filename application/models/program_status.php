@@ -43,7 +43,15 @@ class Program_status_Model extends Model
 	{
 		$db = Database::instance();
 		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
-		$res = $db->query($sql);
+		$res = false;
+		try {
+			$res = $db->query($sql);
+		} catch (Kohana_Database_Exception $e) {
+			/* FIXME: This should be logged to file perhaps? */
+			openlog("ninja", LOG_PID, LOG_USER);
+			syslog(LOG_ERR, "last_alive() failed: $e");
+			closelog();
+		}
 		$cur = ($res && count($res)) ? $res->current() : false;
 		return $cur ? $cur->last_alive : false;
 	}
@@ -56,10 +64,14 @@ class Program_status_Model extends Model
 	{
 		$db = Database::instance();
 		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";
+		$res = false;
 		try {           
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
 			/* FIXME: This should be logged to file perhaps? */
+			openlog("ninja", LOG_PID, LOG_USER);
+			syslog(LOG_ERR, "notifications_checks() failed: $e");
+			closelog();
 		}
 		return (!$res || count($res) == 0) ? false : $res;
 	}

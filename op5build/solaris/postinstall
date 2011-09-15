@@ -8,13 +8,6 @@ if [ $? -eq 1 ]; then
         /etc/opt/csw/apache2/httpd.conf
 fi
 
-test -c /opt/csw/mysql5/bin/mysql
-if [ $? -eq 1 ]; then
-        /opt/csw/mysql5/bin/mysql -e 'create database merlin;'
-	/opt/csw/mysql5/bin/mysql merlin < $prefix/install_scripts/ninja.sql
-	/opt/csw/mysql5/bin/mysql merlin < $prefix/install_scripts/reports.sql
-fi
-
 chown -R monitor:daemon /opt/monitor
 chown -R monitor:daemon /var/www/
 
