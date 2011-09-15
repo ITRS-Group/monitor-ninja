@@ -277,6 +277,8 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function show_error()
 	{
+		if (!is_resource($this->link))
+			return "No database connection";
 		return mysql_error($this->link);
 	}
 
