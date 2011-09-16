@@ -35,7 +35,6 @@ host in scheduled downtime, service as uptime {
 host in scheduled downtime, service as uptime, 2 services {
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name = testhost2
 	service_description {
 		testhost;PING
 		testhost2;PING

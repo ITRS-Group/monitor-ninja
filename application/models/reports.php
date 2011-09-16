@@ -1352,35 +1352,38 @@ class Reports_Model extends Model
 
 	public function st_parse_row($row = false)
 	{
-		$obj_name = $sub = false;
+		$obj_name = $obj_type = false;
 		if (!empty($row['service_description'])) {
 			$obj_name = $row['host_name'] . ";" . $row['service_description'];
+			$obj_type = 'Service';
 		}
 		elseif (!empty($row['host_name'])) {
 			$obj_name = $row['host_name'];
+			$obj_type = 'Host';
 		}
 
-		if ($obj_name && isset($this->sub_reports[$obj_name])) {
-			$rpt = $sub = $this->sub_reports[$obj_name];
-		} else {
-			$rpt = $this;
+		$rpts = array();
+		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+			$rpts[] = $this;
+		foreach ($this->sub_reports as $sr) {
+			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+				$rpts[] = $sr;
 		}
 
 		# skip duplicate events immediately
-		if ($row['event_type'] == self::HOSTCHECK ||
-		    $row['event_type'] == self::SERVICECHECK)
+		if (count($rpts) === 1 && ($row['event_type'] == self::HOSTCHECK ||
+		    $row['event_type'] == self::SERVICECHECK))
 		{
-			if ($row['state'] === $rpt->st_prev_state) {
+			if ($row['state'] === $rpts[0]->st_prev_state) {
 				return;
 			}
-			$rpt->st_prev_state = $row['state'];
+			$rpts[0]->st_prev_state = $row['state'];
 		}
-		$this->st_update($row['the_time']);
 
-		# sub-reports must be be st_update()d before we
-		# set its state in the case statement below
-		if ($sub) {
-			$sub->st_update($row['the_time']);
+		$this->st_update($row['the_time']);
+		foreach ($rpts as $rpt) {
+			if ($rpt !== $this)
+				$rpt->st_update($row['the_time']);
 		}
 
 		# if we get an event and monitor is stopped, we
@@ -1398,74 +1401,56 @@ class Reports_Model extends Model
 
 		switch($row['event_type']) {
 		 case self::DOWNTIME_START:
-			$row['output'] = $rpt->st_obj_type . ' has entered a period of scheduled downtime';
-			$row['state'] = $rpt->st_real_state;
-			$rpt->st_dt_depth++;
-
-			if (!$sub) {
-				foreach ($this->sub_reports as $sr) {
-					$sr->st_update($row['the_time']);
-					$sr->st_dt_depth++;
-					$sr->calculate_object_state();
-				}
+			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
+			$row['state'] = $rpts[0]->st_real_state;
+			foreach ($rpts as $rpt) {
+				$rpt->st_dt_depth++;
+				$rpt->calculate_object_state();
 			}
 			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::DOWNTIME_STOP:
-			$row['output'] = $rpt->st_obj_type . ' has exited a period of scheduled downtime';
-			$row['state'] = $rpt->st_real_state;
-
-			# old merlin versions created more end events than start events, so
-			# never decrement if we're already at 0.
-			if ($rpt->st_dt_depth)
-				$rpt->st_dt_depth--;
-
-			if (!$sub) {
-				foreach ($this->sub_reports as $sr) {
-					$sr->st_update($row['the_time']);
-					if ($sr->st_dt_depth)
-						$sr->st_dt_depth--;
-					$sr->calculate_object_state();
+			$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
+			$row['state'] = $rpts[0]->st_real_state;
+			foreach ($rpts as $rpt) {
+				# old merlin versions created more end events than start events, so
+				# never decrement if we're already at 0.
+				if ($rpt->st_dt_depth) {
+					$rpt->st_dt_depth--;
+					$rpt->calculate_object_state();
 				}
 			}
 			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
-
 		 case self::SERVICECHECK:
 		 case self::HOSTCHECK:
 			$state = $row['state'];
 
-			# update the real state of the object
-			$rpt->st_real_state = $row['state'];
+			foreach ($rpts as $rpt) {
+				# update the real state of the object
+				if ($rpt->id === $obj_name) {
+					$rpt->st_real_state = $row['state'];
 
-			if ($sub && $sub->st_obj_state != $state) {
-				$this->st_sub[$sub->st_obj_state]--;
-				$this->st_sub[$state]++;
-				$this->st_obj_state = $this->st_worst();
+					if ($rpt !== $this && $rpt->st_obj_state != $state) {
+						$this->st_sub[$rpt->st_obj_state]--;
+						$this->st_sub[$state]++;
+					}
+				}
+				if ($rpt !== $this)
+					$rpt->calculate_object_state();
 			}
 			break;
 		 default:
 			//ERROR
 		}
 
-		if ($sub)
-			$sub->calculate_object_state();
-
 		$this->calculate_object_state();
 
-		# fairly nifty debugging check. This is the place to
-		# call it if you're going to.
-		#$this->check_st_sub_discrepancies($row);
-
-		# $sub must update its log *after* the master has done so,
-		# since master will look at $sub's previous state to see
-		# how it changed
-		$this->st_update_log($sub, $row);
-		if ($sub)
-			$sub->st_update_log(false, $row);
-		else
-			foreach ($this->sub_reports as $sr)
-				$sr->st_update_log(false, $row);
+		foreach ($rpts as $rpt) {
+			$rpt->st_update_log(false, $row);
+			if (!in_array($this, $rpts))
+				$this->st_update_log($rpt, $row);
+		}
 	}
 
 	public function st_worst()
