@@ -94,7 +94,7 @@ class Trends_Controller extends Authenticated_Controller {
 	private $assume_states_during_not_running = true;
 	private $include_soft_states = false;
 	private $cluster_mode = false;
-	private $scheduled_downtime_as_uptime = false;
+	public $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
 	private $create_pdf = false;
 	private $pdf_data = false;
