@@ -416,7 +416,7 @@ class Reports_Model extends Model
 		# a timeperiod without entries will cause us to never
 		# find start or stop. otoh, it never has any active time,
 		# so we simply return 0
-		if ($start >= $stop || $this->report_timeperiod === false)
+		if ($start >= $stop)
 			return 0;
 
 		$nstart = $this->tp_next($start, 'start');
@@ -1658,7 +1658,17 @@ class Reports_Model extends Model
 		# called from st_finalize(), so bail out early
 		if (!$sub && !$row) {
 			$this->st_prev_row['duration'] = $this->end_time - $this->st_prev_row['the_time'];
-			$this->st_log[] = $this->st_prev_row;
+			$active = $this->tp_active_time($this->st_prev_row['the_time'], $this->end_time);
+			if ($active > 0 || $active === $this->st_prev_row['duration'])
+				$this->st_log[] = $this->st_prev_row;
+			else
+				$this->st_log[] = array(
+					'output' => '(event outside of timeperiod)',
+					'the_time' => $this->st_prev_row['the_time'],
+					'duration' => $this->st_prev_row['duration'],
+					'state' => -2,
+					'hard' => 1
+				);
 			return;
 		}
 
@@ -1684,7 +1694,17 @@ class Reports_Model extends Model
 		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
 		if ($duration || $sub) {
 			$this->st_prev_row['duration'] = $duration;
-			$this->st_log[] = $this->st_prev_row;
+			$active = $this->tp_active_time($this->st_prev_row['the_time'], $row['the_time']);
+			if ($active > 0 || ($duration === $active))
+				$this->st_log[] = $this->st_prev_row;
+			else
+				$this->st_log[] = array(
+					'output' => '(event outside of timeperiod)',
+					'the_time' => $this->st_prev_row['the_time'],
+					'duration' => $this->st_prev_row['duration'],
+					'state' => -2,
+					'hard' => 1
+				);
 		}
 		$this->st_prev_row = $row;
 	}

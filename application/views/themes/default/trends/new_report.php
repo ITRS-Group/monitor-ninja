@@ -26,7 +26,6 @@ foreach ($object_data as $obj => $data) {
 			<?php
 			if (is_array($data) && !empty($data))
 				foreach ($data as $event) {
-				$width = 0;
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if (isset($event['duration']) && $event['duration']>0) {
 					$width = number_format(($event['duration']/$length)*100, 2);
@@ -36,6 +35,13 @@ foreach ($object_data as $obj => $data) {
 				}
 				if ($width == '0.00')
 					continue;?>
+				<?php
+					if ($event['state'] == -2) {
+						echo '<td style="padding:0px;height:'.$cell_height.'px;width:'.$width.'"></td>';
+						$cnt++;
+						continue;
+					}
+				?>
 			<td class="trend_event trend_<?php echo Trends_Controller::_translate_state_to_string($event['state'], $sub_type) ?>"
 				<?php if ($create_pdf === false) { ?>title="<?php echo
 					sprintf(

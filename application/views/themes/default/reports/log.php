@@ -28,7 +28,7 @@ if (!empty($log)) {
 			$i = 0;
 			foreach ($log as $key => $value) {
 				$i++;
-				if (isset($value['state'])) {
+				if (isset($value['state']) && $value['state'] != -2) {
 				$event_end_time = $value['the_time'] + $value['duration'];
 			?>
 			<?php $bg_color = ($i%2 != 0) ? '#ffffff' : '#f2f2f2'; ?>
