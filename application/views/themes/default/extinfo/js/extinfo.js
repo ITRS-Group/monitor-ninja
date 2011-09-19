@@ -170,7 +170,7 @@ $(document).ready(function() {
 
 	// refresh helper code
 	var old_refresh = 0;
-//	var refresh_is_paused = false;
+	var refresh_is_paused = false;
 	var host_hidden = true;
 	$('#select_multiple_delete_host').click(function() {
 		if (!refresh_is_paused) {
