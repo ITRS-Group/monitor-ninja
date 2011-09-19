@@ -3563,7 +3563,6 @@ class Reports_Controller extends Authenticated_Controller
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
 		$pdf->SetAuthor('Ninja4Nagios');
-		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
 		$pdf->SetSubject($title);
 		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 
@@ -3682,6 +3681,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
 		$filename = trim($filename);
+		$pdf_title = str_replace('_', ' ', str_replace('.pdf', '', $filename));
+		$pdf->SetTitle($pdf_title);
+
 		if (strtolower(substr($filename, -4, 4))!='.pdf') {
 			$filename .= '.pdf';
 		}
