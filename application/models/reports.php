@@ -399,6 +399,16 @@ class Reports_Model extends Model
 	}
 
 	/**
+	 * Returns whether the given timestamp is inside timeperiod
+	 * @param $timestamp: A timestamp in the unix epoch notation
+	 * @return TRUE if the timestamp is inside the timeperiod, FALSE otherwise
+	 */
+	function tp_inside($timestamp)
+	{
+		return ($this->tp_next($timestamp, 'start') === $timestamp);
+	}
+
+	/**
 	 * Returns the number of active seconds "inside"
 	 * the timeperiod during the start -> stop interval
 	 * @param $start: A timestamp in the unix epoch notation
@@ -3219,7 +3229,8 @@ class Reports_Model extends Model
 
 		$this->summary_result = array();
 		foreach ($dbr as $row) {
-			$this->summary_result[] = $row;
+			if ($this->tp_inside($row['timestamp']))
+				$this->summary_result[] = $row;
 		}
 
 		$this->completion_time = microtime(true) - $this->completion_time;
