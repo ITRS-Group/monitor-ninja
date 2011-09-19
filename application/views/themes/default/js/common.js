@@ -59,7 +59,7 @@ $(document).ready(function() {
 				new_url = _site_domain + _index_page + '/noc';
 			}
 		} else if (_current_uri == 'noc/index') {
-			new_url = _site_domain + _index_page + '/tac/index';
+			new_url = _site_domain + _index_page + '/tac/index' + new_url.toString();
 		}
 
 		window.location.href = new_url.toString();
