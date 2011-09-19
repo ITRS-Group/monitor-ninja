@@ -29,7 +29,12 @@ foreach ($object_data as $obj => $data) {
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if (isset($event['duration']) && $event['duration']>0) {
 					$width = number_format(($event['duration']/$length)*100, 2);
-					$width = ($width < 1 && $width != 0.00) ? '1px' : $width.'%';
+					if ($width > 0.6 && $width < 1)
+						$width = '1%';
+					else if ($width < 1)
+						$width = '1px';
+					else
+						$width = $width.'%';
 				} else {
 					continue;
 				}
