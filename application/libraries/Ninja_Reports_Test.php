@@ -366,6 +366,37 @@ class Ninja_Reports_Test_Core
 
 		$failed = false;
 		foreach ($correct as $k => $v) {
+			if ($k === 'subs') {
+				foreach ($v as $sub_name => $sub_correct) {
+					$sub = false;
+					foreach ($full_result as $_ => $obj) {
+						$tmp_sub_name = '';
+						if (!isset($obj['states']) || !$obj['states'])
+							continue;
+						$tmp_sub_name .= $obj['states']['HOST_NAME'];
+						if (isset($obj['states']['SERVICE_DESCRIPTION']))
+							$tmp_sub_name .= ';'.$obj['states']['SERVICE_DESCRIPTION'];
+						if ($tmp_sub_name === $sub_name) {
+							$sub = $obj;
+							break;
+						}
+					}
+					if (!$sub) {
+						$failed[$sub_name] = "expected sub report $sub_name, but couldn't find it";
+						continue;
+					}
+					foreach ($sub_correct as $sk => $sv) {
+						if (!isset($sub['states'])) {
+							$failed["$sub_name;$sk"] = "expected=$sv; lib_reports=(not set)";
+							continue;
+						}
+						if (strcmp($sub['states'][$sk], $sv)) {
+							$failed["$sub_name;$sk"] = "expected=$sv; lib_reports={$sub['states'][$sk]}";
+						}
+					}
+				}
+				continue;
+			}
 			if (!isset($states[$k])) {
 				$failed[$k] = "expected=$v; lib_reports=(not set)";
 				continue;
