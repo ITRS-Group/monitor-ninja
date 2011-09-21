@@ -183,7 +183,8 @@ tr#pdf-hide td {
 
 th.headerNone {
 	white-space: nowrap;
-	text-align: right
+	text-align: right;
+
 }
 
 tr.dark td,
@@ -215,6 +216,37 @@ table#multiple_hosts tr.even td.data {
 	text-align: right;
 	white-space: nowrap;
 }
+
+/* röd fältet för summan */
+
+tr.dark td.data_red
+tr.odd td.data_red,
+table.multiple_services tr.odd td.data_red,
+table#multiple_hosts tr.odd td.data_red,
+tr.even td.data_red,
+table.multiple_services tr.even td.data_red,
+table#multiple_hosts tr.even td.data_red
+ {
+	text-align: right;
+	white-space: nowrap;
+	background-color:#FFE8E8;
+	background: url(../../reports/images/redbgimg.png) repeat-x;
+}
+
+tr.dark td.data_green
+tr.odd td.data_green,
+table.multiple_services tr.odd td.data_green,
+table#multiple_hosts tr.odd td.data_green,
+tr.even td.data_green,
+table.multiple_services tr.even td.data_green,
+table#multiple_hosts tr.even td.data_green
+ {
+	text-align: right;
+	white-space: nowrap;
+	background-color:#e3f8dc;
+	background: url(../../reports/images/greenbgimg.png) repeat-x;
+}
+
 
 tr.odd td.data img,
 tr.even td.data img,
