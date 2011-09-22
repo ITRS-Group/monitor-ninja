@@ -261,10 +261,9 @@ class Reports_Model extends Model
 
 		$this->report_timeperiod = array();
 
-		$res = Timeperiod_Model::get($period);
-		if (!count($res))
+		$result = Timeperiod_Model::get($period, true);
+		if (empty($result))
 			return false;
-		$result = $res->current();
 		$timeperiod_id = $result['id'];
 		unset($result['id']);
 		unset($result['timeperiod_name']);
@@ -339,7 +338,7 @@ class Reports_Model extends Model
 		# start or stop, so we can break out early.
 		# Noone sane will want to take a report from such a timeperiod,
 		# but in case the user misclicks, we should behave properly.
-		if (empty($this->report_timeperiod))
+		if (empty($this->report_timeperiod) && empty($this->tp_exceptions))
 			return 0;
 
 		$other = 'stop';
@@ -371,16 +370,16 @@ class Reports_Model extends Model
 
 		$orig_day = $day;
 		$loops = 0;
-		for ($day = $orig_day + 1; $loops < 7; $day++) {
-			$ents = false;
+		for ($day = $orig_day + 1; $when + ($loops * 86400) < $this->end_time; $day++) {
 			$loops++;
+			$ents = false;
 			if ($day > 6)
 				$day = 0;
 
 			$midnight_to_when += 86400;
 
-			if (!empty($this->tp_exceptions[$year][$tm_yday + $day]))
-				$ents = $this->tp_exceptions[$year][$tm_yday + $day];
+			if (!empty($this->tp_exceptions[$year][$tm_yday + $loops]))
+				$ents = $this->tp_exceptions[$year][$tm_yday + $loops];
 			elseif (!empty($this->report_timeperiod[$day]))
 				$ents = $this->report_timeperiod[$day];
 
@@ -391,9 +390,6 @@ class Reports_Model extends Model
 			foreach ($ents as $ent)
 				return $midnight_to_when + $ent[$what];
 		}
-
-		# @@@FIXME: no print statements in models
-		echo "upsadaisy, I fell through\n";
 
 		return 0;
 	}
@@ -445,7 +441,7 @@ class Reports_Model extends Model
 			return $stop - $nstart;
 
 		$active = $nstop - $nstart;
-		for (;;) {
+		while ($nstart != 0) {
 			if (($nstart = $this->tp_next($nstop, 'start')) > $stop)
 				$nstart = $stop;
 			if (($nstop = $this->tp_next($nstart, 'stop')) > $stop)
@@ -456,10 +452,9 @@ class Reports_Model extends Model
 				return $active;
 		}
 
-		/* never reached */
-		# @@@FIXME: no print statements in models
-		echo "HALALIIIII!\n";
-		exit(1);
+		# we ran out of time periods before we reached $stop, so let's
+		# show 'em what we've got, so far
+		return $active;
 	}
 
 	public function register_db_time($t)
@@ -686,7 +681,6 @@ class Reports_Model extends Model
 			$this->report_timeperiod[6] = $this->tp_parse_day($value);
 			break;
 		# @@@FIXME: support exclude
-		# @@@FIXME: support exceptions
 		 default:
 			return false;
 		}
@@ -889,7 +883,8 @@ class Reports_Model extends Model
 					$check_exception = !($days_since_start % $x['skip_interval']);
 				}
 
-				if (!$check_exception || $exp_start > $day_time || $exp_end < $day_time)
+				# We must add 1 day to exp_end, as times during that day must be included
+				if (!$check_exception || $exp_start > $day_time || $exp_end + 86400 < $day_time)
 					continue;
 
 				if(!isset($all_exceptions[$day_year]))
