@@ -10,6 +10,8 @@ class Scheduling_queue_Model extends Model {
 	public $num_per_page = false;
 	public $offset = false;
 	public $count = false;
+	public $host_qry = false;
+	public $svc_qry = false;
 
 	/**
 	*	Fetch scheduled events
@@ -24,6 +26,17 @@ class Scheduling_queue_Model extends Model {
 		if ($auth->view_hosts_root) {
 
 			$num_per_page = (int)$num_per_page;
+			$search_sql_host = false;
+			$search_sql_svc = false;
+			$prevent_host_query = false;
+			if (!empty($this->host_qry)) {
+				$search_sql_host = ' AND LCASE(host_name) LIKE LCASE('.$this->db->escape($this->host_qry).') ';
+			}
+
+			if (!empty($this->svc_qry)) {
+				$search_sql_svc = ' AND LCASE(service_description) LIKE LCASE('.$this->db->escape($this->svc_qry).') ';
+				$prevent_host_query = ' AND 2=1';
+			}
 
 			# only use LIMIT when NOT counting
 			if ($offset !== false)
@@ -33,11 +46,11 @@ class Scheduling_queue_Model extends Model {
 
 			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled ".
 							"FROM service ".
-							"WHERE should_be_scheduled=1".
+							"WHERE should_be_scheduled=1".$search_sql_svc.$search_sql_host.
 							") UNION (".
 							"SELECT host_name, CONCAT('', '') as service_description, next_check, last_check, check_type, active_checks_enabled ".
 							"FROM host ".
-							"WHERE should_be_scheduled=1".
+							"WHERE should_be_scheduled=1".$search_sql_host.$prevent_host_query.
 							") ORDER BY ".$this->sort_field." ".$this->sort_order." ".$offset_limit;
 
 			$result = $db->query($sql);
@@ -55,6 +68,27 @@ class Scheduling_queue_Model extends Model {
 	public function count_queue()
 	{
 		return self::show_scheduling_queue(false, false, true);
+	}
+
+	/**
+	*	Set class variable host_qry to use when searching
+	*
+	*/
+	public function set_host_search_term($qry=false)
+	{
+		if (!empty($qry)) {
+			$this->host_qry = '%'.$qry.'%';
+		}
+	}
+	/**
+	*	Set class variable svc_qry to use when searching
+	*
+	*/
+	public function set_service_search_term($qry=false)
+	{
+		if (!empty($qry)) {
+			$this->svc_qry = '%'.$qry.'%';
+		}
 	}
 
 }

@@ -1436,6 +1436,18 @@ class Extinfo_Controller extends Authenticated_Controller {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
+		$host_qry = false;
+		$svc_qry = false;
+		$search_active = false;
+		if (arr::search($_REQUEST, 'host_name')) {
+			$sq_model->set_host_search_term($_REQUEST['host_name']);
+			$search_active = true;
+		}
+		if (arr::search($_REQUEST, 'service')) {
+			$sq_model->set_service_search_term($_REQUEST['service']);
+			$search_active = true;
+		}
+
 		$pagination = new Pagination(
 			array(
 				'total_items'=> $sq_model->count_queue(),
@@ -1481,6 +1493,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $result;
+		$this->template->content->search_active = $search_active;
 		$this->template->content->filter_string = $filter_string;
 		$this->template->content->back_link = $back_link;
 		$this->template->content->header_links = $header_links;
