@@ -42,7 +42,7 @@ class Timeperiod_Model extends Model
 	 * @param $use_array bool: Use array if true. Object if false.
 	 * @return false on errors. Database result set on success.
 	 */
-	public function excludes($timeperiod_id=null, $use_array=true)
+	public function excludes($timeperiod_id=null, $include_exceptions=false)
 	{
 		if (empty($timeperiod_id))
 			return false;
@@ -55,8 +55,17 @@ class Timeperiod_Model extends Model
 		$res = $db->query($query);
 		if (!$res)
 			return false;
-		if ($use_array === true)
-			$res->result(false);
+		$res = $res->result_array(false);
+
+		if ($include_exceptions) {
+			foreach ($res as &$exclude) {
+				$query = "SELECT variable, value FROM custom_vars WHERE obj_type = 'timeperiod' AND obj_id = {$exclude['id']}";
+				$exception_res = $db->query($query);
+				foreach ($exception_res as $exception) {
+					$exclude[$exception->variable] = $exception->value;
+				}
+			}
+		}
 		return $res;
 	}
 

@@ -139,6 +139,7 @@ class Reports_Model extends Model
 	public $last_shutdown = false;
 	public $states = array();
 	public $tp_exceptions = array();
+	public $tp_excludes = array();
 
 	public $options = array();
 
@@ -272,47 +273,40 @@ class Reports_Model extends Model
 
 		$includes = $result;
 
-		$result_set = Timeperiod_Model::excludes($timeperiod_id);
-
-		if(count($result_set))
-		{
-			foreach($result_set as $result_row) # for each exclude
-			{
-				foreach($valid_weekdays as $i => $weekday) # each weekday
-				{
-					if(!isset($includes[$weekday]))
-					{
-						# no time to include this day
-						continue;
-					}
-					$exclude_ranges =& $result_row[$weekday];
-					if (empty($exclude_ranges))
-					{
-						# have include, no exclude
-						$this->report_timeperiod[$i] = $this->tp_parse_day($includes[$weekday]);
-					}
-					else
-					{
-						# have both include and exclude
-						$include        = $this->tp_parse_day($includes[$weekday]);
-						$exclude_ranges = $this->tp_parse_day($exclude_ranges);
-						$this->report_timeperiod[$i] = $this->subtract_timerange_sets($include, $exclude_ranges);
-					}
-				}
+		$errors = 0;
+		foreach ($includes as $k => $v) {
+			if (empty($v)) {
+				continue;
 			}
-		} else { # use old set_option() based functionality
-			$errors = 0;
-			foreach ($includes as $k => $v) {
-				if (empty($v)) {
-					continue;
-				}
-				$errors += $this->set_option($k, $v) === false;
-			}
-
-			if ($errors)
-				return false;
+			$errors += $this->set_option($k, $v) === false;
 		}
 
+		$result_set = Timeperiod_Model::excludes($timeperiod_id, true);
+
+		if(!empty($result_set))
+		{
+			foreach($result_set as $i => $result_row) # for each exclude
+			{
+				$this->tp_excludes[$i] = array('timeperiod'=>array(), 'exceptions'=>array());
+				unset($result_row['id']);
+				unset($result_row['timeperiod_name']);
+				unset($result_row['alias']);
+				unset($result_row['instance_id']);
+				foreach($valid_weekdays as $didx => $weekday) # each weekday
+				{
+					if(isset($result_row[$weekday]))
+						$this->tp_excludes[$i]['timeperiod'][$didx] = $this->tp_parse_day($includes[$weekday]);
+					unset($result_row[$weekday]);
+				}
+				foreach($result_row as $key => $val)
+				{
+					$this->set_timeperiod_variable($key, $val, $this->tp_excludes[$i]['exceptions']);
+				}
+			}
+		}
+
+		if ($errors)
+			return false;
 		return true;
 	}
 
@@ -341,6 +335,69 @@ class Reports_Model extends Model
 		if (empty($this->report_timeperiod) && empty($this->tp_exceptions))
 			return 0;
 
+		if ($what === 'start') {
+			# try to find the next valid timestamp in this timeperiod,
+			# that is not valid in any of the exceptions.
+			# if we make it through a whole loop without $when changing, we
+			# must have found next tp start.
+			$main_when = false;
+			while ($main_when !== $when && $when <= $this->end_time) {
+				$main_when = $when = $this->tp_flat_next($when, 'start');
+
+				$tp_exceptions = $this->tp_exceptions;
+				$report_timeperiod = $this->report_timeperiod;
+				$tp_excludes = $this->tp_excludes;
+				unset($this->tp_excludes);
+				foreach ($tp_excludes as $exclude) {
+					$this->tp_exceptions = $exclude['exceptions'];
+					$this->report_timeperiod = $exclude['timeperiod'];
+					$tmp_when = $this->tp_flat_next($when, 'stop');
+					if ($tmp_when !== 0) # 0 => no more tp entries => ignore
+						$when = $tmp_when;
+				}
+				$this->tp_exceptions = $tp_exceptions;
+				$this->report_timeperiod = $report_timeperiod;
+				$this->tp_excludes = $tp_excludes;
+			}
+			if ($when > $this->end_time)
+				return 0;
+			return $when;
+		}
+		else if ($what === 'stop') {
+			# when this timeperiod stops, or any of the excludes start, we
+			# have a stop, whatever happens first
+			$whens = array();
+			$whens[] = $this->tp_flat_next($when, 'stop');
+
+			$tp_exceptions = $this->tp_exceptions;
+			$report_timeperiod = $this->report_timeperiod;
+			$tp_excludes = $this->tp_excludes;
+			unset($this->tp_excludes);
+			foreach ($tp_excludes as $exclude) {
+				$this->tp_exceptions = $exclude['exceptions'];
+				$this->report_timeperiod = $exclude['timeperiod'];
+				$whens[] = $this->tp_flat_next($when, 'start');
+			}
+			$this->tp_exceptions = $tp_exceptions;
+			$this->report_timeperiod = $report_timeperiod;
+			$this->tp_excludes = $tp_excludes;
+
+			$whens = array_filter($whens); // remove any 0
+
+			if (empty($whens))
+				return 0;
+			return min($whens);
+		}
+
+		return 0;
+	}
+	
+	/**
+	 * Finds the next start or stop of timeperiod, ignoring excludes, from
+	 * a given timestamp. Really just a helper for the above.
+	 */
+	private function tp_flat_next($when, $what)
+	{
 		$other = 'stop';
 		if ($what === 'stop')
 			$other = 'start';
@@ -354,11 +411,15 @@ class Reports_Model extends Model
 		$midnight_to_when = $when - $day_seconds;
 		$ents = array();
 		# see if we have an exception first
-		if (!empty($this->tp_exceptions[$year][$tm_yday])) {
+		if (!empty($this->tp_exceptions[$year][$tm_yday]))
 			$ents = $this->tp_exceptions[$year][$tm_yday];
-		}
+		# if not, look for regular weekday
 		elseif (!empty($this->report_timeperiod[$day]))
 			$ents = $this->report_timeperiod[$day];
+		# we have no entries today, so if we're looking for something outside
+		# a timeperiod, everything is.
+		elseif ($what === 'stop')
+			return $when;
 
 		foreach ($ents as $ent) {
 			if ($ent[$what] <= $day_seconds && $ent[$other] > $day_seconds)
@@ -680,7 +741,6 @@ class Reports_Model extends Model
 		 case 'saturday':
 			$this->report_timeperiod[6] = $this->tp_parse_day($value);
 			break;
-		# @@@FIXME: support exclude
 		 default:
 			return false;
 		}
@@ -711,17 +771,21 @@ class Reports_Model extends Model
 	public function add_timeperiod_exception($dateperiod_type,
 	                                  $syear, $smon, $smday, $swday, $swday_offset,
 	                                  $eyear, $emon, $emday, $ewday, $ewday_offset,
-	                                  $skip_interval, $timeranges)
+	                                  $skip_interval, $timeranges, &$ref)
 	{
+		if ($ref === false) {
+			$ref =& $this->tp_exceptions;
+		}
+
 		$days_per_month = reports::$days_per_month;
 
-		if (!isset($this->tp_exceptions['unresolved']))
-			$this->tp_exception['unresolved'] = array();
+		if (!isset($ref['unresolved']))
+			$ref['unresolved'] = array();
 
 		assert($dateperiod_type >= 0 && $dateperiod_type < self::DATERANGE_TYPES); # can only fail if programmer messed up
 		$timeranges = $this->tp_parse_day($timeranges);
 
-		$this->tp_exceptions['unresolved'][] = array
+		$ref['unresolved'][] = array
 		(
 			'type' => $dateperiod_type,
 			'syear' => $syear,
@@ -749,27 +813,12 @@ class Reports_Model extends Model
 		return $errors ? false : true;
 	}
 
-	public function resolve_timeperiods()
-	{
-		if ($this->start_time == false || $this->end_time == false) {
-			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
-		}
-		$start_time = $this->start_time;
-		$end_time = $this->end_time;
-
-		if ($end_time < $start_time) {
-			throw new Exception("Report time set to end before start");
-		}
-
-		$this->timeperiods_resolved = empty($this->tp_exceptions['unresolved']);
-		if ($this->timeperiods_resolved)
-			return;
-
-		$all_exceptions =& $this->tp_exceptions;
-		$unres_exceptions =& $all_exceptions['unresolved'];
-
+	private function resolve_timeperiods_worker($start_time, $end_time, &$all_exceptions) {
 		$start_year = date('Y', $start_time);
 		$end_year = date('Y', $end_time);
+		
+		$unres_exceptions =& $all_exceptions['unresolved'];
+		
 		/*
 		 * Goal:
 		 * For every day of year affected by this exception,
@@ -897,7 +946,28 @@ class Reports_Model extends Model
 				$all_exceptions[$day_year][$day] = self::merge_timerange_sets($all_exceptions[$day_year][$day], $x['timeranges']);
 			}
 		}
+	}
+
+	public function resolve_timeperiods()
+	{
+		if ($this->start_time == false || $this->end_time == false) {
+			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
+		}
+		$start_time = $this->start_time;
+		$end_time = $this->end_time;
+
+		if ($end_time < $start_time) {
+			throw new Exception("Report time set to end before start");
+		}
+
+		$this->resolve_timeperiods_worker($start_time, $end_time, $this->tp_exceptions);
 		unset($this->tp_exceptions['unresolved']);
+
+		foreach ($this->tp_excludes as $idx => &$exclude) {
+			$this->resolve_timeperiods_worker($start_time, $end_time, $exclude['exceptions']);
+			unset($exclude['exceptions']['unresolved']);
+		}
+
 		$this->timeperiods_resolved = true;
 	}
 
@@ -2074,7 +2144,7 @@ class Reports_Model extends Model
 	 * @param $value The value of the timeperiod variable
 	 * @return boolean
 	 */
-	public function set_timeperiod_variable($name, $value)
+	public function set_timeperiod_variable($name, $value, &$ref=false)
 	{
 		$valid_weekdays = reports::$valid_weekdays;
 		$valid_months = reports::$valid_months;
@@ -2097,7 +2167,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 			return true;
 		}
 
@@ -2111,7 +2181,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 			return true;
 		}
 
@@ -2122,7 +2192,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 			return true;
 		}
 
@@ -2135,7 +2205,7 @@ class Reports_Model extends Model
 			$emday = $smday;
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 			return true;
 		}
 
@@ -2157,7 +2227,7 @@ class Reports_Model extends Model
 				$emon = $month_numbers[$str4];
 
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2180,7 +2250,7 @@ class Reports_Model extends Model
 
 				/* add timeperiod exception */
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
@@ -2190,14 +2260,14 @@ class Reports_Model extends Model
 				/* february 1 - march 15 / 3 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
 					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
 			{
 				/* day 4 - 6 / 2 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2219,7 +2289,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(in_array($str1, $valid_months))
@@ -2229,14 +2299,14 @@ class Reports_Model extends Model
 				/* february 3 - 5 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
 					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1, "day"))
 			{
 				/* day 1 - 4 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2256,7 +2326,7 @@ class Reports_Model extends Model
 				$ewday = $weekday_numbers[$str3];
 				$emon = $month_numbers[$str4];
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2278,7 +2348,7 @@ class Reports_Model extends Model
 				$ewday = $weekday_numbers[$swday];
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(in_array($str1, $valid_months))
@@ -2287,14 +2357,14 @@ class Reports_Model extends Model
 				$smon = $month_numbers[$str1];
 				$emon = $smon;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day"))
 			{
 				/* day 1 - 4 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2315,7 +2385,7 @@ class Reports_Model extends Model
 				$swday_offset = $smday;
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
@@ -2324,14 +2394,14 @@ class Reports_Model extends Model
 				$smon = $month_numbers[$str1];
 				$emon = $month_numbers[$str2];
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
 			{
 				/* day 1 - day 5 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2352,7 +2422,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $swday_offset;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months))
@@ -2362,7 +2432,7 @@ class Reports_Model extends Model
 				$emon = $smon;
 				$emday = $smday;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day"))
@@ -2370,7 +2440,7 @@ class Reports_Model extends Model
 				/* day 1 */
 				$emday = $smday;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2390,7 +2460,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $swday_offset;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			// return false;
