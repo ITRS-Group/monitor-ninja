@@ -50,13 +50,14 @@ class Command_Controller extends Authenticated_Controller
 
 	/**
 	 * Create a standard checkbox item
-	 * @param $name The user visible text for this option
-	 * @param $dflt The default value of the checkbox (true = checked)
+	 * @param $description The user visible text for this option
+	 * @param $name The internal name for this option
 	 * @return array suitable for passing to the request template
 	 */
-	protected function cb($name, $dflt = true)
+	protected function cb($description, $name)
 	{
-		return array('type' => 'checkbox', 'name' => $name, 'default' => $dflt);
+		$value = Command_Model::get_setting($name);
+		return array('type' => 'checkbox', 'name' => $description, 'default' => $value);
 	}
 
 	/**
@@ -104,7 +105,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			$param['_force'] = $this->cb($this->translate->_('Force Check'));
+			$param['_force'] = $this->cb($this->translate->_('Force Check'), '_force');
 			break;
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
@@ -126,14 +127,14 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => $this->translate->_('Child Hosts'));
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			$param['_services-too'] = $this->cb($this->translate->_('Schedule downtime for services too'));
+			$param['_services-too'] = $this->cb($this->translate->_('Schedule downtime for services too'), '_services-too');
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
 		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
-			$param['_broadcast'] = $this->cb($this->translate->_('Broadcast'));
-			$param['_force'] = $this->cb($this->translate->_('Force notification'));
-			$param['_increment'] = $this->cb($this->translate->_('Increment notification number'));
+			$param['_broadcast'] = $this->cb($this->translate->_('Broadcast'), '_broadcast');
+			$param['_force'] = $this->cb($this->translate->_('Force notification'), '_force');
+			$param['_increment'] = $this->cb($this->translate->_('Increment notification number'), '_increment');
 			break;
 
 		 case 'ENABLE_HOST_SVC_CHECKS':
@@ -143,19 +144,19 @@ class Command_Controller extends Authenticated_Controller
 		 case 'ENABLE_SERVICEGROUP_SVC_CHECKS':
 		 case 'DISABLE_SERVICEGROUP_SVC_CHECKS':
 			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis));
+			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis), '_host-too');
 			break;
 
 		 case 'ENABLE_HOST_CHECK':
 		 case 'DISABLE_HOST_CHECK':
 			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_services-too'] = $this->cb(sprintf($this->translate->_('%s checks for services too'), $en_dis));
+			$param['_services-too'] = $this->cb(sprintf($this->translate->_('%s checks for services too'), $en_dis), '_services-too');
 			break;
 
 		 case 'ENABLE_HOST_SVC_NOTIFICATIONS':
 		 case 'DISABLE_HOST_SVC_NOTIFICATIONS':
 			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis));
+			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis), '_host-too');
 			break;
 
 		}

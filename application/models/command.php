@@ -14,6 +14,21 @@ class Command_Model extends Model
 		$this->auth = new Nagios_auth_Model();
 	}
 
+	public function get_setting($setting)
+	{
+		# the underscore is an implementation detail ("don't pass this straight
+		# to nagios") that should not be exposed in config/nagdefault.php
+		$setting = 'nagdefault.'.ltrim($setting, '_');
+		$value = Ninja_setting_Model::fetch_page_setting($setting, '*');
+		if (is_object($value))
+			$value = $value->setting;
+		else
+			# all checkboxes that used to be hardcoded to true is set to true
+			# in the config file. as this defaults to false, we stay consistent.
+			$value = Kohana::config($setting);
+		return $value;
+	}
+
 	protected function get_object_list($param_name)
 	{
 		$ary = false;
@@ -141,13 +156,13 @@ class Command_Model extends Model
 				$ary = array('type' => 'immutable', 'default' => $this->auth->user);
 				break;
 			 case 'check_attempts':
-				$ary = array('type' => 'int', 'default' => 5);
+				$ary = array('type' => 'int', 'default' => $this->get_setting('check_attempts'));
 				break;
 			 case 'check_interval':
-				$ary = array('type' => 'int', 'default' => 300);
+				$ary = array('type' => 'int', 'default' => $this->get_setting('check_interval'));
 				break;
 			 case 'comment':
-				$ary = array('type' => 'string', 'size' => 100);
+				$ary = array('type' => 'string', 'size' => 100, 'default' => $this->get_setting('comment'));
 				break;
 			 case 'comment_id':
 				$ary = array('type' => 'select', 'options' => $this->get_comment_ids($cmd));
@@ -156,7 +171,7 @@ class Command_Model extends Model
 				}
 				break;
 			 case 'delete':
-				$ary = array('type' => 'bool', 'default' => 1);
+				$ary = array('type' => 'bool', 'default' => $this->get_setting('delete'));
 				break;
 			 case 'downtime_id':
 			 case 'trigger_id':
@@ -165,7 +180,7 @@ class Command_Model extends Model
 				$ary['help'] = help::render('triggered_by');
 				break;
 			 case 'duration':
-				$ary = array('type' => 'duration', 'default' => '2.0');
+				$ary = array('type' => 'duration', 'default' => $this->get_setting('duration'));
 				$ary['help'] = help::render('duration');
 				break;
 			 case 'event_handler_command':
@@ -176,19 +191,19 @@ class Command_Model extends Model
 				$ary = array('type' => 'string');
 				break;
 			 case 'fixed':
-				$ary = array('type' => 'bool', 'default' => 1);
+				$ary = array('type' => 'bool', 'default' => $this->get_setting('fixed'));
 				break;
 			 case 'notification_number':
 				$ary = array('type' => 'int', 'default' => 1);
 				break;
 			 case 'notify':
-				$ary = array('type' => 'bool', 'default' => 1);
+				$ary = array('type' => 'bool', 'default' => $this->get_setting('notify'));
 				break;
 			 case 'options':
 				$ary = 'skip';
 				break;
 			 case 'persistent':
-				$ary = array('type' => 'bool', 'default' => 1);
+				$ary = array('type' => 'bool', 'default' => $this->get_setting('persistent'));
 				break;
 			 case 'plugin_output':
 				$ary = array('type' => 'string', 'size' => 100);
@@ -203,7 +218,7 @@ class Command_Model extends Model
 							 (0 => 'Up', 1 => 'Down'));
 				break;
 			 case 'sticky':
-				$ary = array('type' => 'bool', 'default' => 1);
+				$ary = array('type' => 'bool', 'default' => $this->get_setting('sticky'));
 				break;
 			 case 'value':
 				$ary = array('type' => 'string', 'size' => 100, 'default' => 'variable=value');
@@ -249,7 +264,7 @@ class Command_Model extends Model
 			 case 'start_time':
 				$ary = array('type' => 'time', 'default' => date(nagstat::date_format(), time()+10));
 				if ($param_name === 'end_time')
-					$ary['default'] = date(nagstat::date_format(), time() + 7200);
+					$ary['default'] = date(nagstat::date_format(), time() + ($this->get_setting('duration') * 3600) + 10);
 				break;
 			}
 
