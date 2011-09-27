@@ -20,9 +20,9 @@ $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 $cell_height = isset($avail_height) ? $avail_height: 50;
 $title_str = $this->translate->_('Start: %s, End: %s, Duration: %s, Output: %s');
 
-$graph->draw();
-$graph->display();
-
 ?>
+
+	<img src="<?php echo $graph_image_source ?>" alt="" />
+
 <div style="clear:both"></div>
 <?php echo (isset($avail_template) && !empty($avail_template)) ? $avail_template : ''; ?>
