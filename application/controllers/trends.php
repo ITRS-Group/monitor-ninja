@@ -405,7 +405,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$template->scheduled_periods = $scheduled_periods;
 		$template->saved_reports = $saved_reports;
 
-		# decide what report periods to print
+		# decide what hardcoded options for report periods to print
 		$report_period_strings = Reports_Controller::_report_period_strings();
 
 		$report_periods = $report_period_strings["report_period_strings"];
