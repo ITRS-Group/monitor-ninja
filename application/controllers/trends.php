@@ -191,6 +191,11 @@ class Trends_Controller extends Authenticated_Controller {
 		);
 	}
 
+	private function _getGraphForData($data) {
+		$graph = new MultipleBarChart();
+		$graph->set_legend_y();
+	}
+
 	/**
 	*	Display report selection/setup page
 	*/
@@ -1029,6 +1034,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
+		$content->graph = $this->_getGraphForData($container);
 		$content->object_data = $container;
 		$content->start = $report_start;
 		$content->end = $report_end;
