@@ -46,6 +46,9 @@
 				<?php } ?>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['up'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
 							array( 'alt' => $t->_('Up'), 'title' => $t->_('Up'), 'style' => 'height: 12px; width: 12x')); ?></td>
+					if (isset($data['counted_as_up'][$i]) && $data['counted_as_up'][$i] > 0) {
+						echo " (" . reports::format_report_value($data['counted_as_up'][$i]) ."% in other states)";
+					}?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 95px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['unreachable'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unreachable'][$i]) > 0 ? '' : 'not-').'unreachable.png'),
 							array( 'alt' => $t->_('Unreachable'), 'title' => $t->_('Unreachable'), 'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['down'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['down'][$i]) > 0 ? '' : 'not-').'down.png'),

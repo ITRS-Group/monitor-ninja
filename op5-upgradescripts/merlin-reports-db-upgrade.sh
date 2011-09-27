@@ -11,8 +11,8 @@ db_user=root
 db_pass=
 
 # These are the versions (+1) that will be installed by running this script
-target_sla_version=6
-target_avail_version=7
+target_sla_version=8
+target_avail_version=8
 
 if [ $# -ge 1 ]
 then
@@ -51,38 +51,28 @@ fi
 while [ "$sla_ver" -lt "$target_sla_version" ]
 do
 	case "$sla_ver" in
-	[1-3])
+	[5-7])
+		new_ver='8'
+		upgrade_script="$prefix/op5-upgradescripts/sla_v5_to_v8.sql"
+		;;
+	*)
 		new_ver=`expr $sla_ver + 1 `
 		upgrade_script="$prefix/op5-upgradescripts/sla_v${sla_ver}_to_v${new_ver}.sql"
-
-		echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file "$db_login_opts" $upgrade_script
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		;;
-	4)
-		# upgrade to latest
-		upgrade_script="$prefix/op5-upgradescripts/sla_v4_to_v5.sql"
-		echo -n "Upgrading SLA tables to v5 ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file "$db_login_opts" $upgrade_script
-			mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '5'" merlin 2>/dev/null
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		break
 		;;
 	esac
 
-	(( sla_ver++ ))
+	echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
+	if [ -r "$upgrade_script" ]
+	then
+		run_sql_file "$db_login_opts" $upgrade_script
+		mysql $db_login_opts -Be "UPDATE sla_db_version SET version = '$new_ver'" merlin 2>/dev/null
+		echo "done."
+	else
+		echo "SCRIPT MISSING."
+		echo "Tried to use $upgrade_script"
+	fi
+
+	sla_ver=$new_ver
 done
 
 
@@ -99,52 +89,33 @@ fi
 while [ "$avail_ver" -lt $target_avail_version ]
 do
 	case "$avail_ver" in
-	1)
+	[2-4])
+		new_ver=5
+		upgrade_script="$prefix/op5-upgradescripts/avail_v2_to_v5.sql"
+		;;
+	[6-7])
+		new_ver=8
+		upgrade_script="$prefix/op5-upgradescripts/avail_v6_to_v8.sql"
+		;;
+	*)
 		new_ver=`expr $avail_ver + 1 `
 		upgrade_script="$prefix/op5-upgradescripts/avail_v${avail_ver}_to_v${new_ver}.sql"
 
-		echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file "$db_login_opts" $upgrade_script
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		;;
-	4)
-		# upgrade to latest
-		upgrade_script="$prefix/op5-upgradescripts/avail_v2_to_v5.sql"
-		echo -n "Upgrading AVAIL tables to v5 ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file "$db_login_opts" $upgrade_script
-			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '5'" merlin 2>/dev/null
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		;;
-	5)
-		# upgrade to latest
-		upgrade_script="$prefix/op5-upgradescripts/avail_v5_to_v6.sql"
-		echo -n "Upgrading AVAIL tables to v6 ... "
-		if [ -r "$upgrade_script" ]
-		then
-			run_sql_file "$db_login_opts" $upgrade_script
-			mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '6'" merlin 2>/dev/null
-			echo "done."
-		else
-			echo "SCRIPT MISSING."
-			echo "Tried to use $upgrade_script"
-		fi
-		break
 		;;
 	esac
 
-	(( avail_ver++ ))
+	echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
+	if [ -r "$upgrade_script" ]
+	then
+		run_sql_file "$db_login_opts" $upgrade_script
+		mysql $db_login_opts -Be "UPDATE avail_db_version SET version = '$new_ver'" merlin 2>/dev/null
+		echo "done."
+	else
+		echo "SCRIPT MISSING."
+		echo "Tried to use $upgrade_script"
+	fi
+
+	avail_ver=$new_ver
 done
 
 # check that we have the scheduled reports tables in merlin

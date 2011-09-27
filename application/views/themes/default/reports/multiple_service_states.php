@@ -99,7 +99,10 @@
 					<?php } ?>
 				</td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_green"'; ?>bgcolor="#e3f8dc"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
+							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px'));
+					if (isset($data['counted_as_ok'][$i]) && $data['counted_as_ok'][$i] > 0) {
+						echo " (" . reports::format_report_value($data['counted_as_ok'][$i]) ."% in other states)";
+					}?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
 							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['unknown'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unknown'][$i]) > 0 ? '' : 'not-').'unknown.png'),

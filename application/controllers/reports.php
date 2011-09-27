@@ -234,6 +234,12 @@ class Reports_Controller extends Authenticated_Controller
 			'DOWN' => $this->translate->_('DOWN'),
 			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
 		);
+
+		$this->scheduled_downtime_options = array(
+			0 => $this->translate->_('Actual state'),
+			1 => $this->translate->_('Uptime'),
+			2 => $this->translate->_('Uptime, with difference')
+		);
 	}
 
 	public function add_view($view) {
@@ -291,9 +297,6 @@ class Reports_Controller extends Authenticated_Controller
 				$del_result = 'error';
 			}
 		}
-
-		$scheduled_downtime_as_uptime_checked  =
-			arr::search($_REQUEST, 'scheduleddowntimeasuptime', $this->scheduled_downtime_as_uptime) ? 'checked="checked"' : '';
 
 		$cluster_mode = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
 		$cluster_mode_checked =	!empty($cluster_mode) ? 'checked="checked"' : '';
@@ -481,11 +484,6 @@ class Reports_Controller extends Authenticated_Controller
 
 			$use_alias_checked = (isset($report_info["use_alias"]) && $report_info["use_alias"] != 0) ? 'checked="checked"' : '';
 
-			if(isset($report_info["scheduleddowntimeasuptime"]) && $report_info["scheduleddowntimeasuptime"] != 0)
-				$scheduled_downtime_as_uptime_checked = 'checked="checked"';
-			else
-				$scheduled_downtime_as_uptime_checked = '';
-
 			$report_period = $report_info["report_period"];
 		}
 		$template->json_periods = $json_periods;
@@ -545,8 +543,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->inline_js .= "show_state_options(true);\n";
 			$this->inline_js .= "toggle_label_weight(true, 'assume_initial');\n";
 		}
-		if($scheduled_downtime_as_uptime_checked)
-			$this->inline_js .= "toggle_label_weight(true, 'sched_downt');\n";
 		if($include_soft_states_checked)
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
 		if($assume_states_during_not_running_checked)
@@ -638,7 +634,9 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_click_calendar = $t->_('Click calendar to select date');
 		$template->label_rpttimeperiod = $t->_('Report time period');
 		$template->label_initialassumedhoststate = $t->_('First assumed host state');
-		$template->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as uptime');
+		$template->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
+		$template->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
+		$template->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
 		$template->label_initialassumedservicestate = $t->_('First assumed service state');
 		$template->label_assumestatesduringnotrunning = $t->_('Assume states during program downtime');
 		$template->label_assumeinitialstates = $t->_('Assume initial states');
@@ -646,7 +644,6 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
 		$template->label_enter_sla = $t->_('Enter SLA');
 		$template->reporting_periods = $this->_get_reporting_periods();
-		$template->scheduled_downtime_as_uptime_checked = $scheduled_downtime_as_uptime_checked;
 		$template->cluster_mode_checked = $cluster_mode_checked;
 		$template->assume_initial_states_checked = $assume_initial_states_checked;
 		$template->initial_assumed_host_states = self::$initial_assumed_host_states;
@@ -1144,7 +1141,6 @@ class Reports_Controller extends Authenticated_Controller
 		$err_msg = "";
 		$report_class = $this->reports_model;
 		foreach (self::$options as $var => $new_var) {
-			//echo $var.' '.$new_var."\n";
 			if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
 				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var))."'<br />";
 			}
@@ -1209,7 +1205,7 @@ class Reports_Controller extends Authenticated_Controller
 		$report_class->set_option('host_name', $hostname);
 		$report_class->set_option('service_description', $service);
 
-		$scheduled_downtime_as_uptime     = arr::search($_REQUEST, 'scheduleddowntimeasuptime');
+		$this->scheduled_downtime_as_uptime = arr::search($_REQUEST, 'scheduleddowntimeasuptime');
 		$assume_initial_states            = arr::search($_REQUEST, 'assumeinitialstates');
 		$assume_states_during_not_running = arr::search($_REQUEST, 'assumestatesduringnotrunning');
 		$include_soft_states              = arr::search($_REQUEST, 'includesoftstates');
@@ -1406,7 +1402,9 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_cluster_mode = $t->_('Cluster mode');
 
 				$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
-				$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as uptime');
+				$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
+				$tpl_options->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
+				$tpl_options->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
 				$tpl_options->label_initialassumedservicestate = $t->_('First assumed service state');
 				$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
 				$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
@@ -1479,7 +1477,7 @@ class Reports_Controller extends Authenticated_Controller
 					$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
 					$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
 					$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
-					$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$scheduled_downtime_as_uptime."');\n";
+					$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->scheduled_downtime_as_uptime."');\n";
 					$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
 					$this->inline_js .= "show_calendar('".$report_period."');\n";
 					$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
@@ -1488,7 +1486,7 @@ class Reports_Controller extends Authenticated_Controller
 
 				$this->js_strings .= "var cluster_mode = '".(int)$cluster_mode."';\n";
 				$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
-				$this->js_strings .= "var scheduleddowntimeasuptime = '".$scheduled_downtime_as_uptime."';\n";
+				$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->scheduled_downtime_as_uptime."';\n";
 
 				$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
 				$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
@@ -1690,6 +1688,7 @@ class Reports_Controller extends Authenticated_Controller
 				if (!empty($this->data_arr)) {
 					$data = $this->data_arr;
 					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
+					$template->content->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
 					$template->content->create_pdf = $this->create_pdf;
 					$template->content->start_time = $this->start_date;
 					$template->content->end_time = $this->end_date;
@@ -1901,7 +1900,7 @@ class Reports_Controller extends Authenticated_Controller
 						$links = array();
 						$trends_img_params = '';
 						$trends_link_params = '';
-						$downtime       = $scheduled_downtime_as_uptime;
+						$downtime       = $this->scheduled_downtime_as_uptime;
 						$assume_initial = $assume_initial_states;
 						$not_running    = $assume_states_during_not_running;
 						$soft_states    = $include_soft_states;
@@ -2786,6 +2785,8 @@ class Reports_Controller extends Authenticated_Controller
 				$return['unknown'][] 		= $data['states']['PERCENT_KNOWN_TIME_UNKNOWN'];
 				$return['critical'][] 		= $data['states']['PERCENT_KNOWN_TIME_CRITICAL'];
 				$return['undetermined'][] 	= $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
+				if ($this->scheduled_downtime_as_uptime == 2)
+					$return['counted_as_ok'][]  = $data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'];
 
 				$prev_host = $host_name;
 				$sum_ok += $data['states']['PERCENT_KNOWN_TIME_OK'];
@@ -2822,6 +2823,8 @@ class Reports_Controller extends Authenticated_Controller
 				$return['down'][] 			= $data['states']['PERCENT_KNOWN_TIME_DOWN'];
 				$return['unreachable'][]	= $data['states']['PERCENT_KNOWN_TIME_UNREACHABLE'];
 				$return['undetermined'][]	= $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
+				if ($this->scheduled_downtime_as_uptime == 2)
+					$return['counted_as_up'][]  = $data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'];
 
 				$sum_up += $data['states']['PERCENT_KNOWN_TIME_UP'];
 				$sum_down += $data['states']['PERCENT_KNOWN_TIME_DOWN'];
@@ -3562,7 +3565,6 @@ class Reports_Controller extends Authenticated_Controller
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
 		$pdf->SetAuthor('Ninja4Nagios');
-		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
 		$pdf->SetSubject($title);
 		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 
@@ -3681,6 +3683,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
 		$filename = trim($filename);
+		$pdf_title = str_replace('_', ' ', str_replace('.pdf', '', $filename));
+		$pdf->SetTitle($pdf_title);
+
 		if (strtolower(substr($filename, -4, 4))!='.pdf') {
 			$filename .= '.pdf';
 		}
@@ -3829,13 +3834,15 @@ class Reports_Controller extends Authenticated_Controller
 					# control colour of bar depending on value
 					# true = green, false = red
 					$sla_ok = $this->in_months[$months_key] > $real_val ? true : false;
-					$data[$this->abbr_month_names[$months_key-1]] = array($real_val, $this->in_months[$months_key], $sla_ok);
-					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->in_months[$months_key], $sla_ok);
 				} else {
 					$sla_ok = false;
-					$data[$this->abbr_month_names[$months_key]] = array(0, $this->in_months[$months_key], $sla_ok);
-					$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array(0, $this->in_months[$months_key], $sla_ok);
+					$real_val = 0;
 				}
+				$data[$this->abbr_month_names[$months_key-1]] = array($real_val, $this->in_months[$months_key], $sla_ok);
+				if ($this->scheduled_downtime_as_uptime == 2)
+					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->in_months[$months_key], $period_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
+				else
+					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->in_months[$months_key]);
 			}
 		}
 
@@ -3891,18 +3898,20 @@ class Reports_Controller extends Authenticated_Controller
 						# true = green, false = red
 						$sla_ok = $this->in_months[$key] > $real_val ? true : false;
 
-						# eg: $data['Jan'] = array(99.99999, 99.5)
-						$data[$this->abbr_month_names[$months_key]] = array($real_val, $this->in_months[$key], $sla_ok);
-
-						# eg: $table_data['groupnameX']['Jan'] = array(98,342342, 98)
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->in_months[$key]);
 
 					} else {
 						// create empty 'real' values
 						$sla_ok = false;
-						$data[$this->abbr_month_names[$months_key]] = array(0, $this->in_months[$key], $sla_ok);
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array(0, $this->in_months[$key]);
+						$real_val = 0;
 					}
+
+					# eg: $data['Jan'] = array(99.99999, 99.5)
+					$data[$this->abbr_month_names[$months_key]] = array($real_val, $this->in_months[$key], $sla_ok);
+					# eg: $table_data['groupnameX']['Jan'] = array(98,342342, 98)
+					if ($this->scheduled_downtime_as_uptime == 2)
+						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->in_months[$key], $tmp_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
+					else
+						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->in_months[$key]);
 				}
 
 				if (is_null($members) && arr::search($tmp_data, 'states')) {

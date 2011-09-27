@@ -59,7 +59,7 @@ $(document).ready(function() {
 				new_url = _site_domain + _index_page + '/noc';
 			}
 		} else if (_current_uri == 'noc/index') {
-			new_url = _site_domain + _index_page + '/tac/index';
+			new_url = _site_domain + _index_page + '/tac/index' + new_url.toString();
 		}
 
 		window.location.href = new_url.toString();
@@ -816,6 +816,8 @@ function object_action(action,the_id)
 	switch(action) {
 		case 'schedule_host_downtime':
 		case 'schedule_svc_downtime':
+		case 'del_host_downtime':
+		case 'del_svc_downtime':
 		case 'acknowledge_host_problem':
 		case 'acknowledge_svc_problem':
 		case 'disable_host_svc_notifications':
@@ -926,6 +928,14 @@ function multi_action_select(action, type)
 		case 'DISABLE_SVC_CHECK':
 			$('.' + prop_field).each(function() {
 				if ($(this).text() & CHECKS_ENABLED) {
+					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
+				}
+			});
+			break;
+		case 'DEL_HOST_DOWNTIME':
+		case 'DEL_SVC_DOWNTIME':
+			$('.' + prop_field).each(function() {
+				if (!($(this).text() & SCHEDULED_DT)) {
 					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
 				}
 			});

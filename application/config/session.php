@@ -20,7 +20,7 @@ $config['name'] = 'ninjasession';
 /**
  * Session parameters to validate: user_agent, ip_address, expiration.
  */
-$config['validate'] = array('user_agent');
+$config['validate'] = array('ip_address');
 
 /**
  * Enable or disable session encryption.

@@ -94,7 +94,7 @@ class Trends_Controller extends Authenticated_Controller {
 	private $assume_states_during_not_running = true;
 	private $include_soft_states = false;
 	private $cluster_mode = false;
-	private $scheduled_downtime_as_uptime = false;
+	public $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
 	private $create_pdf = false;
 	private $pdf_data = false;
@@ -198,8 +198,6 @@ class Trends_Controller extends Authenticated_Controller {
 	{
 		$this->template->disable_refresh = true;
 
-		$scheduled_downtime_as_uptime_checked  =
-			arr::search($_REQUEST, 'scheduleddowntimeasuptime', $this->scheduled_downtime_as_uptime) ? 'checked="checked"' : '';
 		$cluster_mode_checked =
 			arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode) ? 'checked="checked"' : '';
 		$assume_initial_states_checked =
@@ -295,8 +293,6 @@ class Trends_Controller extends Authenticated_Controller {
 			$this->inline_js .= "show_state_options(true);\n";
 			$this->inline_js .= "toggle_label_weight(true, 'assume_initial');\n";
 		}
-		if($scheduled_downtime_as_uptime_checked)
-			$this->inline_js .= "toggle_label_weight(true, 'sched_downt');\n";
 		if($include_soft_states_checked)
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
 		if($assume_states_during_not_running_checked)
@@ -380,7 +376,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
 		#$template->label_enter_sla = $t->_('Enter SLA');
 		$template->reporting_periods = Reports_Controller::_get_reporting_periods();
-		$template->scheduled_downtime_as_uptime_checked = $scheduled_downtime_as_uptime_checked;
 		$template->cluster_mode_checked = $cluster_mode_checked;
 		$template->assume_initial_states_checked = $assume_initial_states_checked;
 		$template->initial_assumed_host_states = self::$initial_assumed_host_states;
@@ -1002,7 +997,7 @@ class Trends_Controller extends Authenticated_Controller {
 		switch ($days) {
 			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
 				while ($time < $report_end) {
-					$h = date('H:i', $time);
+					$h = date('H', $time);
 					$resolution_names[] = $h;
 					$time += (60*60);
 				}

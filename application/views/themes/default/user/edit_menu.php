@@ -22,7 +22,7 @@ if (!$is_admin) { ?>
 		echo $this->translate->_('Username').': ';
 		echo form::dropdown(array('name' => 'username', 'id' => 'editmenu_username', 'style' => 'padding-right:10px'), $limited_users, $selected_user);
 	} else {
-		echo $this->translate->_("No limied users found in the system so there's nothing we can do here.");
+		echo $this->translate->_("No limited users found in the system so there's nothing we can do here.");
 	}
 	echo form::close();
 

@@ -267,10 +267,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				</tr>
 				<tr>
 					<td>
-						<?php echo help::render('scheduled_downtime') ?>
-						<input type="checkbox" class="checkbox" value="1" id="scheduleddowntimeasuptime" name="scheduleddowntimeasuptime"
-							onchange="toggle_label_weight(this.checked, 'sched_downt')" <?php echo $scheduled_downtime_as_uptime_checked ?> />
-						<label for="scheduleddowntimeasuptime" id="sched_downt"><?php echo $label_scheduleddowntimeasuptime ?></label>
+						<?php echo help::render('scheduled_downtime').' '.$label_scheduleddowntimeasuptime?><br />
+						<?php echo form::dropdown(array('name' => 'scheduleddowntimeasuptime'), $scheduleddowntimeasuptime_options, $scheduleddowntimeasuptime_selected) ?>
 					</td>
 					<td>&nbsp;</td>
 					<td>

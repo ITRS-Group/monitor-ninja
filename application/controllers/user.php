@@ -28,7 +28,14 @@ class User_Controller extends Authenticated_Controller {
 		'config.popup_delay' => 'int',
 		'config.show_display_name' => 'bool',
 		'config.show_notes' => 'bool',
-		'config.show_notes_chars' => 'int'
+		'config.show_notes_chars' => 'int',
+		'nagdefault.sticky' => 'bool',
+		'nagdefault.persistent' => 'bool',
+		'nagdefault.comment' => 'string',
+		'nagdefault.services-too' => 'bool',
+		'nagdefault.force' => 'bool',
+		'nagdefault.duration' => 'int'
+		'nagdefault.fixed' => 'bool'
 	);
 
 	/**
@@ -63,7 +70,8 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Config') => 'config',
 			$t->_('Keyboard Commands') => 'keycommands',
 			$t->_('Pop ups') => 'popups',
-			$t->_('Status Pages') => 'status'
+			$t->_('Status Pages') => 'status',
+			$t->_('Nagios Defaults') => 'nagdefault'
 		);
 
 		$settings['pagination'] = array(
@@ -92,6 +100,15 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Use popups') => array('config.use_popups', self::$var_types['config.use_popups']),
 			$t->_('Popup delay') => array('config.popup_delay', self::$var_types['config.popup_delay'])
 		);
+
+		$settings['nagdefault'] = array(
+			$t->_('Sticky') => array('nagdefault.sticky', self::$var_types['nagdefault.sticky']),
+			$t->_('Persistent') => array('nagdefault.persistent', self::$var_types['nagdefault.persistent']),
+			$t->_('Force action') => array('nagdefault.force', self::$var_types['nagdefault.force']),
+			$t->_('Perform action for services too') => array('nagdefault.services-too', self::$var_types['nagdefault.services-too']),
+			$t->_('Fixed') => array('nagdefault.fixed', self::$var_types['nagdefault.fixed']),
+			$t->_('Duration (hours)') => array('nagdefault.duration', self::$var_types['nagdefault.duration']),
+			$t->_('Comment') => array('nagdefault.comment', self::$var_types['nagdefault.comment']));
 
 		$skins = glob(APPPATH.'views/'.$this->theme_path.'css/*', GLOB_ONLYDIR);
 
@@ -190,7 +207,7 @@ class User_Controller extends Authenticated_Controller {
 		$base_err_str = $this->translate->_('Wrong datatype vaule for field %s. Should be %s - found %s');
 		$empty_str = $this->translate->_('Ignoring %s since no value was found for it.');
 		foreach ($data as $key => $val) {
-			if ($val == '') {
+			if ($val == '' && $type_info[$key] != 'string') {
 				$errors[$key] = sprintf($empty_str, $key);
 			}
 			switch ($type_info[$key]) {

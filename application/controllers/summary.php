@@ -534,7 +534,7 @@ class Summary_Controller extends Authenticated_Controller
 			('summary_items', 'alert_types', 'state_types',
 			 'host_states', 'service_states', 'start_time', 'end_time',
 			 'report_period', 'host_name', 'service_description',
-			 'hostgroup', 'servicegroup');
+			 'hostgroup', 'servicegroup', 'report_timeperiod');
 
 		if (!empty($input) && is_array($input)) {
 			$_REQUEST = $input;
@@ -686,6 +686,9 @@ class Summary_Controller extends Authenticated_Controller
 			$_REQUEST['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
 			$_REQUEST['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
 		}
+
+		if (isset($_REQUEST['rpttimeperiod']))
+			$_REQUEST['report_timeperiod'] = $_REQUEST['rpttimeperiod'];
 
 		$options = $_REQUEST;
 		if (isset($_REQUEST['standardreport'])) {

@@ -184,21 +184,6 @@ function set_initial_state(what, val)
 				toggle_label_weight(0, 'assume_statesnotrunning');
 			}
 			break;
-		case 'scheduleddowntimeasuptime':
-			if (val!='0' && val!='') {
-				toggle_label_weight(1, 'sched_downt');
-				$('input[name=' + what + ']').attr('checked', true);
-				if ($('#fancy_content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				$('input[name=' + what + ']').attr('checked', false);
-				toggle_label_weight(0, 'sched_downt');
-				if ($('#fancy_content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-			}
-			break;
 		case 'report_name':
 			f.elements['report_name'].value = val;
 			break;

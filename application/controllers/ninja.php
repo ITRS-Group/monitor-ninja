@@ -171,14 +171,14 @@ class Ninja_Controller extends Template_Controller {
 		if ($items_per_page !== false) {
 			$_GET['items_per_page'] = ($items_per_page !== false && $items_per_page < 0)
 				? ($items_per_page * -1)
-				: $items_per_page;
+				: (int)$items_per_page;
 		}
 
 		$custom_per_page = arr::search($_GET, 'custom_pagination_field');
 		if ($custom_per_page !== false) {
 			$_GET['custom_pagination_field'] = ($custom_per_page !== false && $custom_per_page < 0)
 				? ($custom_per_page * -1)
-				: $custom_per_page;
+				: (int)$custom_per_page;
 		}
 
 		# convert test params to $_REQUEST to enable more

@@ -109,6 +109,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_contacts = $t->_('Contacts');
 		$content->label_no_contacts = $t->_('No contacts');
 		$content->lable_contact_name = $t->_('Contact name');
+		$content->label_pager = $t->_('Pager');
 		$content->lable_contact_alias = $t->_('Alias');
 		$content->lable_contact_email = $t->_('Email');
 		$content->lable_click_to_view = $t->_('Click to view contacts');
@@ -991,11 +992,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		$handling_commands = false;
+		$handling_deletes = false;
 		$command_success = false;
 		$command_result_msg = false;
 		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
-			$handling_commands = true;
+			$handling_deletes = true;
 			$cmd = false;
 			$nagios_commands = array();
 			# bulk delete of comments?
@@ -1119,15 +1120,22 @@ class Extinfo_Controller extends Authenticated_Controller {
 			array_multisort($comment, SORT_ASC, SORT_REGULAR, $comment);
 		}
 
+		$filter_string = $this->translate->_('Enter text to filter');
+
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
 		$this->template->content->comments = $this->add_view('extinfo/comments');
 		if (!is_array($this->xtra_js) || !in_array('application/views/'.$this->theme_path.'extinfo/js/extinfo.js', $this->xtra_js)) {
 			$this->template->js_header = $this->add_view('js_header');
+			$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
 			$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
 			$this->template->js_header->js = $this->xtra_js;
 		}
 
 		$t = $this->translate;
 		$comments = $this->template->content->comments;
+		$comments->filter_string = $filter_string;
 		$comments->label_add_comment = $service ? $t->_('Add a new service comment') : $t->_('Add a new host comment');
 		$comments->cmd_add_comment =
 			$type=='host' ? nagioscmd::command_id('ADD_HOST_COMMENT')
@@ -1428,6 +1436,18 @@ class Extinfo_Controller extends Authenticated_Controller {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
+		$host_qry = false;
+		$svc_qry = false;
+		$search_active = false;
+		if (arr::search($_REQUEST, 'host_name')) {
+			$sq_model->set_host_search_term($_REQUEST['host_name']);
+			$search_active = true;
+		}
+		if (arr::search($_REQUEST, 'service')) {
+			$sq_model->set_service_search_term($_REQUEST['service']);
+			$search_active = true;
+		}
+
 		$pagination = new Pagination(
 			array(
 				'total_items'=> $sq_model->count_queue(),
@@ -1461,9 +1481,20 @@ class Extinfo_Controller extends Authenticated_Controller {
 			)
 		);
 
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$filter_string = $this->translate->_('Enter text to filter');
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
+		$this->template->js_header->js = $this->xtra_js;
+
 		$this->template->title = $this->translate->_('Monitoring').' » '.$this->translate->_('Scheduling queue');
 		$this->template->content = $this->add_view('extinfo/scheduling_queue');
 		$this->template->content->data = $result;
+		$this->template->content->search_active = $search_active;
+		$this->template->content->filter_string = $filter_string;
 		$this->template->content->back_link = $back_link;
 		$this->template->content->header_links = $header_links;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
@@ -1492,6 +1523,83 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 		}
 
+		$handling_commands = false;
+		$command_success = false;
+		$command_result_msg = false;
+		if (!empty($_POST) && (!empty($_POST['del_host']) || !empty($_POST['del_service']))) {
+			$handling_commands = true;
+			$cmd = false;
+			$nagios_commands = array();
+			# bulk delete of comments?
+			if (isset($_POST['del_submithost']) || isset($_POST['del_submithost_svc'])) {
+				# host comments
+				$cmd = 'DEL_HOST_DOWNTIME';
+				foreach ($_POST['del_host'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+				}
+
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+					url::redirect('command/unauthorized');
+				}
+
+				if (!empty($_POST['del_service'])) {
+					# service comments
+					$cmd = 'DEL_SVC_DOWNTIME';
+						if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+							url::redirect('command/unauthorized');
+						}
+					foreach ($_POST['del_service'] as $param) {
+						$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+					}
+				}
+
+			} elseif (isset($_POST['del_submitservice'])) {
+				# service comments
+				$cmd = 'DEL_SVC_DOWNTIME';
+				foreach ($_POST['del_service'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
+				}
+
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+					url::redirect('command/unauthorized');
+				}
+
+			}
+
+			$nagios_base_path = Kohana::config('config.nagios_base_path');
+			$pipe = $nagios_base_path."/var/rw/nagios.cmd";
+			$nagconfig = System_Model::parse_config_file("nagios.cfg");
+			if (isset($nagconfig['command_file'])) {
+				$pipe = $nagconfig['command_file'];
+			}
+
+			while ($ncmd = array_pop($nagios_commands)) {
+				$command_success = nagioscmd::submit_to_nagios($ncmd, $pipe);
+			}
+
+			if ($command_success === true) {
+				# everything was ok
+				$command_result_msg = sprintf($this->translate->_('Your commands were successfully submitted to %s.'),
+					Kohana::config('config.product_name'));
+			} else {
+				# errors encountered
+				$command_result_msg = sprintf($this->translate->_('There was an error submitting one or more of your commands to %s.'),
+					Kohana::config('config.product_name'));
+			}
+
+			$_SESSION['command_result_msg'] = $command_result_msg;
+			$_SESSION['command_success'] = $command_success;
+
+			# reload controller to prevent it from trying to submit
+			# the POST data on refresh
+			url::redirect(Router::$controller.'/'.Router::$method);
+		}
+
+		$command_result_msg = $this->session->get('error_msg', $command_result_msg);
+		$command_success = $this->session->get('error_msg', $command_success);
+
+
+
 		$host_title_str = $this->translate->_('Scheduled host downtime');
 		$service_title_str = $this->translate->_('Scheduled service downtime');
 		$title = $this->translate->_('Scheduled downtime');
@@ -1516,6 +1624,17 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/scheduled_downtime');
 		$content = $this->template->content;
 
+		$this->template->js_header = $this->add_view('js_header');
+#		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_js[] = $this->add_path('extinfo/js/extinfo.js');
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$filter_string = $this->translate->_('Enter text to filter');
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+
+		$this->template->js_header->js = $this->xtra_js;
+
+
 		# table header fields
 		$content->label_host_name = $this->translate->_('Host name');
 		$content->label_service = $this->translate->_('Service');
@@ -1531,6 +1650,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->label_actions = $this->translate->_('Actions');
 
 		$content->title = $title;
+		$content->filter_string = $filter_string;
 		$content->fixed = $this->translate->_('Fixed');
 		$content->flexible = $this->translate->_('Flexible');
 		$content->na_str = $this->translate->_('N/A');
@@ -1544,6 +1664,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->service_data = $service_data;
 		$content->service_title_str = $service_title_str;
 		$this->template->title = $this->translate->_("Monitoring » Scheduled downtime");
+		$content->command_result = arr::search($_SESSION, 'command_result_msg');
+		$content->command_success = arr::search($_SESSION, 'command_success');
+		unset($_SESSION['command_result_msg']);
+		unset($_SESSION['command_success']);
+
 
 	}
 }

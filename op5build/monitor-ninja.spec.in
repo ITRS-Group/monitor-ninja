@@ -78,13 +78,23 @@ ln -sfT %prefix %buildroot/var/www/html/ninja
 ln -s ../ %buildroot%prefix/op5
 
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
-install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py
+install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 
 mkdir -p %buildroot%_sysconfdir/httpd/conf.d
 install -m 640 op5build/ninja.httpd-conf %buildroot/etc/httpd/conf.d/monitor-ninja.conf
 
 %post
-sh %prefix/install_scripts/ninja_db_init.sh
+# Verify that mysql-server is installed and running before executing sql scripts
+$(mysql -Be "quit" 2>/dev/null)
+if [ $? -eq 0 ]; then
+  sh %prefix/install_scripts/ninja_db_init.sh
+else
+  echo "WARNING: mysql-server is not installed or not running."
+  echo "If Oracle database is to be used this is ok."
+  echo "If MySQL database is to be used you need to maually run:"
+  echo "  %prefix/install_scripts/ninja_db_init.sh"
+  echo "to complete the setup of %name"
+fi
 
 # Set driver to LDAP if ad or ldap is configured
 if [ -f /opt/op5sys/etc/ldapserver ]; then
@@ -97,7 +107,7 @@ fi
 %attr(644,root,root) /etc/cron.d/*
 /var/www/html/monitor
 /var/www/html/ninja
-/opt/monitor/op5/nacoma/hooks/save/nacoma_hooks.py*
+/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py*
 %attr(-,root,apache) /etc/httpd/conf.d/monitor-ninja.conf
 
 %clean

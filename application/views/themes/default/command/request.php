@@ -68,9 +68,8 @@ foreach ($params as $pname => $ary) {
 			}
 			# fallthrough
 		case 'bool':
-			$default_checked = array('fixed', '_services-too', 'sticky', 'notify', 'persistent', '_force');
-			$checked = in_array($pname, $default_checked) ? true : false;
-			echo form::checkbox(array('name' => $form_name, 'id' => 'field_'.$pname), $dflt, $checked, 'class="checkbox"');
+			$checked = (bool)$dflt;
+			echo form::checkbox(array('name' => $form_name, 'id' => 'field_'.$pname), true, $checked, 'class="checkbox"');
 			break;
 		case 'float':
 		case 'int':

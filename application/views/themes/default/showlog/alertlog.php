@@ -100,14 +100,22 @@
 		</tr>
 		</table>
 	<?php echo form::close(); ?>
-
-<?php echo (isset($pagination)) ? $pagination : ''; ?>
-<table>
 <?php
-$headers = '<tr><th></th><th>%s:00</th><th>Alert type</th><th>Object</th><th>State</th><th>Hard?</th><th>Attempt</th><th>Output</th></tr>';
+	echo form::open('', array('onsubmit' => 'return false'));
+	echo form::input(array('id' => 'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+	echo form::button('clearfilterbox', $this->translate->_('Clear'));
+	echo form::close();
+
+	echo (isset($pagination)) ? $pagination : ''; ?>
+<table id="showlog">
+<?php
+$headers = '<tr class="alertlog_header"><th></th><th colspan="7">%s:00</th></tr>';
 $timeformat = nagstat::date_format();
 $headertimestamp = substr($timeformat, 0, -4); // all known timeformats end with :i:s - strip
 $lastheader = false;
+if (count($entries) > 1)
+	$lastheader = date($headertimestamp, $entries[0]->timestamp + 3599);
+	printf('<tr class="alertlog_header"><th></th><th>%s:00</th><th>Alert type</th><th>Object</th><th>State</th><th>Hard?</th><th>Attempt</th><th>Output</th></tr>', $lastheader);
 $evenodd = 'even';
 foreach ($entries as $entry) {
 	$parts = alertlog::get_user_friendly_representation($entry);

@@ -1,7 +1,22 @@
 <div class="widget w98 left">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<h2><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></h2>
-	<table id="host_table">
+	<table cellpadding="2" cellspacing="0" class="schedule_search" border=1>
+		<tr>
+			<?php echo form::open('', array('onsubmit' => 'return false'));?>
+			<td><?php echo $this->translate->_('Filter').': '; ?>
+			<td colspan="2"><?php echo form::input(array('id' => 'hostfilterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string).' '.form::button('clearhostsearch', $this->translate->_('Clear')); ?></td>
+			<?php echo form::close(); ?>
+		</tr>
+		<tr>
+			<?php echo form::open('extinfo/scheduling_queue', array('method' => 'get')); ?>
+			<td><?php echo $this->translate->_('Search Host').': '; ?></td>
+			<td><?php echo form::input(array('id' => 'hostsearch', 'name' => 'host_name')).' '.$this->translate->_('Service').': '.form::input(array('id' => 'svcsearch', 'name' => 'service')).' '.form::button('submitsearch', $this->translate->_('Search'));; ?></td>
+			<td><?php echo $search_active ? form::button(array('id' => 'reload_page', 'name' => 'reload_page'), $this->translate->_('Clear Search')) : '&nbsp;'; ?></td>
+			<?php echo form::close(); ?>
+		</tr>
+	</table>
+	<table id="hostcomments_table">
 		<tr>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';

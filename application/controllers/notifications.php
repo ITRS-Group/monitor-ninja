@@ -139,6 +139,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$t = $this->translate;
 
 		$service = urldecode($this->input->get('service', $service));
+		$host_name = urldecode($this->input->get('host_name', $host_name));
 		$sql = '';
 		if ($type != '') {
 			$value = $this->select_types[$type];
@@ -179,9 +180,9 @@ class Notifications_Controller extends Authenticated_Controller {
 		$i = 0;
 		foreach ($header_link_fields as $field) {
 			$header_links[$i]['title'] = $field['title'];
-			$header_links[$i]['url_asc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['url_asc'] = Router::$controller.'/host/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'].'&amp;host_name='.$host_name.'&amp;service='.urlencode($service);
 			$header_links[$i]['alt_asc'] = $t->_('Sort by').' '.$t->_('last').' '.$field['title'].' ('.$t->_('ascending').')';
-			$header_links[$i]['url_desc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'];
+			$header_links[$i]['url_desc'] = Router::$controller.'/host/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'].'&amp;host_name='.$host_name.'&amp;service='.urlencode($service);
 			$header_links[$i]['alt_desc'] = $t->_('Sort by').' '.$field['title'].' ('.$t->_('descending').')';
 			$i++;
 		}

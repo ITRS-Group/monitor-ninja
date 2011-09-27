@@ -27,7 +27,7 @@ if (!empty($widgets)) {
 		<tr>
 			<td class="white" colspan="2" style="padding: 7px 0px" >
 				<?php echo !empty($icon_image) ? html::image('application/media/images/logos/'.$icon_image, array('alt' => $icon_image_alt, 'title' => $icon_image_alt, 'style' => 'width: 32px; margin: -5px 7px 0px 0px; float: left')) : ''?>
-				<h1 style="display: inline"><?php echo $main_object_alias.' ('.$main_object.')' ?></h1>
+				<h1 style="display: inline"><?php echo ($main_object_alias ? $main_object_alias.' ('.$main_object.')' : $main_object) ?></h1>
 			</td>
 		</tr>
 		<?php
@@ -73,17 +73,19 @@ if (!empty($widgets)) {
 						echo '<a title="'.$label_contactgroup.': '.$cgroup.', '.$lable_click_to_view.'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.$c.'">';
 						echo $cgroup.'</a>';
 				?>
-				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;" class="extinfo_contacts">
+				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
 						<th style="border: 1px solid #cdcdcd"><?php echo $lable_contact_name ?></th>
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $lable_contact_alias ?></th>
 						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $lable_contact_email ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $label_pager ?></th>
 					</tr>
 					<?php	foreach ($contacts[$cgroup] as $cmember) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
 						<td><?php echo $cmember->contact_name ?></td>
 						<td><?php echo $cmember->alias ?></td>
 						<td><?php echo $cmember->email ?></td>
+						<td><?php echo $cmember->pager ?></td>
 					</tr>
 					<?php	} ?>
 				</table>

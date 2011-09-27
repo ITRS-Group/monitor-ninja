@@ -71,7 +71,6 @@ class Reports_Model extends Model
 	var $st_sub_discrepancies = 0;
 	var $st_obj_type = '';
 	var $st_state_calculator = 'st_worst';
-	var $st_last_dt_start_depth = array();
 
 	/**
 	 * The calculated state of the object, taking such things
@@ -140,6 +139,7 @@ class Reports_Model extends Model
 	public $last_shutdown = false;
 	public $states = array();
 	public $tp_exceptions = array();
+	public $tp_excludes = array();
 
 	public $options = array();
 
@@ -262,10 +262,9 @@ class Reports_Model extends Model
 
 		$this->report_timeperiod = array();
 
-		$res = Timeperiod_Model::get($period);
-		if (!count($res))
+		$result = Timeperiod_Model::get($period, true);
+		if (empty($result))
 			return false;
-		$result = $res->current();
 		$timeperiod_id = $result['id'];
 		unset($result['id']);
 		unset($result['timeperiod_name']);
@@ -274,47 +273,40 @@ class Reports_Model extends Model
 
 		$includes = $result;
 
-		$result_set = Timeperiod_Model::excludes($timeperiod_id);
-
-		if(count($result_set))
-		{
-			foreach($result_set as $result_row) # for each exclude
-			{
-				foreach($valid_weekdays as $i => $weekday) # each weekday
-				{
-					if(!isset($includes[$weekday]))
-					{
-						# no time to include this day
-						continue;
-					}
-					$exclude_ranges =& $result_row[$weekday];
-					if (empty($exclude_ranges))
-					{
-						# have include, no exclude
-						$this->report_timeperiod[$i] = $this->tp_parse_day($includes[$weekday]);
-					}
-					else
-					{
-						# have both include and exclude
-						$include        = $this->tp_parse_day($includes[$weekday]);
-						$exclude_ranges = $this->tp_parse_day($exclude_ranges);
-						$this->report_timeperiod[$i] = $this->subtract_timerange_sets($include, $exclude_ranges);
-					}
-				}
+		$errors = 0;
+		foreach ($includes as $k => $v) {
+			if (empty($v)) {
+				continue;
 			}
-		} else { # use old set_option() based functionality
-			$errors = 0;
-			foreach ($includes as $k => $v) {
-				if (empty($v)) {
-					continue;
-				}
-				$errors += $this->set_option($k, $v) === false;
-			}
-
-			if ($errors)
-				return false;
+			$errors += $this->set_option($k, $v) === false;
 		}
 
+		$result_set = Timeperiod_Model::excludes($timeperiod_id, true);
+
+		if(!empty($result_set))
+		{
+			foreach($result_set as $i => $result_row) # for each exclude
+			{
+				$this->tp_excludes[$i] = array('timeperiod'=>array(), 'exceptions'=>array());
+				unset($result_row['id']);
+				unset($result_row['timeperiod_name']);
+				unset($result_row['alias']);
+				unset($result_row['instance_id']);
+				foreach($valid_weekdays as $didx => $weekday) # each weekday
+				{
+					if(isset($result_row[$weekday]))
+						$this->tp_excludes[$i]['timeperiod'][$didx] = $this->tp_parse_day($includes[$weekday]);
+					unset($result_row[$weekday]);
+				}
+				foreach($result_row as $key => $val)
+				{
+					$this->set_timeperiod_variable($key, $val, $this->tp_excludes[$i]['exceptions']);
+				}
+			}
+		}
+
+		if ($errors)
+			return false;
 		return true;
 	}
 
@@ -340,9 +332,72 @@ class Reports_Model extends Model
 		# start or stop, so we can break out early.
 		# Noone sane will want to take a report from such a timeperiod,
 		# but in case the user misclicks, we should behave properly.
-		if (empty($this->report_timeperiod))
+		if (empty($this->report_timeperiod) && empty($this->tp_exceptions))
 			return 0;
 
+		if ($what === 'start') {
+			# try to find the next valid timestamp in this timeperiod,
+			# that is not valid in any of the exceptions.
+			# if we make it through a whole loop without $when changing, we
+			# must have found next tp start.
+			$main_when = false;
+			while ($main_when !== $when && $when <= $this->end_time) {
+				$main_when = $when = $this->tp_flat_next($when, 'start');
+
+				$tp_exceptions = $this->tp_exceptions;
+				$report_timeperiod = $this->report_timeperiod;
+				$tp_excludes = $this->tp_excludes;
+				unset($this->tp_excludes);
+				foreach ($tp_excludes as $exclude) {
+					$this->tp_exceptions = $exclude['exceptions'];
+					$this->report_timeperiod = $exclude['timeperiod'];
+					$tmp_when = $this->tp_flat_next($when, 'stop');
+					if ($tmp_when !== 0) # 0 => no more tp entries => ignore
+						$when = $tmp_when;
+				}
+				$this->tp_exceptions = $tp_exceptions;
+				$this->report_timeperiod = $report_timeperiod;
+				$this->tp_excludes = $tp_excludes;
+			}
+			if ($when > $this->end_time)
+				return 0;
+			return $when;
+		}
+		else if ($what === 'stop') {
+			# when this timeperiod stops, or any of the excludes start, we
+			# have a stop, whatever happens first
+			$whens = array();
+			$whens[] = $this->tp_flat_next($when, 'stop');
+
+			$tp_exceptions = $this->tp_exceptions;
+			$report_timeperiod = $this->report_timeperiod;
+			$tp_excludes = $this->tp_excludes;
+			unset($this->tp_excludes);
+			foreach ($tp_excludes as $exclude) {
+				$this->tp_exceptions = $exclude['exceptions'];
+				$this->report_timeperiod = $exclude['timeperiod'];
+				$whens[] = $this->tp_flat_next($when, 'start');
+			}
+			$this->tp_exceptions = $tp_exceptions;
+			$this->report_timeperiod = $report_timeperiod;
+			$this->tp_excludes = $tp_excludes;
+
+			$whens = array_filter($whens); // remove any 0
+
+			if (empty($whens))
+				return 0;
+			return min($whens);
+		}
+
+		return 0;
+	}
+	
+	/**
+	 * Finds the next start or stop of timeperiod, ignoring excludes, from
+	 * a given timestamp. Really just a helper for the above.
+	 */
+	private function tp_flat_next($when, $what)
+	{
 		$other = 'stop';
 		if ($what === 'stop')
 			$other = 'start';
@@ -356,11 +411,15 @@ class Reports_Model extends Model
 		$midnight_to_when = $when - $day_seconds;
 		$ents = array();
 		# see if we have an exception first
-		if (!empty($this->tp_exceptions[$year][$tm_yday])) {
+		if (!empty($this->tp_exceptions[$year][$tm_yday]))
 			$ents = $this->tp_exceptions[$year][$tm_yday];
-		}
+		# if not, look for regular weekday
 		elseif (!empty($this->report_timeperiod[$day]))
 			$ents = $this->report_timeperiod[$day];
+		# we have no entries today, so if we're looking for something outside
+		# a timeperiod, everything is.
+		elseif ($what === 'stop')
+			return $when;
 
 		foreach ($ents as $ent) {
 			if ($ent[$what] <= $day_seconds && $ent[$other] > $day_seconds)
@@ -372,16 +431,16 @@ class Reports_Model extends Model
 
 		$orig_day = $day;
 		$loops = 0;
-		for ($day = $orig_day + 1; $loops < 7; $day++) {
-			$ents = false;
+		for ($day = $orig_day + 1; $when + ($loops * 86400) < $this->end_time; $day++) {
 			$loops++;
+			$ents = false;
 			if ($day > 6)
 				$day = 0;
 
 			$midnight_to_when += 86400;
 
-			if (!empty($this->tp_exceptions[$year][$tm_yday + $day]))
-				$ents = $this->tp_exceptions[$year][$tm_yday + $day];
+			if (!empty($this->tp_exceptions[$year][$tm_yday + $loops]))
+				$ents = $this->tp_exceptions[$year][$tm_yday + $loops];
 			elseif (!empty($this->report_timeperiod[$day]))
 				$ents = $this->report_timeperiod[$day];
 
@@ -393,10 +452,17 @@ class Reports_Model extends Model
 				return $midnight_to_when + $ent[$what];
 		}
 
-		# @@@FIXME: no print statements in models
-		echo "upsadaisy, I fell through\n";
-
 		return 0;
+	}
+
+	/**
+	 * Returns whether the given timestamp is inside timeperiod
+	 * @param $timestamp: A timestamp in the unix epoch notation
+	 * @return TRUE if the timestamp is inside the timeperiod, FALSE otherwise
+	 */
+	function tp_inside($timestamp)
+	{
+		return ($this->tp_next($timestamp, 'start') === $timestamp);
 	}
 
 	/**
@@ -417,7 +483,7 @@ class Reports_Model extends Model
 		# a timeperiod without entries will cause us to never
 		# find start or stop. otoh, it never has any active time,
 		# so we simply return 0
-		if ($start >= $stop || $this->report_timeperiod === false)
+		if ($start >= $stop)
 			return 0;
 
 		$nstart = $this->tp_next($start, 'start');
@@ -436,7 +502,7 @@ class Reports_Model extends Model
 			return $stop - $nstart;
 
 		$active = $nstop - $nstart;
-		for (;;) {
+		while ($nstart != 0) {
 			if (($nstart = $this->tp_next($nstop, 'start')) > $stop)
 				$nstart = $stop;
 			if (($nstop = $this->tp_next($nstart, 'stop')) > $stop)
@@ -447,10 +513,9 @@ class Reports_Model extends Model
 				return $active;
 		}
 
-		/* never reached */
-		# @@@FIXME: no print statements in models
-		echo "HALALIIIII!\n";
-		exit(1);
+		# we ran out of time periods before we reached $stop, so let's
+		# show 'em what we've got, so far
+		return $active;
 	}
 
 	public function register_db_time($t)
@@ -476,7 +541,7 @@ class Reports_Model extends Model
 			 'keep_logs' => 'bool',
 			 'keep_sub_logs' => 'bool',
 			 'report_timeperiod' => 'string',
-			 'scheduled_downtime_as_uptime' => 'bool',
+			 'scheduled_downtime_as_uptime' => 'int',
 			 'assume_initial_states' => 'bool',
 			 'assume_states_during_not_running' => 'bool',
 			 'initial_assumed_host_state' => 'string',
@@ -676,8 +741,6 @@ class Reports_Model extends Model
 		 case 'saturday':
 			$this->report_timeperiod[6] = $this->tp_parse_day($value);
 			break;
-		# @@@FIXME: support exclude
-		# @@@FIXME: support exceptions
 		 default:
 			return false;
 		}
@@ -708,17 +771,21 @@ class Reports_Model extends Model
 	public function add_timeperiod_exception($dateperiod_type,
 	                                  $syear, $smon, $smday, $swday, $swday_offset,
 	                                  $eyear, $emon, $emday, $ewday, $ewday_offset,
-	                                  $skip_interval, $timeranges)
+	                                  $skip_interval, $timeranges, &$ref)
 	{
+		if ($ref === false) {
+			$ref =& $this->tp_exceptions;
+		}
+
 		$days_per_month = reports::$days_per_month;
 
-		if (!isset($this->tp_exceptions['unresolved']))
-			$this->tp_exception['unresolved'] = array();
+		if (!isset($ref['unresolved']))
+			$ref['unresolved'] = array();
 
 		assert($dateperiod_type >= 0 && $dateperiod_type < self::DATERANGE_TYPES); # can only fail if programmer messed up
 		$timeranges = $this->tp_parse_day($timeranges);
 
-		$this->tp_exceptions['unresolved'][] = array
+		$ref['unresolved'][] = array
 		(
 			'type' => $dateperiod_type,
 			'syear' => $syear,
@@ -746,27 +813,12 @@ class Reports_Model extends Model
 		return $errors ? false : true;
 	}
 
-	public function resolve_timeperiods()
-	{
-		if ($this->start_time == false || $this->end_time == false) {
-			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
-		}
-		$start_time = $this->start_time;
-		$end_time = $this->end_time;
-
-		if ($end_time < $start_time) {
-			throw new Exception("Report time set to end before start");
-		}
-
-		$this->timeperiods_resolved = empty($this->tp_exceptions['unresolved']);
-		if ($this->timeperiods_resolved)
-			return;
-
-		$all_exceptions =& $this->tp_exceptions;
-		$unres_exceptions =& $all_exceptions['unresolved'];
-
+	private function resolve_timeperiods_worker($start_time, $end_time, &$all_exceptions) {
 		$start_year = date('Y', $start_time);
 		$end_year = date('Y', $end_time);
+		
+		$unres_exceptions =& $all_exceptions['unresolved'];
+		
 		/*
 		 * Goal:
 		 * For every day of year affected by this exception,
@@ -880,7 +932,8 @@ class Reports_Model extends Model
 					$check_exception = !($days_since_start % $x['skip_interval']);
 				}
 
-				if (!$check_exception || $exp_start > $day_time || $exp_end < $day_time)
+				# We must add 1 day to exp_end, as times during that day must be included
+				if (!$check_exception || $exp_start > $day_time || $exp_end + 86400 < $day_time)
 					continue;
 
 				if(!isset($all_exceptions[$day_year]))
@@ -893,7 +946,28 @@ class Reports_Model extends Model
 				$all_exceptions[$day_year][$day] = self::merge_timerange_sets($all_exceptions[$day_year][$day], $x['timeranges']);
 			}
 		}
+	}
+
+	public function resolve_timeperiods()
+	{
+		if ($this->start_time == false || $this->end_time == false) {
+			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
+		}
+		$start_time = $this->start_time;
+		$end_time = $this->end_time;
+
+		if ($end_time < $start_time) {
+			throw new Exception("Report time set to end before start");
+		}
+
+		$this->resolve_timeperiods_worker($start_time, $end_time, $this->tp_exceptions);
 		unset($this->tp_exceptions['unresolved']);
+
+		foreach ($this->tp_excludes as $idx => &$exclude) {
+			$this->resolve_timeperiods_worker($start_time, $end_time, $exclude['exceptions']);
+			unset($exclude['exceptions']['unresolved']);
+		}
+
 		$this->timeperiods_resolved = true;
 	}
 
@@ -1132,6 +1206,7 @@ class Reports_Model extends Model
 		$cstate = array();
 		$cstate['TIME_UNDETERMINED_NO_DATA'] = 0;
 		$cstate['TIME_UNDETERMINED_NOT_RUNNING'] = 0;
+		$cstate['TIME_DOWN_COUNTED_AS_UP'] = 0;
 		$cstate['TOTAL_TIME_UNSCHEDULED'] = 0;
 		$cstate['TOTAL_TIME_SCHEDULED'] = 0;
 		$cstate['TOTAL_TIME_UNDETERMINED'] = 0;
@@ -1142,7 +1217,7 @@ class Reports_Model extends Model
 			$cstate['TOTAL_TIME_ACTIVE'] += $duration;
 			$ary = explode(':', $s);
 			$is_running = intval($ary[0]);
-			$in_dt = $ary[1] == 1;
+			$in_dt = $ary[1] != 0;
 			$p3 = $in_dt ? '' : 'UN';
 			$p3 .= 'SCHEDULED';
 
@@ -1153,7 +1228,10 @@ class Reports_Model extends Model
 
 			# this is where we hack in scheduled downtime as uptime
 			if ($in_dt && $this->scheduled_downtime_as_uptime) {
+				$real_state = $conv[$ary[2]];
 				$p2 = $conv[0];
+				if ($real_state !== 'UP' && $real_state !== 'OK')
+					$cstate['TIME_DOWN_COUNTED_AS_UP'] += $duration;
 			}
 			elseif (isset($conv[$ary[2]])) {
 				$p2 = $conv[$ary[2]];
@@ -1256,6 +1334,8 @@ class Reports_Model extends Model
 			reports::percent($cstate['TIME_UNDETERMINED_NOT_RUNNING'], $div);
 		$cstate['PERCENT_TIME_UNDETERMINED_NO_DATA'] =
 			reports::percent($cstate['TIME_UNDETERMINED_NO_DATA'], $div);
+		$cstate['PERCENT_TIME_DOWN_COUNTED_AS_UP'] =
+			reports::percent($cstate['TIME_DOWN_COUNTED_AS_UP'], $div);
 
 		return $cstate;
 	}
@@ -1347,35 +1427,38 @@ class Reports_Model extends Model
 
 	public function st_parse_row($row = false)
 	{
-		$obj_name = $sub = false;
+		$obj_name = $obj_type = false;
 		if (!empty($row['service_description'])) {
 			$obj_name = $row['host_name'] . ";" . $row['service_description'];
+			$obj_type = 'Service';
 		}
 		elseif (!empty($row['host_name'])) {
 			$obj_name = $row['host_name'];
+			$obj_type = 'Host';
 		}
 
-		if ($obj_name && isset($this->sub_reports[$obj_name])) {
-			$rpt = $sub = $this->sub_reports[$obj_name];
-		} else {
-			$rpt = $this;
+		$rpts = array();
+		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+			$rpts[] = $this;
+		foreach ($this->sub_reports as $sr) {
+			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+				$rpts[] = $sr;
 		}
 
 		# skip duplicate events immediately
-		if ($row['event_type'] == self::HOSTCHECK ||
-		    $row['event_type'] == self::SERVICECHECK)
+		if (count($rpts) === 1 && ($row['event_type'] == self::HOSTCHECK ||
+		    $row['event_type'] == self::SERVICECHECK))
 		{
-			if ($row['state'] === $rpt->st_prev_state) {
+			if ($row['state'] === $rpts[0]->st_prev_state) {
 				return;
 			}
-			$rpt->st_prev_state = $row['state'];
+			$rpts[0]->st_prev_state = $row['state'];
 		}
-		$this->st_update($row['the_time']);
 
-		# sub-reports must be be st_update()d before we
-		# set its state in the case statement below
-		if ($sub) {
-			$sub->st_update($row['the_time']);
+		$this->st_update($row['the_time']);
+		foreach ($rpts as $rpt) {
+			if ($rpt !== $this)
+				$rpt->st_update($row['the_time']);
 		}
 
 		# if we get an event and monitor is stopped, we
@@ -1386,123 +1469,63 @@ class Reports_Model extends Model
 
 		# only update sub-reports on statechange
 		if ($is_running != $this->st_running) {
-			foreach ($this->sub_reports as $rpt)
-				$rpt->st_running = $is_running;
+			foreach ($this->sub_reports as $sr)
+				$sr->st_running = $is_running;
 			$this->st_running = $is_running;
 		}
 
 		switch($row['event_type']) {
 		 case self::DOWNTIME_START:
-			$row['output'] = $this->st_obj_type . ' has entered a period of scheduled downtime';
-			# Due to a bug in the nagios module (not the import
-			# program), DOWNTIME_START events sometimes have a
-			# downtime_depth of 0 in the database (which is clearly
-			# bogus). We work around it by making sure it's always
-			# at least 1.
-			if (!$row['downtime_depth'])
-				$row['downtime_depth'] = 1;
-			# For the same reason, we must save the dt depth for
-			# when we encounter the DOWNTIME_STOP event later, so
-			# we know which value it *should* have.
-			$this->st_last_dt_start_depth[$obj_name] = $row['downtime_depth'];
-
-			# update this sub-object's status to OK if we're supposed
-			# to calculate scheduled downtime as uptime
-			if ($this->scheduled_downtime_as_uptime && $sub && $sub->st_obj_state != self::STATE_OK) {
-				$sub->st_dt_depth++;
-				$sub->calculate_object_state();
-				$sub->sub->st_obj_state = self::STATE_OK;
-				$this->st_sub[$sub->st_real_state]--;
-				$this->st_sub[$sub->st_obj_state]++;
+			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
+			$row['state'] = $rpts[0]->st_real_state;
+			foreach ($rpts as $rpt) {
+				$rpt->st_dt_depth++;
+				$rpt->calculate_object_state();
 			}
-
-			$dt_depth = intval(!!$row['downtime_depth']);
-			foreach ($this->sub_reports as $sr) {
-				$sr->st_dt_depth = $dt_depth;
-			}
-
-			if ($sub) {
-				# sub->st_dt_depth must be set before we get the
-				# common downtime depth here
-				$sub->st_dt_depth = $dt_depth;
-				$this->st_dt_depth = $this->get_common_downtime_state();
-			} else {
-				$this->st_dt_depth = $dt_depth;
-			}
+			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::DOWNTIME_STOP:
-			$row['output'] = $this->st_obj_type . ' has exited a period of scheduled downtime';
-
-			# Similar to the fix above, we check the downtime
-			# depth of the last start event here to make sure
-			# it's decremented by one (unless it's already zero).
-			if ($row['downtime_depth']) {
-				if (!isset($this->st_last_dt_start_depth[$obj_name]))
-					$row['downtime_depth'] = 0;
-				elseif ($row['downtime_depth'] == $this->st_last_dt_start_depth[$obj_name]) {
-					$row['downtime_depth'] = --$this->st_last_dt_start_depth[$obj_name];
+			$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
+			$row['state'] = $rpts[0]->st_real_state;
+			foreach ($rpts as $rpt) {
+				# old merlin versions created more end events than start events, so
+				# never decrement if we're already at 0.
+				if ($rpt->st_dt_depth) {
+					$rpt->st_dt_depth--;
+					$rpt->calculate_object_state();
 				}
 			}
-
-			if ($sub) {
-				# sub->st_dt_depth must be set before we retrieve the
-				# common downtime depth
-				$sub->st_dt_depth = intval(!!$row['downtime_depth']);
-				$this->st_dt_depth = $this->get_common_downtime_state();
-			} else {
-				$this->st_dt_depth = intval(!!$row['downtime_depth']);
-			}
-
-			# possibly restore the actual object state if
-			# scheduled downtime ends
-			if ($this->scheduled_downtime_as_uptime) {
-				if ($sub && !$sub->st_dt_depth && $sub->st_obj_state != $sub->st_real_state) {
-					$this->st_sub[$sub->st_obj_state]--;
-					$this->st_sub[$sub->st_real_state]++;
-					$sub->calculate_object_state();
-				}
-				else
-					$this->calculate_object_state();
-			}
+			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
-
 		 case self::SERVICECHECK:
 		 case self::HOSTCHECK:
 			$state = $row['state'];
-			if ($sub && $sub->scheduled_downtime_as_uptime && $sub->st_dt_depth)
-				$state = self::STATE_OK;
 
-			# update the real state of the object
-			if ($sub)
-				$sub->st_real_state = $row['state'];
-			else
-				$this->st_real_state = $row['state'];
+			foreach ($rpts as $rpt) {
+				# update the real state of the object
+				if ($rpt->id === $obj_name) {
+					$rpt->st_real_state = $row['state'];
 
-			if ($sub && $sub->st_obj_state != $state) {
-				$this->st_sub[$sub->st_obj_state]--;
-				$this->st_sub[$state]++;
-				$this->st_obj_state = $this->st_worst();
+					if ($rpt !== $this && $rpt->st_obj_state != $state) {
+						$this->st_sub[$rpt->st_obj_state]--;
+						$this->st_sub[$state]++;
+					}
+				}
+				if ($rpt !== $this)
+					$rpt->calculate_object_state();
 			}
 			break;
 		 default:
 			//ERROR
 		}
 
-		if ($sub)
-			$sub->calculate_object_state();
-
 		$this->calculate_object_state();
 
-		# fairly nifty debugging check. This is the place to
-		# call it if you're going to.
-		#$this->check_st_sub_discrepancies($row);
-
-		# $sub must update its log *after* the master has done so,
-		# since master will look at $sub's previous state to see
-		# how it changed
-		$this->st_update_log($sub, $row);
-		if ($sub)
-			$sub->st_update_log(false, $row);
+		foreach ($rpts as $rpt) {
+			$rpt->st_update_log(false, $row);
+			if (!in_array($this, $rpts))
+				$this->st_update_log($rpt, $row);
+		}
 	}
 
 	public function st_worst()
@@ -1536,13 +1559,7 @@ class Reports_Model extends Model
 		if (!$state)
 			$state = $this->st_real_state;
 
-		# if we're counting scheduled downtime as uptime and
-		# we're in downtime, the calculated state is always OK
-		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth) {
-			$this->st_obj_state = self::STATE_OK;
-		} else {
-			$this->st_obj_state = $state;
-		}
+		$this->st_obj_state = $state;
 	}
 
 	/**
@@ -1603,7 +1620,7 @@ class Reports_Model extends Model
 			foreach ($this->st_text as $st => $discard)
 				$this->st_sub[$st] = 0;
 			foreach ($this->sub_reports as $rpt) {
-				$rpt->st_dt_depth = $rpt->initial_dt_depth;
+				$rpt->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
 				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state]++;
 			}
@@ -1701,7 +1718,17 @@ class Reports_Model extends Model
 		# called from st_finalize(), so bail out early
 		if (!$sub && !$row) {
 			$this->st_prev_row['duration'] = $this->end_time - $this->st_prev_row['the_time'];
-			$this->st_log[] = $this->st_prev_row;
+			$active = $this->tp_active_time($this->st_prev_row['the_time'], $this->end_time);
+			if ($active > 0 || $active === $this->st_prev_row['duration'])
+				$this->st_log[] = $this->st_prev_row;
+			else
+				$this->st_log[] = array(
+					'output' => '(event outside of timeperiod)',
+					'the_time' => $this->st_prev_row['the_time'],
+					'duration' => $this->st_prev_row['duration'],
+					'state' => -2,
+					'hard' => 1
+				);
 			return;
 		}
 
@@ -1714,18 +1741,30 @@ class Reports_Model extends Model
 		if ($sub) {
 			$output = $sub->id . ' went from ' . $sub->st_prev_row['state'] .
 				' to ' . $row['state'];
-			$row['state'] = $this->st_obj_state;
 			$row['hard'] = 1;
 			$row['output'] = $output;
 			unset($row['host_name']);
 			unset($row['service_description']);
 		}
 
+		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth)
+			$row['state'] = self::STATE_OK;
+
 		# don't save states without duration for master objects
 		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
 		if ($duration || $sub) {
 			$this->st_prev_row['duration'] = $duration;
-			$this->st_log[] = $this->st_prev_row;
+			$active = $this->tp_active_time($this->st_prev_row['the_time'], $row['the_time']);
+			if ($active > 0 || ($duration === $active))
+				$this->st_log[] = $this->st_prev_row;
+			else
+				$this->st_log[] = array(
+					'output' => '(event outside of timeperiod)',
+					'the_time' => $this->st_prev_row['the_time'],
+					'duration' => $this->st_prev_row['duration'],
+					'state' => -2,
+					'hard' => 1
+				);
 		}
 		$this->st_prev_row = $row;
 	}
@@ -1800,8 +1839,7 @@ class Reports_Model extends Model
 		# want to get all state entries for a hosts services when
 		# we're only asking for uptime of the host
 		$sql = "SELECT host_name, service_description, " .
-			"state,timestamp AS the_time, hard, event_type, " .
-			"downtime_depth";
+			"state,timestamp AS the_time, hard, event_type";
 		# output is a TEXT field, so it needs an extra disk
 		# lookup to fetch and we don't always need it
 		if ($this->st_needs_log)
@@ -1868,7 +1906,7 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT timestamp, event_type, downtime_depth FROM " .
+		$sql = "SELECT timestamp, event_type FROM " .
 			$this->db_name . "." . $this->db_table . " " .
 			"WHERE timestamp <= " . $this->start_time . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
@@ -1889,7 +1927,7 @@ class Reports_Model extends Model
 			return false;
 
 		$this->register_db_time($row['timestamp']);
-		$this->initial_dt_depth = $row['downtime_depth'];
+		$this->initial_dt_depth = $row['event_type'] == self::DOWNTIME_START;
 		return $this->initial_dt_depth;
 	}
 
@@ -2106,7 +2144,7 @@ class Reports_Model extends Model
 	 * @param $value The value of the timeperiod variable
 	 * @return boolean
 	 */
-	public function set_timeperiod_variable($name, $value)
+	public function set_timeperiod_variable($name, $value, &$ref=false)
 	{
 		$valid_weekdays = reports::$valid_weekdays;
 		$valid_months = reports::$valid_months;
@@ -2129,7 +2167,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 			return true;
 		}
 
@@ -2143,7 +2181,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 			return true;
 		}
 
@@ -2154,7 +2192,7 @@ class Reports_Model extends Model
 
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 			return true;
 		}
 
@@ -2167,7 +2205,7 @@ class Reports_Model extends Model
 			$emday = $smday;
 			/* add timerange exception */
 			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges);
+				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 			return true;
 		}
 
@@ -2189,7 +2227,7 @@ class Reports_Model extends Model
 				$emon = $month_numbers[$str4];
 
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2212,7 +2250,7 @@ class Reports_Model extends Model
 
 				/* add timeperiod exception */
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
@@ -2222,14 +2260,14 @@ class Reports_Model extends Model
 				/* february 1 - march 15 / 3 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
 					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
 			{
 				/* day 4 - 6 / 2 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2251,7 +2289,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(in_array($str1, $valid_months))
@@ -2261,14 +2299,14 @@ class Reports_Model extends Model
 				/* february 3 - 5 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
 					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges);
+					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1, "day"))
 			{
 				/* day 1 - 4 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2288,7 +2326,7 @@ class Reports_Model extends Model
 				$ewday = $weekday_numbers[$str3];
 				$emon = $month_numbers[$str4];
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2310,7 +2348,7 @@ class Reports_Model extends Model
 				$ewday = $weekday_numbers[$swday];
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(in_array($str1, $valid_months))
@@ -2319,14 +2357,14 @@ class Reports_Model extends Model
 				$smon = $month_numbers[$str1];
 				$emon = $smon;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day"))
 			{
 				/* day 1 - 4 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2347,7 +2385,7 @@ class Reports_Model extends Model
 				$swday_offset = $smday;
 				$ewday_offset = $emday;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
@@ -2356,14 +2394,14 @@ class Reports_Model extends Model
 				$smon = $month_numbers[$str1];
 				$emon = $month_numbers[$str2];
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
 			{
 				/* day 1 - day 5 */
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2384,7 +2422,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $swday_offset;
 				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			elseif(in_array($str1, $valid_months))
@@ -2394,7 +2432,7 @@ class Reports_Model extends Model
 				$emon = $smon;
 				$emday = $smday;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges);
+					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			else if(!strcmp($str1,"day"))
@@ -2402,7 +2440,7 @@ class Reports_Model extends Model
 				/* day 1 */
 				$emday = $smday;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges);
+					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
 				return true;
 			}
 			return false;
@@ -2422,7 +2460,7 @@ class Reports_Model extends Model
 				$ewday = $swday;
 				$ewday_offset = $swday_offset;
 				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges);
+					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
 				return true;
 			}
 			// return false;
@@ -3256,7 +3294,8 @@ class Reports_Model extends Model
 
 		$this->summary_result = array();
 		foreach ($dbr as $row) {
-			$this->summary_result[] = $row;
+			if ($this->tp_inside($row['timestamp']))
+				$this->summary_result[] = $row;
 		}
 
 		$this->completion_time = microtime(true) - $this->completion_time;

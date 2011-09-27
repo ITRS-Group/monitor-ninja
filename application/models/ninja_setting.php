@@ -25,6 +25,11 @@ class Ninja_setting_Model extends Model
 			return false;
 
 		$db = Database::instance();
+		try {
+			@$db->connect();
+		} catch (Exception $ex) {
+			return false;
+		}
 
 		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$db->escape($user).
 			" AND page=".$db->escape($page)." AND type=".$db->escape($type);
@@ -60,6 +65,11 @@ class Ninja_setting_Model extends Model
 			return false;
 
 		$db = Database::instance();
+		try {
+			@$db->connect();
+		} catch (Exception $ex) {
+			return false;
+		}
 		$res = false;
 		$sql_base = "SELECT * FROM ninja_settings";
 		$user = Auth::instance()->get_user()->username;

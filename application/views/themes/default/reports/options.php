@@ -63,8 +63,8 @@ if ($type == 'avail') { ?>
 				</tr>
 				<tr class="none">
 					<td>
-						<input type="checkbox" value="1" class="checkbox" id="count" name="scheduleddowntimeasuptime" onchange="toggle_label_weight(this.checked, 'sched_downt')" />
-						<label for="count" id="sched_downt" onclick="toggle_state('count');"><?php echo $label_scheduleddowntimeasuptime ?></label>
+						<label for="count" id="sched_downt" onclick="toggle_state('count');"><?php echo $label_scheduleddowntimeasuptime ?></label><br />
+						<?php echo form::dropdown(array('name' => 'scheduleddowntimeasuptime'), $scheduleddowntimeasuptime_options, $scheduleddowntimeasuptime_selected) ?>
 					</td>
 				</tr>
 				<tr class="none">

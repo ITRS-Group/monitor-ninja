@@ -12,6 +12,7 @@ class Ninja_Reports_Test_Core
 	public $failed = 0;
 	public $logfiles = false;
 	public $logfile = false;
+	public $sqlfile = false;
 	public $table_name = false;
 	public $test_globals = array();
 	public $interesting_prefixes = array();
@@ -204,6 +205,9 @@ class Ninja_Reports_Test_Core
 				 case 'logfile':
 					$this->logfile = $v;
 					break;
+				 case 'sqlfile':
+					$this->sqlfile = $v;
+					break;
 				 case 'db_table':
 					$this->table_name = $v;
 					break;
@@ -228,12 +232,18 @@ class Ninja_Reports_Test_Core
 		echo "Preparing for test-series '" . $this->description . "'\n";
 
 		$this->details = array();
-		if ($this->logfile)
-			$this->logfiles[] = MODPATH."unit_test/reports/".$this->logfile;
+		if ($this->sqlfile) {
+			exec('mysql -u'.$this->db_user.' -p'.$this->db_pass.' '.$this->db_name.' < '.MODPATH.'unit_test/reports/'.$this->sqlfile);
+			$this->table_name = substr($this->sqlfile, 0, strpos($this->sqlfile, '.'));
+		}
+		else {
+			if ($this->logfile)
+				$this->logfiles[] = MODPATH."unit_test/reports/".$this->logfile;
 
-		$result = $this->import_logs();
-		if ($result < 0)
-			return $result;
+			$result = $this->import_logs();
+			if ($result < 0)
+				return $result;
+		}
 
 		foreach ($this->tests as $test_name => $params) {
 			$this->cur_test = $test_name;
@@ -300,7 +310,7 @@ class Ninja_Reports_Test_Core
 				" --db-user=".$this->db_user .
 				" --db-pass=".$this->db_pass." " .
 				join(" ", $this->logfiles);
-			#	echo "$cmd\n";
+				echo "$cmd\n";
 			#	exit(0);
                         #echo "Running command: $cmd\n";
 			system($cmd, $retval);
@@ -356,6 +366,37 @@ class Ninja_Reports_Test_Core
 
 		$failed = false;
 		foreach ($correct as $k => $v) {
+			if ($k === 'subs') {
+				foreach ($v as $sub_name => $sub_correct) {
+					$sub = false;
+					foreach ($full_result as $_ => $obj) {
+						$tmp_sub_name = '';
+						if (!isset($obj['states']) || !$obj['states'])
+							continue;
+						$tmp_sub_name .= $obj['states']['HOST_NAME'];
+						if (isset($obj['states']['SERVICE_DESCRIPTION']))
+							$tmp_sub_name .= ';'.$obj['states']['SERVICE_DESCRIPTION'];
+						if ($tmp_sub_name === $sub_name) {
+							$sub = $obj;
+							break;
+						}
+					}
+					if (!$sub) {
+						$failed[$sub_name] = "expected sub report $sub_name, but couldn't find it";
+						continue;
+					}
+					foreach ($sub_correct as $sk => $sv) {
+						if (!isset($sub['states'])) {
+							$failed["$sub_name;$sk"] = "expected=$sv; lib_reports=(not set)";
+							continue;
+						}
+						if (strcmp($sub['states'][$sk], $sv)) {
+							$failed["$sub_name;$sk"] = "expected=$sv; lib_reports={$sub['states'][$sk]}";
+						}
+					}
+				}
+				continue;
+			}
 			if (!isset($states[$k])) {
 				$failed[$k] = "expected=$v; lib_reports=(not set)";
 				continue;

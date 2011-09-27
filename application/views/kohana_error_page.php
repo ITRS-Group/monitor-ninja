@@ -36,7 +36,7 @@ if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
 		$content .= "<p>Additionally, there was an error when trying to save the debug information to \"$file\". Please check that your hard drive isn't full.</p>";
 	}
 }
-include('themes/default/menu/menu.php');
+require('themes/default/menu/menu.php');
 $links = $menu_base;
 
-include_once('themes/default/template.php');
+require('themes/default/template.php');

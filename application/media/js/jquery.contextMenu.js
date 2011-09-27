@@ -110,6 +110,10 @@ if(jQuery)( function() {
 										$('#_menu_schedule_host_downtime').hide();
 										$('#_menu_schedule_svc_downtime').hide();
 									}
+									if (!(obj_prop & SCHEDULED_DT)) {
+										$('#_menu_removeschedule_host_downtime').hide();
+										$('#_menu_removeschedule_svc_downtime').hide();
+									}
 								}
 							}
 

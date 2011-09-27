@@ -26,15 +26,27 @@ foreach ($object_data as $obj => $data) {
 			<?php
 			if (is_array($data) && !empty($data))
 				foreach ($data as $event) {
-				$width = 0;
 				#$sub_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if (isset($event['duration']) && $event['duration']>0) {
 					$width = number_format(($event['duration']/$length)*100, 2);
+					if ($width > 0.6 && $width < 1)
+						$width = '1%';
+					else if ($width < 1)
+						$width = '1px';
+					else
+						$width = $width.'%';
 				} else {
 					continue;
 				}
 				if ($width == '0.00')
 					continue;?>
+				<?php
+					if ($event['state'] == -2) {
+						echo '<td style="padding:0px;height:'.$cell_height.'px;width:'.$width.'"></td>';
+						$cnt++;
+						continue;
+					}
+				?>
 			<td class="trend_event trend_<?php echo Trends_Controller::_translate_state_to_string($event['state'], $sub_type) ?>"
 				<?php if ($create_pdf === false) { ?>title="<?php echo
 					sprintf(
@@ -45,9 +57,9 @@ foreach ($object_data as $obj => $data) {
 							$event['output'] ); ?>"
 					<?php }
 					if ($create_pdf !== false) { ?>
-				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background-color:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>;background-color:<?php echo Trends_Controller::_state_colors($sub_type, $event['state']) ?>"></td>
 					<?php } else { ?>
-				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>%;background:url(<?php echo url::base(false).$this->add_path('trends/images/'.Trends_Controller::_translate_state_to_string($event['state'], $sub_type).'.png') ?>)"></td>
+				style="height:<?php echo $cell_height ?>px;width:<?php echo $width ?>;background:url(<?php echo url::base(false).$this->add_path('trends/images/'.Trends_Controller::_translate_state_to_string($event['state'], $sub_type).'.png') ?>)"></td>
 					<?php } ?>
 		<?php	$cnt++;
 			} ?>

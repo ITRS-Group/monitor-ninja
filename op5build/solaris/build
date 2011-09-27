@@ -1,5 +1,6 @@
 #!/bin/bash
-basedir=`pwd`
+curdir=`pwd`
+basedir=`dirname $curdir`
 tempdir=$basedir/temp
 prefix='/opt/monitor/op5/ninja'
 PATH_DEF=`echo $PATH`
@@ -9,7 +10,6 @@ echo $tempdir
 rm -rf $tempdir
 mkdir -p $tempdir$prefix
 
-pushd ninja
 pushd cli-helpers
         make clean
         make
@@ -29,6 +29,7 @@ done
 /opt/csw/bin/gsed -i \
         -e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
         -e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
+        -e 's/^\(.config..show_cgi_links.. = .\)true/\1false/' \
         -e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
         $tempdir$prefix/application/config/config.php
 
@@ -69,9 +70,8 @@ ln -sf $prefix $tempdir/var/www/html/ninja
 ln -s ../ $tempdir$prefix/op5
 
 mkdir -p $tempdir/etc/opt/csw/apache2/extra/
-cp ../ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
+cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
 
-popd
 
 PATH=$PATH_DEF
 

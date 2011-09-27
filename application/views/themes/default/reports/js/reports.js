@@ -887,21 +887,6 @@ function set_initial_state(what, val)
 				toggle_label_weight(0, 'assume_initial');
 			}
 			break;
-		case 'scheduleddowntimeasuptime':
-			if (val!='0') {
-				toggle_label_weight(1, 'sched_downt');
-				//f.elements['scheduleddowntimeasuptime'].checked = true;
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				//f.elements['scheduleddowntimeasuptime'].checked = false;
-				toggle_label_weight(0, 'sched_downt');
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-			}
-			break;
 		case 'cluster_mode':
 			if (val!='0') {
 				toggle_label_weight(1, 'cluster_mode');

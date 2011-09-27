@@ -195,6 +195,15 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->content = $this->add_view('showlog/alertlog');
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Alert history");
+
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = $this->add_path('showlog/js/alertlog.js');
+		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
+		$filter_string = $this->translate->_('Enter text to filter');
+		$this->js_strings .= "var _filter_label = '".$filter_string."';";
+		$this->template->js_strings = $this->js_strings;
+		$this->template->js_header->js = $this->xtra_js;
+
 		$service = false;
 		$hostgroup = $this->input->get('hostgroup', $this->input->post('hostgroup', false));
 		$servicegroup = $this->input->get('servicegroup', $this->input->post('servicegroup', false));
@@ -245,6 +254,7 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->content->total_entries = $cnt;
 		$this->template->content->is_authorized = $is_authorized;
 		$this->template->content->options = $this->options;
+		$this->template->content->filter_string = $filter_string;
 	}
 
 	public function showlog()

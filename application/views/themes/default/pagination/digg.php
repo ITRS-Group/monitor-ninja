@@ -1,4 +1,20 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+	if (!isset($_SESSION['_pagination_id_'])) {
+		$_SESSION['_pagination_id_'] = 1;
+	} else {
+		switch ($_SESSION['_pagination_id_']) {
+			case 1:
+				$_SESSION['_pagination_id_'] = 2;
+				break;
+			case 2:
+				$_SESSION['_pagination_id_'] = 1;
+				break;
+			default:
+				$_SESSION['_pagination_id_'] = 1;
+		}
+	}
+
+
 /**
  * Digg pagination style
  *
@@ -6,13 +22,13 @@
  */
 if (!empty($total_items)) {
 $label_previous = html::image(
-										$this->add_path('icons/16x16/arrow-left.png'),
-										array('alt' => $this->translate->_('previous'),'title' => $this->translate->_('previous'), 'style' => 'margin-bottom: -4px')
-									);//$this->translate->_('previous');
+	$this->add_path('icons/16x16/arrow-left.png'),
+	array('alt' => $this->translate->_('previous'),'title' => $this->translate->_('previous'), 'style' => 'margin-bottom: -4px')
+);//$this->translate->_('previous');
 $label_next = html::image(
-										$this->add_path('icons/16x16/arrow-right.png'),
-										array('alt' => $this->translate->_('next'),'title' => $this->translate->_('next'))
-									);//$this->translate->_('next');
+	$this->add_path('icons/16x16/arrow-right.png'),
+	array('alt' => $this->translate->_('next'),'title' => $this->translate->_('next'))
+);//$this->translate->_('next');
 ?>
 
 <?php
@@ -105,11 +121,11 @@ $label_next = html::image(
 <form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
 		<fieldset>
 		<?php //echo $this->translate->_('Show') ?>
-		<select class="items_per_page" name="items_per_page" onchange="preserve_get_params();this.form.submit()">
+		<select id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
 			?>
-			<option value="<?php echo $total_items ?>" selected="selected"><?php echo $total_items ?> <?php echo $entries.'/'.$this->translate->_('page') ?></option>
+			<option value="<?php echo $total_items ?>" selected="selected"><?php echo $total_items ?> <?php echo $entries ?></option>
 			<?php
 		} else {
 			?>
@@ -123,7 +139,7 @@ $label_next = html::image(
 		</select>
 
 			<input
-				type="text" size="4" name="custom_pagination_field" class="custom_pagination_field"
+				type="text" size="4" name="custom_pagination_field" id="pagination_id_<?php echo $_SESSION['_pagination_id_'] ?>" class="custom_pagination_field"
 				title="<?php echo $this->translate->_('Enter number of items to show on each page or select from the drop-down on the left') ?>"
 				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
 			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('Go') ?>" />
