@@ -212,15 +212,14 @@ class Trends_Controller extends Authenticated_Controller {
 	}
 
 	private function _getGraphForData($data) {
-		$chart_type = 'CurvedLinePoint';
-		$graph_filepath = charts::load($chart_type);
-		$complete_chart_classname = $chart_type.'Chart';
+		zeta_charts::load();
+		$data_suited_for_chart = array();
+		$categories = current($data);
+		foreach($categories as $category) {
+			$data_suited_for_chart[$category['the_time']] = $category['state'];
+		}
+		$content->image_graph_src = 'line_point_chart?dont_cache='.mktime();
 
-		$width = null;
-		$height = null;
-
-		$graph = new $complete_chart_classname($width, $height);
-		return $graph;
 	}
 
 	/**
@@ -1062,12 +1061,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
 		//echo Kohana::debug($container);die;
-		$data_suited_for_chart = array();
-		$categories = current($data);
-		foreach($categories as $category) {
-			$data_suited_for_chart[$category['the_time']] = $category['state'];
-		}
-		$content->image_graph_src = 'line_point_chart?dont_cache='.mktime();
 		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;
