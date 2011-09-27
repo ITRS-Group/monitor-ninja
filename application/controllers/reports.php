@@ -3261,7 +3261,7 @@ class Reports_Controller extends Authenticated_Controller
 		$return .= form::hidden('csvoutput', 1);
 		$label = $this->translate->_('Download report as CSV');
 		$return .= "<input type='image' src='".Kohana::config('config.site_domain').$this->add_path('icons/32x32/page-csv.png').
-			"' alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none; margin-right: 7px' /></div></form>\n";
+			"' alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: 13px; background: none; margin-right: 7px' /></div></form>\n";
 		return $return;
 	}
 
@@ -3512,7 +3512,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf_img_src = Kohana::config('config.site_domain').$pdf_img_src;
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
-			.'value="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none;" />';
+			.'value="'.$pdf_img_alt.'"  style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
+			
+									  
 		/*html::image(
 			$pdf_img_src,
 				array(

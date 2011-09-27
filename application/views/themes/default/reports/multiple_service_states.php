@@ -47,7 +47,7 @@
 	<?php } ?>
 		<table summary="<?php echo $t->_('State breakdown for host services') ?>" class="multiple_services" style="margin-top: 15px" border="1" <?php echo ($create_pdf) ? 'cellpadding="5"' : ''; ?>>
 			<tr>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 219px;background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 90%"';?>>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 222px;background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>>
 				<?php
 				echo ((!$create_pdf) ? help::render('servicegroup_breakdown') : '').' ';
 				if(!empty($data['groupname'])) {
@@ -66,17 +66,17 @@
 						echo '</a>';
 				?>
 				</th>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('OK') ?></th>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Warning') ?></th>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Unknown') ?></th>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Critical') ?></th>
-				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 105px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Undetermined') ?></th>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('OK') ?></th>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Warning') ?></th>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Unknown') ?></th>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 90px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Critical') ?></th>
+				<th <?php echo ($create_pdf) ? 'style="font-weight:bold; width: 105px;text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Undetermined') ?></th>
 				</tr>
 		<?php } ?>
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
 			<?php if (!$use_alias && $sg_no == 0) { ?>
-				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'>' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } elseif ($sg_no == 0) { ?>
 				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 			<?php } else { ?>
@@ -91,40 +91,40 @@
 						 ($data['critical'][$i] != 0 && $service_filter_status['critical'] == true) ||
 						 ($data['undetermined'][$i] != 0 && $service_filter_status['pending'] == true)) { $no++;?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
-				<td <?php echo ($create_pdf) ? 'style="width: 219px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
+				<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
 					<?php if ($create_pdf) { ?>
 						<?php echo $data['SERVICE_DESCRIPTION'][$i] ?>
 					<?php } else { ?>
 					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 					<?php } ?>
 				</td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['unknown'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unknown'][$i]) > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['critical'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['critical'][$i]) > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
-				<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_green"'; ?>bgcolor="#e3f8dc"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
+							array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['warning'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['warning'][$i]) > 0 ? '' : 'not-').'warning.png'),
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['unknown'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['unknown'][$i]) > 0 ? '' : 'not-').'unknown.png'),
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px;font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['critical'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['critical'][$i]) > 0 ? '' : 'not-').'critical.png'),
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php	} } }  $sg_no = $sg_no + $no; ?>
 
 			<?php if (!empty($data['groupname'])) {
 					if ($use_average==0 && $sg_no == 0) { ?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
-				<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $t->_('Average') ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $t->_('Average') ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php } ?>
 			<?php $i++; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
@@ -132,15 +132,15 @@
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_green"'; ?>bgcolor="#e3f8dc"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
-							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
-							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
-							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+							array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php } } ?>
 			<?php if ($sg_no > 0 && $no == 0) { ?>
@@ -172,41 +172,41 @@
 <?php }  ?>
 	<table summary="<?php echo $t->_('State breakdown for host services') ?>" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : 'class="multiple_services" style="margin-bottom: 15px"';?>>
 		<tr>
-			<th <?php echo ($create_pdf) ? 'style="width: 222px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 90%"';?>><?php echo ((!$create_pdf) ? help::render('average_and_sla') : '').' '.$t->_('Average and Group availability for all selected services') ?></th>
-			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('OK') ?></th>
-			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Warning') ?></th>
-			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Unknown') ?></th>
-			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Critical') ?></th>
-			<th <?php echo ($create_pdf) ? 'style="width: 105px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $t->_('Undetermined') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 222px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" ';?>><?php echo ((!$create_pdf) ? help::render('average_and_sla') : '').' '.$t->_('Average and Group availability for all selected services') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('OK') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Warning') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Unknown') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Critical') ?></th>
+			<th <?php echo ($create_pdf) ? 'style="width: 105px; font-weight: bold; text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone" style="width: 80px"';?>><?php echo $t->_('Undetermined') ?></th>
 		</tr>
 		<?php if ($use_average==0) {  ?>
 		<tr class="even">
 			<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: #ffffff' : ''; ?>><?php echo $t->_('Average');?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; "' : 'class="data"'; ?>><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
-						array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
+						array( 'alt' => $t->_('OK'), 'title' => $t->_('OK'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo $data['average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_warning'] > 0 ? '' : 'not-').'warning.png'),
-						array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
+						array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo $data['average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-						array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
+						array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; "' : 'class="data"'; ?>><?php echo $data['average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_critical'] > 0 ? '' : 'not-').'critical.png'),
-						array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
+						array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
 			<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 		<?php } ?>
 		<?php $i++; $bg_color = '#f2f2f2'; ?>
 		<tr class="odd">
 			<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php if ($use_average==0) { ?><?php echo $t->_('Group availability (SLA)') ?> <?php } else { ?><?php echo $t->_('Average') ?><?php } ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
-						array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
-						array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 11px')) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
-						array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 11px')) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
-						array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 11px')) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
-						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 11px')) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_green"'; ?>bgcolor="#e3f8dc"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
+						array( 'alt' => $t->_('Ok'), 'title' => $t->_('Ok'),'style' => 'height: 12px; width: 12px')) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
+						array( 'alt' => $t->_('Warning'), 'title' => $t->_('Warning'),'style' => 'height: 12px; width: 12px')) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_unknown'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_unknown'] > 0 ? '' : 'not-').'unknown.png'),
+						array( 'alt' => $t->_('Unknown'), 'title' => $t->_('Unknown'),'style' => 'height: 12px; width: 12px')) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_critical'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_critical'] > 0 ? '' : 'not-').'critical.png'),
+						array( 'alt' => $t->_('Critical'), 'title' => $t->_('Critical'),'style' => 'height: 12px; width: 12px')) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 105px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data_red"'; ?>bgcolor="#ffe8e8"><?php echo $data['group_average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
+						array( 'alt' => $t->_('Undetermined'), 'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')) ?></td>
 		</tr>
 	</table>
 </div>
