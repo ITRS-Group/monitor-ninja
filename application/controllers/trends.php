@@ -196,6 +196,7 @@ class Trends_Controller extends Authenticated_Controller {
 			return;
 		}
 		// do something with data
+		zeta_charts::load();
 		$graph = $this->_getGraphSrcForData($data);
 
 		$graph->set_title("A title");
@@ -214,14 +215,22 @@ class Trends_Controller extends Authenticated_Controller {
 	private function _getGraphSrcForData($data) {
 		// if tmp file already exists, exit early
 
-
-		zeta_charts::load();
 		$data_suited_for_chart = array();
 		$categories = current($data);
 		foreach($categories as $category) {
 			$data_suited_for_chart[$category['the_time']] = $category['state'];
 		}
-		return 'line_point_chart?dont_cache='.mktime();
+
+		// Generate a unique filename that's short, based on data and doesn't already exist
+		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
+		$strlen_needed = 7;
+		do {
+			$chart_filename = substr(0, $strlen_needed, $encoded_image_name);
+			$strlen_needed++;
+		} while(file_exists($chart_filename));
+		// save image
+		echo Kohana::debug($chart_key);die;
+		return "line_point_chart?chart_key=$chart_key";
 	}
 
 	/**
