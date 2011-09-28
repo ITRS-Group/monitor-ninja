@@ -196,7 +196,7 @@ class Trends_Controller extends Authenticated_Controller {
 			return;
 		}
 		// do something with data
-		$graph = $this->_getGraphForData($data);
+		$graph = $this->_getGraphSrcForData($data);
 
 		$graph->set_title("A title");
 		$graph->set_legend(array('absa'));
@@ -211,15 +211,17 @@ class Trends_Controller extends Authenticated_Controller {
 		die;
 	}
 
-	private function _getGraphForData($data) {
+	private function _getGraphSrcForData($data) {
+		// if tmp file already exists, exit early
+
+
 		zeta_charts::load();
 		$data_suited_for_chart = array();
 		$categories = current($data);
 		foreach($categories as $category) {
 			$data_suited_for_chart[$category['the_time']] = $category['state'];
 		}
-		$content->image_graph_src = 'line_point_chart?dont_cache='.mktime();
-
+		return 'line_point_chart?dont_cache='.mktime();
 	}
 
 	/**
@@ -1061,6 +1063,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
 		//echo Kohana::debug($container);die;
+		$content->graph_image_source = $this->_getGraphSrcForData($container);
 		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;

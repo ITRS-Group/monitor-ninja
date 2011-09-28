@@ -16,10 +16,6 @@ $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 
 <?php
 }
-
-$cell_height = isset($avail_height) ? $avail_height: 50;
-$title_str = $this->translate->_('Start: %s, End: %s, Duration: %s, Output: %s');
-
 ?>
 
 	<img src="<?php echo $graph_image_source ?>" alt="" />
