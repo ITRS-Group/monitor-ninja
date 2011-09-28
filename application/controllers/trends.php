@@ -230,9 +230,10 @@ class Trends_Controller extends Authenticated_Controller {
 		// @todo make some bars colored differently, based on state
 
 		// @todo make dynamic
-		$bar_width = $width / count($data_suited_for_chart);
+		//$bar_width = $width / count($data_suited_for_chart);
 
-		$graph->set_bar_width($bar_width);
+		//$graph->set_bar_width($bar_width);
+		$graph->set_bar_width(70);
 		$graph->set_margins(0, -690, 0, 0);
 		$graph->set_legend(array('absa'));
 		$graph->set_legend_y($this->translate->_("State"));
