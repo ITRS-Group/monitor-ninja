@@ -199,37 +199,54 @@ class Trends_Controller extends Authenticated_Controller {
 		zeta_charts::load();
 		$graph = $this->_getGraphSrcForData($data);
 
-		$graph->set_title("A title");
-		$graph->set_legend(array('absa'));
-		$graph->set_legend_y($this->translate->_("Status"));
-		// @todo get this based on time in $data, should depend on report_period
-		$graph->set_legend_x($this->translate->_("Timeline (months)"));
-
-
-		$graph->set_data($data_suited_for_chart);
-		$graph->draw();
-		$graph->display();
 		die;
 	}
 
+	/**
+	 * A graph is generated based on input, and saved in tmp files. If the graph
+	 * already has been generated, it's used.
+	 *
+	 * @input array $data
+	 * @return string
+	 */
 	private function _getGraphSrcForData($data) {
 		// if tmp file already exists, exit early
 
 		$data_suited_for_chart = array();
 		$categories = current($data);
 		foreach($categories as $category) {
-			$data_suited_for_chart[$category['the_time']] = $category['state'];
+			// @todo extract date parameters from data
+			$data_suited_for_chart[date('H:i:s', $category['the_time'])] = $category['state'];
 		}
+
+		$tmp_name_placeholder = "/tmp/%s.png";
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
 		$strlen_needed = 7;
 		do {
-			$chart_filename = substr(0, $strlen_needed, $encoded_image_name);
+			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
+			$qualified_filename = sprintf($tmp_name_placeholder, $chart_key);
 			$strlen_needed++;
-		} while(file_exists($chart_filename));
+		} while(file_exists($qualified_filename));
+		// generate graph, trying mfcharts first
+		charts::load('Bar');
+		$graph = new BarChart();
+
+		$graph->set_title("A title");
+		$graph->set_bar_width(70);
+		$graph->set_width(700);
+		$graph->set_height(700);
+		$graph->set_legend(array('absa'));
+		$graph->set_legend_y($this->translate->_("Status"));
+		// @todo get this based on time in $data, should depend on report_period
+		$graph->set_legend_x($this->translate->_("Timeline (months)"));
+
+		$graph->set_data($data_suited_for_chart);
+		$graph->draw();
+		$graph->display();
+		die;
 		// save image
-		echo Kohana::debug($chart_key);die;
 		return "line_point_chart?chart_key=$chart_key";
 	}
 
