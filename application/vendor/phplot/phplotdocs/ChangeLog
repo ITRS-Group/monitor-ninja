@@ -1,0 +1,946 @@
+This is phplotdocs/ChangeLog, listing changes to the PHPlot Reference Manual
+-----------------------------------------------------------------------------
+Note: This is a more complete ChangeLog than the one in Appendix A of the
+manual, which only contains summaries of changes.
+-----------------------------------------------------------------------------
+
+2011-08-09
+   * concepts.xml: Add note on pie chart with text-data-single data type that
+     the label strings can be used to build a legend.
+
+2011-07-30
+   For release with PHPlot-5.5.0 (no changes)
+
+2011-07-28
+   For feature request #3352301 "Bubble plots":
+   * Makefile: Add files for new example.
+   * advanced.xml: Add new tuning parameters for bubble plots.
+   * concepts.xml: New data type and plot type for bubble plots.
+   * developer.xml: New internal function DrawBubbles.
+   * examples.xml: New example of bubbles plot.
+   * examples/bubbles1.php: New example
+   * variables.list: New class variables for X/Y/Z data and bubble plots.
+
+2011-07-26
+   * reference.xml: In SetBgImage and SetPlotAreaBgImage, add a note advising
+     use of PHPlot truecolor images whenever using a JPEG (or high-color PNG)
+     background image, to avoid color map overflow.
+
+2011-07-24
+   For feature request #3374495 "Data URL encoding":
+   * Makefile: Add new example script and static image (this example
+     does not generate an image file, so Makefile can't build it).
+   * concepts.xml: Overview - add note on embedding image. Error
+     Handling - add information on disabling the error image.
+   * developer.xml: Add internal function GetImageType.
+   * examples.xml: Add new example for EncodeImage
+   * examples/encodeimage.php images/encodeimage.png : New example
+   * functions.xml: Add links to 2 new functions
+   * reference.xml: Document 2 new functions EncodeImage, SetFailureImage.
+       Update SetPrintImage re: new EncodeImage.
+   * variables.list: Add new member variable suppress_error_image
+
+2011-07-21
+   * main.xml: Indicate next version PHPlot-5.5.0
+   * .ispell_words: Updated spelling list
+
+   For bug #3370548 "Reverse legend line order for stackedbars":
+   * reference.xml: Document new function SetLegendReverse()
+   * variables.list: Add new member variable legend_reverse_order
+   * functions.xml: Link to new function SetLegendReverse()
+   * concepts.xml: Expand section on legend, add links to functions
+   * examples.xml, examples/stackedarea1.php, examples/stackedbars2.php,
+     examples/stackedbars3.php: Use the new SetLegendReverse() to make the
+     legend line order match the display in 3 example plots, and add text to
+     2 of them to explain. (Left stackedbars1 example alone to show the
+     difference.)
+
+2011-06-12
+   For bug #3312064 "PHP errors with invalid data arrays":
+   * concepts.xml: New section: Data Array Validation.
+   * reference.xml: Add a link from SetDataValues() to the section on
+     Data Arrays. Fix text in SetDrawBrokenLines(): missing reference
+     to squared plot type.
+   Other changes:
+   * developer.xml: New chapter for class constants.
+
+2011-06-09
+   * reference.xml: Remove 8 places where zero-based sequential integer
+     indexed arrays are described as "what the PHP manual calls 'the usual
+     integer indices (starting from zero, increasing by one)'." The PHP
+     manual no longer has this text.
+
+2011-05-27
+   For release with PHPlot-5.4.0 (no changes)
+
+2011-05-26
+   * concepts.xml: Fix bad indents in some programlisting blocks.
+
+2011-05-23
+   * concepts.xml: Explain new stackedbars plot behavior regarding zeros.
+
+2011-05-21
+   For feature request #3303654 "Force tick mark at specific value":
+   * concepts.xml: Rewrite text on ticks and tick labels
+   * developer.xml: Add to CalcTicks() description
+   * examples.xml, examples/xtickanchor.php, examples/ytickanchor.php,
+       examples/ytickanchor1.php: Add 2 new examples of tick anchors
+   * functions.xml: Link to 2 new functions
+   * reference.xml: Document 2 new functions, update others on ticks
+   * variables.list: Add 2 new variables for tick anchors
+   * Makefile: List new files, add missing dependency for example
+   * examples/legendshape1.php: Clarify comment in example script
+
+2011-05-15
+   For feature request #3291155 "More flexible legend positioning":
+   * advanced.xml: Rewrite text on legend position with multiple plots.
+   * concepts.xml: Add definition of Relative Coordinates
+   * developer.xml: Document changes to internals for SetLegendPosition
+   * examples.xml: Add new example for SetLegendPosition
+   * functions.xml: Link to new legend functions
+   * main.xml: Reference future release PHPlot-5.4.0
+   * reference.xml: Document new GetLegendSize, SetLegendPosition
+   * variables.list: Document change to internal variables for legend position
+   * Makefile: List new files
+   * etc/legendpos.php: New script, generates images for new example.
+   * images/legendpos*.png: 7 new images for new legend position example.
+   * .ispell_words: Updated spelling list
+
+2011-05-01
+   For feature request #3292825 "Use point shape markers in legend box":
+   * examples.xml, examples/legendshape.php, examples/legendshape1.php,
+     Makefile: Add new example (with 2 pictures).
+   * advanced.xml: Update description of legend_colorbox_width.
+   * concepts.xml: Update "Plot Element Colors" table.
+   * developer.xml: Update legend layout description. Update internals
+     DrawDot(), new DrawShape().
+   * functions.xml: Link to new function SetLegendUseShapes().
+   * reference.xml: Drop 3rd argument to SetLegendStyle(). Document new
+     function SetLegendUseShapes(). In SetLegend() and SetLegendStyle(),
+     rewrite references to legend features to include point shapes option.
+   * variables.list: Update legend_colorbox_align; add legend_use_shapes.
+
+2011-04-27
+   * advanced.xml, reference.xml: Mention that the legend uses the data
+     colors in the order from the data colors array, regardless of any
+     custom data color callback.
+
+2011-01-14
+   * reference.xml: Redirected note in SetPlotAreaPixels to new section on
+     multiple plots. Fixed SetLegend confusion about multiple plots versus
+     multiple data sets. Fixed SetPlotBorderType parameter name.
+
+   For release with PHPlot-5.3.1:
+   * Change references to release "after 5.3.0" to "5.3.1".
+
+2011-01-11
+   * advanced.xml: Added missing id attributes to some level 3 sections.
+
+   * pdf.xsl: Fixed comment typo.
+
+   * variables.list: Documented changes in internal variables (committed
+     2010-12-27) which track element drawing: Removed background_done
+     and title_done, and added new member array done[].
+
+   * advanced.xml: Added new section on multiple plots per image.
+
+   * examples.xml: Moved pagebreak tags and add missing ones (for PDF).
+     Updated description of example of two plots on an image.
+
+   * Makefile, examples.xml, examples/outbreak.php: Add new example of
+     multiple plot overlay.
+
+2011-01-05
+    * advanced.xml: Added figure to Truecolor section showing file formats.
+
+    * advanced.xml: Added new section showing how to extend the PHPlot class
+      in order to customize default settings.
+
+2011-01-04
+   * reference.xml: Add icons showing the point shapes in SetPointShapes().
+   * images/shape-*.png: Add 20 new image files for point shapes.
+
+2011-01-03
+   * reference.xml: Document new behavior of functions to reset parameters
+     to defaults when no arguments (or special values) are supplied:
+     SetLegendPixels(), SetNumXTicks(), SetNumYTicks(), SetXAxisPosition(),
+     and SetYAxisPosition(). Documented existing behavior of functions to
+     reset parameters to defaults: SetXTickIncrement(), SetYTickIncrement(),
+     SetXTitle(), and SetYTitle().
+
+2010-12-29
+   * developer.xml: Document changes as a result of fixing a bug with
+     color allocation vs multiple plots per image. Add 2 new internal
+     functions and remove 1 unused internal function.
+
+2010-12-28
+   * reference.xml: SetLegend(NULL) now clears the legend array.
+
+2010-12-26
+   * advanced.xml: Fix wrong-case color name.
+
+   * reference.xml: Document that SetBgImage() and SetPlotAreaBgImage()
+     take NULL as an input_file argument to disable the background image.
+
+   * reference.xml, functions.xml: Remove SetLabelColor() from the manual.
+     This is a deprecated function, and no other deprecated functions are
+     documented.
+   * variables.list: Remove label_color variable. There is no such variable.
+     It might have been associated with SetLabelColor at one time.
+
+   * concepts.xml: Add new section "Plot Element Colors" with a table that
+     maps plot elements to the functions that set their color.
+
+2010-12-16
+   * pdf.xsl: Customize the page headers for PDF so the chapter title or
+     reference entry name is show on the top of all pages. (By default, it
+     isn't shown on the first page of a chapter or refentry, which is a
+     problem since most reference entries are only one page.)
+   * developer.xml: Small change to chapter titles.
+
+2010-12-04
+   For release with PHPlot-5.3.0:
+   * Change vague references to release "after 5.2.0" to "5.3.0".
+
+2010-12-03
+   * reference.xml: Markup fix. Remove newlines from <synopsis> elements
+     to get rid of unwanted blank lines (1 per in HTML, 2 per in PDF).
+
+   New feature to allow suppressing X and/or Y axis lines.
+   * functions.xml: Add links to 2 new functions under Axis Controls.
+   * reference.xml: Document new functions SetDrawXAxis and SetDrawYAxis.
+   * variables.list: Document 2 new flag variables for axis control.
+   * examples/histogram.php: Use new SetDraw*Axis functions to hide the
+     axis lines, instead of setting grid color to be transparent.
+
+   * .ispell_words: Additions
+
+2010-11-28
+   Document availability of data value labels with more plot types.
+   * Makefile, examples.xml, examples/linepoints.php: Add new example of
+     linepoints plot with data value labels.
+   * advanced.xml: New subsection under Tuning for data value label
+     position control variables.
+   * concepts.xml: Change data value labels subsection to mention
+     newly supported plot types.
+   * developer.xml: Document new internal function CheckDataValueLabels.
+   * reference.xml: Update SetYDataLabelPos, works with more plot types.
+   * variables.list: Add 2 new variables which control data value label
+     position for the newly supported plot types.
+
+2010-11-21
+   * advanced.xml: Document new tunable parameter for legend colorbox width.
+   * variables.list: New variable legend_colorbox_width.
+       Added note about version for ohlc* variables.
+   * etc/legend-layout.fig: Update to show adjustable colorbox width.
+   * images/legend-layout.png: Regenerated from xfig source.
+   * images/layout.png: Regenerated with xfig smoothing option.
+   * developer.xml: Updated notes on the legend-layout figure.
+
+2010-11-18
+   Restructuring, to move advanced material out of the Concepts chapter.
+   * advanced.xml: New chapter. This started with all material on Callbacks
+     from callbacks.xml (demoted from chapter to section level 1). Then
+     two sections were moved from concepts.xml to the new chapter: custom
+     data color callback, and truecolor images.
+   * callbacks.xml: Deleted. Material moved to advanced.xml
+   * main.xml: Changed chapters, moved Functions by Category to after Examples.
+   * Makefile: Changed file list due to new chapter.
+
+   Improved documentation for variables used to adjust plot appearance:
+   * advanced.xml: New section for tunable parameters.
+   * developer.xml, variables.list: Add info/links to new section.
+
+2010-11-16
+   * concepts.xml, reference.xml: Document 3 new plot types.
+   * examples.xml, Makefile: Added 3 new examples for new OHLC plot types.
+   * developer.xml: Add new internal function to draw OHLC plots.
+   * variables.list: Add 3 new variables for adjusting OHLC plots.
+
+2010-11-11
+   * variables.list, developer.xml: Document new plots[] static array.
+
+2010-11-09
+   * variables.list, developer.xml: Split the Member Variables chapter into
+     two sections: one with the variables list, and one with detailed
+     explanations of some (curently two) of the more complex variables.
+
+2010-10-31
+   * developer.xml: Change arguments to internal CalcBarWidths().
+
+2010-10-03
+   For release with PHPlot-5.2.0:
+   * Change vague references to release "after 5.1.3" to "5.2.0".
+
+2010-10-01
+   * reference.xml: Fix out-of-order reference entries.
+   * .ispell_words: Additions - new function names
+
+2010-09-30
+   Document changes associated with new color processing method.
+   * reference.xml: Document new functions SetXTitleColor and SetYTitleColor,
+     and modify description of SetTitleColor to reference them.
+   * developer.xml:
+     + Changed arguments to internal function DrawBar.
+     + New internal functions: GetBarColors, GetColorIndex, GetDarkColorIndex,
+       GetDataColor, GetDataErrorColors, NeedDataDarkColors, NeedErrorBarColors,
+       SetColorIndexes, truncate_array.
+     + Removed internal functions: SetIndexColor, SetIndexDarkColor.
+   * functions.xml: Add new SetXTitleColor, SetYTitleColor (2 places).
+   * variables.list:
+     + Most ndx_*color* variables are now set in SetColorIndexes.
+     + Other *color variables now contain a color component array (R,G,B,A)
+       rather than a color name or other caller-provided color specification.
+     + Removed data_colors_alpha. This became unneeded due to other changes.
+     + New member variables: ndx_x_title_color, ndx_y_title_color,
+       x_title_color, y_title_color.
+
+2010-09-27
+   * developer.xml: Document new internal function DrawBar().
+   * concepts.xml: Update description of stackedbars plot type, which now
+     works with negative values as well. Fix some links to plot types.
+     Rewrote confusing (incorrect) description of stackedarea plot type.
+
+2010-09-25
+   * Makefile: Add 2 missing static image filenames. These need to be in
+     the Makefile or they won't get copied into the release.
+
+   Document change to axis default positioning:
+   * developer.xml: In CalcAxisPositions, replace obsolete defaults text
+        with links to references where the new defaults are described.
+   * concepts.xml: Clarify thinbarline - lines are not always up or right.
+        Fix some quoting, and rewrite some plot type descriptions.
+        Clarify or fix use of "axis" when describing ticks and labels.  These
+        might not actually be on the axis lines.
+   * reference.xml: Specify new defaults in SetXAxisPosition, SetYAxisPosition.
+        Also corrected text on axis position in SetYTickLabelPos, SetYTickPos,
+        SetPlotBorderType, and others.
+
+
+   * Makefile, callbacks.xml, concepts.xml, examples.xml, install.xml,
+     quickstart.xml, reference.xml, webform.xml: Improve PDF production.
+     First line of verbatim blocks (programlisting, screen) needs to be on
+     the same line as the opening tag, or the PDF version will contain a
+     shaded blank line at the top.
+   * pdf.xsl: Add a little padding around monospace verbatim blocks.
+
+
+2010-09-13
+   Documentation for horizontal plot types (which were implemented in
+   PHPlot-5.1.2 and PHPlot-5.1.3 as an experimental feature).
+
+   * concepts.xml: Changes for horizontal plots.
+     + Add definitions: horizontal plot, vertical plot. Clarify: world coords.
+     + Add anchors to data type terms, to allow linking.
+     + Add new data types for horizontal plots.
+     + Update plot types section to indicate which support horizontal plots.
+     + Add table of plot type / data type support.
+     + Rewrite "Labels" section to describe new data label types. See note
+       in the Changelog appendix of the manual concerning the terminology.
+       New subsection: Data value labels.
+     + Redid the figures showing labels, to adjust the terminology.
+
+   * reference.xml: Changes for horizontal plots.
+     + SetDataType: Accepts 2 new data types.
+     + SetDrawXGrid, SetDrawYGrid: Defaults differ for horizontal, vertical.
+     + SetXDataLabelPos, SetYDataLabelPos: Horizontal plot data value labels.
+     + SetXTickLabelPos, SetYTickLabelPos: Defaults for horizontal plots.
+     + Other data label related functions: Add link to Concepts section.
+
+   * examples.xml: Add 3 new examples of horizontal plots.
+       Clarify data label type in other examples.
+   * quickstart.xml: Mention horizontal and vertical plot types available.
+   * developer.xml: Clarify layout picture in reference to vertical vs
+     horizontal plots. In internal function list, clarify label types.
+   * examples/horizbar.php, horizstackedbar.php, horizthinbarline.php: New
+
+   Other changes:
+   * functions.xml: Move explanatory text and figures out of this chapter
+     and into the Concepts chapter. The Functions chapter was meant to
+     just contain functions listed by category, but more content crept in.
+     Add links from function categories to sections in the Concepts chapter.
+   * concepts.xml: Add new section "Other Elements" with subsections. This
+     contains text and figures relocated from the Functions chapter.
+   * .ispell_words: Additions
+   * Makefile: Add files from 3 new examples
+   * examples/colorcallback*.php: Add image border for better presentation.
+   * images/ : Add 1 background file, add 3 new figures, update 2 figures.
+   * etc/ : Updated and added scripts used for figures.
+
+2010-09-09
+   * variables.list: Forgot this file when preparing for release with
+     PHPlot-5.1.3 and setting the specific PHPlot version. Fixed.
+
+2010-09-08
+   Extensive changes to support PDF production of the manual.
+   * README: Add information on PDF.
+   * Makefile: Add rules for building PDF.
+   * gen.vardoc: Generate column width rules for PDF not HTML. These seem
+     to be incompatible and only one can work. HTML needs them, but PDF
+     /really/ needs them.
+   * style.xsl: Ignore image scaling when doing HTML. PDF needs image scales.
+   * pdf.xsl: New XSL style sheet for PDF output via Apache FOP.
+   * variables.list: One fix to allow PDF to line-break a certain wide cell.
+   * examples/histogram.php: Wrapped one line so it fits on PDF page.
+   * examples/colorcallbackgradient.php: Fix image size for PDF page.
+   * callbacks.xml, concepts.xml, developer.xml, examples.xml, functions.xml,
+     quickstart.xml, install.xml, reference.xml: Fixes for PDF, including:
+     + Tables need column widths, and some tables need a fixed table width.
+     + Images need to be scaled down so they fit on the pages.
+     + The table with color samples needed to be regenerated to use both
+       the HTML-specific and FO-specific code (PIs) to create the colors.
+     + You cannot link to a list element (term) ID in FO (PDF), as you can
+       in HTML. Use anchors instead.
+     + Supply help for pagination where needed. This included instructions
+       to keep elements together, or force page breaks.
+     + The format examples table in SetXLabelType had to be changed as it
+       was too wide for a PDF page.
+   * main.xml: Removed 2 obsolete markup comments
+
+2010-08-30
+   For release with PHPlot-5.1.3:
+   * Change vague references to release "after 5.1.2" to "5.1.3".
+
+2010-08-27
+   Update with changes for new TrueType font default and handling.
+   * concepts.xml: Rewrite "TrueType Font Selection" section, correct and
+     update path usage information, and add new subsection on default font.
+   * reference.xml: Update descriptions of SetDefaultTTFont, SetFont,
+     SetFontTTF, SetTTFPath, and SetUseTTF to document how TrueType fonts
+     are located.
+   * developer.xml: Add new internal function GetDefaultTTFont.
+   * variables.list: Remove default value for default_ttfont and reference
+     new function GetDefaultTTFont.
+
+   * install.xml: Removed the text suggesting you can change some of the
+     configuration settings in phplot.php, especially the TrueType font
+     path and default font name. In general, this is a bad idea.
+
+   * concepts.xml: Add note that some GD functions on truecolor images
+     are only available with the bundled GD library.
+
+2010-08-21
+   * reference.xml: Clarify Set[XY]TimeFormat sets both types of labels
+     unless overridden by Set[XY]DataLabelType.
+     Add note to Set[XY]TimeFormat and SetPrecision[XY] that these are
+     kept for compatibility but using Set[XY]LabelType is preferred.
+
+2010-08-19
+   * concepts.xml, install.xml : Removed all references to phplot_data.php,
+     including deleting the Extra Data Processing section. This file is no
+     longer distributed with PHPLot. (Reference bug report 3048267.)
+
+2010-08-17
+   Updated with changes from implementation of horizontal plots (5.1.2 and
+   later) and other recent changes. (Horizontal plots are still an
+   experimental feature and not documented in the other parts of the manual.)
+   * variables.list : Updated with changes to internal variables, including
+     new variables, changed initialization, and renamed data_maxy/data_miny.
+   * developer.xml : Updated with changes to internal functions, including
+     new arguments, new functions, replaced DrawDataLabel with
+     DrawDataValueLabel, and changes to which plot drawing functions calls
+     which others.
+
+2010-08-14
+   * variables.list : Add new internal variable data_columns.
+   * developer.xml : Add new internal function CheckDataArray.
+
+2010-08-12
+   * examples/histogram.php : Fixed the grayscale value equation to use
+     integers. This avoids round-off error which was visible on a test image.
+
+2010-08-06
+   * reference.xml: Fix SetDrawXDataLabelLines : Data label lines do
+     not in fact work with thinbarline plots, and never have. (They
+     would either overlap or extend the actual plot lines.)
+
+2010-07-29
+   * concepts.xml: Add section documenting use of the new data color
+     callback to customize usage of data colors.
+   * examples.xml: Add 2 new examples showing data color callback.
+   * callbacks.xml: Rewrite top warning. Callbacks can now return values.
+     Add new data_color callback to table.
+   * developer.xml: DoCallback now returns whatever the callback returns.
+   * reference.xml: Add note and link to section on data color callback
+     for 3 cases of data color array usage
+
+2010-07-27
+   * developer.xml: Document new argument to internal functions DrawLines,
+     DrawDots, DrawLinesError, and DrawDotsError.
+
+2010-07-09
+   * Makefile, examples/histogram.php, examples.xml : Changed the 'histogram'
+     example to output a JPEG instead of PNG, and changed the Makefile to
+     no longer assume every example makes a PNG. This is because that one
+     example image as a PNG doubled the size of the download.
+
+2010-06-28
+   For release with PHPlot-5.1.2:
+   * Change references to versions: "after 5.1.1" becomes "5.1.2".
+   * README: Corrections to file list
+
+2010-06-25
+   * developer.xml: Document new error checking funtion CheckDataType.
+   * variables.list: Clarify that the data array counters (num_data_rows,
+     num_recs, records_per_group, total_records) do include all entries
+     in the data array, including label and independent variable value.
+     Correct description of num_data_rows: it is the number of points or
+     point sets, not the number of plot lines.
+
+2010-06-20
+   * variables.list: Clarify the difference between variables max_x, max_y,
+     min_x, and min_y and the variables plot_max_x, plot_max_y, plot_min_x,
+     and plot_min_y. Add reference to SetPlotAreaWorld for the plot_* vars.
+
+2010-06-13
+   Documentation for truecolor images (introduced at phplot-5.1.1):
+   * concepts.xml: New definitions, new section and subsections on Truecolor.
+   * developer.xml: Changes to internal functions for truecolor: SetIndexColor,
+     SetIndexDarkColor, SetRGBColor.
+   * examples.xml: New example using truecolor to make a photo histogram
+     overlay.
+   * functions.xml: Link to new constructor; link to new truecolor section.
+   * reference.xml: Document new constructor PHPlot_truecolor,
+     cross-reference to base constructor, and add note on background image
+     type. Document new alpha parameters to SetDataColors, and that
+     SetRGBArray takes 3 or 4 element color component arrays.
+   * variables.list: New internal variable data_colors_alpha
+   * Makefile: removed unused 'dist' target (if you want a source
+     distribution, just "make allclean" and pack up the whole directory);
+     explicitly list the required files in images/*; fix verbosity; change
+     to use the list of examples vs wildcarding *.png for releasing.
+   * README: updated tool versions and info on Makefile.
+
+2010-05-30
+   * developer.xml: Update plot layout figure and explain the margins, taking
+     into account the changes to allow for a wider image border.
+     Document new internal functions: CheckOptionArray, GetImageBorderWidth.
+   * examples.xml: Fix typo
+   * functions.xml: Link to new function: SetImageBorderWidth.
+   * reference.xml: Document changes to SetImageBorderType, SetPlotBorderType
+     for new controls on image and plot borders, and new function
+     SetImageBorderWidth. Fix explanation of image border colors.
+   * variables.list: List new variables image_border_width, title_offset.
+
+2010-04-18
+   * webform.xml, images/webform.png: New example of a web form with plot.
+   * examples.xml, main.xml, Makefile: Changes for new web form example.
+
+2010-04-03
+   For release with PHPlot-5.1.1:
+   * Change vague references to release "after 5.1.0" to "5.1.1".
+
+2010-03-31
+   * reference.xml, concepts.xml: Clarify that the data array must use
+     0-based sequential integer indexes. (Based on a problem reported in
+     the Help forum.) This was always true, but never actually documented.
+
+   * reference.xml: SetDataColors, SetDataBorderColors, SetErrorBarColors
+     are 3 functions that take an array of colors, or a single color.
+     Document a way around the restriction of not being able to specify
+     a single color as array(R,G,B).
+
+2010-03-26
+   * concepts.xml: Document new plot type 'stackedarea'.
+   * developer.xml: Internal function DrawArea() has a new parameter.
+   * examples.xml: Reference new example stackedarea1.
+   * examples/stackedarea1.php: New example of new plot type 'stackedarea'.
+   * quickstart.xml: New plot type
+   * reference.xml: SetPlotType has a new plot type. For data label lines,
+     list only plot types that it does work with.
+   * All: Fixes to abstract markup (to avoid title suppressing CSS hack).
+
+2010-03-23
+   * concepts.xml: New Y Data Labels for stackedbars.
+   * reference.xml: Changes to SetYDataLabelPos for stackedbars labels.
+   * examples.xml: Reference new example stackedbar3.
+   * examples/stackedbar3.php: New example of stackedbar chart with data labels.
+
+2010-01-24
+   * main.xml: Updated copyright year to 2010.
+   * reference.xml: Document fixed behavior of default X axis position.
+
+2009-12-21
+   For release with PHPlot-5.1.0:
+   * Change vague references to release "after 5.0.7" to "5.1.0".
+
+2009-12-20
+   * concepts.xml: Fix description of data type 'text-data'. Under Data types,
+     it incorrectly said X=0, 1, 2. Under Plot Types, it correctly said it was
+     X=0.5, 1.5, 2.5 but this was missing under 3 of the plot types.
+
+2009-12-18
+   Changes related to new Data Colors list:
+   * concepts.xml: List the new default data colors, including a color table.
+   * variables.list: Add default_colors. Change data_colors,
+     error_bar_colors, and data_border_colors.
+   * reference.xml: Updated SetDataColors(), SetErrorBarColors(),
+     and SetDataBorderColors(). Document new defaults and use of '' to reset
+     the maps.
+
+2009-12-14
+   Changes related to new Data Label Types controls:
+   * concepts.xml: Updated information on tick and data label functions;
+     add missing label format types.
+
+   * developer.xml: Document new internal CheckLabels(). Add references to
+     new Set[XY]DataLabelType in label formatting, and update descriptions
+     of internals FormatLabel() and SetLabelType().
+
+   * functions.xml: Add links to 4 new functions and remove link to
+     removed link to function SetDrawYDataLabelLines().
+
+   * reference.xml: Documented 4 new functions Set[XY]DataLabelAngle() and
+     Set[XY]DataLabelType().
+     Updated descriptions of Set[X]LabelAngle() and Set[XY]LabelType(),
+     to reference the new functions, document use of '' as a format type.
+     Updated descriptions of SetXDataLabelPos() and SetXTickLabelPos() to
+     indicate the change in interaction between these two and how the
+     defaults work now.
+     Removed function SetDrawYDataLabelLines().  This was never implemented
+     and isn't planned.
+
+   * variables.list: Update label_format description, and defaults for X
+     and Y label position and angle variables. Added [xy]_data_label_angle.
+     Remove unused draw_y_data_label_lines.
+
+   Also:
+   * developer.xml: Link xtr() and ytr() to public function GetDeviceXY().
+   * install.xml: Refreshed picture of phpinfo GD listing.
+   * quickstart.xml: Removed the list of functions from the Customization
+     sections. This duplicates the material in Chapter 4, PHPlot Functions
+     By Category, and was out of date.
+   * reference.xml: Minor cleanup, corrections, and style fixes.
+
+2009-12-10
+   * concepts.xml: Put the definitions into alphabetical order. New section
+     added to chapter with info on text, especially TrueType fonts.
+
+   * developer.xml: Add note about internal function visibility.
+
+2009-12-07
+   * variables.list, reference.xml, developer.xml: Document changes in
+     SetPointShapes and SetPointSizes. New point shapes and defaults.
+
+   * concepts.xml: Fix typo and change <programlisting> elements to use CDATA
+     for contents.
+
+   * examples.xml, examples/linepoints1.php: Update the example and text
+     to include the new point shapes.
+
+2009-11-18
+   * callbacks.xml, reference.xml: Fix <programlisting> elements to use CDATA
+     for contents.
+
+   * callbacks.xml: Added new section about annotating a plot with callbacks.
+
+2009-11-16
+   * developer.xml: DrawText() can take NULL or '' for $font.
+
+   * callbacks.xml: new callback 'draw_all'. Several callbacks now provide
+     'plot_area' as a parameter.
+
+   * examples.xml, examples/annotate.php : New example added
+
+   * examples/squared1.php, examples/thinbarline1.php,
+     examples/thinbarline2.php: switch mt_rand() which gives the same results
+     on all platforms, unlike rand().
+
+2009-11-13
+   * README: Updated to mention need for Tcl shell to make variablelist.xml,
+     updated the tool versions, deleted mention of "make pdf" target.
+   * reference.xml: document new method GetDeviceXY()
+   * functions.xml: Link to GetDeviceXY
+
+2009-11-06
+   The Callbacks chapter is moved from the "Part III, Developer's Guide to
+   PHPlot" to "Part I, PHPlot Programming", because it doesn't only apply
+   to PHPlot developers. A new chapter under Developers is added, with a
+   list of the PHPlot class member variables and brief descriptions.
+   * developer.xml:
+     + The material on Callbacks is removed (now in its own file).
+     + A new chapter Member Variables is added.
+   * main.xml:
+     + Define two new system entities for new files
+     + Fix - SourceForge, not Sourceforge
+     + Callbacks chapter inclusion
+   * callbacks.xml: New file, text taken from developer.xml
+   * variables.list: New file. This is the data file which is used to
+      generate variablelist.xml which contains the table of member variables.
+   * gen.vardoc: New file. This is a Tcl script to generate variablelist.xml
+      from variables.list
+   * Makefile: Add new files, dependencies, and command to generate the
+      variablelist.xml file
+
+
+   * callbacks.xml:
+     + Callback access to PHPlot object can also be via global variable.
+
+   * reference.xml:
+     + Document additional cases where LightGridColor and GridColor are used.
+
+2009-10-12
+   * developer.xml: document SetLabelType as an internal function.
+   * reference.xml:
+     + Document new feature SetImageBorderType('none').
+     + Document existing feature: SetXLabelType('') and SetYLabelType('') to
+       reset label formatting to default. Also works if arg is omitted.
+
+2009-07-21
+   * reference.xml:
+     + Update SetNumberFormat regarding setlocale() and the new hook variable
+       locale_override.
+     + Fix examples in SetXLabelType for rendering a Euro.
+       Helpful information provided by kalvaro on the PHPlot Help forum.
+
+2009-06-13
+   * main.xml: Update license information. PHPlot is now under the LGPL.
+   * reference.xml: Add notes to SetRGBArray() about finding the rgb.inc.php
+       file (related to a recent bug fix), about the default color map, and
+       how to avoid invalid color errors with custom color maps.
+
+2009-05-25
+   For next release PHPlot-5.0.7:
+   * Updates for new feature allowing partial margin specification.
+     + developer: Update description of CalcMargins
+     + reference: Arguments to SetMarginsPixels and SetPlotAreaPixels are
+       now optional.
+   * In the reference part, consistently put the History sections in
+     reverse chronological order.
+
+2009-03-15
+   * style.xsl: Change Sourceforge.net logo link per 2009-03-09 instructions.
+
+2009-01-21
+   For release with PHPlot-5.0.6:
+   * Change vague references to release "after 5.0.5" to "5.0.6".
+
+2008-09-21
+   * Changes for new label formatting types.
+     + reference: Document new arguments to SetXLabelType and SetYLabelType.
+         Add note to SetPrecision[XY] and Set[XY]TimeFormat.
+
+   * Use CDATA for example scripts, instead of processing them through sed
+     to escape special XML characters.
+
+2008-09-01
+   * Continue changes for new GD/TTF mixed font usage.
+     + developer: Document changes to font arguments for internal functions
+       ProcessTextGD() and ProcessTextTTF().
+
+2008-07-22
+   * Changes for new GD/TTF mixed font usage.
+     + developer: Document change to font data arrays. New GetLineSpacing().
+     + functions: Rewrite text to not discourage TTF; list 2 new functions.
+            Recreate the text fonts figure - use a free TrueType font.
+     + reference: Document, link, and update all text on font usage.
+   * Use History subsections in the reference to detail behavior changes
+     over previous releases. This text used to be in Notes. The reference
+     section text, other than History, should not mention prior releases.
+
+2008-01-13
+   * Change vague references to release "after 5.0.4" to "5.0.5".
+
+2008-01-12
+   * Incorporate the callbacks documentation from the "Callbacks" file in
+     the source distribution into the manual.
+     + developer: Add new chapter on callbacks.
+     + functions: Add new category with list of callback functions
+     + reference: Document GetCallback, RemoveCallback, SetCallback.
+
+   * Makefile: Added 'install' target to copy the manual files somewhere.
+
+   * Fixed external links: www.phplot.com is redirecting away now, so
+     use the new PHPlot web site on Sourceforge.net instead. Fix GD URL.
+     Update peoples' roles to reflect current activities.
+
+2008-01-10
+   * examples: Fix area1 example. Top tick should be 100 not 110, and there
+     was a typo in a code comment.
+
+   * reference: Explain the 3 available tile modes in SetBgImage and
+     SetPlotAreaBgImage.
+
+   * developer: Fix error in tile mode.
+
+2008-01-07
+   * Changes for new margin code rewrite:
+     + developer: Updated layout figure (images/layout.png) and added
+         new explanatory text.
+         Updated documentation on internal functions.
+     + reference: Updated description of SetPlotAreaWorld and SetPlotAreaPixels.
+
+   * Updated copyright year to 2008.
+   * Updated install prerequisites to indicate PHP4 is no longer supported.
+
+2008-01-05
+   * Changes to Makefile and style.xsl stylesheet to allow building a
+     special version for the Sourceforge project site, with required logo.
+
+2007-12-09
+   * Updates to developer section for the rewritten text functions:
+     + Internal function TTFBBoxSize is removed.
+     + Internal function DrawText is now just a wrapper.
+     + Add new internal functions SizeText, ProcessText, ProcessTextGD,
+       ProcessTextTTF.
+   * Add internal function DoCallback to the developer section.
+     (Note that the external functions for the experimental callback
+     feature are still only documented outside the manual.)
+
+2007-11-22
+   * Updates for latest changes to CVS to improve error handling:
+     concepts:
+     +  Add new section on error handling. This applies past PHPlot-5.0.4.
+     developer:
+     +  Update DrawError and PrintError to correspond to changes in the
+        implementation of error handling.
+     +  Clarify arguments to CheckOption, per fix for bug #1836528.
+
+2007-10-19
+   * Change vague references to release "after 5.0rc3" to "5.0.4".
+
+2007-10-11
+   * Updates for latest changes to CVS:
+     developer:
+     +  array_pad_array() and array_merge_php4() are removed.
+        Document new pad_array() which replaces these.
+     +  Document SetInputFile(). This was overlooked because it was in
+        the "Deprecated" section of the code, but it is used by the constructor.
+        It was only deprecated for direct external use.
+     +  Document new GetImage().
+
+     reference:
+     +  Document the requirement that style arrays use zero-based sequential
+        integer indexes only. This was previously an undocumented requirement
+        for some of them, but now it is required of all.
+     +  Document the requirement that SetLineSpacing() be called before
+        setting any title text, and not changed after.
+
+2007-10-01
+   * Fix reference for SetDrawXDataLabelLines. It said the lines go up from
+     the X axis to the points, but that is only the most usual case. In fact
+     they can go up or down or both, and not to the X axis but to the plot
+     area edges.
+     Also cross-reference back from SetXDataLabelPos, and explain what happens
+     to the data label lines when a plot has multiple data sets.
+
+2007-09-30
+   * New Part III - PHPlot Developer's Guide. This includes two layout figures
+     (overall plot, and legend), and a list of internal functions. This
+     idea for this material comes from the documentation released with
+     PHPlot-5.0rc2 and earlier, but has been redone from scratch.
+
+2007-09-08
+   * Removed use of reference assignment ($p =& new PHPlot())
+     in all inline examples, external examples, and reference material when
+     creating a PHPlot object. Added note to PHPlot constructor reference
+     explaining why. This was the result of the fix for bug report #1790441,
+     which removed the  shutdown function, which was the reason for the
+     reference assignment.
+
+   * Document that SetLegendWorld() no longer has to have scale setup before
+
+   * Document SetNumberFormat() (new function added to CVS a while ago), and
+     change SetXLabelType and SetYLabelType accordingly.
+
+2007-09-05
+   * Change note on SetXLabelType for new behavior: ignoring blank labels.
+
+2007-08-26
+   * Document new option in SetLegendStyle: $colorbox_align = 'none'.
+
+2007-08-04
+   * Added documentation for new function SetLegendStyle.
+
+2006-12-01
+   * No changes, but regenerate the manual because the examples showed
+     a change in tick/label counts at 5.0rc3 and this has been patched.
+
+2006-11-29
+   * Add new example bars4 showing bar chart data labels.
+   * Fix notes comment at top of examples.xml: remove obsolete info on
+     scaling of pictures for PDF output. Add notes on example order and
+     referencing.
+
+2006-11-28
+
+   * Default 'time' format was fixed at 5.0rc3 as %H:%M:%S.
+   * Found and fixed more references to "no Y data labels".
+
+2006-11-27 Changes to catch up to 5.0rc3 release:
+
+   * Update PHP version requirement. Min is 4.3.0 (not 4.2); PHP5 works; always
+     use the latest versions.
+   * Updated text to more closely match the release README file instructions,
+     including ZIP file availability and no TrueType fonts included.
+   * Delete note about "included examples and documentation", as they are no
+     longer included in the release.
+
+   * Changed 3 examples that use random data to seed the generator with a
+     fixed value. So now the graphs won't change and file compares work.
+
+   * Note how to get borderless, unshaded bars with SetDataBorderColors.
+
+   * Document new values in SetPointShapes and SetLineStyles to suppress
+     point markers or lines for individual datasets in 'linepoints' plots.
+     (New feature in 5.0rc3)
+
+   * Document new bar chart data labels with SetYDataLabelPos('plotin').
+
+   * Add reference to another image viewer: qiv.
+
+
+2006-11-11 Released manual dated 2006-11-11 to Sourceforge.net
+
+2006-09-24
+
+   Reorganized. Reference section is now alphabetically by function,
+   with the category grouping moved to a new chapter. This was done
+   partly because the previous organization had some odd Table of
+   Contents issues.
+
+2006-05-20
+
+   Conversion from SGML to XML, using DocBook-XML and the xsltproc
+   processor.
+
+2005-02-27 Released draft manual tagged REL20050227 dated 2005-02-27
+
+2005-02-26
+
+    Section 4.7 Reference, Fonts: TrueType font size issues
+    * Don't scale the font figure for PDF; make it smaller so it fits
+      on the page at full size. This is necessary so the fonts are
+      shown sized to match the HTML version.
+    * Add a note above the figure that the font sizes here may differ.
+    * Add a note to SetFont about PHP+GD TrueType font sizes in 'points'
+      actually being in pixels, and dependency on user's display resolution.
+
+2005-02-20
+
+   Section 1.2 Install:
+   * Use $ before shell commands consistently.
+   * Fix error in copy command: rgb.inc.php not rgb.inc
+   * Add text on configuration settings for TrueType font defaults.
+   * Moved configuration part up so as not to split up the two uses of
+     "three files" (chmod, and copying).
+
+   Section 4.7 Reference, Fonts:
+   * Added a figure at the start of the section showing the built-in GD
+     fonts and a sample of TrueType fonts.
+   * Note you can't mix TrueType and built-in fonts in an image.
+   * Changes to reference material for TrueType font functions to reflect
+     the fixes made by the "ttf" patch:
+     * SetDefaultTTFont: Accepts pathname or filename; enables TTF.
+     * SetFont: Call SetUseTTF or SetDefaultTTFont before use; accepts pathname
+       or filename; use empty fontname to just change size.
+     * SetTTFPath: Reference note under SetUseTTF, install customization.
+     * SetUseTTF: Describe 3 ways to set up TrueType fonts without error.
+
+2005-02-13
+
+  * Fixed typos in examples, concepts/datatypes, example/pie1
+
+2005-02-06 Released draft manual tagged REL20050206 dated 2005-02-06
+
+$Id: ChangeLog 1006 2011-08-10 01:46:19Z lbayuk $
