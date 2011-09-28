@@ -123,6 +123,8 @@ class Trends_Controller extends Authenticated_Controller {
 	private $report_options = false;
 	private $in_months = false;
 
+	private $tmp_name_placeholder = "/tmp/%s.png";
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -191,14 +193,10 @@ class Trends_Controller extends Authenticated_Controller {
 		);
 	}
 
-	public function line_point_chart() {
-		if(!isset($_GET['data'])) {
-			return;
-		}
+	public function line_point_chart($chart_key) {
 		// do something with data
-		zeta_charts::load();
-		$graph = $this->_getGraphSrcForData($data);
-
+		$filename = sprintf($this->tmp_name_placeholder, $chart_key);
+		readfile($filename);
 		die;
 	}
 
@@ -210,8 +208,6 @@ class Trends_Controller extends Authenticated_Controller {
 	 * @return string
 	 */
 	private function _getGraphSrcForData($data) {
-		// if tmp file already exists, exit early
-
 		$data_suited_for_chart = array();
 		$categories = current($data);
 		foreach($categories as $category) {
@@ -219,35 +215,34 @@ class Trends_Controller extends Authenticated_Controller {
 			$data_suited_for_chart[date('H:i:s', $category['the_time'])] = $category['state'];
 		}
 
-		$tmp_name_placeholder = "/tmp/%s.png";
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
 		$strlen_needed = 7;
 		do {
 			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
-			$qualified_filename = sprintf($tmp_name_placeholder, $chart_key);
+			$qualified_filename = sprintf($this->tmp_name_placeholder, $chart_key);
 			$strlen_needed++;
 		} while(file_exists($qualified_filename));
-		// generate graph, trying mfcharts first
 		charts::load('Bar');
-		$graph = new BarChart();
+		$graph = new BarChart(830, 200);
 
-		$graph->set_title("A title");
-		$graph->set_bar_width(70);
-		$graph->set_width(700);
-		$graph->set_height(700);
+		// @todo make some bars colored differently, based on state
+
+		// @todo make dynamic
+		$bar_width = $width / count($data_suited_for_chart);
+
+		$graph->set_bar_width($bar_width);
+		$graph->set_margins(0, -690, 0, 0);
 		$graph->set_legend(array('absa'));
-		$graph->set_legend_y($this->translate->_("Status"));
+		$graph->set_legend_y($this->translate->_("State"));
 		// @todo get this based on time in $data, should depend on report_period
-		$graph->set_legend_x($this->translate->_("Timeline (months)"));
+		$graph->set_legend_x($this->translate->_("Timeline"));
 
 		$graph->set_data($data_suited_for_chart);
 		$graph->draw();
-		$graph->display();
-		die;
-		// save image
-		return "line_point_chart?chart_key=$chart_key";
+		$r = file_put_contents($qualified_filename, $graph->get_image());
+		return "line_point_chart/$chart_key";
 	}
 
 	/**
