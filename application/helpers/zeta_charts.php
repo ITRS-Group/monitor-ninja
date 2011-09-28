@@ -2,7 +2,7 @@
 /**
  * Charts helper class
  */
-class charts_zeta_Core
+class zeta_charts_Core
 {
 	private static $_classmap;
 
