@@ -1119,11 +1119,11 @@ class Host_Model extends Model {
 			$db = $this->db;
 		}
 		$auth = new Nagios_auth_Model();
-		$auth_svc = $auth->get_authorized_services();
-		$obj_ids = array_keys($auth_svc);
 
-		$sql = "SELECT service_description FROM service WHERE host_name = ".$db->escape($host_name).
-			" AND id IN(".implode(',', $obj_ids).") ORDER BY service_description";
+		$sql = "SELECT service_description FROM service".
+			" INNER JOIN contact_access ON contact_access.service = service.id".
+			" WHERE host_name = ".$db->escape($host_name).
+			" AND contact_access.contact = ".$auth->id." ORDER BY service_description";
 
 		$data = self::query($db,$sql);
 		return count($data)>0 ? $data : false;
