@@ -965,20 +965,7 @@ class Trends_Controller extends Authenticated_Controller {
 		}
 		# stash events with object as key
 		if (is_array($raw_trends_data) && !empty($raw_trends_data)) {
-			foreach ($raw_trends_data as $id => $row) {
-				if (empty($obj_key) && (isset($row['host_name']) || isset($row['service_description'])) ) {
-					if (empty($row['service_description'])) {
-						$key = $row['host_name'];
-					} else {
-						$key = $row['host_name'] . ';' . $row['service_description'];
-					}
-				} elseif(empty($obj_key) && isset($row['source']) && !empty($row['source'])) {
-					$key = $row['source'];
-				} else {
-					$key = $obj_key;
-				}
-				$container[$key][] = $row;
-			}
+			$container = $raw_trends_data;
 		}
 
 		unset($raw_trends_data);

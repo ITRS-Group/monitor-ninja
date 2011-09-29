@@ -57,7 +57,7 @@ class Reports_Model extends Model
 
 	var $st_raw = array(); # raw states
 	var $st_needs_log = false;
-	var $keep_sub_logs = false;
+	var $keep_sub_logs = true;
 	var $st_log = false;
 	var $st_prev_row = array();
 	var $st_prev_state = self::STATE_PENDING;
@@ -1522,9 +1522,7 @@ class Reports_Model extends Model
 		$this->calculate_object_state();
 
 		foreach ($rpts as $rpt) {
-			$rpt->st_update_log(false, $row);
-			if (!in_array($this, $rpts))
-				$this->st_update_log($rpt, $row);
+			$this->st_update_log($rpt, $row);
 		}
 	}
 
@@ -1670,6 +1668,22 @@ class Reports_Model extends Model
 			if (!empty($servicename) && is_string($servicename))
 				$this->st_prev_row['service_description'] = $servicename;
 		}
+		foreach ($this->sub_reports as $sr) {
+			if ($sr->st_needs_log) {
+				$fout = sprintf("Report period start. Daemon is%s running, " .
+				                "we're%s in scheduled downtime, state is %s (%d)",
+				                $sr->st_running ? '' : ' not',
+				                $sr->st_dt_depth ? '' : ' not',
+				                $sr->st_text[$sr->st_obj_state], $sr->st_obj_state);
+				$sr->st_prev_row['output'] = $fout;
+
+				if (!empty($hostname) && is_string($hostname))
+					$sr->st_prev_row['host_name'] = $hostname;
+
+				if (!empty($servicename) && is_string($servicename))
+					$sr->st_prev_row['service_description'] = $servicename;
+			}
+		}
 	}
 
 	/**
@@ -1710,22 +1724,29 @@ class Reports_Model extends Model
 
 	private function st_update_log($sub = false, $row = false)
 	{
-		if (!$this->st_needs_log) {
-			$this->st_prev_row = $row;
+		if ($sub)
+			$rpt = $sub;
+		else
+			$rpt = $this;
+
+		if (!$rpt->st_needs_log) {
+			$rpt->st_prev_row = $row;
 			return;
 		}
 
 		# called from st_finalize(), so bail out early
-		if (!$sub && !$row) {
-			$this->st_prev_row['duration'] = $this->end_time - $this->st_prev_row['the_time'];
-			$active = $this->tp_active_time($this->st_prev_row['the_time'], $this->end_time);
-			if ($active > 0 || $active === $this->st_prev_row['duration'])
-				$this->st_log[] = $this->st_prev_row;
+		if (!$row) {
+			#if (!$rpt->st_prev_row)
+			#	return;
+			$rpt->st_prev_row['duration'] = $this->end_time - $rpt->st_prev_row['the_time'];
+			$active = $this->tp_active_time($rpt->st_prev_row['the_time'], $this->end_time);
+			if ($active > 0 || $active === $rpt->st_prev_row['duration'])
+				$rpt->st_log[] = $rpt->st_prev_row;
 			else
-				$this->st_log[] = array(
+				$rpt->st_log[] = array(
 					'output' => '(event outside of timeperiod)',
-					'the_time' => $this->st_prev_row['the_time'],
-					'duration' => $this->st_prev_row['duration'],
+					'the_time' => $rpt->st_prev_row['the_time'],
+					'duration' => $rpt->st_prev_row['duration'],
 					'state' => -2,
 					'hard' => 1
 				);
@@ -1738,35 +1759,26 @@ class Reports_Model extends Model
 		if (empty($row['output']))
 			$row['output'] = '(No output)';
 
-		if ($sub) {
-			$output = $sub->id . ' went from ' . $sub->st_prev_row['state'] .
-				' to ' . $row['state'];
-			$row['hard'] = 1;
-			$row['output'] = $output;
-			unset($row['host_name']);
-			unset($row['service_description']);
-		}
-
-		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth)
+		if ($rpt->scheduled_downtime_as_uptime && $rpt->st_dt_depth)
 			$row['state'] = self::STATE_OK;
 
 		# don't save states without duration for master objects
-		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
-		if ($duration || $sub) {
-			$this->st_prev_row['duration'] = $duration;
-			$active = $this->tp_active_time($this->st_prev_row['the_time'], $row['the_time']);
+		$duration = $row['the_time'] - $rpt->st_prev_row['the_time'];
+		if ($duration) {
+			$rpt->st_prev_row['duration'] = $duration;
+			$active = $this->tp_active_time($rpt->st_prev_row['the_time'], $row['the_time']);
 			if ($active > 0 || ($duration === $active))
-				$this->st_log[] = $this->st_prev_row;
+				$rpt->st_log[] = $rpt->st_prev_row;
 			else
-				$this->st_log[] = array(
+				$rpt->st_log[] = array(
 					'output' => '(event outside of timeperiod)',
-					'the_time' => $this->st_prev_row['the_time'],
-					'duration' => $this->st_prev_row['duration'],
+					'the_time' => $rpt->st_prev_row['the_time'],
+					'duration' => $rpt->st_prev_row['duration'],
 					'state' => -2,
 					'hard' => 1
 				);
 		}
-		$this->st_prev_row = $row;
+		$rpt->st_prev_row = $row;
 	}
 
 	/**
@@ -1780,6 +1792,9 @@ class Reports_Model extends Model
 		# gather remaining time. If they match, it'll be 0
 		$this->st_update($this->end_time);
 		$this->st_update_log();
+		foreach ($this->sub_reports as $sr)
+			$this->st_update_log($sr);
+
 
 		$converted_state = $this->convert_state_table($this->st_raw, $this->st_text);
 
@@ -1818,7 +1833,16 @@ class Reports_Model extends Model
 		$this->states = $converted_state;
 		$total_time = $this->end_time - $this->start_time;
 		$groupname = $this->hostgroup != '' ? $this->hostgroup : $this->servicegroup;
-		return array('source' => $this->st_source, 'log' => $this->st_log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
+		if (!empty($this->sub_reports)) {
+			$log = array();
+			foreach ($this->sub_reports as $sr) {
+				$log[$sr->st_source] = $sr->st_log;
+			}
+		}
+		else {
+			$log = array($this->st_source => $this->st_log);
+		}
+		return array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
 	}
 
 	/**

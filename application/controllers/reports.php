@@ -1742,7 +1742,7 @@ class Reports_Controller extends Authenticated_Controller
 
 						$trends_data = false;
 						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
-							$trends_data[$data['source']] = $data['log'];
+							$trends_data = $data['log'];
 						}
 
 						# from trends:
