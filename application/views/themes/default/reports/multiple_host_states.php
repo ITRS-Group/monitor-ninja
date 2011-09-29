@@ -45,7 +45,7 @@
 				<td <?php echo ($create_pdf) ? 'style="width: 304px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
 				<?php } ?>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['up'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
-							array( 'alt' => $t->_('Up'), 'title' => $t->_('Up'), 'style' => 'height: 12px; width: 12x')); ?></td>
+							array( 'alt' => $t->_('Up'), 'title' => $t->_('Up'), 'style' => 'height: 12px; width: 12x'));
 					if (isset($data['counted_as_up'][$i]) && $data['counted_as_up'][$i] > 0) {
 						echo " (" . reports::format_report_value($data['counted_as_up'][$i]) ."% in other states)";
 					}?></td>
