@@ -5,18 +5,20 @@
 class phplot_charts_Core
 {
 	/**
-	 * @param int $width = null
-	 * @param int $height = null
-	 * @return PHPlot
+	 * Autoload phplot, now you can use new PHPlot()
+	 *
+	 * This is how you save a file:
+	 *
+	 * <code>
+	 * $plot = new PHPlot($height, $width, $filename);
+	 * $plot->SetFileFormat('png');
+	 * $plot->SetIsInline(true);
+	 * // ...
+	 * $plot->DrawGraph();
+	 * </code>
 	 */
-	public static function load($width = null, $height = null)
+	public static function load()
 	{
-		if(self::$_classmap) {
-			// Classmap was already stored, thus the autoloader already
-			// knows about the files locations
-			return true;
-		}
-		require_once Kohana::find_file('vendor','phplot/phplot/phplot.php');
-		return new PHPlot($width, $height);
+		require_once Kohana::find_file('vendor','phplot/phplot/phplot');
 	}
 }

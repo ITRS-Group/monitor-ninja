@@ -16,9 +16,11 @@ $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 
 <?php
 }
-?>
 
+if ($graph_image_source) {
+?>
 	<img src="<?php echo $graph_image_source ?>" alt="" />
+<?php } ?>
 
 <div style="clear:both"></div>
 <?php echo (isset($avail_template) && !empty($avail_template)) ? $avail_template : ''; ?>
