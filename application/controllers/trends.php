@@ -196,6 +196,7 @@ class Trends_Controller extends Authenticated_Controller {
 	public function line_point_chart($chart_key) {
 		// do something with data
 		$filename = sprintf($this->tmp_name_placeholder, $chart_key);
+		header("Content-Type: ".mime_content_type($filename));
 		readfile($filename);
 		die;
 	}
@@ -204,17 +205,40 @@ class Trends_Controller extends Authenticated_Controller {
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
+	 * @uses PHPlot
 	 * @input array $data
 	 * @return string
 	 */
 	private function _getGraphSrcForData($data) {
 		$data_suited_for_chart = array();
-		$categories = current($data);
-		foreach($categories as $category) {
+		$events = current($data);
+		$min_timestamp = PHP_INT_MAX;
+		$max_timestamp = 0;
+		$graph_width = 500;
+
+		foreach($events as $event) {
 			// @todo extract date parameters from data
-			$data_suited_for_chart[date('H:i:s', $category['the_time'])] = $category['state'];
+			echo Kohana::debug($event);die;
+			$key = $event['event_type'];
+			$color = self::_state_colors(isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host', $event['state'], $event['state']);
+			echo Kohana::debug($key);die;
+			if(!isset($data_suited_for_chart[$key])) {
+				$data_suited_for_chart[$key] = array();
+			}
+			$data_suited_for_chart[date('H:i:s', $event['the_time'])] = $event['state'];
+			if($event['the_time'] < $min_timestamp) {
+				$min_timestamp = $event['the_time'];
+			}
+			if($event['the_time'] > $max_timestamp) {
+				$max_timestamp = $event['the_time'];
+			}
+			// @todo abstract one px in order to show even the smallest durations
 		}
 
+		$timespan_in_graph = $max_timestamp - $min_timestamp;
+		$seconds_per_pixel = $timespan_in_graph / $graph_width;
+
+		//echo Kohana::debug($event);die;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
@@ -224,25 +248,47 @@ class Trends_Controller extends Authenticated_Controller {
 			$qualified_filename = sprintf($this->tmp_name_placeholder, $chart_key);
 			$strlen_needed++;
 		} while(file_exists($qualified_filename));
-		charts::load('Bar');
-		$graph = new BarChart(830, 200);
+		phplot_charts::load();
+		$column_names = array(
+			'Failure', 'Fish', 'Pork', 'Chicken', 'Butter',
+			'Cheese',
+			'Ice Cream');
+		$data = array(
+			array('1910',   48.5,   11.2,   38.2,   11.0,   18.4,    3.9,    1.9),
+			array('1930',   33.7,   10.2,   41.1,   11.1,   17.6,    4.7,    9.7),
+			array('1950',   44.6,   11.9,   43.0,   14.3,   10.9,    7.7,   17.4),
+			array('1970',   79.6,   11.7,   48.1,   27.4,    5.4,   11.4,   17.8),
+			array('1990',   63.9,   14.9,   46.4,   42.4,    4.0,   24.6,   15.8),
+		);
+		$plot = new PHPlot(800, $graph_width, $qualified_filename);
+		$plot->SetImageBorderType('plain'); // Improves presentation in the manual
+		$plot->SetTitle("U.S. Annual Per-Capita Consumption\n"
+			. "of Selected Meat and Dairy Products");
+		$plot->SetLegend($column_names);
+		#  Move the legend to the lower right of the plot area:
+		$plot->SetLegendPixels(700, 300);
+		$plot->SetDataValues($data);
+		$plot->SetDataType('text-data-yx');
+		$plot->SetPlotType('stackedbars');
+		$plot->SetXTitle('Pounds Consumed Per Capita');
+		#  Show data value labels:
+		$plot->SetXDataLabelPos('plotstack');
+		#  Rotate data value labels to 90 degrees:
+		$plot->SetXDataLabelAngle(90);
+		#  Format the data value labels with 1 decimal place:
+		$plot->SetXDataLabelType('data', 1);
+		#  Specify a whole number for the X tick interval:
+		$plot->SetXTickIncrement(20);
+		#  Disable the Y tick marks:
+		$plot->SetYTickPos('none');
+		$plot = new PHPlot(800, $graph_width, $qualified_filename);
+		$plot->SetFileFormat('png');
+		$plot->SetIsInline(true);
+		$plot->DrawGraph();
 
 		// @todo make some bars colored differently, based on state
-
 		// @todo make dynamic
-		//$bar_width = $width / count($data_suited_for_chart);
 
-		//$graph->set_bar_width($bar_width);
-		$graph->set_bar_width(70);
-		$graph->set_margins(0, -690, 0, 0);
-		$graph->set_legend(array('absa'));
-		$graph->set_legend_y($this->translate->_("State"));
-		// @todo get this based on time in $data, should depend on report_period
-		$graph->set_legend_x($this->translate->_("Timeline"));
-
-		$graph->set_data($data_suited_for_chart);
-		$graph->draw();
-		$r = file_put_contents($qualified_filename, $graph->get_image());
 		return "line_point_chart/$chart_key";
 	}
 

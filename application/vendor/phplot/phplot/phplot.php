@@ -1615,14 +1615,18 @@ class PHPlot
         }
 
         // Get MIME type and GD output function name:
+        //if (!$this->GetImageType($mime_type, $output_f)) { echo Kohana::debug(DYING1);die; }
         if (!$this->GetImageType($mime_type, $output_f)) return FALSE;
 
         if (!$this->is_inline) {
+		//echo Kohana::debug(DYING2);die;
             Header("Content-type: $mime_type");
         }
         if ($this->is_inline && $this->output_file != '') {
+		//echo Kohana::debug(DYING3);die;
             $output_f($this->img, $this->output_file);
         } else {
+		//echo Kohana::debug(DYING4);die;
             $output_f($this->img);
         }
         return TRUE;
