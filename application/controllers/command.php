@@ -159,6 +159,12 @@ class Command_Controller extends Authenticated_Controller
 			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis), '_host-too');
 			break;
 
+		 case 'ACKNOWLEDGE_HOST_PROBLEM':
+			$param['_services-too'] = $this->cb($this->translate->_('Acknowledge any problems on services too'), '_services-too');
+			break;
+		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+			$param['_services-too'] = $this->cb($this->translate->_('Remove any acknowledgements on services too'), '_services-too');
+			break;
 		}
 		$info['params'] = $param;
 
@@ -287,6 +293,22 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['_host-too']);
 				$xcmd = str_replace('SVC', 'HOST', $cmd);
 				$nagios_commands = $this->_build_command($xcmd, $param);
+			}
+			break;
+		 case 'ACKNOWLEDGE_HOST_PROBLEM':
+		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+			if (!empty($param['_services-too'])) {
+				unset($param['_services-too']);
+				$xcmd = str_replace('HOST', 'SVC', $cmd);
+				$host = new Host_Model();
+				$host_name = $param['host_name'];
+				$xparam = $param;
+				unset($xparam['host_name']);
+				$svcs = $host->get_services($host_name);
+				foreach ($svcs as $svc) {
+					$xparam['service'] = $host_name.';'.$svc->service_description;
+					$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
+				}
 			}
 			break;
 		}
