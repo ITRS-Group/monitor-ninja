@@ -209,7 +209,7 @@ class Trends_Controller extends Authenticated_Controller {
 	 * @input array $data
 	 * @return string
 	 */
-	private function _getGraphSrcForData($data) {
+	private function _get_graph_src_for_data($data) {
 		$data_suited_for_chart = array();
 		$events = current($data);
 		$min_timestamp = PHP_INT_MAX;
@@ -1131,7 +1131,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
 		//echo Kohana::debug($container);die;
-		$content->graph_image_source = $this->_getGraphSrcForData($container);
+		$content->graph_image_source = $this->_get_graph_src_for_data($container);
 		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;
