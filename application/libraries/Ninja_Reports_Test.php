@@ -421,14 +421,14 @@ class Ninja_Reports_Test_Core
 			foreach ($rpt->sub_reports as $r) {
 				$duration = $this->log_duration($r->st_log);
 				if ($duration != $r->end_time - $r->start_time) {
-					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration";
+					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration (expected ".($r->end_time - $r->start_time).", was $duration)";
 				}
 			}
 		}
 		# also check the master report
 		$duration = $this->log_duration($rpt->st_log);
 		if ($duration != $rpt->end_time - $rpt->start_time) {
-			$failed['st_log'] = "Log duration doesn't match report period duration";
+			$failed['st_log'] = "Log duration doesn't match report period duration (expected ".($r->end_time - $r->start_time).", was $duration)";
 		}
 
 		if (empty($failed)) {
