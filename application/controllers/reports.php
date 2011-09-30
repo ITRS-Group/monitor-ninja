@@ -1879,7 +1879,7 @@ class Reports_Controller extends Authenticated_Controller
 							$label_entries = $t->_("Log Entries for");
 							$template->log_content = $this->add_view('reports/'.$this->template_prefix.'log');
 							$log_template = $template->log_content;
-							$log_template->log = $log;
+							$log_template->log = $log[$data['source']];
 							$log_template->type = $sub_type;
 							$log_template->label_entries = $label_entries;
 							$log_template->source = $data['source'];
