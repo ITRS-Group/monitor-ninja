@@ -218,27 +218,26 @@ class Trends_Controller extends Authenticated_Controller {
 
 		foreach($events as $event) {
 			// @todo extract date parameters from data
-			echo Kohana::debug($event);die;
-			$key = $event['event_type'];
+			$id = $event['host_name'].':'.$event['service_description'];
 			$color = self::_state_colors(isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host', $event['state'], $event['state']);
-			echo Kohana::debug($key);die;
-			if(!isset($data_suited_for_chart[$key])) {
-				$data_suited_for_chart[$key] = array();
+			if(!isset($data_suited_for_chart[$id])) {
+				$data_suited_for_chart[$id] = array();
 			}
-			$data_suited_for_chart[date('H:i:s', $event['the_time'])] = $event['state'];
+			$data_suited_for_chart[$id][] =  array(
+				'duration' => $event['duration'],
+				'state' => $event['state']
+			);
+
+			// include time boundaries in graph object
 			if($event['the_time'] < $min_timestamp) {
 				$min_timestamp = $event['the_time'];
 			}
 			if($event['the_time'] > $max_timestamp) {
 				$max_timestamp = $event['the_time'];
 			}
-			// @todo abstract one px in order to show even the smallest durations
 		}
 
-		$timespan_in_graph = $max_timestamp - $min_timestamp;
-		$seconds_per_pixel = $timespan_in_graph / $graph_width;
-
-		//echo Kohana::debug($event);die;
+		$seconds_per_pixel = ( $max_timestamp - $min_timestamp ) / $graph_width;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
@@ -248,11 +247,8 @@ class Trends_Controller extends Authenticated_Controller {
 			$qualified_filename = sprintf($this->tmp_name_placeholder, $chart_key);
 			$strlen_needed++;
 		} while(file_exists($qualified_filename));
+
 		phplot_charts::load();
-		$column_names = array(
-			'Failure', 'Fish', 'Pork', 'Chicken', 'Butter',
-			'Cheese',
-			'Ice Cream');
 		$data = array(
 			array('1910',   48.5,   11.2,   38.2,   11.0,   18.4,    3.9,    1.9),
 			array('1930',   33.7,   10.2,   41.1,   11.1,   17.6,    4.7,    9.7),
@@ -260,14 +256,32 @@ class Trends_Controller extends Authenticated_Controller {
 			array('1970',   79.6,   11.7,   48.1,   27.4,    5.4,   11.4,   17.8),
 			array('1990',   63.9,   14.9,   46.4,   42.4,    4.0,   24.6,   15.8),
 		);
+
+
+		$data2 = array();
+
+		// @todo abstract one px in order to show even the smallest durations
+		foreach($data_suited_for_chart as $service => $state_change) {
+			$current_row = array('1910');
+			//$current_row = array(preg_replace('/[^a-z]/', null, $service));
+			foreach($state_change as $state_change) {
+				$duration = number_format($state_change['duration'] / $seconds_per_pixel, 1, '.', null);
+				$current_row[] = $duration;
+			}
+			$data2[] = $current_row;
+		}
+
+		//echo Kohana::debug($data);
+		//echo Kohana::debug($data2);die;
+		//
 		$plot = new PHPlot(800, $graph_width, $qualified_filename);
 		$plot->SetImageBorderType('plain'); // Improves presentation in the manual
 		$plot->SetTitle("U.S. Annual Per-Capita Consumption\n"
 			. "of Selected Meat and Dairy Products");
-		$plot->SetLegend($column_names);
+		$plot->SetLegend(array_keys($data_suited_for_chart));
 		#  Move the legend to the lower right of the plot area:
 		$plot->SetLegendPixels(700, 300);
-		$plot->SetDataValues($data);
+		$plot->SetDataValues($data2);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
 		$plot->SetXTitle('Pounds Consumed Per Capita');
