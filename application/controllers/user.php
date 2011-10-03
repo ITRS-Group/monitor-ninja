@@ -34,7 +34,7 @@ class User_Controller extends Authenticated_Controller {
 		'nagdefault.comment' => 'string',
 		'nagdefault.services-too' => 'bool',
 		'nagdefault.force' => 'bool',
-		'nagdefault.duration' => 'int'
+		'nagdefault.duration' => 'int',
 		'nagdefault.fixed' => 'bool'
 	);
 
