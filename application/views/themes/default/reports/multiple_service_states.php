@@ -40,10 +40,10 @@
 		$prev_group = $data['groupname'];
 
 		if ($j != 1) { ?>
-	<!--</table>
+	</table>
 
 </div>
-<div class="state_services">-->
+<div class="state_services">
 	<?php } ?>
 		<table summary="<?php echo $t->_('State breakdown for host services') ?>" class="multiple_services" style="margin-top: 15px" border="1" <?php echo ($create_pdf) ? 'cellpadding="5"' : ''; ?>>
 			<tr>
