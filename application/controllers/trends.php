@@ -207,37 +207,30 @@ class Trends_Controller extends Authenticated_Controller {
 	 *
 	 * @uses PHPlot
 	 * @input array $data
+	 * @input int $report_start
+	 * @input int $report_end
 	 * @return string
 	 */
-	private function _get_graph_src_for_data($data) {
+	private function _get_graph_src_for_data($data, $report_start, $report_end) {
 		$data_suited_for_chart = array();
 		$events = current($data);
-		$min_timestamp = PHP_INT_MAX;
-		$max_timestamp = 0;
+		$graph_height = 800;
 		$graph_width = 500;
 
-		foreach($events as $event) {
-			// @todo extract date parameters from data
-			$id = $event['host_name'].':'.$event['service_description'];
-			$color = self::_state_colors(isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host', $event['state'], $event['state']);
-			if(!isset($data_suited_for_chart[$id])) {
-				$data_suited_for_chart[$id] = array();
-			}
-			$data_suited_for_chart[$id][] =  array(
-				'duration' => $event['duration'],
-				'state' => $event['state']
-			);
-
-			// include time boundaries in graph object
-			if($event['the_time'] < $min_timestamp) {
-				$min_timestamp = $event['the_time'];
-			}
-			if($event['the_time'] > $max_timestamp) {
-				$max_timestamp = $event['the_time'];
+		foreach($data as $current_object => $events) {
+			foreach($events as $event) {
+				$color = self::_state_colors(isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host', $event['state'], $event['state']);
+				if(!isset($data_suited_for_chart[$current_object])) {
+					$data_suited_for_chart[$current_object] = array();
+				}
+				$data_suited_for_chart[$current_object][] =  array(
+					'duration' => $event['duration'],
+					'state' => $event['state']
+				);
 			}
 		}
 
-		$seconds_per_pixel = ( $max_timestamp - $min_timestamp ) / $graph_width;
+		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
@@ -249,57 +242,35 @@ class Trends_Controller extends Authenticated_Controller {
 		} while(file_exists($qualified_filename));
 
 		phplot_charts::load();
-		$data = array(
-			array('1910',   48.5,   11.2,   38.2,   11.0,   18.4,    3.9,    1.9),
-			array('1930',   33.7,   10.2,   41.1,   11.1,   17.6,    4.7,    9.7),
-			array('1950',   44.6,   11.9,   43.0,   14.3,   10.9,    7.7,   17.4),
-			array('1970',   79.6,   11.7,   48.1,   27.4,    5.4,   11.4,   17.8),
-			array('1990',   63.9,   14.9,   46.4,   42.4,    4.0,   24.6,   15.8),
-		);
+		$data = array();
 
-
-		$data2 = array();
-
+		$column_names = array();
 		// @todo abstract one px in order to show even the smallest durations
 		foreach($data_suited_for_chart as $service => $state_change) {
-			$current_row = array('1910');
+			$current_row = array($service);
 			//$current_row = array(preg_replace('/[^a-z]/', null, $service));
 			foreach($state_change as $state_change) {
 				$duration = number_format($state_change['duration'] / $seconds_per_pixel, 1, '.', null);
 				$current_row[] = $duration;
 			}
-			$data2[] = $current_row;
+			$data[] = $current_row;
 		}
 
-		//echo Kohana::debug($data);
-		//echo Kohana::debug($data2);die;
-		//
-		$plot = new PHPlot(800, $graph_width, $qualified_filename);
-		$plot->SetImageBorderType('plain'); // Improves presentation in the manual
-		$plot->SetTitle("U.S. Annual Per-Capita Consumption\n"
-			. "of Selected Meat and Dairy Products");
-		$plot->SetLegend(array_keys($data_suited_for_chart));
+		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
+		//$plot->SetLegend($column_names);
 		#  Move the legend to the lower right of the plot area:
-		$plot->SetLegendPixels(700, 300);
-		$plot->SetDataValues($data2);
+		//$plot->SetLegendPixels(700, 300);
+		$plot->SetDataValues($data);
+		$plot->SetShading(0);
+		$plot->SetFont('y_label', 3, 10);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
-		$plot->SetXTitle('Pounds Consumed Per Capita');
-		#  Show data value labels:
-		$plot->SetXDataLabelPos('plotstack');
-		#  Rotate data value labels to 90 degrees:
-		$plot->SetXDataLabelAngle(90);
-		#  Format the data value labels with 1 decimal place:
-		$plot->SetXDataLabelType('data', 1);
-		#  Specify a whole number for the X tick interval:
-		$plot->SetXTickIncrement(20);
-		#  Disable the Y tick marks:
+		$plot->SetTitle($this->translate->_("Trend report"));
+		//$plot->SetXTickIncrement(20);
 		$plot->SetYTickPos('none');
-		$plot = new PHPlot(800, $graph_width, $qualified_filename);
 		$plot->SetFileFormat('png');
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
-
 		// @todo make some bars colored differently, based on state
 		// @todo make dynamic
 
@@ -1144,8 +1115,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
-		//echo Kohana::debug($container);die;
-		$content->graph_image_source = $this->_get_graph_src_for_data($container);
+		$content->graph_image_source = $this->_get_graph_src_for_data($container, $report_start, $report_end);
 		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;
