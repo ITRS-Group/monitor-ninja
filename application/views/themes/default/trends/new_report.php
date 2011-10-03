@@ -10,7 +10,6 @@ $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 <h1 style="margin-top: 0px"><?php echo $title ?></h1>
 <p style="margin-top: -13px;">
 	<?php echo $label_report_period ?>: <?php echo $rpttimeperiod	?>
-	<?php //echo $label_duration.': '.$duration ?>
 	(<?php echo $str_start_date.' '.$this->translate->_('to').' '.$str_end_date ?>)
 </p>
 
