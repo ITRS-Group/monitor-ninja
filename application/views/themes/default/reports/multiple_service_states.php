@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate; ?>
-<div class="state_services">
 <?php
 	if (!isset($service_filter_status) || $service_filter_status == false) {
 			$service_filter_status = array(
@@ -30,16 +29,16 @@
 	$prev_host = false;
 	$prev_group = false;
 	$prev_hostname = false;
-	$j = 0; foreach ($multiple_states as $data) {
+	foreach ($multiple_states as $data) {
+		echo '<div class="state_services">';
 	for ($i=0;$i<$data['nr_of_items'];$i++) { if (isset($data['ok'][$i])) {
 	$condition = (!empty($data['groupname'])) ? $data['groupname']!= $prev_group : $data['HOST_NAME'][$i]!= $prev_host;
 
 	if ($condition) {
-		$j++;
 		$prev_host = $data['HOST_NAME'][$i];
 		$prev_group = $data['groupname'];
 
-		if ($j != 1) { ?>
+		if ($i != 0) { ?>
 	</table>
 
 </div>
@@ -76,11 +75,9 @@
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
 			<?php if (!$use_alias && $sg_no == 0) { ?>
-				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'>' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } elseif ($sg_no == 0) { ?>
 				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
-			<?php } else { ?>
-				<td colspan="6">&nbsp;</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
@@ -172,7 +169,9 @@
 
 <br />
 <div class="state_services">
-<?php }  ?>
+<?php
+	$sg_no = 0;
+	}  ?>
 	<table summary="<?php echo $t->_('State breakdown for host services') ?>" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : 'class="multiple_services" style="margin-bottom: 15px"';?>>
 		<tr>
 			<th <?php echo ($create_pdf) ? 'style="width: 222px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" ';?>><?php echo ((!$create_pdf) ? help::render('average_and_sla') : '').' '.$t->_('Average and Group availability for all selected services') ?></th>
