@@ -216,14 +216,17 @@ class Trends_Controller extends Authenticated_Controller {
 		$events = current($data);
 		$graph_height = 800;
 		$graph_width = 800;
+		$smallest_visible_bar_width = 4;
 
+		// Group log entries by object type
 		foreach($data as $current_object => $events) {
+			// @todo remove this stuff
+			//if($current_object != 'DNS') continue;
 			foreach($events as $event) {
 				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
 				}
-				// @todo add some "display only" information: row & column
 				$data_suited_for_chart[$current_object][] =  array(
 					'duration' => $event['duration'],
 					'state' => $event['state'],
@@ -245,15 +248,15 @@ class Trends_Controller extends Authenticated_Controller {
 
 		phplot_charts::load();
 		$data = array();
-
 		$column_names = array();
-		// @todo abstract one px in order to show even the smallest durations
 		foreach($data_suited_for_chart as $service => $state_changes) {
 			$current_row = array($service);
-			foreach($state_changes as $state_change) {
-				$duration = number_format($state_change['duration'] / $seconds_per_pixel, 1, '.', null);
-				$current_row[] = $duration;
-				$extra_information_phplot_colors[] = $state_change;
+			for($i = 0; $i < count($state_changes); $i++) {
+				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
+				// @todo check previous & next values in array for extra pixels
+				// if bar_width is too slim
+				$current_row[] = number_format($bar_width, 1, '.', null);
+				$extra_information_phplot_colors[] = $state_changes[$i];
 			}
 			$data[] = $current_row;
 		}
@@ -261,29 +264,26 @@ class Trends_Controller extends Authenticated_Controller {
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
-		$plot->SetDataColors(array(
+		$colors = array(
 			$arr['green'],
 			$arr['grey'],
 			$arr['orange'],
 			$arr['red']
-		));
-		//$plot->SetCallback('data_color', 'color_the_trends_graph', $data_suited_for_chart);
-		//$plot->SetLegend($column_names);
-		#  Move the legend to the lower right of the plot area:
-		//$plot->SetLegendPixels(700, 300);
+		);
+		$plot->SetDataColors($colors);
+		$plot->SetDataBorderColors($colors);
+		$plot->SetSkipLeftTick(true);
+		$plot->SetSkipRightTick(true);
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 3, 10);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
 		$plot->SetTitle(sprintf($this->translate->_('State History for %s (%s to %s)'), $this->report_type, date(nagstat::date_format(), $report_start), date(nagstat::date_format(), $report_end)));
-		//$plot->SetXTickIncrement(20);
 		$plot->SetYTickPos('none');
 		$plot->SetFileFormat('png');
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
-		// @todo make some bars colored differently, based on state
-		// @todo make dynamic
 
 		return "line_point_chart/$chart_key";
 	}
