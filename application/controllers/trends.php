@@ -215,17 +215,19 @@ class Trends_Controller extends Authenticated_Controller {
 		$data_suited_for_chart = array();
 		$events = current($data);
 		$graph_height = 800;
-		$graph_width = 500;
+		$graph_width = 800;
 
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
-				$color = self::_state_colors(isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host', $event['state'], $event['state']);
+				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
 				}
+				// @todo add some "display only" information: row & column
 				$data_suited_for_chart[$current_object][] =  array(
 					'duration' => $event['duration'],
-					'state' => $event['state']
+					'state' => $event['state'],
+					'object_type' => $object_type
 				);
 			}
 		}
@@ -246,17 +248,26 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$column_names = array();
 		// @todo abstract one px in order to show even the smallest durations
-		foreach($data_suited_for_chart as $service => $state_change) {
+		foreach($data_suited_for_chart as $service => $state_changes) {
 			$current_row = array($service);
-			//$current_row = array(preg_replace('/[^a-z]/', null, $service));
-			foreach($state_change as $state_change) {
+			foreach($state_changes as $state_change) {
 				$duration = number_format($state_change['duration'] / $seconds_per_pixel, 1, '.', null);
 				$current_row[] = $duration;
+				$extra_information_phplot_colors[] = $state_change;
 			}
 			$data[] = $current_row;
 		}
 
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
+		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
+		$arr = Reports_Controller::$colors;
+		$plot->SetDataColors(array(
+			$arr['green'],
+			$arr['grey'],
+			$arr['orange'],
+			$arr['red']
+		));
+		//$plot->SetCallback('data_color', 'color_the_trends_graph', $data_suited_for_chart);
 		//$plot->SetLegend($column_names);
 		#  Move the legend to the lower right of the plot area:
 		//$plot->SetLegendPixels(700, 300);
@@ -265,7 +276,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$plot->SetFont('y_label', 3, 10);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
-		$plot->SetTitle($this->translate->_("Trend report"));
+		$plot->SetTitle(sprintf($this->translate->_('State History for %s (%s to %s)'), $this->report_type, date(nagstat::date_format(), $report_start), date(nagstat::date_format(), $report_end)));
 		//$plot->SetXTickIncrement(20);
 		$plot->SetYTickPos('none');
 		$plot->SetFileFormat('png');
@@ -1124,7 +1135,6 @@ class Trends_Controller extends Authenticated_Controller {
 		$content->resolution_names = $resolution_names;
 		$content->length = ($report_end - $report_start);
 		$content->sub_type = $sub_type;
-
 		$avail_template->use_alias = false;
 		$avail_template->use_average = false;
 		$content->avail_data = $avail_data;
@@ -1132,7 +1142,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$content->multiple_items = $multiple_items;
 		$content->str_start_date = $str_start_date;
 		$content->str_end_date = $str_end_date;
-		$content->title = sprintf($t->_('State History for %s'), $label_type).': '.$obj_key;
+		$content->title = sprintf($t->_('State History for %s'), $label_type);
 		$content->rpttimeperiod = $rpttimeperiod;
 		$content->label_report_period = $label_report_period;
 		$content->objects = $objects;
