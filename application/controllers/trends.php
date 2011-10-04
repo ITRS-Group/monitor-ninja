@@ -206,12 +206,13 @@ class Trends_Controller extends Authenticated_Controller {
 	 * already has been generated, it's used.
 	 *
 	 * @uses PHPlot
-	 * @input array $data
-	 * @input int $report_start
-	 * @input int $report_end
+	 * @param array $data
+	 * @param int $report_start
+	 * @param int $report_end
+	 * @param string $title = null
 	 * @return string
 	 */
-	private function _get_graph_src_for_data($data, $report_start, $report_end) {
+	private function _get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
 		$data_suited_for_chart = array();
 		$events = current($data);
 		$graph_height = 800;
@@ -253,8 +254,12 @@ class Trends_Controller extends Authenticated_Controller {
 			$current_row = array($service);
 			for($i = 0; $i < count($state_changes); $i++) {
 				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
-				// @todo check previous & next values in array for extra pixels
-				// if bar_width is too slim
+				if ($bar_width < 4) {
+					// @todo proper check previous & next values in array for extra pixels
+					// if bar_width is too slim. Alternatively: check longest bar and
+					// pad the rest.
+					$bar_width = 4;
+				}
 				$current_row[] = number_format($bar_width, 1, '.', null);
 				$extra_information_phplot_colors[] = $state_changes[$i];
 			}
@@ -279,8 +284,12 @@ class Trends_Controller extends Authenticated_Controller {
 		$plot->SetFont('y_label', 3, 10);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
-		$plot->SetTitle(sprintf($this->translate->_('State History for %s (%s to %s)'), $this->report_type, date(nagstat::date_format(), $report_start), date(nagstat::date_format(), $report_end)));
+		if($title) {
+			$plot->SetTitle($title);
+		}
 		$plot->SetYTickPos('none');
+		$plot->SetXDataLabelPos('none'); // plotstack for inline label values
+		//$plot->SetNumXTicks('none'); calculate in some smart way based on input
 		$plot->SetFileFormat('png');
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
@@ -1126,7 +1135,7 @@ class Trends_Controller extends Authenticated_Controller {
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
-		$content->graph_image_source = $this->_get_graph_src_for_data($container, $report_start, $report_end);
+		$content->graph_image_source = $this->_get_graph_src_for_data($container, $report_start, $report_end, sprintf($this->translate->_('State History for %s (%s to %s)'), $this->report_type, date(nagstat::date_format(), $report_start), date(nagstat::date_format(), $report_end)));
 		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;
