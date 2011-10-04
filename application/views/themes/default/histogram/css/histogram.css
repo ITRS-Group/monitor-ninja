@@ -27,7 +27,7 @@ body { margin: 0px; }
 	display: none;
 }
 
-#options,
+#options_container,
 #block_host_states,
 #block_service_states{
 	display:none;
