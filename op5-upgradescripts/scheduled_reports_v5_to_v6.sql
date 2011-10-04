@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS summary_config;
 CREATE TABLE IF NOT EXISTS summary_config (
   id int(11) NOT NULL auto_increment,
   user varchar(200) NOT NULL,
