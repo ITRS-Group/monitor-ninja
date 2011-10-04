@@ -238,7 +238,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
-		$encoded_image_name = base64_encode(serialize($data_suited_for_chart));
+		$encoded_image_name = base64_encode(serialize(func_get_args()));
 		$strlen_needed = 7;
 		do {
 			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
