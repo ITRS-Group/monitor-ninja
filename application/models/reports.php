@@ -1826,11 +1826,11 @@ class Reports_Model extends Model
 		if (!empty($this->sub_reports)) {
 			$log = array();
 			foreach ($this->sub_reports as $sr) {
-				$log[$sr->st_source] = $sr->st_log;
+				$log[$sr->id] = $sr->st_log;
 			}
 		}
 		else {
-			$log = array($this->st_source => $this->st_log);
+			$log = array($this->id => $this->st_log);
 		}
 		return array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
 	}
