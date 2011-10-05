@@ -281,7 +281,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$plot->SetSkipRightTick(true);
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
-		$plot->SetFont('y_label', 3, 10);
+		$plot->SetFont('y_label', 2, 8);
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
 		if($title) {
