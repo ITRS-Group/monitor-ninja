@@ -37,7 +37,8 @@ class Trends_graph_Model extends Model
 	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null, $resolution_names = array()) {
 		$data_suited_for_chart = array();
 		$events = current($data);
-		$graph_height = count($data) * 30; // guessed value from testing, feel free to make it better
+		// guessed value from testing, feel free to make it better (+60 = heading)
+		$graph_height = 60 + count($data) * 30;
 		$graph_width = 800;
 		$smallest_visible_bar_width = 4;
 
