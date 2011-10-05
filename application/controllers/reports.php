@@ -886,6 +886,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
+		}
+
+		if ($this->create_pdf) {
 			Kohana::close_buffers(FALSE);
 		}
 
@@ -3516,8 +3519,8 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf_img_src = Kohana::config('config.site_domain').$pdf_img_src;
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
 			.'value="'.$pdf_img_alt.'"  style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
-			
-									  
+
+
 		/*html::image(
 			$pdf_img_src,
 				array(
