@@ -16,7 +16,7 @@ $create_pdf = !isset($create_pdf) ? false : $create_pdf;
 <?php
 }
 
-if ($graph_image_source) {
+if (isset($graph_image_source) && $graph_image_source) {
 ?>
 	<img src="<?php echo $graph_image_source ?>" alt="" />
 <?php } ?>
