@@ -3300,6 +3300,12 @@ class Reports_Controller extends Authenticated_Controller
 		if (!is_array($test) || empty($test))
 			return '';
 
+		$auth = new Nagios_auth_Model();
+		if (!$auth->view_hosts_root) {
+			return false;
+		}
+		unset($auth);
+
 		if (!$prefix)
 			$test_buf = form::open('reports/mktest');
 		else
