@@ -1045,11 +1045,12 @@ class Trends_Controller extends Authenticated_Controller {
 			$report_start,
 			$report_end,
 			sprintf(
-				$this->translate->_('State History for %s (%s to %s)'),
+				$this->translate->_('State History for %s'.PHP_EOL.' (%s   to   %s)'),
 				$this->report_type,
 				date(nagstat::date_format(), $report_start),
 				date(nagstat::date_format(), $report_end)
-			)
+			),
+			$resolution_names
 		);
 		$content->container = $container;
 		$content->object_data = $container;
