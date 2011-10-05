@@ -239,7 +239,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
-		$encoded_image_name = base64_encode(serialize(func_get_args()));
+		$encoded_image_name = md5(serialize(func_get_args()));
 		$strlen_needed = 7;
 		do {
 			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
@@ -254,11 +254,11 @@ class Trends_Controller extends Authenticated_Controller {
 			$current_row = array($service);
 			for($i = 0; $i < count($state_changes); $i++) {
 				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
-				if ($bar_width < 4) {
+				if ($bar_width < $smallest_visible_bar_width) {
 					// @todo proper check previous & next values in array for extra pixels
 					// if bar_width is too slim. Alternatively: check longest bar and
 					// pad the rest.
-					$bar_width = 4;
+					$bar_width = $smallest_visible_bar_width;
 				}
 				$current_row[] = number_format($bar_width, 1, '.', null);
 				$extra_information_phplot_colors[] = $state_changes[$i];
