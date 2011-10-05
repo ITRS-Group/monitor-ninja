@@ -111,6 +111,13 @@ class PHPlot
 
     public $draw_x_data_label_lines = FALSE;   // Draw a line from the data point to the axis?
 
+    /**
+     * To be used while printing values on x-axis
+     *
+     * @var array
+     */
+    public $x_labels = array();
+
     // Label format controls: (for tick, data and plot labels)
     // Unset by default, these array members are used as needed for 'x' (x tick labels), 'xd' (x data
     // labels), 'y' (y tick labels), and 'yd' (y data labels).
@@ -4491,20 +4498,44 @@ class PHPlot
         // Loop, avoiding cumulative round-off errors from $x_tmp += $delta_x
         $n = 0;
         $x_tmp = $x_start;
-        while ($x_tmp <= $x_end) {
-            $xlab = $this->FormatLabel('x', $x_tmp);
-            $x_pixels = $this->xtr($x_tmp);
 
-            // Vertical grid lines
-            if ($this->draw_x_grid) {
-                ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
-            }
+	if($this->x_labels) {
+		// Stupid copy paste, don't want to mess to much with official version
+		$copy = $this->x_labels;
+		$total_printable_width = $x_end - $x_start;
+		$width_per_label = $total_printable_width / count($copy);
+		while ($x_tmp <= $x_end) {
+		    $x_pixels = $this->xtr($x_tmp);
 
-            // Draw tick mark(s)
-            $this->DrawXTick($xlab, $x_pixels);
+		    // Vertical grid lines
+		    if ($this->draw_x_grid) {
+			ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
+		    }
 
-            // Step to next X, without accumulating error
-            $x_tmp = $x_start + ++$n * $delta_x;
+		    // Draw tick mark(s)
+		    $xlab = array_shift($copy);
+		    $this->DrawXTick($xlab, $x_pixels);
+
+		    // Step to next X, without accumulating error
+		    //$x_tmp = $x_start + ++$n * $delta_x;
+		    $x_tmp += $width_per_label;
+		}
+	} else {
+		while ($x_tmp <= $x_end) {
+		    $xlab = $this->FormatLabel('x', $x_tmp);
+		    $x_pixels = $this->xtr($x_tmp);
+
+		    // Vertical grid lines
+		    if ($this->draw_x_grid) {
+			ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
+		    }
+
+		    // Draw tick mark(s)
+		    $this->DrawXTick($xlab, $x_pixels);
+
+		    // Step to next X, without accumulating error
+		    $x_tmp = $x_start + ++$n * $delta_x;
+		}
         }
         return TRUE;
     }

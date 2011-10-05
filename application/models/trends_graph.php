@@ -31,20 +31,23 @@ class Trends_graph_Model extends Model
 	 * @param int $report_start
 	 * @param int $report_end
 	 * @param string $title = null
+	 * @param array $resolution_names = array()
 	 * @return string
 	 */
-	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
+	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null, $resolution_names = array()) {
 		$data_suited_for_chart = array();
 		$events = current($data);
-		$graph_height = 800;
+		$graph_height = count($data) * 30; // guessed value from testing, feel free to make it better
 		$graph_width = 800;
 		$smallest_visible_bar_width = 4;
 
+		$hosts = array();
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			// @todo remove  stuff
 			//if($current_object != 'DNS') continue;
 			foreach($events as $event) {
+				$hosts[] = $event['host_name'];
 				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
@@ -70,8 +73,15 @@ class Trends_graph_Model extends Model
 
 		phplot_charts::load();
 		$data = array();
-		$column_names = array();
+		$remove_host_from_object_name = false;
+		if(count(array_unique($hosts)) == 1) {
+			$remove_host_from_object_name = true;
+		}
 		foreach($data_suited_for_chart as $service => $state_changes) {
+			if($remove_host_from_object_name) {
+				// Turn "linux-server1;FTP" into "FTP" if all objects are from "linux-server1"
+				$service = preg_replace('/^([^;]*);/', null, $service);
+			}
 			$current_row = array($service);
 			for($i = 0; $i < count($state_changes); $i++) {
 				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
@@ -88,6 +98,7 @@ class Trends_graph_Model extends Model
 		}
 
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
+		$plot->x_labels = $resolution_names;
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
 		$colors = array(
@@ -98,8 +109,6 @@ class Trends_graph_Model extends Model
 		);
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
-		$plot->SetSkipLeftTick(true);
-		$plot->SetSkipRightTick(true);
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
@@ -110,7 +119,6 @@ class Trends_graph_Model extends Model
 		}
 		$plot->SetYTickPos('none');
 		$plot->SetXDataLabelPos('none'); // plotstack for inline label values
-		//$plot->SetNumXTicks('none'); calculate in some smart way based on input
 		$plot->SetFileFormat('png');
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
