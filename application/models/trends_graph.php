@@ -40,7 +40,7 @@ class Trends_graph_Model extends Model
 		// guessed value from testing, feel free to make it better (+60 = heading)
 		$graph_height = 60 + count($data) * 30;
 		$graph_width = 800;
-		$smallest_visible_bar_width = 4;
+		$smallest_visible_bar_width = 4; // set to 0 to disable the expanding of narrow bars
 
 		$hosts = array();
 		// Group log entries by object type
