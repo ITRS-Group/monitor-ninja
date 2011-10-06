@@ -1578,8 +1578,30 @@ class Reports_Controller extends Authenticated_Controller
 					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 				}
 
+				if($group_name) {
+					// Copy-pasted from controllers/trends.php
+					foreach ($this->data_arr as $key => $data) {
+						# >= 2 hosts or services won't have the extra
+						# depth in the array, so we break out early
+						if (empty($data['log']) || !is_array($data['log'])) {
+							$graph_data = $this->data_arr['log'];
+							break;
+						}
+
+						# $data is the outer array (with, source, log,
+						# states etc)
+						if (empty($graph_data)) {
+							$graph_data = $data['log'];
+						} else {
+							$graph_data = array_merge($data['log'], $graph_data);
+						}
+					} # end foreach
+				} else {
+					// We are not checking groups
+					$graph_data = $this->data_arr['log'];
+				}
 				$header->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-					$this->data_arr['log'],
+					$graph_data,
 					$report_class->start_time,
 					$report_class->end_time,
 					$template->title
