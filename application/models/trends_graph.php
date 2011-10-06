@@ -72,7 +72,6 @@ class Trends_graph_Model extends Model
 			$strlen_needed++;
 		} while(file_exists($qualified_filename));
 
-		phplot_charts::load();
 		$data = array();
 		$remove_host_from_object_name = false;
 		if(count(array_unique($hosts)) == 1) {
@@ -98,7 +97,15 @@ class Trends_graph_Model extends Model
 			$data[] = $current_row;
 		}
 
+		phplot_charts::load();
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
+		foreach($resolution_names as $key => $name) {
+			// Ugly fix for viewing longer time periods: count($resolution_names) == ~300
+			// for a year when we want 12 (one label/month)
+			if(' &nbsp;' == $name) {
+				unset($resolution_names[$key]);
+			}
+		}
 		$plot->x_labels = $resolution_names;
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
