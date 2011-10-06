@@ -1,4 +1,7 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*');
+?>
 <div class="widget left w33" id="page_links">
 	<ul>
 	<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
@@ -108,14 +111,14 @@ if (!empty($widgets)) {
 			<td class="white" colspan="2"style="padding-top: 7px">
 				<?php
 					if (!empty($action_url)) {
-						echo '<a href="'.$action_url.'" style="border: 0px" target="_blank">';
+						echo '<a href="'.$action_url.'" style="border: 0px" target="'.$action_url_target.'">';
 						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a href="'.$action_url.'" target="_blank">'.$label_action_url.'</a>';
+						echo '<a href="'.$action_url.'" target="'.$action_url_target.'">'.$label_action_url.'</a>';
 					}
 					if (!empty($notes_url)) {
-						echo '&nbsp; <a target="_blank" href="'.$notes_url.'" style="border: 0px">';
+						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$notes_url.'" style="border: 0px">';
 						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a target="_blank" href="'.$notes_url.'">'.$label_notes_url.'</a>';
+						echo '<a target="'.$notes_url_target.'" href="'.$notes_url.'">'.$label_notes_url.'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
 						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';

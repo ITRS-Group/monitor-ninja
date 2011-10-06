@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate;
-$notes_chars = config::get('config.show_notes_chars', '*'); ?>
+$notes_chars = config::get('config.show_notes_chars', '*');
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 <div class="widget left w32" id="page_links">
 		<ul>
@@ -127,12 +129,12 @@ foreach ($result as $row) {
 						if (Kohana::config('config.pnp4nagios_path')!==false)
 							echo (pnp::has_graph($row->host_name))  ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv=_HOST_', html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).'&nbsp;' : '';
 						if (!empty($row->action_url)) {
-							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="_blank">';
+							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">';
 							echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
 							echo '</a> &nbsp;';
 						}
 						if (!empty($row->notes_url)) {
-							echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="_blank">';
+							echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">';
 							echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
 							echo '</a>';
 						}

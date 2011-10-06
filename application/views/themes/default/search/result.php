@@ -2,7 +2,8 @@
 $label_na = $this->translate->_('N/A');
 $notes_chars = config::get('config.show_notes_chars', '*');
 $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
-?>
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 <div class="widget left w98" id="search_result">
 <?php echo help::render('search_help') ?>&nbsp;
@@ -88,12 +89,12 @@ if (isset($host_result) ) {
 				if (Kohana::config('config.pnp4nagios_path')!==false)
 					echo (pnp::has_graph($host->host_name))  ? '<a href="' . url::site() . 'pnp/?host='.urlencode($host->host_name).'&srv=_HOST_" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $this->translate->_('Show performance graph'), 'title' => $this->translate->_('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;' : '';
 				if (!empty($host->action_url)) {
-					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="_blank">';
+					echo '<a href="'.nagstat::process_macros($host->action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'), $this->translate->_('Perform extra host actions'));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($host->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px" target="_blank">';
+					echo '<a href="'.nagstat::process_macros($host->notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'), $this->translate->_('View extra host notes'));
 					echo '</a>';
 				}
@@ -221,12 +222,12 @@ if (isset($service_result) ) {
 						echo '<a href="' . url::site() . 'pnp/?host='.urlencode($service->host_name).'&srv='.urlencode($service->service_description).'" style="border: 0px">'.html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $this->translate->_('Show performance graph'), 'title' => $this->translate->_('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> &nbsp;';
 				}
 				if (!empty($service->action_url)) {
-					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px" target="_blank">';
+					echo '<a href="'.nagstat::process_macros($service->action_url, $service).'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($service->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).'" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($service->notes_url, $service).'" style="border: 0px" target="'.$notes_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
 					echo '</a> &nbsp;';
 				}

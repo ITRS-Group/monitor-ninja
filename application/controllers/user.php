@@ -35,7 +35,9 @@ class User_Controller extends Authenticated_Controller {
 		'nagdefault.services-too' => 'bool',
 		'nagdefault.force' => 'bool',
 		'nagdefault.duration' => 'int',
-		'nagdefault.fixed' => 'bool'
+		'nagdefault.fixed' => 'bool',
+		'nagdefault.notes_url_target' => 'select',
+		'nagdefault.action_url_target' => 'select'
 	);
 
 	/**
@@ -71,6 +73,7 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Keyboard Commands') => 'keycommands',
 			$t->_('Pop ups') => 'popups',
 			$t->_('Status Pages') => 'status',
+			$t->_('URL Targets') => 'url_target',
 			$t->_('Nagios Defaults') => 'nagdefault'
 		);
 
@@ -79,6 +82,7 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Pagination Step') => array('pagination.paging_step', self::$var_types['pagination.paging_step']),
 			$t->_('Group Pagination Limit') => array('pagination.group_items_per_page', self::$var_types['pagination.group_items_per_page'])
 		);
+
 		$settings['keycommands'] = array(
 			$t->_('Keycommands') => array('keycommands.activated', self::$var_types['keycommands.activated']),
 			$t->_('Search') => array('keycommands.search', self::$var_types['keycommands.search']),
@@ -94,6 +98,11 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Show display_name') => array('config.show_display_name', self::$var_types['config.show_display_name']),
 			$t->_('Show notes') => array('config.show_notes', self::$var_types['config.show_notes']),
 			$t->_('Note length') => array('config.show_notes_chars', self::$var_types['config.show_notes_chars'])
+		);
+
+		$settings['url_target'] = array(
+			$t->_('Notes URL Target') => array('nagdefault.notes_url_target', self::$var_types['nagdefault.notes_url_target'], Kohana::config('nagdefault.available_targets')),
+			$t->_('Action URL Target') => array('nagdefault.action_url_target', self::$var_types['nagdefault.action_url_target'], Kohana::config('nagdefault.available_targets')),
 		);
 
 		$settings['popups'] = array(
@@ -303,7 +312,9 @@ class User_Controller extends Authenticated_Controller {
 			'config.show_display_name' => $t->_('Use this setting to control whether to show display_name for your hosts and services on status/service and search result pages or not.'),
 			'config.show_notes' => $t->_('Use this setting to control whether to show notes for your services on status/service and search result pages or not.'),
 			'config.show_notes_chars' => $t->_('Control how many characters of the note to be displayed in the GUI. The entire note will be displayed on mouseover or click. <br />Use 0 to display everything. Default: 80.'),
-			'edit_menu' => $t->_('Edit menu item visibility for limited users.')
+			'edit_menu' => $t->_('Edit menu item visibility for limited users.'),
+			'nagdefault.notes_url_target' => $t->_('This option determines the name of the frame target that notes URLs should be displayed in.'),
+			'nagdefault.action_url_target' => $t->_('This option determines the name of the frame target that action URLs should be displayed in.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
