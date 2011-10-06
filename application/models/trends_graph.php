@@ -99,13 +99,6 @@ class Trends_graph_Model extends Model
 
 		phplot_charts::load();
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
-		foreach($resolution_names as $key => $name) {
-			// Ugly fix for viewing longer time periods: count($resolution_names) == ~300
-			// for a year when we want 12 (one label/month)
-			if(' &nbsp;' == $name) {
-				unset($resolution_names[$key]);
-			}
-		}
 		$plot->x_labels = $resolution_names;
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
