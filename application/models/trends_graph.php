@@ -104,7 +104,8 @@ class Trends_graph_Model extends Model
 		// guessed value from testing, feel free to make it better (+60 = heading)
 		$graph_height = 60 + count($data) * 30;
 		$graph_width = 800;
-		$smallest_visible_bar_width = 4; // set to 0 to disable the expanding of narrow bars
+		// In pixels. Set to > 0 to enable the expanding of narrow bars.
+		$smallest_visible_bar_width = 0;
 
 		$hosts = array();
 		// Group log entries by object type
@@ -190,4 +191,53 @@ class Trends_graph_Model extends Model
 
 		return "line_point_chart/$chart_key";
 	}
+}
+
+/**
+ * PHPlot needs a global function as callback for registering custom
+ * data colors.
+ *
+ * @see http://phplot.sourceforge.net/phplotdocs/conc-colors-datacolor-callback.html
+ * @return string rgb
+ */
+function color_the_trends_graph($image, $passthrough, $row, $column, $extra = 0) {
+	static $counter;
+	if(!$counter) {
+		$counter = 0;
+	}
+	$color = phplot_color_index_by_state_color($passthrough[$counter]['object_type'], $passthrough[$counter]['state']);
+	$counter++;
+	return $color;
+}
+
+/**
+ * Helper for the above function: color_the_trends_graph()
+ *
+ * @param string $type = 'host'
+ * @param string $state = false
+ * @return string|false
+ */
+function phplot_color_index_by_state_color($type='host', $state=false) {
+	$arr = Reports_Controller::$colors;
+	$colors['host'] = array(
+		Reports_Model::HOST_UP => $arr['green'],
+		Reports_Model::HOST_DOWN => $arr['red'],
+		Reports_Model::HOST_UNREACHABLE => $arr['orange'],
+		Reports_Model::HOST_PENDING => $arr['grey']
+	);
+	$colors['service'] = array(
+		Reports_Model::SERVICE_OK => $arr['green'],
+		Reports_Model::SERVICE_WARNING => $arr['orange'],
+		Reports_Model::SERVICE_CRITICAL => $arr['red'],
+		Reports_Model::SERVICE_UNKNOWN => $arr['grey'],
+		Reports_Model::SERVICE_PENDING => $arr['grey']
+	);
+	$phplot_color_array = array(
+		$arr['green'],
+		$arr['grey'],
+		$arr['orange'],
+		$arr['red']
+	);
+	$spelled_out_color = $colors[$type][$state];
+	return array_search($spelled_out_color, $phplot_color_array);
 }
