@@ -1013,8 +1013,6 @@ class Trends_Controller extends Authenticated_Controller {
 					$h = date('M', $time);
 					if ($prev != $h) {
 						$resolution_names[] = $h;
-					} else {
-						$resolution_names[] = ' &nbsp;';
 					}
 					$time += 86400;
 					$prev = $h;
