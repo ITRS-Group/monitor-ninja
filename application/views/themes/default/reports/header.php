@@ -25,5 +25,6 @@
 ?>
 </div>
 <?php if(isset($graph_image_source) && $graph_image_source) { ?>
-<p><img src="../trends/<?php echo $graph_image_source ?>" alt="" /></p>
+<p style="margin-bottom: 3em"><img src="../trends/<?php echo $graph_image_source ?>" alt="" /></p>
+<br style="clear: both;" />
 <?php } ?>
