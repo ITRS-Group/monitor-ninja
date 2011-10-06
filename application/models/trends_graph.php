@@ -23,6 +23,71 @@ class Trends_graph_Model extends Model
 	}
 
 	/**
+	 * Format the x-axis of the graph accordingly to input dates
+	 *
+	 * @param int $report_start
+	 * @param int $report_end
+	 */
+	private function _get_resolution_names($report_start, $report_end) {
+		$resolution_names = array();
+		$length = $report_end-$report_start;
+		$days = floor($length/86400);
+		$time = $report_start;
+		$df = nagstat::date_format();
+		$df_parts = explode(' ', $df);
+		if (is_array($df_parts) && !empty($df_parts)) {
+			$df = $df_parts[0];
+		} else {
+			$df = 'Y-m-d';
+		}
+
+		switch ($days) {
+			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
+				while ($time < $report_end) {
+					$h = date('H', $time);
+					$resolution_names[] = $h;
+					$time += (60*60);
+				}
+				break;
+			case 7: # thisweek', last7days', 'lastweek':
+				while ($time < $report_end) {
+					$h = date('w', $time);
+					$resolution_names[] = date($df, $time);
+					$time += 86400;
+				}
+				break;
+			case ($days > 90) :
+				$prev = '';
+				while ($time < $report_end) {
+					$h = date('M', $time);
+					if ($prev != $h) {
+						$resolution_names[] = $h;
+					}
+					$time += 86400;
+					$prev = $h;
+				}
+
+				break;
+			case ($days > 7) :
+				while ($time < $report_end) {
+					$h = date('d', $time);
+					$resolution_names[] = $h;
+					$time += 86400;
+				}
+
+				break;
+			default: # < 7 days, custom report period, defaulting to day names
+				while ($time < $report_end) {
+					$h = date('w', $time);
+					$resolution_names[] = $this->abbr_day_names[$h];
+					$time += 86400;
+				}
+				break;
+		}
+		return $resolution_names;
+	}
+
+	/**
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
@@ -31,10 +96,9 @@ class Trends_graph_Model extends Model
 	 * @param int $report_start
 	 * @param int $report_end
 	 * @param string $title = null
-	 * @param array $resolution_names = array()
 	 * @return string
 	 */
-	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null, $resolution_names = array()) {
+	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
 		$data_suited_for_chart = array();
 		$events = current($data);
 		// guessed value from testing, feel free to make it better (+60 = heading)
@@ -99,7 +163,7 @@ class Trends_graph_Model extends Model
 
 		phplot_charts::load();
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
-		$plot->x_labels = $resolution_names;
+		$plot->x_labels = $this->_get_resolution_names($report_start, $report_end);
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
 		$colors = array(

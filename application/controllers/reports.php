@@ -1582,8 +1582,7 @@ class Reports_Controller extends Authenticated_Controller
 					$this->data_arr['log'],
 					$report_class->start_time,
 					$report_class->end_time,
-					$template->title,
-					$resolution_names = array()
+					$template->title
 				);
 
 				if (!empty($template_values) && count($template_values))
