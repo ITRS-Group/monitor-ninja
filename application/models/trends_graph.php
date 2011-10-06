@@ -17,8 +17,12 @@ class Trends_graph_Model extends Model
 	 */
 	public function display_chart($chart_key) {
 		$filename = sprintf($this->tmp_name_placeholder, $chart_key);
+		if(!is_readable($filename)) {
+			return;
+		}
 		header("Content-Type: ".mime_content_type($filename));
 		readfile($filename);
+		unlink($filename);
 		die;
 	}
 
