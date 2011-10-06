@@ -979,8 +979,9 @@ class Trends_Controller extends Authenticated_Controller {
 			$container = $raw_trends_data;
 		}
 
+
 		unset($raw_trends_data);
-		$resolution_names = false;
+		$resolution_names = array();
 		$length = $report_end-$report_start;
 		$days = floor($length/86400);
 		$time = $report_start;
