@@ -161,6 +161,7 @@ class Reports_Controller extends Authenticated_Controller
 	private $notifications_link = "notifications/host";
 
 	public $reports_model = false;
+	private $trends_graph_model = false;
 	public $start_date = false;
 	public $end_date = false;
 	public $mashing = false;
@@ -173,6 +174,7 @@ class Reports_Controller extends Authenticated_Controller
 		parent::__construct();
 
 		$this->reports_model = new Reports_Model();
+		$this->trends_graph_model = new Trends_graph_Model();
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -1388,6 +1390,7 @@ class Reports_Controller extends Authenticated_Controller
 
 			if (!$this->create_pdf) {
 				$this->template->content->report_options = $this->add_view('reports/'.$this->template_prefix.'options');
+
 				$tpl_options = $this->template->content->report_options;
 
 				$tpl_options->label_report_period = $label_report_period;
@@ -1575,6 +1578,13 @@ class Reports_Controller extends Authenticated_Controller
 					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
 				}
 
+				$header->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+					$this->data_arr['log'],
+					$report_class->start_time,
+					$report_class->end_time,
+					$template->title,
+					$resolution_names = array()
+				);
 
 				if (!empty($template_values) && count($template_values))
 					for($i=0,$num_groups=count($template_values)  ; $i<$num_groups ; $i++) {
@@ -1684,7 +1694,6 @@ class Reports_Controller extends Authenticated_Controller
 						$this->pdf_data['pie_data'] = $data_str;
 					}
 				}
-
 			} else { # host/services
 				$image_data = false;
 				$data_str = '';
@@ -1815,6 +1824,7 @@ class Reports_Controller extends Authenticated_Controller
 						$template->trends_graph = $this->add_view('trends/new_report');
 						$this->xtra_css[] = $this->add_path('css/default/reports');
 						$this->xtra_js[] = $this->add_path('trends/js/trends');
+						$template->trends_graph->object_data = $trends_data;
 						$template->trends_graph->object_data = $trends_data;
 						$template->trends_graph->start = $report_start;
 						$template->trends_graph->end = $report_end;
