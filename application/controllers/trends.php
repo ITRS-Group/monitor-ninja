@@ -118,7 +118,7 @@ class Trends_Controller extends Authenticated_Controller {
 	private $notifications_link = "notifications/index";
 
 	private $reports_model = false;
-	private $trends_model;
+	private $trends_graph_model;
 	public $start_date = false;
 	public $end_date = false;
 	private $report_options = false;
