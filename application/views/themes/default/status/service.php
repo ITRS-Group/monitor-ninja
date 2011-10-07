@@ -223,7 +223,13 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		} ?>
 
 <?php } else {
-		echo '<tr><td colspan=9>'.$this->translate->_('No services found for this host').'</td></tr>';
+			echo '<tr><td colspan=9>';
+			if (isset($filters) && !empty($filters)) {
+				echo $this->translate->_('No services found matching this filter.');
+			} else {
+				echo $this->translate->_('No services found for this host.');
+			}
+			echo '</td></tr>';
 		} ?>
 		</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
