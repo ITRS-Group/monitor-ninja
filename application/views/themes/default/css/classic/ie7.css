@@ -3,8 +3,6 @@
 table{border-collapse:collapse}
 #login-table hr {margin: 0px;}
 .w98 { width: 99%;}
-div.left {float: left;margin-left: 0px;}
-div.right {float: none; position: absolute; right: 0px;}
 .w49 { padding-right: 10px }
 .service-totals {margin-top:-75px;}
 

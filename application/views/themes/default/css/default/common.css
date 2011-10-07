@@ -818,10 +818,12 @@ div.left {
 	float: left;
 	margin-top: 11px;
 	margin-left: 1%;
+        
 }
 div.right {
 	float: right;
 	margin-top: 11px;
+        clear: both;
 }
 .max { width: 100%; }
 .w99 { width: 99%; }
@@ -1570,7 +1572,7 @@ select {
 #report_setup {
 	position: relative;
 	float: right;
-	margin-bottom: -2px;
+	marginright-bottom: -2px;
 }
 
 hr {
@@ -1587,6 +1589,11 @@ hr {
 
 #save_search img{
 	margin-bottom: -7px;
+}
+
+.clearservice{
+	        clear: both;
+       
 }
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line

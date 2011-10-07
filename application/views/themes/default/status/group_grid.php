@@ -15,6 +15,7 @@ $t = $this->translate; ?>
 		?>
 		</ul>
 	</div>
+<div class="clearservice"> </div>
 
 	<?php
 	if (!empty($widgets)) {
@@ -31,6 +32,7 @@ $t = $this->translate; ?>
 	}
 	?>
 	</div>
+    <div class="clearservice"> </div>
 </div>
 
 <div class="widget left w98" id="status_group-grid">

@@ -14,6 +14,7 @@
 		?>
 		</ul>
 	</div>
+    <div class="clearservice"> </div>
 	<?php
 		if (!empty($widgets)) {
 			foreach ($widgets as $widget) {
@@ -29,6 +30,7 @@
 	}
 	?>
 	</div>
+    <div class="clearservice"> </div>
 </div>
 
 <div class="widget left w98" id="status_group-summary">

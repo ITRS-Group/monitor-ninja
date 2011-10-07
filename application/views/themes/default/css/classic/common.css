@@ -791,10 +791,12 @@ div.left {
 	float: left;
 	margin-top: 11px;
 	margin-left: 1%;
+        
 }
 div.right {
 	float: right;
 	margin-top: 11px;
+        clear: both;
 }
 .max { width: 100%; }
 .w99 { width: 99%; }
@@ -821,7 +823,7 @@ div.right {
 	margin-bottom: -1px;
 }
 #widget-status_totals .icon,
-#widget-host_totals .icon {
+#widget-host_totals .widget-status_totalsicon {
 	width: 11px;
 }
 tr.odd td.bl,
@@ -1557,6 +1559,11 @@ hr {
 
 #save_search img{
 	margin-bottom: -7px;
+}
+
+.clearservice{
+	        clear: both;
+                
 }
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line

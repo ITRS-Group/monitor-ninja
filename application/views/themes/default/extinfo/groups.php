@@ -11,6 +11,7 @@
 	?>
 	</ul>
 </div>
+<div class="clearservice"> </div>
 
 <?php if (!empty($action_url)) { ?>
 <a href="<?php echo $action_url ?>" style="border: 0px" target="_blank">

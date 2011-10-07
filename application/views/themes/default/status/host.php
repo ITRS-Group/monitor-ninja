@@ -2,7 +2,7 @@
 <?php $t = $this->translate;
 $notes_chars = config::get('config.show_notes_chars', '*'); ?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
-<div class="widget left w32" id="page_links">
+     <div class="widget left w32" id="page_links">
 		<ul>
 			<li><?php echo $t->_('View').', '.$label_view_for.':'; ?></li>
 		<?php
@@ -17,7 +17,7 @@ $notes_chars = config::get('config.show_notes_chars', '*'); ?>
 		?>
 		</ul>
 	</div>
-
+<div class="clearservice"> </div>
 	<?php
 	if (!empty($widgets)) {
 		foreach ($widgets as $widget) {
@@ -33,6 +33,7 @@ $notes_chars = config::get('config.show_notes_chars', '*'); ?>
 	}
 	?>
 	</div>
+    <div class="clearservice"> </div>
 </div>
 
 <div class="widget left w98" id="status_host">
