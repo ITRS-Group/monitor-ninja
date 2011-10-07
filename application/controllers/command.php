@@ -49,6 +49,31 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
+ 	 * @param string $submitted_start_time (Y-m-d H:i:s)
+ 	 * @param string $submitted_end_time (Y-m-d H:i:s)
+	 * @return true | string (string = error message)
+	 */
+	private function _validate_dates($submitted_start_time, $submitted_end_time) {
+		$start_time = strtotime($submitted_start_time);
+		$end_time = strtotime($submitted_end_time);
+		$errors = array();
+		if(!$start_time || !$end_time) {
+			if(!$start_time && !$end_time) {
+				return "Neither of your submitted dates are valid, please <a href='javascript:history.back();'>adjust them</a>";
+			} else {
+				return sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $submitted_end_time : $submitted_start_time);
+			}
+		}
+		if($start_time > $end_time) {
+			return sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+		}
+		if($start_time <= time()) {
+			return sprintf("The downtime must be scheduled into the future, %s has already passed. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+		}
+		return true;
+	}
+
+	/**
 	 * Create a standard checkbox item
 	 * @param $description The user visible text for this option
 	 * @param $name The internal name for this option
@@ -159,6 +184,12 @@ class Command_Controller extends Authenticated_Controller
 			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis), '_host-too');
 			break;
 
+		 case 'ACKNOWLEDGE_HOST_PROBLEM':
+			$param['_services-too'] = $this->cb($this->translate->_('Acknowledge any problems on services too'), '_services-too');
+			break;
+		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+			$param['_services-too'] = $this->cb($this->translate->_('Remove any acknowledgements on services too'), '_services-too');
+			break;
 		}
 		$info['params'] = $param;
 
@@ -215,6 +246,12 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
+			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
+			if($date_validation_result !== true) {
+				$this->template->content->result = false;
+				$this->template->content->error = $date_validation_result;
+				return;
+			}
 			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
 				$what = $param['_child-hosts'];
 				unset($param['_child-hosts']);
@@ -287,6 +324,34 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['_host-too']);
 				$xcmd = str_replace('SVC', 'HOST', $cmd);
 				$nagios_commands = $this->_build_command($xcmd, $param);
+			}
+			break;
+		 case 'SCHEDULE_SVC_DOWNTIME':
+			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
+			if($date_validation_result !== true) {
+				$this->template->content->result = false;
+				$this->template->content->error = $date_validation_result;
+				return;
+			}
+			break;
+		 case 'ACKNOWLEDGE_HOST_PROBLEM':
+		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+			if (!empty($param['_services-too'])) {
+				unset($param['_services-too']);
+				$xcmd = str_replace('HOST', 'SVC', $cmd);
+				$host = new Host_Model();
+				$host_names = $param['host_name'];
+				if (!is_array($host_names))
+					$host_names = array($host_names);
+				$xparam = $param;
+				unset($xparam['host_name']);
+				$svcs = array();
+				foreach ($host_names as $host_name)
+					$svcs = array_merge($svcs, $host->get_services($host_name));
+				foreach ($svcs as $svc) {
+					$xparam['service'] = $host_name.';'.$svc->service_description;
+					$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
+				}
 			}
 			break;
 		}
@@ -421,39 +486,57 @@ class Command_Controller extends Authenticated_Controller
 		if (empty($contact))
 			return -3;
 
-		$service = isset($params['service']) ? $params['service'] : false;
-		$host_name = isset($params['host_name']) ? $params['host_name'] : false;
-		if (strstr($service, ';')) {
-			# we have host_name;service in service field
-			$parts = explode(';', $service);
-			if (!empty($parts) && sizeof($parts)==2) {
-				$service = $parts[1];
-				$host_name = $parts[0];
-			}
-		}
+		$services = isset($params['service']) ? $params['service'] : false;
+		$host_names = isset($params['host_name']) ? $params['host_name'] : false;
 
 		# FIXME handle host/servicegroup commands as well
 
 		# neither host_name nor service description. Either the user
 		# hasn't filled out the form yet, or this regards hostgroups
 		# or servicegroups
-		if (!$service && !$host_name) {
+		if (!$services && !$host_names) {
 			return true;
 		}
 
-		# if the user isn't specifically configured for the service, he/she
-		# can still submit commands for it if he/she is a contact for the host
-		if ($service) {
-			$auth->get_authorized_services_r();
-			if (isset($auth->services_r[$host_name . ';' . $service])) {
-				return true;
+		# ensure host_names is an array, as services might append more elements
+		# to the array
+		if (!$host_names)
+			$host_names = array();
+		else if (!is_array($host_names))
+			$host_names = array($host_names);
+
+		if ($services) {
+			if (!is_array($services))
+				$services = array($services);
+			foreach ($services as $service) {
+				if (strstr($service, ';')) {
+					# we have host_name;service in service field
+					$parts = explode(';', $service);
+					if (!empty($parts) && sizeof($parts)==2) {
+						$service = $parts[1];
+						$host_name = $parts[0];
+						$host_names[] = $parts[0];
+					}
+				}
+				else {
+					# FIXME: both host_name and service can't be an array, can they?
+					$host_name = $host_names;
+				}
+				# if the user isn't specifically configured for the service, he/she
+				# can still submit commands for it if he/she is a contact for the host
+				$auth->get_authorized_services_r();
+				if (isset($auth->services_r[$host_name . ';' . $service])) {
+					return true;
+				}
 			}
 		}
 
-		if ($host_name) {
-			$auth->get_authorized_hosts_r();
-			if (isset($auth->hosts_r[$host_name])) {
-				return true;
+		if ($host_names) {
+			foreach ($host_names as $host_name) {
+				$auth->get_authorized_hosts_r();
+				if (isset($auth->hosts_r[$host_name])) {
+					return true;
+				}
 			}
 		}
 		return false;

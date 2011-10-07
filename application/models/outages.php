@@ -6,7 +6,7 @@ function sort_outages ($a, $b) {
 		return -1;
 	if (!isset($b['severity']))
 		return 1;
-	
+
 	if ($a['severity'] == $b['severity'])
 		return 0;
 	return ($a['severity'] < $b['severity']) ? 1 : -1;
@@ -133,7 +133,7 @@ class Outages_Model extends Model
 			}
 		}
 
-		usort($return, 'sort_outages');
+		uasort($return, 'sort_outages');
 
 		return $return;
 	}

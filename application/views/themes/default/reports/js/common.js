@@ -364,9 +364,7 @@ function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = new Date().addDays(1).asString();
-	if ($('.date-pick').is(':visible')) {
-		$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-	}
+	$('.date-pick:visible').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 	$('#cal_start').bind(
 		'dpClosed',
 		function(e, selectedDates)

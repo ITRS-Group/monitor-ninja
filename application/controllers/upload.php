@@ -217,6 +217,7 @@ class Upload_Controller extends Authenticated_Controller
 		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
 		$widget_ok = false;
+		$is_upgrade = false;
 		if ($data !== false) {
 			# widget already exists - compare versions
 			$manifestpath = $custom_dir.$widget_name.'/'.$manifest;
@@ -233,6 +234,7 @@ class Upload_Controller extends Authenticated_Controller
 					}
 				}
 			}
+			$is_upgrade = $widget_ok;
 		} else {
 			$widget_ok = true;
 		}
@@ -258,16 +260,17 @@ class Upload_Controller extends Authenticated_Controller
 			return;
 		}
 
-		if (is_dir($savepath.$file['name']));
+		if (file_exists($savepath.$file['name']));
 			unlink($savepath.$file['name']);
 		self::_rrmdir($savepath.$widget_name);
 
 		$save = Ninja_widget_Model::add_widget($pagename, $widget_name, $friendly_name);
-		if ($save) {
+		if ($save || $is_upgrade) {
 			$msg .= sprintf($this->translate->_("OK, saved widget to db%s"), '<br />');
 		} else {
 			$ct->err_msg = $this->translate->_("Unable to save widget - maybe it's already installed?");
-			unlink($savepath.$file['name']);
+			if (file_exists($savepath.$file['name']))
+				unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		}

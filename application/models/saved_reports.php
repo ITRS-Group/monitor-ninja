@@ -327,6 +327,22 @@ class Saved_reports_Model extends Model
 
 					$return[$month_key] = $row->value;
 				}
+
+				# handle dynamic month values
+				if (strstr($return['report_period'], 'last')) {
+					$month = date('n');
+					switch ($return['report_period']) {
+						case 'last3months':
+							self::adjust_sla_periods(3, $return);
+							break;
+						case 'last6months':
+							self::adjust_sla_periods(6, $return);
+							break;
+						case 'lastquarter':
+							self::adjust_sla_periods(3, $return, true);
+							break;
+					}
+				}
 			}
 		}
 
@@ -339,6 +355,62 @@ class Saved_reports_Model extends Model
 		}
 		$return['objects'] = $objects;
 		return $return;
+	}
+
+	/**
+	*	Make monthly SLA values dynamic
+	*/
+	public function adjust_sla_periods($num=false, &$arr, $is_quarter=false)
+	{
+		if (empty($num)) {
+			return false;
+		}
+		$month = date('n');
+
+		$new_months = false;
+		$start = $month - $num;
+		if ($is_quarter === true) {
+			# quarter
+			if ($month <= 3) {
+				$start = 10;
+			} elseif ($month <= 6) {
+				$start = 1;
+			} elseif ($month <= 9) {
+				$start = 4;
+			} else {
+				$start = 7;
+			}
+		}
+
+		$month = $month == 1 ? 12 : $month;
+		for ($i=$start;$i<=$month;$i++) {
+			$a = $i<0 ? $i + 13 : $i;
+			$a = $a == 0 ? 1 : $a;
+			$new_months[] = 'month_'.$a;
+		}
+
+		$i = 0;
+		$unset = false;
+		$add = false;
+		foreach ($arr as $key => $val) {
+			if (strstr($key, 'month_')) {
+				$unset[] = $key;
+				$add[$new_months[$i]] = $val;
+				$i++;
+			}
+		}
+		if (!empty($unset)) {
+			foreach ($unset as $k) {
+				unset($arr[$k]);
+			}
+			unset($unset);
+		}
+		if (!empty($add)) {
+			foreach ($add as $key => $val) {
+				$arr[$key] = $val;
+			}
+			unset($add);
+		}
 	}
 
 	/**

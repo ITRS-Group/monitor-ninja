@@ -1,4 +1,6 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');?>
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 <div class="widget left w32" id="page_links">
 		<ul>
@@ -133,12 +135,12 @@
 
 					if (!is_null($group->action_url)) {
 						$lable_host_action = $t->_('Perform Extra Host Actions');
-						echo '<a href="'.nagstat::process_macros($group->action_url, $group).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+						echo '<a href="'.nagstat::process_macros($group->action_url, $group).'" style="border: 0px" target="'.$action_url_target.'">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
 					}
 
 					if (!is_null($group->notes_url)) {
 						$lable_host_notes = $t->_('View Extra Host Notes');
-						echo '<a href="'.nagstat::process_macros($group->notes_url, $group).'" style="border: 0px">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+						echo '<a href="'.nagstat::process_macros($group->notes_url, $group).'" style="border: 0px" target="'.$notes_url_target.'">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
 					} ?>
 				</td>
 			</tr>

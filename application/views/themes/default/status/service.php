@@ -2,7 +2,8 @@
 $style = isset($style) ? $style : false;
 $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 $notes_chars = config::get('config.show_notes_chars', '*');
-?>
+$notes_url_target = config::get('nagdefault.notes_url_target', '*');
+$action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
 		<ul>
@@ -178,12 +179,12 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 						echo html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $this->translate->_('Show performance graph'), 'title' => $this->translate->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).' &nbsp;';
 				}
 				if (!empty($row->action_url)) {
-					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="_blank">';
+					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($row->notes_url)) {
-					echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px">';
+					echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">';
 					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
 					echo '</a> &nbsp;';
 				}
@@ -223,7 +224,13 @@ $notes_chars = config::get('config.show_notes_chars', '*');
 		} ?>
 
 <?php } else {
-		echo '<tr><td colspan=9>'.$this->translate->_('No services found for this host').'</td></tr>';
+			echo '<tr><td colspan=9>';
+			if (isset($filters) && !empty($filters)) {
+				echo $this->translate->_('No services found matching this filter.');
+			} else {
+				echo $this->translate->_('No services found for this host.');
+			}
+			echo '</td></tr>';
 		} ?>
 		</table>
 	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),

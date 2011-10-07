@@ -7,7 +7,8 @@
 </a>
 
 
-<div id="options">
+<div id="options_container">
+	<div id="options">
 <?php	echo form::open('histogram/generate', array('id' => 'histogram_form', 'onsubmit' => 'return check_form_values(this);')); ?>
 			<table summary="Report settings" id="report">
 				<tr class="none">
@@ -67,4 +68,5 @@
 				foreach ($html_options as $html_option)
 					echo form::hidden($html_option[1], $html_option[2]); ?>
 		</div>
-	</form>
+	</div>
+</form>

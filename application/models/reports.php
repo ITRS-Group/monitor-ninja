@@ -1103,6 +1103,7 @@ class Reports_Model extends Model
 				$sub_class = new Reports_Model(false, false, $this->db);
 				$sub_class->set_master($this);
 				$sub_class->id = $host;
+				$sub_class->st_needs_log = true;
 				$sub_class->st_init($host, false);
 				$this->sub_reports[$sub_class->id] = $sub_class;
 			}
@@ -1115,6 +1116,7 @@ class Reports_Model extends Model
 					$sub_class = new Reports_Model(false, false, $this->db);
 					$sub_class->set_master($this);
 					$sub_class->id = $service;
+					$sub_class->st_needs_log = true;
 					$sub_class->st_init($service_parts[0], $service_parts[1]);
 					$this->sub_reports[$sub_class->id] = $sub_class;
 				}
@@ -1780,6 +1782,9 @@ class Reports_Model extends Model
 		# gather remaining time. If they match, it'll be 0
 		$this->st_update($this->end_time);
 		$this->st_update_log();
+		#foreach ($this->sub_reports as $sr)
+		#	$sr->st_update_log();
+
 
 		$converted_state = $this->convert_state_table($this->st_raw, $this->st_text);
 
@@ -1818,7 +1823,16 @@ class Reports_Model extends Model
 		$this->states = $converted_state;
 		$total_time = $this->end_time - $this->start_time;
 		$groupname = $this->hostgroup != '' ? $this->hostgroup : $this->servicegroup;
-		return array('source' => $this->st_source, 'log' => $this->st_log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
+		if (!empty($this->sub_reports)) {
+			$log = array();
+			foreach ($this->sub_reports as $sr) {
+				$log[$sr->id] = $sr->st_log;
+			}
+		}
+		else {
+			$log = array($this->id => $this->st_log);
+		}
+		return array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
 	}
 
 	/**

@@ -85,16 +85,9 @@ class Service_Model extends Model
 			return false;
 		}
 		$auth = new Nagios_auth_Model();
-		$auth_services = self::authorized_services();
-		$service_str = !empty($auth_services) ? implode(', ', array_keys($auth_services)) : false;
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$auth_str = '';
-		} elseif (!empty($service_str)) {
-			$auth_str = " AND s.id IN(".$service_str.")";
-		} else {
-			# not authorized_for all hosts or services and no hosts
-			# so we return false here.
-			return false;
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 		}
 
 		switch ($type) {
@@ -102,13 +95,13 @@ class Service_Model extends Model
 				$sql = "SELECT
 					s.*
 				FROM
-					service s,
+					service s ".$auth_str.",
 					servicegroup sg,
 					service_servicegroup ssg
 				WHERE
 					sg.servicegroup_name=".$this->db->escape($group)." AND
 					ssg.servicegroup = sg.id AND
-					s.id=ssg.service ".$auth_str."
+					s.id=ssg.service
 				ORDER BY
 					s.service_description";
 					break;
@@ -116,7 +109,7 @@ class Service_Model extends Model
 				$sql = "SELECT
 					s.*
 				FROM
-					service s,
+					service s ".$auth_str.",
 					host h,
 					hostgroup hg,
 					host_hostgroup hhg
@@ -124,7 +117,7 @@ class Service_Model extends Model
 					hg.hostgroup_name=".$this->db->escape($group)." AND
 					hhg.hostgroup = hg.id AND
 					s.host_name=h.host_name AND
-					hhg.host = h.id ".$auth_str."
+					hhg.host = h.id
 				ORDER BY
 					s.service_description";
 				break;
@@ -145,8 +138,10 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
-		$auth_hosts = Host_Model::authorized_hosts();
-		$host_str = implode(', ', array_values($auth_hosts));
+		$auth = new Nagios_auth_Model();
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.host = h.id AND ca.contact = ".$auth->id;
 		$db = Database::instance();
 		switch ($type) {
 			case 'servicegroup':
@@ -154,7 +149,7 @@ class Service_Model extends Model
 					DISTINCT h.*
 				FROM
 					service s,
-					host h,
+					host h ".$auth_str.",
 					servicegroup sg,
 					service_servicegroup ssg
 				WHERE
@@ -162,7 +157,6 @@ class Service_Model extends Model
 					ssg.servicegroup = sg.id AND
 					s.id=ssg.service AND
 					h.host_name=s.host_name AND
-					h.id IN(".$host_str.")
 				ORDER BY
 					h.host_name";
 				case 'hostgroup':
@@ -188,7 +182,6 @@ class Service_Model extends Model
 		$sql_join = false;
 		$sql_where = false;
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
-			$obj_ids = self::authorized_services();
 			$sql_join = ' INNER JOIN contact_access ON contact_access.service=service.id';
 			$sql_where = ' AND contact_access.contact= '.(int)$auth->id;
 		}
@@ -217,12 +210,13 @@ class Service_Model extends Model
 		}
 
 		$auth = new Nagios_auth_Model();
-		if (!$auth->view_hosts_root && !$auth->view_services_root) {
-			$obj_ids = self::authorized_services();
-		}
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
+
 		$db = Database::instance();
 
-		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name WHERE s.id IN (SELECT DISTINCT s.id ".
+		$sql = "SELECT s.*, h.current_state AS host_state FROM service s INNER JOIN host h ON s.host_name = h.host_name ".$auth_str." WHERE s.id IN (SELECT DISTINCT s.id ".
 		"FROM service s WHERE ";
 		$limit_str = sql::limit_parse($limit);
 		$query_parts = false;
@@ -255,9 +249,6 @@ class Service_Model extends Model
 					$sql .= " )";
 				}
 			}
-			if (!$auth->view_hosts_root && !$auth->view_services_root) {
-				$sql .= " AND s.id IN(".implode(',', $obj_ids).") ";
-			}
 			$sql .= ' ) ORDER BY s.host_name, s.service_description '.$limit_str;
 			#echo $sql;
 			$obj_info = self::query($db,$sql);
@@ -272,10 +263,10 @@ class Service_Model extends Model
 	public function search($value=false, $limit=false, $xtra_query=false)
 	{
 		if (empty($value)) return false;
-		$auth_obj = self::authorized_services();
-		$obj_ids = is_array($auth_obj) ? implode(',',$auth_obj) : false;
-		if (empty($obj_ids))
-			return false;
+		$auth = new Nagios_auth_Model();
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 
 		$limit_str = sql::limit_parse($limit);
 		$order_str = ' ORDER BY s.host_name, s.service_description';
@@ -290,13 +281,12 @@ class Service_Model extends Model
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT id FROM service ".
-			"WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
-			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
-			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
-			sprintf($sql_notes, $this->db->escape($val)).
-			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))".
-			" AND s.id IN (".$obj_ids.")";
+				$query[] = "SELECT id FROM service s ". $auth_str .
+					" WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
+					" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
+					" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
+					sprintf($sql_notes, $this->db->escape($val)).
+					" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))";
 			}
 			if (!empty($query)) {
 				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, host h WHERE s.id IN ('.
@@ -305,14 +295,13 @@ class Service_Model extends Model
 		} else {
 			$value = '%'.$value.'%';
 			$sql = "SELECT s.*, h.current_state AS host_state, h.address ".
-			"FROM service s, host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
+			"FROM service s ".$auth_str.", host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
 			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".
-			" AND (s.host_name=h.host_name)".
-			" AND s.id IN (".$obj_ids.") ".$order_str.$limit_str;
+			" AND (s.host_name=h.host_name)".$order_str.$limit_str;
 		}
 		$obj_info = $this->query($this->db,$sql);
 		return $obj_info;
@@ -356,21 +345,17 @@ class Service_Model extends Model
 			"WHERE ".
 				"s.host_name = h.host_name ";
 		} else {
-			$servicelist = self::authorized_services();
-			if (empty($servicelist)) {
-				return false;
-			}
-			# @@@FIXME: Redesign needed to get all services via contact and contactgroup and hosts
-			$str_servicelist = implode(', ', $servicelist);
-			$where = "AND s.id IN (".$str_servicelist.")";
+			$auth_str = '';
+			if (!$auth->view_hosts_root && !$auth->view_services_root)
+				$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 			$sql = "SELECT ".
 					"s.*, ".
 					"h.current_state AS host_status ".
 				"FROM ".
-					"service s, ".
-					"host h ".
+					"service s, ".$auth_str.
+					" host h ".
 				"WHERE ".
-					"s.host_name = h.host_name " . $where;
+					"s.host_name = h.host_name ";
 		}
 
 		$result = $this->query($this->db,$sql);
@@ -386,18 +371,9 @@ class Service_Model extends Model
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
-		} else {
-			$servicelist = self::authorized_services();
-			if (empty($servicelist)) {
-				return false;
-			}
-			$str_servicelist = implode(', ', $servicelist);
-			$where_w_alias = "AND t.id IN (".$str_servicelist.")";
-			$where = "AND id IN (".$str_servicelist.")";
-		}
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 
 		$extra_sql = "";
 		if ($checks_state == 1) {
@@ -411,8 +387,8 @@ class Service_Model extends Model
 			"MIN(percent_state_change) AS min_perc_change, ".
 			"MAX(percent_state_change) AS max_perc_change ".
 			$extra_sql .
-			"FROM ".$this->table." ".
-			"WHERE active_checks_enabled=".$checks_state." ".$where;
+			"FROM ".$this->table.' s '.$auth_str." ".
+			"WHERE active_checks_enabled=".$checks_state;
 
 		$result = $this->query($this->db,$sql);
 		if (count($result)) {
@@ -460,26 +436,18 @@ class Service_Model extends Model
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
-		} else {
-			$servicelist = self::authorized_services();
-			if (empty($servicelist)) {
-				return false;
-			}
-			$str_servicelist = implode(', ', $servicelist);
-			$where_w_alias = "AND t.id IN (".$str_servicelist.")";
-			$where = "AND id IN (".$str_servicelist.")";
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root) {
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 		}
 
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(s.id) AS cnt FROM ".$this->table." s".$auth_str.", program_status ps WHERE last_check>=ps.program_start AND s.active_checks_enabled=".$checks_state;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(s.id) AS cnt FROM ".$this->table." s".$auth_str." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';
@@ -531,13 +499,10 @@ class Service_Model extends Model
 		if ($field == 'service_name') {
 			$field = 'service_description';
 		}
-		if (!isset($this->auth) || !is_object($this->auth)) {
-			$auth = new Nagios_auth_Model();
-			$auth_obj = $auth->get_authorized_services();
-		} else {
-			$auth_obj = $this->auth->get_authorized_services();
-		}
-		$obj_ids = array_keys($auth_obj);
+		$auth = new Nagios_auth_Model();
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
 			$db = Database::instance();
@@ -545,9 +510,8 @@ class Service_Model extends Model
 			$db = $this->db;
 		}
 
-		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service WHERE ".
-			$field." REGEXP ".$db->escape($regexp)." ".
-		 	"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
+		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service s ".$auth_str." WHERE ".
+			$field." REGEXP ".$db->escape($regexp)." ".$limit_str;
 		$obj_info = self::query($db,$sql);
 		return count($obj_info)>0 ? $obj_info : false;
 	}
