@@ -49,6 +49,31 @@ class Command_Controller extends Authenticated_Controller
 	}
 
 	/**
+ 	 * @param string $submitted_start_time (Y-m-d H:i:s)
+ 	 * @param string $submitted_end_time (Y-m-d H:i:s)
+	 * @return true | string (string = error message)
+	 */
+	private function _validate_dates($submitted_start_time, $submitted_end_time) {
+		$start_time = strtotime($submitted_start_time);
+		$end_time = strtotime($submitted_end_time);
+		$errors = array();
+		if(!$start_time || !$end_time) {
+			if(!$start_time && !$end_time) {
+				return "Neither of your submitted dates are valid, please <a href='javascript:history.back();'>adjust them</a>";
+			} else {
+				return sprintf("%s is not a valid date, please <a href='javascript:history.back();'>adjust it</a>", $start_time ? $submitted_end_time : $submitted_start_time);
+			}
+		}
+		if($start_time > $end_time) {
+			return sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+		}
+		if($start_time <= time()) {
+			return sprintf("The downtime must be scheduled into the future, %s has already passed. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
+		}
+		return true;
+	}
+
+	/**
 	 * Create a standard checkbox item
 	 * @param $description The user visible text for this option
 	 * @param $name The internal name for this option
@@ -221,6 +246,12 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
+			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
+			if($date_validation_result !== true) {
+				$this->template->content->result = false;
+				$this->template->content->error = $date_validation_result;
+				return;
+			}
 			if (!empty($param['_child-hosts']) && $param['_child-hosts'] != 'none') {
 				$what = $param['_child-hosts'];
 				unset($param['_child-hosts']);
@@ -293,6 +324,14 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['_host-too']);
 				$xcmd = str_replace('SVC', 'HOST', $cmd);
 				$nagios_commands = $this->_build_command($xcmd, $param);
+			}
+			break;
+		 case 'SCHEDULE_SVC_DOWNTIME':
+			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
+			if($date_validation_result !== true) {
+				$this->template->content->result = false;
+				$this->template->content->error = $date_validation_result;
+				return;
 			}
 			break;
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':
