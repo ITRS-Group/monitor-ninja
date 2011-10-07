@@ -340,10 +340,14 @@ class Command_Controller extends Authenticated_Controller
 				unset($param['_services-too']);
 				$xcmd = str_replace('HOST', 'SVC', $cmd);
 				$host = new Host_Model();
-				$host_name = $param['host_name'];
+				$host_names = $param['host_name'];
+				if (!is_array($host_names))
+					$host_names = array($host_names);
 				$xparam = $param;
 				unset($xparam['host_name']);
-				$svcs = $host->get_services($host_name);
+				$svcs = array();
+				foreach ($host_names as $host_name)
+					$svcs = array_merge($svcs, $host->get_services($host_name));
 				foreach ($svcs as $svc) {
 					$xparam['service'] = $host_name.';'.$svc->service_description;
 					$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
