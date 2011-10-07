@@ -106,7 +106,9 @@ if (!empty($command_result)) {
 	} ?>
 	</span>
 
-	<?php if (!empty($service_data)) {?>
+	<?php
+	echo form::open('extinfo/scheduled_downtime', array('id' => 'del_svc_downtime_form'));
+	if (!empty($service_data)) {?>
 
 	<table id="scheduled_service_downtime" style="margin-bottom: 15px">
 		<!--<caption><?php echo $service_title_str ?></caption>-->
