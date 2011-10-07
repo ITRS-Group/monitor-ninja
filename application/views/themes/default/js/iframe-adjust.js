@@ -1,3 +1,8 @@
+$(document).ready(function() {
+	adjust_height();
+	collapse_menu('');
+});
+
 function adjust_height() {
 	$('#iframe').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
 	$('#nagvis').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
