@@ -482,39 +482,57 @@ class Command_Controller extends Authenticated_Controller
 		if (empty($contact))
 			return -3;
 
-		$service = isset($params['service']) ? $params['service'] : false;
-		$host_name = isset($params['host_name']) ? $params['host_name'] : false;
-		if (strstr($service, ';')) {
-			# we have host_name;service in service field
-			$parts = explode(';', $service);
-			if (!empty($parts) && sizeof($parts)==2) {
-				$service = $parts[1];
-				$host_name = $parts[0];
-			}
-		}
+		$services = isset($params['service']) ? $params['service'] : false;
+		$host_names = isset($params['host_name']) ? $params['host_name'] : false;
 
 		# FIXME handle host/servicegroup commands as well
 
 		# neither host_name nor service description. Either the user
 		# hasn't filled out the form yet, or this regards hostgroups
 		# or servicegroups
-		if (!$service && !$host_name) {
+		if (!$services && !$host_names) {
 			return true;
 		}
 
-		# if the user isn't specifically configured for the service, he/she
-		# can still submit commands for it if he/she is a contact for the host
-		if ($service) {
-			$auth->get_authorized_services_r();
-			if (isset($auth->services_r[$host_name . ';' . $service])) {
-				return true;
+		# ensure host_names is an array, as services might append more elements
+		# to the array
+		if (!$host_names)
+			$host_names = array();
+		else if (!is_array($host_names))
+			$host_names = array($host_names);
+
+		if ($services) {
+			if (!is_array($services))
+				$services = array($services);
+			foreach ($services as $service) {
+				if (strstr($service, ';')) {
+					# we have host_name;service in service field
+					$parts = explode(';', $service);
+					if (!empty($parts) && sizeof($parts)==2) {
+						$service = $parts[1];
+						$host_name = $parts[0];
+						$host_names[] = $parts[0];
+					}
+				}
+				else {
+					# FIXME: both host_name and service can't be an array, can they?
+					$host_name = $host_names;
+				}
+				# if the user isn't specifically configured for the service, he/she
+				# can still submit commands for it if he/she is a contact for the host
+				$auth->get_authorized_services_r();
+				if (isset($auth->services_r[$host_name . ';' . $service])) {
+					return true;
+				}
 			}
 		}
 
-		if ($host_name) {
-			$auth->get_authorized_hosts_r();
-			if (isset($auth->hosts_r[$host_name])) {
-				return true;
+		if ($host_names) {
+			foreach ($host_names as $host_name) {
+				$auth->get_authorized_hosts_r();
+				if (isset($auth->hosts_r[$host_name])) {
+					return true;
+				}
 			}
 		}
 		return false;
