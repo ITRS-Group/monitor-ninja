@@ -21,8 +21,9 @@ class Trends_graph_Model extends Model
 			return;
 		}
 		header("Content-Type: ".mime_content_type($filename));
+		header("Content-Length: ".filesize($filename));
 		readfile($filename);
-		unlink($filename);
+		//unlink($filename);
 		die;
 	}
 
@@ -105,17 +106,17 @@ class Trends_graph_Model extends Model
 	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
 		$data_suited_for_chart = array();
 		$events = current($data);
-		// guessed value from testing, feel free to make it better (+60 = heading)
+
+		// Guessed value from testing, feel free to make it better (+60 = heading)
 		$graph_height = 60 + count($data) * 30;
 		$graph_width = 800;
+
 		// In pixels. Set to > 0 to enable the expanding of narrow bars.
 		$smallest_visible_bar_width = 0;
 
 		$hosts = array();
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
-			// @todo remove  stuff
-			//if($current_object != 'DNS') continue;
 			foreach($events as $event) {
 				$hosts[] = $event['host_name'];
 				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
@@ -130,7 +131,6 @@ class Trends_graph_Model extends Model
 			}
 		}
 
-		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 
 		// Generate a unique filename that's short, based on data and doesn't already exist
 		$encoded_image_name = md5(serialize(func_get_args()));
@@ -146,6 +146,7 @@ class Trends_graph_Model extends Model
 		if(count(array_unique($hosts)) == 1) {
 			$remove_host_from_object_name = true;
 		}
+		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 		foreach($data_suited_for_chart as $service => $state_changes) {
 			if($remove_host_from_object_name) {
 				// Turn "linux-server1;FTP" into "FTP" if all objects are from "linux-server1"
