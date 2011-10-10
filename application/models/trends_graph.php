@@ -112,20 +112,36 @@ class Trends_graph_Model extends Model
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
-	 * @uses PHPlot
 	 * @param array $data
 	 * @param int $report_start
 	 * @param int $report_end
 	 * @param string $title = null
 	 * @return string
 	 */
-	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
+	public function get_graph_pdf_src_for_data($data, $report_start, $report_end, $title = null) {
+		return $this->_generate_graph($data, $report_start, $report_end, $title, true);
+	}
+
+	/**
+	 * A graph is generated based on input, and saved in tmp files. If the graph
+	 * already has been generated, it's used.
+	 *
+	 * @uses PHPlot
+	 * @param array $data
+	 * @param int $report_start
+	 * @param int $report_end
+	 * @param string $title = null
+	 * @param boolean $fit_pdf = false
+	 * @return string
+	 */
+	private function _generate_graph($data, $report_start, $report_end, $title = null, $fit_pdf = false) {
+
 		$data_suited_for_chart = array();
 		$events = current($data);
 
 		// Guessed value from testing, feel free to make it better (+60 = heading)
 		$graph_height = 60 + count($data) * 30;
-		$graph_width = 800;
+		$graph_width = $fit_pdf ? 700 : 800;
 
 		// In pixels. Set to > 0 to enable the expanding of narrow bars.
 		$smallest_visible_bar_width = 0;
@@ -210,7 +226,21 @@ class Trends_graph_Model extends Model
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
 
-		return sprintf($this->src_placeholder, $chart_key);
+		return $fit_pdf ? $this->get_filename_for_key($chart_key) : sprintf($this->src_placeholder, $chart_key);
+	}
+
+	/**
+	 * A graph is generated based on input, and saved in tmp files. If the graph
+	 * already has been generated, it's used.
+	 *
+	 * @param array $data
+	 * @param int $report_start
+	 * @param int $report_end
+	 * @param string $title = null
+	 * @return string
+	 */
+	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
+		return $this->_generate_graph($data, $report_start, $report_end, $title);
 	}
 }
 
@@ -225,6 +255,11 @@ function color_the_trends_graph($image, $passthrough, $row, $column, $extra = 0)
 	static $counter;
 	if(!$counter) {
 		$counter = 0;
+	}
+	if(!isset($passthrough[$counter])) {
+		// Weird bug: generating pdf uses up one extra $counter so a last
+		// valid one is missing
+		return null;
 	}
 	$color = phplot_color_index_by_state_color($passthrough[$counter]['object_type'], $passthrough[$counter]['state']);
 	$counter++;

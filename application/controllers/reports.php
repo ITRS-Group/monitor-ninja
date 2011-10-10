@@ -2140,20 +2140,23 @@ class Reports_Controller extends Authenticated_Controller
 				} # end foreach
 			} else {
 				// We are not checking groups
-				//var_dump(single);die;
 				$graph_data = $this->data_arr['log'];
 			}
-			$graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+			$template->header->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 				$graph_data,
 				$report_class->start_time,
 				$report_class->end_time,
 				$template->title
 			);
-			$template->header->graph_image_source = $graph_image_source;
 
 			# skip the rest if pdf or mashing
 			if ($this->create_pdf || $this->mashing) {
-				$template->header->graph_chart_src = $this->trends_graph_model->get_filename_for_src($graph_image_source);
+				$template->header->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+					$graph_data,
+					$report_class->start_time,
+					$report_class->end_time,
+					$template->title
+				);
 				$this->pdf_data['content'] = $template->content->render();
 				$this->pdf_data['header'] = $template->header->render();
 
