@@ -11,21 +11,11 @@ class Trends_graph_Model extends Model
 	private $tmp_name_placeholder = "/tmp/%s.png";
 
 	/**
-	 * Print image (including setting header) based on key. Kill request.
+	 * Src attribute for image files
 	 *
-	 * @param string $chart_key
+	 * @var string
 	 */
-	public function display_chart($chart_key) {
-		$filename = sprintf($this->tmp_name_placeholder, $chart_key);
-		if(!is_readable($filename)) {
-			return;
-		}
-		header("Content-Type: ".mime_content_type($filename));
-		header("Content-Length: ".filesize($filename));
-		readfile($filename);
-		//unlink($filename);
-		die;
-	}
+	private $src_placeholder = "line_point_chart/%s";
 
 	/**
 	 * Format the x-axis of the graph accordingly to input dates
@@ -93,6 +83,32 @@ class Trends_graph_Model extends Model
 	}
 
 	/**
+	 * Print image (including setting header) based on key. Kill request.
+	 *
+	 * @param string $chart_key
+	 */
+	public function display_chart($chart_key) {
+		$filename = $this->get_filename_for_key($chart_key);
+		if(!is_readable($filename)) {
+			return;
+		}
+		header("Content-Type: ".mime_content_type($filename));
+		header("Content-Length: ".filesize($filename));
+		readfile($filename);
+		//unlink($filename);
+		die;
+	}
+
+	public function get_filename_for_key($chart_key) {
+		return sprintf($this->tmp_name_placeholder, $chart_key);
+	}
+
+	public function get_filename_for_src($src) {
+		$chart_key = pathinfo($src, PATHINFO_BASENAME);
+		return $this->get_filename_for_key($chart_key);
+	}
+
+	/**
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
@@ -137,7 +153,7 @@ class Trends_graph_Model extends Model
 		$strlen_needed = 7;
 		do {
 			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
-			$qualified_filename = sprintf($this->tmp_name_placeholder, $chart_key);
+			$qualified_filename = $this->get_filename_for_key($chart_key);
 			$strlen_needed++;
 		} while(file_exists($qualified_filename));
 
@@ -194,7 +210,7 @@ class Trends_graph_Model extends Model
 		$plot->SetIsInline(true);
 		$plot->DrawGraph();
 
-		return "line_point_chart/$chart_key";
+		return sprintf($this->src_placeholder, $chart_key);
 	}
 }
 
