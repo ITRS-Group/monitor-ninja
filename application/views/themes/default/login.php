@@ -8,6 +8,12 @@
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css') ?>" />
 		<?php echo html::link($this->add_path('icons/16x16/favicon.ico'),'icon','image/icon') ?>
 		<?php echo html::script('application/media/js/jquery.min.js'); ?>
+		 <script type="text/javascript">
+			var this_page = "<?php echo Kohana::config('config.site_domain').
+				Kohana::config('config.index_page').'/'.Kohana::config('routes.log_in_form'); ?>";
+			if (window.location.pathname != this_page)
+				window.location.replace(this_page);
+		</script>
 		<script type="text/javascript">
 			//<!--
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';

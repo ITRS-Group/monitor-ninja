@@ -44,11 +44,8 @@ class Authenticated_Controller extends Ninja_Controller {
 				# store requested uri in session for later redirect
 				$this->session->set('requested_uri', url::current(true));
 
-				if (Router::$controller != 'default') {?>
-				<script type="text/javascript">
-					window.location.replace('<?php echo Kohana::config('config.site_domain').
-						Kohana::config('config.index_page').'/'.Kohana::config('routes.log_in_form'); ?>');
-				</script><?php
+				if (Router::$controller != 'default') {
+					url::redirect(Kohana::config('routes.log_in_form'));
 				}
 			} else {
 				# fetch the external widget user if any
