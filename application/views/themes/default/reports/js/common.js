@@ -316,16 +316,16 @@ function remove_schedule(id, remove_type)
 
 function fancybox_datepicker()
 {
-	var datepicker_enddate = new Date().addDays(1).asString();
+	var datepicker_enddate = (new Date()).asString();
 	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 
 	if ($('#fancybox-content #cal_start').attr('value')) {
 		var ds = Date.fromString($('#fancybox-content #cal_start').attr('value'));
-		$('#fancybox-content #cal_end').dpSetStartDate(ds.addDays(1).asString());
+		$('#fancybox-content #cal_end').dpSetStartDate(ds.asString());
 	}
 	if ($('#fancybox-content #cal_end').attr('value')) {
 		var ds = Date.fromString($('#fancybox-content #cal_end').attr('value'));
-		$('#fancybox-content #cal_start').dpSetEndDate(ds.addDays(1).asString());
+		$('#fancybox-content #cal_start').dpSetEndDate(ds.asString());
 	}
 
 	$('.datepick-start').bind(
@@ -338,7 +338,7 @@ function fancybox_datepicker()
 				startDate = d.asString();
 				$('#fancybox-content #start_time').attr('value', d.asString());
 				$("input[name=start_time]").attr('value', d.asString());
-				$('#fancybox-content #cal_end').dpSetStartDate(d.addDays(1).asString());
+				$('#fancybox-content #cal_end').dpSetStartDate(d.asString());
 			}
 		}
 	);
@@ -352,8 +352,8 @@ function fancybox_datepicker()
 				d = new Date(d);
 				endDate = d.asString();
 				$('#fancybox-content #end_time').attr('value', d.asString());
-				$("input[name=end_time]").attr('value', d.addDays(1).asString());
-				$('#fancybox-content #cal_start').dpSetEndDate(d.addDays(-1).asString());
+				$("input[name=end_time]").attr('value', d.asString());
+				$('#fancybox-content #cal_start').dpSetEndDate(d.asString());
 			}
 		}
 	);
@@ -363,7 +363,7 @@ function fancybox_datepicker()
 function init_datepicker()
 {
 	// datePicker Jquery plugin
-	var datepicker_enddate = new Date().addDays(1).asString();
+	var datepicker_enddate = (new Date()).asString();
 	$('.date-pick:visible').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 	$('#cal_start').bind(
 		'dpClosed',
@@ -374,7 +374,7 @@ function init_datepicker()
 				d = new Date(d);
 				startDate = d.asString();
 				$('#start_time').attr('value', d.asString());
-				$('#cal_end').dpSetStartDate(d.addDays(1).asString());
+				$('#cal_end').dpSetStartDate(d.asString());
 			}
 		}
 	);
@@ -385,8 +385,8 @@ function init_datepicker()
 			var d = selectedDates[0];
 			if (d) {
 				d = new Date(d);
-				$('#cal_start').dpSetEndDate(d.addDays(-1).asString());
-				$('#end_time').attr('value', d.addDays(1).asString());
+				$('#cal_start').dpSetEndDate(d.asString());
+				$('#end_time').attr('value', d.asString());
 				endDate = d.asString();
 			}
 		}

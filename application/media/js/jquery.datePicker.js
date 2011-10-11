@@ -604,6 +604,10 @@
 				if (this.endDate.getTime() < this.startDate.getTime()) {
 					this.endDate = this.startDate;
 				}
+				// Always include the full endDate's last day while comparing
+				this.endDate.setHours(23);
+				this.endDate.setMinutes(59);
+				this.endDate.setSeconds(59);
 				this.setDisplayedMonth(this.displayedMonth, this.displayedYear);
 			},
 			setPosition : function(v, h)
