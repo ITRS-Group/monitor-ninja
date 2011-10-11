@@ -71,7 +71,7 @@ class User_Controller extends Authenticated_Controller {
 			$t->_('Checks') => 'checks',
 			$t->_('Config') => 'config',
 			$t->_('Keyboard Commands') => 'keycommands',
-			$t->_('Pop ups') => 'popups',
+			$t->_('Pop up graphs') => 'popups',
 			$t->_('Status Pages') => 'status',
 			$t->_('URL Targets') => 'url_target',
 			$t->_('Nagios Defaults') => 'nagdefault'
@@ -106,7 +106,7 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		$settings['popups'] = array(
-			$t->_('Use popups') => array('config.use_popups', self::$var_types['config.use_popups']),
+			$t->_('Show pop-up graphs') => array('config.use_popups', self::$var_types['config.use_popups']),
 			$t->_('Popup delay') => array('config.popup_delay', self::$var_types['config.popup_delay'])
 		);
 
