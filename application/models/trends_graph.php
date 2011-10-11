@@ -256,10 +256,11 @@ function color_the_trends_graph($image, $passthrough, $row, $column, $extra = 0)
 	if(!$counter) {
 		$counter = 0;
 	}
-	if(!isset($passthrough[$counter])) {
-		// Weird bug: generating pdf uses up one extra $counter so a last
-		// valid one is missing
-		return null;
+	if(count($passthrough) == $counter) {
+		// Weird bug: generating pdf uses up one extra iteration
+		// so $counter must be reset when the color information
+		// is all used up
+		$counter = 0;
 	}
 	$color = phplot_color_index_by_state_color($passthrough[$counter]['object_type'], $passthrough[$counter]['state']);
 	$counter++;
