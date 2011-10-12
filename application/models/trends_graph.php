@@ -140,13 +140,18 @@ class Trends_graph_Model extends Model
 		$events = current($data);
 
 		// Guessed value from testing, feel free to make it better (+60 = heading)
-		$graph_height = 60 + count($data) * 30;
+		$graph_height = 60 + count($data) * ($fit_pdf ? 15 : 19);
+		$max_graph_height_in_pdf = 900;
+		if($fit_pdf && $graph_height > $max_graph_height_in_pdf) {
+			$graph_height = $max_graph_height_in_pdf;
+		}
 		$graph_width = $fit_pdf ? 700 : 800;
 
 		// In pixels. Set to > 0 to enable the expanding of narrow bars.
 		$smallest_visible_bar_width = 0;
 
 		$hosts = array();
+		$number_of_objects = 0;
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
@@ -160,6 +165,7 @@ class Trends_graph_Model extends Model
 					'state' => $event['state'],
 					'object_type' => $object_type
 				);
+				$number_of_objects++;
 			}
 		}
 
@@ -215,6 +221,9 @@ class Trends_graph_Model extends Model
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
+		if($fit_pdf && $number_of_objects > 30) {
+			$plot->SetFont('y_label', 1, 6);
+		}
 		$plot->SetDataType('text-data-yx');
 		$plot->SetPlotType('stackedbars');
 		if($title) {
