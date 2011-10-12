@@ -450,7 +450,7 @@ function create_filename()
 	var new_filename = $('#saved_report_id option:selected').text();
 	new_filename = remove_scheduled_str(new_filename);
 	new_filename += '_' + $('#period option:selected').text() + '.pdf';
-	new_filename = new_filename.replace(' ', '_');
+	new_filename = new_filename.replace(/ /g, '_');
 	if ($('input[name=filename]').val() != '' && $('input[name=filename]').val() != current_filename) {
 		if (!confirm(_schedule_change_filename)) {
 			return false;
