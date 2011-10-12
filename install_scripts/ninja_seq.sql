@@ -138,9 +138,9 @@ CREATE TABLE ninja_saved_searches (
 	search_description VARCHAR2(255 CHAR) NOT NULL
 );
 
-PROMPT Creating Primary Key Constraint PRIMARY_18 on table ninja_saved_searches ...
+PROMPT Creating Primary Key Constraint ninja_saved_searches_pk on table ninja_saved_searches ...
 ALTER TABLE ninja_saved_searches
-ADD CONSTRAINT PRIMARY_18 PRIMARY KEY
+ADD CONSTRAINT ninja_saved_searches_pk PRIMARY KEY
 (
   id
 )
@@ -191,9 +191,9 @@ CREATE TABLE avail_config (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_14 on table avail_config ...
+PROMPT Creating Primary Key Constraint avail_config_pk on table avail_config ...
 ALTER TABLE avail_config
-ADD CONSTRAINT PRIMARY_14 PRIMARY KEY
+ADD CONSTRAINT avail_config_pk PRIMARY KEY
 (
   id
 )
@@ -217,9 +217,9 @@ CREATE TABLE avail_config_objects (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_16 on table avail_config_objects ...
+PROMPT Creating Primary Key Constraint avail_config_objects_pk on table avail_config_objects ...
 ALTER TABLE avail_config_objects
-ADD CONSTRAINT PRIMARY_16 PRIMARY KEY
+ADD CONSTRAINT avail_config_objects_pk PRIMARY KEY
 (
   id
 )
@@ -283,9 +283,9 @@ CREATE TABLE ninja_db_version (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_17 on table ninja_db_version ...
+PROMPT Creating Primary Key Constraint ninja_db_version_pk on table ninja_db_version ...
 ALTER TABLE ninja_db_version
-ADD CONSTRAINT PRIMARY_17 PRIMARY KEY
+ADD CONSTRAINT ninja_db_version_pk PRIMARY KEY
 (
   id
 )
@@ -313,9 +313,9 @@ CREATE TABLE ninja_settings (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_12 on table ninja_settings ...
+PROMPT Creating Primary Key Constraint ninja_settings_pk on table ninja_settings ...
 ALTER TABLE ninja_settings
-ADD CONSTRAINT PRIMARY_12 PRIMARY KEY
+ADD CONSTRAINT ninja_settings_pk PRIMARY KEY
 (
   id
 )
@@ -361,9 +361,9 @@ CREATE TABLE ninja_user_authorization (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_9 on table ninja_user_authorization ...
+PROMPT Creating Primary Key Constraint ninja_user_authorization_pk on table ninja_user_authorization ...
 ALTER TABLE ninja_user_authorization
-ADD CONSTRAINT PRIMARY_9 PRIMARY KEY
+ADD CONSTRAINT ninja_user_authorization_pk PRIMARY KEY
 (
   id
 )
@@ -389,9 +389,9 @@ CREATE TABLE ninja_widgets (
   setting CLOB DEFAULT NULL
 );
 
-PROMPT Creating Primary Key Constraint PRIMARY_1 on table ninja_widgets ...
+PROMPT Creating Primary Key Constraint ninja_widgets_pk on table ninja_widgets ...
 ALTER TABLE ninja_widgets
-ADD CONSTRAINT PRIMARY_1 PRIMARY KEY
+ADD CONSTRAINT ninja_widgets_pk PRIMARY KEY
 (
   id
 )
@@ -435,9 +435,9 @@ CREATE TABLE recurring_downtime (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_2 on table recurring_downtime ...
+PROMPT Creating Primary Key Constraint recurring_downtime_pk on table recurring_downtime ...
 ALTER TABLE recurring_downtime
-ADD CONSTRAINT PRIMARY_2 PRIMARY KEY
+ADD CONSTRAINT recurring_downtime_pk PRIMARY KEY
 (
   id
 )
@@ -467,9 +467,9 @@ CREATE TABLE roles (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_13 on table roles ...
+PROMPT Creating Primary Key Constraint roles_pk on table roles ...
 ALTER TABLE roles
-ADD CONSTRAINT PRIMARY_13 PRIMARY KEY
+ADD CONSTRAINT roles_pk PRIMARY KEY
 (
   id
 )
@@ -500,9 +500,9 @@ CREATE TABLE roles_users (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_3 on table roles_users ...
+PROMPT Creating Primary Key Constraint roles_users_pk on table roles_users ...
 ALTER TABLE roles_users
-ADD CONSTRAINT PRIMARY_3 PRIMARY KEY
+ADD CONSTRAINT roles_users_pk PRIMARY KEY
 (
   user_id,
   role_id
@@ -526,9 +526,9 @@ CREATE TABLE scheduled_report_periods (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_5 on table scheduled_report_periods ...
+PROMPT Creating Primary Key Constraint scheduled_report_periods_pk on table scheduled_report_periods ...
 ALTER TABLE scheduled_report_periods
-ADD CONSTRAINT PRIMARY_5 PRIMARY KEY
+ADD CONSTRAINT scheduled_report_periods_pk PRIMARY KEY
 (
   id
 )
@@ -553,9 +553,9 @@ CREATE TABLE scheduled_report_types (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_8 on table scheduled_report_types ...
+PROMPT Creating Primary Key Constraint scheduled_report_types_pk on table scheduled_report_types ...
 ALTER TABLE scheduled_report_types
-ADD CONSTRAINT PRIMARY_8 PRIMARY KEY
+ADD CONSTRAINT scheduled_report_types_pk PRIMARY KEY
 (
   id
 )
@@ -589,9 +589,9 @@ CREATE TABLE scheduled_reports (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_4 on table scheduled_reports ...
+PROMPT Creating Primary Key Constraint scheduled_reports_pk on table scheduled_reports ...
 ALTER TABLE scheduled_reports
-ADD CONSTRAINT PRIMARY_4 PRIMARY KEY
+ADD CONSTRAINT scheduled_reports_pk PRIMARY KEY
 (
   id
 )
@@ -659,9 +659,9 @@ CREATE TABLE sla_config (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_15 on table sla_config ...
+PROMPT Creating Primary Key Constraint sla_config_pk on table sla_config ...
 ALTER TABLE sla_config
-ADD CONSTRAINT PRIMARY_15 PRIMARY KEY
+ADD CONSTRAINT sla_config_pk PRIMARY KEY
 (
   id
 )
@@ -679,9 +679,9 @@ CREATE TABLE sla_config_objects (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_10 on table sla_config_objects ...
+PROMPT Creating Primary Key Constraint sla_config_objects_pk on table sla_config_objects ...
 ALTER TABLE sla_config_objects
-ADD CONSTRAINT PRIMARY_10 PRIMARY KEY
+ADD CONSTRAINT sla_config_objects_pk PRIMARY KEY
 (
   id
 )
@@ -719,9 +719,9 @@ CREATE TABLE sla_periods (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_7 on table sla_periods ...
+PROMPT Creating Primary Key Constraint sla_periods_pk on table sla_periods ...
 ALTER TABLE sla_periods
-ADD CONSTRAINT PRIMARY_7 PRIMARY KEY
+ADD CONSTRAINT sla_periods_pk PRIMARY KEY
 (
   id
 )
@@ -748,9 +748,9 @@ CREATE TABLE user_tokens (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_6 on table user_tokens ...
+PROMPT Creating Primary Key Constraint user_tokens_pk on table user_tokens ...
 ALTER TABLE user_tokens
-ADD CONSTRAINT PRIMARY_6 PRIMARY KEY
+ADD CONSTRAINT user_tokens_pk PRIMARY KEY
 (
   id
 )
@@ -785,9 +785,9 @@ CREATE TABLE users (
 );
 
 
-PROMPT Creating Primary Key Constraint PRIMARY_11 on table users ...
+PROMPT Creating Primary Key Constraint users_pk on table users ...
 ALTER TABLE users
-ADD CONSTRAINT PRIMARY_11 PRIMARY KEY
+ADD CONSTRAINT users_pk PRIMARY KEY
 (
   id
 )
