@@ -28,7 +28,7 @@ if (isset($schedules)) {
 					$state = $host_state_names[$ary['state']];
 				} else {
 					$alert_type = $label_service_alert;
-					$ary['service_description'] = html::anchor('extinfo/details/service/'.$ary['host_name'].'?service='.urlencode($ary['service_description']), $ary['service_description']);
+					$ary['service_description'] = html::anchor(base_url::get().'extinfo/details/service/'.$ary['host_name'].'?service='.urlencode($ary['service_description']), $ary['service_description']);
 					$state = $service_state_names[$ary['state']];
 				}
 				$softhard = $ary['hard'] == 1 ? $label_hard : $label_soft;
@@ -38,7 +38,7 @@ if (isset($schedules)) {
 			</td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $alert_type; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor('extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['service_description']; ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px' : '' ?>><?php echo $softhard; ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['output']; ?></td>
