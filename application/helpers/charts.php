@@ -14,6 +14,7 @@ class charts
 			require_once(dirname($path).'/Chart.php');
 			require_once(dirname($path).'/BarChart.php');
 			require_once(dirname($path).'/PieChart.php');
+			require_once(dirname($path).'/LinePointChart.php');
 
 			if (!defined('FONT_TAHOMA'))
 				define("FONT_TAHOMA", dirname($path).'/fonts/tahoma.ttf');

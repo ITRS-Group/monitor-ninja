@@ -1,0 +1,3112 @@
+<!-- $Id: concepts.xml 1006 2011-08-10 01:46:19Z lbayuk $
+     Concepts chapter for PHPlot Reference Manual
+-->
+<chapter id="concepts">
+<title>PHPlot Concepts</title>
+
+<abstract><title></title>
+  <para>
+This chapter explains the operation and use of PHPlot.
+For advanced topics, see <xref linkend="advanced"/>.
+  </para>
+</abstract>
+
+<sect1 id="conc-defs">
+<title>Definitions</title>
+<abstract><title></title>
+  <para>
+This section contains definitions of terms used throughout the PHPlot
+Reference Manual.
+  </para>
+</abstract>
+
+<!-- Note: All defs need to be tagged with anchor id="def-..."
+     To link a word to its definition, use <link linkend="def-...">Word</link>
+     Keep the definitions in alphabetical order.
+-->
+<para>
+  <variablelist>
+
+    <varlistentry>
+      <term><anchor id="def-alpha" />Alpha value</term>
+      <listitem>
+        <para>
+A component in a color system which represents the amount of transparency,
+or opacity.  At one extreme, an alpha value indicates an opaque object
+which covers or hides whatever was drawn before it. At the other extreme,
+it indicates a completely transparent object which has no affect on
+whatever was drawn before it.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-dataset" />Data Set</term>
+      <listitem>
+        <para>
+A set of data points which represent some function, trend, samples, etc.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-devcoor" />Device Coordinates</term>
+      <listitem>
+        <para>
+The coordinate space used by GD to create images. The origin is at the
+upper left corner, X increases to the left, Y increases down, and the units
+are pixels. Also known as Pixel Coordinates or GD Coordinates.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-element" />Element</term>
+      <listitem>
+        <para>
+A component of a graph, such as a label, tick mark, axis, or plot.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-gd" />GD</term>
+      <listitem>
+        <para>
+A programming library used to create and manipulate images.
+GD can be found at the <ulink url="http://libgd.org/">GD Graphics
+Library home page</ulink>.
+You can think of GD as a software implementation of a video card.
+GD is also available as a PHP extension, and that is what PHPlot uses to
+create images.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-graph" />Graph</term>
+      <listitem>
+        <para>
+A complete, labeled, graphical representation of some data sets.
+In PHPlot, a graph contains a single plot and other elements such as axes,
+tick marks, and labels.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-horizplot" />Horizontal Plot</term>
+      <listitem>
+        <para>
+A plot in which the Y axis represents the independent variable, and the X
+axis represents the dependent variable values. In a horizontal bar chart,
+for example, the bars extend to the right from the Y axis.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-image" />Image</term>
+      <listitem>
+        <para>
+A graphical image, represented as data. For example, a PNG file is an image
+in PNG format which is stored in a file. PHPlot creates images using the GD
+library. A PHPlot image contains one or more graphs (but usually only one).
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-palette" />Palette Image</term>
+      <listitem>
+        <para>
+A color image file, or image in memory, in which each pixel value is an
+index into a color map which contains the actual color. Typically, the
+pixel value is 8 bits, limiting this type of image to 256 distinct colors.
+See also <link linkend="def-truecolor">Truecolor Image</link>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-plot" />Plot</term>
+      <listitem>
+        <para>
+The graphical representation of one or more data sets.
+In PHPlot, each graph contains a single plot, but a plot
+can contain representation of multiple data sets (for example,
+you can have 3 line charts on a plot).
+        </para>
+        <para>
+Less formally, the term 'plot' is often used for the overall output of
+PHPlot: an image with a complete graphical representation of data, with
+labels, legend, title, etc.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-relativecoor" />Relative Coordinates</term>
+      <listitem>
+        <para>
+A coordinate space in which the X and Y coordinates represent a fraction of
+the size of an object. The point (0,0) is defined as the upper left corner
+of the object, and (1,1) is the lower right corner. (Relative coordinate values
+are not restricted to the range 0 to 1, however.) So a point specification
+in relative coordinates to an object is independent of the size of the object.
+This coordinate system is used by <xref linkend="SetLegendPosition"/>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-truecolor" />Truecolor Image</term>
+      <listitem>
+        <para>
+A color image file, or image in memory, in which each pixel value has a
+complete representation of the color of that pixel. The pixels may use 24
+bits, with 8 bits each for red, blue, and green color components, or 32
+bits with an additional alpha component.
+See also <link linkend="def-palette">Palette Image</link>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-vertplot" />Vertical Plot</term>
+      <listitem>
+        <para>
+A plot in which the X axis represents the independent variable, and the Y
+axis represents the dependent variable values. This is the usual orientation
+for plots. Compare with <link linkend="def-horizplot">horizontal plot</link>.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><anchor id="def-worldcoor" />World Coordinates</term>
+      <listitem>
+        <para>
+The coordinate space of the plotted data. This is the real world
+coordinate space, in the units of whatever the plotted data measures.
+The origin of the world coordinate space is the 0,0 point on the X and Y
+axes.
+The X coordinate increases to the right, and the Y coordinate increases upwards.
+Note that the Y direction of world coordinates is opposite that of device
+coordinates.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+</para>
+
+</sect1>
+
+<sect1 id="conc-overview">
+<title>Programming Overview</title>
+<abstract><title></title>
+  <para>
+This section contains an overview of how to use PHPlot.
+  </para>
+</abstract>
+
+<sect2 id="conc-overview-howitworks">
+<title>How It Works</title>
+<para>
+To create a plot with PHPlot, your PHP script will generally do the
+following:
+<orderedlist>
+  <listitem>
+    <para>
+Include the <filename>phplot.php</filename> source using
+<literal>require_once</literal>.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Create an object which is an instance of the <literal>PHPlot</literal> class.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Use PHPlot functions (methods of the class object) to select the plot type,
+present the data array, and optionally change settings which control the
+appearance of the plot.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Output the plot, typically to the user's browser but possibly to a file
+instead.
+    </para>
+  </listitem>
+</orderedlist>
+The order of operations you use between creating a PHPlot object and output
+of the plot does not matter. The PHPlot class sets internal class variables
+as you configure the plot, but doesn't do anything with the values until
+you are ready. For example, setting a font for the plot title, then setting
+the title text, is the same as setting the title text first, then the font.
+In both cases, the title will be drawn using the font you selected.
+</para>
+
+<note>
+  <para>
+It is important to remember that if you are writing a PHP script that uses
+PHPlot to create an image for a web page, that PHP script must output
+<emphasis>only</emphasis> the image data.
+If you want your plot image to appear on a web page with text and other images,
+you need at least two scripts.
+Your main script returns an HTML page which includes an IMG (Image) tag for
+the plot.
+The IMG tag has a SRC attribute which references the second script, and it
+is this second script which creates the PHPlot image.
+An example of this can be found in <xref linkend="ex-webform"/>.
+You will most likely need a way to communicate parameters from your main
+script to your image script. Two good ways to do this are using URL parameters,
+and with PHP session variables.
+  </para>
+</note>
+
+<para>
+An alternative to using two scripts - one generating HTML, and one using PHPlot
+to create the plot image - is available starting with PHPlot-5.5.0. You can
+write a single script which generates HTML and also embeds the PHPlot-generated
+plot image.  See <xref linkend="ex-encodeimage"/>.
+</para>
+
+</sect2>
+
+<sect2 id="conc-overview-annoex">
+<title>Annotated Example</title>
+<para>
+Here is a simple, annotated example of a script which produces an image.
+More examples can be found in <xref linkend="examples" />.
+</para>
+
+<para>
+<programlisting><![CDATA[require_once 'phplot.php';
+]]></programlisting>
+This brings in the PHPlot source into your script. For this to work,
+PHP needs to be able to find the PHPlot source file. A good way to arrange
+this is to install PHPlot into a directory outside your web server's
+document root and on the PHP Include Path. Other ways are to include a full
+path to <filename>phplot.php</filename> when including it, or to copy
+<filename>phplot.php</filename> into the same directory as your script.
+</para>
+
+<para>
+<programlisting><![CDATA[$plot = new PHPlot();
+]]></programlisting>
+Here we create a new PHPlot object and call it <literal>plot</literal>.
+Everything else we do with the plot will be through the $plot object.
+</para>
+
+<para>
+<programlisting><![CDATA[$plot->SetPlotType('lines');
+$plot->SetDataType('text-data');
+]]></programlisting>
+Here we select the plot type 'lines', for a line plot
+(see <xref linkend="conc-plottypes" />),
+and indicate our data will be represented in the 'text-data' format
+(see <xref linkend="conc-datatypes" />).
+</para>
+
+<para>
+<programlisting><![CDATA[$plot->SetDataValues($data);
+]]></programlisting>
+The data array $data is where we store the values to be plotted.
+We haven't shown where the data came from, but in a typical application
+it might be from a database query.
+How the data array is constructed is described in
+<xref linkend="conc-datatypes" />.
+</para>
+
+<para>
+<programlisting><![CDATA[$plot->SetXDataLabelPos('none');
+$plot->SetLineWidths(3);
+$plot->SetDrawXGrid(True);
+]]></programlisting>
+These three functions illustrate how to change the appearance of the plot.
+</para>
+
+<para>
+<programlisting><![CDATA[$plot->DrawGraph();
+]]></programlisting>
+This final function call outputs the plot.
+More accurately,
+this function creates the plot using all the data and settings
+which were established by previous functions, and then outputs the plot.
+This is a crucial point when using PHPlot: Until you call DrawGraph,
+PHPlot is simply recording all the settings resulting from the functions
+you call, and saving a copy of your data array. Nothing really happens
+until you complete the plot with DrawGraph.
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-datatypes">
+<title>PHPlot Data Types</title>
+<abstract><title></title>
+  <para>
+This section describes how data need to be organized for use with PHPlot.
+  </para>
+</abstract>
+
+<sect2 id="conc-datatypes-types">
+<title>Available Data Types</title>
+<para>
+The data values to be plotted are presented to PHPlot with
+<xref linkend="SetDataValues" />.
+In all cases, the data values are stored in a PHP array.
+This data array contains elements, themselves also arrays, which are called
+records.
+Each record contains labels and/or data values.
+The 'data type' of the data array determines how PHPlot will interpret
+the records in the data array.
+To set the data type, use <xref linkend="SetDataType" />.
+</para>
+
+<para>
+The following data types are available in PHPlot:
+
+<variablelist>
+
+  <varlistentry>
+    <term><anchor id="text-data" xreflabel="text-data"/>text-data</term>
+    <listitem>
+      <para>
+Each record contains a label, followed by one or more Y values:
+<literal>array('label', y1, y2, ...)</literal>.
+The corresponding X value for all Y values in a record is implicit.
+PHPlot assigns x=0.5 to the first data record, x=1.5 to the second, etc.
+This data type works with all plot types.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="data-data" xreflabel="data-data"/>data-data</term>
+    <listitem>
+      <para>
+Each record contains a label, an X value, then one or more Y values:
+<literal>array('label', x, y1, y2, ...)</literal>.
+This is the same as 'text-data' except the X values are explicitly given.
+This data type works with all plot types except bars and stackedbars.
+      </para>
+      <para>
+Note that with data type 'data-data', it is possible to create a data array
+with duplicate X values, or X values out of order. Depending on the plot
+type, this may or may not make sense. For example, with a point plot (which
+puts a marker at each data point), the data array can legitimately contain
+duplicate and out-of-order X values. With a line plot (which connects
+adjacent points in the data array with a line), it probably makes no sense
+to have out-of-order or duplicate X values in the data array.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="data-data-error" xreflabel="data-data-error"/>data-data-error</term>
+    <listitem>
+      <para>
+Each record contains a label, an X value, then sets of 3 values for each Y
+point: the Y value, error in the positive direction, and error in the
+negative direction:
+<literal>array('label', x, y1, e1+, e1-, y2, e2+, e2-, ...)</literal>.
+This data type works with plot types lines, points, and linepoints only.
+      </para>
+      <para>
+Note that both errors (e+ and e-) are given as positive numbers. They
+represent the absolute value of the error in the positive and negative
+directions respectively.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="text-data-single" xreflabel="text-data-single"/>text-data-single</term>
+    <listitem>
+      <para>
+Each record contains a label and a single value:
+<literal>array('label', factor)</literal>.
+This data type is only for the pie chart plot type.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="text-data-yx" xreflabel="text-data-yx"/>text-data-yx</term>
+    <listitem>
+      <para>
+Each record contains a label, followed by one or more X values:
+<literal>array('label', x1, x2, ...)</literal>.
+The corresponding Y value for all X values in a record is implicit.
+PHPlot assigns y=0.5 to the first data record, y=1.5 to the second, etc.
+This data type is for horizontal plots, and works with bar, stackedbar,
+and thinbarline plot types.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="data-data-yx" xreflabel="data-data-yx"/>data-data-yx</term>
+    <listitem>
+      <para>
+Each record contains a label, a Y value, then one or more X values:
+<literal>array('label', y, x1, x2, ...)</literal>.
+This is the same as 'text-data-yx' except the X values are explicitly given.
+This data type is for horizontal plots, and only works with the thinbarline
+plot type.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term><anchor id="data-data-xyz" xreflabel="data-data-xyz"/>data-data-xyz</term>
+    <listitem>
+      <para>
+Each record contains a label, an X value, and then one or more pairs of Y
+and Z values:
+<literal>array('label', x, y1, z1, y2, z2, ...)</literal>.
+A single data set in an array using this data type contains (x, y, z)
+triplets. Multiple data sets can also be represented, with each row in the
+array containing an X value and the corresponding Y and Z values.
+An array with this data type can have duplicate X values, and X values need
+not be in order.
+This data type only works with the 'bubbles' plot type.
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</para>
+</sect2>
+
+<sect2 id="conc-datatypes-array">
+<title>Building Data Arrays</title>
+<para>
+In most of the examples in this manual, the data array is built from
+constant values in PHP code. For example:
+<programlisting><![CDATA[$data = array(
+  array('',  0,   0,   0,   0),
+  array('',  1,   1,   1, -10),
+  array('',  2,   8,   4, -20),
+  array('',  3,  27,   9, -30),
+  array('',  4,  64,  16, -40),
+  array('',  5, 125,  25, -50),
+);
+]]></programlisting>
+Which contains 6 records, each with an empty label, an X value (assuming
+the data type is 'data-data'), and then 3 Y values representing 3 data sets
+to plot.
+</para>
+
+<para>
+In a real application, of course, the data values will most likely come
+from a calculation, perhaps using values from a database.
+This section provides a few sample code fragments which construct
+data arrays. We use the PHP ability to append a new value to the end of an
+array using <literal>$array[] = ...</literal>.
+</para>
+
+<para>
+This code fragment creates a data array of type 'text-data' with three
+data sets for Y=X+1, Y=X*X/2, and Y=X*X*X/3.
+<programlisting><![CDATA[$data = array();
+for ($x = 0; $x <= 5; $x++) $data[] = array('', $x+1, $x*$x/2, $x*$x*$x/3);
+]]></programlisting>
+</para>
+
+<para>
+This code fragment creates a data array of type 'data-data' with about
+100 points from the equation X * Y = 10.
+<programlisting><![CDATA[$data = array();
+for ($x = 1.0; $x <= 10.0; $x += 0.1) $data[] = array('', $x, 10.0/$x);
+]]></programlisting>
+</para>
+
+<para>
+The next code fragments use database queries to build data arrays for PHPlot.
+In many cases, you can create a query such that the returned columns
+correspond to the format of a PHPlot data array record.
+The first query result column should be the data label, the second (for
+data type 'data-data' only) should be the X value, and subsequent column
+results should be one or more Y values (depending on the number of datasets you are plotting).
+(Pie charts work differently - see <xref linkend="plottype-pie" />.)
+You aren't limited to simple table lookups - you can use the full power of the SQL language
+to combine tables and perform calculations on the data.
+Be sure to use <literal>ORDER BY</literal> in your SQL query to order the results,
+or you will not get predictable plots.
+</para>
+<para>
+Database access methods differ. This code is for PostgreSQL; for MySQL there are
+similar functions like <function>mysql_fetch_row()</function>.
+<programlisting><![CDATA[$r = pg_query($db, 'SELECT ...');
+if (!$r) exit();
+$data = array();
+$n_rows = pg_num_rows($r);
+for ($i = 0; $i < $n_rows; $i++) $data[] = pg_fetch_row($r, $i);
+...
+$plot->SetDataValues($data);
+]]></programlisting>
+This works because <function>pg_fetch_row</function> assigns the result
+columns from the query to sequentially numbered elements in the array.
+</para>
+<para>
+Using data arrays from database query results also works if the result
+columns are in an array which is indexed by the field name, because PHPlot
+converts the data array to use numeric indexes.
+So with PostgreSQL you can use <function>pg_fetch_assoc()</function>.
+You can also use <function>pg_fetch_array()</function>,
+but only if you specify the type as <literal>PGSQL_ASSOC</literal>
+or <literal>PGSQL_NUM</literal>.
+The default type <literal>PGSQL_BOTH</literal> will not work,
+because the result array will contain the data values duplicated
+under both number and field-name indexes,
+and PHPlot will see both copies of the data.
+</para>
+<para>
+Going even further, with a properly designed query you can use
+<function>pg_fetch_all()</function> to fetch the entire query result and
+assign it to a data array with one statement.
+<programlisting><![CDATA[$r = pg_query($db, 'SELECT ...');
+if (!$r) exit();
+$data = pg_fetch_all($r);
+...
+$plot->SetDataValues($data);
+]]></programlisting>
+This uses field-name indexes in the array representing each row, but as noted above PHPlot
+will convert the data array to use numeric indexes.
+</para>
+</sect2>
+
+<sect2 id="conc-datatypes-missing">
+<title>Missing Data in Data Arrays</title>
+<para>
+Most plot types support the concept of missing points.
+A missing point is represented in your data array with an empty string
+instead of a Y value. (Actually, any non-numeric value works.) For example:
+<programlisting><![CDATA[$data = array( array('1996', 45.5),
+               array('1997', 53.8),
+               array('1998', ''),   # No data available for 1998
+               array('1999', 34.1));
+]]></programlisting>
+(For horizontal plots, the missing value is X not Y.)
+</para>
+
+<para>
+With the <link linkend="plottype-lines">lines</link>,
+<link linkend="plottype-linepoints">linepoints</link>, and
+<link linkend="plottype-squared">squared</link> plot types,
+there are two ways to handle missing points.
+By default, PHPlot will act as if the missing point does not exist,
+connecting the points before it and after it. You can use
+<xref linkend="SetDrawBrokenLines" /> to leave a gap at the missing point
+instead.
+</para>
+
+<para>
+The <link linkend="plottype-candlesticks">candlesticks</link>,
+<link linkend="plottype-candlesticks2">candlesticks2</link>,
+and <link linkend="plottype-ohlc">ohlc</link> plot types
+support missing points. Specify all four Y values at the missing point
+as empty strings. (This does not work with PHPlot-5.4.0 and earlier.)
+</para>
+
+<para>
+The <link linkend="plottype-area">area</link>,
+<link linkend="plottype-stackedarea">stackedarea</link>, and
+<link linkend="plottype-stackedbars">stackedbars</link> plot types
+do not support missing points. Non-numeric values are taken as zero for
+these plot types.
+</para>
+
+<para>
+All other plot types support missing points and simply ignore the point.
+That is, no bar, point shape, thinbar line, etc. will be plotted at that
+position.
+</para>
+
+<para>
+With data type <link linkend="data-data-xyz">data-data-xyz</link>, missing
+points are represented by an empty string for the Y value.  There still must
+be a Z value entry in the array for each missing Y, although the Z value is
+ignored.
+</para>
+
+</sect2>
+
+<sect2 id="conc-datatypes-indexes">
+<title>Data Array Indexes</title>
+<para>
+There are some rules you need to follow when building data arrays, in order
+for PHPlot to correctly process your data. The following rules apply to the
+array indexes, or keys, in your data array.
+  <itemizedlist>
+    <listitem>
+      <para>
+Your data array must be indexed using sequential integers starting with zero.
+This is automatically true if you build an array with the empty-brackets
+syntax (<literal>$mydata[] = ...</literal>), or if you use the
+<literal>array(...)</literal> construct without specifying keys.
+Note that this refers only to the data array itself, not the elements of
+the data array - the records.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+The data records, which are elements of the data array, are also arrays.
+These record arrays are processed by PHPlot using the
+<literal>array_values()</literal> function. This means the array keys
+are ignored, and the elements of the record are processed in the same order
+as they were assigned. As with the data array itself, you can use the
+empty-brackets syntax, or the array() language construct, to build records
+in the data array. You can also use words (such as database query result
+fields) as indexes, as long as the assignments are made in the correct
+order.
+      </para>
+    </listitem>
+  </itemizedlist>
+</para>
+</sect2>
+
+<sect2 id="conc-datatypes-validation">
+<title>Data Array Validation</title>
+<para>
+PHPlot checks the validity of the data array in 3 stages.
+<xref linkend="SetDataValues"/> only checks that it really was given an
+array, that the array contains zero-based sequential integer keys, and
+that the values are also arrays.
+</para>
+<para>
+More extensive checking takes place when the graph is drawn with
+<xref linkend="DrawGraph"/>. At that time, PHPlot checks that the data array
+is not empty, and that the rows contain a correct number of entries depending
+on the data type. A third stage of checking takes place for specific plot types.
+For example, OHLC plots require 4 values, and area plots require the same
+number of values for each row. (These requirements are documented in
+<xref linkend="conc-plottypes"/>.) If any of these checks fails,
+PHPlot produces an error image instead of a plot.
+</para>
+<para>
+An empty plot will be produced if the data array is valid but contains no
+numeric Y values (X values for horizontal plots). The result has titles, X
+and Y axis with labels and tick marks (except for pie plots), and other
+applicable plot features, but no actual plotted data. There is no error or
+warning from PHPlot when an empty plot is produced.
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-plottypes">
+<title>PHPlot Plot Types</title>
+<abstract><title></title>
+  <para>
+This section describes the PHPlot plot types and their individual data
+type requirements.
+  </para>
+</abstract>
+<para>
+Plot types determine the overall look of the
+graphical representation of the data values. To select the plot type,
+use <xref linkend="SetPlotType" />.
+The following plot types are available:
+<informaltable>
+  <tgroup cols="2">
+    <?dbhtml table-summary="Available plot types"?>
+    <colspec colname="c1" colwidth="20*" />
+    <colspec colname="c2" colwidth="80*" />
+    <thead>
+      <row>
+        <entry>Plot Type</entry>
+        <entry>Description</entry>
+      </row>
+    </thead>
+    <tbody>
+      <row>
+        <entry><link linkend="plottype-area">area</link></entry>
+        <entry>Filled areas between lines. Also known as <emphasis>cumulative
+            line plot</emphasis> or <emphasis>component line plot</emphasis>.
+            </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-bars">bars</link></entry>
+        <entry>Filled bars with optional 3-D look. Multiple datasets are offset.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-bubbles">bubbles</link></entry>
+        <entry>A scatter-point plot using bubbles (filled circles), with the
+            bubble size proportional to a Z value.
+            </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-candlesticks">candlesticks</link></entry>
+        <entry>An Open/High/Low/Close (OHLC) financial plot using filled
+            and unfilled candlesticks.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-candlesticks2">candlesticks2</link></entry>
+        <entry>An Open/High/Low/Close (OHLC) financial plot using filled
+            candlesticks.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-linepoints">linepoints</link></entry>
+        <entry>Lines between points, with a marker at each point, and optional
+            error bars.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-lines">lines</link></entry>
+        <entry>Straight lines between data points, with optional error bars.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-ohlc">ohlc</link></entry>
+        <entry>A basic Open/High/Low/Close (OHLC) financial plot using lines
+            and ticks.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-pie">pie</link></entry>
+        <entry>Pie chart with or without 3-D affects.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-points">points</link></entry>
+        <entry>Draws a marker at each data point, with optional error bars.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-squared">squared</link></entry>
+        <entry>Stepped lines</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-stackedarea">stackedarea</link></entry>
+        <entry>Filled areas between lines, with multiple data sets accumulated.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-stackedbars">stackedbars</link></entry>
+        <entry>Filled bars with optional 3-D look. Multiple data sets
+            are accumulated and the sum is graphed.</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-thinbarline">thinbarline</link></entry>
+        <entry>Vertical lines from the X axis to the value, or horizontal lines
+            from the Y axis to the value. Also known as <emphasis>impulse</emphasis>.
+            </entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+</para>
+
+<sect2 id="plottype-area">
+<title>Plot Type: area (Area Plot)</title>
+<para>
+This plot type draws filled areas between lines.
+This is often called a <emphasis>cumulative line plot</emphasis> or
+<emphasis>component line plot</emphasis>.
+Each data set (set of corresponding Y values from each record in the
+data array) is plotted in order, with the area
+between each line and the next line filled solid. The area between the
+last line and the X axis is also filled. The data must be arranged
+so the values are (generally) decreasing within each row, because later
+drawn filled areas will cover previously drawn areas.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+A minimum of 2 rows (X values and corresponding Y value(s)) is required for
+this plot type.  If there are fewer than 2 rows, an empty plot will be produced.
+</para>
+<para>
+This plot type uses the absolute value of each supplied Y, because negative
+values do not make sense here. Missing values are taken as zero.
+All records in the data array must have the same number of Y values.
+</para>
+<para>
+The areas are filled with colors as set with <xref linkend="SetDataColors" />.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-area1" />.
+</para>
+</sect2>
+
+<sect2 id="plottype-bars">
+<title>Plot Type: bars (Bar Graph)</title>
+<para>
+This plot type draws a bar chart, with filled rectangles.
+Both vertical and horizontal bar charts are available.
+The bars are centered on the X values (for vertical charts),
+or on the Y values (for horizontal charts).
+The rectangles can have a 3-D look, or be flat with a border.
+Multiple data-set plots work, with each one producing a set of bars
+offset from the previous set.
+</para>
+<para>
+For vertical bars, use data type <xref linkend="text-data"/>.
+The data X values are assumed to be at 0.5+N for N=0,1,2...
+For horizontal bars, use data type <xref linkend="text-data-yx"/>.
+The data Y values are assumed to be at 0.5+N for N=0,1,2...
+No other data type works with bar graphs.
+</para>
+<para>
+If shading is on with <xref linkend="SetShading" /> (default is on with value
+5 pixels), then the bars have a 3-D look. If shading is off
+(<function>SetShading(0)</function>), the bars are flat rectangles with borders.
+The filled rectangle color is set with <xref linkend="SetDataColors" />.
+The border color (if shading is off) can be set with
+<xref linkend="SetDataBorderColors" />.
+</para>
+<para>
+An empty string (or any non-numeric value) for the dependent variable
+(Y, for vertical plots) indicates a missing point.
+No bar will be drawn at missing point positions.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-bars1" />,
+<xref linkend="ex-bars2" />,
+<xref linkend="ex-bars3" />,
+<xref linkend="ex-bars4" />, and
+<xref linkend="ex-horizbar" />.
+</para>
+<para>
+Horizontal bar plots were added in PHPlot-5.1.2.
+</para>
+</sect2>
+
+<sect2 id="plottype-bubbles">
+<title>Plot Type: Bubbles</title>
+<para>
+This plot type produces a scatter-plot using filled circles, with the diameter
+of each circle representing a Z value for the point.
+The range of Z values in the plot is linearly mapped into a range of bubble
+sizes, with the lowest plotted Z value producing a bubble with the minimum size,
+and the largest Z value producing the largest bubble.
+The smallest and largest bubble sizes are automatically calculated
+based on the plot area size, but see also <xref linkend="conc-tuning-bubbles"/>.
+Note: There is no way to display the actual numeric Z values on the plot.
+</para>
+
+<para>
+Multiple data sets work, with more than one (Y,Z) pair for each X. The
+bubbles will be drawn using the corresponding colors in the data colors
+array, as set with <xref linkend="SetDataColors"/>.
+With multiple data sets (or even a single data set), you may find
+the plot easier to read when using semi-transparent data colors as
+described in <xref linkend="conc-truecolor-using-alpha"/>.
+</para>
+
+<para>
+This plot type only works with data type <xref linkend="data-data-xyz"/>.
+Each (X,Y,Z) triplet from the data array produces a bubble on the plot.
+</para>
+
+<para>
+An empty string (or any non-numeric value) for Y indicates a missing point
+and will not be plotted. A corresponding Z entry must be provided in the
+data array, but the value is ignored.
+</para>
+
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-bubbles1"/>.
+</para>
+
+<para>
+Bubble plots were added in PHPlot-5.5.0.
+</para>
+</sect2>
+
+<sect2 id="plottype-candlesticks">
+<title>Plot Type: candlesticks (OHLC Candlesticks Plot)</title>
+<para>
+This plot type represents the changing price of a financial instrument
+(such as a stock or other security) over time.
+At each time point, 4 values are plotted: the opening price, the highest price,
+the lowest price, and the closing price.
+The candlesticks plot type is one of three Open/High/Low/Close (OHLC) plot
+types available. It shows the opening and closing prices as the top and bottom
+of a narrow rectangle (the candlestick), with an upper wick showing the
+highest price, and a lower wick showing the lowest price.
+The candlestick body is drawn solid filled if the closing price is lower
+than the opening price, and as an outline (unfilled) if the closing price
+is higher than the opening price.
+(For a variation on this, see
+<link linkend="plottype-candlesticks2">candlesticks2</link>.)
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+This plot type requires exactly 4 Y values for each X. These represent the
+Open, High, Low, and Close prices in that order.
+Multiple data sets are not supported.
+A missing point is indicated by using four empty strings
+(or any non-numeric value) for the 4 Y values.
+(Missing points were not allowed for this plot type in PHPlot-5.4.0 and earlier.)
+</para>
+<para>
+This plot type uses 4 colors from the data colors array.
+If the security closed lower than it opened for that time period,
+then color 0 is used for the candlestick body, and color 2 is used
+for the upper and lower wicks.
+If the security closed higher or the same as it opened for that time period,
+then color 1 is used for the candlestick body, and color 3 is used
+for the upper and lower wicks.
+</para>
+<para>
+<xref linkend="SetLineWidths"/> can be used to set line widths.
+Index 0 will be used to draw the candlestick bodies, and index 1 will
+be used to draw the wicks.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-ohlccandlesticks"/>.
+</para>
+<para>
+This plot type was added in PHPlot-5.3.0.
+</para>
+</sect2>
+
+<sect2 id="plottype-candlesticks2">
+<title>Plot Type: candlesticks2 (OHLC Filled Candlesticks Plot)</title>
+<para>
+This plot type represents the changing price of a financial instrument
+(such as a stock or other security) over time.
+The candlesticks2 plot type is the same as the
+<link linkend="plottype-candlesticks">candlesticks</link> plot type,
+except the candlestick bodies are always drawn filled, regardless of whether
+the security closes up or down.
+Color usage and line width usage are the same.
+</para>
+<para>
+Be sure to set the data colors with <xref linkend="SetDataColors"/> for this
+plot type. Unlike candlesticks, candlesticks2 plots use only color to
+show the difference between a security closing up or closing down.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+As with candlesticks, this plot type requires exactly 4 Y values for each X:
+Open, High, Low, and Close prices.
+</para>
+<para>
+This plot type requires exactly 4 Y values for each X. These represent the
+Open, High, Low, and Close prices in that order.
+Multiple data sets are not supported.
+A missing point is indicated by using four empty strings
+(or any non-numeric value) for the 4 Y values.
+(Missing points were not allowed for this plot type in PHPlot-5.4.0 and earlier.)
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-ohlccandlesticks2"/>.
+</para>
+<para>
+This plot type was added in PHPlot-5.3.0.
+</para>
+</sect2>
+
+<sect2 id="plottype-linepoints">
+<title>Plot Type: linepoints (Lines and Points)</title>
+<para>
+This plot type draws a line graph with a marker at each point, thus
+combining the 'line' and 'point' plot types.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+It also works with <xref linkend="data-data-error"/> for error bars.
+</para>
+<para>
+An empty string (or any non-numeric value) for a Y value
+indicates a missing point.
+PHPlot can either skip the line segments around missing points, or connect
+the adjacent points. See <xref linkend="SetDrawBrokenLines"/> for details.
+</para>
+<para>
+Line and marker colors for each line are set with
+<xref linkend="SetDataColors" />.
+Marker styles for each line are set with <xref linkend="SetPointShapes" />.
+Marker sizes for each line are set with <xref linkend="SetPointSizes" />.
+Line widths for each line are set with <xref linkend="SetLineWidths" />.
+Line styles (solid or dashed) for each line are set with
+<xref linkend="SetLineStyles" />.
+</para>
+<para>
+You can also suppress the line, or the markers, for individual data sets
+in a graph.
+This allows you combine points-only, lines-only, and line/points plots.
+Refer to <xref linkend="SetLineStyles" /> and <xref linkend="SetPointShapes" />
+for details.
+</para>
+<para>
+For error-bar plots with data type 'data-data-error' only:
+Error bar colors for each line are set with <xref linkend="SetErrorBarColors" />.
+Error bar shape (tee or line) is set with <xref linkend="SetErrorBarShape" />.
+If tee-shaped error bars are used, the width of the
+upper and lower 'tee' is set with <xref linkend="SetErrorBarSize" />.
+Error bar line width is set with <xref linkend="SetErrorBarLineWidth" />.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-linepoints1" />.
+</para>
+</sect2>
+
+<sect2 id="plottype-lines">
+<title>Plot Type: lines (Lines Graph)</title>
+<para>
+This plot type simply draws a line from each point to the next.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+It also works with <xref linkend="data-data-error"/> for error bars.
+</para>
+<para>
+An empty string (or any non-numeric value) for a Y value
+indicates a missing point.
+PHPlot can either skip the line segments around missing points, or connect
+the adjacent points. See <xref linkend="SetDrawBrokenLines"/> for details.
+</para>
+<para>
+Line colors for each line are set with <xref linkend="SetDataColors" />.
+Line widths for each line are set with <xref linkend="SetLineWidths" />.
+Line styles (solid or dashed) for each line are set with
+<xref linkend="SetLineStyles" />.
+</para>
+<para>
+For error-bar plots with data type 'data-data-error' only:
+Error bar colors for each line are set with <xref linkend="SetErrorBarColors" />.
+Error bar shape (tee or line) is set with <xref linkend="SetErrorBarShape" />.
+If tee-shaped error bars are used, the width of the
+upper and lower 'tee' is set with <xref linkend="SetErrorBarSize" />.
+Error bar line width is set with <xref linkend="SetErrorBarLineWidth" />.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-lines1" /> and
+<xref linkend="ex-lines2" />.
+</para>
+</sect2>
+
+<sect2 id="plottype-ohlc">
+<title>Plot Type: ohlc (Basic OHLC Plot)</title>
+<para>
+This plot type represents the changing price of a financial instrument
+(such as a stock or other security) over time.
+At each time point, 4 values are plotted: the opening price, the highest price,
+the lowest price, and the closing price.
+The ohlc plot type is one of three Open/High/Low/Close (OHLC) plot
+types available. It shows a vertical line connecting the low and high prices,
+with small horizontal tick marks showing the opening and closing prices.
+The opening price tick mark is on the left of the vertical line, and the
+closing price tick mark is on the right.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+This plot type requires exactly 4 Y values for each X. These represent the
+Open, High, Low, and Close prices in that order.
+Multiple data sets are not supported.
+A missing point is indicated by using four empty strings
+(or any non-numeric value) for the 4 Y values.
+(Missing points were not allowed for this plot type in PHPlot-5.4.0 and earlier.)
+</para>
+<para>
+This plot type uses 4 colors from the data colors array.
+If the security closed lower than it opened for that time period,
+then color 0 is used for the vertical line, and color 2 is used
+for the open and close tick marks.
+If the security closed higher or the same as it opened for that time period,
+then color 1 is used for the vertical line, and color 3 is used
+for the open and close tick marks.
+</para>
+<para>
+<xref linkend="SetLineWidths"/> can be used to set line widths.
+Index 0 will be used to draw the vertical lines, and index 1 will
+be used to draw the tick marks.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-ohlcbasic"/>.
+</para>
+<para>
+This plot type was added in PHPlot-5.3.0.
+</para>
+</sect2>
+
+<sect2 id="plottype-pie">
+<title>Plot Type: pie (Pie Chart)</title>
+<para>
+This plot type draws pie charts. The pie chart can have a 3-D look or be
+drawn flat.
+The first pie segment starts at 0 degrees (East, or 3:00PM) and they go around
+the pie in a counter-clockwise direction.
+Each segment is labeled with its percentage.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>,
+<xref linkend="data-data"/>, and <xref linkend="text-data-single"/>.
+Data arrays for pie charts are handled differently from with other plot types,
+so the data types are described in more detail below.
+</para>
+<para>
+If shading is on with <xref linkend="SetShading" /> (default is on with value
+5 pixels), then the pie chart has a 3-D look. If shading is off
+(<function>SetShading(0)</function>), the pie chart is drawn flat (circular
+rather than oval).
+The position of the segment percentage labels is set with
+<xref linkend="SetLabelScalePosition" />.
+</para>
+<para>
+Missing values (an empty string or any non-numeric value) are taken as zero.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-pie1" /> (text-data-single),
+<xref linkend="ex-pie2" /> (text-data), and
+<xref linkend="ex-pie3" /> (unshaded).
+</para>
+
+<sect3 id="plottype-pie-tds">
+<title>Pie Chart with data type: 'text-data-single'</title>
+<para>
+The data array for pie charts with 'text-data-single' data type is
+structured as follows.
+Each record in the data array represents a pie segment.
+The record is an array of 2 elements: label and value,
+but the label is ignored.
+The value sets the relative size of a pie segment.
+PHPlot totals up the values and computes the relative size of each segment.
+</para>
+<para>
+For example:
+<programlisting><![CDATA[$data = array(array('', 1), array('',4), array('',5));
+]]></programlisting>
+This makes a pie chart with 3 segments, with sizes 10%, 40%, and 50%.
+</para>
+
+<para>
+Although the labels in the data array are ignored when drawing the pie chart,
+you can assign strings to the label positions in the array, then use them to
+build a plot legend.  For example, this will produce a pie chart with 3
+slices, and a legend with 3 entries using the labels from the data array:
+<programlisting><![CDATA[$data = array(array('Gold', 100), array('Silver',35), array('Copper',12));
+$plot = new PHPlot();
+$plot->SetPlotType('pie');
+$plot->SetDataType('text-data-single');
+$plot->SetDataValues($data);
+foreach ($data as $row) $plot->SetLegend($row[0]); // Copy labels to legend
+$plot->DrawGraph();
+]]></programlisting>
+A slighly more complex example of this can be seen in <xref linkend="ex-pie1"/>.
+This only works for the 'text-data-single' data type, where each row or record
+in the data array is used to build one pie slice.
+</para>
+
+</sect3>
+
+<sect3 id="plottype-pie-td">
+<title>Pie Chart with data type: 'text-data'</title>
+<para>
+The data array for pie charts with 'text-data' data type is
+structured as follows.
+Each record in the data array is an array of a label followed by N data values.
+The label is ignored. The pie chart will be produced with N segments.
+The relative weight of the first segment is the sum of the first data values
+in each record.
+The relative weight of each subsequent segment is the sum of the corresponding
+data values in each record.
+</para>
+<para>
+For example:
+<programlisting><![CDATA[$data = array(array('', 10, 10, 20, 10),
+              array('', 15, 10, 15, 10));
+]]></programlisting>
+This results in 4 segments with sizes 25%, 20%, 35%, and 20%.
+</para>
+</sect3>
+
+<sect3 id="plottype-pie-dd">
+<title>Pie Chart with data type: 'data-data'</title>
+<para>
+The data array for pie charts with 'data-data' data type is
+structured the same as 'text-data', except that the first
+two values in each record are ignored (the positions usually
+used for label and X value).
+Each element in the data array represents a record.
+Each record is an array of a label, X value, then N data values.
+The label and X value are ignored.
+The pie chart will be produced with N segments.
+The relative weight of the first segment is the sum of the first data values
+in each record.
+The relative weight of each subsequent segment is the sum of the corresponding
+data values in each record.
+</para>
+<para>
+For example:
+<programlisting><![CDATA[$data = array(array('', 1, 10, 10, 20, 10),
+              array('', 2, 15, 10, 15, 10));
+]]></programlisting>
+This results in 4 segments with sizes 25%, 20%, 35%, and 20%.
+The empty strings and '1' and '2' are ignored.
+</para>
+</sect3>
+
+</sect2>
+
+<sect2 id="plottype-points">
+<title>Plot Type: points (Styled Dot Plot)</title>
+<para>
+This plot type draws a point marker at each X,Y value.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+It also works with <xref linkend="data-data-error"/> for error bars.
+</para>
+<para>
+Marker colors for each line are set with <xref linkend="SetDataColors" />.
+Marker styles for each line are set with <xref linkend="SetPointShapes" />.
+Marker sizes for each line are set with <xref linkend="SetPointSizes" />.
+</para>
+<para>
+For error-bar plots with data type 'data-data-error' only:
+Error bar colors for each line are set with <xref linkend="SetErrorBarColors" />.
+Error bar shape (tee or line) is set with <xref linkend="SetErrorBarShape" />.
+If tee-shaped error bars are used, the width of the
+upper and lower 'tee' is set with <xref linkend="SetErrorBarSize" />.
+Error bar line width is set with <xref linkend="SetErrorBarLineWidth" />.
+</para>
+<para>
+An empty string (or any non-numeric value) for a Y value
+indicates a missing point.
+No point marker will be drawn at missing point positions.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-points2" />, and
+<xref linkend="ex-points1" />.
+</para>
+</sect2>
+
+<sect2 id="plottype-squared">
+<title>Plot Type: squared (Step Plot)</title>
+<para>
+This plot type makes stepped lines. For each point, you get a horizontal
+line from the previous point to the current X, then a vertical line to
+the current Y.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+An empty string (or any non-numeric value) for a Y value
+indicates a missing point.
+PHPlot can either skip the line segments around missing points, or connect
+the adjacent points. See <xref linkend="SetDrawBrokenLines"/> for details.
+</para>
+<para>
+Line colors per line are set with <xref linkend="SetDataColors" />.
+Line widths per line are set with <xref linkend="SetLineWidths" />.
+Line style (solid or dashed) per line are set with
+<xref linkend="SetLineStyles" />.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-squared1" />.
+</para>
+</sect2>
+
+<sect2 id="plottype-stackedarea">
+<title>Plot Type: stackedarea (Stacked Area Plot)</title>
+<para>
+This plot type draws filled areas between lines, similar to
+<link linkend="plottype-area">area</link> except the values are accumulated
+as in <link linkend="plottype-stackedbars">stackedbars</link> plots.
+The area between the X axis and the first data set (the line resulting from
+the first Y value from each record) is filled first.  Then the area above that
+line, up to the sum of the first and second Y values in each record, is
+filled next. This repeats until filling the area up to the top-most line,
+which is the sum of all the Y values from each record.
+</para>
+<para>
+This plot type works with data types <xref linkend="text-data"/>
+and <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+A minimum of 2 rows (X values and corresponding Y value(s)) is required for
+this plot type.  If there are fewer than 2 rows, an empty plot will be produced.
+</para>
+<para>
+This plot type uses the absolute value of each supplied Y, because negative
+values do not make sense here. Missing values are taken as zero.
+All records in the data array must have the same number of Y values.
+</para>
+<para>
+The areas are filled with colors as set with <xref linkend="SetDataColors" />.
+Note that data sets are processed with stacked area plots in reverse order
+relative to area plots.  With stacked area plots, the first data set (using the
+first data color) will be at the bottom, but with area plots it will be at
+the top.
+Compare <xref linkend="ex-area1"/> and <xref linkend="ex-stackedarea1"/>.
+</para>
+<para>
+An example of this plot type can be seen in
+<xref linkend="ex-stackedarea1" />.
+</para>
+<para>
+This plot type was added in PHPlot-5.1.1.
+</para>
+</sect2>
+
+<sect2 id="plottype-stackedbars">
+<title>Plot Type: stackedbars</title>
+<para>
+This plot type draws a bar chart with stacked bars.
+Both vertical and horizontal stacked bar charts are available.
+The bars are centered on the X values (for vertical charts),
+or on the Y values (for horizontal charts).
+Each data set value contributes one segment of a stack.
+That is, the first data set is drawn from the axis in the first
+color, then the second data set is drawn stacked on the first
+using the second color, etc.
+</para>
+<para>
+Data values greater than zero result in an upward (or rightward) bar.
+Data values less than zero result in a downward (or leftward) bar.
+Mixing negative and positive values within a row does work, but
+the results are not generally useful.
+The first non-zero value in any given row determines the direction of that
+bar stack.
+PHPlot keeps a running total for each row, but does not draw any segment unless
+it increases the bar stack height (or length, for horizontal plots).
+It also does not draw any segment on the wrong side of the axis
+(which is normally at 0).
+</para>
+<para>
+Segments of length zero in a bar stack are usually ignored, but they might
+be visible if the axis is moved in the direction opposite to the bar stack
+direction.  (For example, axis is at Y=2, stack contains segment values 0
+and -4; the 0 segment is drawn down from the axis at Y=2 to Y=0, followed
+by the second segment down to -4).  Also, a segment with value zero at the
+top of a stack in a shaded vertical stackedbars plot will be drawn as a
+'cap' on the bar in that data color.
+</para>
+<para>
+For vertical bars, use data type <xref linkend="text-data"/>.
+The data X values are assumed to be at 0.5+N for N=0,1,2...
+For horizontal bars, use data type <xref linkend="text-data-yx"/>.
+The data Y values are assumed to be at 0.5+N for N=0,1,2...
+No other data type works with stacked bar plots.
+</para>
+<para>
+If shading is on with <xref linkend="SetShading" /> (default is on with value
+5 pixels), then the bars have a 3-D look. If shading is off
+(<function>SetShading(0)</function>), the bars are flat rectangles with borders.
+The filled rectangle colors for each stacked segment are set with
+<xref linkend="SetDataColors" />.
+The border color (if shading is off) can be set with
+<xref linkend="SetDataBorderColors" />.
+</para>
+<para>
+Missing values (an empty string or any non-numeric value) are taken as zero.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-stackedbars1" />,
+<xref linkend="ex-stackedbars2" />,
+<xref linkend="ex-stackedbars3" />, and
+<xref linkend="ex-horizstackedbar" />.
+</para>
+<para>
+Horizontal stackedbars plots were added in PHPlot-5.1.3.
+Support for negative values in stackedbars plots was added in PHPlot-5.2.0.
+Before PHPlot-5.4.0, zero values were completely ignored in stackedbars plots.
+</para>
+</sect2>
+
+<sect2 id="plottype-thinbarline">
+<title>Plot Type: thinbarline</title>
+<para>
+This plot type draws lines from the axis to the data value.
+Other implementations call this type of plot <emphasis>impulses</emphasis>.
+Both vertical and horizontal thinbarline plots are available.
+Plotting multiple data sets does not work, because the lines are drawn on
+top of each other and only one can typically be seen.
+This plot type can be more readable than a bar chart when there are a large
+number of data points.
+</para>
+<para>
+For vertical plots, use data type <xref linkend="text-data"/>
+or <xref linkend="data-data"/>.
+For 'text-data', the data X values are assumed to be at 0.5+N for N=0,1,2...
+For horizontal plots, use data type <xref linkend="text-data-yx"/>
+or <xref linkend="data-data-yx"/>.
+For 'text-data-yx', the data Y values are assumed to be at 0.5+N for N=0,1,2...
+</para>
+<para>
+The width of the plot lines can be controlled with <xref linkend="SetLineWidths" />.
+</para>
+<para>
+An empty string (or any non-numeric value) for the dependent variable
+(Y, for vertical plots) indicates a missing point.
+No line will be drawn at missing point positions.
+</para>
+<para>
+Examples of this plot type can be seen in
+<xref linkend="ex-thinbarline1" />,
+<xref linkend="ex-thinbarline2" />, and
+<xref linkend="ex-horizthinbarline" />.
+</para>
+
+</sect2>
+
+<sect2 id="conc-plottype-datatype">
+<title>Plot Types and Data Types</title>
+<para>
+The following table indicates which plot types support which data types.
+Refer to <xref linkend="conc-datatypes"/> for more information on data
+types.
+<informaltable>
+  <?dbfo keep-together="always"?>
+  <tgroup cols="8">
+    <?dbhtml table-summary="Supported plot type/data type combinations."?>
+    <?dbhtml cellpadding="4"?>
+    <colspec colname="pt" align="left" colwidth="16*" />
+    <colspec colname="dt1" align="center" colwidth="12*" />
+    <colspec colname="dt2" align="center" colwidth="12*" />
+    <colspec colname="dt3" align="center" colwidth="12*" />
+    <colspec colname="dt4" align="center" colwidth="12*" />
+    <colspec colname="dt5" align="center" colwidth="12*" />
+    <colspec colname="dt6" align="center" colwidth="12*" />
+    <colspec colname="dt7" align="center" colwidth="12*" />
+    <thead>
+      <row>
+        <entry morerows="1" valign="bottom">Plot Type:</entry>
+        <entry namest="dt1" nameend="dt7">Data Type:</entry>
+      </row>
+      <row>
+        <entry><xref linkend="text-data" /></entry>
+        <entry><xref linkend="data-data" /></entry>
+        <entry><xref linkend="data-data-error" /></entry>
+        <entry><xref linkend="text-data-single" /></entry>
+        <entry><xref linkend="text-data-yx" /></entry>
+        <entry><xref linkend="data-data-yx" /></entry>
+        <entry><xref linkend="data-data-xyz" /></entry>
+      </row>
+    </thead>
+    <tbody>
+      <row>
+        <entry><link linkend="plottype-area">area</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-bars">bars</link></entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-bubbles">bubbles</link></entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry>Yes</entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-candlesticks">candlesticks</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-candlesticks2">candlesticks2</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-linepoints">linepoints</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-lines">lines</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-pie">pie</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-ohlc">ohlc</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-points">points</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-squared">squared</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-stackedarea">stackedarea</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-stackedbars">stackedbars</link></entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+      </row>
+      <row>
+        <entry><link linkend="plottype-thinbarline">thinbarline</link></entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+        <entry> </entry>
+        <entry>Yes</entry>
+        <entry>Yes</entry>
+        <entry> </entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-colors">
+<title>Colors</title>
+<abstract><title></title>
+  <para>
+This section contains information about using colors in PHPlot.
+Functions described in <xref linkend="ref-colorstyle" /> in the Reference
+chapter control the use of colors in PHPlot.
+  </para>
+  <para>
+This section describes <link linkend="def-palette">Palette images</link>.
+Starting with PHPlot-5.1.1, a second color model is available in
+PHPlot: <link linkend="def-truecolor">Truecolor images</link>.
+Refer to <xref linkend="conc-truecolor"/> for more information.
+  </para>
+</abstract>
+
+<sect2 id="conc-colors-forms">
+<title>Color Parameter Forms</title>
+<para>
+Individual colors as arguments to PHPlot functions can take one of the
+following forms:
+<orderedlist>
+  <listitem>
+    <para>
+A color name, as defined by <xref linkend="SetRGBArray" /> or from a built-in
+color map if SetRGBArray was not called.
+Note that color names are case sensitive.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Numeric color component values, in the form <literal>#rrggbb</literal>.
+Here rr is red, gg is green, and bb is blue, and each component
+value is represented as a 2-digit hexadecimal number between 00 and ff.
+For example, <literal>#0000ff</literal> is full-saturation blue.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+A PHP array of red, green, and blue color component values, each value
+being in the range 0 to 255 inclusive, for example
+<literal>array(0,0,255)</literal> for blue.
+    </para>
+  </listitem>
+</orderedlist>
+Additional color forms can be found in <xref linkend="conc-truecolor-forms"/>.
+Those forms are more useful with truecolor images.
+</para>
+<note>
+  <para>
+You cannot use the (red, green, blue) array form as a color value in those
+functions (like <xref linkend="SetDataColors" />) which accept either a
+single color or an array of colors. The functions are unable to distinguish
+between an array of colors and a single color represented as an array.
+However, you can work around this restriction by using an array containing
+the array with the colors, for example:
+<literal>array(array(102, 0, 192))</literal>.
+  </para>
+</note>
+</sect2>
+
+<sect2 id="conc-colors-map">
+<title>Built-in Color Maps</title>
+<para>
+There are 36 colors defined in the 'small' internal color map.
+This is the set of colors available by default, unless
+<xref linkend="SetRGBArray" /> is used to load in a different color map.
+The colors and their names are shown in the figure below.
+  <informalfigure>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/colors.png" scale="58" format="PNG" />
+      </imageobject>
+      <textobject>
+        <phrase>The 36 color 'small' color map</phrase>
+      </textobject>
+    </mediaobject>
+  </informalfigure>
+</para>
+
+<para>
+Here are the color names again.
+
+<informaltable frame="none">
+  <?dbfo table-width="75%"?> <!-- Table width hint for PDF only -->
+  <tgroup cols="6">
+    <?dbhtml table-summary="Color names"?>
+    <colspec colname="c1" colwidth="16*" />
+    <colspec colname="c2" colwidth="16*" />
+    <colspec colname="c3" colwidth="16*" />
+    <colspec colname="c4" colwidth="16*" />
+    <colspec colname="c5" colwidth="16*" />
+    <colspec colname="c6" colwidth="16*" />
+    <tbody>
+      <row>
+        <entry>DarkGreen</entry>
+        <entry>DimGrey</entry>
+        <entry>PeachPuff</entry>
+        <entry>SkyBlue</entry>
+        <entry>SlateBlue</entry>
+        <entry>YellowGreen</entry>
+      </row>
+      <row>
+        <entry>aquamarine1</entry>
+        <entry>azure1</entry>
+        <entry>beige</entry>
+        <entry>black</entry>
+        <entry>blue</entry>
+        <entry>brown</entry>
+      </row>
+      <row>
+        <entry>cyan</entry>
+        <entry>gold</entry>
+        <entry>gray</entry>
+        <entry>green</entry>
+        <entry>grey</entry>
+        <entry>ivory</entry>
+      </row>
+      <row>
+        <entry>lavender</entry>
+        <entry>magenta</entry>
+        <entry>maroon</entry>
+        <entry>navy</entry>
+        <entry>orange</entry>
+        <entry>orchid</entry>
+      </row>
+      <row>
+        <entry>peru</entry>
+        <entry>pink</entry>
+        <entry>plum</entry>
+        <entry>purple</entry>
+        <entry>red</entry>
+        <entry>salmon</entry>
+      </row>
+      <row>
+        <entry>snow</entry>
+        <entry>tan</entry>
+        <entry>violet</entry>
+        <entry>wheat</entry>
+        <entry>white</entry>
+        <entry>yellow</entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+</para>
+
+<para>
+The color names and values in the 'small' internal color map are
+selected from the X11 RGB Color Database.
+If you use <xref linkend="SetRGBArray" /> to pick the 'large' color map,
+PHPlot loads a much larger list of colors equivalent to the entire
+X11 RGB Color Database. Note that there are some duplicate colors in the
+maps, as they include alternate spellings (like 'gray' and 'grey').
+</para>
+
+</sect2>
+
+<sect2 id="conc-colors-datacolors">
+<title>Plotting Colors</title>
+<para>
+<?dbfo keep-together="always"?>
+Each data set plotted on a graph uses the next color in the Data Colors list.
+By default, the Data Colors list contains the following 16 colors in order.
+  <informaltable>
+    <?dbfo table-width="50%"?> <!-- Table width hint for PDF only -->
+    <tgroup cols="3">
+      <?dbhtml table-summary="Default PHPlot Data Colors List"?>
+      <colspec colname="c1" colwidth="30*" />
+      <colspec colname="c2" colwidth="30*" />
+      <colspec colname="c3" colwidth="40*" />
+      <thead>
+        <row>
+          <entry>Data Set:</entry>
+          <entry>Color Name:</entry>
+          <entry>Color Sample:</entry>
+        </row>
+      </thead>
+      <tbody>
+<!-- Automatically generated content -->
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>1</entry>
+          <entry>SkyBlue</entry>
+          <entry><?dbhtml bgcolor="#87ceeb"?><?dbfo bgcolor="#87ceeb"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>2</entry>
+          <entry>green</entry>
+          <entry><?dbhtml bgcolor="#00ff00"?><?dbfo bgcolor="#00ff00"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>3</entry>
+          <entry>orange</entry>
+          <entry><?dbhtml bgcolor="#ffa500"?><?dbfo bgcolor="#ffa500"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>4</entry>
+          <entry>blue</entry>
+          <entry><?dbhtml bgcolor="#0000ff"?><?dbfo bgcolor="#0000ff"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>5</entry>
+          <entry>red</entry>
+          <entry><?dbhtml bgcolor="#ff0000"?><?dbfo bgcolor="#ff0000"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>6</entry>
+          <entry>DarkGreen</entry>
+          <entry><?dbhtml bgcolor="#006400"?><?dbfo bgcolor="#006400"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>7</entry>
+          <entry>purple</entry>
+          <entry><?dbhtml bgcolor="#a020f0"?><?dbfo bgcolor="#a020f0"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>8</entry>
+          <entry>peru</entry>
+          <entry><?dbhtml bgcolor="#cd853f"?><?dbfo bgcolor="#cd853f"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>9</entry>
+          <entry>cyan</entry>
+          <entry><?dbhtml bgcolor="#00ffff"?><?dbfo bgcolor="#00ffff"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>10</entry>
+          <entry>salmon</entry>
+          <entry><?dbhtml bgcolor="#fa8072"?><?dbfo bgcolor="#fa8072"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>11</entry>
+          <entry>SlateBlue</entry>
+          <entry><?dbhtml bgcolor="#6a5acd"?><?dbfo bgcolor="#6a5acd"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>12</entry>
+          <entry>YellowGreen</entry>
+          <entry><?dbhtml bgcolor="#9acd32"?><?dbfo bgcolor="#9acd32"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>13</entry>
+          <entry>magenta</entry>
+          <entry><?dbhtml bgcolor="#ff00ff"?><?dbfo bgcolor="#ff00ff"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>14</entry>
+          <entry>aquamarine1</entry>
+          <entry><?dbhtml bgcolor="#7fffd4"?><?dbfo bgcolor="#7fffd4"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>15</entry>
+          <entry>gold</entry>
+          <entry><?dbhtml bgcolor="#ffd700"?><?dbfo bgcolor="#ffd700"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+        <row><?dbhtml bgcolor="white"?><?dbfo bgcolor="white"?>
+          <entry>16</entry>
+          <entry>violet</entry>
+          <entry><?dbhtml bgcolor="#ee82ee"?><?dbfo bgcolor="#ee82ee"?>&nbsp;&nbsp;&nbsp;&nbsp;</entry>
+        </row>
+<!-- End automatically generated content -->
+      </tbody>
+    </tgroup>
+  </informaltable>
+</para>
+<para>
+An additional color list is used with error plots. These have data type
+data-data-error (see <xref linkend="conc-datatypes-types"/>).
+The positive and negative error bars use a color map that is set using
+<xref linkend="SetErrorBarColors"/>. By default, this color list contains
+the same colors as the data color list, so each data set and its error bars
+will be in the same color. If you change the data colors list with
+<xref linkend="SetDataColors"/>, you probably want to use the same color
+list for the error bars.
+</para>
+<para>
+For bar charts and stackedbar charts, if shading is off, the color of the
+bar borders can be set with <xref linkend="SetDataBorderColors"/>. By
+default, unshaded bar charts use a black outline around the bars for all
+data sets.
+</para>
+<para>
+Note: PHPlot through version 5.0.7 used 8 colors in the default Data Colors
+list: SkyBlue, green, orange, blue, orange, red, violet, and azure1.
+If plotting more than four data sets with PHPlot-5.0.7 or earlier, you should
+use <xref linkend="SetDataColors" /> to define your own data colors list.
+Otherwise you will get two data sets plotted in the same color, orange.
+</para>
+
+<para>
+Instead of using sequential data colors for plotted data sets, you can
+control exactly which data color is used for each data value using the
+data color callback.
+For more information, see <xref linkend="conc-colors-datacolor-callback"/>.
+</para>
+
+</sect2>
+
+<sect2 id="conc-colors-transparent">
+<title>Transparency</title>
+<para>
+You can designate one color in the color map to be transparent.
+This is most often used to make a plot with a transparent background.
+Use <xref linkend="SetTransparentColor" /> to designate the color,
+and <xref linkend="SetBackgroundColor" /> to use that color for the background.
+Use a color which is not otherwise used in the plot.
+</para>
+<para>
+For transparency to work, the output format (see <xref linkend="SetFileFormat" />)
+must support transparency, and the the user's viewer or browser also must
+support transparency.
+If transparency is not supported, the user will see the actual color
+which was designated as transparent (so don't use red, for example).
+Most viewers support transparency in GIF format, and newer viewers should
+support transparency in PNG format.  JPEG format does not support
+transparency.
+</para>
+</sect2>
+
+<sect2 id="conc-colors-elements">
+<title>Plot Element Colors</title>
+<para>
+The following table shows the function used to set the color of each
+element on a plot.
+<informaltable>
+  <tgroup cols="2">
+    <?dbhtml table-summary="Functions to set color of plot elements"?>
+    <colspec colname="c1" colwidth="40*"/>
+    <colspec colname="c2" colwidth="60*"/>
+    <thead>
+      <row>
+        <entry>Plot element:</entry>
+        <entry>Function used to set color:</entry>
+      </row>
+    </thead>
+    <tbody>
+      <row>
+        <entry>Bar chart bar outlines</entry>
+        <entry><xref linkend="SetDataBorderColors"/></entry>
+      </row>
+      <row>
+        <entry>Data elements (points, lines, bar fill, etc.)</entry>
+        <entry><xref linkend="SetDataColors"/></entry>
+      </row>
+      <row>
+        <entry>Data value labels</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>Error bars</entry>
+        <entry><xref linkend="SetErrorBarColors"/></entry>
+      </row>
+      <row>
+        <entry>Image background</entry>
+        <entry><xref linkend="SetBackgroundColor"/></entry>
+      </row>
+      <row>
+        <entry>Image border</entry>
+        <entry><xref linkend="SetImageBorderColor"/></entry>
+      </row>
+      <row>
+        <entry>Legend background</entry>
+        <entry><xref linkend="SetBackgroundColor"/></entry>
+      </row>
+      <row>
+        <entry>Legend color box fill or point shape</entry>
+        <entry><xref linkend="SetDataColors"/></entry>
+      </row>
+      <row>
+        <entry>Legend color box outline</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>Legend outline</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>Legend text</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>Main title</entry>
+        <entry><xref linkend="SetTitleColor"/></entry>
+      </row>
+      <row>
+        <entry>Pie chart data labels</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>Pie slice fill</entry>
+        <entry><xref linkend="SetDataColors"/></entry>
+      </row>
+      <row>
+        <entry>Pie slice outlines</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>Plot area background</entry>
+        <entry><xref linkend="SetPlotBgColor"/></entry>
+      </row>
+      <row>
+        <entry>Plot border</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>X axis line</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>X axis data labels</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>X data lines</entry>
+        <entry><xref linkend="SetLightGridColor"/></entry>
+      </row>
+      <row>
+        <entry>X grid lines</entry>
+        <entry><xref linkend="SetLightGridColor"/></entry>
+      </row>
+      <row>
+        <entry>X tick labels</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>X tick marks</entry>
+        <entry><xref linkend="SetTickColor"/></entry>
+      </row>
+      <row>
+        <entry>X title</entry>
+        <entry><xref linkend="SetXTitleColor"/>, <xref linkend="SetTitleColor"/></entry>
+      </row>
+      <row>
+        <entry>Y axis lines</entry>
+        <entry><xref linkend="SetGridColor"/></entry>
+      </row>
+      <row>
+        <entry>Y axis data labels</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>Y grid lines</entry>
+        <entry><xref linkend="SetLightGridColor"/></entry>
+      </row>
+      <row>
+        <entry>Y tick labels</entry>
+        <entry><xref linkend="SetTextColor"/></entry>
+      </row>
+      <row>
+        <entry>Y tick marks</entry>
+        <entry><xref linkend="SetTickColor"/></entry>
+      </row>
+      <row>
+        <entry>Y title</entry>
+        <entry><xref linkend="SetYTitleColor"/>, <xref linkend="SetTitleColor"/></entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-labels">
+<title>Labels</title>
+<abstract><title></title>
+  <para>
+This section contains information about creating labels which identify data
+values on the plot.
+For a list of functions used to control labels,
+see <xref linkend="ref-labels"/>.
+  </para>
+</abstract>
+<para>
+Several types of labels are available in PHPlot:
+  <itemizedlist>
+    <listitem>
+      <para>
+Tick labels identify the values at the tick positions.
+There are X tick labels and Y tick labels.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+Axis data labels display the label values from your data array.
+X axis data labels are available for vertical plots, and
+Y axis data labels are available for horizontal plots.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+Data value labels display the actual value of a data point.
+These are available only for some plot types.
+Y data value labels are available for vertical plots, and
+X data value labels are available for horizontal plots.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+Pie chart data labels show the percentage of each pie slice.
+      </para>
+    </listitem>
+  </itemizedlist>
+</para>
+<note>
+  <para>
+The term <emphasis>data label</emphasis> is often used to refer to both axis
+data labels and data value labels. The same PHPlot functions are used
+to configure axis data labels and data value labels.
+  </para>
+</note>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample plot with the Y tick labels and X axis data labels called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/labels.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Tick labels and Data labels on a plot</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample plot with the pie chart labels called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/labels-pie.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Pie chart data labels</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample vertical bar plot with the Y tick labels,
+Y data value labels, and X axis data labels called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/labels-bar.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Tick labels, Data labels, and Data Value labels on a plot</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample horizontal bar plot with the Y (axis) data labels,
+X data value labels, and X tick labels called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/labels-horizbar.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Tick labels, Data labels, and Data Value labels on a plot</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<sect2 id="conc-labels-tick">
+<title>Tick Labels</title>
+<para>
+Tick labels identify the X or Y values at tick positions (even if the tick
+marks themselves are not drawn).
+See <xref linkend="conc-ticks"/> for information about the tick positions.
+</para>
+
+<para>
+Note that even with data type 'data-data', where explicit independent
+variable values for the data are supplied, the tick positions and labels
+along that axis are still calculated automatically (unless modified by the
+available functions).
+For example, for vertical plots, your supplied X values in the
+data array are not used for the X tick labels.
+</para>
+
+<para>
+You can enable, disable, or position the tick labels with
+<xref linkend="SetXTickLabelPos" /> and <xref linkend="SetYTickLabelPos" />.
+</para>
+</sect2>
+
+<sect2 id="conc-labels-data">
+<title>Axis Data Labels</title>
+<para>
+Axis data labels are available for the independent variable axis. This is X
+for vertical plots, and Y for horizontal plots.
+These data labels are supplied in your data array for each data point.
+For example, with data type text-data :
+<programlisting><![CDATA[$data = array( array('Peaches',100),
+               array('Apples', 140),
+               array('Pears', 90));
+]]></programlisting>
+The three points have data labels 'Peaches', 'Apples', and 'Pears'.
+For vertical plots, these data labels will be drawn at the bottom of the plot
+(by default) below the corresponding X values.
+For horizontal plots, these data labels will be drawn to the left of the plot
+(by default), to the left of the corresponding Y values.
+You can disable or reposition the data labels with
+<xref linkend="SetXDataLabelPos" /> and
+<xref linkend="SetYDataLabelPos" />.
+</para>
+
+<note>
+  <para>
+The axis data labels are not necessarily drawn along axis lines. They are
+usually drawn along the bottom (for X) or left side (for Y) of the plot.
+Although these are also the usual positions for the X axis and Y axis, the
+actual axis lines may be drawn elsewhere.
+See <xref linkend="SetXAxisPosition"/> or <xref linkend="SetYAxisPosition"/>
+for more information on axis positions.
+  </para>
+</note>
+
+<para>
+You will generally not want both tick labels and axis data labels on,
+because they will overlap and be unreadable. If you are not using data
+labels, you should either make them all empty strings in your data array,
+or else use <xref linkend="SetXDataLabelPos"/>('none') (for vertical plots)
+or <xref linkend="SetYDataLabelPos"/>('none') (for horizontal plots)
+to turn them off.
+You can also call <xref linkend="SetXTickLabelPos"/> (for vertical plots)
+or <xref linkend="SetYTickLabelPos"/> (for horizontal plots)
+to explicitly position the tick labels.
+PHPlot will then disable the data labels.
+</para>
+
+<para>
+If you don't tell PHPlot what to do with data and tick labels,
+the behavior depends on the PHPlot version.
+PHPlot 5.1.0 and later will examine your data array to see if there are any
+non-empty data labels, and if so it will draw only data labels, and omit
+tick labels.
+If all of the labels in your data array are empty, tick labels will be drawn.
+(PHPlot through 5.0.7 will draw both tick and data labels in these cases.)
+</para>
+
+</sect2>
+
+<sect2 id="conc-labels-datavalue">
+<title>Data Value Labels</title>
+<para>
+Data value labels are available only for some plot types.
+These are displayed inside the plot, and show the value at
+each data point, bar, or bar segment.
+</para>
+<para>
+For vertical bar charts, Y data value labels indicate the Y value for each
+bar, and are drawn above the bar for positive values, or below the bar for
+negative values.
+For vertical stackedbar charts, Y data value labels indicate the total Y
+value for each stack, and optionally indicate the value of each segment.
+Use <xref linkend="SetYDataLabelPos" /> to enable Y data value labels.
+</para>
+<para>
+For horizontal bar charts, X data value labels indicate the X value for each
+bar, and are drawn to the left or right of the end of the bar.
+For horizontal stackedbar charts, X data value labels indicate the total X
+value for each stack, and optionally indicate the value of each segment.
+Use <xref linkend="SetXDataLabelPos" /> to enable X data value labels.
+</para>
+
+<para>
+For vertical plots of types lines, linepoints, points, and squared,
+Y data value labels indicate the value of each point and are displayed
+(by default) above each point.
+PHPlot does not attempt to prevent interference between the labels and
+other plot elements.
+Use <xref linkend="SetYDataLabelPos" /> to enable Y data value labels.
+To change the position of the labels, see <xref linkend="conc-tuning-labels"/>.
+Note: data value labels for these plot types was added in PHPlot-5.3.0.
+</para>
+<para>
+Data value labels are not available with other plot types.
+</para>
+
+<para>
+  <note>
+    <para>
+The same function is used to position X axis data labels and X data value
+labels, and the same function is used to position Y axis data labels and Y data
+value labels. There is no ambiguity, because one type of label is available
+for each axis for vertical plots, and the other type for horizontal plots.
+    </para>
+  </note>
+</para>
+
+<para>
+<xref linkend="example-bars4" /> shows a vertical bar chart
+with Y data value labels.
+<xref linkend="example-stackedbars3" /> shows a vertical stacked bar chart
+with Y data value labels.
+<xref linkend="example-linepoints2" /> shows a linepoints plot
+with Y data value labels.
+</para>
+
+<para>
+<xref linkend="example-horizbar" /> shows a horizontal bar chart
+with X data value labels.
+<xref linkend="example-horizstackedbar" /> shows a horizontal stacked bar chart
+with X data value labels.
+</para>
+
+</sect2>
+
+<sect2 id="conc-labels-format">
+<title>Formatting Labels</title>
+<para>
+Both tick and data labels are subject to format controls. There are several
+choices in formatting.  By default, the label value itself is simply displayed.
+Use <xref linkend="SetXLabelType" /> and <xref linkend="SetYLabelType" /> to
+select one of the other format types for tick labels.
+Use <xref linkend="SetXDataLabelType" /> and
+<xref linkend="SetYDataLabelType" /> to select one of the other format
+types for data labels (both axis data labels and data value labels).
+(Note that SetXLabelType also sets the default format for X data labels,
+for use if SetXDataLabelType is not called.
+Also SetYLabelType sets the default for Y data labels, for use if
+SetYDataLabelType is not called.)
+</para>
+
+<para>
+Label format type 'data' expects the tick or data label values to be numbers,
+and formats the values as floating point numbers with a separator between every
+group of thousands and a fixed number of decimal places.
+You can set the number of digits of precision, with the default being 1 digit.
+PHPlot will try to set the thousands grouping separator and decimal separator
+according to your locale, but this can be overridden if necessary.
+</para>
+
+<para>
+Label format type 'time' expects the tick or data label values to be a PHP time
+value (number of seconds since a fixed base data, the Unix Epoch).
+PHPlot will format the labels according to the format string you provide.
+Refer to the PHP documentation for <function>strftime()</function> for
+details on the format string, but here are some examples for 31 December
+2004 at 1:23:45 pm:
+
+<informaltable>
+  <?dbfo table-width="40%"?> <!-- Table width hint for PDF only -->
+  <?dbfo keep-together="always"?>
+  <tgroup cols="2">
+    <?dbhtml table-summary="Date/time format examples"?>
+    <colspec colname="c1" colwidth="50*" />
+    <colspec colname="c2" colwidth="50*" />
+    <thead>
+      <row>
+        <entry>Format String:</entry>
+        <entry>Result:</entry>
+      </row>
+    </thead>
+    <tbody>
+      <row>
+        <entry>%Y-%m-%d</entry>   <entry>2004-12-31</entry>
+      </row>
+      <row>
+        <entry>%b %Y</entry>      <entry>Dec 2004</entry>
+      </row>
+      <row>
+        <entry>%b %d, %Y</entry>  <entry>Dec 31, 2004</entry>
+      </row>
+      <row>
+        <entry>%d %b</entry>      <entry>31 Dec</entry>
+      </row>
+      <row>
+        <entry>%H:%M:%S</entry>   <entry>13:23:45</entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+</para>
+
+<note>
+  <para>
+If you select 'time' formatting, but don't set a time format string,
+PHPlot-5.0rc3 and higher will format the values as hours, minutes, and
+seconds as shown in the last row of the table above.
+(The default format was undefined before version 5.0rc3.)
+  </para>
+  <para>
+Also note that there are limits to the range of this type of formatting
+that can make it unusable for historical data. On some platforms, dates
+before 1970-01-01 can not be formatted.
+  </para>
+  <para>
+Starting with PHPlot-5.0.4, empty string values for data labels are
+ignored for 'time' and 'data' formatting. Earlier versions would format
+the labels as 0 (for 'data') or cause an error (for 'time').
+  </para>
+</note>
+
+<para>
+While date/time formatting can be useful, for X values it may be
+easier to just format the label values in your PHP code and put the result
+into the label positions in the data array. If you need date/time formatting for
+Y values (and it is hard to imagine where that would be useful), you have
+no option but to use the 'time' format labels for tick values.
+</para>
+
+<para>
+Two additional label format types are available.
+Label format type 'printf' uses a custom print format string.
+To use label format type 'custom', you supply a function of your own
+to format the labels. See <xref linkend="SetXLabelType"/> for more
+details about these format types.
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-otherelements">
+<title>Other Plot Elements</title>
+<abstract><title></title>
+  <para>
+This section contains information about other elements which can be part of
+a plot.
+  </para>
+</abstract>
+
+<sect2 id="conc-titles">
+<title>Titles</title>
+<para>
+PHPlot can draw three types of titles:
+  <itemizedlist>
+    <listitem>
+      <para>
+The main plot title, which is centered at the top of the image.
+This is typically used to identify the plot as a whole.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+The X title, which is drawn horizontally and can appear below the plot,
+above the plot, or in both places.
+This is typically used to identify the values along the X axis.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+The Y title, which is drawn vertically and can appear to the left of the plot,
+to the right of the plot, or on both sides.
+This is typically used to identify the values along the Y axis.
+      </para>
+    </listitem>
+  </itemizedlist>
+For a list of functions used to control titles,
+see <xref linkend="ref-titles"/>.
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample plot with the titles called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/typical-titles.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Titles on a plot</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+</sect2>
+
+<sect2 id="conc-legend">
+<title>Legend</title>
+<para>
+PHPlot can draw a legend on the plot. This is normally used with multiple
+data sets, to identify the data sets by color.
+A legend can also be used with pie charts to identify the sections.
+For a list of functions used to control the legend,
+see <xref linkend="ref-legend"/>.
+</para>
+
+<para>
+  <itemizedlist>
+    <listitem>
+      <para>
+Use <xref linkend="SetLegend"/> to enable the legend and define the text lines
+to be displayed.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+You can let PHPlot position the legend, or position it yourself with
+<xref linkend="SetLegendPixels"/>, <xref linkend="SetLegendWorld"/>,
+or <xref linkend="SetLegendPosition"/>.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+You can use <xref linkend="SetLegendStyle"/>,
+<xref linkend="SetLegendUseShapes"/>, and
+<xref linkend="SetLegendReverse"/> to change the appearance of the legend.
+      </para>
+    </listitem>
+  </itemizedlist>
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample plot with the legend called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/typical-legend.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend on a plot</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+</sect2>
+
+<sect2 id="conc-grid">
+<title>Grid Lines</title>
+<para>
+PHPlot can draw horizontal (Y) and/or vertical (X) grid lines on a plot.
+You can independently enable the horizontal (Y) and vertical (X)
+lines in the grid, and use dashed or solid lines.
+For a list of functions used to control the grid,
+see <xref linkend="ref-grid"/>.
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+Here is a sample plot with the X Grid and Y Grid called out.
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/typical-grid.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>X and Y Grid</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+</sect2>
+
+<sect2 id="conc-ticks">
+<title>Tick Marks</title>
+<para>
+Tick marks are drawn by default along the bottom edge of the plot (X tick
+marks) and the left side of the plot (Y tick marks).
+These usually, but not always, correspond to the X and Y axis lines.
+You can set the tick interval or control the number of ticks, suppress the
+first or last tick on an axis, and control the tick mark size.
+You can also anchor the tick marks at a specific X or Y value.
+For a list of functions used to control tick marks,
+see <xref linkend="ref-ticks"/>.
+</para>
+<para>
+Left to its own, PHPlot will determine tick positions for X and Y axes, but it
+isn't too smart about choosing the values, and you might not be happy with the
+results.  You can improve the situation with some combination of: setting
+the desired tick interval, setting a tick anchor point, or using
+<xref linkend="SetPlotAreaWorld" /> to set the X or Y data range limits
+(since the automatic calculation of tick marks is based on the data range).
+</para>
+<para>
+ For example:
+<programlisting><![CDATA[$plot->SetPlotAreaWorld(-10, NULL, 10, NULL);
+$plot->SetXTickIncrement(1);
+]]></programlisting>
+This results in the X tick labels going from -10 to 10, with a tick mark
+every 1 data unit.
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-text">
+<title>Text Fonts</title>
+<abstract><title></title>
+  <para>
+This section contains information about using text fonts in PHPlot.
+See <xref linkend="ref-textfonts"/> for PHPlot functions used with text
+fonts.
+  </para>
+</abstract>
+
+<sect2 id="conc-text-overview">
+<title>Overview</title>
+<para>
+PHPlot supports both built-in GD fonts and TrueType fonts (if available on
+your system).
+TrueType fonts generally produce higher quality text, but using them
+requires more internal computations. The built-in GD fonts are faster
+to render, but are limited to one typeface and 5 available sizes.
+TrueType fonts can be drawn at any size and angle, and many typefaces are
+available.
+On most systems, TrueType fonts are anti-aliased for improved appearance,
+but under some conditions the GD fonts may be easier to read.
+TrueType fonts support much wider character sets, including special
+symbols, while the GD fonts are more limited.
+</para>
+
+<para>
+<?dbfo keep-together="always"?>
+The following figure shows the built-in GD fonts plus a sample TrueType
+font.  (Depending on how you are viewing this manual, the sizes of the
+fonts in this figure might differ from how they would look in a PHPlot
+image. For more on font sizes, see the notes with <xref linkend="SetFont" />.)
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/fonts.png" scale="65" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>A sample of the fonts</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+</sect2>
+
+<sect2 id="conc-text-fonts">
+<title>TrueType Font Selection</title>
+<para>
+PHPlot text can use built-in GD fonts or TrueType fonts. When using GD
+fonts, you specify a font name as a number between 1 and 5. This selects
+from 5 built-in GD fonts.
+When using TrueType fonts, you need to specify a font filename.
+The rest of this section discusses only TrueType fonts.
+</para>
+
+<note>
+  <para>
+The material on specifying font files for PHPlot applies to releases
+starting with PHPlot-5.1.3. Through PHPlot-5.1.2, you generally need to specify
+the full pathname of a font file, or the full path of a font directory.
+  </para>
+</note>
+
+<para>
+On Windows systems, you need to use the font filename, not the font name.
+You can get the font filename using Control Panel - Fonts.
+For example, Windows applications may display "Arial Black", or "Arial
+Black (TrueType)" as a font name, but the actual font filename is "ariblk.ttf".
+Since GD knows to look for fonts in the Windows font directory, you will
+not need to specify a full pathname to font files, unless the font is
+installed in some other directory.
+</para>
+
+<para>
+On Windows, you can use the "Character Map" system tool to examine a font.
+This can also be used to find the Unicode character code of a special character.
+These will be displayed in hexadecimal, for example U+20AC for the Euro.
+See <xref linkend="conc-text-special"/>
+for more information on using special characters.
+</para>
+
+<para>
+Here are some font selection examples for Windows:
+<programlisting><![CDATA[# For titles, use Arial Bold Italic at 14 points:
+$plot->SetFontTTF('title', 'ARIALBI.TTF', 14)
+# For X Title, use Verdana at 12 points:
+$plot->SetFontTTF('x_title', 'VERDANA.TTF', 12)
+]]></programlisting>
+</para>
+
+<para>
+On some Linux and similar systems, GD is able to find fonts specified
+without paths, but on other systems you will have to specify a font
+directory with either <xref linkend="SetTTFPath"/> or as part of the
+font name in <xref linkend="SetFontTTF"/>.
+If you specify a full pathname to a font, you must also supply the extension
+(.ttf); you may omit the extension when relying on GD to find the font.
+Remember that font filenames are case sensitive on most of these systems.
+</para>
+
+<para>
+The font search path for GD (bundled with PHP) includes the following
+directories on Linux and similar systems:
+  <itemizedlist>
+    <listitem>
+      <para><filename>/usr/X11R6/lib/X11/fonts/TrueType</filename></para>
+    </listitem>
+    <listitem>
+      <para><filename>/usr/X11R6/lib/X11/fonts/truetype</filename></para>
+    </listitem>
+    <listitem>
+      <para><filename>/usr/X11R6/lib/X11/fonts/TTF</filename></para>
+    </listitem>
+    <listitem>
+      <para><filename>/usr/share/fonts/TrueType</filename></para>
+    </listitem>
+    <listitem>
+      <para><filename>/usr/share/fonts/truetype</filename></para>
+    </listitem>
+    <listitem>
+      <para><filename>/usr/openwin/lib/X11/fonts/TrueType</filename></para>
+    </listitem>
+  </itemizedlist>
+If your system has TrueType fonts in one of those directories, you can
+select them with a filename only. If not, you must use a full directory path
+in either the font name or with SetTTFPath.
+</para>
+<note>
+  <para>
+The environment variable <envar>GDFONTPATH</envar> can be defined to
+contain a list of directories (separated by a colon ':') to search for
+fonts. If defined, this replaces the above list.
+  </para>
+</note>
+
+<para>
+Your Linux system may include a tool for examining fonts. One such tool is
+<application>gucharmap</application>.
+This can also be used to find the Unicode character code of a special character.
+These may be displayed in hexadecimal, for example U+20AC for the Euro.
+See the next section for more information on using special characters.
+</para>
+
+<para>
+Here are some font selection examples for Linux:
+<programlisting><![CDATA[# On systems with fonts in an expected place, like Slackware Linux,
+# just use the font filename:
+# For titles, use Liberation Sans Bold Italic at 14 points:
+$plot->SetFontTTF('title', 'LiberationSans-BoldItalic.ttf', 14)
+# For X Title, use DejaVuSans Bold at 12 points:
+$plot->SetFontTTF('x_title', 'DejaVuSans-Bold.ttf', 12)
+
+# Ubuntu and Debian use subdirectories under a searched path.
+# You can use a partial path here.
+$plot->SetFontTTF('x_title', 'ttf-liberation/LiberationSans-Regular.ttf', 12)
+
+# Fedora uses subdirectories which are not under a searched path.
+# You must use full paths here.
+$plot->SetTTFPath('/usr/share/fonts/liberation/');
+$plot->SetFontTTF('x_title', 'LiberationSans-Regular.ttf', 12)
+]]></programlisting>
+</para>
+
+</sect2>
+
+<sect2 id="conc-text-defaultfont">
+<title>Default TrueType Font</title>
+<note>
+  <para>
+This section applies starting with PHPlot-5.1.3.
+  </para>
+</note>
+<para>
+If you try to use TrueType text without specifying a font name, PHPlot will
+use the default font. You can set the default font with
+<xref linkend="SetDefaultTTFont"/>. If you do not set a default font,
+PHPlot tries to locate a sans-serif font to use. Here are the font names
+that PHPlot tries in order. First it tries the filename alone, letting GD
+use its search path, and then it tries with the default font path, as set
+with <xref linkend="SetTTFPath"/>.
+  <itemizedlist>
+    <listitem>
+      <para>
+<filename>LiberationSans-Regular.ttf</filename>
+- Likely to work on Linux and other systems with a correct GD font search path.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+<filename>Verdana.ttf, Arial.ttf, Helvetica.ttf</filename>
+- One of these is going to work on Windows, maybe other systems too.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+<filename>ttf-liberation/LiberationSans-Regular.ttf</filename>
+- This is for Debian, Ubuntu, and similar.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+<filename>benjamingothic.ttf</filename>
+- The original PHPlot default, for compatibility.
+      </para>
+    </listitem>
+  </itemizedlist>
+The last item on the list is used regardless of whether it can be found or
+not. This means if you enable TrueType fonts without setting a default, and
+get a fatal error from PHPlot that it can't find the font benjamingothic.ttf,
+this means PHPlot was unable to find any of the standard fonts in its list.
+On that system, then, you must provide either a font directory, or use full
+font pathnames.
+</para>
+</sect2>
+
+<sect2 id="conc-text-special">
+<title>Using Special Characters</title>
+<para>
+You can include special characters in your PHPlot labels and titles. This
+refers to characters which you may not be able to type with a single key
+on your keyboard, including accented characters and special symbols.
+</para>
+
+<para>
+PHPlot itself does not do any special processing of text strings, so you
+should refer to the PHP GD and Image Functions reference for more
+information.
+</para>
+
+<note>
+  <para>
+This mostly only works with TrueType fonts. The built-in GD fonts do
+have some extended characters, but they are encoded in ISO8859-2 which is
+probably not what you might expect, and the GD font routines do not support
+special character entities.
+  </para>
+</note>
+
+<para>
+To use special characters in your PHPlot text strings, you need a TrueType
+font that contains the characters you want. Ideally, you want a Unicode
+font. You might have to examine the font using an operating system-specific
+tool to see if your characters are present and to find their numeric values.
+</para>
+
+<para>
+There are two basic ways to include special characters in your text
+strings. The examples below use the Euro character, which is decimal
+Unicode value 8364.
+<itemizedlist>
+  <listitem>
+    <para>
+Use HTML-type character entities with decimal numeric encoding. For
+example, the Unicode Euro symbol is: &amp;#8364;
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Include the UTF-8 encoding of the Unicode value in your string as a series
+of hex escapes. For example, the Euro symbol is: "\xe2\x82\xac".
+    </para>
+  </listitem>
+</itemizedlist>
+</para>
+<para>
+These are shown in the example below, both of which set the Y axis title to
+"Items per &euro;100".
+<programlisting><![CDATA[$plot->SetYTitle("Items per &#8364;100"); # Numeric character entity
+$plot->SetYTitle("Items per \xe2\x82\xac100"); # UTF-8 encoding
+]]></programlisting>
+</para>
+
+<para>
+You can also use PHP functions to encode your characters for including in
+PHPlot text strings. See the PHP documentation for the functions
+<function>html_entity_decode()</function>
+and <function>iconv()</function>.
+Here are some examples (sent in by SourceForge user 'kalvaro'):
+<programlisting><![CDATA[# Encode the Euro symbol into UTF-8:
+$chars = html_entity_decode('&euro;', ENT_NOQUOTES, 'UTF-8');
+
+# Use iconv() to convert a character value xA4 in ISO-8859-15 to UTF:
+$chars = iconv('iso-8859-15', 'utf-8', chr(0xA4));
+]]></programlisting>
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="conc-errors">
+<title>Error Handling</title>
+<abstract><title></title>
+  <para>
+This section describes error handling in PHPlot. This information may not
+be accurate for PHPlot-5.0.4 and earlier.
+  </para>
+</abstract>
+
+<sect2 id="conc-errors-overview">
+<title>Error Handling Overview</title>
+<para>
+Errors detected within PHPlot are programming or installation errors. These
+are conditions that web application users should never see, because they
+should be detected and corrected before an application is deployed.
+Therefore, error handling in PHPlot is aimed more at the developer
+than the application user.
+</para>
+<para>
+PHPlot does the following by default when an error is detected:
+<itemizedlist>
+  <listitem>
+    <para>
+Creates an error image - an image containing the text of the error message.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Outputs the error image to standard output or to a file, depending on where
+the plot image was supposed to go.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Triggers a user-level error condition.
+If an error handler has been established, it determines what happens next.
+Otherwise, with no error handler:
+Writes the error message to error output, or logs it to the
+web server error log, depending on the PHPlot SAPI in use.
+Then the script will exit with a non-zero exit status.
+    </para>
+  </listitem>
+</itemizedlist>
+It is important not to have any text sent to standard output, even when
+an error occurs, or the image will be corrupted or PHP will display a "headers
+already sent" error and no image. Therefore it is necessary to turn off the
+PHP <command>display_errors</command> parameter, otherwise PHP will also
+write the error messages to standard output. This can be turned off in the
+php.ini configuration file, where it affects all scripts, or in an
+application script using:
+<programlisting><![CDATA[ini_set('display_errors', 'off');
+]]></programlisting>
+</para>
+<para>
+Note that an image is produced and output on error even if
+<function>SetPrintImage(False)</function> is used to suppress or delay
+the normal output of a plot image. The error image is meant for the application
+developer or tester, but you need to see the error message in order to fix
+the problem which caused it, so the image is output when the error occurs.
+</para>
+<para>
+<?dbfo keep-together="always"?>
+The following figure shows an example of an error image resulting from
+<function>$plot->SetPlotType('dots')</function>:
+  <informalfigure>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/error-image.png" scale="58" format="PNG" />
+      </imageobject>
+      <textobject>
+        <phrase>Example of an error image</phrase>
+      </textobject>
+    </mediaobject>
+  </informalfigure>
+</para>
+
+<para>
+You can disable the error image entirely using
+<xref linkend="SetFailureImage"/> (added in PHPlot-5.5.0).
+One case where this is recommended is when your script will use
+<xref linkend="EncodeImage"/> to get the plot image, rather than sending
+it to a file or back to the browser. Since your script is not intended to ever
+produce an image, it should not produce an error image either.
+</para>
+
+<para>
+If a failure occurs when error images are disabled with
+<xref linkend="SetFailureImage"/>, PHPlot will still trigger a user-level error
+condition, which will normally record the error message in the server log,
+and terminate the script. However, there will be no feedback to the user that
+the error occurred.
+If using <literal>SetFailureImage(False)</literal> to disable error images,
+you should place this call right after creating the PHPlot object, because
+an error which occurs before the call will produce an error image.
+</para>
+
+</sect2>
+
+<sect2 id="conc-errors-types">
+<title>Types of Errors</title>
+<para>
+The following types of errors can occur within PHPlot:
+<orderedlist>
+  <listitem>
+    <para>
+Parameter value errors: Use of an incorrect argument to a PHPlot function,
+such as: SetPlotType('dots') ['dots' is not a valid plot type].
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Semantic errors: Invalid combination of parameters or data values, such as
+trying to use data type 'data-data' with plot type 'bars' [bar charts only
+work with 'text-data' data type].
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Pathname errors: Missing font file or invalid font path; missing or
+invalid image file used as background. It might seem extreme to have a
+missing font file be a fatal error, but PHPlot has no way to substitute an
+appropriate font, and a missing font would indicate an application
+configuration or installation error.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+Inability to create a GD image resource. Probably the only way this can
+happen is if there is insufficient memory, which can occur if PHP's
+configured per-script memory limit is reached. (See note below)
+    </para>
+  </listitem>
+</orderedlist>
+All of these result in an E_USER_ERROR level error, except for memory
+exhaustion when creating an image, which is E_ERROR (fatal unrecoverable).
+If no GD image resource was created, no error image will be output.
+Furthermore, if the reason was memory exhaustion, there is no way to catch
+the error and PHP will cause the script to immediately exit.
+</para>
+</sect2>
+<sect2 id="conc-errors-handle">
+<title>Error Handlers</title>
+<para>
+It is possible to set up an error handler with PHP's
+<function>set_error_handler</function> to catch most errors from PHPlot.
+The handler can be established for all errors (the default), or just
+E_USER_ERROR error types (the only type PHPlot will trigger).
+See the PHP documentation for more details.
+Your handler function can perform cleanup before it exits, however it should
+not return.
+Some of the PHPlot functions will correctly handle a return from an error
+handler, and return FALSE to their callers, but not all. At the very least,
+a PHPlot object instance should be unset and not re-used after error.
+Use of error handlers that return is untested and unsupported.
+</para>
+<para>
+Note that an error image will be created and output, as described above,
+even if you have established an error handler.
+</para>
+
+</sect2>
+
+</sect1>
+
+</chapter>

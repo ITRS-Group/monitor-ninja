@@ -1,0 +1,1503 @@
+<!-- $Id: examples.xml 984 2011-07-28 22:23:54Z lbayuk $
+     Examples chapter for PHPlot Reference Manual
+
+     Notes to editors:
+         Refer to the manual source distribution README file for more
+     information on example production.
+         Try to add new examples to the end, so the numbers of the existing
+     examples do not change.
+-->
+<chapter id="examples">
+<title>PHPlot Examples</title>
+
+<abstract><title></title>
+  <para>
+This chapter contains examples of plots produced with PHPlot.
+  </para>
+</abstract>
+
+<para>
+Each of the following PHPlot examples shows an image, followed by the PHP
+script which produced that image.  Each script is self-contained (needing
+only PHPlot), so you can copy it from this manual and run it with PHP to
+produce the image.
+Note that some of the scripts may require the latest version of PHPlot.
+</para>
+
+<note>
+  <para>
+The PHP CLI (command line interface), used to generate the examples here,
+never outputs HTTP headers. So it isn't necessary to use
+<xref linkend="SetIsInline" /> to suppress headers when using the CLI.
+This is a useful method you can use to debug and test your own PHPlot scripts
+without having to modify them for stand-alone use.
+Also, by using the CLI instead of a web server and browser, you can more
+readily see any error messages.
+Run your PHPlot scripts with the PHP CLI like this (using the
+<ulink url="http://www.imagemagick.org/">ImageMagick</ulink>
+display program to view the results):
+    <screen><![CDATA[$  php myscript.php > output.png
+$  display output.png
+]]></screen>
+  </para>
+  <para>
+<application>ImageMagick</application> is available for several operating systems.
+There are many other image viewers for Linux and Linux-like systems,
+including <application>qiv</application> and <application>geeqie</application>.
+  </para>
+</note>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-lines1">
+<title>Example - Line Plot</title>
+<para>
+This is a simple line plot with a single data set. Data type 'data-data'
+is used to include the X values (the years) in the data points.
+</para>
+<example id="example-lines1">
+<?dbfo keep-together="auto"?>
+<title>Line Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/lines1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Line Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&lines1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-lines2">
+<title>Example - Line Plot: Functions</title>
+<para>
+This is a line plot showing the graph of sin(x) and cos(x).
+This uses quite a few of the PHPlot style control functions
+to tune the appearance of the plot.
+</para>
+<example id="example-lines2">
+<?dbfo keep-together="auto"?>
+<title>Line Plot: Functions</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/lines2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Line Plot Functions Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&lines2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-area1">
+<title>Example - Area Plot</title>
+<para>
+In the area plot, PHPlot fills the area from each data set down to the
+next data set, or to the X axis for the last data set.
+For this example, the data was prepared such that the data sets are
+cumulative percentages.
+(See also <xref linkend="example-stackedarea1" /> which produces a similar
+plot using a different data representation.)
+</para>
+<example id="example-area1">
+<?dbfo keep-together="auto"?>
+<title>Area Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/area1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Area Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&area1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-bars1">
+<title>Example - Bar Chart</title>
+<para>
+This is a bar chart with three data sets plotted. The data type is
+'text-data', so the X values are implicit. But the X values are
+not relevant because the data labels (month names) are used instead,
+and the X tick marks and labels are turned off. This plot uses the default
+shading of bars.
+</para>
+<example id="example-bars1">
+<?dbfo keep-together="auto"?>
+<title>Bar Chart</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/bars1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Bar Chart Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&bars1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-bars2">
+<title>Example - Unshaded Bar Chart</title>
+<para>
+This is the same example as <xref linkend="example-bars1" /> except shading has
+been turned off. Instead we get flat rectangles with borders for the bars.
+</para>
+<example id="example-bars2">
+<?dbfo keep-together="auto"?>
+<title>Bar Chart - Unshaded</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/bars2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Unshaded Bar Chart Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&bars2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-bars3">
+<title>Example - Bar Chart, Label Options</title>
+<para>
+This is a bar chart showing data per year. Because the Y values are so
+large, we enable numeric formatting of Y tick labels, with precision 0.
+This results in a comma separator between thousands.
+This example also shows how to force the Y tick marks to start at zero and
+use a nice whole number for the tick interval.
+</para>
+<example id="example-bars3">
+<?dbfo keep-together="auto"?>
+<title>Bar Chart - Label Options</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/bars3.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Bar Chart with Labels Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&bars3;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-linepoints1">
+<title>Example - Line/Point Plot, Point Shapes</title>
+<para>
+This is a 'linepoints' plot (Lines/Points) showing all the point shapes
+available for 'point' and 'linepoints' plots. In this example, we also
+use a legend to display a text string for each data set, and change the
+data colors to get a different color for each point shape.
+Note that the point shape sizes have been increased to 10 in this example,
+to make them easier to identify.
+</para>
+<example id="example-linepoints1">
+<?dbfo keep-together="auto"?>
+<title>Line/Point Plot, Point Shapes</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/linepoints1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Line/Point Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&linepoints1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-pie1">
+<title>Example - Pie Chart, text-data-single</title>
+<para>
+This is a pie chart with the data array type 'text-data-single'.
+This data type is only used with pie charts. Each record in the data array
+simply contains a label (which is not used by PHPlot) and a slice size.
+In this example, we use the label to identify the data for our own
+reference, and then build a legend from those data labels along with the
+data values. This is useful because PHPlot only labels the slices with
+percentage values.
+</para>
+<example id="example-pie1">
+<?dbfo keep-together="auto"?>
+<title>Pie Chart, text-data-single</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/pie1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Pie Chart text-data-single Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&pie1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-pie2">
+<title>Example - Pie Chart, text-data</title>
+<para>
+This is a simple pie chart showing the data type 'text-data'.
+When you use this data type with pie charts, the first entry in each record
+(a label) is ignored; the sum of all the second entries equals the relative
+size of the first slice, the sum of the third entries is the second slice,
+etc. So this pie has 4 slices, of relative size 250, 200, 350, and 200.
+</para>
+<para>
+Data type 'data-data' is similar, except the first two entries in each
+record (label and X value for other plot types) is ignored.
+</para>
+<example id="example-pie2">
+<?dbfo keep-together="auto"?>
+<title>Pie Chart, text-data</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/pie2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Pie Chart text-data Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&pie2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-pie3">
+<title>Example - Pie Chart, flat with options</title>
+<para>
+For this pie chart, we turned off shading with <xref linkend="SetShading" />
+to get a flat pie instead of a 3-D look.
+We also overrode the default colors with our own array using
+<xref linkend="SetDataColors" />,
+and used the same color names to make a legend with <xref linkend="SetLegend" />.
+Finally, we moved the labels in towards the center with
+<xref linkend="SetLabelScalePosition" />.
+</para>
+<example id="example-pie3">
+<?dbfo keep-together="auto"?>
+<title>Pie Chart, flat with options</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/pie3.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Pie Chart, Flat, with Options Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&pie3;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-points1">
+<title>Example - Points Plot with Error Bars</title>
+<para>
+This is a point plot with error bars (as indicated by data type
+'data-data-error'). Each point is specified as X value, Y value, Y error
+in the positive direction, and Y error in the negative direction.
+</para>
+<example id="example-points1">
+<?dbfo keep-together="auto"?>
+<title>Points Plot with Error Bars</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/points1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Points Plot with Error Bars Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&points1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-points2">
+<title>Example - Points Plot / Scatterplot</title>
+<para>
+This is a rather contrived example of using a 'points' plot to make a
+scatterplot. The data array is a set of X/Y points. With 'points' plots,
+the data can be in any order and duplicate X values are allowed.
+The points here are generated from R = 0.5 * Theta.
+</para>
+<para>
+For this example, the X and Y axes and tick marks were moved to 0,0, labels
+turned off, and plot borders enabled for all four sides.
+</para>
+<example id="example-points2">
+<?dbfo keep-together="auto"?>
+<title>Points Plot / Scatterplot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/points2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Points Plot / Scatterplot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&points2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-squared1">
+<title>Example - Squared Plot</title>
+<para>
+This is a squared line plot, which is similar to a line plot but
+the points are connected with steps.
+</para>
+<example id="example-squared1">
+<?dbfo keep-together="auto"?>
+<title>Squared Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/squared1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Squared Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&squared1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-stackedbars1">
+<title>Example - Stacked Bars, Shaded</title>
+<para>
+This is a stacked bar chart, with the default 3-D shaded look.
+(Compare with <xref linkend="example-stackedbars2" /> which has no shading.)
+The only valid data types for stacked bars are 'text-data' (for vertical
+plots), and 'text-data-yx' (for horizontal plots).
+</para>
+<example id="example-stackedbars1">
+<?dbfo keep-together="auto"?>
+<title>Stacked Bars, Shaded</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/stackedbars1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Stacked Bars, Shaded Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&stackedbars1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-stackedbars2">
+<title>Example - Stacked Bars, Unshaded</title>
+<para>
+This is the same as <xref linkend="example-stackedbars1" /> except we have
+turned off shading and now get flat stacked bars with borders.
+Also in this example we changed the legend using
+<xref linkend="SetLegendReverse"/> so the lines of text and color boxes
+are in the same order as the stacked bar segments, bottom-to-top.
+</para>
+<example id="example-stackedbars2">
+<?dbfo keep-together="auto"?>
+<title>Stacked Bars, Unshaded</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/stackedbars2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Stacked Bars, Unshaded Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&stackedbars2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-thinbarline1">
+<title>Example - Thin Bar Line Plot</title>
+<para>
+This is a Thin Bar Line Plot (thinbarline).
+</para>
+<example id="example-thinbarline1">
+<?dbfo keep-together="auto"?>
+<title>Thin Bar Line</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/thinbarline1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Thin Bar Line Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&thinbarline1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-thinbarline2">
+<title>Example - Thin Bar Line Plot, Wider Lines</title>
+<para>
+This is the same as the previous plot type
+(<xref linkend="example-thinbarline1" />) except the lines are wider.
+This now looks more like a bar chart.
+</para>
+<example id="example-thinbarline2">
+<?dbfo keep-together="auto"?>
+<title>Thin Bar Line Plot, Wider Lines</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/thinbarline2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Wider Thin Bar Line Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&thinbarline2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-twoplot1">
+<title>Example - Two Plots on One Image</title>
+<para>
+This example shows multiple plots tiled on a single image.
+To place multiple plots on an image, first disable automatic output with
+<xref linkend="SetPrintImage" />(False). Then define each plot area using
+<xref linkend="SetPlotAreaPixels" /> and create the plot.
+Finish each plot with <xref linkend="DrawGraph" />.
+At the end, <xref linkend="PrintImage" /> outputs the image containing all
+of the plots.
+</para>
+<para>
+See <xref linkend="adv-multiplot" /> for more information.
+</para>
+<example id="example-twoplot1">
+<?dbfo keep-together="auto"?>
+<title>Two Plots on One Image</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/twoplot1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Two Plots on One Image Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&twoplot1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-bars4">
+<title>Example - Bar Chart with Data Value Labels</title>
+<para>
+This is a bar chart with data value labels. Data value labels can be used as an
+alternative to (or along with) Y tick labels, but only with bar and stackedbar
+charts.
+(Bar chart data value labels were added to PHPlot-5.0rc3.)
+</para>
+<example id="example-bars4">
+<?dbfo keep-together="auto"?>
+<title>Bar Chart with Data Value Labels</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/bars4.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Bar Chart with Data Value Labels Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&bars4;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-stackedbars3">
+<title>Example - Stacked Bars with Y Data Value Labels</title>
+<para>
+This is the same as <xref linkend="example-stackedbars2" /> except that
+Y data value labels are turned on.
+Note this feature was added in PHPlot-5.1.1.
+</para>
+<example id="example-stackedbars3">
+<?dbfo keep-together="auto"?>
+<title>Stacked Bars with Y Data Value Labels</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/stackedbars3.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Stacked Bars with Y Data Value Labels Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&stackedbars3;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-stackedarea1">
+<title>Example - Stacked Area Plot</title>
+<para>
+The stacked area plot is similar in appearance to the area plot, and this
+example is the same as in <xref linkend="ex-area1" /> except for the
+plot type and data values. In the stacked area plot, PHPlot accumulates the
+Y values at each X position, similar to the stacked bar plot, and fills the
+area between the resulting values. For example, in 1960, 30% of the candy
+sales were cherry, 10% were lime, and 6% were lemon. In the stacked area
+plot, this is represented simply as (30, 10, 6, ...), whereas in the area
+plot example we had to sum the values to get (100, 70, 60, 54, ...).
+</para>
+<para>
+Also in this example we changed the legend using
+<xref linkend="SetLegendReverse"/> so the lines of text and color boxes
+are in the same order as the area segments, bottom-to-top.
+</para>
+<para>
+Note this plot type was added in PHPlot-5.1.1.
+</para>
+<example id="example-stackedarea1">
+<?dbfo keep-together="auto"?>
+<title>Stacked Area Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/stackedarea1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Stacked Area Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&stackedarea1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-annotate">
+<title>Example - Annotating a Plot Using a Callback</title>
+<para>
+This is an advanced example that uses a drawing callback to
+add annotations to a plot. More information on this topic can
+be found in <xref linkend="callbacks-drawing" />,
+where this example is described in detail.
+</para>
+<example id="example-annotate">
+<?dbfo keep-together="auto"?>
+<title>Annotated Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/annotate.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Annotated Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&annotate;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<!-- This webform.xml is long enough to get its own file. -->
+&webform;
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-truecolor-histogram">
+<title>Example - Using Truecolor To Make a Histogram</title>
+<para>
+This example creates a <link linkend="def-truecolor">Truecolor</link>
+plot containing a histogram of a photograph, then overlays the histogram on
+a scaled-down copy of the photograph. The histogram is partly transparent so
+you can still see the photograph below.
+Refer to <xref linkend="conc-truecolor"/> for more information on using
+truecolor PHPlot images.
+</para>
+<para>
+Here are some notes on the code example:
+  <itemizedlist>
+    <listitem>
+      <para>
+The main functions are <function>get_histogram</function> and
+<function>plot_histogram</function>. Parameters controlling the histogram
+and its placement on the image are in an array passed to
+<function>plot_histogram</function>. For the purpose of this demo, the
+array <literal>$param</literal> is used, and there is no provision to
+change the parameters or the photograph filename.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+This isn't a 'true' histogram, because the Y values are automatically scaled
+by PHPlot so they fill the available height. This could be called a
+'relative histogram', with the heights indicating the relative count of
+pixels in the image with that value.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+The histogram is created by converting each pixel's R, G, B color values to
+a grayscale value between 0 and 255, and counting the number of times each
+value appears in the image.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+The photograph image is scaled by PHPlot to fit into the background of the
+plot image using <xref linkend="SetBgImage"/>. The histogram is then
+drawn into an area restricted using <xref linkend="SetPlotAreaPixels"/>,
+leaving most of the background image unobscured. All labels and tick marks
+are turned off. The plot data colors are set to be partly transparent using
+the default alpha argument to <xref linkend="SetDataColors"/>.
+      </para>
+    </listitem>
+  </itemizedlist>
+</para>
+<para>
+  <note>
+This is a demonstration only. Processing individual pixels in
+nested loops this way using PHP code is not recommended, because it is very
+slow. A small image file (800x600) might be processed in a few seconds, but
+a larger file such as a 12 megapixel photograph could take 30 seconds, for
+example.
+  </note>
+</para>
+<example id="example-truecolor-histogram">
+<?dbfo keep-together="auto"?>
+<title>Truecolor Plot of Histogram</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/histogram.jpg" scale="58" format="JPEG" />
+    </imageobject>
+    <textobject>
+      <phrase>Truecolor Plot of Histogram Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&histogram;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-colorcallbackgradient">
+<title>Example - Creative Use of the Data Color Callback</title>
+<para>
+This example uses the data_color callback to vary the colors used in a
+thinbarline plot.
+The callback function <function>getcolor</function> simply returns the row
+number, which corresponds to each point's position along the X axis.
+PHPlot will therefore use a different color for each plotted point (modulo
+the number of defined colors). A large data color array is also defined,
+with colors set to shades of blue from dark to light and back to dark.
+</para>
+<para>
+A truecolor plot image is used to allow for more colors than would be
+allowed in a palette image.
+</para>
+<para>
+Using the data color callback is described in
+<xref linkend="conc-colors-datacolor-callback"/>.
+More information on callbacks can be found in
+<xref linkend="callbacks" />.
+More information on truecolor images can be found in
+<xref linkend="conc-truecolor" />.
+</para>
+<example id="example-colorcallbackgradient">
+<?dbfo keep-together="auto"?>
+<title>Creative Use of the Data Color Callback</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/colorcallbackgradient.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Data Color Callback Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&colorcallbackgradient;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-colorcallbackbars">
+<title>Example - Custom Bar Colors Using the Data Color Callback</title>
+<para>
+This example uses the data_color callback to customize the colors in a bar
+chart. The goal is to have the bar colors depend on the value of the bar
+(rather than the position of the bar in the bar group). Bars above 80% will
+be drawn in green, bars below 60% will be red, and bars in between those
+two values will be yellow.
+</para>
+<para>
+The function <function>pickcolor</function> is the data_color callback.
+It accesses the data array using its pass-through argument, indexing into
+it with the current row and column. (Note col+1 is used to skip over the row
+label.) It then checks the data value, and returns an index into the data
+colors array: 0, 1, or 2, depending on the value.
+</para>
+<para>
+Using the data color callback is described in
+<xref linkend="conc-colors-datacolor-callback"/>.
+More information on callbacks can be found in <xref linkend="callbacks" />.
+</para>
+<example id="example-colorcallbackbars">
+<?dbfo keep-together="auto"?>
+<title>Custom Bar Colors Using the Data Color Callback</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/colorcallbackbars.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Custom Bar Colors Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&colorcallbackbars;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-horizbar">
+<title>Example - Horizontal Bar Chart</title>
+<para>
+This example shows a horizontal bar chart.
+As always, the X axis is horizontal, and the Y axis is vertical.
+But the data array contains the X value for each implicit Y.
+The data type 'text-data-yx' indicates this is a
+horizontal plot.
+</para>
+<para>
+This example also has a tiled background image under the plot area.
+</para>
+<example id="example-horizbar">
+<?dbfo keep-together="auto"?>
+<title>Horizontal Bar Chart</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/horizbar.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Horizontal Bar Chart Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&horizbar;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-horizstackedbar">
+<title>Example - Horizontal Stacked Bar Chart</title>
+<para>
+This example shows a horizontal stacked bar chart.
+As always, the X axis is horizontal, and the Y axis is vertical.
+But the data array contains the X value for each implicit Y.
+The data type 'text-data-yx' indicates this is a
+horizontal plot.
+</para>
+<example id="example-horizstackedbar">
+<?dbfo keep-together="auto"?>
+<title>Horizontal Stacked Bar Chart</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/horizstackedbar.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Horizontal Stacked Bar Chart Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&horizstackedbar;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-horizthinbarline">
+<title>Example - Horizontal Thin Bar Line Plot</title>
+<para>
+This example shows a horizontal thin bar line (thinbarline) plot.
+As always, the X axis is horizontal, and the Y axis is vertical.
+The data type 'data-data-yx' indicates this is a
+horizontal plot, with explicit independent (Y) variables. There is
+one X for each Y. With this data type, the independent variable
+values need not be in order or sequential in the data array.
+</para>
+<example id="example-horizthinbarline">
+<?dbfo keep-together="auto"?>
+<title>Horizontal Thin Bar Line Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/horizthinbarline.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Horizontal Thin Bar Line Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&horizthinbarline;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-ohlcbasic">
+<title>Example - Basic OHLC (Open, High, Low, Close) Financial Plot</title>
+<para>
+This example shows an <link linkend="plottype-ohlc">ohlc</link> plot, which
+is a basic form of the Open, High, Low, Close (OHLC) financial plot.
+Each X is a point in time or interval, and there are 4 corresponding Y values
+for the four prices (open, high, low, and close).
+Compare this with the next two examples,
+<xref linkend="example-ohlccandlesticks"/>
+and <xref linkend="example-ohlccandlesticks2"/>,
+which show the same data but with a different presentation.
+</para>
+<para>
+In this example, the data array is read from an external file in Comma
+Separated Value (CSV) format. (Financial data in this format is available
+for download from sites such as Yahoo! Finance.)
+An portion example of the data file can be found below.
+</para>
+<para>
+This example uses the dates from the data file as row labels in the data
+array, with text-data data format. For this to work, the rows have to be sorted
+by increasing date, so the <function>read_prices_text_data()</function>
+first reads the data into a temporary array, sorts by the date, then copies
+the data into a PHPlot data array. Compare this with the other two OHLC
+examples, where the same data is used differently.
+</para>
+<example id="example-ohlcbasic">
+<?dbfo keep-together="auto"?>
+<title>Basic OHLC Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/ohlcbasic.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Basic OHLC Financial Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&ohlcbasic;
+</example>
+<para>
+Here is the top portion of the data file used for the three OHLC examples.
+This file is called <ulink url="ohlcdata.csv">ohlcdata.csv</ulink>.
+<programlisting><![CDATA[Date,Open,High,Low,Close,Volume,Adj Close
+2009-03-31,17.83,18.79,17.78,18.37,92095500,17.81
+2009-03-30,17.74,17.76,17.27,17.48,49633000,16.95
+2009-03-27,18.54,18.62,18.05,18.13,47670400,17.58
+2009-03-26,18.17,18.88,18.12,18.83,63775100,18.26
+2009-03-25,17.98,18.31,17.52,17.88,73927100,17.34
+...
+]]></programlisting>
+</para>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-ohlccandlesticks">
+<title>Example - Candlesticks OHLC (Open, High, Low, Close) Financial Plot</title>
+<para>
+This example shows a <link linkend="plottype-candlesticks">candlesticks</link>
+plot, which is a form of the Open, High, Low, Close (OHLC) financial plot.
+Each X is a point in time or interval, and there are 4 corresponding Y values
+for the four prices (open, high, low, and close).
+Compare this with <xref linkend="example-ohlcbasic"/>
+and <xref linkend="example-ohlccandlesticks2"/>,
+which show the same data but with a different presentation.
+</para>
+<para>
+The data values for this example are read from an external file.
+Refer to <xref linkend="ex-ohlcbasic"/> for more information.
+Unlike that example, this candlesticks example uses the dates from the
+data file as the X values in the data array, with the PHPlot data type
+data-data. The dates read from the file are converted into timestamp values
+with <function>strtotime()</function> inside
+<function>read_prices_data_data()</function>.
+Since each row in a data-data array specifies its X value, the rows do not
+need to be sorted (as they were in the previous example).
+</para>
+<para>
+PHPlot will format the X values as dates because <xref linkend="SetXLabelType"/>
+is used to select date/time formatting.  Unlike the text-data example, this
+also lets us use <xref linkend="SetXTickIncrement"/> to control the label
+density along the X axis.
+</para>
+<example id="example-ohlccandlesticks">
+<?dbfo keep-together="auto"?>
+<title>Candlesticks OHLC Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/ohlccandlesticks.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Candlesticks OHLC Financial Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&ohlccandlesticks;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-ohlccandlesticks2">
+<title>Example - Filled Candlesticks OHLC (Open, High, Low, Close) Financial Plot</title>
+<para>
+This example shows a <link linkend="plottype-candlesticks2">candlesticks2</link>
+plot, which is a form of the Open, High, Low, Close (OHLC) financial plot.
+Each X is a point in time or interval, and there are 4 corresponding Y values
+for the four prices (open, high, low, and close).
+Compare this with <xref linkend="example-ohlcbasic"/>
+and <xref linkend="example-ohlccandlesticks"/>,
+which show the same data but with a different presentation.
+With the candlesticks2 plot type, all the candlestick bodies are filled in,
+meaning you must set meaningful data colors in order to be able to tell if
+a security closes up or down.
+</para>
+<para>
+The data values for this example are read from an external file.
+Refer to <xref linkend="ex-ohlcbasic"/> for more information.
+This example uses the data-data format, with the dates read from the file
+converted to X values in the data array.
+</para>
+<example id="example-ohlccandlesticks2">
+<?dbfo keep-together="auto"?>
+<title>Filled Candlesticks OHLC Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/ohlccandlesticks2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Filled Candlesticks OHLC Financial Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&ohlccandlesticks2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-linepoints2">
+<title>Example - Linepoints Plot with Data Value Labels</title>
+<para>
+This example shows a linepoints plot with data value labels. These are
+text strings which show the Y value above each point.
+(This feature was implemented for lines, points, and linepoints plots
+in PHPlot-5.3.0.)
+Because the Y values are shown with the data value labels, we have chosen
+to turn off the Y axis ticks and tick labels, which would be somewhat
+redundant.
+This example also has data label lines
+(see <xref linkend="SetDrawXDataLabelLines"/>),
+which are the lines drawn from the X axis up to the data points, to help
+associate the point with the X axis label.
+</para>
+<example id="example-linepoints2">
+<?dbfo keep-together="auto"?>
+<title>Linepoints Plot with Data Value Labels</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/linepoints2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Linepoints Plot with Data Value Labels Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&linepoints2;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-outbreak">
+<title>Example - Overlaying Plots</title>
+<para>
+This example shows overlay plots, where multiple plots are drawn at the same
+position on the same image. In this case, one plot contains a stacked bar
+plot, and the second is a linepoints plot. The two plots also have
+different Y axis scales.
+</para>
+<para>
+See <xref linkend="adv-multiplot" /> for more information.
+</para>
+<example id="example-outbreak">
+<?dbfo keep-together="auto"?>
+<title>Overlaying Plots</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/outbreak.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Overlay Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&outbreak;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-legendshape">
+<title>Example - Legend with Point Shapes</title>
+<para>
+This example shows the standard legend appearance, followed by the same
+plot with point shapes in the legend instead of color boxes.
+Using point shapes in the legend was added in PHPlot-5.4.0.
+This feature is useful if you need to be able to interpret the legend
+without color, for example with monochrome printing, or for accessibility
+reasons. See <xref linkend="conc-legend"/> for more on the plot legend.
+</para>
+<example id="example-legendshape">
+<?dbfo keep-together="auto"?>
+<title>Legend with Color Boxes or Point Shapes</title>
+<para>
+First, here is the standard legend with color boxes.
+</para>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/legendshape.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend with Color Boxes</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&legendshape;
+<para>
+Changing the call to <xref linkend="SetLegendUseShapes"/> results in a
+legend using point shapes instead of color boxes.
+</para>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/legendshape1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend with Point Shapes</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&legendshape1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-legendpos">
+<title>Example - Legend Positioning</title>
+<para>
+Here are some examples showing the usage of <xref linkend="SetLegendPosition"/>
+to position the legend on the plot. The first two arguments ($x, $y)
+indicate a point on the legend box, relative to the legend box size, with
+(0,0) being the upper left corner, and (1,1) being the lower right corner.
+The third argument $relative_to indicates the positioning mode: image, plot,
+world, or title. The next two arguments ($x_base, $y_base), along with the
+positioning mode, indicate where to place the legend point given in the
+first two arguments. The last two optional arguments ($x_offset, $y_offset)
+are an additional pixel offset.
+</para>
+<example id="example-legendpos">
+<?dbfo keep-together="auto"?>
+<title>Legend Positioning</title>
+
+<para><?dbfo keep-together="always"?>
+Case 1. Place upper left corner of legend at offset (5,5) from upper left corner of image:
+<programlisting><![CDATA[$plot->SetLegendPosition(0, 0, 'image', 0, 0, 5, 5);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 1</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 2. Place bottom left corner of legend at offset (7,-7) from bottom
+left corner of image:
+<programlisting><![CDATA[$plot->SetLegendPosition(0, 1, 'image', 0, 1, 7, -7);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos2.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 2</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 3. Place top right corner of legend at top center of plot area:
+<programlisting><![CDATA[$plot->SetLegendPosition(1, 0, 'plot', 0.5, 0);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos3.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 3</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 4. Center the legend in the upper half of the plot area:
+<programlisting><![CDATA[$plot->SetLegendPosition(0.5, 0.5, 'plot', 0.5, 0.25);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos4.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 4</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 5. Place center of legend at world coordinates (2,60):
+<programlisting><![CDATA[$plot->SetLegendPosition(0.5, 0.5, 'world', 2, 60);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos5.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 5</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 6. Place top right corner of legend at offset (-5,5) from world
+coordinates (4,0):
+<programlisting><![CDATA[$plot->SetLegendPosition(1, 0, 'world', 4, 0, -5, 5);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos6.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 6</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+<para><?dbfo keep-together="always"?>
+Case 7. Center the top of the legend below the bottom of the title:
+<programlisting><![CDATA[$plot->SetLegendPosition(0.5, 0, 'title', 0.5, 1);
+]]></programlisting>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/legendpos7.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Legend Position Case 7</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+</para>
+
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-ytickanchor">
+<title>Example - Setting a Y Tick Anchor</title>
+<para>
+This example shows the use of <xref linkend="SetYTickAnchor"/> to tell PHPlot
+that we want a tick mark and label at a specific value.
+</para>
+<example id="example-ytickanchor">
+<?dbfo keep-together="auto"?>
+<title>Setting a Y Tick Anchor</title>
+<para>
+First, here is the example without a Y tick anchor. Note that there is no Y
+tick mark or label at the X axis Y=0.
+</para>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/ytickanchor.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Setting a Y Tick Anchor - 1</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&ytickanchor;
+<para>
+Using <xref linkend="SetYTickAnchor"/>(0) tells PHPlot to shift the Y tick
+marks and labels to place a tick mark at Y=0.
+</para>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/ytickanchor1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Setting a Y Tick Anchor - 2</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&ytickanchor1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<pagebreak/>
+<sect1 id="ex-xtickanchor">
+<title>Example - Hourly Data Using X Tick Anchor</title>
+<para>
+This example uses an X tick anchor (see <xref linkend="SetXTickAnchor"/>) to
+offset the X tick marks and grid lines. Hourly data is being plotted, for
+one week, and the goal is to have the tick marks and grid lines separate
+the days of the week, regardless of the time during the day of the initial
+data point.
+</para>
+
+<para>
+In this example, both X axis data labels and X tick labels are turned on.
+The data labels display weekday names, and the tick labels display the dates.
+Having both labels on is usually something to avoid, because the labels will
+overlay.
+In this case, however, only 1 in 24 points has a data label (those points
+representing noon). Tick marks are also every 24 hours, but anchored at
+midnight. So the tick and data labels are separated.
+To avoid any overlap, the tick labels are drawn vertically (90 degrees)
+while the data labels are horizontal.
+</para>
+<para>
+(Note that <xref linkend="SetXLabelAngle"/> sets the angle for both tick
+and data labels, while <xref linkend="SetXDataLabelAngle"/> sets the angle
+for data labels only. PHPlot does this to maintain compatibility.
+As a result, since the example here wants to turn the tick labels only
+(from the default 0 degrees), we also need to turn the data labels back to 0.
+The order of the calls does not matter, however.
+The same is true for label formatting with
+<xref linkend="SetXLabelType"/> and <xref linkend="SetXDataLabelType"/>.
+To get non-default tick label formatting and default data label formatting
+requires two calls as shown in the example.)
+</para>
+
+<example id="example-xtickanchor">
+<?dbfo keep-together="auto"?>
+<title>Hourly Data Using X Tick Anchor</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/xtickanchor.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Hourly Data Using X Tick Anchor</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&xtickanchor;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+<!-- Note: This example scripts makes a web page (HTML file), not an image.
+     A screen-shot of the page was created separately and is included in
+     the images/ directory with the manual. PHPlot is not used to generate
+     this example when building the manual.
+-->
+
+<pagebreak/>
+<sect1 id="ex-encodeimage">
+<title>Example - Embedding Image with EncodeImage</title>
+<para>
+This example shows how <xref linkend="EncodeImage"/> can be used to
+embed a PHPlot image inside an HTML file using the 'data:' URL scheme.
+Note: This feature was added in PHPlot-5.5.0.
+</para>
+
+<para>
+This is the same plot as <xref linkend="ex-lines2"/>, except instead of
+producing the image on standard output, this script embeds the image in an HTML
+page, which is produced on standard output. The screen shot below shows how the
+web page looks in Firefox.
+</para>
+
+<example id="example-encodeimage">
+<?dbfo keep-together="auto"?>
+<title>Embedding Image with EncodeImage</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="images/encodeimage.png" scale="55" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Web Page With Embedded Image</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&encodeimage;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+
+<pagebreak/>
+<sect1 id="ex-bubbles1">
+<title>Example - Bubbles Plot</title>
+<para>
+This example shows a <link linkend="plottype-bubbles">bubbles plot</link>.
+A data array for a bubbles plot uses the
+<link linkend="data-data-xyz">data-data-xyz</link> data type, in which three
+coordinate values specify each point: X and Y are the position on the plot,
+and Z maps to the bubble diameter.
+</para>
+<para>
+In this example, X is the flavor, Y is the age group, and Z represents the
+percentage of participants who liked that flavor.
+Note that there are two missing points in the Y=1 row.  No bubbles are
+drawn at X=3,Y=1 or X=5,Y=1.
+Presumably, no-one under 12 would try the pear or kiwi flavors, so there are
+no valid data points there. This is different from a value Z=0, which
+would be plotted with a bubble of the smallest size.
+</para>
+<para>
+This plot type was added in PHPlot-5.5.0.
+</para>
+
+<para>
+This example also shows the use of custom Y labels. A function
+<function>get_label()</function> is defined to map the Y tick value
+into a string from an array of strings. This method allows the display
+of arbitrary labels along the Y axis.
+See <xref linkend="SetYLabelType"/> for details.
+</para>
+
+<example id="example-bubbles1">
+<?dbfo keep-together="auto"?>
+<title>Bubbles Plot</title>
+<informalfigure>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="examples/bubbles1.png" scale="58" format="PNG" />
+    </imageobject>
+    <textobject>
+      <phrase>Bubbles Plot Example</phrase>
+    </textobject>
+  </mediaobject>
+</informalfigure>
+&bubbles1;
+</example>
+</sect1>
+
+<!-- =============================================== -->
+
+</chapter>

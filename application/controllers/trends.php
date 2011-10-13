@@ -118,6 +118,7 @@ class Trends_Controller extends Authenticated_Controller {
 	private $notifications_link = "notifications/index";
 
 	private $reports_model = false;
+	private $trends_graph_model;
 	public $start_date = false;
 	public $end_date = false;
 	private $report_options = false;
@@ -128,6 +129,7 @@ class Trends_Controller extends Authenticated_Controller {
 		parent::__construct();
 
 		$this->reports_model = new Reports_Model();
+		$this->trends_graph_model = new Trends_graph_Model();
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -189,6 +191,15 @@ class Trends_Controller extends Authenticated_Controller {
 			'DOWN' => $this->translate->_('DOWN'),
 			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
 		);
+	}
+
+	/**
+	 * Display chart for $chart_key
+	 *
+	 * @param string $chart_key
+	 */
+	public function line_point_chart($chart_key) {
+		$this->trends_graph_model->display_chart($chart_key);
 	}
 
 	/**
@@ -968,75 +979,29 @@ class Trends_Controller extends Authenticated_Controller {
 			$container = $raw_trends_data;
 		}
 
+
 		unset($raw_trends_data);
-		$resolution_names = false;
-		$length = $report_end-$report_start;
-		$days = floor($length/86400);
-		$time = $report_start;
-		$df = nagstat::date_format();
-		$df_parts = explode(' ', $df);
-		if (is_array($df_parts) && !empty($df_parts)) {
-			$df = $df_parts[0];
-		} else {
-			$df = 'Y-m-d';
-		}
-
-		switch ($days) {
-			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
-				while ($time < $report_end) {
-					$h = date('H', $time);
-					$resolution_names[] = $h;
-					$time += (60*60);
-				}
-				break;
-			case 7: # thisweek', last7days', 'lastweek':
-				while ($time < $report_end) {
-					$h = date('w', $time);
-					$resolution_names[] = date($df, $time);
-					$time += 86400;
-				}
-				break;
-			case ($days > 90) :
-				$prev = '';
-				while ($time < $report_end) {
-					$h = date('M', $time);
-					if ($prev != $h) {
-						$resolution_names[] = $h;
-					} else {
-						$resolution_names[] = ' &nbsp;';
-					}
-					$time += 86400;
-					$prev = $h;
-				}
-
-				break;
-			case ($days > 7) :
-				while ($time < $report_end) {
-					$h = date('d', $time);
-					$resolution_names[] = $h;
-					$time += 86400;
-				}
-
-				break;
-			default: # < 7 days, custom report period, defaulting to day names
-				while ($time < $report_end) {
-					$h = date('w', $time);
-					$resolution_names[] = $this->abbr_day_names[$h];
-					$time += 86400;
-				}
-				break;
-		}
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
+		$content->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+			$container,
+			$report_start,
+			$report_end,
+			sprintf(
+				$this->translate->_('State History for %s'.PHP_EOL.' (%s   to   %s)'),
+				$this->report_type,
+				date(nagstat::date_format(), $report_start),
+				date(nagstat::date_format(), $report_end)
+			)
+		);
+		$content->container = $container;
 		$content->object_data = $container;
 		$content->start = $report_start;
 		$content->end = $report_end;
 		$content->report_period = $report_period;
-		$content->resolution_names = $resolution_names;
 		$content->length = ($report_end - $report_start);
 		$content->sub_type = $sub_type;
-
 		$avail_template->use_alias = false;
 		$avail_template->use_average = false;
 		$content->avail_data = $avail_data;
@@ -1044,7 +1009,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$content->multiple_items = $multiple_items;
 		$content->str_start_date = $str_start_date;
 		$content->str_end_date = $str_end_date;
-		$content->title = sprintf($t->_('State History for %s'), $label_type).': '.$obj_key;
+		$content->title = sprintf($t->_('State History for %s'), $label_type);
 		$content->rpttimeperiod = $rpttimeperiod;
 		$content->label_report_period = $label_report_period;
 		$content->objects = $objects;
