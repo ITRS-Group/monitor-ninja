@@ -1132,10 +1132,6 @@ class Reports_Controller extends Authenticated_Controller
 		$esec 	= (int)arr::search($_REQUEST, 'esec');
 		$this->report_type = $this->_check_report_type($this->report_type, $in_host, $in_service, $servicegroup, $hostgroup);
 
-		# these inputs are not provided when called from trends.cgi
-		#if(!isset($_REQUEST['rpttimeperiod']))
-		#	$_REQUEST['rpttimeperiod'] = '';
-
 		# default to "Current state" = -1 both in new and old avail
 		if(!isset($_REQUEST['initialassumedhoststate']))
 			$_REQUEST['initialassumedhoststate'] = $this->initialassumedhoststate;
@@ -1546,25 +1542,25 @@ class Reports_Controller extends Authenticated_Controller
 
 			# hostgroups / servicegroups
 			if ($this->type == 'avail' && isset($this->data_arr[0])) {
+
 				$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
-				$header = $template->header;
-				$header->report_time_formatted = $report_time_formatted;
+				$template->header->report_time_formatted = $report_time_formatted;
 				$template->header->create_pdf = $this->create_pdf;
 				if (!$this->create_pdf) {
 					$csv_link = $this->_get_csv_link();
-					$header->csv_link = $csv_link;
-					$header->pdf_link = $pdf_link;
+					$template->header->csv_link = $csv_link;
+					$template->header->pdf_link = $pdf_link;
 				} #end if NOT create_pdf
 				if ($report_period != 'custom') {
-					$header->str_start_date = $str_start_date;
-					$header->str_end_date = $str_end_date;
+					$template->header->str_start_date = $str_start_date;
+					$template->header->str_end_date = $str_end_date;
 				}
-				$header->use_average = $use_average;
+				$template->header->use_average = $use_average;
 
-				$header->label_report_period = $label_report_period;
-				$header->label_to = $t->_('to');
-				$header->label_using_avg = $t->_('using averages');
-				$header->label_print = $t->_('Print report');
+				$template->header->label_report_period = $label_report_period;
+				$template->header->label_to = $t->_('to');
+				$template->header->label_using_avg = $t->_('using averages');
+				$template->header->label_print = $t->_('Print report');
 
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
@@ -1582,6 +1578,48 @@ class Reports_Controller extends Authenticated_Controller
 					for($i=0,$num_groups=count($template_values)  ; $i<$num_groups ; $i++) {
 						$this->_reorder_by_host_and_service($template_values[$i], $this->report_type);
 					}
+
+				if($group_name) {
+					// Copy-pasted from controllers/trends.php
+					foreach ($this->data_arr as $key => $data) {
+						# >= 2 hosts or services won't have the extra
+						# depth in the array, so we break out early
+						if (empty($data['log']) || !is_array($data['log'])) {
+							$graph_data = $this->data_arr['log'];
+							break;
+						}
+
+						# $data is the outer array (with, source, log,
+						# states etc)
+						if (empty($graph_data)) {
+							$graph_data = $data['log'];
+						} else {
+							$graph_data = array_merge($data['log'], $graph_data);
+						}
+					} # end foreach
+				} else {
+					// We are not checking groups
+					$graph_data = $this->data_arr['log'];
+				}
+
+				$template->trends_graph = $this->add_view('trends/new_report');
+				$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+					$graph_data,
+					$report_class->start_time,
+					$report_class->end_time,
+					$template->title
+				);
+				$template->trends_graph->is_avail = true;
+				$template->trends_graph->create_pdf = $this->create_pdf;
+				if ($this->create_pdf) {
+					$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+						$graph_data,
+						$report_class->start_time,
+						$report_class->end_time,
+						$template->title
+					);
+					$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+				}
 
 				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
 				$template->content->multiple_states = $template_values;
@@ -1696,6 +1734,7 @@ class Reports_Controller extends Authenticated_Controller
 					$template->content->create_pdf = $this->create_pdf;
 					$template->content->start_time = $this->start_date;
 					$template->content->end_time = $this->end_date;
+
 					$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->str_start_date = $str_start_date;
@@ -1738,7 +1777,6 @@ class Reports_Controller extends Authenticated_Controller
 						$avail->report_time_formatted = $report_time_formatted;
 						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
-
 						$avail->header_string = ucfirst($this->report_type)." ".$t->_('state breakdown');
 						if ($this->create_pdf) {
 							$content = $avail;
@@ -1749,85 +1787,47 @@ class Reports_Controller extends Authenticated_Controller
 							$trends_data = $data['log'];
 						}
 
-						# from trends:
-						$report_start = $report_class->start_time;
-						$report_end = $report_class->end_time;
+						if($group_name) {
+							// Copy-pasted from controllers/trends.php
+							foreach ($this->data_arr as $key => $data) {
+								# >= 2 hosts or services won't have the extra
+								# depth in the array, so we break out early
+								if (empty($data['log']) || !is_array($data['log'])) {
+									$graph_data = $this->data_arr['log'];
+									break;
+								}
 
-						$resolution = false;
-						$resolution_steps = false;
-						$resolution_names = false;
-						$length = $report_end-$report_start;
-						$days = floor($length/86400);
-						$time = $report_start;
-						$df = nagstat::date_format();
-						$df_parts = explode(' ', $df);
-						if (is_array($df_parts) && !empty($df_parts)) {
-							$df = $df_parts[0];
+								# $data is the outer array (with, source, log,
+								# states etc)
+								if (empty($graph_data)) {
+									$graph_data = $data['log'];
+								} else {
+									$graph_data = array_merge($data['log'], $graph_data);
+								}
+							} # end foreach
 						} else {
-							$df = 'Y-m-d';
-						}
-
-						switch ($days) {
-							case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
-								while ($time < $report_end) {
-									$h = date('H:i', $time);
-									$resolution_names[] = $h;
-									$time += (60*60);
-								}
-								break;
-							case 7: # thisweek', last7days', 'lastweek':
-								while ($time < $report_end) {
-									$h = date('w', $time);
-									$resolution_names[] = date($df, $time);
-									$time += 86400;
-								}
-								break;
-							case ($days > 90) :
-								$prev = '';
-								while ($time < $report_end) {
-									$h = date('M', $time);
-									if ($prev != $h) {
-										$resolution_names[] = $h;
-									} else {
-										$resolution_names[] = ' &nbsp;';
-									}
-									$time += 86400;
-									$prev = $h;
-								}
-
-								break;
-							case ($days > 7) :
-								while ($time < $report_end) {
-									$h = date('d', $time);
-									$resolution_names[] = $h;
-									$time += 86400;
-								}
-
-								break;
-							default: # < 7 days, custom report period, defaulting to day names
-								while ($time < $report_end) {
-									$h = date('w', $time);
-									$resolution_names[] = $this->abbr_day_names[$h];
-									$time += 86400;
-								}
-								break;
+							// We are not checking groups
+							$graph_data = $this->data_arr['log'];
 						}
 
 						$template->trends_graph = $this->add_view('trends/new_report');
+						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+							$graph_data,
+							$report_class->start_time,
+							$report_class->end_time,
+							$template->title
+						);
+						$template->trends_graph->report_time_formatted = $report_time_formatted;
+						$template->trends_graph->create_pdf = $this->create_pdf;
 						$this->xtra_css[] = $this->add_path('css/default/reports');
 						$this->xtra_js[] = $this->add_path('trends/js/trends');
-						$template->trends_graph->object_data = $trends_data;
-						$template->trends_graph->object_data = $trends_data;
-						$template->trends_graph->start = $report_start;
-						$template->trends_graph->end = $report_end;
-						$template->trends_graph->report_period = $report_period;
-						$template->trends_graph->resolution_names = $resolution_names;
-						$template->trends_graph->length = ($report_end - $report_start);
-						$template->trends_graph->sub_type = $sub_type;
-						$template->trends_graph->is_avail = true;
-						$template->trends_graph->avail_height = 50;
-						$template->trends_graph->create_pdf = $this->create_pdf;
 						if ($this->create_pdf) {
+							$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+								$graph_data,
+								$report_class->start_time,
+								$report_class->end_time,
+								$template->title
+							);
 							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
 						}
 
@@ -1925,13 +1925,13 @@ class Reports_Controller extends Authenticated_Controller
 								$host = $hostname[0];
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
-										 "&amp;host_name=all".
-										 "&amp;report_period=$report_period".
-										 "&amp;rpttimeperiod=$rpttimeperiod".
-										 "&amp;start_time=".$this->start_date.
-										 "&amp;end_time=".$this->end_date.
-										 "&amp;initialassumedhoststate=".$this->initial_assumed_host_state.
-										 "&amp;initialassumedservicestate=".$this->initial_assumed_service_state;
+									 "&amp;host_name=all".
+									 "&amp;report_period=$report_period".
+									 "&amp;rpttimeperiod=$rpttimeperiod".
+									 "&amp;start_time=".$this->start_date.
+									 "&amp;end_time=".$this->end_date.
+									 "&amp;initialassumedhoststate=".$this->initial_assumed_host_state.
+									 "&amp;initialassumedservicestate=".$this->initial_assumed_service_state;
 
 								if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
 								if($assume_initial)		$all_avail_params .= "&amp;assumeinitialstates=$assume_initial";
@@ -1941,37 +1941,37 @@ class Reports_Controller extends Authenticated_Controller
 								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('Availability report for all hosts');
 
 								$trends_params = "host=$host".
-												"&amp;t1=$t1".
-												"&amp;t2=$t2".
-												"&amp;assumestateretention=$assume_state_retention".
-												"&amp;assumeinitialstates=".$assume_initial_states.
-												"&amp;includesoftstates=".$include_soft_states.
-												"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-												"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-												"&amp;backtrack=$backtrack";
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+									"&amp;backtrack=$backtrack";
 
 								$trends_img_params = $this->trend_link."?".
-															"host=$host".
-															"&amp;createimage&amp;smallimage".
-															"&amp;t1=$t1".
-															"&amp;t2=$t2".
-															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$assume_initial_states.
-															"&amp;includesoftstates=".$include_soft_states.
-															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-															"&amp;backtrack=$backtrack";
+									"host=$host".
+									"&amp;createimage&amp;smallimage".
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+									"&amp;backtrack=$backtrack";
 
 								$trends_link_params = $this->trend_link."?".
-															"host=$host".
-															"&amp;t1=$t1".
-															"&amp;t2=$t2".
-															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$assume_initial_states.
-															"&amp;includesoftstates=".$include_soft_states.
-															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-															"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
-															"&amp;backtrack=$backtrack";
+									"host=$host".
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
+									"&amp;backtrack=$backtrack";
 
 
 
@@ -1997,18 +1997,18 @@ class Reports_Controller extends Authenticated_Controller
 									$template->content->service = $service;
 								}
 								$avail_params = "&show_log_entries".
-											 "&amp;t1=$t1".
-											 "&amp;t2=$t2".
-											 "&amp;report_period=".$report_period.
-											 "&amp;rpttimeperiod=$rpttimeperiod".
-											 "&amp;backtrack=$backtrack".
-											 "&amp;assumestateretention=$assume_state_retention".
-											 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-											 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-											 "&amp;initialassumedhoststate=".$this->initialassumedhoststate.
-											 "&amp;initialassumedservicestate=".$this->initialassumedservicestate.
-											 "&amp;show_log_entries".
-											 "&amp;showscheduleddowntime=yes";
+									 "&amp;t1=$t1".
+									 "&amp;t2=$t2".
+									 "&amp;report_period=".$report_period.
+									 "&amp;rpttimeperiod=$rpttimeperiod".
+									 "&amp;backtrack=$backtrack".
+									 "&amp;assumestateretention=$assume_state_retention".
+									 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
+									 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
+									 "&amp;initialassumedhoststate=".$this->initialassumedhoststate.
+									 "&amp;initialassumedservicestate=".$this->initialassumedservicestate.
+									 "&amp;show_log_entries".
+									 "&amp;showscheduleddowntime=yes";
 
 
 								if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
@@ -2017,40 +2017,39 @@ class Reports_Controller extends Authenticated_Controller
 								if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
 
 								$trends_params = "host=$host".
-												"&amp;t1=$t1".
-												"&amp;t2=$t2".
-												"&amp;assumestateretention=$assume_state_retention".
-												"&amp;assumeinitialstates=".$assume_initial_states.
-												"&amp;includesoftstates=".$include_soft_states.
-												"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-												"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-												"&amp;backtrack=$backtrack";
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+									"&amp;backtrack=$backtrack";
 
 								$trends_img_params = $this->trend_link."?".
-															"host=$host".
-															"&amp;service=$service".
-															"&amp;createimage&amp;smallimage".
-															"&amp;t1=$t1".
-															"&amp;t2=$t2".
-															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$assume_initial_states.
-															"&amp;includesoftstates=".$include_soft_states.
-															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-															"&amp;backtrack=$backtrack";
+									"host=$host".
+									"&amp;service=$service".
+									"&amp;createimage&amp;smallimage".
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+									"&amp;backtrack=$backtrack";
 
 								$trends_link_params = $this->trend_link."?".
-															"host=$host".
-															"&amp;service=$service".
-															"&amp;t1=$t1".
-															"&amp;t2=$t2".
-															"&amp;assumestateretention=$assume_state_retention".
-															"&amp;assumeinitialstates=".$assume_initial_states.
-															"&amp;includesoftstates=".$include_soft_states.
-															"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
-															"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
-															"&amp;backtrack=$backtrack";
-
+									"host=$host".
+									"&amp;service=$service".
+									"&amp;t1=$t1".
+									"&amp;t2=$t2".
+									"&amp;assumestateretention=$assume_state_retention".
+									"&amp;assumeinitialstates=".$assume_initial_states.
+									"&amp;includesoftstates=".$include_soft_states.
+									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
+									"&amp;backtrack=$backtrack";
 
 								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
 								$history_params       = "host=$host&amp;service=$service";
@@ -2120,43 +2119,8 @@ class Reports_Controller extends Authenticated_Controller
 				$this->template->css_header->css = $this->xtra_css;
 			}
 
-			if($group_name) {
-				// Copy-pasted from controllers/trends.php
-				foreach ($this->data_arr as $key => $data) {
-					# >= 2 hosts or services won't have the extra
-					# depth in the array, so we break out early
-					if (empty($data['log']) || !is_array($data['log'])) {
-						$graph_data = $this->data_arr['log'];
-						break;
-					}
-
-					# $data is the outer array (with, source, log,
-					# states etc)
-					if (empty($graph_data)) {
-						$graph_data = $data['log'];
-					} else {
-						$graph_data = array_merge($data['log'], $graph_data);
-					}
-				} # end foreach
-			} else {
-				// We are not checking groups
-				$graph_data = $this->data_arr['log'];
-			}
-			$template->header->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-				$graph_data,
-				$report_class->start_time,
-				$report_class->end_time,
-				$template->title
-			);
-
 			# skip the rest if pdf or mashing
 			if ($this->create_pdf || $this->mashing) {
-				$template->header->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
-					$graph_data,
-					$report_class->start_time,
-					$report_class->end_time,
-					$template->title
-				);
 				$this->pdf_data['content'] = $template->content->render();
 				$this->pdf_data['header'] = $template->header->render();
 
@@ -3703,11 +3667,12 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
+		$pdf->writeHTML($this->pdf_data['header'], true, 0, true, 0);
+
 		if (isset($this->pdf_data['trends_graph'])) {
 			$pdf->writeHTML($this->pdf_data['trends_graph'], true, 0, true, 0);
 		}
 
-		$pdf->writeHTML($this->pdf_data['header'], true, 0, true, 0);
 		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
 
 		if (isset($image_string) && !empty($image_string)) {

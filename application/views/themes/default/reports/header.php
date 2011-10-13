@@ -17,16 +17,9 @@
 				)
 			)
 		);
-	} else { ?>
-		<img src="<?php echo $graph_chart_pdf_src ?>" alt="Loading bar chart" />
-	<?php }
+	}
 	echo isset($csv_link) ? $csv_link : '';
 	echo isset($pdf_link) ? $pdf_link : '';
 
 ?>
 </div>
-
-<?php if(!$create_pdf && isset($graph_image_source) && $graph_image_source) { ?>
-<p style="margin-bottom: 3em"><img src="<?php echo url::site()?>trends/<?php echo $graph_image_source ?>" alt="" /></p>
-<br style="clear: both;" />
-<?php } ?>
