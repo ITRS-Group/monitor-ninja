@@ -27,15 +27,15 @@ fi
 runTest()
 {
 	line="$@"
-    if [ "$line" != "" ]
+	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
 	then
 		the_test=`echo $line|awk '{print $1}'`
 		the_user=`echo $line|awk '{print $2}'`
 		/usr/bin/php $prefix/index.php $the_test $the_user
-   		if [ $? -ne 0 ]
-    	then
-        	errors=$(($errors + 1))
-    	fi
+		if [ $? -ne 0 ]
+		then
+			errors=$(($errors + 1))
+		fi
 	fi
 }
 
