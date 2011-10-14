@@ -95,7 +95,7 @@ class Trends_graph_Model extends Model
 		header("Content-Type: ".mime_content_type($filename));
 		header("Content-Length: ".filesize($filename));
 		readfile($filename);
-		//unlink($filename);
+		unlink($filename);
 		die;
 	}
 
