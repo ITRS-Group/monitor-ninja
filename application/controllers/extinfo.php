@@ -1542,12 +1542,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 					url::redirect('command/unauthorized');
 				}
 
-				if (!empty($_POST['del_service'])) {
+				if (isset($_POST['del_submithost_svc']) && !empty($_POST['del_service'])) {
 					# service comments
 					$cmd = 'DEL_SVC_DOWNTIME';
-						if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
-							url::redirect('command/unauthorized');
-						}
+					if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
+						url::redirect('command/unauthorized');
+					}
 					foreach ($_POST['del_service'] as $param) {
 						$nagios_commands = Command_Controller::_build_command($cmd, array('downtime_id' => $param), $nagios_commands);
 					}

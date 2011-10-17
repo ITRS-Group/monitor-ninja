@@ -25,7 +25,7 @@ if (!empty($command_result)) {
 				  echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($host_data)) {
-		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_delete_host" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
+		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
 	}?>
 
 				  <div style="clear:both"></div></span>
@@ -41,8 +41,8 @@ if (!empty($command_result)) {
 		</caption>-->
 		<thead>
 			<tr>
-				<th class="td_host_checkbox headerNone" style="display:none">
-					<?php echo form::checkbox(array('name' => 'selectall_host', 'class' => 'selectall_host'), ''); ?>
+				<th class="headerNone item_select" style="display:none">
+					<?php echo form::checkbox(array('name' => 'selectall_host', 'class' => 'select_all_items'), ''); ?>
 				</th>
 				<th class="headerNone"><?php echo $label_host_name ?></th>
 				<th class="headerNone"><?php echo $label_entry_time ?></th>
@@ -59,7 +59,7 @@ if (!empty($command_result)) {
 		<tbody>
 		<?php $i=0; foreach ($host_data as $row) { $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td class="td_host_checkbox" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_host[]', 'class' => 'deletecommentbox_host'), $row->downtime_id); ?></td>
+			<td class="item_select" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_host[]', 'class' => 'deletecommentbox_host'), $row->downtime_id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
 			<td><?php echo $row->author_name ?></td>
@@ -76,13 +76,15 @@ if (!empty($command_result)) {
 				?>
 			</td>
 		</tr>
-		<?php }
-		echo '<tr class="odd submithost"><td colspan="11">';
-		echo form::submit(array('name' => 'del_submithost'), $this->translate->_('Delete Selected'));
-		echo form::submit(array('name' => 'del_submithost_svc', 'id' => 'del_submithost_svc'), $this->translate->_('Delete for services too'));
-		echo '<span  class="host_feedback"></span></td></tr>';?>
+		<?php } ?>
 		</tbody>
 	</table>
+	<?php
+	echo '<div class="item_select" style="display:none">';
+	echo form::submit(array('name' => 'del_submithost'), $this->translate->_('Delete Selected'));
+	echo form::submit(array('id' => 'del_submithost_svc'), $this->translate->_('Delete for services too'));
+	echo '<span class="host_feedback"></span>';
+	echo '</div></form>'; ?>
 	<br />
 	<br />
 	<?php
@@ -90,10 +92,12 @@ if (!empty($command_result)) {
 
 	echo '<h2>'.$service_title_str.'</h2>';
 
-	echo form::open('', array('onsubmit' => 'return false'));
-	echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-	echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
-	echo form::close();
+	if (!empty($service_data)) {
+		echo form::open('', array('onsubmit' => 'return false'));
+		echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+		echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
+		echo form::close();
+	}
 	echo "<br />";
 
 	echo '<span style="float: right; margin-top: -30px; ">';
@@ -102,7 +106,7 @@ if (!empty($command_result)) {
 	echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($service_data)) {
-		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_delete_service" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
+		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
 	} ?>
 	</span>
 
@@ -114,8 +118,8 @@ if (!empty($command_result)) {
 		<!--<caption><?php echo $service_title_str ?></caption>-->
 		<thead>
 			<tr>
-				<th class="td_service_checkbox headerNone" style="display:none">
-					<?php echo form::checkbox(array('name' => 'selectall_service', 'class' => 'selectall_service'), ''); ?>
+				<th class="headerNone item_select_service" style="display:none">
+					<?php echo form::checkbox(array('name' => 'selectall_service', 'class' => 'select_all_items_service'), ''); ?>
 				</th>
 				<th class="headerNone"><?php echo $label_host_name ?></th>
 				<th class="headerNone"><?php echo $label_service ?></th>
@@ -133,7 +137,7 @@ if (!empty($command_result)) {
 		<tbody>
 		<?php $i = 0; foreach ($service_data as $row) { $i++; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
-			<td class="td_service_checkbox" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_service[]', 'class' => 'deletecommentbox_service'), $row->downtime_id); ?></td>
+			<td class="item_select_service" style="display:none;padding-left:7px"><?php echo form::checkbox(array('name' => 'del_service[]', 'class' => 'deletecommentbox_service'), $row->downtime_id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) ?></td>
 			<td><?php echo date($date_format, $row->entry_time) ?></td>
@@ -151,12 +155,14 @@ if (!empty($command_result)) {
 				?>
 			</td>
 		</tr>
-		<?php }
-		echo '<tr class="odd submitservice"><td colspan="12">';
-		echo form::submit(array('name' => 'del_submitservice'), $this->translate->_('Delete Selected'));
-		echo '<span  class="service_feedback"></span></td></tr>';?>
+		<?php } ?>
 		</tbody>
 	</table>
-	<?php }
+	<?php
+	echo '<div class="item_select_service" style="display:none">';
+	echo form::submit(array('name' => 'del_submitservice'), $this->translate->_('Delete Selected'));
+	echo '<span  class="service_feedback"></span>';
+	echo '</div>'; ?>
+	<?php } else { echo $this->translate->_('No services scheduled for downtime'); }
 	echo form::close(); ?>
 </div>

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	var old_refresh = 0;
 
 	$('.filterboxfield').focus(function() {
 		if (!$('#ninja_refresh_control').attr('checked')) {
@@ -31,7 +32,7 @@ $(document).ready(function() {
 		========================
 	*/
 	// host comments
-	$('#hostcomments_table').tablesorter({});
+	$('#hostcomments_table').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearhostsearch').click(function() {
 		$('#hostfilterbox').val('').trigger('keyup').trigger('blur');
@@ -52,7 +53,7 @@ $(document).ready(function() {
 	});
 
 	// service comments
-	$('#servicecomments_table').tablesorter({});
+	$('#servicecomments_table').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearservicesearch').click(function() {
 		$('#servicefilterbox').val('').trigger('keyup').trigger('blur');
@@ -79,7 +80,7 @@ $(document).ready(function() {
 		========================
 	*/
 	// host scheduled downtime
-	$('#scheduled_host_downtime').tablesorter({});
+	$('#scheduled_host_downtime').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearhostsearch_sched').click(function() {
 		$('#hostfilterbox_sched').val('').trigger('keyup').trigger('blur');
@@ -101,7 +102,7 @@ $(document).ready(function() {
 
 
 	// service scheduled downtime
-	$('#scheduled_service_downtime').tablesorter({});
+	$('#scheduled_service_downtime').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearservicesearch_sched').click(function() {
 		$('#servicefilterbox_sched').val('').trigger('keyup').trigger('blur');
@@ -133,16 +134,6 @@ $(document).ready(function() {
 
 	setTimeout('hide_del_msg()', 3000);
 
-	$('.deletecommentbox_host').hide();
-	$('#selectall_host').hide();
-	$('.td_host_checkbox').hide();
-	$('.submithost').hide();
-
-	$('.deletecommentbox_service').hide();
-	$('#selectall_service').hide();
-	$('.td_service_checkbox').hide();
-	$('.submitservice').hide();
-
 	// restore left border for first cell of each row
 	$('table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
 	$('table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
@@ -152,123 +143,11 @@ $(document).ready(function() {
 		//return false;
 	});
 
-	$('#del_submithost_svc').click(function() {
-
+	var validate_host_submit = function() {
 		$('.deletecommentbox_host').each(function() {
-			if ($(this).attr('checked')) {
-				var hostname = $(this).closest('tr').find('td:nth-child(2)').text();
-				$('#scheduled_service_downtime').find('tr td:nth-child(2)').each(function() {
-					if ($(this).text() == hostname) {
-						$(this).closest('tr').find('td:nth-child(1) input[type="checkbox"]').attr('checked', true);
-					}
-				});
-			}
-
+			if (!$(this).is(':visible'))
+				$(this).attr('checked', false);
 		});
-
-	});
-
-	// refresh helper code
-	var old_refresh = 0;
-	var refresh_is_paused = false;
-	var host_hidden = true;
-	$('#select_multiple_delete_host').click(function() {
-		if (!refresh_is_paused) {
-			if ($('.td_host_checkbox').is(':visible') || $('.td_service_checkbox').is(':visible')) {
-				// pausing and un-pausing refresh might be
-				// irritating for users that already has selected
-				// to pause refresh
-
-				// save previous refresh rate
-				// to be able to restore it later
-				old_refresh = current_interval;
-				$('#ninja_refresh_lable').css('font-weight', 'bold');
-				ninja_refresh(0);
-				$("#ninja_refresh_control").attr('checked', true);
-			} else {
-				// restore previous refresh rate
-				ninja_refresh(old_refresh);
-				$("#ninja_refresh_control").attr('checked', false);
-				$('#ninja_refresh_lable').css('font-weight', '');
-			}
-		}
-
-		if (!host_hidden) {
-			$('.deletecommentbox_host').hide();
-			$('.td_host_checkbox').hide();
-			$('#selectall_host').hide();
-			$('.submithost').hide();
-
-			// uncheck all host checkboxes
-			$('.deletecommentbox_host').attr('checked', false);
-			$('.selectall_host').attr('checked', false);
-			host_hidden = true;
-		} else {
-			$('.deletecommentbox_host').show();
-			$('.td_host_checkbox').show();
-			$('#selectall_host').show();
-			$('.submithost').show();
-			host_hidden = false;
-		}
-		return false;
-	});
-
-	var svc_hidden = true;
-	$('#select_multiple_delete_service').click(function() {
-		if (!refresh_is_paused) {
-			if ($('.td_service_checkbox').is(':visible') || $('.td_host_checkbox').is(':visible')) {
-				// pausing and un-pausing refresh might be
-				// irritating for users that already has selected
-				// to pause refresh
-
-				// save previous refresh rate
-				// to be able to restore it later
-				old_refresh = current_interval;
-				$('#ninja_refresh_lable').css('font-weight', 'bold');
-				ninja_refresh(0);
-				$("#ninja_refresh_control").attr('checked', true);
-			} else {
-				// restore previous refresh rate
-				ninja_refresh(old_refresh);
-				$("#ninja_refresh_control").attr('checked', false);
-				$('#ninja_refresh_lable').css('font-weight', '');
-			}
-		}
-
-		if (!svc_hidden) {
-			$('.deletecommentbox_service').hide();
-			$('.td_service_checkbox').hide();
-			$('#selectall_service').hide();
-			$('.submitservice').hide();
-
-			// uncheck all service checkboxes
-			$('.deletecommentbox_service').attr('checked', false);
-			$('.selectall_service').attr('checked', false);
-
-			svc_hidden = true;
-		} else {
-			$('.deletecommentbox_service').show();
-			$('.td_service_checkbox').show();
-			$('#selectall_service').show();
-			$('.submitservice').show();
-			svc_hidden = false;
-		}
-		return false;
-	});
-
-	$('#selectall_host').change(function() {
-		$('.deletecommentbox_host').each(function() {
-			$(this).attr('checked', $('#selectall_host').attr('checked'));
-		});
-	});
-	$('#selectall_service').change(function() {
-		$('.deletecommentbox_service').each(function() {
-			$(this).attr('checked', $('#selectall_service').attr('checked'));
-		});
-	});
-
-	// check that user selected any checkboxes before submitting
-	$('#del_submithost').click(function() {
 		if (!$('.deletecommentbox_host').filter(':checked').length) {
 			$('.host_feedback').text('   Nothing selected...');
 			setTimeout(function() {$('.host_feedback').hide();}, 5000);
@@ -276,9 +155,39 @@ $(document).ready(function() {
 		} else {
 			$('.host_feedback').text('');
 		}
+	}
+
+	$('#del_submithost_svc').click(function() {
+		if (validate_host_submit() == false)
+			return false;
+
+		var hostform = $(this).parents('form');
+		// borderline evil:
+		// this moves the checkboxes from the service form to the host form before submitting.
+		var cb = trigger_cb_on_nth_call(function() {hostform.submit();}, $('.deletecommentbox_host').length);
+		hostform.append('<input type="hidden" name="del_submithost_svc" value="1" />');
+		$('.deletecommentbox_host').each(function() {
+			if ($(this).attr('checked')) {
+				var hostname = $(this).closest('tr').find('td:nth-child(2)').text();
+				$('#scheduled_service_downtime').find('tr td:nth-child(2)').each(function() {
+					if ($(this).text() == hostname) {
+						hostform.append($(this).closest('tr').find('td:nth-child(1) input[type="checkbox"]').css('display', 'none').attr('checked', true));
+					}
+				});
+			}
+			cb();
+		});
+		return false;
 	});
 
+	// check that user selected any checkboxes before submitting
+	$('#del_submithost').click(validate_host_submit);
+
 	$('#del_submitservice').click(function() {
+		$('.deletecommentbox_service').each(function() {
+			if (!$(this).is(':visible'))
+				$(this).attr('checked', false);
+		});
 		if (!$('.deletecommentbox_service').filter(':checked').length) {
 			$('.service_feedback').text('   Nothing selected...');
 			setTimeout(function() {$('.service_feedback').hide();}, 5000);

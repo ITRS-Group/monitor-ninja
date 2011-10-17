@@ -27,6 +27,7 @@ if (!empty($command_result)) {
 </div>-->
 <a name="comments"></a>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
+	<?php if (Router::$method == 'show_comments') { echo form::open('extinfo/show_comments'); } ?>
 	<table class="comments_table" id="<?php echo ($service == false ? 'host' : 'service') ?>comments_table">
 		<caption>
 			<?php echo (isset($label_title)) ? $label_title : $this->translate->_('Comments'); ?>:
@@ -36,15 +37,14 @@ if (!empty($command_result)) {
 			<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => $label_delete_all_comments, 'title' => $label_delete_all_comments, 'style' => 'margin-bottom: -4px')) ?>
 			<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, $this->translate->_('Delete all'), array('style' => 'font-weight: normal')); ?>
 			<?php if (Router::$method == 'show_comments') {
-				echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_delete_<?php echo ($service == false ? 'host' : 'service') ?>" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+				echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple<?php echo ($service == false ? '' : '_service') ?>_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
 			<?php } ?>
 		</caption>
 		<thead>
 			<tr>
-			<?php if (Router::$method == 'show_comments') {
-					echo form::open('extinfo/show_comments'); ?>
-				<th class="td_<?php echo ($service == false ? 'host' : 'service') ?>_checkbox" style="display_none">
-					<?php echo form::checkbox(array('name' => 'selectall_'.($service == false ? 'host' : 'service'), 'class' => 'selectall_'.($service == false ? 'host' : 'service')), ''); ?>
+			<?php if (Router::$method == 'show_comments') { ?>
+				<th class="item_select<?php echo ($service == false ? '' : '_service') ?>">
+					<?php echo form::checkbox(array('name' => 'selectall_'.($service == false ? 'host' : 'service'), 'class' => 'select_all_items'.($service == false ? '' : '_service')), ''); ?>
 				</th>
 				<th style="white-space: nowrap">
 					<?php echo $label_host_name ?>
@@ -69,7 +69,7 @@ if (!empty($command_result)) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<?php if (Router::$method == 'show_comments') { ?>
-				<td class="td_<?php echo ($service == false ? 'host' : 'service') ?>_checkbox" style="display_none"><?php echo form::checkbox(array('name' => 'del_'.$row['comment_type'].'[]', 'class' => 'deletecommentbox_'.($service == false ? 'host' : 'service')), $row['comment_id']); ?></td>
+				<td class="item_select<?php echo ($service == false ? '' : '_service') ?>"><?php echo form::checkbox(array('name' => 'del_'.$row['comment_type'].'[]', 'class' => 'deletecommentbox_'.($service == false ? 'host' : 'service')), $row['comment_id']); ?></td>
 				<td style="white-space: nowrap"><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
 				<?php if (isset($row['service_description']) && !empty($row['service_description'])) { ?>
 				<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
@@ -126,15 +126,15 @@ if (!empty($command_result)) {
 			<tr class="even">
 				<td colspan="<?php echo $service ? 10 : 9 ?>"><?php echo $no_data ?></td>
 			</tr>
-		<?php }
-		if (Router::$method == 'show_comments') {
-			echo '<tr class="odd submit'.($service == false ? 'host' : 'service').'"><td colspan="'.($service ? 11 : 10).'">';
-			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), $this->translate->_('Delete Selected'));
-			echo '<span  class="'.($service == false ? 'host' : 'service').'_feedback"></span></td></tr>';
-			echo form::close();
-		}
-		?>
+		<?php } ?>
 		</tbody>
 	</table>
-
+	<?php
+		if (Router::$method == 'show_comments') {
+			echo '<div class="item_select'.($service == false ? '' : '_service').'">';
+			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), $this->translate->_('Delete Selected'));
+			echo '</div>';
+			echo form::close();
+		}
+	?>
 </div>

@@ -427,8 +427,11 @@ $(document).ready(function() {
 		if ($(this).attr('checked')) {
 			$('.select_all_items').attr('checked', true);
 			$(".item_select input[type='checkbox']").not('.select_all_items').each(function() {
-				if (!$(this).attr('disabled')) {
+				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
 					$(this).attr('checked', true);
+				}
+				else if ($(this).is(':hidden')) {
+					$(this).attr('checked', false);
 				}
 			});
 		} else {
@@ -442,8 +445,11 @@ $(document).ready(function() {
 		if ($(this).attr('checked')) {
 			$('.select_all_items_service').attr('checked', true);
 			$(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
-				if (!$(this).attr('disabled')) {
+				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
 					$(this).attr('checked', true);
+				}
+				else if ($(this).is(':hidden')) {
+					$(this).attr('checked', false);
 				}
 			});
 		} else {
@@ -1108,3 +1114,11 @@ function loadScroll() { // added function
 		window.scrollTo(parseInt(ar[0]), parseInt(ar[1]));
 	}
 }
+
+function trigger_cb_on_nth_call(cb, n) {
+	return function() {
+		if (--n <= 0)
+			cb();
+	};
+}
+
