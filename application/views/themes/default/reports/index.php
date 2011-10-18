@@ -22,7 +22,7 @@ if (!empty($widgets)) {
 		}
 	}
 	if (!empty($trends_graph)) {
-		echo '<strong style="margin-bottom: -25px; margin-top: 25px;display: block">'.help::render('trends').' '.$this->translate->_('Trends').'</strong>';
+		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '.$this->translate->_('Trends').'</strong>';
 		echo $trends_graph;
 	}
 	echo !empty($content) ? $content : '';
