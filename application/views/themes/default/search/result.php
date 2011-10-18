@@ -49,7 +49,7 @@ if (isset($host_result) ) {
 				<?php echo html::anchor('extinfo/details/host/'.$host->host_name.'#comments',
 						html::image($this->add_path('icons/16x16/add-comment.png'),
 						array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
-						'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px')); ?>
+						'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment')); ?>
 			</span>
 			<?php } ?>
 			<div style="float: right"><?php
