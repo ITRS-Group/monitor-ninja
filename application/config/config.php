@@ -209,12 +209,14 @@ $config['pnp4nagios_config_path'] = '/opt/monitor/etc/pnp/config.php';
  * If path differs from the one below but still installed
  * you could simply change it.
  */
+/* remove hardcoded nagvis menu entry
 $config['nagvis_real_path'] = '/opt/monitor/op5/nagvis/';
 if (is_dir($config['nagvis_real_path'])) {
 	$config['nagvis_path'] = '/monitor/op5/nagvis/';
 } else {
 	$config['nagvis_path'] = false;
 }
+*/
 
 /**
 * Add some suport for cacti/statistics

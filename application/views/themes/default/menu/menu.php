@@ -43,10 +43,11 @@ if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('confi
 	$menu_items['hyper_map'] = _('Hyper Map');
 }
 
-
+/* remove hardcoded nagvis menu entry
 if (Kohana::config('config.nagvis_path') !== false) {
 	$menu_items['nagvis'] = _('Nagvis');
 }
+*/
 
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['trends'] = _('Trends');
@@ -78,7 +79,7 @@ $menu = array(
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
 		'network_outages', 'host_problems', 'service_problems', 'unhandled_problems',
-		'comments', 'schedule_downtime', 'process_info', 'scheduling_queue', 'hyper_map', 'nagvis'),
+		'comments', 'schedule_downtime', 'process_info', 'scheduling_queue', 'hyper_map'), //'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'alert_history', 'alert_summary', 'notifications', 'event_log',
 		'availability', 'sla', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
@@ -153,8 +154,10 @@ if (isset($menu_items['hyper_map']))
 	$menu_base[$menu_items['section_monitoring']][$menu_items['hyper_map']] = array('/hypermap', 'hypermap',0);
 unset($auth);
 
+/* remove hardcoded nagvis menu entry
 if (isset($menu_items['nagvis']))
 	$menu_base[$menu_items['section_monitoring']][$menu_items['nagvis']] = array('/nagvis/index', 'nagvis',0);
+*/
 
 if (Kohana::config('config.site_domain') != '/monitor/') {
 	# remove op5 monitor specific links
