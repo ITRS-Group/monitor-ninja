@@ -997,23 +997,37 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$command_result_msg = false;
 		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
 			$handling_deletes = true;
-			$cmd = false;
+			$comment_cmd = false;
+			$downtime_cmd = false;
 			$nagios_commands = array();
 			# bulk delete of comments?
 			if (isset($_POST['del_submithost'])) {
 				# host comments
-				$cmd = 'DEL_HOST_COMMENT';
+				$comment_cmd = 'DEL_HOST_COMMENT';
+				$downtime_cmd = 'DEL_HOST_DOWNTIME';
 			} elseif (isset($_POST['del_submitservice'])) {
 				# service comments
-				$cmd = 'DEL_SVC_COMMENT';
+				$comment_cmd = 'DEL_SVC_COMMENT';
+				$downtime_cmd = 'DEL_SVC_DOWNTIME';
 			}
 
-			if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $cmd))) {
-				url::redirect('command/unauthorized');
+
+			if (isset($_POST['del_comment'])) {
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
+					url::redirect('command/unauthorized');
+				}
+				foreach ($_POST['del_comment'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
+				}
 			}
 
-			foreach ($_POST['del_comment'] as $param) {
-				$nagios_commands = Command_Controller::_build_command($cmd, array('comment_id' => $param), $nagios_commands);
+			if (isset($_POST['del_downtime'])) {
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $downtime_cmd))) {
+					url::redirect('command/unauthorized');
+				}
+				foreach ($_POST['del_downtime'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($downtime_cmd, array('downtime_id' => $param), $nagios_commands);
+				}
 			}
 
 			$nagios_base_path = Kohana::config('config.nagios_base_path');
