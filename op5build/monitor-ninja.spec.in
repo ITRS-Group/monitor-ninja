@@ -112,3 +112,6 @@ fi
 
 %clean
 rm -rf %buildroot
+
+%postun
+echo "DELETE FROM ninja_widgets WHERE name='geomap';" | mysql -uroot merlin
