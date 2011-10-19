@@ -24,6 +24,36 @@ class Search_Controller extends Authenticated_Controller {
 	public function lookup($query=false, $obj_type=false)
 	{
 		$obj_type = urldecode($this->input->get('obj_type', $obj_type));
+
+		$host = urldecode(trim($this->input->get('host', false)));
+		$hostgroup = urldecode(trim($this->input->get('hostgroup', false)));
+		$service = urldecode(trim($this->input->get('service', false)));
+		$servicegroup = urldecode(trim($this->input->get('servicegroup', false)));
+		$comment = urldecode(trim($this->input->get('comment', false)));
+		$status = urldecode(trim($this->input->get('status', false)));
+
+		$host = !empty($host) ? 'h:'.$host : false;
+		$hostgroup = !empty($hostgroup) ? 'hg:'.$hostgroup : false;
+		$service = !empty($service) ? 's:'.$service : false;
+		$servicegroup = !empty($servicegroup) ? 'sg:'.$servicegroup : false;
+		$comment = !empty($comment) ? 'c:'.$comment : false;
+		$status = !empty($status) ? 'si:'.$status : false;
+
+		# join all search fields into query
+		$queries = false;
+		$queries[] = $host;
+		$queries[] = $hostgroup;
+		$queries[] = $service;
+		$queries[] = $servicegroup;
+		$queries[] = $comment;
+		$queries[] = $status;
+
+		foreach ($queries as $q) {
+			if (!empty($q)) {
+				$query .= $q.' ';
+			}
+		}
+
 		$query = urldecode($this->input->get('query', $query));
 		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model', 'comment' => 'Comment_Model');
 		$query_str = trim($query); # stash query string for later use when saving search
