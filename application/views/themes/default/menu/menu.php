@@ -39,7 +39,7 @@ $menu_items['process_info'] = _('Process info');
 $menu_items['performance_info'] = _('Performance info');
 $menu_items['scheduling_queue'] = _('Scheduling queue');
 
-if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('config.hypermap_path') !== false) {
+if ($auth->view_hosts_root && $auth->view_services_root && Kohana::config('hypergraph.hyperapplet_path') !== false) {
 	$menu_items['hyper_map'] = _('Hyper Map');
 }
 

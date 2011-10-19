@@ -185,13 +185,6 @@ if (is_dir($nacoma_real_path)) {
 	$config['nacoma_path'] = false;
 }
 
-$hypermap_real_path = '/opt/monitor/share/cgi-bin/hypergraph.cgi';
-if (is_file($hypermap_real_path)) {
-	$config['hypermap_path'] = '/monitor.old/cgi-bin/hypergraph.cgi';
-} else {
-	$config['hypermap_path'] = false;
-}
-
 /**
  * Web path to Pnp4nagios
  * If installed, change path below or set to false if not
