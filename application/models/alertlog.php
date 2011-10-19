@@ -84,7 +84,7 @@ class Alertlog_Model extends Model
 			else if (!empty($cond))
 				$sql_where[] = implode(' OR ', $cond);
 			else
-				$sql_where[] = "service_description != ''";
+				$sql_where[] = "report_data.service_description != ''";
 		}
 		if (isset($options['service_state_options'])) {
 			$cond = array();
@@ -97,7 +97,7 @@ class Alertlog_Model extends Model
 			else if (!empty($cond))
 				$sql_where[] = implode(' OR ', $cond);
 			else
-				$sql_where[] = "service_description = ''";
+				$sql_where[] = "report_data.service_description = ''";
 		}
 
 		if (isset($options['hide_downtime']) && $options['hide_downtime'])
