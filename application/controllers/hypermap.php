@@ -27,8 +27,9 @@ class Hypermap_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('hypermap/hypermap');
 		$content = $this->template->content;
 
-		$content->hyperapplet_path = Kohana::config('config.site_domain')
-			.'application/'. Kohana::config('hypergraph.hyperapplet_path');
+		if (Kohana::config('hypergraph.hyperapplet_path'))
+			$content->hyperapplet_path = Kohana::config('config.site_domain')
+				.'application/'. Kohana::config('hypergraph.hyperapplet_path');
 		$content->nagios_prop = Kohana::config('config.site_domain')
 			.'application/'. Kohana::config('hypergraph.nagios_props');
 		$content->xml_path = url::site().'hypermap/createxml';
