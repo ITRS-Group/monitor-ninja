@@ -14,12 +14,14 @@ class Reports_Model extends Model
 	const HOST_DOWN = 1;
 	const HOST_UNREACHABLE = 2;
 	const HOST_PENDING = -1;
+	const HOST_EXCLUDED = -2;
 	const HOST_ALL = 7;
 	const SERVICE_OK = 0;
 	const SERVICE_WARNING = 1;
 	const SERVICE_CRITICAL = 2;
 	const SERVICE_UNKNOWN = 3;
 	const SERVICE_PENDING = -1;
+	const SERVICE_EXCLUDED = -2;
 	const SERVICE_ALL = 15;
 	const PROCESS_SHUTDOWN = 103;
 	const PROCESS_RESTART = 102;
@@ -62,6 +64,7 @@ class Reports_Model extends Model
 	var $st_prev_row = array();
 	var $st_prev_state = self::STATE_PENDING;
 	var $st_running = 0;
+	var $st_last_dt_init = 1; /** set to FALSE on restart, and a timestamp on first DT start after restart */
 	var $st_dt_depth = 0;
 	var $st_is_service = false;
 	var $st_source = false;
@@ -1440,10 +1443,10 @@ class Reports_Model extends Model
 		}
 
 		$rpts = array();
-		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
 			$rpts[] = $this;
 		foreach ($this->sub_reports as $sr) {
-			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START))
+			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
 				$rpts[] = $sr;
 		}
 
@@ -1463,32 +1466,52 @@ class Reports_Model extends Model
 				$rpt->st_update($row['the_time']);
 		}
 
-		# if we get an event and monitor is stopped, we
-		# consider it started. This is necessary to prevent
-		# us from generating bogus reports in case there's
-		# a missing PROCESS_START event in the database
-		$is_running = intval($row['event_type'] !== self::PROCESS_SHUTDOWN);
-
-		# only update sub-reports on statechange
-		if ($is_running != $this->st_running) {
-			foreach ($this->sub_reports as $sr)
-				$sr->st_running = $is_running;
-			$this->st_running = $is_running;
-		}
-
 		switch($row['event_type']) {
+		 case self::PROCESS_START:
+		 case self::PROCESS_SHUTDOWN:
+			if ($row['event_type'] == self::PROCESS_START) {
+				$row['output'] = 'Monitor started';
+			}
+			else {
+				$row['output'] = 'Monitor shut down';
+			}
+			foreach ($rpts as $rpt) {
+				$rpt->st_last_dt_init = false;
+				if ($row['event_type'] == self::PROCESS_START) {
+					$row['state'] = $rpt->st_real_state;
+					$rpt->st_running = 1;
+				}
+				else {
+					if ($this->assume_states_during_not_running) {
+						$row['state'] = $rpt->st_real_state;
+					} else {
+						$row['state'] = -1;
+						$rpt->st_running = 0;
+					}
+				}
+				$rpt->st_update_log(false, $row);
+			}
+			$this->calculate_object_state();
+			return 0;
+			break;
 		 case self::DOWNTIME_START:
 			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
-			$row['state'] = $rpts[0]->st_real_state;
 			foreach ($rpts as $rpt) {
-				$rpt->st_dt_depth++;
+				# we are always spammed with downtime events after restart, so
+				# don't increase the downtime depth if we're already in downtime
+				if (!$rpt->st_last_dt_init || $rpt->st_last_dt_init === $row['the_time']) {
+					$rpt->st_last_dt_init = $row['the_time'];
+					if (!$rpt->st_dt_depth)
+						$rpt->st_dt_depth++;
+				}
+				else
+					$rpt->st_dt_depth++;
 				$rpt->calculate_object_state();
 			}
 			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::DOWNTIME_STOP:
 			$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
-			$row['state'] = $rpts[0]->st_real_state;
 			foreach ($rpts as $rpt) {
 				# old merlin versions created more end events than start events, so
 				# never decrement if we're already at 0.
@@ -1524,6 +1547,14 @@ class Reports_Model extends Model
 		$this->calculate_object_state();
 
 		foreach ($rpts as $rpt) {
+			switch ($row['event_type']) {
+			 case self::DOWNTIME_START:
+			 case self::DOWNTIME_STOP:
+				$row['state'] = $rpt->st_real_state;
+				break;
+			 default:
+				break;
+			}
 			$rpt->st_update_log(false, $row);
 			if (!in_array($this, $rpts))
 				$this->st_update_log($rpt, $row);
@@ -1864,7 +1895,7 @@ class Reports_Model extends Model
 			"AND timestamp <=".$this->end_time." ";
 
 		if (is_array($hostname) && empty($servicename)) {
-			$sql .= "AND (host_name IN ('" . join("', '", $hostname) . "') AND (service_description = '' OR service_description IS NULL)) ";
+			$sql .= "AND ((host_name IN ('" . join("', '", $hostname) . "') AND (service_description = '' OR service_description IS NULL)) OR (host_name = '' AND service_description = '')) ";
 		}
 		elseif (is_array($servicename)) {
 			$sql .= "AND (concat(concat(host_name, ';'), service_description) IN ('" .
@@ -1877,12 +1908,12 @@ class Reports_Model extends Model
 				}
 			}
 			$sql .= " OR (host_name IN ('" . join("', '", $hostname) . "') AND (" .
-				"service_description = '' OR service_description IS NULL))) ";
+				"service_description = '' OR service_description IS NULL)) OR (host_name = '' AND service_description = '')) ";
 		}
 		else {
 			if (empty($servicename)) $servicename = '';
-			$sql .= "AND host_name=".$this->db->escape($hostname)." " .
-				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).") ";
+			$sql .= "AND ((host_name=".$this->db->escape($hostname)." " .
+				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).")) OR (host_name = '' AND service_description = ''))";
 		}
 
 		$sql .= "AND ( ";
@@ -1894,12 +1925,11 @@ class Reports_Model extends Model
 		}
 		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
 			"OR event_type=" . self::DOWNTIME_STOP . ' ';
-		if (!$this->assume_states_during_not_running)
-			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
+		$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
 			" OR event_type=".self::PROCESS_START;
 		$sql .= ") ";
 
-		$sql .= 'ORDER BY timestamp';
+		$sql .= ' ORDER BY timestamp';
 
 		return $this->db->query($sql)->result(false);
 	}

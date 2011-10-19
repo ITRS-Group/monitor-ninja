@@ -2,6 +2,7 @@ description = Assume states during program downtime
 logfile = assumed_states_during_program_downtime.log
 
 assumed states during program downtime #1 {
+	assume_states_during_not_running = true
 	start_time = 1202684400
 	end_time = 1202770800
 	host_name = testhost
