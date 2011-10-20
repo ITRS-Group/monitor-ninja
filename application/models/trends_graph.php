@@ -38,23 +38,24 @@ class Trends_graph_Model extends Model
 
 		switch ($days) {
 			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
+				$df = 'H';
 				while ($time < $report_end) {
-					$h = date('H', $time);
+					$h = date($df, $time);
 					$resolution_names[] = $h;
 					$time += (60*60);
 				}
 				break;
 			case 7: # thisweek', last7days', 'lastweek':
 				while ($time < $report_end) {
-					$h = date('w', $time);
 					$resolution_names[] = date($df, $time);
 					$time += 86400;
 				}
 				break;
 			case ($days > 90) :
 				$prev = '';
+				$df = 'M';
 				while ($time < $report_end) {
-					$h = date('M', $time);
+					$h = date($df, $time);
 					if ($prev != $h) {
 						$resolution_names[] = $h;
 					}
@@ -64,24 +65,25 @@ class Trends_graph_Model extends Model
 
 				break;
 			case ($days > 7) :
+				$df = 'd';
 				while ($time < $report_end) {
-					$h = date('d', $time);
+					$h = date($df, $time);
 					$resolution_names[] = $h;
 					$time += 86400;
 				}
-				$last_day = date('d', $report_end);
-				if(end($resolution_names) != $last_day) {
-					$resolution_names[] = $last_day;
-				}
-
 				break;
 			default: # < 7 days, custom report period, defaulting to day names
+				$df = 'w';
 				while ($time < $report_end) {
-					$h = date('w', $time);
+					$h = date($df, $time);
 					$resolution_names[] = $this->abbr_day_names[$h];
 					$time += 86400;
 				}
 				break;
+		}
+		$last_timestamp = date($df, $report_end);
+		if(end($resolution_names) != $last_timestamp) {
+			$resolution_names[] = $last_timestamp;
 		}
 		return $resolution_names;
 	}
