@@ -196,6 +196,10 @@ $config['pnp4nagios_path'] = '/monitor/op5/pnp/';
 *	Only used if 'pnp4nagios_path' !== false
 */
 $config['pnp4nagios_config_path'] = '/opt/monitor/etc/pnp/config.php';
+if (!is_file($config['pnp4nagios_config_path'])) {
+	$config['pnp4nagios_path'] = false;
+	$config['pnp4nagios_config_path'] = false;
+}
 
 /**
  * Do we use NagVis?

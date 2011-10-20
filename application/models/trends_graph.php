@@ -69,6 +69,10 @@ class Trends_graph_Model extends Model
 					$resolution_names[] = $h;
 					$time += 86400;
 				}
+				$last_day = date('d', $report_end);
+				if(end($resolution_names) != $last_day) {
+					$resolution_names[] = $last_day;
+				}
 
 				break;
 			default: # < 7 days, custom report period, defaulting to day names
@@ -219,6 +223,7 @@ class Trends_graph_Model extends Model
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
 		$plot->SetDataValues($data);
+		//$plot->SetPlotAreaPixels(null, null, $graph_width);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
 		if($fit_pdf && $number_of_objects > 30) {

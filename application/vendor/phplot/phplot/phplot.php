@@ -4507,6 +4507,21 @@ class PHPlot
 		while ($x_tmp <= $x_end) {
 		    $x_pixels = $this->xtr($x_tmp);
 
+
+			// We can't start to draw at 0 "no matter what"
+			// Imagine the custom search from 23:50 to ..., but the
+			// first post will always start att 0:00
+			//
+			// Solution: adjust the first $x_pixels to be at
+			// 0 + the minutes of the first value / how long a step is
+		    //
+		    //
+		    // another thing: is the "assume state X" really counted? it
+		    // should (if necessary) add initial state at the beginning
+		    // of the graph
+		    
+
+			//number of x labels: var_dump($this->total_records);die;
 		    // Vertical grid lines
 		    if ($this->draw_x_grid) {
 			ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
@@ -4517,7 +4532,6 @@ class PHPlot
 		    $this->DrawXTick($xlab, $x_pixels);
 
 		    // Step to next X, without accumulating error
-		    //$x_tmp = $x_start + ++$n * $delta_x;
 		    $x_tmp += $width_per_label;
 		}
 	} else {
