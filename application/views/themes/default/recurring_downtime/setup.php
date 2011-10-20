@@ -18,13 +18,15 @@ if (!empty($widgets)) {
 			<li><a href="#schedules-tab" style="border: 0px"><?php echo $this->translate->_('Schedules') ?></a></li>
 		</ul>
 		<div id="create-tab">
+			<?php
+				echo form::open('recurring_downtime/generate', array('id' => 'setup_form'));
+			?>
 			<div class="setup-table"><br />
 		<?php	if (isset($schedule_id) && !empty($schedule_id)) {
 					# show link to create new recurring schedule
 					echo '&nbsp'.html::anchor('recurring_downtime/', $this->translate->_('Add New Downtime Schedule')).'<br /><br />';
 				}
 
-				echo form::open('recurring_downtime/generate', array('id' => 'setup_form'));
 				if (isset($schedule_id) && !empty($schedule_id)) {?>
 				<input type="hidden" name="schedule_id" value="<?php echo $schedule_id ?>" />
 				<?php }?>
