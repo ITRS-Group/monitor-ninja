@@ -18,12 +18,33 @@ class Trends_graph_Model extends Model
 	private $src_placeholder = "line_point_chart/%s";
 
 	/**
+	 * Holds weekday labels
+	 *
+	 * @var array
+	 */
+	private $abbr_day_names = array();
+
+	public function __construct() {
+		$translate = zend::instance('Registry')->get('Zend_Translate');
+		$this->abbr_day_names = array(
+			$translate->_('Sun'),
+			$translate->_('Mon'),
+			$translate->_('Tue'),
+			$translate->_('Wed'),
+			$translate->_('Thu'),
+			$translate->_('Fri'),
+			$translate->_('Sat')
+		);
+	}
+
+	/**
 	 * Format the x-axis of the graph accordingly to input dates
 	 *
 	 * @param int $report_start
 	 * @param int $report_end
 	 */
 	private function _get_resolution_names($report_start, $report_end) {
+		$use_abbr_day_names = false;
 		$resolution_names = array();
 		$length = $report_end-$report_start;
 		$days = floor($length/86400);
@@ -76,12 +97,16 @@ class Trends_graph_Model extends Model
 				$df = 'w';
 				while ($time < $report_end) {
 					$h = date($df, $time);
+					$use_abbr_day_names = true;
 					$resolution_names[] = $this->abbr_day_names[$h];
 					$time += 86400;
 				}
 				break;
 		}
 		$last_timestamp = date($df, $report_end);
+		if($use_abbr_day_names) {
+			$last_timestamp = $this->abbr_day_names[$last_timestamp];
+		}
 		if(end($resolution_names) != $last_timestamp) {
 			$resolution_names[] = $last_timestamp;
 		}
@@ -158,6 +183,7 @@ class Trends_graph_Model extends Model
 
 		$hosts = array();
 		$number_of_objects = 0;
+		$earliest_object_state_change_timestamp = $report_end;
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
@@ -165,6 +191,9 @@ class Trends_graph_Model extends Model
 				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
+				}
+				if($event['the_time'] < $earliest_object_state_change_timestamp) {
+					$earliest_object_state_change_timestamp = $event['the_time'];
 				}
 				$data_suited_for_chart[$current_object][] =  array(
 					'duration' => $event['duration'],
@@ -225,7 +254,8 @@ class Trends_graph_Model extends Model
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
 		$plot->SetDataValues($data);
-		//$plot->SetPlotAreaPixels(null, null, $graph_width);
+		//$x_starting_value = $earliest_object_state_change_timestamp - $report_start;
+		//$plot->SetPlotAreaWorld(null, $x_starting_value);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
 		if($fit_pdf && $number_of_objects > 30) {
