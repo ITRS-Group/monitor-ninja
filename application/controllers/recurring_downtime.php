@@ -116,7 +116,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/date';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
 
-		#$this->xtra_js[] = 'application/media/js/jquery.datePicker';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
 		$this->xtra_js[] = $this->add_path('reports/js/move_options');
 		$this->xtra_js[] = $this->add_path('reports/js/common');
@@ -125,7 +125,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->css_header = $this->add_view('css_header');
-		#$this->xtra_css[] = $this->add_path('reports/css/datePicker');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports');
