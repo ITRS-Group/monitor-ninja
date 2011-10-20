@@ -1423,6 +1423,10 @@ th.headerNone,
 	background:#dcdcdc url(images/bg.png) repeat-x;
 }
 
+.headerNone.left a {
+	vertical-align: top;
+}
+
 .group_grid_table th.headerSortDown,
 .group_overview_table th.headerSortDown,
 .comments_table th.headerSortDown,
