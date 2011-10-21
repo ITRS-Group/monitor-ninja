@@ -51,7 +51,6 @@ if (Kohana::config('config.nagvis_path') !== false) {
 
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['trends'] = _('Trends');
-$menu_items['pnp'] = _('PNP');
 $menu_items['alert_history'] = _('Alert history');
 $menu_items['alert_summary'] = _('Alert summary');
 $menu_items['notifications'] = _('Notifications');
@@ -89,20 +88,6 @@ $menu = array(
 $group_items_per_page = config::get('pagination.group_items_per_page', '*', true);
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
-// Preparing the reporting section on beforehand since it might or might not include the pnp link
-$section_reporting = array(
-	$menu_items['trends'] => array('/trends', 'trends',0));
-if(Kohana::config('config.pnp4nagios_path') !== false) {
-	$section_reporting[$menu_items['pnp']] = array(rtrim(Kohana::config('config.pnp4nagios_path'), '/').'/graph?host=.pnp-internal&srv=runtime', 'statistics',0);
-}
-$section_reporting[$menu_items['alert_history']] = array('/showlog/alert_history', 'alerthistory',0);
-$section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
-$section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
-$section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
-$section_reporting[$menu_items['availability']] = array('/'.Kohana::config('reports.reports_link').'/?type=avail', 'availability',0);
-$section_reporting[$menu_items['sla']] = array('/'.Kohana::config('reports.reports_link').'/?type=sla', 'sla',0);
-$section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('reports.reports_link').'/?show_schedules', 'schedulereports',0);
-
 # base menu (all)
 $menu_base = array(
 	$menu_items['section_about'] => array(
@@ -138,13 +123,24 @@ $menu_base = array(
 		$menu_items['performance_info'] 		=> array('/extinfo/performance', 'performanceinfo',0),
 		$menu_items['scheduling_queue'] 		=> array('/extinfo/scheduling_queue', 'schedulingqueue',0)
 	),
-	$menu_items['section_reporting'] => $section_reporting,
+	$menu_items['section_reporting'] => array(
+		$menu_items['trends'] 					=> array('/trends', 'trends',0),
+
+		$menu_items['alert_history'] 			=> array('/showlog/alert_history', 'alerthistory',0),
+		$menu_items['alert_summary']			=> array('/summary', 'alertsummary',0),
+		$menu_items['notifications']  			=> array('/notifications', 'notifications',0),
+		$menu_items['event_log'] 				=> array('/showlog/showlog', 'eventlog',0),
+		$menu_items['availability'] 			=> array('/'.Kohana::config('reports.reports_link').'/?type=avail', 'availability',0),
+		$menu_items['sla'] 						=> array('/'.Kohana::config('reports.reports_link').'/?type=sla', 'sla',0),
+		$menu_items['schedule_reports']			=> array('/'.Kohana::config('reports.reports_link').'/?show_schedules', 'schedulereports',0)
+	),
 	$menu_items['section_configuration'] => array(
 		$menu_items['view_config'] 				=> array('/config', 'viewconfig',0),
 		$menu_items['my_account'] 				=> array('/user', 'password',0),
 		$menu_items['backup_restore']			=> array('/backup', 'backup',0)
 	)
 );
+
 
 if (isset($menu_items['statistics']))
 	$menu_base[$menu_items['section_reporting']][$menu_items['statistics']] = array('/statistics', 'statistics',1);
@@ -210,3 +206,4 @@ if (!empty($xtra_menu)) {
 		unset($xtra_menu[$section]);
 	}
 }
+?>

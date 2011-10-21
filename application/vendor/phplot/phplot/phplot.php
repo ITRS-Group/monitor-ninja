@@ -4507,7 +4507,6 @@ class PHPlot
 		while ($x_tmp <= $x_end) {
 		    $x_pixels = $this->xtr($x_tmp);
 
-			//number of x labels: var_dump($this->total_records);die;
 		    // Vertical grid lines
 		    if ($this->draw_x_grid) {
 			ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
@@ -4518,6 +4517,7 @@ class PHPlot
 		    $this->DrawXTick($xlab, $x_pixels);
 
 		    // Step to next X, without accumulating error
+		    //$x_tmp = $x_start + ++$n * $delta_x;
 		    $x_tmp += $width_per_label;
 		}
 	} else {

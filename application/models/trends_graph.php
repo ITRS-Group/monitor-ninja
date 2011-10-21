@@ -254,8 +254,6 @@ class Trends_graph_Model extends Model
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
 		$plot->SetDataValues($data);
-		//$x_starting_value = $earliest_object_state_change_timestamp - $report_start;
-		//$plot->SetPlotAreaWorld(null, $x_starting_value);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
 		if($fit_pdf && $number_of_objects > 30) {
