@@ -1097,19 +1097,19 @@ class Reports_Controller extends Authenticated_Controller
 				unset($in_servicegroup[$k]);
 		}
 
-		$this->report_type 	= arr::search($_REQUEST, 'report_type');
-		$in_csvoutput 		= arr::search($_REQUEST, 'csvoutput');
-		$start_time			= arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
-		$end_time			= arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
-		$report_period		= arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
-		$rpttimeperiod 		= arr::search($_REQUEST, 'rpttimeperiod', '');
-		$cluster_mode       = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
-		$hostgroup			= false;
-		$hostname			= false;
-		$servicegroup		= false;
-		$service			= false;
-		$sub_type			= false;
-		$time_parts 		= false;
+		$this->report_type = arr::search($_REQUEST, 'report_type');
+		$in_csvoutput = arr::search($_REQUEST, 'csvoutput');
+		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
+		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
+		$report_period = arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
+		$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', '');
+		$cluster_mode = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
+		$hostgroup = false;
+		$hostname = false;
+		$servicegroup = false;
+		$service = false;
+		$sub_type = false;
+		$time_parts = false;
 
 		# just make sure the javascript isn't messing things up for us
 		$start_time = trim($start_time) == 'undefined' ? '' : $start_time;
