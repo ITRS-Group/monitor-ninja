@@ -32,7 +32,8 @@ $(document).ready(function() {
 		========================
 	*/
 	// host comments
-	$('#hostcomments_table').tablesorter({headers:{0:{sorter:false}}});
+	if ($.tablesorter)
+		$('#hostcomments_table').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearhostsearch').click(function() {
 		$('#hostfilterbox').val('').trigger('keyup').trigger('blur');
@@ -53,7 +54,8 @@ $(document).ready(function() {
 	});
 
 	// service comments
-	$('#servicecomments_table').tablesorter({headers:{0:{sorter:false}}});
+	if ($.tablesorter)
+		$('#servicecomments_table').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearservicesearch').click(function() {
 		$('#servicefilterbox').val('').trigger('keyup').trigger('blur');
@@ -80,7 +82,8 @@ $(document).ready(function() {
 		========================
 	*/
 	// host scheduled downtime
-	$('#scheduled_host_downtime').tablesorter({headers:{0:{sorter:false}}});
+	if ($.tablesorter)
+		$('#scheduled_host_downtime').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearhostsearch_sched').click(function() {
 		$('#hostfilterbox_sched').val('').trigger('keyup').trigger('blur');
@@ -102,7 +105,8 @@ $(document).ready(function() {
 
 
 	// service scheduled downtime
-	$('#scheduled_service_downtime').tablesorter({headers:{0:{sorter:false}}});
+	if ($.tablesorter)
+		$('#scheduled_service_downtime').tablesorter({headers:{0:{sorter:false}}});
 
 	$('#clearservicesearch_sched').click(function() {
 		$('#servicefilterbox_sched').val('').trigger('keyup').trigger('blur');
