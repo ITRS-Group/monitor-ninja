@@ -289,6 +289,7 @@ function phplot_color_index_by_state_color($type='host', $state=false) {
 		Reports_Model::HOST_UP => $arr['green'],
 		Reports_Model::HOST_DOWN => $arr['red'],
 		Reports_Model::HOST_UNREACHABLE => $arr['orange'],
+		3 => $arr['orange'], // UNREACHABLE according to nagios, @see http://nagios.sourceforge.net/docs/3_0/pluginapi.html
 		Reports_Model::HOST_PENDING => $arr['grey']
 	);
 	$colors['service'] = array(
