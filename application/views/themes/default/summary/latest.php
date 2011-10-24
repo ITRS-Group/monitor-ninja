@@ -41,7 +41,7 @@ if (isset($schedules)) {
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['service_description']; ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px' : '' ?>><?php echo $softhard; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['output']; ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo htmlspecialchars($ary['output']); ?></td>
 		</tr>
 		<?php }
 		} ?>
