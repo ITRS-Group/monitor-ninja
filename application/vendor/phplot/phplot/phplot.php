@@ -117,6 +117,7 @@ class PHPlot
      * @var array
      */
     public $x_labels = array();
+    public $first_x_at = 0;
 
     // Label format controls: (for tick, data and plot labels)
     // Unset by default, these array members are used as needed for 'x' (x tick labels), 'xd' (x data
@@ -4504,20 +4505,26 @@ class PHPlot
 		$copy = $this->x_labels;
 		$total_printable_width = $x_end - $x_start;
 		$width_per_label = $total_printable_width / count($copy);
+		$skip_first_x_label = false;
+		if($this->first_x_at) {
+			$skip_first_x_label = true;
+		}
 		while ($x_tmp <= $x_end) {
 		    $x_pixels = $this->xtr($x_tmp);
-
+		    $xlab = array_shift($copy);
+		    if($skip_first_x_label) {
+			    $skip_first_x_label = false;
+			    $x_tmp = $this->first_x_at;
+			    $width_per_label = $total_printable_width / ( count($copy) - 1 );
+			    continue;
+		    }
 		    // Vertical grid lines
 		    if ($this->draw_x_grid) {
 			ImageLine($this->img, $x_pixels, $this->plot_area[1], $x_pixels, $this->plot_area[3], $style);
 		    }
 
-		    // Draw tick mark(s)
-		    $xlab = array_shift($copy);
 		    $this->DrawXTick($xlab, $x_pixels);
 
-		    // Step to next X, without accumulating error
-		    //$x_tmp = $x_start + ++$n * $delta_x;
 		    $x_tmp += $width_per_label;
 		}
 	} else {

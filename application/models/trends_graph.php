@@ -42,8 +42,9 @@ class Trends_graph_Model extends Model
 	 *
 	 * @param int $report_start
 	 * @param int $report_end
+	 * @return array ['resolution_names', 'offset']
 	 */
-	private function _get_resolution_names($report_start, $report_end) {
+	private function _get_chart_scope($report_start, $report_end) {
 		$use_abbr_day_names = false;
 		$resolution_names = array();
 		$length = $report_end-$report_start;
@@ -57,51 +58,54 @@ class Trends_graph_Model extends Model
 			$df = 'Y-m-d';
 		}
 
-		switch ($days) {
-			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
-				$df = 'H';
-				while ($time < $report_end) {
-					$h = date($df, $time);
+		$time_interval = false;
+		$correction_format = 'Y-m-d';
+		if (1 >= $days) {
+			# 'today', 'last24hours', 'yesterday' or possibly custom:
+			$df = 'H';
+			$time_interval = 60*60;
+			$correction_format = 'Y-m-d H:00:00';
+			while ($time < $report_end) {
+				$resolution_names[] = date($df, $time);
+				$time += $time_interval;
+			}
+		} elseif(7 == $days) {
+			# thisweek', last7days', 'lastweek':
+			$time_interval = 86400;
+			while ($time < $report_end) {
+				$resolution_names[] = date($df, $time);
+				$time += $time_interval;
+			}
+		} elseif($days > 90) {
+			$prev = '';
+			$df = 'M';
+			$time_interval = 86400;
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				if ($prev != $h) {
 					$resolution_names[] = $h;
-					$time += (60*60);
 				}
-				break;
-			case 7: # thisweek', last7days', 'lastweek':
-				while ($time < $report_end) {
-					$resolution_names[] = date($df, $time);
-					$time += 86400;
-				}
-				break;
-			case ($days > 90) :
-				$prev = '';
-				$df = 'M';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					if ($prev != $h) {
-						$resolution_names[] = $h;
-					}
-					$time += 86400;
-					$prev = $h;
-				}
-
-				break;
-			case ($days > 7) :
-				$df = 'd';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					$resolution_names[] = $h;
-					$time += 86400;
-				}
-				break;
-			default: # < 7 days, custom report period, defaulting to day names
-				$df = 'w';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					$use_abbr_day_names = true;
-					$resolution_names[] = $this->abbr_day_names[$h];
-					$time += 86400;
-				}
-				break;
+				$time += $time_interval;
+				$prev = $h;
+			}
+		} elseif($days > 7) {
+			$df = 'd';
+			$time_interval = 86400;
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				$resolution_names[] = $h;
+				$time += $time_interval;
+			}
+		} else {
+			# < 7 days, custom report period, defaulting to day names
+			$df = 'w';
+			$time_interval = 86400;
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				$use_abbr_day_names = true;
+				$resolution_names[] = $this->abbr_day_names[$h];
+				$time += $time_interval;
+			}
 		}
 		$last_timestamp = date($df, $report_end);
 		if($use_abbr_day_names) {
@@ -110,7 +114,30 @@ class Trends_graph_Model extends Model
 		if(end($resolution_names) != $last_timestamp) {
 			$resolution_names[] = $last_timestamp;
 		}
-		return $resolution_names;
+
+		$offset = 0;
+		if($report_start - strtotime(date($correction_format, $report_start))) {
+			$offset = $time_interval - ( $report_start - strtotime(date($correction_format, $report_start)) );
+		}
+
+		//echo "<pre>";
+		//var_dump($offset);
+		//var_dump($time_interval);
+		//var_dump($time);
+		//var_dump(date('Y-m-d H:i:s', $time));
+		//var_dump($report_start);
+		//var_dump(date('Y-m-d H:i:s', $report_start));
+		//var_dump($report_end);
+		//var_dump(date('Y-m-d H:i:s', $report_end));
+		//var_dump($time - $report_start);
+		//var_dump($time - $report_end);
+		//die;
+
+		return array(
+		        'resolution_names' => $resolution_names,
+			'offset' => $offset,
+			'end_offset' => $time - $report_end
+		);
 	}
 
 	/**
@@ -183,7 +210,7 @@ class Trends_graph_Model extends Model
 
 		$hosts = array();
 		$number_of_objects = 0;
-		$earliest_object_state_change_timestamp = $report_end;
+		$earliest_object_state_change_timestamp = false;
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
@@ -192,7 +219,7 @@ class Trends_graph_Model extends Model
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
 				}
-				if($event['the_time'] < $earliest_object_state_change_timestamp) {
+				if(false === $earliest_object_state_change_timestamp) {
 					$earliest_object_state_change_timestamp = $event['the_time'];
 				}
 				$data_suited_for_chart[$current_object][] =  array(
@@ -242,7 +269,16 @@ class Trends_graph_Model extends Model
 
 		phplot_charts::load();
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
-		$plot->x_labels = $this->_get_resolution_names($report_start, $report_end);
+
+		// hacked phplot features.. git log phplot.php for custom mods
+		$chart_scope = $this->_get_chart_scope($report_start, $report_end);
+		if($chart_scope['offset']) {
+			$plot->first_x_at = $chart_scope['offset'] / $seconds_per_pixel;
+		}
+
+		$plot->x_labels = $chart_scope['resolution_names'];
+
+		// original phplot methods
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
 		$colors = array(
@@ -253,6 +289,7 @@ class Trends_graph_Model extends Model
 		);
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
+		$plot->SetPlotAreaWorld(null, null, $graph_width + ($chart_scope['end_offset'] / $seconds_per_pixel));
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
