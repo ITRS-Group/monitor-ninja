@@ -352,8 +352,8 @@ class Service_Model extends Model
 					"s.*, ".
 					"h.current_state AS host_status ".
 				"FROM ".
-					"service s, ".$auth_str.
-					" host h ".
+					"service s ".$auth_str.
+					", host h ".
 				"WHERE ".
 					"s.host_name = h.host_name ";
 		}
