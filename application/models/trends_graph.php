@@ -107,13 +107,6 @@ class Trends_graph_Model extends Model
 				$time += $time_interval;
 			}
 		}
-		$last_timestamp = date($df, $report_end);
-		if($use_abbr_day_names) {
-			$last_timestamp = $this->abbr_day_names[$last_timestamp];
-		}
-		if(end($resolution_names) != $last_timestamp) {
-			$resolution_names[] = $last_timestamp;
-		}
 
 		$offset = 0;
 		if($report_start - strtotime(date($correction_format, $report_start))) {
@@ -124,7 +117,17 @@ class Trends_graph_Model extends Model
 		$end_offset = 0;
 		if($report_end - strtotime(date($correction_format, $report_end))) {
 			$end_offset = $time_interval - ( $report_end - strtotime(date($correction_format, $report_end)) );
+
+			// only add another x-axis label if that value is not at the end of the graph
+			$last_timestamp = date($df, $report_end);
+			if($use_abbr_day_names) {
+				$last_timestamp = $this->abbr_day_names[$last_timestamp];
+			}
+			if(end($resolution_names) != $last_timestamp) {
+				$resolution_names[] = $last_timestamp;
+			}
 		}
+
 
 		//echo "<pre>";
 		//var_dump($offset);
