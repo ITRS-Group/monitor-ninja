@@ -4511,7 +4511,15 @@ class PHPlot
 		//var_dump(date('d H:i:s', $this->offset));
 		//var_dump(date('d H:i:s', $this->offset_end));
 		//die;
-		$width_per_label = $total_printable_width / (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
+		$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
+		//echo "<pre>";
+		//var_dump($this->offset);
+		//var_dump($this->offset_end);
+		//var_dump(!!$this->offset);
+		//var_dump(!!$this->offset_end);
+		//var_dump(!($this->offset_end + $this->offset));
+		//die;
+		$width_per_label = $total_printable_width / $number_of_labels;
 		$skip_first_x_label = false;
 		if($this->first_x_at) {
 			$skip_first_x_label = true;
