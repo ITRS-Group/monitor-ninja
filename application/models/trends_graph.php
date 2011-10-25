@@ -63,12 +63,15 @@ class Trends_graph_Model extends Model
 		if (1 >= $days) {
 			# 'today', 'last24hours', 'yesterday' or possibly custom:
 			$df = 'H';
-			$time_interval = 60*60;
+			$time_interval = 60*60; # hours
 			$correction_format = 'Y-m-d H:00:00';
 			while ($time < $report_end) {
 				$resolution_names[] = date($df, $time);
 				$time += $time_interval;
 			}
+			//echo "<pre>";
+			//var_dump($resolution_names);
+			//die;
 		} elseif(7 == $days) {
 			# thisweek', last7days', 'lastweek':
 			$time_interval = 86400;
@@ -109,23 +112,33 @@ class Trends_graph_Model extends Model
 		}
 
 		$offset = 0;
+		// Does date() add one hour to timestamp? In that case, adjust
 		if($report_start - strtotime(date($correction_format, $report_start))) {
-			$offset =  ( $report_start - strtotime(date($correction_format, $report_start)) );
+			$offset = $report_start - strtotime(date($correction_format, $report_start));
 		}
 
 		$end_offset = 0;
+		//echo "<pre>";
+		//var_dump($report_end);
+		//var_dump($correction_format);
+		//var_dump(date($correction_format, $report_end));
+		//var_dump(strtotime(date($correction_format, $report_end)));
+		//die;
+
+		// Does date() add one hour to timestamp? In that case, adjust
 		if($report_end - strtotime(date($correction_format, $report_end))) {
-			$end_offset = $time_interval - ( $report_end - strtotime(date($correction_format, $report_end)) );
+			$end_offset = $time_interval - ($report_end - strtotime(date($correction_format, $report_end)));
 
 		}
-			// only add another x-axis label if that value is not at the end of the graph
-			$last_timestamp = date($df, $report_end);
-			if($use_abbr_day_names) {
-				$last_timestamp = $this->abbr_day_names[$last_timestamp];
-			}
-			//if(end($resolution_names) != $last_timestamp) {
-				$resolution_names[] = $last_timestamp;
-			//}
+
+		// Add the last timestamp again, have it removed later if necessary
+		$last_timestamp = date($df, $report_end);
+		if($use_abbr_day_names) {
+			$last_timestamp = $this->abbr_day_names[$last_timestamp];
+		}
+		//if(end($resolution_names) != $last_timestamp) {
+		$resolution_names[] = $last_timestamp;
+		//}
 		//echo "<pre>";
 		//var_dump(date('H:i:s', $end_offset));
 		//var_dump(date('H:i:s', $offset));

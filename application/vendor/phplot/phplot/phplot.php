@@ -4511,7 +4511,14 @@ class PHPlot
 		//var_dump(date('d H:i:s', $this->offset));
 		//var_dump(date('d H:i:s', $this->offset_end));
 		//die;
+
+
 		$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
+
+		// works for 15:26:00 to 15:26:00 (last 24 hours)
+		//$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
+		// works for 00:00:00 to 15:25:00 the same day:
+		//$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !!($this->offset_end + $this->offset));
 		//echo "<pre>";
 		//var_dump($this->offset);
 		//var_dump($this->offset_end);
