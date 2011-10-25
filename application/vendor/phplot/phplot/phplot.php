@@ -118,6 +118,8 @@ class PHPlot
      */
     public $x_labels = array();
     public $first_x_at = 0;
+    public $offset = 0;
+    public $offset_end = 0;
 
     // Label format controls: (for tick, data and plot labels)
     // Unset by default, these array members are used as needed for 'x' (x tick labels), 'xd' (x data
@@ -4503,11 +4505,17 @@ class PHPlot
 	if($this->x_labels) {
 		// Stupid copy paste, don't want to mess to much with official version
 		$copy = $this->x_labels;
-		$total_printable_width = $x_end - $x_start;
-		$width_per_label = $total_printable_width / count($copy);
+		$total_printable_width = $x_end - $x_start - $this->offset - $this->offset_end;
+		//echo "<pre>";
+		//var_dump($this->offset);
+		//var_dump(date('d H:i:s', $this->offset));
+		//var_dump(date('d H:i:s', $this->offset_end));
+		//die;
+		$width_per_label = $total_printable_width / (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
 		$skip_first_x_label = false;
 		if($this->first_x_at) {
 			$skip_first_x_label = true;
+			//$width_per_label = ( $total_printable_width - $this->offset - $this->offset_end ) / (count($copy) - 3);
 		}
 		while ($x_tmp <= $x_end) {
 		    $x_pixels = $this->xtr($x_tmp);
@@ -4515,6 +4523,7 @@ class PHPlot
 		    if($skip_first_x_label) {
 			    $skip_first_x_label = false;
 			    $x_tmp = $this->first_x_at;
+			//$width_per_label = $total_printable_width / (count($copy)-1);
 			    continue;
 		    }
 		    // Vertical grid lines

@@ -110,23 +110,27 @@ class Trends_graph_Model extends Model
 
 		$offset = 0;
 		if($report_start - strtotime(date($correction_format, $report_start))) {
-			$offset = $time_interval - ( $report_start - strtotime(date($correction_format, $report_start)) );
+			$offset =  ( $report_start - strtotime(date($correction_format, $report_start)) );
 		}
 
-		//$end_offset = $time - $report_end;
 		$end_offset = 0;
 		if($report_end - strtotime(date($correction_format, $report_end))) {
 			$end_offset = $time_interval - ( $report_end - strtotime(date($correction_format, $report_end)) );
 
+		}
 			// only add another x-axis label if that value is not at the end of the graph
 			$last_timestamp = date($df, $report_end);
 			if($use_abbr_day_names) {
 				$last_timestamp = $this->abbr_day_names[$last_timestamp];
 			}
-			if(end($resolution_names) != $last_timestamp) {
+			//if(end($resolution_names) != $last_timestamp) {
 				$resolution_names[] = $last_timestamp;
-			}
-		}
+			//}
+		//echo "<pre>";
+		//var_dump(date('H:i:s', $end_offset));
+		//var_dump(date('H:i:s', $offset));
+		//var_dump(date('Y-m-d H:i:s', $report_end));
+		//die;
 
 
 		//echo "<pre>";
@@ -147,6 +151,7 @@ class Trends_graph_Model extends Model
 		return array(
 		        'resolution_names' => $resolution_names,
 			'offset' => $offset,
+			'time_interval' => $time_interval,
 			'end_offset' => $end_offset
 		);
 	}
@@ -257,7 +262,6 @@ class Trends_graph_Model extends Model
 		if(count(array_unique($hosts)) == 1) {
 			$remove_host_from_object_name = true;
 		}
-		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 		foreach($data_suited_for_chart as $service => $state_changes) {
 			if($remove_host_from_object_name) {
 				// Turn "linux-server1;FTP" into "FTP" if all objects are from "linux-server1"
@@ -265,14 +269,14 @@ class Trends_graph_Model extends Model
 			}
 			$current_row = array($service);
 			for($i = 0; $i < count($state_changes); $i++) {
-				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
+				$bar_width = $state_changes[$i]['duration'] ;
 				if ($bar_width < $smallest_visible_bar_width) {
 					// @todo proper check previous & next values in array for extra pixels
 					// if bar_width is too slim. Alternatively: check longest bar and
 					// pad the rest.
 					$bar_width = $smallest_visible_bar_width;
 				}
-				$current_row[] = number_format($bar_width, 1, '.', null);
+				$current_row[] = $bar_width;
 				$extra_information_phplot_colors[] = $state_changes[$i];
 			}
 			$data[] = $current_row;
@@ -284,10 +288,12 @@ class Trends_graph_Model extends Model
 		// hacked phplot features.. git log phplot.php for custom mods
 		$chart_scope = $this->_get_chart_scope($report_start, $report_end);
 		if($chart_scope['offset']) {
-			$plot->first_x_at = $chart_scope['offset'] / $seconds_per_pixel;
+			$plot->first_x_at = $chart_scope['offset'] ;
 		}
 
 		$plot->x_labels = $chart_scope['resolution_names'];
+		$plot->offset = $chart_scope['offset'];
+		$plot->offset_end = $chart_scope['end_offset'];
 
 		// original phplot methods
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
@@ -300,7 +306,7 @@ class Trends_graph_Model extends Model
 		);
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
-		$plot->SetPlotAreaWorld(null, null, $graph_width + ($chart_scope['end_offset'] / $seconds_per_pixel));
+		$plot->SetPlotAreaWorld(null, null, $report_end-$report_start);
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
