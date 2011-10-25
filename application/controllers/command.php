@@ -346,8 +346,11 @@ class Command_Controller extends Authenticated_Controller
 				$xparam = $param;
 				unset($xparam['host_name']);
 				$svcs = array();
-				foreach ($host_names as $host_name)
-					$svcs = array_merge($svcs, $host->get_services($host_name));
+				foreach ($host_names as $host_name) {
+					$new_svcs = $host->get_services($host_name);
+					if (is_array($new_svcs))
+						$svcs = array_merge($svcs, $new_svcs);
+				}
 				foreach ($svcs as $svc) {
 					$xparam['service'] = $host_name.';'.$svc->service_description;
 					$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
