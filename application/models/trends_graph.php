@@ -40,9 +40,9 @@ class Trends_graph_Model extends Model
 	/**
 	 * Format the x-axis of the graph accordingly to input dates
 	 *
-	 * @param int $report_start
-	 * @param int $report_end
-	 * @return array ['resolution_names', 'offset']
+	 * @param int $report_start unix timestamp
+	 * @param int $report_end unix timestamp
+	 * @return array ['resolution_names', 'offset', 'time_interval', 'end_offset']
 	 */
 	private function _get_chart_scope($report_start, $report_end) {
 		$use_abbr_day_names = false;
@@ -60,21 +60,20 @@ class Trends_graph_Model extends Model
 
 		$time_interval = false;
 		$correction_format = 'Y-m-d';
-		if (1 >= $days) {
+		if ($days <= 1) {
 			# 'today', 'last24hours', 'yesterday' or possibly custom:
 			$df = 'H';
-			$time_interval = 60*60; # hours
+			$time_interval = 60*60;
 			$correction_format = 'Y-m-d H:00:00';
+			$time = strtotime(date($correction_format, $time));
 			while ($time < $report_end) {
 				$resolution_names[] = date($df, $time);
 				$time += $time_interval;
 			}
-			//echo "<pre>";
-			//var_dump($resolution_names);
-			//die;
 		} elseif(7 == $days) {
 			# thisweek', last7days', 'lastweek':
 			$time_interval = 86400;
+			$time = strtotime(date($correction_format, $time));
 			while ($time < $report_end) {
 				$resolution_names[] = date($df, $time);
 				$time += $time_interval;
@@ -83,17 +82,20 @@ class Trends_graph_Model extends Model
 			$prev = '';
 			$df = 'M';
 			$time_interval = 86400;
+			$correction_format = 'Y-m-01';
+			$time = strtotime(date($correction_format, $time));
 			while ($time < $report_end) {
 				$h = date($df, $time);
 				if ($prev != $h) {
 					$resolution_names[] = $h;
 				}
-				$time += $time_interval;
+				$time = strtotime("+1 month", $time);
 				$prev = $h;
 			}
 		} elseif($days > 7) {
 			$df = 'd';
 			$time_interval = 86400;
+			$time = strtotime(date($correction_format, $time));
 			while ($time < $report_end) {
 				$h = date($df, $time);
 				$resolution_names[] = $h;
@@ -102,7 +104,7 @@ class Trends_graph_Model extends Model
 		} else {
 			# < 7 days, custom report period, defaulting to day names
 			$df = 'w';
-			$time_interval = 86400;
+			$time_interval = 7 * 24 * 60 * 60;
 			while ($time < $report_end) {
 				$h = date($df, $time);
 				$use_abbr_day_names = true;
@@ -114,52 +116,21 @@ class Trends_graph_Model extends Model
 		$offset = 0;
 		// Does date() add one hour to timestamp? In that case, adjust
 		if($report_start - strtotime(date($correction_format, $report_start))) {
-			$offset = $report_start - strtotime(date($correction_format, $report_start));
+			$offset = $time_interval - ( $report_start - strtotime(date($correction_format, $report_start)) );
 		}
 
 		$end_offset = 0;
-		//echo "<pre>";
-		//var_dump($report_end);
-		//var_dump($correction_format);
-		//var_dump(date($correction_format, $report_end));
-		//var_dump(strtotime(date($correction_format, $report_end)));
-		//die;
-
 		// Does date() add one hour to timestamp? In that case, adjust
 		if($report_end - strtotime(date($correction_format, $report_end))) {
-			$end_offset = $time_interval - ($report_end - strtotime(date($correction_format, $report_end)));
-
+			$end_offset = $report_end - strtotime(date($correction_format, $report_end));
 		}
 
-		// Add the last timestamp again, have it removed later if necessary
+		// Add the last timestamp again (non enumerated),
+		// have it removed later if necessary
 		$last_timestamp = date($df, $report_end);
 		if($use_abbr_day_names) {
 			$last_timestamp = $this->abbr_day_names[$last_timestamp];
 		}
-		//if(end($resolution_names) != $last_timestamp) {
-		$resolution_names[] = $last_timestamp;
-		//}
-		//echo "<pre>";
-		//var_dump(date('H:i:s', $end_offset));
-		//var_dump(date('H:i:s', $offset));
-		//var_dump(date('Y-m-d H:i:s', $report_end));
-		//die;
-
-
-		//echo "<pre>";
-		//var_dump($offset);
-		//var_dump($end_offset);
-		//var_dump($time_interval);
-		//var_dump($resolution_names);
-		//var_dump($time);
-		//var_dump(date('Y-m-d H:i:s', $time));
-		//var_dump($report_start);
-		//var_dump(date('Y-m-d H:i:s', $report_start));
-		//var_dump($report_end);
-		//var_dump(date('Y-m-d H:i:s', $report_end));
-		//var_dump($time - $report_start);
-		//var_dump($time - $report_end);
-		//die;
 
 		return array(
 		        'resolution_names' => $resolution_names,
@@ -409,4 +380,5 @@ function phplot_color_index_by_state_color($type='host', $state=false) {
 	);
 	$spelled_out_color = $colors[$type][$state];
 	return array_search($spelled_out_color, $phplot_color_array);
+
 }

@@ -4506,31 +4506,18 @@ class PHPlot
 		// Stupid copy paste, don't want to mess to much with official version
 		$copy = $this->x_labels;
 		$total_printable_width = $x_end - $x_start - $this->offset - $this->offset_end;
-		//echo "<pre>";
-		//var_dump($this->offset);
-		//var_dump(date('d H:i:s', $this->offset));
-		//var_dump(date('d H:i:s', $this->offset_end));
-		//die;
 
+		$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end);
 
-		$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
+		if($number_of_labels <= 1) {
+			$width_per_label = ($x_end - $x_start) / 2;
+		} else {
+			$width_per_label = $total_printable_width / $number_of_labels;
+		}
 
-		// works for 15:26:00 to 15:26:00 (last 24 hours)
-		//$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !($this->offset_end + $this->offset));
-		// works for 00:00:00 to 15:25:00 the same day:
-		//$number_of_labels = (count($copy) - !!$this->offset - !!$this->offset_end - !!($this->offset_end + $this->offset));
-		//echo "<pre>";
-		//var_dump($this->offset);
-		//var_dump($this->offset_end);
-		//var_dump(!!$this->offset);
-		//var_dump(!!$this->offset_end);
-		//var_dump(!($this->offset_end + $this->offset));
-		//die;
-		$width_per_label = $total_printable_width / $number_of_labels;
 		$skip_first_x_label = false;
 		if($this->first_x_at) {
 			$skip_first_x_label = true;
-			//$width_per_label = ( $total_printable_width - $this->offset - $this->offset_end ) / (count($copy) - 3);
 		}
 		while ($x_tmp <= $x_end) {
 		    $x_pixels = $this->xtr($x_tmp);
@@ -4538,7 +4525,6 @@ class PHPlot
 		    if($skip_first_x_label) {
 			    $skip_first_x_label = false;
 			    $x_tmp = $this->first_x_at;
-			//$width_per_label = $total_printable_width / (count($copy)-1);
 			    continue;
 		    }
 		    // Vertical grid lines
