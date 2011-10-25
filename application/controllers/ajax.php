@@ -450,14 +450,15 @@ class Ajax_Controller extends Authenticated_Controller {
 		if ($pnp_path != '') {
 			$pnp_path .= '/image?'.$param;
 
-			$source = Ninja_setting_Model::fetch_page_setting('source', $pnp_path);
+			if (strpos($param, 'source') === false) {
+				$source = Ninja_setting_Model::fetch_page_setting('source', $pnp_path);
+				if ($source)
+					$pnp_path .= '&source='.$source->setting;
+				else
+					$pnp_path .= '&source=0';
+			}
+
 			$view = Ninja_setting_Model::fetch_page_setting('view', $pnp_path);
-
-			if ($source)
-				$pnp_path .= '&source='.$source->setting;
-			else
-				$pnp_path .= '&source=0';
-
 			if ($view)
 				$pnp_path .= '&view='.$view->setting;
 			else
