@@ -40,10 +40,11 @@ class Trends_graph_Model extends Model
 	/**
 	 * Format the x-axis of the graph accordingly to input dates
 	 *
-	 * @param int $report_start
-	 * @param int $report_end
+	 * @param int $report_start unix timestamp
+	 * @param int $report_end unix timestamp
+	 * @return array ['resolution_names', 'offset', 'time_interval', 'end_offset']
 	 */
-	private function _get_resolution_names($report_start, $report_end) {
+	private function _get_chart_scope($report_start, $report_end) {
 		$use_abbr_day_names = false;
 		$resolution_names = array();
 		$length = $report_end-$report_start;
@@ -57,60 +58,86 @@ class Trends_graph_Model extends Model
 			$df = 'Y-m-d';
 		}
 
-		switch ($days) {
-			case 1: # 'today', 'last24hours', 'yesterday' or possibly custom:
-				$df = 'H';
-				while ($time < $report_end) {
-					$h = date($df, $time);
+		$time_interval = false;
+		$correction_format = 'Y-m-d';
+		if ($days <= 1) {
+			# 'today', 'last24hours', 'yesterday' or possibly custom:
+			$df = 'H';
+			$time_interval = 60*60;
+			$correction_format = 'Y-m-d H:00:00';
+			$time = strtotime(date($correction_format, $time));
+			while ($time < $report_end) {
+				$resolution_names[] = date($df, $time);
+				$time += $time_interval;
+			}
+		} elseif(7 == $days) {
+			# thisweek', last7days', 'lastweek':
+			$time_interval = 86400;
+			$time = strtotime(date($correction_format, $time));
+			while ($time < $report_end) {
+				$resolution_names[] = date($df, $time);
+				$time += $time_interval;
+			}
+		} elseif($days > 90) {
+			$prev = '';
+			$df = 'M';
+			$time_interval = 86400;
+			$correction_format = 'Y-m-01';
+			$time = strtotime(date($correction_format, $time));
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				if ($prev != $h) {
 					$resolution_names[] = $h;
-					$time += (60*60);
 				}
-				break;
-			case 7: # thisweek', last7days', 'lastweek':
-				while ($time < $report_end) {
-					$resolution_names[] = date($df, $time);
-					$time += 86400;
-				}
-				break;
-			case ($days > 90) :
-				$prev = '';
-				$df = 'M';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					if ($prev != $h) {
-						$resolution_names[] = $h;
-					}
-					$time += 86400;
-					$prev = $h;
-				}
-
-				break;
-			case ($days > 7) :
-				$df = 'd';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					$resolution_names[] = $h;
-					$time += 86400;
-				}
-				break;
-			default: # < 7 days, custom report period, defaulting to day names
-				$df = 'w';
-				while ($time < $report_end) {
-					$h = date($df, $time);
-					$use_abbr_day_names = true;
-					$resolution_names[] = $this->abbr_day_names[$h];
-					$time += 86400;
-				}
-				break;
+				$time = strtotime("+1 month", $time);
+				$prev = $h;
+			}
+		} elseif($days > 7) {
+			$df = 'd';
+			$time_interval = 86400;
+			$time = strtotime(date($correction_format, $time));
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				$resolution_names[] = $h;
+				$time += $time_interval;
+			}
+		} else {
+			# < 7 days, custom report period, defaulting to day names
+			$df = 'w';
+			$time_interval = 7 * 24 * 60 * 60;
+			while ($time < $report_end) {
+				$h = date($df, $time);
+				$use_abbr_day_names = true;
+				$resolution_names[] = $this->abbr_day_names[$h];
+				$time += $time_interval;
+			}
 		}
+
+		$offset = 0;
+		// Does date() add one hour to timestamp? In that case, adjust
+		if($report_start - strtotime(date($correction_format, $report_start))) {
+			$offset = $time_interval - ( $report_start - strtotime(date($correction_format, $report_start)) );
+		}
+
+		$end_offset = 0;
+		// Does date() add one hour to timestamp? In that case, adjust
+		if($report_end - strtotime(date($correction_format, $report_end))) {
+			$end_offset = $report_end - strtotime(date($correction_format, $report_end));
+		}
+
+		// Add the last timestamp again (non enumerated),
+		// have it removed later if necessary
 		$last_timestamp = date($df, $report_end);
 		if($use_abbr_day_names) {
 			$last_timestamp = $this->abbr_day_names[$last_timestamp];
 		}
-		if(end($resolution_names) != $last_timestamp) {
-			$resolution_names[] = $last_timestamp;
-		}
-		return $resolution_names;
+
+		return array(
+		        'resolution_names' => $resolution_names,
+			'offset' => $offset,
+			'time_interval' => $time_interval,
+			'end_offset' => $end_offset
+		);
 	}
 
 	/**
@@ -183,7 +210,7 @@ class Trends_graph_Model extends Model
 
 		$hosts = array();
 		$number_of_objects = 0;
-		$earliest_object_state_change_timestamp = $report_end;
+		$earliest_object_state_change_timestamp = false;
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
@@ -192,7 +219,7 @@ class Trends_graph_Model extends Model
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
 				}
-				if($event['the_time'] < $earliest_object_state_change_timestamp) {
+				if(false === $earliest_object_state_change_timestamp) {
 					$earliest_object_state_change_timestamp = $event['the_time'];
 				}
 				$data_suited_for_chart[$current_object][] =  array(
@@ -219,7 +246,6 @@ class Trends_graph_Model extends Model
 		if(count(array_unique($hosts)) == 1) {
 			$remove_host_from_object_name = true;
 		}
-		$seconds_per_pixel = ( $report_end - $report_start ) / $graph_width;
 		foreach($data_suited_for_chart as $service => $state_changes) {
 			if($remove_host_from_object_name) {
 				// Turn "linux-server1;FTP" into "FTP" if all objects are from "linux-server1"
@@ -227,14 +253,14 @@ class Trends_graph_Model extends Model
 			}
 			$current_row = array($service);
 			for($i = 0; $i < count($state_changes); $i++) {
-				$bar_width = $state_changes[$i]['duration'] / $seconds_per_pixel;
+				$bar_width = $state_changes[$i]['duration'] ;
 				if ($bar_width < $smallest_visible_bar_width) {
 					// @todo proper check previous & next values in array for extra pixels
 					// if bar_width is too slim. Alternatively: check longest bar and
 					// pad the rest.
 					$bar_width = $smallest_visible_bar_width;
 				}
-				$current_row[] = number_format($bar_width, 1, '.', null);
+				$current_row[] = $bar_width;
 				$extra_information_phplot_colors[] = $state_changes[$i];
 			}
 			$data[] = $current_row;
@@ -242,7 +268,18 @@ class Trends_graph_Model extends Model
 
 		phplot_charts::load();
 		$plot = new PHPlot($graph_width, $graph_height, $qualified_filename);
-		$plot->x_labels = $this->_get_resolution_names($report_start, $report_end);
+
+		// hacked phplot features.. git log phplot.php for custom mods
+		$chart_scope = $this->_get_chart_scope($report_start, $report_end);
+		if($chart_scope['offset']) {
+			$plot->first_x_at = $chart_scope['offset'] ;
+		}
+
+		$plot->x_labels = $chart_scope['resolution_names'];
+		$plot->offset = $chart_scope['offset'];
+		$plot->offset_end = $chart_scope['end_offset'];
+
+		// original phplot methods
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
 		$arr = Reports_Controller::$colors;
 		$colors = array(
@@ -253,6 +290,7 @@ class Trends_graph_Model extends Model
 		);
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
+		$plot->SetPlotAreaWorld(null, null, $report_end-$report_start);
 		$plot->SetDataValues($data);
 		$plot->SetShading(0);
 		$plot->SetFont('y_label', 2, 8);
@@ -342,4 +380,5 @@ function phplot_color_index_by_state_color($type='host', $state=false) {
 	);
 	$spelled_out_color = $colors[$type][$state];
 	return array_search($spelled_out_color, $phplot_color_array);
+
 }
