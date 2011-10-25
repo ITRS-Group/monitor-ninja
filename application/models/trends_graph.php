@@ -120,9 +120,17 @@ class Trends_graph_Model extends Model
 			$offset = $time_interval - ( $report_start - strtotime(date($correction_format, $report_start)) );
 		}
 
+		//$end_offset = $time - $report_end;
+		$end_offset = 0;
+		if($report_end - strtotime(date($correction_format, $report_end))) {
+			$end_offset = $time_interval - ( $report_end - strtotime(date($correction_format, $report_end)) );
+		}
+
 		//echo "<pre>";
 		//var_dump($offset);
+		//var_dump($end_offset);
 		//var_dump($time_interval);
+		//var_dump($resolution_names);
 		//var_dump($time);
 		//var_dump(date('Y-m-d H:i:s', $time));
 		//var_dump($report_start);
@@ -136,7 +144,7 @@ class Trends_graph_Model extends Model
 		return array(
 		        'resolution_names' => $resolution_names,
 			'offset' => $offset,
-			'end_offset' => $time - $report_end
+			'end_offset' => $end_offset
 		);
 	}
 

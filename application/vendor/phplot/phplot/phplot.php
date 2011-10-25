@@ -4515,7 +4515,7 @@ class PHPlot
 		    if($skip_first_x_label) {
 			    $skip_first_x_label = false;
 			    $x_tmp = $this->first_x_at;
-			    $width_per_label = $total_printable_width / ( count($copy) - 1 );
+			    //$width_per_label = $total_printable_width / ( count($copy) - 1 );
 			    continue;
 		    }
 		    // Vertical grid lines
