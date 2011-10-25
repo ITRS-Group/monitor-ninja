@@ -215,7 +215,7 @@ class Trends_graph_Model extends Model
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
 				$hosts[] = $event['host_name'];
-				$object_type = isset($event['service_description']) && !empty($event['service_description']) ? 'service' : 'host';
+				$object_type = strpos($current_object, ';') !== false ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
 				}
