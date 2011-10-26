@@ -104,7 +104,7 @@ class Trends_graph_Model extends Model
 		} else {
 			# < 7 days, custom report period, defaulting to day names
 			$df = 'w';
-			$time_interval = 7 * 24 * 60 * 60;
+			$time_interval = 24 * 60 * 60;
 			while ($time < $report_end) {
 				$h = date($df, $time);
 				$use_abbr_day_names = true;
