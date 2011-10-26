@@ -72,12 +72,12 @@ class Ninja_setting_Model extends Model
 		}
 		$res = false;
 		$sql_base = "SELECT * FROM ninja_settings";
-		$user = Auth::instance()->get_user()->username;
 		if ($default === true) {
 			# We have a request for default value
 			$sql = $sql_base." WHERE (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL) AND page=".
 				$db->escape($page)." AND type=".$db->escape($type);
 		} else {
+			$user = Auth::instance()->get_user()->username;
 			# first, try user setting
 			$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
 				" AND type=".$db->escape($type);

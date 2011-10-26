@@ -358,15 +358,15 @@ class Ninja_widget_Model extends Model
 	*	Add a new widget to the widget_order string
 	* 	after validating that it dosesn't exist
 	*/
-	public function add_to_widget_order($page=false, $widget=false)
+	public function add_to_widget_order($page=false, $widget=false, $default=false)
 	{
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page, $default);
 
 		if (empty($widget) || empty($page)) {
 			return false;
 		}
 
-		$widget_parts = $data->setting;
+		$widget_parts = isset($data->setting) ? $data->setting : false;
 		$widget_order = false;
 		$all_parts = false;
 		$all_widgets = array();
@@ -450,7 +450,22 @@ class Ninja_widget_Model extends Model
 		$return = $db->query($sql);
 
 		# add the new widget to the widget_order string
-		self::add_to_widget_order($page. $name);
+		self::add_to_widget_order($page, $name);
 		return $return;
+	}
+
+	/**
+	 * DANGER WILL ROBINSON!
+	 * This makes a ton of assumptions, and should only be called after much
+	 * consideration.
+	 */
+	public function rename_widget($old_name, $new_name)
+	{
+		$db = Database::instance();
+		$sql = 'UPDATE ninja_widgets SET name='.$db->escape($new_name).' WHERE name='.$db->escape($old_name);
+		$db->query($sql);
+
+		self::add_to_widget_order('tac/index', $new_name, true);
+		self::add_to_widget_order('noc/index', $new_name, true);
 	}
 }
