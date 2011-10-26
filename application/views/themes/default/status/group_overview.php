@@ -115,32 +115,32 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					<?php
 					if ($nacoma_link===true) {
 						$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-						echo html::anchor('configuration/configure/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px'));
+						echo html::anchor('configuration/configure/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px')).' ';
 					}
 
 					if ($pnp4nagios_path!==false && pnp::has_graph($group->host_name)) {
-						echo '<a href="'.url::base(true) . 'pnp/?host='.urlencode($group->host_name).'&srv=_HOST_" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a>';
+						echo '<a href="'.url::base(true) . 'pnp/?host='.urlencode($group->host_name).'&srv=_HOST_" style="border: 0px">'.html::image($this->img_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a> ';
 					}
 
 					$lable_extinfo_host = $t->_('View Extended Information For This Host');
-					echo html::anchor('extinfo/details/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') );
+					echo html::anchor('extinfo/details/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ).' ';
 
 					if ( Kohana::config('config.nagvis_path') ) {
 						$lable_statusmap = $t->_('Locate Host On Map');
-						echo html::anchor('statusmap/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') );
+						echo html::anchor('statusmap/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_statusmap, 'title' => $lable_statusmap)), array('style' => 'border: 0px') ).' ';
 					}
 
 					$lable_svc_status = $t->_('View Service Details For This Host');
-					echo html::anchor('status/service/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') );
+					echo html::anchor('status/service/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ).' ';
 
 					if (!is_null($group->action_url)) {
 						$lable_host_action = $t->_('Perform Extra Host Actions');
-						echo '<a href="'.nagstat::process_macros($group->action_url, $group).'" style="border: 0px" target="'.$action_url_target.'">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a>';
+						echo '<a href="'.nagstat::process_macros($group->action_url, $group).'" style="border: 0px" target="'.$action_url_target.'">'.html::image($this->img_path('icons/16x16/host-actions.png'), array('alt' => $lable_host_action, 'title' => $lable_host_action)).'</a> ';
 					}
 
 					if (!is_null($group->notes_url)) {
 						$lable_host_notes = $t->_('View Extra Host Notes');
-						echo '<a href="'.nagstat::process_macros($group->notes_url, $group).'" style="border: 0px" target="'.$notes_url_target.'">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a>';
+						echo '<a href="'.nagstat::process_macros($group->notes_url, $group).'" style="border: 0px" target="'.$notes_url_target.'">'.html::image($this->img_path('icons/16x16/host-notes.png'), array('alt' => $lable_host_notes, 'title' => $lable_host_notes)).'</a> ';
 					} ?>
 				</td>
 			</tr>
