@@ -29,11 +29,19 @@ runTest()
 	line="$@"
 	the_test=`echo $line|awk '{print $1}'`
 	the_user=`echo $line|awk '{print $2}'`
+	if [ "$the_test" == "" -o "$the_user" == "" ]
+	then
+		echo "Malformed test found. Correct syntax: <request> <user>. Skipping:"
+		echo $line
+		echo
+		return
+	fi
 	/usr/bin/php $prefix/index.php $the_test $the_user
 	if [ $? -ne 0 ]
 	then
 		errors=$(($errors + 1))
 	fi
+	ntests=$(($ntests+1))
 }
 
 # Set loop separator to end of line
@@ -47,7 +55,6 @@ do
 	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
 	then
 		runTest $line
-		ntests=$(($ntests+1))
 	fi
 done
 exec 0<&3
