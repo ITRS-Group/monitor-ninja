@@ -8,8 +8,6 @@ status/servicegroup_grid?run_tests monitor
 status/hostgroup_summary?run_tests monitor
 status/servicegroup_summary?run_tests monitor
 status/host/all/6?run_tests monitor
-op5reports/generate?run_tests&new_report_setup=1&type=sla&report_type=services&service_description[]=linux Server1-klon1;Disk usage /&service_description[]=linux Server1-klon1;DNS&service_description[]=linux Server1-klon1;FTP&service_description[]=linux Server1-klon1;HTTP&service_description[]=linux Server1-klon1;NTP&service_description[]=linux Server1-klon1;PING&service_description[]=linux Server1-klon1;SSH&report_period=thisyear&use_average=0&host_filter_status[]=1&host_filter_status[]=1&host_filter_status[]=1&host_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&scheduleddowntimeasuptime=0&assumestatesduringnotrunning=1&assumeinitialstates=1&initialassumedhoststate=-3&initialassumedservicestate=-3&summary_report_type=1&summary_items=25&alert_types=3&state_types=3&host_states=7&service_states=15&month_1=5&month_2=6&month_3=2&month_4=7&month_5=2&month_6=5&month_7=4&month_8=2&month_9=1 monitor
-op5reports/generate?run_tests&new_report_setup=1&type=sla&report_type=hostgroups&hostgroup[]=unix-servers&report_period=thisyear&use_average=0&host_filter_status[]=1&host_filter_status[]=1&host_filter_status[]=1&host_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&service_filter_status[]=1&scheduleddowntimeasuptime=0&assumestatesduringnotrunning=1&assumeinitialstates=1&initialassumedhoststate=-3&initialassumedservicestate=-3&month_1=5 monitor
 tac?run_tests monitor
 outages?run_tests monitor
 search/lookup?query=monitor&run_tests monitor
@@ -29,9 +27,6 @@ config?run_tests&type=contacts monitor
 extinfo/details?run_tests&type=host&host=monitor monitor
 notifications?run_tests monitor
 summary/generate?run_tests&standardreport=4&summary_items=25 monitor
-
-#### TEMPLATE
-#trends/generate?run_tests& monitor
 
 # trends graph, today, hostgroups
 trends/generate?run_tests&new_report_setup=1&type=avail&report_type=hostgroups&filter_field=&hostgroup%5B%5D=hostgroup_passive_disabled&report_period=today&cal_start=&start_time=&time_start=08%3A00&cal_end=&end_time=&time_end=09%3A00&assumestatesduringnotrunning=1&assumeinitialstates=1&initialassumedhoststate=-3&initialassumedservicestate=-3 monitor

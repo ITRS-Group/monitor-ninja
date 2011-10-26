@@ -338,7 +338,13 @@ class Ninja_Controller extends Template_Controller {
 			return false;
 		}
 
-		if ($this->run_tests !== false && unittest::get_testfile($view) !== false) {
+		if ($this->run_tests !== false) {
+			if(unittest::get_testfile($view) === false) {
+				$tap = unittest::instance();
+				$tap->fail("Could not find the view file '$view'");
+				exit($tap->done());
+			}
+
 			return new View('tests/'.$view);
 		} else {
 			return new View($this->theme_path.$view);
