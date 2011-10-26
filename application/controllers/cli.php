@@ -330,7 +330,7 @@ class Cli_Controller extends Authenticated_Controller {
 			die("Usage: {$params[0]} {$params[1]} <user> --page <page> --name <name> --friendly_name <friendly_name>\n");
 
 		$widget = new Ninja_widget_Model();
-		$widget->add_widget($params['page'], $params['name'], $params['friendly_name']);
+		$widget->add_widget($params['page'], $params['name'], $params['friendly_name'], true);
 	}
 
 	public function rename_widget()

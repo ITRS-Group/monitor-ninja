@@ -434,7 +434,7 @@ class Ninja_widget_Model extends Model
 	/**
 	*	Add a new widget to ninja_widgets table
 	*/
-	public function add_widget($page=false, $name=false, $friendly_name=false)
+	public function add_widget($page=false, $name=false, $friendly_name=false, $default=false)
 	{
 		if (empty($name) || empty($friendly_name)) {
 			return false;
@@ -450,7 +450,7 @@ class Ninja_widget_Model extends Model
 		$return = $db->query($sql);
 
 		# add the new widget to the widget_order string
-		self::add_to_widget_order($page, $name);
+		self::add_to_widget_order($page, $name, $default);
 		return $return;
 	}
 
