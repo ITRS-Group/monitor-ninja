@@ -27,15 +27,12 @@ fi
 runTest()
 {
 	line="$@"
-	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
+	the_test=`echo $line|awk '{print $1}'`
+	the_user=`echo $line|awk '{print $2}'`
+	/usr/bin/php $prefix/index.php $the_test $the_user
+	if [ $? -ne 0 ]
 	then
-		the_test=`echo $line|awk '{print $1}'`
-		the_user=`echo $line|awk '{print $2}'`
-		/usr/bin/php $prefix/index.php $the_test $the_user
-		if [ $? -ne 0 ]
-		then
-			errors=$(($errors + 1))
-		fi
+		errors=$(($errors + 1))
 	fi
 }
 
@@ -47,8 +44,11 @@ exec 0<"$file"
 while read -r line
 do
 	# use $line variable to process line in runTest() function
-	runTest $line
-	ntests=$(($ntests+1))
+	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
+	then
+		runTest $line
+		ntests=$(($ntests+1))
+	fi
 done
 exec 0<&3
 
