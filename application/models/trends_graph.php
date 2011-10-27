@@ -214,7 +214,8 @@ class Trends_graph_Model extends Model
 		// Group log entries by object type
 		foreach($data as $current_object => $events) {
 			foreach($events as $event) {
-				$hosts[] = $event['host_name'];
+				if (isset($event['host_name']))
+					$hosts[] = $event['host_name'];
 				$object_type = strpos($current_object, ';') !== false ? 'service' : 'host';
 				if(!isset($data_suited_for_chart[$current_object])) {
 					$data_suited_for_chart[$current_object] = array();
