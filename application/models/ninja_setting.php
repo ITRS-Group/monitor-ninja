@@ -20,7 +20,7 @@ class Ninja_setting_Model extends Model
 		$type = trim($type);
 		$page = trim($page);
 		$value = trim($value);
-		$user = empty($username) ? Auth::instance()->get_user()->username : $username;
+		$user = empty($username) ? @Auth::instance()->get_user()->username : $username;
 		if (empty($type) || empty($user))
 			return false;
 
