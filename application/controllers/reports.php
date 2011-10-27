@@ -20,6 +20,7 @@ class Reports_Controller extends Authenticated_Controller
 		'red' 	=> '#f7261b',
 		'grey' 	=> '#a19e95',
 		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
+		'white' => '#ffffff'
 	);
 
 	public static $options = array(
