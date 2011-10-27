@@ -101,8 +101,6 @@ if [ -f /opt/op5sys/etc/ldapserver ]; then
   sed -i "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/" %prefix/application/config/auth.php
 fi
 
-echo "DELETE FROM ninja_widgets WHERE name='geomap';" | mysql -uroot merlin
-
 %files
 %defattr(-,monitor,apache)
 %prefix
