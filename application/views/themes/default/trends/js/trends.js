@@ -44,6 +44,7 @@ $(document).ready(function() {
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
 	});
+	show_calendar($("#report_period").attr('value'));
 
 	$("#trends_show_hide_objects").bind('click', function() {
 		//show_hide_objects($(this).attr('value'));

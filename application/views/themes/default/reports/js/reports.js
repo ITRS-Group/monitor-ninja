@@ -69,6 +69,7 @@ $(document).ready(function() {
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
 	});
+	show_calendar($("#report_period").attr('value'));
 
 	$('.autofill').click(function() {
 		var the_val = $("input[name='" + $(this).attr('id') + "']").attr('value');
