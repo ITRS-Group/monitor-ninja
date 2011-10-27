@@ -27,15 +27,16 @@ if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
 	fclose($fd);
 
 	$css_header = false;
-	$content = '<h3>There was an error rendering the page</h3>';
+	$content = '<div class="left"><h3>There was an error rendering the page</h3>';
 	if (!$writeerror) {
-		$content .= '<p>Please contact your administrator. Debug information has been saved to "'.$file.'".</p>';
+		$content .= '<p>Please contact your administrator. Debug information has been saved to "'.$file.'".</p></div>';
 	} else {
 		// by special casing this here once, we save some support time every time
 		// log data clobbers a customers hard drive
-		$content .= "<p>Additionally, there was an error when trying to save the debug information to \"$file\". Please check that your hard drive isn't full.</p>";
+		$content .= "<p>Additionally, there was an error when trying to save the debug information to \"$file\". Please check that your hard drive isn't full.</p></div>";
 	}
 }
+$title = 'Error';
 require('themes/default/menu/menu.php');
 $links = $menu_base;
 
