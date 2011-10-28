@@ -32,9 +32,9 @@ $(document).ready(function() {
 	$('.item_selectcomment').hide();
 
 	// restore left border for first cell of each row
-	$('table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
-	$('table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
-	$('table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
+	$('#comment_search_table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
+	$('#comment_search_table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
+	$('#comment_search_table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
 
 	var old_refresh = 0;
 	var refresh_is_paused = false;

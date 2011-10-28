@@ -328,7 +328,7 @@ if (isset($comment_result)) {
 	echo form::open('extinfo/show_comments');
 
 	if (isset($comment_pagination)) { ?><br /><div id="comment_pagination"><?php echo $comment_pagination ?></div><?php } ?>
-	<table>
+	<table id="comment_search_table">
 	<caption><?php echo $this->translate->_('Comment results for').': &quot;'.$query.'&quot'; ?>
 		<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_comment_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
 	</caption>
