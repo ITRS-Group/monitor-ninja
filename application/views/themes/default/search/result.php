@@ -24,7 +24,7 @@ if (isset($host_result) ) {
 	<caption><?php echo $this->translate->_('Host results for').': &quot;'.$query.'&quot'; ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><br /></caption>
 	<tr>
 		<th class="header"><em><?php echo $this->translate->_('Status'); ?></em></th>
-		<th class="item_select"><input type="checkbox" class="select_all_items" title="'.$this->translate->_('Click to select/unselect all').'"></th>
+		<th class="item_select"><input type="checkbox" class="select_all_items" title="<?php echo $this->translate->_('Click to select/unselect all') ?>"></th>
 		<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 		<th class="no-sort"><?php echo $this->translate->_('Actions'); ?></th>
 		<th class="header"><?php echo $this->translate->_('Alias'); ?></th>
@@ -325,10 +325,17 @@ if (isset($comment_result)) {
 	$label_type_flapping = $this->translate->_('Flap Detection');
 	$label_type_acknowledgement = $this->translate->_('Acknowledgement');
 
+	echo form::open('extinfo/show_comments');
+
 	if (isset($comment_pagination)) { ?><br /><div id="comment_pagination"><?php echo $comment_pagination ?></div><?php } ?>
 	<table>
-	<caption><?php echo $this->translate->_('Comment results for').': &quot;'.$query.'&quot'; ?></caption>
+	<caption><?php echo $this->translate->_('Comment results for').': &quot;'.$query.'&quot'; ?>
+		<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_comment_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+	</caption>
 		<tr>
+			<th class="item_selectcomment headerNone">
+				<?php echo form::checkbox(array('name' => 'selectall_comments', 'class' => 'select_all_items'), ''); ?>
+			</th>
 			<th class="header"><?php echo $this->translate->_('Host'); ?></th>
 			<th class="header"><?php echo $this->translate->_('Service'); ?></th>
 			<th class="headerNone"><?php echo $this->translate->_('Entry time'); ?></th>
@@ -360,6 +367,7 @@ if (isset($comment_result)) {
 			}
 			$i = 0; ?>
 		<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd' ?>">
+			<td class="item_selectcomment"><?php echo form::checkbox(array('name' => 'del_comment_'.(isset($row->service_description) ? 'service' : 'host').'[]', 'class' => 'deletecommentbox', 'title' => $this->translate->_('Click to select/unselect all')), $row->comment_id); ?></td>
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name) ?></td>
 			<td><?php echo !empty($row->service_description) ? html::anchor('extinfo/details/service/'.$row->host_name.'?service='.urlencode($row->service_description), $row->service_description) : '' ?></td>
 			<td style="white-space: normal"><?php echo !empty($row->entry_time) ? date(nagstat::date_format(), $row->entry_time) : '' ?></td>
@@ -379,5 +387,10 @@ if (isset($comment_result)) {
 	<?php $i++;	} ?>
 	</table>
 	<?php
+		echo '<div class="item_selectcomment">';
+		echo form::hidden('redirect_page', Router::$controller.'/'.Router::$method.'?'.$_SERVER['QUERY_STRING']);
+		echo form::submit(array('name' => 'del_submit_comment'), $this->translate->_('Delete Selected'));
+		echo '</div>';
+		echo form::close();
 }
-?>
+?><br />
