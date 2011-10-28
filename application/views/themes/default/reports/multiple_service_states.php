@@ -75,9 +75,9 @@
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
 			<?php if (!$use_alias && $sg_no == 0) { ?>
-				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $create_pdf != false ? html::anchor(base_url::get().str_replace('/ninja/index.php/', null, $data['host_link'][$i]), $data['HOST_NAME'][$i]) :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } elseif ($sg_no == 0) { ?>
-				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+				<td colspan="6" class="multiple label"><strong><?php echo $t->_('Services on host') ?></strong>: <?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? html::anchor(base_url::get().str_replace('/ninja/index.php/', null, $data['host_link'][$i]), $data['HOST_NAME'][$i]) : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
@@ -90,7 +90,8 @@
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td <?php echo ($create_pdf) ? 'style="width: 222px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="label"'; ?>>
 					<?php if ($create_pdf) { ?>
-						<?php echo $data['SERVICE_DESCRIPTION'][$i] ?>
+ 
+						<?php echo html::anchor(base_url::get().str_replace('/ninja/index.php/', null, $data['service_link'][$i]), $data['SERVICE_DESCRIPTION'][$i]) ?>
 					<?php } else { ?>
 					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 					<?php } ?>
