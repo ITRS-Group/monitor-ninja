@@ -211,9 +211,9 @@ $config['nagvis_real_path'] = '/opt/monitor/op5/nagvis/';
 if (is_dir($config['nagvis_real_path'])) {
 	$config['nagvis_path'] = '/monitor/op5/nagvis/';
 } else {
-	$config['nagvis_path'] = false;
 }
 */
+$config['nagvis_path'] = false;
 
 /**
 * Add some suport for cacti/statistics
