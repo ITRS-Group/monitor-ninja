@@ -109,7 +109,7 @@ if (isset($host_result) ) {
 		<td><?php echo $host->display_name ?></td>
 	<?php }
 		 if ($show_notes) { ?>
-		<td <?php if (!empty($host->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $host->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($host->notes, $notes_chars, '...') : $host->notes ?></td>
+		<td <?php if (!empty($host->notes)) { ?> style="white-space: normal" class="notescontainer"<?php } ?> title="<?php echo $host->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($host->notes, $notes_chars, '...') : $host->notes ?></td>
 	<?php } ?>
 	</tr>
 <?php	$i++; } ?>
@@ -239,7 +239,7 @@ if (isset($service_result) ) {
 		<td><?php echo $service->display_name ?></td>
 	<?php }
 		 if ($show_notes) { ?>
-		<td <?php if (!empty($service->notes)) { ?>class="notescontainer"<?php } ?> title="<?php echo $service->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($service->notes, $notes_chars, '...') : $service->notes ?></td>
+		<td <?php if (!empty($service->notes)) { ?>style="white-space: normal" class="notescontainer"<?php } ?> title="<?php echo $service->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($service->notes, $notes_chars, '...') : $service->notes ?></td>
 	<?php } ?>
 	</tr>
 <?php	$i++;
