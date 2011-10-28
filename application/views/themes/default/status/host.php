@@ -98,7 +98,7 @@ foreach ($result as $row) {
 							$properties += 4;
 						}
 						if (isset($row->is_flapping) && $row->is_flapping) {
-							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'))), array('style' => 'border: 0px'));
 							$properties += 32;
 						}
 						if ($row->scheduled_downtime_depth > 0) {
