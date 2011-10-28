@@ -326,19 +326,11 @@ class Ninja_widget_Model extends Model
 		return false;
 	}
 
-	/**
-	*	Parse the widget order for use on a page
-	*/
-	public function fetch_widget_order($page=false)
+	private function parse_widget_order($setting)
 	{
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
-		if ($data === false || empty($data->setting)) {
-			return false;
-		}
-		$widget_parts = $data->setting;
 		$widget_order = false;
-		if (!empty($widget_parts)) {
-			$widget_parts = explode('|', $widget_parts);
+		if (!empty($setting)) {
+			$widget_parts = explode('|', $setting);
 			if (!empty($widget_parts)) {
 				foreach ($widget_parts as $part) {
 					$parts = explode('=', $part);
@@ -352,6 +344,18 @@ class Ninja_widget_Model extends Model
 			}
 		}
 		return $widget_order;
+	}
+
+	/**
+	*	Parse the widget order for use on a page
+	*/
+	public function fetch_widget_order($page=false)
+	{
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		if ($data === false || empty($data->setting)) {
+			return false;
+		}
+		return self::parse_widget_order($data->setting);
 	}
 
 	/**
@@ -454,6 +458,22 @@ class Ninja_widget_Model extends Model
 		return $return;
 	}
 
+	private function rename_settings($old_name, $new_name) {
+		$db = Database::instance();
+		$sql = "SELECT id, page, username, setting FROM ninja_settings WHERE type = 'widget_order'";
+		$data = $db->query($sql);
+		foreach ($data as $row) {
+			$serialized_settings = array();
+			$parsed_setting = self::parse_widget_order($row->setting);
+			foreach ($parsed_setting as $key => $ary) {
+				if (($idx = array_search($old_name, $ary)) !== false)
+					$ary[$idx] = $new_name;
+				$serialized_settings[] = $key . '=' . implode(',', $ary);
+			}
+			Ninja_setting_Model::save_page_setting('widget_order', $row->page, implode('|', $serialized_settings), $row->username);
+		}
+	}
+
 	/**
 	 * DANGER WILL ROBINSON!
 	 * This makes a ton of assumptions, and should only be called after much
@@ -464,8 +484,6 @@ class Ninja_widget_Model extends Model
 		$db = Database::instance();
 		$sql = 'UPDATE ninja_widgets SET name='.$db->escape($new_name).' WHERE name='.$db->escape($old_name);
 		$db->query($sql);
-
-		self::add_to_widget_order('tac/index', $new_name, true);
-		self::add_to_widget_order('noc/index', $new_name, true);
+		$this->rename_settings("widget-".$old_name, "widget-".$new_name);
 	}
 }
