@@ -316,7 +316,7 @@ if (isset($this) && isset($this->template->js_header))
 							}
 							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
 						}
-						echo '<li onclick="restore_widgets();">'._('Restore to factory settings').'</li>'."\n";
+						echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'._('Set widget refresh rate (s.)').'</li>'."\n";
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'._('Upload new widget').'</li>'."\n";
