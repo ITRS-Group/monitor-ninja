@@ -20,6 +20,7 @@ class Reports_Controller extends Authenticated_Controller
 		'red' 	=> '#f7261b',
 		'grey' 	=> '#a19e95',
 		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
+		'white' => '#ffffff'
 	);
 
 	public static $options = array(
@@ -4108,7 +4109,7 @@ class Reports_Controller extends Authenticated_Controller
 				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
 				"and click on the left pointing arrow."),
 			'report_time_period' => $translate->_("What time should the report be created for. Tip: This can be used for SLA reporting."),
-			'scheduled_downtime' => $translate->_("Select if downtime that occurred during scheduled downtime should be counted as uptime or not."),
+			'scheduled_downtime' => $translate->_("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
 			'initial_states' => sprintf($translate->_("Whether to assume logging of initial states or not. Default values are YES. ".
 				"%sFor advanced users the value can be modified by editing the nagios.cfg config file located in the %s directory."), '<br /><br />', $nagios_etc_path),
 			'first_assumed_host' => $translate->_("If there is no information about the host or service in the current log file, ".

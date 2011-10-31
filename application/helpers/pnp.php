@@ -11,17 +11,22 @@ class pnp_Core
 	*/
 	public static function has_graph($host=false, $service=false)
 	{
+		return !!self::get_sources($host, $service);
+	}
+
+	public static function get_sources($host=false, $service=false)
+	{
 		if (empty($host)) {
-			return false;
+			return array();
 		}
 		if (!self::is_enabled()) {
-			return false;
+			return array();
 		}
 		$host = self::clean($host);
 		$rrdbase = self::pnp_config('rrdbase');
 		if (empty($rrdbase)) {
 			# config missing or some other error
-			return false;
+			return array();
 		}
 
 		$rrdbase = trim($rrdbase);
@@ -42,7 +47,19 @@ class pnp_Core
 
 		$path = $rrdbase . $host . '/' . $service . '.xml';
 
-		return posix_access($path, POSIX_R_OK);
+		if (!posix_access($path, POSIX_R_OK))
+			return array();
+
+		$contents = file_get_contents($path);
+		$xmldata = simplexml_load_string($contents);
+		$res = array();
+		if ($xmldata->DATASOURCE) {
+			foreach ($xmldata->DATASOURCE as $ds) {
+				if (isset($ds->DS))
+					$res[] = ((int)$ds->DS) - 1;
+			}
+		}
+		return $res;
 	}
 
 	/**

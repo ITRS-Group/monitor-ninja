@@ -6,6 +6,7 @@ $(document).ready(function() {
 function adjust_height() {
 	$('#iframe').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
 	$('#nagvis').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
+	$('#hypermap').css('height', parseInt(document.documentElement.clientHeight-68)+'px');
 	$('body').css('overflow-y', 'hidden');
 }
 

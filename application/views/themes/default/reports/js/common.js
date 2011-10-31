@@ -7,6 +7,11 @@ var nr_of_scheduled_instances = 0;
 var is_populated = false; // flag list population when done
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
+	// because chrome, ie AND ff differs
+	if($.browser.mozilla) {
+		$('#availability_toolbox').css('marginTop', '-33px');
+	}
+
 	// handle the move-between-lists-button (> + <) and double click events
 	// hostgroups >
 	$("#mv_hg_r").click(function() {moveAndSort('hostgroup_tmp', 'hostgroup');});

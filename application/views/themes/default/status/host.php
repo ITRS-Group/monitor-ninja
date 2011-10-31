@@ -98,7 +98,7 @@ foreach ($result as $row) {
 							$properties += 4;
 						}
 						if (isset($row->is_flapping) && $row->is_flapping) {
-							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'), 'style' => 'margin-bottom: -2px')), array('style' => 'border: 0px'));
+							echo '&nbsp;'.html::anchor('extinfo/details/host/'.$row->host_name, html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $t->_('Flapping'), 'title' => $t->_('Flapping'))), array('style' => 'border: 0px'));
 							$properties += 32;
 						}
 						if ($row->scheduled_downtime_depth > 0) {
@@ -128,7 +128,7 @@ foreach ($result as $row) {
 						if (nacoma::link()===true)
 							echo nacoma::link('configuration/configure/host/'.$row->host_name, 'icons/16x16/nacoma.png', $t->_('Configure this host')).' &nbsp;';
 						if (Kohana::config('config.pnp4nagios_path')!==false)
-							echo (pnp::has_graph($row->host_name))  ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv=_HOST_', html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).'&nbsp;' : '';
+							echo (pnp::has_graph($row->host_name))  ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv=_HOST_', html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).' &nbsp;' : '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">';
 							echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));

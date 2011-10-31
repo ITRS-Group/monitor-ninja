@@ -27,16 +27,21 @@ fi
 runTest()
 {
 	line="$@"
-	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
+	the_test=`echo $line|awk '{print $1}'`
+	the_user=`echo $line|awk '{print $2}'`
+	if [ "$the_test" == "" -o "$the_user" == "" ]
 	then
-		the_test=`echo $line|awk '{print $1}'`
-		the_user=`echo $line|awk '{print $2}'`
-		/usr/bin/php $prefix/index.php $the_test $the_user
-		if [ $? -ne 0 ]
-		then
-			errors=$(($errors + 1))
-		fi
+		echo "Malformed test found. Correct syntax: <request> <user>. Skipping:"
+		echo $line
+		echo
+		return
 	fi
+	/usr/bin/php $prefix/index.php $the_test $the_user
+	if [ $? -ne 0 ]
+	then
+		errors=$(($errors + 1))
+	fi
+	ntests=$(($ntests+1))
 }
 
 # Set loop separator to end of line
@@ -47,8 +52,10 @@ exec 0<"$file"
 while read -r line
 do
 	# use $line variable to process line in runTest() function
-	runTest $line
-	ntests=$(($ntests+1))
+	if [ "$line" != "" ] && [ ${line:0:1} != "#" ]
+	then
+		runTest $line
+	fi
 done
 exec 0<&3
 

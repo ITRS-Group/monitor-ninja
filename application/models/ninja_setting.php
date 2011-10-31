@@ -20,8 +20,8 @@ class Ninja_setting_Model extends Model
 		$type = trim($type);
 		$page = trim($page);
 		$value = trim($value);
-		$user = empty($username) ? Auth::instance()->get_user()->username : $username;
-		if (empty($type) || empty($user))
+		$user = empty($username) ? @Auth::instance()->get_user()->username : $username;
+		if (empty($type))
 			return false;
 
 		$db = Database::instance();
@@ -31,19 +31,24 @@ class Ninja_setting_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$db->escape($user).
+		if (empty($user))
+			$user = "''";
+		else
+			$user = $db->escape($user);
+
+		$sql = "SELECT * FROM ninja_settings WHERE ".self::USERFIELD."=".$user.
 			" AND page=".$db->escape($page)." AND type=".$db->escape($type);
 
 		# does this setting exist? (i.e should we do insert or update)
 		$res = $db->query($sql);
 		if (count($res)!=0) {
 			$sql = "UPDATE ninja_settings SET setting=".$db->escape($value).
-				" WHERE ".self::USERFIELD."=".$db->escape($user)." AND type=".
+				" WHERE ".self::USERFIELD."=".$user." AND type=".
 				$db->escape($type)." AND page=".$db->escape($page);
 		} else {
 			$sql = "INSERT INTO ninja_settings(page, type, setting, ".self::USERFIELD.") ".
 				"VALUES(".$db->escape($page).", ".$db->escape($type).", ".$db->escape($value).
-				", ".$db->escape($user).")";
+				", ".$user.")";
 		}
 		unset($res);
 		$db->query($sql);
@@ -72,12 +77,12 @@ class Ninja_setting_Model extends Model
 		}
 		$res = false;
 		$sql_base = "SELECT * FROM ninja_settings";
-		$user = Auth::instance()->get_user()->username;
 		if ($default === true) {
 			# We have a request for default value
 			$sql = $sql_base." WHERE (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL) AND page=".
 				$db->escape($page)." AND type=".$db->escape($type);
 		} else {
+			$user = Auth::instance()->get_user()->username;
 			# first, try user setting
 			$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
 				" AND type=".$db->escape($type);

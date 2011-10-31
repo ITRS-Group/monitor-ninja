@@ -482,7 +482,7 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		foreach ($fields as $f => $internal) {
-			if (array_key_exists($f, $user_access)) {
+			if ($user_access && array_key_exists($f, $user_access)) {
 				$access[$internal] = true;
 			} else {
 				$access[$internal] = false;
@@ -490,7 +490,7 @@ class User_Controller extends Authenticated_Controller {
 		}
 
 		# special cased
-		if (in_array('authorized_for_configuration_information', $user_access)) {
+		if ($user_access && in_array('authorized_for_configuration_information', $user_access)) {
 			$access['authorized_for_configuration_information'] = true;
 		}
 

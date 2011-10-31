@@ -1,7 +1,6 @@
-<?php $t = $this->translate;
-echo '<div style="display:none" id="link_container"></div>';
-?>
-<div style="position: relative; top: -33px; right: 118px; float: right">
+<?php $t = $this->translate; ?>
+<div style="display:none" id="link_container"></div>
+<div id="availability_toolbox">
 <?php if ($type == 'avail') { ?>
 	<?php if (!$report_id) { ?>
 	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>

@@ -40,9 +40,9 @@
 			<?php $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
 			<?php if (!$use_alias) { ?>
-				<td <?php echo ($create_pdf) ? 'style="width: 304px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 304px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $create_pdf != false ? html::anchor(base_url::get().str_replace('/ninja/index.php/', null, $data['host_link'][$i]), $data['HOST_NAME'][$i]) : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
 				<?php } else { ?>	
-				<td <?php echo ($create_pdf) ? 'style="width: 304px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
+				<td <?php echo ($create_pdf) ? 'style="width: 304px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? html::anchor(base_url::get().str_replace('/ninja/index.php/', null, $data['host_link'][$i]), $data['HOST_NAME'][$i]) :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
 				<?php } ?>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; text-align: right; background-color: '.$bg_color.'"' : 'class="data"'; ?>><?php echo reports::format_report_value($data['up'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['up'][$i]) > 0 ? '' : 'not-').'up.png'),
 							array( 'alt' => $t->_('Up'), 'title' => $t->_('Up'), 'style' => 'height: 12px; width: 12x'));

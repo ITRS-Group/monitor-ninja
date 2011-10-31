@@ -995,7 +995,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$handling_deletes = false;
 		$command_success = false;
 		$command_result_msg = false;
-		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime']))) {
+		if (!empty($_POST) && (!empty($_POST['del_comment']) || !empty($_POST['del_downtime'])
+			|| !empty($_POST['del_comment_host']) || !empty($_POST['del_comment_service']))) {
 			$handling_deletes = true;
 			$comment_cmd = false;
 			$downtime_cmd = false;
@@ -1017,6 +1018,27 @@ class Extinfo_Controller extends Authenticated_Controller {
 					url::redirect('command/unauthorized');
 				}
 				foreach ($_POST['del_comment'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
+				}
+			}
+
+			# delete host comments from search result
+			if (isset($_POST['del_comment_host'])) {
+				$comment_cmd = 'DEL_HOST_COMMENT';
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
+					url::redirect('command/unauthorized');
+				}
+				foreach ($_POST['del_comment_host'] as $param) {
+					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
+				}
+			}
+			# delete service comments from search result
+			if (isset($_POST['del_comment_service'])) {
+				$comment_cmd = 'DEL_SVC_COMMENT';
+				if (!Command_Controller::_is_authorized_for_command(array('cmd_typ' => $comment_cmd))) {
+					url::redirect('command/unauthorized');
+				}
+				foreach ($_POST['del_comment_service'] as $param) {
 					$nagios_commands = Command_Controller::_build_command($comment_cmd, array('comment_id' => $param), $nagios_commands);
 				}
 			}
@@ -1051,12 +1073,17 @@ class Extinfo_Controller extends Authenticated_Controller {
 					Kohana::config('config.product_name'));
 			}
 
-			$_SESSION['command_result_msg'] = $command_result_msg;
-			$_SESSION['command_success'] = $command_success;
+			$redirect = arr::search($_REQUEST, 'redirect_page');
+			if (empty($redirect)) {
+				$_SESSION['command_result_msg'] = $command_result_msg;
+				$_SESSION['command_success'] = $command_success;
 
-			# reload controller to prevent it from trying to submit
-			# the POST data on refresh
-			url::redirect(Router::$controller.'/'.Router::$method);
+				# reload controller to prevent it from trying to submit
+				# the POST data on refresh
+				url::redirect(Router::$controller.'/'.Router::$method);
+			} else {
+				url::redirect($redirect);
+			}
 		}
 
 		$command_result_msg = $this->session->get('error_msg', $command_result_msg);

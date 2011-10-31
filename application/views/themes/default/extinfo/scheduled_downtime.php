@@ -88,7 +88,7 @@ if (!empty($command_result)) {
 	<br />
 	<br />
 	<?php
-	} else { echo $this->translate->_('No hosts scheduled for downtime'); }
+	} else { echo $this->translate->_('No hosts scheduled for downtime') . "<br/><br/>"; }
 
 	echo '<h2>'.$service_title_str.'</h2>';
 

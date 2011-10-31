@@ -28,6 +28,63 @@ $(document).ready(function() {
 		}
 	});
 
+
+	$('.item_selectcomment').hide();
+
+	// restore left border for first cell of each row
+	$('#comment_search_table').find('tr:eq(0) th:eq(0)').css('border-left', '1px solid #dcdccd');
+	$('#comment_search_table').find('tr:eq(0) th:eq(1)').css('border-left', '1px solid #dcdccd');
+	$('#comment_search_table').find('tr td:nth-child(2)').css('border-left', '1px solid #dcdccd');
+
+	var old_refresh = 0;
+	var refresh_is_paused = false;
+	$('#select_multiple_comment_items').click(function() {
+		if (!refresh_is_paused) {
+			if (!$('.item_selectcomment').is(':visible')) {
+				// pausing and un-pausing refresh might be
+				// irritating for users that already has selected
+				// to pause refresh
+
+				// save previous refresh rate
+				// to be able to restore it later
+				old_refresh = current_interval;
+				$('#ninja_refresh_lable').css('font-weight', 'bold');
+				ninja_refresh(0);
+				$("#ninja_refresh_control").attr('checked', true);
+			} else {
+				// restore previous refresh rate
+				ninja_refresh(old_refresh);
+				$("#ninja_refresh_control").attr('checked', false);
+				$('#ninja_refresh_lable').css('font-weight', '');
+			}
+		}
+
+		if ($('.item_selectcomment').is(':hidden'))
+			$(	'.item_selectcomment').show();
+		else
+			$(	'.item_selectcomment').hide();
+
+		return false;
+	});
+
+	$('.select_all_items').live('click', function() {
+		if ($(this).attr('checked')) {
+			//$('.select_all_items').attr('checked', true);
+			$(".item_selectcomment input[type='checkbox']").not('.select_all_items').each(function() {
+				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
+					$(this).attr('checked', true);
+				}
+				else if ($(this).is(':hidden')) {
+					$(this).attr('checked', false);
+				}
+			});
+		} else {
+			$('.select_all_items').attr('checked', false);
+			$(".item_selectcomment input[type='checkbox']").not('.select_all_items').each(function() {
+				$(this).attr('checked', false);
+			});
+		}
+	});
 });
 
 // function from http://forums.devshed.com/t39065/s84ded709f924610aa44fff827511aba3.html

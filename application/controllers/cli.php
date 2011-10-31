@@ -309,4 +309,49 @@ class Cli_Controller extends Authenticated_Controller {
 	public function handle_deletion($type, $name)
 	{
 	}
+
+	public function save_widget()
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+
+		$params = $this->_parse_parameters();
+		if (!isset($params['page']) || !isset($params['name']) || !isset($params['friendly_name']))
+			die("Usage: {$params[0]} {$params[1]} <user> --page <page> --name <name> --friendly_name <friendly_name>\n");
+
+		$widget = new Ninja_widget_Model();
+		$widget->add_widget($params['page'], $params['name'], $params['friendly_name'], true);
+	}
+
+	public function rename_widget()
+	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+
+		$params = $this->_parse_parameters();
+		if (!isset($params['from']) || !isset($params['to']))
+			die("Usage: {$params[0]} {$params[1]} <user> --from <old_name> --to <new_name>\n");
+
+		$widget = new Ninja_widget_Model();
+		$widget->rename_widget($params['from'], $params['to']);
+	}
 }

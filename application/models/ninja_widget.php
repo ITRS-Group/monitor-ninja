@@ -326,19 +326,11 @@ class Ninja_widget_Model extends Model
 		return false;
 	}
 
-	/**
-	*	Parse the widget order for use on a page
-	*/
-	public function fetch_widget_order($page=false)
+	private function parse_widget_order($setting)
 	{
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
-		if ($data === false || empty($data->setting)) {
-			return false;
-		}
-		$widget_parts = $data->setting;
 		$widget_order = false;
-		if (!empty($widget_parts)) {
-			$widget_parts = explode('|', $widget_parts);
+		if (!empty($setting)) {
+			$widget_parts = explode('|', $setting);
 			if (!empty($widget_parts)) {
 				foreach ($widget_parts as $part) {
 					$parts = explode('=', $part);
@@ -355,18 +347,30 @@ class Ninja_widget_Model extends Model
 	}
 
 	/**
+	*	Parse the widget order for use on a page
+	*/
+	public function fetch_widget_order($page=false)
+	{
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		if ($data === false || empty($data->setting)) {
+			return false;
+		}
+		return self::parse_widget_order($data->setting);
+	}
+
+	/**
 	*	Add a new widget to the widget_order string
 	* 	after validating that it dosesn't exist
 	*/
-	public function add_to_widget_order($page=false, $widget=false)
+	public function add_to_widget_order($page=false, $widget=false, $default=false)
 	{
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
+		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page, $default);
 
 		if (empty($widget) || empty($page)) {
 			return false;
 		}
 
-		$widget_parts = $data->setting;
+		$widget_parts = isset($data->setting) ? $data->setting : false;
 		$widget_order = false;
 		$all_parts = false;
 		$all_widgets = array();
@@ -434,7 +438,7 @@ class Ninja_widget_Model extends Model
 	/**
 	*	Add a new widget to ninja_widgets table
 	*/
-	public function add_widget($page=false, $name=false, $friendly_name=false)
+	public function add_widget($page=false, $name=false, $friendly_name=false, $default=false)
 	{
 		if (empty($name) || empty($friendly_name)) {
 			return false;
@@ -450,7 +454,36 @@ class Ninja_widget_Model extends Model
 		$return = $db->query($sql);
 
 		# add the new widget to the widget_order string
-		self::add_to_widget_order($page. $name);
+		self::add_to_widget_order($page, $name, $default);
 		return $return;
+	}
+
+	private function rename_settings($old_name, $new_name) {
+		$db = Database::instance();
+		$sql = "SELECT id, page, username, setting FROM ninja_settings WHERE type = 'widget_order'";
+		$data = $db->query($sql);
+		foreach ($data as $row) {
+			$serialized_settings = array();
+			$parsed_setting = self::parse_widget_order($row->setting);
+			foreach ($parsed_setting as $key => $ary) {
+				if (($idx = array_search($old_name, $ary)) !== false)
+					$ary[$idx] = $new_name;
+				$serialized_settings[] = $key . '=' . implode(',', $ary);
+			}
+			Ninja_setting_Model::save_page_setting('widget_order', $row->page, implode('|', $serialized_settings), $row->username);
+		}
+	}
+
+	/**
+	 * DANGER WILL ROBINSON!
+	 * This makes a ton of assumptions, and should only be called after much
+	 * consideration.
+	 */
+	public function rename_widget($old_name, $new_name)
+	{
+		$db = Database::instance();
+		$sql = 'UPDATE ninja_widgets SET name='.$db->escape($new_name).' WHERE name='.$db->escape($old_name);
+		$db->query($sql);
+		$this->rename_settings("widget-".$old_name, "widget-".$new_name);
 	}
 }

@@ -26,6 +26,10 @@ class Pnp_Controller extends Authenticated_Controller {
 		$host = urldecode($this->input->get('host', $host));
 		$srv = urldecode($this->input->get('srv', $srv));
 
+		if(!$host) {
+			$host = '.pnp-internal';
+		}
+
 		$target_link = pnp::url($host, $srv);
 		$this->template->content = '<iframe src="'.$target_link.'" style="width: 100%; height: 600px" frameborder="0" id="iframe"></iframe>';
 		$this->template->title = $this->translate->_('Reporting » PNP');
