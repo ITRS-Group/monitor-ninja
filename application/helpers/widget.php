@@ -68,8 +68,10 @@ class widget_Core
 			# if we have a requested widget method - let's call it
 			# always call index method of widget
 			$widget_method = 'index';
-			$master->inline_js .= "var ".$name.$instance_id." = new widget('".$name.$instance_id."');";
-			$master->inline_js .= $name.$instance_id.".set_instance_id('".$instance_id."');";
+			if (!empty($instance_id)) {
+				$master->inline_js .= "var ".$name.$instance_id." = new widget('".$name.$instance_id."');";
+				$master->inline_js .= $name.$instance_id.".set_instance_id('".$instance_id."');";
+			}
 			return $obj->$widget_method($arguments, $master);
 		} catch (Exception $ex) {
 			$master->widgets[] = "<div id=\"widget-$name\" class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";

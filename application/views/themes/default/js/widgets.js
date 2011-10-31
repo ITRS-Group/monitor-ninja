@@ -275,32 +275,32 @@ function widget(name, content_area, no_edit)
 
 		loaded_widgets.push(self.name);
 		return true;
-	}
+	};
 
 	this.set_current_uri = function(uri) {
 		this.current_uri = uri;
-	}
+	};
 	/*
 	*	Set the name of the widget.
 	*/
 	this.set_name = function(name) {
-		this.name = (name == null) ? false : name;
-	}
+		this.name = name || false;
+	};
 
 	this.set_instance_id = function(instance_id) {
-		this.instance_id = (instance_id == null) ? false : instance_id;
-	}
+		this.instance_id = instance_id || false;
+	};
 
 	/**
 	*	Set the ID of the area that should be updated through the AJAX call.
 	*/
 	this.set_content_area = function(area) {
-		this.content_area = (area == null) ? 'widget-content' : area;
-	}
+		this.content_area = area || 'widget-content';
+	};
 
 	this.set_widget_id = function(name) {
-		this.widget_id = (name == null) ? false : 'widget-' + name;
-	}
+		this.widget_id = name ? 'widget-' + name : false;
+	};
 
 	/*
 	*	Fetch current widget state through AJAX call
@@ -325,8 +325,13 @@ function widget(name, content_area, no_edit)
 			// clean up widget name before trying to refresh
 			var cleaned_name = self.name;
 			cleaned_name = cleaned_name.replace(self.instance_id, '');
+			var params = {
+				widget_name: cleaned_name
+			};
+			if(self.instance_id)
+				params["instance_id"] = self.instance_id;
 			$.ajax({
-				url: ajax_url + "widget/" + cleaned_name + "/index/?instance_id=" + self.instance_id + '&widget_name=' + cleaned_name,
+				url: ajax_url + "widget/" + cleaned_name + "/index/?" + jQuery.param(params),
 				dataType:'json',
 				success: function(data) {
 					$("#" + self.widget_id + ' .' + self.content_area).html(data);
@@ -337,7 +342,7 @@ function widget(name, content_area, no_edit)
 				}
 			});
 		}
-	}
+	};
 
 	/*
 	*	Save widget settings to db
@@ -405,7 +410,7 @@ function widget(name, content_area, no_edit)
 			var data = {page: this.current_uri, refresh_interval: this.current_interval, widget: this.name};
 			this.save_settings(data);
 		}
-	}
+	};
 
 	/*
 	*	Since the slider is possible to move rather fast,
@@ -418,7 +423,7 @@ function widget(name, content_area, no_edit)
 			clearTimeout(this.save_interval);
 		}
 		this.save_interval = setTimeout(function() {self.set_refresh_interval();}, 5000);
-	}
+	};
 
 	this.init_slider = function() {
 		$("#" + this.name + "_slider").slider({
@@ -433,7 +438,7 @@ function widget(name, content_area, no_edit)
 			}
 		});
 		$("#" + this.name + "_refresh").val($("#" + this.name + "_slider").slider("value"));
-	}
+	};
 
 	this.init_title_edit = function() {
 		$("." + this.name + "_editable").editable(function(value, settings) {
@@ -457,7 +462,7 @@ function widget(name, content_area, no_edit)
 			cancel : 'cancel',
 			placeholder:'Double-click to edit'
 		});
-	}
+	};
 
 	// initialize widget
 	var widget_ok = this.init_widget(name);
