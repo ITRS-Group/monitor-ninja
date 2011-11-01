@@ -80,7 +80,7 @@ $menu = array(
 		'hostgroup_summary', 'hostgroup_overview', 'hostgroup_grid',
 		'servicegroup_summary', 'servicegroup_overview', 'servicegroup_grid',
 		'network_outages', 'host_problems', 'service_problems', 'unhandled_problems',
-		'comments', 'schedule_downtime', 'process_info', 'scheduling_queue', 'hyper_map'), //'nagvis'), /* remove hardcoded nagvis menu entry */
+		'comments', 'schedule_downtime', 'process_info', 'scheduling_queue', 'performance_info', 'hyper_map'), //'nagvis'), /* remove hardcoded nagvis menu entry */
 	'section_reporting' => array('trends', 'pnp', 'alert_history', 'alert_summary', 'notifications', 'event_log',
 		'availability', 'sla', 'schedule_reports', 'statistics'),
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
