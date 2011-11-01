@@ -53,11 +53,6 @@ $(document).ready(function() {
 		self.location.href = base_uri;
 	});
 
-	// delete the report (and all the schedules if any)
-	$("#delete_report").click(function() {
-		confirm_delete_report($("#report_id").attr('value'));
-	});
-
 	$("#show_scheduled").click(function() {
 		self.location.href = _site_domain + _index_page + '/reports?show_schedules#summary_schedules';
 	});
