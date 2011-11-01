@@ -5,11 +5,14 @@
  */
 class Downtime_Model extends Model
 {
-
 	/**
-	*	Fetch current downtime information
-	*/
-	public function get_downtime_data($filter=3, $order_by='downtime_id')
+	 * Fetch current downtime information
+	 * 
+	 * @param int $filter = 3
+	 * @param string $order_by = 'downtime_id'
+	 * @param boolean $generate_links_for_downtime_id = false
+	 */
+	public function get_downtime_data($filter=3, $order_by='downtime_id', $generate_links_for_downtime_id = false)
 	{
 		$db = Database::instance();
 		$filter = empty($filter) ? 3 : $filter;
@@ -23,23 +26,59 @@ class Downtime_Model extends Model
 		$bits = substr($bits, 1);
 		$auth = new Nagios_auth_Model();
 		if ($auth->view_hosts_root) {
-			$query = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
+			if($generate_links_for_downtime_id) {
+				$query = "SELECT
+						d.*,
+						d2.host_name AS triggering_host,
+						d2.service_description AS triggering_service
+					FROM
+						scheduled_downtime d
+					LEFT JOIN
+						scheduled_downtime AS d2
+						ON
+							d.triggered_by = d2.downtime_id
+					WHERE
+						d.downtime_type IN ($bits)";
+			} else {
+				$query = "SELECT d.* FROM scheduled_downtime d WHERE d.downtime_type IN ($bits)";
+			}
 		} else {
 			# hosts
-			$sql = "SELECT d.* FROM scheduled_downtime d ".
-				"INNER JOIN host ON host.host_name=d.host_name ".
-				"INNER JOIN contact_access ON contact_access.host=host.id ".
-				"WHERE contact_access.service IS NULL ".
-				"AND d.service_description IS NULL ".
-				"AND contact_access.contact=".$auth->id.
-				" AND d.downtime_type IN (" . $bits . ")";
+			$sql = "SELECT d.* ";
+			if($generate_links_for_downtime_id) {
+				$sql .= ", d2.host_name AS triggering_host, d2.service_description AS triggering_service ";
+			}
+			$sql .= "FROM scheduled_downtime d 
+				INNER JOIN host ON host.host_name=d.host_name 
+				INNER JOIN contact_access ON contact_access.host=host.id ";
+			if($generate_links_for_downtime_id) {
+				$sql .= "LEFT JOIN
+						scheduled_downtime AS d2
+						ON
+							d.triggered_by = d2.downtime_id ";
+			}
+			$sql .= "WHERE contact_access.service IS NULL 
+				AND d.service_description IS NULL 
+				AND contact_access.contact=".$auth->id."
+				AND d.downtime_type IN ($bits)";
 
 			# services
-			$query_svc = "SELECT d.* ".
+			$query_svc = "SELECT d.* ";
+			if($generate_links_for_downtime_id) {
+				$query_svc .= ", d2.host_name AS triggering_host, d2.service_description AS triggering_service ";
+			}
+			$query_svc .=
 				"FROM scheduled_downtime d ".
 				"INNER JOIN host ON host.host_name=d.host_name ".
 				"INNER JOIN service ON service.host_name=d.host_name ".
-				"INNER JOIN contact_access ON contact_access.service=service.id ".
+				"INNER JOIN contact_access ON contact_access.service=service.id ";
+			if($generate_links_for_downtime_id) {
+				$query_svc .= "LEFT JOIN
+						scheduled_downtime AS d2
+						ON
+							d.triggered_by = d2.downtime_id ";
+			}
+			$query_svc .=
 				"WHERE d.service_description=service.service_description ".
 				"AND d.host_name=service.host_name ".
 				"AND contact_access.contact=".$auth->id.
@@ -58,7 +97,10 @@ class Downtime_Model extends Model
 		}
 
 		$result = $db->query($query);
-		return $result->count() ? $result: false;
+		if(!$result->count()) {
+			return false;
+		}
+		return $result;
 	}
 
 	/**
