@@ -11,9 +11,7 @@ if (!$is_admin) { ?>
 	echo form::open('user/menu_edit', array('id' => 'editmenu_form')); ?>
 	<div class="left">
 	<div>
-		<br />
-		<?php echo html::anchor(Router::$controller, $this->translate->_('Back')) ?>
-		<br />
+		<p><?php echo html::anchor(Router::$controller, $this->translate->_('Back')) ?></p>
 		<h3><?php echo $this->translate->_('Edit user menu') ?></h3>
 	</div>
 	<?php
