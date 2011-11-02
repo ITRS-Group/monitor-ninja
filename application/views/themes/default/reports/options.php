@@ -32,7 +32,7 @@ if (Session::instance()->get('current_report_params', false)) {
 <?php
 if ($type == 'avail') { ?>
 <div id="options">
-<?php	echo form::open(Kohana::config('reports.reports_link').'/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
+<?php echo form::open(Kohana::config('reports.reports_link').'/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
 			<h1><?php echo $label_settings ?></h1>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
@@ -96,7 +96,7 @@ if ($type == 'avail') { ?>
 							<label for="save_report_settings" id="save_report_label" onclick="toggle_state('save_report_settings');"><?php echo $label_save_report ?></label>
 						</div>
 						<div id="report_setup">
-							<span id="report_save_information">
+							<span class="hidden" id="report_save_information">
 								<input type="text" name="report_name" id="report_name" class="input-save-name"
 									value="<?php echo isset($report_info['report_name']) && !empty($report_info['report_name']) ? $report_info['report_name'] : '' ?>" maxlength="255" />
 							</span>
@@ -134,7 +134,7 @@ if ($type == 'avail') { ?>
 # SLA form - only save report. No "update"
 } else { ?>
 <div id="sla_options">
-<?php	echo form::open(Kohana::config('reports.reports_link').'/save', array('id' => 'report_form_sla', 'onsubmit' => 'return trigger_ajax_save(this);'));?>
+<?php echo form::open(Kohana::config('reports.reports_link').'/save', array('id' => 'report_form_sla', 'onsubmit' => 'return trigger_ajax_save(this);'));?>
 	<h1><?php echo $t->_('Save report') ?></h1>
 	<table style="width: 350px">
 		<tr class="none">
