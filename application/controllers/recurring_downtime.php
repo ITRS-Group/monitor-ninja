@@ -25,13 +25,13 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 	public function __construct()
 	{
+		parent::__construct();
 		if (PHP_SAPI != 'cli') {
 			$auth = new Nagios_auth_Model();
-			if (!$auth->view_hosts_root) {
-				url::redirect(Kohana::config('routes.logged_in_default'));
+			if (!$auth->view_hosts_root && Router::$method !== 'unauthorized') {
+				url::redirect('recurring_downtime/unauthorized');
 			}
 		}
-		parent::__construct();
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -499,6 +499,15 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		} else {
 			echo "ERROR";
 		}
+	}
+
+	public function unauthorized()
+	{
+		$this->template->content = $this->add_view('unauthorized');
+		$this->template->disable_refresh = true;
+
+		$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to scheduled recurring downtimes');
+		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
 
 }
