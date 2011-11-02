@@ -131,7 +131,6 @@ function get_members(val, type, no_erase) {
 		success: function(data) {
 			if (data.error) {
 				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
-				setup_hide_content('progress');
 				return;
 			}
 			populate_options(field_name, empty_field, data.result);
