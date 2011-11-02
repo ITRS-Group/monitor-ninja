@@ -50,7 +50,7 @@ $t = $this->translate; ?>
 				if (nacoma::link()===true)
 					echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($details->{$grouptype.'group_name'}), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype)).' &nbsp;';
 				echo html::anchor('status/'.$grouptype.'group/'.$details->{$grouptype.'group_name'}.'?style=detail', html::specialchars($details->alias));
-				echo '('.html::anchor('extinfo/details/'.$grouptype.'group/'.$details->{$grouptype.'group_name'}, html::specialchars($details->{$grouptype.'group_name'})).')';
+				echo '<span>('.html::anchor('extinfo/details/'.$grouptype.'group/'.$details->{$grouptype.'group_name'}, html::specialchars($details->{$grouptype.'group_name'})).')</span>';
 			?>
 		</caption>
 		<tr>

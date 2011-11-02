@@ -68,7 +68,18 @@ if (!empty($command_result)) {
 			<td><?php echo date($date_format, $row->end_time) ?></td>
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
-			<td><?php echo empty($row->trigger_id) ? $na_str : $row->trigger_id ?></td>
+			<td><?php
+		if(empty($row->triggered_by)) {
+			echo $na_str;
+		} else {
+			if(!empty($row->triggering_service)) {
+				echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
+			} elseif(!empty($row->triggering_host)) {
+				echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
+			} else {
+				echo $na_str;
+			}
+		} ?></td>
 			<td style="text-align: center">
 				<?php
 					echo html::anchor('command/submit?cmd_typ=DEL_HOST_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';
@@ -147,7 +158,18 @@ if (!empty($command_result)) {
 			<td><?php echo date($date_format, $row->end_time) ?></td>
 			<td><?php echo $row->fixed ? $fixed : $flexible ?></td>
 			<td><?php echo time::to_string($row->duration) ?></td>
-			<td><?php echo empty($row->trigger_id) ? $na_str : $row->trigger_id ?></td>
+			<td><?php
+			if(empty($row->triggered_by)) {
+				echo $na_str;
+			} else {
+				if(!empty($row->triggering_service)) {
+					echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
+				} elseif(!empty($row->triggering_host)) {
+					echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
+				} else {
+					echo $na_str;
+				}
+			} ?></td>
 			<td style="text-align: center">
 				<?php
 					echo html::anchor('command/submit?cmd_typ=DEL_SVC_DOWNTIME&downtime_id='.$row->downtime_id, html::image($this->add_path('icons/16x16/delete-downtime.png'), array('alt' => $link_titlestring, 'title' => $link_titlestring)), array('style' => 'border: 0px')).' &nbsp;';

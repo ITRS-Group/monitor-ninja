@@ -47,7 +47,7 @@ class Scheduling_queue_Model extends Model {
 			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled ".
 							"FROM service ".
 							"WHERE should_be_scheduled=1".$search_sql_svc.$search_sql_host.
-							") UNION (".
+							") UNION ALL (".
 							"SELECT host_name, CONCAT('', '') as service_description, next_check, last_check, check_type, active_checks_enabled ".
 							"FROM host ".
 							"WHERE should_be_scheduled=1".$search_sql_host.$prevent_host_query.

@@ -152,7 +152,6 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => $this->translate->_('Child Hosts'));
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
-			$param['_services-too'] = $this->cb($this->translate->_('Schedule downtime for services too'), '_services-too');
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':

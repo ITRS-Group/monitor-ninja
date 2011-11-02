@@ -6,14 +6,13 @@ if (!isset($hyperapplet_path)) {
 }
 ?>
 
-<table border=1 cellpadding=0 cellspacing=0 class='linkBox'>
-	<tr>
-		<td class='linkBox'>
-			<?php echo html::anchor('status/host/all', $this->translate->_('View Status Detail For All Hosts')) ?><br />
-			<?php echo html::anchor('status/hostgroup?items_per_page='.config::get('pagination.group_items_per_page', '*'), $this->translate->_('View Status Overview For All Hosts')) ?>
-		</td>
-	</tr>
-</table>
+<div class="widget left w32" id="page_links">
+	<ul>
+		<li>View, for all hosts:</li>
+		<li><?php echo html::anchor('status/host/all', $this->translate->_('Status Detail')) ?></li>
+		<li><?php echo html::anchor('status/hostgroup?items_per_page='.config::get('pagination.group_items_per_page', '*'), $this->translate->_('Status Overview')) ?></li>
+	</ul>
+</div>
 
 <a name="graph-section"></a>
 <?php if (isset($hyperapplet_path)) { ?>

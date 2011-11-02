@@ -294,7 +294,7 @@ class User_Model extends Auth_User_Model {
 	{
 		$db = Database::instance();
 		$query = 'SELECT u.username FROM users u, ninja_user_authorization nua '.
-			'WHERE nua.all_hosts=0 AND u.id=nua.user_id ORDER BY u.username;';
+			'WHERE nua.all_hosts=0 AND u.id=nua.user_id ORDER BY u.username';
 		$user_res = $db->query($query);
 
 		if (count($user_res)==0) {

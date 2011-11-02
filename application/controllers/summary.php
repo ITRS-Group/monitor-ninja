@@ -21,28 +21,28 @@ class Summary_Controller extends Authenticated_Controller
 	const ALERT_TOTALS_SERVICE = 6;
 	const ALERT_TOTALS_SG = 7;
 
-	public $reports_model = false;
-	private $abbr_month_names = false;
-	private $month_names = false;
-	private $day_names = false;
 	private $abbr_day_names = false;
+	private $abbr_month_names = false;
+	private $day_names = false;
 	private $first_day_of_week = 1;
-	private $report_id = false;
-	public $create_pdf = false;
-	public $pdf_data = false;
-	public $mashing = false;
-	public $template_prefix = false;
+	private $month_names = false;
 	private $pdf_filename = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
+	private $report_id = false;
 	private $schedule_id = false;
 	private $type = 'summary';
-	public $report_types = false;
-	public $report_periods = false;
 	public $alerttypes = false;
-	public $statetypes = false;
+	public $create_pdf = false;
 	public $hoststates = false;
+	public $mashing = false;
+	public $pdf_data = false;
+	public $report_periods = false;
+	public $report_types = false;
+	public $reports_model = false;
 	public $servicestates = false;
+	public $statetypes = false;
+	public $template_prefix = false;
 
 
 	public function __construct($mashing=false, $obj=false)
