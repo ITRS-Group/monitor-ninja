@@ -183,6 +183,7 @@ class Config_Model extends Model {
 						$contacts_array[$row->host_name] = $row->contact_name;
 					}
 				}
+				$result_mod = array();
 				foreach($result as $row){
 					if(isset($parent_array[$row->host_name])){
 						$row->parent = $parent_array[$row->host_name];

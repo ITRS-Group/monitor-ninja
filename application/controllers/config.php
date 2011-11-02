@@ -164,6 +164,7 @@ class Config_Controller extends Authenticated_Controller {
 
 				if ($data!==false) {
 					$i = 0;
+					$result=array();
 					foreach($data as $row) {
 						$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
 						$result[$i][]= $row->alias;
