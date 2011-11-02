@@ -251,10 +251,10 @@ class Status_Controller extends Authenticated_Controller {
 				$label_service_status_details = $this->translate->_('Service status detail for all service groups');
 				$label_view_for = $this->translate->_('for this service group');
 				$page_links = array(
-					$label_group_status_overview => Router::$controller.'/'.$group_type.'group/'.$host,
-					$label_group_status_summary => Router::$controller.'/'.$group_type.'group/'.$host.'?style=summary',
-					$label_group_status_grid => Router::$controller.'/'.$group_type.'group_grid/'.$host,
-					$label_service_status_details => Router::$controller.'/'.$group_type.'group/all?style=detail'
+					$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$host,
+					$label_group_status_summary => Router::$controller.'/'.$group_type.'/'.$host.'?style=summary',
+					$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$host,
+					$label_service_status_details => Router::$controller.'/'.$group_type.'/all?style=detail'
 				);
 			}
 		}
