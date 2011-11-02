@@ -7,6 +7,36 @@
  */
 class json_Core
 {
+
+	/**
+	 * Kills the request after echoing a structured json response
+	 *
+	 * @param array $response
+	 * @param int $exit_code = 0
+	 */
+	private static function _send_response($response, $exit_code = 0) {
+		echo self::encode($response);
+		exit($exit_code);
+	}
+
+	/**
+	 * Decode JSON data into PHP
+	 *
+	 * @param $var json-encoded string to decode
+	 * @return false on error, json-decoded data on success
+	 */
+	public static function decode($var = false)
+	{
+		if (empty($var)) {
+			return false;
+		}
+		if (function_exists('json_decode')) {
+			return json_decode($var);
+		}
+		$json = zend::instance('json');
+		return $json->decode($var);
+	}
+
 	/**
 	 * Encode variable data into JSON
 	 *
@@ -27,20 +57,20 @@ class json_Core
 	}
 
 	/**
-	 * Decode JSON data into PHP
+	 * [error] => message
 	 *
-	 * @param $var json-encoded string to decode
-	 * @return false on error, json-decoded data on success
+	 * @param string $reason
 	 */
-	public static function decode($var = false)
-	{
-		if (empty($var)) {
-			return false;
-		}
-		if (function_exists('json_decode')) {
-			return json_decode($var);
-		}
-		$json = zend::instance('json');
-		return $json->decode($var);
+	public static function fail($reason) {
+		return self::_send_response(array('error' => $reason), 1);
+	}
+
+	/**
+	 * [result] => message
+	 *
+	 * @param string $result
+	 */
+	public static function ok($result) {
+		return self::_send_response(array('result' => $result));
 	}
 }

@@ -532,10 +532,11 @@ class Ajax_Controller extends Authenticated_Controller {
 		$input = urldecode($this->input->post('input', false));
 		$type = urldecode($this->input->post('type', false));
 
-		$auth = new Nagios_auth_Model();
 		if (empty($type)) {
-			return false;
+			json::fail('"type" must be provided');
 		}
+
+		$auth = new Nagios_auth_Model();
 
 		$return = false;
 		$items = false;
@@ -546,7 +547,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				#$res = get_host_servicegroups($type);
 				$res = $auth->{'get_authorized_'.$type.'s'}();
 				if (!$res) {
-					return false;
+					json::fail("The current user could not be authorized for checking '$type'. Check your configuration.");
 				}
 				foreach ($res as $name) {
 					$items[] = $name;
@@ -565,13 +566,11 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		sort($items);
-		$return_data = false;
+		$return_data = array();
 		foreach ($items as $k => $item) {
 			$return_data[] = array('optionValue' => $item, 'optionText' => $item);
 		}
-		$json_val = json::encode($return_data);
-
-		echo $json_val;
+		json::ok($return_data);
 	}
 
 	/**

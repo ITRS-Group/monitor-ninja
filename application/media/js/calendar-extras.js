@@ -129,18 +129,17 @@ function get_members(val, type, no_erase) {
 		type: 'POST',
 		data: data,
 		success: function(data) {
-			if (data != '') {
-				// OK, populate
-				populate_options(field_name, empty_field, data);
-				if(no_erase == '') {
-					empty_list(field_name);
-					empty_list(empty_field);
-				}
-			} else {
-				// error
-				jgrowl_message('Unable to fetch objects...', _reports_error);
+			if (data.error) {
+				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
+				return;
 			}
-		}
+			populate_options(field_name, empty_field, data.result);
+			if(no_erase == '') {
+				empty_list(field_name);
+				empty_list(empty_field);
+			}
+		},
+		dataType: 'json'
 	});
 
 
