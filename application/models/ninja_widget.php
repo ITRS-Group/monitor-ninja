@@ -253,6 +253,7 @@ class Ninja_widget_Model extends Model
 		# check if there is customized widgets (with user settings)
 		$widgets = self::fetch_widgets($page);
 
+		$inline_js = false;
 		$user_widgets = false;
 		if (!empty($widgets)) {
 			foreach ($widgets as $w) {
@@ -267,23 +268,13 @@ class Ninja_widget_Model extends Model
 				if (is_array($user_settings) && !empty($user_settings) && array_key_exists('status', $user_settings)) {
 					if ($user_settings['status'] == 'hide') {
 						# don't show widgets set to 'hide'
+						$inline_js .= "\$('#widget-".$w->name."').removeClass('movable').hide();\n";
 						continue;
 					} else {
 						$user_widgets['widget-'.$w->name] = $w->friendly_name;
 					}
 				} else {
 					$user_widgets['widget-'.$w->name] = $w->friendly_name;
-				}
-			}
-		}
-
-		$inline_js = false;
-		if (!empty($user_widgets) && !empty($settings_widgets)) {
-			# customized settings detected
-			# some widgets should possibly be hidden
-			foreach ($settings_widgets as $id => $w) {
-				if (!array_key_exists($id, $user_widgets)) {
-					$inline_js .= "\$('#".$id."').removeClass('movable').hide();\n";
 				}
 			}
 		}
