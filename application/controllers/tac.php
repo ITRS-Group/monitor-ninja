@@ -67,12 +67,9 @@ class Tac_Controller extends Authenticated_Controller {
 			$tmp_arr = array_merge($tmp_arr, (array)$widgets);
 		}
 
-		# only continue checks if sizes differs
-		if (sizeof($widget_info['widget_list']) != sizeof($tmp_arr)) {
-			foreach ($widget_info['widget_list'] as $tmp) {
-				if (!in_array('widget-'.$tmp, $tmp_arr)) {
-					$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
-				}
+		foreach ($widget_info['widget_list'] as $tmp) {
+			if (!in_array('widget-'.$tmp, $tmp_arr)) {
+				$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
 			}
 		}
 
