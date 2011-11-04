@@ -25,6 +25,7 @@ if (isset($this->template->js_header))
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=8" /> <!-- Please remove me -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/'.$current_skin.'common.css') ?>" media="screen" />
