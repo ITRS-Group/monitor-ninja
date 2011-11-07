@@ -339,11 +339,13 @@ input.textbox {
 	z-index: 1;
 	border: 1px solid #dcdcdc;
 }
+#quicklinks {
+	float: left;
+}
 #quicklinks ul {
 	padding: 10px 7px 11px 7px;
 	margin: 0px;
 	width: 100%;
-	float: left;
 	background: #ffdd00 url(images/bg.png) repeat-x;
 }
 #notification_checks ul li,
@@ -1599,8 +1601,8 @@ hr {
 
 .clearservice{
 	        clear: both;
-       
 }
+
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/
