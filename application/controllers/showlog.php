@@ -208,13 +208,13 @@ class Showlog_Controller extends Authenticated_Controller
 		$hostgroup = $this->input->get('hostgroup', $this->input->post('hostgroup', false));
 		$servicegroup = $this->input->get('servicegroup', $this->input->post('servicegroup', false));
 		$host = $this->input->get('host', $this->input->post('host', $obj_name));
-		if ($host) {
+		if ($host && !is_array($host)) {
 			$service = urldecode( # check for service param passed in GET or POST
 					$this->input->get('service',
 						$this->input->post('service', false)
 					)
 				);
-			if ($service) {
+			if ($service && !is_array($service)) {
 				$service = array($host.';'.$service);
 				$host = false;
 			}
