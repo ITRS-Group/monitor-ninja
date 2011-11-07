@@ -171,7 +171,7 @@ class Default_Controller extends Ninja_Controller  {
 
 		# trying to login without $_POST is not allowed and shouldn't
 		# even happen - redirecting to default routes
-		if (!$auth->logged_in()) {
+		if (!isset($auth) || !$auth->logged_in()) {
 			url::redirect($this->route_config['_default']);
 		} else {
 			url::redirect($this->route_config['logged_in_default']);
