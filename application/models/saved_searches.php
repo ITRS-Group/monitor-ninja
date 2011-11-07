@@ -28,6 +28,12 @@ class Saved_searches_Model extends Model
 			return $id;
 		}
 
+		if($previously_stored_searches_same_query = self::get_search_by_query($query)) {
+			foreach($previously_stored_searches_same_query as $previously_stored_search_same_query) {
+				self::remove_search($previously_stored_search_same_query->id);
+			}
+		}
+
 		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$sql = "INSERT INTO ".self::tablename." (username, search_name, search_query, search_description) ".
@@ -65,6 +71,18 @@ class Saved_searches_Model extends Model
 		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;
 		$sql = 'SELECT * FROM '.self::tablename.' WHERE id='.$id.' AND username = '.$db->escape($user);
+		$res = $db->query($sql);
+		return $res ? $res : false;
+	}
+
+	/**
+	*	Get a saved search by query
+	*/
+	public function get_search_by_query($query)
+	{
+		$db = Database::instance();
+		$user = Auth::instance()->get_user()->username;
+		$sql = 'SELECT * FROM '.self::tablename.' WHERE search_query ='.$db->escape($query).' AND username = '.$db->escape($user);
 		$res = $db->query($sql);
 		return $res ? $res : false;
 	}

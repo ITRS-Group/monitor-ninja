@@ -755,7 +755,8 @@ class Ajax_Controller extends Authenticated_Controller {
 		$search_description = urldecode($this->input->post('description', false));
 		$search_id = urldecode($this->input->post('search_id', false));
 
-		$res = Saved_searches_Model::save_search($search_query, $search_name, $search_description, $search_id);
+		$model = new Saved_searches_Model();
+		$res = $model->save_search($search_query, $search_name, $search_description, $search_id);
 
 		echo ((int)$res != 0) ? (int)$res : 'Error';
 	}
@@ -791,6 +792,16 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 		echo "Error";
 		return false;
+	}
+
+	public function fetch_saved_search_by_query() {
+		$query = $this->input->get('query', false);
+		$model = new Saved_searches_Model();
+		$result = $model->get_search_by_query($query)->as_array();
+		if(!$result) {
+			json::fail("'$query' has not yet been saved");
+		}
+		json::ok(current($result));
 	}
 }
 

@@ -660,6 +660,24 @@ $(document).ready(function() {
 		query.val(old_query);
 		$('#search_id').val(0);
 		description.val('');
+
+		// ... unless there's already a saved search for the same query
+		$.get(
+			_site_domain + _index_page + '/' + '/ajax/fetch_saved_search_by_query',
+			{query: old_query},
+			function(data) {
+				if (data.error == 'Error') {
+					jgrowl_message(data.error);
+				} else {
+					data = data.result;
+					// set fetched values to edit dialog
+					$('#search_name').attr('value', data['search_name'])
+					$('#search_description').attr('value', data['search_description'])
+					$('#search_id').attr('value', data['search_id']);
+				}
+			},
+			'json'
+		);
 	});
 
 	// hide/show layer with saved searches
