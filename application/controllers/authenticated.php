@@ -51,9 +51,13 @@ class Authenticated_Controller extends Ninja_Controller {
 				# fetch the external widget user if any
 				$external_widget_user = Kohana::config('external_widget.username');
 				if (!empty($external_widget_user) && Auth::instance()->get_user()->username === $external_widget_user) {
-					echo $this->translate->_('You are currently logged on as an '.
-						'external widget user which means you are not authorized for this action!');
-					die(sprintf($this->translate->_('%sBack%s'), '<br /><a href="javascript:history.go(-1)">', '</a>'));
+					# explicitly whitelist the widget setting method, so that if, say, showing nagvis on an external
+					# web server, the map is changeable
+					if (Router::$controller !== 'ajax' || (Router::$method !== 'save_dynamic_widget_setting' && Router::$method !== 'widget')) {
+						echo $this->translate->_('You are currently logged on as an '.
+							'external widget user which means you are not authorized for this action!');
+						die(sprintf($this->translate->_('%sBack%s'), '<br /><a href="javascript:history.go(-1)">', '</a>'));
+					}
 				}
 
 				$this->user = Auth::instance()->get_user();

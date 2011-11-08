@@ -217,7 +217,10 @@ class Ninja_widget_Model extends Model
 			$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($current_widget->id);
 			$db->query($sql);
 		} else {
-			self::copy_to_user(self::get_widget($page, $widget));
+			$default_widget = self::get_widget($page, $widget);
+			if (!$default_widget)
+				$default_widget = self::get_widget('tac/index', $widget);
+			self::copy_to_user($default_widget, $page);
 			self::save_widget_setting($page, $widget, $data);
 		}
 		return true;
@@ -258,12 +261,10 @@ class Ninja_widget_Model extends Model
 		if (!empty($widgets)) {
 			foreach ($widgets as $w) {
 				$user_settings = i18n::unserialize(trim($w->setting));
-				if (isset($settings[$w->name]) && is_array($settings[$row->name])) {
-					# replace default settings with user settings if available
-					if (!empty($user_settings) && is_array($user_settings)) {
-						$settings[$w->name] = $user_settings;
-						array_unshift($settings[$w->name], $model);
-					}
+				# replace default settings with user settings if available
+				if (!empty($user_settings) && is_array($user_settings)) {
+					$settings[$w->name] = $user_settings;
+					array_unshift($settings[$w->name], $model);
 				}
 				if (is_array($user_settings) && !empty($user_settings) && array_key_exists('status', $user_settings)) {
 					if ($user_settings['status'] == 'hide') {

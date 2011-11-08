@@ -47,13 +47,16 @@ class External_widget_Controller extends Ninja_Controller {
 			}
 		}
 
+		$model = new Current_status_Model();
+		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $model);
+
 		$this->template->content = $this->add_view('single_widget');
 		$this->template->title = $this->translate->_('External widget');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		widget::add($name, false, $this);
+		widget::add($name, isset($widget_info['settings'][$name]) ? $widget_info['settings'][$name] : false, $this);
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->content->widgets = $this->widgets;
