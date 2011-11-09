@@ -686,9 +686,44 @@ class Current_status_Model extends Model
 
 	/**
 	 * List available states for host or service
+	 *
+	 * @param string $what = 'host' (or 'service')
+	 * @return array
+	 */
+	public function get_available_states($what='host')
+	{
+		switch($what) {
+			case 'host':
+				return array(
+					self::HOST_UP => 'UP',
+					self::HOST_DOWN => 'DOWN',
+					self::HOST_UNREACHABLE => 'UNREACHABLE',
+					self::HOST_PENDING => 'PENDING'
+				);
+			case 'service':
+				return array(
+					self::SERVICE_OK => 'OK',
+					self::SERVICE_WARNING => 'WARNING',
+					self::SERVICE_CRITICAL => 'CRITICAL',
+					self::SERVICE_PENDING => 'PENDING',
+					self::SERVICE_UNKNOWN => 'UNKNOWN'
+				);
+			default:
+				return array();
+		}
+	}
+
+	/**
+	 * List available states for host or service
+	 *
+	 * @param string $what = 'host' (or 'service')
+	 * @return array
 	 */
 	public function available_states($what='host')
 	{
+		if(!in_array($what, array('host', 'service'))) {
+			return array();
+		}
 		$host_states = array(
 			self::HOST_UP,
 			self::HOST_DOWN,
