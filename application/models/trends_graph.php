@@ -240,7 +240,7 @@ class Trends_graph_Model extends Model
 			$chart_key = substr($encoded_image_name, 0, $strlen_needed);
 			$qualified_filename = $this->get_filename_for_key($chart_key);
 			$strlen_needed++;
-		} while(file_exists($qualified_filename));
+		} while(file_exists($qualified_filename) && $strlen_needed <= strlen($encoded_image_name));
 
 		$data = array();
 		$remove_host_from_object_name = false;
