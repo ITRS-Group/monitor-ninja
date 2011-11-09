@@ -152,7 +152,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$content->parents = $parents;
 			}
 
-			$back_link = '/extinfo/details/host/'.urlencode($host);
+			$back_link = '/extinfo/details/?host='.urlencode($host);
 			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = $t->_('This host has not yet been checked, so status information is not available.');
@@ -162,8 +162,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->title = $this->translate->_('Service State Information');
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next scheduled check');
-			$host_link = html::anchor('extinfo/details/host/'.urlencode($host), html::specialchars($host));
-			$back_link = '/extinfo/details/service/'.urlencode($host).'?service='.urlencode($service);
+			$host_link = html::anchor('extinfo/details/?host='.urlencode($host), html::specialchars($host));
+			$back_link = '/extinfo/details/service/?host='.urlencode($host).'&service='.urlencode($service);
 			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is this service flapping?');
@@ -184,9 +184,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$xaction = array();
 		if (nacoma::link()===true) {
 			$label = $t->_('Configure');
-			$url = url::site() . "configuration/configure/$type/" . urlencode($host);
+			$url = url::site() . "configuration/configure/?type=$type&name=".urlencode($host);
 			if ($type === 'service') {
-				$url .= '?service=' . urlencode($service);
+				$url .= '&service='.urlencode($service);
 				$alt = $t->_('Configure this service using Nacoma');
 			} else {
 				$alt = $t->_('Configure this host using Nacoma');

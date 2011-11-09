@@ -7,7 +7,7 @@
  */
 class getparams_Core {
 	static function get_raw_param ($desired_param, $default) {
-		$querypieces = explode('!', $_SERVER['QUERY_STRING']);
+		$querypieces = explode('&', $_SERVER['QUERY_STRING']);
 		foreach ($querypieces as $param) {
 			if (!strncmp($desired_param, $param, strlen($desired_param))) {
 				return urldecode(substr($param, strlen($desired_param) + 1));
@@ -18,4 +18,3 @@ class getparams_Core {
 		return false;
 	}
 }
-?>
