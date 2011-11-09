@@ -276,21 +276,31 @@ class Service_Model extends Model
 			$sql_notes = " OR LCASE(s.notes) LIKE LCASE(%s)";
 		}
 
+		$service_codes = array_flip(Current_status_Model::get_available_states('service'));
 		if (is_array($value) && !empty($value)) {
 			$query = false;
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT id FROM service s ". $auth_str .
-					" WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")".
-					" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")".
-					" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
+				$query = "SELECT id FROM service s ". $auth_str . "
+					WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")
+					OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")
+					OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
 					sprintf($sql_notes, $this->db->escape($val)).
 					" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))";
+
+				if($xtra_query) {
+					// this means that "si:" has been used and we need to filter on state
+					foreach($xtra_query as $condition) {
+						$condition = strtr(strtoupper($condition), $service_codes);
+						$query .= " AND current_state = ".$this->db->escape($condition)." ";
+					}
+				}
+				$queries[] = $query;
 			}
-			if (!empty($query)) {
+			if (!empty($queries)) {
 				$sql = 'SELECT s.*, h.current_state AS host_state, h.address FROM service s, host h WHERE s.id IN ('.
-					implode(' UNION ALL ', $query).') AND s.host_name=h.host_name'.$order_str.$limit_str;
+					implode(' UNION ALL ', $queries).') AND s.host_name=h.host_name'.$order_str.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
