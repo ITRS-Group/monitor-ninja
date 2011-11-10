@@ -8,13 +8,13 @@
 		</tr>
 		<?php # only for hosts!
 			$i =0;
-			if ($type == 'host' && Kohana::config('config.nagvis_path')) {
+			if ($type == 'host' && Kohana::config('nagvis.nagvis_real_path')) {
 		?>
 		<tr>
 			<td class="dark">
 				<?php echo html::image($this->add_path('icons/16x16/locate-host-on-map.png'), array('alt' => $lable_host_map, 'title' => $lable_host_map)); ?>
 			</td>
-			<td class="bt"><?php echo html::anchor('statusmap/host/'.$host, $lable_host_map) ?></td>
+			<td class="bt"><?php echo html::anchor('nagvisls/automap/host/'.$host, $lable_host_map) ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
@@ -129,3 +129,4 @@
 		</tr>
 	</table>
 </div>
+
