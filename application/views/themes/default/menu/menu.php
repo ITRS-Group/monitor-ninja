@@ -51,7 +51,7 @@ if (Kohana::config('config.nagvis_path') !== false) {
 
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['trends'] = _('Trends');
-$menu_items['pnp'] = _('PNP');
+$menu_items['pnp'] = _('Graphs');
 $menu_items['alert_history'] = _('Alert history');
 $menu_items['alert_summary'] = _('Alert summary');
 $menu_items['notifications'] = _('Notifications');
