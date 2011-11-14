@@ -865,14 +865,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		$t = $this->translate;
 
-		$schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
-
-		$this->schedule_id 	= $schedule_id;
+		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
 
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
-			$_REQUEST['report_period'] 			= 'last24hours';
-			$_REQUEST['assumeinitialstates'] 	= 1;
+			$_REQUEST['report_period'] = 'last24hours';
+			$_REQUEST['assumeinitialstates'] = 1;
 		}
 
 		# Handle call from cron or GUI to generate PDF report and send by email
@@ -884,8 +882,8 @@ class Reports_Controller extends Authenticated_Controller
 			$_REQUEST = $this->_scheduled_report();
 		}
 
-		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
-		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+		$this->create_pdf = arr::search($_REQUEST, 'create_pdf');
 
 		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
@@ -895,12 +893,13 @@ class Reports_Controller extends Authenticated_Controller
 			Kohana::close_buffers(FALSE);
 		}
 
-		$in_host 			= arr::search($_REQUEST, 'host', false);
+		$in_host = arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
-			$in_host 		= arr::search($_REQUEST, 'host_name', false);
-		$in_service 		= arr::search($_REQUEST, 'service', array());
+			$in_host = arr::search($_REQUEST, 'host_name', false);
+
+		$in_service = arr::search($_REQUEST, 'service', array());
 		if (empty($in_service))
-			$in_service 	= arr::search($_REQUEST, 'service_description', array());
+			$in_service = arr::search($_REQUEST, 'service_description', array());
 
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
@@ -2131,7 +2130,6 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		//$this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
 	}
 
@@ -3688,17 +3686,25 @@ class Reports_Controller extends Authenticated_Controller
 		// @todo bug 612
 		$local_persistent_filepath = $this->pdf_local_persistent_filepath;
 		// the local path must be specified and there must be an original pdf
-		if($local_persistent_filepath && is_readable($filename)) {
+		if($local_persistent_filepath && 'F' == $action && is_readable($filename)) {
 			$local_persistent_filepath = preg_replace('/\.pdf$/', null, $local_persistent_filepath);
-			$local_persistent_filepath = rtrim('/', $local_persistent_filepath).'/';
-			$local_persistent_filepath .= date('Y-m-d').'-'.str_replace(K_PATH_CACHE.'/', null, $filename);
+			$local_persistent_filepath = rtrim($local_persistent_filepath, '/').'/';
 			if(!is_writable($local_persistent_filepath)) {
 				// @todo log failure
 				echo "<pre>";
+				var_dump(__LINE__);
 				var_dump('DYING');
 				die;
 			} else {
-				copy($filename, $local_persistent_filepath);
+				$local_persistent_filepath .= date('Y-m-d').'-'.str_replace(K_PATH_CACHE.'/', null, $filename);
+				$could_copy = copy($filename, $local_persistent_filepath);
+				if(!$could_copy) {
+					// @todo log failure
+					echo "<pre>";
+					var_dump(__LINE__);
+					var_dump('DYING');
+					die;
+				}
 			}
 		}
 
@@ -4376,6 +4382,7 @@ class Reports_Controller extends Authenticated_Controller
 		$request['new_report_setup'] = 1;
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_recipients = $report_data['recipients'];
+		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
 		foreach ($this->setup_keys as $k) {
 			if ($type === 'sla' && $k === 'report_name')
