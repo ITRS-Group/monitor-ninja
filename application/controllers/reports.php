@@ -4140,7 +4140,8 @@ class Reports_Controller extends Authenticated_Controller
 			'filename' => $translate->_("This field lets you select a custom filename for the report"),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
-			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar).")
+			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
+			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /var/log").'</p>'
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
