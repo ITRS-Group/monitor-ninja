@@ -784,6 +784,7 @@ span a img{
 .widget {
 	width: 100%;
 	margin-top: 11px;
+	position: relative;
 }
 .widget-place {
 	margin-left: 1%;
@@ -808,12 +809,11 @@ span a img{
 	z-index: 9999;
 	background-color: #ffffff;
 	padding: 15px;
-	float: right;
 	margin-top: -1px;
 	border: 1px solid #e9e9e0;
 	right: 0px;
 	width: 200px;
-	position: relative;
+	position: absolute;
 }
 /**************************************************************************************************/
 div.left {
