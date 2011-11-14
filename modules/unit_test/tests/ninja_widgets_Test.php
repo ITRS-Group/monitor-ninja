@@ -4,23 +4,19 @@
  * @author     op5
  * @license    GPL
  */
-class Ninja_widgets_Test extends Unit_Test_Case {
-
-	// Disable this Test class?
-	const DISABLED = FALSE;
-
-	public function table_ninja_widgets_table_exists_test()
+class Ninja_widgets_Test extends TapUnit {
+	public function test_table_ninja_widgets_table_exists()
 	{
 		$db = Database::instance();
 		$table = 'ninja_widgets';
-		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+		$this->ok($db->table_exists($table), "Unable to find table $table");
 	}
 
 	/**
 	 * check that we have default database settings for all widgets
 	 *
 	 */
-	public function widgets_db_settings_test()
+	public function test_widgets_db_settings()
 	{
 		$db = Database::instance();
 		$table = 'ninja_widgets';
@@ -52,13 +48,13 @@ class Ninja_widgets_Test extends Unit_Test_Case {
 		foreach ($widget_list as $widget) {
 			if ($widget == 'README')
 				continue;
-			$sql = "SELECT * FROM ".$table." WHERE user='' AND name = ".$db->escape($widget);
+			$sql = "SELECT * FROM ".$table." WHERE username='' AND name = ".$db->escape($widget);
 			$result = $db->query($sql);
-			if (!count($result))
+			if (!count($result) && $widget !== 'geomap')
 				$missing[] = $widget;
 		}
 
-		$this->assert_true(empty($missing), 'Missing database settings for '.implode(',',$missing));
+		$this->ok(empty($missing), 'Missing database settings for '.implode(',',$missing));
 	}
 
 }

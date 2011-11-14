@@ -9,71 +9,67 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class User_Test extends Unit_Test_Case {
-
-	// Disable this Test class?
-	const DISABLED = FALSE;
-
-	public function user_model_exists_test()
+class User_Test extends TapUnit {
+	public function test_user_model_exists()
 	{
 		$user = new User_Model();
-		$this->assert_true_strict(is_object($user));
+		$this->ok(is_object($user), "User model exists");
 		unset($user);
 	}
 
-	public function user_model_complete_login_exists_test()
+	public function test_user_model_complete_login_exists()
 	{
 		$user = new User_Model();
-		$this->assert_true_strict(method_exists($user, 'complete_login'));
+		$this->ok(method_exists($user, 'complete_login'), "Complete login method exists");
 		unset($user);
 	}
 
-	public function table_users_exists_test()
+	public function test_table_users_exists()
 	{
 		$db = Database::instance();
 		$table = 'users';
-		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
-		$this->assert_false_strict($db->table_exists('foo'));
+		$this->ok($db->table_exists($table), "Unable to find table $table");
+		$this->ok(!$db->table_exists('foo'), "Random tables doesn't exist");
 	}
 
-	public function users_exists_test()
+	public function test_users_exists()
 	{
 		$db = Database::instance();
 		$table = 'users';
 		$sql = "SELECT COUNT(*) as cnt FROM users";
 		$result = $db->query($sql);
 
-		$this->assert_true(count($result));
+		$this->ok(count($result) > 0, "There are users");
 	}
 
-	public function table_ninja_settings_exists_test()
+	public function test_table_ninja_settings_exists()
 	{
 		$db = Database::instance();
 		$table = 'ninja_settings';
-		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+		$this->ok($db->table_exists($table), "Unable to find table $table");
 	}
 
 	/**
 	 * Check that we have the ninja_user_authorization table
 	 */
-	public function table_ninja_user_authorization_exists_test()
+	public function test_table_ninja_user_authorization_exists()
 	{
 		$db = Database::instance();
 		$table = 'ninja_user_authorization';
-		$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
+		$this->ok($db->table_exists($table), "Unable to find table $table");
 	}
 
-	public function table_ninja_user_authorization_test()
+	public function test_table_ninja_user_authorization()
 	{
 		$db = Database::instance();
 		$table = 'ninja_user_authorization';
 		#$this->assert_true_strict($db->table_exists($table), "Unable to find table $table");
 		$sql = "SELECT * FROM ".$table;
 		$result = $db->query($sql);
-		$this->assert_true(count($result), 'No data exists for '.$table);
+		$this->ok(count($result) > 0, 'No data exists for '.$table);
 	}
 
-	public function menu_icons_exists_test()
+	public function test_menu_icons_exists()
 	{
 		$menu_path = APPPATH.'views/themes/default/icons/menu/*.png';
 		$menu_path_dark = APPPATH.'views/themes/default/icons/menu-dark/*.png';
@@ -111,7 +107,7 @@ class User_Test extends Unit_Test_Case {
 			}
 			$missing_str = (!empty($missing) && is_array($missing) ) ? implode(', ', $missing) : '';
 		}
-		$this->assert_true((sizeof($menu) == sizeof($menu_dark)), 'Missing: '. $missing_str);
+		$this->ok((sizeof($menu) == sizeof($menu_dark)), 'Missing dark icons: '. $missing_str, TAP_TODO);
 	}
 
 }

@@ -8,8 +8,7 @@ class Ninja_unit_test_Controller extends Controller {
 
 	public function index($user=false)
 	{
-		$authentic = new Auth;
-		Auth::instance()->force_login($user);
+		#Auth::instance()->force_login($user);
 
 		// Run tests and show results!
 		echo new Ninja_Unit_Test;
