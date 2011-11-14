@@ -258,7 +258,6 @@ function validate_report_form(f)
 
 		// these 2 fields should be the same no matter where on the
 		// page they are found
-		//var saved_report_id = f.saved_report_id.value;
 		var saved_report_id = $('input[name=saved_report_id]').attr('value');
 		var old_report_name = $.trim($('input[name=old_report_name]').attr('value'));
 
@@ -327,26 +326,21 @@ function ajax_submit(f)
 	rep_type = rep_type[0];
 	var rep_type_str = $('#rep_type option:selected').val();
 
-	var saved_report_id = $('#saved_report_id').fieldValue();
-	saved_report_id = saved_report_id[0];
+	var saved_report_id = $('#saved_report_id').fieldValue()[0];
 
-	var period = $('#period').fieldValue();
-	period = period[0];
+	var period = $('#period').fieldValue()[0];
 	var period_str = $('#period option:selected').text();
 
-	var recipients = $('#recipients').fieldValue();
-	recipients = $.trim(recipients[0]);
+	var recipients = $.trim($('#recipients').fieldValue()[0]);
 
 	if (!check_email(recipients)) {
 		alert(_reports_invalid_email);
 		return false;
 	}
 
-	var filename = $('#filename').fieldValue();
-	filename = filename[0];
+	var filename = $('#filename').fieldValue()[0];
 
-	var description = $('#description').fieldValue();
-	description = description[0];
+	var description = $('#description').fieldValue()[0];
 
 	var report_types = $.parseJSON(_report_types_json);
 	for (var i in report_types) {
@@ -359,15 +353,16 @@ function ajax_submit(f)
 		setTimeout('delayed_hide_progress()', 1000);
 		return false;
 	}
+	var local_persistent_filepath = $.trim($('#local_persistent_filepath').val());
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
 		type: 'POST',
-		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
+		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description, local_persistent_filepath: local_persistent_filepath},
 		success: function(data) {
 			if (isNaN(data)) { // error!
 				jgrowl_message(data, _reports_error);
 			} else {
-				new_schedule_rows(data, period_str, recipients, filename, description, rep_type_str, report_type_id);
+				new_schedule_rows(data, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath);
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
 			}
 		}
@@ -1016,7 +1011,7 @@ function show_response(responseText, statusText)
 
 
 // used from setup
-function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id)
+function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath)
 {
 	var return_str = '';
 	var reportname = $("#saved_report_id option:selected").text();
@@ -1027,6 +1022,7 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form>';
 	return_str += '<div class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" title="Delete scheduled report" /></td></tr>';
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
