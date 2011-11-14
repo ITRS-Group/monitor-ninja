@@ -3484,13 +3484,6 @@ class Reports_Controller extends Authenticated_Controller
 		if($user_action_url)
 			$action_url = $user_action_url;
 
-		# make sure action exists, keeps us from creating broken links on systems where op5common has not been updated
-		#if(!file_exists("/var/www/html$action_url"))
-		#	return "";
-
-		# start of deprecated code needed for old pdf backend:
-
-		#$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
 		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: -1px; right: 39px;'));
 		$form .= '<div>';
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
@@ -3528,16 +3521,6 @@ class Reports_Controller extends Authenticated_Controller
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
 			.'value="'.$pdf_img_alt.'"  style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
 
-
-		/*html::image(
-			$pdf_img_src,
-				array(
-					'alt' => $pdf_img_alt,
-					'title' => $pdf_img_alt,
-					'style' => 'border: 0px; width: 32px; height: 32px'
-				)
-			);
-			*/
 		$form .= '</div>';
 		$form .= "</form>";
 
@@ -3714,6 +3697,24 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		$pdf->Output($filename, $action);
+
+		// @todo bug 612
+		//if($local_persistent_filepath) {
+			//$local_persistent_filepath = str_replace(
+				//array(
+					//'%Y',
+					//'%m',
+					//'%d'
+				//),
+				//array(
+					//date('Y'),
+					//date('m'),
+					//date('d')
+				//),
+				//$local_persistent_filepath
+			//);
+			//copy($filename, $local_persistent_filepath);
+		//}
 
 		$mail_sent = 0;
 		if ($send_by_mail) {
