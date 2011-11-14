@@ -338,19 +338,19 @@ class Scheduled_reports_Model extends Model
 
 		switch ($type) {
 			case 'avail':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
 					"scheduled_reports sr, avail_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";
 				break;
 			case 'sla':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
 					"scheduled_reports sr, sla_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";
 				break;
 			case 'summary':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, c.* FROM ".
+				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
 					"scheduled_reports sr, summary_config c ".
 					"WHERE sr.id=".$schedule_id." AND ".
 					"c.id=sr.report_id";

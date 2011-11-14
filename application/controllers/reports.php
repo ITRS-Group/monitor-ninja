@@ -129,7 +129,6 @@ class Reports_Controller extends Authenticated_Controller
 	public $pdf_data = false;
 	public $pdf_filename = false;
 	public $pdf_recipients = false; # when sending reports by email
-	private $pdf_savepath = false;	# when saving pdf to a path
 	private $schedule_id = false;
 
 	private $assume_initial_states = true;
@@ -904,14 +903,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
-
-		/*
-		if (isset($_REQUEST['show_log_entries'])) {
-			$_REQUEST['report_period'] 			= 'last24hours';
-			$_REQUEST['assumeinitialstates'] 	= 1;
-			$assumeinitialstates 				= 1;
-		}
-		*/
 
 		$use_average_selected = arr::search($_REQUEST, 'use_average', $this->use_average);
 
@@ -3551,7 +3542,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$type = $this->type;
 		$filename = $this->pdf_filename;
-		$save_path = $this->pdf_savepath;
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -3562,11 +3552,7 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->SetSubject($title);
 		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 
-		// set default header data
-		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-
 		// set header and footer fonts
-		//$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_DATA));
 		$pdf->setFooterFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_DATA));
 
 		// set default monospaced font
@@ -3620,7 +3606,7 @@ class Reports_Controller extends Authenticated_Controller
 						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
 						$images[] = $img; # store absolute path to file for later removal
 						$image_string .= '<tr><td style="font-size: 0.9em; background-color: #f4f4f4; font-weight: bold">'.($this->translate->_('Status Overview').': '.$data_str[$i]['host']).'</td></tr>'.
-											  '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
+						  '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
 						$image_string .= '</table>';
 						$image_string .= ($i%2 == 0) ? '</td>' : '</td></tr></table>';
 					}
@@ -3663,18 +3649,18 @@ class Reports_Controller extends Authenticated_Controller
 			$pdf->writeHTML($image_string, true, 0, true, 0);
 		}
 		# remove all temporary images
-        foreach ($images as $i) {
-            unlink($i);
-        }
+		foreach ($images as $i) {
+		    unlink($i);
+		}
 
-        if (isset($this->pdf_data['svc_content'])) {
-        	$pdf->writeHTML($this->pdf_data['svc_content'], true, 0, true, 0);
-        }
+		if (isset($this->pdf_data['svc_content'])) {
+			$pdf->writeHTML($this->pdf_data['svc_content'], true, 0, true, 0);
+		}
 
-        # print log data if available
-        if (isset($this->pdf_data['log_data']) && !empty($this->pdf_data['log_data'])) {
-        	$pdf->writeHTML($this->pdf_data['log_data'], true, 0, true, 0);
-        }
+		# print log data if available
+		if (isset($this->pdf_data['log_data']) && !empty($this->pdf_data['log_data'])) {
+			$pdf->writeHTML($this->pdf_data['log_data'], true, 0, true, 0);
+		}
 
 		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
 		$filename = trim($filename);
@@ -3699,27 +3685,24 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->Output($filename, $action);
 
 		// @todo bug 612
-		//if($local_persistent_filepath) {
-			//$local_persistent_filepath = str_replace(
-				//array(
-					//'%Y',
-					//'%m',
-					//'%d'
-				//),
-				//array(
-					//date('Y'),
-					//date('m'),
-					//date('d')
-				//),
-				//$local_persistent_filepath
-			//);
-			//copy($filename, $local_persistent_filepath);
-		//}
+		// the local path must be specified and there must be an original pdf
+		if($local_persistent_filepath && is_readable($filename)) {
+			$local_persistent_filepath = preg_replace('/\.pdf$/', null, $local_persistent_filepath);
+			$local_persistent_filepath = rtrim('/', $local_persistent_filepath).'/';
+			$local_persistent_filepath .= date('Y-m-d').'-'.str_replace(K_PATH_CACHE.'/', null, $filename);
+			if(!is_writable($local_persistent_filepath)) {
+				// @todo log failure
+				echo "<pre>";
+				var_dump('DYING');
+				die;
+			} else {
+				copy($filename, $local_persistent_filepath);
+			}
+		}
 
 		$mail_sent = 0;
 		if ($send_by_mail) {
 			# send file as email to recipients
-			#chmod($filename, 0777);
 			$to = $this->pdf_recipients;
 			if (strstr($to, ',')) {
 				$recipients = explode(',', $to);
