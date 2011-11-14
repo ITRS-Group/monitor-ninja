@@ -12,6 +12,7 @@
 								<th class="headerNone left"><?php echo $label_sch_recipients ?></th>
 								<th class="headerNone left"><?php echo $label_sch_filename ?></th>
 								<th class="headerNone left"><?php echo $label_sch_description ?></th>
+								<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
 								<th class="headerNone left" style='width: 60px'><?php echo $this->translate->_('Actions'); ?></th>
 							</tr>
 						</thead>
@@ -29,6 +30,7 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo $schedule->description ?></td>
+								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="local_persistent_filepath-<?php echo $schedule->id ?>"><?php echo $schedule->local_persistent_filepath ?></td>
 								<td>
 									<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
 									<div class="delete_schedule avail_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
@@ -52,6 +54,7 @@
 								<th class="headerNone left"><?php echo $label_sch_recipients ?></th>
 								<th class="headerNone left"><?php echo $label_sch_filename ?></th>
 								<th class="headerNone left"><?php echo $label_sch_description ?></th>
+								<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
 								<th class="headerNone left"style='width: 60px'><?php echo $this->translate->_('Actions'); ?></th>
 							</tr>
 						</thead>
@@ -70,6 +73,7 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo $schedule->description ?></td>
+								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="local_persistent_filepath-<?php echo $schedule->id ?>"><?php echo $schedule->local_persistent_filepath ?></td>
 								<td>
 									<form><input type="button" class="send_report_now" id="send_now_sla_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
 									<div class="delete_schedule sla_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
@@ -93,6 +97,7 @@
 								<th class="headerNone left"><?php echo $label_sch_recipients ?></th>
 								<th class="headerNone left"><?php echo $label_sch_filename ?></th>
 								<th class="headerNone left"><?php echo $label_sch_description ?></th>
+								<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
 								<th class="headerNone left"style='width: 60px'><?php echo $this->translate->_('Actions'); ?></th>
 							</tr>
 						</thead>
@@ -111,6 +116,7 @@
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
 								<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo $schedule->description ?></td>
+								<td class="iseditable" title="<?php echo $label_dblclick ?>" id="local_persistent_filepath-<?php echo $schedule->id ?>"><?php echo $schedule->local_persistent_filepath ?></td>
 								<td>
 									<form><input type="button" class="send_report_now" id="send_now_summary_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>
 									<div class="delete_schedule summary_del" id="alldel_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'),array('alt' => $this->translate->_('Delete scheduled report'), 'title' => $this->translate->_('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
