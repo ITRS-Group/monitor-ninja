@@ -1,16 +1,16 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
-<div class="widget collapsable right editable" id="widget-<?php echo $widget_id ?>" style="margin-right: 1%;width:500px">
+<div class="widget collapsable right editable" id="widget-<?php echo $widget_id ?>">
 	<div class="widget-header dark">
 		<span><?php echo $host_title ?></span>
-		<span style="margin-left: 145px"><?php echo $service_title ?></span>
+		<span><?php echo $service_title ?></span>
 	</div>
 		<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
 		<fieldset>
 		<label for="<?php echo $widget_id ?>_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
-		<input style="border:0px solid red; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
-		<div id="<?php echo $widget_id ?>_slider" style="z-index:1000"></div>
+		<input size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
+		<div id="<?php echo $widget_id ?>_slider"></div>
 		</fieldset>
 		<?php echo form::close() ?>
 	</div>

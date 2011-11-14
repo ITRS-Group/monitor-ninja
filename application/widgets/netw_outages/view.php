@@ -6,8 +6,8 @@
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
 		<fieldset>
 		<label for="<?php echo $widget_id ?>_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
-		<input style="border:0px solid red; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
-		<div id="<?php echo $widget_id ?>_slider" style="z-index:1000"></div>
+		<input size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
+		<div id="<?php echo $widget_id ?>_slider"></div>
 		</fieldset>
 		<?php echo form::close() ?>
 	</div>
