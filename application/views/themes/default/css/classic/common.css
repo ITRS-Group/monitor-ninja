@@ -10,7 +10,3 @@
 	padding: 10px 0px 10px 10px;
 	background: yellow url(images/bg-dark.png) repeat-x;
 }
-
-.headerNone.left a {
-	vertical-align: top;
-}
