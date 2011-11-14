@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div id="new_schedule_area">
-<?php	echo form::open('reports/schedule', array('id' => 'new_schedule_report_form', 'onsubmit' => 'return ajax_submit(this)'));
+<?php echo form::open('reports/schedule', array('id' => 'new_schedule_report_form'));
 	?>
 		<h1><?php echo $label_new_schedule ?></h1>
 		<table id="new_schedule_report_table">
