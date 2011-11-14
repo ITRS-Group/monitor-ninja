@@ -139,7 +139,6 @@ class Tac_problems_Widget extends widget_Core {
 			# add custom javascript to header
 			$this->js = array('/js/tac_problems');
 			$this->master_obj->xtra_js[] = 'application/media/js/mColorPicker.min.js';
-			$this->css = array('/css/tac_problems.css.php');
 			#$this->master_obj->inline_js .= "var ".$widget_id." = new widget('".$widget_id."');";
 			$this->master_obj->inline_js .= "init_tac_problems('".$widget_id."');";
 
