@@ -3,14 +3,15 @@ test: test-reports
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
-test-ci-prepare:
-	@# get default config
-	@/sbin/service monitor stop &> /dev/null || :
-	@cp test/configs/all-host_service-states/etc/* /opt/monitor/etc/
-	@cp test/configs/all-host_service-states/var/status.sav /opt/monitor/var/
-	@/sbin/service monitor start &> /dev/null
-	@# make sure users are imported to db:
-	@php index.php 'cli/insert_user_data'
+test-ci: prepare-config
+	mkdir -p test/configs/all-host_service-states/var/rw; \
+	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg; \
+	while [ ! -e test/configs/all-host_service-states/var/status.log ]; do \
+		sleep 1; \
+	done; \
+	echo "[$$(date +%s)] SHUTDOWN_PROGRAM" > test/configs/all-host_service-states/var/rw/nagios.cmd; \
+	/opt/monitor/op5/merlin/ocimp --force --cache=test/configs/all-host_service-states/var/objects.cache --status-log=test/configs/all-host_service-states/var/status.log; \
+	php index.php 'cli/insert_user_data'
 
 test-coverage: test-ci-prepare
 	@php test/all_coverage.php $$(pwd)
@@ -29,5 +30,8 @@ help:
 
 wipe:
 	php index.php ninja_unit_test/wipe_tables
+
+prepare-config:
+	sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 
 .PHONY: test help test-reports
