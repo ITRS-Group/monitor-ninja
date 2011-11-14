@@ -190,17 +190,29 @@ class Scheduled_reports_Model extends Model
 		return $objResponse;
 	}
 
-	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='')
+	/**
+	 * @param int $id = false
+	 * @param int $rep_type = false
+	 * @param int $saved_report_id = false
+	 * @param int $period = false
+	 * @param string $recipients = false comma separated
+	 * @param string $filename = ''
+	 * @param string $description = ''
+	 * @param string $local_persistent_filepath = ''
+	 * @return string|int either error string or the report's id
+	 */
+	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
 	{
-		$db 			= Database::instance();
-		$id 			= (int)$id;
-		$rep_type 		= (int)$rep_type;
+		$db = Database::instance();
+		$id = (int)$id;
+		$rep_type = (int)$rep_type;
 		$saved_report_id = (int)$saved_report_id;
-		$period			= (int)$period;
-		$recipients 	= trim($recipients);
-		$filename		= trim($filename);
-		$description	= trim($description);
-		$user 			= Auth::instance()->get_user()->username;
+		$period	= (int)$period;
+		$recipients = trim($recipients);
+		$filename = trim($filename);
+		$description = trim($description);
+		$local_persistent_filepath = trim($local_persistent_filepath);
+		$user = Auth::instance()->get_user()->username;
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
 
@@ -219,11 +231,10 @@ class Scheduled_reports_Model extends Model
 
 		if ($id) {
 			// UPDATE
-			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.",
-				recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." WHERE id=".$id;
+			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
 		} else {
-			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description)
-				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).")";
+			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath)
+				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).")";
 		}
 
 		try {

@@ -128,6 +128,7 @@ class Reports_Controller extends Authenticated_Controller
 	private $create_pdf = false;
 	public $pdf_data = false;
 	public $pdf_filename = false;
+	public $pdf_local_persistent_filepath = false;
 	public $pdf_recipients = false; # when sending reports by email
 	private $schedule_id = false;
 
@@ -3391,14 +3392,15 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$this->auto_render=false;
 		// collect input values
-		$report_id 			= arr::search($_REQUEST, 'report_id'); // scheduled ID
-		$rep_type 			= arr::search($_REQUEST, 'rep_type');
-		$saved_report_id 	= arr::search($_REQUEST, 'saved_report_id'); // ID for report module
-		$period 			= arr::search($_REQUEST, 'period');
-		$recipients			= arr::search($_REQUEST, 'recipients');
-		$filename			= arr::search($_REQUEST, 'filename');
-		$description		= arr::search($_REQUEST, 'description');
-		$module_save		= arr::search($_REQUEST, 'module_save');
+		$report_id = arr::search($_REQUEST, 'report_id'); // scheduled ID
+		$rep_type = arr::search($_REQUEST, 'rep_type');
+		$saved_report_id = arr::search($_REQUEST, 'saved_report_id'); // ID for report module
+		$period = arr::search($_REQUEST, 'period');
+		$recipients = arr::search($_REQUEST, 'recipients');
+		$filename = arr::search($_REQUEST, 'filename');
+		$description = arr::search($_REQUEST, 'description');
+		$local_persistent_filepath = arr::search($_REQUEST, 'local_persistent_filepath');
+		$module_save = arr::search($_REQUEST, 'module_save');
 
 		if (!$module_save) {
 			# if this parameter is set to false, we have to lookup
@@ -3423,14 +3425,13 @@ class Reports_Controller extends Authenticated_Controller
 		$filename = $this->_convert_special_chars($filename);
 		$filename = $this->_check_filename($filename);
 
-		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description);
+		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath);
 
 		if (is_int($ok)) {
 			echo $ok;
 		} else {
 			echo sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok);
 		}
-		return;
 	}
 
 	/**
@@ -3685,6 +3686,7 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->Output($filename, $action);
 
 		// @todo bug 612
+		$local_persistent_filepath = $this->pdf_local_persistent_filepath;
 		// the local path must be specified and there must be an original pdf
 		if($local_persistent_filepath && is_readable($filename)) {
 			$local_persistent_filepath = preg_replace('/\.pdf$/', null, $local_persistent_filepath);
