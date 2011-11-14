@@ -1,16 +1,16 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
-<div class="widget editable movable collapsable removable closeconfirm" id="widget-<?php echo $widget_id ?>" style="position: relative;">
+<div class="widget editable movable collapsable removable closeconfirm" id="widget-<?php echo $widget_id ?>">
 	<div class="widget-header"><span class="<?php echo $widget_id ?>_editable" id="<?php echo $widget_id ?>_title"><?php echo $title ?></span></div>
-	<div class="widget-editbox" style="position: absolute;">
+	<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
 		<fieldset>
-		<div id="<?php echo $widget_id ?>_slider" style="display: none;"></div>
+		<div id="<?php echo $widget_id ?>_slider"></div>
 		<label for="<?php echo $widget_id ?>_map"><?php echo $this->translate->_('Map') ?>:</label>
 		<?php echo form::dropdown(array('name' => $widget_id . '_map'), $all_maps, $choosen_map); ?>
 		<br />
 		<label for="<?php echo $widget_id ?>_height"><?php echo $this->translate->_('Height (px)') ?>:</label>
-		<input style="border:0px solid red; display: inline; padding: 0px; margin-bottom: 7px;" size="3" type="text" name="<?php echo $widget_id ?>_height" id="<?php echo $widget_id; ?>_height" value="<?php echo floatval($height) ?>" />
+		<input size="3" type="text" name="<?php echo $widget_id ?>_height" id="<?php echo $widget_id; ?>_height" value="<?php echo floatval($height) ?>" />
 		</fieldset>
 		<?php echo form::close() ?>
 	</div>
