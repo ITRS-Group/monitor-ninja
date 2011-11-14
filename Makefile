@@ -6,9 +6,7 @@ test-reports:
 test-ci-prepare: prepare-config
 	mkdir -p test/configs/all-host_service-states/var/rw; \
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg; \
-	while [ ! -e test/configs/all-host_service-states/var/status.log ]; do \
-		sleep 1; \
-	done; \
+	sleep 5; \
 	echo "[$$(date +%s)] SHUTDOWN_PROGRAM" > test/configs/all-host_service-states/var/rw/nagios.cmd; \
 	/opt/monitor/op5/merlin/ocimp --force --cache=test/configs/all-host_service-states/var/objects.cache --status-log=test/configs/all-host_service-states/var/status.log; \
 	php index.php 'cli/insert_user_data'
