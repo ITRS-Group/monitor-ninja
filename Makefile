@@ -3,7 +3,7 @@ test: test-reports
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
-test-ci: prepare-config
+test-ci-prepare: prepare-config
 	mkdir -p test/configs/all-host_service-states/var/rw; \
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg; \
 	while [ ! -e test/configs/all-host_service-states/var/status.log ]; do \
