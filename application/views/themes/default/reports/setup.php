@@ -89,9 +89,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<?php echo form::close();?>
 	</div>
 
-	<!--<h1><?php echo $label_create_new ?></h1>-->
-
-
 	<?php	echo form::open('reports/generate', array('id' => 'report_form')); ?>
 			<input type="hidden" name="new_report_setup" value="1" />
 			<input type="hidden" name="type" value="<?php echo $type ?>" />
