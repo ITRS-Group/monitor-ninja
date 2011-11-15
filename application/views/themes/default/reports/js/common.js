@@ -219,15 +219,14 @@ function send_report_now(type, id)
 		success: function(data) {
 			if (data == '' || !data.error) {
 				jgrowl_message(_reports_schedule_send_ok, _reports_success);
-				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			} else {
 				if(data.error) {
 					jgrowl_message(_reports_schedule_send_error + ': ' + data.error, _reports_error);
 				} else {
 					jgrowl_message(_reports_schedule_send_error, _reports_error);
 				}
-				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			}
+			setTimeout(function() {restore_sendimg(html_id)}, 1000);
 		},
 		dataType: 'json'
 	});
