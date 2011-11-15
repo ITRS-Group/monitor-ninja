@@ -600,48 +600,52 @@ $(document).ready(function() {
 				bValid = bValid && check_save_search_fields(query, _search_string_field, 1, 100);
 				bValid = bValid && check_save_search_fields(name, _search_name_field, 1, 100);
 
-				if ( bValid ) {
-					// save form to db
-					$.ajax({
-						url:_site_domain + _index_page + '/' + '/ajax/save_search',
-						type: 'POST',
-						data: {name: name.val(), query: query.val(), description: description.val(), search_id: $('#search_id').val()},
-						success: function(data) {
-							data = parseInt(data);
-							if (!isNaN(data)) { // return value should be an integer if OK
-								jgrowl_message(_search_saved_ok, _search_save_ok);
-
-								// update/edit
-								if ($('#search_id').val() != 0 && $('#saved_searchrow_' + $('#search_id').val())) {
-									// update list of saved searches
-
-									$('#searchname_' + $('#search_id').val()).html(name.val());
-									$('#searchquery_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a>');
-									$('#searchqueryimg_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a>');
-									$('#searchdescription_' + $('#search_id').val()).html(description.val());
-
-								} else if($('#search_id').val() == 0) {
-									// created new search - add rows
-									var new_data = '<td class="edit_search_query" id="searchquery_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a></td>';
-									new_data += '<td class="edit_search_name" id="searchname_' + data + '">' + name.val() + '</td>';
-									new_data += '<td class="edit_search_description" id="searchdescription_' + data + '">' + description.val() + '</td>'; //_theme_path
-									new_data += '<td id="searchqueryimg_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a></td>';
-									new_data += '<td class="edit_search_item" id="editsearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/edit.png" id="editsearchimg_' + data + '" /></td>';
-									new_data += '<td class="remove_search_item" id="removesearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/remove.png" id="removesearchimg_' + data + '" /></td>';
-									$('#saved_searches_table').append('<tr id="saved_searchrow_' + data + '">' + new_data + '</tr>');
-									if (!$('#my_saved_searches').is(':visible')) {
-										$('#my_saved_searches').show();
-									}
-
-									$('#search_id').attr('value', data);
-								}
-							} else {
-								jgrowl_message(_search_saved_error, _search_save_error);
-							}
-						}
-					});
+				if (!bValid) {
+					$(this).dialog("close");
+					return;
 				}
+				// save form to db
+				$.ajax({
+					url:_site_domain + _index_page + '/' + '/ajax/save_search',
+					type: 'POST',
+					data: {name: name.val(), query: query.val(), description: description.val(), search_id: $('#search_id').val()},
+					success: function(data) {
+						data = parseInt(data);
+						if (isNaN(data)) { // return value should be an integer if OK
+							jgrowl_message(_search_saved_error, _search_save_error);
+							return;
+						}
+						jgrowl_message(_search_saved_ok, _search_save_ok);
 
+						// update/edit
+						if ($('#search_id').val() != 0 && $('#saved_searchrow_' + $('#search_id').val())) {
+							// update list of saved searches
+							$('#searchname_' + $('#search_id').val()).html(name.val());
+							$('#searchquery_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a>');
+							$('#searchqueryimg_' + $('#search_id').val()).html('<a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a>');
+							$('#searchdescription_' + $('#search_id').val()).html(description.val());
+
+						} else if($('#search_id').val() == 0) {
+							var previously_saved_searches_for_same_query = $('#saved_searches_table td[id^=searchquery_]:contains("'+query.val()+'")');
+							if(previously_saved_searches_for_same_query.length) {
+								previously_saved_searches_for_same_query.parent('tr').remove();
+							}
+							// created new search - add rows
+							var new_data = '<td class="edit_search_query" id="searchquery_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '">' + query.val() + '</a></td>';
+							new_data += '<td class="edit_search_name" id="searchname_' + data + '">' + name.val() + '</td>';
+							new_data += '<td class="edit_search_description" id="searchdescription_' + data + '">' + description.val() + '</td>'; //_theme_path
+							new_data += '<td id="searchqueryimg_' + data + '"><a href="' + _site_domain + _index_page + '/' + 'search/lookup?query=' + query.val() + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/use_search.png" /></a></td>';
+							new_data += '<td class="edit_search_item" id="editsearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/edit.png" id="editsearchimg_' + data + '" /></td>';
+							new_data += '<td class="remove_search_item" id="removesearch_' + data + '"><img style="cursor:pointer" src="' + _site_domain + _theme_path + 'icons/16x16/remove.png" id="removesearchimg_' + data + '" /></td>';
+							$('#saved_searches_table').append('<tr id="saved_searchrow_' + data + '">' + new_data + '</tr>');
+							if (!$('#my_saved_searches').is(':visible')) {
+								$('#my_saved_searches').show();
+							}
+
+							$('#search_id').attr('value', data);
+						}
+					}
+				});
 				$(this).dialog("close");
 			}
 		}
