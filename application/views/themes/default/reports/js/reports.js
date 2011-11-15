@@ -165,7 +165,6 @@ function js_print_date_ranges(the_year, type, item)
 	if (!the_year && type!='' && item!='') {
 		return false;
 	}
-//	console.log('the_year: '+ the_year + ', type: ' + type + ', item: ' + item);
 	//get_date_ranges(the_year, type, item);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "get_date_ranges/";
@@ -185,19 +184,14 @@ function js_print_date_ranges(the_year, type, item)
 			if (data != '') {
 				// OK, continue
 				data = eval( "(" + data + ")" );
-				//console.dir(data);
 				if (data['start_year']) {
-					//console.dir(data['start_year']);
 					for (i in data['start_year']) {
-						//console.log(data['start_year'][i]);
 						addSelectOption('start_year', data['start_year'][i], data['start_year'][i]);
 					}
 				}
 
 				if (data['end_year']) {
-					//console.dir(data['end_year']);
 					for (i in data['end_year']) {
-						//console.log(data['end_year'][i]);
 						addSelectOption('end_year', data['end_year'][i], data['end_year'][i]);
 					}
 				}
@@ -345,13 +339,14 @@ function ajax_submit(f)
 		type: 'POST',
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description, local_persistent_filepath: local_persistent_filepath},
 		success: function(data) {
-			if (isNaN(data)) { // error!
-				jgrowl_message(data, _reports_error);
+			if (data.error) {
+				jgrowl_message(data.error, _reports_error);
 			} else {
-				new_schedule_rows(data, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath);
+				new_schedule_rows(data.result.id, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath);
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
 			}
-		}
+		},
+		dataType: 'json'
 	});
 	setTimeout('delayed_hide_progress()', 1000);
 	return false;
