@@ -4238,6 +4238,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		// check some fields a little extra
 		switch ($field) {
+			case 'local_persistent_filepath':
+				if(!is_writable(rtrim($new_value, '/').'/')) {
+					echo $this->translate->_("Can't write to '$new_value'. Provide another path.<br />");
+					return;
+				}
+				break;
 			case 'recipients': // convert ';' to ','
 				$new_value = str_replace(';', ',', $new_value);
 				$rec_arr = explode(',', $new_value);
@@ -4276,9 +4282,6 @@ class Reports_Controller extends Authenticated_Controller
 				$new_value = $this->_check_filename($new_value);
 				break;
 		}
-
-		$ok = false;
-		#echo "Should update field '$field' with value '$new_value' on item '$report_id'";
 
 		$ok = Scheduled_reports_Model::update_report_field($report_id, $field, $new_value);
 
@@ -4319,7 +4322,6 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 								}
 							}
-							#echo "Unable to find name of selected report (ID:$new_value	)";
 						} else {
 							echo $this->translate->_("Unable to fetch list of saved reports");
 						}
