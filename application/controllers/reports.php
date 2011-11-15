@@ -3687,6 +3687,9 @@ class Reports_Controller extends Authenticated_Controller
 			try {
 				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
 			} catch(Exception $e) {
+				if(request::is_ajax()) {
+					return json::fail($e->getMessage());
+				}
 				// @todo log failure
 				echo "<pre>";
 				var_dump(__LINE__);
