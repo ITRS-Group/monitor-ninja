@@ -3807,13 +3807,15 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf->Output($filename, $action);
 
-		$local_persistent_filepath = $this->pdf_local_persistent_filepath;
 		// the local path must be specified and there must be an original pdf
-		if($local_persistent_filepath && 'F' == $action) {
-			$saved = persist_pdf::save($filename, $local_persistent_filepath);
-			if(!$saved) {
+		if($this->pdf_local_persistent_filepath && 'F' == $action) {
+			try {
+				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
+			} catch(Exception $e) {
 				// @todo log failure
 				echo "<pre>";
+				var_dump(__LINE__);
+				var_dump($e->getMessage());
 				var_dump('DYING');
 				die;
 			}
