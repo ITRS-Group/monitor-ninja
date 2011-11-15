@@ -4287,65 +4287,65 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($ok!==true) {
 			echo $this->translate->_('An error occurred')."<br />";
-		} else {
-			/*
-			# decide how to interpret field and value, since we
-			# should print the correct value back.
-			# If the value is an integer it should indicate that
-			# we need to make a lookup in database to fetch correct value
-			# Let's say we have 'periodname' as field, then value is an
-			# integer and the return value should be Weekly/Monthly
-			# if we get a string we should return that string
-			# The problem is that all values will be passed as strings
-			#
-			#	Possible input values:
-			#	* report_id
-			#	* period_id
-			#	* recipients		no changes needed
-			#	* filename			no changes needed
-			#	* description/info	no changes needed
-			#
-			*/
-			switch ($field) {
-				case 'report_id':
-					$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
-					if (!$report_type) {
-						echo $this->translate->_("Unable to determine type for selected report");
-					} else {
-						$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
-						if (count($saved_reports)!=0) {
-							foreach ($saved_reports as $report) {
-								if ($report->id == $new_value) {
-									echo $report_type == 'avail' || $report_type == 'summary'
-										? $report->report_name
-										: $report->sla_name;
-									break;
-								}
+			return;
+		}
+		/*
+		# decide how to interpret field and value, since we
+		# should print the correct value back.
+		# If the value is an integer it should indicate that
+		# we need to make a lookup in database to fetch correct value
+		# Let's say we have 'periodname' as field, then value is an
+		# integer and the return value should be Weekly/Monthly
+		# if we get a string we should return that string
+		# The problem is that all values will be passed as strings
+		#
+		#	Possible input values:
+		#	* report_id
+		#	* period_id
+		#	* recipients		no changes needed
+		#	* filename			no changes needed
+		#	* description/info	no changes needed
+		#
+		*/
+		switch ($field) {
+			case 'report_id':
+				$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
+				if (!$report_type) {
+					echo $this->translate->_("Unable to determine type for selected report");
+				} else {
+					$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
+					if (count($saved_reports)!=0) {
+						foreach ($saved_reports as $report) {
+							if ($report->id == $new_value) {
+								echo $report_type == 'avail' || $report_type == 'summary'
+									? $report->report_name
+									: $report->sla_name;
+								break;
 							}
-						} else {
-							echo $this->translate->_("Unable to fetch list of saved reports");
 						}
+					} else {
+						echo $this->translate->_("Unable to fetch list of saved reports");
 					}
-					break;
-				case 'period_id':
-					$period = false;
-					$periods = Scheduled_reports_Model::get_available_report_periods();
-					if ($periods !== false) {
-						foreach ($periods as $row) {
-							$period[$row->id] = $row->periodname;
-						}
-						echo (is_array($period) && array_key_exists($new_value, $period))
-							? $period[$new_value]
-							: '';
+				}
+				break;
+			case 'period_id':
+				$period = false;
+				$periods = Scheduled_reports_Model::get_available_report_periods();
+				if ($periods !== false) {
+					foreach ($periods as $row) {
+						$period[$row->id] = $row->periodname;
 					}
-					break;
-				case 'recipients':
-					$new_value = str_replace(',', ', ', $new_value);
-					echo $new_value;
-					break;
-				default:
-					echo $new_value;
-			}
+					echo (is_array($period) && array_key_exists($new_value, $period))
+						? $period[$new_value]
+						: '';
+				}
+				break;
+			case 'recipients':
+				$new_value = str_replace(',', ', ', $new_value);
+				echo $new_value;
+				break;
+			default:
+				echo $new_value;
 		}
 	}
 
