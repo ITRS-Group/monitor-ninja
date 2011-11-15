@@ -1036,7 +1036,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
-			//print_r(unserialize($report_options['host_filter_status']));
 		}
 
 		if (!empty($this->report_id)) {
@@ -1242,7 +1241,6 @@ class Reports_Controller extends Authenticated_Controller
 		$selected_objects = ""; // string containing selected objects for this report
 
 		# pass selected calculation method on to report options
-		#$html_options[] = array('hidden', 'use_average', $use_average);
 		$html_options[] = array('hidden', 'use_alias', $use_alias);
 
 		# $objects is an array used when creating report_error page (template).
