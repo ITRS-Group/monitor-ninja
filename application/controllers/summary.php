@@ -1180,6 +1180,10 @@ class Summary_Controller extends Authenticated_Controller
 			try {
 				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
 			} catch(Exception $e) {
+				if(request::is_ajax()) {
+					return json::fail($e->getMessage());
+				}
+
 				// @todo log failure
 				echo "<pre>";
 				var_dump(__LINE__);
@@ -1228,9 +1232,19 @@ class Summary_Controller extends Authenticated_Controller
 
 			# remove file from cache folder
 			unlink($filename);
+			if(request::is_ajax()) {
+				if($mail_sent) {
+					return json::ok(_("Mail sent"));
+				} else {
+					return json::fail(_("Could not send email"));
+				}
+			}
 			return $mail_sent;
 		}
 
+		if(request::is_ajax()) {
+			return json::ok();
+		}
 		return true;
 	}
 

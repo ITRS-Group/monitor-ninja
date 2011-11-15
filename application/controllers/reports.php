@@ -2072,8 +2072,6 @@ class Reports_Controller extends Authenticated_Controller
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
 						$sla->use_alias = $use_alias;
-						#$sla->charts = $charts;
-						#$sla->page_js = $page_js;
 					}
 
 				} # end if not empty. Display message to user?
@@ -3682,7 +3680,6 @@ class Reports_Controller extends Authenticated_Controller
 		$pdf->Output($filename, $action);
 
 		// @todo bug 612
-		// the local path must be specified and there must be an original pdf
 		if($this->pdf_local_persistent_filepath && 'F' == $action) {
 			try {
 				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
@@ -3690,6 +3687,7 @@ class Reports_Controller extends Authenticated_Controller
 				if(request::is_ajax()) {
 					return json::fail($e->getMessage());
 				}
+
 				// @todo log failure
 				echo "<pre>";
 				var_dump(__LINE__);
@@ -3736,7 +3734,18 @@ class Reports_Controller extends Authenticated_Controller
 			# $mail_sent will contain the nr of mail sent - not used at the moment
 			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
 
+			if(request::is_ajax()) {
+				if($mail_sent) {
+					return json::ok(_("Mail sent"));
+				} else {
+					return json::fail(_("Could not send email"));
+				}
+			}
 			return $mail_sent;
+		}
+
+		if(request::is_ajax()) {
+			return json::ok();
 		}
 
 		return true;

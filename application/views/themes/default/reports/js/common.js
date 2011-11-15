@@ -213,7 +213,7 @@ function send_report_now(type, id)
 	}
 
 	$.ajax({
-		url:_site_domain + _index_page + '/' + controller + '/generate',
+		url: _site_domain + _index_page + '/' + controller + '/generate',
 		type: 'POST',
 		data: {type: type, schedule_id: id},
 		success: function(data) {
