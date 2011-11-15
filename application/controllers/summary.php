@@ -553,7 +553,7 @@ class Summary_Controller extends Authenticated_Controller
 			$_REQUEST = $this->_scheduled_report();
 		}
 
-		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
+		$this->create_pdf = arr::search($_REQUEST, 'create_pdf');
 		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
 		}
@@ -1108,8 +1108,6 @@ class Summary_Controller extends Authenticated_Controller
 		$pdf->SetSubject($title);
 		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 
-		// set default header data
-		#$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 		// set header and footer fonts
 		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
