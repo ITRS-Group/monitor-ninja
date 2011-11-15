@@ -3542,11 +3542,10 @@ class Reports_Controller extends Authenticated_Controller
 
 		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath);
 
-		if (is_int($ok)) {
-			echo $ok;
-		} else {
-			echo sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok);
+		if (!is_int($ok)) {
+			return json::fail(sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok));
 		}
+		return json::ok(array('id' => $ok));
 	}
 
 	/**

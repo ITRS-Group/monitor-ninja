@@ -212,6 +212,9 @@ class Scheduled_reports_Model extends Model
 		$filename = trim($filename);
 		$description = trim($description);
 		$local_persistent_filepath = trim($local_persistent_filepath);
+		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
+			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
+		}
 		$user = Auth::instance()->get_user()->username;
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
