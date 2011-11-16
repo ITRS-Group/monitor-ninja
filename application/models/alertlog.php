@@ -38,7 +38,7 @@ class Alertlog_Model extends Model
 			$sql_where[] = implode(' OR ', $host_cond);
 		}
 		if (isset($options['services']) && !empty($options['services'])) {
-			$sql_join['service'] = 'service.service_description = report_data.service_description AND service.host_name = report_data.host_name';
+			$sql_join['service'] = '(service.service_description = report_data.service_description OR (report_data.service_description=\'\' AND report_data.event_type > 1000)) AND service.host_name = report_data.host_name';
 			$svc_cond = array();
 			foreach ($options['services'] as $service) {
 				$parts = explode(';', $service);
