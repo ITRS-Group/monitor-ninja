@@ -260,7 +260,7 @@ class Service_Model extends Model
 	/**
 	*	Search through several fields for a specific value
 	*/
-	public function search($value=false, $limit=false, $xtra_query=false)
+	public function search($value=false, $limit=false, $filter_service_on_state=false)
 	{
 		if (empty($value)) return false;
 		$auth = new Nagios_auth_Model();
@@ -289,9 +289,9 @@ class Service_Model extends Model
 					sprintf($sql_notes, $this->db->escape($val)).
 					" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))";
 
-				if($xtra_query) {
+				if($filter_service_on_state) {
 					// this means that "si:" has been used and we need to filter on state
-					foreach($xtra_query as $condition) {
+					foreach($filter_service_on_state as $condition) {
 						$condition = strtr(strtoupper($condition), $service_codes);
 						$query .= " AND current_state = ".$this->db->escape($condition)." ";
 					}
