@@ -164,7 +164,7 @@ class Group_Model extends Model
 			$sort_string = $sort_field.' '.$sort_order;
 		}
 
-		$service_props_sql = Host_Model::build_service_props_query($service_props, 's.');
+		$service_props_sql = Host_Model::build_service_props_query($service_props, 's.', 'h.');
 		$host_props_sql = Host_Model::build_host_props_query($host_props, 'h.');
 
 		$auth = new Nagios_auth_Model();
@@ -202,7 +202,7 @@ class Group_Model extends Model
 				"s.active_checks_enabled,".
 				"s.current_state,".
 				"s.problem_has_been_acknowledged,".
-				"s.scheduled_downtime_depth,".
+				"(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,".
 				"s.last_check,".
 				"s.output AS service_output,".
 				"s.long_output AS service_long_output,".
@@ -436,7 +436,7 @@ class Group_Model extends Model
 			: "  AND service.id IN (SELECT service FROM contact_access WHERE contact=".(int)$contact." AND service IS NOT NULL) ";
 
 		if (!empty($serviceprops)) {
-			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.');
+			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.', 'h.');
 		}
 
 		$filter_host_sql = false;

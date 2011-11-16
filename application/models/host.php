@@ -452,7 +452,7 @@ class Host_Model extends Model {
 				$from .= 'INNER JOIN service ON service.host_name=host.host_name ';
 			}
 
-			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
+			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.', 'host.');
 			$hostprops_sql = $this->build_host_props_query($this->hostprops, 'host.');
 
 			# remove possible table aliases just to be on the safe side here
@@ -525,7 +525,7 @@ class Host_Model extends Model {
 				$filter_sql .= sprintf($filter_service_sql, 'service.');
 			}
 
-			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.');
+			$serviceprops_sql = $this->build_service_props_query($this->serviceprops, 'service.', 'host.');
 			$hostprops_sql = $this->build_host_props_query($this->hostprops, 'host.');
 
 			if (empty($this->sort_field)) {
@@ -569,7 +569,7 @@ class Host_Model extends Model {
 					"service.icon_image_alt,".
 					"service.passive_checks_enabled,".
 					"service.problem_has_been_acknowledged,".
-					"service.scheduled_downtime_depth,".
+					"(service.scheduled_downtime_depth + host.scheduled_downtime_depth) AS scheduled_downtime_depth,".
 					"service.is_flapping as service_is_flapping,".
 					"(UNIX_TIMESTAMP() - service.last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time,".
 					"service.current_attempt,".
@@ -695,15 +695,15 @@ class Host_Model extends Model {
 	/**
 	*	Build a string to be used in a sql query to filter on different service properties
 	*/
-	public function build_service_props_query($serviceprops=false, $table_alias='')
+	public function build_service_props_query($serviceprops=false, $table_alias='', $host_table_alias='')
 	{
 		if (empty($serviceprops))
 			return false;
 		$ret_str = false;
 		if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth>0 ';
+			$ret_str .= ' AND ('.$table_alias.'scheduled_downtime_depth + '.$host_table_alias.'scheduled_downtime_depth)>0 ';
 		if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME)
-			$ret_str .= ' AND '.$table_alias.'scheduled_downtime_depth<=0 ';
+			$ret_str .= ' AND ('.$table_alias.'scheduled_downtime_depth + '.$host_table_alias.'scheduled_downtime_depth)<=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED)
 			$ret_str .= ' AND '.$table_alias.'problem_has_been_acknowledged!=0 ';
 		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
@@ -888,7 +888,7 @@ class Host_Model extends Model {
 					s.icon_image_alt,
 					s.passive_checks_enabled,
 					s.problem_has_been_acknowledged,
-					s.scheduled_downtime_depth,
+					(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,
 					s.is_flapping,
 					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
 					UNIX_TIMESTAMP() AS cur_time,
