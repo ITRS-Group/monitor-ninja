@@ -588,6 +588,8 @@ CREATE TABLE scheduled_reports (
   filename VARCHAR2(255 CHAR) NOT NULL
 );
 
+ALTER TABLE scheduled_reports
+  ADD local_persistent_filepath VARCHAR2(200 CHAR) DEFAULT NULL
 
 PROMPT Creating Primary Key Constraint scheduled_reports_pk on table scheduled_reports ...
 ALTER TABLE scheduled_reports
