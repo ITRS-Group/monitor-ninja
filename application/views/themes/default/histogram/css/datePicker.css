@@ -89,7 +89,7 @@ div.dp-popup {
 }
 div#dp-popup {
 	position: absolute;
-	z-index: 199;
+	z-index: 1102;
 }
 div.dp-popup h2 {
 	font-size: 12px;
