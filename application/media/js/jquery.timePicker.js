@@ -52,7 +52,8 @@
 	$tpDiv.append($tpList);
 	// Append the timPicker to the body and position it.
 	var elmOffset = $(elm).offset();
-	$tpDiv.appendTo('body').css({'top':elmOffset.top, 'left':elmOffset.left}).hide();
+	var aboveFancybox = 3000;
+	$tpDiv.appendTo('body').css({'top':elmOffset.top, 'left':elmOffset.left, 'zIndex': aboveFancybox}).hide();
 
 	// Store the mouse state, used by the blur event. Use mouseover instead of
 	// mousedown since Opera fires blur before mousedown.
