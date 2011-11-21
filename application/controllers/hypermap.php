@@ -58,7 +58,7 @@ class Hypermap_Controller extends Authenticated_Controller {
 
 		foreach ($result as $host) {
 			$parent = $host_model->get_parents($host->host_name);
-			if ($parent != false) {
+			if (!empty($parent)) {
 				$parent = $parent[0];
 				$host_parents[$host->host_name] = $parent->host_name;
 			} else {

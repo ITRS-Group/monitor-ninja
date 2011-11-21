@@ -28,8 +28,10 @@ foreach ($result as $node) {
 		       $node->current_state, $node->host_name, $node->host_name, urlencode($node->host_name), $title_str);
 }
 
-foreach ($data as $host => $parent) {
-	echo '<edge source="'.$parent.'" target="'.$host.'"/>';
+if (is_array($data)) {
+	foreach ($data as $host => $parent) {
+		echo '<edge source="'.$parent.'" target="'.$host.'"/>';
+	}
 }
 
 if (!empty($no_parents)) {

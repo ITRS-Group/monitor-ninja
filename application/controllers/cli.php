@@ -20,6 +20,7 @@ class Cli_Controller extends Authenticated_Controller {
 			!Auth::instance()->logged_in(Ninja_Controller::ADMIN)) {
 			url::redirect('default/index');
 		}
+		parent::__construct();
 	}
 
 	/**

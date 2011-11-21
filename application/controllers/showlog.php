@@ -204,27 +204,35 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 		$this->template->js_header->js = $this->xtra_js;
 
-		$service = false;
+		$service = $this->input->get('service', $this->input->post('service', false));
 		$hostgroup = $this->input->get('hostgroup', $this->input->post('hostgroup', false));
 		$servicegroup = $this->input->get('servicegroup', $this->input->post('servicegroup', false));
 		$host = $this->input->get('host', $this->input->post('host', $obj_name));
-		if ($host && !is_array($host)) {
-			$service = urldecode( # check for service param passed in GET or POST
-					$this->input->get('service',
-						$this->input->post('service', false)
-					)
-				);
-			if ($service && !is_array($service)) {
-				$service = array($host.';'.$service);
-				$host = false;
+		if (is_array($host)) {
+			foreach ($host as $k => $v) {
+				if (empty($v))
+					unset($host[$k]);
 			}
-			elseif (strstr($host, ';') !== false) {
-				$service = array($host);
-				$host = false;
+		}
+		if (is_array($service)) {
+			foreach ($service as $k => $v) {
+				if (empty($v))
+					unset($host[$k]);
 			}
-			else {
-				$host = array($host);
-			}
+		}
+		if ($service && !is_array($service) && $host && !is_array($host)) {
+			$service = array($host.';'.$service);
+			$host = false;
+		}
+		else if ($host && !is_array($host) && strstr($host, ';') !== false) {
+			$service = array($host);
+			$host = false;
+		}
+		else if (!is_array($host) && $host) {
+			$host = array($host);
+		}
+		else if (!is_array($service) && $service) {
+			$service = array($service);
 		}
 
 		$auth = new Nagios_auth_Model();
@@ -235,8 +243,8 @@ class Showlog_Controller extends Authenticated_Controller
 
 		$log_model = new Alertlog_Model();
 		$this->options = array_merge($this->options, array(
-			'hosts' => $host,
-			'services' => $service,
+			'hosts' => $host ? $host : false,
+			'services' => $service ? $service : false,
 			'hostgroups' => $hostgroup ? array($hostgroup) : false,
 			'servicegroups' => $servicegroup ? array($servicegroup) : false
 		));

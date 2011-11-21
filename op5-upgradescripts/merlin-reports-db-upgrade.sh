@@ -132,6 +132,7 @@ then
 	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version"   merlin 2>/dev/null | sed -n \$p)
 fi
 
+sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
 while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	case "$sched_db_ver" in
 	[1-5])
