@@ -21,6 +21,7 @@ class Cli_Controller extends Authenticated_Controller {
 			url::redirect('default/index');
 		}
 		parent::__construct();
+		$this->auto_render = false;
 	}
 
 	/**
@@ -239,6 +240,7 @@ class Cli_Controller extends Authenticated_Controller {
 				}
 			}
 		}
+		return true;
 	}
 
 	/**
