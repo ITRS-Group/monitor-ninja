@@ -17,8 +17,9 @@ $content .= '</div>';
 $css_header = '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
 
 if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
-	@mkdir('/tmp/ninja-stacktraces/', 0700, true);
-	$file = tempnam('/tmp/ninja-stacktraces', date('Ymd-hi').'-');
+	$tmp_dir = '/tmp/ninja-stacktraces/';
+	@mkdir($tmp_dir, 0700, true);
+	$file = tempnam($tmp_dir, date('Ymd-hi').'-');
 	$fd = fopen($file, 'w');
 	$error_data = "<html><head>$css_header</head><body>$content</body></html>";
 	$writeerror = false;
@@ -33,8 +34,9 @@ if (Authenticated_Controller::ALLOW_PRODUCTION === true) {
 	} else {
 		// by special casing this here once, we save some support time every time
 		// log data clobbers a customers hard drive
-		$content .= "<p>Additionally, there was an error when trying to save the debug information to \"$file\". Please check that your hard drive isn't full.</p></div>";
+		$content .= "<p>Additionally, there was an error when trying to save the debug information to a file in '$tmp_dir'. Please make sure that your hard drive isn't full.</p></div>";
 	}
+	unset($tmp_dir);
 }
 $title = 'Error';
 require('themes/default/menu/menu.php');
