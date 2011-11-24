@@ -4,7 +4,7 @@ test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
 test-ci-prepare: prepare-config
-	mkdir -p test/configs/all-host_service-states/var/rw; \
+	@mkdir -p test/configs/all-host_service-states/var/rw; \
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg; \
 	sleep 5; \
 	echo "[$$(date +%s)] SHUTDOWN_PROGRAM" > test/configs/all-host_service-states/var/rw/nagios.cmd; \
@@ -30,6 +30,6 @@ wipe:
 	php index.php ninja_unit_test/wipe_tables
 
 prepare-config:
-	sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
+	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 
 .PHONY: test help test-reports
