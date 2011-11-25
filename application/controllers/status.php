@@ -987,7 +987,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_service_status_details => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					$label_group_host_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group
+					$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group
 				);
 			}
 
