@@ -39,6 +39,7 @@ class Config_Model extends Model {
 
 		$db = Database::instance();
 		$auth = new Nagios_auth_Model();
+		$result_mod = array();
 
 		if ($auth->view_hosts_root) {
 
@@ -183,7 +184,6 @@ class Config_Model extends Model {
 						$contacts_array[$row->host_name] = $row->contact_name;
 					}
 				}
-				$result_mod = array();
 				foreach($result as $row){
 					if(isset($parent_array[$row->host_name])){
 						$row->parent = $parent_array[$row->host_name];
