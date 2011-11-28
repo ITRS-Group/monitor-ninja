@@ -2,7 +2,7 @@
 /**
  * Unit_Test controller.
  */
-class Ninja_unit_test_Controller extends Controller {
+class Ninja_unit_test_Controller extends Ninja_Controller {
 
 	const ALLOW_PRODUCTION = FALSE;
 
