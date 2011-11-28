@@ -102,9 +102,12 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($host);
+		$widget->set_hoststatus($hoststatustypes);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = array($widget);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
@@ -350,9 +353,14 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($name);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($group_type);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = array($widget);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
@@ -765,9 +773,14 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("No data found");
 		}
 
-		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($grouptype.'group');
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = array($widget);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
@@ -890,8 +903,13 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
-		$this->template->content->widgets = array($widget);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_group($grouptype);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->js = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
@@ -1086,8 +1104,13 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
-		$this->template->content->widgets = array($widget);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($grouptype);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->inline_js = $this->inline_js;
 		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
