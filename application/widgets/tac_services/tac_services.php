@@ -6,47 +6,13 @@
  * @author     op5 AB
  * @license    GPL
  */
-class Tac_services_Widget extends widget_Core {
+class Tac_services_Widget extends widget_Base {
+	protected $duplicatable = true;
 
-	public function __construct()
+	public function index()
 	{
-		parent::__construct();
-
-		# needed to figure out path to widget
-		$this->set_widget_name(__CLASS__, basename(__FILE__));
-	}
-
-	public function index($arguments=false, $master=false)
-	{
-		# required to enable us to assign the correct
-		# variables to the calling controller
-		$this->master_obj = $master;
-
 		# fetch widget view path
 		$view_path = $this->view_path('view');
-
-		if (is_object($arguments[0])) {
-			$current_status = $arguments[0];
-			array_shift($arguments);
-		} else {
-			$current_status = new Current_status_Model();
-			$current_status->analyze_status_data();
-		}
-
-		# assign variables for our view
-		$widget_id = $this->widgetname;
-		$refresh_rate = 60;
-		if (isset($arguments['refresh_interval'])) {
-			$refresh_rate = $arguments['refresh_interval'];
-		}
-
-		$title = $this->translate->_('Services');
-		if (isset($arguments['widget_title'])) {
-			$title = $arguments['widget_title'];
-		}
-
-		# let view template know if wrapping div should be hidden or not
-		$ajax_call = request::is_ajax() ? true : false;
 
 		$default_links = array(
 			'critical' => 'status/service/all/?servicestatustypes='.nagstat::SERVICE_CRITICAL,
@@ -61,6 +27,8 @@ class Tac_services_Widget extends widget_Core {
 			config::get('checks.show_passive_as_active')
 			? ((nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED))
 			: (nagstat::SERVICE_NO_SCHEDULED_DOWNTIME|nagstat::SERVICE_STATE_UNACKNOWLEDGED|nagstat::SERVICE_CHECKS_ENABLED);
+
+		$current_status = $this->get_current_status();
 
 		# SERVICES CRITICAL
 		$services_critical = array();
@@ -148,21 +116,7 @@ class Tac_services_Widget extends widget_Core {
 			$services_pending['status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING] = $current_status->services_pending.' '.$this->translate->_('Pending');
 		}
 
-		# fetch widget content
-		require_once($view_path);
-
-		if(request::is_ajax()) {
-			# output widget content
-			echo json::encode( $this->output());
-		} else {
-
-			# set required extra resources
-			$this->js = array('/js/tac_services');
-
-			# call parent helper to assign all
-			# variables to master controller
-			return $this->fetch();
-		}
+		require($view_path);
 	}
 }
 
