@@ -1,0 +1,261 @@
+= PORTING GUIDE =
+
+The widget system in ninja <= 1.2.x was somewhat different from the widget
+system used afterwards. This document will explain how to port your widgets.
+
+- JS -
+In old-style widgets, you usually needed to create a javascript file with the
+following content:
+
+$(document).ready(function() {
+	var my_widget = new widget('my_widget', 'widget-content');
+});
+
+If that was all your javascript file contained, you can now safely remove it. If
+it did more things, you may no longer initialize the widget yourself, but must
+instead wait for the widget system to load your widget:
+
+widget.register_widget_load('my_widget', function() {
+	var my_widget = this;
+});
+
+If your javascript also kept track of your custom configuration options, that,
+too, can likely be removed - see EXTRA SETTINGS.
+
+If you do custom things to your javascript, you may need to adjust it, should
+you want to make it possible to create multiple instances of the widget. This is
+described in MULTI INSTANCE WIDGETS.
+
+- VIEW -
+
+Any widget that supported ajax refreshes, which was most of them, had to
+copy-paste the following template:
+
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php if (!$ajax_call) { ?>
+<div class="widget editable movable collapsable removable closeconfirm" id="widget-<?php echo $widget_id ?>">
+	<div class="widget-header"><span class="<?php echo $widget_id ?>_editable" id="<?php echo $widget_id ?>_title"><?php echo $title ?></span></div>
+	<div class="widget-editbox">
+		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
+		<fieldset>
+		<label for="<?php echo $widget_id ?>_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
+		<input size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
+		<div id="<?php echo $widget_id ?>_slider"></div>
+<!-- EXTRA CONTROLS HERE -->
+		</fieldset>
+		<?php echo form::close() ?>
+	</div>
+	<div class="widget-content">
+<?php } ?>
+<!-- WIDGET CONTENT HERE -->
+<?php if (!$ajax_call) { ?>
+	</div>
+</div>
+<?php } ?>
+
+You should remove everything from this file that isn't content. That is, the
+only thing you should keep in the view, is what you had where it says
+<!-- WIDGET CONTENT HERE --> - everything else should go. Any extra controls
+will need to be migrated to the controller - see EXTRA SETTINGS below.
+
+- CONTROLLER -
+
+This is the old template for the controller, i.e. the file that had the name of
+your widget. Not all widgets had all of this, but most of them had most of it:
+
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+class My_widget_Widget extends widget_Core {
+	public function __construct()
+	{
+		parent::__construct();
+
+		# needed to figure out path to widget
+		$this->set_widget_name(__CLASS__, basename(__FILE__));
+	}
+
+	public function index($arguments=false, $master=false)
+	{
+		# required to enable us to assign the correct
+		# variables to the calling controller
+		$this->master_obj = $master;
+
+		# fetch widget view path
+		$view_path = $this->view_path('view');
+
+		if (is_object($arguments[0])) {
+			$current_status = $arguments[0];
+			array_shift($arguments);
+		} else {
+			$current_status = new Current_status_Model();
+		}
+
+		if (!$current_status->data_present()) {
+			$current_status->analyze_status_data();
+		}
+
+		$widget_id = $this->widgetname;
+		if (isset($arguments['refresh_interval'])) {
+			$refresh_rate = $arguments['refresh_interval'];
+		}
+
+		$title = $this->translate->_('My Widget');
+		if (isset($arguments['widget_title'])) {
+			$title = $arguments['widget_title'];
+		}
+
+		# let view template know if wrapping div should be hidden or not
+		$ajax_call = request::is_ajax() ? true : false;
+
+		/**
+		 * Actually do stuff
+		 */
+
+		# fetch widget content
+		require_once($view_path);
+
+		if(request::is_ajax()) {
+			# output widget content
+			echo json::encode( $this->output());
+		} else {
+			$this->js = array('/js/my_widget');
+			$this->css = array('/css/my_widget');
+			# call parent helper to assign all
+			# variables to master controller
+			return $this->fetch();
+		}
+	}
+}
+
+This is the new-style equivalent:
+
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+class My_widget_Widget extends widget_Base {
+	public function __construct($model)
+	{
+		parent::__construct($model);
+		/**
+		 * Do any global initiation here
+		 */
+	}
+
+	public function index()
+	{
+		# fetch widget view path
+		$view_path = $this->view_path('view');
+
+		$current_status = $this->get_current_status();
+		$arguments = $this->get_arguments();
+
+		/**
+		 * Actually do stuff
+		 */
+
+		$this->js = array('/js/my_widget');
+		$this->css = array('/css/my_widget');
+		require($view_path);
+	}
+}
+
+Note:
+ * The widget must inherit from widget_Base instead of widget_Core.
+ * The constructor now takes an argument, index takes none.
+ * You must not use require_once to include the view if you intend to allow
+   multiple widget instances.
+ * Still no file endings on javascript and css resources.
+
+- EXTRA SETTINGS -
+This used to be a free-form div in the view, however, it was mostly just
+cut'n'pasted from widget to widget, so we have implemented the redundant stuff
+once, so you won't have to. You now add a method to the controller, options, and
+have it return an array of your extra options. This is the last example widget
+again, but with two extra settings:
+
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+class My_widget_Widget extends widget_Base {
+	public function options() {
+		$options = parent::options();
+		$options[] = new option('my_widget', // your widget name (or something else unique)
+		                        'option1', // a unique option name
+		                        $this->translate->_('My first option'), // your label
+		                        'input', // option type - input, checkbox, dropdown, etc
+		                        array('size'=>5), // extra attributes for the field
+		                        'default1'); // default value
+		$options[] = new option('my_widget',
+		                        'option2',
+		                        'My second option',
+		                        'input',
+		                        array('size'=>5),
+		                        'default2');
+		return $options;
+	}
+
+	public function index()
+	{
+		# fetch widget view path
+		$view_path = $this->view_path('view');
+
+		$current_status = $this->get_current_status();
+		$arguments = $this->get_arguments();
+
+		/**
+		 * Actually do stuff
+		 */
+
+		require($view_path);
+	}
+}
+
+NOTE:
+ * This will automatically create javascript to save any changes and refresh the
+   page on changes. If you want to do this manually, you must call
+   should_render_js(false) on the option object.
+ * If you want to, you can return a pure HTML string of the widget settings you
+   want to keep track of. That way, you will get to do everything yourself.
+
+- MULTI INSTANCE WIDGETS -
+For simple widgets, to enable multiple instances you will only have to add one
+single line of code to the constructor: "protected $duplicatable = true;". This
+is a simple hello world widget that can be duplicated:
+
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+class My_widget_Widget extends widget_Base {
+	protected $duplicatable = true;
+	public function index()
+	{
+		print "Hello world!";
+	}
+}
+
+If your widget is more complicated, you will probably have to change more
+things.
+
+First, it's likely that your widget includes fields with the id attribute. Doing
+so is no longer valid - you must either create a globally unique name using both
+the widget's name and instance id, or you should use a class attribute instead.
+
+Then, in your javascript, you must take care to use a combined selector to
+retrieve the HTML node you want to for the correct widget instance. In the past,
+a common pattern in javascript files was the following:
+
+$(document).ready(function() {
+	var my_widget = new widget('my_widget', 'widget-content');
+	$('#my_widget_setting').change(function() {
+		my_widget.save_custom_val($(this).val(), 'my_widget_setting');
+		do_something();
+	});
+});
+
+Again, if do_something is only a widget reload, you can remove this code
+completely. If you do more things, you need to take more care.
+
+This is how the above should be written with new-style, multi-instance widgets:
+
+widget.register_widget_load('my_widget', function() {
+	var my_widget = this;
+	$('#'+my_widget.widget_id+' .my_widget_setting').change(function() {
+		my_widget.save_custom_val($(this).val(), 'my_widget_setting');
+		do_something();
+	});
+});
+
+That is, you can safely search for the class within the widget instance id.
