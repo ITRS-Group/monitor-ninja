@@ -215,22 +215,22 @@ if (isset($this->template->js_header))
 
 									if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[0] == '/'.Router::$current_uri.'?items_per_page=10')
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 									else
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 								}
 								// common external links
 								elseif($url[2] == 1) {
