@@ -102,11 +102,12 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $host, $hoststatustypes, false, $group_type, $serviceprops, $hostprops), $this);
+		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = array($widget);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('icons/16x16/up.gif');
@@ -349,11 +350,12 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $name, $hoststatustypes, $servicestatustypes, $group_type), $this);
+		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = array($widget);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 		$this->template->content->na_str = $this->translate->_('N/A');
 
 		# set sort images, used in header_links() below
@@ -763,11 +765,12 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("No data found");
 		}
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
+		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = array($widget);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
@@ -887,9 +890,11 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$this->template->content->widgets = array($widget);
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->js = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		$group_details = false;
 		$auth_groups = false;
@@ -1081,9 +1086,10 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::add(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$this->template->content->widgets = array($widget);
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->inline_js = $this->inline_js;
 		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$content->label_host = $t->_('Host');

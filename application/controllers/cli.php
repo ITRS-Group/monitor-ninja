@@ -330,10 +330,9 @@ class Cli_Controller extends Authenticated_Controller {
 
 		$params = $this->_parse_parameters();
 		if (!isset($params['page']) || !isset($params['name']) || !isset($params['friendly_name']))
-			die("Usage: {$params[0]} {$params[1]} <user> --page <page> --name <name> --friendly_name <friendly_name>\n");
+			die("Usage: {$params[0]} {$params[1]} --page <page> --name <name> --friendly_name <friendly_name>\n");
 
-		$widget = new Ninja_widget_Model();
-		$widget->add_widget($params['page'], $params['name'], $params['friendly_name'], true);
+		Ninja_widget_Model::install($params['page'], $params['name'], $params['friendly_name']);
 	}
 
 	public function rename_widget()
@@ -352,9 +351,8 @@ class Cli_Controller extends Authenticated_Controller {
 
 		$params = $this->_parse_parameters();
 		if (!isset($params['from']) || !isset($params['to']))
-			die("Usage: {$params[0]} {$params[1]} <user> --from <old_name> --to <new_name>\n");
+			die("Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n");
 
-		$widget = new Ninja_widget_Model();
-		$widget->rename_widget($params['from'], $params['to']);
+		Ninja_widget_Model::rename_widget($params['from'], $params['to']);
 	}
 }

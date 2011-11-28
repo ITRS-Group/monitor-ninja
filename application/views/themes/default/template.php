@@ -199,7 +199,7 @@ if (isset($this) && isset($this->template->js_header))
 			</div>
 			<div id="icons">
 				<ul>
-					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => _('Settings'), 'title' => _('Settings'))) ?></li>
+					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => _('Settings'), 'title' => _('Settings'))) ?></li>
 					<li onclick="show_info()"><?php echo html::image('application/views/themes/default/icons/16x16/versioninfo.png',array('alt' => _('Product information'), 'title' => _('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo html::image('application/views/themes/default/icons/16x16/refresh.png',array('alt' => _('Refresh page'), 'title' => _('Refresh page'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo _('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
@@ -306,16 +306,11 @@ if (isset($this) && isset($this->template->js_header))
 				<?php
 					} # end if disable_refresh
 
-					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
-					if (is_array($settings_widgets)) {
+					if (isset($widgets) && is_array($widgets)) {
 						echo '<li class="header">'._('Available Widgets').'</li>'."\n";
-						foreach($settings_widgets as $id => $widget) {
-							if (isset($user_widgets) && is_array($user_widgets)) {
-								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
-							} else {
-								$class_name = 'selected';
-							}
-							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
+						foreach($widgets as $widget) {
+							$class_name = (isset($widget->setting['status']) && $widget->setting['status'] == 'hide') ? 'unselected' : 'selected';
+							echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.'" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'._('Set widget refresh rate (s.)').'</li>'."\n";

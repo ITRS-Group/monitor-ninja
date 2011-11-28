@@ -39,47 +39,25 @@ class Tac_Controller extends Authenticated_Controller {
 		# fetch data for all widgets
 		$this->model->analyze_status_data();
 
-		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $this->model);
-		$widget_order = Ninja_widget_Model::fetch_widget_order(Router::$controller.'/'.Router::$method);
+		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method, $this->model);
+		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 
-		if (!empty($widget_info)) {
-			$settings_widgets = $widget_info['settings_widgets'];
-			$settings = $widget_info['settings'];
-			$widget_list = $widget_info['widget_list'];
-			$this->inline_js .= $widget_info['inline_js'];
-			$user_widgets = $widget_info['user_widgets'];
-
-			# add the widgets to the page using user settings or default if not available
-			foreach ($widget_list as $widget_name) {
-				widget::add($widget_name, $settings[$widget_name], $this);
-			}
-
-			$this->template->settings_widgets = $settings_widgets;
-			$this->template->user_widgets = $user_widgets;
-			$this->template->content->widget_settings = $settings;
+		if (array_keys($widgets) == array('unknown')) {
+			$nwidgets = count($widgets['unknown']);
+			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/3));
+			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/3));
+			$widgets['widget-placeholder2'] = $widgets['unknown'];
+			unset($widgets['unknown']);
+		} else if (isset($widgets['unknown'])) {
+			$widgets['widget-placeholder'] = array_merge($widgets['widget-placeholder'], $widgets['unknown']);
+			unset($widgets['unknown']);
 		}
 
-		# Validate that we have all the widgets in our order string.
-		# If this fails users will get a jGrowl error each time the page
-		# reloaded.
-		$tmp_arr = array();
-		foreach ($widget_order as $place => $widgets) {
-			$tmp_arr = array_merge($tmp_arr, (array)$widgets);
-		}
-
-		foreach ($widget_info['widget_list'] as $tmp) {
-			if (!in_array('widget-'.$tmp, $tmp_arr)) {
-				$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
-			}
-		}
-
-		# add the inline javascript to master template header
-		$this->template->inline_js = $this->inline_js;
-
-		$this->template->content->widget_order = $widget_order;
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = $widgets;
+		$this->template->widgets = $widget_objs;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 	}
 
 	/**

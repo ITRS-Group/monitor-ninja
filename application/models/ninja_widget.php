@@ -1,298 +1,308 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+function sort_widgets_by_friendly_name($a, $b) {
+	return strcmp($a->name, $b->name) || strcmp($a->friendly_name, $b->friendly_name);
+}
+
 /**
- *	Handle page data - saving and fetching
+ * A widget consists of four (or, well, five) identifying pieces of information.
+ *
+ * It has a name. The name links it to the on-disk PHP files.
+ *
+ * It has a page. This means the same widget can/will look different depending
+ * on your URL.
+ *
+ * It has a user. This means that different users see the same widget
+ * differently.
+ *
+ * It has an instance id. This means that the same user can see the same widget
+ * multiple times on the same page, with different options in each.
+ *
+ * (there's also an ID column, but it's pretty useless)
+ *
+ * When showing a widget, we first try to find a widget with the same page, user
+ * and instance id. If that's not possible, we fall back to the same page and
+ * user, but any id we can find, then to the same page but with blank user and
+ * id, and then to the 'tac/index' page with a blank user and id. When returning
+ * data from this model, nobody should have to bother about whether the widget
+ * information was returned from a fallback or not.
+ *
+ * (If you have a clever, quick, cross-database solution to do this whole thing
+ * in-database, please don't hesitate to do it)
+ *
+ * This means we must do copy-on-read, as we must "claim" a new instance id
+ * in case we have multiple browser tabs showing the same thing - keeping the
+ * javascript aware of when an instance id is assigned after an hour of showing
+ * a widget and then editing it seems doomed to create bugs.
+ *
+ * Saving an edited widget must never save to any of the fallback options. In
+ * particular, for legacy systems, that means we must never write to anything
+ * with an empty instance id. FIXME: tested?
+ *
+ * There are two add/remove pairs of functions: install/uninstall, and
+ * copy/delete. The first pair works globally, the second per-user.
  */
+
 class Ninja_widget_Model extends Model
 {
-	const USERFIELD = 'username';
-
+	public $name;
+	public $page;
+	public $instance_id;
+	public $username;
+	public $setting;
 	/**
-	*	Fetch all available widgets for a page
-	*
-	*/
-	public function fetch_widgets($page=false, $all=false)
-	{
-		if (empty($page) && $all !== true)
-			return false;
-		$user = Auth::instance()->get_user()->username;
-		$db = Database::instance();
-		$sql = "SELECT * FROM ninja_widgets ";
-		if ($all===true) {
-			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
-				self::USERFIELD."=' ' OR ". self::USERFIELD." IS NULL) ".
-				"ORDER BY friendly_name";
-		} else {
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user).
-				"ORDER BY friendly_name";
+	 * You should not call this constructor directly!
+	 *
+	 * What you're looking for is probably get.
+	 */
+	function __construct($db_row) {
+		parent::__construct();
+		$db_row['setting'] = i18n::unserialize(trim($db_row['setting']));
+		if (isset($db_row['setting']['widget_title']))
+			$db_row['friendly_name'] = $db_row['setting']['widget_title'];
+		$this->db_row = $db_row;
+		foreach ($db_row as $keys => $vals) {
+			$this->$keys = $vals;
 		}
-		$result = $db->query($sql);
-        if (count($result) == 0) {
-		return false;
-        } else {
-            $rc = array();
-            foreach ( $result as $row ) {
-                $rc[] = $row;
-            }
-            unset($result);
-            return $rc;
-        }
 	}
 
 	/**
-	*	Fetch info on a saved widget for a page
-	*
-	*/
-	public function get_widget($page=false, $widget=false, $get_user=false)
-	{
-		if (empty($page) || empty($widget))
-			return false;
-		$db = Database::instance();
-		$sql = "SELECT * FROM ninja_widgets ";
-		if ($get_user === true) {
-			# fetch customized widget for user
-			# i.e a user has saved settings
-			$user = Auth::instance()->get_user()->username;
-			$sql .= " WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".
-				$db->escape($user)." AND name=".$db->escape($widget);
-		} else {
-			# fetch default widget settings
-			$sql .= " WHERE page=".$db->escape($page)." AND (".self::USERFIELD."='' OR ".
-				self::USERFIELD ."=' ' OR ". self::USERFIELD . " IS NULL) " .
-				"AND name=".$db->escape($widget);
-		}
-		$result = $db->query($sql);
-
-		return count($result)!=0 ? $result->current() : false;
-	}
-
-	/**
-	*	Copy all standard widgets for a page to user as customized
-	*/
-	private function customize_widgets($page=false)
+	 * Fetches a list of widget names for a given page
+	 * @returns array of Ninja_widget_Model objects
+	 */
+	public static function fetch_all($page)
 	{
 		if (empty($page))
-			return false;
-		$page = trim($page);
+			return array();
+
 		$user = Auth::instance()->get_user()->username;
 		$db = Database::instance();
-		$sql_base = "SELECT * FROM ninja_widgets ";
-		$sql = $sql_base." WHERE page=".$db->escape($page)." AND ".self::USERFIELD."=".$db->escape($user);
-		$res = $db->query($sql);
-		if (!count($res)) {
-			unset($res);
-			# copy all under users' name
-			$sql = $sql_base." WHERE page=".$db->escape($page)." AND " .
-				"(".self::USERFIELD."='' OR ".self::USERFIELD."=' ' OR ".self::USERFIELD." IS NULL)";
-			$res = $db->query($sql);
-			foreach ($res as $row) {
-				# copy widget setting to user
-				self::copy_to_user($row);
-			}
-			unset($res);
+
+		# warning: cleverness!
+		# sort any rows with non-NULL instance_id first, so we can ignore the
+		# generic widget rows for widgets that have "personalized" rows
+		$res = $db->query('SELECT name, instance_id FROM ninja_widgets WHERE page='.$db->escape($page).' OR page=\'tac/index\' GROUP BY name, instance_id ORDER BY instance_id DESC');
+		$widgets = array();
+		$seen_widgets = array();
+		foreach ($res as $row) {
+			if ($row->instance_id === null && isset($seen_widgets[$row->name]))
+				continue;
+			$seen_widgets[$row->name] = 1;
+			$widget = self::get($page, $row->name, $row->instance_id);
+			assert('$widget !== false');
+			$widgets['widget-'.$widget->name.'-'.$widget->instance_id] = $widget;
 		}
+		uasort($widgets, 'sort_widgets_by_friendly_name');
+		return $widgets;
 	}
 
 	/**
-	*	Copy an existing widget and save as customized (ie for a user)
-	*	Assuming that checks has already been made that the user doesn't
-	* 	already have the widget.
-	*/
-	public static function copy_to_user($old_widget=false, $page=false)
-	{
-		if (empty($old_widget)) {
-			return false;
-		}
-		$user = Auth::instance()->get_user()->username;
-		$db = Database::instance();
-		if ($page === false) {
-			$page = $old_widget->page;
-		}
-		$sql = "INSERT INTO ninja_widgets (".self::USERFIELD.", page, name, friendly_name, setting) ".
-			'VALUES('.$db->escape($user).', '.$db->escape($page).', '.$db->escape($old_widget->name).', '.$db->escape($old_widget->friendly_name).', '.$db->escape($old_widget->setting).')';
-		$db->query($sql);
-	}
-
-	/**
-	*	User has decided to add or remove a widget from a page
-	*	Store this customized setting for user
-	*/
-	public function save_widget_state($page=false, $method='hide', $widget=false)
-	{
-		if (empty($page) || empty($widget))
-			return false;
-		$page = trim($page);
-		$method = trim(strtolower($method));
-		$widget = trim($widget);
-		$widget = self::clean_widget_name($widget);
-		$user = Auth::instance()->get_user()->username;
-
-		# check if the user already have customized widgets settings
-		# (already removed/added a widget)
-		self::customize_widgets($page);
-
-		# Make sure that this particular widget exists for user.
-		# Could've been added later
-		$current_widget = self::get_widget($page, $widget, true);
-		if ($current_widget === false) {
-			self::copy_to_user(self::get_widget($page, $widget), $page);
-		}
-
-		# all widgets for current page should exist under users name
-
-		$db = Database::instance();
-		$sql_base = "SELECT * FROM ninja_widgets ";
-		$sql = $sql_base." WHERE name=".$db->escape($widget).
-			" AND ".self::USERFIELD."=".$db->escape($user).
-			" AND page=".$db->escape($page);
-
-		$res = $db->query($sql);
-		$setting = array();
-		$id = false;
-		if (count($res)!=0) {
-			$cur = $res->current();
-			$setting = $cur->setting;
-			$id = $cur->id;
-			unset($res);
-			unset($cur);
-		}
-
-		switch ($method) {
-			case 'hide': case 'close':
-				$setting = self::merge_settings($setting, array('status' => 'hide'));
-				break;
-			case 'show': case 'add':
-				$setting = self::merge_settings($setting, array('status' => 'show'));
-				break;
-		}
-		if (!empty($setting) && !empty($id)) {
-			$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($id);
-			$db->query($sql);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	*	Merges old settings with new settings and reurns serialized settings
-	* 	If settings index of new settings exists in old settings the old value
-	* 	will be	replaced with the value of the new one.
-	*/
-	private function merge_settings($old_setting=false, $new_setting=false)
-	{
-		if (!empty($old_setting)) {
-			$old_setting = trim($old_setting);
-			$old_setting = !empty($old_setting) ? i18n::unserialize(trim($old_setting)) : array();
-			$new_setting = serialize(array_merge($old_setting, $new_setting));
-		} else {
-			$new_setting = serialize($new_setting);
-		}
-		return $new_setting;
-	}
-
-	/**
-	*	Clean the widget name received from easywidgets
-	*/
-	public function clean_widget_name($widget)
-	{
-		return str_replace('#widget-', '', $widget);
-	}
-
-	/**
-	*	Accept call from a widget that has some settings to store
-	* 	for a user.
+	* Fetch info on a saved widget for a page
+	*
+	* @param $page The page the widget is to be shown at
+	* @param $widget The widget name to retrieve
+	* @param $instance_id The instance_id to retrieve. Sending in NULL will create a new widget
+	* @returns A widget object, or false if none could be found matching the input
 	*
 	*/
-	public function save_widget_setting($page=false, $widget=false, $data=false)
+	public static function get($page, $widget, $instance_id=null)
 	{
-		if (empty($widget) || empty($data) || empty($page) || !is_array($data))
+		$user = Auth::instance()->get_user();
+		if (!empty($user))
+			$user = $user->username;
+		else
+			$user = false;
+
+		$db = Database::instance();
+
+		if (is_numeric($instance_id))
+			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).($instance_id===false?'':' AND instance_id = '.$db->escape($instance_id));
+		else
+			$subquery = '(page='.$db->escape($page).' OR page=\'tac/index\') AND (username IS NULL OR username='.$db->escape($user).' AND instance_id IS NULL)';
+
+		$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
+
+		if (!count($result))
 			return false;
-		self::customize_widgets($page);
-		# fetch current setting for widget and merge settings with new
-		# merge/replace new settings with the old
-		$current_widget = self::get_widget($page, $widget, true);
-		if ($current_widget !== false) {
-			$db = Database::instance();
-			$setting = self::merge_settings($current_widget->setting, $data);
-			$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($current_widget->id);
-			$db->query($sql);
-		} else {
-			$default_widget = self::get_widget($page, $widget);
-			if (!$default_widget)
-				$default_widget = self::get_widget('tac/index', $widget);
-			self::copy_to_user($default_widget, $page);
-			self::save_widget_setting($page, $widget, $data);
+
+		$obj = new Ninja_widget_Model($result->result(false)->current());
+		if ($instance_id !== null && $obj->instance_id === null) {
+			// we were asked for a specific widget, but it could not be found
+			return false;
+		}
+		else if ($user && $obj->instance_id === null) {
+			// we were asked for a widget with "any" instance_id, so create one
+			// and re-fetch it to get correct ID
+			// if we don't have a user, that should mean we're being called from CLI
+			// scripts, so don't do anything.
+			$instance_id = $obj->instance_id = 1;
+			// just in case...
+			$obj->username = $user;
+			$obj->page = $page;
+			unset($obj->id);
+			$obj->save();
+			return $obj;
+		}
+		$obj->page = $page;
+		$obj->widget = $widget;
+		$obj->instance_id = $instance_id;
+		$obj->username = $user;
+
+		return $obj;
+	}
+
+	public function save()
+	{
+		$new = false;
+		$user = Auth::instance()->get_user()->username;
+		if (!isset($this->id))
+			$new = true;
+		else if ($this->db_row['name'] !== $this->name)
+			$new = true;
+		else if ($this->db_row['page'] !== $this->page)
+			$new = true;
+		else if ($this->db_row['username'] !== $user)
+			$new = true;
+		else if ($this->db_row['instance_id'] !== $this->instance_id)
+			$new = true;
+
+		if ($new) {
+			$sql = 'INSERT INTO ninja_widgets (username, page, name, friendly_name, setting, instance_id) VALUES (%s, %s, %s, %s, %s, %s)';
+		}
+		else {
+			$sql = 'UPDATE ninja_widgets SET username=%s, page=%s, name=%s, friendly_name=%s, setting=%s, instance_id=%s WHERE id='.$this->db->escape($this->id);
+		}
+
+		$this->db->query(sprintf($sql,
+			$this->db->escape($this->username),
+			$this->db->escape($this->page),
+			$this->db->escape(self::clean_widget_name($this->name)),
+			$this->db->escape($this->friendly_name),
+			$this->db->escape(serialize($this->setting)),
+			$this->db->escape($this->instance_id)));
+
+		if (!isset($this->id)) {
+			$res = $this->db->query(sprintf('SELECT id FROM ninja_widgets WHERE username%s AND page%s AND name=%s AND instance_id=%s',
+				$this->username ? '='.$this->db->escape($this->username) : ' IS NULL',
+				$this->page ? '='.$this->db->escape($this->page) : ' IS NULL',
+				$this->db->escape(self::clean_widget_name($this->name)),
+				$this->db->escape($this->instance_id)));
+			$this->id = $res->current()->id;
+		}
+
+		foreach ($this->db_row as $key => $_) {
+			$this->db_row[$key] = $this->$key;
 		}
 		return true;
 	}
 
 	/**
-	*	Fetch all info required to show widgets on a page
+	* Merges old settings with new settings and reurns serialized settings
+	* If settings index of new settings exists in old settings the old value
+	* will be	replaced with the value of the new one.
 	*/
-	public static function fetch_page_widgets($page=false, $model=false)
+	public function merge_settings($new_setting)
 	{
-		$all_widgets = self::fetch_widgets($page, true);
-		$settings_widgets = false;
-		$widget_list = false;
-		$settings = false;
-		if (!empty($all_widgets)) {
-			foreach ($all_widgets as $row) {
-				$settings[$row->name] = i18n::unserialize(trim($row->setting));
-				if (!empty($settings[$row->name]) && is_array($settings[$row->name])) {
-					# if we have settings we should add this
-					# model to the start of the arguments array
-					# since the widgets expect the first parameter
-					# in arguments list to be the model
-					array_unshift($settings[$row->name], $model);
-				} else {
-					$settings[$row->name][] = $model;
-				}
-
-				$widget_list[] = $row->name; # keep track of all available widgets
-				$settings_widgets['widget-'.$row->name] = $row->friendly_name;
-			}
-		}
-
-		# check if there is customized widgets (with user settings)
-		$widgets = self::fetch_widgets($page);
-
-		$inline_js = false;
-		$user_widgets = false;
-		if (!empty($widgets)) {
-			foreach ($widgets as $w) {
-				$user_settings = i18n::unserialize(trim($w->setting));
-				# replace default settings with user settings if available
-				if (!empty($user_settings) && is_array($user_settings)) {
-					$settings[$w->name] = $user_settings;
-					array_unshift($settings[$w->name], $model);
-				}
-				if (is_array($user_settings) && !empty($user_settings) && array_key_exists('status', $user_settings)) {
-					if ($user_settings['status'] == 'hide') {
-						# don't show widgets set to 'hide'
-						$inline_js .= "\$('#widget-".$w->name."').removeClass('movable').hide();\n";
-						continue;
-					} else {
-						$user_widgets['widget-'.$w->name] = $w->friendly_name;
-					}
-				} else {
-					$user_widgets['widget-'.$w->name] = $w->friendly_name;
-				}
-			}
-		}
-
-		$widget_info = array(
-			'settings_widgets' => $settings_widgets,
-			'settings' => $settings,
-			'widget_list' => $widget_list,
-			'inline_js' => $inline_js,
-			'user_widgets' => $user_widgets
-		);
-
-		return $widget_info;
+		if (!is_array($this->setting))
+			$this->setting = array();
+		$this->setting = array_merge($this->setting, $new_setting);
 	}
 
 	/**
-	*	Update setting fo all widgets on a page
+	* Add a new widget to ninja_widgets table
+	*/
+	public static function install($page, $name, $friendly_name)
+	{
+		if (empty($name) || empty($friendly_name)) {
+			return false;
+		}
+
+		if (Ninja_widget_Model::get($page, $name) !== false) {
+			# widget already exists
+			return false;
+		}
+		$db = Database::instance();
+		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
+			'VALUES('.$db->escape($name).', '.$db->escape($page).', '.$db->escape($friendly_name).')';
+		$db->query($sql);
+		# add the new widget to the widget_order string
+		return true;
+	}
+
+	public static function uninstall($name)
+	{
+		$db = Database::instance();
+		$sql = 'DELETE FROM ninja_widgets WHERE name='.$db->escape($name);
+		$db->query($sql);
+		$sql = "SELECT id, setting FROM ninja_settings WHERE type='widget_order'";
+		$result = $db->query($sql);
+		foreach ($result as $row) {
+			if (strpos($row->setting, $name) === false)
+				continue;
+			$parsed_setting = self::parse_widget_order($row->setting);
+			$widgets = array();
+			foreach ($parsed_setting as $container => $widgets) {
+				foreach ($widgets as $idx => $id) {
+					if (strpos($id, 'widget-'.$name) === 0) {
+						unset($parsed_setting[$container][$idx]);
+					}
+				}
+				$widget_string[] = $container . '=' . implode(',', $widgets);
+			}
+			$db->query('UPDATE ninja_settings SET setting='.$db->escape(implode('|', $widget_string)).' WHERE id='.$row->id);
+		}
+		return true;
+	}
+
+	public function copy()
+	{
+		$db = Database::instance();
+		$res = $db->query('SELECT MAX(instance_id) AS max_instance_id FROM ninja_widgets WHERE name='.$db->escape($this->name).' AND page='.$db->escape($this->page).' AND username='.$db->escape($this->username));
+		$res = $res->current();
+		$the_copy = self::get($this->page, $this->name, $this->instance_id);
+		unset($the_copy->id);
+		if (isset($res->max_instance_id))
+			$the_copy->instance_id = $res->max_instance_id + 1;
+		else
+			$the_copy->instance_id = 0;
+		$the_copy->save();
+		$order = self::fetch_widget_order($this->page);
+		foreach ($order as $container => $widgets) {
+			if (in_array('widget-'.$this->name.'-'.$this->instance_id, $widgets))
+				$order[$container][] = 'widget-'.$this->name.'-'.$the_copy->instance_id;
+		}
+		self::set_widget_order($this->page, $order);
+		return $the_copy;
+	}
+
+	/**
+	 * Deletes a copy of a widget.
+	 *
+	 * @returns true if widget was deleted, false if this was the last copy which thus wasn't deleted
+	 */
+	public function delete()
+	{
+		$user = Auth::instance()->get_user()->username;
+		$sql = 'SELECT COUNT(instance_id) AS count FROM ninja_widgets WHERE instance_id IS NOT NULL AND username='.$this->db->escape($user).' AND page='.$this->db->escape($this->page).' AND name='.$this->db->escape($this->name);
+		$res = $this->db->query($sql);
+		if ($res->current()->count <= 1)
+			return false;
+
+		$sql = 'DELETE FROM ninja_widgets WHERE id='.$this->db->escape($this->id);
+		$this->db->query($sql);
+		return true;
+	}
+
+	/**
+	* Clean the widget name received from easywidgets
+	*/
+	private function clean_widget_name($widget)
+	{
+		return str_replace('#widget-', '', trim($widget));
+	}
+
+	/**
+	* Update setting for all widgets on a page
 	*/
 	public static function update_all_widgets($page=false, $value=false, $type='refresh_interval')
 	{
@@ -308,17 +318,15 @@ class Ninja_widget_Model extends Model
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
-				$db = Database::instance();
-				$setting = self::merge_settings($widget->setting, $new_setting);
-				$sql = 'UPDATE ninja_widgets SET setting='.$db->escape($setting).' WHERE id='.$db->escape($widget->id);
-				$db->query($sql);
+				$widget->merge_settings($new_setting);
+				$widget->save();
 			}
 			return true;
 		}
 		return false;
 	}
 
-	private function parse_widget_order($setting)
+	private static function parse_widget_order($setting)
 	{
 		$widget_order = false;
 		if (!empty($setting)) {
@@ -339,9 +347,9 @@ class Ninja_widget_Model extends Model
 	}
 
 	/**
-	*	Parse the widget order for use on a page
+	* Parse the widget order for use on a page
 	*/
-	public function fetch_widget_order($page=false)
+	public static function fetch_widget_order($page=false)
 	{
 		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page);
 		if ($data === false || empty($data->setting)) {
@@ -350,120 +358,12 @@ class Ninja_widget_Model extends Model
 		return self::parse_widget_order($data->setting);
 	}
 
-	/**
-	*	Add a new widget to the widget_order string
-	* 	after validating that it dosesn't exist
-	*/
-	public function add_to_widget_order($page=false, $widget=false, $default=false)
-	{
-		$data = Ninja_setting_Model::fetch_page_setting('widget_order', $page, $default);
-
-		if (empty($widget) || empty($page)) {
-			return false;
+	public static function set_widget_order($page, $widget_order) {
+		$res = array();
+		foreach ($widget_order as $key => $ary) {
+			$res[] = "$key=".implode(',', $ary);
 		}
-
-		$widget_parts = isset($data->setting) ? $data->setting : false;
-		$widget_order = false;
-		$all_parts = false;
-		$all_widgets = array();
-		if (!empty($widget_parts)) {
-			$widget_parts = explode('|', $widget_parts);
-			if (!empty($widget_parts)) {
-				$all_parts = $widget_parts; # stash all sections for later use
-				foreach ($widget_parts as $part) {
-					$parts = explode('=', $part);
-					if (is_array($parts) && !empty($parts)) {
-						$widget_sublist = explode(',', $parts[1]);
-						if (is_array($widget_sublist) && !empty($widget_sublist)) {
-							$all_widgets = array_merge($widget_sublist, $all_widgets);
-						}
-					}
-				}
-			}
-		}
-
-		if (is_array($widget)) {
-			$first_container = false;
-			foreach ($widget as $w) {
-				$w = 'widget-'.$w;
-				if (!empty($all_widgets) && is_array($all_parts) && !empty($all_parts) && !in_array($w, $all_widgets)) {
-					# widget hasn't been added for current user so let's add it
-					$first_container = $all_parts[0]; # we will add the widget to the first div
-					$parts = explode('=', $first_container);
-					if (is_array($parts) && !empty($parts)) {
-						$container_id = $parts[0];
-						$widget_str = $parts[1];
-						$widget_str = $w.','.$widget_str; # insert the widget
-						$first_container = $container_id.'='.$widget_str;
-						$all_parts[0] = $first_container;
-					}
-				}
-			}
-
-			if (!empty($first_container)) {
-				$widget_order = implode('|', $all_parts);
-				# finally add to database
-				return Ninja_setting_Model::save_page_setting('widget_order', $page, $widget_order);
-			}
-		} else {
-			$widget = 'widget-'.$widget;
-			if (!empty($all_widgets) && is_array($all_parts) && !empty($all_parts) && !in_array($widget, $all_widgets)) {
-				# widget hasn't been added for current user so let's add it
-				$first_container = $all_parts[0]; # we will add the widget to the first div
-				$parts = explode('=', $first_container);
-				if (is_array($parts) && !empty($parts)) {
-					$container_id = $parts[0];
-					$widget_str = $parts[1];
-					$widget_str = $widget.','.$widget_str; # insert the widget
-					$first_container = $container_id.'='.$widget_str;
-					$all_parts[0] = $first_container;
-					$widget_order = implode('|', $all_parts);
-
-					# finally add to database
-					return Ninja_setting_Model::save_page_setting('widget_order', $page, $widget_order);
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	*	Add a new widget to ninja_widgets table
-	*/
-	public function add_widget($page=false, $name=false, $friendly_name=false, $default=false)
-	{
-		if (empty($name) || empty($friendly_name)) {
-			return false;
-		}
-
-		if (Ninja_widget_Model::get_widget($page, $name) !== false) {
-			# widget already exists
-			return false;
-		}
-		$db = Database::instance();
-		$sql = "INSERT INTO ninja_widgets(name, page, friendly_name) ".
-			'VALUES('.$db->escape($name).', '.$db->escape($page).', '.$db->escape($friendly_name).')';
-		$return = $db->query($sql);
-
-		# add the new widget to the widget_order string
-		self::add_to_widget_order($page, $name, $default);
-		return $return;
-	}
-
-	private function rename_settings($old_name, $new_name) {
-		$db = Database::instance();
-		$sql = "SELECT id, page, username, setting FROM ninja_settings WHERE type = 'widget_order'";
-		$data = $db->query($sql);
-		foreach ($data as $row) {
-			$serialized_settings = array();
-			$parsed_setting = self::parse_widget_order($row->setting);
-			foreach ($parsed_setting as $key => $ary) {
-				if (($idx = array_search($old_name, $ary)) !== false)
-					$ary[$idx] = $new_name;
-				$serialized_settings[] = $key . '=' . implode(',', $ary);
-			}
-			Ninja_setting_Model::save_page_setting('widget_order', $row->page, implode('|', $serialized_settings), $row->username);
-		}
+		Ninja_setting_Model::save_page_setting('widget_order', $page, implode('|', $res));
 	}
 
 	/**
@@ -471,11 +371,10 @@ class Ninja_widget_Model extends Model
 	 * This makes a ton of assumptions, and should only be called after much
 	 * consideration.
 	 */
-	public function rename_widget($old_name, $new_name)
+	public static function rename_widget($old_name, $new_name)
 	{
 		$db = Database::instance();
 		$sql = 'UPDATE ninja_widgets SET name='.$db->escape($new_name).' WHERE name='.$db->escape($old_name);
 		$db->query($sql);
-		$this->rename_settings("widget-".$old_name, "widget-".$new_name);
 	}
 }

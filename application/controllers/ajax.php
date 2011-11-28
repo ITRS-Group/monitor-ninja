@@ -186,55 +186,17 @@ class Ajax_Controller extends Authenticated_Controller {
 	/**
 	 *	wrapper for widget ajax calls
 	 */
-	public function widget($widget, $method, $arguments=false)
+	public function widget($widget)
 	{
 		// Disable auto-rendering
 		$this->auto_render = FALSE;
 
 		$instance_id = urldecode($this->input->get('instance_id', false));
+		$page = $this->input->get('page', false);
 
-		# path to widget helper is somehow lost when doing ajax calls
-		# so let kohana find it for us
-		$widget_core_path = Kohana::find_file('helpers', 'widget', true);
-		require_once($widget_core_path);
-
-		# first try custom path
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget, $widget, false);
-		if ($path === false) {
-			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget, $widget, true);
-		}
-
-		$page = false;
-		if (empty($arguments)) {
-			$page = request::referrer();
-			$page_parts = explode(Kohana::config('config.site_domain').Kohana::config('config.index_page').'/', $page);
-			$page = isset($page_parts[1]) ? $page_parts[1] : false;
-			$page = (!empty($page) && $page == 'tac') ? $page.'/index' : $page;
-			if (!empty($page)) {
-				$data = Ninja_widget_Model::get_widget($page, $widget.$instance_id, true);
-				$arguments = $data!==false ? i18n::unserialize(trim($data->setting)) : false;
-				$arguments[0] = false;
-			}
-		}
-
-		require_once($path);
-		$classname = $widget.'_Widget';
-		$obj = new $classname;
-
-		# set instance variables to make it possible with multiple instances
-		$obj->set_instance_vars($widget, $instance_id);
-
-		# if we have a requested widget method - let's call it
-		if (!empty($method)) {
-			if (method_exists($obj, $method)) {
-				if (empty($arguments)) {
-					$arguments[] = false;
-				}
-				$arguments['is_ajax'] = true;
-				return $obj->$method($arguments);
-			}
-		}
+		$data = Ninja_widget_Model::get($page, $widget, $instance_id);
+		widget::set_show_chrome(false);
+		echo json::encode(widget::add($data, $this));
 
 		# return false if no method defined
 		return false;
@@ -286,11 +248,22 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$page = urldecode($this->input->post('page', false));
 		$method = urldecode($this->input->post('method', false));
+		$instance_id = urldecode($this->input->post('instance_id', false));
 		$name = urldecode($this->input->post('name', false));
 		if (empty($page))
 			return false;
 		# save data to database
-		Ninja_widget_Model::save_widget_state($page, $method, $name);
+		$widget = Ninja_widget_Model::get($page, $name, $instance_id);
+		switch ($method) {
+		 case 'hide': case 'close':
+			if (!$widget->delete())
+				$widget->merge_settings(array('status' => 'hide'));
+			break;
+		 case 'show': case 'add':
+			$widget->merge_settings(array('status' => 'show'));
+			break;
+		}
+		$widget->save();
 	}
 
 	/**
@@ -300,6 +273,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$page = urldecode($this->input->post('page', false));
 		$widget = urldecode($this->input->post('widget', false));
+		$instance_id = urldecode($this->input->post('instance_id', false));
 		$data = false;
 		foreach ($_POST as $key => $val) {
 			if ($key == 'page' || $key == 'widget')
@@ -308,7 +282,9 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 		if (empty($widget) || empty($data) || empty($page))
 			return false;
-		Ninja_widget_Model::save_widget_setting($page, $widget, $data);
+		$widget = Ninja_widget_Model::get($page, $widget, $instance_id);
+		$widget->merge_settings($data);
+		$widget->save();
 	}
 
 	/**
@@ -319,13 +295,16 @@ class Ajax_Controller extends Authenticated_Controller {
 	{
 		$page = urldecode($this->input->post('page', false));
 		$widget = urldecode($this->input->post('widget', false));
+		$instance_id = $this->input->post('instance_id', false);
 		$fieldname = $this->input->post('fieldname', false);
 		$fieldvalue = $this->input->post('fieldvalue', false);
 		$data = false;
 		$data[$fieldname] = $fieldvalue;
-		if (empty($widget) || empty($data) || empty($page))
+		if (empty($widget) || empty($instance_id) || empty($data) || empty($page))
 			return false;
-		Ninja_widget_Model::save_widget_setting($page, $widget, $data);
+		$widget = Ninja_widget_Model::get($page, $widget, $instance_id);
+		$widget->merge_settings($data);
+		$widget->save();
 	}
 
 	/**
@@ -802,6 +781,15 @@ class Ajax_Controller extends Authenticated_Controller {
 			json::fail("'$query' has not yet been saved");
 		}
 		json::ok(current($result));
+	}
+
+	public function copy_widget_instance() {
+		$page = $this->input->post('page');
+		$widget = $this->input->post('widget');
+		$instance_id = $this->input->post('instance_id');
+		$widget = Ninja_widget_Model::get($page, $widget, $instance_id);
+		$dup_widget = $widget->copy();
+		echo widget::add($dup_widget, false);
 	}
 }
 

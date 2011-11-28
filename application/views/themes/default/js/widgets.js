@@ -1,5 +1,5 @@
+init_easywidgets();
 $(document).ready(function() {
-	init_easywidgets();
 	$(".widget-place").bind('click', function() {
 		$("#page_settings").hide();
 	});
@@ -22,7 +22,7 @@ function widget_upload()
 }
 
 function init_easywidgets(){
-	$.fn.EasyWidgets({
+	window.easywidgets_obj = $.fn.EasyWidgets({
 		behaviour : {
 			useCookies : false
 		},
@@ -48,22 +48,19 @@ function init_easywidgets(){
 			onChangePositions : function(str){
 				save_widget_order(str);
 			},
-			onRefreshPositions: function() {
-				fetch_widget_order();
-			},
 			onClose: function(link, widget) {
-				var widget_name = '#' + widget[0].id;
-				$('#li_' + widget[0].id).removeClass().addClass('unselected');
-				$(widget_name).removeClass('movable');
-				save_widget_state('hide', widget_name);
+				widget.removeClass().addClass('unselected');
+				//$(widget_name).removeClass('movable');
+				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 			},
 			onHide: function(widget) {
-				var widget_name = widget.selector;
-				save_widget_state('hide', widget_name);
+				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 			},
 			onShow: function(widget) {
-				var widget_name = widget.selector;
-				save_widget_state('show', widget_name);
+				save_widget_state('show', widget.data('name'), widget.data('instance_id'));
+			},
+			onAdd: function(w) {
+				new widget(w.data('name'), w.data('instance_id'));
 			}
 		}
 	});
@@ -135,7 +132,7 @@ function set_widget_refresh()
 			if (data.success == true) {
 				$.jGrowl(sprintf(_widget_refresh_msg, value), { header: _success_header });
 				$('#widget_global_slider').remove();
-				$('.widget-editbox [name$=_refresh]').each(function() {
+				$('.widget-editbox [name=refresh_interval]').each(function() {
 					$(this).attr('value', value);
 				});
 				window.location.reload();
@@ -158,55 +155,25 @@ function save_widget_order(order_str)
 	$.post(url, data);
 }
 
-/*
-*	Fetch saved widget order from database
-*/
-function fetch_widget_order(restore)
-{
-	var page_name = _current_uri;
-	restore = (restore == null) ? false : true;
-	var restore_str = restore ? '&default=1' : '';
-	$.ajax({
-		url: _site_domain + _index_page + "/ajax/fetch_widgets_order/?page=" + escape(page_name) + restore_str,
-		dataType:'json',
-		success: function(data) {
-			if (data.widget_order) {
-				if (restore == true) {
-					save_widget_order(data.widget_order);
-				}
-
-				$.fn.EasyWidgets({callbacks:{onRefreshPositions:function(){return data.widget_order;}}});
-			}
-		},
-		error: function(obj, msg){
-			// disable annoying error message
-			//$.jGrowl(_widget_order_error, { header: _error_header });
-		}
-	});
-
-}
-
-
-function control_widgets(id,item) {
+function control_widgets(item) {
+	var it = $(item);
 	if (item.className == 'selected') {
-		$.fn.HideEasyWidget(id);
-		$('#'+id).removeClass('movable');
+		$.fn.HideEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
+		it.removeClass('movable');
 		item.className = 'unselected';
 	}
 	else {
-
-		$('#'+id).addClass('movable');
-		$.fn.ShowEasyWidget(id);
-		init_easywidgets();
+		it.addClass('movable');
+		$.fn.ShowEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
 		item.className = 'selected';
 	}
 }
 
-function save_widget_state(what, widget_name)
+function save_widget_state(what, widget_name, instance_id)
 {
 	var url = _site_domain + _index_page + "/ajax/save_widget_state/";
 	var page_name = _current_uri;
-	var data = {page: escape(page_name), method: what, name: widget_name};
+	var data = {page: escape(page_name), method: what, name: widget_name, 'instance_id': instance_id};
 	$.post(url, data);
 }
 
@@ -216,9 +183,8 @@ function restore_widgets()
 		var item_id = $(this).attr('id');
 		var widget_id = item_id.replace('li_', '');
 		$('#' + item_id).removeClass().addClass('selected');
-		$.fn.ShowEasyWidget(widget_id);
+		$.fn.ShowEasyWidget(widget_id, window.easywidgets_obj);
 		$('#'+widget_id).addClass('movable');
-		init_easywidgets();
 	});
 	fetch_widget_order(true);
 }
@@ -230,256 +196,246 @@ function trim(str) {
 	return str.replace(/^\s+|\s+$/g,"");
 }
 
-var loaded_widgets = new Array();
+var loaded_widgets = {};
 
 /**
 *	Ninja widget class
 */
-function widget(name, content_area, no_edit)
+function widget(name, instance_id)
 {
 	var self = this;
-	var ajax_url = _site_domain + _index_page + '/ajax/';
+	this.ajax_url = _site_domain + _index_page + '/ajax/';
 
 	this._refresh_interval = 0;
 	this.save_interval = 0;
 	this.current_uri = _current_uri;
-	this.content_area = false;
-	this.no_edit = no_edit;
+	this.content_area = 'widget-content';
 	this.is_updating = false;
-	this.instance_id = false;
-	var loadimg = new Image(16,16);
-	loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
-
-	/*
-	*	Initialize some internal values.
-	*/
-	this.init_widget = function(name) {
-		self.set_name(name);
-
-		// check that widget isn't already loaded
-		if (loaded_widgets.has(self.name)) {
-			return;
-		}
-
-		if (this.name !== false)
-			this.set_widget_id(name);
-		if (!$('#' + self.widget_id).text())
-			return false;
-		this.current_interval = $('input[name=' + name + '_refresh]').val();
-		this.title =  $('#' + self.name + '_title').text();
-		if (_current_uri == 'external_widget/show_widget') {
-			$('.widget-menu .widget-collapselink').hide();
-			$('.widget-menu .widget-closelink').hide();
-			$('#' + self.name + '_title').removeClass(self.name + '_editable');
-		}
-
-		loaded_widgets.push(self.name);
-		return true;
-	};
-
-	this.set_current_uri = function(uri) {
-		this.current_uri = uri;
-	};
-	/*
-	*	Set the name of the widget.
-	*/
-	this.set_name = function(name) {
-		this.name = name || false;
-	};
-
-	this.set_instance_id = function(instance_id) {
-		this.instance_id = instance_id || false;
-	};
-
-	/**
-	*	Set the ID of the area that should be updated through the AJAX call.
-	*/
-	this.set_content_area = function(area) {
-		this.content_area = area || 'widget-content';
-	};
-
-	this.set_widget_id = function(name) {
-		this.widget_id = name ? 'widget-' + name : false;
-	};
-
-	/*
-	*	Fetch current widget state through AJAX call
-	*/
-	this.update_display = function() {
-		if (this.content_area != false && $('#widget-' + self.name).is(':visible')) {
-			if (self.is_updating || _is_refreshing) {
-				/**
-				* Prevent multiple instances of the same widget
-				* from trying to fetch data at the same time as this
-				* will possibly hog the system. Also prevent new
-				* ajax calls when user has decided to reload the page
-				*/
-				return;
-			}
-			self.is_updating = true;
-
-			// add a loading img to indicate update progress
-			$("#" + self.widget_id + ' .widget-header').append('<img src="' + loadimg.src + '" class="widget_loadimg" />');
-			$("#" + self.widget_id + ' .widget-header .widget_loadimg').css('opacity', 0.4).css('padding-left', '15px').css('width', '12px').css('height', '12px');
-
-			// clean up widget name before trying to refresh
-			var cleaned_name = self.name;
-			cleaned_name = cleaned_name.replace(self.instance_id, '');
-			var params = {
-				widget_name: cleaned_name
-			};
-			if(self.instance_id)
-				params["instance_id"] = self.instance_id;
-			$.ajax({
-				url: ajax_url + "widget/" + cleaned_name + "/index/?" + jQuery.param(params),
-				dataType:'json',
-				success: function(data) {
-					$("#" + self.widget_id + ' .' + self.content_area).html(data);
-					self.is_updating = false;
-
-					// remove load image
-					$("#" + self.widget_id + ' .widget-header .widget_loadimg').remove();
-				}
-			});
-		}
-	};
-
-	/*
-	*	Save widget settings to db
-	*/
-	this.save_settings = function(data) {
-		var url = ajax_url + "save_widget_setting/";
-		$.post(url, data);
-		$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
-	};
-
-	/*
-	*	Save custom widget setting
-	*/
-	this.save_custom_val = function(newval, fieldname) {
-		var ajax_url = _site_domain + _index_page + '/ajax/';
-		var url = ajax_url + "save_dynamic_widget_setting/";
-		var data = {page: _current_uri, fieldvalue: newval, fieldname:fieldname, widget: self.name};
-		$.post(url, data);
-		$.jGrowl(sprintf(_widget_settings_msg, self.name), { header: _success_header });
-	};
-
-	/**
-	*	Get saved settings for widget
-	*	So far only refresh_interval is handled
-	*/
-	this.get_settings = function() {
-		$.ajax({
-			url: ajax_url + "get_widget_setting/",
-			dataType:'json',
-			data: {page: self.current_uri, widget:self.name},
-			type: 'POST',
-			success: function(data) {
-				if (data.refresh_interval) {
-					self.current_interval = data.refresh_interval;
-					self.set_refresh_interval(true);
-					$('input[name=' + self.name + '_refresh]').val(self.current_interval);
-					$("#" + self.name + "_slider").slider("value", self.current_interval);
-				}
-			},
-			error: function(obj, msg){
-				// disable annoying error message
-				//$.jGrowl(sprintf(_widget_settings_error, self.name), { header: _error_header });
-			}
-		});
-
-	};
-
-	/*
-	*	Set the refresh interval to use for widget
-	*	and also pass this value on to be saved to db
-	*/
-	this.set_refresh_interval = function(is_init){
-		if (this._refresh_interval) {
-			clearInterval(this._refresh_interval);
-		}
-
-		if (this.current_interval>0) {
-			var interval = (this.current_interval * 1000);
-			//this._refresh_interval = setInterval("update_display()", interval);
-			this._refresh_interval = setInterval(function() {self.update_display();}, interval);
-		}
-
-		if (!is_init) {
-			// update widget settings
-			var data = {page: this.current_uri, refresh_interval: this.current_interval, widget: this.name};
-			this.save_settings(data);
-		}
-	};
-
-	/*
-	*	Since the slider is possible to move rather fast,
-	*	we add a delay (timeout) to this before we do anything with it.
-	*	The timeout is cleared when a new value is selected and only saved
-	*	until there is no activity (new value) for 5 seconds
-	*/
-	this.control_save_interval = function() {
-		if (this.save_interval) {
-			clearTimeout(this.save_interval);
-		}
-		this.save_interval = setTimeout(function() {self.set_refresh_interval();}, 5000);
-	};
-
-	this.init_slider = function() {
-		$("#" + this.name + "_slider").slider({
-			value: self.current_interval,
-			min: 0,
-			max: 500,
-			step: 10,
-			slide: function(event, ui) {
-				$("#" + self.name + "_refresh").val(ui.value);
-				self.current_interval = ui.value;
-				self.control_save_interval();
-			}
-		});
-		$("#" + this.name + "_refresh").val($("#" + this.name + "_slider").slider("value"));
-	};
-
-	this.init_title_edit = function() {
-		$("." + this.name + "_editable").editable(function(value, settings) {
-			var data = {page: self.current_uri, widget:self.name, widget_title:value};
-			value = trim(value);
-			// don't save an empty title
-			if (value.length) {
-				self.save_settings(data);
-				self.title = value;
-			} else {
-				value = self.title;
-			}
-			return value;
-		}, {
-			type : 'text',
-			style : 'margin-top: -4px',
-			event : 'dblclick',
-			width : 'auto',
-			height : '14px',
-			submit : 'OK',
-			cancel : 'cancel',
-			placeholder:'Double-click to edit'
-		});
-	};
 
 	// initialize widget
-	var widget_ok = this.init_widget(name);
+	var widget_ok = this.init_widget(name, instance_id);
 	if (widget_ok == false) {
 		// here we should probably notify user that
 		// the widget isn't found
 		$.jGrowl(sprintf(_widget_notfound_error, name), { header: _error_header });
-		return false;
+		return;
 	}
-	this.set_content_area(content_area);
 
 	// only enable refresh and interval editing
 	// if we have a content_area and there's a sider div
-	if (this.content_area && $("#" + this.name + "_slider").length) {
+	if (this.content_area && $("#" + this.widget_id + " .refresh_slider").length) {
 		this.set_refresh_interval(true);
 		this.init_slider();
 	}
-	if (this.no_edit != true)
-		this.init_title_edit();
+	this.init_title_edit();
+	if (widget.widgets[name])
+		for (var i in widget.widgets[name])
+			widget.widgets[name][i].call(this);
 }
+widget.loadimg = new Image(16,16);
+widget.loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
+
+/*
+ *	Initialize some internal values.
+ */
+widget.prototype.init_widget = function(name, instance_id) {
+	var self = this;
+	this.set_id(name, instance_id);
+
+	// check that widget isn't already loaded
+	if (loaded_widgets[this.id]) {
+		return;
+	}
+
+	if (!$('#' + this.widget_id).text())
+		return false;
+	this.current_interval = $('#' + this.widget_id + ' .refresh_interval').val();
+	this.title =  $('#' + this.id + '_title').text();
+	if (this.current_uri == 'external_widget/show_widget') {
+		$('.widget-menu .widget-collapselink').hide();
+		$('.widget-menu .widget-closelink').hide();
+		$('#' + this.id + '_title').removeClass(this.id + '_editable');
+	}
+
+	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + _theme_path + 'icons/12x12/copy.png"/></a>');
+	$('#' + this.widget_id + ' .widget-copylink').click(function() {
+		$.ajax({
+			url: _site_domain + _index_page + '/ajax/copy_widget_instance',
+			dataType: 'html',
+			type: 'POST',
+			data: {page: self.current_uri, widget: self.name, instance_id: self.instance_id},
+			success: function(data) {
+				var this_widget = $('#' + self.widget_id);
+				this_widget.after(data);
+				var new_widget = this_widget.next('.widget');
+				$.fn.AddEasyWidget('#widget-'+new_widget.data('name')+'-'+new_widget.data('instance_id'), this_widget.parent().id, window.easywidgets_obj);
+			}});
+	});
+	loaded_widgets[this.id] = 1;
+
+	return true;
+};
+
+widget.prototype.set_current_uri = function(uri) {
+	this.current_uri = uri;
+};
+
+widget.prototype.set_id = function(name, instance_id) {
+	if (!name || !instance_id)
+		return;
+	this.id = name + '-' + instance_id;
+	this.name = name;
+	this.instance_id = instance_id;
+	this.widget_id = 'widget-' + this.id;
+};
+
+/*
+*	Fetch current widget state through AJAX call
+*/
+widget.prototype.update_display = function() {
+	var self = this;
+
+	if (this.content_area != false && $('#' + this.widget_id).is(':visible')) {
+		if (this.is_updating || _is_refreshing) {
+			/**
+			* Prevent multiple instances of the same widget
+			* from trying to fetch data at the same time as this
+			* will possibly hog the system. Also prevent new
+			* ajax calls when user has decided to reload the page
+			*/
+			return;
+		}
+		this.is_updating = true;
+
+		// add a loading img to indicate update progress
+		$("#" + this.widget_id + ' .widget-header').append('<img src="' + widget.loadimg.src + '" class="widget_loadimg" />');
+		$("#" + this.widget_id + ' .widget-header .widget_loadimg').css('opacity', 0.4).css('padding-left', '15px').css('width', '12px').css('height', '12px');
+
+		var params = {
+			widget_name: this.name,
+			instance_id: this.instance_id,
+			page: this.current_uri
+		};
+		$.ajax({
+			url: this.ajax_url + "widget/" + this.name + "/index/?" + jQuery.param(params),
+			dataType:'json',
+			success: function(data) {
+				$("#" + self.widget_id + ' .' + self.content_area).html(data);
+				self.is_updating = false;
+
+				// remove load image
+				$("#" + self.widget_id + ' .widget-header .widget_loadimg').remove();
+			}
+		});
+	}
+};
+
+/*
+*	Save widget settings to db
+*/
+widget.prototype.save_settings = function(data) {
+	var url = this.ajax_url + "save_widget_setting/";
+	$.post(url, data);
+	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+};
+
+/*
+*	Save custom widget setting
+*/
+widget.prototype.save_custom_val = function(newval, fieldname) {
+	var url = this.ajax_url + "save_dynamic_widget_setting/";
+	var data = {page: this.current_uri, fieldvalue: newval, fieldname:fieldname, widget: this.name, instance_id: this.instance_id};
+	$.post(url, data);
+	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
+};
+
+widget.widgets = {};
+widget.register_widget_load = function(widget_name, cb) {
+	if (!widget.widgets[widget_name])
+		widget.widgets[widget_name] = [cb];
+	else
+		widget.widgets[widget_name].push(cb);
+}
+
+/*
+ *	Set the refresh interval to use for widget
+ *	and also pass this value on to be saved to db
+*/
+widget.prototype.set_refresh_interval = function(is_init){
+	var self = this;
+	if (this._refresh_interval) {
+		clearInterval(this._refresh_interval);
+	}
+
+	if (this.current_interval>0) {
+		var interval = (this.current_interval * 1000);
+		//this._refresh_interval = setInterval("update_display()", interval);
+		this._refresh_interval = setInterval(function() {self.update_display();}, interval);
+	}
+
+	if (!is_init) {
+		// update widget settings
+		var data = {page: this.current_uri, refresh_interval: this.current_interval, widget: this.name, instance_id: this.instance_id};
+		this.save_settings(data);
+	}
+};
+
+/*
+*	Since the slider is possible to move rather fast,
+*	we add a delay (timeout) to this before we do anything with it.
+*	The timeout is cleared when a new value is selected and only saved
+*	until there is no activity (new value) for 5 seconds
+*/
+widget.prototype.control_save_interval = function() {
+	var self = this;
+	if (this.save_interval) {
+		clearTimeout(this.save_interval);
+	}
+	this.save_interval = setTimeout(function() {self.set_refresh_interval();}, 5000);
+};
+
+widget.prototype.init_slider = function() {
+	var self = this;
+	$("#" + this.widget_id + " .refresh_slider").slider({
+		value: this.current_interval,
+		min: 0,
+		max: 500,
+		step: 10,
+		slide: function(event, ui) {
+			$("#" + self.widget_id + " .refresh_interval").val(ui.value);
+			self.current_interval = ui.value;
+			self.control_save_interval();
+		}
+	});
+	$("#" + this.widget_id + " .refresh_interval").val($("#" + this.widget_id + " .refresh_slider").slider("value")).change(function() {
+		$("#" + self.widget_id + " .refresh_slider").slider("value", $(this).val());
+		self.current_interval = $(this).val();
+		self.control_save_interval();
+	});
+
+};
+
+widget.prototype.init_title_edit = function() {
+	var self = this;
+	$("." + this.id + "_editable").editable(function(value, settings) {
+		var data = {page: self.current_uri, widget:self.name, instance_id:self.instance_id, widget_title:value};
+		value = trim(value);
+		// don't save an empty title
+		if (value.length) {
+			self.save_settings(data);
+			self.title = value;
+		} else {
+			value = self.title;
+		}
+		return value;
+	}, {
+		type : 'text',
+		style : 'margin-top: -4px',
+		event : 'dblclick',
+		width : 'auto',
+		height : '14px',
+		submit : 'OK',
+		cancel : 'cancel',
+		placeholder:'Double-click to edit'
+	});
+};
