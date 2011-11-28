@@ -6,49 +6,12 @@
  * @author     op5 AB
  * @license    GPL
  */
-class Tac_hosts_Widget extends widget_Core {
-	public function __construct()
+class Tac_hosts_Widget extends widget_Base {
+	protected $duplicatable = true;
+	public function index()
 	{
-		parent::__construct();
-
-		# needed to figure out path to widget
-		$this->set_widget_name(__CLASS__, basename(__FILE__));
-	}
-
-	public function index($arguments=false, $master=false)
-	{
-		# required to enable us to assign the correct
-		# variables to the calling controller
-		$this->master_obj = $master;
-
 		# fetch widget view path
 		$view_path = $this->view_path('view');
-
-		if (is_object($arguments[0])) {
-			$current_status = $arguments[0];
-			array_shift($arguments);
-		} else {
-			$current_status = new Current_status_Model();
-		}
-
-		if (!$current_status->data_present()) {
-			$current_status->analyze_status_data();
-		}
-
-		# assign variables for our view
-		$widget_id = $this->widgetname;
-		$refresh_rate = 60;
-		if (isset($arguments['refresh_interval'])) {
-			$refresh_rate = $arguments['refresh_interval'];
-		}
-
-		$title = $this->translate->_('Hosts');
-		if (isset($arguments['widget_title'])) {
-			$title = $arguments['widget_title'];
-		}
-
-		# let view template know if wrapping div should be hidden or not
-		$ajax_call = request::is_ajax() ? true : false;
 
 		$default_links = array(
 			'down' => 'status/host/all/'.nagstat::HOST_DOWN,
@@ -56,6 +19,8 @@ class Tac_hosts_Widget extends widget_Core {
 			'up' => 'status/host/all/'.nagstat::HOST_UP,
 			'pending' => 'status/host/all/'.nagstat::HOST_PENDING
 		);
+
+		$current_status = $this->get_current_status();
 
 		# HOSTS DOWN
 		$hosts_down = array();
@@ -116,21 +81,7 @@ class Tac_hosts_Widget extends widget_Core {
 			$hosts_pending['status/host/all/?hoststatustypes='.nagstat::HOST_PENDING] = $current_status->hosts_pending.' '.$this->translate->_('Pending');
 		}
 
-		# fetch widget content
-		require_once($view_path);
-
-		if(request::is_ajax()) {
-			# output widget content
-			echo json::encode( $this->output());
-		} else {
-
-			# set required extra resources
-			$this->js = array('/js/tac_hosts');
-
-			# call parent helper to assign all
-			# variables to master controller
-			return $this->fetch();
-		}
+		require($view_path);
 	}
 }
 
