@@ -6,50 +6,15 @@
  * @author     op5 AB
  * @license    GPL
  */
-class Tac_monfeat_Widget extends widget_Core {
+class Tac_monfeat_Widget extends widget_Base {
+	protected $duplicatable = true;
 
-	public function __construct()
+	public function index()
 	{
-		parent::__construct();
-
-		# needed to figure out path to widget
-		$this->set_widget_name(__CLASS__, basename(__FILE__));
-	}
-
-	public function index($arguments=false, $master=false)
-	{
-		# required to enable us to assign the correct
-		# variables to the calling controller
-		$this->master_obj = $master;
-
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		if (is_object($arguments[0])) {
-			$current_status = $arguments[0];
-			array_shift($arguments);
-		} else {
-			$current_status = new Current_status_Model();
-		}
-
-		if (!$current_status->data_present()) {
-			$current_status->analyze_status_data();
-		}
-
-		# translation
-		$widget_id = $this->widgetname;
-		$refresh_rate = 60;
-		if (isset($arguments['refresh_interval'])) {
-			$refresh_rate = $arguments['refresh_interval'];
-		}
-
-		$title = $this->translate->_('Monitoring Features');
-		if (isset($arguments['widget_title'])) {
-			$title = $arguments['widget_title'];
-		}
-
-		# let view template know if wrapping div should be hidden or not
-		$ajax_call = request::is_ajax() ? true : false;
+		$current_status = $this->get_current_status();
 
 		$flap_detect_header_label = $this->translate->_('Flap Detection');
 		$notifications_header_label = $this->translate->_('Notifications');
@@ -119,22 +84,7 @@ class Tac_monfeat_Widget extends widget_Core {
 		$cmd_activecheck_link = url::site('extinfo/');
 		$cmd_passivecheck_link = url::site('extinfo/');
 
-		# <a href='extinfo.cgi?type=0'><img src='/monitor/images/tacenabled.png' border='0' alt='Active Checks Enabled' title='Active Checks Enabled'></a>
-
 		# fetch widget content
-		require_once($view_path);
-
-		if(request::is_ajax()) {
-			# output widget content
-			echo json::encode( $this->output());
-		} else {
-
-			# set required extra resources
-			$this->js = array('/js/tac_monfeat');
-
-			# call parent helper to assign all
-			# variables to master controller
-			return $this->fetch();
-		}
+		require($view_path);
 	}
 }
