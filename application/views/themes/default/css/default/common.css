@@ -693,34 +693,34 @@ table.white-table tr td input[type=checkbox] {
 	width: auto;
 }
 /* health css *************************************************************************************/
-table.healt {
+table.health {
 	border: 1px solid #dcdccd;
 	border-spacing: 1px;
 	background-color: #ffffff;
 	margin-top: -1px;
 }
-table.healt tr td {
+table.health tr td {
 	background: none;
 	border: 0px;
 	text-align: left;
 	padding: 0px;
 	width: 50%;
 }
-table.healt tr td div.border {
+table.health tr td div.border {
 	height: 187px;
 	height: 100px;
 }
-table.healt tr td:first-child div.border {
+table.health tr td:first-child div.border {
 	margin-right: 0px;
 }
-table.healt tr td div.border img {
+table.health tr td div.border img {
 	height: 187px;
 	height: 100px;
 }
-table.healt tr td div.border {
+table.health tr td div.border {
 	padding: 0px;
 }
-table.healt tr td div.border img {
+table.health tr td div.border img {
 	display: block;
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -1366,7 +1366,7 @@ tr.odd td.bt,
 tr.even td.bt,
 .widget-placeholder,
 .widget-header,
-table.healt,
+table.health,
 #quickbar{
 	border-color: #dcdcdc;
 	border-color: #d0d0d0;
@@ -1399,7 +1399,7 @@ input.i160 { border: 0px; outline: 0px; }
 }
 
 tr td,
-table.healt tr td div.border {
+table.health tr td div.border {
 	background:#e9e9e9 url(images/bg.png) repeat;
 }
 

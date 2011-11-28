@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<table summary="Network healt" class="healt">
+<table summary="Network health" class="health">
 	<tr>
 		<td style="text-align: center">
 			<div style="<?php echo ($host_value > 33) ? 'color: #ffffff;' : ''?>font-size: 22px; position: absolute; padding-top: 62px; padding-left: 10px;"><?php echo $host_value ?> %</div>
