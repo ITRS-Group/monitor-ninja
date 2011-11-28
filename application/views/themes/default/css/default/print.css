@@ -394,10 +394,6 @@ div.right {
 	margin-top: 2px;
 	margin-bottom: -1px;
 }
-#widget-status_totals .icon,
-#widget-host_totals .icon {
-	width: 11px;
-}
 tr.odd td.bl,
 tr.even td.bl { border-left: 1px solid #dcdccd; }
 tr.odd td.bt,
