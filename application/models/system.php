@@ -117,7 +117,7 @@ class System_Model extends Model
 	 * for a named user.
 	 * Use cached authorization data from session if available.
 	 */
-	public function nagios_access($username=false)
+	public static function nagios_access($username=false)
 	{
 		$access = Session::instance()->get('nagios_access', null);
 
