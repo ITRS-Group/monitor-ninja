@@ -1,7 +1,10 @@
-test: test-reports
+test: test-reports test-unittest
 
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
+
+test-unittest:
+	php index.php ninja_unit_test
 
 test-ci-prepare: prepare-config
 	@mkdir -p test/configs/all-host_service-states/var/rw
