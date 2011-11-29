@@ -50,7 +50,7 @@ class zend_Core
 	 * @param $class string: Class-name
 	 * @return path returned by kohana::find_file on succes. false on error
 	 */
-	public function set_zend_path($class = false)
+	public static function set_zend_path($class = false)
 	{
 		$filename = !empty($class) ? $class : 'Exception';
 		$class = addslashes(trim(ucfirst(strtolower($class))));
@@ -70,7 +70,7 @@ class zend_Core
 	 * @param $lang (default en)
 	 * @return translate object
 	 */
-	public function translate($driver='gettext', $lang="en")
+	public static function translate($driver='gettext', $lang="en")
 	{
 		$path = self::set_zend_path('Translate');
 		require_once($path);
