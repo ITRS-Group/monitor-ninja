@@ -77,7 +77,7 @@ class Alertlog_Model extends Model
 			$cond = array();
 			foreach ($options['host_state_options'] as $state => $ison) {
 				if ((int)$ison)
-					$cond[] = 'event_type state = '. $this->host_ccode_to_ncode[$state];
+					$cond[] = ' state = '. $this->host_ccode_to_ncode[$state];
 			}
 			if (count($cond) == 3)
 				;
