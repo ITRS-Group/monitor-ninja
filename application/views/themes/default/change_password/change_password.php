@@ -9,9 +9,9 @@ if (isset($error_msg)) echo $error_msg; ?>
 	echo '<h2>'.$this->translate->_('Change password').'</h2>';
 
 	$fields = array(
-		'current_password' => form::password('current_password'),
-		'new_password' => form::password('new_password'),
-		'confirm_password' => form::password('confirm_password'),
+		'current_password' => form::password(array('name' => 'current_password', 'autocomplete' => 'off')),
+		'new_password' => form::password(array('name' => 'new_password', 'autocomplete' => 'off')),
+		'confirm_password' => form::password(array('name' => 'confirm_password', 'autocomplete' => 'off'))
 	);?>
 	<table class="white-table">
 	<?php

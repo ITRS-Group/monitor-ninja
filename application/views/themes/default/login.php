@@ -38,11 +38,11 @@
 				<tr><td colspan="2"><hr /></td></tr>
 				<tr>
 					<td><?php echo $username ?></td>
-					<td><?php echo form::input('username','','class="i160"') ?></td>
+					<td><?php echo form::input(array('name' => 'username', 'class' => 'i160', 'autocomplete' => 'off')) ?></td>
 				</tr>
 				<tr>
 					<td><?php echo $password ?></td>
-					<td><?php echo form::password('password','','class="i160"') ?></td>
+					<td><?php echo form::password(array('name' => 'password', 'class' => 'i160', 'autocomplete' => 'off')) ?></td>
 				</tr>
 				<?php
 				$auth_methods = Kohana::config('auth.auth_methods');
