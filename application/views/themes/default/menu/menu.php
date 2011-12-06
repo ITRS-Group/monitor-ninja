@@ -106,8 +106,8 @@ $section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('r
 # base menu (all)
 $menu_base = array(
 	$menu_items['section_about'] => array(
-		$menu_items['portal'] 					=> array('http://'.$_SERVER['HTTP_HOST'], 'portal',2),
-		$menu_items['manual'] 					=> array('http://'.$_SERVER['HTTP_HOST'].'/monitor/op5/manual/index.html', 'manual',2),
+		$menu_items['portal'] 					=> array('//'.$_SERVER['HTTP_HOST'], 'portal',2),
+		$menu_items['manual'] 					=> array('//'.$_SERVER['HTTP_HOST'].'/monitor/op5/manual/index.html', 'manual',2),
 		$menu_items['support'] 					=> array('http://www.op5.com/support', 'support',2),
 		$menu_items['ninja_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/ninja', 'ninja',3),
 		$menu_items['merlin_project'] 			=> array('http://www.op5.org/community/plugin-inventory/op5-projects/merlin', 'merlin',3),
