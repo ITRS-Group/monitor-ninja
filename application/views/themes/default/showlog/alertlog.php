@@ -2,7 +2,6 @@
 	$date_format = cal::get_calendar_format(true);
 	$x = $this->translate; ?>
 <div id="response"></div>
-<?php echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get')); ?>
 <div class="widget left w98">
 <h1>Alert history
 <?php
@@ -28,6 +27,7 @@
 ?>
 </h1>
 <?php
+	echo form::open('showlog/'.Router::$method, array('id' => 'summary_form', 'method' => 'get'));
 	if (isset($remember_object))
 		echo $remember_object;
 ?>

@@ -95,9 +95,9 @@ class alertlog_Core {
 
 		$ret['obj_name'] = $entry->host_name;
 		if ($entry->service_description)
-			$ret['obj_name'] = html::anchor('extinfo/details/service/'.$ret['obj_name'].'?service='.$entry->service_description, $ret['obj_name'].';'.$entry->service_description);
+			$ret['obj_name'] = html::anchor('extinfo/details/service/'.urlencode($ret['obj_name']).'?service='.urlencode($entry->service_description), $ret['obj_name'].';'.$entry->service_description);
 		elseif ($entry->host_name)
-			$ret['obj_name'] = html::anchor('extinfo/details/host/'.$ret['obj_name'], $ret['obj_name']);
+			$ret['obj_name'] = html::anchor('extinfo/details/host/'.urlencode($ret['obj_name']), $ret['obj_name']);
 		else
 			$ret['obj_name'] = false;
 
