@@ -282,13 +282,7 @@ class Trends_graph_Model extends Model
 
 		// original phplot methods
 		$plot->SetCallback('data_color', 'color_the_trends_graph', $extra_information_phplot_colors);
-		$arr = Reports_Controller::$colors;
-		$colors = array(
-			$arr['green'],
-			$arr['grey'],
-			$arr['orange'],
-			$arr['red']
-		);
+		$colors = array_values(Reports_Controller::$colors);
 		$plot->SetDataColors($colors);
 		$plot->SetDataBorderColors($colors);
 		$plot->SetPlotAreaWorld(null, null, $report_end-$report_start);
@@ -362,26 +356,19 @@ function phplot_color_index_by_state_color($type='host', $state=false) {
 	$colors['host'] = array(
 		Reports_Model::HOST_UP => $arr['green'],
 		Reports_Model::HOST_DOWN => $arr['red'],
-		Reports_Model::HOST_UNREACHABLE => $arr['orange'],
-		3 => $arr['orange'], // UNREACHABLE according to nagios, @see http://nagios.sourceforge.net/docs/3_0/pluginapi.html
+		Reports_Model::HOST_UNREACHABLE => $arr['yellow'],
 		Reports_Model::HOST_PENDING => $arr['grey'],
 		Reports_Model::HOST_EXCLUDED => $arr['white']
 	);
 	$colors['service'] = array(
 		Reports_Model::SERVICE_OK => $arr['green'],
-		Reports_Model::SERVICE_WARNING => $arr['orange'],
+		Reports_Model::SERVICE_WARNING => $arr['yellow'],
 		Reports_Model::SERVICE_CRITICAL => $arr['red'],
-		Reports_Model::SERVICE_UNKNOWN => $arr['grey'],
+		Reports_Model::SERVICE_UNKNOWN => $arr['orange'],
 		Reports_Model::SERVICE_PENDING => $arr['grey'],
 		Reports_Model::SERVICE_EXCLUDED => $arr['white']
 	);
-	$phplot_color_array = array(
-		$arr['green'],
-		$arr['grey'],
-		$arr['orange'],
-		$arr['red']
-	);
 	$spelled_out_color = $colors[$type][$state];
-	return array_search($spelled_out_color, $phplot_color_array);
-
+	$index = array_search($spelled_out_color, array_values($arr));
+	return $index;
 }
