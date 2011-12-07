@@ -35,6 +35,7 @@ class User_Test extends TapUnit {
 	public function test_create_user()
 	{
 		User_Model::add_user(array('username' => 'monitor'));
+		Ninja_user_authorization_Model::insert_user_auth_data('monitor', array('system_information'=>1));
 	}
 
 	public function test_users_exists()
