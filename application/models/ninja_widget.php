@@ -81,7 +81,7 @@ class Ninja_widget_Model extends Model
 		# warning: cleverness!
 		# sort any rows with non-NULL instance_id first, so we can ignore the
 		# generic widget rows for widgets that have "personalized" rows
-		$res = $db->query('SELECT name, instance_id FROM ninja_widgets WHERE page='.$db->escape($page).' OR page=\'tac/index\' GROUP BY name, instance_id ORDER BY instance_id DESC');
+		$res = $db->query('SELECT name, instance_id FROM ninja_widgets WHERE (page='.$db->escape($page).' OR page=\'tac/index\') AND (username IS NULL OR username='.$db->escape($user).') GROUP BY name, instance_id ORDER BY instance_id DESC');
 		$widgets = array();
 		$seen_widgets = array();
 		foreach ($res as $row) {

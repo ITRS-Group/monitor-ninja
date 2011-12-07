@@ -26,7 +26,7 @@ class Ninja_widgets_Test extends TapUnit {
 			$this->ok($w !== false, 'No returned widgets should be false');
 		$this->ok(is_array($new_widgets), "Fetch widgets returns an array");
 		$this->ok(!empty($new_widgets), "Fetch widgets returns widgets");
-		$this->ok(count($new_widgets) === count($this->orig_widgets), 'The new widget is gone');
+		$this->ok(count($new_widgets) === count($this->orig_widgets), 'The new widget is gone (are '.count($new_widgets).', was '.count($this->orig_widgets).')');
 		foreach ($db->query('SELECT username, page, name, instance_id, count(1) as count FROM ninja_widgets GROUP BY username, page, name, instance_id') as $ary)
 			$this->ok_eq($ary->count, 1, "There is 1 page=$ary->page,name=$ary->name,instance_id=$ary->instance_id,username=$ary->username");
 	}
@@ -174,4 +174,13 @@ class Ninja_widgets_Test extends TapUnit {
 		$this->ok(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our old widget is saved in our placeholder');
 		$this->ok(isset($widgets['test_placeholder']['widget-foobar-2']), 'Our new widget is saved in the same placeholder as it\'s original');
 	}
+
+	function test_many_users() {
+		$widget = Ninja_widget_Model::get('tac/index', 'foobar');
+		$a = Auth::instance()->get_user();
+		$real_username = $a->username;
+		$a->username = 'something else';
+		Ninja_widget_Model::fetch_all('tac/index');
+		$a->username = $real_username;
+ 	}
 }
