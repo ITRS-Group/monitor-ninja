@@ -67,9 +67,6 @@ class Command_Controller extends Authenticated_Controller
 		if($start_time > $end_time) {
 			return sprintf("The downtime can not end before it starts. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
 		}
-		if($start_time <= time()) {
-			return sprintf("The downtime must be scheduled into the future, %s has already passed. Please <a href='javascript:history.back();'>adjust it</a>", $submitted_start_time);
-		}
 		return true;
 	}
 
