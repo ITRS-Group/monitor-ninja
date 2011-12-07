@@ -32,6 +32,11 @@ class User_Test extends TapUnit {
 		$this->ok(!$db->table_exists('foo'), "Random tables doesn't exist");
 	}
 
+	public function test_create_user()
+	{
+		User_Model::add_user(array('username' => 'monitor'));
+	}
+
 	public function test_users_exists()
 	{
 		$db = Database::instance();
