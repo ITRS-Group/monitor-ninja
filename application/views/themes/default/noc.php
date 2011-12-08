@@ -185,7 +185,7 @@ if (isset($this->template->js_header))
 	<body onload="loadScroll()" onunload="saveScroll()">
 		<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
-			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
+			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;', 'alt' => 'Warning')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
 		</div>
 		<div id="top-bar"></div>
 		<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">

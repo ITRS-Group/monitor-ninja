@@ -145,10 +145,10 @@ if (isset($this) && isset($this->template->js_header))
 	<body onload="loadScroll()" onunload="saveScroll()">
 	<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
-			<p><?php echo html::image('application/views/themes/default/icons/16x16/shield-warning.png',array('style' => 'float: left; margin-right: 5px')).' '.sprintf(_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
+			<p><?php echo html::image('application/views/themes/default/icons/16x16/shield-warning.png',array('style' => 'float: left; margin-right: 5px', 'alt' => 'Warning')).' '.sprintf(_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
 		</div>
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/icons/icon.png',''); ?>
+			<?php echo html::image('application/views/themes/default/icons/icon.png',array('alt' => '')); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
