@@ -304,7 +304,7 @@ class Service_Model extends Model
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT s.*, h.current_state AS host_state, h.address ".
+			$sql = "SELECT s.*, h.current_state AS host_state, h.address, (h.scheduled_downtime_depth + s.scheduled_downtime_depth) as scheduled_downtime_depth ".
 			"FROM service s ".$auth_str.", host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
