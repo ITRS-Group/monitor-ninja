@@ -79,15 +79,15 @@ $(document).ready(function() {
 	init_regexpfilter();
 	$('#filter_field').keyup(function() {
 		if ($(this).attr('value') == '') {
-			MyRegexp.resetFilter($("select[id$=_tmp]:visible").attr('id'));
+			MyRegexp.resetFilter($("select[id$=_tmp]").filter(":visible").attr('id'));
 			return;
 		}
-		MyRegexp.selectFilter($("select[id$=_tmp]:visible").attr('id'), this.value);
+		MyRegexp.selectFilter($("select[id$=_tmp]").filter(":visible").attr('id'), this.value);
 	});
 
 	$('#clear_filter').click(function() {
 		$('#filter_field').attr('value', '');
-		MyRegexp.resetFilter($("select[id$=_tmp]:visible").attr('id'));
+		MyRegexp.resetFilter($("select[id$=_tmp]").filter(":visible").attr('id'));
 		$('#filter_field').focus();
 	});
 
@@ -369,7 +369,7 @@ function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick:visible').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	$('.date-pick').filter(':visible').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 	$('#cal_start').bind(
 		'dpClosed',
 		function(e, selectedDates)
@@ -1398,21 +1398,21 @@ var summary_schedules = 0;
 function update_visible_schedules(count)
 {
 	if ($('#avail_scheduled_reports_table').is(':visible')) {
-		avail_schedules = $('#avail_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		avail_schedules = $('#avail_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
 		if (count) {
 			avail_schedules--;
 		}
 	}
 
 	if ($('#sla_scheduled_reports_table').is(':visible')) {
-		sla_schedules = $('#sla_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		sla_schedules = $('#sla_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
 		if (count) {
 			sla_schedules--;
 		}
 	}
 
 	if ($('#summary_scheduled_reports_table').is(':visible')) {
-		summary_schedules = $('#summary_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		summary_schedules = $('#summary_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
 		if (count) {
 			summary_schedules--;
 		}
@@ -1420,7 +1420,7 @@ function update_visible_schedules(count)
 
 	// special case for summary reports in fancybox
 	if ($('#fancybox-content #summary_scheduled_reports_table').is(':visible')) {
-		summary_schedules = $('#summary_scheduled_reports_table tbody tr:visible').not('.no-result').length;
+		summary_schedules = $('#summary_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
 		if (count) {
 			summary_schedules--;
 		}
