@@ -32,7 +32,8 @@ $label_next = html::image(
 ?>
 
 <?php
-	$paging_step = Kohana::config('pagination.paging_step');; # step used below to print nr of items per page
+	$paging_step = Kohana::config('pagination.paging_step'); # step used below to print nr of items per page
+	$max_items_per_page = Kohana::config('pagination.max_items_per_page'); # maximum items per page to show
 	$entries = $this->translate->_('entries');
 	if (!isset($items_per_page)) {
 		$items_per_page = Kohana::config('pagination.items_per_page');
@@ -132,7 +133,7 @@ $label_next = html::image(
 			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo $this->translate->_('All').' '.$entries ?></option>
 			<?php
 		}
-		for ($i=$paging_step ; $i<$total_items; $i+=$paging_step ) {
+		for ($i=$paging_step ; $i<$total_items && $i<=$max_items_per_page; $i+=$paging_step ) {
 			?><option value="<?php echo $i ?>"<?php if ($items_per_page == $i) { ?> selected='selected'<?php } ?>><?php echo $i ?> <?php echo $entries ?></option><?php
 		}
 	?>
