@@ -54,8 +54,7 @@ class Comment_Model extends Model {
 			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
 			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
 			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
-			       'INNER JOIN contact ON ca.contact = contact.id ' .
-			       "AND contact.contact_name = $auth->id " .
+			       "AND ca.contact = $auth->id " .
 			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
 		}
 
