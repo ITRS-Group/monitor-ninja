@@ -118,6 +118,7 @@ if (isset($host_result) ) {
 		array(
 			'' => $this->translate->_('Select action'),
 			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
+			'DEL_HOST_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
 			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
 			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
 			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
@@ -250,6 +251,7 @@ if (isset($service_result) ) {
 		array(
 			'' => $this->translate->_('Select action'),
 			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
+			'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
 			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
 			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
 			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
