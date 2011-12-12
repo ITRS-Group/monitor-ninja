@@ -829,13 +829,6 @@ function set_initial_state(what, val)
 	} else {
 		f = document.forms['report_form'];
 	}
-	/*
-	if (rep_type == 'sla') {
-		f = document.forms['report_form_sla'];
-	} else {
-		f = document.forms['report_form'];
-	}
-	*/
 	var item = '';
 	var elem = false;
 	switch (what) {
