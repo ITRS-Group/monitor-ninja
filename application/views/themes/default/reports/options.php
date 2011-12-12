@@ -3,7 +3,7 @@
 <div id="availability_toolbox">
 <?php if ($type == 'avail') { ?>
 	<?php if (!$report_id) { ?>
-	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>
+	<a href="#save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>
 	<?php } ?>
 	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => $label_edit_settings, 'title' => $label_edit_settings)); ?></a>
 <?php } else {?>
@@ -31,6 +31,30 @@ if (Session::instance()->get('current_report_params', false)) {
 <div style="display: none;">
 <?php
 if ($type == 'avail') { ?>
+<div id="save_report">
+<?php echo form::open('reports/generate', array('id' => 'save_report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
+<h1><?php echo $t->_('Save report') ?></h1>
+<table style="width: 350px">
+        <tr class="none">
+                <td style="vertical-align:middle"><label for="report_name" id="save_report_label"><?php echo $t->_('Save as') ?></label></td>
+                <td><div id="report_setup">
+                                        <input type="text" name="report_name" id="report_name" class="input-save-name"
+                                        value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" maxlength="255" style="margin: 0px" />
+                                <input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+                                <input type="hidden" name="save_report_settings" value="1" />
+                                <input type="hidden" name="old_report_name" value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" />
+                                <input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />
+                        </div>
+                </td>
+        </tr>
+</table>
+<?php
+ if (is_array($html_options))
+                 foreach ($html_options as $html_option)
+                         echo form::hidden($html_option[1], $html_option[2]); ?>
+         <input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
+</form>
+</div>
 <div id="options">
 <?php echo form::open(Kohana::config('reports.reports_link').'/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
 			<h1><?php echo $label_settings ?></h1>
