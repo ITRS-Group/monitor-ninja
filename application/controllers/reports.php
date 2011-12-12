@@ -889,10 +889,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->auto_render=false;
 		}
 
-		if ($this->create_pdf) {
-			Kohana::close_buffers(FALSE);
-		}
-
 		$in_host = arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
 			$in_host = arr::search($_REQUEST, 'host_name', false);
