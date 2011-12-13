@@ -1,11 +1,11 @@
 #!/bin/sh
 prefix='/opt/monitor/op5/ninja'
+AP2CONFDIR='/opt/csw/apache2/etc'
 
-
-/usr/xpg4/bin/grep -q 'Include /etc/opt/csw/apache2/extra/ninja.conf' /etc/opt/csw/apache2/httpd.conf
+/usr/xpg4/bin/grep -q 'Include /opt/csw/apache2/etc/extra/ninja.conf' $AP2CONFDIR/httpd.conf
 if [ $? -eq 1 ]; then
-        echo "Include /etc/opt/csw/apache2/extra/ninja.conf" >> \
-        /etc/opt/csw/apache2/httpd.conf
+        echo "Include /opt/csw/apache2/etc/extra/ninja.conf" >> \
+        $AP2CONFDIR/httpd.conf
 fi
 
 chown -R monitor:daemon /opt/monitor
