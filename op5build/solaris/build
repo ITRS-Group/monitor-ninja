@@ -70,7 +70,7 @@ ln -sf $prefix $tempdir/var/www/html/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ $tempdir$prefix/op5
 
-mkdir -p $tempdir$AP2CONFDIR
+mkdir -p $tempdir$AP2CONFDIR/extra
 cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/extra/ninja.conf
 
 
