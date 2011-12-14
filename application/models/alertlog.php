@@ -177,12 +177,12 @@ class Alertlog_Model extends Model
 		if ($limit !== false && $count !== true)
 			$sql .= " LIMIT $limit OFFSET $offset";
 
-		if(!self::$bla) {
-			echo "<pre>";
-			self::$bla = true;
-			var_dump($options);
-		}
-		var_dump($sql);
+		//if(!self::$bla) {
+			//echo "<pre>";
+			//self::$bla = true;
+			//var_dump($options);
+		//}
+		//var_dump($sql);
 
 		$res = $db->query($sql);
 		if ($count === true) {
