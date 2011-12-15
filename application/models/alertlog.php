@@ -138,15 +138,27 @@ class Alertlog_Model extends Model
 			$extra_and_or_where = '(event_type < 1200 AND event_type > 1100)';
 			if (isset($options['hide_process']) && $options['hide_process']) {
 				$sql_where[] = '(event_type < 1200 OR event_type > 1100)';
+				//echo "<pre>";
+				//var_dump(2);
+				//var_dump($sql_where);
 			} else {
 				$extra_and_or_where = '('.$extra_and_or_where.' OR event_type < 200 AND event_type >= 100)';
+				echo "<pre>";
+				var_dump(1);
 			}
 			$sql_or_where[] = $extra_and_or_where;
 		} elseif(!isset($options['hide_process']) || !$options['hide_process']) {
+				echo "<pre>";
+				var_dump(3);
 			$sql_or_where[] = '(event_type < 200 AND event_type >= 100)';
 		} elseif(isset($options['hide_process']) && $options['hide_process']) {
 			$sql_where[] = '(event_type > 1200 OR event_type < 1100)';
+				echo "<pre>";
+				var_dump(4);
 		}
+		//echo "<pre>";
+		//var_dump($options);
+		//die;
 
 		if (isset($options['first']) && $options['first'])
 			$sql_where[] = 'timestamp >= '.$db->escape($options['first']);;
@@ -177,12 +189,12 @@ class Alertlog_Model extends Model
 		if ($limit !== false && $count !== true)
 			$sql .= " LIMIT $limit OFFSET $offset";
 
-		//if(!self::$bla) {
-			//echo "<pre>";
-			//self::$bla = true;
-			//var_dump($options);
-		//}
-		//var_dump($sql);
+		if(!self::$bla) {
+			echo "<pre>";
+			self::$bla = true;
+			var_dump($options);
+		}
+		var_dump($sql);
 
 		$res = $db->query($sql);
 		if ($count === true) {
