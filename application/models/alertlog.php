@@ -25,6 +25,7 @@ class Alertlog_Model extends Model
 			$sql = 'SELECT count(1) AS cnt FROM report_data';
 		$sql_join = false;
 		$sql_where = false;
+		$sql_or_where = false;
 		if (!$auth->view_hosts_root) {
 			$sql_join['host'] = 'host.host_name = report_data.host_name';
 			$sql_join['contact_access'] = 'contact_access.host=host.id';
@@ -69,49 +70,90 @@ class Alertlog_Model extends Model
 			if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'] && isset($options['state_type']['hard']) && (int)$options['state_type']['hard'])
 				;
 			else if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'])
-				$sql_where[] = 'hard = 0 OR event_type < 700 OR event_type > 900';
+				$sql_where[] = 'hard = 0 OR (event_type != 701 AND event_type != 801)';
 			else
-				$sql_where[] = 'hard = 1 OR event_type < 700 OR event_type > 900';
+				$sql_where[] = 'hard = 1 OR (event_type != 701 AND event_type != 801)';
 		}
+
+		// keep track of if we're including or excluding objects
+		// based on simple checkbox logic™
+		$service_host_and_or = 'OR';
+
+		$host_state_wheres = array('event_type=801');
 		if (isset($options['host_state_options'])) {
 			$cond = array();
 			foreach ($options['host_state_options'] as $state => $ison) {
 				if ((int)$ison)
-					$cond[] = ' state = '. $this->host_ccode_to_ncode[$state];
+					$cond[] = 'state = '. $this->host_ccode_to_ncode[$state];
 			}
-			if (count($cond) == 3)
-				;
-			else if (!empty($cond))
-				$sql_where[] = implode(' OR ', $cond);
-			else
-				$sql_where[] = "report_data.service_description != '' OR event_type < 700 OR event_type > 900";
+			if (count($cond) == 3) {
+				// all cases are included
+				$host_state_wheres = array();
+			} else if (!empty($cond)) {
+				$host_state_wheres[] = implode(' OR ', $cond);
+			} else {
+				# only check non host events when checkboxes are unchecked
+				$host_state_wheres = array("event_type != 801");
+				$service_host_and_or = 'AND';
+			}
 		}
+		$service_state_wheres = array('event_type=701');
 		if (isset($options['service_state_options'])) {
 			$cond = array();
 			foreach ($options['service_state_options'] as $state => $ison) {
 				if ((int)$ison)
 					$cond[] = 'state = '. $this->service_ccode_to_ncode[$state];
 			}
-			if (count($cond) == 4)
-				;
-			else if (!empty($cond))
-				$sql_where[] = implode(' OR ', $cond);
-			else
-				$sql_where[] = "report_data.service_description = '' OR event_type < 700 OR event_type > 900";
+			if (count($cond) == 4) {
+				// all cases are included
+				$service_state_wheres = array();
+			} else if (!empty($cond)) {
+				$service_state_wheres[] = implode(' OR ', $cond);
+			} else {
+				# only check non service events when checkboxes are unchecked
+				$service_state_wheres = array("event_type != 701");
+				$service_host_and_or = 'AND';
+			}
+		}
+		if($host_state_wheres && $service_state_wheres) {
+			$sql_where[] = ' ((('.implode(') AND (', $host_state_wheres) . ")) $service_host_and_or ((".implode(') AND (', $service_state_wheres) . ')))';
+		} elseif($host_state_wheres) {
+			$sql_where = $sql_where ? $sql_where : array();
+			$sql_where = array_merge($sql_where, $host_state_wheres);
+		} elseif($service_state_wheres) {
+			$sql_where = $sql_where ? $sql_where : array();
+			$sql_where = array_merge($sql_where, $service_state_wheres);
 		}
 
-		if (isset($options['hide_downtime']) && $options['hide_downtime'])
-			$sql_where[] = 'event_type >= 1200 OR event_type < 1100';
-		if (isset($options['hide_process']) && $options['hide_process'])
-			$sql_where[] = 'event_type >=200 OR event_Type < 100';
+		if (!isset($options['hide_downtime']) || !$options['hide_downtime']) {
+			$extra_and_or_where = '(event_type < 1200 AND event_type > 1100)';
+			if (isset($options['hide_process']) && $options['hide_process']) {
+				$sql_where[] = '(event_type < 1200 OR event_type > 1100)';
+			} else {
+				$extra_and_or_where = '('.$extra_and_or_where.' OR event_type < 200 AND event_type >= 100)';
+			}
+			$sql_or_where[] = $extra_and_or_where;
+		} elseif(!isset($options['hide_process']) || !$options['hide_process']) {
+			$sql_or_where[] = '(event_type < 200 AND event_type >= 100)';
+		} elseif(isset($options['hide_process']) && $options['hide_process']) {
+			$sql_where[] = '(event_type > 1200 OR event_type < 1100)';
+		}
 
 		if (isset($options['first']) && $options['first'])
 			$sql_where[] = 'timestamp >= '.$db->escape($options['first']);;
 		if (isset($options['last']) && $options['last'])
 			$sql_where[] = 'timestamp <= '.$db->escape($options['last']);;
 
-		if (!empty($sql_where))
-			$sql_where = ' WHERE ('.implode(') AND (', $sql_where) . ')';
+		if (!empty($sql_where) || !empty($sql_or_where)) {
+			if($sql_where) {
+				$sql_where = ' WHERE ('.implode(') AND (', $sql_where) . ')';
+				if($sql_or_where) {
+					$sql_where .= 'OR ('.implode(') OR (', $sql_or_where).')';
+				}
+			} elseif($sql_or_where) {
+				$sql_where = ' WHERE ('.implode(') OR (', $sql_or_where) . ')';
+			}
+		}
 		if (!empty($sql_join)) {
 			$real_join = '';
 			foreach ($sql_join as $key => $val)
@@ -125,6 +167,7 @@ class Alertlog_Model extends Model
 			$sql .= 'DESC';
 		if ($limit !== false && $count !== true)
 			$sql .= " LIMIT $limit OFFSET $offset";
+
 		$res = $db->query($sql);
 		if ($count === true) {
 			$cnt = $res->current();
