@@ -77,7 +77,7 @@ class widget_Core
 			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget_obj->name, $widget_obj->name, true);
 		}
 		if (!is_file($path))
-			throw new Exception("Widgot not found on disk");
+			throw new Exception("Widget not found on disk");
 		require_once($path);
 		$classname = $widget_obj->name.'_Widget';
 
