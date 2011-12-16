@@ -88,7 +88,6 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 3) {
 				// all cases are included
-				$host_state_wheres = array();
 			} else if (!empty($cond)) {
 				$host_state_wheres[] = implode(' OR ', $cond);
 			} else {
@@ -106,7 +105,6 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 4) {
 				// all cases are included
-				$service_state_wheres = array();
 			} else if (!empty($cond)) {
 				$service_state_wheres[] = implode(' OR ', $cond);
 			} else {
