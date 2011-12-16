@@ -4,6 +4,7 @@
  */
 class Alertlog_Model extends Model
 {
+	static $bla = false;
 	private $host_ccode_to_ncode = array(
 		'r' => 0,
 		'd' => 1,
@@ -96,6 +97,7 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 3) {
 				// all cases are included
+				$host_state_wheres = array();
 			} else if (!empty($cond)) {
 				$host_state_wheres[] = implode(' OR ', $cond);
 			} else {
@@ -113,6 +115,7 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 4) {
 				// all cases are included
+				$service_state_wheres = array();
 			} else if (!empty($cond)) {
 				$service_state_wheres[] = implode(' OR ', $cond);
 			} else {
@@ -173,6 +176,13 @@ class Alertlog_Model extends Model
 			$sql .= 'DESC';
 		if ($limit !== false && $count !== true)
 			$sql .= " LIMIT $limit OFFSET $offset";
+
+		if(!self::$bla) {
+			echo "<pre>";
+			self::$bla = true;
+			var_dump($options);
+		}
+		var_dump($sql);
 
 		$res = $db->query($sql);
 		if ($count === true) {
