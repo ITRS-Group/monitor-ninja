@@ -3674,7 +3674,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf->Output($filename, $action);
 
-		// @todo bug 612
 		if($this->pdf_local_persistent_filepath && 'F' == $action) {
 			try {
 				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
