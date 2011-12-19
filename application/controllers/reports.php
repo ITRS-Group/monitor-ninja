@@ -826,8 +826,12 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Generate (availability) report from parameters set in index()
-	*/
+ 	 * Generate (availability) report from parameters set in index()
+	 *
+	 * @param string $type = "avail"
+	 * @param int $schedule_id = false
+	 * @param array $input = false
+	 */
 	public function generate($type='avail', $schedule_id=false, $input=false)
 	{
 
@@ -851,17 +855,15 @@ class Reports_Controller extends Authenticated_Controller
 		# 	method param if nothing found
 		$this->type = urldecode(
 			$this->input->post(
-				'type', $this->input->get(
-					'type', $type)
-					)
-				);
+				'type', $this->input->get('type', $type)
+			)
+		);
 
 		$regexp = urldecode(
 			$this->input->post(
-				'regexp', $this->input->get(
-					'regexp', false)
-					)
-				);
+				'regexp', $this->input->get('regexp', false)
+			)
+		);
 
 		$t = $this->translate;
 
@@ -2192,7 +2194,7 @@ class Reports_Controller extends Authenticated_Controller
 		#	either $_GET or $_POST and use default
 		# 	method param if nothing found
 		$this->type = arr::search($_REQUEST, 'type');
-		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 
 		$report_options = false;
 		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
@@ -2464,8 +2466,14 @@ class Reports_Controller extends Authenticated_Controller
 
 
 	/**
-	*	Generate csv output from report data
-	*/
+ 	 * Generate csv output from report data
+	 *
+	 * @param string $type
+	 * @param array $data_arr
+	 * @param string $sub_type
+	 * @param string $group_name = false
+	 * @param boolean $in_hostgroup
+	 */
 	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup)
 	{
 		if (!empty($data_arr)) {
@@ -3612,9 +3620,6 @@ class Reports_Controller extends Authenticated_Controller
 					$image_string .= '</table>';
 				}
 			}
-
-
-
 		} else {
 			# sla
 			$nr = 0;
@@ -4170,13 +4175,18 @@ class Reports_Controller extends Authenticated_Controller
 		$str = trim($str);
 		$str = str_replace(',', '_', $str);
 		if (empty($str)) return false;
-		$extension = 'pdf';
+		$extensions = array('pdf', 'csv');
+		$extension = 'pdf'; // default
 		if (strstr($str, '.')) {
 			$parts = explode('.', $str);
 			if (is_array($parts)) {
 				$str = '';
 				for ($i=0;$i<(sizeof($parts)-1);$i++) {
 					$str .= $parts[$i];
+				}
+				$wanted_extension = end($parts);
+				if(in_array($wanted_extension, $extensions)) {
+					$extension = $wanted_extension;
 				}
 				$str .= '.'.$extension;
 			}
