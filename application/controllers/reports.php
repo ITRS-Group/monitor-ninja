@@ -826,8 +826,12 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Generate (availability) report from parameters set in index()
-	*/
+	 * Generate (availability) report from parameters set in index()
+	 *
+	 * @param string $type = "avail"
+	 * @param int $schedule_id = false
+	 * @param array $input = false
+	 */
 	public function generate($type='avail', $schedule_id=false, $input=false)
 	{
 
@@ -851,17 +855,15 @@ class Reports_Controller extends Authenticated_Controller
 		# 	method param if nothing found
 		$this->type = urldecode(
 			$this->input->post(
-				'type', $this->input->get(
-					'type', $type)
-					)
-				);
+				'type', $this->input->get('type', $type)
+			)
+		);
 
 		$regexp = urldecode(
 			$this->input->post(
-				'regexp', $this->input->get(
-					'regexp', false)
-					)
-				);
+				'regexp', $this->input->get('regexp', false)
+			)
+		);
 
 		$t = $this->translate;
 
@@ -964,8 +966,9 @@ class Reports_Controller extends Authenticated_Controller
 						$service_filter_status = self::_create_filter_array($value,'service');
 					}
 				}
-				else
+				else {
 					$report_options[$key] = $value;
+				}
 				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
 					if (is_numeric($value)) {
 						$_REQUEST[$key] = date("Y-m-d H:i", $value);
@@ -1100,6 +1103,9 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->report_type = arr::search($_REQUEST, 'report_type');
 		$in_csvoutput = arr::search($_REQUEST, 'csvoutput');
+		if(!$in_csvoutput && '.csv' == substr($this->pdf_filename, -4 , 4)) {
+			$in_csvoutput = true;
+		}
 		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
 		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period = arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
@@ -2145,7 +2151,7 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Stash parameters from setup form to be used
+	*	Stash parameters in session from setup form to be used
 	*	for re-generating report.
 	*/
 	public function _stash_params()
@@ -2211,7 +2217,7 @@ class Reports_Controller extends Authenticated_Controller
 		#	either $_GET or $_POST and use default
 		# 	method param if nothing found
 		$this->type = arr::search($_REQUEST, 'type');
-		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 
 		$report_options = false;
 		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
@@ -2481,10 +2487,17 @@ class Reports_Controller extends Authenticated_Controller
 		$group[';testcase;'] = $testcase;
 	}
 
-
 	/**
-	*	Generate csv output from report data
-	*/
+	 * Generate csv output from report data. It also handles output
+	 * formatting, like setting the appropriate headers or saving
+	 * the file and/or emailing that file
+	 *
+	 * @param string $type
+	 * @param array $data_arr
+	 * @param string $sub_type
+	 * @param string $group_name = false
+	 * @param boolean $in_hostgroup
+	 */
 	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup)
 	{
 		if (!empty($data_arr)) {
@@ -2498,16 +2511,24 @@ class Reports_Controller extends Authenticated_Controller
 					$filename = 'sla.csv';
 					break;
 			}
-			header("Content-disposition: attachment; filename=".$filename);
-			if (isset($_SERVER['HTTP_USER_AGENT']) &&
-				(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
-			{
-				header("Pragma: hack");
-				header("Content-Type: application/octet-stream");
-				header("Content-Transfer-Encoding: binary");
-			} else {
-				header("Content-type: text/csv");
+
+			// Sometimes we want to save the file instead of sending it to the browser,
+			// probably because it's scheduled and/or being triggered manually
+			$save_file = request::is_ajax() || php_sapi_name() == 'cli';
+			if (!$save_file) {
+				header("Content-disposition: attachment; filename=".$filename);
+				if (isset($_SERVER['HTTP_USER_AGENT']) &&
+					(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
+				{
+					header("Pragma: hack");
+					header("Content-Type: application/octet-stream");
+					header("Content-Transfer-Encoding: binary");
+				} else {
+					header("Content-type: text/csv");
+				}
 			}
+
+			// headlines, not HTTP header
 			$csv =  $this->_csv_header($sub_type);
 			// =========== GROUPS ===========
 			if ($group_name !== false) { // We have a host- or servicegroup
@@ -2540,7 +2561,34 @@ class Reports_Controller extends Authenticated_Controller
 					}
 				}
 			}
-			echo $csv;
+			if($save_file) {
+				$temp_name = tempnam('/tmp', 'report');
+				// copying behavior for definition of K_PATH_CACHE (grep for it,
+				// it should be in tcpdf somewhere)
+				if(is_file($temp_name)) {
+					unlink($temp_name);
+				}
+				mkdir($temp_name);
+				file_put_contents($temp_name.'/'.$filename, $csv);
+				// Stealing the already used name, not touching it
+				// since it's declared public and such it may be
+				// depended upon from the outside
+				if($this->pdf_recipients) {
+					$report_sender = new Send_report_Model();
+					$mail_sent = $report_sender->send($this->pdf_recipients, $temp_name.'/'.$filename, $filename);
+					if(request::is_ajax()) {
+						if($mail_sent) {
+							return json::ok(_("Mail sent"));
+						} else {
+							return json::fail(_("Could not send email"));
+						}
+					}
+
+					return $mail_sent;
+				}
+			} else {
+				echo $csv;
+			}
 			die();
 		} else {
 			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
@@ -2897,58 +2945,61 @@ class Reports_Controller extends Authenticated_Controller
 			'PERCENT_TOTAL_TIME_UNDETERMINED'
 		);
 		$fields['service'] = array(
-		'HOST_NAME',
-		'SERVICE_DESCRIPTION',
-		'TIME_OK_SCHEDULED',
-		'PERCENT_TIME_OK_SCHEDULED',
-		'PERCENT_KNOWN_TIME_OK_SCHEDULED',
-		'TIME_OK_UNSCHEDULED',
-		'PERCENT_TIME_OK_UNSCHEDULED',
-		'PERCENT_KNOWN_TIME_OK_UNSCHEDULED',
-		'TOTAL_TIME_OK',
-		'PERCENT_TOTAL_TIME_OK',
-		'PERCENT_KNOWN_TIME_OK',
-		'TIME_WARNING_SCHEDULED',
-		'PERCENT_TIME_WARNING_SCHEDULED',
-		'PERCENT_KNOWN_TIME_WARNING_SCHEDULED',
-		'TIME_WARNING_UNSCHEDULED',
-		'PERCENT_TIME_WARNING_UNSCHEDULED',
-		'PERCENT_KNOWN_TIME_WARNING_UNSCHEDULED',
-		'TOTAL_TIME_WARNING',
-		'PERCENT_TOTAL_TIME_WARNING',
-		'PERCENT_KNOWN_TIME_WARNING',
-		'TIME_UNKNOWN_SCHEDULED',
-		'PERCENT_TIME_UNKNOWN_SCHEDULED',
-		'PERCENT_KNOWN_TIME_UNKNOWN_SCHEDULED',
-		'TIME_UNKNOWN_UNSCHEDULED',
-		'PERCENT_TIME_UNKNOWN_UNSCHEDULED',
-		'PERCENT_KNOWN_TIME_UNKNOWN_UNSCHEDULED',
-		'TOTAL_TIME_UNKNOWN',
-		'PERCENT_TOTAL_TIME_UNKNOWN',
-		'PERCENT_KNOWN_TIME_UNKNOWN',
-		'TIME_CRITICAL_SCHEDULED',
-		'PERCENT_TIME_CRITICAL_SCHEDULED',
-		'PERCENT_KNOWN_TIME_CRITICAL_SCHEDULED',
-		'TIME_CRITICAL_UNSCHEDULED',
-		'PERCENT_TIME_CRITICAL_UNSCHEDULED',
-		'PERCENT_KNOWN_TIME_CRITICAL_UNSCHEDULED',
-		'TOTAL_TIME_CRITICAL',
-		'PERCENT_TOTAL_TIME_CRITICAL',
-		'PERCENT_KNOWN_TIME_CRITICAL',
-		'TIME_UNDETERMINED_NOT_RUNNING',
-		'PERCENT_TIME_UNDETERMINED_NOT_RUNNING',
-		'TIME_UNDETERMINED_NO_DATA',
-		'PERCENT_TIME_UNDETERMINED_NO_DATA',
-		'TOTAL_TIME_UNDETERMINED',
-		'PERCENT_TOTAL_TIME_UNDETERMINED'
+			'HOST_NAME',
+			'SERVICE_DESCRIPTION',
+			'TIME_OK_SCHEDULED',
+			'PERCENT_TIME_OK_SCHEDULED',
+			'PERCENT_KNOWN_TIME_OK_SCHEDULED',
+			'TIME_OK_UNSCHEDULED',
+			'PERCENT_TIME_OK_UNSCHEDULED',
+			'PERCENT_KNOWN_TIME_OK_UNSCHEDULED',
+			'TOTAL_TIME_OK',
+			'PERCENT_TOTAL_TIME_OK',
+			'PERCENT_KNOWN_TIME_OK',
+			'TIME_WARNING_SCHEDULED',
+			'PERCENT_TIME_WARNING_SCHEDULED',
+			'PERCENT_KNOWN_TIME_WARNING_SCHEDULED',
+			'TIME_WARNING_UNSCHEDULED',
+			'PERCENT_TIME_WARNING_UNSCHEDULED',
+			'PERCENT_KNOWN_TIME_WARNING_UNSCHEDULED',
+			'TOTAL_TIME_WARNING',
+			'PERCENT_TOTAL_TIME_WARNING',
+			'PERCENT_KNOWN_TIME_WARNING',
+			'TIME_UNKNOWN_SCHEDULED',
+			'PERCENT_TIME_UNKNOWN_SCHEDULED',
+			'PERCENT_KNOWN_TIME_UNKNOWN_SCHEDULED',
+			'TIME_UNKNOWN_UNSCHEDULED',
+			'PERCENT_TIME_UNKNOWN_UNSCHEDULED',
+			'PERCENT_KNOWN_TIME_UNKNOWN_UNSCHEDULED',
+			'TOTAL_TIME_UNKNOWN',
+			'PERCENT_TOTAL_TIME_UNKNOWN',
+			'PERCENT_KNOWN_TIME_UNKNOWN',
+			'TIME_CRITICAL_SCHEDULED',
+			'PERCENT_TIME_CRITICAL_SCHEDULED',
+			'PERCENT_KNOWN_TIME_CRITICAL_SCHEDULED',
+			'TIME_CRITICAL_UNSCHEDULED',
+			'PERCENT_TIME_CRITICAL_UNSCHEDULED',
+			'PERCENT_KNOWN_TIME_CRITICAL_UNSCHEDULED',
+			'TOTAL_TIME_CRITICAL',
+			'PERCENT_TOTAL_TIME_CRITICAL',
+			'PERCENT_KNOWN_TIME_CRITICAL',
+			'TIME_UNDETERMINED_NOT_RUNNING',
+			'PERCENT_TIME_UNDETERMINED_NOT_RUNNING',
+			'TIME_UNDETERMINED_NO_DATA',
+			'PERCENT_TIME_UNDETERMINED_NO_DATA',
+			'TOTAL_TIME_UNDETERMINED',
+			'PERCENT_TOTAL_TIME_UNDETERMINED'
 		);
 		return $fields[$type];
 	}
 
 	/**
-	*	Returns the csv value string to be printed for
-	* 	the selected type (host/service)
-	*/
+	 * Returns the csv value string to be printed for the selected type (host/service)
+	 *
+	 * @param array $states = false
+	 * @param string $type = 'host'
+	 * @return boolean|string
+	 */
 	public function _csv_content(&$states=false, $type='host')
 	{
 		if (!$states) {
@@ -3654,9 +3705,6 @@ class Reports_Controller extends Authenticated_Controller
 					$image_string .= '</table>';
 				}
 			}
-
-
-
 		} else {
 			# sla
 			$nr = 0;
@@ -3681,9 +3729,9 @@ class Reports_Controller extends Authenticated_Controller
 			$pdf->writeHTML($image_string, true, 0, true, 0);
 		}
 		# remove all temporary images
-        foreach ($images as $i) {
-            unlink($i);
-        }
+		foreach ($images as $i) {
+			unlink($i);
+		}
 
         if (isset($this->pdf_data['svc_content'])) {
         	$pdf->writeHTML($this->pdf_data['svc_content'], true, 0, true, 0);
@@ -3718,41 +3766,8 @@ class Reports_Controller extends Authenticated_Controller
 
 		$mail_sent = 0;
 		if ($send_by_mail) {
-			# send file as email to recipients
-			#chmod($filename, 0777);
-			$to = $this->pdf_recipients;
-			if (strstr($to, ',')) {
-				$recipients = explode(',', $to);
-				if (is_array($recipients) && !empty($recipients)) {
-					unset($to);
-					foreach ($recipients as $user) {
-						$to[$user] = $user;
-					}
-				}
-			}
-
-			$config = Kohana::config('reports');
-			$mail_sender_address = $config['from_email'];
-
-			if (!empty($mail_sender_address)) {
-				$from = $mail_sender_address;
-			} else {
-				$hostname = exec('hostname --long');
-				$from = !empty($config['from']) ? $config['from'] : Kohana::config('config.product_name');
-				$from = str_replace(' ', '', trim($from));
-				if (empty($hostname) && $hostname != '(none)') {
-					// unable to get a valid hostname
-					$from = $from . '@localhost';
-				} else {
-					$from = $from . '@'.$hostname;
-				}
-			}
-
-			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE.'/', '', $filename);
-
-			# $mail_sent will contain the nr of mail sent - not used at the moment
-			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
+			$report_sender = new Send_report_Model();
+			$mail_sent = $report_sender->send($this->pdf_recipients, $filename, str_replace(K_PATH_CACHE.'/', '', $filename));
 
 			return $mail_sent;
 		}
@@ -4184,13 +4199,18 @@ class Reports_Controller extends Authenticated_Controller
 		$str = trim($str);
 		$str = str_replace(',', '_', $str);
 		if (empty($str)) return false;
-		$extension = 'pdf';
+		$extensions = array('pdf', 'csv');
+		$extension = 'pdf'; // default
 		if (strstr($str, '.')) {
 			$parts = explode('.', $str);
 			if (is_array($parts)) {
 				$str = '';
 				for ($i=0;$i<(sizeof($parts)-1);$i++) {
 					$str .= $parts[$i];
+				}
+				$wanted_extension = end($parts);
+				if(in_array($wanted_extension, $extensions)) {
+					$extension = $wanted_extension;
 				}
 				$str .= '.'.$extension;
 			}
@@ -4247,6 +4267,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		// check some fields a little extra
 		switch ($field) {
+			case 'local_persistent_filepath':
+				if(!is_writable(rtrim($new_value, '/').'/')) {
+					echo $this->translate->_("Can't write to '$new_value'. Provide another path.")."<br />";
+					return;
+				}
+				break;
 			case 'recipients': // convert ';' to ','
 				$new_value = str_replace(';', ',', $new_value);
 				$rec_arr = explode(',', $new_value);

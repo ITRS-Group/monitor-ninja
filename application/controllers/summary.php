@@ -1173,44 +1173,30 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$pdf->Output($filename, $action);
+
+		// the local path must be specified and there must be an original pdf
+		if($this->pdf_local_persistent_filepath && 'F' == $action) {
+			try {
+				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
+			} catch(Exception $e) {
+				if(request::is_ajax()) {
+					return json::fail($e->getMessage());
+				}
+
+				// @todo log failure
+				echo "<pre>";
+				var_dump(__LINE__);
+				var_dump($e->getMessage());
+				var_dump('DYING');
+				die;
+			}
+		}
+
 		$mail_sent = 0;
 		if ($send_by_mail) {
-			# send file as email to recipients
-			$to = $this->pdf_recipients;
-			if (strstr($to, ',')) {
-				$recipients = explode(',', $to);
-				if (is_array($recipients) && !empty($recipients)) {
-					unset($to);
-					foreach ($recipients as $user) {
-						$to[$user] = $user;
-					}
-				}
-			}
+			$report_sender = new Send_report_Model();
+			$mail_sent = $report_sender->send($this->pdf_recipients, $filename, str_replace(K_PATH_CACHE.'/', '', $filename));
 
-			$config = Kohana::config('reports');
-			$mail_sender_address = $config['from_email'];
-
-			if (!empty($mail_sender_address)) {
-				$from = $mail_sender_address;
-			} else {
-				$hostname = exec('hostname --long');
-				$from = !empty($config['from']) ? $config['from'] : Kohana::config('config.product_name');
-				$from = str_replace(' ', '', trim($from));
-				if (empty($hostname) && $hostname != '(none)') {
-					// unable to get a valid hostname
-					$from = $from . '@localhost';
-				} else {
-					$from = $from . '@'.$hostname;
-				}
-			}
-
-			$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-			$subject = $this->translate->_('Scheduled report').": ".str_replace(K_PATH_CACHE.'/', '', basename($filename));
-
-			# $mail_sent will contain the nr of mail sent - not used at the moment
-			$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($filename => 'pdf'));
-
-			# remove file from cache folder
 			unlink($filename);
 			return $mail_sent;
 		}
