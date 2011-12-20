@@ -55,7 +55,6 @@ class Send_report_Model extends Model {
 		$subject = $this->translate->_('Scheduled report').": $label_filename";
 
 		$filetype = 'pdf';
-		$dot_position = strpos($label_filename, '.');
 		if('.csv' == substr($label_filename, -4, 4)) {
 			$filetype = 'csv';
 		}
