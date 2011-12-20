@@ -54,12 +54,13 @@ class Send_report_Model extends Model {
 		$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
 		$subject = $this->translate->_('Scheduled report').": $label_filename";
 
-		# $mail_sent will contain the nr of mail sent - not used at the moment
 		$filetype = 'pdf';
 		$dot_position = strpos($label_filename, '.');
-		if(false !== $dot_position) {
-			$filetype = substr($label_filename, $dot_position);
+		if('.csv' == substr($label_filename, -4, 4)) {
+			$filetype = 'csv';
 		}
+
+		# $mail_sent will contain the nr of mail sent - not used at the moment
 		$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($path_to_file => $filetype));
 
 		return (boolean) $mail_sent;
