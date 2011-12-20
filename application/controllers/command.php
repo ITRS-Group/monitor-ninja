@@ -619,6 +619,17 @@ class Command_Controller extends Authenticated_Controller
 				$multi_param[$param_str] = $obj;
 				$nagios_commands[] = nagioscmd::build_command($cmd, $multi_param);
 			}
+		} else if ((isset($param['downtime_id']) && is_array($param['downtime_id'])) ||
+			(isset($param['trigger_id']) && is_array($param['trigger_id']))) {
+				if (isset($param['trigger_id']))
+					$param_str = 'trigger_id';
+				else
+					$param_str = 'downtime_id';
+			foreach ($param[$param_str] as $did) {
+				$multi_param = $param;
+				$multi_param[$param_str] = $did;
+				$nagios_commands[] = nagioscmd::build_command($cmd, $multi_param);
+			}
 		} else {
 			$nagios_commands[] = nagioscmd::build_command($cmd, $param);
 		}
