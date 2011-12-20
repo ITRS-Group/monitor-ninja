@@ -4169,7 +4169,7 @@ class Reports_Controller extends Authenticated_Controller
 			'report' => $translate->_("Select the saved report to schedule"),
 			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
 			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
-			'filename' => $translate->_("This field lets you select a custom filename for the report"),
+			'filename' => $translate->_("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar).")
