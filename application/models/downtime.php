@@ -97,9 +97,6 @@ class Downtime_Model extends Model
 		}
 
 		$result = $db->query($query);
-		if(!$result->count()) {
-			return false;
-		}
 		return $result;
 	}
 

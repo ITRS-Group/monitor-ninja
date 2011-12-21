@@ -420,17 +420,13 @@ class Nagios_auth_Model extends Model
 		if ($this->view_hosts_root === true)
 			return true;
 
-		if (!$this->hosts)
-			$this->get_authorized_hosts();
-
-		if (is_numeric($host)) {
-			if (isset($this->hosts[$host]))
-			return true;
-		}
-		if (isset($this->hosts_r[$host]))
-			return true;
-
-		return false;
+		// should always return "0" or "1"
+		if (is_numeric($host))
+			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$host.' AND contact = '.$this->id;
+		else
+			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN host ON host.id = ca.host WHERE host_name = '.$this->db->escape($host).' AND contact = '.$this->id;
+		$res = $this->db->query($query);
+		return ($res->current()->cnt != '0');
 	}
 
 	public function is_authorized_for_service($service)
@@ -438,17 +434,13 @@ class Nagios_auth_Model extends Model
 		if ($this->view_services_root === true)
 			return true;
 
-		if (!$this->services)
-			$this->get_authorized_services();
-
-		if (is_numeric($service)) {
-			if (isset($this->services[$service]))
-			return true;
-		}
-		if (isset($this->services_r[$service]))
-			return true;
-
-		return false;
+		// should always return "0" or "1"
+		if (is_numeric($services))
+			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
+		else
+			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE concat(concat(service.host_name, ";"), service.service_description) = '.$this->db->escape($service).' AND contact = '.$this->id;
+		$res = $this->db->query($query);
+		return ($res->current()->cnt != '0');
 	}
 
 	public function is_authorized_for_hostgroup($hostgroup)
