@@ -435,7 +435,7 @@ class Nagios_auth_Model extends Model
 			return true;
 
 		// should always return "0" or "1"
-		if (is_numeric($services))
+		if (is_numeric($service))
 			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
 		else
 			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE concat(concat(service.host_name, ";"), service.service_description) = '.$this->db->escape($service).' AND contact = '.$this->id;
