@@ -46,7 +46,7 @@ if (isset($this->template->js_header))
 				position:absolute;
 				top:5px;
 				left:5px;
-				background: url(<?php echo $this->add_template_path(customlogo::getImage('noc')); ?>) no-repeat;
+				background: url(<?php echo $this->add_template_path('icons/icon.png'); ?>) no-repeat;
 				width:19px;
 				height:35px;
 				z-index:999;
