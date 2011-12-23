@@ -11,11 +11,9 @@ class customlogo_Core {
 		if (!Kohana::Config('customlogo.enable'))
 			return;
 
-		$logo = customlogo::imageExists(customlogo::getImage());
+		$logo = customlogo::imageExists($image = customlogo::getImage());
 
 		if ($logo) {
-			$image = customlogo::getImage();
-			list($width, $height, $type, $attr)= getimagesize($image);
 			$height = 30;
 			echo html::image(array(
 						'src' => $image,
@@ -36,7 +34,10 @@ class customlogo_Core {
 	 */
 	function imageExists($logo)
 	{
-		return is_readable($logo);
+		if (is_file($logo))
+			return is_readable($logo);
+
+		return false;
 	}
 
 	/**
@@ -45,7 +46,7 @@ class customlogo_Core {
 	function getImage()
 	{
 		$path = 'application/views/themes/default/icons/';
-		$icon = Kohana::config('customlogo.path') . Kohana::config('customlogo.default_icon');
+		$icon = $path . Kohana::config('customlogo.path') . Kohana::config('customlogo.default_icon');
 
 		/**
 		 * Get list of icons found in the custom_logo dir and
@@ -61,7 +62,7 @@ class customlogo_Core {
 		}
 
 		foreach ($images as $image) {
-			if ($image == $custom[1] . '.png') {
+			if (($image == $custom[1] . '.png') || ($image == $custom[1] . '.jpg')) {
 				return $path . Kohana::config('customlogo.path') . $image;
 			}
 		}
@@ -79,7 +80,7 @@ class customlogo_Core {
 		$images = false;
 		if ($fh = opendir(APPPATH.'views/themes/default/icons/'.Kohana::Config('customlogo.path'))) {
 			while (false !== ($file = readdir($fh))) {
-				if (substr($file, -4) == '.png') {
+				if ((substr($file, -4) == '.png') || (substr($file, -4) == '.jpg')) {
 					$images[] = $file;
 				}
 			}

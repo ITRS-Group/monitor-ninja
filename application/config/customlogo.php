@@ -20,6 +20,8 @@ $config['pattern'] = '/^(.*)-.*$/';
 
 /**
  * The default icon to be used if the "custom_logo" is missing
+ * Leave empty if you don't want to display a custom logo for
+ * those who don't have a matching image file
  */
 $config['default_icon'] = 'icon.png';
 
