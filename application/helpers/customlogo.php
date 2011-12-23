@@ -4,24 +4,48 @@
  */
 class customlogo_Core {
 	/**
+	 * Display the div with the logo if it's all enabled
+	 */
+	function Render()
+	{
+		if (!Kohana::Config('customlogo.enable'))
+			return;
+
+		$logo = customlogo::imageExists(customlogo::getImage());
+
+		if ($logo) {
+			$image = customlogo::getImage();
+			list($width, $height, $type, $attr)= getimagesize($image);
+			$height = 30;
+			echo html::image(array(
+						'src' => $image,
+						'height' => $height,
+					),
+					array(
+						'alt' => '',
+						'style' => 'padding: 2px;',
+					)
+				);
+		}
+
+		return;
+	}
+
+	/**
+	 * Function to check if the image actually exists, else we won't display the logo
+	 */
+	function imageExists($logo)
+	{
+		return is_readable($logo);
+	}
+
+	/**
 	 * Get the logo we should use based on some nifty logic
 	 */
-	function getImage($view = false)
+	function getImage()
 	{
-		$normal_path = 'application/views/themes/default/icons/';
-		$noc_path = 'icons/';
-
-		if ($view == 'noc') {
-			$path = $noc_path;
-		} else {
-			$path = $normal_path;
-		}
-
-		$icon = $path . "icon.png";
-
-		if (!Kohana::Config('customlogo.enable')) {
-			return $icon;
-		}
+		$path = 'application/views/themes/default/icons/';
+		$icon = Kohana::config('customlogo.path') . Kohana::config('customlogo.default_icon');
 
 		/**
 		 * Get list of icons found in the custom_logo dir and

@@ -18,6 +18,11 @@ $config['path'] = 'custom_logos/';
  */
 $config['pattern'] = '/^(.*)-.*$/';
 
+/**
+ * The default icon to be used if the "custom_logo" is missing
+ */
+$config['default_icon'] = 'icon.png';
+
 
 # check for custom config files that
 # won't be overwritten on upgrade

@@ -195,7 +195,7 @@ if (isset($this) && isset($this->template->js_header))
 			</div>
 		<?php } ?>
 			<div id="quicklinks">
-
+				<?php customlogo::render(); ?>
 			</div>
 			<div id="icons">
 				<ul>
