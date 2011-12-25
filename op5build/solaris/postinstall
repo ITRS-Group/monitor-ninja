@@ -12,7 +12,7 @@ chown -R monitor:daemon /opt/monitor
 chown -R monitor:daemon /var/www/
 
 # svcadm restart  doesn't work, if service is not started
-svcadm disable svc:/network/http:cswapache2
+svcadm disable cswapache2
 sleep 3
-svcadm enable svc:/network/http:cswapache2
+svcadm enable cswapache2
 
