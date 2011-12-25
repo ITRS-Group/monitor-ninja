@@ -1,11 +1,11 @@
 #!/bin/sh
 prefix='/opt/monitor/op5/ninja'
+AP2CONFDIR='/opt/csw/apache2/etc'
 
-
-/usr/xpg4/bin/grep -q 'Include /etc/opt/csw/apache2/extra/ninja.conf' /etc/opt/csw/apache2/httpd.conf
+/usr/xpg4/bin/grep -q 'Include /opt/csw/apache2/etc/extra/ninja.conf' $AP2CONFDIR/httpd.conf
 if [ $? -eq 1 ]; then
-        echo "Include /etc/opt/csw/apache2/extra/ninja.conf" >> \
-        /etc/opt/csw/apache2/httpd.conf
+        echo "Include /opt/csw/apache2/etc/extra/ninja.conf" >> \
+        $AP2CONFDIR/httpd.conf
 fi
 
 chown -R monitor:daemon /opt/monitor
@@ -13,17 +13,6 @@ chown -R monitor:daemon /var/www/
 
 # svcadm restart  doesn't work, if service is not started
 svcadm disable svc:/network/http:cswapache2
+sleep 3
 svcadm enable svc:/network/http:cswapache2
-
-# We should not setup mysql 
-exit 0
-
-sh $prefix/install_scripts/ninja_db_init.sh
-
-# Set driver to LDAP if ad or ldap is configured
-if [ -f /opt/op5sys/etc/ldapserver ]; then
-        sed -e "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/"\
-                $prefix/application/config/auth.php > $prefix/application/config/auth_temp.php
-        mv $prefix/application/config/auth_temp.php $prefix/application/config/auth.php
-fi
 

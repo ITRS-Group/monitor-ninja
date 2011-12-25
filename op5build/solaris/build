@@ -3,6 +3,7 @@ curdir=`pwd`
 basedir=`dirname $curdir`
 tempdir=$basedir/temp
 prefix='/opt/monitor/op5/ninja'
+AP2CONFDIR='/opt/csw/apache2/etc'
 PATH_DEF=`echo $PATH`
 PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin:/usr/ccs/bin
 
@@ -20,7 +21,7 @@ popd
 cp -r * $tempdir$prefix
 for d in test op5build monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
 do
-        rm -rf $tempdir$prefix/$d
+  	rm -rf $tempdir$prefix/$d
 done
 
 /opt/csw/bin/gsed -i -e 's/\([\t ]const ALLOW_PRODUCTION =\) .*/\1 TRUE;/' \
@@ -55,9 +56,10 @@ install -m 644 -c $tempdir/etc/cron.d/ install_scripts/recurring_downtime.cronta
 /opt/csw/bin/gsed -i 's#tar tfz#/opt/csw/bin/gtar tfz#' $tempdir/opt/monitor/op5/ninja/application/controllers/backup.php
 
 # executables
+
 for f in cli-helpers/apr_md5_validate install_scripts/ninja_db_init.sh;
 do
-        chmod 755 $tempdir$prefix/$f
+  	chmod 755 $tempdir$prefix/$f
 done
 
 # The custom_widgets dir need to be writable by the apache user
@@ -69,9 +71,7 @@ ln -sf $prefix $tempdir/var/www/html/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ $tempdir$prefix/op5
 
-mkdir -p $tempdir/etc/opt/csw/apache2/extra/
-cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir/etc/opt/csw/apache2/extra/ninja.conf
-
+mkdir -p $tempdir$AP2CONFDIR/extra
+cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/extra/ninja.conf
 
 PATH=$PATH_DEF
-
