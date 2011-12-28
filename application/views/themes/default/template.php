@@ -203,7 +203,7 @@ if (isset($this) && isset($this->template->js_header))
 					<li onclick="show_info()"><?php echo html::image('application/views/themes/default/icons/16x16/versioninfo.png',array('alt' => _('Product information'), 'title' => _('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo html::image('application/views/themes/default/icons/16x16/refresh.png',array('alt' => _('Refresh page'), 'title' => _('Refresh page'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo _('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
-					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image('application/views/themes/default/icons/24x24/save_search.png', array('title' => _('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
+					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image('application/views/themes/default/icons/16x16/save_search.png', array('title' => _('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
 				</ul>
 			</div>
 		</div>
