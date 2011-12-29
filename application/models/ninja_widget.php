@@ -45,6 +45,7 @@ function sort_widgets_by_friendly_name($a, $b) {
 
 class Ninja_widget_Model extends Model
 {
+	const FIRST_INSTANCE_ID = 1; /** When getting "any" instance of a widget, we will specifically look for this */
 	public $name;
 	public $page;
 	public $instance_id;
@@ -115,12 +116,24 @@ class Ninja_widget_Model extends Model
 
 		$db = Database::instance();
 
-		if (is_numeric($instance_id))
-			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).($instance_id===false?'':' AND instance_id = '.$db->escape($instance_id));
-		else
-			$subquery = '(page='.$db->escape($page).' OR page=\'tac/index\') AND (username IS NULL OR username='.$db->escape($user).' AND instance_id IS NULL)';
+		if (is_numeric($instance_id)) {
+			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).' AND instance_id = '.$db->escape($instance_id));
+			$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
+		}
+		else {
+			$options = array(
+				array('page' => $page, 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
+				array('page' => $page, 'username' => $user, 'instance_id' => null),
+				array('page' => $page, 'username' => null, 'instance_id' => null),
+				array('page' => 'tac/index', 'username' => null, 'instance_id' => null),
+			);
+			foreach ($options as $option) {
+				$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND page='.$db->escape($option['page']).' AND username '.(is_null($option['username'])?'IS NULL':'='.$db->escape($option['username'])).' AND instance_id '.(is_null($option['instance_id'])?'IS NULL':'='.$db->escape($option['instance_id'])).' LIMIT 1');
+				if (count($result))
+					break;
+			}
+		}
 
-		$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
 
 		if (!count($result))
 			return false;
@@ -264,7 +277,7 @@ class Ninja_widget_Model extends Model
 		if (isset($res->max_instance_id))
 			$the_copy->instance_id = $res->max_instance_id + 1;
 		else
-			$the_copy->instance_id = 0;
+			$the_copy->instance_id = self::FIRST_INSTANCE_ID;
 		$the_copy->save();
 		$order = self::fetch_widget_order($this->page);
 		foreach ($order as $container => $widgets) {
