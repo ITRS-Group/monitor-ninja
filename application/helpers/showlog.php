@@ -4,6 +4,12 @@
  */
 class showlog_Core
 {
+	/**
+	 * Generate HTML-formatted representation of the on-disk nagios log
+	 *
+	 * @param $options A magical array of options to use - check source for more info
+	 * @return HTML-representation of the log
+	 */
 	public function show_log_entries($options)
 	{
 		# default limit

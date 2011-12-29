@@ -27,6 +27,11 @@ class Program_status_Model extends Model
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
+	/**
+	 * List all nagios daemons by instance name
+	 *
+	 * @return Database result object or false
+	 */
 	public function list_program_status()
 	{
 		$db = Database::instance();

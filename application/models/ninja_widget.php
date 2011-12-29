@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Sort method to sort widgets alphabetically by displayed name
+ */
 function sort_widgets_by_friendly_name($a, $b) {
 	return strcmp($a->name, $b->name) || strcmp($a->friendly_name, $b->friendly_name);
 }
@@ -43,12 +46,12 @@ function sort_widgets_by_friendly_name($a, $b) {
 
 class Ninja_widget_Model extends Model
 {
-	const FIRST_INSTANCE_ID = 1; /** When getting "any" instance of a widget, we will specifically look for this */
-	public $name;
-	public $page;
-	public $instance_id;
-	public $username;
-	public $setting;
+	const FIRST_INSTANCE_ID = 1; /**< When getting "any" instance of a widget, we will specifically look for this */
+	public $name; /**< The internal name of the widget */
+	public $page; /**< The page the widget is shown on */
+	public $instance_id; /**< The widget's instance id */
+	public $username; /**< The user's username */
+	public $setting; /**< The widget's settings */
 	/**
 	 * You should not call this constructor directly!
 	 *
@@ -67,7 +70,8 @@ class Ninja_widget_Model extends Model
 
 	/**
 	 * Fetches a list of widget names for a given page
-	 * @returns array of Ninja_widget_Model objects
+	 * @param $page The page name
+	 * @returns array of Ninja_widget_Model objects - not all of them with ID's!
 	 */
 	public static function fetch_all($page)
 	{
@@ -157,6 +161,10 @@ class Ninja_widget_Model extends Model
 		return $obj;
 	}
 
+	/**
+	 * Save any changes to the widget. If the widget is new or not yet copied to
+	 * the user's own widgets, a new ID and instance ID will be chosen.
+	 */
 	public function save()
 	{
 		$new = false;
@@ -211,10 +219,12 @@ class Ninja_widget_Model extends Model
 	}
 
 	/**
-	* Merges old settings with new settings and reurns serialized settings
-	* If settings index of new settings exists in old settings the old value
-	* will be	replaced with the value of the new one.
-	*/
+	 * Given an array of new settings, update the local settings with those.
+	 * Any preexisting settings not in $new_setting will be kept around.
+	 * This does not write to database - see save()
+	 *
+	 * @param $new_setting Array of new settings to overwrite the old ones with
+	 */
 	public function merge_settings($new_setting)
 	{
 		if (!is_array($this->setting))
@@ -224,6 +234,10 @@ class Ninja_widget_Model extends Model
 
 	/**
 	* Add a new widget to ninja_widgets table
+	* @param $page The name of the page this should be displayed on - usually 'tac/index'
+	* @param $name The internal name of the widget
+	* @param $friendly_name The widget name that users should see
+	* @return false on error, true otherwise
 	*/
 	public static function install($page, $name, $friendly_name)
 	{
@@ -245,7 +259,8 @@ class Ninja_widget_Model extends Model
 
 	/**
 	 * Remove any instance of a widget from the ninja_widgets stable
-	 * Scary to expose to end users.
+	 * Scary to expose to end users, as it does no authorization checks.
+	 * @param $name The name of the widget to uninstall
 	 */
 	public static function uninstall($name)
 	{
@@ -274,6 +289,7 @@ class Ninja_widget_Model extends Model
 
 	/**
 	 * Create new instance of widget and save
+	 * @return A widget object for the copy
 	 */
 	public function copy()
 	{
@@ -373,6 +389,10 @@ class Ninja_widget_Model extends Model
 		return self::parse_widget_order($data->setting);
 	}
 
+	/**
+	 * Given a structure like array(placeholder1 => array(widget1, widget2, widgetn), placeholder2 => array(...))
+	 * serialize it and save it in the database.
+	 */
 	public static function set_widget_order($page, $widget_order) {
 		$res = array();
 		foreach ($widget_order as $key => $ary) {

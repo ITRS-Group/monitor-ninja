@@ -125,6 +125,9 @@ class Group_Model extends Model
 	 * @param $servicestatus Service status filter
 	 * @param $service_props Service properties filter
 	 * @param $host_props Host properties filter
+	 * @param $limit The number of rows to fetch
+	 * @param $sort_field The field to sort on
+	 * @param $sort_order The sort ordering
 	 * @return db result
 	 */
 	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false, $limit=false, $sort_field=false, $sort_order='DESC')

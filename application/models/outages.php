@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * usort callback to order outages by severity
+ */
 function sort_outages ($a, $b) {
 	// shouldn't happen, but let's not crash...
 	if (!isset($a['severity']))
@@ -12,9 +15,12 @@ function sort_outages ($a, $b) {
 	return ($a['severity'] < $b['severity']) ? 1 : -1;
 }
 
+/**
+ * Model for outage data
+ */
 class Outages_Model extends Model
 {
-	const SERVICE_SEVERITY_DIVISOR = 4;
+	const SERVICE_SEVERITY_DIVISOR = 4; /**< Magical constant that tells us how many times less interesting a service is compared to a host */
 	private $auth = false;
 
 	public function __construct()

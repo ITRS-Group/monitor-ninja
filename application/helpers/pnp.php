@@ -14,6 +14,13 @@ class pnp_Core
 		return !!self::get_sources($host, $service);
 	}
 
+	/**
+	 * Given a host and optionally a service, return all rrd sources
+	 *
+	 * @param $host A host name
+	 * @param $service A service description
+	 * @return An array of DS sources
+	 */
 	public static function get_sources($host=false, $service=false)
 	{
 		if (empty($host)) {

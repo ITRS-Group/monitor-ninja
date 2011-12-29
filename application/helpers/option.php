@@ -5,14 +5,24 @@
  */
 class option_Core
 {
-	private $should_render_js = true;
-	public $ns;
-	public $name;
-	public $label;
-	private $type;
-	private $args;
-	private $default;
+	private $should_render_js = true; /**< True to auto-render javascript to handle changes */
+	public $ns; /**< A unique namespace, usually the widget name */
+	public $name; /**< A field name, should be "code-friendly" */
+	public $label; /**< The label text, should be translated */
+	private $type; /**< The widget type, ie "input", "checkbox", "textarea", etc - must exist in kohana's form helper */
+	private $args; /**< Arguments to send to the form helper to render it properly */
+	private $default; /**< A default value to fall back on */
 
+	/**
+	 * Constructor
+	 *
+	 * @param $ns A unique namespace for the options, usually the widget name
+	 * @param $name A field name, should be "code-friendly" so lower-case ascii and no spaces
+	 * @param $label A (translated) label to print
+	 * @param $type The widget type, ie "input", "checkbox", "textarea", etc - must exist in kohana's form helper
+	 * @param $args An attribute-value map that will be added to the widget
+	 * @param $default Default value for the widget
+	 */
 	public function __construct($ns, $name, $label, $type, $args=array(), $default=0) {
 		$this->ns = $ns;
 		$this->name = $name;
@@ -22,20 +32,38 @@ class option_Core
 		$this->default = $default;
 	}
 
+	/**
+	 * True to auto-render javascript to handle changes, false otherwise
+	 */
 	public function should_render_js($render_js) {
 		$this->should_render_js = $render_js;
 	}
 
+	/**
+	 * Get the value for the setting
+	 *
+	 * @param $settings Settings from a widget model object
+	 * @return The setting if set, otherwise the default value
+	 */
 	public function value($settings) {
 		if (isset($settings[$this->name]))
 			return $settings[$this->name];
 		return $this->default;
 	}
 
+	/**
+	 * Print the label tag
+	 * @param $id Instance id for this widget
+	 */
 	public function render_label($id) {
 		echo "<label for=\"$this->ns-$this->name-$id\">"._($this->label)."</label>";
 	}
 
+	/**
+	 * Print the widget itself
+	 * @param $id Instance id for this widget
+	 * @param $settings Settings from a widget model object
+	 */
 	public function render_widget($id, $settings) {
 		$type = $this->type;
 
@@ -69,6 +97,10 @@ class option_Core
 		echo $f->$type($args);
 	}
 
+	/**
+	 * Returns the javascript to handle option changes
+	 * Will return the empty string if should_render_js is false
+	 */
 	public function render_js() {
 		if (!$this->should_render_js)
 			return '';

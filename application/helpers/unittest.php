@@ -2,10 +2,7 @@
 /**
  * Kohana help class for unit tests
  *
- *
- * @package    NINJA
  * @author     op5 AB
- * @license    GPL
  */
 class unittest_Core {
 

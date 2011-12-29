@@ -59,7 +59,7 @@ class json_Core
 	/**
 	 * [error] => message
 	 *
-	 * @param string $reason = null
+	 * @param $reason string
 	 */
 	public static function fail($reason = null) {
 		return self::_send_response(array('error' => $reason), 1);
@@ -68,7 +68,7 @@ class json_Core
 	/**
 	 * [result] => message
 	 *
-	 * @param string $result = null
+	 * @param $result string
 	 */
 	public static function ok($result = null) {
 		return self::_send_response(array('result' => $result));

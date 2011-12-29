@@ -1,44 +1,47 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for host objects
+ */
 class Host_Model extends Model {
 	private $auth = false;
 	private $host_list = false; # List of hosts to get status for
 	private $service_host_list = false;
 	private $table = "host";
 
-	public $total_host_execution_time = 0;
-	public $min_host_execution_time = 0;
-	public $max_host_execution_time = 0;
-	public $total_host_percent_change_a = 0;
-	public $min_host_percent_change_a = 0;
-	public $max_host_percent_change_a = 0;
-	public $total_host_latency = 0;
-	public $min_host_latency = 0;
-	public $max_host_latency = 0;
+	public $total_host_execution_time = 0; /**< Total host check execution time */
+	public $min_host_execution_time = 0; /**< Minimum host check execution time */
+	public $max_host_execution_time = 0; /**< Maximum host check execution time */
+	public $total_host_percent_change_a = 0; /**< Total host percentage change for active checks */
+	public $min_host_percent_change_a = 0; /**< Minimum host percentage change for active checks */
+	public $max_host_percent_change_a = 0; /**< Maximum host percentage change for active checks */
+	public $total_host_latency = 0; /**< Total host check latency */
+	public $min_host_latency = 0; /**< Minimum host check latency */
+	public $max_host_latency = 0; /**< Maximum host check latency */
 
 	/***** ACTIVE HOST CHECKS *****/
-	public $total_active_host_checks = 0;
-	public $active_host_checks_1min = 0;
-	public $active_host_checks_5min = 0;
-	public $active_host_checks_15min = 0;
-	public $active_host_checks_1hour = 0;
-	public $active_host_checks_start = 0;
-	public $active_host_checks_ever = 0;
+	public $total_active_host_checks = 0; /**< The total number of active host checks */
+	public $active_host_checks_1min = 0; /**< The number of executed host checks the last minute */
+	public $active_host_checks_5min = 0; /**< The number of executed host checks the last 5 minutes */
+	public $active_host_checks_15min = 0; /**< The number of executed host checks the last 15 minutes */
+	public $active_host_checks_1hour = 0; /**< The number of executed host checks the last hour */
+	public $active_host_checks_start = 0; /**< The number of executed host checks since program start */
+	public $active_host_checks_ever = 0; /**< The number of executed host checks ever recorded */
 
 	/***** PASSIVE HOST CHECKS *****/
-	public $passive_host_checks_1min = 0;
-	public $total_passive_host_checks = 0;
-	public $passive_host_checks_5min = 0;
-	public $passive_host_checks_15min = 0;
-	public $passive_host_checks_1hour = 0;
-	public $passive_host_checks_start = 0;
-	public $passive_host_checks_ever = 0;
+	public $total_passive_host_checks = 0; /**< The total number of passive host checks */
+	public $passive_host_checks_1min = 0; /**< The number of received passive host checks the last minute */
+	public $passive_host_checks_5min = 0; /**< The number of received passive host checks the last 5 minutes */
+	public $passive_host_checks_15min = 0; /**< The number of received passive host checks the last 15 minutes */
+	public $passive_host_checks_1hour = 0; /**< The number of received passive host checks the last hour */
+	public $passive_host_checks_start = 0; /**< The number of received passive host checks since program start */
+	public $passive_host_checks_ever = 0; /**< The number of received passive host checks ever recorded */
 
-	public $total_host_percent_change_b = 0;
-	public $min_host_percent_change_b = 0;
-	public $max_host_percent_change_b = 0;
+	public $total_host_percent_change_b = 0; /**< Total host percentage change for passive checks */
+	public $min_host_percent_change_b = 0; /**< Minimum host percentage change for passive checks */
+	public $max_host_percent_change_b = 0; /**< Maximum host percentage change for passive checks */
 
-	/*
+	/**
 	* Only show services
 	* for each host if this is set to true
 	* Accepts 'all' as input, which will return
@@ -46,15 +49,15 @@ class Host_Model extends Model {
 	*/
 	public $show_services = false;
 
-	public $state_filter = false; # value of current_state to filter for
-	public $sort_field ='';
-	public $sort_order='ASC'; # ASC/DESC
-	public $service_filter = false;
-	public $serviceprops = false;
-	public $hostprops = false;
-	public $num_per_page = false;
-	public $offset = false;
-	public $count = false;
+	public $state_filter = false; /**< value of current_state to filter for */
+	public $sort_field ='';/**< Field to sort on */
+	public $sort_order='ASC'; /**< ASC/DESC */
+	public $service_filter = false; /**< Bitmask of service states to get */
+	public $serviceprops = false; /**< A bitmask of service flags as defined in the nagstat helper */
+	public $hostprops = false; /**< A bitmask of host flags as defined in the nagstat helper */
+	public $num_per_page = false; /**< Number of results per page */
+	public $offset = false; /**< Number of results to skip before getting rows */
+	public $count = false; /**< Skip getting any results, only count the number of matches */
 
 	public function __construct()
 	{
@@ -1049,6 +1052,11 @@ class Host_Model extends Model {
 		}
 	}
 
+	/**
+	 * Given a hostgroup name, return all host data for all hosts in it
+	 * @param $name Hostgroup name
+	 * @return false on error, otherwise database result
+	 */
 	public function get_hosts_for_group($name)
 	{
 		if (empty($name))

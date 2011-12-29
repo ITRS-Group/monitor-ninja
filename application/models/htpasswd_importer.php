@@ -1,21 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for importing htpasswd files to ninja
+ */
 class Htpasswd_importer_Model extends Model
 {
 	private $htpasswd_file = "/opt/monitor/etc/htpasswd.users";
-	public $overwrite = false;
-	public $passwd_ary = array();
+	public $overwrite = false; /**< Overwrite user's passwords */
+	public $passwd_ary = array(); /**< Map between usernames and passwords */
 	private $existing_ary = array();
 	private $db_table = "users";
-	protected $db = false;
 	private $DEBUG = false;
 
+	/**
+	 * Constructor. Parses the provided htpasswd file
+	 */
 	public function __construct($htpasswd_file = false)
 	{
 		$this->htpasswd_file = $htpasswd_file;
 		$this->parse_file($this->htpasswd_file);
 	}
 
+	/**
+	 * Set option in model
+	 */
 	public function set_option($k, $v)
 	{
 		if (!isset($this->$k))
@@ -25,12 +33,11 @@ class Htpasswd_importer_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Read all existing users from db
+	 */
 	private function get_existing_users()
 	{
-		if (!$this->db) {
-			$this->db_connect();
-		}
-
 		$query = 'SELECT username, password_algo, password ' .
 			'FROM ' . $this->db_table;
 		$result = $this->db->query($query);
@@ -48,53 +55,12 @@ class Htpasswd_importer_Model extends Model
 		}
 	}
 
-	# connects to and selects database. false on error, true on success
-	public function db_connect()
-	{
-		$this->db = Database::instance();
-	}
-
-	private function db_quote($str)
-	{
-		$qstr = $this->db->escape($str);
-		if ($qstr) {
-			return $qstr;
-		}
-		return "'" . str_replace("'", "''", $str) . "'";
-	}
-
-	# fetch a single row to associative array
-	# execute an SQL query with error handling
-	public function sql_exec_query($query)
-	{
-		if(empty($query))
-			return(false);
-
-		# workaround for now
-		if($this->db === false) {
-			$this->db_connect();
-		}
-		try
-		{
-			return $this->db->query($query);
-		}
-		catch(Exception $ex)
-		{
-			$error = $ex->getMessage();
-			echo "SQL query failed with the following error message:<br />\n" .
-			$error . "<br />\n";
-			if($this->DEBUG) echo "Query was:<br />\n<b>$query</b><br />\n";
-			return false;
-		}
-	}
-
+	/**
+	 * Write all password hashes to db
+	 */
 	public function write_hashes_to_db()
 	{
 		$this->get_existing_users();
-
-		if (!$this->db) {
-			$this->db_connect();
-		}
 
 		foreach ($this->passwd_ary as $user => $ary) {
 			$hash = $ary['hash'];
@@ -114,21 +80,21 @@ class Htpasswd_importer_Model extends Model
 				}
 
 				$query = "UPDATE $this->db_table SET " .
-					"password_algo = " . $this->db_quote($algo) . ", " .
-					"password = " . $this->db_quote($hash) . " " .
-					"WHERE username = " . $this->db_quote($user);
+					"password_algo = " . $this->db->escape($algo) . ", " .
+					"password = " . $this->db->escape($hash) . " " .
+					"WHERE username = " . $this->db->escape($user);
 			} else {
 				$query = 'INSERT INTO ' . $this->db_table .
 					'(username, password_algo, password) VALUES(' .
-					$this->db_quote($user) . ", " .
-					$this->db_quote($algo) . ", " .
-					$this->db_quote($hash) . ")";
+					$this->db->escape($user) . ", " .
+					$this->db->escape($algo) . ", " .
+					$this->db->escape($hash) . ")";
 					$is_new = true; # mark this as new user
 			}
 
 			$result = $this->db->query($query);
 			if ($result !== false) {
-				$user_res = $this->db->query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db_quote($user));
+				$user_res = $this->db->query('SELECT id FROM '.$this->db_table.' WHERE username = ' . $this->db->escape($user));
 				if ($user_res != false) {
 					$ary = $user_res->current();
 					unset ($user_res);
@@ -145,11 +111,14 @@ class Htpasswd_importer_Model extends Model
 				# delete this user as it is no longer available in
 				# the received list of users
 				$this->db->query("DELETE FROM ".$this->db_table.
-					" WHERE username=".$this->db_quote($old));
+					" WHERE username=".$this->db->escape($old));
 			}
 		}
 	}
 
+	/**
+	 * Read hashes from file, and save to database
+	 */
 	public function import_hashes($htpasswd_file = false)
 	{
 		$ary = $this->parse_file($htpasswd_file);
@@ -159,6 +128,9 @@ class Htpasswd_importer_Model extends Model
 		return $this->write_hashes_to_db($ary);
 	}
 
+	/**
+	 * Given a hash, return the algorithm name
+	 */
 	public function get_algo(&$hash)
 	{
 		if (!strncmp($hash, "{SHA}", 5)) {
@@ -174,6 +146,9 @@ class Htpasswd_importer_Model extends Model
 		return "sha1";
 	}
 
+	/**
+	 * Parse a htpasswd file
+	 */
 	public function parse_file($htpasswd_file = false)
 	{
 		if (!$htpasswd_file)

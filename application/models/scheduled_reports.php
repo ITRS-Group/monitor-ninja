@@ -1,11 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for scheduled reports
+ */
 class Scheduled_reports_Model extends Model
 {
-	public $db_name = 'merlin';
-	const db_name = 'merlin';
-	const USERFIELD = 'username';
+	const USERFIELD = 'username'; /**< Name of username column in database */
 
+	/**
+	 * Given a scheduled report id, delet it from db
+	 */
 	public function delete_scheduled_report($id=false)
 	{
 		$id = (int)$id;
@@ -140,12 +144,17 @@ class Scheduled_reports_Model extends Model
 		return (!$res || count($res)==0) ? false : $res;
 	}
 
+	/**
+	 * Retrieves the value of a db field for a report id
+	 * @param $type the database column
+	 * @param $id the id of the scheduled report
+	 */
 	public function fetch_scheduled_field_value($type=false, $id=false)
 	{
 		$id = (int)$id;
 		$type = trim($type);
 		if (empty($type) || empty($id)) return false;
-		$sql = "SELECT * FROM scheduled_reports WHERE id=".$id;
+		$sql = "SELECT $type FROM scheduled_reports WHERE id=".$id;
 		$db = Database::instance();
 		$res = $db->query($sql);
 		if (!$res || count($res) == 0) {
@@ -191,14 +200,14 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	 * @param int $id = false
-	 * @param int $rep_type = false
-	 * @param int $saved_report_id = false
-	 * @param int $period = false
-	 * @param string $recipients = false comma separated
-	 * @param string $filename = ''
-	 * @param string $description = ''
-	 * @param string $local_persistent_filepath = ''
+	 * @param $id = false
+	 * @param $rep_type = false
+	 * @param $saved_report_id = false
+	 * @param $period = false
+	 * @param $recipients = false comma separated
+	 * @param $filename = ''
+	 * @param $description = ''
+	 * @param $local_persistent_filepath = ''
 	 * @return string|int either error string or the report's id
 	 */
 	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')

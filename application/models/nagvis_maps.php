@@ -1,7 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
+/**
+ * Model for old nagvis versions, no longer used in monitor
+ */
 class Nagvis_Maps_Model extends Model
 {
+	/**
+	 * Get list of nagvis maps
+	 */
 	public function get_list()
 	{
 		if (Kohana::config('config.nagvis_path') !== false)
@@ -24,6 +29,9 @@ class Nagvis_Maps_Model extends Model
 			return array();
 	}
 
+	/**
+	 * Create new nagvis map
+	 */
 	public function create($map)
 	{
 		if (Kohana::config('config.nagvis_path') === false)
@@ -44,6 +52,9 @@ EOD;
 			return false;
 	}
 
+	/**
+	 * Delete nagvis map
+	 */
 	public function delete($map)
 	{
 		if (Kohana::config('config.nagvis_path') !== false)

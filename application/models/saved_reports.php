@@ -6,9 +6,15 @@
  */
 class Saved_reports_Model extends Model
 {
-	const db_name = 'merlin';
-	const USERFIELD = 'username';
+	const db_name = 'merlin'; /**< Name of reports database */
+	const USERFIELD = 'username'; /**< Name of the user field in database */
 
+	/**
+	 * Return all saved reports for a given report type
+	 *
+	 * @param $type The report type ('avail', 'sla' or 'summary')
+	 * @param $user If set, the user to use to filter reports. If not set or false, the session will be used instead.
+	 */
 	public function get_saved_reports($type='avail', $user=false)
 	{
 		$type = strtolower($type);
@@ -39,6 +45,19 @@ class Saved_reports_Model extends Model
 	}
 
 
+	/**
+	 * Save changes to a report, or save a new report.
+	 *
+	 * @param $type The report type ('avail', 'summary' or 'sla')
+	 * @param $id The report id, or false to create a new one.
+	 * @param $options The new options to save. For summary reports, this will
+	 *        first unset any old options and then set these, for other report
+	 *        types only the options that are set will be overwritten.
+	 * @param $objects The objects included in this report. Not used for
+	 *        summary reports, can be false to not do any changes
+	 * @param $months If an SLA report, change what months are affected
+	 * @return false on error, or the id of the saved report
+	 */
 	public function edit_report_info($type='avail', $id=false, $options=false, $objects=false, $months=false)
 	{
 		$update = false;
@@ -126,8 +145,15 @@ class Saved_reports_Model extends Model
 	}
 
 	/**
-	*	Fetch the ID of a saved report
-	*/
+	 * Fetch the ID of a saved report
+	 *
+	 * FIXME: we shouldn't ask for $name_field, we can figure it out ourselves.
+	 *
+	 * @param $type The report type
+	 * @param $name The report name
+	 * @param $name_field The name of the database field containing the report name
+	 * @return The id of the report
+	 */
 	public function insert_id($type='avail', $name=false, $name_field='report_name')
 	{
 		$name = trim($name);
@@ -450,6 +476,13 @@ class Saved_reports_Model extends Model
 		return (!$res || count($res)==0) ? false : $res;
 	}
 
+	/**
+	 * Given the ID of a saved SLA report, returns the SLA values stored
+	 *
+	 * @param $sla_id ID of the SLA report
+	 * @param $user The user that we should run as, or false to grab username from session
+	 * @return The database result object of (name, value) pairs, or false on error or empty.
+	 */
 	public function get_sla_from_saved_reports($sla_id, $user=false)
 	{
 		$db = Database::instance();

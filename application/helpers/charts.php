@@ -4,6 +4,9 @@
  */
 class charts
 {
+	/**
+	 * Setup the mfchart library
+	 */
 	public static function load($type='pie')
 	{
 		$path = Kohana::find_file('vendor','mfchart/'.ucfirst($type).'Chart');

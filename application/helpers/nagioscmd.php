@@ -1047,6 +1047,9 @@ class nagioscmd_Core
 		return false;
 	}
 
+	/**
+	 * If the provided name is a valid command, return it, otherwise return false
+	 */
 	function cmd_name($name = false)
 	{
 		$info = self::cmd_info($name);
@@ -1168,6 +1171,12 @@ class nagioscmd_Core
 		return false;
 	}
 
+	/**
+	 * Actually submit command to nagios
+	 * @param $cmd The complete command
+	 * @param $pipe_path Path to the nagios path
+	 * @return false on error, else true
+	 */
 	public function submit_to_nagios($cmd, $pipe_path)
 	{
 		$fh = fopen($pipe_path, "w");

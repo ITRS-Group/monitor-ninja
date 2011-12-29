@@ -8,72 +8,70 @@
 class Reports_Model extends Model
 {
 	// state codes
-	const STATE_PENDING = -1;
-	const STATE_OK = 0;
-	const HOST_UP = 0;
-	const HOST_DOWN = 1;
-	const HOST_UNREACHABLE = 2;
-	const HOST_PENDING = -1;
-	const HOST_EXCLUDED = -2;
-	const HOST_ALL = 7;
-	const SERVICE_OK = 0;
-	const SERVICE_WARNING = 1;
-	const SERVICE_CRITICAL = 2;
-	const SERVICE_UNKNOWN = 3;
-	const SERVICE_PENDING = -1;
-	const SERVICE_EXCLUDED = -2;
-	const SERVICE_ALL = 15;
-	const PROCESS_SHUTDOWN = 103;
-	const PROCESS_RESTART = 102;
-	const PROCESS_START = 100;
-	const SERVICECHECK = 701;
-	const HOSTCHECK =  801;
-	const DOWNTIME_START = 1103;
-	const DOWNTIME_STOP = 1104;
-	const PERC_DEC = 3; // nr of decimals in returned percentage
-	const DEBUG = true;
-	const DATERANGE_CALENDAR_DATE = 0; 	/* eg: 2008-12-25 - 2009-02-01 / 6 */
-	const DATERANGE_MONTH_DATE = 1;  	/* eg: july 4 - november 15 / 3 (specific month) */
-	const DATERANGE_MONTH_DAY = 2;  	/* eg: day 1 - 25 / 5  (generic month)  */
-	const DATERANGE_MONTH_WEEK_DAY = 3; /* eg: thursday 1 april - tuesday 2 may / 2 (specific month) */
-	const DATERANGE_WEEK_DAY = 4;  		/* eg: thursday 3 - monday 4 (generic month) */
-	const DATERANGE_TYPES = 5;
+	const STATE_PENDING = -1; /**< Magical state for unchecked objects. In other parts of ninja, 6 is used for this */
+	const STATE_OK = 0; /**< "Everything is fine"-state */
+	const HOST_UP = 0; /**< Host is up */
+	const HOST_DOWN = 1; /**< Host is down */
+	const HOST_UNREACHABLE = 2; /**< Host is unreachable */
+	const HOST_PENDING = -1; /**< Magical state for unchecked hosts. In other parts of ninja, 6 is used for this */
+	const HOST_EXCLUDED = -2; /**< Magical state when a host event falls outside of the specified timeperiod */
+	const HOST_ALL = 7; /**< Bitmask for any non-magical host state */
+	const SERVICE_OK = 0; /**< Service is up */
+	const SERVICE_WARNING = 1; /**< Service is warning */
+	const SERVICE_CRITICAL = 2; /**< Service is critical */
+	const SERVICE_UNKNOWN = 3; /**< Service is unknown */
+	const SERVICE_PENDING = -1; /**< Magical state for unchecked services. In other parts of ninja, 6 is used for this */
+	const SERVICE_EXCLUDED = -2; /**< Magical state when a service event falls outside of the specified timeperiod */
+	const SERVICE_ALL = 15; /**< Bitmask for any non-magical service state */
+	const PROCESS_SHUTDOWN = 103; /**< Nagios code for when it is shut down */
+	const PROCESS_RESTART = 102; /**< Nagios code for when it is restarted - not normally added to report_data, check for stop and start instead */
+	const PROCESS_START = 100; /**< Nagios code for when it is started */
+	const SERVICECHECK = 701; /**< Nagios code for a service check */
+	const HOSTCHECK =  801; /**< Nagios code for a host check */
+	const DOWNTIME_START = 1103; /**< Nagios code for downtime start */
+	const DOWNTIME_STOP = 1104; /**< Nagios code for downtime stop, either because it ended or because it was deleted */
+	const PERC_DEC = 3; /**< Nr of decimals in returned percentage */
+	const DEBUG = true; /**< Debug bool - can't see this is ever false */
+	const DATERANGE_CALENDAR_DATE = 0; 	/**< eg: 2008-12-25 - 2009-02-01 / 6 */
+	const DATERANGE_MONTH_DATE = 1;  	/**< eg: july 4 - november 15 / 3 (specific month) */
+	const DATERANGE_MONTH_DAY = 2;  	/**< eg: day 1 - 25 / 5  (generic month)  */
+	const DATERANGE_MONTH_WEEK_DAY = 3; /**< eg: thursday 1 april - tuesday 2 may / 2 (specific month) */
+	const DATERANGE_WEEK_DAY = 4;  		/**< eg: thursday 3 - monday 4 (generic month) */
+	const DATERANGE_TYPES = 5; /**< FIXME: incomprehensible magic */
 
-	var $db = false; # PDO database object.
-
-	var $db_start_time = 0; # earliest database timestamp we look at
-	var $db_end_time = 0;   # latest database timestamp we look at
-	var $debug = array();
-	var $completion_time = 0;
+	var $db_start_time = 0; /**< earliest database timestamp we look at */
+	var $db_end_time = 0;   /**< latest database timestamp we look at */
+	var $debug = array(); /**< Array of the debug information that we print during unit tests */
+	var $completion_time = 0; /**< The time it took to generate the report */
 
 	# alert summary options
-	var $alert_types = 3; # host and service alerts by default
-	var $state_types = 3; # soft and hard states by default
-	var $host_states = self::HOST_ALL;
-	var $service_states = self::SERVICE_ALL;
-	var $summary_items = 25; # max items to return
-	var $summary_result = array();
-	var $summary_query = '';
-	private $host_hostgroup; /** array(host => array(hgroup1, hgroupx...)) */
-	private $service_servicegroup; /** same as $host_hostgroup */
+	var $alert_types = 3; /**< Bitmask of host(1) and service(2) alerts - both by default */
+	var $state_types = 3; /**< Bitmask of soft(1) and hard(2) states - both by default */
+	var $host_states = self::HOST_ALL; /**< Bitmask of host states to include */
+	var $service_states = self::SERVICE_ALL; /**< Bitmask of service states to include */
+	var $summary_items = 25; /**< Max items to return */
+	private $summary_result = array();
+	private $summary_query = '';
+	private $host_hostgroup; /**< array(host => array(hgroup1, hgroupx...)) */
+	private $service_servicegroup; /**< same as $host_hostgroup */
 
-	var $st_raw = array(); # raw states
-	var $st_needs_log = false;
-	var $keep_sub_logs = false;
-	var $st_log = false;
-	var $st_prev_row = array();
-	var $st_prev_state = self::STATE_PENDING;
-	var $st_running = 0;
-	var $st_last_dt_init = 1; /** set to FALSE on restart, and a timestamp on first DT start after restart */
-	var $st_dt_depth = 0;
-	var $st_is_service = false;
-	var $st_source = false;
-	var $st_inactive = 0;
-	var $st_text = array();
-	var $st_sub = array(); # only used by the master report
-	var $st_sub_discrepancies = 0;
-	var $st_obj_type = '';
-	var $st_state_calculator = 'st_worst';
+	var $st_raw = array(); /**< Mapping between the raw states and the time spent there */
+	var $st_needs_log = false; /**< Generating a log of states takes time, so don't by default */
+	var $keep_sub_logs = false; /**< This will be copied to any subreports' $st_needs_log */
+	var $st_log = false; /**< The log array */
+	var $st_prev_row = array(); /**< The last db row, so we can get duration */
+	var $st_prev_state = self::STATE_PENDING; /**< The previous object state */
+	var $st_running = 0; /**< Is nagios running? */
+	var $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
+	var $st_dt_depth = 0; /**< The downtime depth */
+	var $st_is_service = false; /**< Whether this is a service */
+	var $st_source = false; /**< The source object */
+	var $st_inactive = 0; /**< Time we have no information about */
+	var $st_text = array(); /**< Mapping between state integers and state text */
+	var $st_sub = array(); /**< Sub reports. Only used by the master report */
+	var $st_sub_discrepancies = 0; /**< Sub report appears to be weirded out */
+	var $st_obj_type = ''; /**< Object type (FIXME: haven't we already covered this?) */
+	var $st_state_calculator = 'st_worst'; /**< Whether to use normal SLA (worst state) or clustered (best state) */
 
 	/**
 	 * The calculated state of the object, taking such things
@@ -84,6 +82,7 @@ class Reports_Model extends Model
 	/** The real state of the object */
 	private $st_real_state = false;
 
+	/** The state template for hosts */
 	private $state_tpl_host = array(
 		'HOST_NAME' => '',
 		'TIME_UP_SCHEDULED' => 0,
@@ -96,6 +95,7 @@ class Reports_Model extends Model
 		'TIME_UNDETERMINED_NO_DATA' => 0,
 		);
 
+	/** The state template for services */
 	private $state_tpl_svc = array(
 	   'HOST_NAME' => '',
 	   'SERVICE_DESCRIPTION' => '',
@@ -111,49 +111,50 @@ class Reports_Model extends Model
 	   'TIME_UNDETERMINED_NO_DATA' => 0,
 	   );
 
-	public $master = false;
-	public $id = '';
-	public $result = array();
-	public $csv_result = array();
-	public $old_csv_result = array();
-	public $sub_results = array();
-	public $use_average = false;
-	public $assume_states_during_not_running = false;
-	public $initial_assumed_host_state = false;
-	public $initial_assumed_service_state = false;
-	public $scheduled_downtime_as_uptime = false;
-	public $include_soft_states = true; /* NOTE: defaults to true */
-	public $report_timeperiod = false;
-	public $timeperiods_resolved = false; #whether timeperiod exceptions and exclusions have been resolved
-	public $initial_state = false;
-	public $initial_dt_depth = false;
-	public $start_time = false;
-	public $end_time = false;
-	public $assume_initial_states = null;
-	public $host_name = false;
-	public $service_description = false;
-	public $servicegroup = false;
-	public $hostgroup = false;
-	public $db_name = 'merlin';
-	const db_name = 'merlin';
-	public $db_table = 'report_data';
-	const db_table = 'report_data';
-	public $sub_reports = array();
-	public $last_shutdown = false;
-	public $states = array();
-	public $tp_exceptions = array();
-	public $tp_excludes = array();
+	public $master = false; /**< Master report, compare with $st_sub */
+	public $id = ''; /**< Another way of saving and getting the object name (FIXME: just use $st_source?) */
+	public $result = array(); /**< FIXME: If I remove this, something obscure will break, but this isn't even used, is it? */
+	public $csv_result = array(); /**< FIXME: not used? */
+	public $old_csv_result = array(); /**< FIXME: not used? */
+	public $sub_results = array(); /**< FIXME: not used? */
+	public $use_average = false; /**< Calculate average state */
+	public $assume_states_during_not_running = false; /**< If true, monitor downtime is ignored */
+	public $initial_assumed_host_state = false; /**< The state to start a host report with, if $assume_initial_states */
+	public $initial_assumed_service_state = false; /**< The state to start a service report with, if $assume_initial_states */
+	public $scheduled_downtime_as_uptime = false; /**< Cheat by calling downtimes uptime */
+	public $include_soft_states = true; /**< NOTE: defaults to true */
+	public $report_timeperiod = false; /**< Only include events and time in this timeperiod - not to be confused with the report start and stop */
+	public $timeperiods_resolved = false; /**< whether timeperiod exceptions and exclusions have been resolved */
+	public $initial_state = false; /**< Initial state actually used */
+	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
+	public $start_time = false; /**< Report start timestamp */
+	public $end_time = false; /**< Report end timestamp */
+	public $assume_initial_states = null; /**< Should we assume initial states? If yes, use initial_assumed_{host,service}_state */
+	public $host_name = false; /**< The hosts affected by this report - could be a hostgroup, could be a service's host, could be all hosts in a servicegroup. Magic and scary */
+	public $service_description = false; /**< The services affected by this report - false if report only affects hosts, but could also be a list of services that we're interested in, without the host part. FIXME: wait, so, what happens when there's a servicegroup? */
+	public $servicegroup = false; /**< The name of one or several servicegroups to generate the report for */
+	public $hostgroup = false; /**< The name of one or several hostgroups to generate the report for */
+	public $db_name = 'merlin'; /**< Report database name */
+	const db_name = 'merlin'; /**< Report database name, FIXME: again, 4 teh lulz */
+	public $db_table = 'report_data'; /**< Report table name */
+	const db_table = 'report_data'; /**< Report table name, FIXME: again, 4 teh lulz */
+	public $sub_reports = array(); /**< An array of sub-reports for this report */
+	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
+	public $states = array(); /**< The final array of report states */
+	public $tp_exceptions = array(); /**< Timeperiod exceptions */
+	public $tp_excludes = array(); /**< Timeperiod excludes */
 
+	/** The provided options */
 	public $options = array();
 
 	/**
 	 * Constructor
 	 * @param $db_name Database name
 	 * @param $db_table Database name
-	 * @param $db Connected PDO object
 	 */
-	public function __construct($db_name='merlin', $db_table='report_data', $db = false)
+	public function __construct($db_name='merlin', $db_table='report_data')
 	{
+		parent::__construct();
 		if (self::DEBUG === true) {
 			assert_options(ASSERT_ACTIVE, 1);
 			assert_options(ASSERT_WARNING, 0);
@@ -164,21 +165,12 @@ class Reports_Model extends Model
 			assert_options(ASSERT_CALLBACK, array('reports', 'lib_reports_assert_handler'));
 		}
 
+		$this->db_table = $db_table;
+		$this->db_name = $db_name;
 		$this->st_obj_state = self::STATE_PENDING;
 
 		/** The real state of the object */
 		$this->st_real_state = self::STATE_PENDING;
-
-		if ($db) {
-			$this->db = $db;
-		} else {
-			if (!empty($db_name))
-				$this->db_name 	= $db_name;
-			if (!empty($db_table))
-				$this->db_table = $db_table;
-
-			$this->db = Database::instance();
-		}
 	}
 
 	/**
@@ -254,6 +246,12 @@ class Reports_Model extends Model
 		return $ret;
 	}
 
+	/**
+	 * Only generate the report over the provided timeperiod
+	 *
+	 * @param $period A timeperiod name
+	 * @return true on success, false otherwise
+	 */
 	public function set_report_timeperiod($period=NULL)
 	{
 		$valid_weekdays = reports::$valid_weekdays;
@@ -521,6 +519,11 @@ class Reports_Model extends Model
 		return $active;
 	}
 
+	/**
+	 * Adjust report start and end time so that the provided timestamp is included
+	 *
+	 * @param $t A timestamp
+	 */
 	public function register_db_time($t)
 	{
 		if (!$this->db_start_time || $t < $this->db_start_time)
@@ -531,6 +534,12 @@ class Reports_Model extends Model
 		$this->debug['db_end_time'] = $this->db_end_time;
 	}
 
+	/**
+	 * Set an option, with some validation
+	 *
+	 * @param $name Option name
+	 * @param $value Option value
+	 */
 	public function set_option($name, $value)
 	{
 		$vtypes = array
@@ -769,6 +778,7 @@ class Reports_Model extends Model
 	 * @param $ewday_offset End weekday offset
 	 * @param $skip_interval Interval to skip, such as: "every 3 weeks" etc
 	 * @param $timeranges Array of timeranges.
+	 * @param $ref A reference to a structure with exceptions, or False
 	 * Throws Exception if any parameter has bogus values.
 	 */
 	public function add_timeperiod_exception($dateperiod_type,
@@ -807,6 +817,10 @@ class Reports_Model extends Model
 		$this->timeperiods_resolved = false;
 	}
 
+	/**
+	 * Update the options for the report
+	 * @param $options New options
+	 */
 	public function set_options($options)
 	{
 		$errors = false;
@@ -951,6 +965,11 @@ class Reports_Model extends Model
 		}
 	}
 
+	/**
+	 * Resolve timeperiods, both the actual timeperiods and the exclusions
+	 *
+	 * FIXME: exclusions from exclusions doesn't work
+	 */
 	public function resolve_timeperiods()
 	{
 		if ($this->start_time == false || $this->end_time == false) {
@@ -975,6 +994,11 @@ class Reports_Model extends Model
 	}
 
 
+	/**
+	 * Set the master report, and copy required variables from it
+	 *
+	 * @param $master Master report
+	 */
 	public function set_master($master)
 	{
 		$this->master = $master;
@@ -1103,7 +1127,7 @@ class Reports_Model extends Model
 		if (is_array($hostname)) {
 			// == multiple hosts ==
 			foreach ($hostname as $host) {
-				$sub_class = new Reports_Model(false, false, $this->db);
+				$sub_class = new Reports_Model($this->db_name, $this->db_table);
 				$sub_class->set_master($this);
 				$sub_class->id = $host;
 				$sub_class->st_needs_log = true;
@@ -1116,7 +1140,7 @@ class Reports_Model extends Model
 				foreach ($servicename as $service) {
 					// split hostname, service_desciption on ';'
 					$service_parts = explode(';', $service);
-					$sub_class = new Reports_Model(false, false, $this->db);
+					$sub_class = new Reports_Model($this->db_name, $this->db_table);
 					$sub_class->set_master($this);
 					$sub_class->id = $service;
 					$sub_class->st_needs_log = true;
@@ -1345,10 +1369,16 @@ class Reports_Model extends Model
 		return $cstate;
 	}
 
-	# this just lets us safely access array variables
-	# that might not be set, optionally specifying a default
-	# to return in case the variable isn't found.
-	# Note that $k (for key) can be an array
+	/**
+	 * this just lets us safely access array variables
+	 * that might not be set, optionally specifying a default
+	 * to return in case the variable isn't found.
+	 * Note that $k (for key) can be an array
+	 *
+	 * @param $ary Array
+	 * @param $k Array key
+	 * @param $def Default value
+	 */
 	public function get_array_var($ary, $k, $def = false)
 	{
 		if (is_array($k))
@@ -1363,6 +1393,11 @@ class Reports_Model extends Model
 		return $def;
 	}
 
+	/**
+	 * Update the raw uptime array
+	 *
+	 * @param $end_time When the event ends - start time is taken from st_prev_row
+	 */
 	public function st_update($end_time)
 	{
 		$prev_time = $this->st_prev_row['the_time'];
@@ -1430,6 +1465,10 @@ class Reports_Model extends Model
 		$this->st_sub_discrepancies = $disc;
 	}
 
+	/**
+	 * Take a database row object, and parse it
+	 * @param $row Database row
+	 */
 	public function st_parse_row($row = false)
 	{
 		$obj_name = $obj_type = false;
@@ -1561,6 +1600,9 @@ class Reports_Model extends Model
 		}
 	}
 
+	/**
+	 * Calculate worst state for either hosts or services
+	 */
 	public function st_worst()
 	{
 		if (empty($this->sub_reports))
@@ -1571,6 +1613,9 @@ class Reports_Model extends Model
 		return $this->get_worst_host_state();
 	}
 
+	/**
+	 * Calculate best state for either hosts or services
+	 */
 	public function st_best()
 	{
 		if (empty($this->sub_reports))
@@ -1581,6 +1626,15 @@ class Reports_Model extends Model
 		return $this->get_best_host_state();
 	}
 
+	/**
+	 * Calculate the object state, based on the chosen state calculator.
+	 *
+	 * If there is sub reports, the argument will be ignored. Otherwise, use
+	 * either the argument or the object's real state, according to magical
+	 * properties inherent in the numbers themselves.
+	 *
+	 * @param $state a nagios state, or not
+	 */
 	public function calculate_object_state($state = false)
 	{
 		if ($this->sub_reports) {
@@ -2077,6 +2131,11 @@ class Reports_Model extends Model
 		return $state;
 	}
 
+	/**
+	 * Return whether any sub-reports are in downtime
+	 *
+	 * @return 1 if a sub report is in downtime, 0 otherwise
+	 */
 	public function get_common_downtime_state()
 	{
 		if (!$this->sub_reports)
@@ -2090,6 +2149,10 @@ class Reports_Model extends Model
 		return 1;
 	}
 
+	/**
+	 * Calculate host state by taking the best state of any child report
+	 * @return State
+	 */
 	public function get_best_host_state()
 	{
 		if (!empty($this->st_sub[self::HOST_UP]))
@@ -2105,6 +2168,10 @@ class Reports_Model extends Model
 		return self::HOST_DOWN;
 	}
 
+	/**
+	 * Calculate service state by taking the best state of any child report
+	 * @return State
+	 */
 	public function get_best_service_state()
 	{
 		if (!empty($this->st_sub[self::SERVICE_OK]))
@@ -2123,6 +2190,10 @@ class Reports_Model extends Model
 		return self::SERVICE_CRITICAL;
 	}
 
+	/**
+	 * Calculate host state by taking the worst state of any child report
+	 * @return State
+	 */
 	public function get_worst_host_state()
 	{
 		if (!empty($this->st_sub[self::HOST_DOWN]))
@@ -2134,6 +2205,10 @@ class Reports_Model extends Model
 		return  self::HOST_UP;
 	}
 
+	/**
+	 * Calculate service state by taking the worst state of any child report
+	 * @return State
+	 */
 	public function get_worst_service_state()
 	{
 		if (!empty($this->st_sub[self::SERVICE_CRITICAL]))
@@ -2186,6 +2261,7 @@ class Reports_Model extends Model
 	 *
 	 * @param $name The timeperiod style variable we want to parse
 	 * @param $value The value of the timeperiod variable
+	 * @param $ref A reference to a timeperiod exception structure, or false
 	 * @return boolean
 	 */
 	public function set_timeperiod_variable($name, $value, &$ref=false)
@@ -2565,6 +2641,15 @@ class Reports_Model extends Model
 		return $midnight;
 	}
 
+	/**
+	 * Nagios supports exceptions such as "third monday in november 2010" - this
+	 * converts such statements to unix timestamps.
+	 *
+	 * @param $year The year
+	 * @param $month The month number
+	 * @param $weekday The weekday's numeric presentation (0=sunday, 6=saturday)
+	 * @param $weekday_offset Which occurence of the weekday, can be negative
+	 */
 	public function calculate_time_from_weekday_of_month($year, $month, $weekday, $weekday_offset)
 	{
 		$weeks = 0;
@@ -2744,6 +2829,12 @@ class Reports_Model extends Model
 		return $resulting_timerange_set;
 	}
 
+	/**
+	 * Return true if both the start date and end date is the same day
+	 *
+	 * @param $dr A daterange
+	 * @return true if condition holds
+	 */
 	public function is_daterange_single_day(&$dr)
 	{
 		if($dr['syear'] != $dr['eyear'])
@@ -2760,11 +2851,24 @@ class Reports_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Print the timerange $r
+	 * @param $r A timerange
+	 */
 	public function print_timerange(&$r)
 	{
 		print "$r[start]-$r[stop]";
 	}
 
+	/**
+	 * Take two sets of timeranges, and subtract all the ranges in the second
+	 * from all the ranges in the first. The first set will be modified
+	 * in-place.
+	 *
+	 * @param $set_include A set of original timeranges
+	 * @param $set_exclude A set of timeranges to remove from the first arg
+	 * @return $set_include, after manipulation
+	 */
 	public function subtract_timerange_sets(&$set_include, &$set_exclude)
 	{
 		for($i=0,$num_includes=count($set_include) ; $i<$num_includes ; $i++)
@@ -2992,6 +3096,11 @@ class Reports_Model extends Model
 		return $query;
 	}
 
+	/**
+	 * Given a query, generate debug information.
+	 *
+	 * While it's made for testing summary queries, it's completely generic
+	 */
 	public function test_summary_query($query = false)
 	{
 		if (!$query) {
@@ -3005,6 +3114,9 @@ class Reports_Model extends Model
 		return $dbr->current();
 	}
 
+	/**
+	 * Used by summary model to generate debug information for queries
+	 */
 	public function test_summary_queries()
 	{
 		$result = array();

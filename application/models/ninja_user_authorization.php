@@ -6,6 +6,9 @@
  */
 class Ninja_user_authorization_Model extends Model
 {
+	/**
+	 * The different db fields that contains authorization info
+	 */
 	public static $auth_fields = array(
 				'system_information',
 				'configuration_information',

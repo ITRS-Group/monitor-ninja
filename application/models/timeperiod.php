@@ -39,8 +39,8 @@ class Timeperiod_Model extends Model
 	/**
 	 * Join timeperiod with excludes
 	 * @param $timeperiod_id int: Timeperiod id
-	 * @param $use_array bool: Use array if true. Object if false.
-	 * @return false on errors. Database result set on success.
+	 * @param $include_exceptions bool: If true, mash timeperiod exceptions into the result
+	 * @return false on errors. An array of arrays on success.
 	 */
 	public function excludes($timeperiod_id=null, $include_exceptions=false)
 	{

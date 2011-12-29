@@ -4,7 +4,7 @@
  */
 class time_Core
 {
-	public $translate = false;
+	private $translate = false;
 	public function __construct()
 	{
 		# fetch our translation instance

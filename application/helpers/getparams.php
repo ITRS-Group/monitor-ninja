@@ -6,6 +6,10 @@
  * characters. This method returns a GET parameter with them intact.
  */
 class getparams_Core {
+	/**
+	 * Given a parameter and a default value, return the parameter value if
+	 * available from the query string.
+	 */
 	static function get_raw_param ($desired_param, $default) {
 		$querypieces = explode('&', $_SERVER['QUERY_STRING']);
 		foreach ($querypieces as $param) {

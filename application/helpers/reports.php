@@ -4,8 +4,11 @@
  */
 class reports_Core
 {
+	/** Array of month_number => days_in_month */
 	public static $days_per_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+	/** Array of weekday names */
 	public static $valid_weekdays = array('sunday','monday','tuesday','wednesday','thursday','friday','saturday');
+	/** Array of month names */
 	public static $valid_months = array
 	(
 		1  => 'january',
@@ -22,6 +25,9 @@ class reports_Core
 		12 => 'december'
 	);
 
+	/**
+	 * Called by PHP as an assert callback to format errors usefully
+	 */
 	public function lib_reports_assert_handler($filename, $line, $code)
 	{
 		if (!posix_isatty(0))
@@ -38,6 +44,13 @@ class reports_Core
 			echo "</pre>\n";
 	}
 
+	/**
+	 * Generate a percentage easily
+	 *
+	 * @param $dividend The whole
+	 * @param $divisor The part
+	 * @return The percentage
+	 */
 	public function percent($dividend, $divisor)
 	{
 		if (!$dividend || !$divisor)
@@ -115,6 +128,12 @@ class reports_Core
 		return $return;
 	}
 
+	/**
+	 * Validate report item
+	 * @param $k Unused FIXME
+	 * @param $data A data array that should have states
+	 * return true if valid, false otherwise
+	 */
 	public function is_proper_report_item($k, $data)
 	{
 		if (is_array($data) && !empty($data['states']) && is_array($data['states']))
@@ -123,7 +142,7 @@ class reports_Core
 		return false;
 	}
 
-	// used for automatic test cases
+	/// used for automatic test cases
 	public function print_test_settings($test=false)
 	{
 		# report uses reports model default settings

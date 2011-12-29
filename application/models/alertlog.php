@@ -15,6 +15,14 @@ class Alertlog_Model extends Model
 		'c' => 2,
 		'u' => 3
 	);
+	/**
+	 * Return all log entries matching the specified options
+	 * @param $options Pretty much magical array of options to filter objects
+	 * @param $limit The number of rows to get
+	 * @param $offset The number of rows to skip before fetching
+	 * @param $count Skip the whole row fetching, only return the number of lines
+	 * @return If count is false, database object or false on error or empty. If count is true, line count
+	 */
 	function get_log_entries($options=false, $limit=false, $offset=0, $count=false)
 	{
 		$auth = new Nagios_auth_Model();

@@ -5,11 +5,8 @@
  */
 class Config_Model extends Model {
 
-	public $num_per_page = false;
-	public $offset = false;
-	public $count = false;
-	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands';
-	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands';
+	const SERVICE_NOTIFICATION_COMMANDS =  'service_notification_commands'; /**< DB column name for service notification commands */
+	const HOST_NOTIFICATION_COMMANDS = 'host_notification_commands'; /**< DB column name for host notification commands */
 
 	/**
 	 Workaround for PDO queries: runs $db->query($sql), copies
@@ -31,9 +28,13 @@ class Config_Model extends Model {
 	}
 
 	/**
-	*	Fetch host info
-	*
-	*/
+	 * Fetch config info for a specific type
+	 * @param $type The object type
+	 * @param $num_per_page The number of rows to get
+	 * @param $offset The number of rows to skip
+	 * @param $count Skip fetching config info, fetch the number of matching database rows
+	 * @return If count is false, database object or false on error or empty. If count is true, number
+	 */
 	public function list_config($type = 'hosts', $num_per_page=false, $offset=false, $count=false)
 	{
 
@@ -244,6 +245,10 @@ class Config_Model extends Model {
 			return false;
 	}
 
+	/**
+	 * Wrapper around list_config to only return the number of $type objects
+	 * @param $type The object type
+	 */
 	public function count_config($type)
 	{
 		return self::list_config($type, false, false, true);

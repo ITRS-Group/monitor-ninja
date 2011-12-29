@@ -6,7 +6,8 @@
 /*
    A simple class to schedule a command by date
 
-   Copyright (C) 2009- Giuseppe Lucarelli <giu.lucarelli@gmail.com>
+   Copyright (C) 2009-2010 Giuseppe Lucarelli <giu.lucarelli@gmail.com>
+   Copyright (C) 2010- op5 AB
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of version 2 of the GNU General Public License as
@@ -24,24 +25,26 @@
 
 /**
  * @author Giuseppe Lucarelli <giu.lucarelli@gmail.com>
- * @link http://www.phpclasses.org
- * @return true                          existing scheduling pattern and date is greater then now
- * @return false but date is not false   existing scheduling pattern and date is less then now
- * @return false and date is false too   not existing scheduling
+ * @see http://www.phpclasses.org
  */
 class ScheduleDate_Model extends Model
 {
-	public $week = array('sun','mon','tue','wed','thu','fri','sat');
-	public $dateArray = array('year'=>0,'month'=>0,'day'=>0,'hour'=>0,'minute'=>0);
-	public $date = null;
-	public $time = null;
-	public $firstRun = null;
-	public $lastRun = null;
-	public $pattern = null;
-	public $dayPattern = null;
-	public $matches = null;
-	public $now = null;
+	private $week = array('sun','mon','tue','wed','thu','fri','sat');
+	private $dateArray = array('year'=>0,'month'=>0,'day'=>0,'hour'=>0,'minute'=>0);
+	public $date = null; /**< A ISO-8601 date and time representation (with space, not T, that is) of the date */
+	public $time = null; /**< A UNIX timestamp representation of of the date */
+	private $firstRun = null;
+	private $lastRun = null;
+	private $pattern = null;
+	private $dayPattern = null;
+	private $matches = null;
+	private $now = null;
 
+	/**
+	 * Given something that looks like a date, load up the internal dateArray
+	 *
+	 * @param $date A date in a format parsable by strtotime
+	 */
 	public function BuildDateArray($date) {
 		$t = explode(',',strftime("%Y,%m,%d,%H,%M", strtotime($date)));
 		$this->dateArray['year'] = $t[0];
@@ -51,6 +54,12 @@ class ScheduleDate_Model extends Model
 		$this->dateArray['minute'] = $t[4];
 	}
 
+	/**
+	 * Generate useful formats from the internal dateArray
+	 * "Useful" is defined as "both unix timestamp and iso-8601"
+	 *
+	 * @returns The unix timestamp represented by the dateArray
+	 */
 	public function BuildDate() {
 		$this->date = $this->dateArray['year'].'-'.$this->dateArray['month'].'-'.$this->dateArray['day'].' '.
 			$this->dateArray['hour'].':'.$this->dateArray['minute'];
@@ -58,6 +67,12 @@ class ScheduleDate_Model extends Model
 		return $this->time;
 	}
 
+	/**
+	 * Given a string (confusingly called pattern), find date representations therein
+	 * @param $pattern The subject to search
+	 * @param $matches A somewhat rewritten version of the match of a gigantic complicated regex
+	 * @return true if there was a match, false otherwise
+	 */
 	public function Parse(& $pattern, & $matches) {
 		preg_match("/([\*0-9]{1,4})(|[\-,].*)[[:blank:]\/\-]+([\*0-9]{1,2})(|[\-,].*)[[:blank:]\/\-]([\*0-9a-z]{1,3}|)(|[\*\-,].*)[[:blank:]\/]([\*0-9]{1,2})(|[\-,].*)[[:blank:]:\-]([\*0-9]{1,2})(|[\-,].*)[[:blank:]:\-\r\n\t$]/i", $pattern."\n", $matches, PREG_OFFSET_CAPTURE);
 		if(!@$matches || !@$matches[0][0]) {
@@ -86,6 +101,9 @@ class ScheduleDate_Model extends Model
 		return true;
 	}
 
+	/**
+	 * FIXME: really, no idea
+	 */
 	public function Explode(& $pattern, $rif, & $field, $needle = ',') {
 		$retval = false;
 
@@ -120,6 +138,9 @@ class ScheduleDate_Model extends Model
 		return $retval;
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function GetFirstWeekDay($day) {
 		$retval = false;
 		$daycounter = array();
@@ -148,6 +169,9 @@ class ScheduleDate_Model extends Model
 		return $retval;
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function GetLastWeekDay($year,$month,$day,$hour,$minute) {
 		$retval = strtotime($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':00');
 		$daycounter = array();
@@ -181,6 +205,9 @@ class ScheduleDate_Model extends Model
 		return $retval;
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function GetLastToken($field, $pattern, $max) {
 		if(preg_match("/[a-z]/i",$pattern)) {
 			$this->TransformWeek($pattern);
@@ -202,6 +229,9 @@ class ScheduleDate_Model extends Model
 		}
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function TransformWeek($pattern) {
 		if($this->dayPattern !== null)
 			return;
@@ -222,6 +252,9 @@ class ScheduleDate_Model extends Model
 		}
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function CheckPattern (& $pattern, $rif, & $field, $debug = false) {
 		if($debug) {
 			echo "\n";
@@ -239,7 +272,7 @@ class ScheduleDate_Model extends Model
 		return true;
 	}
 
-	// minute
+	/// minute
 	public function BuildMinute() {
 		if($this->BuildDate() < $this->now) {
 			$d=date("i",strtotime($this->date)+60);
@@ -247,7 +280,7 @@ class ScheduleDate_Model extends Model
 			//echo " < min(".date("Y-m-d H:i:s",$this->BuildDate())."); ";
 		}
 	}
-	// hour
+	/// hour
 	public function BuildHour() {
 		if($this->BuildDate() < $this->now) {
 			$d=date("H",strtotime($this->date)+60*60);
@@ -255,7 +288,7 @@ class ScheduleDate_Model extends Model
 			//echo " < hour(".date("Y-m-d H:i:s",$this->BuildDate())."); ";
 		}
 	}
-	// day
+	/// day
 	public function BuildDay() {
 		if($this->BuildDate() < $this->now) {
 			if(!preg_match("/[a-z]/i",$this->matches[6][0])) {
@@ -291,7 +324,7 @@ class ScheduleDate_Model extends Model
 			//echo " < day(".date("Y-m-d H:i:s",$this->BuildDate())."); ";
 		}
 	}
-	// month
+	/// month
 	public function BuildMonth() {
 		if($this->BuildDate() < $this->now) {
 			$d=date('m',$this->now)+1;
@@ -305,7 +338,7 @@ class ScheduleDate_Model extends Model
 			//echo " < mon(".date("Y-m-d H:i:s",$this->BuildDate())."); ";
 		}
 	}
-	// year
+	/// year
 	public function BuildYear() {
 		if($this->BuildDate() < $this->now) {
 			$d = date('Y',$this->now)+1;
@@ -316,6 +349,9 @@ class ScheduleDate_Model extends Model
 		}
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function GetFirstRun($pattern,$now) {
 		$this->pattern = $pattern;
 		if(!$this->matches) {
@@ -347,6 +383,9 @@ class ScheduleDate_Model extends Model
 		return $this->firstRun;
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function GetLastRun() {
 		return $this->GetLastWeekDay(
 				$this->GetLastToken($this->matches[1][0], $this->matches[2][0], 2019),
@@ -356,6 +395,9 @@ class ScheduleDate_Model extends Model
 				$this->GetLastToken($this->matches[9][0], $this->matches[10][0], 59));
 	}
 
+	/**
+	 * FIXME: no idea
+	 */
 	public function Renew($pattern, $date, $timecheck) {
 		$retval = false;
 		$loop = 365;
@@ -527,7 +569,12 @@ class ScheduleDate_Model extends Model
 	}
 
 	/**
+	 * Delete a scheduled recurring downtime
 	 *
+	 * FIXME: why is there no authorization here?
+	 *
+	 * @param $id ID of the downtime to delete
+	 * @returns true on success, false otherwise
 	 *
 	 */
 	public function delete_schedule($id=false)

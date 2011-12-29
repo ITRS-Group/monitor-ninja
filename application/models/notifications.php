@@ -5,12 +5,9 @@
  */
 class Notifications_Model extends Model {
 
-	public $sort_field ='next_check';
-	public $sort_order='ASC';
-	public $where='';
-	public $num_per_page = false;
-	public $offset = false;
-	public $count = false;
+	public $sort_field ='next_check'; /**< The field to sort on */
+	public $sort_order='ASC'; /**< The sort order */
+	public $where=''; /**< Arbitrary SQL to add to filtering */
 
 	/**
 	*	Fetch scheduled events

@@ -1,7 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for old nagvis rotation pools. Not used in monitor.
+ */
 class Nagvis_Rotation_Pools_Model extends Model
 {
+	/**
+	 * Return list of nagvis rotation pools
+	 */
 	public function get_list()
 	{
 		$pools = array();

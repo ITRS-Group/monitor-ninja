@@ -7,8 +7,18 @@
  * Authentication stuff should *not* end up here.
  */
 class User_Model extends Auth_User_Model {
+	/** The name of the authorization table */
 	public static $auth_table = 'ninja_user_authorization';
 
+	/**
+	 * Update a user's password
+	 *
+	 * This only sets the password in the htpasswd file.
+	 *
+	 * @param $username Name of user to have it's password updated
+	 * @param $password The password to set
+	 * @return Hashed password
+	 */
 	public function update_password($username, $password)
 	{
 		$password = ninja_auth::hash_password($password);
@@ -41,6 +51,11 @@ class User_Model extends Auth_User_Model {
 		return $password;
 	}
 
+	/**
+	 * Write user obj to database.
+	 *
+	 * @param $user_obj The user object to save
+	 */
 	public function save_user($user_obj)
 	{
 		$db = Database::instance();
@@ -124,6 +139,14 @@ class User_Model extends Auth_User_Model {
 		}
 	}
 
+	/**
+	 * Curiously, this is called from the parent, but parent doesn't define it...
+	 * FIXME: As username_exists only seem to be defined in parent using
+	 * kohana's query builder, I'm pretty sure this will break if called.
+	 *
+	 * @param $id A username
+	 * @returns Whether the username is already taken by another user
+	 */
 	public function username_available($id) {
 		return ! $this->username_exists($id);
 	}

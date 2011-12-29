@@ -6,8 +6,8 @@
 class persist_pdf_Core
 {
 	/**
-	 * @param string $original_file
-	 * @param string $save_here
+	 * @param $original_file string
+	 * @param $save_here string
 	 * @throws Exception with reason of failure
 	 */
 	public function save($original_file, $save_here) {

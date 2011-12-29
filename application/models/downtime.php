@@ -8,9 +8,9 @@ class Downtime_Model extends Model
 	/**
 	 * Fetch current downtime information
 	 * 
-	 * @param int $filter = 3
-	 * @param string $order_by = 'downtime_id'
-	 * @param boolean $generate_links_for_downtime_id = false
+	 * @param $filter Host, service or both
+	 * @param $order_by Field name
+	 * @param $generate_links_for_downtime_id If true, do extra work to find the downtime trigger/source
 	 */
 	public function get_downtime_data($filter=3, $order_by='downtime_id', $generate_links_for_downtime_id = false)
 	{

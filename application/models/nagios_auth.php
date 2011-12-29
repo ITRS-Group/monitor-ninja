@@ -1,27 +1,32 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model providing access to the authorization system in nagios
+ *
+ * Warning: a lot of these function calls are expensive! Do not create loads of instances!
+ */
 class Nagios_auth_Model extends Model
 {
-	public $session = false;
-	public $id = false;
-	public $user = '';
-	public $hosts = array();
-	public $hosts_r = array();
-	public $services = array();
-	public $services_r = array();
-	public $hostgroups = array();
-	public $hostgroups_r = array();
-	public $servicegroups = array();
-	public $servicegroups_r = array();
-	public $view_hosts_root = false;
-	public $view_services_root = false;
-	public $command_hosts_root = false;
-	public $command_services_root = false;
-	public $authorized_for_system_information = false;
-	public $authorized_for_system_commands = false;
-	public $authorized_for_all_host_commands = false;
-	public $authorized_for_all_service_commands = false;
-	public $authorized_for_configuration_information = false;
+	public $session = false; /**< FIXME: Another user session variable, that the ninja model already provides, except we've decided not to use it */
+	public $id = false; /**< The user id */
+	public $user = ''; /**< The username */
+	public $hosts = array(); /**< An id->host_name map of hosts the user is authorized to see */
+	public $hosts_r = array(); /**< An host_name->id map of hosts the user is authorized to see */
+	public $services = array(); /**< An id->service map of servicesthe user is authorized to see */
+	public $services_r = array(); /**< An service->id map of servicesthe user is authorized to see */
+	public $hostgroups = array(); /**< An id->hostgroup_name map of hostgroups the user is authorized to see */
+	public $hostgroups_r = array(); /**< An hostgroup_name->id map of hostgroups the user is authorized to see */
+	public $servicegroups = array(); /**< An id->servicegroup_name map of servicegroups the user is authorized to see */
+	public $servicegroups_r = array(); /**< An servicegroup_name->id map of servicegroups the user is authorized to see */
+	public $view_hosts_root = false; /**< Is user authorized to see all hosts? */
+	public $view_services_root = false; /**< Is user authorized to see all services? */
+	public $command_hosts_root = false; /**< Is user authorized to issue all host commands? WARNING: we ignore this way too much */
+	public $command_services_root = false; /**< Is user authorized to issue all servicecommands? WARNING: we ignore this way too much */
+	public $authorized_for_system_information = false; /**< Is the user authorized to see system information? WARNING: we ignore this way too much */
+	public $authorized_for_system_commands = false; /**< Is the user authorized to issue system-wide commands? WARNING: we ignore this way too much*/
+	public $authorized_for_all_host_commands = false; /**< Alias for command_hosts_root */
+	public $authorized_for_all_service_commands = false; /**< Alias for command_services_root */
+	public $authorized_for_configuration_information = false; /**< Is the user authorized to see information about the global configuration? */
 
 	public function __construct()
 	{
@@ -40,16 +45,21 @@ class Nagios_auth_Model extends Model
 		$this->get_contact_id();
 	}
 
-	# This is required for testing purposes.
-	# The backdoor side of it can safely be ignored, since the
-	# reports library has zero authentication anyway, and
-	# return-into-libzend or similar exploits are impossible from php
+	/**
+	 * This is required for testing purposes.
+	 * The backdoor side of it can safely be ignored, since the
+	 * reports library has zero authentication anyway, and
+	 * return-into-libzend or similar exploits are impossible from php
+	 */
 	public function i_can_has_root_plx()
 	{
 		$this->view_hosts_root = true;
 		$this->view_services_root = true;
 	}
 
+	/**
+	 * Initializes the user authorization levels.
+	 */
 	public function check_rootness()
 	{
 		$access = System_Model::nagios_access($this->user);
@@ -415,6 +425,9 @@ class Nagios_auth_Model extends Model
 		return $this->servicegroups;
 	}
 
+	/**
+	 * Return a boolean saying if we're authorized for the host name or id provided
+	 */
 	public function is_authorized_for_host($host)
 	{
 		if ($this->view_hosts_root === true)
@@ -429,6 +442,9 @@ class Nagios_auth_Model extends Model
 		return ($res->current()->cnt != '0');
 	}
 
+	/**
+	 * Return a boolean saying if we're authorized for the service name or id provided
+	 */
 	public function is_authorized_for_service($service)
 	{
 		if ($this->view_services_root === true)
@@ -443,6 +459,9 @@ class Nagios_auth_Model extends Model
 		return ($res->current()->cnt != '0');
 	}
 
+	/**
+	 * Return a boolean saying if we're authorized for the hostgroup name or id provided
+	 */
 	public function is_authorized_for_hostgroup($hostgroup)
 	{
 		if ($this->view_hosts_root === true)
@@ -461,6 +480,9 @@ class Nagios_auth_Model extends Model
 		return false;
 	}
 
+	/**
+	 * Return a boolean saying if we're authorized for the servicegroup name or id provided
+	 */
 	public function is_authorized_for_servicegroup($servicegroup)
 	{
 		if ($this->view_services_root === true)

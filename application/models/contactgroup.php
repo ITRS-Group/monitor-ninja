@@ -97,6 +97,11 @@ class Contactgroup_Model extends Model
 		return count($result) ? $result : false;
 	}
 
+	/**
+	 * Given an escalation, return all contactgroups, or false on error or empty
+	 * @param $type 'host' or 'service'
+	 * @param $id The escalation id
+	 */
 	public function get_contactgroups_from_escalation($type = 'host', $id = false) {
 		$sql = false;
 		$db = Database::instance();

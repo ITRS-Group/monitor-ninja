@@ -9,37 +9,37 @@ class Service_Model extends Model
 	private $table = "service";
 
 	/***** ACTIVE SERVICE CHECKS *****/
-	public $total_active_service_checks = 0;
-	public $active_service_checks_1min = 0;
-	public $active_service_checks_5min = 0;
-	public $active_service_checks_15min = 0;
-	public $active_service_checks_1hour = 0;
-	public $active_service_checks_start = 0;
-	public $active_service_checks_ever = 0;
-	public $total_service_execution_time = 0;
-	public $min_service_execution_time = 0;
-	public $max_service_execution_time = 0;
-	public $total_service_percent_change_a = 0;
-	public $min_service_percent_change_a = 0;
-	public $max_service_percent_change_a = 0;
-	public $min_service_latency = 0;
-	public $max_service_latency = 0;
-	public $total_service_latency = 0;
+	public $total_active_service_checks = 0; /**< The total number of active service checks */
+	public $active_service_checks_1min = 0; /**< The number of active service checks the last minute */
+	public $active_service_checks_5min = 0; /**< The number of active service checks the last 5 minutes */
+	public $active_service_checks_15min = 0; /**< The number of active service checks the last 15 minutes */
+	public $active_service_checks_1hour = 0; /**< The number of active service checks in the last hour */
+	public $active_service_checks_start = 0; /**< The number of active service checks since program start */
+	public $active_service_checks_ever = 0; /**< The total number of active service checks ever FIXME: other than being retrieved separately through an extra slow query, this appears to be the same as total_active_service_checks */
+	public $total_service_execution_time = 0; /**< The total active service check execution time */
+	public $min_service_execution_time = 0; /**< The minimum active service check execution time */
+	public $max_service_execution_time = 0; /**< The maximum active service check execution time */
+	public $total_service_percent_change_a = 0; /**< The total percentage of service state changes for active checks */
+	public $min_service_percent_change_a = 0; /**< The minimum percentage of service state changes for active checks */
+	public $max_service_percent_change_a = 0; /**< The maximum percentage of service state changes for active checks */
+	public $min_service_latency = 0; /**< The minimum active service check latency */
+	public $max_service_latency = 0; /**< The maximum active service check latency */
+	public $total_service_latency = 0; /**< The total active service check latency */
 
 	/***** PASSIVE SERVICE CHECKS *****/
-	public $passive_service_checks_1min = 0;
-	public $total_passive_service_checks = 0;
-	public $passive_service_checks_5min = 0;
-	public $passive_service_checks_15min = 0;
-	public $passive_service_checks_1hour = 0;
-	public $passive_service_checks_start = 0;
-	public $min_service_percent_change_b = 0;
-	public $max_service_percent_change_b = 0;
-	public $total_service_percent_change_b = 0;
-	public $passive_service_checks_ever = 0;
+	public $passive_service_checks_1min = 0; /**< The number of passive service checks the last minute */
+	public $total_passive_service_checks = 0; /**< The total number of passive service checks */
+	public $passive_service_checks_5min = 0; /**< The number of passive service checks the last 5 minutes */
+	public $passive_service_checks_15min = 0; /**< The number of passive service checks the last 15 minutes */
+	public $passive_service_checks_1hour = 0; /**< The number of passive service checks the last hour */
+	public $passive_service_checks_start = 0; /**< The number of passive service checks since program start */
+	public $min_service_percent_change_b = 0; /**< The minium percentage of service state changes for passive checks */
+	public $max_service_percent_change_b = 0; /**< The max percentage of service state changes for passive checks */
+	public $total_service_percent_change_b = 0; /**< The total percentage of service state changes for passive checks */
+	public $passive_service_checks_ever = 0; /**< The total number of passive service checks FIXME: other than being retrieved separately through an extra slow query, this appears to be the same as total_passive_service_checks */
 
 	/***** CHECK STATS *****/
-	public $passive_host_checks_start = 0;
+	public $passive_host_checks_start = 0; /**< Number of passive host checks since program start */
 
 	public function __construct()
 	{
@@ -64,11 +64,10 @@ class Service_Model extends Model
         }
 
 	/**
-	 * Fetch info on a specific service by either id or name
-	 * @param $id Id of the service
-	 * @param $name Name of the service. This must be in the form
-	 *              hostname;service_description
-	 * @return Service object on success, false on errors
+	 * Return the current service state
+	 * @param $host_name The name of the host the service is on
+	 * @param $service_description The service description
+	 * @return Database result object on success, false on errors
 	 */
 	public function get($host_name=false, $service_description=false)
 	{
@@ -200,9 +199,14 @@ class Service_Model extends Model
 	}
 
 	/**
-	*
-	*
-	*/
+	 * FIXME: I have no fucking clue really what this does.
+	 *
+	 * According to the search controller, this is used for AND searches.
+	 * @param $host_name This appears to be an array of host name candidates
+	 * @param $service This appears to be an array of service description candidates
+	 * @param $xtra_query Extra filters to apply
+	 * @param $limit If non-false, specifies maximum number of rows
+	 */
 	public function multi_search($host_name=array(), $service=array(), $xtra_query=false, $limit=false)
 	{
 		if (empty($host_name) || empty($service)) {

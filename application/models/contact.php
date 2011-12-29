@@ -31,6 +31,12 @@ class Contact_Model extends Model
 		return $result->count() ? $result: false;
 	}
 
+	/**
+	 * Return a database object of escalation contacts
+	 * @param $type What type of escalation (host or service)
+	 * @param $id The escalation ID
+	 * @return Database object, or false on error or empty
+	 */
 	public function get_contacts_from_escalation($type = 'host', $id = false) {
 		$sql = false;
 		$db = Database::instance();

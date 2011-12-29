@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Helper to get the proper complete URL to the server
+ */
 class base_url_Core {
 
 	/**

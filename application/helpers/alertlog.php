@@ -12,6 +12,11 @@
  *  PARTICULAR PURPOSE.
  */
 class alertlog_Core {
+	/**
+	 * Convert all sorts of constants to user-readable strings, add html, and generally make things pretty
+	 * @param $entry A database row
+	 * @return An array, somewhat similar to the entry one, but with new values
+	 */
 	public function get_user_friendly_representation($entry) {
 		$ret = array(
 			'type' => '',

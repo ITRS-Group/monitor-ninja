@@ -6,7 +6,7 @@
  */
 class Saved_searches_Model extends Model
 {
-	const tablename = 'ninja_saved_searches';
+	const tablename = 'ninja_saved_searches'; /**< Name of saved searches table */
 
 	/**
 	*	Save a search after validating that it doesn't

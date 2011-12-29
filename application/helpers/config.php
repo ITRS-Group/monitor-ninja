@@ -78,6 +78,9 @@ class config_Core
 		return $val;
 	}
 
+	/**
+	 * FIXME: I believe this does nothing
+	 */
 	public function get_version_info()
 	{
 		$file = Kohana::config('config.version_info');

@@ -1,26 +1,23 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for generating trend graphs
+ */
 class Trends_graph_Model extends Model
 {
 
 	/**
 	 * Location temporary image files
-	 *
-	 * @var string
 	 */
 	private $tmp_name_placeholder = "/tmp/%s.png";
 
 	/**
 	 * Src attribute for image files
-	 *
-	 * @var string
 	 */
 	private $src_placeholder = "line_point_chart/%s";
 
 	/**
 	 * Holds weekday labels
-	 *
-	 * @var array
 	 */
 	private $abbr_day_names = array();
 
@@ -40,9 +37,9 @@ class Trends_graph_Model extends Model
 	/**
 	 * Format the x-axis of the graph accordingly to input dates
 	 *
-	 * @param int $report_start unix timestamp
-	 * @param int $report_end unix timestamp
-	 * @return array ['resolution_names', 'offset', 'time_interval', 'end_offset']
+	 * @param $report_start unix timestamp
+	 * @param $report_end unix timestamp
+	 * @return ['resolution_names', 'offset', 'time_interval', 'end_offset']
 	 */
 	private function _get_chart_scope($report_start, $report_end) {
 		$use_abbr_day_names = false;
@@ -143,7 +140,7 @@ class Trends_graph_Model extends Model
 	/**
 	 * Print image (including setting header) based on key. Kill request.
 	 *
-	 * @param string $chart_key
+	 * @param $chart_key
 	 */
 	public function display_chart($chart_key) {
 		$filename = $this->get_filename_for_key($chart_key);
@@ -157,10 +154,16 @@ class Trends_graph_Model extends Model
 		die;
 	}
 
+	/**
+	 * Get the filename for a chart key
+	 */
 	public function get_filename_for_key($chart_key) {
 		return sprintf($this->tmp_name_placeholder, $chart_key);
 	}
 
+	/**
+	 * Get the filename for a path
+	 */
 	public function get_filename_for_src($src) {
 		$chart_key = pathinfo($src, PATHINFO_BASENAME);
 		return $this->get_filename_for_key($chart_key);
@@ -170,10 +173,10 @@ class Trends_graph_Model extends Model
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
-	 * @param array $data
-	 * @param int $report_start
-	 * @param int $report_end
-	 * @param string $title = null
+	 * @param $data
+	 * @param $report_start
+	 * @param $report_end
+	 * @param $title = null
 	 * @return string
 	 */
 	public function get_graph_pdf_src_for_data($data, $report_start, $report_end, $title = null) {
@@ -185,11 +188,11 @@ class Trends_graph_Model extends Model
 	 * already has been generated, it's used.
 	 *
 	 * @uses PHPlot
-	 * @param array $data
-	 * @param int $report_start
-	 * @param int $report_end
-	 * @param string $title = null
-	 * @param boolean $fit_pdf = false
+	 * @param $data
+	 * @param $report_start
+	 * @param $report_end
+	 * @param $title = null
+	 * @param $fit_pdf = false
 	 * @return string
 	 */
 	private function _generate_graph($data, $report_start, $report_end, $title = null, $fit_pdf = false) {
@@ -310,10 +313,10 @@ class Trends_graph_Model extends Model
 	 * A graph is generated based on input, and saved in tmp files. If the graph
 	 * already has been generated, it's used.
 	 *
-	 * @param array $data
-	 * @param int $report_start
-	 * @param int $report_end
-	 * @param string $title = null
+	 * @param $data
+	 * @param $report_start
+	 * @param $report_end
+	 * @param $title = null
 	 * @return string
 	 */
 	public function get_graph_src_for_data($data, $report_start, $report_end, $title = null) {
@@ -347,8 +350,8 @@ function color_the_trends_graph($image, $passthrough, $row, $column, $extra = 0)
 /**
  * Helper for the above function: color_the_trends_graph()
  *
- * @param string $type = 'host'
- * @param string $state = false
+ * @param $type = 'host'
+ * @param $state = false
  * @return string|false
  */
 function phplot_color_index_by_state_color($type='host', $state=false) {
