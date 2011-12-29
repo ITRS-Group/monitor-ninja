@@ -30,10 +30,8 @@ function sort_widgets_by_friendly_name($a, $b) {
  * (If you have a clever, quick, cross-database solution to do this whole thing
  * in-database, please don't hesitate to do it)
  *
- * This means we must do copy-on-read, as we must "claim" a new instance id
- * in case we have multiple browser tabs showing the same thing - keeping the
- * javascript aware of when an instance id is assigned after an hour of showing
- * a widget and then editing it seems doomed to create bugs.
+ * We no longer send hidden default widgets to the user. We must thus send empty
+ * widget instances that the user can copy into their own namespace.
  *
  * Saving an edited widget must never save to any of the fallback options. In
  * particular, for legacy systems, that means we must never write to anything
@@ -117,7 +115,7 @@ class Ninja_widget_Model extends Model
 		$db = Database::instance();
 
 		if (is_numeric($instance_id)) {
-			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).' AND instance_id = '.$db->escape($instance_id));
+			$subquery = 'page='.$db->escape($page).' AND username = '.$db->escape($user).' AND instance_id = '.$db->escape($instance_id);
 			$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
 		}
 		else {
@@ -143,22 +141,17 @@ class Ninja_widget_Model extends Model
 			// we were asked for a specific widget, but it could not be found
 			return false;
 		}
-		else if ($user && $obj->instance_id === null) {
-			// we were asked for a widget with "any" instance_id, so create one
-			// and re-fetch it to get correct ID
-			// if we don't have a user, that should mean we're being called from CLI
-			// scripts, so don't do anything.
-			$instance_id = $obj->instance_id = 1;
-			// just in case...
-			$obj->username = $user;
-			$obj->page = $page;
+		else if ($obj->instance_id === null) {
+			// we were asked for a widget with "any" instance_id.
+			// make sure we unset the id so we don't accidentally
+			// overwrite it.
 			unset($obj->id);
-			$obj->save();
-			return $obj;
+		}
+		else {
+			$obj->instance_id = $instance_id;
 		}
 		$obj->page = $page;
 		$obj->widget = $widget;
-		$obj->instance_id = $instance_id;
 		$obj->username = $user;
 
 		return $obj;
@@ -168,7 +161,7 @@ class Ninja_widget_Model extends Model
 	{
 		$new = false;
 		$user = Auth::instance()->get_user()->username;
-		if (!isset($this->id))
+		if (!isset($this->id) || !$this->instance_id)
 			$new = true;
 		else if ($this->db_row['name'] !== $this->name)
 			$new = true;
@@ -180,6 +173,14 @@ class Ninja_widget_Model extends Model
 			$new = true;
 
 		if ($new) {
+			if (!$this->instance_id) {
+				$res = $this->db->query('SELECT MAX(instance_id) AS max_instance_id FROM ninja_widgets WHERE name='.$this->db->escape($this->name).' AND page='.$this->db->escape($this->page).' AND username='.$this->db->escape($this->username));
+				$res = $res->current();
+				if (isset($res->max_instance_id))
+					$this->instance_id = $res->max_instance_id + 1;
+				else
+					$this->instance_id = self::FIRST_INSTANCE_ID;
+			}
 			$sql = 'INSERT INTO ninja_widgets (username, page, name, friendly_name, setting, instance_id) VALUES (%s, %s, %s, %s, %s, %s)';
 		}
 		else {
@@ -242,6 +243,10 @@ class Ninja_widget_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Remove any instance of a widget from the ninja_widgets stable
+	 * Scary to expose to end users.
+	 */
 	public static function uninstall($name)
 	{
 		$db = Database::instance();
@@ -267,6 +272,9 @@ class Ninja_widget_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Create new instance of widget and save
+	 */
 	public function copy()
 	{
 		$db = Database::instance();
@@ -290,17 +298,11 @@ class Ninja_widget_Model extends Model
 
 	/**
 	 * Deletes a copy of a widget.
-	 *
-	 * @returns true if widget was deleted, false if this was the last copy which thus wasn't deleted
 	 */
 	public function delete()
 	{
-		$user = Auth::instance()->get_user()->username;
-		$sql = 'SELECT COUNT(instance_id) AS count FROM ninja_widgets WHERE instance_id IS NOT NULL AND username='.$this->db->escape($user).' AND page='.$this->db->escape($this->page).' AND name='.$this->db->escape($this->name);
-		$res = $this->db->query($sql);
-		if ($res->current()->count <= 1)
+		if (!$this->id)
 			return false;
-
 		$sql = 'DELETE FROM ninja_widgets WHERE id='.$this->db->escape($this->id);
 		$this->db->query($sql);
 		return true;

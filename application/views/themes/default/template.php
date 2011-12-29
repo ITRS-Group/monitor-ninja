@@ -311,8 +311,8 @@ if (isset($this) && isset($this->template->js_header))
 					if (isset($widgets) && is_array($widgets)) {
 						echo '<li class="header">'._('Available Widgets').'</li>'."\n";
 						foreach($widgets as $widget) {
-							$class_name = (isset($widget->setting['status']) && $widget->setting['status'] == 'hide') ? 'unselected' : 'selected';
-							echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.'" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
+							$class_name = isset($widget->id) ? 'selected' : 'unselected';
+							echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'._('Set widget refresh rate (s.)').'</li>'."\n";

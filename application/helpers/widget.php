@@ -52,6 +52,8 @@ class widget_Core
 	 */
 	public static function add($widget_obj, $master)
 	{
+		if (!isset($widget_obj->id) || !$widget_obj->id)
+			return;
 		set_error_handler('widget_error_handler', error_reporting());
 		try {
 			$obj = self::get($widget_obj);

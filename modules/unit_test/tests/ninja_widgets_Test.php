@@ -100,6 +100,7 @@ class Ninja_widgets_Test extends TapUnit {
 
 	function test_copy_widget() {
 		$widget = Ninja_widget_Model::get('tac/index', 'foobar');
+		$widget = $widget->copy();
 		$this->ok($widget !== false, 'Create new widget is successful');
 		$dup_widget = $widget->copy();
 		$this->ok($dup_widget !== false, 'Copy widget is successful');
@@ -122,8 +123,8 @@ class Ninja_widgets_Test extends TapUnit {
 		$this->ok(count($new_widgets) === count($this->orig_widgets) + 1, "Last widget copy can't be deleted");
 	}
 
+	/** there were no instance_ids in the past */
 	function test_edit_legacy() {
-		# there were no instance_ids in the past
 		$db = Database::instance();
 		$db->query("INSERT INTO ninja_widgets (name, username, page, instance_id) VALUES ('foobar2', 'monitor', 'tac/index', null)");
 		$widgets = Ninja_widget_Model::fetch_all('tac/index');
@@ -135,7 +136,9 @@ class Ninja_widgets_Test extends TapUnit {
 			}
 		}
 		$this->ok($foobar !== false, 'Foobar2 widget found');
-		$this->ok_id($foobar->instance_id, 1, 'Instance ID is set to a number upon retrieval');
+		$this->ok_id($foobar->instance_id, NULL, 'Instance ID is initially NULL');
+		$foobar->save();
+		$this->ok_id($foobar->instance_id, 1, 'Instance ID is set to a number after save');
 		$foobar->friendly_name='w00t';
 		$foobar->save();
 		$res = $db->query("SELECT count(1) AS count FROM ninja_widgets WHERE name='foobar2'");
@@ -156,6 +159,8 @@ class Ninja_widgets_Test extends TapUnit {
 	}
 
 	function test_widget_helper() {
+		$widget = Ninja_widget_Model::get('tac/index', 'foobar');
+		$widget->save();
 		$ws = Ninja_widget_Model::fetch_all('tac/index');
 		foreach ($ws as $name => $widget_obj) {
 			$this->ok_id($name, 'widget-'.$widget_obj->name.'-'.$widget_obj->instance_id, 'Not all widgets have correct array indexes');

@@ -256,14 +256,12 @@ class Ajax_Controller extends Authenticated_Controller {
 		$widget = Ninja_widget_Model::get($page, $name, $instance_id);
 		switch ($method) {
 		 case 'hide': case 'close':
-			if (!$widget->delete())
-				$widget->merge_settings(array('status' => 'hide'));
+			$widget->delete();
 			break;
 		 case 'show': case 'add':
-			$widget->merge_settings(array('status' => 'show'));
+			$widget->add();
 			break;
 		}
-		$widget->save();
 	}
 
 	/**
@@ -787,6 +785,8 @@ class Ajax_Controller extends Authenticated_Controller {
 		$page = $this->input->post('page');
 		$widget = $this->input->post('widget');
 		$instance_id = $this->input->post('instance_id');
+		if (!$instance_id)
+			$instance_id = null;
 		$widget = Ninja_widget_Model::get($page, $widget, $instance_id);
 		$dup_widget = $widget->copy();
 		echo widget::add($dup_widget, false);

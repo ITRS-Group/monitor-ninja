@@ -49,15 +49,24 @@ function init_easywidgets(){
 				save_widget_order(str);
 			},
 			onClose: function(link, widget) {
-				widget.removeClass().addClass('unselected');
-				//$(widget_name).removeClass('movable');
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
+				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
+				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				if (menu_siblings.length > 1)
+					this_entry.detach();
+				else
+					this_entry.removeClass('selected').addClass('unselected');
+				widget.detach();
 			},
 			onHide: function(widget) {
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
-			},
-			onShow: function(widget) {
-				save_widget_state('show', widget.data('name'), widget.data('instance_id'));
+				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
+				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				if (menu_siblings.length > 1)
+					this_entry.detach();
+				else
+					this_entry.removeClass('selected').addClass('unselected');
+				widget.detach();
 			},
 			onAdd: function(w) {
 				new widget(w.data('name'), w.data('instance_id'));
@@ -159,14 +168,37 @@ function control_widgets(item) {
 	var it = $(item);
 	if (item.className == 'selected') {
 		$.fn.HideEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
-		it.removeClass('movable');
 		item.className = 'unselected';
 	}
 	else {
-		it.addClass('movable');
-		$.fn.ShowEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
+		copy_widget_instance(it.data('name'), it.data('instance_id'));
 		item.className = 'selected';
 	}
+}
+
+function copy_widget_instance(name, instance_id, cb) {
+	$.ajax({
+		url: _site_domain + _index_page + '/ajax/copy_widget_instance',
+		dataType: 'html',
+		type: 'POST',
+		data: {page: _current_uri, widget: name, 'instance_id': instance_id},
+		success: function(data) {
+			var new_widget;
+			var this_widget = $('#widget-' + name + '-' + instance_id);
+			if (this_widget.length) {
+				this_widget.after(data);
+				new_widget = this_widget.next('.widget');
+			}
+			else {
+				var container = $('#widget-placeholder');
+				container.append(data);
+				new_widget = container.find('.widget:last');
+			}
+			$.fn.AddEasyWidget('#widget-'+new_widget.data('name')+'-'+new_widget.data('instance_id'), new_widget.parent().id, window.easywidgets_obj);
+			if (cb)
+				cb(new_widget);
+		}
+	});
 }
 
 function save_widget_state(what, widget_name, instance_id)
@@ -259,17 +291,9 @@ widget.prototype.init_widget = function(name, instance_id) {
 
 	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + _theme_path + 'icons/12x12/copy.png"/></a>');
 	$('#' + this.widget_id + ' .widget-copylink').click(function() {
-		$.ajax({
-			url: _site_domain + _index_page + '/ajax/copy_widget_instance',
-			dataType: 'html',
-			type: 'POST',
-			data: {page: self.current_uri, widget: self.name, instance_id: self.instance_id},
-			success: function(data) {
-				var this_widget = $('#' + self.widget_id);
-				this_widget.after(data);
-				var new_widget = this_widget.next('.widget');
-				$.fn.AddEasyWidget('#widget-'+new_widget.data('name')+'-'+new_widget.data('instance_id'), this_widget.parent().id, window.easywidgets_obj);
-			}});
+		copy_widget_instance(self.name, self.instance_id, function (new_widget) {
+			$('.widget-selector').filter(':last').after('<li id="li-'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'" data-name="'+new_widget.data('name')+'" data-instance_id="'+new_widget.data('instance_id')+'" class="selected widget-selector" onclick="control_widgets(this)">'+new_widget.find('#'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'_title').text()+'</li>');
+		});
 	});
 	loaded_widgets[this.id] = 1;
 
