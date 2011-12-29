@@ -21,7 +21,11 @@ test-coverage: test-ci-prepare
 docs: Documentation
 
 Documentation: ninja.doxy application/models/*.php application/helpers/*.php
-	doxygen ninja.doxy
+	a=$$(doxygen ninja.doxy 2>&1); \
+	if [[ -n $$a ]]; then \
+		echo "$$a"; \
+		exit 1; \
+	fi;
 
 help:
 	@echo
