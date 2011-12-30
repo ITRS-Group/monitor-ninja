@@ -34,7 +34,7 @@ class Downtime_Model extends Model
 					FROM
 						scheduled_downtime d
 					LEFT JOIN
-						scheduled_downtime AS d2
+						scheduled_downtime d2
 						ON
 							d.triggered_by = d2.downtime_id
 					WHERE

@@ -12,18 +12,7 @@ chown -R monitor:daemon /opt/monitor
 chown -R monitor:daemon /var/www/
 
 # svcadm restart  doesn't work, if service is not started
-svcadm disable svc:/network/http:cswapache2
-svcadm enable svc:/network/http:cswapache2
-
-# We should not setup mysql 
-exit 0
-
-sh $prefix/install_scripts/ninja_db_init.sh
-
-# Set driver to LDAP if ad or ldap is configured
-if [ -f /opt/op5sys/etc/ldapserver ]; then
-        sed -e "s/^\$config\[\"*'*driver\"*'*\].*/\$config\['driver'\] = 'LDAP';/"\
-                $prefix/application/config/auth.php > $prefix/application/config/auth_temp.php
-        mv $prefix/application/config/auth_temp.php $prefix/application/config/auth.php
-fi
+svcadm disable cswapache2
+sleep 3
+svcadm enable cswapache2
 
