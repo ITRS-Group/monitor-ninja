@@ -151,7 +151,7 @@ class Ninja_widget_Model extends Model
 			// overwrite it.
 			unset($obj->id);
 		}
-		else {
+		else if ($instance_id) {
 			$obj->instance_id = $instance_id;
 		}
 		$obj->page = $page;

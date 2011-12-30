@@ -358,12 +358,12 @@ class Status_Controller extends Authenticated_Controller {
 		$widget->set_hoststatus($hoststatustypes);
 		$widget->set_servicestatus($servicestatustypes);
 		$widget->set_grouptype($group_type);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
+
 		$this->template->content->na_str = $this->translate->_('N/A');
 
 		# set sort images, used in header_links() below
@@ -778,7 +778,6 @@ class Status_Controller extends Authenticated_Controller {
 		$widget->set_hoststatus($hoststatustypes);
 		$widget->set_servicestatus($servicestatustypes);
 		$widget->set_grouptype($grouptype.'group');
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
@@ -911,7 +910,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
-		$this->template->css_header->js = $this->xtra_css;
+		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
 		$group_details = false;
@@ -1112,8 +1111,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
-		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 
 		$content->label_host = $t->_('Host');
 		$content->label_services = $t->_('Services');
