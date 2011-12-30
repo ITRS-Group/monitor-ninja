@@ -205,6 +205,7 @@ else { ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?>
+	<br /><span id="multi_object_submit_progress" class="item_select"></span>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>
 

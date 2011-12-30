@@ -558,6 +558,12 @@ $(document).ready(function() {
 			return false;
 		}
 
+		// Check if we actually set an action
+		if ($('#multi_action_select_service').val() == "") {
+			show_message("multi_object_submit_progress_service", _no_action_error);
+			return false;
+		}
+
 		show_progress("multi_object_submit_progress_service", _wait_str);
 	});
 
@@ -565,6 +571,12 @@ $(document).ready(function() {
 		// check that we have any selected items
 		if (!$('.item_select input[name=object_select\\[\\]]').is(':checked')) {
 			show_message("multi_object_submit_progress", _nothing_selected_error);
+			return false;
+		}
+
+		// Check if we actually set an action
+		if ($('#multi_action_select').val() == "") {
+			show_message("multi_object_submit_progress", _no_action_error);
 			return false;
 		}
 
