@@ -233,22 +233,28 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			echo '</td></tr>';
 		} ?>
 		</table>
-	<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
-		array(
-			'' => $this->translate->_('Select action'),
-			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
-			'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
-			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
-			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
-			'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
-			'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
-			'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
-			)
-		); ?>
-	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+<?php
+	$options = array(
+		'' => $this->translate->_('Select action'),
+		'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
+		'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
+		'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
+		'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+		'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
+		'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
+		'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
+		'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
+		'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
+		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
+		);
+
+	if (Nacoma::allowed()) {
+		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
+	}
+	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);
+?>
+	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+	<br /><span id="multi_object_submit_progress_service" class="item_select_service"></span>
 	<?php echo form::hidden('obj_type', 'service'); ?>
 	<?php echo form::close(); ?>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>

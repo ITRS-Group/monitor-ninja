@@ -111,6 +111,7 @@ if (isset($this) && isset($this->template->js_header))
 				var _search_save_error = '<?php echo _('ERROR') ?>';
 				var _search_saved_ok = '<?php echo _('Your search was successfully saved.') ?>';
 				var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
+				var _nothing_selected_error = '<?php echo _('Please select at least one item.') ?>';
 
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 

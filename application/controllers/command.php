@@ -186,6 +186,23 @@ class Command_Controller extends Authenticated_Controller
 		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
 			$param['_services-too'] = $this->cb($this->translate->_('Remove any acknowledgements on services too'), '_services-too');
 			break;
+		 case 'NACOMA_DEL_HOST':
+		 case 'NACOMA_DEL_SERVICE':
+			// Delete the host/service then route to NACOMA SAVE_CONFIG page
+			if (isset($params['service'])) {
+				foreach ($params['service'] as $service) {
+					Nacoma::delService($service);
+				}
+			}
+
+			if (isset($params['host_name'])) {
+				foreach ($params['host_name'] as $host) {
+					Nacoma::delHost($host);
+				}
+			}
+
+			url::redirect('/configuration/configure?page=export.php');
+			break;
 		}
 		$info['params'] = $param;
 

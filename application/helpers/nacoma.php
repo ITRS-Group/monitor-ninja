@@ -38,4 +38,46 @@ class nacoma_Core {
 		}
 		return $link;
 	}
+
+	/**
+	*	Check if the current user is allowed to use Nacoma
+	*
+	*	@return true/false
+	*/
+	public function allowed() {
+		if (!Auth::instance()->logged_in()) {
+			return null;
+		}
+
+		$auth = new Nagios_auth_Model();
+		if (!$auth->authorized_for_configuration_information || Kohana::config('config.nacoma_path')===false) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	*	Delete host (and associated services) using monitor CLI api
+	*
+	*	@params $host string host to be deleted
+	*/
+	public function delHost ($host) {
+		if (!Nacoma::allowed()) {
+			return false;
+		}
+		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t host -n "' . $host . '" -a delete -u >/dev/null', $retval);
+	}
+
+	/**
+	*	Delete the service using monitor CLI api
+	*
+	*	@params $service string service to be deleted, format <HOST>;<SERVICE>
+	*/
+	public function delService ($service) {
+		if (!Nacoma::allowed()) {
+			return false;
+		}
+		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -n "' . $service . '" -a delete -u >/dev/null', $retval);
+	}
 }

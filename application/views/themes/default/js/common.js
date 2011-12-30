@@ -551,11 +551,24 @@ $(document).ready(function() {
 		}
 	}
 
-	$('#multi_object_submit').click(function() {
+	$('#multi_object_submit_service').click(function() {
 		// check that we have any selected items
-		if (!$('input[name=object_select\\[\\]]').is(':checked')) {
+		if (!$('.item_select_service input[name=object_select\\[\\]]').is(':checked')) {
+			show_message("multi_object_submit_progress_service", _nothing_selected_error);
 			return false;
 		}
+
+		show_progress("multi_object_submit_progress_service", _wait_str);
+	});
+
+	$('#multi_object_submit').click(function() {
+		// check that we have any selected items
+		if (!$('.item_select input[name=object_select\\[\\]]').is(':checked')) {
+			show_message("multi_object_submit_progress", _nothing_selected_error);
+			return false;
+		}
+
+		show_progress("multi_object_submit_progress", _wait_str);
 	});
 
 	// ======== Saved search handling ==========
@@ -792,6 +805,36 @@ $(document).ready(function() {
 
 var loadimg_sml = new Image(16,16);
 loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
+
+/**
+*	cache the progress indicator image to show faster...
+*/
+var Image1 = new Image(16,16);
+Image1.src = _site_domain + 'application/media/images/loading.gif';
+
+/**
+*	Show a progress indicator to inform user that something
+*	is happening...
+*/
+function show_progress(the_id, info_str, size_str) {
+	switch (size_str) {
+		case "small": case "tiny":
+			size_str = loadimg_sml.src;
+			break;
+		case "large": case "big":
+			size_str = Image1.src;
+			break;
+		default:
+			size_str = loadimg_sml.src;
+			break;
+	}
+	$("#" + the_id).html('<img id="progress_image_id" src="' + size_str + '"> <em>' + info_str +'</em>').show();
+}
+
+function show_message(the_id, info_str) {
+	$("#" + the_id).html('<em>' + info_str +'</em>').show();
+}
+	
 
 function switch_image(html_id, src)
 {

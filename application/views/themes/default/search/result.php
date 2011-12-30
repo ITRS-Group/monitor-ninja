@@ -114,23 +114,29 @@ if (isset($host_result) ) {
 	</tr>
 <?php	$i++; } ?>
 </table><br />
-<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
-		array(
-			'' => $this->translate->_('Select action'),
-			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
-			'DEL_HOST_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
-			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
-			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
-			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
-			'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks'),
-			'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule host checks'),
-			'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
-			)
-		); ?>
+<?php
+	$options = array(
+		'' => $this->translate->_('Select action'),
+		'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
+		'DEL_HOST_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
+		'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
+		'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+		'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
+		'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
+		'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
+		'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
+		'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks'),
+		'SCHEDULE_HOST_CHECK' => $this->translate->_('Reschedule host checks'),
+		'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
+		);
+
+	if (Nacoma::allowed()) {
+		$options['NACOMA_DEL_HOST'] = $this->translate->_('Delete selected host(s)');
+	}
+	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'), $options);
+?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<br /><span id="multi_object_submit_progress" class="item_select"></span>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?><br /><br /><?php
 }
@@ -247,27 +253,35 @@ if (isset($service_result) ) {
 	$prev_host = $service->host_name;
 	} ?>
 </table><br />
-<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'),
-		array(
-			'' => $this->translate->_('Select action'),
-			'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
-			'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
-			'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-			'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
-			'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
-			'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
-			'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
-			'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
-			'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
-			)
-		); ?>
-	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+<?php
+	$options = array(
+		'' => $this->translate->_('Select action'),
+		'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
+		'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
+		'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
+		'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
+		'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
+		'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
+		'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
+		'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
+		'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
+		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
+		);
+
+	if (Nacoma::allowed()) {
+		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
+	}
+
+	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);
+?>
+	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+	<br /><span id="multi_object_submit_progress_service" class="item_select_service"></span>
 	<?php echo form::hidden('obj_type', 'service'); ?>
 	<?php echo form::close(); ?>
+<br />
+<br />
 <?php
 }
-
 # show servicegroup data if available
 if (isset($servicegroup_result) ) {
 	if (isset($servicegroup_pagination)) {?><div id="servicegroup_pagination"><?php echo $servicegroup_pagination ?></div><?php } ?>
