@@ -907,7 +907,7 @@ class Status_Controller extends Authenticated_Controller {
 		$widget->set_host($group);
 		$widget->set_hoststatus($hoststatustypes);
 		$widget->set_servicestatus($servicestatustypes);
-		$widget->set_group($grouptype);
+		$widget->set_grouptype($grouptype);
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
