@@ -60,7 +60,7 @@ class nacoma_Core {
 	/**
 	*	Delete host (and associated services) using monitor CLI api
 	*
-	*	@params $host string host to be deleted
+	*	@param $host string host to be deleted
 	*/
 	public function delHost ($host) {
 		if (!Nacoma::allowed()) {
@@ -72,7 +72,7 @@ class nacoma_Core {
 	/**
 	*	Delete the service using monitor CLI api
 	*
-	*	@params $service string service to be deleted, format <HOST>;<SERVICE>
+	*	@param $service string service to be deleted, format HOST;SERVICE
 	*/
 	public function delService ($service) {
 		if (!Nacoma::allowed()) {
