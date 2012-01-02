@@ -3,7 +3,7 @@
 /**
  * Model for importing htpasswd files to ninja
  */
-class Htpasswd_importer_Model extends Model
+class Htpasswd_importer_Model extends Ninja_Model
 {
 	private $htpasswd_file = "/opt/monitor/etc/htpasswd.users";
 	public $overwrite = false; /**< Overwrite user's passwords */
@@ -17,6 +17,7 @@ class Htpasswd_importer_Model extends Model
 	 */
 	public function __construct($htpasswd_file = false)
 	{
+		parent::__construct();
 		$this->htpasswd_file = $htpasswd_file;
 		$this->parse_file($this->htpasswd_file);
 	}
