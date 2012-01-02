@@ -3,7 +3,7 @@
 /**
  * Retrieve and manipulate information regarding hostgroups
  */
-class Hostgroup_Model extends ORM
+class Hostgroup_Model extends Ninja_Model
 {
 	/**
 	 * Fetch hostgroup where field matches value

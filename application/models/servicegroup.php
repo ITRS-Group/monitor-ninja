@@ -3,7 +3,7 @@
 /**
  * Retrieve and manipulate information regarding servicegroups
  */
-class Servicegroup_Model extends ORM
+class Servicegroup_Model extends Ninja_Model
 {
 	/**
 	 * Fetch servicegroup where field matches value
