@@ -17,9 +17,9 @@
 			<th <?php echo ($create_pdf) ? 'style=" font-weight: bold;width: 110px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left"style="border-top: 0px; vertical-align: bottom; width: 110px"'; ?> rowspan="3">
 					<?php echo ucfirst(strtolower($state_values[$var_type])); ?>
 			</th>
-			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em; ' : ''; ?>><?php echo $label_unscheduled ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data" style="width: 80px"'; ?>><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_UNSCHEDULED']) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data" style="width: 80px"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %
+			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;"' : ''; ?>><?php echo $label_unscheduled ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data" style="width: 80px"'; ?>><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_UNSCHEDULED']) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data" style="width: 80px"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_UNSCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
 				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 12px')); ?>
 			</td>
@@ -31,9 +31,9 @@
 			<?php } } ?>
 		</tr>
 		<tr class="even">
-			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;' : 'style="border-left: 0px"'; ?>><?php echo $label_scheduled ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_SCHEDULED']) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
+			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;"' : 'style="border-left: 0px"'; ?>><?php echo $label_scheduled ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_' . $var_type .'_SCHEDULED']) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
 				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 12px')); ?>
 			<?php if ($scheduled_downtime_as_uptime == 2 && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
@@ -53,16 +53,16 @@
 			<th <?php echo ($create_pdf) ? 'style=" font-weight: bold;width: 110px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'class="headerNone left" style="vertical-align: bottom; border-top: 0px"'; ?> rowspan="3">
 				<?php echo $label_undetermined ?>
 			</th>
-			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;' : ''; ?>><?php echo $label_not_running ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %
+			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;"' : ''; ?>><?php echo $label_not_running ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NOT_RUNNING']) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NOT_RUNNING']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => $t->_('Undetermined'),'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')); ?> </td>
 		</tr>
 		<tr class="even">
-			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;' : 'style="border-left: 0px"'; ?>><?php echo $label_insufficient_data ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NO_DATA']) ?></td>
-			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %
+			<td <?php echo ($create_pdf) ? 'style="width: 354px; font-size: 0.9em;"' : 'style="border-left: 0px"'; ?>><?php echo $label_insufficient_data ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo time::to_string($avail_data['values']['TIME_UNDETERMINED_NO_DATA']) ?></td>
+			<td <?php echo ($create_pdf) ? 'style="width: 110px; font-size: 0.9em; text-align: right;"' : 'class="data"'; ?>><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_UNDETERMINED_NO_DATA']) > 0 ? '' : 'not-').'pending.png'),
 				array('alt' => $t->_('Undetermined'),'title' => $t->_('Undetermined'),'style' => 'height: 12px; width: 12px')); ?></td>
 		</tr>
