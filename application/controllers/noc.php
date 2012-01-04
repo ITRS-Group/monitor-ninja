@@ -18,7 +18,7 @@ class Noc_Controller extends Authenticated_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->model = new Current_status_Model();
+		$this->model = Current_status_Model::instance();
 		#$this->template = $this->add_view('noc');
 	}
 

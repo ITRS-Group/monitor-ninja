@@ -44,7 +44,7 @@ class Outages_Model extends Model
 				$status->find_hosts_causing_outages();
 			}
 		} else {
-			$status = new Current_status_Model();
+			$status = Current_status_Model::instance();
 			$status->find_hosts_causing_outages();
 		}
 		$outages = false;

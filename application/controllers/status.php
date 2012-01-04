@@ -28,7 +28,7 @@ class Status_Controller extends Authenticated_Controller {
 		parent::__construct();
 
 		# load current status for host/service status totals
-		$this->current = new Current_status_Model();
+		$this->current = Current_status_Model::instance();
 		$this->current->analyze_status_data();
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 

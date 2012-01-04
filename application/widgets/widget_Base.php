@@ -20,7 +20,6 @@ class widget_Base
 	public $widget_full_path = false;
 	public $translate = false;
 	public $model = false;
-	private static $current_status = false;
 	private static $loaded_widgets = array();
 
 	public $arguments = array();
@@ -47,16 +46,11 @@ class widget_Base
 		$this->model = $widget_model;
 	}
 
-	public function set_current_status($status) {
-		self::$current_status = $status;
-	}
-
 	public function get_current_status() {
-		if (self::$current_status === false) {
-			self::$current_status = new Current_status_Model();
-			self::$current_status->analyze_status_data();
-		}
-		return self::$current_status;
+		$current_status = Current_status_Model::instance();
+		if (!$current_status->data_present())
+			$current_status->analyze_status_data();
+		return $current_status;
 	}
 
 	public function get_arguments() {

@@ -47,7 +47,7 @@ class External_widget_Controller extends Ninja_Controller {
 			}
 		}
 
-		$model = new Current_status_Model();
+		$model = Current_status_Model::instance();
 		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $model);
 
 		$this->template->content = $this->add_view('single_widget');

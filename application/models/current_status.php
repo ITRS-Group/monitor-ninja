@@ -131,12 +131,26 @@ class Current_status_Model extends Model
 
 	private $base_path = '';
 	private $auth = false;
+	private static $instance = false;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->base_path = Kohana::config('config.nagios_base_path');
 		$this->auth = new Nagios_auth_Model();
+	}
+
+	/**
+	 * Use this class as a singleton, as it is quite slow
+	 *
+	 * @return A Current_status_Model object
+	 */
+	public static function instance()
+	{
+		if (!self::$instance) {
+			self::$instance = new Current_status_Model();
+		}
+		return self::$instance;
 	}
 
 	/**
