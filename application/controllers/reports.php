@@ -1924,6 +1924,7 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 
 								$host = $hostname[0];
+								$template->content->host = $host;
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
 									 "&amp;host_name=all".
