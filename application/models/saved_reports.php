@@ -15,7 +15,7 @@ class Saved_reports_Model extends Model
 	 * @param $type The report type ('avail', 'sla' or 'summary')
 	 * @param $user If set, the user to use to filter reports. If not set or false, the session will be used instead.
 	 */
-	public function get_saved_reports($type='avail', $user=false)
+	public static function get_saved_reports($type='avail', $user=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -283,7 +283,7 @@ class Saved_reports_Model extends Model
 	 * @param $type string: Report type. { avail, sla }
 	 * @return false on errors. Array of all names on success
 	 */
-	public function get_all_report_names($type='avail')
+	public static function get_all_report_names($type='avail')
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')

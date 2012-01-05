@@ -140,7 +140,7 @@ class nagstat_Core {
 	/**
 	 * Process macros for host- or service objects
 	 */
-	public function process_macros($string=false, &$obj=false)
+	public static function process_macros($string=false, &$obj=false)
 	{
 		if (empty($string) || empty($obj)) {
 			return false;
@@ -256,7 +256,7 @@ class nagstat_Core {
 	*	Format a Nagios date format string to the
 	*	PHP equivalent.
 	*/
-	public function date_format($nagios_format_name=false)
+	public static function date_format($nagios_format_name=false)
 	{
 		if (empty($nagios_format_name)) {
 			$date_format_id = 'date_format';

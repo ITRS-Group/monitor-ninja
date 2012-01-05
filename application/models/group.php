@@ -407,7 +407,7 @@ class Group_Model extends Model
 	*	Fetch group overview data
 	* 	Expects group type (host/service) and group name
 	*/
-	public function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
+	public static function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = array();

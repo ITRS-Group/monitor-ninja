@@ -14,7 +14,7 @@ class nagioscmd_Core
 	 * @return array with command information if a command was found, or
 	 *         false otherwise
 	 */
-	public function cmd_info($name = false)
+	public static function cmd_info($name = false)
 	{
 		if (empty($name)) {
 			return false;
@@ -1050,7 +1050,7 @@ class nagioscmd_Core
 	/**
 	 * If the provided name is a valid command, return it, otherwise return false
 	 */
-	function cmd_name($name = false)
+	public static function cmd_name($name = false)
 	{
 		$info = self::cmd_info($name);
 		if (empty($info) || isset($info['name'])) {
@@ -1064,7 +1064,7 @@ class nagioscmd_Core
 	 * @param $name The name of the command
 	 * @return False on errors, the numeric id on success (may be 0)
 	 */
-	public function command_id($name)
+	public static function command_id($name)
 	{
 		if (empty($name))
 			return false;

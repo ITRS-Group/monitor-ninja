@@ -10,7 +10,7 @@ class arr_Core
 	 * to return in case the variable isn't found.
 	 * Note that $k (for key) can be an array
 	 */
-	public function search($ary, $k, $def = false)
+	public static function search($ary, $k, $def = false)
 	{
 		if (is_array($k))
 			$try = $k;

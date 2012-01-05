@@ -18,7 +18,7 @@ class nacoma_Core {
 	*	This depends on if Nacoma is actually available
 	* 	and if the user is authorized to use it.
 	*/
-	public function link($path=false, $img=false, $title=false)
+	public static function link($path=false, $img=false, $title=false)
 	{
 		# don't try this if user isn't logged in
 		if (!Auth::instance()->logged_in()) {
@@ -31,7 +31,7 @@ class nacoma_Core {
 		# create the link.
 		$link = false;
 		if (!empty($path) && !empty($img)) {
-			$link = html::anchor($path, html::image($this->add_path($img),array('alt' => $title, 'title' => $title)), array('style' => 'border: 0px'));
+			$link = html::anchor($path, html::image(ninja::add_path($img),array('alt' => $title, 'title' => $title)), array('style' => 'border: 0px'));
 		} else {
 			# helper only used to decide if the link should be displayed at all
 			$link = true;
@@ -44,7 +44,7 @@ class nacoma_Core {
 	*
 	*	@return true/false
 	*/
-	public function allowed() {
+	public static function allowed() {
 		if (!Auth::instance()->logged_in()) {
 			return null;
 		}

@@ -661,7 +661,7 @@ class Current_status_Model extends Model
 	/**
 	 * Translates a given status from db to a readable string
 	 */
-	public function status_text($db_status=false, $type='host')
+	public static function status_text($db_status=false, $type='host')
 	{
 		$host_states = array(
 			self::HOST_UP => 'UP',

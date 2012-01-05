@@ -54,7 +54,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $type string: {avail, sla}
 	 * @return res
 	 */
-	public function get_scheduled_reports($type='avail')
+	public static function get_scheduled_reports($type='avail')
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -136,7 +136,7 @@ class Scheduled_reports_Model extends Model
 	 * Get available report periods
 	 * @return Database result object on success. False on errors.
 	 */
-	public function get_available_report_periods()
+	public static function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
 		$db = Database::instance();
@@ -334,7 +334,7 @@ class Scheduled_reports_Model extends Model
 	*	Fetch info on all defined report types, i.e all
 	* 	types we can schedule
 	*/
-	public function get_all_report_types()
+	public static function get_all_report_types()
 	{
 		$db = Database::instance();
 		$sql = "SELECT * FROM scheduled_report_types ORDER BY id";

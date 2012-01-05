@@ -62,7 +62,7 @@ class Ninja_setting_Model extends Model
 	 * @param $page string: The page we're looking at.
 	 * @param $default bool: Request default or not.
 	 */
-	public function fetch_page_setting($type='widget_order', $page=false, $default=false)
+	public static function fetch_page_setting($type='widget_order', $page=false, $default=false)
 	{
 		$type = trim($type);
 		$page = trim($page);

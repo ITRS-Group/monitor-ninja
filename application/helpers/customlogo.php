@@ -6,7 +6,7 @@ class customlogo_Core {
 	/**
 	 * Display the div with the logo if it's all enabled
 	 */
-	function Render()
+	public static function Render()
 	{
 		if (!Kohana::Config('customlogo.enable'))
 			return;

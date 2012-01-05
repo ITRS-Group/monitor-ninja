@@ -31,7 +31,7 @@ class Hostgroup_Model extends Ninja_Model
 	/**
 	 * Fetch info on all defined hostgroups
 	 */
-	public function get_all($items_per_page = false, $offset=false)
+	public static function get_all($items_per_page = false, $offset=false)
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
@@ -198,7 +198,7 @@ class Hostgroup_Model extends Ninja_Model
 	 * @param $hoststatustypes A bitmask of interesting host states (1 << the_nagios_state)
 	 * @param $servicestatustypes A bitmask of interesting service states (1 << the_nagios_state)
 	 */
-	public function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
+	public static function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_hostgroups();

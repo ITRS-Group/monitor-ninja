@@ -133,7 +133,7 @@ class System_Model extends Model
 	/**
 	*	Fetch status info from nagios log file
 	*/
-	public function get_status_info($file = 'status.log', $section = 'programstatus')
+	public static function get_status_info($file = 'status.log', $section = 'programstatus')
 	{
 		if (empty($file))
 			return false;
@@ -182,7 +182,7 @@ class System_Model extends Model
 	*	Extract values from status.log array returned from
 	*	get_status_info()
 	*/
-	public function extract_stat_key($key=false, &$arr=false)
+	public static function extract_stat_key($key=false, &$arr=false)
 	{
 		if (empty($key) || empty($arr))
 			return false;

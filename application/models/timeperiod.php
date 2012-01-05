@@ -12,7 +12,7 @@ class Timeperiod_Model extends Model
 	 * @param $include_exceptions bool: If true, include the exceptions for the timeperiod
 	 * @return an array of the timeperiod's properties
 	 */
-	public function get($period, $include_exceptions=false)
+	public static function get($period, $include_exceptions=false)
 	{
 		$db = Database::instance();
 		$query = 'SELECT * FROM timeperiod ' .
@@ -42,7 +42,7 @@ class Timeperiod_Model extends Model
 	 * @param $include_exceptions bool: If true, mash timeperiod exceptions into the result
 	 * @return false on errors. An array of arrays on success.
 	 */
-	public function excludes($timeperiod_id=null, $include_exceptions=false)
+	public static function excludes($timeperiod_id=null, $include_exceptions=false)
 	{
 		if (empty($timeperiod_id))
 			return false;
@@ -73,7 +73,7 @@ class Timeperiod_Model extends Model
 	 * Fetch all timperiods
 	 * @return db result
 	 */
-	public function get_all()
+	public static function get_all()
 	{
 		$return = "";
 		$sql = "SELECT timeperiod_name FROM timeperiod ORDER BY timeperiod_name";

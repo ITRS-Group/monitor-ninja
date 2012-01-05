@@ -108,7 +108,7 @@ class Comment_Model extends Model {
 	/**
 	*	Wrapper method to fetch nr of comments for host or service
 	*/
-	public function count_comments($host=false, $service=false)
+	public static function count_comments($host=false, $service=false)
 	{
 		return self::fetch_comments($host, $service, false, false, true);
 	}
@@ -116,7 +116,7 @@ class Comment_Model extends Model {
 	/**
 	*	Fetch all host- or service comments
 	*/
-	public function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
@@ -176,7 +176,7 @@ class Comment_Model extends Model {
 	*	Returned array will contain object name as key and count
 	* 	as value for all objects with comments.
 	*/
-	public function count_comments_by_object($service=false)
+	public static function count_comments_by_object($service=false)
 	{
 		if ($service === false) { # only host comments
 			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".self::TABLE_NAME." WHERE ".

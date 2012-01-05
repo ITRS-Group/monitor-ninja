@@ -46,7 +46,7 @@ class widget_Base
 		$this->model = $widget_model;
 	}
 
-	public function get_current_status() {
+	public static function get_current_status() {
 		$current_status = Current_status_Model::instance();
 		if (!$current_status->data_present())
 			$current_status->analyze_status_data();

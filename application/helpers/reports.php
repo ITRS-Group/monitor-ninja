@@ -145,9 +145,10 @@ class reports_Core
 	/// used for automatic test cases
 	public function print_test_settings($test=false)
 	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
 		# report uses reports model default settings
 		if (!isset($test['start_time']) || !isset($test['end_time'])) {
-			echo $this->translate->_('Empty report settings. We need start_time and end_time')."\n";
+			echo $translate->_('Empty report settings. We need start_time and end_time')."\n";
 			print_r($test);
 			exit(1);
 		}
@@ -171,9 +172,9 @@ class reports_Core
 	/**
 	*	Create common translated javascript strings
 	*/
-	public function js_strings()
+	public static function js_strings()
 	{
-		$t = $this->translate;
+		$t = zend::instance('Registry')->get('Zend_Translate');
 		$js_strings = false;
 		$js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
 		$js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";

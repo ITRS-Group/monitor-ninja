@@ -4,28 +4,22 @@
  */
 class time_Core
 {
-	private $translate = false;
-	public function __construct()
-	{
-		# fetch our translation instance
-		$this->translate = zend::instance('Registry')->get('Zend_Translate');
-	}
-
 	/**
 	 * Convert a given nr of sec to string,
 	 * day, hour, minute, second
 	 */
-	function to_string($t=0)
+	public static function to_string($t=0)
 	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
 		$neg = false;
 
 		# translate the abbreviations
 		# seems weird but I suppose someone will want this anyway
-		$d = $this->translate->_('d'); // day
-		$h = $this->translate->_('h'); // hour
-		$m = $this->translate->_('m'); // minute
-		$s = $this->translate->_('s'); // second
-		$negative = $this->translate->_("negative") . " ";
+		$d = $translate->_('d'); // day
+		$h = $translate->_('h'); // hour
+		$m = $translate->_('m'); // minute
+		$s = $translate->_('s'); // second
+		$negative = $translate->_("negative") . " ";
 
 		if (!$t) return "0$d 0$h 0$m 0$s";
 		if ($t < 0) {

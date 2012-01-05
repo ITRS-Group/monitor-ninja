@@ -26,7 +26,6 @@ class Ninja_Controller extends Template_Controller {
 	public $template = "template";
 	public $user = false;
 	public $profiler = false;
-	public $theme_path = false;
 	public $xtra_js = array();
 	public $xtra_css = array();
 	public $inline_js = false;
@@ -36,11 +35,12 @@ class Ninja_Controller extends Template_Controller {
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
 	public $global_notifications = false;
+	protected $theme_path = false;
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->theme_path = Kohana::config('config.theme_path').Kohana::config('config.current_theme');
+		$this->theme_path = ninja::get_theme_path();
 
 		$this->run_tests = $this->input->get('run_tests', false);
 
@@ -116,7 +116,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
-		$this->registry->set('theme_path', $this->theme_path);
 
 		$this->translate = zend::translate('gettext', $this->locale->getLanguage(), $this->locale);
 
@@ -367,17 +366,7 @@ class Ninja_Controller extends Template_Controller {
 	 */
 	public function add_path($rel_path)
 	{
-		$rel_path = trim($rel_path);
-		if (empty($rel_path)) {
-			return false;
-		}
-
-		$path = false;
-		# assume rel_path is relative from current theme
-		$path = 'application/views/'.$this->theme_path.$rel_path;
-		# make sure we didn't mix up start/end slashes
-		$path = str_replace('//', '/', $path);
-		return $path;
+		return ninja::add_path($rel_path);
 	}
 
 	/**

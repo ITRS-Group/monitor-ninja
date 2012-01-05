@@ -8,7 +8,7 @@ class Contact_Model extends Model
 	/**
 	*	Fetch contact information
 	*/
-	public function get_contact($id = false, $username=false)
+	public static function get_contact($id = false, $username=false)
 	{
 		$sql = false;
 		$db = Database::instance();

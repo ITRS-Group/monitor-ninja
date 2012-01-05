@@ -90,7 +90,7 @@ class Saved_searches_Model extends Model
 	/**
 	*	Fetch all the saved searches for current user
 	*/
-	public function get_saved_searches()
+	public static function get_saved_searches()
 	{
 		$db = Database::instance();
 		$user = Auth::instance()->get_user()->username;

@@ -245,7 +245,7 @@ class Reports_Controller extends Authenticated_Controller
 		);
 	}
 
-	public function add_view($view) {
+	public function add_view($view=false) {
 		$ret = parent::add_view($view);
 		if (is_array($this->extra_template_data)) {
 			foreach ($this->extra_template_data as $key => $val) {
@@ -2582,11 +2582,11 @@ class Reports_Controller extends Authenticated_Controller
 	*	Return report period strings depending on current
 	*	report type (avail/sla)
 	*/
-	public function _report_period_strings($type='avail')
+	public static function _report_period_strings($type='avail')
 	{
 		$report_periods = false;
 		$selected = false;
-		$t = $this->translate;
+		$t = zend::instance('Registry')->get('Zend_Translate');
 		$label_lastmonth = $t->_('Last Month');
 		$label_thisyear = $t->_('This Year');
 		$label_lastyear = $t->_('Last Year');
@@ -3097,7 +3097,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Fetch and print information on saved timperiods
 	*/
-	public function _get_reporting_periods()
+	public static function _get_reporting_periods()
 	{
 		$res = Timeperiod_Model::get_all();
 		if (!$res)
