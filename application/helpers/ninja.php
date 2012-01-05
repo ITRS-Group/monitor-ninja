@@ -1,8 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Helper for basic ninja stuff
+ *
+ * Basically, stuff that could be in the ninja controller, if not other helpers
+ * had needed it.
+ */
 class ninja_Core {
 	private static $theme_path = false;
 
+	/**
+	 * Return the base path to the current theme
+	 */
 	public static function get_theme_path() {
 		$registry = zend::instance('Registry');
 		if (self::$theme_path)
@@ -18,6 +27,10 @@ class ninja_Core {
 		return self::$theme_path;
 	}
 
+	/**
+	 * Given a file name that is relative to the current theme, find it and
+	 * return the full path.
+	 */
 	public static function add_path($rel_path) {
 		$rel_path = trim($rel_path);
 		if (empty($rel_path)) {
