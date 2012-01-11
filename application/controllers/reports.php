@@ -2495,7 +2495,10 @@ class Reports_Controller extends Authenticated_Controller
 
 			// Sometimes we want to save the file instead of sending it to the browser,
 			// probably because it's scheduled and/or being triggered manually
-			$save_file = request::is_ajax() || php_sapi_name() == 'cli';
+			$save_file = request::is_ajax();
+			if(PHP_SAPI == 'cli') {
+				$save_file = true;
+			}
 			if (!$save_file) {
 				header("Content-disposition: attachment; filename=".$filename);
 				if (isset($_SERVER['HTTP_USER_AGENT']) &&
