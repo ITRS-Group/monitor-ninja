@@ -4270,7 +4270,8 @@ class Reports_Controller extends Authenticated_Controller
 		// check some fields a little extra
 		switch ($field) {
 			case 'local_persistent_filepath':
-				if(!is_writable(rtrim($new_value, '/').'/')) {
+				$new_value = trim($new_value);
+				if(!empty($new_value) && !is_writable(rtrim($new_value, '/').'/')) {
 					echo $this->translate->_("Can't write to '$new_value'. Provide another path.")."<br />";
 					return;
 				}
