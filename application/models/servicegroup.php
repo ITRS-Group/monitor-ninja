@@ -142,7 +142,7 @@ class Servicegroup_Model extends Ninja_Model
 	}
 
 	/**
-	 * Fetch services that belong to one or more specific servicegroup(s)
+	 * Fetch all information on all services that belong to one or more specific servicegroup(s)
 	 * @param $group Servicegroup name, or array of names
 	 * @return database result set
 	 */
@@ -158,27 +158,21 @@ class Servicegroup_Model extends Ninja_Model
 		foreach ($group as $g) {
 			$sg[$g] = $this->db->escape($g);
 		}
-		$auth_services = Service_Model::authorized_services();
-		$service_str = implode(', ', array_values($auth_services));
-		$sql = "SELECT
-			DISTINCT s.*
-		FROM
-			service s,
-			servicegroup sg,
-			service_servicegroup ssg
-		WHERE
-			sg.servicegroup_name IN(". join(', ', $sg) . ") AND
-			ssg.servicegroup = sg.id AND
-			s.id=ssg.service AND
-			s.id IN(".$service_str.")
-		ORDER BY
-			s.host_name, s.service_description";
+		$auth = new Nagios_auth_Model();
+		$contact = $auth->id;
 
-		if (!empty($sql)) {
-			$result = $this->db->query($sql);
-			return $result;
+		$ca_access = '';
+		if (!$auth->view_hosts_root) {
+			$ca_access = "INNER JOIN contact_access ca ON s.id = ca.service AND ca.contact=$contact";
 		}
-		return false;
+		$sql = "SELECT s.* FROM service s
+			INNER JOIN service_servicegroup ssg ON s.id = ssg.service
+			INNER JOIN servicegroup sg ON ssg.servicegroup = sg.id
+			$ca_access
+			WHERE sg.servicegroup_name IN (".join(',',$sg).")
+			ORDER BY s.host_name, s.service_description";
+		$result = $this->db->query($sql);
+		return $result;
 	}
 	/**
 	 * Create a query to find all the host and service

@@ -144,7 +144,7 @@ class Hostgroup_Model extends Ninja_Model
 	}
 
 	/**
-	 * Fetch hosts that belongs to a specific hostgroup
+	 * Fetch all information on all hosts that belongs to one or more specific hostgroup(s)
 	 * @param $group Hostgroup name, or array of names
 	 * @return database result set
 	 */
@@ -165,25 +165,16 @@ class Hostgroup_Model extends Ninja_Model
 
 		$ca_access = '';
 		if (!$auth->view_hosts_root) {
-			$ca_access = "AND h.id IN(SELECT host from contact_access where contact=".(int)$contact." and service is null)";
+			$ca_access = "INNER JOIN contact_access ca ON h.id = ca.host AND ca.contact=$contact";
 		}
-		$sql = "SELECT * FROM host WHERE id IN (SELECT
-			DISTINCT h.id
-		FROM
-			host h,
-			hostgroup hg,
-			host_hostgroup hhg
-		WHERE
-			hg.hostgroup_name IN (" . join(', ', $hg) . ") AND
-			hhg.hostgroup = hg.id AND
-			h.id=hhg.host ".$ca_access.")
-		ORDER BY
-			host_name";
-		if (!empty($sql)) {
-			$result = $this->db->query($sql);
-			return $result;
-		}
-		return false;
+		$sql = "SELECT h.* FROM host h
+			INNER JOIN host_hostgroup hhg ON h.id = hhg.host
+			INNER JOIN hostgroup hg ON hhg.hostgroup = hg.id
+			$ca_access
+			WHERE hg.hostgroup_name IN (".join(',',$hg).")
+			ORDER BY h.host_name";
+		$result = $this->db->query($sql);
+		return $result;
 	}
 
 	/**

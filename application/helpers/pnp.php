@@ -58,7 +58,11 @@ class pnp_Core
 			return array();
 
 		$contents = file_get_contents($path);
-		$xmldata = simplexml_load_string($contents);
+		$xmldata = @simplexml_load_string($contents);
+		if ($xmldata === false) {
+			// one can always try...
+			$xmldata = @simplexml_load_string(utf8_encode($contents));
+		}
 		$res = array();
 		if ($xmldata->DATASOURCE) {
 			foreach ($xmldata->DATASOURCE as $ds) {

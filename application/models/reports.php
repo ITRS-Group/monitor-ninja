@@ -2784,7 +2784,7 @@ class Reports_Model extends Model
 			$testrange = $timerange_set[$i];
 			if(self::timeranges_overlap($range, $testrange, true)) {
 				# if range overlaps with current item, merge them and continue
-				$range = merge_timeranges($range, $testrange);
+				$range = self::merge_timeranges($range, $testrange);
 
 				# remove the existing range, to later re-add it in the end
 				unset($timerange_set[$i]);
