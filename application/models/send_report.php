@@ -5,9 +5,6 @@
  */
 class Send_report_Model extends Model {
 
-	/**
-	 * @var Zend_Translate
-	 */
 	private $translate;
 
 	public function __construct() {
