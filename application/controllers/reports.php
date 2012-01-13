@@ -2517,7 +2517,7 @@ class Reports_Controller extends Authenticated_Controller
 		// Sometimes we want to save the file instead of sending it to the browser,
 		// probably because it's scheduled and/or being triggered manually
 		$save_file = request::is_ajax();
-		if(!$save_file && PHP_SAPI == 'cli') {
+		if(PHP_SAPI == 'cli') {
 			$save_file = true;
 		}
 		if (!$save_file) {
@@ -2533,7 +2533,7 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		// headlines, not HTTP header
+		// headings, not HTTP header
 		$csv = $this->_csv_header($sub_type);
 
 		if('sla' == $type) {
