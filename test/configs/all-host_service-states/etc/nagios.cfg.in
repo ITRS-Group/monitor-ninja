@@ -11,7 +11,7 @@
 #
 ###############################################################################
 
-broker_module=/opt/monitor/op5/merlin/merlin.so /opt/monitor/op5/merlin/merlin.conf
+broker_module=/opt/monitor/op5/merlin/merlin.so @@TESTDIR@@/etc/merlin.conf
 
 precached_object_file=@@TESTDIR@@/var/objects.precache
 check_result_path=@@TESTDIR@@/var/spool/checkresults
