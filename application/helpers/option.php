@@ -56,7 +56,7 @@ class option_Core
 	 * @param $id Instance id for this widget
 	 */
 	public function render_label($id) {
-		echo "<label for=\"$this->ns-$this->name-$id\">"._($this->label)."</label>";
+		return "<label for=\"$this->ns-$this->name-$id\">"._($this->label)."</label>";
 	}
 
 	/**
@@ -94,7 +94,7 @@ class option_Core
 			$args[$value_arg] = $value;
 
 		$f = new form();
-		echo $f->$type($args);
+		return $f->$type($args);
 	}
 
 	/**

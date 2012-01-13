@@ -102,7 +102,7 @@ class widget_Base
 	 */
 	public function render($method='index', $with_chrome=true)
 	{
-		ob_start();
+		$content = '';
 		$widget_id = $this->model->name.'-'.$this->model->instance_id;
 		if ($with_chrome) {
 			$options = $this->options();
@@ -112,40 +112,41 @@ class widget_Base
 				if ($this->$class)
 					$widget_classes[] = $class;
 			}
-			echo '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'"'.((isset($this->model->setting['status']) && $this->model->setting['status'] === 'hide')?' style="display: none;"' : '').' data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
-			echo '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
-			echo '<div class="widget-editbox">';
-			echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
-			echo '<fieldset>';
+			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'"'.((isset($this->model->setting['status']) && $this->model->setting['status'] === 'hide')?' style="display: none;"' : '').' data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
+			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
+			$content .= '<div class="widget-editbox">';
+			$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
+			$content .= '<fieldset>';
 			if (!isset(self::$loaded_widgets[$this->model->name]))
 				$this->inline_js .= "widget.register_widget_load('".$this->model->name."', function() {";
 			foreach ($options as $option) {
 				if (is_string($option)) {
-					echo $option;
+					$content .= $option;
 				}
 				else {
-					echo $option->render_label($this->model->instance_id);
-					echo $option->render_widget($this->model->instance_id, $this->model->setting);
+					$content .= $option->render_label($this->model->instance_id);
+					$content .= $option->render_widget($this->model->instance_id, $this->model->setting);
 					$js = $option->render_js();
 					if (!empty($js) && !isset(self::$loaded_widgets[$this->model->name]))
 						$this->inline_js .= "($js)(this);\n";
 				}
-				echo '<br/>';
+				$content .= '<br/>';
 			}
 			if (!isset(self::$loaded_widgets[$this->model->name]))
 				$this->inline_js .= "});\n";
-			echo '</fieldset>';
-			echo form::close();
-			echo '</div>';
-			echo '<div class="widget-content">';
+			$content .= '</fieldset>';
+			$content .= form::close();
+			$content .= '</div>';
+			$content .= '<div class="widget-content">';
 		}
+		ob_start();
 		$this->$method();
-		if ($with_chrome) {
-			echo '</div>';
-			echo '</div>';
-		}
-		$content = ob_get_contents();
+		$content .= ob_get_contents();
 		ob_end_clean();
+		if ($with_chrome) {
+			$content .= '</div>';
+			$content .= '</div>';
+		}
 		self::$loaded_widgets[$this->model->name] = 1;
 		return $content;
 	}
