@@ -1,7 +1,6 @@
 <?php
 
-require_once 'phptap/phptap.php';
-require_once 'phptap/tapunit.php';
+require_once unittest::tap_path();
 
 class Ninja_Unit_Test {
 	function __construct() {

@@ -39,6 +39,6 @@ class unittest_Core {
 	*/
 	public function tap_path()
 	{
-		return Kohana::find_file('vendor', 'phptap/phptap');
+		return Kohana::find_file('vendor', 'phptap/tapunit');
 	}
 }
