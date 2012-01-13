@@ -4,6 +4,10 @@
  * Model for sending out reports in different ways
  */
 class Send_report_Model extends Model {
+
+	/**
+	 * @var Zend_Translate
+	 */
 	private $translate;
 
 	public function __construct() {

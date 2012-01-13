@@ -245,7 +245,7 @@ class Reports_Controller extends Authenticated_Controller
 		);
 	}
 
-	public function add_view($view=false) {
+	public function add_view($view) {
 		$ret = parent::add_view($view);
 		if (is_array($this->extra_template_data)) {
 			foreach ($this->extra_template_data as $key => $val) {
@@ -1309,7 +1309,7 @@ class Reports_Controller extends Authenticated_Controller
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
-			die();
+			exit(0);
 			# if all went OK we have csv_status === true or we have an error string
 		} elseif ($this->type == 'avail' && (empty($this->data_arr)
 			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
@@ -1915,7 +1915,6 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 
 								$host = $hostname[0];
-								$template->content->host = $host;
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
 									 "&amp;host_name=all".
@@ -2499,7 +2498,7 @@ class Reports_Controller extends Authenticated_Controller
 		// Sometimes we want to save the file instead of sending it to the browser,
 		// probably because it's scheduled and/or being triggered manually
 		$save_file = request::is_ajax();
-		if(!$save_file && PHP_SAPI == 'cli') {
+		if(PHP_SAPI == 'cli') {
 			$save_file = true;
 		}
 		if (!$save_file) {
@@ -2516,38 +2515,68 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		// headlines, not HTTP header
-		$csv =  $this->_csv_header($sub_type);
-		// =========== GROUPS ===========
-		if ($group_name !== false) { // We have a host- or servicegroup
-			// Add new csv header fields
-			$group_type = !empty($in_hostgroup) ? "HOST_GROUP, " : "SERVICE_GROUP, ";
-			$csv = $group_type . $csv;
-			foreach ($data_arr as $data_arr_group) {
-				// Add group name to csv output
-				$csv_group_name = $data_arr_group['groupname'];
-				foreach ($data_arr_group as $k => $data) {
-					if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-						continue;
-					if (!empty($data['states'])) {
-						$csv .= '"'.$csv_group_name.'", ';
+		$csv = $this->_csv_header($sub_type);
+
+		if('sla' == $type) {
+			// headings, @todo add YEAR when you know how to find it
+			$csv = '"MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n";
+			$current_row = current($data_arr);
+			foreach($current_row['table_data'] as $object_name => $time_periods) {
+				$filename = str_replace(array(';', ','), '_', $object_name).'.csv';
+				foreach($time_periods as $time_period => $sla_result) {
+					// handles weird nesting
+					$sla_result = current($sla_result);
+					$real_value = $sla_result[0];
+					$sla_value = $sla_result[1];
+					$csv .= implode(', ', array(
+						$time_period,
+						$real_value,
+						$sla_value,
+						(int) ($real_value >= $sla_value)
+					))."\n";
+					// for total compliance, all of the last columns' values need to be 1
+				}
+			}
+		} else {
+			// Availability
+			// =========== GROUPS ===========
+			if ($group_name !== false) {
+				// We have host- or servicegroup(s)
+
+				// Add new csv header fields
+				$group_type = !empty($in_hostgroup) ? "HOST_GROUP, " : "SERVICE_GROUP, ";
+				$csv = $group_type . $csv;
+				foreach ($data_arr as $data_arr_group) {
+					// Add group name to csv output
+					$csv_group_name = $data_arr_group['groupname'];
+					foreach ($data_arr_group as $k => $data) {
+						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
+							continue;
+						if (!empty($data['states'])) {
+							$csv .= '"'.$csv_group_name.'", ';
+							$csv .= self::_csv_content($data['states'], $sub_type)."\n";
+						}
+					}
+				}
+			} else {
+				// We're dealing with host(s) or service(s)
+
+				if (!arr::search($data_arr, 0)) {
+					// if we can't find item with index 0, we
+					// are dealing with a single item and should
+					// skip the foreach loop
+					$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
+				} else {
+					foreach ($data_arr as $k => $data) {
+						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
+							continue;
+
 						$csv .= self::_csv_content($data['states'], $sub_type)."\n";
 					}
 				}
 			}
-		} else {
-			if (!arr::search($data_arr, 0)) {
-				// if we can't find item with index 0, we
-				// are dealing with a single item and should
-				// skip the foreach loop
-				$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
-			} else {
-				foreach ($data_arr as $k => $data) {
-					if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-						continue;
-					$csv .= self::_csv_content($data['states'], $sub_type)."\n";
-				}
-			}
 		}
+
 		if($save_file) {
 			$temp_name = tempnam('/tmp', 'report');
 			// copying behavior for definition of K_PATH_CACHE (grep for it,
@@ -2583,11 +2612,11 @@ class Reports_Controller extends Authenticated_Controller
 	*	Return report period strings depending on current
 	*	report type (avail/sla)
 	*/
-	public static function _report_period_strings($type='avail')
+	public function _report_period_strings($type='avail')
 	{
 		$report_periods = false;
 		$selected = false;
-		$t = zend::instance('Registry')->get('Zend_Translate');
+		$t = $this->translate;
 		$label_lastmonth = $t->_('Last Month');
 		$label_thisyear = $t->_('This Year');
 		$label_lastyear = $t->_('Last Year');
@@ -3004,8 +3033,10 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Get the csv header line
-	*/
+	 * Get the csv header line
+	 *
+	 * @param string $type = false
+	 */
 	public function _csv_header($type=false)
 	{
 		$fields = $this->_get_csv_fields($type);
@@ -3098,7 +3129,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	*	Fetch and print information on saved timperiods
 	*/
-	public static function _get_reporting_periods()
+	public function _get_reporting_periods()
 	{
 		$res = Timeperiod_Model::get_all();
 		if (!$res)
@@ -3129,6 +3160,7 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	 * Expands a series of groupnames (host or service) into its member objects, and calculate uptime for each
 	 *
+	 * @uses Reports_Model::get_uptime()
 	 * @param array $arr List of groups
 	 * @param string $type The type of objects in $arr. Valid values are "hostgroup" or "servicegroup".
 	 * @param mixed $start_date datetime or unix timestamp
@@ -3765,22 +3797,26 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Fetch data from report_class
-	* 	Uses split_month_data() to split start- and end_time
-	* 	on months.
-	*/
+	 * Fetch data from report_class
+	 * Uses split_month_data() to split start- and end_time
+	 * on months.
+	 *
+	 * @param $months = false
+	 * @param $objects = false
+	 * @return array
+	 */
 	public function get_sla_data($months=false, $objects=false)
 	{
-		$report_data = false;
-
 		if (empty($months) || empty($objects)) {
 			return false;
 		}
 
+		$report_data = false;
+
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
 		$time_tmp = $this->_split_month_data($months, $this->start_date, $this->end_date);
-		$time_arr = $time_tmp;//array();
+		$time_arr = $time_tmp;
 		// only use month entered by the user regardless of start- or endtime
 		$option_name = false;
 		$data = false;
@@ -3810,6 +3846,8 @@ class Reports_Controller extends Authenticated_Controller
 						$this->err_msg .= sprintf($this->translate->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var));
 					}
 				}
+
+				// assumed initial state
 				foreach (self::$dep_vars as $check => $set) {
 					if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check])) {
 						foreach ($set as $dep => $key) {
@@ -3841,7 +3879,6 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function _sla_object_data($sla_data = false)
 	{
-		$report_data = false;
 		foreach ($sla_data as $months_key => $period_data) {
 			$sourcename = $this->_get_sla_group_name($period_data);
 			if (array_key_exists($months_key, $this->in_months)) {
@@ -3863,9 +3900,9 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		$data_str 		= base64_encode(serialize($data));
-		$member_links 	= array();
-		$avail_links 	= false;
+		$data_str = base64_encode(serialize($data));
+		$member_links = array();
+		$avail_links = false;
 		if(strpos($sourcename, ',') !== false) {
 			$members = explode(',', $sourcename);
 			foreach($members as $member) {
@@ -3876,16 +3913,16 @@ class Reports_Controller extends Authenticated_Controller
 			$avail_links = $this->_generate_avail_member_link($sourcename, $this->object_varname);
 		}
 
-		$report_data = array(array
-		(
+		$report_data = array(array(
 			'data' => $data,
-			'source'=>$sourcename,
+			'source' => $sourcename,
 			'data_str' => $data_str,
-			'table_data'=>$table_data,
-			'group_title'=>false,
-			'member_links'=>$member_links,
+			'table_data' => $table_data,
+			'group_title' => false,
+			'member_links' => $member_links,
 			'avail_links' => $avail_links
 		));
+
 		return $report_data;
 	}
 
@@ -4156,7 +4193,7 @@ class Reports_Controller extends Authenticated_Controller
 			'report' => $translate->_("Select the saved report to schedule"),
 			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
 			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
-			'filename' => $translate->_("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
+			'filename' => $translate->_("This field lets you select a custom filename for the report"),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
@@ -4258,8 +4295,7 @@ class Reports_Controller extends Authenticated_Controller
 		// check some fields a little extra
 		switch ($field) {
 			case 'local_persistent_filepath':
-				$new_value = trim($new_value);
-				if(!empty($new_value) && !is_writable(rtrim($new_value, '/').'/')) {
+				if(!is_writable(rtrim($new_value, '/').'/')) {
 					echo $this->translate->_("Can't write to '$new_value'. Provide another path.")."<br />";
 					return;
 				}
