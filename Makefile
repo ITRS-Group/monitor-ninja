@@ -3,7 +3,7 @@ test: test-reports test-unittest
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
 
-test-unittest:
+test-unittest: test-ci-prepare
 	php index.php ninja_unit_test
 
 test-ci-prepare: prepare-config
