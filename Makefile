@@ -11,8 +11,8 @@ test-ci-prepare: prepare-config
 	@mkdir -p test/configs/all-host_service-states/var/spool/checkresults
 	@/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg &> /dev/null
 	@/bin/sleep 5
-	@/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> test/configs/all-host_service-states/var/rw/nagios.cmd
 	@/opt/monitor/op5/merlin/ocimp --force --cache=test/configs/all-host_service-states/var/objects.cache --status-log=test/configs/all-host_service-states/var/status.log &> /dev/null
+	@/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> test/configs/all-host_service-states/var/rw/nagios.cmd
 	@php index.php 'cli/insert_user_data'
 
 test-coverage: test-ci-prepare
