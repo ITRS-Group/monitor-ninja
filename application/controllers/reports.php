@@ -2481,131 +2481,130 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup)
 	{
-		if (!empty($data_arr)) {
-			$this->auto_render=false;
-			$filename = false;
-			switch ($type) {
-				case 'avail':
-					$filename = 'availability.csv';
-					break;
-				case 'sla':
-					$filename = 'sla.csv';
-					break;
-			}
+		if (empty($data_arr)) {
+			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
+		}
+		$this->auto_render=false;
+		$filename = false;
+		switch ($type) {
+			case 'avail':
+				$filename = 'availability.csv';
+				break;
+			case 'sla':
+				$filename = 'sla.csv';
+				break;
+		}
 
-			// Sometimes we want to save the file instead of sending it to the browser,
-			// probably because it's scheduled and/or being triggered manually
-			$save_file = request::is_ajax();
-			if(PHP_SAPI == 'cli') {
-				$save_file = true;
-			}
-			if (!$save_file) {
-				header("Content-disposition: attachment; filename=".$filename);
-				if (isset($_SERVER['HTTP_USER_AGENT']) &&
-					(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
-				{
-					header("Pragma: hack");
-					header("Content-Type: application/octet-stream");
-					header("Content-Transfer-Encoding: binary");
-				} else {
-					header("Content-type: text/csv");
-				}
-			}
-
-			// headlines, not HTTP header
-			$csv = $this->_csv_header($sub_type);
-
-			if('sla' == $type) {
-				// headings, @todo add YEAR when you know how to find it
-				$csv = '"MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n";
-				$current_row = current($data_arr);
-				foreach($current_row['table_data'] as $object_name => $time_periods) {
-					$filename = str_replace(array(';', ','), '_', $object_name).'.csv';
-					foreach($time_periods as $time_period => $sla_result) {
-						// handles weird nesting
-						$sla_result = current($sla_result);
-						$real_value = $sla_result[0];
-						$sla_value = $sla_result[1];
-						$csv .= implode(', ', array(
-							$time_period,
-							$real_value,
-							$sla_value,
-							(int) ($real_value >= $sla_value)
-						))."\n";
-						// for total compliance, all of the last columns' values need to be 1
-					}
-				}
+		// Sometimes we want to save the file instead of sending it to the browser,
+		// probably because it's scheduled and/or being triggered manually
+		$save_file = request::is_ajax();
+		if(PHP_SAPI == 'cli') {
+			$save_file = true;
+		}
+		if (!$save_file) {
+			header("Content-disposition: attachment; filename=".$filename);
+			if (isset($_SERVER['HTTP_USER_AGENT']) &&
+				(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
+			{
+				header("Pragma: hack");
+				header("Content-Type: application/octet-stream");
+				header("Content-Transfer-Encoding: binary");
 			} else {
-				// Availability
-				// =========== GROUPS ===========
-				if ($group_name !== false) {
-					// We have host- or servicegroup(s)
+				header("Content-type: text/csv");
+			}
+		}
 
-					// Add new csv header fields
-					$group_type = !empty($in_hostgroup) ? "HOST_GROUP, " : "SERVICE_GROUP, ";
-					$csv = $group_type . $csv;
-					foreach ($data_arr as $data_arr_group) {
-						// Add group name to csv output
-						$csv_group_name = $data_arr_group['groupname'];
-						foreach ($data_arr_group as $k => $data) {
-							if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-								continue;
-							if (!empty($data['states'])) {
-								$csv .= '"'.$csv_group_name.'", ';
-								$csv .= self::_csv_content($data['states'], $sub_type)."\n";
-							}
-						}
-					}
-				} else {
-					// We're dealing with host(s) or service(s)
+		// headings, not HTTP header
+		$csv = $this->_csv_header($sub_type);
 
-					if (!arr::search($data_arr, 0)) {
-						// if we can't find item with index 0, we
-						// are dealing with a single item and should
-						// skip the foreach loop
-						$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
-					} else {
-						foreach ($data_arr as $k => $data) {
-							if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-								continue;
+		if('sla' == $type) {
+			// headings, @todo add YEAR when you know how to find it
+			$csv = '"MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n";
+			$current_row = current($data_arr);
+			foreach($current_row['table_data'] as $object_name => $time_periods) {
+				$filename = str_replace(array(';', ','), '_', $object_name).'.csv';
+				foreach($time_periods as $time_period => $sla_result) {
+					// handles weird nesting
+					$sla_result = current($sla_result);
+					$real_value = $sla_result[0];
+					$sla_value = $sla_result[1];
+					$csv .= implode(', ', array(
+						$time_period,
+						$real_value,
+						$sla_value,
+						(int) ($real_value >= $sla_value)
+					))."\n";
+					// for total compliance, all of the last columns' values need to be 1
+				}
+			}
+		} else {
+			// Availability
+			// =========== GROUPS ===========
+			if ($group_name !== false) {
+				// We have host- or servicegroup(s)
 
+				// Add new csv header fields
+				$group_type = !empty($in_hostgroup) ? "HOST_GROUP, " : "SERVICE_GROUP, ";
+				$csv = $group_type . $csv;
+				foreach ($data_arr as $data_arr_group) {
+					// Add group name to csv output
+					$csv_group_name = $data_arr_group['groupname'];
+					foreach ($data_arr_group as $k => $data) {
+						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
+							continue;
+						if (!empty($data['states'])) {
+							$csv .= '"'.$csv_group_name.'", ';
 							$csv .= self::_csv_content($data['states'], $sub_type)."\n";
 						}
 					}
 				}
-			}
-			if($save_file) {
-				$temp_name = tempnam('/tmp', 'report');
-				// copying behavior for definition of K_PATH_CACHE (grep for it,
-				// it should be in tcpdf somewhere)
-				if(is_file($temp_name)) {
-					unlink($temp_name);
-				}
-				mkdir($temp_name);
-				file_put_contents($temp_name.'/'.$filename, $csv);
-				// Stealing the already used name, not touching it
-				// since it's declared public and such it may be
-				// depended upon from the outside
-				if($this->pdf_recipients) {
-					$report_sender = new Send_report_Model();
-					$mail_sent = $report_sender->send($this->pdf_recipients, $temp_name.'/'.$filename, $filename);
-					if(request::is_ajax()) {
-						if($mail_sent) {
-							return json::ok(_("Mail sent"));
-						} else {
-							return json::fail(_("Could not send email"));
-						}
-					}
-
-					return $mail_sent;
-				}
 			} else {
-				echo $csv;
+				// We're dealing with host(s) or service(s)
+
+				if (!arr::search($data_arr, 0)) {
+					// if we can't find item with index 0, we
+					// are dealing with a single item and should
+					// skip the foreach loop
+					$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
+				} else {
+					foreach ($data_arr as $k => $data) {
+						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
+							continue;
+
+						$csv .= self::_csv_content($data['states'], $sub_type)."\n";
+					}
+				}
 			}
-			die();
-		} else {
-			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
 		}
+		if($save_file) {
+			$temp_name = tempnam('/tmp', 'report');
+			// copying behavior for definition of K_PATH_CACHE (grep for it,
+			// it should be in tcpdf somewhere)
+			if(is_file($temp_name)) {
+				unlink($temp_name);
+			}
+			mkdir($temp_name);
+			file_put_contents($temp_name.'/'.$filename, $csv);
+			// Stealing the already used name, not touching it
+			// since it's declared public and such it may be
+			// depended upon from the outside
+			if($this->pdf_recipients) {
+				$report_sender = new Send_report_Model();
+				$mail_sent = $report_sender->send($this->pdf_recipients, $temp_name.'/'.$filename, $filename);
+				if(request::is_ajax()) {
+					if($mail_sent) {
+						return json::ok(_("Mail sent"));
+					} else {
+						return json::fail(_("Could not send email"));
+					}
+				}
+
+				return $mail_sent;
+			}
+		} else {
+			echo $csv;
+		}
+		die();
 	}
 
 	/**
