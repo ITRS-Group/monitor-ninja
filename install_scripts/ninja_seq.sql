@@ -378,14 +378,14 @@ CREATE INDEX user_id ON ninja_user_authorization
 
 -- DROP TABLE ninja_widgets CASCADE CONSTRAINTS;
 
-
 PROMPT Creating Table ninja_widgets ...
 CREATE TABLE ninja_widgets (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(200 CHAR) DEFAULT NULL,
-  page VARCHAR2(200 CHAR) NOT NULL,
+  page VARCHAR2(200 CHAR) DEFAULT 'tac/index' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
   friendly_name VARCHAR2(255 CHAR) NOT NULL,
+  instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
 
