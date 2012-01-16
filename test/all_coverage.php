@@ -12,7 +12,7 @@ $errors = 0;
 if (count($argv) > 1)
 	$prefix = $argv[1];
 else
-	$prefix = '/opt/monitor/op5/ninja';
+	$prefix = dirname(dirname(__FILE__));
 
 $coverage = false;
 
