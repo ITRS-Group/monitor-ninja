@@ -16,6 +16,10 @@ test-ci-prepare: prepare-config
 	@/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> test/configs/all-host_service-states/var/rw/nagios.cmd
 	@php index.php 'cli/insert_user_data'
 
+test-ci: test-ci-prepare
+	sh test/ci/testsuite.sh .
+	sh test/ci/testsuite.sh . test/ci/limited_tests.txt
+
 test-coverage: test-ci-prepare
 	@php test/all_coverage.php $$(pwd)
 
