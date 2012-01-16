@@ -1349,7 +1349,7 @@ class Reports_Model extends Model
 				foreach ($sched_junk as $dt_str) {
 					$perc_str = 'PERCENT_' . $known . $str . $dt_str;
 					$cstate[$perc_str] =
-						reports::percent(self::get_array_var($cstate, $str . $dt_str), $div);
+						reports::percent(arr::search($cstate, $str . $dt_str), $div);
 				}
 			}
 
@@ -1367,30 +1367,6 @@ class Reports_Model extends Model
 			reports::percent($cstate['TIME_DOWN_COUNTED_AS_UP'], $div);
 
 		return $cstate;
-	}
-
-	/**
-	 * this just lets us safely access array variables
-	 * that might not be set, optionally specifying a default
-	 * to return in case the variable isn't found.
-	 * Note that $k (for key) can be an array
-	 *
-	 * @param $ary Array
-	 * @param $k Array key
-	 * @param $def Default value
-	 */
-	public function get_array_var($ary, $k, $def = false)
-	{
-		if (is_array($k))
-			$try = $k;
-		else
-			$try = array($k);
-
-		foreach ($try as $k)
-			if (isset($ary[$k]))
-				return $ary[$k];
-
-		return $def;
 	}
 
 	/**
