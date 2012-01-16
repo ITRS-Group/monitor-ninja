@@ -2514,21 +2514,40 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		// headlines, not HTTP header
-		$csv = $this->_csv_header($sub_type);
-
 		if('sla' == $type) {
+			// end() instead of current() because of $data_arr's structure in case of multiple host-/servicegroups
+			$current_row = end($data_arr);
+			$filename = "sla_".date("Y-m-d").".csv";
 			// headings, @todo add YEAR when you know how to find it
-			$csv = '"MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n";
-			$current_row = current($data_arr);
+			if ($group_name !== false) {
+				$object_type = !empty($in_hostgroup) ? "HOST_GROUP" : "SERVICE_GROUP";
+				if(count($current_row['table_data']) > 1) {
+					$object_type .= 'S';
+				}
+			} else {
+				if(strpos($object_name, ';') !== false) {
+					$object_type = 'SERVICE';
+				} else {
+					$object_type = 'HOST';
+				}
+				if(strpos($object_name, ',') !== false) {
+					$object_type .= 'S';
+				}
+			}
+			$csv = null;
 			foreach($current_row['table_data'] as $object_name => $time_periods) {
-				$filename = str_replace(array(';', ','), '_', $object_name).'.csv';
+				if(false !== $group_name) {
+					// groups' names are delivered as separate $object_names, in contrast to
+					// host(s) or service(s). make group's names a single, comma separated list
+					$object_name = implode(',', array_keys($current_row['table_data']));
+				}
 				foreach($time_periods as $time_period => $sla_result) {
 					// handles weird nesting
 					$sla_result = current($sla_result);
 					$real_value = $sla_result[0];
 					$sla_value = $sla_result[1];
 					$csv .= implode(', ', array(
+						'"'.$object_name.'"', // strings containing spaces or commas are better off encapsulated in "
 						$time_period,
 						$real_value,
 						$sla_value,
@@ -2536,9 +2555,15 @@ class Reports_Controller extends Authenticated_Controller
 					))."\n";
 					// for total compliance, all of the last columns' values need to be 1
 				}
+				break; // each month need to appear only once, not once per object
 			}
+			$csv = '"'.$object_type.'", "MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n".$csv;
 		} else {
 			// Availability
+
+			// headlines, not HTTP header
+			$csv = $this->_csv_header($sub_type);
+
 			// =========== GROUPS ===========
 			if ($group_name !== false) {
 				// We have host- or servicegroup(s)
@@ -3586,7 +3611,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf_img_src = Kohana::config('config.site_domain').$pdf_img_src;
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
-			.'value="'.$pdf_img_alt.'"  style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
+			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
 
 		$form .= '</div>';
 		$form .= "</form>";
