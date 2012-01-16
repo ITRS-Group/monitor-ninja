@@ -29,7 +29,8 @@
 				</td>
 				<td>
 					<?php echo help::render('filename').' '.$label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /><br />
-					<?php echo help::render('description').' '.$label_description ?><br /><textarea cols="31" rows="4" id="description" name="description"></textarea>
+					<?php echo help::render('description').' '.$label_description ?><br /><textarea cols="31" rows="4" id="description" name="description"></textarea><br />
+					<?php echo help::render('local_persistent_filepath').' '._("Save report in this local folder") ?><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" />
 				</td>
 			</tr>
 			<tr>

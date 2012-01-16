@@ -719,7 +719,7 @@ class Reports_Controller extends Authenticated_Controller
 		$new_schedule->available_schedule_periods = $periods;
 		$new_schedule->label_interval = $t->_('Report Interval');
 		$new_schedule->label_recipients = $t->_('Recipients');
-		$new_schedule->label_filename = $t->_('Filename');
+		$new_schedule->label_filename = $t->_('Filename (defaults to pdf, may end in .csv)');
 		$new_schedule->label_description = $t->_('Description');
 		$new_schedule->label_save = $t->_('Save');
 		$new_schedule->label_clear = $t->_('Clear');
