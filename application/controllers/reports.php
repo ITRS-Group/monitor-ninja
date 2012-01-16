@@ -154,6 +154,7 @@ class Reports_Controller extends Authenticated_Controller
 	public $data_arr = false;
 	private $report_type = false;
 	private $object_varname = false;
+	private $time_arr = array();
 
 	private $status_link = "status/host/";
 	private $trend_link = "trends/generate";
@@ -310,7 +311,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$host_filter_status_up_checked = arr::search($_REQUEST, 'host_filter_status[0]', $this->host_filter_status_up) ? 'checked="checked"' : '';
 		$host_filter_status_down_checked = arr::search($_REQUEST, 'host_filter_status[1]', $this->host_filter_status_down) ? 'checked="checked"' : '';
-		$host_filter_status_unreachable_checked =	arr::search($_REQUEST, 'host_filter_status[2]', $this->host_filter_status_unreachable) ? 'checked="checked"' : '';
+		$host_filter_status_unreachable_checked = arr::search($_REQUEST, 'host_filter_status[2]', $this->host_filter_status_unreachable) ? 'checked="checked"' : '';
 		$host_filter_status_undetermined_checked = arr::search($_REQUEST, 'host_filter_status[3]', $this->host_filter_status_undetermined) ? 'checked="checked"' : '';
 		$service_filter_status_ok_checked = arr::search($_REQUEST, 'service_filter_status[0]', $this->service_filter_status_ok) ? 'checked="checked"' : '';
 		$service_filter_status_warning_checked = arr::search($_REQUEST, 'service_filter_status[1]', $this->service_filter_status_warning) ? 'checked="checked"' : '';
@@ -2256,7 +2257,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
-			#$return = array('status' => $obj_field, 'status_msg' => Kohana::debug($this->report_id));
 			$return = array('status' => $msg_type, 'status_msg' => $status_msg, 'report_id' => $this->report_id);
 		} else {
 			$return = array('status' => '', 'status_msg' => $this->translate->_('Unable to save this report.'));
@@ -2488,10 +2488,10 @@ class Reports_Controller extends Authenticated_Controller
 		$filename = false;
 		switch ($type) {
 			case 'avail':
-				$filename = 'availability.csv';
+				$filename = "availability_".date("Y-m-d").".csv";
 				break;
 			case 'sla':
-				$filename = 'sla.csv';
+				$filename = "sla_".date("Y-m-d").".csv";
 				break;
 		}
 
@@ -2517,8 +2517,35 @@ class Reports_Controller extends Authenticated_Controller
 		if('sla' == $type) {
 			// end() instead of current() because of $data_arr's structure in case of multiple host-/servicegroups
 			$current_row = end($data_arr);
-			$filename = "sla_".date("Y-m-d").".csv";
-			// headings, @todo add YEAR when you know how to find it
+			$csv = null;
+			reset($this->time_arr); // iterate manually due to inconsistent indexing
+			foreach($current_row['table_data'] as $object_name => $time_periods) {
+				if(false !== $group_name) {
+					// groups' names are delivered as separate $object_names, in contrast to
+					// host(s) or service(s). make group's names a single, comma separated list
+					$object_name = implode(',', array_keys($current_row['table_data']));
+				}
+				foreach($time_periods as $time_period => $sla_result) {
+					// handles weird nesting
+					$sla_result = current($sla_result);
+					$real_value = $sla_result[0];
+					$sla_value = $sla_result[1];
+					$current_starting_time = current($this->time_arr);
+					$csv .= implode(', ', array(
+						'"'.$object_name.'"', // strings containing spaces or commas are better off encapsulated in "
+						date('Y', $current_starting_time['start']), // loop the copy of actual timestamps which
+						// are in the same order as these time periods. this is what you get for decorating values (timestamps) with output
+						// (jan, feb) in a too early stage
+						$time_period,
+						$real_value,
+						$sla_value,
+						(int) ($real_value >= $sla_value)
+					))."\n";
+					next($this->time_arr);
+					// for total compliance, all of the last columns' values need to be 1
+				}
+				break; // each month need to appear only once, not once per object
+			}
 			if ($group_name !== false) {
 				$object_type = !empty($in_hostgroup) ? "HOST_GROUP" : "SERVICE_GROUP";
 				if(count($current_row['table_data']) > 1) {
@@ -2534,30 +2561,7 @@ class Reports_Controller extends Authenticated_Controller
 					$object_type .= 'S';
 				}
 			}
-			$csv = null;
-			foreach($current_row['table_data'] as $object_name => $time_periods) {
-				if(false !== $group_name) {
-					// groups' names are delivered as separate $object_names, in contrast to
-					// host(s) or service(s). make group's names a single, comma separated list
-					$object_name = implode(',', array_keys($current_row['table_data']));
-				}
-				foreach($time_periods as $time_period => $sla_result) {
-					// handles weird nesting
-					$sla_result = current($sla_result);
-					$real_value = $sla_result[0];
-					$sla_value = $sla_result[1];
-					$csv .= implode(', ', array(
-						'"'.$object_name.'"', // strings containing spaces or commas are better off encapsulated in "
-						$time_period,
-						$real_value,
-						$sla_value,
-						(int) ($real_value >= $sla_value)
-					))."\n";
-					// for total compliance, all of the last columns' values need to be 1
-				}
-				break; // each month need to appear only once, not once per object
-			}
-			$csv = '"'.$object_type.'", "MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n".$csv;
+			$csv = '"'.$object_type.'", "YEAR", "MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n".$csv;
 		} else {
 			// Availability
 
@@ -3840,13 +3844,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
-		$time_tmp = $this->_split_month_data($months, $this->start_date, $this->end_date);
-		$time_arr = $time_tmp;
+		$this->time_arr = $this->_split_month_data($months, $this->start_date, $this->end_date);
 		// only use month entered by the user regardless of start- or endtime
 		$option_name = false;
 		$data = false;
 		if (preg_match('/groups$/', $this->report_type)) {
-			foreach ($time_arr as $mnr => $dates) {
+			foreach ($this->time_arr as $mnr => $dates) {
 				$data_tmp = $this->_expand_group_request($objects, substr($this->report_options['report_type'], 0,
 					strlen($this->report_options['report_type'])-1), $dates['start'], $dates['end']);
 				if (!empty($data_tmp))
@@ -3864,7 +3867,7 @@ class Reports_Controller extends Authenticated_Controller
 			$report_data = $this->_sla_group_data($data);
 		} else {
 			$option_name = preg_match('/hosts/', $this->report_type) ? 'host_name' : 'service_description';
-			foreach ($time_arr as $mnr => $dates) {
+			foreach ($this->time_arr as $mnr => $dates) {
 				$report_class = new Reports_Model();
 				foreach (self::$options as $var => $new_var) {
 					if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
