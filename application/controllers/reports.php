@@ -719,7 +719,7 @@ class Reports_Controller extends Authenticated_Controller
 		$new_schedule->available_schedule_periods = $periods;
 		$new_schedule->label_interval = $t->_('Report Interval');
 		$new_schedule->label_recipients = $t->_('Recipients');
-		$new_schedule->label_filename = $t->_('Filename');
+		$new_schedule->label_filename = $t->_('Filename (defaults to pdf, may end in .csv)');
 		$new_schedule->label_description = $t->_('Description');
 		$new_schedule->label_save = $t->_('Save');
 		$new_schedule->label_clear = $t->_('Clear');
@@ -4193,7 +4193,7 @@ class Reports_Controller extends Authenticated_Controller
 			'report' => $translate->_("Select the saved report to schedule"),
 			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
 			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
-			'filename' => $translate->_("This field lets you select a custom filename for the report"),
+			'filename' => $translate->_("This field lets you select a custom filename for the report. Let it end with .csv to export as CSV, otherwise a PDF will be exported."),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),

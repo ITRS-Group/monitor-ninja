@@ -153,6 +153,20 @@ $(document).ready(function() {
 		}
 		set_initial_state('cluster_mode', cluster_mode);
 	});
+
+	$('#filename').blur(function() {
+		// Make sure the filename is explicit by adding it when focus leaves input
+		var input = $(this);
+		var filename = input.val();
+		if(!filename) {
+			return;
+		}
+		if(!filename.match(/.(csv|pdf)$/)) {
+			filename += '.pdf';
+		}
+		input.val(filename);
+	});
+
 });
 
 function js_print_date_ranges(the_year, type, item)
