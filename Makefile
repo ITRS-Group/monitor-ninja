@@ -21,7 +21,8 @@ test-ci: test-ci-prepare
 	sh test/ci/testsuite.sh .
 	sh test/ci/testsuite.sh . test/ci/limited_tests.txt
 
-test-coverage: test-ci-prepare
+test-coverage:
+	@make test-ci-prepare &> /dev/null
 	@php test/all_coverage.php $$(pwd)
 
 docs: Documentation
