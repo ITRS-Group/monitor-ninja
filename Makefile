@@ -15,7 +15,7 @@ test-ci-prepare: prepare-config
 	/opt/monitor/op5/merlin/ocimp --force --cache=test/configs/all-host_service-states/var/objects.cache --status-log=test/configs/all-host_service-states/var/status.log
 	/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> test/configs/all-host_service-states/var/rw/nagios.cmd
 	php index.php 'cli/insert_user_data'
-	git checkout test/configs/all-host_service-states/var/status.sav
+	git checkout test/configs/all-host_service-states/var/status.sav || :
 
 test-ci: test-ci-prepare
 	sh test/ci/testsuite.sh .
