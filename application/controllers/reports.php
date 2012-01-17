@@ -2518,20 +2518,24 @@ class Reports_Controller extends Authenticated_Controller
 			// end() instead of current() because of $data_arr's structure in case of multiple host-/servicegroups
 			$current_row = end($data_arr);
 			$csv = null;
-			reset($this->time_arr); // iterate manually due to inconsistent indexing
-			foreach($current_row['table_data'] as $object_name => $time_periods) {
-				if(false !== $group_name) {
-					// groups' names are delivered as separate $object_names, in contrast to
-					// host(s) or service(s). make group's names a single, comma separated list
-					$object_name = implode(',', array_keys($current_row['table_data']));
+			reset($this->time_arr); // iterate timestamps in parallel to data, reset manually due to inconsistent indexing
+			$object_arrays = array();
+			if(false !== $group_name) {
+				$object_arrays = $current_row['table_data'];
+			} else {
+				// expand array['host1,host2'] to array['host1', 'host2']
+				foreach(explode(',', key($current_row['table_data'])) as $object_name) {
+					$object_arrays[$object_name] = current($current_row['table_data']);
 				}
+			}
+			foreach($object_arrays as $object_name => $time_periods) {
 				foreach($time_periods as $time_period => $sla_result) {
 					// handles weird nesting
 					$sla_result = current($sla_result);
 					$real_value = $sla_result[0];
 					$sla_value = $sla_result[1];
 					$current_starting_time = current($this->time_arr);
-					$csv .= implode(', ', array(
+					$attributes = array(
 						'"'.$object_name.'"', // strings containing spaces or commas are better off encapsulated in "
 						date('Y', $current_starting_time['start']), // loop the copy of actual timestamps which
 						// are in the same order as these time periods. this is what you get for decorating values (timestamps) with output
@@ -2540,26 +2544,22 @@ class Reports_Controller extends Authenticated_Controller
 						$real_value,
 						$sla_value,
 						(int) ($real_value >= $sla_value)
-					))."\n";
-					next($this->time_arr);
+					);
+					$csv .= implode(', ', $attributes)."\n";
+					if(false === next($this->time_arr)) {
+						// we might iterate the date array multiple times (in the case where we're expanding
+						// multiple objects), in which case we need to traverse the time_arr more than once.
+						reset($this->time_arr);
+					}
 					// for total compliance, all of the last columns' values need to be 1
 				}
-				break; // each month need to appear only once, not once per object
 			}
-			if ($group_name !== false) {
+			if(false !== $group_name) {
 				$object_type = !empty($in_hostgroup) ? "HOST_GROUP" : "SERVICE_GROUP";
-				if(count($current_row['table_data']) > 1) {
-					$object_type .= 'S';
-				}
+			} elseif(strpos($object_name, ';') !== false) {
+				$object_type = 'SERVICE';
 			} else {
-				if(strpos($object_name, ';') !== false) {
-					$object_type = 'SERVICE';
-				} else {
-					$object_type = 'HOST';
-				}
-				if(strpos($object_name, ',') !== false) {
-					$object_type .= 'S';
-				}
+				$object_type = 'HOST';
 			}
 			$csv = '"'.$object_type.'", "YEAR", "MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n".$csv;
 		} else {
