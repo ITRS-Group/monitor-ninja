@@ -23,6 +23,8 @@ class Ninja_Reports_Test_Core
 	public $db_name;
 	public $db_user;
 	public $db_pass;
+	public $db_type;
+	public $db_host;
 	public $importer;
 
 	public function __construct($test_file)
@@ -309,6 +311,8 @@ class Ninja_Reports_Test_Core
 				" --db-table=".$this->table_name .
 				" --db-user=".$this->db_user .
 				" --db-pass=".$this->db_pass." " .
+				" --db-host=".$this->db_host." " .
+				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles);
 				echo "$cmd\n";
 			#	exit(0);
