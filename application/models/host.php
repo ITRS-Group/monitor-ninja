@@ -82,44 +82,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Fetch all onfo on a host. The returned object
-	 * will contain all database fields for the host object.
-	 * @param $name The host_name of the host
-	 * @param $id The id of the host
-	 * @return Host object on success, false on errors
-	 */
-	public function get_hostinfo($name=false, $id=false)
-	{
-
-		$id = (int)$id;
-		$name = trim($name);
-
-		$auth_hosts = $this->auth->get_authorized_hosts();
-		$host_info = false;
-
-		if (!empty($id)) {
-			if (!array_key_exists($id, $auth_hosts)) {
-				return false;
-			} else {
-				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
-					->where('host', array('id' => $id));
-			}
-		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $this->auth->hosts_r)) {
-				return false;
-			} else {
-				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
-					->getwhere('host', array('host_name' => $name));
-			}
-		} else {
-			return false;
-		}
-		return $host_info !== false ? $host_info->current() : false;
-	}
-
-	/**
 	 * Determine if user is authorized to view info on a specific host.
 	 * Accepts either hostID or host_name as input
 	 *
