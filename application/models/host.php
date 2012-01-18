@@ -66,19 +66,11 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 Workaround for O queries: runs $db->query($sql), copies
-	 the resultset to an array, closes the resultset, and returns
-	 the array.
+	 * Useless indirection
 	 */
 	private static function query($db,$sql)
 	{
-		$res = $db->query($sql)->result();
-		$rc = array();
-		foreach($res as $row) {
-			$rc[] = $row;
-		}
-		unset($res);
-		return $rc;
+		return $db->query($sql)->result_array();
 	}
 
 	/**
