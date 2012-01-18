@@ -283,17 +283,6 @@ class Nagios_auth_Model extends Model
 			if (empty($this->id))
 				return false;
 
-			# fetch all hostgroups with host count on each
-			$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
-				'hostgroup hg, host_hostgroup hhg '.
-				'WHERE hg.id=hhg.hostgroup GROUP BY hg.id, hg.hostgroup_name';
-			$result1 = $this->db->query($query);
-			$result = array();
-			foreach( $result1 as $row) {
-			    $result[] = $row;
-			}
-			unset($result1);
-
 			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
 				"hostgroup hg, host_hostgroup hhg ".
 				"INNER JOIN contact_access ON contact_access.host=hhg.host ".
@@ -301,7 +290,7 @@ class Nagios_auth_Model extends Model
 				"AND contact_access.contact=".$this->id.
 				" GROUP BY hg.id, hg.hostgroup_name";
 			$user_result = $this->db->query($query2);
-			if (!count($user_result) || !count($result)) {
+			if (!count($user_result)) {
 				unset($user_result);
 				return false;
 			}
@@ -315,6 +304,18 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			} else {
+				# fetch all hostgroups with host count on each
+				$query = 'SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM '.
+					'hostgroup hg, host_hostgroup hhg '.
+					'WHERE hg.id=hhg.hostgroup GROUP BY hg.id, hg.hostgroup_name';
+				$result1 = $this->db->query($query);
+				$result = array();
+				foreach( $result1 as $row) {
+					$result[] = $row;
+				}
+				if (!count($result))
+					return false;
+
 				$available_groups = false;
 				$user_groups = false;
 				$user_groupnames = false;
@@ -322,16 +323,9 @@ class Nagios_auth_Model extends Model
 					$available_groups[$row->id] = $row->cnt;
 				}
 				foreach ($user_result as $row) {
-					$user_groups[$row->id] = $row->cnt;
-					$user_groupnames[$row->id] = $row->groupname;
-				}
-
-				if (!empty($user_groups) && !empty($available_groups)) {
-					foreach ($user_groups as $gid => $gcnt) {
-						if (isset($available_groups[$gid]) && $available_groups[$gid] == $gcnt && isset($user_groupnames[$gid])) {
-							$this->hostgroups[$gid] = $user_groupnames[$gid];
-							$this->hostgroups_r[$user_groupnames[$gid]] = $gid;
-						}
+					if (isset($available_groups[$row->id]) && $row->cnt && $row->cnt === $available_groups[$row->id]) {
+						$this->hostgroups[$row->id] = $row->groupname;
+						$this->hostgroups_r[$row->groupname] = $row->id;
 					}
 				}
 			}
@@ -364,22 +358,6 @@ class Nagios_auth_Model extends Model
 			if (empty($this->id))
 				return false;
 
-			# fetch all servicegroups with service count on each
-			$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.
-				'servicegroup sg, service_servicegroup ssg '.
-				'WHERE sg.id=ssg.servicegroup GROUP BY sg.id, sg.servicegroup_name';
-			$result = $this->db->query($query);
-			if (!count($result)) {
-				unset($result);
-				return false;
-			}
-
-			$available_groups = false;
-			foreach ($result as $row) {
-				$available_groups[$row->id] = $row->cnt;
-			}
-			unset($result);
-
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
 				"servicegroup sg, service_servicegroup ssg ".
 				"INNER JOIN contact_access ON contact_access.service=ssg.service ".
@@ -402,20 +380,26 @@ class Nagios_auth_Model extends Model
 					}
 				}
 			} else {
+				# fetch all servicegroups with service count on each
+				$query = 'SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM '.
+					'servicegroup sg, service_servicegroup ssg '.
+					'WHERE sg.id=ssg.servicegroup GROUP BY sg.id, sg.servicegroup_name';
+				$result = $this->db->query($query);
+				if (!count($result)) {
+					return false;
+				}
+
+				$available_groups = false;
+				foreach ($result as $row) {
+					$available_groups[$row->id] = $row->cnt;
+				}
 				$user_groups = false;
 				$user_groupnames = false;
 
 				foreach ($user_result as $row) {
-					$user_groups[$row->id] = $row->cnt;
-					$user_groupnames[$row->id] = $row->groupname;
-				}
-
-				if (!empty($user_groups) && !empty($available_groups)) {
-					foreach ($user_groups as $gid => $gcnt) {
-						if (isset($available_groups[$gid]) && $available_groups[$gid] == $gcnt && isset($user_groupnames[$gid])) {
-							$this->servicegroups[$gid] = $user_groupnames[$gid];
-							$this->servicegroups_r[$user_groupnames[$gid]] = $gid;
-						}
+					if (isset($available_groups[$row->id]) && $row->cnt && $row->cnt === $available_groups[$row->id]) {
+						$this->servicegroups[$row->id] = $row->groupname;
+						$this->servicegroups_r[$row->groupname] = $row->id;
 					}
 				}
 			}
