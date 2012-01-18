@@ -278,7 +278,7 @@ class Ninja_Reports_Test_Core
 		$line = exec("cat $lfiles | md5sum", $output, $retcode);
 		$ary = explode(" ", $line);
 		$checksum = $ary[0];
-		$table_name = substr($this->description, 0, 27) . "_$checksum";
+		$table_name = substr($this->description, 0, 20) . substr($checksum, 0, 10);
 		$table_name = preg_replace("/[^A-Za-z0-9_]/", "_", $table_name);
 		$this->table_name = $table_name;
 
