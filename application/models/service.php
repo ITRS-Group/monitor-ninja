@@ -294,7 +294,41 @@ class Service_Model extends Model
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT s.*, h.current_state AS host_state, h.address, (h.scheduled_downtime_depth + s.scheduled_downtime_depth) as scheduled_downtime_depth ".
+			$sql = "SELECT s.instance_id, s.id, s.host_name,
+				s.service_description, s.display_name, s.is_volatile,
+				s.check_command, s.initial_state, s.max_check_attempts,
+				s.check_interval, s.retry_interval, s.active_checks_enabled,
+				s.passive_checks_enabled, s.check_period, s.parallelize_check,
+				s.obsess_over_service, s.check_freshness,
+				s.freshness_threshold, s.event_handler, s.event_handler_args,
+				s.event_handler_enabled, s.low_flap_threshold,
+				s.high_flap_threshold, s.flap_detection_enabled,
+				s.flap_detection_options, s.process_perf_data,
+				s.retain_status_information, s.retain_nonstatus_information,
+				s.notification_interval, s.first_notification_delay,
+				s.notification_period, s.notification_options,
+				s.notifications_enabled, s.stalking_options, s.notes,
+				s.notes_url, s.action_url, s.icon_image, s.icon_image_alt,
+				s.failure_prediction_enabled, s.problem_has_been_acknowledged,
+				s.acknowledgement_type, s.host_problem_at_last_check,
+				s.check_type, s.current_state, s.last_state, s.last_hard_state,
+				s.output, s.long_output, s.perf_data, s.state_type,
+				s.next_check, s.should_be_scheduled, s.last_check,
+				s.current_attempt, s.current_event_id, s.last_event_id,
+				s.current_problem_id, s.last_problem_id, s.last_notification,
+				s.next_notification, s.no_more_notifications,
+				s.check_flapping_recovery_notifi, s.last_state_change,
+				s.last_hard_state_change, s.last_time_ok, s.last_time_warning,
+				s.last_time_unknown, s.last_time_critical, s.has_been_checked,
+				s.is_being_freshened, s.notified_on_unknown,
+				s.notified_on_warning, s.notified_on_critical,
+				s.current_notification_number, s.current_notification_id,
+				s.latency, s.execution_time, s.is_executing, s.check_options,
+				s.pending_flex_downtime, s.is_flapping, s.flapping_comment_id,
+				s.percent_state_change, s.modified_attributes, s.max_attempts,
+				s.process_performance_data, s.last_update, s.timeout,
+				s.start_time, s.end_time, s.early_timeout, s.return_code,
+				h.current_state AS host_state, h.address, (h.scheduled_downtime_depth + s.scheduled_downtime_depth) as scheduled_downtime_depth ".
 			"FROM service s ".$auth_str.", host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
 			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
