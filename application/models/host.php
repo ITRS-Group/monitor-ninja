@@ -772,16 +772,15 @@ class Host_Model extends Model {
 
 		$service_description = trim($service_description);
 		# check credentials for host
-		$host_list = $auth->get_authorized_hosts();
+		if (!$auth->is_authorized_for_host($host_name))
+			return false;
 
 		$db = Database::instance();
 		if (empty($service_description)) {
 			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
-			$service_list = $auth->get_authorized_services();
-			if (!in_array($host_name.';'.$service_description, $service_list)) {
+			if (!$auth->is_authorized_for_service($host_name.';'.$service_description))
 				return false;
-			}
 
 			$sql = "
 				SELECT
@@ -871,17 +870,10 @@ class Host_Model extends Model {
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
+		if ($auth->view_hosts_root) {
+			$ca = '';
 		} else {
-			$hostlist = self::authorized_hosts();
-			if (empty($hostlist)) {
-				return false;
-			}
-			$str_hostlist = implode(', ', $hostlist);
-			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
-			$where = "AND id IN (".$str_hostlist.")";
+			$ca = " INNER JOIN contact_access ca ON ca.$this->table = $this->table.id AND ca.contact = $auth->id ";
 		}
 
 		$extra_sql = "";
@@ -896,8 +888,8 @@ class Host_Model extends Model {
 			"MIN(percent_state_change) AS min_perc_change, ".
 			"MAX(percent_state_change) AS max_perc_change ".
 			$extra_sql .
-			"FROM ".$this->table." ".
-			"WHERE active_checks_enabled=".$checks_state." ".$where;
+			"FROM ".$this->table." ".$ca.
+			"WHERE active_checks_enabled=".$checks_state." ";
 
 		$result = $this->query($this->db,$sql);
 		if (count($result)) {
@@ -944,26 +936,21 @@ class Host_Model extends Model {
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
+		if ($auth->view_hosts_root || $auth->authorized_for_system_information) {
+			$ca = '';
+			$ca_w_alias = '';
 		} else {
-			$hostlist = self::authorized_hosts();
-			if (empty($hostlist)) {
-				return false;
-			}
-			$str_hostlist = implode(', ', $hostlist);
-			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
-			$where = "AND id IN (".$str_hostlist.")";
+			$ca_w_alias = " INNER JOIN contact_access ca ON ca.$this->table = t.id AND ca.contact =  $auth->id ";
+			$ca = " INNER JOIN contact_access ca ON ca.$this->table = $this->table.id AND ca.contact =  $auth->id ";
 		}
 
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t $ca_w_alias, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." $ca WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';
@@ -981,7 +968,7 @@ class Host_Model extends Model {
 		}
 
 		if (empty($sql) && empty($class_var)) {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>0 AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." $ca WHERE last_check>0 AND active_checks_enabled=".$checks_state;
 			$class_var = 'ever';
 		}
 		$class_var = $active_passive.'_'.$this->table.'_checks_'.$class_var;
@@ -1035,13 +1022,16 @@ class Host_Model extends Model {
 		if (empty($field) || empty($regexp)) {
 			return false;
 		}
-		if (!isset($this->auth) || !is_object($this->auth)) {
+		if (!isset($this->auth) || !is_object($this->auth))
 			$auth = new Nagios_auth_Model();
-			$auth_hosts = $auth->get_authorized_hosts();
-		} else {
-			$auth_hosts = $this->auth->get_authorized_hosts();
-		}
-		$host_ids = array_keys($auth_hosts);
+		else
+			$auth = $this->auth;
+
+		if ($auth->view_hosts_root)
+			$ca = '';
+		else
+			$ca = " INNER JOIN contact_access ca ON ca.host = host.id AND ca.contact = $auth->id ";
+
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
 			$db = Database::instance();
@@ -1049,8 +1039,7 @@ class Host_Model extends Model {
 			$db = $this->db;
 		}
 
-		$sql = "SELECT * FROM host WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
-		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
+		$sql = "SELECT * FROM host $ca WHERE ".$field." REGEXP ".$db->escape($regexp)." ".$limit_str;
 		$host_info = self::query($db,$sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
