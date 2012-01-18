@@ -75,7 +75,7 @@ class Host_Model extends Model {
 
 	/**
 	 * Determine if user is authorized to view info on a specific host.
-	 * Accepts either hostID or host_name as input
+	 * Accepts either hostID or host_name as input. Setting both is undefined.
 	 *
 	 * @param $name The host_name of the host.
 	 * @param $id The id of the host
@@ -83,24 +83,12 @@ class Host_Model extends Model {
 	 */
 	public function authorized_for($name=false, $id=false)
 	{
-		$id = (int)$id;
-		$name = trim($name);
-		$is_auth = false;
-
-		$auth_hosts = $this->auth->get_authorized_hosts();
-
-		if (!empty($id)) {
-			if (!array_key_exists($id, $auth_hosts)) {
-				return false;
-			}
-		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $auth->hosts_r)) {
-				return false;
-			}
-		} else {
+		if ($name !== false)
+			return $this->auth->get_authorized_for_host($name);
+		else if ($id !== false)
+			return $this->auth->get_authorized_for_host($id);
+		else
 			return false;
-		}
-		return true;
 	}
 
 	/**
