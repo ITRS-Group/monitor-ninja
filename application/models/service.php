@@ -47,21 +47,13 @@ class Service_Model extends Model
 		$this->auth = new Nagios_auth_Model();
 	}
 
-        /**
-         Workaround for PDO queries: runs $db->query($sql), copies
-         the resultset to an array, closes the resultset, and returns
-         the array.
-         */
-        private static function query($db,$sql)
-        {
-            $res = $db->query($sql);
-            $rc = array();
-            foreach($res as $row) {
-                $rc[] = $row;
-            }
-            unset($res);
-            return $rc;
-        }
+	/**
+	 * Useless indirection
+	 */
+	private static function query($db,$sql)
+	{
+		return $db->query($sql)->result_array();
+	}
 
 	/**
 	 * Return the current service state
@@ -76,6 +68,9 @@ class Service_Model extends Model
 
 	/**
 	*	Fetch services that belongs to a specific service- or hostgroup
+	*
+	*	There's an identically named method in servicegroup that does the
+	*	exact same thing, except without supporting the type argument.
 	*/
 	public function get_services_for_group($group=false, $type='service')
 	{
@@ -129,7 +124,7 @@ class Service_Model extends Model
 	}
 
 	/**
-	*	Fetch services that belongs to a specific service- or hostgroup
+	*	Fetch hosts that belongs to a specific servicegroup
 	*/
 	public function get_hosts_for_group($group=false, $type='servicegroup')
 	{
@@ -348,29 +343,17 @@ class Service_Model extends Model
 	public function service_status()
 	{
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			# user authorized for all services
-			$sql = "SELECT ".
+		$auth_str = '';
+		if (!$auth->view_hosts_root && !$auth->view_services_root)
+			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
+		$sql = "SELECT ".
 				"s.*, ".
 				"h.current_state AS host_status ".
 			"FROM ".
-				"service s, ".
-				"host h ".
+				"service s ".$auth_str.
+				", host h ".
 			"WHERE ".
 				"s.host_name = h.host_name ";
-		} else {
-			$auth_str = '';
-			if (!$auth->view_hosts_root && !$auth->view_services_root)
-				$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
-			$sql = "SELECT ".
-					"s.*, ".
-					"h.current_state AS host_status ".
-				"FROM ".
-					"service s ".$auth_str.
-					", host h ".
-				"WHERE ".
-					"s.host_name = h.host_name ";
-		}
 
 		$result = $this->query($this->db,$sql);
 		return count($result) ? $result : false;
