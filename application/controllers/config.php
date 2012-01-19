@@ -58,6 +58,7 @@ class Config_Controller extends Authenticated_Controller {
 		}
 
 		$data = $config_model->list_config($this->type, $items_per_page, $offset);
+		$result = array();
 		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View config');
 		$this->template->content = $this->add_view('config/index');
 
