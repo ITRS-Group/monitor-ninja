@@ -31,6 +31,19 @@ class Contact_Model extends Model
 		return $result->count() ? $result: false;
 	}
 
+	/**
+	 * Fetch list of contact names
+	 */
+	public static function get_contact_names() {
+		$db = Database::instance();
+		$db_result = $db->query('SELECT contact_name FROM contact');
+		$result = array();
+		foreach ($db_result as $row) {
+			$result[] = $row->contact_name;
+		}
+		return $result;
+	}
+
 	public function get_contacts_from_escalation($type = 'host', $id = false) {
 		$sql = false;
 		$db = Database::instance();

@@ -162,11 +162,18 @@ class Cli_Controller extends Authenticated_Controller {
 					continue;
 				}
 			}
-			else if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
-				# We need to make sure LDAP/AD users exists in merlin.users
-				foreach ($config_data['user_list'] as $user) {
-					if ($user)
-						User_Model::add_user(array('username' => $user));
+			else {
+				$contacts = Contact_Model::get_contact_names();
+				foreach ($contacts as $name) {
+					User_Model::add_user(array('username' => $name));
+				}
+
+				if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
+					# We need to make sure LDAP/AD users exists in merlin.users
+					foreach ($config_data['user_list'] as $user) {
+						if ($user)
+							User_Model::add_user(array('username' => $user));
+					}
 				}
 			}
 			$abort = false;
