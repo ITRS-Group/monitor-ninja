@@ -545,7 +545,7 @@ class Current_status_Model extends Model
 		/* check all hosts */
 		$outages = false;
 		foreach ($hosts as $host){
-			$children = false; # reset children
+			$children = array(); # reset children
 			$outages[] = $host->host_name;
 
 			# check if each host has any affected child hosts
