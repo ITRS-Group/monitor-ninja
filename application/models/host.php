@@ -988,7 +988,8 @@ class Host_Model extends Model {
 	 */
 	public function get_hosts_for_group($name)
 	{
-		return Hostgroup_Model::get_hosts_for_group($name);
+		$hostgroup_model = new Hostgroup_Model();
+		return $hostgroup_model->get_hosts_for_group($name);
 	}
 
 
