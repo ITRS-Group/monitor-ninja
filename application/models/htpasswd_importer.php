@@ -5,7 +5,7 @@ class Htpasswd_importer_Model extends Model
 	private $htpasswd_file = "/opt/monitor/etc/htpasswd.users";
 	public $overwrite = false;
 	public $passwd_ary = array();
-	private $existing_ary = array();
+	public $existing_ary = array();
 	private $db_table = "users";
 	protected $db = false;
 	private $DEBUG = false;
@@ -25,7 +25,11 @@ class Htpasswd_importer_Model extends Model
 		return true;
 	}
 
-	private function get_existing_users()
+	/**
+	 * FIXME: I don't belong here, as I perform generic user functionality -
+	 * will someone help me move?
+	 */
+	public function get_existing_users()
 	{
 		if (!$this->db) {
 			$this->db_connect();
@@ -136,16 +140,6 @@ class Htpasswd_importer_Model extends Model
 				}
 				unset($result);
 				unset($user_res);
-			}
-		}
-
-		# check for users that has been removed
-		foreach ($this->existing_ary as $old => $skip) {
-			if (!array_key_exists($old, $this->passwd_ary)) {
-				# delete this user as it is no longer available in
-				# the received list of users
-				$this->db->query("DELETE FROM ".$this->db_table.
-					" WHERE username=".$this->db_quote($old));
 			}
 		}
 	}

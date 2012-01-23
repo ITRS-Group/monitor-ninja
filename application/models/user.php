@@ -326,12 +326,10 @@ class User_Model extends Auth_User_Model {
 		$user = self::get_user($username);
 		if ($user !== false) {
 			# update
-			if ($password) {
-				$user->password = $password;
-				$user->password_algo = $password_algo;
-				$sql = "UPDATE users SET password=".$db->escape($password).", password_algo=".$db->escape($password_algo);
-				$db->query($sql);
-			}
+			$user->password = $password;
+			$user->password_algo = $password_algo;
+			$sql = "UPDATE users SET password=".$db->escape($password).", password_algo=".$db->escape($password_algo);
+			$db->query($sql);
 		} else {
 			# create new
 			$sql = "INSERT INTO users(password, username, password_algo) ".
