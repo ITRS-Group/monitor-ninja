@@ -7,7 +7,7 @@ class report_Test extends TapUnit {
 		$report->set_option('report_timeperiod', 'weird-stuff');
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
-		$this->ok(!empty($report->tp_exceptions), 'There are exclusions');
+		$this->ok(!empty($report->tp_exceptions), 'There are exceptions');
 		// fixme: validate output
 	}
 }
