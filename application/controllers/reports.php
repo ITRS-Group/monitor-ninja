@@ -1307,8 +1307,6 @@ class Reports_Controller extends Authenticated_Controller
 		$report_template_check = !empty($in_hostgroup) ? true : ((count($in_host) > 1) ? true : false);
 		$template->report_template_check = $report_template_check;
 
-		$csv_status = false;
-
 		# AVAIL REPORT
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);

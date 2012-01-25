@@ -27,6 +27,7 @@ class Summary_Controller extends Authenticated_Controller
 	private $first_day_of_week = 1;
 	private $month_names = false;
 	private $pdf_filename = false;
+	private $pdf_local_persistent_filepath = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
 	private $report_id = false;
@@ -863,8 +864,7 @@ class Summary_Controller extends Authenticated_Controller
 
 		 default:
 			echo Kohana::debug("Case fallthrough");
-			die;
-			break;
+			exit(1);
 		}
 
 		$this->js_strings .= reports::js_strings();
@@ -901,6 +901,8 @@ class Summary_Controller extends Authenticated_Controller
 			$retval = $this->_pdf();
 			if (PHP_SAPI == "cli") {
 				echo $retval;
+			} elseif(request::is_ajax()) {
+				return $retval ? json::ok(_("Mail sent")) : json::fail(_("Mail could not be sent"));
 			}
 			return $retval;
 		}
@@ -1057,6 +1059,7 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->pdf_filename = $report_data['filename'];
+		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$this->pdf_recipients = $report_data['recipients'];
 
 		$request['create_pdf'] = 1;
@@ -1177,16 +1180,20 @@ class Summary_Controller extends Authenticated_Controller
 			try {
 				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
 			} catch(Exception $e) {
-				if(request::is_ajax()) {
-					return json::fail($e->getMessage());
-				}
+				// let's not do anything rational now.. we want to send the email even
+				// though the local file saving business went to hell
 
-				// @todo log failure
-				echo "<pre>";
-				var_dump(__LINE__);
-				var_dump($e->getMessage());
-				var_dump('DYING');
-				die;
+
+				//if(request::is_ajax()) {
+					//return json::fail($e->getMessage());
+				//}
+
+				//// @todo log failure
+				//echo "<pre>";
+				//var_dump(__LINE__);
+				//var_dump($e->getMessage());
+				//var_dump('DYING');
+				//die;
 			}
 		}
 
