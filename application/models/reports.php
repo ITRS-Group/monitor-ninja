@@ -1430,6 +1430,33 @@ class Reports_Model extends Model
 		$this->st_sub_discrepancies = $disc;
 	}
 
+	/**
+	 * @param int $event_type
+	 * @param string $object_type = null (host or service)
+	 * @return string
+	 * @throws InvalidArgumentException
+	 */
+	public static function event_type_to_string($event_type, $object_type = null) {
+		switch($event_type) {
+			case self::PROCESS_SHUTDOWN:
+				return _('Monitor shut down');
+			case self::PROCESS_RESTART:
+				return _('Monitor restart');
+			case self::PROCESS_START:
+				return _('Monitor started');
+			case self::SERVICECHECK:
+				return _('Service alert');
+			case self::HOSTCHECK:
+				return _('Host alert');
+			case self::DOWNTIME_START:
+				return _($obj_type . ' has entered a period of scheduled downtime');
+			case self::DOWNTIME_STOP:
+				return _($obj_type . ' has exited a period of scheduled downtime');
+			default:
+				throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
+		}
+	}
+
 	public function st_parse_row($row = false)
 	{
 		$obj_name = $obj_type = false;

@@ -507,18 +507,49 @@ class Summary_Controller extends Authenticated_Controller
 		echo "</tr></table><br />\n";
 	}
 
-	public function _print_duration($start_time, $end_time)
-	{
-		$fmt = "Y-m-d H:i:s";
-		echo date($fmt, $start_time) . " to " .
-			date($fmt, $end_time) . "<br />\n";
+	/**
+	 * @param int $report_type
+	 * @return string
+	 * @throws InvalidArgumentException
+	 */
+	private function _get_summary_variant_by_report_type($report_type) {
+		$types = array(
+			self::RECENT_ALERTS => _("Most recent hard alerts"),
+			self::ALERT_TOTALS => _("Most recent hard host alerts"),
+			self::TOP_ALERT_PRODUCERS => _("Top hard alert producers"),
+			self::ALERT_TOTALS_HG => _('Overall totals'),
+			self::ALERT_TOTALS_HOST => _('Overall totals'),
+			self::ALERT_TOTALS_SERVICE => _('Overall totals'),
+			self::ALERT_TOTALS_SG => _('Overall totals')
+		);
+		if(!array_key_exists($report_type, $types)) {
+			throw new InvalidArgumentException("Invalid report type");
+		}
+		return $types[$report_type];
+	}
+
+	/**
+	 * @param int $start_time unix timestamp
+	 * @param int $end_time unix timestamp
+	 * @return string
+	 */
+	private function _nice_format_duration($start_time, $end_time) {
 		$duration = $end_time - $start_time;
 		$days = $duration / 86400;
 		$hours = ($duration % 86400) / 3600;
 		$minutes = ($duration % 3600) / 60;
 		$seconds = ($duration % 60);
-		printf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
+		return sprintf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
 			   $days, $hours, $minutes, $seconds);
+	}
+
+	public function _print_duration($start_time, $end_time)
+	{
+		$fmt = "Y-m-d H:i:s";
+		echo date($fmt, $start_time) . " to " .
+			date($fmt, $end_time) . "<br />\n";
+
+		echo $this->_nice_format_duration($start_time, $end_time);
 
 		# we needan extra break in case of PDF
 		if ($this->create_pdf) {
@@ -890,6 +921,128 @@ class Summary_Controller extends Authenticated_Controller
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
 		if ($this->create_pdf || $this->mashing) {
+			if('.csv' == substr($this->pdf_filename, -4, 4)) {
+				// @todo move this piece of ** out of the controller
+
+				// meta, array keys are there for you
+				$csv_content = array('"'.implode('", "', array(
+					'kind_of_report' => $this->_get_summary_variant_by_report_type($report_type), // @todo replace this with for example "Most recent hard alerts" (found in $report_type)
+					'start_time' => "From: ".date('Y-m-d H:i:s', $used_options['start_time']),
+					'end_time' => "To: ".date('Y-m-d H:i:s', $used_options['end_time']),
+					'human_readable_duration' => $this->_nice_format_duration($used_options['start_time'], $used_options['end_time'])
+				)).'"');
+
+				if(self::RECENT_ALERTS == $report_type) {
+					// headers
+					$csv_content[] = '"'.implode('", "', array(
+						'TIME',
+						'ALERT TYPE',
+						'HOST',
+						'SERVICE',
+						'STATE TYPE',
+						'INFORMATION'
+					)).'"';
+
+					// content
+					foreach($result as $log_entry) {
+						$csv_content[] = '"'.implode('", "', array(
+							date('Y-m-d H:i:s', $log_entry['timestamp']),
+							Reports_Model::event_type_to_string($log_entry['event_type'], $log_entry['service_description'] ? 'service' : 'host'),
+							$log_entry['host_name'],
+							$log_entry['service_description'] ? $log_entry['service_description'] : 'N/A',
+							$log_entry['hard'] ? _('Hard') : _('Soft'),
+							$log_entry['output']
+						)).'"';
+					}
+				} elseif(self::TOP_ALERT_PRODUCERS == $report_type) {
+					if(isset($result[0]['service_description'])) {
+						// summary of services
+						// headers
+						$csv_content[] = '"'.implode('", "', array(
+							'HOST',
+							'SERVICE',
+							'ALERT TYPE',
+							'TOTAL ALERTS'
+						)).'"';
+
+						// content
+						foreach($result as $log_entry) {
+							$csv_content[] = '"'.implode('", "', array(
+								$log_entry['host_name'],
+								$log_entry['service_description'],
+								Reports_Model::event_type_to_string($log_entry['event_type'], 'service'),
+								$log_entry['total_alerts']
+							)).'"';
+						}
+					} else {
+						// summary of hosts
+						// headers
+						$csv_content[] = '"'.implode('", "', array(
+							'HOST',
+							'ALERT TYPE',
+							'TOTAL ALERTS'
+						)).'"';
+
+						// content
+						foreach($result as $log_entry) {
+							$csv_content[] = '"'.implode('", "', array(
+								$log_entry['host_name'],
+								Reports_Model::event_type_to_string($log_entry['event_type'], 'host'),
+								$log_entry['total_alerts']
+							)).'"';
+						}
+					}
+				}
+
+				$temp_name = tempnam('/tmp', 'report');
+				// copying behavior for definition of K_PATH_CACHE (grep for it,
+				// it should be in tcpdf somewhere)
+				if(is_file($temp_name)) {
+					unlink($temp_name);
+				}
+				mkdir($temp_name);
+
+				$filename = preg_replace('/.(csv|pdf)$/', null, $this->pdf_filename).'.csv';
+				$full_path = $temp_name.'/'.$filename;
+				file_put_contents($full_path, implode("\n", $csv_content));
+
+				if($this->pdf_local_persistent_filepath) {
+					// we want to make sure the file exists forever and ever, which
+					// means that name actually matters
+
+					// once again, stealing methods from pdf to csv
+					$previous_full_path = false;
+					try {
+						$previous_full_path = $full_path;
+						$new_wanted_filename = rtrim($this->pdf_local_persistent_filepath, '/').'/'.$filename;
+						$full_path = persist_pdf::save($full_path, $new_wanted_filename);
+						$file_saved = true;
+					} catch(Exception $e) {
+						if($previous_full_path) {
+							$full_path = $previous_full_path;
+						}
+						$file_saved = false;
+					}
+				}
+
+				// Stealing the already used variable name, not touching it
+				// since it's declared public and such it may be
+				// depended upon from the outside
+				if($this->pdf_recipients) {
+					$report_sender = new Send_report_Model();
+					$mail_sent = $report_sender->send($this->pdf_recipients, $full_path, $filename);
+					if (PHP_SAPI == "cli") {
+						echo $mail_sent;
+					} elseif(request::is_ajax()) {
+						return $mail_sent ? json::ok(_("Mail sent")) : json::fail(_("Mail could not be sent"));
+					}
+					return $mail_sent;
+				}
+				if(request::is_ajax() && $this->pdf_local_persistent_filepath) {
+					return $file_saved ? json::ok(_("File saved")) : json::fail(_("File could not be saved"));
+				}
+				return true;
+			}
 			$this->pdf_data['content'] = $content->render();
 
 			if ($this->create_pdf && $this->mashing) {
