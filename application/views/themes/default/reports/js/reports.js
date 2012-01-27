@@ -74,7 +74,7 @@ $(document).ready(function() {
 	$('.autofill').click(function() {
 		var the_val = $("input[name='" + $(this).attr('id') + "']").attr('value');
 		if (the_val!='') {
-			if (!confirm(_reports_propagate)) {
+			if (!confirm(_reports_propagate.replace('this value', the_val+'%'))) {
 				return false;
 			}
 			set_report_form_values(the_val);
