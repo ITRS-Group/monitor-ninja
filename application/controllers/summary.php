@@ -1331,7 +1331,7 @@ class Summary_Controller extends Authenticated_Controller
 		// the local path must be specified and there must be an original pdf
 		if($this->pdf_local_persistent_filepath && 'F' == $action) {
 			try {
-				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
+				persist_pdf::save($filename, $this->pdf_local_persistent_filepath.'/'.pathinfo($filename, PATHINFO_BASENAME));
 			} catch(Exception $e) {
 				// let's not do anything rational now.. we want to send the email even
 				// though the local file saving business went to hell
