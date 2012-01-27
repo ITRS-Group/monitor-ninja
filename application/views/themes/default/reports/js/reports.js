@@ -161,7 +161,7 @@ $(document).ready(function() {
 		if(!filename) {
 			return;
 		}
-		if(!filename.match(/.(csv|pdf)$/)) {
+		if(!filename.match(/\.(csv|pdf)$/)) {
 			filename += '.pdf';
 		}
 		input.val(filename);
