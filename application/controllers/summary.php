@@ -27,7 +27,6 @@ class Summary_Controller extends Authenticated_Controller
 	private $first_day_of_week = 1;
 	private $month_names = false;
 	private $pdf_filename = false;
-	private $pdf_local_persistent_filepath = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
 	public $pdf_local_persistent_filepath = false;
@@ -1215,7 +1214,6 @@ class Summary_Controller extends Authenticated_Controller
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$this->pdf_recipients = $report_data['recipients'];
-		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 
 		$request['create_pdf'] = 1;
 		$request['new_report_setup'] = 1;
