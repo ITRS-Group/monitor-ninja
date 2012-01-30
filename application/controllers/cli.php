@@ -192,14 +192,9 @@ class Cli_Controller extends Authenticated_Controller {
 
 
 			if (empty($passwd_import->passwd_ary)) {
-				# this is really bad since no users were found.
-				# It could mean that this system is using some other means of authorization
-				# (like LDAP?) but if we end up here something else in the configuration
-				# is terribly wrong.
-				continue;
+				$new_users = array_merge($new_users, $passwd_import->passwd_ary);
+				$abort = false;
 			}
-			$new_users = array_merge($new_users, $passwd_import->passwd_ary);
-			$abort = false;
 		}
 		if ($abort)
 			return false;
