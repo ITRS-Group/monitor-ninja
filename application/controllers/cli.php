@@ -191,7 +191,7 @@ class Cli_Controller extends Authenticated_Controller {
 			$passwd_import->import_hashes($etc_path.'htpasswd.users');
 
 
-			if (empty($passwd_import->passwd_ary)) {
+			if (!empty($passwd_import->passwd_ary)) {
 				$new_users = array_merge($new_users, $passwd_import->passwd_ary);
 				$abort = false;
 			}
