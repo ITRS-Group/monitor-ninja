@@ -1442,8 +1442,10 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * @param int $event_type
-	 * @param string $object_type = null (host or service)
+	 * Retrieve a user-friendly representation for nagios codes
+	 *
+	 * @param $event_type
+	 * @param $object_type = null (host or service)
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */

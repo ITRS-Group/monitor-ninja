@@ -6,9 +6,9 @@
 class Htpasswd_importer_Model extends Ninja_Model
 {
 	private $htpasswd_file = "/opt/monitor/etc/htpasswd.users";
-	public $overwrite = false; /**< Overwrite user's passwords */
+	public $overwrite = false; /**< Overwrite user's passwords? */
 	public $passwd_ary = array(); /**< Map between usernames and passwords */
-	public $existing_ary = array();
+	public $existing_ary = array(); /**< The list of users that already exists */
 	private $db_table = "users";
 	private $DEBUG = false;
 
