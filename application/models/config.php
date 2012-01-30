@@ -154,6 +154,7 @@ class Config_Model extends Model {
 			}
 
 			$result = $this->query($db,$sql);
+			$result_mod = array();
 
 			# We special case host/services since there are one to many relationships
 			# parents, contacts + contactgroups need to fetched separatly so we do this here
@@ -197,7 +198,6 @@ class Config_Model extends Model {
 					}
 					$result_mod[] = $row;
 				}
-                                unset($result);
 				return $result_mod;
 		    }
 		    if ($type === 'services' && $count == false) {
@@ -230,7 +230,6 @@ class Config_Model extends Model {
 					}
 					$result_mod[] = $row;
 				}
-                                unset($result);
 				return $result_mod;
 		    }
 			# End host/service special casing #

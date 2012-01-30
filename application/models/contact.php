@@ -32,6 +32,19 @@ class Contact_Model extends Model
 	}
 
 	/**
+	 * Fetch list of contact names
+	 */
+	public static function get_contact_names() {
+		$db = Database::instance();
+		$db_result = $db->query('SELECT contact_name FROM contact');
+		$result = array();
+		foreach ($db_result as $row) {
+			$result[] = $row->contact_name;
+		}
+		return $result;
+	}
+
+	/**
 	 * Return a database object of escalation contacts
 	 * @param $type What type of escalation (host or service)
 	 * @param $id The escalation ID

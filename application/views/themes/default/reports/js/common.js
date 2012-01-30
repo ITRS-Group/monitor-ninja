@@ -225,13 +225,8 @@ function send_report_now(type, id)
 				} else {
 					jgrowl_message(_reports_schedule_send_error, _reports_error);
 				}
+				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			}
-		},
-		error: function() {
-			jgrowl_message(_reports_schedule_send_error, _reports_error);
-		},
-		complete: function() {
-			setTimeout(function() {restore_sendimg(html_id)}, 1000);
 		},
 		dataType: 'json'
 	});

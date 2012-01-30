@@ -27,6 +27,22 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 		$db_name = 'merlin';
 		$db_user = 'merlin';
 		$db_pass = 'merlin';
+		$db_host = 'localhost';
+		$db_type = 'mysql';
+		$config = Kohana::config('database.default');
+		if (isset($config['connection'])) {
+			$connection = $config['connection'];
+			if (isset($connection['database']) && $connection['database'])
+				$db_name = $connection['database'];
+			if (isset($connection['user']) && $connection['user'])
+				$db_user = $connection['user'];
+			if (isset($connection['pass']) && $connection['pass'])
+				$db_pass = $connection['pass'];
+			if (isset($connection['host']) && $connection['host'])
+				$db_host = $connection['host'];
+			if (isset($connection['type']) && $connection['type'])
+				$db_type = $connection['type'];
+		}
 		$importer = 'mon log import';
 		$test_file = array();
 		$argv = isset($argv) ? $argv : $GLOBALS['argv'];
@@ -64,6 +80,8 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 			$test->db_name = $db_name;
 			$test->db_user = $db_user;
 			$test->db_pass = $db_pass;
+			$test->db_type = $db_type;
+			$test->db_host = $db_host;
 			if ($test->run_test_series() === -1) {
 				echo "    $test->test_file : '$test->description' failed to run\n";
 				exit(1);

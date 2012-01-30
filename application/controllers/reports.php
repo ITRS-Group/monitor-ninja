@@ -827,7 +827,7 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
- 	 * Generate (availability) report from parameters set in index()
+	 * Generate (availability) report from parameters set in index()
 	 *
 	 * @param string $type = "avail"
 	 * @param int $schedule_id = false
@@ -1304,14 +1304,11 @@ class Reports_Controller extends Authenticated_Controller
 		$report_template_check = !empty($in_hostgroup) ? true : ((count($in_host) > 1) ? true : false);
 		$template->report_template_check = $report_template_check;
 
-		$csv_status = false;
-
 		# AVAIL REPORT
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);
-			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup);
-			exit(0);
-			# if all went OK we have csv_status === true or we have an error string
+			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup, $this->pdf_filename, Scheduled_reports_Model::fetch_scheduled_field_value('local_persistent_filepath', $this->schedule_id));
+			return $csv_status;
 		} elseif ($this->type == 'avail' && (empty($this->data_arr)
 			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
 			|| (!isset($this->data_arr['source']) && empty($this->data_arr[0][0]['source']) ))) {
@@ -2478,22 +2475,15 @@ class Reports_Controller extends Authenticated_Controller
 	 * @param string $sub_type
 	 * @param string $group_name = false
 	 * @param boolean $in_hostgroup
+	 * @param string $filename = false
+	 * @param string $folder = false
 	 */
-	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup)
+	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup, $filename = false, $folder = false)
 	{
 		if (empty($data_arr)) {
 			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
 		}
 		$this->auto_render=false;
-		$filename = false;
-		switch ($type) {
-			case 'avail':
-				$filename = "availability_".date("Y-m-d").".csv";
-				break;
-			case 'sla':
-				$filename = "sla_".date("Y-m-d").".csv";
-				break;
-		}
 
 		// Sometimes we want to save the file instead of sending it to the browser,
 		// probably because it's scheduled and/or being triggered manually
@@ -2614,13 +2604,31 @@ class Reports_Controller extends Authenticated_Controller
 				unlink($temp_name);
 			}
 			mkdir($temp_name);
-			file_put_contents($temp_name.'/'.$filename, $csv);
-			// Stealing the already used name, not touching it
+			$full_path = $temp_name.'/'.$filename;
+			file_put_contents($full_path, $csv);
+			if($folder) {
+				// we want to make sure the file exists forever and ever, which
+				// means that name actually matters
+
+				// once again, stealing methods from pdf to csv
+				$previous_full_path = false;
+				try {
+					$previous_full_path = $full_path;
+					$new_wanted_filename = rtrim($folder, '/').'/'.$filename;
+					$full_path = persist_pdf::save($full_path, $new_wanted_filename);
+				} catch(Exception $e) {
+					if($previous_full_path) {
+						$full_path = $previous_full_path;
+					}
+				}
+			}
+
+			// Stealing the already used variable name, not touching it
 			// since it's declared public and such it may be
 			// depended upon from the outside
 			if($this->pdf_recipients) {
 				$report_sender = new Send_report_Model();
-				$mail_sent = $report_sender->send($this->pdf_recipients, $temp_name.'/'.$filename, $filename);
+				$mail_sent = $report_sender->send($this->pdf_recipients, $full_path, $filename);
 				if(request::is_ajax()) {
 					if($mail_sent) {
 						return json::ok(_("Mail sent"));
@@ -2634,7 +2642,7 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			echo $csv;
 		}
-		die();
+		return true;
 	}
 
 	/**
@@ -3617,6 +3625,7 @@ class Reports_Controller extends Authenticated_Controller
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
 			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
 
+
 		$form .= '</div>';
 		$form .= "</form>";
 
@@ -3786,14 +3795,11 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf->Output($filename, $action);
 
+		// the local path must be specified and there must be an original pdf
 		if($this->pdf_local_persistent_filepath && 'F' == $action) {
 			try {
-				persist_pdf::save($filename, $this->pdf_local_persistent_filepath);
+				persist_pdf::save($filename, $this->pdf_local_persistent_filepath.'/'.pathinfo($filename, PATHINFO_BASENAME));
 			} catch(Exception $e) {
-				if(request::is_ajax()) {
-					return json::fail($e->getMessage());
-				}
-
 				// @todo log failure
 				echo "<pre>";
 				var_dump(__LINE__);
@@ -3808,13 +3814,6 @@ class Reports_Controller extends Authenticated_Controller
 			$report_sender = new Send_report_Model();
 			$mail_sent = $report_sender->send($this->pdf_recipients, $filename, str_replace(K_PATH_CACHE.'/', '', $filename));
 
-			if(request::is_ajax()) {
-				if($mail_sent) {
-					return json::ok(_("Mail sent"));
-				} else {
-					return json::fail(_("Could not send email"));
-				}
-			}
 			return $mail_sent;
 		}
 
@@ -4221,11 +4220,11 @@ class Reports_Controller extends Authenticated_Controller
 			'report' => $translate->_("Select the saved report to schedule"),
 			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
 			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
-			'filename' => $translate->_("This field lets you select a custom filename for the report. Let it end with .csv to export as CSV, otherwise a PDF will be exported."),
+			'filename' => $translate->_("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
-			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /var/log").'</p>'
+			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /tmp").'</p>'
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
@@ -4323,7 +4322,8 @@ class Reports_Controller extends Authenticated_Controller
 		// check some fields a little extra
 		switch ($field) {
 			case 'local_persistent_filepath':
-				if(!is_writable(rtrim($new_value, '/').'/')) {
+				$new_value = trim($new_value);
+				if(!empty($new_value) && !is_writable(rtrim($new_value, '/').'/')) {
 					echo $this->translate->_("Can't write to '$new_value'. Provide another path.")."<br />";
 					return;
 				}

@@ -23,6 +23,8 @@ class Ninja_Reports_Test_Core
 	public $db_name;
 	public $db_user;
 	public $db_pass;
+	public $db_type;
+	public $db_host;
 	public $importer;
 
 	public function __construct($test_file)
@@ -278,7 +280,7 @@ class Ninja_Reports_Test_Core
 		$line = exec("cat $lfiles | md5sum", $output, $retcode);
 		$ary = explode(" ", $line);
 		$checksum = $ary[0];
-		$table_name = substr($this->description, 0, 27) . "_$checksum";
+		$table_name = substr($this->description, 0, 20) . substr($checksum, 0, 10);
 		$table_name = preg_replace("/[^A-Za-z0-9_]/", "_", $table_name);
 		$this->table_name = $table_name;
 
@@ -295,10 +297,10 @@ class Ninja_Reports_Test_Core
 		if ($cached) {
 			echo "Data is cached\n";
 		} else {
-			$sql =
-				//"CREATE TABLE $table_name LIKE report_data" // not portable
-				"CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0"
-				;
+			if ($this->db_type === 'oracle')
+				$sql = "CREATE TABLE $table_name AS (SELECT * FROM report_data WHERE rownum < 0)";
+			else
+				$sql = "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0";
 			echo "Building table [$table_name]. This might take a moment or three...\n";
 			if( ! $db->query($sql)) {
 				$this->crash("Error creating table $table_name: ".$db->error_message());
@@ -309,6 +311,8 @@ class Ninja_Reports_Test_Core
 				" --db-table=".$this->table_name .
 				" --db-user=".$this->db_user .
 				" --db-pass=".$this->db_pass." " .
+				" --db-host=".$this->db_host." " .
+				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles);
 				echo "$cmd\n";
 			#	exit(0);

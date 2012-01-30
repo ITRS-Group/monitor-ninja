@@ -118,6 +118,20 @@ class Cli_Controller extends Authenticated_Controller {
 		return $return;
 	}
 
+	private function clean_old_users($old_ary, $new_ary)
+	{
+		$db = Database::instance();
+		# check for users that has been removed
+		foreach ($old_ary as $old => $skip) {
+			if (!array_key_exists($old, $new_ary)) {
+				# delete this user as it is no longer available in
+				# the received list of users
+				$db->query("DELETE FROM users ".
+				" WHERE username=".$db->escape($old));
+			}
+		}
+	}
+
 	/**
 	 * Insert user data from cgi.cfg into db
 	 */
@@ -139,41 +153,58 @@ class Cli_Controller extends Authenticated_Controller {
 		# don't assume any authorized users - start by removing all auth data
 		User_Model::truncate_auth_data();
 
+		$passwd_import = new Htpasswd_importer_Model();
+
+		$passwd_import->get_existing_users();
+		$old_users = $passwd_import->existing_ary;
+		$new_users = array();
+
 		$config_data = self::get_cgi_config();
 
 		$abort = true;
-		foreach ($auth_types as $auth_type => $_) {
-			if ($auth_type !== 'LDAP') {
-				# first import new users from cgi.cfg if there is any
-				$passwd_import = new Htpasswd_importer_Model();
-				$passwd_import->overwrite = true;
-				$base_path = System_Model::get_nagios_base_path();
-				$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
-				if (substr($etc_path, -1, 1) != '/') {
-					$etc_path .= '/';
-				}
-				$passwd_import->import_hashes($etc_path.'htpasswd.users');
-
-
-				if (empty($passwd_import->passwd_ary)) {
-					# this is really bad since no users were found.
-					# It could mean that this system is using some other means of authorization
-					# (like LDAP?) but if we end up here something else in the configuration
-					# is terribly wrong.
-					continue;
-				}
+		if (isset($auth_types['LDAP'])) {
+			$contacts = Contact_Model::get_contact_names();
+			foreach ($contacts as $name) {
+				User_Model::add_user(array('username' => $name));
 			}
-			else if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
+
+			if (isset($config_data['user_list']) && !empty($config_data['user_list'])) {
 				# We need to make sure LDAP/AD users exists in merlin.users
 				foreach ($config_data['user_list'] as $user) {
-					if ($user)
+					if ($user) {
 						User_Model::add_user(array('username' => $user));
+						$new_users[$user] = 1;
+					}
 				}
 			}
 			$abort = false;
 		}
+
+		if (count($auth_types) > 1 || !isset($auth_types['LDAP'])) {
+			# first import new users from cgi.cfg if there is any
+			$passwd_import->overwrite = true;
+			$base_path = System_Model::get_nagios_base_path();
+			$etc_path = Kohana::config('config.nagios_etc_path') ? Kohana::config('config.nagios_etc_path') : $base_path.'/etc';
+			if (substr($etc_path, -1, 1) != '/') {
+				$etc_path .= '/';
+			}
+			$passwd_import->import_hashes($etc_path.'htpasswd.users');
+
+
+			if (empty($passwd_import->passwd_ary)) {
+				# this is really bad since no users were found.
+				# It could mean that this system is using some other means of authorization
+				# (like LDAP?) but if we end up here something else in the configuration
+				# is terribly wrong.
+				continue;
+			}
+			$new_users = array_merge($new_users, $passwd_import->passwd_ary);
+			$abort = false;
+		}
 		if ($abort)
 			return false;
+
+		$this->clean_old_users($old_users, $new_users);
 
 		# fetch all usernames from users table
 		$users = User_Model::get_all_usernames();
