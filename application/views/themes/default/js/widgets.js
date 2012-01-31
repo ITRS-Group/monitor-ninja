@@ -166,7 +166,7 @@ function save_widget_order(order_str)
 
 function control_widgets(item) {
 	var it = $(item);
-	if (item.className == 'selected') {
+	if (item && item.className == 'selected') {
 		$.fn.HideEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
 		item.className = 'unselected';
 	}
