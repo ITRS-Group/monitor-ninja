@@ -63,6 +63,9 @@ class pnp_Core
 			// one can always try...
 			$xmldata = @simplexml_load_string(utf8_encode($contents));
 		}
+		if ($xmldata === false || !isset($xmldata->DATASOURCE)) {
+			return array();
+		}
 		$res = array();
 		if ($xmldata->DATASOURCE) {
 			foreach ($xmldata->DATASOURCE as $ds) {
