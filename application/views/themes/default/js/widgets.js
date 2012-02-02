@@ -166,13 +166,17 @@ function save_widget_order(order_str)
 
 function control_widgets(item) {
 	var it = $(item);
-	if (item && item.className == 'selected') {
+	if (it.hasClass('selected')) {
 		$.fn.HideEasyWidget('widget-' + it.data('name') + '-' + it.data('instance_id'), window.easywidgets_obj);
-		item.className = 'unselected';
+		it.removeClass('selected').addClass('unselected').data('instance_id', '');
 	}
 	else {
-		copy_widget_instance(it.data('name'), it.data('instance_id'));
-		item.className = 'selected';
+		copy_widget_instance(it.data('name'), it.data('instance_id'), function(new_widget) {
+			if (!it.data('instance_id')) {
+				it.data('instance_id', new_widget.data('instance_id'));
+			}
+		});
+		it.removeClass('unselected').addClass('selected');
 	}
 }
 
