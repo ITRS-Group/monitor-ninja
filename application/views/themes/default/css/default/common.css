@@ -777,6 +777,11 @@ table.extinfo tr td.status.icon img {
 .widget-header span.widget-menu img {
 	margin-left: 3px;
 }
+
+.widget-content {
+	overflow: auto;
+}
+
 span a img{
 	padding-left:2px;
 }
