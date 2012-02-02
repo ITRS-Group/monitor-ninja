@@ -59,6 +59,12 @@ class widget_Base
 			if (!is_string($option))
 				$arguments[$option->name] = $option->value($this->model->setting);
 		}
+		if (is_array($this->model->setting)) {
+			foreach ($this->model->setting as $opt => $val) {
+				if (!isset($arguments[$opt]))
+					$arguments[$opt] = $val;
+			}
+		}
 		return $arguments;
 	}
 
