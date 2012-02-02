@@ -1308,6 +1308,10 @@ class Reports_Controller extends Authenticated_Controller
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup, $this->pdf_filename, Scheduled_reports_Model::fetch_scheduled_field_value('local_persistent_filepath', $this->schedule_id));
+			if(PHP_SAPI != "cli") {
+				// request through browser
+				exit();
+			}
 			return $csv_status;
 		} elseif ($this->type == 'avail' && (empty($this->data_arr)
 			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
