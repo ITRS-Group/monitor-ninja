@@ -86,19 +86,6 @@ $(document).ready(function() {
 		}
 	});
 
-	// ajax post form options
-	var options = {
-		target:			'#response',		// target element(s) to be updated with server response
-		beforeSubmit:	validate_form,	// pre-submit callback
-		success:		show_response	// post-submit callback
-	};
-
-	// schedule report when already created
-	$('#schedule_report_form').submit(function() {
-		$(this).ajaxSubmit(options);
-		return false;
-	});
-
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
 	$("#show_scheduled").click(function(){toggle_edit()});
 	setup_editable();
@@ -129,11 +116,6 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
-		$("#fancybox-content .delete_schedule").each(function() {
-			$(this).click(function() {
-				schedule_delete($(this).attr('id'));
-			});
-		});
 
 		$("#fancybox-content .send_report_now").click(function() {
 			var type_id = $(this).attr('id');
@@ -307,7 +289,7 @@ function show_sla_saveresponse(responseText, statusText)
 	}
 	$('#view_add_schedule').show();
 	$('#save_to_schedule').hide();
-	$(".fancybox").fancybox.close();
+	$.fancybox.close();
 }
 
 function ajax_submit(f)

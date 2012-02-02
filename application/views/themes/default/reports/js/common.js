@@ -308,7 +308,7 @@ function remove_schedule(id, remove_type)
 			$('#report_id option:selected').text(chk_text);
 		}
 		if ($(".fancybox").is(':visible')) {
-			$(".fancybox").fancybox.close();
+			$.fancybox.close();
 		}
 	}
 
@@ -1338,15 +1338,19 @@ function trigger_schedule_save(f)
 		type: 'POST',
 		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
 		success: function(data) {
-			if (isNaN(data)) { // error!
-				jgrowl_message(data, _reports_error);
+			if (data.error) {
+				jgrowl_message(data.error, _reports_error);
 			} else {
-				$('#schedule_report_table').append(create_new_schedule_rows(data));
+				// @todo: remove this row, we should fetch that information on each click
+				// on that button since that data might be a bad cache, i.e. it's NEVER guaranteed
+				// to be 1:1 vs the stored data
+				$('#schedule_report_table').append(create_new_schedule_rows(data.result.id));
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-				$(".fancybox").fancybox.close();
 				$('#show_schedule').show(); // show the link to view available schedules
+				$.fancybox.close();
 			}
-		}
+		},
+		dataType: 'json'
 	});
 
 	setTimeout('delayed_hide_progress()', 1000);
