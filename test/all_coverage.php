@@ -69,7 +69,8 @@ foreach ($files as $file) {
 	$h = fopen("$prefix/$file", 'rb');
 	while ($line = fgets($h)) {
 		$line = trim($line);
-		runTest($line);
+		if ($line && $line[0] != '#')
+			runTest($line);
 	}
 }
 
