@@ -309,7 +309,7 @@ widget.prototype.set_current_uri = function(uri) {
 };
 
 widget.prototype.set_id = function(name, instance_id) {
-	if (!name || !instance_id)
+	if (!name)
 		return;
 	this.id = name + '-' + instance_id;
 	this.name = name;
