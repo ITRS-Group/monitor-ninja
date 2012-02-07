@@ -27,7 +27,7 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	*	Takes input from commandline import of cgi.cfg
 	*/
-	public function _edit_user_authorization($username=false, $options=false)
+	public static function _edit_user_authorization($username=false, $options=false)
 	{
 		if (empty($username) || empty($options)) {
 			return false;
@@ -74,7 +74,7 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	 * fetch data from cgi.cfg and return to calling script
 	 */
-	public function get_cgi_config()
+	public static function get_cgi_config()
 	{
 		$auth_data = System_Model::parse_config_file('cgi.cfg');
 		$user_data = false;
@@ -118,7 +118,7 @@ class Cli_Controller extends Authenticated_Controller {
 		return $return;
 	}
 
-	private function clean_old_users($old_ary, $new_ary)
+	private static function clean_old_users($old_ary, $new_ary)
 	{
 		$db = Database::instance();
 		# check for users that has been removed
@@ -135,7 +135,7 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	 * Insert user data from cgi.cfg into db
 	 */
-	public function insert_user_data()
+	public static function insert_user_data()
 	{
 		$auth_types = Kohana::config('auth.auth_methods');
 		if (!is_array($auth_types))
@@ -199,7 +199,7 @@ class Cli_Controller extends Authenticated_Controller {
 		if ($abort)
 			return false;
 
-		$this->clean_old_users($old_users, $new_users);
+		self::clean_old_users($old_users, $new_users);
 
 		# fetch all usernames from users table
 		$users = User_Model::get_all_usernames();

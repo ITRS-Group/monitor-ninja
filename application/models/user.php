@@ -70,9 +70,9 @@ class User_Model extends Auth_User_Model {
 	/**
 	 * Takes care of setting session variables etc
 	 */
-	public function complete_login($user_data=false)
+	public static function complete_login($user_data=false)
 	{
-		if (!$this->session->get(Kohana::config('auth.session_key'), false)) {
+		if (!Session::instance()->get(Kohana::config('auth.session_key'), false)) {
 			url::redirect(Kohana::config('routes._default'));
 		}
 
@@ -114,8 +114,9 @@ class User_Model extends Auth_User_Model {
 				if ($auth_type == 'apache') {
 					url::redirect('default/no_objects');
 				} else {
-					$this->session->set_flash('error_msg',
-						$this->translate->_("You have been denied access since you aren't authorized for any objects."));
+					$translate = zend::instance('Registry')->get('Zend_Translate');
+					Session::instance()->set_flash('error_msg',
+						$translate->_("You have been denied access since you aren't authorized for any objects."));
 					url::redirect('default/show_login');
 				}
 			}
@@ -129,7 +130,7 @@ class User_Model extends Auth_User_Model {
 		}
 		if ($requested_uri !== false) {
 			# remove 'requested_uri' from session
-			$this->session->delete('requested_uri');
+			Session::instance()->delete('requested_uri');
 			url::redirect($requested_uri);
 		} else {
 			# we have no requested uri
@@ -172,18 +173,19 @@ class User_Model extends Auth_User_Model {
 	 * Takes care of setting a user as logged out
 	 * and destroying the session
 	 */
-	public function logout_user()
+	public static function logout_user()
 	{
+		$db = Database::instance();
 		$auth_type = Kohana::config('auth.driver');
 		if ($auth_type == 'db') {
-			$this->db->query('UPDATE user SET logged_in = 0 WHERE id='.(int)user::session('id'));
+			$db->query('UPDATE user SET logged_in = 0 WHERE id='.(int)user::session('id'));
 
 			# reset users logged_in value when they have been logged in
 			# more than sesssion.expiration (default 7200 sec)
 			$session_length = Kohana::config('session.expiration');
-			$this->db->query('UPDATE user SET logged_in = 0 WHERE logged_in!=0 AND logged_in < '.(time()-$session_length));
+			$db->query('UPDATE user SET logged_in = 0 WHERE logged_in!=0 AND logged_in < '.(time()-$session_length));
 		}
-		$this->session->destroy();
+		Session::instance()->destroy();
 		return true;
 	}
 
@@ -192,7 +194,7 @@ class User_Model extends Auth_User_Model {
 	* 	$options data to Nninja_user_authorization_Model to let
 	* 	it decide if to update or insert.
 	*/
-	public function user_auth_data($username=false, $options=false)
+	public static function user_auth_data($username=false, $options=false)
 	{
 		if (empty($username) || empty($options))
 			return false;
@@ -234,7 +236,7 @@ class User_Model extends Auth_User_Model {
 	/**
 	* Truncate ninja_user_authentication table
 	*/
-	public function truncate_auth_data()
+	public static function truncate_auth_data()
 	{
 		$db = Database::instance();
 		$sql = "TRUNCATE TABLE ninja_user_authorization";
@@ -269,7 +271,7 @@ class User_Model extends Auth_User_Model {
 	*	Will return first user with login role found (for CLI access)
 	* 	if username is set to false.
 	*/
-	public function get_user($username=false)
+	public static function get_user($username=false)
 	{
 		$db = Database::instance();
 		if (!empty($username)) {
@@ -293,7 +295,7 @@ class User_Model extends Auth_User_Model {
 	*	Fetch an array of all usernames in users table
 	*	@return array of usernames or false on error
 	*/
-	public function get_all_usernames()
+	public static function get_all_usernames()
 	{
 		$db = Database::instance();
 		$query = 'SELECT * FROM users';

@@ -15,7 +15,7 @@ class Ninja_setting_Model extends Model
 	 * @param $username string: Username if not current user
 	 * @return False on error. True on success.
 	 */
-	public function save_page_setting($type='widget_order', $page=false, $value=false, $username=false)
+	public static function save_page_setting($type='widget_order', $page=false, $value=false, $username=false)
 	{
 		$type = trim($type);
 		$page = trim($page);
