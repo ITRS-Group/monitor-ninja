@@ -500,7 +500,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_host_notifications = $t->_('Notifications');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_status_details => 'status/service/'.$host,
+					 $label_host_status_details => 'status/service/?name='.urlencode($host),
 					 $label_host_alert_history => 'showlog/alert_history/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
