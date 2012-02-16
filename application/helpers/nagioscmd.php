@@ -1130,7 +1130,11 @@ class nagioscmd_Core
 		for ($i = 1; $i < count($template); $i++) {
 			$k = $template[$i];
 			if (isset($param[$k])) {
-				$v = $param[$k];
+				if('trigger_id' == $k && is_array($param[$k])) {
+					$v = current($param[$k]);
+				} else {
+					$v = $param[$k];
+				}
 			} else {
 				# boolean variables that have gone missing mean "0"
 				switch ($k) {
