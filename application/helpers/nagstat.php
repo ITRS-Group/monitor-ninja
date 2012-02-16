@@ -279,11 +279,11 @@ class nagstat_Core {
 		}
 		$date_format = false;
 		switch (strtolower($nagios_format_name)) {
-			case 'us': # MM-DD-YYYY HH:MM:SS
-				$date_format = 'm-d-Y H:i:s';
+			case 'us': # MM/DD/YYYY HH:MM:SS
+				$date_format = 'm/d/Y H:i:s';
 				break;
 			case 'euro': # DD-MM-YYYY HH:MM:SS
-				$date_format = 'd-m-Y H:i:s';
+				$date_format = 'd/m/Y H:i:s';
 				break;
 			case 'iso8601': # YYYY-MM-DD HH:MM:SS
 				$date_format = 'Y-m-d H:i:s';
