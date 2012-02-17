@@ -205,8 +205,16 @@ if (!empty($xtra_menu)) {
 	foreach ($xtra_menu as $section => $page_info) {
 		foreach ($page_info as $page => $info) {
 			$menu_base[$section][$page] = $info;
-			#$menu['section_reporting'][] = $page;
-			$menu_items[$page] = $page;
+
+			# Use key from info array if available
+			# if not - we use the page as key
+			# info array should contain the following fields:
+			# path, icon, link_flag, page_key
+			# where link_flag has value 0-3 and controls link type
+			# (relative/absolute) and visibility (op5/community)
+			$page_key = isset($info[3]) ? $info[3] : $page;
+			$menu_items[$page_key] = $page;
+			$menu['section_'.strtolower($section)][] = $page_key;
 		}
 		unset($xtra_menu[$section]);
 	}
