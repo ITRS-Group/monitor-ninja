@@ -636,7 +636,6 @@ class Reports_Model extends Model
 			break;
 		 case 'report_period':
 			return $this->calculate_time($value);
-			break;
 
 			# lots of fallthroughs. lowest must come first
 		 case 'state_types': case 'alert_types':
@@ -679,7 +678,6 @@ class Reports_Model extends Model
 			break;
 		 case 'report_timeperiod':
 			return $this->set_report_timeperiod($value);
-			break;
 		 case 'start_time':
 			$this->start_time = $value;
 			break;
@@ -700,6 +698,7 @@ class Reports_Model extends Model
 			$this->servicegroup = false;
 			$this->host_name = $value;
 			return true;
+		 case 'host_filter_status':
 			break;
 		 case 'service_description':
 			$this->hostgroup = false;
@@ -711,7 +710,6 @@ class Reports_Model extends Model
 				$this->service_description = $parts[1];
 			}
 			return true;
-			break;
 		 case 'hostgroup':
 			$this->hostgroup = $value;
 			break;
@@ -724,14 +722,12 @@ class Reports_Model extends Model
 			$this->servicegroup = false;
 			$this->hostgroup = $value;
 			return true;
-			break;
 		 case 'servicegroup_name':
 			$this->host_name = false;
 			$this->service_description = false;
 			$this->hostgroup = false;
 			$this->servicegroup = $value;
 			return true;
-			break;
 		 case 'sunday':
 			$this->report_timeperiod[0] = $this->tp_parse_day($value);
 			break;
@@ -756,7 +752,6 @@ class Reports_Model extends Model
 		 default:
 			return false;
 		}
-
 		$this->options[$name] = $value;
 
 		return true;
@@ -1984,10 +1979,12 @@ class Reports_Model extends Model
 		}
 		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
 			"OR event_type=" . self::DOWNTIME_STOP . ' ';
-		$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
-			" OR event_type=".self::PROCESS_START;
-		$sql .= ") ";
+		if(isset($this->options['host_filter_status']) && isset($this->options['host_filter_status'][3]) && $this->options['host_filter_status'][3]) {
+			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
+				" OR event_type=".self::PROCESS_START;
+		}
 
+		$sql .= ") ";
 		$sql .= ' ORDER BY timestamp';
 
 		return $this->db->query($sql)->result(false);

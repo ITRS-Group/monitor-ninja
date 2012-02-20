@@ -1135,11 +1135,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		$err_msg = "";
 		$report_class = $this->reports_model;
-		foreach (self::$options as $var => $new_var) {
-			if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var))."'<br />";
+		foreach (self::$options as $controller_var => $report_model_var) {
+			if (!$report_class->set_option($report_model_var, arr::search($_REQUEST, $controller_var))) {
+				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
 			}
 		}
+		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status'));
 
 		// convert report period to timestamps
 		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {
