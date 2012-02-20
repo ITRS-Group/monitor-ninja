@@ -304,9 +304,13 @@ class Ninja_widget_Model extends Model
 			$the_copy->instance_id = self::FIRST_INSTANCE_ID;
 		$the_copy->save();
 		$order = self::fetch_widget_order($this->page);
-		foreach ($order as $container => $widgets) {
-			if (in_array('widget-'.$this->name.'-'.$this->instance_id, $widgets))
-				$order[$container][] = 'widget-'.$this->name.'-'.$the_copy->instance_id;
+		if (is_array($order)) {
+			foreach ($order as $container => $widgets) {
+				if (in_array('widget-'.$this->name.'-'.$this->instance_id, $widgets))
+					$order[$container][] = 'widget-'.$this->name.'-'.$the_copy->instance_id;
+			}
+		} else {
+			$order = array('unknown' => array('widget-'.$this->name.'-'.$the_copy->instance_id));
 		}
 		self::set_widget_order($this->page, $order);
 		return $the_copy;
