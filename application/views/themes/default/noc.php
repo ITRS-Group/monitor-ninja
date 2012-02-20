@@ -257,7 +257,7 @@ if (isset($this->template->js_header))
 			</div>
 			<div id="icons">
 				<ul>
-					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
+					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('id' => 'info_icon', 'alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
 					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image($this->add_path('icons/24x24/save_search.png'), array('title' => $this->translate->_('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
@@ -315,16 +315,11 @@ if (isset($this->template->js_header))
 				<?php
 					} # end if disable_refresh
 
-					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
-					if (is_array($settings_widgets)) {
+					if (isset($widgets) && is_array($widgets)) {
 						echo '<li class="header">'.$this->translate->_('Available Widgets').'</li>'."\n";
-						foreach($settings_widgets as $id => $widget) {
-							if (isset($user_widgets) && is_array($user_widgets)) {
-								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
-							} else {
-								$class_name = 'selected';
-							}
-							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
+						foreach($widgets as $widget) {
+							$class_name = isset($widget->id) ? 'selected' : 'unselected';
+							echo '<li id="li_'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore overview to factory settings').'</li>'."\n";
 						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
