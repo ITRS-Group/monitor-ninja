@@ -179,6 +179,7 @@ class reports_Core
 		$js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
 		$js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 		$js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$js_strings .= "var _reports_err_str_nostatus = '".$t->_("You must provide at least one status to filter on")."';\n";
 		$js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
 		$js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
 		$js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";

@@ -267,6 +267,11 @@ class Reports_Controller extends Authenticated_Controller
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
+		if(isset($_SESSION['report_err_msg'])) {
+			$this->err_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
+
 		if ($this->mashing) {
 			$this->auto_render=false;
 		}
@@ -344,8 +349,12 @@ class Reports_Controller extends Authenticated_Controller
 		$type_str = $this->type == 'avail'
 			? $this->translate->_('availability')
 			: $this->translate->_('SLA');
-		#html2ps::instance();
-
+		if($this->err_msg) {
+			// @todo make this work work, only handled by js and a very silent redirect
+			// now since the following message never gets printed:
+			$error_msg = $this->err_msg;
+			$this->template->error = $this->add_view('reports/'.$this->template_prefix.'error');
+		}
 		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'setup');
 		$template = $this->template->content;
 		#$this->template->content->noheader = $noheader;
@@ -1140,7 +1149,12 @@ class Reports_Controller extends Authenticated_Controller
 				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
 			}
 		}
-		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status'));
+		$submitted_host_filter_status = arr::search($_REQUEST, 'host_filter_status', array());
+		if(!$submitted_host_filter_status) {
+			$_SESSION['report_err_msg'] = $t->_("You must provide at least one status to filter on.");
+			return url::redirect(Router::$controller.'/index');
+		}
+		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array()));
 
 		// convert report period to timestamps
 		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {

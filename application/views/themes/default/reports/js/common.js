@@ -841,6 +841,11 @@ function check_form_values()
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
+	if(!$('#display_host_status input[type="checkbox"]:checked').length) {
+		errors++;
+		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
+	}
+
 	if ($("#enter_sla").is(":visible")) {
 		// check for sane SLA values
 		var red_error = false;
