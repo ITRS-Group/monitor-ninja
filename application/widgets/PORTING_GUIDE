@@ -28,8 +28,7 @@ described in MULTI INSTANCE WIDGETS.
 
 - VIEW -
 
-Any widget that supported ajax refreshes, which was most of them, had to
-copy-paste the following template:
+Old widgets that supported ajax refreshes all had to copy-paste the following:
 
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php if (!$ajax_call) { ?>
@@ -53,10 +52,11 @@ copy-paste the following template:
 </div>
 <?php } ?>
 
-You should remove everything from this file that isn't content. That is, the
-only thing you should keep in the view, is what you had where it says
-<!-- WIDGET CONTENT HERE --> - everything else should go. Any extra controls
-will need to be migrated to the controller - see EXTRA SETTINGS below.
+With the new widget system, you should remove everything from this file that
+isn't content. That is, the only thing you should keep in the view, is what you
+had where it says <!-- WIDGET CONTENT HERE --> - everything else should go. Any
+extra controls will need to be migrated to the controller - see EXTRA SETTINGS
+below.
 
 - CONTROLLER -
 

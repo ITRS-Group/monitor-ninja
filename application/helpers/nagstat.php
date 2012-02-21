@@ -282,7 +282,7 @@ class nagstat_Core {
 			case 'us': # MM/DD/YYYY HH:MM:SS
 				$date_format = 'm/d/Y H:i:s';
 				break;
-			case 'euro': # DD-MM-YYYY HH:MM:SS
+			case 'euro': # DD/MM/YYYY HH:MM:SS
 				$date_format = 'd/m/Y H:i:s';
 				break;
 			case 'iso8601': # YYYY-MM-DD HH:MM:SS
