@@ -1594,7 +1594,13 @@ class Reports_Controller extends Authenticated_Controller
 						# >= 2 hosts or services won't have the extra
 						# depth in the array, so we break out early
 						if (empty($data['log']) || !is_array($data['log'])) {
-							$graph_data = $this->data_arr['log'];
+							if(isset($this->data_arr['log'])) {
+								$graph_data = $this->data_arr['log'];
+							} elseif(isset($this->data_arr[0]['log'])) {
+								// fixes the case of multiple groups when at least one of them
+								// has a '/' in its name
+								$graph_data = $this->data_arr[0]['log'];
+							}
 							break;
 						}
 
