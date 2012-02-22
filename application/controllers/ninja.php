@@ -143,14 +143,17 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
+			# warning! do not set anything in xlinks, as it isn't working properly
+			# and cannot (easily) be fixed
+			$this->xlinks = array();
+			$this->_addons();
+
 			# create the user menu
 			$this->template->links = $this->create_menu();
 
 			if (Kohana::config('auth.driver') == 'LDAP')
 				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
-			$this->xlinks = array();
-			$this->_addons();
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 

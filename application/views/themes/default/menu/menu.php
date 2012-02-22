@@ -204,8 +204,6 @@ $xtra_menu = Kohana::config('menu.items');
 if (!empty($xtra_menu)) {
 	foreach ($xtra_menu as $section => $page_info) {
 		foreach ($page_info as $page => $info) {
-			$menu_base[$section][$page] = $info;
-
 			# Use key from info array if available
 			# if not - we use the page as key
 			# info array should contain the following fields:
@@ -213,8 +211,9 @@ if (!empty($xtra_menu)) {
 			# where link_flag has value 0-3 and controls link type
 			# (relative/absolute) and visibility (op5/community)
 			$page_key = isset($info[3]) ? $info[3] : $page;
-			$menu_items[$page_key] = $page;
-			$menu['section_'.strtolower($section)][] = $page_key;
+			$menu_items[$page] = $page_key;
+			$menu_base[$section][$page_key] = $info;
+			$menu['section_'.strtolower($section)][] = $page;
 		}
 		unset($xtra_menu[$section]);
 	}
