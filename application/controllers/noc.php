@@ -12,16 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Noc_Controller extends Authenticated_Controller {
-
-	public $model = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->model = Current_status_Model::instance();
-		#$this->template = $this->add_view('noc');
-	}
-
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
@@ -37,11 +27,19 @@ class Noc_Controller extends Authenticated_Controller {
 		#$this->xtra_css[] = 'application/media/css/jmenu.css';
 		$this->template->css_header->css = $this->xtra_css;
 
-		# fetch data for all widgets
-		$this->model->analyze_status_data();
+		# make sure data is analyzed
+		$model = Current_status_Model::instance();
+		$model->analyze_status_data();
 
-		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method, $this->model);
+		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
 		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+
+		if (empty($widgets)) {
+			foreach ($widget_objs as $obj) {
+				$obj->save();
+			}
+			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+		}
 
 		if (array_keys($widgets) == array('unknown')) {
 			$nwidgets = count($widgets['unknown']);

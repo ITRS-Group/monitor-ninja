@@ -45,14 +45,18 @@ class widget_Core
 						unset($order[$placeholder][$idx]);
 						continue;
 					}
-					$order[$placeholder][$widget_name] = self::add($widgets[$widget_name], $master);
+					$w = self::add($widgets[$widget_name], $master);
+					if ($w !== null)
+						$order[$placeholder][$widget_name] = $w;
 					unset($widgets[$widget_name]);
 				}
 			}
 		}
 		if(!empty($widgets)) {
 			foreach ($widgets as $idx => $widget) {
-				$order['unknown'][$idx] = self::add($widget, $master);
+				$w = self::add($widget, $master);
+				if ($w !== null)
+					$order['unknown'][$idx] = $w;
 			}
 		}
 

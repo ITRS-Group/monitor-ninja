@@ -12,15 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Authenticated_Controller {
-
-	public $model = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->model = Current_status_Model::instance();
-	}
-
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
@@ -36,11 +27,23 @@ class Tac_Controller extends Authenticated_Controller {
 			$this->translate->_('logout')     => 'default/logout'
 		);
 
-		# fetch data for all widgets
-		$this->model->analyze_status_data();
+		# make sure we have this done before letting widgets near
+		$model = Current_status_Model::instance();
+		$model->analyze_status_data();
 
-		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method, $this->model);
+		# fetch data for all widgets
+		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
 		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+
+		if (empty($widgets)) {
+			# probably a new user, we should populate the widget list
+			# yeah, this does Weird Things™ if a user should try to hide everything
+			# but that is a silly thing to do, so just blame the user.
+			foreach ($widget_objs as $obj) {
+				$obj->save();
+			}
+			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
+		}
 
 		if (array_keys($widgets) == array('unknown')) {
 			$nwidgets = count($widgets['unknown']);
