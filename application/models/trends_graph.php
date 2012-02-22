@@ -147,7 +147,7 @@ class Trends_graph_Model extends Model
 		if(!is_readable($filename)) {
 			return;
 		}
-		header("Content-Type: ".mime_content_type($filename));
+		header("Content-Type: image/png");
 		header("Content-Length: ".filesize($filename));
 		readfile($filename);
 		unlink($filename);
