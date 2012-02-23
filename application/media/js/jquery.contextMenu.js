@@ -113,6 +113,18 @@ if(jQuery)( function() {
 									if (!(obj_prop & SCHEDULED_DT)) {
 										$('#_menu_removeschedule_host_downtime').hide();
 										$('#_menu_removeschedule_svc_downtime').hide();
+									} else if(srcElement.hasClass('svc_obj_properties')) {
+										// Do not offer to cancel scheduled downtime if its host is in scheduled downtime. Look for that.
+
+										// Traverse upwards, looking for a host-td (since it might not be to the immidiate left of this service's td)
+										var tr_to_examine = srcElement.parent();
+										while(tr_to_examine.find('td').eq(1).hasClass('white')) {
+											tr_to_examine = tr_to_examine.prev();
+										}
+
+										if(tr_to_examine.find('.service_hostname img[title="Scheduled downtime"]').length > 0) {
+											$('#_menu_removeschedule_svc_downtime').hide();
+										}
 									}
 								}
 							}
