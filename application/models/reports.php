@@ -2977,23 +2977,33 @@ class Reports_Model extends Model
 			}
 		}
 
-		# recent hard alerts doesn't select any hosts
-		# or services so we have to figure this out here
-		if (empty($hosts) && empty($services)) {
+		if (empty($hosts)) {
 			$auth = new Nagios_auth_Model();
-			$auth->get_authorized_hosts();
-			$host_list = $auth->hosts_r;
-			if (!empty($host_list)) {
-				foreach ($host_list as $h => $v) {
-					$hosts[$h] = $h;
+			if ($auth->view_hosts_root) {
+				$hosts = true;
+			}
+			else {
+				$auth->get_authorized_hosts();
+				$host_list = $auth->hosts_r;
+				if (!empty($host_list)) {
+					foreach ($host_list as $h => $v) {
+						$hosts[$h] = $h;
+					}
 				}
 			}
+		}
+		if ($services === true) {
 
-			$auth->get_authorized_services();
-			$svc_list = $auth->services_r;
-			if (!empty($svc_list)) {
-				foreach ($svc_list as $s => $v) {
-					$services[$s] = $s;
+			if ($auth->view_hosts_root || $auth->view_services_root) {
+				$services = true;
+			}
+			else {
+				$auth->get_authorized_services();
+				$svc_list = $auth->services_r;
+				if (!empty($svc_list)) {
+					foreach ($svc_list as $s => $v) {
+						$services[$s] = $s;
+					}
 				}
 			}
 		}
@@ -3005,32 +3015,34 @@ class Reports_Model extends Model
 
 		$object_selection = false;
 		if ($services) {
-			if ($hosts) {
-				$object_selection = "\nAND ((event_type = " . self::HOSTCHECK .
-					"\nAND host_name IN(\n '" .
-					join("',\n '", array_keys($hosts)) . "'))" .
+			if ($hosts && $hosts !== true) {
+				$object_selection = "\nAND host_name IN(\n '" .
+					join("',\n '", array_keys($hosts)) . "')" .
 					"\nOR ";
-			} else {
+			}
+			else if (!$hosts) {
 				$object_selection = "\nAND (";
 			}
-			$orstr = '';
-			# Must do this the hard way to allow host_name indices to
-			# take effect when running the query, since the construct
-			# "concat(host_name, ';', service_description)" isn't
-			# indexable
-			foreach ($services as $srv => $discard) {
-				$ary = explode(';', $srv);
-				$h = $ary[0];
-				$s = $ary[1];
-				$object_selection .= $orstr . "(host_name = '" . $h . "' ";
-				if (!$s)
-					$object_selection .= "AND (service_description = '' OR service_description IS NULL))";
-				else
-					$object_selection .= "AND service_description = '" . $s . "')";
-				$orstr = "\n OR ";
+
+			if ($services !== true) {
+				$orstr = '';
+				# Must do this the hard way to allow host_name indices to
+				# take effect when running the query, since the construct
+				# "concat(host_name, ';', service_description)" isn't
+				# indexable
+				foreach ($services as $srv => $discard) {
+					$ary = explode(';', $srv);
+					$h = $ary[0];
+					$s = $ary[1];
+					$object_selection .= $orstr . "(host_name = '" . $h . "' ";
+					if (!$s)
+						$object_selection .= "AND (service_description = '' OR service_description IS NULL))";
+					else
+						$object_selection .= "AND service_description = '" . $s . "')";
+					$orstr = "\n OR ";
+				}
 			}
-			$object_selection .= ')';
-		} elseif ($hosts) {
+		} elseif ($hosts && $hosts !== true) {
 			$object_selection = "\nAND host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
 		}

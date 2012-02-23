@@ -889,6 +889,9 @@ class Summary_Controller extends Authenticated_Controller
 			if (!empty($services)) {
 				$rpt->set_option('service_description', $services);
 			}
+			else {
+				$rpt->set_option('service_description', true);
+			}
 
 			$result = $rpt->alert_totals();
 			break;
