@@ -86,7 +86,7 @@ $menu = array(
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
 
-$group_items_per_page = config::get('pagination.group_items_per_page', '*', true);
+$group_items_per_page = Kohana::config('pagination.group_items_per_page', '*', true);
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
