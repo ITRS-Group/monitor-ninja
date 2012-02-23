@@ -212,6 +212,10 @@ class Scheduled_reports_Model extends Model
 	 */
 	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
 	{
+		$local_persistent_filepath = trim($local_persistent_filepath);
+		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
+			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
+		}
 		$db = Database::instance();
 		$id = (int)$id;
 		$rep_type = (int)$rep_type;
@@ -220,10 +224,6 @@ class Scheduled_reports_Model extends Model
 		$recipients = trim($recipients);
 		$filename = trim($filename);
 		$description = trim($description);
-		$local_persistent_filepath = trim($local_persistent_filepath);
-		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
-			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
-		}
 		$user = Auth::instance()->get_user()->username;
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
@@ -243,7 +243,7 @@ class Scheduled_reports_Model extends Model
 
 		if ($id) {
 			// UPDATE
-			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
+			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
 		} else {
 			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath)
 				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).")";
@@ -348,7 +348,7 @@ class Scheduled_reports_Model extends Model
 	 * and the report.
 	 *
 	 * @param $schedule_id The id of the schedule we're interested in.
-	 * @return False on errors. Array with schedule-info on succes.
+	 * @return False on errors. Array with schedule-info on success.
 	 */
 	public function get_scheduled_data($schedule_id=false)
 	{

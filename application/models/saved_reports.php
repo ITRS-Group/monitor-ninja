@@ -102,7 +102,7 @@ class Saved_reports_Model extends Model
 			$update = true;
 		else {
 			$id = self::insert_id($type, $options[$name_field], $name_field);
-			$update = $id !== false ? true : false;
+			$update = $id !== false;
 		}
 		if (!$update) {
 			if ($type == 'summary') {

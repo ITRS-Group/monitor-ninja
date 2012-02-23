@@ -346,12 +346,24 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
 					</td>
 					<td>&nbsp;</td>
+					<td>
+						<?php if('avail' == $type) { ?>
+						<?php echo help::render('include_trends') ?>
+						<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
+								onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $include_trends_checked; ?> />
+						<label for="include_trends"><?php echo $label_include_trends ?></label>
+						<?php } ?>
+					</td>
+				</tr>
+				<tr>
 					<td id="csv_cell" style="vertical-align: top">
 						<?php echo help::render('csv_format') ?>
 						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
 								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
 						<label for="csvoutput" id="csvout"><?php echo $label_csvoutput ?></label>
 					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 				</tr>
 			</table>
 		</div>
