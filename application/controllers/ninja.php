@@ -238,7 +238,7 @@ class Ninja_Controller extends Template_Controller {
 				&& empty($menu_links[$menu_items['section_'.$section_str]])) {
 				# remove the section
 				unset($menu_links[$menu_items['section_'.$section_str]]);
-			} elseif (!empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
+			} elseif (!empty($item_str) && isset($menu_items['section_'.$section_str]) && isset($menu_links[$menu_items['section_'.$section_str]]) && isset($menu_items[$item_str]) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
 				unset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]]);
 			}
 		}
