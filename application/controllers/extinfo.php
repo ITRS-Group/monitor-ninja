@@ -1502,23 +1502,23 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$header_links = array(
 			array(
 				'title' => $this->translate->_('Host'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=host_name',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=host_name',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=host_name',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=host_name',
 			),
 			array(
 				'title' => $this->translate->_('Service'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=service_description',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=service_description',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=service_description',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=service_description',
 			),
 			array(
 				'title' => $this->translate->_('Last check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=last_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sorttype=DESC&sort_field=last_check',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=last_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=last_check',
 			),
 			array(
 				'title' => $this->translate->_('Next check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=next_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=next_check',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=next_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=next_check',
 			)
 		);
 
