@@ -2915,7 +2915,7 @@ class Reports_Model extends Model
 	 *
 	 * @param $fields Database fields the caller needs
 	 */
-	private function build_alert_summary_query($fields = false)
+	private function build_alert_summary_query($fields = false, $auth = false)
 	{
 		$this->mangle_summary_options();
 
@@ -2977,7 +2977,8 @@ class Reports_Model extends Model
 			}
 		}
 
-		$auth = new Nagios_auth_Model();
+		if (!$auth)
+			$auth = new Nagios_auth_Model();
 		if (empty($hosts) && $this->alert_types & 1) {
 			if (!$auth->view_hosts_root) {
 				$hosts = array();
@@ -3133,7 +3134,7 @@ class Reports_Model extends Model
 	/**
 	 * Used by summary model to generate debug information for queries
 	 */
-	public function test_summary_queries()
+	public function test_summary_queries($auth = false)
 	{
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
@@ -3144,7 +3145,7 @@ class Reports_Model extends Model
 					$this->state_types = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
 						$this->alert_types = $alert_types;
-						$query = $this->build_alert_summary_query();
+						$query = $this->build_alert_summary_query($auth);
 						$result[$query] = $this->test_summary_query($query);
 					}
 				}

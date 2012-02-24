@@ -445,6 +445,8 @@ class Summary_Controller extends Authenticated_Controller
 		$rpt->set_option('start_time', 0);
 		$rpt->set_option('end_time', time());
 		$result = $rpt->test_summary_queries();
+		if (PHP_SAPI === 'cli')
+			return true;
 		echo "<pre>\n";
 		$cnt = count($result);
 		echo $cnt . " total different queries\n";

@@ -10,4 +10,30 @@ class report_Test extends TapUnit {
 		$this->ok(!empty($report->tp_exceptions), 'There are exceptions');
 		// fixme: validate output
 	}
+
+	public function test_run_summary_test_queries() {
+		// found this method while trying to memorize ninja's source code
+		// turns out, I'd just broken it and nothing told me, so let's always
+		// run this so it'll yell at me for next time
+		$sum = new Summary_Controller();
+		$auth = new Nagios_auth_Model();
+		$auth->view_hosts_root = true;
+		try {
+			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_host_root');
+		} catch (Exception $e) {
+			$this->fail($e->getMessage());
+		}
+		$auth->view_services_root = true;
+		try {
+			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_host_root and view_services_root');
+		} catch (Exception $e) {
+			$this->fail($e->getMessage());
+		}
+		$auth->view_hosts_root = false;
+		try {
+			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_services_root');
+		} catch (Exception $e) {
+			$this->fail($e->getMessage());
+		}
+	}
 }
