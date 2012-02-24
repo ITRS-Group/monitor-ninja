@@ -2977,34 +2977,33 @@ class Reports_Model extends Model
 			}
 		}
 
-		if (empty($hosts)) {
-			$auth = new Nagios_auth_Model();
-			if ($auth->view_hosts_root) {
-				$hosts = true;
-			}
-			else {
-				$auth->get_authorized_hosts();
-				$host_list = $auth->hosts_r;
+		$auth = new Nagios_auth_Model();
+		if (empty($hosts) && $this->alert_types & 1) {
+			if (!$auth->view_hosts_root) {
+				$hosts = array();
+				$host_list = $auth->get_authorized_hosts_r();
 				if (!empty($host_list)) {
 					foreach ($host_list as $h => $v) {
 						$hosts[$h] = $h;
 					}
 				}
 			}
-		}
-		if ($services === true) {
-
-			if ($auth->view_hosts_root || $auth->view_services_root) {
-				$services = true;
-			}
 			else {
-				$auth->get_authorized_services();
-				$svc_list = $auth->services_r;
+				$hosts = true;
+			}
+		}
+		if (empty($services) && $this->alert_types & 2) {
+			if (!$auth->view_hosts_root && !$auth->view_services_root) {
+				$services = array();
+				$svc_list = $auth->get_authorized_services_r();
 				if (!empty($svc_list)) {
 					foreach ($svc_list as $s => $v) {
 						$services[$s] = $s;
 					}
 				}
+			}
+			else {
+				$services = true;
 			}
 		}
 
@@ -3015,16 +3014,17 @@ class Reports_Model extends Model
 
 		$object_selection = false;
 		if ($services) {
+			$hosts_too = false;
 			if ($hosts && $hosts !== true) {
-				$object_selection = "\nAND host_name IN(\n '" .
+				$object_selection = "\nAND (host_name IN(\n '" .
 					join("',\n '", array_keys($hosts)) . "')" .
 					"\nOR ";
-			}
-			else if (!$hosts) {
-				$object_selection = "\nAND (";
+				$hosts_too = true;
 			}
 
 			if ($services !== true) {
+				if ($hosts_too === false)
+					$object_selection .= "\nAND (";
 				$orstr = '';
 				# Must do this the hard way to allow host_name indices to
 				# take effect when running the query, since the construct
@@ -3042,6 +3042,8 @@ class Reports_Model extends Model
 					$orstr = "\n OR ";
 				}
 			}
+			if (!empty($object_selection))
+				$object_selection .= ')';
 		} elseif ($hosts && $hosts !== true) {
 			$object_selection = "\nAND host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
@@ -3714,7 +3716,6 @@ class Reports_Model extends Model
 			$object_selection = "AND host_name IN('" .
 				join("', '", array_keys($hosts)) . "')";
 		} elseif ($services) {
-			$object_selection = "AND (";
 			$orstr = '';
 			# Must do this the hard way to allow host_name indices to
 			# take effect when running the query, since the construct
@@ -3731,7 +3732,8 @@ class Reports_Model extends Model
 					$object_selection .= "AND service_description = '{$s}')";
 				$orstr = " OR ";
 			}
-			$object_selection .= ')';
+			if ($object_selection)
+				$object_selection = 'AND ('.$object_selection.')';
 		}
 
 		if (empty($fields))

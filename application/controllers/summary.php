@@ -885,13 +885,8 @@ class Summary_Controller extends Authenticated_Controller
 		case self::ALERT_TOTALS_SERVICE:
 			$content->label_overall_totals = $t->_('Overall Totals');
 			$services = $this->_populate_services($used_options);
-
-			if (!empty($services)) {
+			if (!empty($services))
 				$rpt->set_option('service_description', $services);
-			}
-			else {
-				$rpt->set_option('service_description', true);
-			}
 
 			$result = $rpt->alert_totals();
 			break;
