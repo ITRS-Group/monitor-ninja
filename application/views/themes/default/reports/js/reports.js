@@ -937,6 +937,7 @@ function confirm_delete_report(the_val)
 		if (is_scheduled) {
 			msg += _reports_confirm_delete_warning;
 		}
+		msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
 		if (confirm(msg)) {
 			self.location.href=the_path + '?del_report=true&del_id=' + the_val + '&type=' + type;
 			return true;
