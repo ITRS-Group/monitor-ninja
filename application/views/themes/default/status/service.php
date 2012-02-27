@@ -206,6 +206,11 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				$output = $row->service_output;
 				$output = str_replace('','', $output);
 				echo str_replace('\n','<br />', $output);
+				if (Kohana::config('config.service_long_output_enabled')) {
+					if ($row->service_long_output) {
+						echo '<br />' . str_replace('\n','</br />', $row->service_long_output);
+					}
+				}
 			}
 			?>
 		</td>
