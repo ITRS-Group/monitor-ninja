@@ -11,29 +11,52 @@ class report_Test extends TapUnit {
 		// fixme: validate output
 	}
 
+	private function run_and_diag($auth) {
+		$auth->hosts = false;
+		$auth->services = false;
+		$msg = 'Run summary test queries without syntax errors';
+		if ($auth->view_hosts_root)
+			$msg .= ' with view_hosts_root';
+		if ($auth->view_services_root)
+			$msg .= ' with view_services_root';
+		try {
+			$res = $this->rpt->test_summary_queries($auth);
+			$this->ok(is_array($res), $msg);
+			if (!is_array($res))
+				$this->diag($res);
+		} catch (Exception $e) {
+			$this->fail($e->getMessage());
+		}
+	}
+
 	public function test_run_summary_test_queries() {
 		// found this method while trying to memorize ninja's source code
 		// turns out, I'd just broken it and nothing told me, so let's always
 		// run this so it'll yell at me for next time
-		$sum = new Summary_Controller();
+		$this->rpt = new Reports_Model();
+		$this->rpt->set_option('start_time', 0);
+		$this->rpt->set_option('end_time', time());
 		$auth = new Nagios_auth_Model();
-		$auth->view_hosts_root = true;
-		try {
-			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_host_root');
-		} catch (Exception $e) {
-			$this->fail($e->getMessage());
-		}
-		$auth->view_services_root = true;
-		try {
-			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_host_root and view_services_root');
-		} catch (Exception $e) {
-			$this->fail($e->getMessage());
-		}
+		$res = Database::instance()->query('SELECT id FROM contact LIMIT 1');
+		//whatever, as long as it's valid (and has at least one of each)
+		$auth->id = $res->current()->id;
+
 		$auth->view_hosts_root = false;
-		try {
-			$this->ok($sum->test_queries($auth), 'Run summary test queries without syntax errors with view_services_root');
-		} catch (Exception $e) {
-			$this->fail($e->getMessage());
-		}
+		$auth->view_services_root = false;
+		$this->run_and_diag($auth);
+
+		$auth->view_hosts_root = true;
+		$auth->view_services_root = false;
+		$this->run_and_diag($auth);
+
+		$auth->view_hosts_root = true;
+		$auth->view_services_root = true;
+		$this->run_and_diag($auth);
+
+		$auth->view_hosts_root = false;
+		$auth->view_services_root = true;
+		$auth->hosts = false;
+		$auth->services = false;
+		$this->run_and_diag($auth);
 	}
 }

@@ -181,7 +181,7 @@ class Nagios_auth_Model extends Model
 			$this->hosts[$id] = $name;
 			$this->hosts_r[$name] = $id;
 		}
-                unset($result);
+		unset($result);
 		#Session::instance()->set('auth_hosts', $this->hosts);
 		#Session::instance()->set('auth_hosts_r', $this->hosts_r);
 

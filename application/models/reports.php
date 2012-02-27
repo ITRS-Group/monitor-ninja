@@ -3018,14 +3018,15 @@ class Reports_Model extends Model
 			$hosts_too = false;
 			if ($hosts && $hosts !== true) {
 				$object_selection = "\nAND (host_name IN(\n '" .
-					join("',\n '", array_keys($hosts)) . "')" .
-					"\nOR ";
+					join("',\n '", array_keys($hosts)) . "')";
 				$hosts_too = true;
 			}
 
 			if ($services !== true) {
 				if ($hosts_too === false)
 					$object_selection .= "\nAND (";
+				else
+					$object_selection .= "\nOR ";
 				$orstr = '';
 				# Must do this the hard way to allow host_name indices to
 				# take effect when running the query, since the construct
@@ -3118,15 +3119,11 @@ class Reports_Model extends Model
 	 *
 	 * While it's made for testing summary queries, it's completely generic
 	 */
-	public function test_summary_query($query = false)
+	public function test_summary_query($query)
 	{
-		if (!$query) {
-			$query = $this->build_alert_summary_query();
-		}
 		$dbr = $this->db->query("EXPLAIN " . $query)->result(false);
 		if (!$dbr) {
 			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
-			die;
 		}
 		return $dbr->current();
 	}
@@ -3145,7 +3142,9 @@ class Reports_Model extends Model
 					$this->state_types = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
 						$this->alert_types = $alert_types;
-						$query = $this->build_alert_summary_query($auth);
+						$query = $this->build_alert_summary_query(false, $auth);
+						if (!$query)
+							return "FAIL: host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
 						$result[$query] = $this->test_summary_query($query);
 					}
 				}
