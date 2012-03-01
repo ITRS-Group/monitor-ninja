@@ -4496,10 +4496,13 @@ class Reports_Controller extends Authenticated_Controller
 		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
 		foreach ($this->setup_keys as $k) {
-			if ($type === 'sla' && $k === 'report_name')
-				$k = 'sla_name';
-			if ($k != 'host_filter_status' && $k != 'service_filter_status')
-				$request[$k] = $report_data[$k];
+			if ($type === 'sla') {
+				if ($k === 'report_name')
+					$k = 'sla_name';
+				if ($k == 'host_filter_status' || $k == 'service_filter_status')
+					continue;
+			}
+			$request[$k] = $report_data[$k];
 		}
 
 		if (!empty($report_data['objects'])) {
