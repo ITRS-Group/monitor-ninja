@@ -322,10 +322,10 @@ if (isset($this->template->js_header))
 							echo '<li id="li_'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore overview to factory settings').'</li>'."\n";
-						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'.$this->translate->_('Upload new widget').'</li>'."\n";
 						}
+						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
 					}
 				?>
 			</ul>
