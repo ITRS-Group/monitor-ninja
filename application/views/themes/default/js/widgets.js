@@ -370,10 +370,14 @@ widget.prototype.save_settings = function(data) {
 /*
 *	Save custom widget setting
 */
-widget.prototype.save_custom_val = function(newval, fieldname) {
+widget.prototype.save_custom_val = function(newval, fieldname, cb) {
+	var self = this;
 	var url = this.ajax_url + "save_dynamic_widget_setting/";
 	var data = {page: this.current_uri, fieldvalue: newval, fieldname:fieldname, widget: this.name, instance_id: this.instance_id};
-	$.post(url, data);
+	$.post(url, data, function(data) {
+		if (typeof cb == 'function')
+			cb.call(self, data);
+	});
 	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
 };
 
