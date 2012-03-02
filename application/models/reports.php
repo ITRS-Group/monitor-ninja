@@ -1092,7 +1092,7 @@ class Reports_Model extends Model
 			$group_model = new Group_Model();
 			$res_group = $group_model->get_group_info('host', $hostgroup);
 
-			if (!count($res_group))
+			if (empty($res_group))
 				return false;
 
 			$res_group->result(false);
