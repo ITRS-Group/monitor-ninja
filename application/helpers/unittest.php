@@ -6,18 +6,22 @@
  */
 class unittest_Core {
 
+	private static $tap = false;
 	/**
 	 * Create and return a new PHPTap instance
 	 *
 	 * @return object
 	 */
-	public function instance()
+	public static function instance()
 	{
+		if (self::$tap !== false)
+			return self::$tap;
+
 		$path = self::tap_path();
 		if ($path !== false) {
 			require_once($path);
-			$tap = new phptap();
-			return $tap;
+			self::$tap = new phptap();
+			return self::$tap;
 		}
 		return false;
 	}
