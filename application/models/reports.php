@@ -577,7 +577,8 @@ class Reports_Model extends Model
 			 'exclude' => 'string',
 			 'use_average' => 'bool',
 			 'host_filter_status' => 'array',
-			 'service_filter_status' => 'array');
+			 'service_filter_status' => 'array',
+			 'include_trends' => 'bool');
 
 		# this will happen for timeperiod exceptions
 		if (!isset($vtypes[$name]))
@@ -699,6 +700,12 @@ class Reports_Model extends Model
 			$this->host_name = $value;
 			return true;
 		 case 'host_filter_status':
+			break;
+		 case 'include_trends':
+			if ($value === true) {
+				$this->set_option('keep_logs', true);
+				$this->set_option('keep_sub_logs', true);
+			}
 			break;
 		 case 'service_description':
 			$this->hostgroup = false;
@@ -1125,7 +1132,6 @@ class Reports_Model extends Model
 				$sub_class = new Reports_Model($this->db_name, $this->db_table);
 				$sub_class->set_master($this);
 				$sub_class->id = $host;
-				$sub_class->st_needs_log = true;
 				$sub_class->st_init($host, false);
 				$this->sub_reports[$sub_class->id] = $sub_class;
 			}
@@ -1138,7 +1144,6 @@ class Reports_Model extends Model
 					$sub_class = new Reports_Model($this->db_name, $this->db_table);
 					$sub_class->set_master($this);
 					$sub_class->id = $service;
-					$sub_class->st_needs_log = true;
 					$sub_class->st_init($service_parts[0], $service_parts[1]);
 					$this->sub_reports[$sub_class->id] = $sub_class;
 				}
