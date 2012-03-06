@@ -803,7 +803,7 @@ CREATE UNIQUE INDEX uniq_username ON users
 )
 ;
 
-connect merlin/merlin;
+--connect merlin/merlin;
 
 CREATE OR REPLACE TRIGGER ninja_widgets_id_TRG BEFORE INSERT OR UPDATE ON ninja_widgets
 FOR EACH ROW
