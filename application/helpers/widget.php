@@ -50,6 +50,8 @@ class widget_Core
 						$order[$placeholder][$widget_name] = $w;
 					unset($widgets[$widget_name]);
 				}
+				if (empty($order[$placeholder]))
+					unset($order[$placeholder]);
 			}
 		}
 		if(!empty($widgets)) {
