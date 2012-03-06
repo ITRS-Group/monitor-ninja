@@ -206,13 +206,16 @@ if ($type == 'avail') { ?>
 			</tr>
 			<?php } ?>
 			<tr class="none">
-				<td><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" /></td>
+				<td><label><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" /></label></td>
 			</tr>
 			<tr class="none">
-				<td><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /></td>
+				<td><label><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /></label></td>
 			</tr>
 			<tr class="none">
-				<td><?php echo $label_description ?><br /><textarea cols="31" rows="3" id="description" name="description"></textarea></td>
+				<td><label><?php echo _("Local persistent filepath (absolute path to folder, e.g. /tmp)") ?><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" /></label></td>
+			</tr>
+			<tr class="none">
+				<td><label><?php echo $label_description ?><br /><textarea cols="31" rows="3" id="description" name="description"></textarea></label></td>
 			</tr>
 			<tr class="none">
 				<td id="scheduled_btn_ctrl">
@@ -235,6 +238,7 @@ if ($type == 'avail') { ?>
 					<th class="headerNone left"><?php echo $label_interval ?></th>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
 					<th class="headerNone left"><?php echo $label_filename ?></th>
+					<th class="headerNone left"><?php echo _("Local persistent filepath (absolute path to folder, e.g. /tmp)") ?></th>
 					<th class="headerNone left"><?php echo $label_description ?></th>
 					<th class="headerNone left" style="width: 45px"><?php echo $this->translate->_('Actions') ?></th>
 				</tr>
@@ -249,6 +253,7 @@ if ($type == 'avail') { ?>
 				<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
+				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="local_persistent_filepath-<?php echo $schedule->id ?>"><?php echo $schedule->local_persistent_filepath ?></td>
 				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo $schedule->description ?></td>
 				<td>
 					<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>

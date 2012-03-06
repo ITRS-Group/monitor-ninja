@@ -1336,12 +1336,22 @@ function trigger_schedule_save(f)
 	var period_str = $('#fancybox-content #period option:selected').text();
 	var recipients = $('#fancybox-content #recipients').attr('value');
 	var filename = $('#fancybox-content #filename').attr('value');
+	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
 	var description = $('#fancybox-content #description').attr('value');
 
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
 		type: 'POST',
-		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
+		data: {
+			report_id: report_id,
+			rep_type: rep_type,
+			saved_report_id: saved_report_id,
+			period: period,
+			recipients: recipients,
+			filename: filename,
+			local_persistent_filepath: local_persistent_filepath,
+			description: description
+		},
 		success: function(data) {
 			if (data.error) {
 				jgrowl_message(data.error, _reports_error);
