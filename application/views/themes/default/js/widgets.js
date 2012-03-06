@@ -294,7 +294,8 @@ widget.prototype.init_widget = function(name, instance_id) {
 	}
 
 	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + _theme_path + 'icons/12x12/copy.png"/></a>');
-	$('#' + this.widget_id + ' .widget-copylink').click(function() {
+	$('#' + this.widget_id + ' .widget-copylink').click(function(ev) {
+		ev.preventDefault();
 		copy_widget_instance(self.name, self.instance_id, function (new_widget) {
 			$('.widget-selector').filter(':last').after('<li id="li-'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'" data-name="'+new_widget.data('name')+'" data-instance_id="'+new_widget.data('instance_id')+'" class="selected widget-selector" onclick="control_widgets(this)">'+new_widget.find('#'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'_title').text()+'</li>');
 		});
