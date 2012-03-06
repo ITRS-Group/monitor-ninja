@@ -659,7 +659,6 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_assumestatesduringnotrunning = $t->_('Assume states during program downtime');
 		$template->label_assumeinitialstates = $t->_('Assume initial states');
 		$template->label_cluster_mode = $t->_('Cluster mode');
-		$template->label_include_trends = $t->_('Include trends');
 		$template->label_propagate = $t->_('Click to propagate this value to all months');
 		$template->label_enter_sla = $t->_('Enter SLA');
 		$template->reporting_periods = $this->_get_reporting_periods();
@@ -2277,6 +2276,7 @@ class Reports_Controller extends Authenticated_Controller
 			unset($report_options['report_name']);
 			unset($report_options['host_filter_status']);
 			unset($report_options['service_filter_status']);
+			unset($report_options['include_trends']);
 			$report_options['sla_name'] = $report_name;
 		}
 
