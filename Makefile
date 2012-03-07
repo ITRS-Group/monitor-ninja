@@ -27,6 +27,9 @@ test-coverage:
 	@make test-ci-prepare &> /dev/null
 	@php test/all_coverage.php $$(pwd)
 
+test-cucumber:
+	HEADLESS=1 cucumber -f Cucumber::Formatter::Nagios -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber
+
 docs: Documentation
 
 Documentation: ninja.doxy application/models/*.php application/helpers/*.php
