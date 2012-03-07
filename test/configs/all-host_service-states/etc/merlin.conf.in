@@ -3,7 +3,7 @@
 #
 # Default options have been commented out
 #
-ipc_socket = @@TESTDIR@@/var/ipc.sock;
+ipc_socket = /tmp/ninja-test/ipc.sock;
 
 # module-specific configuration options.
 module {

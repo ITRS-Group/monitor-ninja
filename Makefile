@@ -8,6 +8,7 @@ test-unittest: test-ci-prepare
 
 test-ci-prepare: prepare-config
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/rw
+	mkdir -m 0777 -p /tmp/ninja-test/
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/spool/checkresults
 	chmod 777 test/configs/all-host_service-states/var/
 	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
