@@ -10,11 +10,11 @@ test-ci-prepare: prepare-config
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/rw
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/spool/checkresults
 	chmod 777 test/configs/all-host_service-states/var/
+	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
 	/opt/monitor/op5/merlin/merlind test/configs/all-host_service-states/etc/merlin.conf
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
 	/bin/sleep 5
 	/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> test/configs/all-host_service-states/var/rw/nagios.cmd
-	if [ -f /opt/autotest/autotests/ninja/ninja/test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat /opt/autotest/autotests/ninja/ninja/test/configs/all-host_service-states/var/merlin.pid); rm /opt/autotest/autotests/ninja/ninja/test/configs/all-host_service-states/var/merlin.pid; fi
 	php index.php 'cli/insert_user_data'
 	git checkout test/configs/all-host_service-states/var/status.sav || :
 
