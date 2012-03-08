@@ -51,7 +51,7 @@ function init_easywidgets(){
 			onClose: function(link, widget) {
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
-				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
 				if (menu_siblings.length > 1)
 					this_entry.detach();
 				else
@@ -61,11 +61,11 @@ function init_easywidgets(){
 			onHide: function(widget) {
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
-				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
 				if (menu_siblings.length > 1)
 					this_entry.detach();
 				else
-					this_entry.removeClass('selected').addClass('unselected');
+					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
 			},
 			onAdd: function(w) {
@@ -173,7 +173,7 @@ function control_widgets(item) {
 	else {
 		copy_widget_instance(it.data('name'), it.data('instance_id'), function(new_widget) {
 			if (!it.data('instance_id')) {
-				it.data('instance_id', new_widget.data('instance_id'));
+				it.data('instance_id', new_widget.data('instance_id')).attr('data-instance_id', new_widget.data('instance_id'));
 			}
 		});
 		it.removeClass('unselected').addClass('selected');
