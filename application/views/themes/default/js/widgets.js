@@ -55,7 +55,7 @@ function init_easywidgets(){
 				if (menu_siblings.length > 1)
 					this_entry.detach();
 				else
-					this_entry.removeClass('selected').addClass('unselected');
+					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
 			},
 			onHide: function(widget) {
