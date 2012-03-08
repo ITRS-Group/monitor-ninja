@@ -344,12 +344,8 @@ class Ninja_widget_Model extends Model
 		if (empty($page) || ($value!=0 && empty($value)) || empty($type))
 			return false;
 
-		# check if the user already have customized widgets settings
-		# (already removed/added a widget)
-		self::customize_widgets($page);
-
 		# fetch all available widgets for a page
-		$all_widgets = self::fetch_widgets($page);
+		$all_widgets = self::fetch_all($page);
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {

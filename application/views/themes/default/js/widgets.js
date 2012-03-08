@@ -89,11 +89,11 @@ function widget_page_refresh()
 	if ($('#widget_global_slider').is('div')) {
 		$('#widget_global_slider').remove();
 	} else {
-		var content = '<div id="widget_global_slider" style="height:10px;background-color: #ffffff;">';
+		var content = '<div id="widget_global_slider"><div style="height:10px;background-color: #ffffff;"></div>';
 		content += '<br /><input style="border:0px; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="global_widget_refresh" id="global_widget_refresh" value="' + global_refresh + '" />';
 		content += '</div>';
-		$("#page_settings").append(content);
-		$("#widget_global_slider").slider({
+		$("#show_global_widget_refresh").append(content);
+		$("#widget_global_slider div").slider({
 			value: global_refresh,
 			min: 0,
 			max: 500,
