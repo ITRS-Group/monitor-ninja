@@ -33,7 +33,6 @@ class Alertlog_Model extends Model
 			$sql = 'SELECT count(1) AS cnt FROM report_data';
 		$sql_join = false;
 		$sql_where = false;
-		$sql_or_where = false;
 		if (!$auth->view_hosts_root) {
 			$sql_join['host'] = 'host.host_name = report_data.host_name';
 			$sql_join['contact_access'] = 'contact_access.host=host.id';
@@ -74,7 +73,7 @@ class Alertlog_Model extends Model
 			$sql_where[] = implode(' OR ', $hg_cond);
 		}
 
-		if (isset($options['state_type'])) {
+		if (isset($options['state_type']) && !empty($options['state_type'])) {
 			if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'] && isset($options['state_type']['hard']) && (int)$options['state_type']['hard'])
 				;
 			else if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'])
@@ -96,7 +95,6 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 3) {
 				// all cases are included
-				$host_state_wheres = array();
 			} else if (!empty($cond)) {
 				$host_state_wheres[] = implode(' OR ', $cond);
 			} else {
@@ -114,7 +112,6 @@ class Alertlog_Model extends Model
 			}
 			if (count($cond) == 4) {
 				// all cases are included
-				$service_state_wheres = array();
 			} else if (!empty($cond)) {
 				$service_state_wheres[] = implode(' OR ', $cond);
 			} else {
@@ -124,7 +121,7 @@ class Alertlog_Model extends Model
 			}
 		}
 		if($host_state_wheres && $service_state_wheres) {
-			$sql_where[] = ' ((('.implode(') AND (', $host_state_wheres) . ")) $service_host_and_or ((".implode(') AND (', $service_state_wheres) . ')))';
+			$sql_where[] = ' ((('.implode(') AND (', $host_state_wheres) . ")) $service_host_and_or ((".implode(') AND (', $service_state_wheres) . '))) OR event_type >= 900 OR event_type < 700';
 		} elseif($host_state_wheres) {
 			$sql_where = $sql_where ? $sql_where : array();
 			$sql_where = array_merge($sql_where, $host_state_wheres);
@@ -133,34 +130,19 @@ class Alertlog_Model extends Model
 			$sql_where = array_merge($sql_where, $service_state_wheres);
 		}
 
-		if (!isset($options['hide_downtime']) || !$options['hide_downtime']) {
-			$extra_and_or_where = '(event_type < 1200 AND event_type > 1100)';
-			if (isset($options['hide_process']) && $options['hide_process']) {
-				$sql_where[] = '(event_type < 1200 OR event_type > 1100)';
-			} else {
-				$extra_and_or_where = '('.$extra_and_or_where.' OR event_type < 200 AND event_type >= 100)';
-			}
-			$sql_or_where[] = $extra_and_or_where;
-		} elseif(!isset($options['hide_process']) || !$options['hide_process']) {
-			$sql_or_where[] = '(event_type < 200 AND event_type >= 100)';
-		} elseif(isset($options['hide_process']) && $options['hide_process']) {
-			$sql_where[] = '(event_type > 1200 OR event_type < 1100)';
-		}
+		if (isset($options['hide_downtime']) && $options['hide_downtime'])
+			$sql_where[] = 'event_type > 1200 OR event_type < 1100';
+
+		if (isset($options['hide_process']) && $options['hide_process'])
+			$sql_where[] = 'event_type > 200';
 
 		if (isset($options['first']) && $options['first'])
 			$sql_where[] = 'timestamp >= '.$db->escape($options['first']);;
 		if (isset($options['last']) && $options['last'])
 			$sql_where[] = 'timestamp <= '.$db->escape($options['last']);;
 
-		if (!empty($sql_where) || !empty($sql_or_where)) {
-			if($sql_where) {
-				$sql_where = ' WHERE ('.implode(') AND (', $sql_where) . ')';
-				if($sql_or_where) {
-					$sql_where .= 'OR ('.implode(') OR (', $sql_or_where).')';
-				}
-			} elseif($sql_or_where) {
-				$sql_where = ' WHERE ('.implode(') OR (', $sql_or_where) . ')';
-			}
+		if (!empty($sql_where)) {
+			$sql_where = ' WHERE ('.implode(') AND (', $sql_where) . ')';
 		}
 		if (!empty($sql_join)) {
 			$real_join = '';
@@ -168,13 +150,15 @@ class Alertlog_Model extends Model
 				$real_join .= " INNER JOIN $key ON $val";
 			$sql_join = $real_join;
 		}
-		$sql = $sql . $sql_join . $sql_where . ' ORDER BY timestamp ';
-		if (isset($options['parse_forward']) && $options['parse_forward'])
-			$sql .= 'ASC';
-		else
-			$sql .= 'DESC';
-		if ($limit !== false && $count !== true)
-			$sql .= " LIMIT $limit OFFSET $offset";
+		if ($count !== true) {
+			$sql = $sql . $sql_join . $sql_where . ' ORDER BY timestamp ';
+			if (isset($options['parse_forward']) && $options['parse_forward'])
+				$sql .= 'ASC';
+			else
+				$sql .= 'DESC';
+			if ($limit !== false)
+				$sql .= " LIMIT $limit OFFSET $offset";
+		}
 
 		$res = $db->query($sql);
 		if ($count === true) {
