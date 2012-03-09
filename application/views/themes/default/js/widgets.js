@@ -46,9 +46,11 @@ function init_easywidgets(){
 		},
 		callbacks : {
 			onChangePositions : function(str){
+				// triggered by drag & drop
 				save_widget_order(str);
 			},
 			onClose: function(link, widget) {
+				// triggered by X on the widget's own window panel
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
 				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
@@ -59,6 +61,7 @@ function init_easywidgets(){
 				widget.detach();
 			},
 			onHide: function(widget) {
+				// trigged by unchecking box in the widget menu
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
 				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
@@ -69,6 +72,7 @@ function init_easywidgets(){
 				widget.detach();
 			},
 			onAdd: function(w) {
+				// triggered by checking box in the widget menu
 				new widget(w.data('name'), w.data('instance_id'));
 			}
 		}
