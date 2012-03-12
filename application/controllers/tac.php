@@ -47,9 +47,10 @@ class Tac_Controller extends Authenticated_Controller {
 
 		if (array_keys($widgets) == array('unknown')) {
 			$nwidgets = count($widgets['unknown']);
-			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/3));
-			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/3));
-			$widgets['widget-placeholder2'] = $widgets['unknown'];
+			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+			$widgets['widget-placeholder2'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+			$widgets['widget-placeholder3'] = $widgets['unknown'];
 			unset($widgets['unknown']);
 		} else if (isset($widgets['unknown'])) {
 			$widgets['widget-placeholder'] = array_merge($widgets['widget-placeholder'], $widgets['unknown']);
