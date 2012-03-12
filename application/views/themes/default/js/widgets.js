@@ -59,6 +59,7 @@ function init_easywidgets(){
 				else
 					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
+				delete loaded_widgets[widget.data('name')+'-'+widget.data('instance_id')];
 			},
 			onHide: function(widget) {
 				// trigged by unchecking box in the widget menu
@@ -70,6 +71,7 @@ function init_easywidgets(){
 				else
 					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
+				delete loaded_widgets[widget.data('name')+'-'+widget.data('instance_id')];
 			},
 			onAdd: function(w) {
 				// triggered by checking box in the widget menu
