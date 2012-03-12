@@ -164,11 +164,11 @@ class Ninja_widgets_Test extends TapUnit {
 		$widget->save();
 		$ws = Ninja_widget_Model::fetch_all('tac/index');
 		foreach ($ws as $name => $widget_obj) {
-			$this->ok_id($name, 'widget-'.$widget_obj->name.'-'.$widget_obj->instance_id, 'Not all widgets have correct array indexes');
+			$this->ok_id($name, 'widget-'.$widget_obj->name.'-'.$widget_obj->instance_id, 'All widgets have correct array indexes');
 		}
 		$order = Ninja_widget_Model::fetch_widget_order('tac/index');
 		$order['test_placeholder'] = array('widget-foobar-1');
-		Ninja_widget_Model::set_widget_order('tac/index', $order);
+		$this->ok(Ninja_widget_Model::set_widget_order('tac/index', $order), "set widget order is successful");
 		$widgets = widget::add_widgets('tac/index', $ws, $this);
 		$this->ok(isset($widgets['test_placeholder']), 'The new placeholder exists');
 		$this->ok(isset($widgets['test_placeholder']['widget-foobar-1']), 'Our widget is saved in our placeholder');

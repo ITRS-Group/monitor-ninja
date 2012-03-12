@@ -395,10 +395,11 @@ class Ninja_widget_Model extends Model
 	 */
 	public static function set_widget_order($page, $widget_order) {
 		$res = array();
+		unset($widget_order['unknown']);
 		foreach ($widget_order as $key => $ary) {
 			$res[] = "$key=".implode(',', $ary);
 		}
-		Ninja_setting_Model::save_page_setting('widget_order', $page, implode('|', $res));
+		return Ninja_setting_Model::save_page_setting('widget_order', $page, implode('|', $res));
 	}
 
 	/**
