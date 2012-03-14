@@ -3,7 +3,7 @@ if (isset($schedules)) {
 	echo $schedules;
 }
 ?>
-<div class="widget w98 left">
+<div class="w98 left">
 	<h1><?php echo $this->translate->_('Most recent hard alerts'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>

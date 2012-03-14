@@ -4,7 +4,7 @@ if (isset($schedules)) {
 }
 ?>
 
-<div class="widget left w98">
+<div class="left w98">
 	<h1><?php echo $this->translate->_('Top hard alert producers'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>
