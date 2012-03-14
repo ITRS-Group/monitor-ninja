@@ -46,7 +46,11 @@ if (!$create_pdf) {
 	<div class="hidden">
 		<div id="schedule_report">
 			<table id="schedule_report_table">
-					<caption><?php echo $lable_schedules ?> (<span id="scheduled_report_name"><?php echo !empty($report_info) ? (!empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name']) : '' ?></span>)</caption>
+					<caption><?php echo $lable_schedules ?>
+<?php if(!empty($report_info)) { ?>
+(<span id="scheduled_report_name"><?php echo !empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name'] ?></span>)
+<?php } ?>
+</caption>
 					<tr id="schedule_header">
 						<th class="headerNone left"><?php echo $label_interval ?></th>
 						<th class="headerNone left"><?php echo $label_recipients ?></th>
