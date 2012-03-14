@@ -123,6 +123,7 @@ class Ninja_widget_Model extends Model
 			$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
 		}
 		else {
+			$instance_id = null;
 			$options = array(
 				array('page' => $page, 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
 				array('page' => $page, 'username' => $user, 'instance_id' => null),
