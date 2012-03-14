@@ -772,7 +772,7 @@ class Host_Model extends Model {
 
 		$service_description = trim($service_description);
 		# check credentials for host
-		if (!$auth->is_authorized_for_host($host_name))
+		if (!$auth->is_authorized_for_host($host_name) && ($service_description == false || !$auth->is_authorized_for_service($host_name .';'.$service_description)))
 			return false;
 
 		$db = Database::instance();
