@@ -220,14 +220,10 @@ function save_widget_state(what, widget_name, instance_id)
 
 function restore_widgets()
 {
-	$('li[id^=li_widget]').each(function() {
-		var item_id = $(this).attr('id');
-		var widget_id = item_id.replace('li_', '');
-		$('#' + item_id).removeClass().addClass('selected');
-		$.fn.ShowEasyWidget(widget_id, window.easywidgets_obj);
-		$('#'+widget_id).addClass('movable');
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	$.post(ajax_url + 'factory_reset_widgets', false, function() {
+		window.location.reload();
 	});
-	fetch_widget_order(true);
 }
 
 /**

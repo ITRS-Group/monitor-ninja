@@ -362,6 +362,19 @@ class Ajax_Controller extends Authenticated_Controller {
 	}
 
 	/**
+	 * A "factory reset" is defined as "undefined, fairly evenly distributed
+	 * widgets with default settings"
+	 */
+	 public function factory_reset_widgets()
+	 {
+		$username = user::session('username');
+		$db = Database::instance();
+		$db->query('DELETE FROM ninja_widgets WHERE username = ' . $db->escape($username));
+		$db->query('DELETE FROM ninja_settings WHERE type = \'widget_order\' AND username = '. $db->escape($username));
+		echo json::encode(array('success' => true));
+	 }
+
+	/**
 	*	Fetch translated help text
 	* 	Two parameters arre supposed to be passed through POST
 	* 		* controller - where is the translation?
