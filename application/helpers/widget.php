@@ -136,14 +136,12 @@ class widget_Core
 	 * @param $master Generally the caller controller, which will then have to provide this to their template
 	 */
 	public static function set_resources($widget, $master) {
-		if (!request::is_ajax()) {
-			$master->xtra_js = array_merge(isset($master->xtra_js) && is_array($master->xtra_js) ? $master->xtra_js : array(), $widget->resources($widget->js, 'js'));
-			$master->xtra_css = array_merge(isset($master->xtra_css) && is_array($master->xtra_css) ? $master->xtra_css : array(), $widget->resources($widget->css, 'css'));
-			$master->inline_js .= $widget->inline_js;
-			if ($widget->model) {
-				$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;
-				$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
-			}
+		$master->xtra_js = array_merge(isset($master->xtra_js) && is_array($master->xtra_js) ? $master->xtra_js : array(), $widget->resources($widget->js, 'js'));
+		$master->xtra_css = array_merge(isset($master->xtra_css) && is_array($master->xtra_css) ? $master->xtra_css : array(), $widget->resources($widget->css, 'css'));
+		$master->inline_js .= $widget->inline_js;
+		if ($widget->model) {
+			$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;
+			$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
 		}
 	}
 

@@ -204,7 +204,6 @@ function copy_widget_instance(name, instance_id, cb) {
 				container.append(data);
 				new_widget = container.find('.widget:last');
 			}
-			$.fn.AddEasyWidget('#widget-'+new_widget.data('name')+'-'+new_widget.data('instance_id'), new_widget.parent().id, window.easywidgets_obj);
 			if (cb)
 				cb(new_widget);
 		}
@@ -393,6 +392,10 @@ widget.register_widget_load = function(widget_name, cb) {
 	if (!widget.widgets[widget_name])
 		widget.widgets[widget_name] = [cb];
 	else
+		for (var i =0; i <  widget.widgets[widget_name].length; i++) {
+		if (widget.widgets[widget_name][i].toString() == cb.toString())
+			return
+		}
 		widget.widgets[widget_name].push(cb);
 }
 

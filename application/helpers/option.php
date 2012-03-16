@@ -106,7 +106,7 @@ class option_Core
 			return '';
 		return <<<EOSCRIPT
 function(widget) {
-	\$('#'+ widget.widget_id + ' *[name=$this->name]').live('change', function() {
+	\$('#'+ widget.widget_id + ' *[name=$this->name]').on('change', function() {
 	widget.save_custom_val(this.type == 'checkbox' ? this.checked + 0 : $(this).val(), '$this->name', widget.update_display);
 });}
 EOSCRIPT;
