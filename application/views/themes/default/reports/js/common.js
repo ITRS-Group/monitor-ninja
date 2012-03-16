@@ -1249,8 +1249,8 @@ function disable_last_months(mnr)
 function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
-	$('#' + the_id).css('font-weight', val_str);
-	$('#fancybox-content #' + the_id).css('font-weight', val_str);
+	$('#' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
+	$('#fancybox-content #' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
 }
 
 /**
