@@ -93,7 +93,8 @@ class Outages_Model extends Model
 
 				$outages[$outage_host]['affected_services'] = 0;
 				foreach ($children as $host_id => $host_name) {
-					$outages[$outage_host]['affected_services'] += $children_services[$host_id];
+					if (isset($children_services[$host_id]))
+						$outages[$outage_host]['affected_services'] += $children_services[$host_id];
 				}
 
 				# calculate severity
