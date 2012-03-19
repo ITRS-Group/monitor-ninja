@@ -41,7 +41,7 @@
 		<h3><?php echo $x->_('General options'); ?></h3>
 		<label><?php echo form::checkbox('hide_flapping', 1, isset($options['hide_flapping'])).' '.$x->_('Hide flapping alerts'); ?></label><br />
 		<label><?php echo form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '.$x->_('Hide downtime alerts'); ?></label><br />
-		<label><?php echo $is_authorized ? '<label>'.form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages').'</label><br />' : ''; ?>
+		<?php echo $is_authorized ? '<label>'.form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages').'</label><br />' : ''; ?>
 		<label><?php echo form::checkbox('hide_initial', 1, isset($options['hide_initial'])).' '.$x->_('Hide initial and current states'); ?></label><br />
 		<label><?php echo form::checkbox('hide_logrotation', 1, isset($options['hide_logrotation'])).' '.$x->_('Hide logrotation messages'); ?></label><br />
 		<?php echo $is_authorized ? '<label>'.form::checkbox('hide_commands', 1, isset($options['hide_commands'])).' '.$x->_('Hide external commands').'</label><br />' : ''; ?>
