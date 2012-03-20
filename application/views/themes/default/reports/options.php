@@ -41,6 +41,7 @@ if ($type == 'avail') { ?>
                                         <input type="text" name="report_name" id="report_name" class="input-save-name"
                                         value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" maxlength="255" style="margin: 0px" />
                                 <input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+                                <input type="hidden" name="include_trends" value="<?php echo $include_trends ?>" />
                                 <input type="hidden" name="save_report_settings" value="1" />
                                 <input type="hidden" name="old_report_name" value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" />
                                 <input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />

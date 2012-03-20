@@ -337,9 +337,7 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
 		$csv_output_checked =
 			arr::search($_REQUEST, 'csvoutput', $this->csv_output) ? 'checked="checked"' : '';
-		$include_trends = (boolean)
-			arr::search($_REQUEST, 'include_trends', true);
-		$include_trends_checked = $include_trends ? 'checked="checked"' : '';
+		$include_trends_checked = arr::search($_REQUEST, 'include_trends', true) ? 'checked="checked"' : '';
 		$use_alias  =
 			arr::search($_REQUEST, 'use_alias', $this->use_alias);
 		$use_alias_checked = $use_alias ? 'checked="checked"' : '';
@@ -923,8 +921,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$report_options = false;
 		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
-		$include_trends = (boolean)
-			arr::search($_REQUEST, 'include_trends', false);
+		$include_trends = arr::search($_REQUEST, 'include_trends', false);
 
 		if ($this->type == 'sla') {
 			// take care of start_year, end_year etc
@@ -1406,6 +1403,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
+				$tpl_options->include_trends = $include_trends;
 				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 				$tpl_options->label_settings = $t->_('Report settings');
 				$tpl_options->label_startdate = $t->_('Start date');
