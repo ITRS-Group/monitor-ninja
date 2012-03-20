@@ -392,12 +392,13 @@ widget.widgets = {};
 widget.register_widget_load = function(widget_name, cb) {
 	if (!widget.widgets[widget_name])
 		widget.widgets[widget_name] = [cb];
-	else
+	else {
 		for (var i =0; i <  widget.widgets[widget_name].length; i++) {
-		if (widget.widgets[widget_name][i].toString() == cb.toString())
-			return
+			if (widget.widgets[widget_name][i].toString() == cb.toString())
+				return
 		}
 		widget.widgets[widget_name].push(cb);
+	}
 }
 
 /*
