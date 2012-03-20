@@ -3,6 +3,7 @@ $(document).ready(function() {
 	$(".widget-place").bind('click', function() {
 		$("#page_settings").hide();
 	});
+	$('#show_global_widget_refresh').click(widget_page_refresh);
 });
 
 // create array prototype to sole the lack of in_array() in javascript
@@ -90,8 +91,12 @@ var global_refresh = 60;	// keeps track of the refresh rate set by slider
 /**
 *	Update refresh rate for all widgets on the page
 */
-function widget_page_refresh()
+function widget_page_refresh(ev)
 {
+	// maybe someone clicked the input?
+	if (ev.target != this)
+		return;
+
 	if ($('#widget_global_slider').is('div')) {
 		$('#widget_global_slider').remove();
 	} else {

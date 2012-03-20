@@ -325,7 +325,7 @@ if (isset($this->template->js_header))
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'.$this->translate->_('Upload new widget').'</li>'."\n";
 						}
-						echo '<li id=show_global_widget_refresh" onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
+						echo '<li id=show_global_widget_refresh">'._('Set widget refresh rate (s.)').'</li>'."\n";
 					}
 				?>
 			</ul>
