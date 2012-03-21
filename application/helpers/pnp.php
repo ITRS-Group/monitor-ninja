@@ -68,9 +68,10 @@ class pnp_Core
 		}
 		$res = array();
 		if ($xmldata->DATASOURCE) {
+			$i = 0;
 			foreach ($xmldata->DATASOURCE as $ds) {
 				if (isset($ds->DS))
-					$res[] = ((int)$ds->DS) - 1;
+					$res[] = $i++;
 			}
 		}
 		return $res;

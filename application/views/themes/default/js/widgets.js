@@ -3,6 +3,7 @@ $(document).ready(function() {
 	$(".widget-place").bind('click', function() {
 		$("#page_settings").hide();
 	});
+	$('#show_global_widget_refresh').click(widget_page_refresh);
 });
 
 // create array prototype to sole the lack of in_array() in javascript
@@ -46,29 +47,35 @@ function init_easywidgets(){
 		},
 		callbacks : {
 			onChangePositions : function(str){
+				// triggered by drag & drop
 				save_widget_order(str);
 			},
 			onClose: function(link, widget) {
+				// triggered by X on the widget's own window panel
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
-				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
 				if (menu_siblings.length > 1)
 					this_entry.detach();
 				else
-					this_entry.removeClass('selected').addClass('unselected');
+					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
+				delete loaded_widgets[widget.data('name')+'-'+widget.data('instance_id')];
 			},
 			onHide: function(widget) {
+				// trigged by unchecking box in the widget menu
 				save_widget_state('hide', widget.data('name'), widget.data('instance_id'));
 				var menu_siblings = $('.widget-selector').filter('[data-name=' + widget.data('name') + ']');
-				var this_entry = menu_siblings.filter('#li-' + widget.data('name') + '-' + widget.data('instance_id'));
+				var this_entry = menu_siblings.filter('[data-instance_id=' + widget.data('instance_id') + ']');
 				if (menu_siblings.length > 1)
 					this_entry.detach();
 				else
-					this_entry.removeClass('selected').addClass('unselected');
+					this_entry.removeClass('selected').addClass('unselected').attr('data-instance_id', '');
 				widget.detach();
+				delete loaded_widgets[widget.data('name')+'-'+widget.data('instance_id')];
 			},
 			onAdd: function(w) {
+				// triggered by checking box in the widget menu
 				new widget(w.data('name'), w.data('instance_id'));
 			}
 		}
@@ -84,16 +91,20 @@ var global_refresh = 60;	// keeps track of the refresh rate set by slider
 /**
 *	Update refresh rate for all widgets on the page
 */
-function widget_page_refresh()
+function widget_page_refresh(ev)
 {
+	// maybe someone clicked the input?
+	if (ev.target != this)
+		return;
+
 	if ($('#widget_global_slider').is('div')) {
 		$('#widget_global_slider').remove();
 	} else {
-		var content = '<div id="widget_global_slider" style="height:10px;background-color: #ffffff;">';
+		var content = '<div id="widget_global_slider"><div style="height:10px;background-color: #ffffff;"></div>';
 		content += '<br /><input style="border:0px; display: inline; padding: 0px; margin-bottom: 7px" size="3" type="text" name="global_widget_refresh" id="global_widget_refresh" value="' + global_refresh + '" />';
 		content += '</div>';
-		$("#page_settings").append(content);
-		$("#widget_global_slider").slider({
+		$("#show_global_widget_refresh").append(content);
+		$("#widget_global_slider div").slider({
 			value: global_refresh,
 			min: 0,
 			max: 500,
@@ -173,7 +184,7 @@ function control_widgets(item) {
 	else {
 		copy_widget_instance(it.data('name'), it.data('instance_id'), function(new_widget) {
 			if (!it.data('instance_id')) {
-				it.data('instance_id', new_widget.data('instance_id'));
+				it.data('instance_id', new_widget.data('instance_id')).attr('data-instance_id', new_widget.data('instance_id'));
 			}
 		});
 		it.removeClass('unselected').addClass('selected');
@@ -198,7 +209,6 @@ function copy_widget_instance(name, instance_id, cb) {
 				container.append(data);
 				new_widget = container.find('.widget:last');
 			}
-			$.fn.AddEasyWidget('#widget-'+new_widget.data('name')+'-'+new_widget.data('instance_id'), new_widget.parent().id, window.easywidgets_obj);
 			if (cb)
 				cb(new_widget);
 		}
@@ -215,14 +225,10 @@ function save_widget_state(what, widget_name, instance_id)
 
 function restore_widgets()
 {
-	$('li[id^=li_widget]').each(function() {
-		var item_id = $(this).attr('id');
-		var widget_id = item_id.replace('li_', '');
-		$('#' + item_id).removeClass().addClass('selected');
-		$.fn.ShowEasyWidget(widget_id, window.easywidgets_obj);
-		$('#'+widget_id).addClass('movable');
+	var ajax_url = _site_domain + _index_page + '/ajax/';
+	$.post(ajax_url + 'factory_reset_widgets', false, function() {
+		window.location.reload();
 	});
-	fetch_widget_order(true);
 }
 
 /**
@@ -294,7 +300,8 @@ widget.prototype.init_widget = function(name, instance_id) {
 	}
 
 	$('#' + this.widget_id + '.duplicatable .widget-menu').prepend('<a class="widget-copylink" title="Copy this widget" href="#"><img alt="Copy" src="' + _site_domain + _theme_path + 'icons/12x12/copy.png"/></a>');
-	$('#' + this.widget_id + ' .widget-copylink').click(function() {
+	$('#' + this.widget_id + ' .widget-copylink').click(function(ev) {
+		ev.preventDefault();
 		copy_widget_instance(self.name, self.instance_id, function (new_widget) {
 			$('.widget-selector').filter(':last').after('<li id="li-'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'" data-name="'+new_widget.data('name')+'" data-instance_id="'+new_widget.data('instance_id')+'" class="selected widget-selector" onclick="control_widgets(this)">'+new_widget.find('#'+new_widget.data('name')+'-'+new_widget.data('instance_id')+'_title').text()+'</li>');
 		});
@@ -370,10 +377,14 @@ widget.prototype.save_settings = function(data) {
 /*
 *	Save custom widget setting
 */
-widget.prototype.save_custom_val = function(newval, fieldname) {
+widget.prototype.save_custom_val = function(newval, fieldname, cb) {
+	var self = this;
 	var url = this.ajax_url + "save_dynamic_widget_setting/";
 	var data = {page: this.current_uri, fieldvalue: newval, fieldname:fieldname, widget: this.name, instance_id: this.instance_id};
-	$.post(url, data);
+	$.post(url, data, function(data) {
+		if (typeof cb == 'function')
+			cb.call(self, data);
+	});
 	$.jGrowl(sprintf(_widget_settings_msg, this.name), { header: _success_header });
 };
 
@@ -381,8 +392,13 @@ widget.widgets = {};
 widget.register_widget_load = function(widget_name, cb) {
 	if (!widget.widgets[widget_name])
 		widget.widgets[widget_name] = [cb];
-	else
+	else {
+		for (var i =0; i <  widget.widgets[widget_name].length; i++) {
+			if (widget.widgets[widget_name][i].toString() == cb.toString())
+				return
+		}
 		widget.widgets[widget_name].push(cb);
+	}
 }
 
 /*

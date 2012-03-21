@@ -12,13 +12,13 @@ $(document).ready(function() {
 			// service/host comments since we want to let the user choose objects
 			$('select').each(function() {
 				if ($(this).attr('multiple')) {
-					$(this).children(':option').attr('selected', true);
+					$(this).children('option').attr('selected', true);
 				}
 			});
 		}
-		var inputs = $('#command_form :input');
+		var inputs = $('#command_form input');
 		$('select[type="select-multiple"]').each(function() {
-			$(this).children(':option').attr('selected', true);
+			$(this).children('option').attr('selected', true);
 		});
 		var empty = 0;
 		var err_str = '';

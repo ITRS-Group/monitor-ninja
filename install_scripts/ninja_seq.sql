@@ -187,7 +187,8 @@ CREATE TABLE avail_config (
   alert_types NUMBER(3,0) DEFAULT '0',
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
-  service_states NUMBER(3,0) DEFAULT '0'
+  service_states NUMBER(3,0) DEFAULT '0',
+  include_trends NUMBER(3,0) DEFAULT '1'
 );
 
 
@@ -802,7 +803,7 @@ CREATE UNIQUE INDEX uniq_username ON users
 )
 ;
 
-connect merlin/merlin;
+--connect merlin/merlin;
 
 CREATE OR REPLACE TRIGGER ninja_widgets_id_TRG BEFORE INSERT OR UPDATE ON ninja_widgets
 FOR EACH ROW

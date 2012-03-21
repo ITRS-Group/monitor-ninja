@@ -318,10 +318,14 @@ class Oracle_Result extends Database_Result {
 		return $this;
 	}
 
-	# unimplemented and unused
-	public function result_array($object = null, $type = false)
+	public function result_array($object = true, $type = false)
 	{
-		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
+		$rows = array();
+		if ($object == false)
+			$this->fetch_array = true;
+		foreach ($this as $row)
+			$rows[] = $row;
+		return $rows;
 	}
 
 	public function list_fields()

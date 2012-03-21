@@ -6,7 +6,7 @@ if (isset($schedules)) {
 $this->create_pdf = $create_pdf;
 ?>
 
-<div class="widget left w98">
+<div class="left w98">
 	<h1><?php echo $label_overall_totals ?></h1>
 	<p style="margin-top:-10px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 

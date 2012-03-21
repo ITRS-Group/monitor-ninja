@@ -1,3 +1,6 @@
 [submodule "application/vendor/phptap"]
 	path = application/vendor/phptap
 	url = git://git.op5.org/php-tools.git
+[submodule "test/cucumber/helpers"]
+	path = test/cucumber/helpers
+	url = git://devel.int.op5.se:19418/lib/cucumber.git

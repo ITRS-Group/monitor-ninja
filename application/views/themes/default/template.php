@@ -255,10 +255,15 @@ if (isset($this) && isset($this->template->js_header))
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 										html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-							else
+							elseif($url[0] == '/'.Router::$complete_uri) {
+								echo '<li class="'.html::specialchars($header).'">'.
+										html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+										html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+							} else {
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 										html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+							}
 						}
 						// common external links
 						elseif($url[2] == 1) {
@@ -315,10 +320,10 @@ if (isset($this) && isset($this->template->js_header))
 							echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
-						echo '<li onclick="widget_page_refresh();">'._('Set widget refresh rate (s.)').'</li>'."\n";
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'._('Upload new widget').'</li>'."\n";
 						}
+						echo '<li id="show_global_widget_refresh">'._('Set widget refresh rate (s.)').'</li>'."\n";
 					}
 				?>
 			</ul>

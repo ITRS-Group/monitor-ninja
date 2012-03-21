@@ -123,6 +123,7 @@ class Ninja_widget_Model extends Model
 			$result = $db->query('SELECT * FROM ninja_widgets WHERE name='.$db->escape($widget).' AND '.$subquery.' LIMIT 1');
 		}
 		else {
+			$instance_id = null;
 			$options = array(
 				array('page' => $page, 'username' => $user, 'instance_id' => self::FIRST_INSTANCE_ID),
 				array('page' => $page, 'username' => $user, 'instance_id' => null),
@@ -344,12 +345,8 @@ class Ninja_widget_Model extends Model
 		if (empty($page) || ($value!=0 && empty($value)) || empty($type))
 			return false;
 
-		# check if the user already have customized widgets settings
-		# (already removed/added a widget)
-		self::customize_widgets($page);
-
 		# fetch all available widgets for a page
-		$all_widgets = self::fetch_widgets($page);
+		$all_widgets = self::fetch_all($page);
 		if ($all_widgets !== false) {
 			$new_setting = array($type => $value);
 			foreach ($all_widgets as $widget) {
@@ -399,10 +396,11 @@ class Ninja_widget_Model extends Model
 	 */
 	public static function set_widget_order($page, $widget_order) {
 		$res = array();
+		unset($widget_order['unknown']);
 		foreach ($widget_order as $key => $ary) {
 			$res[] = "$key=".implode(',', $ary);
 		}
-		Ninja_setting_Model::save_page_setting('widget_order', $page, implode('|', $res));
+		return Ninja_setting_Model::save_page_setting('widget_order', $page, implode('|', $res));
 	}
 
 	/**

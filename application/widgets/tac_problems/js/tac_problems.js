@@ -1,7 +1,7 @@
 widget.register_widget_load('tac_problems', function() {
 	var tac_problems = this;
 	var problem_field_register = function(name) {
-		$('#' + tac_problems.widget_id + ' #col_' + name + '-' + tac_problems.instance_id).live('colorpicked', function () {
+		$('#' + tac_problems.widget_id + ' .col_' + name).live('colorpicked', function () {
 			$('#' + tac_problems.widget_id + ' #id_' + name + tac_problems.instance_id).css('background', $(this).val());
 			tac_problems.save_custom_val($(this).val(), 'col_' + name);
 			if ($(this).val() == '#ffffff') {

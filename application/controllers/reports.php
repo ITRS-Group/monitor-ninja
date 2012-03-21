@@ -40,6 +40,7 @@ class Reports_Controller extends Authenticated_Controller
 		'service_filter_status_unknown' => 'service_filter_status_unknown',
 		'service_filter_status_critical' => 'service_filter_status_critical',
 		'service_filter_status_pending' => 'service_filter_status_pending',
+		'include_trends' => 'include_trends',
 	);
 
 	public static $dep_vars = array(
@@ -67,7 +68,8 @@ class Reports_Controller extends Authenticated_Controller
 		'cluster_mode',
 		'use_alias',
 		'host_filter_status',
-		'service_filter_status'
+		'service_filter_status',
+		'include_trends'
 	);
 
 	public static $map_type_field = array(
@@ -335,6 +337,7 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
 		$csv_output_checked =
 			arr::search($_REQUEST, 'csvoutput', $this->csv_output) ? 'checked="checked"' : '';
+		$include_trends_checked = arr::search($_REQUEST, 'include_trends', true) ? 'checked="checked"' : '';
 		$use_alias  =
 			arr::search($_REQUEST, 'use_alias', $this->use_alias);
 		$use_alias_checked = $use_alias ? 'checked="checked"' : '';
@@ -678,6 +681,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_avg = $t->_('Average');
 		$template->label_use_alias = $t->_('Use alias');
 		$template->label_csvoutput = $t->_('Output in CSV format');
+		$template->label_include_trends = $t->_('Include trends graph');
 		$template->label_create_report = $t->_('Create report');
 		$template->label_save_report = $t->_('Save report');
 		$template->use_alias_checked = $use_alias_checked;
@@ -687,6 +691,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->initial_assumed_service_state_selected = $initial_assumed_service_state_selected;
 
 		$template->csv_output_checked = $csv_output_checked;
+		$template->include_trends_checked = $include_trends_checked;
 		$template->months = $this->abbr_month_names;
 		$template->is_scheduled_report = $t->_('This is a scheduled report');
 		$edit_str = $t->_('edit');
@@ -916,6 +921,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$report_options = false;
 		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
+		$include_trends = arr::search($_REQUEST, 'include_trends', false);
 
 		if ($this->type == 'sla') {
 			// take care of start_year, end_year etc
@@ -1149,12 +1155,8 @@ class Reports_Controller extends Authenticated_Controller
 				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
 			}
 		}
-		$submitted_host_filter_status = arr::search($_REQUEST, 'host_filter_status', array());
-		if(!$submitted_host_filter_status) {
-			$_SESSION['report_err_msg'] = $t->_("You must provide at least one status to filter on.");
-			return url::redirect(Router::$controller.'/index');
-		}
-		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array()));
+		// default to showing all states if none are given
+		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
 
 		// convert report period to timestamps
 		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {
@@ -1401,6 +1403,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
+				$tpl_options->include_trends = $include_trends;
 				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 				$tpl_options->label_settings = $t->_('Report settings');
 				$tpl_options->label_startdate = $t->_('Start date');
@@ -1411,6 +1414,7 @@ class Reports_Controller extends Authenticated_Controller
 
 				$tpl_options->label_assumeinitialstates = $t->_('Assume initial states');
 				$tpl_options->label_cluster_mode = $t->_('Cluster mode');
+				$tpl_options->label_include_trends = $t->_('Include trends');
 
 				$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
 				$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
@@ -1588,52 +1592,54 @@ class Reports_Controller extends Authenticated_Controller
 						$this->_reorder_by_host_and_service($template_values[$i], $this->report_type);
 					}
 
-				if($group_name) {
-					// Copy-pasted from controllers/trends.php
-					foreach ($this->data_arr as $key => $data) {
-						# >= 2 hosts or services won't have the extra
-						# depth in the array, so we break out early
-						if (empty($data['log']) || !is_array($data['log'])) {
-							if(isset($this->data_arr['log'])) {
-								$graph_data = $this->data_arr['log'];
-							} elseif(isset($this->data_arr[0]['log'])) {
-								// fixes the case of multiple groups when at least one of them
-								// has a '/' in its name
-								$graph_data = $this->data_arr[0]['log'];
+				if($include_trends) {
+					if($group_name) {
+						// Copy-pasted from controllers/trends.php
+						foreach ($this->data_arr as $key => $data) {
+							# >= 2 hosts or services won't have the extra
+							# depth in the array, so we break out early
+							if (empty($data['log']) || !is_array($data['log'])) {
+								if(isset($this->data_arr['log'])) {
+									$graph_data = $this->data_arr['log'];
+								} elseif(isset($this->data_arr[0]['log'])) {
+									// fixes the case of multiple groups when at least one of them
+									// has a '/' in its name
+									$graph_data = $this->data_arr[0]['log'];
+								}
+								break;
 							}
-							break;
-						}
 
-						# $data is the outer array (with, source, log,
-						# states etc)
-						if (empty($graph_data)) {
-							$graph_data = $data['log'];
-						} else {
-							$graph_data = array_merge($data['log'], $graph_data);
-						}
-					} # end foreach
-				} else {
-					// We are not checking groups
-					$graph_data = $this->data_arr['log'];
-				}
+							# $data is the outer array (with, source, log,
+							# states etc)
+							if (empty($graph_data)) {
+								$graph_data = $data['log'];
+							} else {
+								$graph_data = array_merge($data['log'], $graph_data);
+							}
+						} # end foreach
+					} else {
+						// We are not checking groups
+						$graph_data = $this->data_arr['log'];
+					}
 
-				$template->trends_graph = $this->add_view('trends/new_report');
-				$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-					$graph_data,
-					$report_class->start_time,
-					$report_class->end_time,
-					$template->title
-				);
-				$template->trends_graph->is_avail = true;
-				$template->trends_graph->create_pdf = $this->create_pdf;
-				if ($this->create_pdf) {
-					$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+					$template->trends_graph = $this->add_view('trends/new_report');
+					$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 						$graph_data,
 						$report_class->start_time,
 						$report_class->end_time,
 						$template->title
 					);
-					$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+					$template->trends_graph->is_avail = true;
+					$template->trends_graph->create_pdf = $this->create_pdf;
+					if ($this->create_pdf) {
+						$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+							$graph_data,
+							$report_class->start_time,
+							$report_class->end_time,
+							$template->title
+						);
+						$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+					}
 				}
 
 				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
@@ -1797,53 +1803,55 @@ class Reports_Controller extends Authenticated_Controller
 							$content = $avail;
 						}
 
-						$trends_data = false;
-						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
-							$trends_data = $data['log'];
-						}
-
-						if($group_name) {
-							// Copy-pasted from controllers/trends.php
-							foreach ($this->data_arr as $key => $data) {
-								# >= 2 hosts or services won't have the extra
-								# depth in the array, so we break out early
-								if (empty($data['log']) || !is_array($data['log'])) {
-									$graph_data = $this->data_arr['log'];
-									break;
-								}
-
-								# $data is the outer array (with, source, log,
-								# states etc)
-								if (empty($graph_data)) {
-									$graph_data = $data['log'];
-								} else {
-									$graph_data = array_merge($data['log'], $graph_data);
-								}
-							} # end foreach
-						} else {
-							// We are not checking groups
-							$graph_data = $this->data_arr['log'];
-						}
-
-						$template->trends_graph = $this->add_view('trends/new_report');
-						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-							$graph_data,
-							$report_class->start_time,
-							$report_class->end_time,
-							$template->title
-						);
-						$template->trends_graph->report_time_formatted = $report_time_formatted;
-						$template->trends_graph->create_pdf = $this->create_pdf;
 						$this->xtra_css[] = $this->add_path('css/default/reports');
-						$this->xtra_js[] = $this->add_path('trends/js/trends');
-						if ($this->create_pdf) {
-							$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+						if($include_trends) {
+							$trends_data = false;
+							if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
+								$trends_data = $data['log'];
+							}
+
+							if($group_name) {
+								// Copy-pasted from controllers/trends.php
+								foreach ($this->data_arr as $key => $data) {
+									# >= 2 hosts or services won't have the extra
+									# depth in the array, so we break out early
+									if (empty($data['log']) || !is_array($data['log'])) {
+										$graph_data = $this->data_arr['log'];
+										break;
+									}
+
+									# $data is the outer array (with, source, log,
+									# states etc)
+									if (empty($graph_data)) {
+										$graph_data = $data['log'];
+									} else {
+										$graph_data = array_merge($data['log'], $graph_data);
+									}
+								} # end foreach
+							} else {
+								// We are not checking groups
+								$graph_data = $this->data_arr['log'];
+							}
+
+							$template->trends_graph = $this->add_view('trends/new_report');
+							$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 								$graph_data,
 								$report_class->start_time,
 								$report_class->end_time,
 								$template->title
 							);
-							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+							$template->trends_graph->report_time_formatted = $report_time_formatted;
+							$template->trends_graph->create_pdf = $this->create_pdf;
+							$this->xtra_js[] = $this->add_path('trends/js/trends');
+							if ($this->create_pdf) {
+								$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+									$graph_data,
+									$report_class->start_time,
+									$report_class->end_time,
+									$template->title
+								);
+								$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+							}
 						}
 
 						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
@@ -2266,6 +2274,7 @@ class Reports_Controller extends Authenticated_Controller
 			unset($report_options['report_name']);
 			unset($report_options['host_filter_status']);
 			unset($report_options['service_filter_status']);
+			unset($report_options['include_trends']);
 			$report_options['sla_name'] = $report_name;
 		}
 
@@ -4250,6 +4259,7 @@ class Reports_Controller extends Authenticated_Controller
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /tmp").'</p>',
+			'include_trends' => '<p>'.$translate->_("Include a trends graph in your report.").'</p>',
 			'status_to_display' => $translate->_('Uncheck a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
@@ -4496,10 +4506,13 @@ class Reports_Controller extends Authenticated_Controller
 		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
 		foreach ($this->setup_keys as $k) {
-			if ($type === 'sla' && $k === 'report_name')
-				$k = 'sla_name';
-			if ($k != 'host_filter_status' && $k != 'service_filter_status')
-				$request[$k] = $report_data[$k];
+			if ($type === 'sla') {
+				if ($k === 'report_name')
+					$k = 'sla_name';
+				if ($k == 'host_filter_status' || $k == 'service_filter_status')
+					continue;
+			}
+			$request[$k] = $report_data[$k];
 		}
 
 		if (!empty($report_data['objects'])) {
