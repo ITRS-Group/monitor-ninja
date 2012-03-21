@@ -57,6 +57,8 @@ class Alertlog_Model extends Model
 		$objsel = array();
 
 		# Don't think this auth stuff makes that much sense - whaddabout services and system_information for restarts?
+		# Also think it's gosh darn slow already, and would be unusable if done Right™, so I don't want to be the one
+		# to break it.
 		if (!$auth->view_hosts_root) {
 			$sql_join['host'] = 'host.host_name = report_data.host_name';
 			$sql_join['contact_access'] = 'contact_access.host=host.id AND contact_access.contact='.(int)$auth->id;
@@ -78,22 +80,17 @@ class Alertlog_Model extends Model
 			$objsel[] = implode(' OR ', $svc_cond);
 		}
 		if (isset($options['hostgroups']) && !empty($options['hostgroups'])) {
-			$sql_join['host'] = 'host.host_name = report_data.host_name';
-			$sql_join['host_hostgroup'] = 'host.id = host_hostgroup.host';
-			$sql_join['hostgroup'] = 'hostgroup.id = host_hostgroup.hostgroup';
 			$hg_cond = array();
 			foreach ($options['hostgroups'] as $hostgroup)
-				$hg_cond[] = 'hostgroup.hostgroup_name = '.$db->escape($hostgroup);
-			$objsel[] = implode(' OR ', $hg_cond);
+				$hg_cond[] = $db->escape($hostgroup);
+			$objsel[] = 'service_description IS NULL AND host_name IN (SELECT host_name FROM host INNER JOIN host_hostgroup ON host.id = host_hostgroup.host INNER JOIN hostgroup ON hostgroup.id = host_hostgroup.hostgroup WHERE hostgroup_name IN ('.implode(', ', $hg_cond).'))';
 		}
 		if (isset($options['servicegroups']) && !empty($options['servicegroups'])) {
-			$sql_join['service'] = '(service.service_description = report_data.service_description OR (report_data.service_description=\'\' AND report_data.event_type > 900)) AND service.host_name = report_data.host_name';
-			$sql_join['service_servicegroup'] = 'service.id = service_servicegroup.service';
-			$sql_join['servicegroup'] = 'servicegroup.id = service_servicegroup.servicegroup';
 			$sg_cond = array();
 			foreach ($options['servicegroups'] as $servicegroup)
-				$sg_cond[] = 'servicegroup.servicegroup_name = '.$db->escape($servicegroup);
-			$objsel[] = implode(' OR ', $sg_cond);
+				$sg_cond[] = $db->escape($servicegroup);
+
+			$objsel[] = '(host_name, service_description) IN (SELECT host_name, service_description FROM service INNER JOIN service_servicegroup ON service.id = service_servicegroup.service INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup WHERE servicegroup_name IN ('.implode(', ', $sg_cond).'))';
 		}
 
 		if (isset($options['state_type']) && !empty($options['state_type'])) {
