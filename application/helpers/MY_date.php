@@ -2,7 +2,7 @@
 /**
  * Help with formatting datestamps
  */
-class date_Core {
+class date extends date_Core {
 
 	private static function _nice_format_duration($start_time, $end_time) {
 		$duration = $end_time - $start_time;
@@ -17,7 +17,7 @@ class date_Core {
 	/**
 	 * Outputs a nicely formatted version of "2003-03-12 21:14:34 to 2003-03-12 21:14:35<br>
 	 * Duration: 0d 0h 0m 1s"
- 	 *
+	 *
 	 * @param $start_time int timestamp
 	 * @param $end_time int timestamp
 	 */
