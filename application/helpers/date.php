@@ -14,6 +14,13 @@ class date_Core {
 			   $days, $hours, $minutes, $seconds);
 	}
 
+	/**
+	 * Outputs a nicely formatted version of "2003-03-12 21:14:34 to 2003-03-12 21:14:35<br />
+	 * Duration: 0d 0h 0m 1s"
+ 	 *
+	 * @param $start_time int timestamp
+	 * @param $end_time int timestamp
+	 */
 	public static function duration($start_time, $end_time)
 	{
 		$fmt = "Y-m-d H:i:s";
