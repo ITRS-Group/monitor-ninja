@@ -1398,6 +1398,10 @@ function create_new_schedule_rows(id)
 	if (filename == '')
 		filename = $('#filename').attr('value');
 
+	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
+	if (local_persistent_filepath == '')
+		local_persistent_filepath = $('#local_persistent_filepath').attr('value');
+
 	var description = $('#fancybox-content #description').attr('value');
 	if (description == '')
 		description = $('#description').attr('value');
@@ -1408,6 +1412,7 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
 	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
