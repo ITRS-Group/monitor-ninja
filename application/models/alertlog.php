@@ -83,7 +83,7 @@ class Alertlog_Model extends Model
 			$hg_cond = array();
 			foreach ($options['hostgroups'] as $hostgroup)
 				$hg_cond[] = $db->escape($hostgroup);
-			$objsel[] = 'service_description IS NULL AND host_name IN (SELECT host_name FROM host INNER JOIN host_hostgroup ON host.id = host_hostgroup.host INNER JOIN hostgroup ON hostgroup.id = host_hostgroup.hostgroup WHERE hostgroup_name IN ('.implode(', ', $hg_cond).'))';
+			$objsel[] = 'service_description = \'\' AND host_name IN (SELECT host_name FROM host INNER JOIN host_hostgroup ON host.id = host_hostgroup.host INNER JOIN hostgroup ON hostgroup.id = host_hostgroup.hostgroup WHERE hostgroup_name IN ('.implode(', ', $hg_cond).'))';
 		}
 		if (isset($options['servicegroups']) && !empty($options['servicegroups'])) {
 			$sg_cond = array();
