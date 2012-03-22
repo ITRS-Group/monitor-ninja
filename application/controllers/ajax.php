@@ -64,7 +64,7 @@ class Ajax_Controller extends Authenticated_Controller {
 								'class' => 'Host_Model',
 								'name_field' => 'host_name',
 								'data' => 'host_name',
-								'path' => '/status/service/%s'
+								'path' => '/status/service/?name=%s'
 								);
 							break;
 						case 'service': case 's':
@@ -73,7 +73,7 @@ class Ajax_Controller extends Authenticated_Controller {
 								'class' => 'Service_Model',
 								'name_field' => 'service_description',
 								'data' => 'host_name',
-								'path' => '/extinfo/details/service/%s/?service=%s'
+								'path' => '/extinfo/details/?type=service&host=%s&service=%s'
 							);
 							break;
 						case 'hostgroup': case 'hg':
@@ -81,7 +81,7 @@ class Ajax_Controller extends Authenticated_Controller {
 								'class' => 'Hostgroup_Model',
 								'name_field' => 'hostgroup_name',
 								'data' => 'hostgroup_name',
-								'path' => '/status/hostgroup/%s'
+								'path' => '/status/hostgroup/?group=%s'
 							);
 							break;
 						case 'servicegroup': case 'sg':
@@ -89,7 +89,7 @@ class Ajax_Controller extends Authenticated_Controller {
 								'class' => 'Servicegroup_Model',
 								'name_field' => 'servicegroup_name',
 								'data' => 'servicegroup_name',
-								'path' => '/status/servicegroup/%s'
+								'path' => '/status/servicegroup/?group=%s'
 							);
 							break;
 						case 'comment': case 'c':
@@ -98,7 +98,7 @@ class Ajax_Controller extends Authenticated_Controller {
 								'class' => 'Comment_Model',
 								'name_field' => 'comment_data',
 								'data' => 'host_name',
-								'path' => '/extinfo/details/host/%s'
+								'path' => '/extinfo/details/?type=host&host=%s'
 							);
 							break;
 
@@ -165,7 +165,7 @@ class Ajax_Controller extends Authenticated_Controller {
 							break;
 						}
 						$host_info[] = $row->host_name;
-						$host_data[] = array('/status/service/%s', $row->host_name);
+						$host_data[] = array('/status/service/?name=%s', $row->host_name);
 					}
 					if (!empty($host_data) && !empty($found_str)) {
 						$host_info[] = $divider_str;

@@ -196,6 +196,6 @@ function do_redirect(value, data)
 		value = match[1];
 	}
 
-	var str = sprintf(data[0], data[1], value);
+	var str = sprintf(data[0], encodeURIComponent(data[1]), value);
 	self.location.href = _site_domain + _index_page + str;
 }
