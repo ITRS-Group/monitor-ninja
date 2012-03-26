@@ -110,7 +110,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
 								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
-								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment')).'&nbsp; ';
+								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name)).'&nbsp; ';
 						}
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
@@ -138,7 +138,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 						<?php echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
 								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]),
-								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment')); ?>
+								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name.';'.$row->service_description)); ?>
 					</span>
 					<?php } ?>
 			<span style="float: right">

@@ -489,9 +489,9 @@ class Ajax_Controller extends Authenticated_Controller {
 		$service = false;
 		$data = false;
 		$model = new Comment_Model();
-		if (strstr($host, '?service=')) {
+		if (strstr($host, ';')) {
 			# we have a service - needs special handling
-			$parts = explode('?service=', $host);
+			$parts = explode(';', $host);
 			if (sizeof($parts) == 2) {
 				$host = $parts[0];
 				$service = $parts[1];

@@ -49,7 +49,7 @@ if (isset($host_result) ) {
 				<?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name).'#comments',
 						html::image($this->add_path('icons/16x16/add-comment.png'),
 						array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments),
-						'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment')); ?>
+						'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $host->host_name)); ?>
 			</span>
 			<?php } ?>
 			<div style="float: right"><?php
@@ -188,7 +188,7 @@ if (isset($service_result) ) {
 						<?php echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
 								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]),
-								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment')); ?>
+								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$service->host_name.';'.$service->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $service->host_name.';'.$service->service_description)); ?>
 					</span>
 					<?php } ?>
 			</span>

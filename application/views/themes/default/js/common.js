@@ -253,14 +253,10 @@ $(document).ready(function() {
 			if (typeof _use_popups == 'undefined' || !_use_popups) {
 				return;
 			}
-			var obj_name = $(this).attr('href');
-			var link_parts = obj_name.split('/');
-			if (!link_parts.length) {
+			var obj_name = $(this).data('obj_name');
+			if (!obj_name) {
 				return false;
 			}
-
-			obj_name = link_parts[link_parts.length-1];
-			obj_name = obj_name.replace('#comments', '');
 
 			var loading_img = '/application/media/images/loading.gif';
 
