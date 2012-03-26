@@ -447,13 +447,13 @@ class Config_Controller extends Authenticated_Controller {
 				$header = array(
 					$t->_('Name'),
 					$t->_('Alias/Description'),
-					$t->_('Sunday Time Ranges'),
 					$t->_('Monday Time Ranges'),
 					$t->_('Tuesday Time Ranges'),
 					$t->_('Wednesday Time Ranges'),
 					$t->_('Thursday Time Ranges'),
 					$t->_('Friday Time Ranges'),
 					$t->_('Saturday Time Ranges'),
+					$t->_('Sunday Time Ranges'),
 				);
 			break;
 
