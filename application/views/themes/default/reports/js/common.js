@@ -1504,7 +1504,8 @@ function init_regexpfilter() {
 		list.options.length = 0;   //remove all elements from the list
 		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
-			list.add(o, null);
+			if (!o.parentNode)
+				list.add(o, null);
 		}
 
 	};
