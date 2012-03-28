@@ -69,15 +69,14 @@ class User_Model extends Auth_User_Model {
 
 	/**
 	 * Takes care of setting session variables etc
+	 *
+	 * @returns TRUE if everything was OK, or a string you might want to redirect the user to
 	 */
-	public static function complete_login($user_data=false)
+	public static function complete_login()
 	{
 		if (!Session::instance()->get(Kohana::config('auth.session_key'), false)) {
-			url::redirect(Kohana::config('routes._default'));
+			return Kohana::config('routes._default');
 		}
-
-		# save user object data to session
-		#$this->session->set('user_data', $user_data);
 
 		# set logged_in to current timestamp if db
 		$auth_type = Kohana::config('auth.driver');
@@ -87,8 +86,6 @@ class User_Model extends Auth_User_Model {
 				$db->escape(Auth::instance()->get_user()->username);
 			$db->query($sql);
 		}
-
-		$requested_uri = Session::instance()->get('requested_uri', false);
 
 		# cache nagios_access session information
 		System_Model::nagios_access();
@@ -112,32 +109,16 @@ class User_Model extends Auth_User_Model {
 
 			if ($redirect !== false) {
 				if ($auth_type == 'apache') {
-					url::redirect('default/no_objects');
+					return 'default/no_objects';
 				} else {
 					$translate = zend::instance('Registry')->get('Zend_Translate');
 					Session::instance()->set_flash('error_msg',
 						$translate->_("You have been denied access since you aren't authorized for any objects."));
-					url::redirect('default/show_login');
+					return 'default/show_login';
 				}
 			}
 		}
-
-
-		# make sure we don't end up in infinite loop
-		# if user managed to request show_login
-		if ($requested_uri == Kohana::config('routes.log_in_form')) {
-			$requested_uri = Kohana::config('routes.logged_in_default');
-		}
-		if ($requested_uri !== false) {
-			# remove 'requested_uri' from session
-			Session::instance()->delete('requested_uri');
-			url::redirect($requested_uri);
-		} else {
-			# we have no requested uri
-			# using logged_in_default from routes config
-			#die('going to default');
-			url::redirect(Kohana::config('routes.logged_in_default'));
-		}
+		return true;
 	}
 
 	/**

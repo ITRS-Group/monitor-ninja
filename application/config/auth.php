@@ -62,11 +62,10 @@ $config['users'] = array
 $config['min_username_chars'] = 2;
 
 /**
- * Control the use of login by passing username and password
- * as get parameters.
- * Default is set to false and by changing this to true it is
- * possible to login to your account with a url like
- * http://$site/default/do_login?username=<username>&password=<password>
+ * Setting this to TRUE will allow you to access any page by
+ * appending ?username=<username>&password=<password> to the URL.
+ *
+ * Warning: this is insecure! Do know what you're doing!
  */
 $config['use_get_auth'] = false;
 

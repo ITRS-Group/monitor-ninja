@@ -25,27 +25,36 @@ class Authenticated_Controller extends Ninja_Controller {
 		# Check if user is accessing through PHP CLI
 		if (PHP_SAPI === "cli") {
 			$cli_access = Kohana::config('config.cli_access');
-			if ($cli_access !== false) {
-				if ($cli_access === true) {
-					# username should be passed as argv[2]
-					if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
-						Auth::instance()->force_login($_SERVER['argv'][2]);
-					}
-
-				} else {
-					Auth::instance()->force_login($cli_access);
+			if ($cli_access === true) {
+				# username should be passed as argv[2]
+				if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
+					Auth::instance()->force_login($_SERVER['argv'][2]);
 				}
+
+			} else if ($cli_access !== false) {
+				Auth::instance()->force_login($cli_access);
 			} else {
 				echo "CLI access denied or not configured\n";
 				exit(1);
 			}
 		} else {
 			if (!Auth::instance()->logged_in()) {
-				# store requested uri in session for later redirect
-				$this->session->set('requested_uri', url::current(true));
+				if (Kohana::config('auth.use_get_auth') === true && isset($_GET['username']) && isset($_GET['password'])) {
+					$auth_method = $this->input->get('auth_method', false);
+					if (!empty($auth_method)) {
+						$_SESSION['auth_method'] = $auth_method;
+						Kohana::config_set('auth.driver', $auth_method);
+					}
+					$res = ninja_auth::login_user($_GET['username'], $_GET['password']);
+					if ($res !== true)
+						die('The provided authorization is invalid');
+				} else {
+					# store requested uri in session for later redirect
+					$this->session->set('requested_uri', url::current(true));
 
-				if (Router::$controller != 'default') {
-					url::redirect(Kohana::config('routes.log_in_form'));
+					if (Router::$controller != 'default') {
+						url::redirect(Kohana::config('routes.log_in_form'));
+					}
 				}
 			} else {
 				# fetch the external widget user if any
