@@ -134,12 +134,15 @@ class Default_Controller extends Ninja_Controller  {
 			# support multiple password hash algorithms, so if we're
 			# using the Ninja authenticator we must call the driver
 			# explicitly
-			if (Kohana::config('auth.driver') === 'Ninja') {
+			switch (Kohana::config('auth.driver')) {
+			 case 'Ninja':
+			 case 'LDAP':
+			 case 'apache':
 				$result = $auth->driver->login($username, $password, false);
-			} elseif (Kohana::config('auth.driver') === 'LDAP') {
-				$result = $auth->driver->login($username, $password, false);
-			} else {
+				break;
+			 default:
 				$result = $auth->login($username, $password);
+				break;
 			}
 			if (!$result) {
 				# increase login attempts counter
