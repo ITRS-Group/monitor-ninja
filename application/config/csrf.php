@@ -3,7 +3,7 @@
 /**
  * Check if we always should use CSRF tokens to secure forms
  */
-$config['active'] = false;
+$config['active'] = true;
 
 /**
  * Session key to hold CSRF token

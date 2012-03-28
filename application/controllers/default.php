@@ -109,7 +109,7 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($user->{$this->csrf_config['csrf_token']})) {
+			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
 				$error_msg = $this->translate->_("Request forgery attack detected");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
