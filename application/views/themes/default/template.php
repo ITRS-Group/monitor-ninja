@@ -258,7 +258,7 @@ if (isset($this) && isset($this->template->js_header))
 							elseif($url[0] == '/'.Router::$complete_uri) {
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
-										html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+										html::anchor($url[0],html::specialchars($title), array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
 							} else {
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
