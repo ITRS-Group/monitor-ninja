@@ -536,11 +536,14 @@ class Current_status_Model extends Model
 		if (empty($result)) {
 			return false;
 		}
-                $hosts = array();
+		$hosts = array();
 		foreach ($result as $host){
-                    $hosts[] = $host;
-                }
-                unset($result);
+			$hosts[] = $host;
+			// Note: count() returns 1 for FALSE
+			$svcs = Host_Model::get_services($host->host_name);
+			$this->children_services[$host->id] = $svcs !== false ? count($svcs) : 0;
+		}
+		unset($result);
 
 		/* check all hosts */
 		$outages = false;
@@ -587,7 +590,7 @@ class Current_status_Model extends Model
 		}
 
 		$sql = "SELECT * FROM host WHERE ".$xtra_sql.
-				"(current_state!=".self::HOST_UP." AND current_state!=".self::HOST_PENDING.")";
+				"host.current_state=".self::HOST_DOWN;
 
 		$result = $this->db->query($sql);
 
@@ -599,10 +602,9 @@ class Current_status_Model extends Model
 	 * Fetch child hosts for a host
 	 * @param $host_id Id of the host to fetch children for
 	 * @param $children Out variable
-	 * @param $only_hosts If true, skip calculating the number of services each host has
 	 * @return True on success, false on errors
 	 */
-	public function get_child_hosts($host_id=false, &$children=false, $only_hosts=false)
+	public function get_child_hosts($host_id=false, &$children=false)
 	{
 		$host_id = trim($host_id);
 		if (empty($host_id)) {
@@ -615,33 +617,17 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		if ($only_hosts !== false) {
-			$query = "SELECT ".
-				"h.id, h.host_name, 0 AS service_cnt ".
-				"FROM host h, host_parents hp ".
-				"WHERE ".
-				"hp.parents=".$host_id." AND h.id=hp.host GROUP BY h.id, h.host_name";
-		} else {
-			$query = "SELECT ".
-					"h.id, ".
-					"h.host_name, ".
-					"count(s.id) as service_cnt ".
-				"FROM ".
-					"host h, ".
-					"host_parents hp, ".
-					"service s ".
-				"WHERE ".
-					"hp.parents=".$host_id." AND ".
-					"h.id=hp.host AND ".
-					"s.host_name=h.host_name ".
-				"GROUP BY h.id, h.host_name";
-		}
+		$query = "SELECT ".
+				"h.id, ".
+				"h.host_name, ".
+				"count(s.id) as service_cnt ".
+			"FROM host h ".
+			"INNER JOIN host_parents hp ON h.id=hp.host ".
+			"LEFT JOIN service s ON s.host_name=h.host_name ".
+			"WHERE hp.parents=".$host_id.
+			" GROUP BY h.id, h.host_name";
 
 		$result = $this->db->query($query);
-		if ($result->count()==0 && $only_hosts == false) {
-			unset($result);
-			return $this->get_child_hosts($host_id, $children, true); # RECURSIVE
-		}
 
 		$hosts = array();
 		foreach ($result as $host) {

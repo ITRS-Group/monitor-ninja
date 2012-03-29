@@ -44,7 +44,7 @@ class Tac_problems_Widget extends widget_Base {
 		$problem = array();
 		$i = 0;
 		$outages = new Outages_Model();
-		$outage_data = $outages->fetch_outage_data($current_status);
+		$outage_data = $outages->fetch_outage_data();
 
 		if (!empty($outage_data)) {
 			$problem[$i]['type'] = $this->translate->_('Network');
