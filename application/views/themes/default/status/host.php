@@ -156,7 +156,7 @@ foreach ($result as $row) {
 					?>
 				</td>
 			<?php	if ($show_display_name) { ?>
-				<td style="white-space: normal"><?php echo $row->host_display_name ?></td>
+				<td style="white-space: normal"><?php echo $row->display_name ?></td>
 			<?php 	}
 
 					if ($show_notes) { ?>

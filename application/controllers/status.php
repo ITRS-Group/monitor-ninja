@@ -122,18 +122,18 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'host.output', 'sort_field_str' => 'status information')
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'host.display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 
@@ -372,24 +372,24 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'h.host_name', 'sort_field_str' => 'host name'),
-			array('title' => $this->translate->_('Status'), 'sort_field_db' => 's.current_state', 'sort_field_str' => 'service status'),
-			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
+			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
+			array('title' => $this->translate->_('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'service status'),
+			array('title' => $this->translate->_('Service'), 'sort_field_db' => 'service_description', 'sort_field_str' => 'service name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 's.current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 's.output', 'sort_field_str' => 'status information')
+			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 's.display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 

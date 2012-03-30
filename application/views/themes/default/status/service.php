@@ -203,12 +203,12 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
 				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
 			} else {
-				$output = $row->service_output;
+				$output = $row->output;
 				$output = str_replace('','', $output);
 				echo str_replace('\n','<br />', $output);
 				if (Kohana::config('config.service_long_output_enabled')) {
-					if ($row->service_long_output) {
-						echo '<br />' . str_replace('\n','</br />', $row->service_long_output);
+					if ($row->long_output) {
+						echo '<br />' . str_replace('\n','</br />', $row->long_output);
 					}
 				}
 			}
@@ -216,7 +216,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		</td>
 
 <?php	if ($show_display_name) { ?>
-		<td style="white-space: normal"><?php echo $row->service_display_name ?></td>
+		<td style="white-space: normal"><?php echo $row->display_name ?></td>
 <?php	}
 
 		if ($show_notes) { ?>
