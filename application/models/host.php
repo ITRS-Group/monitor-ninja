@@ -442,7 +442,7 @@ class Host_Model extends Model {
 					"host.scheduled_downtime_depth, ".
 					"host.output, ".
 					"host.long_output, ".
-					"host.display_name".
+					"host.display_name ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
