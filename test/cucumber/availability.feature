@@ -1,5 +1,6 @@
 Feature: Availability reports
 
+	@javascript @calendar
 	Scenario: Toggle JS-calendars on custom report date
 		Given I am logged in as "monitor" with password "monitor"
 		And I click "Availability"
