@@ -3182,7 +3182,7 @@ class Reports_Model extends Model
 		if (!is_object($dbr)) {
 			return false;
 		}
-		$dbr = $dbr->result_array(false);
+		$dbr = $dbr->result(false);
 		$result = array();
 		$pstate = array();
 		foreach ($dbr as $row) {
