@@ -43,12 +43,6 @@ if (Kohana::config('hypergraph.hyperapplet_path') !== false) {
 	$menu_items['hyper_map'] = _('Hyper Map');
 }
 
-/* remove hardcoded nagvis menu entry
-if (Kohana::config('config.nagvis_path') !== false) {
-	$menu_items['nagvis'] = _('Nagvis');
-}
-*/
-
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['trends'] = _('Trends');
 $menu_items['pnp'] = _('Graphs');
