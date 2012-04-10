@@ -898,7 +898,7 @@ function check_form_values()
 		var report_name 	= $(fancy_str + "input[name=report_name]").attr('value');
 		report_name = $.trim(report_name);
 		var saved_report_id = $("input[name=saved_report_id]").attr('value');
-		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').attr('checked') ? 1 : 0;
+		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').is(':checked') ? 1 : 0;
 
 		/*
 		*	Only perform checks if:
@@ -938,7 +938,7 @@ function check_form_values()
 		$('#response').html('');
 
 		// check if report name is unique
-		if(saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
+		if(report_name && saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
 		{
 			if(!confirm(_reports_error_name_exists_replace))
 			{
