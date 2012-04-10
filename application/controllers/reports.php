@@ -993,6 +993,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($this->type == 'sla') {
 			$report_name = arr::search($_REQUEST, 'report_name', false);
+			unset($report_options['include_trends']);
 			unset($report_options['report_name']);
 			$report_options['sla_name'] = $report_name;
 			if (isset($report_options['host_filter_status']))
