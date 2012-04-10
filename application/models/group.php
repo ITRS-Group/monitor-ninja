@@ -217,7 +217,7 @@ class Group_Model extends Model
 				"s.next_check,".
 				"s.notifications_enabled,".
 				"s.service_description,".
-				"s.display_name AS service_display_name ".
+				"s.display_name AS display_name ".
 			"FROM host h ".
 			"INNER JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
