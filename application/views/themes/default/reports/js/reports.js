@@ -364,7 +364,6 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/availability.png');
 		$('#switcher_image').attr('alt', _label_avail);
 		$('#switcher_image').attr('title', _label_avail);
-		$("#old_avail_link").hide();
 		$(".sla_display").show();
 		$(".avail_display").hide();
 
@@ -377,7 +376,6 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/sla.png');
 		$('#switcher_image').attr('alt', _label_sla);
 		$('#switcher_image').attr('title', _label_sla);
-		$("#old_avail_link").show();
 		$(".sla_display").hide();
 		$(".avail_display").show();
 
