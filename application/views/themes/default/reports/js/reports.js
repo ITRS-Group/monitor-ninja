@@ -224,12 +224,12 @@ function validate_report_form(f)
 	}
 
 	// only run this part if report should be saved
-	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
+	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=save_report_settings]').is(':checked')) {
 		var report_name = $.trim($('input[name=report_name]').attr('value'));
 		if (report_name == '') {
 			// fancybox is stupid and copies the form so we have to force
 			// this script to check the form in the fancybox_content div
-			report_name = $(fancy_str + '#report_name').attr('value');
+			report_name = $.trim($(fancy_str + '#report_name').attr('value'));
 		}
 
 		// these 2 fields should be the same no matter where on the
