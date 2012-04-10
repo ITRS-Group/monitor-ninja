@@ -754,7 +754,7 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$save_report_settings = arr::search($_REQUEST, 'save_report_settings', false);
-		if ($save_report_settings) {
+		if ($save_report_settings && !empty($_REQUEST['report_name'])) {
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
