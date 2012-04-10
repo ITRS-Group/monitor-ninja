@@ -3138,15 +3138,14 @@ class Reports_Controller extends Authenticated_Controller
 		if (empty($host_name)) {
 			return false;
 		}
-		$service_model = new Service_Model();
-		$res = $service_model->get_where('host_name', $host_name);
+		$host_model = new Host_Model();
+		$res = $host_model->get_services($host_name);
 		if (!empty($res)) {
-			$res->result(false); # convert to array
 			$service_arr = array();
 
 			$report_class = new Reports_Model();
 			foreach ($res as $row)
-				$service_arr[] = $host_name.";".$row['service_description'];
+				$service_arr[] = $host_name.";".$row->service_description;
 
 			foreach ($options as $var => $new_var) {
 				if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
