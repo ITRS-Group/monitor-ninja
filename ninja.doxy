@@ -1,17 +1,25 @@
 PROJECT_NAME = ninja
+PROJECT_NUMBER = git
 
-INPUT            = application/models application/helpers
+INPUT            = application/models application/helpers xdoc/
 QUIET            = YES
 RECURSIVE        = YES
-FILE_PATTERNS    = *.php
+FILE_PATTERNS    = *.php *.dox
 OUTPUT_DIRECTORY = Documentation
 GENERATE_TAGFILE = Documentation/api.tags
+GENERATE_LATEX   = NO
+GENERATE_HTML    = YES
 
 JAVADOC_AUTOBRIEF     = YES
 MACRO_EXPANSION       = YES
 EXPAND_ONLY_PREDEF    = YES
 OPTIMIZE_OUTPUT_FOR_C = YES
-STRIP_CODE_COMMENTS   = NO
+STRIP_CODE_COMMENTS   = YES
 FULL_PATH_NAMES       = NO
 CASE_SENSE_NAMES      = YES
 WARNINGS              = YES
+CALL_GRAPH            = YES
+INCLUDED_BY_GRAPH     = YES
+COLLABORATION_GRAPH   = YES
+CLASS_DIAGRAMS        = YES
+GRAPHICAL_HIERARCHY   = YES
