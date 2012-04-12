@@ -4,6 +4,29 @@
  * Reports model
  * Responsible for fetching data for avail and SLA reports. This class
  * must be instantiated to work properly.
+ *
+ * ## State interaction in subreports
+ * Given two objects, assuming only two states per object type, would interact
+ * such that the non-OK state overrules the OK state completely as such:
+ *                                               host
+ *                                   UP            |          DOWN
+ *                      | scheduled  | unscheduled | scheduled  | unscheduled
+ *          ------------+------------+-------------+------------+-------------
+ *           scheduled  |  sched up  | unsched up  | sched down | unsched down
+ *      UP  ------------+------------+-------------+------------+-------------
+ *           unscheduled| unsched up | unsched up  | sched down | unsched down
+ * host ----------------+------------+-------------+------------+-------------
+ *           scheduled  | sched down | sched down  | sched down | unsched down
+ *      DOWN------------+------------+-------------+------------+-------------
+ *           unscheduled|unsched down| unsched down|unsched down| unsched down
+ *
+ * When two sub-objects have different non-OK states, the outcome depends on
+ * whether scheduled_downtime_as_uptime is used or not. If the option is used,
+ * then the service with the worst non-scheduled state is used. If the option
+ * is not used, the worst state is used, prioritizing any non-scheduled state.
+ *
+ * This applies to non-"cluster mode" reports. If you're in cluster mode, this
+ * applies backwards exactly.
  */
 class Reports_Model extends Model
 {
@@ -60,7 +83,6 @@ class Reports_Model extends Model
 	var $keep_sub_logs = false; /**< This will be copied to any subreports' $st_needs_log */
 	var $st_log = false; /**< The log array */
 	var $st_prev_row = array(); /**< The last db row, so we can get duration */
-	var $st_prev_state = self::STATE_PENDING; /**< The previous object state */
 	var $st_running = 0; /**< Is nagios running? */
 	var $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
 	var $st_dt_depth = 0; /**< The downtime depth */
@@ -68,7 +90,7 @@ class Reports_Model extends Model
 	var $st_source = false; /**< The source object */
 	var $st_inactive = 0; /**< Time we have no information about */
 	var $st_text = array(); /**< Mapping between state integers and state text */
-	var $st_sub = array(); /**< Sub reports. Only used by the master report */
+	var $st_sub = array(); /**< Map of sub report [state => [downtime_status => [indexes]]] */
 	var $st_sub_discrepancies = 0; /**< Sub report appears to be weirded out */
 	var $st_obj_type = ''; /**< Object type (FIXME: haven't we already covered this?) */
 	var $st_state_calculator = 'st_worst'; /**< Whether to use normal SLA (worst state) or clustered (best state) */
@@ -111,7 +133,7 @@ class Reports_Model extends Model
 	   'TIME_UNDETERMINED_NO_DATA' => 0,
 	   );
 
-	public $master = false; /**< Master report, compare with $st_sub */
+	public $master = false; /**< Master report, compare with sub_reports */
 	public $id = ''; /**< Another way of saving and getting the object name (FIXME: just use $st_source?) */
 	public $result = array(); /**< FIXME: If I remove this, something obscure will break, but this isn't even used, is it? */
 	public $csv_result = array(); /**< FIXME: not used? */
@@ -1403,7 +1425,8 @@ class Reports_Model extends Model
 		if (!$this->sub_reports)
 			return;
 
-		foreach ($this->st_sub as $state => $cnt) {
+		foreach ($this->st_sub as $state => $objs) {
+			$cnt = count($objs[0]) + count($objs[1]);
 			if ($cnt < 0)
 				echo "WARN: $state count is $cnt\n";
 			$st_sub_totals += $cnt;
@@ -1411,8 +1434,13 @@ class Reports_Model extends Model
 
 		$actual = $this->st_sub;
 		$stash = array();
-		foreach ($actual as $state => $cnt)
+		$statecnt = array();
+		foreach ($actual as $state => $ary) {
 			$actual[$state] = 0;
+			foreach ($ary as $objs) {
+				$statecnt[$state] += count($objs);
+			}
+		}
 		$real = $actual;
 		foreach ($this->sub_reports as $rpt) {
 			$actual[$rpt->st_obj_state]++;
@@ -1421,8 +1449,8 @@ class Reports_Model extends Model
 		}
 
 		foreach ($actual as $state => $cnt) {
-			if ($this->st_sub[$state] !== $cnt) {
-				$disc_desc[] = "DISCREPANCY: ($state): actual=$cnt; st_sub=" . $this->st_sub[$state] . "\n";
+			if ($statecnt[$state] !== $cnt) {
+				$disc_desc[] = "DISCREPANCY: ($state): actual=$cnt; st_sub=" . $statecnt[$state] . "\n";
 				$disc++;
 			}
 		}
@@ -1488,20 +1516,10 @@ class Reports_Model extends Model
 
 		$rpts = array();
 		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
-			$rpts[] = $this;
-		foreach ($this->sub_reports as $sr) {
+			$rpts[-1] = $this;
+		foreach ($this->sub_reports as $idx => $sr) {
 			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
-				$rpts[] = $sr;
-		}
-
-		# skip duplicate events immediately
-		if (count($rpts) === 1 && ($row['event_type'] == self::HOSTCHECK ||
-		    $row['event_type'] == self::SERVICECHECK))
-		{
-			if ($row['state'] === $rpts[0]->st_prev_state) {
-				return;
-			}
-			$rpts[0]->st_prev_state = $row['state'];
+				$rpts[$idx] = $sr;
 		}
 
 		$this->st_update($row['the_time']);
@@ -1540,44 +1558,57 @@ class Reports_Model extends Model
 			break;
 		 case self::DOWNTIME_START:
 			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
-			foreach ($rpts as $rpt) {
+			foreach ($rpts as $idx => $rpt) {
+				$add = 0;
 				# we are always spammed with downtime events after restart, so
 				# don't increase the downtime depth if we're already in downtime
 				if (!$rpt->st_last_dt_init || $rpt->st_last_dt_init === $row['the_time']) {
 					$rpt->st_last_dt_init = $row['the_time'];
-					if (!$rpt->st_dt_depth)
-						$rpt->st_dt_depth++;
+					if (!$rpt->st_dt_depth) {
+						$add = 1;
+					}
 				}
-				else
+				else {
+					$add = 1;
+				}
+
+				if ($add) {
 					$rpt->st_dt_depth++;
-				$rpt->calculate_object_state();
+					if ($rpt !== $this) {
+						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth-1][$idx]);
+						$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
+						$rpt->calculate_object_state();
+					}
+				}
 			}
-			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::DOWNTIME_STOP:
 			$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
-			foreach ($rpts as $rpt) {
+			foreach ($rpts as $idx => $rpt) {
 				# old merlin versions created more end events than start events, so
 				# never decrement if we're already at 0.
 				if ($rpt->st_dt_depth) {
 					$rpt->st_dt_depth--;
-					$rpt->calculate_object_state();
+					if ($rpt !== $this) {
+						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth+1][$idx]);
+						$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
+						$rpt->calculate_object_state();
+					}
 				}
 			}
-			$this->st_dt_depth = $this->get_common_downtime_state();
 			break;
 		 case self::SERVICECHECK:
 		 case self::HOSTCHECK:
 			$state = $row['state'];
 
-			foreach ($rpts as $rpt) {
+			foreach ($rpts as $idx => $rpt) {
 				# update the real state of the object
 				if ($rpt->id === $obj_name) {
 					$rpt->st_real_state = $row['state'];
 
 					if ($rpt !== $this && $rpt->st_obj_state != $state) {
-						$this->st_sub[$rpt->st_obj_state]--;
-						$this->st_sub[$state]++;
+						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx]);
+						$this->st_sub[$state][$rpt->st_dt_depth][$idx] = $idx;
 					}
 				}
 				if ($rpt !== $this)
@@ -1610,12 +1641,59 @@ class Reports_Model extends Model
 	 */
 	public function st_worst()
 	{
-		if (empty($this->sub_reports))
+		if (empty($this->sub_reports)) {
 			return $this->st_obj_state;
+		}
 
+		/*
+		 * Welcome to todays installment of "The world sucks and I'm tired of
+		 * trying to fix it"!
+		 *
+		 * So, states. States have codes. If you've written plugins
+		 * you'll think the "badness" increases with the numeric code. This is
+		 * incorrect, of course, because then state comparison would be simple.
+		 */
 		if ($this->st_is_service)
-			return $this->get_worst_service_state();
-		return $this->get_worst_host_state();
+			$states = array(self::SERVICE_CRITICAL, self::SERVICE_WARNING, self::SERVICE_UNKNOWN, self::SERVICE_OK, self::SERVICE_PENDING);
+		else
+			$states = array(self::HOST_DOWN, self::HOST_UNREACHABLE, self::HOST_UP, self::HOST_PENDING);
+
+		$final_state = self::SERVICE_OK;
+
+		// Loop through states in order of badness.
+		foreach ($states as $state) {
+			$keys = array_keys($this->st_sub[$state]);
+			// Sort downtime states outside downtime first
+			sort($keys);
+			foreach ($keys as $in_dt) {
+				if (empty($this->st_sub[$state][$in_dt]))
+					continue;
+				// This would look OK but isn't, go look for non-OK
+				if ($this->scheduled_downtime_as_uptime && $in_dt)
+					break 1;
+				// Else, we're done, this is the worst.
+				$this->st_dt_depth = $in_dt;
+				$final_state = $state;
+				break 2;
+			}
+		}
+
+		// So, scheduled_downtime_as_uptime and worst not in sched_down is OK?
+		// Maybe there's a non-OK in sched_down...
+		if ($this->scheduled_downtime_as_uptime && $final_state === 0) {
+			foreach ($states as $state) {
+				if ($state === 0)
+					break;
+				foreach ($this->st_sub[$state] as $dt_depth => $ary) {
+					if (!empty($ary)) {
+						$this->st_dt_depth = $dt_depth;
+						$final_state = $state;
+						break;
+					}
+				}
+			}
+		}
+		return $final_state;
 	}
 
 	/**
@@ -1623,12 +1701,30 @@ class Reports_Model extends Model
 	 */
 	public function st_best()
 	{
-		if (empty($this->sub_reports))
+		if (empty($this->sub_reports)) {
 			return $this->st_obj_state;
+		}
 
 		if ($this->st_is_service)
-			return $this->get_best_service_state();
-		return $this->get_best_host_state();
+			$states = array(self::SERVICE_OK, self::SERVICE_WARNING, self::SERVICE_CRITICAL, self::SERVICE_UNKNOWN, self::SERVICE_PENDING);
+		else
+			$states = array(self::HOST_UP, self::HOST_DOWN, self::HOST_UNREACHABLE, self::HOST_PENDING);
+
+		$final_state = $states[count($states) - 1];
+
+		foreach ($states as $state) {
+			$keys = array_keys($this->st_sub[$state]);
+			// Sort downtime states outside downtime first
+			sort($keys);
+			foreach ($keys as $in_dt) {
+				if (!empty($this->st_sub[$state][$in_dt])) {
+					$final_state = $state;
+					$this->st_dt_depth = $in_dt;
+					break 2;
+				}
+			}
+		}
+		return $final_state;
 	}
 
 	/**
@@ -1710,15 +1806,13 @@ class Reports_Model extends Model
 		# prime the state counter for sub-objects
 		if (!empty($this->sub_reports)) {
 			foreach ($this->st_text as $st => $discard)
-				$this->st_sub[$st] = 0;
-			foreach ($this->sub_reports as $rpt) {
+				$this->st_sub[$st] = array();
+			foreach ($this->sub_reports as $idx => $rpt) {
 				$rpt->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
 				$rpt->calculate_object_state();
-				$this->st_sub[$rpt->st_obj_state]++;
+				$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
 			}
-			$func = $this->st_state_calculator;
-			$this->st_obj_state = $this->$func();
-			$this->st_dt_depth = $this->get_common_downtime_state();
+			$this->calculate_object_state();
 		}
 		else {
 			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth($hostname, $servicename));
@@ -1744,7 +1838,6 @@ class Reports_Model extends Model
 			 'the_time' => $this->start_time,
 			 'event_type' => $fevent_type,
 			 'downtime_depth' => $this->st_dt_depth);
-		$this->st_prev_state = $this->st_obj_state;
 
 		# if we're actually going to use the log, we'll need
 		# to generate a faked initial message for it.
@@ -2136,99 +2229,6 @@ class Reports_Model extends Model
 
 		$this->initial_state = $state;
 		return $state;
-	}
-
-	/**
-	 * Return whether any sub-reports are in downtime
-	 *
-	 * @return 1 if a sub report is in downtime, 0 otherwise
-	 */
-	public function get_common_downtime_state()
-	{
-		if (!$this->sub_reports)
-			return $this->st_dt_depth;
-
-		foreach ($this->sub_reports as $rpt) {
-			if (!$rpt->st_dt_depth)
-				return 0;
-		}
-
-		return 1;
-	}
-
-	/**
-	 * Calculate host state by taking the best state of any child report
-	 * @return State
-	 */
-	public function get_best_host_state()
-	{
-		if (!empty($this->st_sub[self::HOST_UP]))
-			return self::HOST_UP;
-		if (!empty($this->st_sub[self::HOST_DOWN]))
-			return self::HOST_DOWN;
-		if (!empty($this->st_sub[self::HOST_UNREACHABLE]))
-			return self::HOST_UNREACHABLE;
-		if (!empty($this->st_sub[self::HOST_PENDING]))
-			return self::HOST_PENDING;
-
-		# not reached
-		return self::HOST_DOWN;
-	}
-
-	/**
-	 * Calculate service state by taking the best state of any child report
-	 * @return State
-	 */
-	public function get_best_service_state()
-	{
-		if (!empty($this->st_sub[self::SERVICE_OK]))
-			return self::SERVICE_OK;
-		if (!empty($this->st_sub[self::SERVICE_WARNING]))
-			return self::SERVICE_WARNING;
-		if (!empty($this->st_sub[self::SERVICE_CRITICAL]))
-			return self::SERVICE_CRITICAL;
-		# Is UNKNOWN 'better' than WARNING or CRITICAL?
-		if (!empty($this->st_sub[self::SERVICE_UNKNOWN]))
-			return self::SERVICE_UNKNOWN;
-		if (!empty($this->st_sub[self::SERVICE_PENDING]))
-			return self::SERVICE_PENDING;
-
-		# not reached
-		return self::SERVICE_CRITICAL;
-	}
-
-	/**
-	 * Calculate host state by taking the worst state of any child report
-	 * @return State
-	 */
-	public function get_worst_host_state()
-	{
-		if (!empty($this->st_sub[self::HOST_DOWN]))
-			return self::HOST_DOWN;
-		if (!empty($this->st_sub[self::HOST_UNREACHABLE]))
-			return self::HOST_UNREACHABLE;
-		if (!empty($this->st_sub[self::HOST_PENDING]) && empty($this->st_sub[self::HOST_UP]))
-			return self::HOST_PENDING;
-		return  self::HOST_UP;
-	}
-
-	/**
-	 * Calculate service state by taking the worst state of any child report
-	 * @return State
-	 */
-	public function get_worst_service_state()
-	{
-		if (!empty($this->st_sub[self::SERVICE_CRITICAL]))
-			return self::SERVICE_CRITICAL;
-		if (!empty($this->st_sub[self::SERVICE_WARNING]))
-			return self::SERVICE_WARNING;
-		if (!empty($this->st_sub[self::SERVICE_UNKNOWN]))
-			return self::SERVICE_UNKNOWN;
-
-		if (!empty($this->st_sub[self::SERVICE_PENDING]) && empty($this->st_sub[self::SERVICE_OK]))
-			return self::SERVICE_PENDING;
-
-		return self::SERVICE_OK;
 	}
 
 	/**
