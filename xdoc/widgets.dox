@@ -1,0 +1,10 @@
+/** @page Widgets
+[TOC]
+
+@section intro Introduction
+Widgets are usable from a number of places in ninja, although
+primarily from the tactical overview.
+
+This document should describe how to code them up, and the examples
+section will get some examples of widgets "any day now", so stay tuned.
+*/
