@@ -117,7 +117,7 @@ if ($type == 'avail') { ?>
 					<td>
 						<div class="save-report">
 							<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
-							<label for="save_report_settings" id="save_report_label" onclick="toggle_state('save_report_settings');"><?php echo $label_save_report ?></label>
+							<label for="save_report_settings" id="save_report_label"><?php echo $label_save_report ?></label>
 						</div>
 						<div id="report_setup">
 							<span class="hidden" id="report_save_information">
