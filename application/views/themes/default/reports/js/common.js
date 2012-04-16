@@ -1277,14 +1277,14 @@ function remove_duplicates()
 	var tmp_fields = new field_maps3();
 	var field_str = current_obj_type;
 	var field = field_obj.map[field_str]+'[]'
-	var tmp_field = tmp_fields.map[field_str]+ '[]';
+	var tmp_field = $("select[name='" + tmp_fields.map[field_str]+ '[]' + "']");
 	var removed_items = new Array();
 	var i = 0;
 
 	$("select[name='" + field + "'] option").each(function() {
 		var this_item = $(this).val();
-		if ($("select[name='" + tmp_field + "']").containsOption(this_item)) {
-			$("select[name='" + tmp_field + "']").removeOption($(this).val());
+		if (tmp_field.containsOption(this_item)) {
+			tmp_field.removeOption(this_item);
 		} else {
 			//$("select[name='" + field + "']").removeOption(this_item);
 			removed_items[i++] = this_item;
