@@ -186,8 +186,8 @@ class Group_Model extends Model
 				"h.current_state AS host_state,".
 				"(UNIX_TIMESTAMP() - h.last_state_change) AS duration,".
 				"UNIX_TIMESTAMP() AS cur_time,".
-				"h.output,".
-				"h.long_output,".
+				"h.output AS host_output,".
+				"h.long_output AS host_long_output,".
 				"h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
 				"h.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
 				"h.notifications_enabled AS host_notifications_enabled,".
@@ -207,8 +207,8 @@ class Group_Model extends Model
 				"s.problem_has_been_acknowledged,".
 				"(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,".
 				"s.last_check,".
-				"s.output AS service_output,".
-				"s.long_output AS service_long_output,".
+				"s.output,".
+				"s.long_output,".
 				"s.notes_url,".
 				"s.action_url,".
 				"s.current_attempt,".
