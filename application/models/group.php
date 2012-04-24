@@ -219,7 +219,7 @@ class Group_Model extends Model
 				"s.service_description,".
 				"s.display_name AS display_name ".
 			"FROM host h ".
-			"INNER JOIN service s ON h.host_name=s.host_name ".
+			"LEFT JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
 			"INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group ".
 			"WHERE 1 = 1 ".
