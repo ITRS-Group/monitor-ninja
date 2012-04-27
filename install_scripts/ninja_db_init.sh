@@ -39,6 +39,12 @@ then
 	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
 fi
 
+if [[ "$db_ver" = '' ]]
+then
+	echo "Cannot connect to mysql, cannot install/upgrade database."
+	exit 1
+fi
+
 while [ "$db_ver" -lt "$target_db_version" ]; do
 	case "$db_ver" in
 	1)
