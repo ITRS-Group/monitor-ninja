@@ -18,7 +18,6 @@ class Ninja_Controller extends Template_Controller {
 	const ADMIN = 'admin'; # how do we define the admin role in database
 
 	public $session = false;
-	public $max_attempts = false;
 	public $locale = false;
 	public $registry = false;
 	public $defaultlanguage = 'en';
@@ -112,8 +111,6 @@ class Ninja_Controller extends Template_Controller {
 			$_GET['sort_field'] = $_SESSION['sort_options'][$sort_key]['sort_field'];
 			$_GET['sort_order'] = $_SESSION['sort_options'][$sort_key]['sort_order'];
 		}
-
-		$this->max_attempts =  Kohana::config('auth.max_attempts');
 
 		$this->locale = zend::instance('locale');
 

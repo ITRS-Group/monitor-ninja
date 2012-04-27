@@ -72,14 +72,14 @@ class Default_Controller extends Ninja_Controller  {
 	}
 
 	/**
-	 * Check if we should check if user has tried
+	 * Check if the user has tried
 	 * to login too many times
 	 *
 	 * @return bool
 	 */
 	public function is_locked_out()
 	{
-		if ($this->session->get('locked_out') && $this->max_attempts) {
+		if ($this->session->get('locked_out') && Kohana::config('auth.max_attempts')) {
 			return true;
 		}
 		return false;
@@ -96,6 +96,7 @@ class Default_Controller extends Ninja_Controller  {
 			&& array_key_exists('password', $_GET)) {
 				$_POST['username'] = $_GET['username'];
 				$_POST['password'] = $_GET['password'];
+				$_POST['auth_method'] = $this->input->get('auth_method', false);
 		}
 
 		if ($_POST) {
@@ -109,67 +110,42 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($user->{$this->csrf_config['csrf_token']})) {
+			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
 				$error_msg = $this->translate->_("Request forgery attack detected");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
 
-			$auth_method = $this->input->post('auth_method', false);
-			if (!empty($auth_method)) {
-					$_SESSION['auth_method'] = $auth_method;
-					Kohana::config_set('auth.driver', $auth_method);
-			}
-			$auth = Auth::factory();
-
-			# check if new authorization data is available in cgi.cfg
-			# this enables incremental import
-			Cli_Controller::insert_user_data();
-
 			$username = $this->input->post('username', false);
 			$password = $this->input->post('password', false);
-			# Kohana is stupid (well, it's Auth module is anyways) and
-			# refuses to *not* hash the password it passes on to the
-			# driver. However, that doesn't fly well with our need to
-			# support multiple password hash algorithms, so if we're
-			# using the Ninja authenticator we must call the driver
-			# explicitly
-			switch (Kohana::config('auth.driver')) {
-			 case 'Ninja':
-			 case 'LDAP':
-			 case 'apache':
-				$result = $auth->driver->login($username, $password, false);
-				break;
-			 default:
-				$result = $auth->login($username, $password);
-				break;
-			}
-			if (!$result) {
-				# increase login attempts counter
-				# this could be used to restrict access after
-				#  a certain nr of failed login attempts by setting
-				# 'max_attempts' in auth config
-				$this->session->set('login_attempts', $this->session->get('login_attempts')+1);
 
-				# set login error to user
-				$error_msg = $this->translate->_("Login failed - please try again");
-				if ($this->max_attempts) {
-					$error_msg .= " (".($this->max_attempts - $this->session->get('login_attempts'))." left)";
-				}
-
-				if ($this->max_attempts && $this->session->get('login_attempts') >= $this->max_attempts) {
-					$error_msg = sprintf($this->translate->_("You have been locked out due to %s failed login attempts"), $this->session->get('login_attempts'));
-					$this->session->set('error_msg', $error_msg);
-					$this->session->set('locked_out', true);
-					url::redirect('default/locked_out');
-				}
-
-				$this->session->set_flash('error_msg', $error_msg);
-				url::redirect('default/show_login');
+			$auth_method = $this->input->post('auth_method', false);
+			if (!empty($auth_method)) {
+				$_SESSION['auth_method'] = $auth_method;
+				Kohana::config_set('auth.driver', $auth_method);
 			}
 
-			$user_data = $auth->get_user()->last_login;
-			User_Model::complete_login($user_data);
+			$res = ninja_auth::login_user($username, $password);
+			if ($res !== true) {
+				url::redirect($res);
+			}
+			
+			$requested_uri = Session::instance()->get('requested_uri', false);
+			# make sure we don't end up in infinite loop
+			# if user managed to request show_login
+			if ($requested_uri == Kohana::config('routes.log_in_form')) {
+				$requested_uri = Kohana::config('routes.logged_in_default');
+			}
+			if ($requested_uri !== false) {
+				# remove 'requested_uri' from session
+				Session::instance()->delete('requested_uri');
+				url::redirect($requested_uri);
+			} else {
+				# we have no requested uri
+				# using logged_in_default from routes config
+				#die('going to default');
+				url::redirect(Kohana::config('routes.logged_in_default'));
+			}
 		}
 
 		# trying to login without $_POST is not allowed and shouldn't
