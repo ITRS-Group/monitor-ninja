@@ -17,6 +17,11 @@ class Command_Controller extends Authenticated_Controller
 	private $command_id = false;
 	private $cmd_params = array();
 	private $csrf_token = false;
+	/**
+	 * @var int = 300, if the starting time of a scheduled downtime is
+	 * older than this many seconds, it's considered to have been added retrospectively
+	 */
+	private $grace_time_in_s = 300;
 	private $objects = false;
 	private $obj_type = false;
 
@@ -139,6 +144,8 @@ class Command_Controller extends Authenticated_Controller
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
+			$this->template->inline_js = "grace_time_in_s = '$this->grace_time_in_s'";
+			$this->xtra_js[] = $this->add_path('command/js/schedule_downtime.js');
 			$param['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
@@ -149,6 +156,10 @@ class Command_Controller extends Authenticated_Controller
 				 'name' => $this->translate->_('Child Hosts'));
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
+			break;
+		 case 'SCHEDULE_SVC_DOWNTIME':
+			$this->template->inline_js = "grace_time_in_s = '$this->grace_time_in_s'";
+			$this->xtra_js[] = $this->add_path('command/js/schedule_downtime.js');
 			break;
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
@@ -221,15 +232,18 @@ class Command_Controller extends Authenticated_Controller
 	 */
 	public function commit()
 	{
-		$this->init_page('command/commit');
+		if(!isset($_REQUEST['requested_command'])) {
+			return url::redirect(Router::$controller.'/unauthorized/');
+		}
 		$cmd = $_REQUEST['requested_command'];
+		$this->init_page('command/commit');
 		$this->template->content->requested_command = $cmd;
 
 		$nagios_commands = array();
 		$param = $this->get_array_var($_REQUEST, 'cmd_param', array());
 		$auth_check = $this->_is_authorized_for_command($param, $cmd);
 		if ($auth_check === false || $auth_check <0) {
-			url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
+			return url::redirect(Router::$controller.'/unauthorized/'.$auth_check);
 		}
 
 		if (isset($param['comment']) && trim($param['comment'])=='') {
@@ -274,15 +288,69 @@ class Command_Controller extends Authenticated_Controller
 					$cmd = 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME';
 				}
 			}
+			if(1 == $param['fixed']) {
+				// we can't add a scheduled downtime to a flexible event
+				$now = time();
+				$start_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['start_time']);
+				$end_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['end_time']);
+				if(($start_as_seconds + $this->grace_time_in_s) < $now) {
+					Database::instance()->query(
+						"INSERT INTO
+							report_data_extras
+							(
+								timestamp,
+								event_type,
+								host_name,
+								downtime_depth
+							)
+						VALUES
+						(
+							?,
+							1103,
+							?,
+							1
+						)",
+						array(
+							$start_as_seconds,
+							$param['host_name']
+						)
+					);
+					if($end_as_seconds < $now) {
+						Database::instance()->query(
+							"INSERT INTO
+								report_data_extras
+								(
+									timestamp,
+									event_type,
+									host_name,
+									downtime_depth
+								)
+							VALUES
+							(
+								?,
+								1103,
+								?,
+								0
+							)",
+							array(
+								$end_as_seconds,
+								$param['host_name']
+							)
+						);
+					}
+					$param['start_time'] = date(nagstat::date_format(), $now);
+				}
+			}
 			$fallthrough = true;
 			# fallthrough to services-too handling
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
 			if (!empty($param['_services-too'])) {
 				unset($param['_services-too']);
-				if ($fallthrough)
-					$nagios_commands = $this->_build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param);
-				else
-					$nagios_commands = $this->_build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param);
+				if ($fallthrough) {
+					$nagios_commands = array_merge($this->_build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param), $nagios_commands);
+				} else {
+					$nagios_commands = array_merge($this->_build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param), $nagios_commands);
+				}
 			}
 			break;
 
@@ -345,6 +413,67 @@ class Command_Controller extends Authenticated_Controller
 				$this->template->content->result = false;
 				$this->template->content->error = $date_validation_result;
 				return;
+			}
+			if(1 != $param['fixed']) {
+				// we can't add a scheduled downtime to a flexible event
+				break;
+			}
+			$now = time();
+			$start_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['start_time']);
+			$end_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['end_time']);
+			list($host, $service) = explode(';', $param['service']);
+			if(($start_as_seconds + $this->grace_time_in_s) < $now) {
+				Database::instance()->query(
+					"INSERT INTO
+						report_data_extras
+						(
+							timestamp,
+							event_type,
+							host_name,
+							service_description,
+							downtime_depth
+						)
+					VALUES
+					(
+						?,
+						1103,
+						?,
+						?,
+						1
+					)",
+					array(
+						$start_as_seconds,
+						$host,
+						$service
+					)
+				);
+				if($end_as_seconds < $now) {
+					Database::instance()->query(
+						"INSERT INTO
+							report_data_extras
+							(
+								timestamp,
+								event_type,
+								host_name,
+								service_description,
+								downtime_depth
+							)
+						VALUES
+						(
+							?,
+							1103,
+							?,
+							?,
+							0
+						)",
+						array(
+							$end_as_seconds,
+							$host,
+							$service
+						)
+					);
+				}
+				$param['start_time'] = date(nagstat::date_format(), $now);
 			}
 			break;
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':

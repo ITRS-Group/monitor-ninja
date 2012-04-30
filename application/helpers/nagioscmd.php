@@ -1181,7 +1181,7 @@ class nagioscmd_Core
 	 * @param $pipe_path Path to the nagios path
 	 * @return false on error, else true
 	 */
-	public function submit_to_nagios($cmd, $pipe_path)
+	public static function submit_to_nagios($cmd, $pipe_path)
 	{
 		$fh = fopen($pipe_path, "w");
 		if ($fh === false)
