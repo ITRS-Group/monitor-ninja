@@ -118,7 +118,7 @@ class widget_Base
 				if ($this->$class)
 					$widget_classes[] = $class;
 			}
-			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'"'.((isset($this->model->setting['status']) && $this->model->setting['status'] === 'hide')?' style="display: none;"' : '').' data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
+			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
 			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
 			$content .= '<div class="widget-editbox">';
 			$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
