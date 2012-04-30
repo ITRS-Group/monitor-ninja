@@ -364,13 +364,22 @@ class Ajax_Controller extends Authenticated_Controller {
 	/**
 	 * A "factory reset" is defined as "undefined, fairly evenly distributed
 	 * widgets with default settings"
+	 *
+	 * @FIXME I'm reasonably certain that default ordering won't work on oracle
 	 */
 	 public function factory_reset_widgets()
 	 {
 		$username = user::session('username');
 		$db = Database::instance();
 		$db->query('DELETE FROM ninja_widgets WHERE username = ' . $db->escape($username));
-		$db->query('DELETE FROM ninja_settings WHERE type = \'widget_order\' AND username = '. $db->escape($username));
+		$res = $db->query('SELECT setting FROM ninja_settings WHERE type=\'widget_order\' AND username = \'\'');
+		if (empty($res)) {
+			$setting = '';
+		} else {
+			$row = $res->current();
+			$setting = $row->setting;
+		}
+		$db->query('UPDATE ninja_settings SET setting='.$db->escape($setting).' WHERE type = \'widget_order\' AND username = '. $db->escape($username));
 		echo json::encode(array('success' => true));
 	 }
 
