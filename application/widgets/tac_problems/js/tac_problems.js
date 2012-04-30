@@ -12,8 +12,8 @@ widget.register_widget_load('tac_problems', function() {
 
 	problem_field_register('outages');
 	problem_field_register('host_down');
-	problem_field_register('services_critical');
+	problem_field_register('service_critical');
 	problem_field_register('host_unreachable');
-	problem_field_register('services_warning');
-	problem_field_register('services_unknown');
+	problem_field_register('service_warning');
+	problem_field_register('service_unknown');
 });
