@@ -32,8 +32,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 *
-	 *
+	 * @param $type string = host
+	 * @param $host boolean = false
+	 * @param $service boolean = false
 	 */
 	public function details($type='host', $host=false, $service=false)
 	{
@@ -65,14 +66,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$is_authenticated = true;
 		switch ($type) {
 			case 'host':
-				$auth_hosts = $auth->get_authorized_hosts();
+				$auth->get_authorized_hosts();
 				if (!array_key_exists($host, $auth->hosts_r)) {
 					# user not allowed to view info on selected host
 					$is_authenticated = false;
 				}
 				break;
 			case 'service':
-				$auth_services = $auth->get_authorized_services();
+				$auth->get_authorized_services();
 				if (!array_key_exists($host.';'.$service, $auth->services_r)) {
 					# user not allowed to view info on selected service
 					$is_authenticated = false;
@@ -80,10 +81,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 				break;
 			case 'servicegroup': case 'hostgroup':
 				return $this->group_details($type, $host);
-				break;
 		}
 		if ($is_authenticated === false) {
-			url::redirect('extinfo/unauthorized/'.$type);
+			return url::redirect('extinfo/unauthorized/'.$type);
 		}
 
 		$this->template->content = $this->add_view('extinfo/index');
@@ -100,6 +100,17 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$result_data = Host_Model::object_status($host, $service);
 		$result = $result_data[0];
+		switch($type) {
+			case 'host':
+				$content->custom_variables = Custom_variable_Model::get_for($type, $result->id);
+				break;
+			case 'service':
+				$content->custom_variables = Custom_variable_Model::get_for($type, $result->service_id);
+				break;
+			default:
+				$content->custom_variables = array();
+
+		}
 		$host_link = false;
 		$yes = $t->_('YES');
 		$no = $t->_('NO');

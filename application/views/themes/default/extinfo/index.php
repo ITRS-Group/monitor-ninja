@@ -244,8 +244,17 @@ if (!empty($widgets)) {
 				<span class="<?php echo strtolower($flap_detection_enabled); ?>"><?php echo ucfirst(strtolower($flap_detection_enabled)) ?></span>
 			</td>
 		</tr>
-	</table>
-	<?php } ?>
+		<?php if($custom_variables) {
+			foreach($custom_variables as $custom_variable) { ?>
+				<tr>
+					<td class="dark"><?php echo $custom_variable['variable'] ?></td>
+					<td><?php echo $custom_variable['value'] ?></td>
+				</tr>
+		<?php
+			}
+		} ?>
+			</table>
+<?php } ?>
 </div>
 
 <?php
