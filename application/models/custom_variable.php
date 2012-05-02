@@ -6,7 +6,8 @@
 class Custom_variable_Model extends Model
 {
 	/**
- 	 * @param $object_type
+	 * @param $object_type string
+	 * @param $object_id int = null
 	 * @throws InvalidArgumentException
 	 * @return array
 	 */
