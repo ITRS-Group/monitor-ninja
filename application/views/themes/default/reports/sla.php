@@ -19,9 +19,22 @@ foreach($report_data as $i =>  $report) {
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo ((!$create_pdf) ? help::render('sla_graph') : '').' '.$str_source; ?></h2>
 		<?php
-		if (!$create_pdf) { ?>
-		<a href="<?php echo $report['avail_links'];?>" style="border: 0px"><img src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" alt="" title="<?php echo $t->_('Uptime');?>" id="pie" class="chart-border" /></a><?php
-		} else {
+		if (!$create_pdf) {
+			$avail_links = html_entity_decode($report['avail_links']);
+			parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
+		<form action="<?php echo url::site().Kohana::config('reports.reports_link').'/generate?type=avail' ?>" method="post">
+			<input type="image" src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" title="<?php echo $t->_('Uptime');?>" />
+			<?php foreach($avail_links as $key => $value) {
+				if(is_array($value)) {
+					foreach($value as $value_part) { ?>
+					<input type="hidden" name="<?php echo $key ?>[]" value="<?php echo $value_part ?>" />
+					<?php }
+				} else { ?>
+					<input type="hidden" name="<?php echo $key ?>" value="<?php echo $value ?>" />
+				<?php }
+			} ?>
+		</form>
+		<?php } else {
 			echo "#chart_placeholder_$nr#";
 		} ?>
 	</div>
