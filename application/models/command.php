@@ -23,13 +23,7 @@ class Command_Model extends Model
 		# the underscore is an implementation detail ("don't pass this straight
 		# to nagios") that should not be exposed in config/nagdefault.php
 		$setting = 'nagdefault.'.ltrim($setting, '_');
-		$value = Ninja_setting_Model::fetch_page_setting($setting, '*');
-		if (is_object($value))
-			$value = $value->setting;
-		else
-			# all checkboxes that used to be hardcoded to true is set to true
-			# in the config file. as this defaults to false, we stay consistent.
-			$value = Kohana::config($setting);
+		$value = config::get($setting);
 		return $value;
 	}
 
