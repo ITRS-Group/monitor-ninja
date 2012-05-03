@@ -80,7 +80,6 @@ $menu = array(
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
 
-$group_items_per_page = Kohana::config('pagination.group_items_per_page', '*', true);
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
@@ -112,13 +111,13 @@ $menu_base = array(
 		$menu_items['host_detail'] 				=> array('/status/host/all', 'host',0),
 		$menu_items['service_detail'] 			=> array('/status/service/all', 'service',0),
 		//'hr1' 														=> array('', ''),
-		$menu_items['hostgroup_summary']		=> array('/status/hostgroup_summary?items_per_page='.$group_items_per_page, 'hostgroupsummary',0),
-		$menu_items['hostgroup_overview'] 		=> array('/status/hostgroup?items_per_page='.$group_items_per_page, 'hostgroup',0),
-		$menu_items['hostgroup_grid']			=> array('/status/hostgroup_grid?items_per_page='.$group_items_per_page, 'hostgroupgrid',0),
+		$menu_items['hostgroup_summary']		=> array('/status/hostgroup_summary', 'hostgroupsummary',0),
+		$menu_items['hostgroup_overview'] 		=> array('/status/hostgroup', 'hostgroup',0),
+		$menu_items['hostgroup_grid']			=> array('/status/hostgroup_grid', 'hostgroupgrid',0),
 		//'hr2'														=> array('', ''),
-		$menu_items['servicegroup_summary'] 	=> array('/status/servicegroup_summary?items_per_page='.$group_items_per_page, 'servicegroupsummary',0),
-		$menu_items['servicegroup_overview'] 	=> array('/status/servicegroup?items_per_page='.$group_items_per_page, 'servicegroup',0),
-		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid?items_per_page='.$group_items_per_page, 'servicegroupgrid',0),
+		$menu_items['servicegroup_summary'] 	=> array('/status/servicegroup_summary', 'servicegroupsummary',0),
+		$menu_items['servicegroup_overview'] 	=> array('/status/servicegroup', 'servicegroup',0),
+		$menu_items['servicegroup_grid'] 		=> array('/status/servicegroup_grid', 'servicegroupgrid',0),
 		//'hr3' 														=> array('', ''),
 		$menu_items['network_outages']  		=> array('/outages', 'outages',0),
 		$menu_items['host_problems'] 			=> array('/status/host/all/'.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE), 'hostproblems',0),
