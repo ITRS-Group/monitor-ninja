@@ -32,11 +32,11 @@ $label_next = html::image(
 ?>
 
 <?php
-	$paging_step = Kohana::config('pagination.paging_step'); # step used below to print nr of items per page
-	$max_items_per_page = Kohana::config('pagination.max_items_per_page'); # maximum items per page to show
+	$paging_step = config::get('pagination.paging_step', '*'); # step used below to print nr of items per page
+	$max_items_per_page = config::get('pagination.max_items_per_page', '*'); # maximum items per page to show
 	$entries = $this->translate->_('entries');
 	if (!isset($items_per_page)) {
-		$items_per_page = Kohana::config('pagination.items_per_page');
+		$items_per_page = config::get('pagination.items_per_page', '*');
 	}
 	?>
 	<span class="pagination_entries_str" style="display:none"><?php echo $entries ?></span>

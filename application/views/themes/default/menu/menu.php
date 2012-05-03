@@ -193,7 +193,7 @@ $sections = array(
 	'configuration'
 );
 
-$xtra_menu = Kohana::config('menu.items');
+$xtra_menu = config::get('menu.items');
 if (!empty($xtra_menu)) {
 	foreach ($xtra_menu as $section => $page_info) {
 		foreach ($page_info as $page => $info) {
