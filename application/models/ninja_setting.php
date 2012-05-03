@@ -126,33 +126,4 @@ class Ninja_setting_Model extends Model
 		$result = ($res!== false && count($res)) ? $res : $db->query($sql);
 		return count($result) !=0 ? $result->current() : false;
 	}
-
-
-	/**
-	*	Copy widget order from an existing page for current user
-	*/
-	public function copy_widget_order($existing_page='tac/index', $new_page=false)
-	{
-		if (empty($existing_page) || empty($new_page)) {
-			return false;
-		}
-
-		$type = 'widget_order';
-		$data = self::fetch_page_setting($type, $existing_page);
-
-		# make sure we don't already have this info and that old info exists
-		$check = self::fetch_page_setting('widget_order', $new_page);
-		if (!empty($check) || empty($data)) {
-			return false;
-		}
-
-		$user = Auth::instance()->get_user()->username;
-		$widget_order = $data->setting;
-		$db = Database::instance();
-		$sql = "INSERT INTO ninja_settings(page, type, setting, ".self::USERFIELD.") ".
-			"VALUES(".$db->escape($new_page).", ".$db->escape($type).", ".$db->escape($widget_order).
-			", ".$db->escape($user).")";
-
-		return $db->query($sql);
-	}
 }
