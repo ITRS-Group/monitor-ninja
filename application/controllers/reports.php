@@ -996,10 +996,8 @@ class Reports_Controller extends Authenticated_Controller
 			unset($report_options['include_trends']);
 			unset($report_options['report_name']);
 			$report_options['sla_name'] = $report_name;
-			if (isset($report_options['host_filter_status']))
-				unset($report_options['host_filter_status']);
-			if (isset($report_options['service_filter_status']))
-				unset($report_options['service_filter_status']);
+			unset($report_options['host_filter_status']);
+			unset($report_options['service_filter_status']);
 		}
 
 		$this->report_options = $report_options;
@@ -4507,7 +4505,7 @@ class Reports_Controller extends Authenticated_Controller
 			if ($type === 'sla') {
 				if ($k === 'report_name')
 					$k = 'sla_name';
-				if ($k == 'host_filter_status' || $k == 'service_filter_status')
+				if ($k == 'host_filter_status' || $k == 'service_filter_status' || $k == 'include_trends')
 					continue;
 			}
 			$request[$k] = $report_data[$k];
