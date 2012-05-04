@@ -345,7 +345,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
 					</td>
 					<td>&nbsp;</td>
-					<td>
+					<td class="avail_display">
 						<?php if('avail' == $type) { ?>
 						<?php echo help::render('include_trends') ?>
 						<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
