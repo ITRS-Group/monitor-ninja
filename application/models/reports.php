@@ -1537,7 +1537,6 @@ class Reports_Model extends Model
 			}
 			$this->calculate_object_state();
 			return 0;
-			break;
 		 case self::DOWNTIME_START:
 			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
 			foreach ($rpts as $rpt) {
