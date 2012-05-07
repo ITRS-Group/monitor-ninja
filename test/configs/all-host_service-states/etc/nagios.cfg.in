@@ -69,7 +69,7 @@ log_archive_path=/opt/monitor/var/archives
 check_external_commands=1
 command_check_interval=-1
 
-command_file=@@TESTDIR@@/var/rw/nagios.cmd
+command_file=/tmp/ninja-test/nagios.cmd
 
 
 
