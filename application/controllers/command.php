@@ -296,6 +296,27 @@ class Command_Controller extends Authenticated_Controller
 				if(($start_as_seconds + $this->grace_time_in_s) < $now) {
 					Database::instance()->query(
 						"INSERT INTO
+							report_data
+							(
+								timestamp,
+								event_type,
+								host_name,
+								downtime_depth
+							)
+						VALUES
+						(
+							?,
+							1103,
+							?,
+							1
+						)",
+						array(
+							$start_as_seconds,
+							$param['host_name']
+						)
+					);
+					Database::instance()->query(
+						"INSERT INTO
 							report_data_extras
 							(
 								timestamp,
@@ -318,6 +339,27 @@ class Command_Controller extends Authenticated_Controller
 					if($end_as_seconds < $now) {
 						Database::instance()->query(
 							"INSERT INTO
+								report_data
+								(
+									timestamp,
+									event_type,
+									host_name,
+									downtime_depth
+								)
+							VALUES
+							(
+								?,
+								1104,
+								?,
+								0
+							)",
+							array(
+								$end_as_seconds,
+								$param['host_name']
+							)
+						);
+						Database::instance()->query(
+							"INSERT INTO
 								report_data_extras
 								(
 									timestamp,
@@ -328,7 +370,7 @@ class Command_Controller extends Authenticated_Controller
 							VALUES
 							(
 								?,
-								1103,
+								1104,
 								?,
 								0
 							)",
@@ -338,7 +380,6 @@ class Command_Controller extends Authenticated_Controller
 							)
 						);
 					}
-					$param['start_time'] = date(nagstat::date_format(), $now);
 				}
 			}
 			$fallthrough = true;
@@ -425,6 +466,30 @@ class Command_Controller extends Authenticated_Controller
 			if(($start_as_seconds + $this->grace_time_in_s) < $now) {
 				Database::instance()->query(
 					"INSERT INTO
+						report_data
+						(
+							timestamp,
+							event_type,
+							host_name,
+							service_description,
+							downtime_depth
+						)
+					VALUES
+					(
+						?,
+						1103,
+						?,
+						?,
+						1
+					)",
+					array(
+						$start_as_seconds,
+						$host,
+						$service
+					)
+				);
+				Database::instance()->query(
+					"INSERT INTO
 						report_data_extras
 						(
 							timestamp,
@@ -450,6 +515,30 @@ class Command_Controller extends Authenticated_Controller
 				if($end_as_seconds < $now) {
 					Database::instance()->query(
 						"INSERT INTO
+							report_data
+							(
+								timestamp,
+								event_type,
+								host_name,
+								service_description,
+								downtime_depth
+							)
+						VALUES
+						(
+							?,
+							1104,
+							?,
+							?,
+							0
+						)",
+						array(
+							$end_as_seconds,
+							$host,
+							$service
+						)
+					);
+					Database::instance()->query(
+						"INSERT INTO
 							report_data_extras
 							(
 								timestamp,
@@ -461,7 +550,7 @@ class Command_Controller extends Authenticated_Controller
 						VALUES
 						(
 							?,
-							1103,
+							1104,
 							?,
 							?,
 							0
@@ -473,7 +562,6 @@ class Command_Controller extends Authenticated_Controller
 						)
 					);
 				}
-				$param['start_time'] = date(nagstat::date_format(), $now);
 			}
 			break;
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':
