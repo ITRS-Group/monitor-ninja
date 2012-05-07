@@ -1556,7 +1556,9 @@ class Reports_Model extends Model
 			$this->calculate_object_state();
 			return 0;
 		 case self::DOWNTIME_START:
-			$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
+			if(!isset($row['output']) || !$row['output']) {
+				$row['output'] = $obj_type . ' has entered a period of scheduled downtime';
+			}
 			foreach ($rpts as $idx => $rpt) {
 				$add = 0;
 				# we are always spammed with downtime events after restart, so
@@ -1582,7 +1584,9 @@ class Reports_Model extends Model
 			}
 			break;
 		 case self::DOWNTIME_STOP:
-			$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
+			if(!isset($row['output']) || !$row['output']) {
+				$row['output'] = $obj_type . ' has exited a period of scheduled downtime';
+			}
 			foreach ($rpts as $idx => $rpt) {
 				# old merlin versions created more end events than start events, so
 				# never decrement if we're already at 0.

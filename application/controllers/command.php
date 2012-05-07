@@ -301,18 +301,21 @@ class Command_Controller extends Authenticated_Controller
 								timestamp,
 								event_type,
 								host_name,
-								downtime_depth
+								downtime_depth,
+								output
 							)
 						VALUES
 						(
 							?,
 							1103,
 							?,
-							1
+							1,
+							?
 						)",
 						array(
 							$start_as_seconds,
-							$param['host_name']
+							$param['host_name'],
+							"Host has entered a period of retroactively added scheduled downtime"
 						)
 					);
 					Database::instance()->query(
@@ -322,18 +325,21 @@ class Command_Controller extends Authenticated_Controller
 								timestamp,
 								event_type,
 								host_name,
-								downtime_depth
+								downtime_depth,
+								output
 							)
 						VALUES
 						(
 							?,
 							1103,
 							?,
-							1
+							1,
+							?
 						)",
 						array(
 							$start_as_seconds,
-							$param['host_name']
+							$param['host_name'],
+							"Host has entered a period of retroactively added scheduled downtime"
 						)
 					);
 					if($end_as_seconds < $now) {
@@ -344,18 +350,21 @@ class Command_Controller extends Authenticated_Controller
 									timestamp,
 									event_type,
 									host_name,
-									downtime_depth
+									downtime_depth,
+									output
 								)
 							VALUES
 							(
 								?,
 								1104,
 								?,
-								0
+								0,
+								?
 							)",
 							array(
 								$end_as_seconds,
-								$param['host_name']
+								$param['host_name'],
+								"Host has exited a period of retroactively added scheduled downtime"
 							)
 						);
 						Database::instance()->query(
@@ -365,18 +374,21 @@ class Command_Controller extends Authenticated_Controller
 									timestamp,
 									event_type,
 									host_name,
-									downtime_depth
+									downtime_depth,
+									output
 								)
 							VALUES
 							(
 								?,
 								1104,
 								?,
-								0
+								0,
+								?
 							)",
 							array(
 								$end_as_seconds,
-								$param['host_name']
+								$param['host_name'],
+								"Host has exited a period of retroactively added scheduled downtime"
 							)
 						);
 					}
@@ -472,7 +484,8 @@ class Command_Controller extends Authenticated_Controller
 							event_type,
 							host_name,
 							service_description,
-							downtime_depth
+							downtime_depth,
+							output
 						)
 					VALUES
 					(
@@ -480,12 +493,14 @@ class Command_Controller extends Authenticated_Controller
 						1103,
 						?,
 						?,
-						1
+						1,
+						?
 					)",
 					array(
 						$start_as_seconds,
 						$host,
-						$service
+						$service,
+						"Service has entered a period of retroactively added scheduled downtime"
 					)
 				);
 				Database::instance()->query(
@@ -496,7 +511,8 @@ class Command_Controller extends Authenticated_Controller
 							event_type,
 							host_name,
 							service_description,
-							downtime_depth
+							downtime_depth,
+							output
 						)
 					VALUES
 					(
@@ -504,12 +520,14 @@ class Command_Controller extends Authenticated_Controller
 						1103,
 						?,
 						?,
-						1
+						1,
+						?
 					)",
 					array(
 						$start_as_seconds,
 						$host,
-						$service
+						$service,
+						"Service has entered a period of retroactively added scheduled downtime"
 					)
 				);
 				if($end_as_seconds < $now) {
@@ -521,7 +539,8 @@ class Command_Controller extends Authenticated_Controller
 								event_type,
 								host_name,
 								service_description,
-								downtime_depth
+								downtime_depth,
+								output
 							)
 						VALUES
 						(
@@ -529,12 +548,14 @@ class Command_Controller extends Authenticated_Controller
 							1104,
 							?,
 							?,
-							0
+							0,
+							?
 						)",
 						array(
 							$end_as_seconds,
 							$host,
-							$service
+							$service,
+							"Service has exited a period of retroactively added scheduled downtime"
 						)
 					);
 					Database::instance()->query(
@@ -545,7 +566,8 @@ class Command_Controller extends Authenticated_Controller
 								event_type,
 								host_name,
 								service_description,
-								downtime_depth
+								downtime_depth,
+								output
 							)
 						VALUES
 						(
@@ -553,12 +575,14 @@ class Command_Controller extends Authenticated_Controller
 							1104,
 							?,
 							?,
-							0
+							0,
+							?
 						)",
 						array(
 							$end_as_seconds,
 							$host,
-							$service
+							$service,
+							"Service has exited a period of retroactively added scheduled downtime"
 						)
 					);
 				}
