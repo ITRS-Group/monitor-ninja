@@ -1585,7 +1585,6 @@ select {
 #report_setup {
 	position: relative;
 	float: right;
-	marginright-bottom: -2px;
 }
 
 hr {
