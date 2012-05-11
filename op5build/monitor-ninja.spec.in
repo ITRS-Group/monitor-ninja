@@ -12,8 +12,9 @@ Requires: monitor-gui-core
 Requires: merlin-apps >= 0.8.0
 Requires: op5auth >= 1.2.0
 %if 0%{?rhel} >= 6
- Requires: php-process
+Requires: php-process
 %endif
+
 Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
 %description
