@@ -187,10 +187,10 @@ CREATE TABLE avail_config (
   alert_types NUMBER(3,0) DEFAULT '0',
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
-  service_states NUMBER(3,0) DEFAULT '0',
-  include_trends NUMBER(3,0) DEFAULT '1'
+  service_states NUMBER(3,0) DEFAULT '0'
 );
 
+ALTER TABLE avail_config ADD include_trends NUMBER(3,0) DEFAULT '1';
 
 PROMPT Creating Primary Key Constraint avail_config_pk on table avail_config ...
 ALTER TABLE avail_config
@@ -386,9 +386,10 @@ CREATE TABLE ninja_widgets (
   page VARCHAR2(200 CHAR) DEFAULT 'tac/index' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
   friendly_name VARCHAR2(255 CHAR) NOT NULL,
-  instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
+
+ALTER TABLE ninja_widgets ADD instance_id NUMBER(10,0) DEFAULT NULL;
 
 PROMPT Creating Primary Key Constraint ninja_widgets_pk on table ninja_widgets ...
 ALTER TABLE ninja_widgets

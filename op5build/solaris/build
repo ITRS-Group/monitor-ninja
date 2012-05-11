@@ -3,7 +3,7 @@ curdir=`pwd`
 basedir=`dirname $curdir`
 tempdir=$basedir/temp
 prefix='/opt/monitor/op5/ninja'
-AP2CONFDIR='/opt/csw/apache2/etc'
+AP2CONFDIR='/etc/opt/csw/apache2/extra'
 PATH_DEF=`echo $PATH`
 PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin:/usr/ccs/bin
 
@@ -71,8 +71,8 @@ ln -sf $prefix $tempdir/var/www/html/ninja
 # recursive symbolic link, so must be after all 'find' stuff above
 ln -s ../ $tempdir$prefix/op5
 
-mkdir -p $tempdir$AP2CONFDIR/extra
-cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/extra/ninja.conf
+mkdir -p $tempdir$AP2CONFDIR
+cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/ninja.conf
 
 
 PATH=$PATH_DEF
