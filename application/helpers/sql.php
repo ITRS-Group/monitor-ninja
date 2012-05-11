@@ -35,7 +35,7 @@ class sql_Core
 	* 	Arguments 1 and 3 are assumed to be field names
 	* 	and argument 2 i assumed to be a string.
 	*/
-	public function concat($arg1, $arg2, $arg3)
+	public static function concat($arg1, $arg2, $arg3)
 	{
 		switch (Kohana::config('database.default.connection.type'))
 		{

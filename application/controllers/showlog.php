@@ -107,10 +107,9 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->options = array
 			(
 			 'state_type' => array('soft' => true, 'hard' => true),
-			 'host_state_options' =>
-			 array('r' => true, 'd' => true, 'u' => true),
-			 'service_state_options' =>
-			 array('r' => true, 'w' => true, 'c' => true, 'u' => true),
+			 'host_state_options' => array('r' => true, 'd' => true, 'u' => true),
+			 'service_state_options' => array('r' => true, 'w' => true, 'c' => true, 'u' => true),
+			 'hide_initial' => true
 			 );
 
 		$auth = new Nagios_auth_Model();
@@ -270,7 +269,6 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->basic_setup();
 		$this->template->title = $this->translate->_("Reporting » Event Log");
-		$this->options['hide_initial'] = true;
 
 		$auth = new Nagios_auth_Model();
 		$is_authorized = false;

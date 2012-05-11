@@ -1,215 +1,151 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once(Kohana::find_file(Kohana::config('widget.dirname'), 'widget_Base'));
+
+function widget_error_handler($a, $b, $c, $d)
+{
+	throw new ErrorException($b, 0, $a, $c, $d);
+}
+
 /**
  * widget helper class.
  */
 class widget_Core
 {
-	public $result = false; 	# widget content result
-	public $js = false;			# required js resources?
-	public $css = false;		# additional css?
-	public $widget_base_path = false;# base_path to widget
-	public $widget_full_path = false;
-	public $master_obj = false;
-	public $widgetname = false;
-	private $widget_basename = false;
-	private $instance_id = false;
-	public $translate = false;
-
-	public function __construct()
-	{
-		$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.dirname');
-		$this->auto_render = FALSE;
-
-		$this->theme_path = zend::instance('Registry')->get('theme_path');
-
-		# fetch our translation instance
-		$this->translate = zend::instance('Registry')->get('Zend_Translate');
-
-		# check for instance id via GET (widget ajax update)
-		$instance_id = arr::search($_GET, 'instance_id');
-		if ($instance_id) {
-			$this->instance_id = $instance_id;
-		}
-
-		$widget_name = arr::search($_GET, 'widget_name');
-		if ($widget_name) {
-			$this->set_instance_vars($widget_name, $instance_id);
-		}
-
-		# suppress output until widget is done
-		ob_implicit_flush(0);
-		ob_start();
-	}
+	private static $with_chrome = true;
 
 	/**
-	 * Add a new widget
-	 * @param $name string: Name of the widget
-	 * @param $arguments array: Widget arguments
-	 * @param $master ?
-	 */
-	public function add($name=false, $arguments=false, &$master=false, $instance_id=false)
-	{
-
-		try {
-			# first try custom path
-			$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$name, $name, false);
-			if ($path === false) {
-				# try core path if not found in custom
-				$path = Kohana::find_file(Kohana::config('widget.dirname').$name, $name, true);
-			}
-			require_once($path);
-			$classname = $name.'_Widget';
-
-			$obj = new $classname;
-
-			# set instance variables to make it possible with multiple instances
-			$obj->set_instance_vars($name, $instance_id);
-
-			# if we have a requested widget method - let's call it
-			# always call index method of widget
-			$widget_method = 'index';
-			if (!empty($instance_id)) {
-				$master->inline_js .= "var ".$name.$instance_id." = new widget('".$name.$instance_id."');";
-				$master->inline_js .= $name.$instance_id.".set_instance_id('".$instance_id."');";
-			}
-			return $obj->$widget_method($arguments, $master);
-		} catch (Exception $ex) {
-			$master->widgets[] = "<div id=\"widget-$name\" class='widget editable movable collapsable removable closeconfirm'><div class='widget-header'>$name</div><div class='widget-content'>The widget $name couldn't be loaded.</div></div>";
-		}
-
-	}
-
-	/**
-	 * Find name of input class and set wiidget_full path for later use
-	 * @param $input string: Widget name
-	 * @param $dirname Directory name
-	 * @return false on error. true on success
-	 */
-	public function set_widget_name($input=false, $dirname=false)
-	{
-		if (empty($input))
-			return false;
-
-		$this->widgetname = strtolower(str_replace('_Widget', '',$input));
-
-		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget, $widget, false);
-		if ($path === false) {
-			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget, $widget, false);
-		}
-
-		if (strstr($path, Kohana::config('widget.custom_dirname')) !== false) {
-			# we have a custom_widget
-			$this->widget_base_path = Kohana::config('widget.path').Kohana::config('widget.custom_dirname');
-		}
-
-		$this->widget_full_path = $this->widget_base_path.$widget;
-		return true;
-	}
-
-	/**
-	 * Find path of widget viewer
-	 * @param $view Template object
-	 * @return str path to viewer
-	 */
-	public function view_path($view=false)
-	{
-		if (empty($view))
-			return false;
-
-		$widget = empty($this->widget_basename) ? $this->widgetname : $this->widget_basename;
-		# first try custom path
-		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$this->widget_basename, $view, false);
-		if ($path === false) {
-			# try core path if not found in custom
-			$path = Kohana::find_file(Kohana::config('widget.dirname').$this->widget_basename, $view, true);
-		}
-
-		return $path;
-	}
-
-	/**
-	 * Fetch content from output buffer for widget.
-	 * Assign required external files (js, css) on to master controller
-	 * variables.
-	 */
-	public function fetch()
-	{
-		$content = $this->output();
-		$this->resources($this->js, 'js');
-		$this->resources($this->css, 'css');
-		$this->master_obj->widgets = array_merge($this->master_obj->widgets, array($content));
-		#return array('content' => $content, 'js' => $this->js, 'css' => $this->css);
-	}
-
-	/**
-	 * Fetch content from output buffer for widget ajax call
-	 * and clean up output buffer.
-	 * @return Buffered output content
-	 */
-	public function output()
-	{
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
-	}
-
-	/**
-	 * Merge current widgets resource files with other
-	 * widgets to be printed to HTML head
+	 * Set to true to render the widget with chrome, ie the settings and titlebar
+	 * Set to false to only render the content.
 	 *
-	 * @param $in_files array: Paths to widget files
-	 * @param $type string: File type { css, js }
-	 * @return false on errors, true on success.
+	 * @param $with_chrome boolean Whether to show chrome or not
 	 */
-	public function resources($in_files=false, $type='js')
-	{
-		if (empty($in_files) || empty($this->master_obj) || empty($type))
-			return false;
-		$type = strtolower($type);
-		$files = false;
-		foreach ($in_files as $file) {
-			$files[] = $this->widget_base_path.$this->widget_basename.$file;
-		}
-		switch ($type) {
-		 case 'css':
-			$this->master_obj->xtra_css = array_merge($this->master_obj->xtra_css, $files);
-			break;
-		 case 'js': default:
-			$this->master_obj->xtra_js = array_merge($this->master_obj->xtra_js, $files);
-			break;
-		}
-		return true;
+	public static function set_show_chrome($with_chrome) {
+		self::$with_chrome = $with_chrome;
 	}
 
 	/**
-	 * Set correct paths considering
-	 * the path to current theme.
-	 * @param $rel_path string: Relative path
-	 * @return false on errors, "full relative" path on success.
+	 * Render all the widgets in $widgets in the proper order for $page.
+	 * Set the widgets' resources to $master.
+	 *
+	 * @param $page The name of the page to use ordering from
+	 * @param $widgets A list of ninja widget model objects
+	 * @param $master A parent container, often the caller
+	 * @return An array of the placeholders, and the rendered widgets therein
 	 */
-	public function add_path($rel_path)
-	{
-		$rel_path = trim($rel_path);
-		if (empty($rel_path)) {
-			return false;
+	public static function add_widgets($page, $widgets, $master) {
+		$order = Ninja_widget_Model::fetch_widget_order($page);
+		if (is_array($order)) {
+			foreach ($order as $placeholder => $widget_names) {
+				$order[$placeholder] = array();
+				foreach ($widget_names as $idx => $widget_name) {
+					# upgrade from pre-instance-id widget_order string
+					if (!isset($widgets[$widget_name]))
+						$widget_name = $widget_name.'-1';
+					if (!isset($widgets[$widget_name])) {
+						unset($order[$placeholder][$idx]);
+						continue;
+					}
+					$w = self::add($widgets[$widget_name], $master);
+					if ($w !== null)
+						$order[$placeholder][$widget_name] = $w;
+					unset($widgets[$widget_name]);
+				}
+				if (empty($order[$placeholder]))
+					unset($order[$placeholder]);
+			}
+		}
+		if(!empty($widgets)) {
+			foreach ($widgets as $idx => $widget) {
+				$w = self::add($widget, $master);
+				if ($w !== null)
+					$order['unknown'][$idx] = $w;
+			}
 		}
 
-		$path = false;
-		# assume rel_path is relative from current theme
-		$path = 'application/views/'.$this->theme_path.$rel_path;
-		# make sure we didn't mix up start/end slashes
-		$path = str_replace('//', '/', $path);
-		return $path;
+		$master->xtra_js = array_unique($master->xtra_js);
+		$master->xtra_css = array_unique($master->xtra_css);
+
+		return $order;
 	}
 
 	/**
-	* set instance variables to make it possible with multiple instances
-	*/
-	public function set_instance_vars($widget_name=false, $instance_id=false) {
-		$this->instance_id = $instance_id;
-		$this->widgetname = $widget_name.$instance_id;
-		$this->widget_basename = $widget_name;
+	 * Given a widget model object and a parent object, add the widget's resources
+	 * to the parent object and return a string rendering of the widget.
+	 *
+	 * In other words, this does the combination of get and set_resources, with
+	 * some extra error handling.
+	 *
+	 * Also see add_widgets method, which is probably what you want.
+	 *
+	 * @param $widget_obj A widget model object to render
+	 * @param $master The parent object to set resources on
+	 * @returns string The rendered widget output
+	 */
+	public static function add($widget_obj, $master)
+	{
+		if (!isset($widget_obj->id) || !$widget_obj->id)
+			return;
+		set_error_handler('widget_error_handler', error_reporting());
+		try {
+			$obj = self::get($widget_obj);
+			$out = $obj->render('index', self::$with_chrome);
+		} catch (Exception $ex) {
+			if (ob_get_level() > 2)
+				ob_end_clean();
+			require_once(Kohana::find_file(Kohana::config('widget.dirname').'error', 'error'));
+			$obj = new Error_Widget($widget_obj, $ex);
+			$out = $obj->render('index', self::$with_chrome);
+		}
+		restore_error_handler();
+		self::set_resources($obj, $master);
+		return $out;
+	}
+
+	/**
+	 * Given a widget model object, return an instance of the widget class.
+	 *
+	 * Also see the add method, which is probably what you want.
+	 *
+	 * @param $widget_obj The widget model object
+	 * @return An instance of the widget class
+	 */
+	public static function get($widget_obj)
+	{
+		# first try custom path
+		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_obj->name, $widget_obj->name, false);
+		if ($path === false) {
+			# try core path if not found in custom
+			$path = Kohana::find_file(Kohana::config('widget.dirname').$widget_obj->name, $widget_obj->name, true);
+		}
+		if (!is_file($path))
+			throw new Exception("Widget not found on disk");
+		require_once($path);
+		$classname = $widget_obj->name.'_Widget';
+
+		return new $classname($widget_obj);
+	}
+
+	/**
+	 * Extract the external resources from the widget and provides them to the master.
+	 *
+	 * The master will have the resources assigned to it's xtra_js, xtra_css and inline_js properties.
+	 *
+	 * Also see the add method, which is probably what you want.
+	 *
+	 * @param $widget A widget object
+	 * @param $master Generally the caller controller, which will then have to provide this to their template
+	 */
+	public static function set_resources($widget, $master) {
+		$master->xtra_js = array_merge(isset($master->xtra_js) && is_array($master->xtra_js) ? $master->xtra_js : array(), $widget->resources($widget->js, 'js'));
+		$master->xtra_css = array_merge(isset($master->xtra_css) && is_array($master->xtra_css) ? $master->xtra_css : array(), $widget->resources($widget->css, 'css'));
+		$master->inline_js .= $widget->inline_js;
+		if ($widget->model) {
+			$widget_id = 'widget-'.$widget->model->name.'-'.$widget->model->instance_id;
+			$master->inline_js .= "$.fn.AddEasyWidget('#$widget_id', \$('#$widget_id').parent().id, window.easywidgets_obj);";
+		}
+	}
+
+	public function __construct() {
+		throw new Exception("This widget needs to be ported to the new widget API. See ".APPPATH."widgets/PORTING_GUIDE");
 	}
 }

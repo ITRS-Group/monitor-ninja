@@ -8,7 +8,7 @@ class i18n_Core {
 	 * A wrapper around PHP's unserialize that tries to cope when the database
 	 * encoding has changed.
 	 */
-	function unserialize($string) {
+	public static function unserialize($string) {
 		$ret = @unserialize($string);
 		if ($ret !== false)
 			return $ret;

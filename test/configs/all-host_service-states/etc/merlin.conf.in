@@ -1,0 +1,76 @@
+#
+# Sample configuration file for merlin
+#
+# Default options have been commented out
+#
+ipc_socket = /tmp/ninja-test/ipc.sock;
+
+# module-specific configuration options.
+module {
+	# textual log of normal hum-drum events
+	log_file = @@TESTDIR@@/var/merlin-neb.log;
+
+	# determine whether we should call pthread_cancel() for the
+	# reaper thread or not. Set this to "no" if you're having
+	# problems with Monitor/Nagios crashing on soft reloads
+	#cancel_threads = yes
+}
+
+# daemon-specific config options
+daemon {
+	pidfile = @@TESTDIR@@/var/merlin.pid;
+
+	# same as the "module" section above
+	log_file = @@TESTDIR@@/var/merlin-daemon.log;
+
+	# The import_program is responsible for priming the merlin database
+	# with configuration information and an initial import of status data.
+	# It's invoked with the following arguments:
+	# --cache=/path/to/objects.cache
+	# --status-log=/path/to/status.log
+	# --db-name=database_name
+	# --db-user=database_user_name
+	# --db-pass=database_password
+	# --db-host=database_host
+	# --db-conn_str=database_connection_string
+	# The database parameters are taken from "database" section if such
+	# a section exists.
+	import_program = /opt/monitor/op5/merlin/ocimp
+
+	# address to listen to. 0.0.0.0 is default
+	#address = 0.0.0.0;
+
+	# port to listen to. 15551 is default. This is a daemon
+	# specific config setting, as the module never listens to
+	# the network
+	port = 15551;
+	database {
+		name = merlin;
+		user = merlin;
+		pass = merlin;
+		host = localhost;
+		type = mysql;
+	}
+
+	# this section describes how we handle config synchronization
+	# It can also be configured on a per-node basis to override the
+	# globals set here.
+	# "push" and "fetch" point to a command supposed to be run when we
+	# want to push configuration to any or all nodes in the network.
+	# They're invoked with the following arguments:
+	# --merlin-cfg=/path/to/merlin.conf
+	object_config {
+		# a "push" happens for peers and pollers that we know have an
+		# older configuration than we do. This is what one would
+		# normally want to happen, since it originates from the node
+		# that already has all the information
+		push = mon oconf push
+
+		# a "fetch" happens for peers and masters that we know
+		# have a newer configuration than we do. One won't normally
+		# configure this (and it currently lacks scripting support),
+		# but it's available for advanced users who know what they're
+		# doing
+		#fetch = mon oconf fetch
+	}
+}

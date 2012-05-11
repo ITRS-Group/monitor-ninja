@@ -9,7 +9,7 @@ class refresh_Core {
 	*	Print javascript to control page reload
 	*	Modified from http://grizzlyweb.com/webmaster/javascripts/refresh.asp
 	*/
-	public function control()
+	public static function control()
 	{
 		if (!Auth::instance()->logged_in()) {
 			return;
@@ -37,7 +37,7 @@ class refresh_Core {
 	*	Add ajax checks for freshness to be ued when page
 	* 	refresh is disabled.
 	*/
-	public function is_alive()
+	public static function is_alive()
 	{
 		$interval = Kohana::config('config.stale_data_limit');
 		?>

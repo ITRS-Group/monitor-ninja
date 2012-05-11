@@ -12,8 +12,8 @@ class persist_pdf_Core
 	 * Turns my_report.csv into my_report-2011-03-23.csv and, perhaps,
 	 * my_report.pdf into my_report-2011-03-23-dsaf43.pdf
 	 *
-	 * @param string $original_file
-	 * @param string $save_here
+	 * @param $original_file string
+	 * @param $save_here string
 	 * @throws Exception with reason of failure
 	 * @return string filename of new file
 	 */

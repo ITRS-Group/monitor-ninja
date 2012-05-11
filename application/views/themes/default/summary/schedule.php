@@ -1,11 +1,6 @@
 <?php defined('SYSPATH') OR die("No direct access allowed");
 if (!$create_pdf) {
 ?>
-	<span id="view_add_schedule"<?php if (!$report_id) {?> style="display: none;"<?php } ?> style="position: absolute; right: 1%; top: 11px">
-		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $this->translate->_('Add').' '. strtolower($label_new_schedule), 'title' => $this->translate->_('Add').' '. strtolower($label_new_schedule))); ?></a>
-		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
-	</span>
-
 	<span id="autoreport_periods" style="display:none"><?php echo $json_periods ?></span>
 	<div class="hidden">
 		<div id="new_schedule_form_area">
@@ -46,7 +41,11 @@ if (!$create_pdf) {
 	<div class="hidden">
 		<div id="schedule_report">
 			<table id="schedule_report_table">
-					<caption><?php echo $lable_schedules ?> (<span id="scheduled_report_name"><?php echo !empty($report_info) ? (!empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name']) : '' ?></span>)</caption>
+					<caption><?php echo $lable_schedules ?>
+<?php if(!empty($report_info)) { ?>
+(<span id="scheduled_report_name"><?php echo !empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name'] ?></span>)
+<?php } ?>
+</caption>
 					<tr id="schedule_header">
 						<th class="headerNone left"><?php echo $label_interval ?></th>
 						<th class="headerNone left"><?php echo $label_recipients ?></th>

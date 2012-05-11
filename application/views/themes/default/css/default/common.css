@@ -14,7 +14,7 @@ input, select, isindex, listing, xmp, plaintext {
 dfn, i, cite, var, address, em {
 	font-style: normal;
 }
-th, b, strong, h1, h2, h3, h4, h5, h6 {
+th, h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 a, img, a img, iframe, form, fieldset,
@@ -70,7 +70,6 @@ body {
 	background-color: #ffffff;
 }
 td { vertical-align: middle; }
-strong { font-weight: bold; }
 a { color: #414141; }
 cite {font-style: normal;}
 title {	text-transform: capitalize;}
@@ -693,34 +692,34 @@ table.white-table tr td input[type=checkbox] {
 	width: auto;
 }
 /* health css *************************************************************************************/
-table.healt {
+table.health {
 	border: 1px solid #dcdccd;
 	border-spacing: 1px;
 	background-color: #ffffff;
 	margin-top: -1px;
 }
-table.healt tr td {
+table.health tr td {
 	background: none;
 	border: 0px;
 	text-align: left;
 	padding: 0px;
 	width: 50%;
 }
-table.healt tr td div.border {
+table.health tr td div.border {
 	height: 187px;
 	height: 100px;
 }
-table.healt tr td:first-child div.border {
+table.health tr td:first-child div.border {
 	margin-right: 0px;
 }
-table.healt tr td div.border img {
+table.health tr td div.border img {
 	height: 187px;
 	height: 100px;
 }
-table.healt tr td div.border {
+table.health tr td div.border {
 	padding: 0px;
 }
-table.healt tr td div.border img {
+table.health tr td div.border img {
 	display: block;
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -778,12 +777,18 @@ table.extinfo tr td.status.icon img {
 .widget-header span.widget-menu img {
 	margin-left: 3px;
 }
+
+.widget-content {
+	overflow: auto;
+}
+
 span a img{
 	padding-left:2px;
 }
 .widget {
 	width: 100%;
 	margin-top: 11px;
+	position: relative;
 }
 .widget-place {
 	margin-left: 1%;
@@ -808,12 +813,12 @@ span a img{
 	z-index: 9999;
 	background-color: #ffffff;
 	padding: 15px;
-	float: right;
 	margin-top: -1px;
 	border: 1px solid #e9e9e0;
 	right: 0px;
 	width: 200px;
-	position: relative;
+	position: absolute;
+	display: none;
 }
 /**************************************************************************************************/
 div.left {
@@ -850,10 +855,6 @@ div.right {
 .icon img {
 	margin-top: 2px;
 	margin-bottom: -1px;
-}
-#widget-status_totals .icon,
-#widget-host_totals .icon {
-	width: 11px;
 }
 tr.odd td.bl,
 tr.even td.bl { border-left: 1px solid #dcdccd; }
@@ -1286,6 +1287,10 @@ div.jGrowl div.jGrowl-closer {
 	right: 118px;
 	float: right
 }
+.headerNone.left a {
+	vertical-align: top;
+}
+
 /***************************************************************************************************
 *	COLOURS!
 ***************************************************************************************************/
@@ -1365,7 +1370,7 @@ tr.odd td.bt,
 tr.even td.bt,
 .widget-placeholder,
 .widget-header,
-table.healt,
+table.health,
 #quickbar{
 	border-color: #dcdcdc;
 	border-color: #d0d0d0;
@@ -1398,7 +1403,7 @@ input.i160 { border: 0px; outline: 0px; }
 }
 
 tr td,
-table.healt tr td div.border {
+table.health tr td div.border {
 	background:#e9e9e9 url(images/bg.png) repeat;
 }
 
@@ -1592,7 +1597,7 @@ hr {
 }
 
 #my_saved_searches_img{
-	margin-top: -9px;
+	margin-top: -3px;
 }
 
 #save_search img{

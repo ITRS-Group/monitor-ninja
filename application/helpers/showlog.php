@@ -4,7 +4,13 @@
  */
 class showlog_Core
 {
-	public function show_log_entries($options)
+	/**
+	 * Generate HTML-formatted representation of the on-disk nagios log
+	 *
+	 * @param $options A magical array of options to use - check source for more info
+	 * @return HTML-representation of the log
+	 */
+	public static function show_log_entries($options)
 	{
 		# default limit
 		$limit = 2500;
@@ -99,7 +105,7 @@ class showlog_Core
 	/**
 	*	Get path to showlog executable
 	*/
-	public function get_path()
+	public static function get_path()
 	{
 		$showlog = Kohana::config('reports.showlog_path');
 		if (!file_exists($showlog) || !is_executable($showlog)) {

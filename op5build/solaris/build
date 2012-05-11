@@ -74,4 +74,5 @@ ln -s ../ $tempdir$prefix/op5
 mkdir -p $tempdir$AP2CONFDIR
 cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/ninja.conf
 
+
 PATH=$PATH_DEF

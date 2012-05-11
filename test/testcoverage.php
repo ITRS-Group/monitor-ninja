@@ -2,7 +2,8 @@
 xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 
 function on_exit() {
-	ob_end_clean();
+	while (ob_get_level())
+		ob_end_clean();
 	var_export(xdebug_get_code_coverage());
 }
 

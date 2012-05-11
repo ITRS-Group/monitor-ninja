@@ -2,14 +2,13 @@
 /**
  * Unit_Test controller.
  */
-class Ninja_unit_test_Controller extends Controller {
+class Ninja_unit_test_Controller extends Ninja_Controller {
 
 	const ALLOW_PRODUCTION = FALSE;
 
 	public function index($user=false)
 	{
-		$authentic = new Auth;
-		Auth::instance()->force_login($user);
+		#Auth::instance()->force_login($user);
 
 		// Run tests and show results!
 		echo new Ninja_Unit_Test;
@@ -101,7 +100,7 @@ class Ninja_unit_test_Controller extends Controller {
 		echo "$passed/".($passed+$failed)." tests passed.".($failed==0?" Hooray!":"")."\n";
 		if ($failed)
 			exit(1);
-
+		exit(0); //removing this causes ninja to print a 302 to tac
 
 	}
 

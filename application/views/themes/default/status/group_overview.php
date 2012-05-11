@@ -58,9 +58,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		<table class="group_overview_table">
 			<caption>
 			<?php echo html::anchor('status/'.$grouptype.'group/'.$groupname.'?style=detail', $group_info->alias) ?>
-			<span>(<?php echo html::anchor('extinfo/details/'.$grouptype.'group/'.$groupname, $groupname) ?>)</span>
+			<span>(<?php echo html::anchor('extinfo/details/?type='.$grouptype.'group&host='.$groupname, $groupname) ?>)</span>
 			<?php if ($nacoma_link===true)
-				echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
+				echo nacoma::link('configuration/configure/?type='.$grouptype.'group&name='.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>
 		</caption>
 			<tr>
 				<th><em><?php echo $this->translate->_('Status');?></em></th>
@@ -82,32 +82,32 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
 				<td class="icon bl <?php if ($this->cmd_ok && $this->cmd_host_ok) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($group->current_state, 'host')); ?>" id="<?php echo 'host|'.$group->host_name ?>"><em><?php echo Current_status_Model::status_text($group->current_state, 'host');?></em></td>
 				<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $group->host_name); ?></td>
-				<td style="width: 180px"><?php echo html::anchor('status/service/'.urlencode($group->host_name).'?hoststatustypes='.$this->hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($group->host_name), array('title' => $group->address)) ?></td>
+				<td style="width: 180px"><?php echo html::anchor('status/service/?name='.urlencode($group->host_name).'&hoststatustypes='.$this->hoststatustypes.'&servicestatustypes='.(int)$servicestatustypes, html::specialchars($group->host_name), array('title' => $group->address)) ?></td>
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
 				<td><?php
 					if (!empty($group->services_ok)) {
 						echo html::image($this->add_path('icons/12x12/shield-ok.png'), array('alt' => '', 'title' => $this->translate->_('OK'), 'class' => 'status-default'));
-						echo html::anchor('status/service/'.urlencode($group->host_name).'?servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
+						echo html::anchor('status/service/?name='.urlencode($group->host_name).'&servicestatustypes='.nagstat::SERVICE_OK.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
 							$group->services_ok.' '.$this->translate->_('OK'), array('class' => 'status-ok')).' &nbsp; ';
 					}
 					if (!empty($group->services_warning)) {
 						echo html::image($this->add_path('icons/12x12/shield-warning.png'), array('alt' => '', 'title' => $this->translate->_('Warning'), 'class' => 'status-default'));
-						echo html::anchor('status/service/'.urlencode($group->host_name).'?servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
+						echo html::anchor('status/service/?name='.urlencode($group->host_name).'&servicestatustypes='.nagstat::SERVICE_WARNING.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
 							$group->services_warning.' '.$this->translate->_('Warning'), array('class' => 'status-warning')).' &nbsp; ';
 					}
 					if (!empty($group->services_critical)) {
 						echo html::image($this->add_path('icons/12x12/shield-critical.png'), array('alt' => '', 'title' => $this->translate->_('Critical'), 'class' => 'status-default'));
-						echo html::anchor('status/service/'.urlencode($group->host_name).'?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
+						echo html::anchor('status/service/?name='.urlencode($group->host_name).'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
 							$group->services_critical.' '.$this->translate->_('Critical'), array('class' => 'status-critical')).' &nbsp; ';
 					}
 					if (!empty($group->services_unknown)) {
 						echo html::image($this->add_path('icons/12x12/shield-unknown.png'), array('alt' => '', 'title' => $this->translate->_('Unknown'), 'class' => 'status-default'));
-						echo html::anchor('status/service/'.urlencode($group->host_name).'?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
+						echo html::anchor('status/service/?name='.urlencode($group->host_name).'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
 							$group->services_unknown.' '.$this->translate->_('Unknown'), array('class' => 'status-unknown')).' &nbsp; ';
 					}
 					if (!empty($group->services_pending)) {
 						echo html::image($this->add_path('icons/12x12/shield-pending.png'), array('alt' => '', 'title' => $this->translate->_('Pending'), 'class' => 'status-default'));
-						echo html::anchor('status/service/'.urlencode($group->host_name).'?servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
+						echo html::anchor('status/service/?name='.urlencode($group->host_name).'&servicestatustypes='.nagstat::SERVICE_PENDING.'&hoststatustypes='.$this->hoststatustypes.'&hostproperties='.$this->hostprops.'&serviceprops='.$this->serviceprops,
 							$group->services_pending.' '.$this->translate->_('Pending'), array('class' => 'status-pending')).' &nbsp; ';
 					} ?>
 				</td>
@@ -115,7 +115,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					<?php
 					if ($nacoma_link===true) {
 						$lable_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
-						echo html::anchor('configuration/configure/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px')).' ';
+						echo html::anchor('configuration/configure/?type=host&name='.urlencode($group->host_name), html::image($this->img_path('icons/16x16/nacoma.png'), array('alt' => $lable_nacoma, 'title' => $lable_nacoma)), array('style' => 'border: 0px')).' ';
 					}
 
 					if ($pnp4nagios_path!==false && pnp::has_graph($group->host_name)) {
@@ -123,7 +123,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					}
 
 					$lable_extinfo_host = $t->_('View Extended Information For This Host');
-					echo html::anchor('extinfo/details/host/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ).' ';
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($group->host_name), html::image($this->img_path('icons/16x16/extended-information.gif'), array('alt' => $lable_extinfo_host, 'title' => $lable_extinfo_host)), array('style' => 'border: 0px') ).' ';
 
 					if ( Kohana::config('config.nagvis_path') ) {
 						$lable_statusmap = $t->_('Locate Host On Map');
@@ -131,7 +131,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					}
 
 					$lable_svc_status = $t->_('View Service Details For This Host');
-					echo html::anchor('status/service/'.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ).' ';
+					echo html::anchor('status/service/?name='.urlencode($group->host_name), html::image($this->img_path('icons/16x16/service-details.gif'), array('alt' => $lable_svc_status, 'title' => $lable_svc_status)), array('style' => 'border: 0px') ).' ';
 
 					if (!is_null($group->action_url)) {
 						$lable_host_action = $t->_('Perform Extra Host Actions');
@@ -181,5 +181,6 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?>
+	<br /><span id="multi_object_submit_progress" class="item_select"></span>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 </div>

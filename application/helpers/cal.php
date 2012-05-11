@@ -7,7 +7,7 @@ class cal_Core
 	/**
 	*	decide what date format to use for calendar
 	*/
-	public function get_calendar_format($get_php=false)
+	public static function get_calendar_format($get_php=false)
 	{
 		$date_format = false;
 		$nagios_config = System_Model::parse_config_file('nagios.cfg');

@@ -4,6 +4,19 @@
  */
 class Alertlog_Model extends Model
 {
+	private static function combine() {
+		$args = func_get_args();
+		$function = array_shift($args);
+		$res = false;
+		foreach ($args as $arg) {
+			if (!empty($arg))
+				$res[] = $arg;
+		}
+		if (!empty($res))
+			$res = '(' . implode(') '.$function.' (', $res) . ')';
+		return $res;
+	}
+
 	private $host_ccode_to_ncode = array(
 		'r' => 0,
 		'd' => 1,
@@ -15,6 +28,15 @@ class Alertlog_Model extends Model
 		'c' => 2,
 		'u' => 3
 	);
+	/**
+	 * Return all log entries matching the specified options
+	 *
+	 * @param $options Pretty much magical array of options to filter objects
+	 * @param $limit The number of rows to get
+	 * @param $offset The number of rows to skip before fetching
+	 * @param $count Skip the whole row fetching, only return the number of lines
+	 * @return If count is false, database object or false on error or empty. If count is true, line count
+	 */
 	function get_log_entries($options=false, $limit=false, $offset=0, $count=false)
 	{
 		$auth = new Nagios_auth_Model();
@@ -24,107 +46,133 @@ class Alertlog_Model extends Model
 		else
 			$sql = 'SELECT count(1) AS cnt FROM report_data';
 		$sql_join = false;
-		$sql_where = false;
+
+		$softorhard = false;
+		$hostopts = false;
+		$svcopts = false;
+		$downtime = false;
+		$process = false;
+		$time_first = false;
+		$time_last = false;
+		$objsel = array();
+
+		# Don't think this auth stuff makes that much sense - whaddabout services and system_information for restarts?
+		# Also think it's gosh darn slow already, and would be unusable if done Right™, so I don't want to be the one
+		# to break it.
 		if (!$auth->view_hosts_root) {
 			$sql_join['host'] = 'host.host_name = report_data.host_name';
-			$sql_join['contact_access'] = 'contact_access.host=host.id';
-			$sql_where[] = 'contact_access.contact='.(int)$auth->id;
+			$sql_join['contact_access'] = 'contact_access.host=host.id AND contact_access.contact='.(int)$auth->id;
 		}
+
 		if (isset($options['hosts']) && !empty($options['hosts'])) {
-			$sql_join['host'] = 'host.host_name = report_data.host_name';
 			$host_cond = array();
 			foreach ($options['hosts'] as $host)
-				$host_cond[] = 'host.host_name = '.$db->escape($host);
-			$sql_where[] = implode(' OR ', $host_cond);
+				$host_cond[] = '(report_data.host_name = '.$db->escape($host).' AND report_data.service_description = \'\')';
+			$objsel[] = implode(' OR ', $host_cond);
 		}
 		if (isset($options['services']) && !empty($options['services'])) {
-			$sql_join['service'] = '(service.service_description = report_data.service_description OR (report_data.service_description=\'\' AND report_data.event_type > 1000)) AND service.host_name = report_data.host_name';
 			$svc_cond = array();
 			foreach ($options['services'] as $service) {
 				$parts = explode(';', $service);
-				$svc_cond[] = '(service.host_name = '.$db->escape($parts[0]).' AND service.service_description = '.$db->escape($parts[1]).')';
+				// an extra OR to allow a host's downtime to end up in service's alert log
+				$svc_cond[] = '(report_data.host_name = '.$db->escape($parts[0]).' AND (report_data.service_description = '.$db->escape($parts[1]).' OR event_type > 900))';
 			}
-			$sql_where[] = implode(' OR ', $svc_cond);
+			$objsel[] = implode(' OR ', $svc_cond);
 		}
 		if (isset($options['hostgroups']) && !empty($options['hostgroups'])) {
-			$sql_join['host'] = 'host.host_name = report_data.host_name';
-			$sql_join['host_hostgroup'] = 'host.id = host_hostgroup.host';
-			$sql_join['hostgroup'] = 'hostgroup.id = host_hostgroup.hostgroup';
 			$hg_cond = array();
 			foreach ($options['hostgroups'] as $hostgroup)
-				$hg_cond[] = 'hostgroup.hostgroup_name = '.$db->escape($hostgroup);
-			$sql_where[] = implode(' OR ', $hg_cond);
+				$hg_cond[] = $db->escape($hostgroup);
+			$objsel[] = 'service_description = \'\' AND host_name IN (SELECT host_name FROM host INNER JOIN host_hostgroup ON host.id = host_hostgroup.host INNER JOIN hostgroup ON hostgroup.id = host_hostgroup.hostgroup WHERE hostgroup_name IN ('.implode(', ', $hg_cond).'))';
 		}
 		if (isset($options['servicegroups']) && !empty($options['servicegroups'])) {
-			$sql_join['service'] = '(service.service_description = report_data.service_description OR (report_data.service_description=\'\' AND report_data.event_type > 900)) AND service.host_name = report_data.host_name';
-			$sql_join['service_servicegroup'] = 'service.id = service_servicegroup.service';
-			$sql_join['servicegroup'] = 'servicegroup.id = service_servicegroup.servicegroup';
-			$hg_cond = array();
+			$sg_cond = array();
 			foreach ($options['servicegroups'] as $servicegroup)
-				$hg_cond[] = 'servicegroup.servicegroup_name = '.$db->escape($servicegroup);
-			$sql_where[] = implode(' OR ', $hg_cond);
+				$sg_cond[] = $db->escape($servicegroup);
+
+			$objsel[] = '(host_name, service_description) IN (SELECT host_name, service_description FROM service INNER JOIN service_servicegroup ON service.id = service_servicegroup.service INNER JOIN servicegroup ON servicegroup.id = service_servicegroup.servicegroup WHERE servicegroup_name IN ('.implode(', ', $sg_cond).'))';
 		}
 
-		if (isset($options['state_type'])) {
+		if (isset($options['state_type']) && !empty($options['state_type'])) {
 			if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'] && isset($options['state_type']['hard']) && (int)$options['state_type']['hard'])
 				;
 			else if (isset($options['state_type']['soft']) && (int)$options['state_type']['soft'])
-				$sql_where[] = 'hard = 0 OR event_type < 700 OR event_type > 900';
+				$softorhard = 'hard = 0';
 			else
-				$sql_where[] = 'hard = 1 OR event_type < 700 OR event_type > 900';
+				$softorhard = 'hard = 1';
 		}
+
 		if (isset($options['host_state_options'])) {
 			$cond = array();
 			foreach ($options['host_state_options'] as $state => $ison) {
 				if ((int)$ison)
-					$cond[] = ' state = '. $this->host_ccode_to_ncode[$state];
+					$cond[] = 'state = '. $this->host_ccode_to_ncode[$state];
 			}
-			if (count($cond) == 3)
-				;
-			else if (!empty($cond))
-				$sql_where[] = implode(' OR ', $cond);
-			else
-				$sql_where[] = "report_data.service_description != '' OR event_type < 700 OR event_type > 900";
+			if (!empty($cond)) {
+				$hostopts = 'event_type = 801';
+				if (count($cond) != 3)
+					$hostopts .= ' AND ('.implode(' OR ', $cond).')';
+			}
 		}
+
 		if (isset($options['service_state_options'])) {
 			$cond = array();
 			foreach ($options['service_state_options'] as $state => $ison) {
 				if ((int)$ison)
 					$cond[] = 'state = '. $this->service_ccode_to_ncode[$state];
 			}
-			if (count($cond) == 4)
-				;
-			else if (!empty($cond))
-				$sql_where[] = implode(' OR ', $cond);
-			else
-				$sql_where[] = "report_data.service_description = '' OR event_type < 700 OR event_type > 900";
+			if (!empty($cond)) {
+				$svcopts = 'event_type = 701';
+				if (count($cond) != 4)
+					$svcopts .= ' AND ('.implode(' OR ', $cond).')';
+			}
 		}
 
-		if (isset($options['hide_downtime']) && $options['hide_downtime'])
-			$sql_where[] = 'event_type >= 1200 OR event_type < 1100';
-		if (isset($options['hide_process']) && $options['hide_process'])
-			$sql_where[] = 'event_type >=200 OR event_Type < 100';
+		if (!isset($options['hide_downtime']) || !$options['hide_downtime'])
+			$downtime = 'event_type < 1200 AND event_type > 1100';
+
+		if (!isset($options['hide_process']) || !$options['hide_process'])
+			$process = 'event_type < 200';
 
 		if (isset($options['first']) && $options['first'])
-			$sql_where[] = 'timestamp >= '.$db->escape($options['first']);;
+			$time_first = 'timestamp >= '.$db->escape($options['first']);;
 		if (isset($options['last']) && $options['last'])
-			$sql_where[] = 'timestamp <= '.$db->escape($options['last']);;
+			$time_last = 'timestamp <= '.$db->escape($options['last']);;
 
-		if (!empty($sql_where))
-			$sql_where = ' WHERE ('.implode(') AND (', $sql_where) . ')';
+		$objsel = implode(') OR (', $objsel);
+
+		$sql_where =
+			self::combine('and',
+				$time_first,
+				$time_last,
+				self::combine('or',
+					$process,
+					self::combine('and',
+						$objsel,
+						self::combine('or',
+							$downtime,
+							self::combine('and',
+								$softorhard,
+								self::combine('or',
+									$hostopts,
+									$svcopts))))));
 		if (!empty($sql_join)) {
 			$real_join = '';
 			foreach ($sql_join as $key => $val)
 				$real_join .= " INNER JOIN $key ON $val";
 			$sql_join = $real_join;
 		}
-		$sql = $sql . $sql_join . $sql_where . ' ORDER BY timestamp ';
-		if (isset($options['parse_forward']) && $options['parse_forward'])
-			$sql .= 'ASC';
-		else
-			$sql .= 'DESC';
-		if ($limit !== false && $count !== true)
-			$sql .= " LIMIT $limit OFFSET $offset";
+		$sql = $sql . $sql_join . ' WHERE ' . $sql_where;
+		if ($count !== true) {
+			$sql .= ' ORDER BY timestamp ';
+			if (isset($options['parse_forward']) && $options['parse_forward'])
+				$sql .= 'ASC';
+			else
+				$sql .= 'DESC';
+			if ($limit !== false)
+				$sql .= " LIMIT $limit OFFSET $offset";
+		}
+
 		$res = $db->query($sql);
 		if ($count === true) {
 			$cnt = $res->current();

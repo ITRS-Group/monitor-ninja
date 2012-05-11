@@ -24,9 +24,9 @@ if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 if (isset($this) && isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" /> <!-- Please remove me -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -111,6 +111,8 @@ if (isset($this) && isset($this->template->js_header))
 				var _search_save_error = '<?php echo _('ERROR') ?>';
 				var _search_saved_ok = '<?php echo _('Your search was successfully saved.') ?>';
 				var _search_saved_error = '<?php echo _('An error occured when trying to save your search.') ?>';
+				var _nothing_selected_error = '<?php echo _('Please select at least one item.') ?>';
+				var _no_action_error = '<?php echo _('Please select an action.') ?>';
 
 			<?php	if (config::get('keycommands.activated', '*', true)) {	?>
 
@@ -145,10 +147,10 @@ if (isset($this) && isset($this->template->js_header))
 	<body onload="loadScroll()" onunload="saveScroll()">
 	<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
-			<p><?php echo html::image('application/views/themes/default/icons/16x16/shield-warning.png',array('style' => 'float: left; margin-right: 5px')).' '.sprintf(_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
+			<p><?php echo html::image('application/views/themes/default/icons/16x16/shield-warning.png',array('style' => 'float: left; margin-right: 5px', 'alt' => 'Warning')).' '.sprintf(_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
 		</div>
 		<div id="top-bar">
-			<?php echo html::image('application/views/themes/default/icons/icon.png',''); ?>
+			<?php echo html::image('application/views/themes/default/icons/icon.png',array('alt' => '')); ?>
 			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
@@ -195,15 +197,15 @@ if (isset($this) && isset($this->template->js_header))
 			</div>
 		<?php } ?>
 			<div id="quicklinks">
-
+				<?php customlogo::render(); ?>
 			</div>
 			<div id="icons">
 				<ul>
-					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => _('Settings'), 'title' => _('Settings'))) ?></li>
+					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image('application/views/themes/default/icons/16x16/settings.gif',array('alt' => _('Settings'), 'title' => _('Settings'))) ?></li>
 					<li onclick="show_info()"><?php echo html::image('application/views/themes/default/icons/16x16/versioninfo.png',array('alt' => _('Product information'), 'title' => _('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo html::image('application/views/themes/default/icons/16x16/refresh.png',array('alt' => _('Refresh page'), 'title' => _('Refresh page'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo _('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
-					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image('application/views/themes/default/icons/24x24/save_search.png', array('title' => _('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
+					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image('application/views/themes/default/icons/16x16/save_search.png', array('title' => _('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
 				</ul>
 			</div>
 		</div>
@@ -253,10 +255,15 @@ if (isset($this) && isset($this->template->js_header))
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 										html::anchor($url[0],html::specialchars($title),array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
-							else
+							elseif($url[0] == '/'.Router::$complete_uri) {
+								echo '<li class="'.html::specialchars($header).'">'.
+										html::anchor($url[0], html::image('application/views/themes/default/icons/menu-dark/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
+										html::anchor($url[0],html::specialchars($title), array('style' => 'font-weight: bold', 'class' => 'ninja_menu_links')).'</li>'."\n";
+							} else {
 								echo '<li class="'.html::specialchars($header).'">'.
 										html::anchor($url[0], html::image('application/views/themes/default/icons/menu/'.$url[1].'.png',array('title' => html::specialchars($title), 'alt' => html::specialchars($title)))).' '.
 										html::anchor($url[0],html::specialchars($title), array('class' => 'ninja_menu_links')).'</li>'."\n";
+							}
 						}
 						// common external links
 						elseif($url[2] == 1) {
@@ -306,22 +313,17 @@ if (isset($this) && isset($this->template->js_header))
 				<?php
 					} # end if disable_refresh
 
-					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
-					if (is_array($settings_widgets)) {
+					if (isset($widgets) && is_array($widgets)) {
 						echo '<li class="header">'._('Available Widgets').'</li>'."\n";
-						foreach($settings_widgets as $id => $widget) {
-							if (isset($user_widgets) && is_array($user_widgets)) {
-								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
-							} else {
-								$class_name = 'selected';
-							}
-							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
+						foreach($widgets as $widget) {
+							$class_name = isset($widget->id) ? 'selected' : 'unselected';
+							echo '<li id="li-'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'._('Restore overview to factory settings').'</li>'."\n";
-						echo '<li onclick="widget_page_refresh();">'._('Set widget refresh rate (s.)').'</li>'."\n";
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'._('Upload new widget').'</li>'."\n";
 						}
+						echo '<li id="show_global_widget_refresh">'._('Set widget refresh rate (s.)').'</li>'."\n";
 					}
 				?>
 			</ul>

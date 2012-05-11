@@ -4,8 +4,11 @@
  */
 class reports_Core
 {
+	/** Array of month_number => days_in_month */
 	public static $days_per_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+	/** Array of weekday names */
 	public static $valid_weekdays = array('sunday','monday','tuesday','wednesday','thursday','friday','saturday');
+	/** Array of month names */
 	public static $valid_months = array
 	(
 		1  => 'january',
@@ -22,6 +25,9 @@ class reports_Core
 		12 => 'december'
 	);
 
+	/**
+	 * Called by PHP as an assert callback to format errors usefully
+	 */
 	public function lib_reports_assert_handler($filename, $line, $code)
 	{
 		if (!posix_isatty(0))
@@ -38,6 +44,13 @@ class reports_Core
 			echo "</pre>\n";
 	}
 
+	/**
+	 * Generate a percentage easily
+	 *
+	 * @param $dividend The whole
+	 * @param $divisor The part
+	 * @return The percentage
+	 */
 	public function percent($dividend, $divisor)
 	{
 		if (!$dividend || !$divisor)
@@ -115,6 +128,12 @@ class reports_Core
 		return $return;
 	}
 
+	/**
+	 * Validate report item
+	 * @param $k Unused FIXME
+	 * @param $data A data array that should have states
+	 * return true if valid, false otherwise
+	 */
 	public function is_proper_report_item($k, $data)
 	{
 		if (is_array($data) && !empty($data['states']) && is_array($data['states']))
@@ -123,12 +142,13 @@ class reports_Core
 		return false;
 	}
 
-	// used for automatic test cases
+	/// used for automatic test cases
 	public function print_test_settings($test=false)
 	{
+		$translate = zend::instance('Registry')->get('Zend_Translate');
 		# report uses reports model default settings
 		if (!isset($test['start_time']) || !isset($test['end_time'])) {
-			echo $this->translate->_('Empty report settings. We need start_time and end_time')."\n";
+			echo $translate->_('Empty report settings. We need start_time and end_time')."\n";
 			print_r($test);
 			exit(1);
 		}
@@ -152,13 +172,14 @@ class reports_Core
 	/**
 	*	Create common translated javascript strings
 	*/
-	public function js_strings()
+	public static function js_strings()
 	{
-		$t = $this->translate;
+		$t = zend::instance('Registry')->get('Zend_Translate');
 		$js_strings = false;
 		$js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
 		$js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
 		$js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$js_strings .= "var _reports_err_str_nostatus = '".$t->_("You must provide at least one status to filter on")."';\n";
 		$js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
 		$js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
 		$js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";

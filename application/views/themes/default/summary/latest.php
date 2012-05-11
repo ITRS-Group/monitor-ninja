@@ -3,7 +3,7 @@ if (isset($schedules)) {
 	echo $schedules;
 }
 ?>
-<div class="widget w98 left">
+<div class="w98 left">
 	<h1><?php echo $this->translate->_('Most recent hard alerts'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>
@@ -28,7 +28,7 @@ if (isset($schedules)) {
 					$state = $host_state_names[$ary['state']];
 				} else {
 					$alert_type = $label_service_alert;
-					$ary['service_description'] = html::anchor(base_url::get().'extinfo/details/service/'.$ary['host_name'].'?service='.urlencode($ary['service_description']), $ary['service_description']);
+					$ary['service_description'] = html::anchor(base_url::get().'extinfo/details/?type=service&host='.urlencode($ary['host_name']).'&service='.urlencode($ary['service_description']), $ary['service_description']);
 					$state = $service_state_names[$ary['state']];
 				}
 				$softhard = $ary['hard'] == 1 ? $label_hard : $label_soft;
@@ -38,7 +38,7 @@ if (isset($schedules)) {
 			</td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo date("Y-m-d H:i:s", $ary['timestamp']); ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $alert_type; ?></td>
-			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/host/'.$ary['host_name'], $ary['host_name']) ?></td>
+			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo html::anchor(base_url::get().'extinfo/details/?type=host&host='.urlencode($ary['host_name']), $ary['host_name']) ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo $ary['service_description']; ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;width:70px' : '' ?>><?php echo $softhard; ?></td>
 			<td <?php echo $create_pdf ? 'style="font-size: 0.8em;' : '' ?>><?php echo htmlspecialchars($ary['output']); ?></td>

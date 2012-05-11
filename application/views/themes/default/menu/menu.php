@@ -43,12 +43,6 @@ if (Kohana::config('hypergraph.hyperapplet_path') !== false) {
 	$menu_items['hyper_map'] = _('Hyper Map');
 }
 
-/* remove hardcoded nagvis menu entry
-if (Kohana::config('config.nagvis_path') !== false) {
-	$menu_items['nagvis'] = _('Nagvis');
-}
-*/
-
 $menu_items['section_reporting'] = _('Reporting');
 $menu_items['trends'] = _('Trends');
 $menu_items['pnp'] = _('Graphs');
@@ -86,22 +80,22 @@ $menu = array(
 	'section_configuration' => array('view_config', 'my_account', 'backup_restore', 'configure')
 );
 
-$group_items_per_page = config::get('pagination.group_items_per_page', '*', true);
+$group_items_per_page = Kohana::config('pagination.group_items_per_page', '*', true);
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
 $section_reporting = array(
 	$menu_items['trends'] => array('/trends', 'trends',0));
 if(Kohana::config('config.pnp4nagios_path') !== false) {
-	$section_reporting[$menu_items['pnp']] = array('pnp/?host=.pnp-internal&srv=runtime', 'pnp',0);
+	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&srv=runtime', 'pnp',0);
 }
 $section_reporting[$menu_items['alert_history']] = array('/showlog/alert_history', 'alerthistory',0);
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
 $section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
-$section_reporting[$menu_items['availability']] = array('/'.Kohana::config('reports.reports_link').'/?type=avail', 'availability',0);
-$section_reporting[$menu_items['sla']] = array('/'.Kohana::config('reports.reports_link').'/?type=sla', 'sla',0);
-$section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('reports.reports_link').'/?show_schedules', 'schedulereports',0);
+$section_reporting[$menu_items['availability']] = array('/'.Kohana::config('reports.reports_link').'?type=avail', 'availability',0);
+$section_reporting[$menu_items['sla']] = array('/'.Kohana::config('reports.reports_link').'?type=sla', 'sla',0);
+$section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('reports.reports_link').'?show_schedules', 'schedulereports',0);
 
 # base menu (all)
 $menu_base = array(
@@ -204,9 +198,16 @@ $xtra_menu = Kohana::config('menu.items');
 if (!empty($xtra_menu)) {
 	foreach ($xtra_menu as $section => $page_info) {
 		foreach ($page_info as $page => $info) {
-			$menu_base[$section][$page] = $info;
-			#$menu['section_reporting'][] = $page;
-			$menu_items[$page] = $page;
+			# Use key from info array if available
+			# if not - we use the page as key
+			# info array should contain the following fields:
+			# path, icon, link_flag, page_key
+			# where link_flag has value 0-3 and controls link type
+			# (relative/absolute) and visibility (op5/community)
+			$page_key = isset($info[3]) ? $info[3] : $page;
+			$menu_items[$page] = $page_key;
+			$menu_base[$section][$page_key] = $info;
+			$menu['section_'.strtolower($section)][] = $page;
 		}
 		unset($xtra_menu[$section]);
 	}

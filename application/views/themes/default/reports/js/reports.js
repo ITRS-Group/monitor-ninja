@@ -74,7 +74,7 @@ $(document).ready(function() {
 	$('.autofill').click(function() {
 		var the_val = $("input[name='" + $(this).attr('id') + "']").attr('value');
 		if (the_val!='') {
-			if (!confirm(_reports_propagate)) {
+			if (!confirm(_reports_propagate.replace('this value', the_val+'%'))) {
 				return false;
 			}
 			set_report_form_values(the_val);
@@ -84,19 +84,6 @@ $(document).ready(function() {
 			}
 			set_report_form_values('');
 		}
-	});
-
-	// ajax post form options
-	var options = {
-		target:			'#response',		// target element(s) to be updated with server response
-		beforeSubmit:	validate_form,	// pre-submit callback
-		success:		show_response	// post-submit callback
-	};
-
-	// schedule report when already created
-	$('#schedule_report_form').submit(function() {
-		$(this).ajaxSubmit(options);
-		return false;
 	});
 
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
@@ -129,11 +116,6 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
-		$("#fancybox-content .delete_schedule").each(function() {
-			$(this).click(function() {
-				schedule_delete($(this).attr('id'));
-			});
-		});
 
 		$("#fancybox-content .send_report_now").click(function() {
 			var type_id = $(this).attr('id');
@@ -161,7 +143,7 @@ $(document).ready(function() {
 		if(!filename) {
 			return;
 		}
-		if(!filename.match(/.(csv|pdf)$/)) {
+		if(!filename.match(/\.(csv|pdf)$/)) {
 			filename += '.pdf';
 		}
 		input.val(filename);
@@ -242,12 +224,12 @@ function validate_report_form(f)
 	}
 
 	// only run this part if report should be saved
-	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=sla_save]').attr('value') == '1') {
+	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=save_report_settings]').is(':checked')) {
 		var report_name = $.trim($('input[name=report_name]').attr('value'));
 		if (report_name == '') {
 			// fancybox is stupid and copies the form so we have to force
 			// this script to check the form in the fancybox_content div
-			report_name = $(fancy_str + '#report_name').attr('value');
+			report_name = $.trim($(fancy_str + '#report_name').attr('value'));
 		}
 
 		// these 2 fields should be the same no matter where on the
@@ -307,7 +289,7 @@ function show_sla_saveresponse(responseText, statusText)
 	}
 	$('#view_add_schedule').show();
 	$('#save_to_schedule').hide();
-	$(".fancybox").fancybox.close();
+	$.fancybox.close();
 }
 
 function ajax_submit(f)
@@ -382,7 +364,6 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/availability.png');
 		$('#switcher_image').attr('alt', _label_avail);
 		$('#switcher_image').attr('title', _label_avail);
-		$("#old_avail_link").hide();
 		$(".sla_display").show();
 		$(".avail_display").hide();
 
@@ -395,7 +376,6 @@ function switch_report_type()
 		$('#switcher_image').attr('src', _site_domain + _theme_path + 'icons/16x16/sla.png');
 		$('#switcher_image').attr('alt', _label_sla);
 		$('#switcher_image').attr('title', _label_sla);
-		$("#old_avail_link").show();
 		$(".sla_display").hide();
 		$(".avail_display").show();
 
@@ -843,13 +823,6 @@ function set_initial_state(what, val)
 	} else {
 		f = document.forms['report_form'];
 	}
-	/*
-	if (rep_type == 'sla') {
-		f = document.forms['report_form_sla'];
-	} else {
-		f = document.forms['report_form'];
-	}
-	*/
 	var item = '';
 	var elem = false;
 	switch (what) {
@@ -962,6 +935,7 @@ function confirm_delete_report(the_val)
 		if (is_scheduled) {
 			msg += _reports_confirm_delete_warning;
 		}
+		msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
 		if (confirm(msg)) {
 			self.location.href=the_path + '?del_report=true&del_id=' + the_val + '&type=' + type;
 			return true;

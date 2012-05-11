@@ -1,44 +1,47 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for host objects
+ */
 class Host_Model extends Model {
 	private $auth = false;
 	private $host_list = false; # List of hosts to get status for
 	private $service_host_list = false;
 	private $table = "host";
 
-	public $total_host_execution_time = 0;
-	public $min_host_execution_time = 0;
-	public $max_host_execution_time = 0;
-	public $total_host_percent_change_a = 0;
-	public $min_host_percent_change_a = 0;
-	public $max_host_percent_change_a = 0;
-	public $total_host_latency = 0;
-	public $min_host_latency = 0;
-	public $max_host_latency = 0;
+	public $total_host_execution_time = 0; /**< Total host check execution time */
+	public $min_host_execution_time = 0; /**< Minimum host check execution time */
+	public $max_host_execution_time = 0; /**< Maximum host check execution time */
+	public $total_host_percent_change_a = 0; /**< Total host percentage change for active checks */
+	public $min_host_percent_change_a = 0; /**< Minimum host percentage change for active checks */
+	public $max_host_percent_change_a = 0; /**< Maximum host percentage change for active checks */
+	public $total_host_latency = 0; /**< Total host check latency */
+	public $min_host_latency = 0; /**< Minimum host check latency */
+	public $max_host_latency = 0; /**< Maximum host check latency */
 
 	/***** ACTIVE HOST CHECKS *****/
-	public $total_active_host_checks = 0;
-	public $active_host_checks_1min = 0;
-	public $active_host_checks_5min = 0;
-	public $active_host_checks_15min = 0;
-	public $active_host_checks_1hour = 0;
-	public $active_host_checks_start = 0;
-	public $active_host_checks_ever = 0;
+	public $total_active_host_checks = 0; /**< The total number of active host checks */
+	public $active_host_checks_1min = 0; /**< The number of executed host checks the last minute */
+	public $active_host_checks_5min = 0; /**< The number of executed host checks the last 5 minutes */
+	public $active_host_checks_15min = 0; /**< The number of executed host checks the last 15 minutes */
+	public $active_host_checks_1hour = 0; /**< The number of executed host checks the last hour */
+	public $active_host_checks_start = 0; /**< The number of executed host checks since program start */
+	public $active_host_checks_ever = 0; /**< The number of executed host checks ever recorded */
 
 	/***** PASSIVE HOST CHECKS *****/
-	public $passive_host_checks_1min = 0;
-	public $total_passive_host_checks = 0;
-	public $passive_host_checks_5min = 0;
-	public $passive_host_checks_15min = 0;
-	public $passive_host_checks_1hour = 0;
-	public $passive_host_checks_start = 0;
-	public $passive_host_checks_ever = 0;
+	public $total_passive_host_checks = 0; /**< The total number of passive host checks */
+	public $passive_host_checks_1min = 0; /**< The number of received passive host checks the last minute */
+	public $passive_host_checks_5min = 0; /**< The number of received passive host checks the last 5 minutes */
+	public $passive_host_checks_15min = 0; /**< The number of received passive host checks the last 15 minutes */
+	public $passive_host_checks_1hour = 0; /**< The number of received passive host checks the last hour */
+	public $passive_host_checks_start = 0; /**< The number of received passive host checks since program start */
+	public $passive_host_checks_ever = 0; /**< The number of received passive host checks ever recorded */
 
-	public $total_host_percent_change_b = 0;
-	public $min_host_percent_change_b = 0;
-	public $max_host_percent_change_b = 0;
+	public $total_host_percent_change_b = 0; /**< Total host percentage change for passive checks */
+	public $min_host_percent_change_b = 0; /**< Minimum host percentage change for passive checks */
+	public $max_host_percent_change_b = 0; /**< Maximum host percentage change for passive checks */
 
-	/*
+	/**
 	* Only show services
 	* for each host if this is set to true
 	* Accepts 'all' as input, which will return
@@ -46,15 +49,15 @@ class Host_Model extends Model {
 	*/
 	public $show_services = false;
 
-	public $state_filter = false; # value of current_state to filter for
-	public $sort_field ='';
-	public $sort_order='ASC'; # ASC/DESC
-	public $service_filter = false;
-	public $serviceprops = false;
-	public $hostprops = false;
-	public $num_per_page = false;
-	public $offset = false;
-	public $count = false;
+	public $state_filter = false; /**< value of current_state to filter for */
+	public $sort_field ='';/**< Field to sort on */
+	public $sort_order='ASC'; /**< ASC/DESC */
+	public $service_filter = false; /**< Bitmask of service states to get */
+	public $serviceprops = false; /**< A bitmask of service flags as defined in the nagstat helper */
+	public $hostprops = false; /**< A bitmask of host flags as defined in the nagstat helper */
+	public $num_per_page = false; /**< Number of results per page */
+	public $offset = false; /**< Number of results to skip before getting rows */
+	public $count = false; /**< Skip getting any results, only count the number of matches */
 
 	public function __construct()
 	{
@@ -63,62 +66,16 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 Workaround for O queries: runs $db->query($sql), copies
-	 the resultset to an array, closes the resultset, and returns
-	 the array.
+	 * Useless indirection
 	 */
 	private static function query($db,$sql)
 	{
-		$res = $db->query($sql)->result();
-		$rc = array();
-		foreach($res as $row) {
-			$rc[] = $row;
-		}
-		unset($res);
-		return $rc;
-	}
-
-	/**
-	 * Fetch all onfo on a host. The returned object
-	 * will contain all database fields for the host object.
-	 * @param $name The host_name of the host
-	 * @param $id The id of the host
-	 * @return Host object on success, false on errors
-	 */
-	public function get_hostinfo($name=false, $id=false)
-	{
-
-		$id = (int)$id;
-		$name = trim($name);
-
-		$auth_hosts = $this->auth->get_authorized_hosts();
-		$host_info = false;
-
-		if (!empty($id)) {
-			if (!array_key_exists($id, $auth_hosts)) {
-				return false;
-			} else {
-				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
-					->where('host', array('id' => $id));
-			}
-		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $this->auth->hosts_r)) {
-				return false;
-			} else {
-				$host_info = $this->db
-					->select('*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time')
-					->getwhere('host', array('host_name' => $name));
-			}
-		} else {
-			return false;
-		}
-		return $host_info !== false ? $host_info->current() : false;
+		return $db->query($sql)->result_array();
 	}
 
 	/**
 	 * Determine if user is authorized to view info on a specific host.
-	 * Accepts either hostID or host_name as input
+	 * Accepts either hostID or host_name as input. Setting both is undefined.
 	 *
 	 * @param $name The host_name of the host.
 	 * @param $id The id of the host
@@ -126,24 +83,12 @@ class Host_Model extends Model {
 	 */
 	public function authorized_for($name=false, $id=false)
 	{
-		$id = (int)$id;
-		$name = trim($name);
-		$is_auth = false;
-
-		$auth_hosts = $this->auth->get_authorized_hosts();
-
-		if (!empty($id)) {
-			if (!array_key_exists($id, $auth_hosts)) {
-				return false;
-			}
-		} elseif (!empty($name)) {
-			if (!array_key_exists($name, $auth->hosts_r)) {
-				return false;
-			}
-		} else {
+		if ($name !== false)
+			return $this->auth->get_authorized_for_host($name);
+		else if ($id !== false)
+			return $this->auth->get_authorized_for_host($id);
+		else
 			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -497,7 +442,7 @@ class Host_Model extends Model {
 					"host.scheduled_downtime_depth, ".
 					"host.output, ".
 					"host.long_output, ".
-					"host.display_name AS host_display_name ".
+					"host.display_name ".
 				"FROM ".$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
@@ -576,9 +521,7 @@ class Host_Model extends Model {
 					"service.max_check_attempts,".
 					"service.output,".
 					"service.long_output,".
-					"service.output AS service_output,".
-					"service.long_output AS service_long_output, ".
-					"service.display_name AS service_display_name ";
+					"service.display_name";
 
 			# when we have a valid host_list, i.e not 'all'
 			# then we should filter on these hosts
@@ -695,7 +638,7 @@ class Host_Model extends Model {
 	/**
 	*	Build a string to be used in a sql query to filter on different service properties
 	*/
-	public function build_service_props_query($serviceprops=false, $table_alias='', $host_table_alias='')
+	public static function build_service_props_query($serviceprops=false, $table_alias='', $host_table_alias='')
 	{
 		if (empty($serviceprops))
 			return false;
@@ -755,7 +698,7 @@ class Host_Model extends Model {
 	/**
 	*	Build a string to be used in a sql query to filter on different host properties
 	*/
-	public function build_host_props_query($hostprops=false, $table_alias='')
+	public static function build_host_props_query($hostprops=false, $table_alias='')
 	{
 		if (empty($hostprops))
 			return false;
@@ -827,16 +770,15 @@ class Host_Model extends Model {
 
 		$service_description = trim($service_description);
 		# check credentials for host
-		$host_list = $auth->get_authorized_hosts();
+		if (!$auth->is_authorized_for_host($host_name) && ($service_description == false || !$auth->is_authorized_for_service($host_name .';'.$service_description)))
+			return false;
 
 		$db = Database::instance();
 		if (empty($service_description)) {
 			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
 		} else {
-			$service_list = $auth->get_authorized_services();
-			if (!in_array($host_name.';'.$service_description, $service_list)) {
+			if (!$auth->is_authorized_for_service($host_name.';'.$service_description))
 				return false;
-			}
 
 			$sql = "
 				SELECT
@@ -926,17 +868,10 @@ class Host_Model extends Model {
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
+		if ($auth->view_hosts_root) {
+			$ca = '';
 		} else {
-			$hostlist = self::authorized_hosts();
-			if (empty($hostlist)) {
-				return false;
-			}
-			$str_hostlist = implode(', ', $hostlist);
-			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
-			$where = "AND id IN (".$str_hostlist.")";
+			$ca = " INNER JOIN contact_access ca ON ca.$this->table = $this->table.id AND ca.contact = $auth->id ";
 		}
 
 		$extra_sql = "";
@@ -951,8 +886,8 @@ class Host_Model extends Model {
 			"MIN(percent_state_change) AS min_perc_change, ".
 			"MAX(percent_state_change) AS max_perc_change ".
 			$extra_sql .
-			"FROM ".$this->table." ".
-			"WHERE active_checks_enabled=".$checks_state." ".$where;
+			"FROM ".$this->table." ".$ca.
+			"WHERE active_checks_enabled=".$checks_state." ";
 
 		$result = $this->query($this->db,$sql);
 		if (count($result)) {
@@ -999,26 +934,21 @@ class Host_Model extends Model {
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
 		$auth = new Nagios_auth_Model();
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			$where = '';
-			$where_w_alias = '';
+		if ($auth->view_hosts_root || $auth->authorized_for_system_information) {
+			$ca = '';
+			$ca_w_alias = '';
 		} else {
-			$hostlist = self::authorized_hosts();
-			if (empty($hostlist)) {
-				return false;
-			}
-			$str_hostlist = implode(', ', $hostlist);
-			$where_w_alias = "AND t.id IN (".$str_hostlist.")";
-			$where = "AND id IN (".$str_hostlist.")";
+			$ca_w_alias = " INNER JOIN contact_access ca ON ca.$this->table = t.id AND ca.contact =  $auth->id ";
+			$ca = " INNER JOIN contact_access ca ON ca.$this->table = $this->table.id AND ca.contact =  $auth->id ";
 		}
 
 		$sql = false;
 		$class_var = false;
 		if ($prog_start !== false) {
-			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state." ".$where_w_alias;
+			$sql = "SELECT COUNT(t.id) AS cnt FROM ".$this->table." t $ca_w_alias, program_status ps WHERE last_check>=ps.program_start AND t.active_checks_enabled=".$checks_state;
 			$class_var = 'start';
 		} else {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." $ca WHERE last_check>=(UNIX_TIMESTAMP()-".(int)$time_arg.") AND active_checks_enabled=".$checks_state;
 			switch ($time_arg) {
 				case 60:
 					$class_var = '1min';
@@ -1036,7 +966,7 @@ class Host_Model extends Model {
 		}
 
 		if (empty($sql) && empty($class_var)) {
-			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." WHERE last_check>0 AND active_checks_enabled=".$checks_state." ".$where;
+			$sql = "SELECT COUNT(*) AS cnt FROM ".$this->table." $ca WHERE last_check>0 AND active_checks_enabled=".$checks_state;
 			$class_var = 'ever';
 		}
 		$class_var = $active_passive.'_'.$this->table.'_checks_'.$class_var;
@@ -1049,21 +979,15 @@ class Host_Model extends Model {
 		}
 	}
 
+	/**
+	 * Given a hostgroup name, return all host data for all hosts in it
+	 * @param $name Hostgroup name
+	 * @return false on error, otherwise database result
+	 */
 	public function get_hosts_for_group($name)
 	{
-		if (empty($name))
-			return false;
-
-		$auth_hosts = self::authorized_hosts();
-		$host_str = join(',', $auth_hosts);
-		$db = Database::instance();
-		$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT h.id " .
-			"FROM host h, hostgroup hg, host_hostgroup hhg " .
-			"WHERE hg.hostgroup_name = " . $db->escape($name) .
-			"AND hhg.hostgroup = hg.id AND h.id = hhg.host " .
-			"AND h.id IN(" . $host_str . "))";
-
-		return $this->query($db,$sql);
+		$hostgroup_model = new Hostgroup_Model();
+		return $hostgroup_model->get_hosts_for_group($name);
 	}
 
 
@@ -1085,13 +1009,16 @@ class Host_Model extends Model {
 		if (empty($field) || empty($regexp)) {
 			return false;
 		}
-		if (!isset($this->auth) || !is_object($this->auth)) {
+		if (!isset($this->auth) || !is_object($this->auth))
 			$auth = new Nagios_auth_Model();
-			$auth_hosts = $auth->get_authorized_hosts();
-		} else {
-			$auth_hosts = $this->auth->get_authorized_hosts();
-		}
-		$host_ids = array_keys($auth_hosts);
+		else
+			$auth = $this->auth;
+
+		if ($auth->view_hosts_root)
+			$ca = '';
+		else
+			$ca = " INNER JOIN contact_access ca ON ca.host = host.id AND ca.contact = $auth->id ";
+
 		$limit_str = sql::limit_parse($limit);
 		if (!isset($this->db) || !is_object($this->db)) {
 			$db = Database::instance();
@@ -1099,8 +1026,7 @@ class Host_Model extends Model {
 			$db = $this->db;
 		}
 
-		$sql = "SELECT * FROM host WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
-		 "AND id IN(".implode(',', $host_ids).") ".$limit_str;
+		$sql = "SELECT * FROM host $ca WHERE ".$field." REGEXP ".$db->escape($regexp)." ".$limit_str;
 		$host_info = self::query($db,$sql);
 		return count($host_info)>0 ? $host_info : false;
 	}
@@ -1127,23 +1053,5 @@ class Host_Model extends Model {
 
 		$data = self::query($db,$sql);
 		return count($data)>0 ? $data : false;
-	}
-
-	/**
-	*	Create an associative array with IP/Address => host_name
-	*/
-	public function addr_name()
-	{
-		$hosts = self::authorized_hosts();
-		$hostlist = false;
-		$db = Database::instance();
-		$sql = "SELECT host_name, address FROM host WHERE id IN (".implode(',', $hosts).")";
-		$data = self::query($db,$sql);
-		if (count($data)>0) {
-			foreach ($data as $row) {
-				$hostlist[$row->address] = $row->host_name;
-			}
-		}
-		return $hostlist;
 	}
 }

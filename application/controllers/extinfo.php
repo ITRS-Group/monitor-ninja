@@ -152,7 +152,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$content->parents = $parents;
 			}
 
-			$back_link = '/extinfo/details/host/'.urlencode($host);
+			$back_link = '/extinfo/details/?host='.urlencode($host);
 			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = $t->_('This host has not yet been checked, so status information is not available.');
@@ -162,8 +162,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$content->title = $this->translate->_('Service State Information');
 			$content->no_group_lable = $t->_('No servicegroups');
 			$content->lable_next_scheduled_check = $t->_('Next scheduled check');
-			$host_link = html::anchor('extinfo/details/host/'.urlencode($host), html::specialchars($host));
-			$back_link = '/extinfo/details/service/'.urlencode($host).'?service='.urlencode($service);
+			$host_link = html::anchor('extinfo/details/?host='.urlencode($host), html::specialchars($host));
+			$back_link = '/extinfo/details/service/?host='.urlencode($host).'&service='.urlencode($service);
 			$check_compare_value = Current_status_Model::SERVICE_CHECK_ACTIVE;
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = $t->_('Is this service flapping?');
@@ -184,9 +184,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$xaction = array();
 		if (nacoma::link()===true) {
 			$label = $t->_('Configure');
-			$url = url::site() . "configuration/configure/$type/" . urlencode($host);
+			$url = url::site() . "configuration/configure/?type=$type&name=".urlencode($host);
 			if ($type === 'service') {
-				$url .= '?service=' . urlencode($service);
+				$url .= '&service='.urlencode($service);
 				$alt = $t->_('Configure this service using Nacoma');
 			} else {
 				$alt = $t->_('Configure this host using Nacoma');
@@ -500,7 +500,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$label_host_notifications = $t->_('Notifications');
 				$label_view_for = $this->translate->_('for this host');
 				$page_links = array(
-					 $label_host_status_details => 'status/service/'.$host,
+					 $label_host_status_details => 'status/service/?name='.urlencode($host),
 					 $label_host_alert_history => 'showlog/alert_history/'.$host,
 					 $label_host_trends => 'trends/host/'.$host,
 					 $label_host_histogram => 'histogram/host/'.$host,
@@ -1502,23 +1502,23 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$header_links = array(
 			array(
 				'title' => $this->translate->_('Host'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=host_name',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=host_name',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=host_name',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=host_name',
 			),
 			array(
 				'title' => $this->translate->_('Service'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=service_description',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=service_description',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=service_description',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=service_description',
 			),
 			array(
 				'title' => $this->translate->_('Last check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=last_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sorttype=DESC&sort_field=last_check',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=last_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=last_check',
 			),
 			array(
 				'title' => $this->translate->_('Next check'),
-				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&sort_field=next_check',
-				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&sort_field=next_check',
+				'url_asc' => Router::$controller.'/'.Router::$method.'?sort_order=ASC&amp;sort_field=next_check',
+				'url_desc' => Router::$controller.'/'.Router::$method.'?sort_order=DESC&amp;sort_field=next_check',
 			)
 		);
 

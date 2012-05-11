@@ -187,7 +187,8 @@ CREATE TABLE avail_config (
   alert_types NUMBER(3,0) DEFAULT '0',
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
-  service_states NUMBER(3,0) DEFAULT '0'
+  service_states NUMBER(3,0) DEFAULT '0',
+  include_trends NUMBER(3,0) DEFAULT '1'
 );
 
 
@@ -378,14 +379,14 @@ CREATE INDEX user_id ON ninja_user_authorization
 
 -- DROP TABLE ninja_widgets CASCADE CONSTRAINTS;
 
-
 PROMPT Creating Table ninja_widgets ...
 CREATE TABLE ninja_widgets (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(200 CHAR) DEFAULT NULL,
-  page VARCHAR2(200 CHAR) NOT NULL,
+  page VARCHAR2(200 CHAR) DEFAULT 'tac/index' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
   friendly_name VARCHAR2(255 CHAR) NOT NULL,
+  instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
 
@@ -802,7 +803,7 @@ CREATE UNIQUE INDEX uniq_username ON users
 )
 ;
 
-connect merlin/merlin;
+--connect merlin/merlin;
 
 CREATE OR REPLACE TRIGGER ninja_widgets_id_TRG BEFORE INSERT OR UPDATE ON ninja_widgets
 FOR EACH ROW

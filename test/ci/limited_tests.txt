@@ -1,3 +1,5 @@
+# runs all tests as the user "limited"
+
 status/service?run_tests&items_per_page=1000 limited
 status/host?run_tests limited
 status/hostgroup?run_tests limited

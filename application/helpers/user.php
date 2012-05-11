@@ -10,7 +10,7 @@ class user_Core
 	 * @param $var string: Variable name to return value for
 	 * @return Value from session on success. false if not found
 	 */
-	public function session($var = false)
+	public static function session($var = false)
 	{
 		$return = false;
 		return !empty(Auth::instance()->get_user()->$var) ? Auth::instance()->get_user()->$var : false;

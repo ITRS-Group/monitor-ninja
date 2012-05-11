@@ -60,9 +60,10 @@ function show_info(action) {
 function collapse_section(section, save){
 	var is_visible = false;
 	$('.'+section).slideToggle(200,function(){
-		$(this).addClass(section + "_hidden");
-	},function(){
-		$(this).removeClass(section + "_hidden");
+		if ($(this).hasClass(section + '_hidden'))
+			$(this).removeClass(section + "_hidden");
+		else
+			$(this).addClass(section + "_hidden");
 	});
 
 	if (save) {

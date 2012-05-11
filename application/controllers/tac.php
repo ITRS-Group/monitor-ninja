@@ -12,15 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Tac_Controller extends Authenticated_Controller {
-
-	public $model = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->model = new Current_status_Model();
-	}
-
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
@@ -36,50 +27,52 @@ class Tac_Controller extends Authenticated_Controller {
 			$this->translate->_('logout')     => 'default/logout'
 		);
 
+		# make sure we have this done before letting widgets near
+		$model = Current_status_Model::instance();
+		$model->analyze_status_data();
+
 		# fetch data for all widgets
-		$this->model->analyze_status_data();
+		$widget_objs = Ninja_widget_Model::fetch_all(Router::$controller.'/'.Router::$method);
+		$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 
-		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $this->model);
-		$widget_order = Ninja_widget_Model::fetch_widget_order(Router::$controller.'/'.Router::$method);
-
-		if (!empty($widget_info)) {
-			$settings_widgets = $widget_info['settings_widgets'];
-			$settings = $widget_info['settings'];
-			$widget_list = $widget_info['widget_list'];
-			$this->inline_js .= $widget_info['inline_js'];
-			$user_widgets = $widget_info['user_widgets'];
-
-			# add the widgets to the page using user settings or default if not available
-			foreach ($widget_list as $widget_name) {
-				widget::add($widget_name, $settings[$widget_name], $this);
+		if (empty($widgets)) {
+			# probably a new user, we should populate the widget list
+			# yeah, this does Weird Things™ if a user should try to hide everything
+			# but that is a silly thing to do, so just blame the user.
+			foreach ($widget_objs as $obj) {
+				$obj->save();
 			}
-
-			$this->template->settings_widgets = $settings_widgets;
-			$this->template->user_widgets = $user_widgets;
-			$this->template->content->widget_settings = $settings;
+			$widgets = widget::add_widgets(Router::$controller.'/'.Router::$method, $widget_objs, $this);
 		}
 
-		# Validate that we have all the widgets in our order string.
-		# If this fails users will get a jGrowl error each time the page
-		# reloaded.
-		$tmp_arr = array();
-		foreach ($widget_order as $place => $widgets) {
-			$tmp_arr = array_merge($tmp_arr, (array)$widgets);
-		}
+		if (array_keys($widgets) == array('unknown')) {
+			$nwidgets = count($widgets['unknown']);
 
-		foreach ($widget_info['widget_list'] as $tmp) {
-			if (!in_array('widget-'.$tmp, $tmp_arr)) {
-				$widget_order['widget-placeholder'][] = 'widget-'.$tmp;
+			# left column
+			$widgets['widget-placeholder'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+
+			# middle column
+			$widgets['widget-placeholder1'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+
+			# right column
+			$widgets['widget-placeholder2'] = array_splice($widgets['unknown'], 0, round($nwidgets/4));
+
+			# full width (placed at bottom)
+			$widgets['widget-placeholder3'] = $widgets['unknown'];
+			unset($widgets['unknown']);
+		} else if (isset($widgets['unknown'])) {
+			if(!isset($widgets['widget-placeholder'])) {
+				$widgets['widget-placeholder'] = array();
 			}
+			$widgets['widget-placeholder'] = array_merge($widgets['widget-placeholder'], $widgets['unknown']);
+			unset($widgets['unknown']);
 		}
 
-		# add the inline javascript to master template header
-		$this->template->inline_js = $this->inline_js;
-
-		$this->template->content->widget_order = $widget_order;
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = $widgets;
+		$this->template->widgets = $widget_objs;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 	}
 
 	/**

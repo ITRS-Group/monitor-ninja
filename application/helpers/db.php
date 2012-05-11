@@ -3,9 +3,12 @@
  * Function needed for making cross-database SQL
  */
 class db_Core {
-	/*
+	/**
 	 * Both mysql and oracle supports logical and, but in completely different
-	 * ways. Workaround by genereting a list of set bits in a bitmask.
+	 * ways. Workaround by generating a list of set bits in a bitmask.
+	 *
+	 * @param $bitmask A bitmask
+	 * @return An array of the bits that were set
 	 */
 	public static function bitmask_to_array($bitmask) {
 		$bits = array();
@@ -20,6 +23,12 @@ class db_Core {
 		return $bits;
 	}
 
+	/**
+	 * Both mysql and oracle supports logical and, but in completely different
+	 * ways. Workaround by generating a comma-separated string of the set bit values
+	 * @param $bitmask A bitmask
+	 * @return A string of the set bits
+	 */
 	public static function bitmask_to_string($bitmask) {
 		$bits = self::bitmask_to_array($bitmask);
 		$res = "";

@@ -125,6 +125,9 @@ class Group_Model extends Model
 	 * @param $servicestatus Service status filter
 	 * @param $service_props Service properties filter
 	 * @param $host_props Host properties filter
+	 * @param $limit The number of rows to fetch
+	 * @param $sort_field The field to sort on
+	 * @param $sort_order The sort ordering
 	 * @return db result
 	 */
 	public static function get_group_info($grouptype='service', $groupname=false, $hoststatus=false, $servicestatus=false, $service_props=false, $host_props=false, $limit=false, $sort_field=false, $sort_order='DESC')
@@ -214,7 +217,7 @@ class Group_Model extends Model
 				"s.next_check,".
 				"s.notifications_enabled,".
 				"s.service_description,".
-				"s.display_name AS service_display_name ".
+				"s.display_name AS display_name ".
 			"FROM host h ".
 			"INNER JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
@@ -404,7 +407,7 @@ class Group_Model extends Model
 	*	Fetch group overview data
 	* 	Expects group type (host/service) and group name
 	*/
-	public function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
+	public static function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = array();

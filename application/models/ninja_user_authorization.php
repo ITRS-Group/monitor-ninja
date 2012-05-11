@@ -6,6 +6,9 @@
  */
 class Ninja_user_authorization_Model extends Model
 {
+	/**
+	 * The different db fields that contains authorization info
+	 */
 	public static $auth_fields = array(
 				'system_information',
 				'configuration_information',
@@ -22,7 +25,7 @@ class Ninja_user_authorization_Model extends Model
 	* 	If authorization credentials has changed for an existing
 	* 	user, the data will be updated
 	*/
-	public function insert_user_auth_data($user_id=false, $options=false)
+	public static function insert_user_auth_data($user_id=false, $options=false)
 	{
 		if (empty($user_id) || empty($options))
 			return false;
@@ -59,7 +62,7 @@ class Ninja_user_authorization_Model extends Model
 	*	or user_id. If both username and user_id are empty
 	* 	we use the id of the current user.
 	*/
-	public function get_auth_data($username=false, $user_id=false)
+	public static function get_auth_data($username=false, $user_id=false)
 	{
 		if (empty($username) && empty($user_id)) {
 			$user_id = Auth::instance()->get_user()->id;

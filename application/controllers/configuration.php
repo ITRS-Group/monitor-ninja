@@ -33,10 +33,11 @@ class Configuration_Controller extends Authenticated_Controller {
 			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
 			return false;
 		}
-		$scan = urldecode($this->input->get('scan', null));
-		$type = urldecode($this->input->get('type', $type));
-		$name = urldecode($this->input->get('name', $name));
-		$service = urldecode($this->input->get('service', false));
+		$scan = $this->input->get('scan', null);
+		$type = $this->input->get('type', $type);
+		$name = $this->input->get('name', $name);
+		$service = $this->input->get('service', false);
+		$page = $this->input->get('page', false);
 		if (Kohana::config('config.nacoma_path')===false) {
 			return false;
 		}
@@ -44,14 +45,17 @@ class Configuration_Controller extends Authenticated_Controller {
 		$name = trim($name);
 
 		$target_link = 'configure.php';
+
+		if ($page)
+			$target_link = $page;
 		if (!empty($type) && !empty($name)) {
 			if (strstr($type, 'group')) {
-				$target_link = 'edit.php?obj_type='.$type.'&obj_name='.$name;
+				$target_link = 'edit.php?obj_type='.$type.'&obj_name='.urlencode($name);
 			} else {
 				if (!empty($service)) {
-					$target_link = 'edit.php?obj_type='.$type.'&host='.$name.'&service='.$service;
+					$target_link = 'edit.php?obj_type='.$type.'&host='.urlencode($name).'&service='.urlencode($service);
 				} else {
-					$target_link = 'edit.php?obj_type='.$type.'&'.$type.'='.$name;
+					$target_link = 'edit.php?obj_type='.$type.'&'.$type.'='.urlencode($name);
 				}
 			}
 		} elseif (!empty($type)) {
@@ -67,7 +71,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$this->template->title = $this->translate->_('Configuration » Configure');
 		$this->template->nacoma = true;
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'));
+		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'), $this->add_path('/js/nacoma-urls.js'));
 		$this->template->js_header->js = $this->xtra_js;
 	}
 }

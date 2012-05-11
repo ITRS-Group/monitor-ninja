@@ -12,7 +12,12 @@
  *  PARTICULAR PURPOSE.
  */
 class alertlog_Core {
-	public function get_user_friendly_representation($entry) {
+	/**
+	 * Convert all sorts of constants to user-readable strings, add html, and generally make things pretty
+	 * @param $entry A database row
+	 * @return An array, somewhat similar to the entry one, but with new values
+	 */
+	public static function get_user_friendly_representation($entry) {
 		$ret = array(
 			'type' => '',
 			'obj_name' => '',
@@ -25,17 +30,17 @@ class alertlog_Core {
 		 case 100:
 			$ret['type'] = 'PROCESS START';
 			$ret['state'] = "Start";
-			$ret['image'] = html::image($this->add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 102:
 			$ret['type'] = 'PROCESS RESTART';
 			$ret['state'] = "Restart";
-			$ret['image'] = html::image($this->add_path('icons/16x16/'.strtolower($ret['state']).'.gif'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.gif'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 103:
 			$ret['type'] = 'PROCESS SHUTDOWN';
 			$ret['state'] = 'Stop';
-			$ret['image'] = html::image($this->add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 701:
 			$ret['type'] = 'SERVICE ALERT';
@@ -57,7 +62,7 @@ class alertlog_Core {
 				$ret['state'] = 'Pending';
 				break;
 			}
-			$ret['image'] = html::image($this->add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			$ret['softorhard'] = $entry->hard ? 'HARD' : 'SOFT';
 			break;
 		 case 801:
@@ -76,7 +81,7 @@ class alertlog_Core {
 				$ret['state'] = 'Pending';
 				break;
 			}
-			$ret['image'] = html::image($this->add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			$ret['softorhard'] = $entry->hard ? 'HARD' : 'SOFT';
 			break;
 		 case 1103:
@@ -86,7 +91,7 @@ class alertlog_Core {
 			else
 				$ret['type'] = 'HOST DOWNTIME ALERT';
 			$ret['state'] = $entry->event_type == 1103 ? 'Started' : 'Stopped';
-			$ret['image'] = html::image($this->add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
+			$ret['image'] = html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
 			break;
 		 default:
 			$ret['type'] = "UNKNOWN EVENT #$event->entry_type";

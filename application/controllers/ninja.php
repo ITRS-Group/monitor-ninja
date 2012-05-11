@@ -26,7 +26,6 @@ class Ninja_Controller extends Template_Controller {
 	public $template = "template";
 	public $user = false;
 	public $profiler = false;
-	public $theme_path = false;
 	public $xtra_js = array();
 	public $xtra_css = array();
 	public $inline_js = false;
@@ -36,13 +35,14 @@ class Ninja_Controller extends Template_Controller {
 	public $notifications_disabled = false;
 	public $checks_disabled = false;
 	public $global_notifications = false;
+	protected $theme_path = false;
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->theme_path = Kohana::config('config.theme_path').Kohana::config('config.current_theme');
+		$this->theme_path = ninja::get_theme_path();
 
-		$this->run_tests = $this->input->get('run_tests', false);
+		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
 		# set base template file to current theme
 		$this->template = $this->add_view('template');
@@ -50,6 +50,9 @@ class Ninja_Controller extends Template_Controller {
 		#$this->profiler = new Profiler;
 		if (Authenticated_Controller::ALLOW_PRODUCTION !== true && $this->run_tests === false) {
 			$this->profiler = new Fire_Profiler;
+		}
+		else if ($this->run_tests !== false) {
+			unittest::instance();
 		}
 
 		# Load session library
@@ -116,7 +119,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
-		$this->registry->set('theme_path', $this->theme_path);
 
 		$this->translate = zend::translate('gettext', $this->locale->getLanguage(), $this->locale);
 
@@ -144,14 +146,17 @@ class Ninja_Controller extends Template_Controller {
 		}
 
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
+			# warning! do not set anything in xlinks, as it isn't working properly
+			# and cannot (easily) be fixed
+			$this->xlinks = array();
+			$this->_addons();
+
 			# create the user menu
 			$this->template->links = $this->create_menu();
 
 			if (Kohana::config('auth.driver') == 'LDAP')
 				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
-			$this->xlinks = array();
-			$this->_addons();
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 
@@ -236,7 +241,7 @@ class Ninja_Controller extends Template_Controller {
 				&& empty($menu_links[$menu_items['section_'.$section_str]])) {
 				# remove the section
 				unset($menu_links[$menu_items['section_'.$section_str]]);
-			} elseif (!empty($item_str) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
+			} elseif (!empty($item_str) && isset($menu_items['section_'.$section_str]) && isset($menu_links[$menu_items['section_'.$section_str]]) && isset($menu_items[$item_str]) && isset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]])) {
 				unset($menu_links[$menu_items['section_'.$section_str]][$menu_items[$item_str]]);
 			}
 		}
@@ -367,17 +372,7 @@ class Ninja_Controller extends Template_Controller {
 	 */
 	public function add_path($rel_path)
 	{
-		$rel_path = trim($rel_path);
-		if (empty($rel_path)) {
-			return false;
-		}
-
-		$path = false;
-		# assume rel_path is relative from current theme
-		$path = 'application/views/'.$this->theme_path.$rel_path;
-		# make sure we didn't mix up start/end slashes
-		$path = str_replace('//', '/', $path);
-		return $path;
+		return ninja::add_path($rel_path);
 	}
 
 	/**

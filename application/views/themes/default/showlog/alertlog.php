@@ -35,8 +35,8 @@
 		<tr>
 			<td>
 	<h3><?php echo $x->_('State type options'); ?></h3>
-	<?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '.$x->_('Soft states'); ?><br />
-	<?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '.$x->_('Hard states'); ?>
+	<label><?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '.$x->_('Soft states').'</label>'; ?><br />
+	<label><?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '.$x->_('Hard states').'</label>'; ?>
 	</td>
 	<td>
 	<h3><?php echo $x->_('Host state options'); ?></h3>
@@ -46,7 +46,7 @@
 				$i++;
 				$set = $hosts_shown && isset($options['host_state_options'][$v]);
 				$name = 'host_state_options[' . $v . ']';
-				echo form::checkbox($name, 1, $set, $hosts_shown ? false : 'disabled="disabled"').' '.$k.'<br />';
+				echo '<label>'.form::checkbox($name, 1, $set, $hosts_shown ? false : 'disabled="disabled"').' '.$k.'</label><br />';
 			}
 		?>
 		</td><td>
@@ -57,14 +57,14 @@
 				$set = isset($options['service_state_options'][$v]);
 				$i++;
 				$name = 'service_state_options[' . $v . ']';
-				echo form::checkbox($name,1, $set).' '.$k.'<br />';
+				echo '<label>'.form::checkbox($name,1, $set).' '.$k.'</label><br />';
 			}
 		?>
 		</td><td>
 		<h3><?php echo $x->_('General options'); ?></h3>
-		<?php echo form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '.$x->_('Hide downtime alerts'); ?><br />
-		<?php echo $is_authorized ? form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages').'<br />' : ''; ?>
-		<?php echo form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '.$x->_('Older entries first'); ?>
+		<?php echo '<label>'.form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '.$x->_('Hide downtime alerts'); ?></label><br />
+		<?php echo $is_authorized ? '<label>'.form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages').'</label><br />' : ''; ?>
+		<?php echo '<label>'.form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '.$x->_('Older entries first').'</label>'; ?>
 		</td>
 		</tr>
 		<tr>

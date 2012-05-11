@@ -34,7 +34,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<a id="old_avail_link" style="position: absolute; right: 1%; top: 54px;border: 0px; margin-left: 4px;<?php if ($type=='sla' || Kohana::config('cgi.show_cgi_links') === false) {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
 
 			<div id="switcher" style="margin-top: -7gpx; padding-bottom: 15px;">
@@ -346,12 +345,24 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
 					</td>
 					<td>&nbsp;</td>
+					<td>
+						<?php if('avail' == $type) { ?>
+						<?php echo help::render('include_trends') ?>
+						<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
+								onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $include_trends_checked; ?> />
+						<label for="include_trends"><?php echo $label_include_trends ?></label>
+						<?php } ?>
+					</td>
+				</tr>
+				<tr>
 					<td id="csv_cell" style="vertical-align: top">
 						<?php echo help::render('csv_format') ?>
 						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
 								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
 						<label for="csvoutput" id="csvout"><?php echo $label_csvoutput ?></label>
 					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
 				</tr>
 			</table>
 		</div>

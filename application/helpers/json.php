@@ -11,10 +11,10 @@ class json_Core
 	/**
 	 * Kills the request after echoing a structured json response
 	 *
-	 * @param array $response
+	 * @param array $response = null
 	 * @param int $exit_code = 0
 	 */
-	private static function _send_response($response, $exit_code = 0) {
+	private static function _send_response($response = null, $exit_code = 0) {
 		echo self::encode($response);
 		exit($exit_code);
 	}
@@ -59,18 +59,18 @@ class json_Core
 	/**
 	 * [error] => message
 	 *
-	 * @param string $reason
+	 * @param $reason string
 	 */
-	public static function fail($reason) {
+	public static function fail($reason = null) {
 		return self::_send_response(array('error' => $reason), 1);
 	}
 
 	/**
 	 * [result] => message
 	 *
-	 * @param string $result
+	 * @param $result string
 	 */
-	public static function ok($result) {
+	public static function ok($result = null) {
 		return self::_send_response(array('result' => $result));
 	}
 }

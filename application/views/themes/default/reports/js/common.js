@@ -213,13 +213,12 @@ function send_report_now(type, id)
 	}
 
 	$.ajax({
-		url:_site_domain + _index_page + '/' + controller + '/generate',
+		url: _site_domain + _index_page + '/' + controller + '/generate',
 		type: 'POST',
 		data: {type: type, schedule_id: id},
 		success: function(data) {
 			if (data == '' || !data.error) {
 				jgrowl_message(_reports_schedule_send_ok, _reports_success);
-				setTimeout(function() {restore_sendimg(html_id)}, 1000);
 			} else {
 				if(data.error) {
 					jgrowl_message(_reports_schedule_send_error + ': ' + data.error, _reports_error);
@@ -309,7 +308,7 @@ function remove_schedule(id, remove_type)
 			$('#report_id option:selected').text(chk_text);
 		}
 		if ($(".fancybox").is(':visible')) {
-			$(".fancybox").fancybox.close();
+			$.fancybox.close();
 		}
 	}
 
@@ -842,6 +841,11 @@ function check_form_values()
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
+	if($('#display_host_status input[type="checkbox"]').length && !$('#display_host_status input[type="checkbox"]:checked').length) {
+		errors++;
+		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
+	}
+
 	if ($("#enter_sla").is(":visible")) {
 		// check for sane SLA values
 		var red_error = false;
@@ -894,7 +898,7 @@ function check_form_values()
 		var report_name 	= $(fancy_str + "input[name=report_name]").attr('value');
 		report_name = $.trim(report_name);
 		var saved_report_id = $("input[name=saved_report_id]").attr('value');
-		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').attr('checked') ? 1 : 0;
+		var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').is(':checked') ? 1 : 0;
 
 		/*
 		*	Only perform checks if:
@@ -934,7 +938,7 @@ function check_form_values()
 		$('#response').html('');
 
 		// check if report name is unique
-		if(saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
+		if(report_name && saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
 		{
 			if(!confirm(_reports_error_name_exists_replace))
 			{
@@ -1245,8 +1249,8 @@ function disable_last_months(mnr)
 function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
-	$('#' + the_id).css('font-weight', val_str);
-	$('#fancybox-content #' + the_id).css('font-weight', val_str);
+	$('#' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
+	$('#fancybox-content #' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
 }
 
 /**
@@ -1332,22 +1336,36 @@ function trigger_schedule_save(f)
 	var period_str = $('#fancybox-content #period option:selected').text();
 	var recipients = $('#fancybox-content #recipients').attr('value');
 	var filename = $('#fancybox-content #filename').attr('value');
+	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
 	var description = $('#fancybox-content #description').attr('value');
 
 	$.ajax({
 		url:_site_domain + _index_page + '/reports/schedule',
 		type: 'POST',
-		data: {report_id: report_id, rep_type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description},
+		data: {
+			report_id: report_id,
+			rep_type: rep_type,
+			saved_report_id: saved_report_id,
+			period: period,
+			recipients: recipients,
+			filename: filename,
+			local_persistent_filepath: local_persistent_filepath,
+			description: description
+		},
 		success: function(data) {
-			if (isNaN(data)) { // error!
-				jgrowl_message(data, _reports_error);
+			if (data.error) {
+				jgrowl_message(data.error, _reports_error);
 			} else {
-				$('#schedule_report_table').append(create_new_schedule_rows(data));
+				// @todo: remove this row, we should fetch that information on each click
+				// on that button since that data might be a bad cache, i.e. it's NEVER guaranteed
+				// to be 1:1 vs the stored data
+				$('#schedule_report_table').append(create_new_schedule_rows(data.result.id));
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-				$(".fancybox").fancybox.close();
 				$('#show_schedule').show(); // show the link to view available schedules
+				$.fancybox.close();
 			}
-		}
+		},
+		dataType: 'json'
 	});
 
 	setTimeout('delayed_hide_progress()', 1000);
@@ -1380,6 +1398,10 @@ function create_new_schedule_rows(id)
 	if (filename == '')
 		filename = $('#filename').attr('value');
 
+	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
+	if (local_persistent_filepath == '')
+		local_persistent_filepath = $('#local_persistent_filepath').attr('value');
+
 	var description = $('#fancybox-content #description').attr('value');
 	if (description == '')
 		description = $('#description').attr('value');
@@ -1390,6 +1412,7 @@ function create_new_schedule_rows(id)
 	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
 	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
+	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
 	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
 	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
@@ -1481,7 +1504,8 @@ function init_regexpfilter() {
 		list.options.length = 0;   //remove all elements from the list
 		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
-			list.add(o, null);
+			if (!o.parentNode)
+				list.add(o, null);
 		}
 
 	};

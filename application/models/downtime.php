@@ -8,11 +8,11 @@ class Downtime_Model extends Model
 	/**
 	 * Fetch current downtime information
 	 * 
-	 * @param int $filter = 3
-	 * @param string $order_by = 'downtime_id'
-	 * @param boolean $generate_links_for_downtime_id = false
+	 * @param $filter Host, service or both
+	 * @param $order_by Field name
+	 * @param $generate_links_for_downtime_id If true, do extra work to find the downtime trigger/source
 	 */
-	public function get_downtime_data($filter=3, $order_by='downtime_id', $generate_links_for_downtime_id = false)
+	public static function get_downtime_data($filter=3, $order_by='downtime_id', $generate_links_for_downtime_id = false)
 	{
 		$db = Database::instance();
 		$filter = empty($filter) ? 3 : $filter;
@@ -246,7 +246,7 @@ class Downtime_Model extends Model
 	/**
 	*	Fetch all host- or service comments
 	*/
-	public function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);

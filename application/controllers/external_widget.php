@@ -26,7 +26,7 @@ class External_widget_Controller extends Ninja_Controller {
 	*	Show page with single widget
 	*	@param $name str widget name to show, defaults to netw_health
 	*/
-	public function show_widget($name = null)
+	public function show_widget($name = null, $instance_id = null)
 	{
 		$username = Kohana::config('external_widget.username');
 		if (!Auth::instance()->logged_in() && !empty($username)) {
@@ -47,8 +47,6 @@ class External_widget_Controller extends Ninja_Controller {
 			}
 		}
 
-		$model = new Current_status_Model();
-		$widget_info = Ninja_widget_Model::fetch_page_widgets(Router::$controller.'/'.Router::$method, $model);
 
 		$this->template->content = $this->add_view('single_widget');
 		$this->template->title = $this->translate->_('External widget');
@@ -56,10 +54,19 @@ class External_widget_Controller extends Ninja_Controller {
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		widget::add($name, isset($widget_info['settings'][$name]) ? $widget_info['settings'][$name] : false, $this);
+
+		$model = Ninja_widget_Model::get(Router::$controller.'/'.Router::$method, $name, $instance_id);
+		if (!$model) {
+			$this->template->content->widget = false;
+			return;
+		}
+		if (!isset($model->id) || !$model->id)
+			$model->save();
+		$widget = widget::add($model, $this);
+
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widget = $widget;
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->render();

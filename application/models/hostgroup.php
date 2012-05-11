@@ -3,10 +3,8 @@
 /**
  * Retrieve and manipulate information regarding hostgroups
  */
-class Hostgroup_Model extends ORM
+class Hostgroup_Model extends Ninja_Model
 {
-	protected $table_names_plural = false;
-
 	/**
 	 * Fetch hostgroup where field matches value
 	 * @param $field The field to fetch
@@ -33,7 +31,7 @@ class Hostgroup_Model extends ORM
 	/**
 	 * Fetch info on all defined hostgroups
 	 */
-	public function get_all($items_per_page = false, $offset=false)
+	public static function get_all($items_per_page = false, $offset=false)
 	{
 		$limit_str = "";
 		if (!empty($items_per_page)) {
@@ -186,8 +184,12 @@ class Hostgroup_Model extends ORM
 	 * @param $groups A named group, a group ID or 'all'.
 	 * @param $items_per_page Items per page
 	 * @param $offset Item to start with
+	 * @param $hostprops A bitmask of host flags as defined in the nagstat helper
+	 * @param $serviceprops A bitmask of service flags as defined in the nagstat helper
+	 * @param $hoststatustypes A bitmask of interesting host states (1 << the_nagios_state)
+	 * @param $servicestatustypes A bitmask of interesting service states (1 << the_nagios_state)
 	 */
-	public function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
+	public static function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$auth = new Nagios_auth_Model();
 		$auth_objects = $auth->get_authorized_hostgroups();

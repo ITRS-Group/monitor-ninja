@@ -55,7 +55,15 @@ function preserve_get_params(custom_val, sel_id)
 	if ($.query.keys) {
 		for (var key in $.query.keys) {
 			if (key != 'items_per_page' && key!= 'custom_pagination_field' && key!='result') {
-				$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + $.query.keys[key] + '">');
+				if("object" == typeof $.query.keys[key] && !($.query.keys[key] instanceof Array)) {
+					// only iterate true objects' properties by; 1) check type, and; 2) exclude arrays
+					// (which in javascript also are typeof === object... sigh)
+					$.each($.query.keys[key], function(index) {
+						$('.pagination_form').append('<input type="hidden" name="' + key + '['+index+']" value="' + $.query.keys[key][index] + '">');
+					});
+				} else {
+					$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + $.query.keys[key] + '">');
+				}
 			}
 		}
 	}

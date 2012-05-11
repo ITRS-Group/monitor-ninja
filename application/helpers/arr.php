@@ -4,11 +4,13 @@
  */
 class arr_Core
 {
-	# this just lets us safely access array variables
-	# that might not be set, optionally specifying a default
-	# to return in case the variable isn't found.
-	# Note that $k (for key) can be an array
-	public function search($ary, $k, $def = false)
+	/**
+	 * this just lets us safely access array variables
+	 * that might not be set, optionally specifying a default
+	 * to return in case the variable isn't found.
+	 * Note that $k (for key) can be an array
+	 */
+	public static function search($ary, $k, $def = false)
 	{
 		if (is_array($k))
 			$try = $k;

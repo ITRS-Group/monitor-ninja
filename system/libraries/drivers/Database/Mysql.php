@@ -341,6 +341,7 @@ class Mysql_Result extends Database_Result {
 	// Fetch function and return type
 	protected $fetch_type  = 'mysql_fetch_object';
 	protected $return_type = MYSQL_ASSOC;
+	protected $_internal_row = 0;
 
 	/**
 	 * Sets up the result variables.
@@ -414,6 +415,14 @@ class Mysql_Result extends Database_Result {
 		return $this;
 	}
 
+	public function current()
+	{
+		if ($this->current_row !== $this->_internal_row AND ! $this->seek($this->current_row))
+			return false;
+		$this->_internal_row++;
+		return call_user_func($this->fetch_type, $this->result, $this->return_type);
+	}
+
 	public function as_array($object = NULL, $type = MYSQL_ASSOC)
 	{
 		return $this->result_array($object, $type);
@@ -480,9 +489,7 @@ class Mysql_Result extends Database_Result {
 	{
 		if ($this->offsetExists($offset) AND mysql_data_seek($this->result, $offset))
 		{
-			// Set the current row to the offset
-			$this->current_row = $offset;
-
+			$this->current_row = $this->_internal_row = $offset;
 			return TRUE;
 		}
 		else

@@ -12,7 +12,7 @@ $errors = 0;
 if (count($argv) > 1)
 	$prefix = $argv[1];
 else
-	$prefix = '/opt/monitor/op5/ninja';
+	$prefix = dirname(dirname(__FILE__));
 
 $coverage = false;
 
@@ -45,14 +45,33 @@ function runTest($line)
 exec("/usr/bin/php $prefix/test/testcoverage.php ninja_unit_test/reports modules/unit_test/reports/*.tst", $output, $code);
 eval('$coverage = '.implode(' ', $output).';');
 
+$output = false;
+# then, unit tests
+exec("/usr/bin/php $prefix/test/testcoverage.php ninja_unit_test", $output, $code);
+eval('$more_coverage = '.implode(' ', $output).';');
+foreach ($more_coverage as $file => $lines) {
+	if (isset($coverage[$file])) {
+		$coverage[$file] = $lines;
+		continue;
+	}
+	foreach ($lines as $line => $state) {
+		if (!isset($coverage[$file][$line])) {
+			$coverage[$file][$line] = $state;
+			continue;
+		}
+		$coverage[$file][$line] = max($coverage[$file][$line], $state);
+	}
+}
+
 # ci tests
 $files = array('test/ci/ninjatests.txt', 'test/ci/limited_tests.txt');
 foreach ($files as $file) {
 	$h = fopen("$prefix/$file", 'rb');
 	while ($line = fgets($h)) {
 		$line = trim($line);
-		runTest($line);
+		if ($line && $line[0] != '#')
+			runTest($line);
 	}
 }
 
-exit(generate_coverage($coverage, array('/opt', 'system', 'modules', 'test', 'application/views/tests', 'application/vendor')));
+exit(generate_coverage($coverage, array('/opt', 'system', 'modules', 'test', 'application/views/tests', 'application/vendor', 'application/libraries')));

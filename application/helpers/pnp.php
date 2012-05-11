@@ -14,6 +14,13 @@ class pnp_Core
 		return !!self::get_sources($host, $service);
 	}
 
+	/**
+	 * Given a host and optionally a service, return all rrd sources
+	 *
+	 * @param $host A host name
+	 * @param $service A service description
+	 * @return An array of DS sources
+	 */
 	public static function get_sources($host=false, $service=false)
 	{
 		if (empty($host)) {
@@ -56,11 +63,15 @@ class pnp_Core
 			// one can always try...
 			$xmldata = @simplexml_load_string(utf8_encode($contents));
 		}
+		if ($xmldata === false || !isset($xmldata->DATASOURCE)) {
+			return array();
+		}
 		$res = array();
 		if ($xmldata->DATASOURCE) {
+			$i = 0;
 			foreach ($xmldata->DATASOURCE as $ds) {
 				if (isset($ds->DS))
-					$res[] = ((int)$ds->DS) - 1;
+					$res[] = $i++;
 			}
 		}
 		return $res;

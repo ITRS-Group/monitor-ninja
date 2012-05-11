@@ -2,7 +2,7 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=4
+target_db_version=5
 
 db_user=root
 db_pass=

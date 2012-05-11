@@ -6,7 +6,7 @@
 class Command_Model extends Model
 {
 	private $auth = false;
-	protected $dryrun = false;
+	protected $dryrun = false; /**< Set to true to make it not actually do anything */
 
 	public function __construct()
 	{
@@ -14,6 +14,10 @@ class Command_Model extends Model
 		$this->auth = new Nagios_auth_Model();
 	}
 
+	/**
+	 * Get the users/systems configured value for this option
+	 * @param $setting Option name
+	 */
 	public function get_setting($setting)
 	{
 		# the underscore is an implementation detail ("don't pass this straight
@@ -29,6 +33,9 @@ class Command_Model extends Model
 		return $value;
 	}
 
+	/**
+	 * Get all objects for this "param name" (which is almost object type, but not quite)
+	 */
 	protected function get_object_list($param_name)
 	{
 		$ary = false;
@@ -96,6 +103,9 @@ class Command_Model extends Model
 		return $ret;
 	}
 
+	/**
+	 * Get all downtime IDs
+	 */
 	protected function get_downtime_ids($command_name, $defaults=false)
 	{
 		$host_name = isset($defaults['host_name']) ? $defaults['host_name'] : false;

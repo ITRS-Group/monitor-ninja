@@ -5,18 +5,19 @@
  */
 class Scheduling_queue_Model extends Model {
 
-	public $sort_field ='next_check';
-	public $sort_order='ASC';
-	public $num_per_page = false;
-	public $offset = false;
-	public $count = false;
-	public $host_qry = false;
-	public $svc_qry = false;
+	public $sort_field ='next_check'; /**< The field to sort the results on */
+	public $sort_order='ASC'; /**< The sort order, 'ASC' or 'DESC' */
+	private $host_qry = false;
+	private $svc_qry = false;
 
 	/**
-	*	Fetch scheduled events
-	*
-	*/
+	 * Fetch scheduled events
+	 *
+	 * @param $num_per_page The number of results per page
+	 * @param $offset The number of result rows to skip
+	 * @param $count Don't return any result rows, only the total number of results
+	 * @return Database result object or false if none if $count is false or unset, otherwise the number of result rows
+	 */
 	public function show_scheduling_queue($num_per_page=false, $offset=false, $count=false)
 	{
 
@@ -71,9 +72,10 @@ class Scheduling_queue_Model extends Model {
 	}
 
 	/**
-	*	Set class variable host_qry to use when searching
-	*
-	*/
+	 * Set class variable host_qry to use when searching
+	 *
+	 * @param $qry A search string to apply against host names
+	 */
 	public function set_host_search_term($qry=false)
 	{
 		if (!empty($qry)) {
@@ -81,9 +83,10 @@ class Scheduling_queue_Model extends Model {
 		}
 	}
 	/**
-	*	Set class variable svc_qry to use when searching
-	*
-	*/
+	 * Set class variable svc_qry to use when searching
+	 *
+	 * @param $qry A search string to apply against service descriptions
+	 */
 	public function set_service_search_term($qry=false)
 	{
 		if (!empty($qry)) {

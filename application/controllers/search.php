@@ -54,7 +54,7 @@ class Search_Controller extends Authenticated_Controller {
 			}
 		}
 
-		$query = urldecode($this->input->get('query', $query));
+		$query = $this->input->get('query', $query);
 		$objects = array('host' => 'Host_Model', 'service' => 'Service_Model', 'hostgroup' => 'Hostgroup_Model', 'servicegroup' => 'Servicegroup_Model', 'comment' => 'Comment_Model');
 		$query_str = trim($query); # stash query string for later use when saving search
 

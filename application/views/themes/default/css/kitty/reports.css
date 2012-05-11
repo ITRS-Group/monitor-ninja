@@ -1,0 +1,638 @@
+/* progress bar ****************************************************************/
+
+#progress{
+	float: right;
+	margin-right: 260px;
+	margin-top: -42px; /* looks ok in firefox, but not in chrome */
+}
+
+#progress em,
+#progress img {
+	float: left;
+}
+#progress em {
+	/*display: block;*/
+	margin-top: 12px;
+}
+
+/* response *********************************************************************/
+
+#response {
+	margin-left:0px;
+	padding-top:0px;
+	background: #f9f9f5 url(images/bg.png) repeat-x;
+	border: 1px solid #ffffff;
+}
+
+#response h1 {
+	font: bold 12px arial,helvetica,sans-serif;
+	display: none;
+}
+
+#response ul {
+	padding: 7px 2px 5px 33px;
+	margin: 0px;
+	margin-bottom: 7px;
+	width: auto;
+	background: transparent 10px 8px no-repeat;
+}
+
+#response li {
+	background: none;
+	padding: 2px 0px;
+	width: auto;
+	list-style: none;
+}
+
+#response ul.ok			{ background-image: url(../../icons/16x16/shield-ok.png); }
+#response ul.error 		{ background-image: url(../../icons/16x16/shield-error.png); }
+#response ul.warning 	{ background-image: url(../../icons/16x16/shield-warning.png); }
+#response ul.info 		{ background-image: url(../../icons/16x16/shield-info.png); }
+#response ul.help 		{ background-image: url(../../icons/16x16/shield-help.png); }
+
+/* id:s *********************************************************************/
+
+#display_service_status,
+#options,
+#sla_options,
+#new_schedule_form_area,
+#schedule_report,
+#report_save_information,
+#autoreport_periods {
+	display: none;
+}
+
+#multiple_hosts {
+	margin-top: 7px
+}
+
+#log_entries {
+	padding-bottom: 15px;
+}
+
+#report-tabs {
+	padding: 0px;
+	padding-top: 2px;
+}
+/* #report-tabs { padding: 0px; } trends */
+
+#header {
+	position: relative;
+	top: 0px;
+	padding-top: 14px; /* reports only*/
+}
+
+#header p {
+	margin-top: -12px;
+}
+
+#header form input {
+	margin-top: -1px;
+}
+
+a#optiontoggle {
+	margin: 5px;
+}
+
+#new_schedule_report_table {
+	width: auto;
+}
+
+#switcher {
+	margin-top: -15px;
+}
+
+#save_to_schedule em {
+	font-style: italic;
+}
+
+a.fancybox {
+	border: 0px;
+	margin-left: 4px;
+}
+
+img.deleteimg {
+	float: left;
+	margin-left: 5px;
+	margin-top: 2px;
+	cursor: pointer;
+}
+
+.report-page-setup,
+.report-page {
+	padding: 0px 1%;
+}
+
+.report-page-setup.availsla,
+.report-page-setup.recurring_dt_schedule {
+	padding: 0px;
+}
+
+.report-page-setup.recurring_dt_schedule {
+	margin: 0px -2px;
+}
+
+.pie-chart {
+	display: block;
+	float: left;
+	width: auto;
+	margin-right: 7px;
+}
+
+.chart-border {
+	border: 1px solid #dcdcdc;
+}
+
+.log_messages {
+	clear: both;
+	float: left;
+}
+
+.headerNone.left {
+	text-align:left;
+}
+
+h1 { margin: 7px 0px 15px 0px; }
+
+/* tables ***********************************************************************/
+
+caption {
+	padding-left:0px;
+}
+
+.setup-table {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.setup-table table tr td {
+	border: 0px;
+	background-color: transparent;
+}
+
+#new_schedule_report_table tr td {
+	background: none;
+	vertical-align: top;
+	width: auto
+}
+
+tr#pdf-hide td {
+	background: transparent;
+	margin-top: 5px;
+	text-align: right;
+	padding-right: 2px;
+}
+
+th.headerNone {
+	white-space: nowrap;
+	text-align: right
+}
+
+tr.dark td,
+tr.odd td.dark,
+tr.even td.dark {
+	border: 1px solid #dcdccd;
+	border-left: 0px;
+	background: #efefef;
+	border-top: 0px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+tr.even td.dark {
+	padding: 2px 5px;
+	border-left: 1px solid #dcdcdc;
+	vertical-align: bottom;
+	width: auto;
+	text-align: left;
+}
+
+tr.dark td.data,
+tr.odd td.data,
+tr.even td.data,
+table.multiple_services tr.odd td.data,
+table.multiple_services tr.even td.data,
+table#multiple_hosts tr.odd td.data,
+table#multiple_hosts tr.even td.data {
+	text-align: right;
+	white-space: nowrap;
+}
+
+tr.odd td.data img,
+tr.even td.data img,
+tr.dark td.data img {
+	margin-bottom: -1px;
+}
+
+tr.none td {
+	border: 0px;
+	background: #ffffff;
+}
+
+table.setup-tbl {
+	width: auto;
+}
+
+table.setup-tbl tr td  {
+	padding: 0px 5px 0px 0px;
+}
+
+#new_schedule_report_table tr td {
+	padding: 0px 15px 0px 0px;
+}
+
+
+table.white-table tr.no-result td {
+	background: #ffffff;
+	font-style: italic;
+	padding-left: 0px;
+}
+
+/* time picker **********************************************************************************/
+
+div.time-picker {
+	position: absolute;
+	height: 200px;
+	width:9em; /* needed for IE */
+	overflow: auto;
+	background: #ffffff;
+	border: 1px solid #d0d0d0;
+	z-index: 99;
+}
+div.time-picker-12hours {
+	width:6em; /* needed for IE */
+}
+
+div.time-picker ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+div.time-picker li {
+	padding: 1px;
+	cursor: pointer;
+}
+div.time-picker li.selected {
+	background: #316aC5;
+	color: #fff;
+}
+
+.time_error {
+	border:1px solid red;
+	color:red;
+}
+
+/* tab specifics **********************************************************************************/
+
+.ui-widget-content {
+	border: 0px;
+	background: #ffffff;
+	color: #222222;
+}
+.ui-widget-header {
+	border: 0px;
+	background: #cdcdcd url(images/bg.png) repeat-x;
+	border-bottom: 1px solid #cdcdcd;
+	color: #222222;
+	font-weight: bold;
+}
+.ui-state-default,
+.ui-widget-content .ui-state-default {
+	border: 1px solid #cdcdcd;
+	background: #dddddd url(images/bg.png) repeat-x;
+	font-weight: normal;
+	color: #555555;
+	outline: none;
+}
+.ui-state-hover,
+.ui-widget-content
+.ui-state-hover,
+.ui-state-focus,
+.ui-widget-content
+.ui-state-focus {
+	border: 1px solid #cdcdcd;
+	background: #aaaaaa url(images/bg.png) repeat-x;
+	font-weight: normal;
+	color: #212121;
+	outline: none;
+}
+.ui-state-active,
+.ui-widget-content
+.ui-state-active {
+	border: 1px solid #cdcdcd;
+	background: #ffffff;
+	font-weight: normal;
+	color: #212121;
+	outline: none;
+}
+.ui-corner-all {
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+}
+
+/***********************************************************************/
+
+input,
+select,
+textarea {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 3px 1px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
+}
+
+select {
+	width: 382px;
+	padding: 2px 1px;
+}
+
+select[multiple=multiple] {
+	padding: 3px;
+	width: 380px;
+}
+
+input[type=button],
+input[type=submit],
+input[type=reset],
+input[type=checkbox],
+input[type=radio] {
+	width: auto;
+}
+
+input[type=checkbox],
+input[type=radio] {
+	margin: 0px;
+	margin-bottom: 5px;
+	border: 0px;
+}
+
+button,
+input[type=reset],
+input[type=submit],
+input[type=button] {
+	background: #cdcdcd url(images/bg.png) repeat-x;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 2px 5px !important;
+	margin-bottom: 5px;
+}
+
+form.directlink {
+	display: inline;
+	padding: 10px;
+	background: #cdcdcd url(images/bg.png) repeat-x;
+	border: 1px solid #dcdcdc;
+}
+
+input.wide,
+input.sla_month,
+input#cal_end,
+input#report_name,
+input.datepick-end,
+input.datepick-start,
+input#cal_start,
+input#summary_items,
+input#filter_field,
+input#time_start,
+input#time_end,
+input#duration,
+input#time_input,
+input#filename,
+input#recipients {
+	background: #fafafa;
+	border: 1px solid #cccccc;
+	outline: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	padding: 3px 1px;
+	width: 378px;
+	margin-top: 3px;
+	margin-left: 0px;
+	margin-bottom: 15px;
+}
+
+textarea {
+	width: 378px;
+}
+
+input.sla_month {
+	width: 30px;
+}
+
+input.wide {
+	padding: 2px 4px;
+	width: 460px;
+	margin: 0px;
+	margin-top: 3px;
+}
+
+input#time_input,
+input#duration,
+input#cal_end,
+input#cal_start,
+input.datepick-end,
+input.datepick-start,
+input#time_start,
+input#time_end {
+	width: 100px;
+}
+
+input.send_report_now {
+	border: 0px;
+	background: url(../../icons/16x16/send-report.png) no-repeat;
+	width: 16px;
+	height: 16px;
+	float: left;
+	cursor: pointer;
+}
+
+select#period.popup {
+	margin-top: 3px;
+	width: 100px;
+}
+
+
+/* trends specifics *******************************************************************************/
+
+.footnotes {
+    background: #eee;
+    padding: 0.25em;
+}
+
+.controls {
+    margin: 10px 0;
+    width:75%;
+}
+
+.controls table{width:300px}
+.controls input{width:100px}
+#filter_states{width:100px}
+
+#trends_filter_table{
+	width:auto;
+	margin-top: 27px;
+}
+
+#controls {
+	padding: 0px;
+	width: auto;
+	float: left;
+}
+
+#controls table tr td,
+#trends_filter_table tr td {
+	background: none;
+	padding: 0px 10px 0px 0px;
+	vertical-align: top;
+}
+
+#controls table tr td div {
+	margin-top: -14px;
+	margin-top: -10px;
+	margin-left: 2px;
+}
+
+#trends_state_breakdown{
+	width:400px;
+}
+
+#trends_many_objects{
+	display: none;
+}
+#trends_show_hide_objects{
+	cursor:pointer;
+}
+
+.trends_objects{
+	padding-left:10px;
+	list-style: disc;
+}
+
+.trend_event{
+	border-top: 1px solid white;
+	border-bottom: 1px solid white;
+	padding:0;
+}
+
+div#trend_event_display {
+	background:#ffffff;
+	padding:10px;
+	position:absolute;
+	left:20px;
+	top:10px;
+	width:200px;
+	border:1px solid #d0d0d0;
+	display:none;
+}
+.trend_event_highlight {
+	border-top: 1px solid #b0b0b0;
+	border-top: 1px solid #b0b0b0;
+}
+
+.trend_time{
+	padding:0;
+	font-size: 8px;
+}
+.trend_time:first-child{
+	border-left:1px solid #d0d0d0;
+	padding-left:2px;
+}
+table.time_table{
+	background:#ffffff;
+	padding:0;
+	border-right:1px solid #d0d0d0;
+	border-bottom:1px solid #d0d0d0;
+}
+
+div#trend_event_display.trend_up_d,
+div#trend_event_display.trend_down_d,
+div#trend_event_display.trend_unreachable_d,
+div#trend_event_display.trend_ok_d,
+div#trend_event_display.trend_warning_d,
+div#trend_event_display.trend_critical_d,
+div#trend_event_display.trend_pending_d,
+div#trend_event_display.trend_unknown_d{
+	background: #ffffff 10px 8px no-repeat ;
+	padding-left:35px;
+}
+
+div#trend_event_display.trend_up_d{
+	background-image: url(../../icons/16x16/shield-up.png);
+}
+div#trend_event_display.trend_down_d{
+	background-image: url(../../icons/16x16/shield-down.png);
+}
+div#trend_event_display.trend_unreachable_d{
+	background-image: url(../../icons/16x16/shield-unreachable.png);
+}
+div#trend_event_display.trend_ok_d{
+	background-image: url(../../icons/16x16/shield-ok.png);
+}
+div#trend_event_display.trend_warning_d{
+	background-image: url(../../icons/16x16/shield-warning.png);
+}
+div#trend_event_display.trend_critical_d{
+	background-image: url(../../icons/16x16/shield-critical.png);
+}
+div#trend_event_display.trend_pending_d{
+	background-image: url(../../icons/16x16/shield-pending.png);
+}
+div#trend_event_display.trend_unknown_d{
+	background-image: url(../../icons/16x16/shield-unknown.png);
+}
+
+/* alert summary specifics *********************************************/
+
+input#summary_items{
+	width:50px;
+}
+
+#settings_table,
+#std_report_table,
+#report_mode_select {
+	width: auto;
+}
+
+#settings_table tr td,
+#report_mode_select tr td,
+#std_report_table tr td  {
+	padding: 0px 5px 0px 0px;
+	background: none;
+}
+
+tr.none td#scheduled_btn_ctrl {
+	padding-top: 7px;
+}
+
+.iseditable_txtarea {
+	width: 80%;
+}
+
+td.iseditable input {
+	width: auto;
+	display: block;
+	margin-bottom: 5px;
+}
+
+td.report_name select,
+td.period_select select {
+	width: auto;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.txtarea textarea {
+	display: block;
+	margin-bottom: 5px;
+}

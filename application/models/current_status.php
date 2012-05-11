@@ -5,143 +5,152 @@
  */
 class Current_status_Model extends Model
 {
-	const HOST_UP =  0;
-	const HOST_DOWN = 1;
-	const HOST_UNREACHABLE = 2;
-	const HOST_PENDING = 6;
+	const HOST_UP =  0; /**< Nagios' host up code */
+	const HOST_DOWN = 1; /**< Nagios' host down code */
+	const HOST_UNREACHABLE = 2; /**< Nagios' host unreachable code */
+	const HOST_PENDING = 6; /**< Our magical "host pending" code for unchecked hosts */
 
-	const SERVICE_OK = 0;
-	const SERVICE_WARNING = 1;
-	const SERVICE_CRITICAL = 2;
-	const SERVICE_UNKNOWN =  3;
-	const SERVICE_PENDING = 6;
-	const HOST_CHECK_ACTIVE = 0;	/* Nagios performed the host check */
-	const HOST_CHECK_PASSIVE = 1;	/* the host check result was submitted by an external source */
-	const SERVICE_CHECK_ACTIVE = 0;
-	const SERVICE_CHECK_PASSIVE = 1;
+	const SERVICE_OK = 0; /**< Nagios' service ok code */
+	const SERVICE_WARNING = 1; /**< Nagios' service warning code */
+	const SERVICE_CRITICAL = 2; /**< Nagios' service critical code */
+	const SERVICE_UNKNOWN =  3; /**< Nagios' service unknown code */
+	const SERVICE_PENDING = 6; /**< Our magical "service pending" code for unchecked services */
+	const HOST_CHECK_ACTIVE = 0;	/**< Nagios performed the host check */
+	const HOST_CHECK_PASSIVE = 1;	/**< the host check result was submitted by an external source */
+	const SERVICE_CHECK_ACTIVE = 0; /**< Nagios performed the service check */
+	const SERVICE_CHECK_PASSIVE = 1; /**< the service check result was submitted by an external source */
 
+	public $flapping_services = 0; /**< Number of flapping services */
+	public $notification_disabled_services = 0; /**< Number of services with disabled notifications */
+	public $event_handler_disabled_svcs = 0; /**< Number of services with disabled event handler */
+	public $active_checks_disabled_svcs = 0; /**< Number of services with disabled active checks */
+	public $passive_checks_disabled_svcs = 0; /**< Number of services with disabled passive checks */
 
-	private $auth_hosts = false;
-	private $auth_services = false;
+	public $services_ok_disabled = 0; /**< Number of ok services with disabled active checks */
+	public $services_ok_unacknowledged = 0; /**< FIXME: Number of ok services that are actively checked. The fuck? */
+	public $services_ok = 0; /**< Number of ok services */
 
-	public $flapping_services = 0;
-	public $notification_disabled_services = 0;
-	public $event_handler_disabled_svcs = 0;
-	public $active_checks_disabled_svcs = 0;
-	public $passive_checks_disabled_svcs = 0;
+	public $services_warning_host_problem = 0; /**< Number of services in warning on problem hosts */
+	public $services_warning_scheduled = 0; /**< Number of services in warning in scheduled downtime */
+	public $services_warning_acknowledged = 0; /**< Number of services in warning that are acknowledged */
+	public $services_warning_disabled = 0; /**< Number of services in warning with active checks disabled */
+	public $svcs_warning_unacknowledged = 0; /**< Number of services in warning that are unacknowledged */
+	public $services_warning = 0; /**< Number of services in warning */
 
-	public $services_ok_disabled = 0;
-	public $services_ok_unacknowledged = 0;
-	public $services_ok = 0;
+	public $services_unknown_host_problem = 0; /**< Number of services in unknown on problem hosts */
+	public $services_unknown_scheduled = 0; /**< Number of services in unknown in scheduled downtime */
+	public $services_unknown_acknowledged = 0; /**< Number of services in unknown that are acknowledged */
+	public $services_unknown_disabled = 0; /**< Number of services in unknown with active checks disabled */
+	public $svcs_unknown_unacknowledged = 0; /**< Number of services in unknown that are unacknowledged */
+	public $services_unknown = 0; /**< Number of services in unknown */
 
-	public $services_warning_host_problem = 0;
-	public $services_warning_scheduled = 0;
-	public $services_warning_acknowledged = 0;
-	public $services_warning_disabled = 0;
-	public $svcs_warning_unacknowledged = 0;
-	public $services_warning = 0;
+	public $services_critical_host_problem = 0; /**< Number of services in critical on problem hosts */
+	public $services_critical_scheduled = 0; /**< Number of services in critical in scheduled downtime */
+	public $services_critical_acknowledged = 0; /**< Number of services in critical that are acknowledged */
+	public $services_critical_disabled = 0; /**< Number of services in critical with active checks disabled */
+	public $svcs_critical_unacknowledged = 0; /**< Number of services in critical that are unacknowledged */
+	public $services_critical = 0; /**< Number of services in critical */
 
-	public $services_unknown_host_problem = 0;
-	public $services_unknown_scheduled = 0;
-	public $services_unknown_acknowledged = 0;
-	public $services_unknown_disabled = 0;
-	public $svcs_unknown_unacknowledged = 0;
-	public $services_unknown = 0;
+	public $services_pending_disabled = 0; /**< Number of pending services with active checks disabled */
+	public $services_pending = 0; /**< Number of pending services */
 
-	public $services_critical_host_problem = 0;
-	public $services_critical_scheduled = 0;
-	public $services_critical_acknowledged = 0;
-	public $services_critical_disabled = 0;
-	public $svcs_critical_unacknowledged = 0;
-	public $services_critical = 0;
+	public $total_service_health = 0; /**< Strange total health algorithm as copied from nagios */
+	public $potential_service_health = 0; /**< Strange potential health algorithm as copied from nagios */
 
-	public $services_pending_disabled = 0;
-	public $services_pending = 0;
+	public $total_active_service_checks = 0; /**< Number of services where last check was active */
+	public $min_service_latency = -1.0; /**< Minimum service check latency */
+	public $max_service_latency = -1.0; /**< Maximum service check latency */
+	public $min_service_execution_time = -1.0; /**< Minimum service check execution time */
+	public $max_service_execution_time = -1.0; /**< Maximum service check execution time */
+	public $total_service_latency = 0; /**< Total service check latency */
+	public $total_service_execution_time = 0; /**< Total service check execution time */
+	public $total_passive_service_checks = 0; /**< Number of services where last check was passive */
+	public $total_services = 0; /**< The total number of services */
 
-	public $total_service_health = 0;
-	public $potential_service_health = 0;
+	public $flap_disabled_hosts = 0; /**< Number of hosts with flap detection disabled */
+	public $flap_disabled_services = 0; /**< Number of services with flap detection disabled */
+	public $flapping_hosts = 0; /**< Number of flapping hosts */
+	public $notification_disabled_hosts = 0; /**< Number of hosts with notification disabled */
+	public $event_handler_disabled_hosts = 0; /**< Number of hosts with event handlers disabled */
+	public $active_checks_disabled_hosts = 0; /**< Number of hosts with active checks disabled */
+	public $passive_checks_disabled_hosts = 0; /**< Number of hosts with passive checks disabled */
 
-	public $total_active_service_checks = 0;
-	public $min_service_latency = -1.0;
-	public $max_service_latency = -1.0;
-	public $min_service_execution_time = -1.0;
-	public $max_service_execution_time = -1.0;
-	public $total_service_latency = 0;
-	public $total_service_execution_time = 0;
-	public $total_passive_service_checks = 0;
-	public $total_services = 0;
+	public $hosts_up_disabled = 0; /**< Number of hosts that are up with active checks disabled */
+	public $hosts_up_unacknowledged = 0; /**< FIXME: Number of hosts that are up with active checks enabled. Makes no sense. */
+	public $hosts_up = 0; /**< Number of hosts that are up */
 
-	public $flap_disabled_hosts = 0;
-	public $flap_disabled_services = 0;
-	public $flapping_hosts = 0;
-	public $notification_disabled_hosts = 0;
-	public $event_handler_disabled_hosts = 0;
-	public $active_checks_disabled_hosts = 0;
-	public $passive_checks_disabled_hosts = 0;
-	public $problem = false;
+	public $hosts_down_scheduled = 0; /**< Number of hosts that are down and in scheduled downtime */
+	public $hosts_down_acknowledged = 0; /**< Number of hosts that are down and acknowledged */
+	public $hosts_down_disabled = 0; /**< Number of hosts that are down and disabled */
+	public $hosts_down_unacknowledged = 0; /**< Number of hosts that are down and unacknowledged */
+	public $hosts_down = 0; /**< Number of hosts that are down */
 
-	public $hosts_up_disabled = 0;
-	public $hosts_up_unacknowledged = 0;
-	public $hosts_up = 0;
+	public $hosts_unreachable_scheduled = 0; /**< Number of hosts that are unreachable and in scheduled downtime */
+	public $hosts_unreachable_acknowledged = 0; /**< Number of hosts that are unreachable and acknowledged */
+	public $hosts_unreachable_disabled = 0; /**< Number of hosts that are unreachable and disabled */
+	public $hosts_unreach_unacknowledged = 0; /**< Number of hosts that are unreachable and unacknowledged */
+	public $hosts_unreachable = 0; /**< Number of hosts that are unreachable */
 
-	public $hosts_down_scheduled = 0;
-	public $hosts_down_acknowledged = 0;
-	public $hosts_down_disabled = 0;
-	public $hosts_down_unacknowledged = 0;
-	public $hosts_down = 0;
+	public $hosts_pending_disabled = 0; /**< Number of pending hosts with active checks disabled */
+	public $hosts_pending = 0; /**< Number of pending hosts */
 
-	public $hosts_unreachable_scheduled = 0;
-	public $hosts_unreachable_acknowledged = 0;
-	public $hosts_unreachable_disabled = 0;
-	public $hosts_unreach_unacknowledged = 0;
-	public $hosts_unreachable = 0;
+	public $total_host_health = 0; /**< Strange total health algorithm as copied from nagios */
+	public $potential_host_health = 0; /**< Strange potential health algorithm as copied from nagios */
+	public $total_active_host_checks = 0; /**< Number of hosts where last check was active */
 
-	public $hosts_pending_disabled = 0;
-	public $hosts_pending = 0;
+	public $min_host_latency = -1.0; /**< Minimum host check latency */
+	public $max_host_latency = -1.0; /**< Maximum host check latency */
+	public $min_host_execution_time = -1.0; /**< Minimum host check execution time */
+	public $max_host_execution_time = -1.0; /**< Maximum host check execution time */
 
-	public $total_host_health = 0;
-	public $potential_host_health = 0;
-	public $total_active_host_checks = 0;
+	public $total_host_latency = 0; /**< Total host check latency */
+	public $total_host_execution_time = 0; /**< Total host check execution time */
+	public $total_passive_host_checks = 0; /**< Number of hosts where last check was passive */
 
-	public $min_host_latency = -1.0;
-	public $max_host_latency = -1.0;
-	public $min_host_execution_time = -1.0;
-	public $max_host_execution_time = -1.0;
-
-	public $total_host_latency = 0;
-	public $total_host_execution_time = 0;
-	public $total_passive_host_checks = 0;
-
-	public $total_hosts = 0;
+	public $total_hosts = 0; /**< Total number of hosts */
 
 	# health
-	public $percent_service_health = 0;
-	public $percent_host_health = 0;
+	public $percent_service_health = 0; /**< Percentage of total service health by potential service health */
+	public $percent_host_health = 0; /**< Percentage of total host health by potential host health */
 
-	public $average_service_latency = 0;
-	public $average_host_latency = 0;
-	public $average_service_execution_time = 0;
-	public $average_host_execution_time = 0;
+	public $average_service_latency = 0; /**< Average latency for service checks */
+	public $average_host_latency = 0; /**< Average latency for host checks */
+	public $average_service_execution_time = 0; /**< Average execution time for service checks */
+	public $average_host_execution_time = 0; /**< Average execution time for host checks */
 
-	public $hostoutage_list = array();
-	public $total_blocking_outages = 0;
-	public $total_nonblocking_outages = 0;
-	public $affected_hosts = array();
-	public $unreachable_hosts = array(); # hosts being unreachable because of network outages
-	public $children_services = array(); # nr of services belonging to host affected by an outage
+	public $hostoutage_list = array(); /**< List of host outages */
+	public $total_blocking_outages = 0; /**< Number of blocking outages */
+	public $total_nonblocking_outages = 0; /**< Number of nonblocking outages */
+	public $affected_hosts = array(); /**< Number of hosts affected by outages */
+	public $unreachable_hosts = array(); /**< hosts being unreachable because of network outages */
+	public $children_services = array(); /**< nr of services belonging to host affected by an outage */
 
-	public $host_data_present = false;
-	public $service_data_present = false;
-	public $outage_data_present = false;
+	public $host_data_present = false; /**< FIXME: implementation detail, make private */
+	public $service_data_present = false; /**< FIXME: implementation detail, make private */
+	public $outage_data_present = false; /**< FIXME: implementation detail, make private */
 
-	public $base_path = '';
+	private $base_path = '';
 	private $auth = false;
+	private static $instance = false;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->base_path = Kohana::config('config.nagios_base_path');
 		$this->auth = new Nagios_auth_Model();
+	}
+
+	/**
+	 * Use this class as a singleton, as it is quite slow
+	 *
+	 * @return A Current_status_Model object
+	 */
+	public static function instance()
+	{
+		if (!self::$instance) {
+			self::$instance = new Current_status_Model();
+		}
+		return self::$instance;
 	}
 
 	/**
@@ -527,16 +536,19 @@ class Current_status_Model extends Model
 		if (empty($result)) {
 			return false;
 		}
-                $hosts = array();
+		$hosts = array();
 		foreach ($result as $host){
-                    $hosts[] = $host;
-                }
-                unset($result);
+			$hosts[] = $host;
+			// Note: count() returns 1 for FALSE
+			$svcs = Host_Model::get_services($host->host_name);
+			$this->children_services[$host->id] = $svcs !== false ? count($svcs) : 0;
+		}
+		unset($result);
 
 		/* check all hosts */
 		$outages = false;
 		foreach ($hosts as $host){
-			$children = false; # reset children
+			$children = array(); # reset children
 			$outages[] = $host->host_name;
 
 			# check if each host has any affected child hosts
@@ -578,7 +590,7 @@ class Current_status_Model extends Model
 		}
 
 		$sql = "SELECT * FROM host WHERE ".$xtra_sql.
-				"(current_state!=".self::HOST_UP." AND current_state!=".self::HOST_PENDING.")";
+				"host.current_state=".self::HOST_DOWN;
 
 		$result = $this->db->query($sql);
 
@@ -592,7 +604,7 @@ class Current_status_Model extends Model
 	 * @param $children Out variable
 	 * @return True on success, false on errors
 	 */
-	public function get_child_hosts($host_id=false, &$children=false, $only_hosts=false)
+	public function get_child_hosts($host_id=false, &$children=false)
 	{
 		$host_id = trim($host_id);
 		if (empty($host_id)) {
@@ -605,33 +617,17 @@ class Current_status_Model extends Model
 			return false;
 		}
 
-		if ($only_hosts !== false) {
-			$query = "SELECT ".
-				"h.id, h.host_name, 0 AS service_cnt ".
-				"FROM host h, host_parents hp ".
-				"WHERE ".
-				"hp.parents=".$host_id." AND h.id=hp.host GROUP BY h.id, h.host_name";
-		} else {
-			$query = "SELECT ".
-					"h.id, ".
-					"h.host_name, ".
-					"count(s.id) as service_cnt ".
-				"FROM ".
-					"host h, ".
-					"host_parents hp, ".
-					"service s ".
-				"WHERE ".
-					"hp.parents=".$host_id." AND ".
-					"h.id=hp.host AND ".
-					"s.host_name=h.host_name ".
-				"GROUP BY h.id, h.host_name";
-		}
+		$query = "SELECT ".
+				"h.id, ".
+				"h.host_name, ".
+				"count(s.id) as service_cnt ".
+			"FROM host h ".
+			"INNER JOIN host_parents hp ON h.id=hp.host ".
+			"LEFT JOIN service s ON s.host_name=h.host_name ".
+			"WHERE hp.parents=".$host_id.
+			" GROUP BY h.id, h.host_name";
 
 		$result = $this->db->query($query);
-		if ($result->count()==0 && $only_hosts == false) {
-			unset($result);
-			return $this->get_child_hosts($host_id, $children, true); # RECURSIVE
-		}
 
 		$hosts = array();
 		foreach ($result as $host) {
@@ -651,7 +647,7 @@ class Current_status_Model extends Model
 	/**
 	 * Translates a given status from db to a readable string
 	 */
-	public function status_text($db_status=false, $type='host')
+	public static function status_text($db_status=false, $type='host')
 	{
 		$host_states = array(
 			self::HOST_UP => 'UP',
@@ -686,9 +682,44 @@ class Current_status_Model extends Model
 
 	/**
 	 * List available states for host or service
+	 *
+	 * @param $what string 'host' (or 'service')
+	 * @return array
+	 */
+	public function get_available_states($what='host')
+	{
+		switch($what) {
+			case 'host':
+				return array(
+					self::HOST_UP => 'UP',
+					self::HOST_DOWN => 'DOWN',
+					self::HOST_UNREACHABLE => 'UNREACHABLE',
+					self::HOST_PENDING => 'PENDING'
+				);
+			case 'service':
+				return array(
+					self::SERVICE_OK => 'OK',
+					self::SERVICE_WARNING => 'WARNING',
+					self::SERVICE_CRITICAL => 'CRITICAL',
+					self::SERVICE_PENDING => 'PENDING',
+					self::SERVICE_UNKNOWN => 'UNKNOWN'
+				);
+			default:
+				return array();
+		}
+	}
+
+	/**
+	 * List available states for host or service
+	 *
+	 * @param $what = 'host' (or 'service')
+	 * @return array
 	 */
 	public function available_states($what='host')
 	{
+		if(!in_array($what, array('host', 'service'))) {
+			return array();
+		}
 		$host_states = array(
 			self::HOST_UP,
 			self::HOST_DOWN,

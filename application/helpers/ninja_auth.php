@@ -11,7 +11,7 @@ class ninja_auth_Core
 	 * @param $pass Plaintext password
 	 * @return Password hash
 	 */
-	public function hash_password($pass)
+	public static function hash_password($pass)
 	{
 		return base64_encode(sha1($pass, true));
 	}
@@ -19,7 +19,7 @@ class ninja_auth_Core
 	/**
 	 * Validates a password using apr's md5 hash algorithm
 	 */
-	private function apr_md5_validate($pass, $hash)
+	private static function apr_md5_validate($pass, $hash)
 	{
 		$pass = escapeshellarg($pass);
 		$hash = escapeshellarg($hash);
@@ -32,7 +32,7 @@ class ninja_auth_Core
 	/**
 	 * Validates a password using the given algorithm
 	 */
-	function valid_password($pass, $hash, $algo = '')
+	public static function valid_password($pass, $hash, $algo = '')
 	{
 		if ($algo === false || !is_string($algo))
 			return false;

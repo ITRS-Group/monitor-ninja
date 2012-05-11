@@ -4,6 +4,9 @@
  */
 class pdf_Core
 {
+	/**
+	 * Do PDF initiation
+	 */
 	public function start()
 	{
 		$path = self::path();

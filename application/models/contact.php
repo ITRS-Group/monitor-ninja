@@ -8,7 +8,7 @@ class Contact_Model extends Model
 	/**
 	*	Fetch contact information
 	*/
-	public function get_contact($id = false, $username=false)
+	public static function get_contact($id = false, $username=false)
 	{
 		$sql = false;
 		$db = Database::instance();
@@ -44,6 +44,12 @@ class Contact_Model extends Model
 		return $result;
 	}
 
+	/**
+	 * Return a database object of escalation contacts
+	 * @param $type What type of escalation (host or service)
+	 * @param $id The escalation ID
+	 * @return Database object, or false on error or empty
+	 */
 	public function get_contacts_from_escalation($type = 'host', $id = false) {
 		$sql = false;
 		$db = Database::instance();

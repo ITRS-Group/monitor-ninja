@@ -28,7 +28,7 @@ class Status_Controller extends Authenticated_Controller {
 		parent::__construct();
 
 		# load current status for host/service status totals
-		$this->current = new Current_status_Model();
+		$this->current = Current_status_Model::instance();
 		$this->current->analyze_status_data();
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
@@ -102,11 +102,15 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $host, $hoststatustypes, false, $group_type, $serviceprops, $hostprops), $this);
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($host);
+		$widget->set_hoststatus($hoststatustypes);
 		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('icons/16x16/up.gif');
@@ -118,18 +122,18 @@ class Status_Controller extends Authenticated_Controller {
 			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'host.output', 'sort_field_str' => 'status information')
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'host.display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 
@@ -349,11 +353,17 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $name, $hoststatustypes, $servicestatustypes, $group_type), $this);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($name);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($group_type);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
+
 		$this->template->content->na_str = $this->translate->_('N/A');
 
 		# set sort images, used in header_links() below
@@ -362,24 +372,24 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'h.host_name', 'sort_field_str' => 'host name'),
-			array('title' => $this->translate->_('Status'), 'sort_field_db' => 's.current_state', 'sort_field_str' => 'service status'),
-			array('title' => $this->translate->_('Service'), 'sort_field_db' => 's.service_description', 'sort_field_str' => 'service name'),
+			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
+			array('title' => $this->translate->_('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'service status'),
+			array('title' => $this->translate->_('Service'), 'sort_field_db' => 'service_description', 'sort_field_str' => 'service name'),
 			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
 			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 's.current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'service.output', 'sort_field_str' => 'status information')
+			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
+			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'service.display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'host.notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 
@@ -763,11 +773,16 @@ class Status_Controller extends Authenticated_Controller {
 			$this->template->content->error_message = $t->_("No data found");
 		}
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($grouptype.'group');
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
@@ -887,9 +902,16 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group', $serviceprops, $hostprops), $this);
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($grouptype);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
+		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		$group_details = false;
 		$auth_groups = false;
@@ -987,7 +1009,7 @@ class Status_Controller extends Authenticated_Controller {
 					$label_group_service_status_details => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
 					$label_group_host_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
 					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'_grid/'.$group
+					$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group
 				);
 			}
 
@@ -1081,10 +1103,16 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		widget::add('status_totals', array($this->current, $group, $hoststatustypes, $servicestatustypes, $grouptype.'group'), $this);
-		$this->template->content->widgets = $this->widgets;
+		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+		$widget->set_host($group);
+		$widget->set_hoststatus($hoststatustypes);
+		$widget->set_servicestatus($servicestatustypes);
+		$widget->set_grouptype($grouptype);
+		$this->template->content->widgets = array($widget->render());
+		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
-		//$this->template->css_header->css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
+		$this->template->css_header->css = $this->xtra_css;
+		$this->template->inline_js = $this->inline_js;
 
 		$content->label_host = $t->_('Host');
 		$content->label_services = $t->_('Services');

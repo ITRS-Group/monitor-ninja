@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 }
 ?>
 
-<div class="widget w98 left">
+<div class="w98 left">
 <h1><?php echo $title ?>
 <?php
 $print_limit = 3;

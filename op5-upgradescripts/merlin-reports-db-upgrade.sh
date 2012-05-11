@@ -12,7 +12,7 @@ db_pass=
 
 # These are the versions (+1) that will be installed by running this script
 target_sla_version=8
-target_avail_version=8
+target_avail_version=9
 target_sched_version=8
 
 if [ $# -ge 1 ]

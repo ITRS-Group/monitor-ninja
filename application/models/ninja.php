@@ -3,21 +3,15 @@
 /**
  * Base NINJA model.
  * Sets necessary objects like session and database
- * @package NINJA
  * @author op5 AB
  */
-class Ninja_Model extends ORM
+class Ninja_Model extends Model
 {
-	public $db = false;
-	public $session = false;
-	public $profiler = false;
+	public $session = false; /**< The user's current session */
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->profiler = new Profiler;
-		# we will always need database and session
-		$this->db = Database::instance;
 		$this->session = Session::instance();
 	}
 }

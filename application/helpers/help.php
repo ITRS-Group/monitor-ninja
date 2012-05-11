@@ -17,7 +17,7 @@ class help_Core
 	* 		<?php help::render('edit', 'extinfo'); ?> the information is instead
 	* 		fetched from the extinfo controller.
 	*/
-	public function render($key=false, $controller=false)
+	public static function render($key=false, $controller=false)
 	{
 		if (empty($key)) {
 			return false;

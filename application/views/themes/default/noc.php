@@ -21,9 +21,9 @@ $ninja_menu_state = 'hide';
 if (isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" /> <!-- Please remove me -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -185,7 +185,7 @@ if (isset($this->template->js_header))
 	<body onload="loadScroll()" onunload="saveScroll()">
 		<?php echo (!empty($context_menu)) ? $context_menu : ''; ?>
 		<div id="infobar-sml">
-			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
+			<p><?php echo html::image($this->add_path('/icons/16x16/shield-warning.png'),array('style' => 'float: left; margin-right: 5px;', 'alt' => 'Warning')).' '.sprintf($this->translate->_('It appears that the database is not up to date. Verify that Merlin and %s are running properly.'), Kohana::config('config.product_name')); ?></p>
 		</div>
 		<div id="top-bar"></div>
 		<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
@@ -215,22 +215,22 @@ if (isset($this->template->js_header))
 
 									if($url[1] == 'serviceproblems' && in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) == true)
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[1] == 'problems' && array_intersect($unhandled_string, $query_string) == true)
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[0] == '/'.Router::$current_uri.'?items_per_page=10')
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 
 									elseif($url[0] == '/'.Router::$current_uri && !in_array('?servicestatustypes='.(nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL|nagstat::SERVICE_UNKNOWN),$query_string) && !array_intersect($unhandled_string, $query_string))
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu-dark/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 									else
 										echo '<li class="'.html::specialchars($header).'">'.
-												html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title)).'</span></li>'."\n";
+												html::anchor($url[0], html::image($this->add_path('icons/menu/'.$url[1].'.png'),array('title' => html::specialchars($title), 'alt' => html::specialchars($title))).' <span>'.html::specialchars($title).'</span>').'</li>'."\n";
 								}
 								// common external links
 								elseif($url[2] == 1) {
@@ -257,7 +257,7 @@ if (isset($this->template->js_header))
 			</div>
 			<div id="icons">
 				<ul>
-					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($settings_widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
+					<li id="settings_icon"<?php if ((isset($disable_refresh) && $disable_refresh !== false) && !isset($widgets)) { ?> style="display:none"<?php } ?>><?php echo html::image($this->add_path('icons/16x16/settings.gif'),array('alt' => $this->translate->_('Settings'), 'title' => $this->translate->_('Settings'))) ?></li>
 					<li onclick="show_info()"><?php echo html::image($this->add_path('icons/16x16/versioninfo.png'),array('id' => 'info_icon', 'alt' => $this->translate->_('Product information'), 'title' => $this->translate->_('Product information'))) ?></li>
 					<li onclick="window.location.reload()"><?php echo $this->translate->_('Updated') ?>: <?php echo Auth::instance()->logged_in() ? '<span id="page_last_updated">'.date(nagstat::date_format()).'</span>' : ''; ?></li>
 					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image($this->add_path('icons/24x24/save_search.png'), array('title' => $this->translate->_('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
@@ -315,22 +315,17 @@ if (isset($this->template->js_header))
 				<?php
 					} # end if disable_refresh
 
-					$settings_widgets = (isset($settings_widgets)) ? $settings_widgets : '';
-					if (is_array($settings_widgets)) {
+					if (isset($widgets) && is_array($widgets)) {
 						echo '<li class="header">'.$this->translate->_('Available Widgets').'</li>'."\n";
-						foreach($settings_widgets as $id => $widget) {
-							if (isset($user_widgets) && is_array($user_widgets)) {
-								$class_name = array_key_exists($id, $user_widgets) ? 'selected' : 'unselected';
-							} else {
-								$class_name = 'selected';
-							}
-							echo '<li id="li_'.$id.'" class="'.$class_name.'" onclick="control_widgets(\''.$id.'\',this)">'.$widget.'</li>'."\n";
+						foreach($widgets as $widget) {
+							$class_name = isset($widget->id) ? 'selected' : 'unselected';
+							echo '<li id="li_'.$widget->name.'-'.$widget->instance_id.'" data-name="'.$widget->name.'" data-instance_id="'.$widget->instance_id.'" class="'.$class_name.' widget-selector" onclick="control_widgets(this)">'.$widget->friendly_name.'</li>'."\n";
 						}
 						echo '<li onclick="restore_widgets();">'.$this->translate->_('Restore overview to factory settings').'</li>'."\n";
-						echo '<li onclick="widget_page_refresh();">'.$this->translate->_('Set widget refresh rate (s.)').'</li>'."\n";
 						if ($authorized === true) {
 							echo '<li onclick="widget_upload();">'.$this->translate->_('Upload new widget').'</li>'."\n";
 						}
+						echo '<li id=show_global_widget_refresh">'._('Set widget refresh rate (s.)').'</li>'."\n";
 					}
 				?>
 			</ul>

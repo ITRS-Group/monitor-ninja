@@ -8,7 +8,7 @@ class Program_status_Model extends Model
 	/**
 	 * Fetch all info from program_status table
 	 */
-	public function get_all()
+	public static function get_all()
 	{
 		$db = Database::instance();
 		$sql = "SELECT * FROM program_status";
@@ -19,7 +19,7 @@ class Program_status_Model extends Model
 	/**
 	 * Fetch all info for local node
 	 */
-	public function get_local()
+	public static function get_local()
 	{
 		$db = Database::instance();
 		$sql = "SELECT * FROM program_status WHERE instance_id = 0";
@@ -27,6 +27,11 @@ class Program_status_Model extends Model
 		return (!$res || count($res) == 0) ? false : $res;
 	}
 
+	/**
+	 * List all nagios daemons by instance name
+	 *
+	 * @return Database result object or false
+	 */
 	public function list_program_status()
 	{
 		$db = Database::instance();
@@ -39,7 +44,7 @@ class Program_status_Model extends Model
 	*	Check last_alive from program_status
 	*	to detect when data was updated
 	*/
-	public function last_alive()
+	public static function last_alive()
 	{
 		$db = Database::instance();
 		$sql = "SELECT last_alive FROM program_status WHERE instance_id = 0";
@@ -60,7 +65,7 @@ class Program_status_Model extends Model
 	*	Fetch current global settings for notifications
 	*	and active_service_checks
 	*/
-	public function notifications_checks()
+	public static function notifications_checks()
 	{
 		$db = Database::instance();
 		$sql = "SELECT notifications_enabled, active_service_checks_enabled FROM program_status WHERE instance_id = 0";

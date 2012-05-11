@@ -212,7 +212,7 @@ class Upload_Controller extends Authenticated_Controller
 		$version = (string)$xml->version;
 		$pagename = (string)$xml->page; # should be tac/index but we don't care for now
 
-		$data = Ninja_widget_Model::get_widget($pagename, $widget_name);
+		$data = Ninja_widget_Model::get($pagename, $widget_name);
 
 		$custom_dir = APPPATH.Kohana::config('widget.custom_dirname');
 
@@ -264,7 +264,7 @@ class Upload_Controller extends Authenticated_Controller
 			unlink($savepath.$file['name']);
 		self::_rrmdir($savepath.$widget_name);
 
-		$save = Ninja_widget_Model::add_widget($pagename, $widget_name, $friendly_name);
+		$save = Ninja_widget_Model::install($pagename, $widget_name, $friendly_name);
 		if ($save || $is_upgrade) {
 			$msg .= sprintf($this->translate->_("OK, saved widget to db%s"), '<br />');
 		} else {
@@ -274,11 +274,6 @@ class Upload_Controller extends Authenticated_Controller
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		}
-
-		/*
-			@@@FIXME: Add widget for current user
-		*/
-		Ninja_widget_Model::copy_to_user(Ninja_widget_Model::get_widget($pagename, $widget_name));
 
 		$ct->final_msg = sprintf($this->translate->_('This widget should now be properly installed.%s
 			Please reload Tactical overview and enable the widget in the widget menu.'), '<br />');

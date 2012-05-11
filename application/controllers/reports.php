@@ -40,6 +40,7 @@ class Reports_Controller extends Authenticated_Controller
 		'service_filter_status_unknown' => 'service_filter_status_unknown',
 		'service_filter_status_critical' => 'service_filter_status_critical',
 		'service_filter_status_pending' => 'service_filter_status_pending',
+		'include_trends' => 'include_trends',
 	);
 
 	public static $dep_vars = array(
@@ -67,7 +68,8 @@ class Reports_Controller extends Authenticated_Controller
 		'cluster_mode',
 		'use_alias',
 		'host_filter_status',
-		'service_filter_status'
+		'service_filter_status',
+		'include_trends'
 	);
 
 	public static $map_type_field = array(
@@ -267,6 +269,11 @@ class Reports_Controller extends Authenticated_Controller
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
+		if(isset($_SESSION['report_err_msg'])) {
+			$this->err_msg = $_SESSION['report_err_msg'];
+			unset($_SESSION['report_err_msg']);
+		}
+
 		if ($this->mashing) {
 			$this->auto_render=false;
 		}
@@ -330,6 +337,7 @@ class Reports_Controller extends Authenticated_Controller
 			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
 		$csv_output_checked =
 			arr::search($_REQUEST, 'csvoutput', $this->csv_output) ? 'checked="checked"' : '';
+		$include_trends_checked = arr::search($_REQUEST, 'include_trends', true) ? 'checked="checked"' : '';
 		$use_alias  =
 			arr::search($_REQUEST, 'use_alias', $this->use_alias);
 		$use_alias_checked = $use_alias ? 'checked="checked"' : '';
@@ -344,8 +352,12 @@ class Reports_Controller extends Authenticated_Controller
 		$type_str = $this->type == 'avail'
 			? $this->translate->_('availability')
 			: $this->translate->_('SLA');
-		#html2ps::instance();
-
+		if($this->err_msg) {
+			// @todo make this work work, only handled by js and a very silent redirect
+			// now since the following message never gets printed:
+			$error_msg = $this->err_msg;
+			$this->template->error = $this->add_view('reports/'.$this->template_prefix.'error');
+		}
 		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'setup');
 		$template = $this->template->content;
 		#$this->template->content->noheader = $noheader;
@@ -669,6 +681,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->label_avg = $t->_('Average');
 		$template->label_use_alias = $t->_('Use alias');
 		$template->label_csvoutput = $t->_('Output in CSV format');
+		$template->label_include_trends = $t->_('Include trends graph');
 		$template->label_create_report = $t->_('Create report');
 		$template->label_save_report = $t->_('Save report');
 		$template->use_alias_checked = $use_alias_checked;
@@ -678,11 +691,11 @@ class Reports_Controller extends Authenticated_Controller
 		$template->initial_assumed_service_state_selected = $initial_assumed_service_state_selected;
 
 		$template->csv_output_checked = $csv_output_checked;
+		$template->include_trends_checked = $include_trends_checked;
 		$template->months = $this->abbr_month_names;
 		$template->is_scheduled_report = $t->_('This is a scheduled report');
 		$edit_str = $t->_('edit');
 		$template->edit_str = $edit_str;
-		$template->old_avail_link = config::get_cgi_cfg_key('url_html_path').'/cgi-bin/avail.cgi';
 		$template->is_scheduled_clickstr = sprintf($t->_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
 
 		if ($report_info) {
@@ -868,14 +881,12 @@ class Reports_Controller extends Authenticated_Controller
 
 		$t = $this->translate;
 
-		$schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
-
-		$this->schedule_id 	= $schedule_id;
+		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
 
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
-			$_REQUEST['report_period'] 			= 'last24hours';
-			$_REQUEST['assumeinitialstates'] 	= 1;
+			$_REQUEST['report_period'] = 'last24hours';
+			$_REQUEST['assumeinitialstates'] = 1;
 		}
 
 		# Handle call from cron or GUI to generate PDF report and send by email
@@ -887,8 +898,8 @@ class Reports_Controller extends Authenticated_Controller
 			$_REQUEST = $this->_scheduled_report();
 		}
 
-		$this->report_id 	= arr::search($_REQUEST, 'saved_report_id', $this->report_id);
-		$this->create_pdf	= arr::search($_REQUEST, 'create_pdf');
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+		$this->create_pdf = arr::search($_REQUEST, 'create_pdf');
 
 		if ($this->create_pdf || $this->mashing) {
 			$this->auto_render=false;
@@ -896,10 +907,11 @@ class Reports_Controller extends Authenticated_Controller
 
 		$in_host = arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
-			$in_host 		= arr::search($_REQUEST, 'host_name', false);
-		$in_service 		= arr::search($_REQUEST, 'service', array());
+			$in_host = arr::search($_REQUEST, 'host_name', false);
+
+		$in_service = arr::search($_REQUEST, 'service', array());
 		if (empty($in_service))
-			$in_service 	= arr::search($_REQUEST, 'service_description', array());
+			$in_service = arr::search($_REQUEST, 'service_description', array());
 
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
@@ -908,6 +920,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$report_options = false;
 		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
+		$include_trends = arr::search($_REQUEST, 'include_trends', false);
 
 		if ($this->type == 'sla') {
 			// take care of start_year, end_year etc
@@ -980,6 +993,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($this->type == 'sla') {
 			$report_name = arr::search($_REQUEST, 'report_name', false);
+			unset($report_options['include_trends']);
 			unset($report_options['report_name']);
 			$report_options['sla_name'] = $report_name;
 			if (isset($report_options['host_filter_status']))
@@ -1037,7 +1051,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
-			//print_r(unserialize($report_options['host_filter_status']));
 		}
 
 		if (!empty($this->report_id)) {
@@ -1137,11 +1150,13 @@ class Reports_Controller extends Authenticated_Controller
 
 		$err_msg = "";
 		$report_class = $this->reports_model;
-		foreach (self::$options as $var => $new_var) {
-			if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var))."'<br />";
+		foreach (self::$options as $controller_var => $report_model_var) {
+			if (!$report_class->set_option($report_model_var, arr::search($_REQUEST, $controller_var))) {
+				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
 			}
 		}
+		// default to showing all states if none are given
+		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
 
 		// convert report period to timestamps
 		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {
@@ -1246,7 +1261,6 @@ class Reports_Controller extends Authenticated_Controller
 		$selected_objects = ""; // string containing selected objects for this report
 
 		# pass selected calculation method on to report options
-		#$html_options[] = array('hidden', 'use_average', $use_average);
 		$html_options[] = array('hidden', 'use_alias', $use_alias);
 
 		# $objects is an array used when creating report_error page (template).
@@ -1311,6 +1325,10 @@ class Reports_Controller extends Authenticated_Controller
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup, $this->pdf_filename, Scheduled_reports_Model::fetch_scheduled_field_value('local_persistent_filepath', $this->schedule_id));
+			if(PHP_SAPI != "cli") {
+				// request through browser
+				exit();
+			}
 			return $csv_status;
 		} elseif ($this->type == 'avail' && (empty($this->data_arr)
 			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
@@ -1385,6 +1403,7 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
+				$tpl_options->include_trends = $include_trends;
 				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 				$tpl_options->label_settings = $t->_('Report settings');
 				$tpl_options->label_startdate = $t->_('Start date');
@@ -1395,6 +1414,7 @@ class Reports_Controller extends Authenticated_Controller
 
 				$tpl_options->label_assumeinitialstates = $t->_('Assume initial states');
 				$tpl_options->label_cluster_mode = $t->_('Cluster mode');
+				$tpl_options->label_include_trends = $t->_('Include trends');
 
 				$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
 				$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
@@ -1436,7 +1456,6 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->report_id = $this->report_id;
 				$tpl_options->report_info = $report_info;
 				$tpl_options->html_options = $html_options;
-				$tpl_options->old_avail_link = config::get_cgi_cfg_key('url_html_path').'/cgi-bin/avail.cgi';
 
 				$use_average_options = array(
 					0 => $t->_('Group availability (SLA)'),
@@ -1572,46 +1591,54 @@ class Reports_Controller extends Authenticated_Controller
 						$this->_reorder_by_host_and_service($template_values[$i], $this->report_type);
 					}
 
-				if($group_name) {
-					// Copy-pasted from controllers/trends.php
-					foreach ($this->data_arr as $key => $data) {
-						# >= 2 hosts or services won't have the extra
-						# depth in the array, so we break out early
-						if (empty($data['log']) || !is_array($data['log'])) {
-							$graph_data = $this->data_arr['log'];
-							break;
-						}
+				if($include_trends) {
+					if($group_name) {
+						// Copy-pasted from controllers/trends.php
+						foreach ($this->data_arr as $key => $data) {
+							# >= 2 hosts or services won't have the extra
+							# depth in the array, so we break out early
+							if (empty($data['log']) || !is_array($data['log'])) {
+								if(isset($this->data_arr['log'])) {
+									$graph_data = $this->data_arr['log'];
+								} elseif(isset($this->data_arr[0]['log'])) {
+									// fixes the case of multiple groups when at least one of them
+									// has a '/' in its name
+									$graph_data = $this->data_arr[0]['log'];
+								}
+								break;
+							}
 
-						# $data is the outer array (with, source, log,
-						# states etc)
-						if (empty($graph_data)) {
-							$graph_data = $data['log'];
-						} else {
-							$graph_data = array_merge($data['log'], $graph_data);
-						}
-					} # end foreach
-				} else {
-					// We are not checking groups
-					$graph_data = $this->data_arr['log'];
-				}
+							# $data is the outer array (with, source, log,
+							# states etc)
+							if (empty($graph_data)) {
+								$graph_data = $data['log'];
+							} else {
+								$graph_data = array_merge($data['log'], $graph_data);
+							}
+						} # end foreach
+					} else {
+						// We are not checking groups
+						$graph_data = $this->data_arr['log'];
+					}
 
-				$template->trends_graph = $this->add_view('trends/new_report');
-				$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-					$graph_data,
-					$report_class->start_time,
-					$report_class->end_time,
-					$template->title
-				);
-				$template->trends_graph->is_avail = true;
-				$template->trends_graph->create_pdf = $this->create_pdf;
-				if ($this->create_pdf) {
-					$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+					$template->trends_graph = $this->add_view('trends/new_report');
+					$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 						$graph_data,
 						$report_class->start_time,
 						$report_class->end_time,
 						$template->title
 					);
-					$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+					$template->trends_graph->is_avail = true;
+					$template->trends_graph->create_pdf = $this->create_pdf;
+					if ($this->create_pdf) {
+						$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+							$graph_data,
+							$report_class->start_time,
+							$report_class->end_time,
+							$template->title
+						);
+						$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+					}
 				}
 
 				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
@@ -1775,53 +1802,55 @@ class Reports_Controller extends Authenticated_Controller
 							$content = $avail;
 						}
 
-						$trends_data = false;
-						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
-							$trends_data = $data['log'];
-						}
-
-						if($group_name) {
-							// Copy-pasted from controllers/trends.php
-							foreach ($this->data_arr as $key => $data) {
-								# >= 2 hosts or services won't have the extra
-								# depth in the array, so we break out early
-								if (empty($data['log']) || !is_array($data['log'])) {
-									$graph_data = $this->data_arr['log'];
-									break;
-								}
-
-								# $data is the outer array (with, source, log,
-								# states etc)
-								if (empty($graph_data)) {
-									$graph_data = $data['log'];
-								} else {
-									$graph_data = array_merge($data['log'], $graph_data);
-								}
-							} # end foreach
-						} else {
-							// We are not checking groups
-							$graph_data = $this->data_arr['log'];
-						}
-
-						$template->trends_graph = $this->add_view('trends/new_report');
-						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-							$graph_data,
-							$report_class->start_time,
-							$report_class->end_time,
-							$template->title
-						);
-						$template->trends_graph->report_time_formatted = $report_time_formatted;
-						$template->trends_graph->create_pdf = $this->create_pdf;
 						$this->xtra_css[] = $this->add_path('css/default/reports');
-						$this->xtra_js[] = $this->add_path('trends/js/trends');
-						if ($this->create_pdf) {
-							$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+						if($include_trends) {
+							$trends_data = false;
+							if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
+								$trends_data = $data['log'];
+							}
+
+							if($group_name) {
+								// Copy-pasted from controllers/trends.php
+								foreach ($this->data_arr as $key => $data) {
+									# >= 2 hosts or services won't have the extra
+									# depth in the array, so we break out early
+									if (empty($data['log']) || !is_array($data['log'])) {
+										$graph_data = $this->data_arr['log'];
+										break;
+									}
+
+									# $data is the outer array (with, source, log,
+									# states etc)
+									if (empty($graph_data)) {
+										$graph_data = $data['log'];
+									} else {
+										$graph_data = array_merge($data['log'], $graph_data);
+									}
+								} # end foreach
+							} else {
+								// We are not checking groups
+								$graph_data = $this->data_arr['log'];
+							}
+
+							$template->trends_graph = $this->add_view('trends/new_report');
+							$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 								$graph_data,
 								$report_class->start_time,
 								$report_class->end_time,
 								$template->title
 							);
-							$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+							$template->trends_graph->report_time_formatted = $report_time_formatted;
+							$template->trends_graph->create_pdf = $this->create_pdf;
+							$this->xtra_js[] = $this->add_path('trends/js/trends');
+							if ($this->create_pdf) {
+								$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
+									$graph_data,
+									$report_class->start_time,
+									$report_class->end_time,
+									$template->title
+								);
+								$this->pdf_data['trends_graph'] = $template->trends_graph->render();
+							}
 						}
 
 						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
@@ -1916,7 +1945,6 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 
 								$host = $hostname[0];
-								$template->content->host = $host;
 								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
 									 "&amp;host_name=all".
@@ -2076,8 +2104,6 @@ class Reports_Controller extends Authenticated_Controller
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
 						$sla->use_alias = $use_alias;
-						#$sla->charts = $charts;
-						#$sla->page_js = $page_js;
 					}
 
 				} # end if not empty. Display message to user?
@@ -2132,7 +2158,6 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		//$this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')
 		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
 	}
 
@@ -2248,6 +2273,7 @@ class Reports_Controller extends Authenticated_Controller
 			unset($report_options['report_name']);
 			unset($report_options['host_filter_status']);
 			unset($report_options['service_filter_status']);
+			unset($report_options['include_trends']);
 			$report_options['sla_name'] = $report_name;
 		}
 
@@ -2602,6 +2628,7 @@ class Reports_Controller extends Authenticated_Controller
 				}
 			}
 		}
+
 		if($save_file) {
 			$temp_name = tempnam('/tmp', 'report');
 			// copying behavior for definition of K_PATH_CACHE (grep for it,
@@ -2642,6 +2669,7 @@ class Reports_Controller extends Authenticated_Controller
 						return json::fail(_("Could not send email"));
 					}
 				}
+
 				return $mail_sent;
 			}
 		} else {
@@ -3110,15 +3138,14 @@ class Reports_Controller extends Authenticated_Controller
 		if (empty($host_name)) {
 			return false;
 		}
-		$service_model = new Service_Model();
-		$res = $service_model->get_where('host_name', $host_name);
+		$host_model = new Host_Model();
+		$res = $host_model->get_services($host_name);
 		if (!empty($res)) {
-			$res->result(false); # convert to array
 			$service_arr = array();
 
 			$report_class = new Reports_Model();
 			foreach ($res as $row)
-				$service_arr[] = $host_name.";".$row['service_description'];
+				$service_arr[] = $host_name.";".$row->service_description;
 
 			foreach ($options as $var => $new_var) {
 				if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
@@ -3593,13 +3620,6 @@ class Reports_Controller extends Authenticated_Controller
 		if($user_action_url)
 			$action_url = $user_action_url;
 
-		# make sure action exists, keeps us from creating broken links on systems where op5common has not been updated
-		#if(!file_exists("/var/www/html$action_url"))
-		#	return "";
-
-		# start of deprecated code needed for old pdf backend:
-
-		#$form = "<form action='$action_url' method='post' style='display:block; position: absolute; top: 0px; right: 39px;'>\n";
 		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: -1px; right: 39px;'));
 		$form .= '<div>';
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
@@ -3638,15 +3658,6 @@ class Reports_Controller extends Authenticated_Controller
 			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
 
 
-		/*html::image(
-			$pdf_img_src,
-				array(
-					'alt' => $pdf_img_alt,
-					'title' => $pdf_img_alt,
-					'style' => 'border: 0px; width: 32px; height: 32px'
-				)
-			);
-			*/
 		$form .= '</div>';
 		$form .= "</form>";
 
@@ -3836,6 +3847,10 @@ class Reports_Controller extends Authenticated_Controller
 			$mail_sent = $report_sender->send($this->pdf_recipients, $filename, str_replace(K_PATH_CACHE.'/', '', $filename));
 
 			return $mail_sent;
+		}
+
+		if(request::is_ajax()) {
+			return json::ok();
 		}
 
 		return true;
@@ -4241,7 +4256,9 @@ class Reports_Controller extends Authenticated_Controller
 			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
-			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /tmp").'</p>'
+			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /tmp").'</p>',
+			'include_trends' => '<p>'.$translate->_("Include a trends graph in your report.").'</p>',
+			'status_to_display' => $translate->_('Uncheck a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
@@ -4384,73 +4401,69 @@ class Reports_Controller extends Authenticated_Controller
 				break;
 		}
 
-		$ok = false;
-		#echo "Should update field '$field' with value '$new_value' on item '$report_id'";
-
 		$ok = Scheduled_reports_Model::update_report_field($report_id, $field, $new_value);
 
 		if ($ok!==true) {
 			echo $this->translate->_('An error occurred')."<br />";
-		} else {
-			/*
-			# decide how to interpret field and value, since we
-			# should print the correct value back.
-			# If the value is an integer it should indicate that
-			# we need to make a lookup in database to fetch correct value
-			# Let's say we have 'periodname' as field, then value is an
-			# integer and the return value should be Weekly/Monthly
-			# if we get a string we should return that string
-			# The problem is that all values will be passed as strings
-			#
-			#	Possible input values:
-			#	* report_id
-			#	* period_id
-			#	* recipients		no changes needed
-			#	* filename			no changes needed
-			#	* description/info	no changes needed
-			#
-			*/
-			switch ($field) {
-				case 'report_id':
-					$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
-					if (!$report_type) {
-						echo $this->translate->_("Unable to determine type for selected report");
-					} else {
-						$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
-						if (count($saved_reports)!=0) {
-							foreach ($saved_reports as $report) {
-								if ($report->id == $new_value) {
-									echo $report_type == 'avail' || $report_type == 'summary'
-										? $report->report_name
-										: $report->sla_name;
-									break;
-								}
+			return;
+		}
+		/*
+		# decide how to interpret field and value, since we
+		# should print the correct value back.
+		# If the value is an integer it should indicate that
+		# we need to make a lookup in database to fetch correct value
+		# Let's say we have 'periodname' as field, then value is an
+		# integer and the return value should be Weekly/Monthly
+		# if we get a string we should return that string
+		# The problem is that all values will be passed as strings
+		#
+		#	Possible input values:
+		#	* report_id
+		#	* period_id
+		#	* recipients		no changes needed
+		#	* filename			no changes needed
+		#	* description/info	no changes needed
+		#
+		*/
+		switch ($field) {
+			case 'report_id':
+				$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
+				if (!$report_type) {
+					echo $this->translate->_("Unable to determine type for selected report");
+				} else {
+					$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
+					if (count($saved_reports)!=0) {
+						foreach ($saved_reports as $report) {
+							if ($report->id == $new_value) {
+								echo $report_type == 'avail' || $report_type == 'summary'
+									? $report->report_name
+									: $report->sla_name;
+								break;
 							}
-							#echo "Unable to find name of selected report (ID:$new_value	)";
-						} else {
-							echo $this->translate->_("Unable to fetch list of saved reports");
 						}
+					} else {
+						echo $this->translate->_("Unable to fetch list of saved reports");
 					}
-					break;
-				case 'period_id':
-					$period = false;
-					$periods = Scheduled_reports_Model::get_available_report_periods();
-					if ($periods !== false) {
-						foreach ($periods as $row) {
-							$period[$row->id] = $row->periodname;
-						}
-						echo (is_array($period) && array_key_exists($new_value, $period))
-							? $period[$new_value]
-							: '';
+				}
+				break;
+			case 'period_id':
+				$period = false;
+				$periods = Scheduled_reports_Model::get_available_report_periods();
+				if ($periods !== false) {
+					foreach ($periods as $row) {
+						$period[$row->id] = $row->periodname;
 					}
-					break;
-				case 'recipients':
-					$new_value = str_replace(',', ', ', $new_value);
-					echo $new_value;
-					break;
-				default:
-					echo $new_value;
-			}
+					echo (is_array($period) && array_key_exists($new_value, $period))
+						? $period[$new_value]
+						: '';
+				}
+				break;
+			case 'recipients':
+				$new_value = str_replace(',', ', ', $new_value);
+				echo $new_value;
+				break;
+			default:
+				echo $new_value;
 		}
 	}
 
@@ -4488,12 +4501,16 @@ class Reports_Controller extends Authenticated_Controller
 		$request['new_report_setup'] = 1;
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_recipients = $report_data['recipients'];
+		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
 		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
 		foreach ($this->setup_keys as $k) {
-			if ($type === 'sla' && $k === 'report_name')
-				$k = 'sla_name';
-			if ($k != 'host_filter_status' && $k != 'service_filter_status')
-				$request[$k] = $report_data[$k];
+			if ($type === 'sla') {
+				if ($k === 'report_name')
+					$k = 'sla_name';
+				if ($k == 'host_filter_status' || $k == 'service_filter_status')
+					continue;
+			}
+			$request[$k] = $report_data[$k];
 		}
 
 		if (!empty($report_data['objects'])) {

@@ -27,9 +27,9 @@ class Summary_Controller extends Authenticated_Controller
 	private $first_day_of_week = 1;
 	private $month_names = false;
 	private $pdf_filename = false;
-	private $pdf_local_persistent_filepath = false;
 	private $pdf_recipients = false; # when sending reports by email
 	private $pdf_savepath = false;	# when saving pdf to a path
+	public $pdf_local_persistent_filepath = false;
 	private $report_id = false;
 	private $schedule_id = false;
 	private $type = 'summary';
@@ -754,7 +754,7 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$save_report_settings = arr::search($_REQUEST, 'save_report_settings', false);
-		if ($save_report_settings) {
+		if ($save_report_settings && !empty($_REQUEST['report_name'])) {
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options);
 			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
@@ -885,10 +885,8 @@ class Summary_Controller extends Authenticated_Controller
 		case self::ALERT_TOTALS_SERVICE:
 			$content->label_overall_totals = $t->_('Overall Totals');
 			$services = $this->_populate_services($used_options);
-
-			if (!empty($services)) {
+			if (!empty($services))
 				$rpt->set_option('service_description', $services);
-			}
 
 			$result = $rpt->alert_totals();
 			break;
@@ -1359,6 +1357,9 @@ class Summary_Controller extends Authenticated_Controller
 			return $mail_sent;
 		}
 
+		if(request::is_ajax()) {
+			return json::ok();
+		}
 		return true;
 	}
 

@@ -1,11 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Model for scheduled reports
+ */
 class Scheduled_reports_Model extends Model
 {
-	public $db_name = 'merlin';
-	const db_name = 'merlin';
-	const USERFIELD = 'username';
+	const USERFIELD = 'username'; /**< Name of username column in database */
 
+	/**
+	 * Given a scheduled report id, delet it from db
+	 */
 	public function delete_scheduled_report($id=false)
 	{
 		$id = (int)$id;
@@ -50,7 +54,7 @@ class Scheduled_reports_Model extends Model
 	 * @param $type string: {avail, sla}
 	 * @return res
 	 */
-	public function get_scheduled_reports($type='avail')
+	public static function get_scheduled_reports($type='avail')
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -132,7 +136,7 @@ class Scheduled_reports_Model extends Model
 	 * Get available report periods
 	 * @return Database result object on success. False on errors.
 	 */
-	public function get_available_report_periods()
+	public static function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
 		$db = Database::instance();
@@ -140,12 +144,17 @@ class Scheduled_reports_Model extends Model
 		return (!$res || count($res)==0) ? false : $res;
 	}
 
+	/**
+	 * Retrieves the value of a db field for a report id
+	 * @param $type the database column
+	 * @param $id the id of the scheduled report
+	 */
 	public function fetch_scheduled_field_value($type=false, $id=false)
 	{
 		$id = (int)$id;
 		$type = trim($type);
 		if (empty($type) || empty($id)) return false;
-		$sql = "SELECT * FROM scheduled_reports WHERE id=".$id;
+		$sql = "SELECT $type FROM scheduled_reports WHERE id=".$id;
 		$db = Database::instance();
 		$res = $db->query($sql);
 		if (!$res || count($res) == 0) {
@@ -191,18 +200,22 @@ class Scheduled_reports_Model extends Model
 	}
 
 	/**
-	 * @param int $id = false
-	 * @param int $rep_type = false
-	 * @param int $saved_report_id = false
-	 * @param int $period = false
-	 * @param string $recipients = false comma separated
-	 * @param string $filename = ''
-	 * @param string $description = ''
-	 * @param string $local_persistent_filepath = ''
+	 * @param $id = false
+	 * @param $rep_type = false
+	 * @param $saved_report_id = false
+	 * @param $period = false
+	 * @param $recipients = false comma separated
+	 * @param $filename = ''
+	 * @param $description = ''
+	 * @param $local_persistent_filepath = ''
 	 * @return string|int either error string or the report's id
 	 */
 	public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '')
 	{
+		$local_persistent_filepath = trim($local_persistent_filepath);
+		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
+			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
+		}
 		$db = Database::instance();
 		$id = (int)$id;
 		$rep_type = (int)$rep_type;
@@ -211,10 +224,6 @@ class Scheduled_reports_Model extends Model
 		$recipients = trim($recipients);
 		$filename = trim($filename);
 		$description = trim($description);
-		$local_persistent_filepath = trim($local_persistent_filepath);
-		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
-			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
-		}
 		$user = Auth::instance()->get_user()->username;
 
 		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
@@ -234,7 +243,7 @@ class Scheduled_reports_Model extends Model
 
 		if ($id) {
 			// UPDATE
-			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description)." local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
+			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath)." WHERE id=".$id;
 		} else {
 			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath)
 				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).")";
@@ -325,7 +334,7 @@ class Scheduled_reports_Model extends Model
 	*	Fetch info on all defined report types, i.e all
 	* 	types we can schedule
 	*/
-	public function get_all_report_types()
+	public static function get_all_report_types()
 	{
 		$db = Database::instance();
 		$sql = "SELECT * FROM scheduled_report_types ORDER BY id";
@@ -339,7 +348,7 @@ class Scheduled_reports_Model extends Model
 	 * and the report.
 	 *
 	 * @param $schedule_id The id of the schedule we're interested in.
-	 * @return False on errors. Array with schedule-info on succes.
+	 * @return False on errors. Array with schedule-info on success.
 	 */
 	public function get_scheduled_data($schedule_id=false)
 	{

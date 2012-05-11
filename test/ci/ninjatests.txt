@@ -1,3 +1,5 @@
+# runs all tests as the user "monitor"
+
 status/service?run_tests&items_per_page=1000 monitor
 status/host?run_tests monitor
 status/hostgroup?run_tests monitor

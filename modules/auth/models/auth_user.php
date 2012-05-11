@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Auth_User_Model extends ORM {
+class Auth_User_Model extends Model {
 
 	// Relationships
 	protected $has_many = array('user_tokens');

@@ -3,7 +3,7 @@
 <div id="availability_toolbox">
 <?php if ($type == 'avail') { ?>
 	<?php if (!$report_id) { ?>
-	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>
+	<a href="#save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => $label_save_to_schedule, 'title' => $label_save_to_schedule)); ?></a>
 	<?php } ?>
 	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => $label_edit_settings, 'title' => $label_edit_settings)); ?></a>
 <?php } else {?>
@@ -13,7 +13,6 @@
 	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => $t->_('Add').' '. strtolower($label_new_schedule), 'title' => $t->_('Add').' '. strtolower($label_new_schedule))); ?></a>
 	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => $label_view_schedule, 'title' => $label_view_schedule)); ?></a>
 </span>
-	<a id="old_avail_link" style="border: 0px; margin-left: 4px;<?php if ($type=='sla' || Kohana::config('cgi.show_cgi_links') === false) {?>display:none<?php } ?>" href="<?php echo $old_avail_link ?>" target="_blank"><?php echo html::image($this->add_path('/icons/32x32/old-availability.png'),array('alt' => $this->translate->_('Old availability'), 'title' => $this->translate->_('Old availability'))); ?></a>
 <?php
 if (Session::instance()->get('main_report_params', false)
 	!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
@@ -31,6 +30,31 @@ if (Session::instance()->get('current_report_params', false)) {
 <div style="display: none;">
 <?php
 if ($type == 'avail') { ?>
+<div id="save_report">
+<?php echo form::open('reports/generate', array('id' => 'save_report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
+<h1><?php echo $t->_('Save report') ?></h1>
+<table style="width: 350px">
+        <tr class="none">
+                <td style="vertical-align:middle"><label for="report_name" id="save_report_label"><?php echo $t->_('Save as') ?></label></td>
+                <td><div id="report_setup">
+                                        <input type="text" name="report_name" id="report_name" class="input-save-name"
+                                        value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" maxlength="255" style="margin: 0px" />
+                                <input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+                                <input type="hidden" name="include_trends" value="<?php echo $include_trends ?>" />
+                                <input type="hidden" name="save_report_settings" value="1" />
+                                <input type="hidden" name="old_report_name" value="<?php echo isset($report_info['name']) && !empty($report_info['name']) ? $report_info['name'] : '' ?>" />
+                                <input type="submit" name="s1" value="<?php echo (!empty($report_id)) ? $label_update : $t->_('Save') ?>" class="button update-report20" id="options_submit" />
+                        </div>
+                </td>
+        </tr>
+</table>
+<?php
+ if (is_array($html_options))
+                 foreach ($html_options as $html_option)
+                         echo form::hidden($html_option[1], $html_option[2]); ?>
+         <input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
+</form>
+</div>
 <div id="options">
 <?php echo form::open(Kohana::config('reports.reports_link').'/generate', array('id' => 'report_form', 'onsubmit' => 'return validate_report_form(this);'));?>
 			<h1><?php echo $label_settings ?></h1>
@@ -182,13 +206,16 @@ if ($type == 'avail') { ?>
 			</tr>
 			<?php } ?>
 			<tr class="none">
-				<td><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" /></td>
+				<td><label><?php echo $label_recipients ?><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" /></label></td>
 			</tr>
 			<tr class="none">
-				<td><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /></td>
+				<td><label><?php echo $label_filename ?><br /><input type="text" class="schedule" name="filename" id="filename" value="" /></label></td>
 			</tr>
 			<tr class="none">
-				<td><?php echo $label_description ?><br /><textarea cols="31" rows="3" id="description" name="description"></textarea></td>
+				<td><label><?php echo _("Local persistent filepath (absolute path to folder, e.g. /tmp)") ?><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" /></label></td>
+			</tr>
+			<tr class="none">
+				<td><label><?php echo $label_description ?><br /><textarea cols="31" rows="3" id="description" name="description"></textarea></label></td>
 			</tr>
 			<tr class="none">
 				<td id="scheduled_btn_ctrl">
@@ -211,6 +238,7 @@ if ($type == 'avail') { ?>
 					<th class="headerNone left"><?php echo $label_interval ?></th>
 					<th class="headerNone left"><?php echo $label_recipients ?></th>
 					<th class="headerNone left"><?php echo $label_filename ?></th>
+					<th class="headerNone left"><?php echo _("Local persistent filepath (absolute path to folder, e.g. /tmp)") ?></th>
 					<th class="headerNone left"><?php echo $label_description ?></th>
 					<th class="headerNone left" style="width: 45px"><?php echo $this->translate->_('Actions') ?></th>
 				</tr>
@@ -225,6 +253,7 @@ if ($type == 'avail') { ?>
 				<td class="period_select" title="<?php echo $label_dblclick ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
 				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="filename-<?php echo $schedule->id ?>"><?php echo $schedule->filename ?></td>
+				<td class="iseditable" title="<?php echo $label_dblclick ?>" id="local_persistent_filepath-<?php echo $schedule->id ?>"><?php echo $schedule->local_persistent_filepath ?></td>
 				<td class="iseditable_txtarea" title="<?php echo $label_dblclick ?>" id="description-<?php echo $schedule->id ?>"><?php echo $schedule->description ?></td>
 				<td>
 					<form><input type="button" class="send_report_now" id="send_now_avail_<?php echo $schedule->id ?>" title="<?php echo $this->translate->_('Send this report now') ?>" value="&nbsp;"></form>

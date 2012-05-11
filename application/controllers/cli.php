@@ -21,12 +21,13 @@ class Cli_Controller extends Authenticated_Controller {
 			url::redirect('default/index');
 		}
 		parent::__construct();
+		$this->auto_render = false;
 	}
 
 	/**
 	*	Takes input from commandline import of cgi.cfg
 	*/
-	public function _edit_user_authorization($username=false, $options=false)
+	public static function _edit_user_authorization($username=false, $options=false)
 	{
 		if (empty($username) || empty($options)) {
 			return false;
@@ -73,7 +74,7 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	 * fetch data from cgi.cfg and return to calling script
 	 */
-	public function get_cgi_config()
+	public static function get_cgi_config()
 	{
 		$auth_data = System_Model::parse_config_file('cgi.cfg');
 		$user_data = false;
@@ -117,7 +118,7 @@ class Cli_Controller extends Authenticated_Controller {
 		return $return;
 	}
 
-	private function clean_old_users($old_ary, $new_ary)
+	private static function clean_old_users($old_ary, $new_ary)
 	{
 		$db = Database::instance();
 		# check for users that has been removed
@@ -134,7 +135,7 @@ class Cli_Controller extends Authenticated_Controller {
 	/**
 	 * Insert user data from cgi.cfg into db
 	 */
-	public function insert_user_data()
+	public static function insert_user_data()
 	{
 		$auth_types = Kohana::config('auth.auth_methods');
 		if (!is_array($auth_types))
@@ -190,20 +191,15 @@ class Cli_Controller extends Authenticated_Controller {
 			$passwd_import->import_hashes($etc_path.'htpasswd.users');
 
 
-			if (empty($passwd_import->passwd_ary)) {
-				# this is really bad since no users were found.
-				# It could mean that this system is using some other means of authorization
-				# (like LDAP?) but if we end up here something else in the configuration
-				# is terribly wrong.
-				continue;
+			if (!empty($passwd_import->passwd_ary)) {
+				$new_users = array_merge($new_users, $passwd_import->passwd_ary);
+				$abort = false;
 			}
-			$new_users = array_merge($new_users, $passwd_import->passwd_ary);
-			$abort = false;
 		}
 		if ($abort)
 			return false;
 
-		$this->clean_old_users($old_users, $new_users);
+		self::clean_old_users($old_users, $new_users);
 
 		# fetch all usernames from users table
 		$users = User_Model::get_all_usernames();
@@ -270,6 +266,7 @@ class Cli_Controller extends Authenticated_Controller {
 				}
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -359,10 +356,9 @@ class Cli_Controller extends Authenticated_Controller {
 
 		$params = $this->_parse_parameters();
 		if (!isset($params['page']) || !isset($params['name']) || !isset($params['friendly_name']))
-			die("Usage: {$params[0]} {$params[1]} <user> --page <page> --name <name> --friendly_name <friendly_name>\n");
+			die("Usage: {$params[0]} {$params[1]} --page <page> --name <name> --friendly_name <friendly_name>\n");
 
-		$widget = new Ninja_widget_Model();
-		$widget->add_widget($params['page'], $params['name'], $params['friendly_name'], true);
+		Ninja_widget_Model::install($params['page'], $params['name'], $params['friendly_name']);
 	}
 
 	public function rename_widget()
@@ -381,9 +377,8 @@ class Cli_Controller extends Authenticated_Controller {
 
 		$params = $this->_parse_parameters();
 		if (!isset($params['from']) || !isset($params['to']))
-			die("Usage: {$params[0]} {$params[1]} <user> --from <old_name> --to <new_name>\n");
+			die("Usage: {$params[0]} {$params[1]} --from <old_name> --to <new_name>\n");
 
-		$widget = new Ninja_widget_Model();
-		$widget->rename_widget($params['from'], $params['to']);
+		Ninja_widget_Model::rename_widget($params['from'], $params['to']);
 	}
 }
