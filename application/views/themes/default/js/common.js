@@ -153,20 +153,6 @@ $(document).ready(function() {
 		}
 	});
 
-	// menu scroll/slider init
-	$("#menu-slider").slider({
-	orientation: 'vertical',
-		animate: true,
-	change: handleSliderChange,
-	slide: handleSliderSlide,
-	min: -100,
-	max: 0,
-	value: -2.7
-	});
-
-	// check if show or hide the scroll/slider
-	scroll_control();
-
 	jQuery('#service_table').floatHeader({
 		fadeIn: 25,
 		fadeOut: 25
@@ -1049,41 +1035,6 @@ function ninja_refresh(val)
 	if (val>0) {
 		_interval = setInterval( "refresh()", refresh_val*1000 );
 	}
-}
-
-$(window).resize(function() {
-	scroll_control()
-});
-
-/**
-*	Control if slider should be shown.
-*	This function should be called from everywhere
-*	we change the menu but with a delay of at least 100msec
-*/
-function scroll_control()
-{
-	// check if the master template wants to prevent
-	// the menu from moving parts of the page
-	if (typeof _no_menu_refresh != 'undefined' && _no_menu_refresh) {
-		return;
-	}
-
-	if ($('#menu').width() < 51) {
-		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
-		$('#menu').css('width', menuwidth+'px');
-		$('#content').css('margin-left', (menuwidth+2)+'px');
-	}
-	$('#menu').css('height', parseInt(document.documentElement.clientHeight - 68)+'px');
-}
-
-function handleSliderChange(e, ui){
-	var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
-  $("#menu-scroll").animate({scrollTop: -ui.value * (maxScroll / 100) }, 1000);
-}
-
-function handleSliderSlide(e, ui){
-	var maxScroll = $("#menu-scroll").attr("scrollHeight") - $("#menu-scroll").height();
-	$("#menu-scroll").attr({scrollTop: -ui.value * (maxScroll / 100) });
 }
 
 function jgrowl_message(message_str, header_str)

@@ -211,7 +211,7 @@ if (isset($this) && isset($this->template->js_header))
 		</div>
 		<div id="close-menu" title="<?php echo _('Mimimize menu') ?>" onclick="collapse_menu('hide', 1)"></div>
 		<div id="show-menu" title="<?php echo _('Expand menu') ?>" onclick="collapse_menu('show', 1)"></div>
-		<div style="position: fixed; left: 0px; z-index:2">
+		<div style="position: fixed; left: 0px; z-index:2; height: 100%">
 
 		<div id="menu" style="overflow-y:auto;">
 			<ul>
