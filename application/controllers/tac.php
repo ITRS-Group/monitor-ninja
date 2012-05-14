@@ -68,6 +68,13 @@ class Tac_Controller extends Authenticated_Controller {
 			unset($widgets['unknown']);
 		}
 
+		$widgets = array_merge(array(
+			'widget-placeholder' => array(),
+			'widget-placeholder1' => array(),
+			'widget-placeholder2' => array(),
+			'widget-placeholder3' => array()
+		), $widgets);
+
 		$this->template->content->widgets = $widgets;
 		$this->template->widgets = $widget_objs;
 		$this->template->js_header->js = $this->xtra_js;
