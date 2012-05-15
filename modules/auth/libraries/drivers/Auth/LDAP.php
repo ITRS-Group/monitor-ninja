@@ -11,15 +11,19 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			$db = Database::instance();
 			$username = $user;
 			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
-			if (!count($users))
+			if (!count($users)) {
+				Kohana::log('error', "No known user called $user");
 				return false;
+			}
 			$user = $users->current();
 		}
 
 		$username = $this->ldap_escape($user->username);
 
-		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false)
+		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false) {
+			Kohana::log('error', 'Trying to perform LDAP authentication, but LDAP authentication is not configured');
 			return false;
+		}
 
 		$ldapbindpw = @file_get_contents('/opt/op5sys/etc/ldapbindpw');
 		$ldapbindpw = chop($ldapbindpw);
@@ -33,8 +37,10 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 				$config[$key] = $value;
 		}
 
-		if (!isset($config['LDAP_SERVER']) || !($ds = ldap_connect($config['LDAP_SERVER'])))
+		if (!isset($config['LDAP_SERVER']) || !($ds = ldap_connect($config['LDAP_SERVER']))) {
+			Kohana::log('error', 'Trying to perform LDAP authentication, but no LDAP server specified');
 			return false;
+		}
 
 		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
 			&& isset($config['LDAP_UPNSUFFIX']))
@@ -44,19 +50,24 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 				$this->complete_login($user);
 				return true;
 			}
+			Kohana::log('error', "Couldn't authenticate, because AD server rejected bind as $username@{$config['LDAP_UPNSUFFIX']}: ".ldap_error($ds));
 		}
 		else
 		{
-			if (!isset($config['LDAP_USERS']) || !isset($config['LDAP_USERKEY']))
+			if (!isset($config['LDAP_USERS']) || !isset($config['LDAP_USERKEY'])) {
+				Kohana::log('error', 'Trying to perform LDAP authentication, but missing configuration about users.');
 				return false;
+			}
 
 			if (@ldap_bind($ds, "{$config['LDAP_USERKEY']}={$username},{$config['LDAP_USERS']}", $password))
 			{
 				$this->complete_login($user);
 				return true;
 			} else {
+				Kohana::log('alert', "Couldn't authenticate, because LDAP server rejected bind as {$config['LDAP_USERKEY']}={$username},{$config['LDAP_USERS']}: ".ldap_error($ds)." - I'm going hunting for subtrees");
 				if(!empty($ldapbindpw)) {
 					if(!@ldap_bind($ds,$config['LDAP_BIND_DN'],$ldapbindpw)) {
+						Kohana::log('error', "Couldn't bind to LDAP server as {$config['LDAP_BIND_DN']}: ".ldap_error($ds));
 						return false;
 					}
 				}
@@ -67,6 +78,8 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 						if(@ldap_bind($ds, $entry["dn"], $password)) {
 							$this->complete_login($user);
 							return true;
+						} else {
+							Kohana::log('alert', "Couldn't authenticate, because LDAP server rejected bind as {$config['LDAP_USERKEY']}={$username},{$config['LDAP_USERS']}: ".ldap_error($ds)." - looking for other matching usernames");
 						}
 					}
 				}
