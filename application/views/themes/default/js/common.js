@@ -927,67 +927,43 @@ function multi_action_select(action, type)
 	var CHECKS_ENABLED = 4;
 	var SCHEDULED_DT = 8;
 
-	switch (action) {
-		case 'ACKNOWLEDGE_HOST_PROBLEM':
-		case 'ACKNOWLEDGE_SVC_PROBLEM':
-			$('.' + prop_field).each(function() {
-				if ($(this).text() & ACKNOWLEDGED || !($(this).text() & 16)) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-
-			break;
-		case 'REMOVE_HOST_ACKNOWLEDGEMENT':
-		case 'REMOVE_SVC_ACKNOWLEDGEMENT':
-			$('.' + prop_field).each(function() {
-				if ( !($(this).text() & ACKNOWLEDGED) ) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-
-			break;
-		case 'DISABLE_HOST_NOTIFICATIONS':
-		case 'DISABLE_SVC_NOTIFICATIONS':
-			$('.' + prop_field).each(function() {
-				if ($(this).text() & NOTIFICATIONS_ENABLED) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-
-			break;
-		case 'ENABLE_HOST_NOTIFICATIONS':
-		case 'ENABLE_SVC_NOTIFICATIONS':
-			$('.' + prop_field).each(function() {
-				if ( !($(this).text() & NOTIFICATIONS_ENABLED) ) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-			break;
-		case 'ENABLE_HOST_CHECK':
-		case 'ENABLE_SVC_CHECK':
-			$('.' + prop_field).each(function() {
-				if ( !($(this).text() & CHECKS_ENABLED)) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-			break;
-		case 'DISABLE_HOST_CHECK':
-		case 'DISABLE_SVC_CHECK':
-			$('.' + prop_field).each(function() {
-				if ($(this).text() & CHECKS_ENABLED) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-			break;
-		case 'DEL_HOST_DOWNTIME':
-		case 'DEL_SVC_DOWNTIME':
-			$('.' + prop_field).each(function() {
-				if (!($(this).text() & SCHEDULED_DT)) {
-					$(this).closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true);
-				}
-			});
-			break;
-	}
+	$('.' + prop_field).each(function() {
+		var that = $(this);
+		var test = false;
+		switch (action) {
+			case 'ACKNOWLEDGE_HOST_PROBLEM':
+			case 'ACKNOWLEDGE_SVC_PROBLEM':
+				test = that.text() & ACKNOWLEDGED || !(that.text() & 16);
+				break;
+			case 'REMOVE_HOST_ACKNOWLEDGEMENT':
+			case 'REMOVE_SVC_ACKNOWLEDGEMENT':
+				test = !(that.text() & ACKNOWLEDGED);
+				break;
+			case 'DISABLE_HOST_NOTIFICATIONS':
+			case 'DISABLE_SVC_NOTIFICATIONS':
+				test = that.text() & NOTIFICATIONS_ENABLED;
+				break;
+			case 'ENABLE_HOST_NOTIFICATIONS':
+			case 'ENABLE_SVC_NOTIFICATIONS':
+				test = !(that.text() & NOTIFICATIONS_ENABLED);
+				break;
+			case 'ENABLE_HOST_CHECK':
+			case 'ENABLE_SVC_CHECK':
+				test = !(that.text() & CHECKS_ENABLED);
+				break;
+			case 'DISABLE_HOST_CHECK':
+			case 'DISABLE_SVC_CHECK':
+				test = that.text() & CHECKS_ENABLED;
+				break;
+			case 'DEL_HOST_DOWNTIME':
+			case 'DEL_SVC_DOWNTIME':
+				test = !(that.text() & SCHEDULED_DT);
+				break;
+		}
+		if (test) {
+			that.closest('tr').find("." + field + " input[type='checkbox']").attr('disabled', true).attr('checked', false);
+		}
+	});
 }
 
 function create_slider(the_id)
