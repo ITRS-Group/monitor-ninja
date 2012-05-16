@@ -71,7 +71,10 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 						return false;
 					}
 				}
-				$search=ldap_search($ds,$config['LDAP_USERS'],"(&(|(objectClass=inetOrgPerson)(objectClass=posixAccount)(objectClass=account))({$config['LDAP_USERKEY']}={$username}))");
+				$userfilter = '(|(objectClass=Account)(objectClass=posixAccount)(objectClass=user)(objectClass=inetOrgPerson))';
+				if (file_exists('/opt/op5sys/share/filters_custom.php'))
+					require_once('/opt/op5sys/share/filters_custom.php');
+				$search=ldap_search($ds,$config['LDAP_USERS'],"(&$userfilter({$config['LDAP_USERKEY']}={$username}))");
 				if($entries = ldap_get_entries($ds,$search)) {
 					unset($entries["count"]);
 					foreach ($entries as $entry) {
