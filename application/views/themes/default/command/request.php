@@ -55,7 +55,11 @@ foreach ($params as $pname => $ary) {
 					foreach($dflt as $tmp) {
 						$tmp_obj[$tmp] = isset($ary['options'][$tmp]) ? $ary['options'][$tmp] : $tmp;
 					}
-					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname), $tmp_obj);
+					$size = count($tmp_obj);
+					if($size > 15) {
+						$size = 15;
+					}
+					echo form::dropdown(array('name' => $form_name.'[]', 'multiple' => 'multiple', 'id' => 'field_'.$pname, 'size' => $size), $tmp_obj);
 				}
 			}
 			break;
