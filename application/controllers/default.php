@@ -111,7 +111,7 @@ class Default_Controller extends Ninja_Controller  {
 			}
 
 			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
-				$error_msg = $this->translate->_("Request forgery attack detected");
+				$error_msg = $this->translate->_("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again.");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
