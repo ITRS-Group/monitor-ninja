@@ -2,13 +2,18 @@ widget.register_widget_load('tac_problems', function() {
 	var tac_problems = this;
 	var problem_field_register = function(name) {
 		var input = $('#' + tac_problems.widget_id + ' .col_' + name);
-		var row = $('#' + tac_problems.widget_id + ' #id_' + name + tac_problems.instance_id);
+		var row_selector = '#' + tac_problems.widget_id + ' #id_' + name + tac_problems.instance_id;
 		input.live('colorpicked', function () {
 			var color = $(this).val();
-			adjust_colors(row, color);
+			adjust_colors($(row_selector), color);
 			tac_problems.save_custom_val(color, 'col_' + name);
 		});
-		adjust_colors(row, rgb_to_hex(row.css('backgroundColor')));
+		var row = $(row_selector);
+		if(row.length) {
+			// when the widget's registered, we might not have host problems, for example,
+			// but there may be after any upgrades, which will be handle by live() above
+			adjust_colors(row, rgb_to_hex(row.css('backgroundColor')));
+		}
 	};
 
 	problem_field_register('outages');
