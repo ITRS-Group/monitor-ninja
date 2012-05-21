@@ -1155,6 +1155,7 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		// default to showing all states if none are given
 		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
+		$report_class->set_option('service_filter_status', arr::search($_REQUEST, 'service_filter_status', array(1, 1, 1, 1, 1)));
 
 		// convert report period to timestamps
 		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {
@@ -3251,6 +3252,10 @@ class Reports_Controller extends Authenticated_Controller
 		$hostgroup = false;
 		$servicegroup = false;
 		$data_arr = false;
+		// @todo this method should NOT traverse _REQUEST again,
+		// it should rather call $this->_set_options($rpt_class)
+		// which could also set all options on the single class,
+		// even if it's in a loop such as this
 		foreach ($arr as $$type) {
 			$rpt_class = new Reports_Model();
 			foreach ($options as $var => $new_var) {
@@ -3267,6 +3272,8 @@ class Reports_Controller extends Authenticated_Controller
 								$key, $_REQUEST[$dep])."'<br />";
 
 			$rpt_class->set_option(substr($type, 0, strlen($type)).'_name', $$type);
+			$rpt_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
+			$rpt_class->set_option('service_filter_status', arr::search($_REQUEST, 'service_filter_status', array(1, 1, 1, 1, 1)));
 			$data_arr[] = $rpt_class->get_uptime(false, false, $start_date, $end_date, $hostgroup, $servicegroup);
 			unset($rpt_class);
 		}

@@ -722,6 +722,7 @@ class Reports_Model extends Model
 			$this->host_name = $value;
 			return true;
 		 case 'host_filter_status':
+		 case 'service_filter_status':
 			break;
 		 case 'include_trends':
 			if ($value === true) {
@@ -1747,8 +1748,15 @@ class Reports_Model extends Model
 			return;
 		}
 
-		if (!$state)
+		if (!$state) {
 			$state = $this->st_real_state;
+		}
+
+		if(isset($this->options['service_filter_status']) && $this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) {
+			$state = self::SERVICE_EXCLUDED;
+		} elseif(isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
+			$state = self::HOST_EXCLUDED;
+		}
 
 		$this->st_obj_state = $state;
 	}
@@ -1797,6 +1805,7 @@ class Reports_Model extends Model
 		$service_state_txt 	= array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
 		$this->st_text = empty($servicename) ? $host_state_txt : $service_state_txt;
 		$this->st_text[self::STATE_PENDING] = 'PENDING';
+		$this->st_text[self::SERVICE_EXCLUDED] = 'EXCLUDED'; // also covers self::HOST_EXCLUDED
 
 		# id must always be set properly for single-object reports
 		if (empty($this->id)) {
