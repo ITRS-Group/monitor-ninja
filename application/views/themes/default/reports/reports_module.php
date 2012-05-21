@@ -5,8 +5,8 @@
 
 
 <?php
-if (isset($label_missing_objects))
-	echo "<strong>".$label_missing_objects.":</strong><br />";
+if (isset($missing_objects))
+	echo "<strong>"._('Missing objects').":</strong><br />";
 
 echo isset($info) ? $info : '';
 ?>

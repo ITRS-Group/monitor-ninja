@@ -8,7 +8,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
 		<ul>
-			<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
+			<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 		<?php
 		if (isset($page_links)) {
 			foreach ($page_links as $label => $link) {
@@ -45,9 +45,9 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 
 <?php echo form::open('command/multi_action'); ?><br />
 <table style="margin-bottom: 2px" id="service_table">
-<caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select multiple items') ?></a></caption>
+<caption><?php echo $sub_title ?>: <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select multiple items') ?></a></caption>
 		<tr>
-			<th><em><?php echo $this->translate->_('Status'); ?></em></th>
+			<th><em><?php echo _('Status'); ?></em></th>
 			<?php
 				$order = isset($_GET['sort_order']) ? $_GET['sort_order'] : 'ASC';
 				$field = isset($_GET['sort_field']) ? $_GET['sort_field'] : 'h.host_name';
@@ -56,8 +56,8 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					$n++;
 					if (isset($row['url_desc'])) {
 						if ($n == 4)
-							echo '<th class="no-sort">'.$this->translate->_('Actions').'</th>';
-						echo ($n == 3 ? '<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="'.$this->translate->_('Click to select/unselect all').'"></th>' : '');
+							echo '<th class="no-sort">'._('Actions').'</th>';
+						echo ($n == 3 ? '<th class="item_select_service"><input type="checkbox" class="select_all_items_service" title="'._('Click to select/unselect all').'"></th>' : '');
 						echo '<th class="header'.(($order == 'DESC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortUp' : (($order == 'ASC' && strpos($row['url_desc'], $field) == true && isset($row['url_desc'])) ? 'SortDown' : (isset($row['url_desc']) ? '' : 'None'))) .
 							'" onclick="location.href=\'' . url::site() .((isset($row['url_desc']) && $order == 'ASC') ? $row['url_desc'] : ((isset($row['url_asc']) && $order == 'DESC') ? $row['url_asc'] : '')).'&items_per_page='.$items_per_page.'&page='.$page.'&style='.$style.'&group_type='.$group_type.'\'">';
 
@@ -87,36 +87,36 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					<?php
 						$host_props = 0;
 						if ($row->hostproblem_is_acknowledged) {
-							echo html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px')).'&nbsp; ';
+							echo html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props++;
 						}
 						if (empty($row->host_notifications_enabled)) {
-							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification disabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
+							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification disabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 2;
 						}
 						if (!$row->host_active_checks_enabled && !$show_passive_as_active) {
-							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
+							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 4;
 						}
 						if (isset($row->host_is_flapping) && $row->host_is_flapping) {
-							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
+							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 32;
 						}
 						if ($row->hostscheduled_downtime_depth > 0) {
-							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
+							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
 							$host_props += 8;
 						}
 						if ($host_comments !== false && array_key_exists($row->host_name, $host_comments)) {
 							echo '&nbsp;'.html::anchor('extinfo/details/?host='.urlencode($row->host_name).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
-								'title' => sprintf($this->translate->_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name)).'&nbsp; ';
+								array('alt' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]),
+								'title' => sprintf(_('This host has %s comment(s) associated with it'), $host_comments[$row->host_name]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name)).'&nbsp; ';
 						}
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
 						}
 						if ($link_to_nacoma) {
-							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->host_name), 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
+							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->host_name), 'icons/16x16/nacoma.png', _('Configure this host')).' &nbsp;';
 						}
 
 						if (!empty($row->host_icon_image)) {
@@ -137,8 +137,8 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
-								array('alt' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]),
-								'title' => sprintf($this->translate->_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name.';'.$row->service_description)); ?>
+								array('alt' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]),
+								'title' => sprintf(_('This service has %s comment(s) associated with it'), $comments[$row->host_name.';'.$row->service_description]))), array('style' => 'border: 0px', 'class' => 'host_comment', 'data-obj_name' => $row->host_name.';'.$row->service_description)); ?>
 					</span>
 					<?php } ?>
 			<span style="float: right">
@@ -146,23 +146,23 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				$properties = 0;
 				if ($row->problem_has_been_acknowledged) {
 					$properties++;
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => $this->translate->_('Acknowledged'), 'title' => $this->translate->_('Acknowledged'))), array('style' => 'border: 0px')).'&nbsp; ';
+					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/acknowledged.png'),array('alt' => _('Acknowledged'), 'title' => _('Acknowledged'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if (empty($row->notifications_enabled)) {
 					$properties += 2;
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => $this->translate->_('Notification enabled'), 'title' => $this->translate->_('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
+					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/notify-disabled.png'),array('alt' => _('Notification enabled'), 'title' => _('Notification disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if (!$row->active_checks_enabled && !$show_passive_as_active) {
 					$properties += 4;
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => $this->translate->_('Active checks enabled'), 'title' => $this->translate->_('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
+					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/active-checks-disabled.png'),array('alt' => _('Active checks enabled'), 'title' => _('Active checks disabled'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if (isset($row->service_is_flapping) && $row->service_is_flapping) {
 					$properties += 32;
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => $this->translate->_('Flapping'), 'title' => $this->translate->_('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
+					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/flapping.gif'),array('alt' => _('Flapping'), 'title' => _('Flapping'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if ($row->scheduled_downtime_depth > 0) {
 					$properties += 8;
-					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => $this->translate->_('Scheduled downtime'), 'title' => $this->translate->_('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
+					echo html::anchor('extinfo/details/service?host='.urlencode($row->host_name).'&service='.urlencode($row->service_description), html::image($this->add_path('icons/16x16//scheduled-downtime.png'),array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime'))), array('style' => 'border: 0px')).'&nbsp; ';
 				}
 				if ($row->current_state == Current_status_Model::SERVICE_CRITICAL || $row->current_state == Current_status_Model::SERVICE_UNKNOWN || $row->current_state == Current_status_Model::SERVICE_WARNING ) {
 					$properties += 16;
@@ -173,35 +173,35 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		<td>
 			<?php
 				if ($link_to_nacoma)
-					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($row->host_name).'&service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
+					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($row->host_name).'&service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', _('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					if (pnp::has_graph($row->host_name, urlencode($row->service_description)))
-						echo html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $this->translate->_('Show performance graph'), 'title' => $this->translate->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).' &nbsp;';
+						echo html::anchor('pnp/?host='.urlencode($row->host_name).'&srv='.urlencode($row->service_description), html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).' &nbsp;';
 				}
 				if (!empty($row->action_url)) {
 					echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">';
-					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions')));
+					echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra host actions'),'title' => _('Perform extra host actions')));
 					echo '</a> &nbsp;';
 				}
 				if (!empty($row->notes_url)) {
 					echo '<a href="'.nagstat::process_macros($row->notes_url, $row).'" style="border: 0px" target="'.$notes_url_target.'">';
-					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes')));
+					echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra host notes'),'title' => _('View extra host notes')));
 					echo '</a> &nbsp;';
 				}
 			?>
 		</td>
-		<td style="width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : _('N/A') ?></td>
 <?php	if (isset($is_svc_details) && $is_svc_details !== false) {
 			# make sure we print service duration and not host since we have a special query result here, i.e displaying servicegroup result ?>
-		<td style="width: 110px"><?php echo $row->service_duration != $row->service_cur_time ? time::to_string($row->service_duration) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->service_duration != $row->service_cur_time ? time::to_string($row->service_duration) : _('N/A') ?></td>
 <?php	} else { ?>
-		<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : _('N/A') ?></td>
 <?php	} ?>
 		<td style="text-align: center; width: 60px"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
 		<td style="white-space: normal">
 		<?php
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
-				echo $row->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $row->next_check)) : $nocheck_output;
+				echo $row->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $row->next_check)) : _('Service is not scheduled to be checked...');
 			} else {
 				$output = $row->output;
 				$output = str_replace('','', $output);
@@ -231,34 +231,34 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <?php } else {
 			echo '<tr><td colspan=9>';
 			if (isset($filters) && !empty($filters)) {
-				echo $this->translate->_('No services found matching this filter.');
+				echo _('No services found matching this filter.');
 			} else {
-				echo $this->translate->_('No services found for this host.');
+				echo _('No services found for this host.');
 			}
 			echo '</td></tr>';
 		} ?>
 		</table>
 <?php
 	$options = array(
-		'' => $this->translate->_('Select action'),
-		'SCHEDULE_SVC_DOWNTIME' => $this->translate->_('Schedule downtime'),
-		'DEL_SVC_DOWNTIME' => $this->translate->_('Cancel Scheduled downtime'),
-		'ACKNOWLEDGE_SVC_PROBLEM' => $this->translate->_('Acknowledge'),
-		'REMOVE_SVC_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-		'DISABLE_SVC_NOTIFICATIONS' => $this->translate->_('Disable service notifications'),
-		'ENABLE_SVC_NOTIFICATIONS' => $this->translate->_('Enable service notifications'),
-		'DISABLE_SVC_CHECK' => $this->translate->_('Disable active checks'),
-		'ENABLE_SVC_CHECK' => $this->translate->_('Enable active checks'),
-		'SCHEDULE_SVC_CHECK' => $this->translate->_('Reschedule service checks'),
-		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
+		'' => _('Select action'),
+		'SCHEDULE_SVC_DOWNTIME' => _('Schedule downtime'),
+		'DEL_SVC_DOWNTIME' => _('Cancel Scheduled downtime'),
+		'ACKNOWLEDGE_SVC_PROBLEM' => _('Acknowledge'),
+		'REMOVE_SVC_ACKNOWLEDGEMENT' => _('Remove problem acknowledgement'),
+		'DISABLE_SVC_NOTIFICATIONS' => _('Disable service notifications'),
+		'ENABLE_SVC_NOTIFICATIONS' => _('Enable service notifications'),
+		'DISABLE_SVC_CHECK' => _('Disable active checks'),
+		'ENABLE_SVC_CHECK' => _('Enable active checks'),
+		'SCHEDULE_SVC_CHECK' => _('Reschedule service checks'),
+		'ADD_SVC_COMMENT' => _('Add service comment')
 		);
 
 	if (nacoma::allowed()) {
-		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
+		$options['NACOMA_DEL_SERVICE'] = _('Delete selected service(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);
 ?>
-	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => _('Submit'))); ?>
 	<br /><span id="multi_object_submit_progress_service" class="item_select_service"></span>
 	<?php echo form::hidden('obj_type', 'service'); ?>
 	<?php echo form::close(); ?>

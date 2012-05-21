@@ -34,7 +34,7 @@ class Upload_Controller extends Authenticated_Controller
 	{
 		$this->template->content = $this->add_view('upload/index');
 		$content = $this->template->content;
-		$this->template->title = $this->translate->_('Widget Upload');
+		$this->template->title = _('Widget Upload');
 		$this->template->disable_refresh = true;
 
 		$this->template->js_header = $this->add_view('js_header');
@@ -52,7 +52,7 @@ class Upload_Controller extends Authenticated_Controller
 	{
 		$this->template->content = $this->add_view('upload/uploaded');
 		$ct = $this->template->content;
-		$this->template->title = $this->translate->_('Widget Upload');
+		$this->template->title = _('Widget Upload');
 		$this->template->disable_refresh = true;
 
 		if (!isset($_FILES['upload_file'])) {
@@ -63,7 +63,7 @@ class Upload_Controller extends Authenticated_Controller
 		$savepath = Kohana::config('upload.directory');
 
 		if (!upload::valid($_FILES['upload_file']) || !upload::type($_FILES['upload_file'], array('zip'))) {
-			$ct->err_msg = $this->translate->_("Uploaded file doesn't seem to be valid - aborting.");
+			$ct->err_msg = _("Uploaded file doesn't seem to be valid - aborting.");
 			return;
 		}
 
@@ -79,7 +79,7 @@ class Upload_Controller extends Authenticated_Controller
 
 		$zip = zip::instance($savepath.$file['name']);
 		if (($list = $zip->listContent()) == 0) {
-			$ct->err_msg = sprintf($this->translate->_("Error: %s"), $zip->errorInfo(true));
+			$ct->err_msg = sprintf(_("Error: %s"), $zip->errorInfo(true));
 			unlink($savepath.$file['name']);
 			return;
 		}
@@ -145,19 +145,19 @@ class Upload_Controller extends Authenticated_Controller
 
 		if (empty($manifest)) {
 			$errors++;
-			$erray[] = $this->translate->_('Found no manifest file');
+			$erray[] = _('Found no manifest file');
 		}
 		if (empty($classfile)) {
 			$errors++;
-			$erray[] = $this->translate->_('Found no class file');
+			$erray[] = _('Found no class file');
 		}
 
 		$msg = '';
-		$ct->widget_name = $this->translate->_('Widget name').': '.$widget_name."<br />";
+		$ct->widget_name = _('Widget name').': '.$widget_name."<br />";
 		if (empty($errors) && !empty($classfile)) {
-			#$msg .= sprintf($this->translate->_("Initial checks turned out ok - Unpacking...%s"), '<br />');
+			#$msg .= sprintf(_("Initial checks turned out ok - Unpacking...%s"), '<br />');
 		} else {
-			$ct->err_msg = sprintf($this->translate->_("Found %s errors:"), $errors);
+			$ct->err_msg = sprintf(_("Found %s errors:"), $errors);
 			$ct->erray = $erray;
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
@@ -165,7 +165,7 @@ class Upload_Controller extends Authenticated_Controller
 		}
 
 		if (!$list = $zip->extract(PCLZIP_OPT_PATH, $savepath)) {
-			$ct->err_msg = sprintf($this->translate->_("Error: %s"), $zip->errorInfo(true));
+			$ct->err_msg = sprintf(_("Error: %s"), $zip->errorInfo(true));
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
@@ -183,25 +183,25 @@ class Upload_Controller extends Authenticated_Controller
 				$line = trim($line);
 				if ($line !== ucfirst($widget_name).'_Widget') {
 					$errors++;
-					$erray[] = $this->translate->_('Widget classname does not meet requirements');
+					$erray[] = _('Widget classname does not meet requirements');
 				}
 			}
 		}
 
 		if (!empty($erray)) {
-			$ct->err_msg = sprintf($this->translate->_("Found %s errors:"), $errors);
+			$ct->err_msg = sprintf(_("Found %s errors:"), $errors);
 			$ct->erray = $erray;
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		} else {
-			#$msg .= sprintf($this->translate->_("Everything seems ok. Let's install this widget. %s"), '<br />');
+			#$msg .= sprintf(_("Everything seems ok. Let's install this widget. %s"), '<br />');
 		}
 
 		# load manifest
 		$xml = simplexml_load_file($savepath.$widget_name.'/'.$manifest);
 		if ($xml === false) {
-			$ct->err_msg = $this->translate->_('Unable to load manifest file');
+			$ct->err_msg = _('Unable to load manifest file');
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
@@ -240,7 +240,7 @@ class Upload_Controller extends Authenticated_Controller
 		}
 
 		if (!$widget_ok) {
-			$ct->err_msg = $this->translate->_('Error: A widget by this name already exists');
+			$ct->err_msg = _('Error: A widget by this name already exists');
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
@@ -248,13 +248,13 @@ class Upload_Controller extends Authenticated_Controller
 
 
 		if (!is_writable($custom_dir)) {
-			sprintf($this->translate->_('Widget custom dir (%s) is not writable - please modify and try again'), $custom_dir);
+			sprintf(_('Widget custom dir (%s) is not writable - please modify and try again'), $custom_dir);
 		}
 
 		exec('cp -av '.$savepath.$widget_name.'/ '.$custom_dir, $output, $retval);
 
 		if ($retval != 0) {
-			$ct->err_msg = $this->translate->_('Error: Unable to copy widget');
+			$ct->err_msg = _('Error: Unable to copy widget');
 			unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
@@ -266,16 +266,16 @@ class Upload_Controller extends Authenticated_Controller
 
 		$save = Ninja_widget_Model::install($pagename, $widget_name, $friendly_name);
 		if ($save || $is_upgrade) {
-			$msg .= sprintf($this->translate->_("OK, saved widget to db%s"), '<br />');
+			$msg .= sprintf(_("OK, saved widget to db%s"), '<br />');
 		} else {
-			$ct->err_msg = $this->translate->_("Unable to save widget - maybe it's already installed?");
+			$ct->err_msg = _("Unable to save widget - maybe it's already installed?");
 			if (file_exists($savepath.$file['name']))
 				unlink($savepath.$file['name']);
 			self::_rrmdir($savepath.$widget_name);
 			return;
 		}
 
-		$ct->final_msg = sprintf($this->translate->_('This widget should now be properly installed.%s
+		$ct->final_msg = sprintf(_('This widget should now be properly installed.%s
 			Please reload Tactical overview and enable the widget in the widget menu.'), '<br />');
 		$ct->msg = $msg;
 	}

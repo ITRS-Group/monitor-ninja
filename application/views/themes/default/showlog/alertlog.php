@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-	$date_format = cal::get_calendar_format(true);
-	$x = $this->translate; ?>
+	$date_format = cal::get_calendar_format(true); ?>
 <div id="response"></div>
 <div class="widget left w98">
 <h1>Alert history
@@ -34,12 +33,12 @@
 	<table class="showlog">
 		<tr>
 			<td>
-	<h3><?php echo $x->_('State type options'); ?></h3>
-	<label><?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '.$x->_('Soft states').'</label>'; ?><br />
-	<label><?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '.$x->_('Hard states').'</label>'; ?>
+	<h3><?php echo _('State type options'); ?></h3>
+	<label><?php echo form::checkbox('state_type[soft]', 1, isset($options['state_type']['soft'])).' '._('Soft states').'</label>'; ?><br />
+	<label><?php echo form::checkbox('state_type[hard]', 1, isset($options['state_type']['hard'])).' '._('Hard states').'</label>'; ?>
 	</td>
 	<td>
-	<h3><?php echo $x->_('Host state options'); ?></h3>
+	<h3><?php echo _('Host state options'); ?></h3>
 		<?php
 			$i = 0;
 			foreach ($host_state_options as $k => $v) {
@@ -50,7 +49,7 @@
 			}
 		?>
 		</td><td>
-		<h3><?php echo $x->_('Service state options'); ?></h3>
+		<h3><?php echo _('Service state options'); ?></h3>
 		<?php
 			$i = 0;
 			foreach ($service_state_options as $k => $v) {
@@ -61,21 +60,21 @@
 			}
 		?>
 		</td><td>
-		<h3><?php echo $x->_('General options'); ?></h3>
-		<?php echo '<label>'.form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '.$x->_('Hide downtime alerts'); ?></label><br />
-		<?php echo $is_authorized ? '<label>'.form::checkbox('hide_process', 1, isset($options['hide_process'])).' '.$x->_('Hide process messages').'</label><br />' : ''; ?>
-		<?php echo '<label>'.form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '.$x->_('Older entries first').'</label>'; ?>
+		<h3><?php echo _('General options'); ?></h3>
+		<?php echo '<label>'.form::checkbox('hide_downtime', 1, isset($options['hide_downtime'])).' '._('Hide downtime alerts'); ?></label><br />
+		<?php echo $is_authorized ? '<label>'.form::checkbox('hide_process', 1, isset($options['hide_process'])).' '._('Hide process messages').'</label><br />' : ''; ?>
+		<?php echo '<label>'.form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '._('Older entries first').'</label>'; ?>
 		</td>
 		</tr>
 		<tr>
 			<td colspan="2">
-				<h3><?php echo $x->_('First time') ?></h3> (<em id="start_time_tmp"><?php echo $x->_('Click calendar to select date') ?></em>)<br />
-				<input type="text" value="<?php echo isset($options['first']) && !empty($options['first']) ? date($date_format, $options['first']) : ''; ?>" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo $x->_('Date Start selector') ?>" />
+				<h3><?php echo _('First time') ?></h3> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+				<input type="text" value="<?php echo isset($options['first']) && !empty($options['first']) ? date($date_format, $options['first']) : ''; ?>" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
 				<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($options['first']) && !empty($options['first']) ? date('H:i', $options['first']) : ''; ?>">
 			</td>
 			<td colspan="2">
-				<h3><?php echo $x->_('Last time') ?></h3> (<em id="end_time_tmp"><?php echo $x->_('Click calendar to select date') ?></em>)<br />
-				<input type="text" value="<?php echo isset($options['last']) && !empty($options['last']) ? date($date_format, $options['last']) : ''; ?>" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo $x->_('Date Start selector') ?>" />
+				<h3><?php echo _('Last time') ?></h3> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+				<input type="text" value="<?php echo isset($options['last']) && !empty($options['last']) ? date($date_format, $options['last']) : ''; ?>" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" class="date-pick datepick-end" title="<?php echo _('Date Start selector') ?>" />
 				<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($options['last']) && !empty($options['last']) ? date('H:i', $options['last']) : ''; ?>">
 			</td>
 		</tr>
@@ -103,7 +102,7 @@
 	<form action="">
 	<?php
 		echo form::input(array('id' => 'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-		echo form::button('clearfilterbox', $this->translate->_('Clear'));
+		echo form::button('clearfilterbox', _('Clear'));
 	?>
 	</form>
 <?php echo (isset($pagination)) ? $pagination : ''; ?>

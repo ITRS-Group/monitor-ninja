@@ -22,15 +22,14 @@ class Trends_graph_Model extends Model
 	private $abbr_day_names = array();
 
 	public function __construct() {
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 		$this->abbr_day_names = array(
-			$translate->_('Sun'),
-			$translate->_('Mon'),
-			$translate->_('Tue'),
-			$translate->_('Wed'),
-			$translate->_('Thu'),
-			$translate->_('Fri'),
-			$translate->_('Sat')
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
 		);
 	}
 

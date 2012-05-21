@@ -62,26 +62,4 @@ class zend_Core
 		}
 		return false;
 	}
-
-	/**
-	 * Instantiate Zend_Translate
-	 *
-	 * @param $driver (default gettext)
-	 * @param $lang (default en)
-	 * @return translate object
-	 */
-	public static function translate($driver='gettext', $lang="en")
-	{
-		$path = self::set_zend_path('Translate');
-		require_once($path);
-		$lang_path = APPPATH.'languages';
-		$mo_path = $lang_path.'/'.$lang.'/'.$lang.'.mo';
-		if (!is_file($mo_path)) {
-			# give caller possibility to fallback on default language
-			# don't use hard coded value as default here - let caller
-			# decide how to handle this
-			return false;
-		}
-		return new Zend_Translate($driver, $mo_path);#$lang_path, null, array('scan' => Zend_Translate::LOCALE_FILENAME));
-	}
 }

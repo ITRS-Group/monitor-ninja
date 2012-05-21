@@ -19,8 +19,8 @@ class Netw_outages_Widget extends widget_Base {
 		$outages = new Outages_Model();
 		$outage_data = $outages->fetch_outage_data();
 
-		$label = $this->translate->_('Blocking Outages');
-		$no_access_msg = $this->translate->_('N/A');
+		$label = _('Blocking Outages');
+		$no_access_msg = _('N/A');
 
 		$total_blocking_outages = !empty($outage_data) ? count($outage_data) : 0;
 

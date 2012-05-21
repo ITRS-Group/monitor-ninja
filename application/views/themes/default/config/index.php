@@ -1,22 +1,21 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate; ?>
-<div class="widget w98 left config_header">
+<div class="widget w98 left config_header" style="top: 57px; position: fixed; background-color: #ffffff; padding: 10px 1%">
 	<div class="ie-pag-config" style="position: absolute; right: 235px;"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
 	<form method="get" action="">
-	<?php echo $t->_('Object type'); ?>:
+	<?php echo _('Object type'); ?>:
 	<select name="type" onchange="submit()">
-		<option value="hosts"<?php echo $type == 'hosts' ? ' selected="selected"' : '';?>><?php echo $t->_('Hosts');?>
-		<option value="host_dependencies"<?php echo $type == 'host_dependencies' ? ' selected="selected"' : '';?>><?php echo $t->_('Host Dependencies');?>
-		<option value="host_escalations"<?php echo $type == 'host_escalations' ? ' selected="selected"' : '';?>><?php echo $t->_('Host Escalations');?>
-		<option value="host_groups"<?php echo $type == 'host_groups' ? ' selected="selected"' : '';?>><?php echo $t->_('Host Groups');?>
-		<option value="services"<?php echo $type == 'services' ? ' selected="selected"' : '';?>><?php echo $t->_('Services');?>
-		<option value="service_groups"<?php echo $type == 'service_groups' ? ' selected="selected"' : '';?>><?php echo $t->_('Service Groups');?>
-		<option value="service_dependencies"<?php echo $type == 'service_dependencies' ? ' selected="selected"' : '';?>><?php echo $t->_('Service Dependencies');?>
-		<option value="service_escalations"<?php echo $type == 'service_escalations' ? ' selected="selected"' : '';?>><?php echo $t->_('Service Escalations');?>
-		<option value="contacts"<?php echo $type == 'contacts' ? ' selected="selected"' : '';?>><?php echo $t->_('Contacts');?>
-		<option value="contact_groups"<?php echo $type == 'contact_groups' ? ' selected="selected"' : '';?>><?php echo $t->_('Contact Groups');?>
-		<option value="timeperiods"<?php echo $type == 'timeperiods' ? ' selected="selected"' : '';?>><?php echo $t->_('Timeperiods');?>
-		<option value="commands"<?php echo $type == 'commands' ? ' selected="selected"' : '';?>><?php echo $t->_('Commands');?>
+		<option value="hosts"<?php echo $type == 'hosts' ? ' selected="selected"' : '';?>><?php echo _('Hosts');?>
+		<option value="host_dependencies"<?php echo $type == 'host_dependencies' ? ' selected="selected"' : '';?>><?php echo _('Host Dependencies');?>
+		<option value="host_escalations"<?php echo $type == 'host_escalations' ? ' selected="selected"' : '';?>><?php echo _('Host Escalations');?>
+		<option value="host_groups"<?php echo $type == 'host_groups' ? ' selected="selected"' : '';?>><?php echo _('Host Groups');?>
+		<option value="services"<?php echo $type == 'services' ? ' selected="selected"' : '';?>><?php echo _('Services');?>
+		<option value="service_groups"<?php echo $type == 'service_groups' ? ' selected="selected"' : '';?>><?php echo _('Service Groups');?>
+		<option value="service_dependencies"<?php echo $type == 'service_dependencies' ? ' selected="selected"' : '';?>><?php echo _('Service Dependencies');?>
+		<option value="service_escalations"<?php echo $type == 'service_escalations' ? ' selected="selected"' : '';?>><?php echo _('Service Escalations');?>
+		<option value="contacts"<?php echo $type == 'contacts' ? ' selected="selected"' : '';?>><?php echo _('Contacts');?>
+		<option value="contact_groups"<?php echo $type == 'contact_groups' ? ' selected="selected"' : '';?>><?php echo _('Contact Groups');?>
+		<option value="timeperiods"<?php echo $type == 'timeperiods' ? ' selected="selected"' : '';?>><?php echo _('Timeperiods');?>
+		<option value="commands"<?php echo $type == 'commands' ? ' selected="selected"' : '';?>><?php echo _('Commands');?>
 	</select>
 	<input type="text" id="filterbox" name="filterbox" value="<?php echo $filter_string ?>" />
 	<input type="submit" value="Search through all result pages"  />
@@ -50,7 +49,7 @@
 				}
 			} else { ?>
 		<tr class="even">
-			<td colspan="<?php echo count($header);?>"><?php echo $t->_('No').' '.str_replace('_',' ',$type).' '.$t->_('configured'); ?></td>
+			<td colspan="<?php echo count($header);?>"><?php echo _('No').' '.str_replace('_',' ',$type).' '._('configured'); ?></td>
 		</tr>
 		<?php } ?>
 		</tbody>

@@ -16,7 +16,7 @@ if (sizeof($objects) > $print_limit) {
 	$show_objects = array_slice($objects, 0, $print_limit);
 	$rest_objects = array_slice($objects, $print_limit); ?>
 		<?php echo implode(', ', $show_objects); ?>
-		...<a title="<?php echo $this->translate->_('Click to show/hide list of objects') ?>" href="#" id="show_all_objects"><?php echo sprintf($this->translate->_('Show %s more'), sizeof($rest_objects)) ?></a>
+		...<a title="<?php echo _('Click to show/hide list of objects') ?>" href="#" id="show_all_objects"><?php echo sprintf(_('Show %s more'), sizeof($rest_objects)) ?></a>
 		</h1>
 	<div id="all_objects" style="display:none">
 		<?php echo implode(', ', $rest_objects); ?>
@@ -33,7 +33,7 @@ if (sizeof($objects) > $print_limit) {
 		<td><div id="histogram_graph" style="width:800px;height:300px; margin-bottom: 15px"></div></td>
 
 		<td style="vertical-align: bottom; padding-bottom: 30px">
-			<p id="choices" style="padding-left:6px; margin-bottom: 7px;"><?php echo $this->translate->_('Show') ?>:</p>
+			<p id="choices" style="padding-left:6px; margin-bottom: 7px;"><?php echo _('Show') ?>:</p>
 			<div id="overviewLegend" style=" width: 40px"></div>
 		</td>
 	</tr>
@@ -41,11 +41,11 @@ if (sizeof($objects) > $print_limit) {
 		<td>
 			<table id="histogram_overview">
 				<tr>
-					<th class="headerNone"><?php echo $label_eventtype ?></th>
-					<th class="headerNone"><?php echo $label_min ?></th>
-					<th class="headerNone"><?php echo $label_max ?></th>
-					<th class="headerNone"><?php echo $label_sum ?></th>
-					<th class="headerNone"><?php echo $label_avg ?></th>
+					<th class="headerNone"><?php echo _('EVENT TYPE') ?></th>
+					<th class="headerNone"><?php echo _('MIN') ?></th>
+					<th class="headerNone"><?php echo _('MAX') ?></th>
+					<th class="headerNone"><?php echo _('SUM') ?></th>
+					<th class="headerNone"><?php echo _('AVG') ?></th>
 				</tr>
 					<?php $i=0; foreach ($available_states as $state) { $i++;?>
 					<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">

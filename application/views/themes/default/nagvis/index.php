@@ -104,24 +104,24 @@ $img_url = Kohana::config('config.site_domain').$this->add_path('css/default/ima
 </script>
 <div class="left" style="height: auto; margin-left: 1%">
 	<div>
-		<strong><?php echo $this->translate->_('Maps') ?> &nbsp;(<a class="view" href="<?php echo $site; ?>index.php/nagvis/configure"><?php echo $this->translate->_('configure') ?></a>)</strong>
+		<strong><?php echo _('Maps') ?> &nbsp;(<a class="view" href="<?php echo $site; ?>index.php/nagvis/configure"><?php echo _('configure') ?></a>)</strong>
 		<ul class="thumbnails">
 			<?php
 			foreach ($maps as $map){
 				echo '<li>';
-				echo '<a class="edit" href="' . $site . 'index.php/nagvis/edit/'.$map.'" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-config.png'),$this->translate->_('Edit')).'</a>';
-				echo '<a class="delete" href="' . $site . 'index.php/nagvis/delete/'.$map.'" onclick="return confirm(\''.$this->translate->_('Are you sure you want to delete map '.$map.'?').'\')" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-close.png'),$this->translate->_('Delete')).'</a>';
+				echo '<a class="edit" href="' . $site . 'index.php/nagvis/edit/'.$map.'" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-config.png'),_('Edit')).'</a>';
+				echo '<a class="delete" href="' . $site . 'index.php/nagvis/delete/'.$map.'" onclick="return confirm(\''._('Are you sure you want to delete map '.$map.'?').'\')" style="border: 0px">'.html::image($this->add_path('icons/12x12/box-close.png'),_('Delete')).'</a>';
 				echo '<a class="view" href="' . $site . 'index.php/nagvis/view/'.$map.'" style="border: 0px"><span>'.$map.'</span><img src="/nagvis/var/'.$map.'-thumb.png" alt="" /></a>';
 				echo '</li>';
 			}
 			?>
-			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/automap" style="border: 0px"><span><?php echo $this->translate->_('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
-			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/geomap" style="border: 0px"><span><?php echo $this->translate->_('Geomap') ?></span><img src="<?php echo $site; ?>geomap-thumb.png" alt="" /></a></li>
+			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/automap" style="border: 0px"><span><?php echo _('Automap') ?></span><img src="/nagvis/var/__automap-thumb.png" alt="" /></a></li>
+			<li><a class="view" href="<?php echo $site; ?>index.php/nagvis/geomap" style="border: 0px"><span><?php echo _('Geomap') ?></span><img src="<?php echo $site; ?>geomap-thumb.png" alt="" /></a></li>
 			<li class="create">
-				<span class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo $this->translate->_('Create map') ?></span>
+				<span class="create" href="#" style="border-bottom: 1px solid #cdcdcd"><?php echo _('Create map') ?></span>
 				<form id="createmap" action="<?php echo $site; ?>index.php/nagvis/create" method="post">
 					<input type="text" id="mapname" name="name" maxlength="25" />
-					<a class="button" href="#" onclick="createmap(); return false" style="border: 1px solid #cdcdcd"><?php echo $this->translate->_('Create') ?></a></li>
+					<a class="button" href="#" onclick="createmap(); return false" style="border: 1px solid #cdcdcd"><?php echo _('Create') ?></a></li>
 				</form>
 			</li>
 		</ul>
@@ -129,7 +129,7 @@ $img_url = Kohana::config('config.site_domain').$this->add_path('css/default/ima
 </div>
 
 <div class="left" style="clear: left; margin-left: 1%">
-	<strong><?php echo $this->translate->_('Rotation pools') ?></strong>
+	<strong><?php echo _('Rotation pools') ?></strong>
 	<div>
 		<ul>
 			<?php

@@ -132,7 +132,7 @@ class Command_Controller extends Authenticated_Controller
 		 case 'SCHEDULE_HOST_CHECK':
 		 case 'SCHEDULE_SVC_CHECK':
 		 case 'SCHEDULE_HOST_SVC_CHECKS':
-			$param['_force'] = $this->cb($this->translate->_('Force Check'), '_force');
+			$param['_force'] = $this->cb(_('Force Check'), '_force');
 			break;
 
 		 case 'PROCESS_HOST_CHECK_RESULT':
@@ -140,7 +140,7 @@ class Command_Controller extends Authenticated_Controller
 			$param['_perfdata'] = array
 				('type' => 'string',
 				 'size' => 100,
-				 'name' => $this->translate->_('Performance data'));
+				 'name' => _('Performance data'));
 			break;
 
 		 case 'SCHEDULE_HOST_DOWNTIME':
@@ -149,11 +149,11 @@ class Command_Controller extends Authenticated_Controller
 			$param['_child-hosts'] = array
 				('type' => 'select',
 				 'options' => array
-				 ('none' => $this->translate->_('Do nothing'),
-				  'triggered' => $this->translate->_('Schedule triggered downtime'),
-				  'fixed' => $this->translate->_('Schedule fixed downtime')),
+				 ('none' => _('Do nothing'),
+				  'triggered' => _('Schedule triggered downtime'),
+				  'fixed' => _('Schedule fixed downtime')),
 				 'default' => 'triggered',
-				 'name' => $this->translate->_('Child Hosts'));
+				 'name' => _('Child Hosts'));
 			# fallthrough
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
 			break;
@@ -164,9 +164,9 @@ class Command_Controller extends Authenticated_Controller
 
 		 case 'SEND_CUSTOM_SVC_NOTIFICATION':
 		 case 'SEND_CUSTOM_HOST_NOTIFICATION':
-			$param['_broadcast'] = $this->cb($this->translate->_('Broadcast'), '_broadcast');
-			$param['_force'] = $this->cb($this->translate->_('Force notification'), '_force');
-			$param['_increment'] = $this->cb($this->translate->_('Increment notification number'), '_increment');
+			$param['_broadcast'] = $this->cb(_('Broadcast'), '_broadcast');
+			$param['_force'] = $this->cb(_('Force notification'), '_force');
+			$param['_increment'] = $this->cb(_('Increment notification number'), '_increment');
 			break;
 
 		 case 'ENABLE_HOST_SVC_CHECKS':
@@ -175,27 +175,27 @@ class Command_Controller extends Authenticated_Controller
 		 case 'DISABLE_HOSTGROUP_SVC_CHECKS':
 		 case 'ENABLE_SERVICEGROUP_SVC_CHECKS':
 		 case 'DISABLE_SERVICEGROUP_SVC_CHECKS':
-			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s checks for host too'), $en_dis), '_host-too');
+			$en_dis = $cmd{0} === 'E' ? _('Enable') : _('Disable');
+			$param['_host-too'] = $this->cb(sprintf(_('%s checks for host too'), $en_dis), '_host-too');
 			break;
 
 		 case 'ENABLE_HOST_CHECK':
 		 case 'DISABLE_HOST_CHECK':
-			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_services-too'] = $this->cb(sprintf($this->translate->_('%s checks for services too'), $en_dis), '_services-too');
+			$en_dis = $cmd{0} === 'E' ? _('Enable') : _('Disable');
+			$param['_services-too'] = $this->cb(sprintf(_('%s checks for services too'), $en_dis), '_services-too');
 			break;
 
 		 case 'ENABLE_HOST_SVC_NOTIFICATIONS':
 		 case 'DISABLE_HOST_SVC_NOTIFICATIONS':
-			$en_dis = $cmd{0} === 'E' ? $this->translate->_('Enable') : $this->translate->_('Disable');
-			$param['_host-too'] = $this->cb(sprintf($this->translate->_('%s notifications for host too'), $en_dis), '_host-too');
+			$en_dis = $cmd{0} === 'E' ? _('Enable') : _('Disable');
+			$param['_host-too'] = $this->cb(sprintf(_('%s notifications for host too'), $en_dis), '_host-too');
 			break;
 
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':
-			$param['_services-too'] = $this->cb($this->translate->_('Acknowledge any problems on services too'), '_services-too');
+			$param['_services-too'] = $this->cb(_('Acknowledge any problems on services too'), '_services-too');
 			break;
 		 case 'REMOVE_HOST_ACKNOWLEDGEMENT':
-			$param['_services-too'] = $this->cb($this->translate->_('Remove any acknowledgements on services too'), '_services-too');
+			$param['_services-too'] = $this->cb(_('Remove any acknowledgements on services too'), '_services-too');
 			break;
 		 case 'NACOMA_DEL_HOST':
 		 case 'NACOMA_DEL_SERVICE':
@@ -307,8 +307,8 @@ class Command_Controller extends Authenticated_Controller
 		if (isset($param['comment']) && trim($param['comment'])=='') {
 			# comments shouldn't ever be empty
 			$this->template->content->result = false;
-			$this->template->content->error = $this->translate->_("Required field 'Comment' was not entered").'<br />'.
-			$this->translate->_(sprintf('Go %s back %s and verify that you entered all required information correctly', '<a href="javascript:history.back();">', '</a>'));
+			$this->template->content->error = _("Required field 'Comment' was not entered").'<br />'.
+			_(sprintf('Go %s back %s and verify that you entered all required information correctly', '<a href="javascript:history.back();">', '</a>'));
 			return false;
 		}
 		$fallthrough = false;
@@ -488,32 +488,32 @@ class Command_Controller extends Authenticated_Controller
 	public function unauthorized($state=false)
 	{
 		$this->template->content = $this->add_view('command/unauthorized');
-		$this->template->content->error_message = $this->translate->_('You are not authorized to submit the specified command.');
+		$this->template->content->error_message = _('You are not authorized to submit the specified command.');
 		switch ($state) {
 			case -1:  # No command passed
-				$this->template->content->error_message = $this->translate->_('No command specified.');
-				$this->template->content->error_description = $this->translate->_('Please enter a valid '.
+				$this->template->content->error_message = _('No command specified.');
+				$this->template->content->error_description = _('Please enter a valid '.
 					'command or use the available links in the GUI.');
 				break;
 
 			case -2:  # Contact can't submit commands
-				$this->template->content->error_description = $this->translate->_("Your account doesn't seem to configured ".
+				$this->template->content->error_description = _("Your account doesn't seem to configured ".
 					"to allow you to submit commands (i.e 'can_submit_commands' is not enabled). Please contact an administrator ".
 					"to enable this for you. ");
 				break;
 
 			case -3: # not authorized from cgi.cfg, and not a configured contact
-				$this->template->content->error_description = $this->translate->_("Your account doesn't seem to be ".
+				$this->template->content->error_description = _("Your account doesn't seem to be ".
 					"configured properly. Please contact an administrator for assistance.");
 				break;
 
 			default: # fallthrough, not authorized for anything
-				$this->template->content->error_description = $this->translate->_('Read the section of the '.
+				$this->template->content->error_description = _('Read the section of the '.
 					'documentation that deals with authentication and authorization in the CGIs for more information.');
 
 		}
 
-		$this->template->content->return_link_lable = $this->translate->_('Return from whence you came');
+		$this->template->content->return_link_lable = _('Return from whence you came');
 	}
 
 	/**
@@ -521,25 +521,23 @@ class Command_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$t = zend::instance('Registry')->get('Zend_Translate');
-
 		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array
 			('triggered_by' =>
-			 $t->_ ("With triggered downtime the start of the downtime ".
+			 _ ("With triggered downtime the start of the downtime ".
 					"is triggered by the start of some other scheduled " .
 					"host or service downtime"),
 			 'duration' =>
-			 $t->_("Duration is given as a decimal value of full hours. " .
+			 _("Duration is given as a decimal value of full hours. " .
 				   "Thus, 1h 15m should be written as <b>1.25</b>"),
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		}
 		else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 
 	/**
@@ -656,7 +654,7 @@ class Command_Controller extends Authenticated_Controller
 	{
 		if (!isset($_REQUEST['multi_action'])) {
 			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing action parameter - unable to process request');
+			$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing action parameter - unable to process request');
 			return false;
 		}
 
@@ -665,7 +663,7 @@ class Command_Controller extends Authenticated_Controller
 		$this->objects = isset($_REQUEST['object_select']) ? $_REQUEST['object_select'] : false;
 		if (empty($this->objects)) {
 			$this->template->content = $this->add_view('error');
-			$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing objects - unable to process request');
+			$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing objects - unable to process request');
 			return false;
 		}
 
@@ -691,7 +689,7 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$this->template->content = $this->add_view('error');
-		$this->template->content->error_message = '<br /> &nbsp;'.$this->translate->_('ERROR: Missing parameters - unable to process request');
+		$this->template->content->error_message = '<br /> &nbsp;'._('ERROR: Missing parameters - unable to process request');
 		return false;
 	}
 

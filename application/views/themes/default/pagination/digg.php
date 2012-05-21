@@ -23,18 +23,18 @@
 if (!empty($total_items)) {
 $label_previous = html::image(
 	$this->add_path('icons/16x16/arrow-left.png'),
-	array('alt' => $this->translate->_('previous'),'title' => $this->translate->_('previous'), 'style' => 'margin-bottom: -4px')
-);//$this->translate->_('previous');
+	array('alt' => _('previous'),'title' => _('previous'), 'style' => 'margin-bottom: -4px')
+);//_('previous');
 $label_next = html::image(
 	$this->add_path('icons/16x16/arrow-right.png'),
-	array('alt' => $this->translate->_('next'),'title' => $this->translate->_('next'))
-);//$this->translate->_('next');
+	array('alt' => _('next'),'title' => _('next'))
+);//_('next');
 ?>
 
 <?php
 	$paging_step = config::get('pagination.paging_step', '*'); # step used below to print nr of items per page
 	$max_items_per_page = config::get('pagination.max_items_per_page', '*'); # maximum items per page to show
-	$entries = $this->translate->_('entries');
+	$entries = _('entries');
 	if (!isset($items_per_page)) {
 		$items_per_page = config::get('pagination.items_per_page', '*');
 	}
@@ -114,14 +114,14 @@ $label_next = html::image(
 	<?php else: ?>
 		<?php echo $label_next ?>
 	<?php endif ?>
-	<?php //echo '&nbsp; (' . $this->translate->_('total') . ': ' . $total_items . ' ' . $this->translate->_('entries') . ')' ?>
+	<?php //echo '&nbsp; (' . _('total') . ': ' . $total_items . ' ' . _('entries') . ')' ?>
 
 </p>
 
 
 <form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
 		<fieldset>
-		<?php //echo $this->translate->_('Show') ?>
+		<?php //echo _('Show') ?>
 		<select id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
@@ -130,7 +130,7 @@ $label_next = html::image(
 			<?php
 		} else {
 			?>
-			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo $this->translate->_('All').' '.$entries ?></option>
+			<option value="<?php echo $total_items ?>"<?php if ($items_per_page == $total_items) { ?> selected='selected'<?php } ?>><?php echo _('All').' '.$entries ?></option>
 			<?php
 		}
 		for ($i=$paging_step ; $i<$total_items && $i<=$max_items_per_page; $i+=$paging_step ) {
@@ -141,9 +141,9 @@ $label_next = html::image(
 
 			<input
 				type="text" size="4" name="custom_pagination_field" id="pagination_id_<?php echo $_SESSION['_pagination_id_'] ?>" class="custom_pagination_field"
-				title="<?php echo $this->translate->_('Enter number of items to show on each page or select from the drop-down on the left') ?>"
+				title="<?php echo _('Enter number of items to show on each page or select from the drop-down on the left') ?>"
 				value="<?php echo $total_items < $items_per_page ? $total_items : $items_per_page ?>" />
-			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo $this->translate->_('Go') ?>" />
+			<input type="button" name="show_pagination" class="show_pagination" value="<?php echo _('Go') ?>" />
 			</fieldset>
 	</form>
 <?php } ?>

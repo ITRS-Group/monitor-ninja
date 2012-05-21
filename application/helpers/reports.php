@@ -145,10 +145,9 @@ class reports_Core
 	/// used for automatic test cases
 	public function print_test_settings($test=false)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 		# report uses reports model default settings
 		if (!isset($test['start_time']) || !isset($test['end_time'])) {
-			echo $translate->_('Empty report settings. We need start_time and end_time')."\n";
+			echo _('Empty report settings. We need start_time and end_time')."\n";
 			print_r($test);
 			exit(1);
 		}
@@ -174,25 +173,24 @@ class reports_Core
 	*/
 	public static function js_strings()
 	{
-		$t = zend::instance('Registry')->get('Zend_Translate');
 		$js_strings = false;
-		$js_strings .= "var _ok_str = '".$t->_('OK')."';\n";
-		$js_strings .= "var _cancel_str = '".$t->_('Cancel')."';\n";
-		$js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
-		$js_strings .= "var _reports_err_str_nostatus = '".$t->_("You must provide at least one status to filter on")."';\n";
-		$js_strings .= "var _reports_invalid_startdate = \"".$t->_("You haven't entered a valid Start date")."\";\n";
-		$js_strings .= "var _reports_invalid_enddate = \"".$t->_("You haven't entered a valid End date")."\";\n";
-		$js_strings .= "var _reports_invalid_timevalue = \"".$t->_("You haven't entered a valid time value")."\";\n";
-		$js_strings .= "var _reports_enddate_infuture = '".sprintf($t->_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
-		$js_strings .= "var _reports_enddate_lessthan_startdate = '".$t->_("You have entered an End date before Start Date.")."';\n";
-		$js_strings .= "var _reports_send_now = '".$t->_('Send this report now')."';\n";
-		$js_strings .= "var _reports_send = '".$t->_('Send')."';\n";
-		$js_strings .= "var _reports_errors_found = '".$t->_('Found the following error(s)')."';\n";
-		$js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
-		$js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
-		$js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
-		$js_strings .= "var _reports_invalid_email = '".$t->_('You have entered an invalid email address')."';\n";
-		$js_strings .= "var _label_direct_link = '".$t->_('Direct link')."';\n";
+		$js_strings .= "var _ok_str = '"._('OK')."';\n";
+		$js_strings .= "var _cancel_str = '"._('Cancel')."';\n";
+		$js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select what objects to base the report on by moving %sobjects from the left selectbox to the right selectbox"), '<br />')."';\n";
+		$js_strings .= "var _reports_err_str_nostatus = '"._("You must provide at least one status to filter on")."';\n";
+		$js_strings .= "var _reports_invalid_startdate = \""._("You haven't entered a valid Start date")."\";\n";
+		$js_strings .= "var _reports_invalid_enddate = \""._("You haven't entered a valid End date")."\";\n";
+		$js_strings .= "var _reports_invalid_timevalue = \""._("You haven't entered a valid time value")."\";\n";
+		$js_strings .= "var _reports_enddate_infuture = '".sprintf(_("You have entered an End date in the future.%sClick OK to change this to current time or cancel to modify."), '\n')."';\n";
+		$js_strings .= "var _reports_enddate_lessthan_startdate = '"._("You have entered an End date before Start Date.")."';\n";
+		$js_strings .= "var _reports_send_now = '"._('Send this report now')."';\n";
+		$js_strings .= "var _reports_send = '"._('Send')."';\n";
+		$js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
+		$js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
+		$js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
+		$js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
+		$js_strings .= "var _reports_invalid_email = '"._('You have entered an invalid email address')."';\n";
+		$js_strings .= "var _label_direct_link = '"._('Direct link')."';\n";
 
 		return $js_strings;
 	}

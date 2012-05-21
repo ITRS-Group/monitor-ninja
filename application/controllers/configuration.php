@@ -29,8 +29,8 @@ class Configuration_Controller extends Authenticated_Controller {
 		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_configuration_information) {
 			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the configuration interface.");
-			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
+			$this->template->content->error_message = _("It appears as though you aren't authorized to access the configuration interface.");
+			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');
 			return false;
 		}
 		$scan = $this->input->get('scan', null);
@@ -68,7 +68,7 @@ class Configuration_Controller extends Authenticated_Controller {
 		$_SESSION['nacoma_user'] = user::session('username');
 		$this->template->disable_refresh = true;
 		$this->template->content = '<iframe src="'.Kohana::config('config.nacoma_path').'/'.$target_link.'" style="width: 100%; height: 768px" frameborder="0" id="iframe"></iframe>';
-		$this->template->title = $this->translate->_('Configuration » Configure');
+		$this->template->title = _('Configuration » Configure');
 		$this->template->nacoma = true;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js = array($this->add_path('/js/iframe-adjust.js'), $this->add_path('/js/nacoma-urls.js'));

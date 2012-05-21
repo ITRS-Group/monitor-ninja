@@ -58,123 +58,122 @@ class Summary_Controller extends Authenticated_Controller
 		} else {
 			$this->reports_model = new Reports_Model();
 		}
-		$t = $this->translate;
 		$this->host_state_names = array(
-			Reports_Model::HOST_UP => $t->_('UP'),
-			Reports_Model::HOST_DOWN => $t->_('DOWN'),
-			Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE')
+			Reports_Model::HOST_UP => _('UP'),
+			Reports_Model::HOST_DOWN => _('DOWN'),
+			Reports_Model::HOST_UNREACHABLE => _('UNREACHABLE')
 		);
 		$this->service_state_names = array(
-			Reports_Model::SERVICE_OK => $t->_('OK'),
-			Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
-			Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
-			Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN')
+			Reports_Model::SERVICE_OK => _('OK'),
+			Reports_Model::SERVICE_WARNING => _('WARNING'),
+			Reports_Model::SERVICE_CRITICAL => _('CRITICAL'),
+			Reports_Model::SERVICE_UNKNOWN => _('UNKNOWN')
 		);
 
 		$this->abbr_month_names = array(
-			$this->translate->_('Jan'),
-			$this->translate->_('Feb'),
-			$this->translate->_('Mar'),
-			$this->translate->_('Apr'),
-			$this->translate->_('May'),
-			$this->translate->_('Jun'),
-			$this->translate->_('Jul'),
-			$this->translate->_('Aug'),
-			$this->translate->_('Sep'),
-			$this->translate->_('Oct'),
-			$this->translate->_('Nov'),
-			$this->translate->_('Dec')
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
 		);
 
 		$this->month_names = array(
-			$this->translate->_('January'),
-			$this->translate->_('February'),
-			$this->translate->_('March'),
-			$this->translate->_('April'),
-			$this->translate->_('May'),
-			$this->translate->_('June'),
-			$this->translate->_('July'),
-			$this->translate->_('August'),
-			$this->translate->_('September'),
-			$this->translate->_('October'),
-			$this->translate->_('November'),
-			$this->translate->_('December')
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
 		);
 
 		$this->abbr_day_names = array(
-			$this->translate->_('Sun'),
-			$this->translate->_('Mon'),
-			$this->translate->_('Tue'),
-			$this->translate->_('Wed'),
-			$this->translate->_('Thu'),
-			$this->translate->_('Fri'),
-			$this->translate->_('Sat')
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
 		);
 
 		$this->day_names = array(
-			$this->translate->_('Sunday'),
-			$this->translate->_('Monday'),
-			$this->translate->_('Tuesday'),
-			$this->translate->_('Wednesday'),
-			$this->translate->_('Thursday'),
-			$this->translate->_('Friday'),
-			$this->translate->_('Saturday')
+			_('Sunday'),
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday')
 		);
 				# displaytype
 		$this->report_types = array
-			(self::RECENT_ALERTS => $t->_("Most Recent Alerts"),
-			 self::ALERT_TOTALS => $t->_("Alert Totals"),
-			 self::TOP_ALERT_PRODUCERS => $t->_("Top Alert Producers"),
-			 self::ALERT_TOTALS_HG => $t->_("Alert Totals By Hostgroup"),
-			 self::ALERT_TOTALS_HOST => $t->_("Alert Totals By Host"),
-			 self::ALERT_TOTALS_SG => $t->_("Alert Totals By Servicegroup"),
-			 self::ALERT_TOTALS_SERVICE => $t->_("Alert Totals By Service"),
+			(self::RECENT_ALERTS => _("Most Recent Alerts"),
+			 self::ALERT_TOTALS => _("Alert Totals"),
+			 self::TOP_ALERT_PRODUCERS => _("Top Alert Producers"),
+			 self::ALERT_TOTALS_HG => _("Alert Totals By Hostgroup"),
+			 self::ALERT_TOTALS_HOST => _("Alert Totals By Host"),
+			 self::ALERT_TOTALS_SG => _("Alert Totals By Servicegroup"),
+			 self::ALERT_TOTALS_SERVICE => _("Alert Totals By Service"),
 		);
 
 		# timeperiod
 		$this->report_periods = array(
-			"today" => $t->_('Today'),
-			"last24hours" => $t->_('Last 24 Hours'),
-			"yesterday" => $t->_('Yesterday'),
-			"thisweek" => $t->_('This Week'),
-			"last7days" => $t->_('Last 7 Days'),
-			"lastweek" => $t->_('Last Week'),
-			"thismonth" => $t->_('This Month'),
-			"last31days" => $t->_('Last 31 Days'),
-			"lastmonth"	=> $t->_('Last Month'),
-			"thisyear" => $t->_('This Year'),
-			"lastyear" => $t->_('Last Year'),
-			"custom" => '* ' . $t->_('CUSTOM REPORT PERIOD'). ' *'
+			"today" => _('Today'),
+			"last24hours" => _('Last 24 Hours'),
+			"yesterday" => _('Yesterday'),
+			"thisweek" => _('This Week'),
+			"last7days" => _('Last 7 Days'),
+			"lastweek" => _('Last Week'),
+			"thismonth" => _('This Month'),
+			"last31days" => _('Last 31 Days'),
+			"lastmonth"	=> _('Last Month'),
+			"thisyear" => _('This Year'),
+			"lastyear" => _('Last Year'),
+			"custom" => '* ' . _('CUSTOM REPORT PERIOD'). ' *'
 		);
 
 		#alerttypes
 		$this->alerttypes = array(
-			3 => $t->_("Host and Service Alerts"),
-			1 => $t->_("Host Alerts"),
-			2 => $t->_("Service Alerts")
+			3 => _("Host and Service Alerts"),
+			1 => _("Host Alerts"),
+			2 => _("Service Alerts")
 		);
 
 		$this->statetypes = array(
-			3 => $t->_("Hard and Soft States"),
-			2 => $t->_("Hard States"),
-			1 => $t->_("Soft States")
+			3 => _("Hard and Soft States"),
+			2 => _("Hard States"),
+			1 => _("Soft States")
 		);
 
 		$this->hoststates = array(
-			7 => $t->_("All Host States"),
-			6 => $t->_("Host Problem States"),
-			1 => $t->_("Host Up States"),
-			2 => $t->_("Host Down States"),
-			4 => $t->_("Host Unreachable States")
+			7 => _("All Host States"),
+			6 => _("Host Problem States"),
+			1 => _("Host Up States"),
+			2 => _("Host Down States"),
+			4 => _("Host Unreachable States")
 		);
 
 		$this->servicestates = array(
-			15 => $t->_("All Service States"),
-			14 => $t->_("Service Problem States"),
-			1 => $t->_("Service Ok States"),
-			2 => $t->_("Service Warning States"),
-			4 => $t->_("Service Critical States"),
-			8 => $t->_("Service Unknown States"),
+			15 => _("All Service States"),
+			14 => _("Service Problem States"),
+			1 => _("Service Ok States"),
+			2 => _("Service Warning States"),
+			4 => _("Service Critical States"),
+			8 => _("Service Unknown States"),
 		);
 	}
 
@@ -198,10 +197,10 @@ class Summary_Controller extends Authenticated_Controller
 		if (arr::search($_REQUEST, 'del_report', false) !== false && $del_id !== false) {
 			$del_ok = Saved_reports_Model::delete_report($this->type, $del_id);
 			if ($del_ok != '') {
-				$del_msg = $this->translate->_('Report was deleted successfully.');
+				$del_msg = _('Report was deleted successfully.');
 				$del_result = 'ok';
 			} else {
-				$del_msg = $this->translate->_('An error occurred while trying to delete the report.');
+				$del_msg = _('An error occurred while trying to delete the report.');
 				$del_result = 'error';
 			}
 		}
@@ -218,7 +217,6 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$t = $this->translate;
 		$this->template->content = $this->add_view('summary/setup');
 		$template = $this->template->content;
 
@@ -258,7 +256,7 @@ class Summary_Controller extends Authenticated_Controller
 				$sel_svcstate = isset($report_setting['service_states']) ? $report_setting['service_states'] : false;
 			}
 		}
-		$scheduled_label = $t->_('Scheduled');
+		$scheduled_label = _('Scheduled');
 		$this->js_strings .= "var report_id = ".(int)$this->report_id.";\n";
 
 		$json_periods = false;
@@ -291,34 +289,25 @@ class Summary_Controller extends Authenticated_Controller
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
-		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
 			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
-		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
-		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
-		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
-		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
-		$template->label_create_new = $this->translate->_('Alert Summary Report');
-		$template->label_standardreport = $this->translate->_('Standard Reports');
-		$template->label_reporttype = $this->translate->_('Report Type');
-		$template->label_report_mode = $this->translate->_('Report Mode');
-		$template->label_report_mode_standard = $this->translate->_('Standard');
-		$template->label_report_mode_custom = $this->translate->_('Custom');
-		$template->label_new = $t->_('New');
-		$template->new_saved_title = sprintf($t->_('Create new saved %s report'), $t->_('Summary'));
-		$template->label_delete = $t->_('Delete report');
+		$template->label_create_new = _('Alert Summary Report');
+		$template->new_saved_title = sprintf(_('Create new saved %s report'), _('Summary'));
 		$template->scheduled_label = $scheduled_label;
-		$template->title_label = $t->_('schedule');
-		$template->is_scheduled_report = $t->_('This is a scheduled report');
-		$template->is_scheduled_clickstr = $t->_("This report has been scheduled. Click the icons below to change settings");
+		$template->is_scheduled_clickstr = _("This report has been scheduled. Click the icons below to change settings");
 		$template->json_periods = $json_periods;
 		$template->type = $this->type;
 		$template->report_id = $this->report_id;
@@ -333,16 +322,7 @@ class Summary_Controller extends Authenticated_Controller
 		$template->sel_hoststate = $sel_hoststate;
 		$template->sel_svcstate = $sel_svcstate;
 		$template->available_schedule_periods = $periods;
-		$template->label_interval = $t->_('Report Interval');
-		$template->label_recipients = $t->_('Recipients');
-		$template->label_filename = $t->_('Filename');
-		$template->label_description = $t->_('Description');
-		$template->label_save = $t->_('Save');
-		$template->label_clear = $t->_('Clear');
-		$template->label_view_schedule = $t->_('View schedule');
 		$template->scheduled_info = $scheduled_info;
-		$template->lable_schedules = $t->_('Schedules for this report');
-		$template->label_dblclick = $t->_('Double click to edit');
 
 		$template->saved_reports = $saved_reports;
 
@@ -383,41 +363,16 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$template->standardreport = array(
-			1 => $t->_("Most Recent Hard Alerts"),
-			2 => $t->_("Most Recent Hard Host Alerts"),
-			3 => $t->_("Most Recent Hard Service Alerts"),
-			4 => $t->_('Top Alert Producers'),
-			5 => $t->_("Top Hard Host Alert Producers"),
-			6 => $t->_("Top Hard Service Alert Producers"),
+			1 => _("Most Recent Hard Alerts"),
+			2 => _("Most Recent Hard Host Alerts"),
+			3 => _("Most Recent Hard Service Alerts"),
+			4 => _('Top Alert Producers'),
+			5 => _("Top Hard Host Alert Producers"),
+			6 => _("Top Hard Service Alert Producers"),
 		);
-		$template->label_show_items = $t->_('Items to show');
 		$template->label_default_show_items = $summary_items;
-		$template->label_customreport_options = $t->_('Custom Report Options');
-		$template->label_rpttimeperiod = $t->_('Report Period');
-		$template->label_inclusive = $t->_('Inclusive');
-		$template->label_startdate = $t->_('Start Date');
-		$template->label_enddate = $t->_('End Date');
-		$template->label_alert_type = $t->_('Alert Types');
-		$template->label_state_type = $t->_('State Types');
-		$template->label_host_state = $t->_('Host States');
-		$template->label_service_state = $t->_('Service States');
-		$template->label_max_items = $t->_('Max List Items');
-		$template->label_create_report = $t->_('Create Summary Report!');
-		$template->label_select = $t->_('Select');
-		$template->label_startdate_selector = $t->_('Date Start selector');
-		$template->label_enddate_selector = $t->_('Date End selector');
-		$template->label_click_calendar = $t->_('Click calendar to select date');
-		$template->label_hostgroups = $t->_('Hostgroups');
-		$template->label_hosts = $t->_('Hosts');
-		$template->label_servicegroups = $t->_('Servicegroups');
-		$template->label_services = $t->_('Services');
-		$template->label_available = $t->_('Available');
-		$template->label_selected = $t->_('Selected');
 		$template->report_id = $this->report_id;
-		$template->label_save_report = $t->_('Save report');
-		$template->label_saved_reports = $t->_('Saved reports');
 		$template->report_name = $report_name;
-		$template->label_new_schedule = $t->_('New schedule');
 
 
 		# displaytype
@@ -440,7 +395,7 @@ class Summary_Controller extends Authenticated_Controller
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
-		$this->template->title = $this->translate->_("Reporting » Alert summary » Setup");
+		$this->template->title = _("Reporting » Alert summary » Setup");
 
 		if ($this->mashing) {
 			return $template->render();
@@ -487,13 +442,12 @@ class Summary_Controller extends Authenticated_Controller
 			$table_border = ' border="1"';
 		}
 
-		$t = $this->translate;
 		echo "<br /><table class=\"host_alerts\"".($this->create_pdf ? 'style="margin-top: 15px" border="1"' : '')."><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>".$spacer;
-		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('State') . "</th>\n";
-		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Soft Alerts') . "</th>\n";
-		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Hard Alerts') . "</th>\n";
-		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Total Alerts') . "</th>\n";
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . _('State') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . _('Soft Alerts') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . _('Hard Alerts') . "</th>\n";
+		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . _('Total Alerts') . "</th>\n";
 		echo "</tr>\n";
 
 		$i = 0;
@@ -550,7 +504,7 @@ class Summary_Controller extends Authenticated_Controller
 		$hours = ($duration % 86400) / 3600;
 		$minutes = ($duration % 3600) / 60;
 		$seconds = ($duration % 60);
-		return sprintf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
+		return sprintf("%s: %dd %dh %dm %ds", _("Duration"),
 			   $days, $hours, $minutes, $seconds);
 	}
 
@@ -601,7 +555,6 @@ class Summary_Controller extends Authenticated_Controller
 			$this->auto_render=false;
 		}
 
-		$t = $this->translate;
 		$this->template->disable_refresh = true;
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
@@ -694,7 +647,7 @@ class Summary_Controller extends Authenticated_Controller
 				$sel_svcstate = $report_setting['service_states'];
 			}
 		}
-		$scheduled_label = $t->_('Scheduled');
+		$scheduled_label = _('Scheduled');
 		$this->js_strings .= "var report_id = ".(int)$this->report_id.";\n";
 
 		$json_periods = false;
@@ -767,7 +720,7 @@ class Summary_Controller extends Authenticated_Controller
 		$save_report_settings = arr::search($_REQUEST, 'save_report_settings', false);
 		if ($save_report_settings && !empty($_REQUEST['report_name'])) {
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options);
-			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
+			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
 		}
 
@@ -810,20 +763,18 @@ class Summary_Controller extends Authenticated_Controller
 			$this->add_view("summary/" . $views[$report_type]);
 
 		$content = $this->template->content;
-		$content->label_time = $t->_('Time');
-		$content->label_alert_type = $t->_('Alert Type');
-		$content->label_host = $t->_('Host');
-		$content->label_service = $t->_('Service');
-		$content->label_hostgroup = $t->_('Hostgroup');
-		$content->label_servicegroup = $t->_('Servicegroup');
-		$content->label_host_alerts = $t->_('Host Alerts');
-		$content->label_service_alerts = $t->_('Service Alerts');
-		$content->label_state = $t->_('State');
-		$content->label_hard = $t->_('Hard');
-		$content->label_soft = $t->_('Soft');
-		$content->label_soft_alerts = $t->_('Soft Alerts');
-		$content->label_hard_alerts = $t->_('Hard Alerts');
-		$content->label_total_alerts = $t->_('Total Alerts');
+		$content->label_alert_type = _('Alert Type');
+		$content->label_host = _('Host');
+		$content->label_service = _('Service');
+		$content->label_hostgroup = _('Hostgroup');
+		$content->label_servicegroup = _('Servicegroup');
+		$content->label_host_alerts = _('Host Alerts');
+		$content->label_service_alerts = _('Service Alerts');
+		$content->label_state = _('State');
+		$content->label_hard = _('Hard');
+		$content->label_soft = _('Soft');
+		$content->label_soft_alerts = _('Soft Alerts');
+		$content->label_hard_alerts = _('Hard Alerts');
 		$content->create_pdf = $this->create_pdf;
 
 		$this->template->content->schedules = $this->add_view('summary/schedule');
@@ -843,38 +794,20 @@ class Summary_Controller extends Authenticated_Controller
 		$template->sel_hoststate = $sel_hoststate;
 		$template->sel_svcstate = $sel_svcstate;
 		$template->available_schedule_periods = $periods;
-		$template->label_interval = $t->_('Report Interval');
-		$template->label_recipients = $t->_('Recipients');
-		$template->label_filename = $t->_('Filename');
-		$template->label_description = $t->_('Description');
-		$template->label_save = $t->_('Save');
-		$template->label_clear = $t->_('Clear');
-		$template->label_view_schedule = $t->_('View schedule');
 		$template->scheduled_info = $scheduled_info;
-		$template->lable_schedules = $t->_('Schedules for this report');
-		$template->label_dblclick = $t->_('Double click to edit');
-		$template->label_new_schedule = $t->_('New schedule');
 
 		$template->saved_reports = $saved_reports;
 
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
-		$content->label_all_states = $t->_('All States');
 
 		$result = false;
 		switch ($report_type) {
 		 case self::TOP_ALERT_PRODUCERS:
-			$content->label_rank = $t->_('Rank');
-			$content->label_producer_type = $t->_('Producer Type');
-			$content->label_total_alerts = $t->_('Total Alerts');
 			$result = $rpt->top_alert_producers();
 			break;
 
 		 case self::RECENT_ALERTS:
-			$content->label_state_type = $t->_('State Type');
-			$content->label_information = $t->_('Information');
-			$content->label_host_alert = $t->_('Host Alert');
-			$content->label_service_alert = $t->_('Service Alert');
 			$result = $rpt->recent_alerts();
 			break;
 
@@ -882,12 +815,10 @@ class Summary_Controller extends Authenticated_Controller
 		 case self::ALERT_TOTALS_HG:
 		 case self::ALERT_TOTALS_SG:
 		 case self::ALERT_TOTALS_HOST:
-			$content->label_overall_totals = $t->_('Overall Totals');
 			$result = $rpt->alert_totals();
 			break;
 
 		case self::ALERT_TOTALS_SERVICE:
-			$content->label_overall_totals = $t->_('Overall Totals');
 			$services = $this->_populate_services($used_options);
 			if (!empty($services))
 				$rpt->set_option('service_description', $services);
@@ -901,27 +832,27 @@ class Summary_Controller extends Authenticated_Controller
 		}
 
 		$this->js_strings .= reports::js_strings();
-		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
 			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
-		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
-		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
-		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
-		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 		$this->template->js_strings = $this->js_strings;
 
 		$content->result = $result;
 		$content->options = $used_options;
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
-		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
+		$this->template->title = _("Reporting » Alert summary » Report");
 		$date_format = nagstat::date_format();
 		if ($this->create_pdf || $this->mashing) {
 			if('.csv' == substr($this->pdf_filename, -4, 4)) {
@@ -989,18 +920,18 @@ class Summary_Controller extends Authenticated_Controller
 					);
 					switch($report_type) {
 						case self::ALERT_TOTALS_HG:
-							$label = $t->_('Hostgroup');
+							$label = _('Hostgroup');
 							array_splice($header, 1, 1, 'HOSTGROUP');
 							break;
 						case self::ALERT_TOTALS_HOST:
-							$label = $t->_('Host');
+							$label = _('Host');
 							break;
 						case self::ALERT_TOTALS_SERVICE:
-							$label = $t->_('Service');
+							$label = _('Service');
 							array_splice($header, 2, 0, 'SERVICE');
 							break;
 						case self::ALERT_TOTALS_SG:
-							$label = $t->_('Servicegroup');
+							$label = _('Servicegroup');
 							array_splice($header, 1, 1, 'SERVICEGROUP');
 							break;
 					}
@@ -1175,8 +1106,6 @@ class Summary_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-
 		$nagios_etc_path = Kohana::config('config.nagios_etc_path');
 		$nagios_etc_path = $nagios_etc_path !== false ? $nagios_etc_path : Kohana::config('config.nagios_base_path').'/etc';
 
@@ -1186,7 +1115,7 @@ class Summary_Controller extends Authenticated_Controller
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 
 	/**
@@ -1298,7 +1227,7 @@ class Summary_Controller extends Authenticated_Controller
 		global $l; # required for tcpdf
 
 		if (isset($l['w_page'])) { # use ninja translation
-			$l['w_page'] = $this->translate->_('page');
+			$l['w_page'] = _('page');
 		}
 
 		$type = $this->type;
@@ -1307,11 +1236,11 @@ class Summary_Controller extends Authenticated_Controller
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : $this->translate->_('Ninja PDF Report');
+		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : _('Ninja PDF Report');
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
 		$pdf->SetAuthor('Ninja4Nagios');
-		$pdf->SetTitle($this->translate->_('Ninja PDF Report'));
+		$pdf->SetTitle(_('Ninja PDF Report'));
 		$pdf->SetSubject($title);
 		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
 

@@ -78,14 +78,14 @@ class Status_Controller extends Authenticated_Controller {
 		$hoststatustypes = $hoststatustypes ==='false' || $hoststatustypes ==='true' ? false : $hoststatustypes;
 
 		$replace = array(
-			1  => $this->translate->_('UP'),
-			2  => $this->translate->_('Down'),
-			4  => $this->translate->_('Unreachable'),
-			6  => $this->translate->_('All problems'),
-			64 => $this->translate->_('Pending')
+			1  => _('UP'),
+			2  => _('Down'),
+			4  => _('Unreachable'),
+			6  => _('All problems'),
+			64 => _('Pending')
 		);
 
-		$title = $this->translate->_('Monitoring » Host details').($hoststatustypes != false ? ' » '.$replace[$hoststatustypes] : '');
+		$title = _('Monitoring » Host details').($hoststatustypes != false ? ' » '.$replace[$hoststatustypes] : '');
 		$this->template->title = $title;
 
 		$this->hoststatustypes = $hoststatustypes;
@@ -115,22 +115,22 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => $this->translate->_('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'host status'),
-			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
-			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
-			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
+			array('title' => _('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'host status'),
+			array('title' => _('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
+			array('title' => _('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
+			array('title' => _('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
+			array('title' => _('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => _('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => _('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 
@@ -145,11 +145,10 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = strtolower($host) == 'all' ? $this->translate->_('All Hosts') : $this->translate->_('Host')." '".$host."'";
-		$sub_title = $this->translate->_('Host Status Details For').' '.$shown;
+		$shown = strtolower($host) == 'all' ? _('All Hosts') : _('Host')." '".$host."'";
+		$sub_title = _('Host Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
-		$this->template->content->pending_output = $this->translate->_('Host check scheduled for %s');
-		$this->template->content->nocheck_output = $this->translate->_('Host is not scheduled to be checked...');
+		$this->template->content->pending_output = _('Host check scheduled for %s');
 
 		# here we should fetch members of group if group_type is set and pass to get_host_status()
 		$host_model = new Host_Model();
@@ -204,59 +203,42 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->pagination = $pagination;
 		$this->template->content->total_items = $tot;
 		$this->template->content->logos_path = $this->logos_path;
-		$this->template->content->na_str = $this->translate->_('N/A');
 
 		if (empty($group_type)) {
 			if ($host == 'all') {
-				$label_host_status_details = $this->translate->_('Service status detail');
-				$label_host_status_overview = $this->translate->_('Status overview');
-				$label_host_status_summary = $this->translate->_('Status summary');
-				$label_host_status_grid = $this->translate->_('Status grid');
-				$label_view_for = $this->translate->_('for all host groups');
+				$label_view_for = _('for all host groups');
 				$page_links = array(
-					 $label_host_status_details => Router::$controller.'/hostgroup/all?style=detail',
-					 $label_host_status_overview => Router::$controller.'/hostgroup/all',
-					 $label_host_status_summary => Router::$controller.'/hostgroup/all?style=summary',
-					 $label_host_status_grid => Router::$controller.'/hostgroup_grid/all'
+					 _('Service status detail') => Router::$controller.'/hostgroup/all?style=detail',
+					 _('Status overview') => Router::$controller.'/hostgroup/all',
+					 _('Status summary') => Router::$controller.'/hostgroup/all?style=summary',
+					 _('Status grid') => Router::$controller.'/hostgroup_grid/all'
 				);
 			} else {
-				$label_host_history = $this->translate->_('Alert history');
-				$label_host_notifications = $this->translate->_('Notifications');
-				$label_host_status_details = $this->translate->_('Service status detail for all hosts');
-				$label_view_for = $this->translate->_('for this host');
+				$label_view_for = _('for this host');
 				$page_links = array(
-					 $label_host_history => 'showlog/alert_history/'.$host,
-					 $label_host_notifications => 'notifications/host/'.$host,
-					 $label_host_status_details => Router::$controller.'/service/all'
+					 _('Alert history') => 'showlog/alert_history/'.$host,
+					 _('Notifications') => 'notifications/host/'.$host,
+					 _('Service status detail for all hosts') => Router::$controller.'/service/all'
 				);
 			}
 		} else {
 			if ($group_type == 'hostgroup') {
-				$label_group_status_details_all = $this->translate->_('Host status detail');
-				$label_group_status_details = $this->translate->_('Service status detail');
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_group_status_grid = $this->translate->_('Status grid');
-				$label_view_for = $this->translate->_('for this host group');
+				$label_view_for = _('for this host group');
 				$page_links = array(
-					$label_group_status_details_all => Router::$controller.'/host/all',
-					$label_group_status_details => Router::$controller.'/hostgroup/'.$host.'?style=detail',
-					$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$host,
-					$label_group_status_summary => Router::$controller.'/'.$group_type.'_summary/'.$host,
-					$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$host
+					_('Host status detail') => Router::$controller.'/host/all',
+					_('Service status detail') => Router::$controller.'/hostgroup/'.$host.'?style=detail',
+					_('Status overview') => Router::$controller.'/'.$group_type.'/'.$host,
+					_('Status summary') => Router::$controller.'/'.$group_type.'_summary/'.$host,
+					_('Status grid') => Router::$controller.'/'.$group_type.'_grid/'.$host
 				);
 
 			} else {
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_service_status_details = $this->translate->_('Service status detail for all service groups');
-				$label_view_for = $this->translate->_('for this service group');
+				$label_view_for = _('for this service group');
 				$page_links = array(
-					$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$host,
-					$label_group_status_summary => Router::$controller.'/'.$group_type.'/'.$host.'?style=summary',
-					$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$host,
-					$label_service_status_details => Router::$controller.'/'.$group_type.'/all?style=detail'
+					_('Status overview') => Router::$controller.'/'.$group_type.'/'.$host,
+					_('Status summary') => Router::$controller.'/'.$group_type.'/'.$host.'?style=summary',
+					_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/'.$host,
+					_('Service status detail for all service groups') => Router::$controller.'/'.$group_type.'/all?style=detail'
 				);
 			}
 		}
@@ -308,28 +290,28 @@ class Status_Controller extends Authenticated_Controller {
 		$servicestatustypes = $servicestatustypes ==='false' || $servicestatustypes==='true' ? false : $servicestatustypes;
 
 		$srv_replace = array(
-			1  => $this->translate->_('OK'),
-			2  => $this->translate->_('Warning'),
-			4  => $this->translate->_('Critical'),
-			8  => $this->translate->_('Unknown'),
-			14 => $this->translate->_('All problems'),
-			64 => $this->translate->_('Pending'),
-			65 => $this->translate->_('Non-problem services'),
-			71 => $this->translate->_('All services'),
-			78 => $this->translate->_('All problems')
+			1  => _('OK'),
+			2  => _('Warning'),
+			4  => _('Critical'),
+			8  => _('Unknown'),
+			14 => _('All problems'),
+			64 => _('Pending'),
+			65 => _('Non-problem services'),
+			71 => _('All services'),
+			78 => _('All problems')
 		);
 
 		$host_replace = array(
-			1  => $this->translate->_('Host OK'),
-			2  => $this->translate->_('Host down'),
-			4  => $this->translate->_('Host unreachable'),
-			6  => $this->translate->_('All host problems'),
-			64 => $this->translate->_('Host pending'),
-			65 => $this->translate->_('Non-problem hosts'),
-			71 => $this->translate->_('All hosts'),
+			1  => _('Host OK'),
+			2  => _('Host down'),
+			4  => _('Host unreachable'),
+			6  => _('All host problems'),
+			64 => _('Host pending'),
+			65 => _('Non-problem hosts'),
+			71 => _('All hosts'),
 		);
 
-		$title = $this->translate->_('Monitoring » Service details').
+		$title = _('Monitoring » Service details').
 			($hoststatustypes != false ? ' » '.$host_replace[$hoststatustypes] : '').
 			($servicestatustypes != false ? ' » '.$srv_replace[$servicestatustypes] : '');
 
@@ -362,7 +344,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->content->na_str = $this->translate->_('N/A');
 		$this->template->content->date_format_str = nagstat::date_format();
 
 		# set sort images, used in header_links() below
@@ -371,24 +352,24 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => $this->translate->_('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
-			array('title' => $this->translate->_('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'service status'),
-			array('title' => $this->translate->_('Service'), 'sort_field_db' => 'service_description', 'sort_field_str' => 'service name'),
-			array('title' => $this->translate->_('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
-			array('title' => $this->translate->_('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => $this->translate->_('Attempt'), 'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => $this->translate->_('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
+			array('title' => _('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
+			array('title' => _('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'service status'),
+			array('title' => _('Service'), 'sort_field_db' => 'service_description', 'sort_field_str' => 'service name'),
+			array('title' => _('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
+			array('title' => _('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
+			array('title' => _('Attempt'), 'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
+			array('title' => _('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
 		if ($show_display_name) {
-			$header_link_fields[] = array('title' => $this->translate->_('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
+			$header_link_fields[] = array('title' => _('Display Name'), 'sort_field_db' => 'display_name', 'sort_field_str' => 'display name');
 		}
 		$this->template->content->show_display_name = $show_display_name;
 
 		$show_notes = config::get('config.show_notes', '*');
 		if ($show_notes) {
-			$header_link_fields[] = array('title' => $this->translate->_('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
+			$header_link_fields[] = array('title' => _('Notes'), 'sort_field_db' => 'notes', 'sort_field_str' => 'notes');
 		}
 		$this->template->content->show_notes = $show_notes;
 
@@ -404,7 +385,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->content->header_links = $header_links;
 
-		$shown = strtolower($name) == 'all' ? $this->translate->_('All hosts') : $this->translate->_('Host')." '".$name."'";
+		$shown = strtolower($name) == 'all' ? _('All hosts') : _('Host')." '".$name."'";
 
 		# handle host- or servicegroup details
 		$host_model = new Host_Model();
@@ -419,7 +400,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->is_svc_details = false;
 
 		if (!empty($group_type)) {
-			$shown = $group_type == 'servicegroup' ? $this->translate->_('Service Group') : $this->translate->_('Host Group');
+			$shown = $group_type == 'servicegroup' ? _('Service Group') : _('Host Group');
 			$shown .= " '".$name."'";
 			# convert 'servicegroup' to 'service' and 'hostgroup' to 'host'
 			$grouptype = str_replace('group', '', $group_type);
@@ -500,89 +481,66 @@ class Status_Controller extends Authenticated_Controller {
 			$host_model->set_host_list($name);
 			$result = $host_model->get_host_status();
 		}
-		$sub_title = $this->translate->_('Service Status Details For').' '.$shown;
+		$sub_title = _('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
-		$this->template->content->pending_output = $this->translate->_('Service check scheduled for %s');
-		$this->template->content->nocheck_output = $this->translate->_('Service is not scheduled to be checked...');
+		$this->template->content->pending_output = _('Service check scheduled for %s');
 		$this->template->content->result = $result;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->logos_path = $this->logos_path;
 		$this->template->content->style = 'detail';
 		if (empty($group_type)) {
 			if ($name == 'all') {
-				$label_host_history = $this->translate->_('Alert history');
-				$label_host_notifications = $this->translate->_('Notifications');
-				$label_host_status_details = $this->translate->_('Host status detail');
-				$label_view_for = $this->translate->_('for all hosts');
+				$label_view_for = _('for all hosts');
 				$page_links = array(
-					 $label_host_history => 'showlog/alert_history/',
-					 $label_host_notifications => 'notifications/host/'.$name,
-					 $label_host_status_details => Router::$controller.'/host/all'
+					 _('Alert history') => 'showlog/alert_history/',
+					 _('Notifications') => 'notifications/host/'.$name,
+					 _('Host status detail') => Router::$controller.'/host/all'
 				);
 			} else {
-				$label_host_history = $this->translate->_('Alert history');
-				$label_host_notifications = $this->translate->_('Notifications');
-				$label_host_status_details = $this->translate->_('Service status detail for all hosts');
-				$label_view_for = $this->translate->_('for this host');
+				$label_view_for = _('for this host');
 				$page_links = array(
-					 $label_host_history => 'showlog/alert_history/'.$name,
-					 $label_host_notifications => 'notifications/host/'.$name,
-					 $label_host_status_details => Router::$controller.'/service/all',
+					 _('Alert history') => 'showlog/alert_history/'.$name,
+					 _('Notifications') => 'notifications/host/'.$name,
+					 _('Service status detail for all hosts') => Router::$controller.'/service/all',
 				);
 			}
 		} else {
 			if ($group_type == 'hostgroup') {
 				if ($name == 'all') {
-					$label_group_status_details = $this->translate->_('Host status detail');
-					$label_group_status_overview = $this->translate->_('Status overview');
-					$label_group_status_summary = $this->translate->_('Status summary');
-					$label_group_status_grid = $this->translate->_('Status grid');
-					$label_view_for = $this->translate->_('for all host groups');
+					$label_view_for = _('for all host groups');
 					$page_links = array(
-						$label_group_status_details => Router::$controller.'/host/all',
-						$label_group_status_overview => Router::$controller.'/'.$group_type.'/all',
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'/all?style=summary',
-						$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/all',
+						_('Host status detail') => Router::$controller.'/host/all',
+						_('Status overview') => Router::$controller.'/'.$group_type.'/all',
+						_('Status summary') => Router::$controller.'/'.$group_type.'/all?style=summary',
+						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/all',
 					);
 				} else {
-					$label_group_status_details_all = $this->translate->_('Service status detail for all host groups');
-					$label_group_status_details = $this->translate->_('Host status detail');
-					$label_group_status_overview = $this->translate->_('Status overview');
-					$label_group_status_summary = $this->translate->_('Status summary');
-					$label_group_status_grid = $this->translate->_('Status grid');
-					$label_view_for = $this->translate->_('for this host group');
+					$label_view_for = _('for this host group');
 					$page_links = array(
-						$label_group_status_details_all => Router::$controller.'/'.$group_type.'/all?style=detail',
-						$label_group_status_details => Router::$controller.'/host/'.$name.'?group_type='.$group_type,
-						$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$name,
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'_summary/'.$name,
-						$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$name,
+						_('Service status detail for all host groups') => Router::$controller.'/'.$group_type.'/all?style=detail',
+						_('Host status detail') => Router::$controller.'/host/'.$name.'?group_type='.$group_type,
+						_('Status overview') => Router::$controller.'/'.$group_type.'/'.$name,
+						_('Status summary') => Router::$controller.'/'.$group_type.'_summary/'.$name,
+						_('Status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
 					);
 				}
 			} else {
 				# servicegroup links
 				if ($name == 'all') {
-					$label_service_status_overview = $this->translate->_('Status overview');
-					$label_group_status_summary = $this->translate->_('Status summary');
-					$label_host_status_grid = $this->translate->_('Service status grid');
-					$label_view_for = $this->translate->_('for all service groups');
+					$label_view_for = _('for all service groups');
 					$page_links = array(
-						$label_service_status_overview => Router::$controller.'/'.$group_type.'/all',
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'/all?style=summary',
-						$label_host_status_grid => Router::$controller.'/'.$group_type.'_grid/all'
+						_('Status overview') => Router::$controller.'/'.$group_type.'/all',
+						_('Status summary') => Router::$controller.'/'.$group_type.'/all?style=summary',
+						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/all'
 					);
 				} else {
-					$label_group_status_overview = $this->translate->_('Status overview');
-					$label_group_status_summary = $this->translate->_('Status summary');
-					$label_group_status_grid = $this->translate->_('Service status grid');
-					$label_group_status_details = $this->translate->_('Service status detail for all service groups');
-					$label_view_for = $this->translate->_('for this service group');
+					$label_view_for = _('for this service group');
 					$page_links = array(
-						$label_group_status_overview => Router::$controller.'/'.$group_type.'/'.$name,
-						$label_group_status_summary => Router::$controller.'/'.$group_type.'/'.$name.'?style=summary',
-						$label_group_status_grid => Router::$controller.'/'.$group_type.'_grid/'.$name,
-						$label_group_status_details => Router::$controller.'/'.$group_type.'/all'
+						_('Status overview') => Router::$controller.'/'.$group_type.'/'.$name,
+						_('Status summary') => Router::$controller.'/'.$group_type.'/'.$name.'?style=summary',
+						_('Service status grid') => Router::$controller.'/'.$group_type.'_grid/'.$name,
+						_('Service status detail for all service groups') => Router::$controller.'/'.$group_type.'/all'
 					);
 				}
 			}
@@ -709,14 +667,14 @@ class Status_Controller extends Authenticated_Controller {
 
 		switch ($style) {
 			case 'overview':
-				$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
-				$this->template->header = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group overview');
+				$this->template->title = _('Monitoring » ').$grouptype._('group overview');
+				$this->template->header = _('Monitoring » ').$grouptype._('group overview');
 				$this->template->content = $this->add_view('status/group_overview');
 				$this->template->content->filters = $filters;
 				$this->template->content->noheader = $noheader;
 				break;
 			case 'detail': case 'details':
-				$this->template->title = $grouptype.$this->translate->_('group » Details');
+				$this->template->title = $grouptype._('group » Details');
 				return $this->service($group, $hoststatustypes, $servicestatustypes, $serviceprops, false, false, $grouptype.'group', $hostprops);
 			case 'summary':
 				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
@@ -752,22 +710,21 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 
 		$content = $this->template->content;
-		$t = $this->translate;
 
 		if ($grouptype == 'service') {
-			$content->lable_header = strtolower($group) == 'all' ? $t->_("Service Overview For All Service Groups") : $t->_("Service Overview For Service Group");
+			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Service Groups") : _("Service Overview For Service Group");
 		} else {
-			$content->lable_header = strtolower($group) == 'all' ? $t->_("Service Overview For All Host Groups") : $t->_("Service Overview For Host Group");
+			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Host Groups") : _("Service Overview For Host Group");
 		}
-		$content->lable_host = $t->_('Host');
-		$content->lable_status = $t->_('Status');
-		$content->lable_services = $t->_('Services');
-		$content->lable_actions = $t->_('Actions');
+		$content->lable_host = _('Host');
+		$content->lable_status = _('Status');
+		$content->lable_services = _('Services');
+		$content->lable_actions = _('Actions');
 		$content->grouptype = $grouptype;
 		$content->hoststatustypes = $hoststatustypes;
 		$content->servicestatustypes = $servicestatustypes;
 		if (empty($group_details)) {
-			$this->template->content->error_message = $t->_("No data found");
+			$this->template->content->error_message = _("No data found");
 		}
 
 		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
@@ -783,56 +740,38 @@ class Status_Controller extends Authenticated_Controller {
 
 		if ($grouptype == 'host') {
 			if ($group == 'all') {
-				$label_host_status_details = $this->translate->_('Service status detail');
-				$label_group_status_details = $this->translate->_('Host status detail');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_host_status_grid = $this->translate->_('Status grid');
-				$label_view_for = $this->translate->_('for all host groups');
+				$label_view_for = _('for all host groups');
 				$page_links = array(
-					$label_host_status_details => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					$label_group_status_details => Router::$controller.'/host/all',
-					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					$label_host_status_grid => Router::$controller.'/'.$grouptype.'group_grid/all'
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
+					_('Host status detail') => Router::$controller.'/host/all',
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
-
-				$label_group_status_overview_all = $this->translate->_('Status overview for all host groups');
-				$label_group_status_service_details = $this->translate->_('Service status detail');
-				$label_group_status_host_details = $this->translate->_('Host status detail');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_view_for = $this->translate->_('for this host groups');
+				$label_view_for = _('for this host groups');
 				$page_links = array(
-
-					$label_group_status_overview_all => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					$label_group_status_service_details => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
-					$label_group_status_host_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
-					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group.'?style=summary'
+					_('Status overview for all host groups') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
+					_('Host status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
+					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group.'?style=summary'
 				);
 			}
 		} else {
 			if ($group == 'all') {
-				$label_service_status_details = $this->translate->_('Service status detail');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_host_status_grid = $this->translate->_('Service status grid');
-				$label_view_for = $this->translate->_('for all service groups');
+				$label_view_for = _('for all service groups');
 				$page_links = array(
-					$label_service_status_details => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					$label_host_status_grid => Router::$controller.'/'.$grouptype.'group_grid/all'
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_group_status_summary = $this->translate->_('Status summary');
-				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_group_status_details = $this->translate->_('Service status detail for all service groups');
-				$label_view_for = $this->translate->_('for this service groups');
+				$label_view_for = _('for this service groups');
 				$page_links = array(
-					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
-					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
-					$label_group_status_details => Router::$controller.'/'.$grouptype.'/all'
+					_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
+					_('Status summary') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=summary',
+					_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
+					_('Service status detail for all service groups') => Router::$controller.'/'.$grouptype.'/all'
 				);
 			}
 		}
@@ -853,7 +792,7 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$grouptype = 'service';
-		$this->template->title = $this->translate->_('Servicegroup » Summary');
+		$this->template->title = _('Servicegroup » Summary');
 		return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
 
@@ -881,13 +820,12 @@ class Status_Controller extends Authenticated_Controller {
 		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
 		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
 		$noheader = urldecode($this->input->get('noheader', false));
-		$this->template->title = $this->translate->_('Monitoring » ').$grouptype.$this->translate->_('group summary');
+		$this->template->title = _('Monitoring » ').$grouptype._('group summary');
 
 		$group = trim($group);
 		$this->template->content = $this->add_view('status/group_summary');
 		$this->template->content->noheader = $noheader;
 		$content = $this->template->content;
-		$t = $this->translate;
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->hostprops = $hostprops;
@@ -930,7 +868,7 @@ class Status_Controller extends Authenticated_Controller {
 			$offset = $pagination->sql_offset;
 			$content->pagination = $pagination;
 
-			$content->lable_header = $grouptype == 'service' ? $t->_('Status Summary For All Service Groups') : $t->_('Status Summary For All Host Groups');
+			$content->lable_header = $grouptype == 'service' ? _('Status Summary For All Service Groups') : _('Status Summary For All Host Groups');
 			$group_info_res = $grouptype == 'service'
 				? Servicegroup_Model::summary($group, $items_per_page, $offset, $hostprops, $serviceprops, $hoststatustypes, $servicestatustypes)
 				: Hostgroup_Model::summary($group, $items_per_page, $offset, $hostprops, $serviceprops, $hoststatustypes, $servicestatustypes);
@@ -945,10 +883,10 @@ class Status_Controller extends Authenticated_Controller {
 			} else {
 				# overwrite previous view with the error view, add some text and bail out
 				$this->template->content = $this->add_view('error');
-				$this->template->content->error_message = sprintf($t->_("The requested group ('%s') wasn't found"), $group);
+				$this->template->content->error_message = sprintf(_("The requested group ('%s') wasn't found"), $group);
 				return;
 			}
-			$label_header = $grouptype == 'service' ? $t->_('Status Summary For Service Group ') : $t->_('Status Summary For Host Group ');
+			$label_header = $grouptype == 'service' ? _('Status Summary For Service Group ') : _('Status Summary For Host Group ');
 			$content->lable_header = $label_header."'".$group."'";
 			$group_info_res = $grouptype == 'service' ? Servicegroup_Model::summary($group) : Hostgroup_Model::summary($group);
 		}
@@ -961,78 +899,44 @@ class Status_Controller extends Authenticated_Controller {
 		$content->hostproperties = $hostprops;
 		$content->servicestatustypes = $servicestatustypes;
 		$content->serviceproperties = $serviceprops;
-		$content->label_group_name = $t->_('Service Group');
-		$content->label_host_summary = $t->_('Host Status Summary');
-		$content->label_service_summary = $t->_('Service Status Summary');
-		$content->label_no_data = $t->_('No data found');
-		$content->label_up = $t->_('UP');
-		$content->label_down = $t->_('DOWN');
-		$content->label_unhandled = $t->_('Unhandled');
-		$content->label_scheduled = $t->_('Scheduled');
-		$content->label_acknowledged = $t->_('Acknowledged');
-		$content->label_disabled = $t->_('Disabled');
-		$content->label_unreachable = $t->_('UNREACHABLE');
-		$content->label_pending = $t->_('PENDING');
-		$content->label_ok = $t->_('OK');
-		$content->label_warning = $t->_('WARNING');
-		$content->label_on_problem_hosts = $t->_('on Problem Hosts');
-		$content->label_unknown = $t->_('UNKNOWN');
-		$content->label_critical = $t->_('CRITICAL');
-		$content->label_no_servicedata = $t->_('No matching services');
 
 		if ($grouptype == 'host') {
-			$content->label_group_name = $t->_('Host Group');
+			$content->label_group_name = _('Host Group');
 			if ($group == 'all') {
-				$label_host_status_details = $this->translate->_('Service status detail');
-				$label_group_status_details = $this->translate->_('Host status detail');
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_host_status_grid = $this->translate->_('Status grid');
-				$label_view_for = $this->translate->_('For all host groups');
+				$label_view_for = _('For all host groups');
 				$page_links = array(
-					$label_host_status_details => Router::$controller.'/'.$grouptype.'group/all?style=detail',
-					$label_group_status_details => Router::$controller.'/host/all?group_type='.$grouptype.'group',
-					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/all',
-					$label_host_status_grid => Router::$controller.'/'.$grouptype.'group_grid/all'
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/all?style=detail',
+					_('Host status detail') => Router::$controller.'/host/all?group_type='.$grouptype.'group',
+					_('Status overview') => Router::$controller.'/'.$grouptype.'group/all',
+					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/all'
 				);
 			} else {
-				$label_group_status_summary = $this->translate->_('Status summary for all host groups');
-				$label_group_service_status_details = $this->translate->_('Service status detail');
-				$label_group_host_status_details = $this->translate->_('Host status detail');
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_group_status_grid = $this->translate->_('Status grid');
-				$label_view_for = $this->translate->_('For this host groups');
+				$label_view_for = _('For this host groups');
 				$page_links = array(
-					$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary',
-					$label_group_service_status_details => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
-					$label_group_host_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
-					$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
-					$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group
+					_('Status summary for all host groups') => Router::$controller.'/'.$grouptype.'group/all?style=summary',
+					_('Service status detail') => Router::$controller.'/'.$grouptype.'group/'.$group.'?style=detail',
+					_('Host status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
+					_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
+					_('Status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group
 				);
 			}
 
 		} else {
-			$content->label_group_name = $t->_('Service Group');
+			$content->label_group_name = _('Service Group');
 			if ($group == 'all') {
-				$label_service_status_details = $this->translate->_('Service status detail');
-				$label_service_status_overview = $this->translate->_('Status overview');
-				$label_service_status_grid = $this->translate->_('Service status grid');
-				$label_view_for = $this->translate->_('For all service groups');
+				$label_view_for = _('For all service groups');
 				$page_links = array(
-					$label_service_status_details => Router::$controller.'/servicegroup/all?style=detail',
-					$label_service_status_overview => Router::$controller.'/servicegroup/all',
-					$label_service_status_grid => Router::$controller.'/servicegroup_grid/all'
+					_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
+					_('Status overview') => Router::$controller.'/servicegroup/all',
+					_('Service status grid') => Router::$controller.'/servicegroup_grid/all'
 				);
 			} else {
-				$label_service_status_details = $this->translate->_('Service status detail');
-				$label_group_status_overview = $this->translate->_('Status overview');
-				$label_group_status_grid = $this->translate->_('Service status grid');
-				$label_group_status_summary = $this->translate->_('Status summary for all service groups');
-				$label_view_for = $this->translate->_('For this service group');
+				$label_view_for = _('For this service group');
 				$page_links = array(
-						$label_service_status_details => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
-						$label_group_status_overview => Router::$controller.'/'.$grouptype.'group/'.$group,
-						$label_group_status_grid => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
-						$label_group_status_summary => Router::$controller.'/'.$grouptype.'group/all?style=summary'
+						_('Service status detail') => Router::$controller.'/host/'.$group.'?group_type='.$grouptype.'group',
+						_('Status overview') => Router::$controller.'/'.$grouptype.'group/'.$group,
+						_('Service status grid') => Router::$controller.'/'.$grouptype.'group_grid/'.$group,
+						_('Status summary for all service groups') => Router::$controller.'/'.$grouptype.'group/all?style=summary'
 					);
 			}
 		}
@@ -1058,14 +962,13 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('status/hostgroup_grid');
 		$this->template->content->noheader = $noheader;
 		$content = $this->template->content;
-		$t = $this->translate;
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->servicestatustypes = $servicestatustypes;
 		$filters = $this->_show_filters();
 		$this->template->content->filters = $filters;
 
-		$this->template->title = $this->translate->_('Monitoring » ').$this->translate->_('servicegroup grid');
+		$this->template->title = _('Monitoring » ')._('servicegroup grid');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -1081,9 +984,9 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		$content->label_host = $t->_('Host');
-		$content->label_services = $t->_('Services');
-		$content->label_actions = $t->_('Actions');
+		$content->label_host = _('Host');
+		$content->label_services = _('Services');
+		$content->label_actions = _('Actions');
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
@@ -1100,23 +1003,23 @@ class Status_Controller extends Authenticated_Controller {
 			$offset = $pagination->sql_offset;
 			$content->pagination = $pagination;
 
-			$content->label_header = $t->_('Status Grid For All Host Groups');
+			$content->label_header = _('Status Grid For All Host Groups');
 			$group_info_res = Hostgroup_Model::get_all($items_per_page, $offset);
 		} else {
 			# make sure we have the correct servicegroup
 			$group_info_res = Hostgroup_Model::get($group);
-			$label_header = $t->_('Status Grid For Host Group ');
+			$label_header = _('Status Grid For Host Group ');
 			$content->label_header = $label_header."'".$group."'";
 		}
 
 		$content->group_details = $group_info_res;
-		$content->error_message = $t->_('No hostgroup data found');
+		$content->error_message = _('No hostgroup data found');
 		$content->grouptype = 'host';
 		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('icons/16x16/');
-		$content->label_host_extinfo = $t->_('View Extended Information For This Host');
-		$content->label_service_status = $t->_('View Service Details For This Host');
-		$content->label_status_map = $t->_('Locate Host On Map');
+		$content->label_host_extinfo = _('View Extended Information For This Host');
+		$content->label_service_status = _('View Service Details For This Host');
+		$content->label_status_map = _('Locate Host On Map');
 		$nacoma_link = false;
 		/**
 		 * Modify config/config.php to enable NACOMA
@@ -1124,7 +1027,7 @@ class Status_Controller extends Authenticated_Controller {
 		 * if installed, to use this
 		 */
 		if (nacoma::link()===true) {
-			$content->label_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
+			$content->label_nacoma = _('Configure this host using NACOMA (Nagios Configuration Manager)');
 			$content->nacoma_path = Kohana::config('config.nacoma_path');
 		}
 
@@ -1134,16 +1037,16 @@ class Status_Controller extends Authenticated_Controller {
 		 */
 		$pnp_link = false;
 		if (Kohana::config('config.pnp4nagios_path')!==false) {
-			$content->label_pnp = $t->_('Show performance graph');
+			$content->label_pnp = _('Show performance graph');
 			$content->pnp_path = url::base(true) . 'pnp/?';
 		}
 
 		if ($group == 'all') {
-			$label_host_status_details = $this->translate->_('Service status detail');
-			$label_group_status_details = $this->translate->_('Host status detail');
-			$label_group_status_overview = $this->translate->_('Status overview');
-			$label_group_status_summary = $this->translate->_('Status summary');
-			$label_view_for = $this->translate->_('for all host groups');
+			$label_host_status_details = _('Service status detail');
+			$label_group_status_details = _('Host status detail');
+			$label_group_status_overview = _('Status overview');
+			$label_group_status_summary = _('Status summary');
+			$label_view_for = _('for all host groups');
 			$page_links	 = array(
 				$label_host_status_details => Router::$controller.'/hostgroup/all?style=detail',
 				$label_group_status_details => Router::$controller.'/host/all',
@@ -1151,12 +1054,12 @@ class Status_Controller extends Authenticated_Controller {
 				$label_group_status_summary => Router::$controller.'/hostgroup/all?style=summary'
 			);
 		} else {
-			$label_host_status_grid = $this->translate->_('Status grid for all host groups');
-			$label_group_service_status_details = $this->translate->_('Service status detail');
-			$label_group_host_status_details = $this->translate->_('Host status detail');
-			$label_group_status_overview = $this->translate->_('Status overview');
-			$label_group_status_summary = $this->translate->_('Status summary');
-			$label_view_for = $this->translate->_('for this host group');
+			$label_host_status_grid = _('Status grid for all host groups');
+			$label_group_service_status_details = _('Service status detail');
+			$label_group_host_status_details = _('Host status detail');
+			$label_group_status_overview = _('Status overview');
+			$label_group_status_summary = _('Status summary');
+			$label_view_for = _('for this host group');
 			$page_links = array(
 				$label_host_status_grid => Router::$controller.'/hostgroup_grid/all',
 				$label_group_service_status_details => Router::$controller.'/hostgroup/'.$group.'?style=detail',
@@ -1187,14 +1090,13 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('status/servicegroup_grid');
 		$this->template->content->noheader = $noheader;
 		$content = $this->template->content;
-		$t = $this->translate;
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->servicestatustypes = $servicestatustypes;
 		$filters = $this->_show_filters();
 		$this->template->content->filters = $filters;
 
-		$this->template->title = $this->translate->_('Monitoring » ').$this->translate->_('servicegroup grid');
+		$this->template->title = _('Monitoring » ')._('servicegroup grid');
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -1209,10 +1111,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->js_header->js = $this->xtra_js;
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
-
-		$content->label_host = $t->_('Host');
-		$content->label_services = $t->_('Services');
-		$content->label_actions = $t->_('Actions');
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
@@ -1229,23 +1127,20 @@ class Status_Controller extends Authenticated_Controller {
 			$offset = $pagination->sql_offset;
 			$content->pagination = $pagination;
 
-			$content->label_header = $t->_('Status Grid For All Service Groups');
+			$content->label_header = _('Status Grid For All Service Groups');
 			$group_info_res = Servicegroup_Model::get_all($items_per_page, $offset);
 		} else {
 			# make sure we have the correct servicegroup
 			$group_info_res = Servicegroup_Model::get($group);
-			$label_header = $t->_('Status Grid For Service Group ');
+			$label_header = _('Status Grid For Service Group ');
 			$content->label_header = $label_header."'".$group."'";
 		}
 
 		$content->group_details = $group_info_res;
-		$content->error_message = $t->_('No servicegroup data found');
+		$content->error_message = _('No servicegroup data found');
 		$content->grouptype = 'service';
 		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('icons/16x16/');
-		$content->label_host_extinfo = $t->_('View Extended Information For This Host');
-		$content->label_service_status = $t->_('View Service Details For This Host');
-		$content->label_status_map = $t->_('Locate Host On Map');
 		$nacoma_link = false;
 		/**
 		 * Modify config/config.php to enable NACOMA
@@ -1253,7 +1148,6 @@ class Status_Controller extends Authenticated_Controller {
 		 * if installed, to use this
 		 */
 		if (nacoma::link()===true) {
-			$content->label_nacoma = $t->_('Configure this host using NACOMA (Nagios Configuration Manager)');
 			$content->nacoma_path = Kohana::config('config.nacoma_path');
 		}
 
@@ -1263,31 +1157,23 @@ class Status_Controller extends Authenticated_Controller {
 		 */
 		$pnp_link = false;
 		if (Kohana::config('config.pnp4nagios_path')!==false) {
-			$content->label_pnp = $t->_('Show performance graph');
 			$content->pnp_path = url::base(true) . 'pnp/?';
 		}
 
 		if ($group == 'all') {
-			$label_service_status_details = $this->translate->_('Service status detail');
-			$label_service_status_overview = $this->translate->_('Status overview');
-			$label_group_status_summary = $this->translate->_('Status summary');
-			$label_view_for = $this->translate->_('for all service groups');
+			$label_view_for = _('for all service groups');
 			$page_links = array(
-				$label_service_status_details => Router::$controller.'/servicegroup/all?style=detail',
-				$label_service_status_overview => Router::$controller.'/servicegroup/all',
-				$label_group_status_summary => Router::$controller.'/servicegroup/all?style=summary'
+				_('Service status detail') => Router::$controller.'/servicegroup/all?style=detail',
+				_('Status overview') => Router::$controller.'/servicegroup/all',
+				_('Status summary') => Router::$controller.'/servicegroup/all?style=summary'
 			);
 		} else {
-			$label_service_status_details = $this->translate->_('Service status detail');
-			$label_group_status_overview = $this->translate->_('Status overview');
-			$label_group_status_summary = $this->translate->_('Status summary');
-			$label_host_status_grid = $this->translate->_('Service status grid for all service groups');
-			$label_view_for = $this->translate->_('for this service group');
+			$label_view_for = _('for this service group');
 			$page_links = array(
-					$label_service_status_details => Router::$controller.'/host/'.$group.'?group_type=servicegroup',
-					$label_group_status_overview => Router::$controller.'/servicegroup/'.$group,
-					$label_group_status_summary => Router::$controller.'/servicegroup/'.$group.'?style=summary',
-					$label_host_status_grid => Router::$controller.'/servicegroup_grid/all'
+					_('Service status detail') => Router::$controller.'/host/'.$group.'?group_type=servicegroup',
+					_('Status overview') => Router::$controller.'/servicegroup/'.$group,
+					_('Status summary') => Router::$controller.'/servicegroup/'.$group.'?style=summary',
+					_('Service status grid for all service groups') => Router::$controller.'/servicegroup_grid/all'
 				);
 		}
 		if (isset($page_links)) {
@@ -1319,10 +1205,10 @@ class Status_Controller extends Authenticated_Controller {
 			return false;
 		}
 		$header = false;
-		$lable_ascending = $this->translate->_('ascending');
-		$lable_descending = $this->translate->_('descending');
-		$lable_sort_by = $this->translate->_('Sort by');
-		$lable_last = $this->translate->_('last');
+		$lable_ascending = _('ascending');
+		$lable_descending = _('descending');
+		$lable_sort_by = _('Sort by');
+		$lable_last = _('last');
 		switch ($type) {
 			case 'host': case 'host_problems':
 				$header['title'] = $title;
@@ -1394,12 +1280,11 @@ class Status_Controller extends Authenticated_Controller {
 		$all_host_problems = nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 		$filters = $this->add_view('status/filters');
-		$t = $this->translate;
-		$filters->header_title = $t->_('Display Filters');
-		$filters->lable_host_status_types = $t->_('Host Status Types');
-		$filters->lable_host_properties = $t->_('Host Properties');
-		$filters->lable_service_status_types = $t->_('Service Status Types');
-		$filters->lable_service_properties = $t->_('Service Properties');
+		$filters->header_title = _('Display Filters');
+		$filters->lable_host_status_types = _('Host Status Types');
+		$filters->lable_host_properties = _('Host Properties');
+		$filters->lable_service_status_types = _('Service Status Types');
+		$filters->lable_service_properties = _('Service Properties');
 		$host_status_type_val = '';
 		$hostprop_val = '';
 		$service_status_type_val = '';
@@ -1408,111 +1293,111 @@ class Status_Controller extends Authenticated_Controller {
 
 		# Host status types
 		if ($hoststatustypes == $all_host_status_types)
-			$host_status_type_val = $t->_("All");
+			$host_status_type_val = _("All");
 		elseif ($hoststatustypes == $all_host_problems)
-			$host_status_type_val = $t->_("All problems");
+			$host_status_type_val = _("All problems");
 		else {
 			$found = 0;
 			if ($hoststatustypes & nagstat::HOST_PENDING) {
-				$host_status_type_val .= $t->_(" Pending");
+				$host_status_type_val .= _(" Pending");
 				$found = 1;
 			}
 			if ($hoststatustypes & nagstat::HOST_UP) {
-				$host_status_type_val .= sprintf($t->_("%s Up"), ($found == 1) ? " |" : '');
+				$host_status_type_val .= sprintf(_("%s Up"), ($found == 1) ? " |" : '');
 				$found = 1;
 		                }
 			if ($hoststatustypes & nagstat::HOST_DOWN) {
-				$host_status_type_val .= sprintf($t->_("%s Down"), ($found == 1) ? " |" : '');
+				$host_status_type_val .= sprintf(_("%s Down"), ($found == 1) ? " |" : '');
 				$found = 1;
 			}
 			if ($hoststatustypes & nagstat::HOST_UNREACHABLE)
-				$host_status_type_val .= sprintf($t->_("%s Unreachable"), ($found == 1) ? " |" : '');
+				$host_status_type_val .= sprintf(_("%s Unreachable"), ($found == 1) ? " |" : '');
 		}
 		$filters->host_status_type_val = $host_status_type_val;
 
 		# Host properties
 		if (!$hostprops)
-			$hostprop_val = $t->_("Any");
+			$hostprop_val = _("Any");
 		else {
 			$found = 0;
 			if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME) {
-				$hostprop_val .= ' ' . $t->_('In Scheduled Downtime');
+				$hostprop_val .= ' ' . _('In Scheduled Downtime');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME) {
-				$hostprop_val .= sprintf($t->_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED) {
-				$hostprop_val .= sprintf($t->_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED) {
-				$hostprop_val .= sprintf($t->_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
-				$hostprop_val .= sprintf($t->_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED) {
-				$hostprop_val .= sprintf($t->_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 		                }
 			if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED) {
-				$hostprop_val .= sprintf($t->_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_IS_FLAPPING) {
-				$hostprop_val .= sprintf($t->_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING) {
-				$hostprop_val .= sprintf($t->_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED) {
-				$hostprop_val .= sprintf($t->_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED) {
-				$hostprop_val .= sprintf($t->_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED) {
-				$hostprop_val .= sprintf($t->_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_PASSIVE_CHECK) {
-				$hostprop_val .= sprintf($t->_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_ACTIVE_CHECK) {
-				$hostprop_val .= sprintf($t->_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_HARD_STATE) {
-				$hostprop_val .= sprintf($t->_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($hostprops & nagstat::HOST_SOFT_STATE) {
-				$hostprop_val .= sprintf($t->_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
+				$hostprop_val .= sprintf(_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 		}
@@ -1520,29 +1405,29 @@ class Status_Controller extends Authenticated_Controller {
 
 		# Service Status Types
 		if ($servicestatustypes == $all_service_status_types)
-			$service_status_type_val = $t->_("All");
+			$service_status_type_val = _("All");
 		elseif ($servicestatustypes == $all_service_problems)
-			$service_status_type_val = $t->_("All Problems");
+			$service_status_type_val = _("All Problems");
 		else {
 			$found = 0;
 			if ($servicestatustypes & nagstat::SERVICE_PENDING) {
-				$service_status_type_val = ' ' . $t->_("Pending");
+				$service_status_type_val = ' ' . _("Pending");
 				$found = 1;
 			}
 			if ($servicestatustypes & nagstat::SERVICE_OK) {
-				$service_status_type_val .= sprintf($t->_("%s OK"), ($found == 1) ? ' |' : '');
+				$service_status_type_val .= sprintf(_("%s OK"), ($found == 1) ? ' |' : '');
 				$found = 1;
 			}
 			if ($servicestatustypes & nagstat::SERVICE_UNKNOWN) {
-				$service_status_type_val .= sprintf($t->_("%s Unknown"), ($found == 1) ? ' |' : '');
+				$service_status_type_val .= sprintf(_("%s Unknown"), ($found == 1) ? ' |' : '');
 				$found = 1;
 			}
 			if ($servicestatustypes & nagstat::SERVICE_WARNING) {
-				$service_status_type_val .= sprintf($t->_("%s Warning"), ($found == 1) ? ' |' : '');
+				$service_status_type_val .= sprintf(_("%s Warning"), ($found == 1) ? ' |' : '');
 				$found = 1;
 			}
 			if ($servicestatustypes & nagstat::SERVICE_CRITICAL) {
-				$service_status_type_val .= sprintf($t->_("%s Critical"), ($found == 1) ? ' |' : '');
+				$service_status_type_val .= sprintf(_("%s Critical"), ($found == 1) ? ' |' : '');
 				$found = 1;
 			}
 		}
@@ -1550,87 +1435,87 @@ class Status_Controller extends Authenticated_Controller {
 
 		# Service Properties
 		if ($serviceprops == 0)
-			$serviceprop_val = $t->_("Any");
+			$serviceprop_val = _("Any");
 		else {
 			$found = 0;
 			if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME){
-				$serviceprop_val .= ' ' .  $t->_("In Scheduled Downtime");
+				$serviceprop_val .= ' ' .  _("In Scheduled Downtime");
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME) {
-				$serviceprop_val .= sprintf($t->_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED) {
-				$serviceprop_val .= sprintf($t->_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED) {
-				$serviceprop_val .= sprintf($t->_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_IS_FLAPPING) {
-				$serviceprop_val .= sprintf($t->_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING) {
-				$serviceprop_val .= sprintf($t->_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf($t->_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK) {
-				$serviceprop_val .= sprintf($t->_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK) {
-				$serviceprop_val .= sprintf($t->_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_HARD_STATE) {
-				$serviceprop_val .= sprintf($t->_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 			if ($serviceprops & nagstat::SERVICE_SOFT_STATE) {
-				$serviceprop_val .= sprintf($t->_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
+				$serviceprop_val .= sprintf(_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
 				$found = 1;
 			}
 		}
@@ -1643,18 +1528,16 @@ class Status_Controller extends Authenticated_Controller {
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-
 		# No helptexts defined yet - this is just an example
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'edit' => $translate->_('@@@HELPTEXT:edit')
+			'edit' => _('@@@HELPTEXT:edit')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		}
 		else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 }

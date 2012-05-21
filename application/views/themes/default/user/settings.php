@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate;
+<?php
 
 if (!empty($widgets)) {
 	foreach ($widgets as $widget) {
@@ -13,7 +13,7 @@ if (!empty($updated_str)) {
 }
 
 if (Kohana::config('auth.driver') != 'LDAP') {
-	echo '<div style="float: right">'.html::anchor('change_password', $this->translate->_('Change Password')).'</div>';
+	echo '<div style="float: right">'.html::anchor('change_password', _('Change Password')).'</div>';
 }
 
 if (!empty($available_setting_sections)) {
@@ -37,8 +37,8 @@ if (!empty($available_setting_sections)) {
 							echo form::input($fieldname, $current_values[$cfgkey[0]]);
 							break;
 						case 'bool':
-							echo form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false, 'id="radio_on_'.$fieldname.'"').' <label for="radio_on_'.$fieldname.'">'.$t->_('On').'</label> &nbsp;';
-							echo form::radio($fieldname, 0, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? false:true, 'id="radio_off_'.$fieldname.'"').' <label for="radio_off_'.$fieldname.'">'.$t->_('Off').'</label>';
+							echo form::radio($fieldname, 1, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? true:false, 'id="radio_on_'.$fieldname.'"').' <label for="radio_on_'.$fieldname.'">'._('On').'</label> &nbsp;';
+							echo form::radio($fieldname, 0, isset($current_values[$cfgkey[0]]) && $current_values[$cfgkey[0]]!=false ? false:true, 'id="radio_off_'.$fieldname.'"').' <label for="radio_off_'.$fieldname.'">'._('Off').'</label>';
 							break;
 
 						case 'select':
@@ -54,14 +54,14 @@ if (!empty($available_setting_sections)) {
 		</div>
 	<?php
 	}
-	echo form::submit('save_config', $t->_('Save'));
+	echo form::submit('save_config', _('Save'));
 	echo form::close();
 }?>
 <br />
 <?php
 if ($is_admin) {
 	echo '<div style="padding-bottom:20px">'.help::render('edit_menu').' &nbsp;'.
-	html::anchor(Router::$controller.'/menu_edit', $this->translate->_('Edit user menu')).'</div>';
+	html::anchor(Router::$controller.'/menu_edit', _('Edit user menu')).'</div>';
 }
 ?>
 </div>

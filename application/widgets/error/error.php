@@ -18,9 +18,6 @@ class Error_Widget extends widget_Base {
 
 		$this->auto_render = FALSE;
 		$this->theme_path = zend::instance('Registry')->get('theme_path');
-
-		# fetch our translation instance
-		$this->translate = zend::instance('Registry')->get('Zend_Translate');
 	}
 	public function index() {
 		require(dirname(__FILE__).'/view.php');

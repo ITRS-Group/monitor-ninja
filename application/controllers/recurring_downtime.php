@@ -34,53 +34,53 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		}
 
 		$this->abbr_month_names = array(
-			$this->translate->_('Jan'),
-			$this->translate->_('Feb'),
-			$this->translate->_('Mar'),
-			$this->translate->_('Apr'),
-			$this->translate->_('May'),
-			$this->translate->_('Jun'),
-			$this->translate->_('Jul'),
-			$this->translate->_('Aug'),
-			$this->translate->_('Sep'),
-			$this->translate->_('Oct'),
-			$this->translate->_('Nov'),
-			$this->translate->_('Dec')
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
 		);
 
 		$this->month_names = array(
-			$this->translate->_('January'),
-			$this->translate->_('February'),
-			$this->translate->_('March'),
-			$this->translate->_('April'),
-			$this->translate->_('May'),
-			$this->translate->_('June'),
-			$this->translate->_('July'),
-			$this->translate->_('August'),
-			$this->translate->_('September'),
-			$this->translate->_('October'),
-			$this->translate->_('November'),
-			$this->translate->_('December')
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
 		);
 
 		$this->abbr_day_names = array(
-			$this->translate->_('Sun'),
-			$this->translate->_('Mon'),
-			$this->translate->_('Tue'),
-			$this->translate->_('Wed'),
-			$this->translate->_('Thu'),
-			$this->translate->_('Fri'),
-			$this->translate->_('Sat')
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
 		);
 
 		$this->day_names = array(
-			$this->translate->_('Sunday'),
-			$this->translate->_('Monday'),
-			$this->translate->_('Tuesday'),
-			$this->translate->_('Wednesday'),
-			$this->translate->_('Thursday'),
-			$this->translate->_('Friday'),
-			$this->translate->_('Saturday')
+			_('Sunday'),
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday')
 		);
 
 		$this->downtime_commands = array(
@@ -91,10 +91,10 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		); # will schedule downtime for all services - not their hosts!
 
 		$this->downtime_types = array(
-			'hosts' => $this->translate->_('Host'),
-			'services' => $this->translate->_('Service'),
-			'hostgroups' => $this->translate->_('Hostgroup'),
-			'servicegroups' => $this->translate->_('Servicegroup'),
+			'hosts' => _('Host'),
+			'services' => _('Service'),
+			'hostgroups' => _('Hostgroup'),
+			'servicegroups' => _('Servicegroup'),
 		);
 	}
 
@@ -107,7 +107,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	{
 		$this->template->disable_refresh = true;
 
-		$this->template->title = $this->translate->_('Monitoring » Scheduled downtime » Recurring downtime');
+		$this->template->title = _('Monitoring » Scheduled downtime » Recurring downtime');
 
 		$this->template->content = $this->add_view('recurring_downtime/setup');
 		$template = $this->template->content;
@@ -198,7 +198,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			}
 		}
 
-		$t = $this->translate;
 		$objfields = array(
 			'hosts' => 'host_name',
 			'hostgroups' => 'hostgroup',
@@ -228,35 +227,19 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		}
 		$this->js_strings .= reports::js_strings();
 
-		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf($t->_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";
-		$this->js_strings .= "var _form_err_empty_fields = '".$t->_("Please Enter valid values in all required fields (marked by *) ")."';\n";
-		$this->js_strings .= "var _form_err_bad_timeformat = '".$t->_("Please Enter a valid %s value (hh:mm)")."';\n";
-		$this->js_strings .= "var _form_err_no_trigger_id = '".$t->_("Please select an object to trigger your flexible downtime by.")."';\n";
-		$this->js_strings .= "var _schedule_error = '".$t->_("An error occurred when trying to delete this schedule")."';\n";
+		$this->js_strings .= "var _reports_err_str_noobjects = '".sprintf(_("Please select objects by moving them from %s the left selectbox to the right selectbox"), '<br />')."';\n";
+		$this->js_strings .= "var _form_err_empty_fields = '"._("Please Enter valid values in all required fields (marked by *) ")."';\n";
+		$this->js_strings .= "var _form_err_bad_timeformat = '"._("Please Enter a valid %s value (hh:mm)")."';\n";
+		$this->js_strings .= "var _form_err_no_trigger_id = '"._("Please select an object to trigger your flexible downtime by.")."';\n";
+		$this->js_strings .= "var _schedule_error = '"._("An error occurred when trying to delete this schedule")."';\n";
 
-		$this->js_strings .= "var _schedule_delete_ok = '".$t->_("OK")."';\n";
-		$this->js_strings .= "var _schedule_delete_success = '".$t->_("The schedule was successfully removed")."';\n";
+		$this->js_strings .= "var _schedule_delete_ok = '"._("OK")."';\n";
+		$this->js_strings .= "var _schedule_delete_success = '"._("The schedule was successfully removed")."';\n";
 
-		$this->js_strings .= "var _confirm_delete_schedule = '".$t->_('Are you sure that you would like to delete this schedule.\nPlease note that already scheuled downtime won\"t be affected by this and will have to be deleted manually.\nThis action can\"t be undone.')."';\n";
-		$this->js_strings .= "var _form_field_time = '".$t->_("time")."';\n";
-		$this->js_strings .= "var _form_field_duration = '".$t->_("duration")."';\n";
+		$this->js_strings .= "var _confirm_delete_schedule = '"._('Are you sure that you would like to delete this schedule.\nPlease note that already scheuled downtime won\"t be affected by this and will have to be deleted manually.\nThis action can\"t be undone.')."';\n";
+		$this->js_strings .= "var _form_field_time = '"._("time")."';\n";
+		$this->js_strings .= "var _form_field_duration = '"._("duration")."';\n";
 
-		$template->label_select = $t->_('Select');
-		$template->label_hostgroups = $t->_('Hostgroups');
-		$template->label_hosts = $t->_('Hosts');
-		$template->label_servicegroups = $t->_('Servicegroups');
-		$template->label_services = $t->_('Services');
-		$template->label_available = $t->_('Available');
-		$template->label_selected = $t->_('Selected');
-		$template->label_add_schedule = $t->_('Add Schedule');
-		$template->label_update_schedule = $t->_('Update Schedule');
-		$template->label_comment = $t->_('Comment');
-		$template->label_time = $t->_('Start Time');
-		$template->label_fixed = $t->_('Fixed');
-		$template->label_triggered_by = $t->_('Triggered By');
-		$template->label_duration = $t->_('Duration');
-		$template->label_days_of_week = $t->_('Days of week');
-		$template->label_months = $t->_('Months');
 		$template->day_names = $this->day_names;
 		$template->day_index = array(1, 2, 3, 4, 5, 6, 0);
 		$template->abbr_day_names = $this->abbr_day_names;
@@ -439,7 +422,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 			$date = false;
 			$time = false;
 			if(ScheduleDate_Model::Parse($pattern,$matches) === false) {
-			    die($this->translate->_("malformed pattern"));
+			    die(_("malformed pattern"));
 			}
 			#echo "renewing pattern: [".$matches[2][0].']-['.$matches[4][0].']-['.$matches[6][0].'] ['.$matches[8][0].']:['.$matches[10][0]."]<br />";
 			#echo "simulating from: [".date("Y-m-d D H:i:s",strtotime($startTime))."]<br />";
@@ -506,8 +489,8 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('unauthorized');
 		$this->template->disable_refresh = true;
 
-		$this->template->content->error_message = $this->translate->_('It appears as though you do not have permission to scheduled recurring downtimes');
-		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
+		$this->template->content->error_message = _('It appears as though you do not have permission to scheduled recurring downtimes');
+		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
 
 }

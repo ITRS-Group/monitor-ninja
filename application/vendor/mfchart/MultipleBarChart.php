@@ -176,17 +176,16 @@ class MultipleBarChart extends BarChart {
 		# text color
 		$rgb = utilities::hex2rgb('#000000');
 		$col = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 
 		# legend strings:
 
 		# sla compliance string
-		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-70, -50, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('SLA Compliance'), $col);
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-70, -50, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, _('SLA Compliance'), $col);
 
 		# breached sla string
-		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('Breached SLA'), $col);
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 255, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, _('Breached SLA'), $col);
 
 		# Fulfilled sla string
-		utilities::imagestringbox($this->image, $this->font, $this->font_size, 545, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, $translate->_('Fulfilled SLA'), $col);
+		utilities::imagestringbox($this->image, $this->font, $this->font_size, 545, $this->height-32, -60, $this->height, ALIGN_CENTER, VALIGN_MIDDLE, 0, _('Fulfilled SLA'), $col);
 	}
 }

@@ -30,59 +30,58 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->get_options();
 
 		$this->abbr_month_names = array(
-			$this->translate->_('Jan'),
-			$this->translate->_('Feb'),
-			$this->translate->_('Mar'),
-			$this->translate->_('Apr'),
-			$this->translate->_('May'),
-			$this->translate->_('Jun'),
-			$this->translate->_('Jul'),
-			$this->translate->_('Aug'),
-			$this->translate->_('Sep'),
-			$this->translate->_('Oct'),
-			$this->translate->_('Nov'),
-			$this->translate->_('Dec')
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
 		);
 
 		$this->month_names = array(
-			$this->translate->_('January'),
-			$this->translate->_('February'),
-			$this->translate->_('March'),
-			$this->translate->_('April'),
-			$this->translate->_('May'),
-			$this->translate->_('June'),
-			$this->translate->_('July'),
-			$this->translate->_('August'),
-			$this->translate->_('September'),
-			$this->translate->_('October'),
-			$this->translate->_('November'),
-			$this->translate->_('December')
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
 		);
 
 		$this->abbr_day_names = array(
-			$this->translate->_('Sun'),
-			$this->translate->_('Mon'),
-			$this->translate->_('Tue'),
-			$this->translate->_('Wed'),
-			$this->translate->_('Thu'),
-			$this->translate->_('Fri'),
-			$this->translate->_('Sat')
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
 		);
 
 		$this->day_names = array(
-			$this->translate->_('Sunday'),
-			$this->translate->_('Monday'),
-			$this->translate->_('Tuesday'),
-			$this->translate->_('Wednesday'),
-			$this->translate->_('Thursday'),
-			$this->translate->_('Friday'),
-			$this->translate->_('Saturday')
+			_('Sunday'),
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday')
 		);
 	}
 
 	protected function get_options()
 	{
-		$x = $this->translate;
 		$this->options = $this->input->get();
 		if (empty($this->options))
 			$this->options = $this->input->post();
@@ -129,8 +128,6 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function basic_setup()
 	{
-		$x = $this->translate;
-
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
@@ -175,14 +172,14 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$host_state_options = array
-			($x->_('Host down') => 'd',
-			 $x->_('Host unreachable') => 'u',
-			 $x->_('Host recovery') => 'r');
+			(_('Host down') => 'd',
+			 _('Host unreachable') => 'u',
+			 _('Host recovery') => 'r');
 		$service_state_options = array
-			($x->_('Service warning') => 'w',
-			 $x->_('Service unknown') => 'u',
-			 $x->_('Service critical') => 'c',
-			 $x->_('Service recovery') => 'r');
+			(_('Service warning') => 'w',
+			 _('Service unknown') => 'u',
+			 _('Service critical') => 'c',
+			 _('Service recovery') => 'r');
 
 		$this->template->content->host_state_options = $host_state_options;
 		$this->template->content->service_state_options = $service_state_options;
@@ -193,12 +190,12 @@ class Showlog_Controller extends Authenticated_Controller
 		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
 		$this->template->content = $this->add_view('showlog/alertlog');
 		$this->basic_setup();
-		$this->template->title = $this->translate->_("Reporting » Alert history");
+		$this->template->title = _("Reporting » Alert history");
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = $this->add_path('showlog/js/alertlog.js');
 		$this->xtra_js[] = 'application/media/js/jquery.tablesorter.min.js';
-		$filter_string = $this->translate->_('Enter text to filter');
+		$filter_string = _('Enter text to filter');
 		$this->js_strings .= "var _filter_label = '".$filter_string."';";
 		$this->template->js_strings = $this->js_strings;
 		$this->template->js_header->js = $this->xtra_js;
@@ -268,7 +265,7 @@ class Showlog_Controller extends Authenticated_Controller
 	{
 		$this->template->content = $this->add_view('showlog/showlog');
 		$this->basic_setup();
-		$this->template->title = $this->translate->_("Reporting » Event Log");
+		$this->template->title = _("Reporting » Event Log");
 
 		$auth = Nagios_auth_Model::instance();
 		$is_authorized = false;

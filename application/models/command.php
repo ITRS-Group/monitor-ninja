@@ -103,15 +103,13 @@ class Command_Model extends Model
 		$host_name = isset($defaults['host_name']) ? $defaults['host_name'] : false;
 		$service = isset($defaults['service']) ? $defaults['service'] : false;
 
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-		$na_str = $translate->_('N/A');
 		$options = false;
-		$options = array(0 => $na_str);
+		$options = array(0 => _('N/A'));
 		$downtime_data = Downtime_Model::get_downtime_data();
 		if ($downtime_data !== false) {
 			foreach ($downtime_data as $data) {
 				if (strstr($command_name, 'HOST_DOWNTIME')) {
-					$options[$data->downtime_id] = $translate->_(sprintf("ID: %s, Host '%s' starting @ %s\n", $data->downtime_id, $data->host_name, date(nagstat::date_format(), $data->start_time)));
+					$options[$data->downtime_id] = _(sprintf("ID: %s, Host '%s' starting @ %s\n", $data->downtime_id, $data->host_name, date(nagstat::date_format(), $data->start_time)));
 				} elseif (strstr($command_name, 'SVC_DOWNTIME')) {
 					if (!empty($data->service_description))
 						$options[$data->downtime_id] = sprintf("ID: %s, Service '%s' on host '%s' starting @ %s \n", $data->downtime_id, $data->service_description, $data->host_name, date(nagstat::date_format(), $data->start_time));
@@ -141,7 +139,6 @@ class Command_Model extends Model
 		if (empty($info) || !isset($info['template'])) {
 			return false;
 		}
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 
 		$cmd = $info['name'];
 
@@ -190,7 +187,7 @@ class Command_Model extends Model
 						if (in_array($downtime->host_name, $defaults['host_name']))
 							$ary['default'][] = $downtime->downtime_id;
 				}
-				$ary['name'] = $translate->_('Triggered By');
+				$ary['name'] = _('Triggered By');
 				$ary['help'] = help::render('triggered_by');
 				break;
 			 case 'duration':
@@ -240,7 +237,7 @@ class Command_Model extends Model
 			 case 'varname':
 			 case 'varvalue':
 				$ary = array('type' => 'string', 'size' => 100);
-				$ary['name'] = $translate->_(sprintf('Variable %s', ucfirst(substr($param_name, 3))));
+				$ary['name'] = _(sprintf('Variable %s', ucfirst(substr($param_name, 3))));
 				break;
 			# nearly all the object link parameters are handled the same
 			# way (more or less), so we just clump them together here
@@ -258,15 +255,15 @@ class Command_Model extends Model
 				}
 			 case 'timeperiod':
 				if (!isset($ary['name'])) {
-					$ary['name'] = $translate->_('Timeperiod');
+					$ary['name'] = _('Timeperiod');
 				}
 			 case 'notification_timeperiod':
 				if (!isset($ary['name'])) {
-					$ary['name'] = $translate->_('Notification Timeperiod');
+					$ary['name'] = _('Notification Timeperiod');
 				}
 			 case 'check_timeperiod':
 				if (!isset($ary['name'])) {
-					$ary['name'] = $translate->_('Check Timeperiod');
+					$ary['name'] = _('Check Timeperiod');
 				}
 				$ary['type'] = 'select';
 				if($defaults) {
@@ -295,7 +292,7 @@ class Command_Model extends Model
 				break;
 			 case 'notification_delay':
 				$ary = array('type' => 'int', 'default' => 5);
-				$ary['name'] = $translate->_('Notification delay (in minutes)');
+				$ary['name'] = _('Notification delay (in minutes)');
 				break;
 			# same go for *_time parameters
 			 case 'check_time':

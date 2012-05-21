@@ -19,8 +19,8 @@ class Nagvis_Controller extends Authenticated_Controller {
 		$maps = new Nagvis_Maps_Model;
 		$pools = new Nagvis_Rotation_Pools_Model;
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis';
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » NagVis';
+		$this->template->title = _('Monitoring') . ' » NagVis';
+		$this->template->breadcrumb = _('Monitoring') . ' » NagVis';
 		$this->template->content = $this->add_view('nagvis/index');
 		$this->template->content->maps = $maps->get_list();
 		$this->template->content->pools = $pools->get_list();
@@ -39,12 +39,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 
 		$maps = new Nagvis_Maps_Model;
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-			. $this->translate->_('View') . ' » ' . $map;
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+			. _('View') . ' » ' . $map;
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('View') . ' » ' . $map;
+			. _('View') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/view');
 		$this->template->content->map = $map;
 
@@ -62,12 +62,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-		. $this->translate->_('Edit') . ' » ' . $map;
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+		. _('Edit') . ' » ' . $map;
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('Edit') . ' » ' . $map;
+			. _('Edit') . ' » ' . $map;
 		$this->template->content = $this->add_view('nagvis/edit');
 		$this->template->content->map = $map;
 		$this->template->disable_refresh = true;
@@ -111,12 +111,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-			. $this->translate->_('Automap');
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+			. _('Automap');
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » ' .
-			$this->translate->_('Automap');
+			_('Automap');
 
 		// Read from config and see if we have any default params set in nagvis.ini.php
 		$preset = nagvisconfig::get(Kohana::config("config.nagvis_real_path") . "etc/nagvis.ini.php");
@@ -159,12 +159,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-			. $this->translate->_('Geomap');
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+			. _('Geomap');
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('Geomap');
+			. _('Geomap');
 		$this->template->content = $this->add_view('nagvis/geomap');
 		$this->template->content->mark_object_type = $object_type;
 		$this->template->content->mark_object_name = $object_name;
@@ -181,12 +181,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-			. $this->translate->_('Rotate') . ' » ' . $pool;
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+			. _('Rotate') . ' » ' . $pool;
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('Rotate') . ' » ' . $pool;
+			. _('Rotate') . ' » ' . $pool;
 		$this->template->content = $this->add_view('nagvis/rotate');
 		$this->template->content->pool = $pool;
 		$this->template->content->first_map = $first_map;
@@ -205,12 +205,12 @@ class Nagvis_Controller extends Authenticated_Controller {
 	{
 		$_SESSION['nagvis_user'] = user::session('username');
 
-		$this->template->title = $this->translate->_('Monitoring') . ' » NagVis » '
-			. $this->translate->_('Configure');
-		$this->template->breadcrumb = $this->translate->_('Monitoring') . ' » '
+		$this->template->title = _('Monitoring') . ' » NagVis » '
+			. _('Configure');
+		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » '
-			. $this->translate->_('Configure');
+			. _('Configure');
 		$this->template->content = $this->add_view('nagvis/configure');
 
 		$this->template->js_header = $this->add_view('js_header');

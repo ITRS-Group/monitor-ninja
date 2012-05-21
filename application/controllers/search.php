@@ -262,9 +262,9 @@ class Search_Controller extends Authenticated_Controller {
 		$content->query = $query;
 		$this->template->query_str = $query_str;
 		$content->limit_str = !empty($limit)
-			? sprintf($this->translate->_('Search result limited to %s rows'), $limit)
-			:$this->translate->_('No search limit is active');
-		$this->template->title = $this->translate->_('Search » ')."'".$query."'";
+			? sprintf(_('Search result limited to %s rows'), $limit)
+			:_('No search limit is active');
+		$this->template->title = _('Search » ')."'".$query."'";
 
 		$content->show_display_name = config::get('config.show_display_name', '*');
 		$content->show_notes = config::get('config.show_notes', '*');
@@ -276,9 +276,8 @@ class Search_Controller extends Authenticated_Controller {
 		 * if installed, to use this
 		 */
 		if (nacoma::link()!==false) {
-			$label_nacoma = $this->translate->_('Configure this object using NACOMA (Nagios Configuration Manager)');
+			$label_nacoma = _('Configure this object using NACOMA (Nagios Configuration Manager)');
 			$content->nacoma_link = 'configuration/configure/';
-			$content->label_nacoma = $label_nacoma;
 		}
 
 		# user requested a special object type
@@ -313,7 +312,7 @@ class Search_Controller extends Authenticated_Controller {
 			if ($data!==false) {
 				$content->{$obj_type.'_result'} = $data;
 			} else {
-				$content->no_data = $this->translate->_('Nothing found');
+				$content->no_data = _('Nothing found');
 			}
 		} elseif ((isset($hosts) && !empty($hosts)) && (isset($services) && !empty($services)) && $or_search !== true) {
 			# AND search
@@ -341,7 +340,7 @@ class Search_Controller extends Authenticated_Controller {
 			if ($data!==false) {
 				$content->service_result = $data;
 			} else {
-				$content->no_data = $this->translate->_('Nothing found');
+				$content->no_data = _('Nothing found');
 			}
 		} elseif ( ((isset($hosts) && !empty($hosts)) || ( (isset($services) && !empty($services)) ))
 			&& ( !empty($this->xtra_query) || $or_search === true ) ) {
@@ -368,7 +367,7 @@ class Search_Controller extends Authenticated_Controller {
 				}
 			}
 			if (!empty($empty)) {
-				$content->no_data = $this->translate->_('Nothing found');
+				$content->no_data = _('Nothing found');
 			}
 
 		} elseif ($or_search === true && isset($obj_type) && !empty($obj_type) && !isset($settings)) {
@@ -458,7 +457,7 @@ class Search_Controller extends Authenticated_Controller {
 				unset($data);
 			}
 			if (!empty($empty) && $empty==5) {
-				$content->no_data = $this->translate->_('Nothing found');
+				$content->no_data = _('Nothing found');
 			}
 		}
 	}
@@ -468,12 +467,10 @@ class Search_Controller extends Authenticated_Controller {
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'search_help' => sprintf($translate->_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
+			'search_help' => sprintf(_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
 			Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail in any of the searchable fields.<br /><br />
 			Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br /><br />
 			Use si:critical to search for status information like critical<br /><br />
@@ -482,13 +479,13 @@ class Search_Controller extends Authenticated_Controller {
 			The search result is currently limited to %s rows (for each object type).<br /><br />
 			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page', '*')
 			),
-			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
-			'filterbox' => $translate->_('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
+			'saved_search_help' => _('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
+			'filterbox' => _('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		}
 		else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 }

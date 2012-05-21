@@ -34,7 +34,7 @@ class Hello_world_Controller extends Authenticated_Controller {
 		# create a template alias to save us some typing
 		$content = $this->template->content;
 
-		$this->template->title = $this->translate->_('Test » Hello World');
+		$this->template->title = _('Test » Hello World');
 
 		# disable page refresh - set to false (or remove) to enable
 		$this->template->disable_refresh = true;
@@ -49,9 +49,9 @@ class Hello_world_Controller extends Authenticated_Controller {
 
 		# pass the string to the translation object if you
 		# would like to be able to translate it using gettext tools
-		$content->msg_header = $this->translate->_('Hello World');
-		$content->header_titlestring = $this->translate->_('Click me to show/hide the data below.');
-		$content->msg_description = $this->translate->_('This is a simple Hello World example using a module.');
+		$content->msg_header = _('Hello World');
+		$content->header_titlestring = _('Click me to show/hide the data below.');
+		$content->msg_description = _('This is a simple Hello World example using a module.');
 
 		$content->data = Hello_world_Model::get_some_data();
 	}

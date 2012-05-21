@@ -19,7 +19,7 @@ class Change_Password_Controller extends Authenticated_Controller {
 		parent::__construct();
 		$this->template->content = $this->add_view('change_password/change_password');
 		$this->template->disable_refresh = true;
-		$this->template->title = $this->translate->_('Configuration » Change password');
+		$this->template->title = _('Configuration » Change password');
 	}
 
 	public function index()
@@ -36,7 +36,7 @@ class Change_Password_Controller extends Authenticated_Controller {
 		$new_password2 = $this->input->post('confirm_password', false);
 		if (strlen($new_password) < 5 || strlen($new_password2) < 5)
 		{
-			$this->template->content->status_msg = $this->translate->_('The password must be at least 5 chars long.');
+			$this->template->content->status_msg = _('The password must be at least 5 chars long.');
 		}
 		elseif ($new_password == $new_password2)
 		{
@@ -45,14 +45,14 @@ class Change_Password_Controller extends Authenticated_Controller {
 			{
 				$user->password = User_Model::update_password($user->username, $new_password);
 				User_Model::save_user($user);
-				$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+				$this->template->content->status_msg = _('The password has been changed.');
 			}
 			else
-				$this->template->content->status_msg = $this->translate->_('You entered incorrect current password.');
+				$this->template->content->status_msg = _('You entered incorrect current password.');
 		}
 		else
 		{
-			$this->template->content->status_msg = $this->translate->_('Passwords do not match.');
+			$this->template->content->status_msg = _('Passwords do not match.');
 		}
 	}
 }

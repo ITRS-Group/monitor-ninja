@@ -4,7 +4,7 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php echo Kohana::config('config.product_name').' '.$this->translate->_('login'); ?></title>
+		<title><?php echo Kohana::config('config.product_name').' '._('login'); ?></title>
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/common.css' ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/screen.css' ?>" media="screen" />
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/status.css' ?>" media="screen" />
@@ -26,7 +26,7 @@
 					$('#login_form').bind('submit', function() {
 						$('#loading').show();
 						$('#login').attr('disabled', true);
-						$('#login').attr('value', '<?php echo $this->translate->_('Please wait...') ?>');
+						$('#login').attr('value', '<?php echo _('Please wait...') ?>');
 					});
 				});
 			//-->
@@ -52,7 +52,7 @@
 				$auth_methods = Kohana::config('auth.auth_methods');
 				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
 				<tr>
-					<td><?php echo $this->translate->_('Login method') ?></td>
+					<td><?php echo _('Login method') ?></td>
 					<td><?php echo form::dropdown('auth_method', $auth_methods) ?></td>
 				</tr>
 				<?php

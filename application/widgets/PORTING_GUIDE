@@ -37,7 +37,7 @@ Old widgets that supported ajax refreshes all had to copy-paste the following:
 	<div class="widget-editbox">
 		<?php echo form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;')); ?>
 		<fieldset>
-		<label for="<?php echo $widget_id ?>_refresh"><?php echo $this->translate->_('Refresh (sec)') ?>:</label>
+		<label for="<?php echo $widget_id ?>_refresh"><?php echo _('Refresh (sec)') ?>:</label>
 		<input size="3" type="text" name="<?php echo $widget_id ?>_refresh" id="<?php echo $widget_id ?>_refresh" value="<?php echo $refresh_rate ?>" />
 		<div id="<?php echo $widget_id ?>_slider"></div>
 <!-- EXTRA CONTROLS HERE -->
@@ -98,7 +98,7 @@ class My_widget_Widget extends widget_Core {
 			$refresh_rate = $arguments['refresh_interval'];
 		}
 
-		$title = $this->translate->_('My Widget');
+		$title = _('My Widget');
 		if (isset($arguments['widget_title'])) {
 			$title = $arguments['widget_title'];
 		}
@@ -176,7 +176,7 @@ class My_widget_Widget extends widget_Base {
 		$options = parent::options();
 		$options[] = new option('my_widget', // your widget name (or something else unique)
 		                        'option1', // a unique option name
-		                        $this->translate->_('My first option'), // your label
+		                        _('My first option'), // your label
 		                        'input', // option type - input, checkbox, dropdown, etc
 		                        array('size'=>5), // extra attributes for the field
 		                        'default1'); // default value

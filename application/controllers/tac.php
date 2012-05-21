@@ -15,7 +15,7 @@ class Tac_Controller extends Authenticated_Controller {
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
-		$this->template->title = $this->translate->_('Monitoring » Tactical overview');
+		$this->template->title = _('Monitoring » Tactical overview');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 		$this->template->disable_refresh = true;
 
@@ -24,7 +24,7 @@ class Tac_Controller extends Authenticated_Controller {
 
 		$this->template->content->links = array
 		(
-			$this->translate->_('logout')     => 'default/logout'
+			_('logout')     => 'default/logout'
 		);
 
 		# make sure we have this done before letting widgets near

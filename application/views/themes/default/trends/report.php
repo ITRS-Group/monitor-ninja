@@ -31,7 +31,7 @@
 		?>
 
 		<p style="margin-top: -13px; margin-bottom: 10px"><?php echo $str_start_date ?> - <?php echo $str_end_date ?>
-		(<?php echo $label_duration ?>: <?php echo $duration ?>)</p>
+		(<?php echo _('Duration') ?>: <?php echo $duration ?>)</p>
 	</div>
 
 	<div id="tl" class="timeline-default" style="height: 300px;"></div>

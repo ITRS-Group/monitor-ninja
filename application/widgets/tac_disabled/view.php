@@ -12,8 +12,8 @@
 		</tr>
 	<?php } if (count($problem) == 0) { ?>
 		<tr>
-			<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-disabled.png'), array('alt' => $this->translate->_('N/A'))) ?></td>
-			<td><?php echo $this->translate->_('N/A')?></td>
+			<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-disabled.png'), array('alt' => _('N/A'))) ?></td>
+			<td><?php echo _('N/A')?></td>
 		</tr>
 	<?php } ?>
 </table>

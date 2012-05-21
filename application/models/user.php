@@ -111,9 +111,8 @@ class User_Model extends Auth_User_Model {
 				if ($auth_type == 'apache') {
 					return 'default/no_objects';
 				} else {
-					$translate = zend::instance('Registry')->get('Zend_Translate');
 					Session::instance()->set_flash('error_msg',
-						$translate->_("You have been denied access since you aren't authorized for any objects."));
+						_("You have been denied access since you aren't authorized for any objects."));
 					return 'default/show_login';
 				}
 			}

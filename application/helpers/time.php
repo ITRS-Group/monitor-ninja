@@ -10,16 +10,15 @@ class time_Core
 	 */
 	public static function to_string($t=0)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 		$neg = false;
 
 		# translate the abbreviations
 		# seems weird but I suppose someone will want this anyway
-		$d = $translate->_('d'); // day
-		$h = $translate->_('h'); // hour
-		$m = $translate->_('m'); // minute
-		$s = $translate->_('s'); // second
-		$negative = $translate->_("negative") . " ";
+		$d = _('d'); // day
+		$h = _('h'); // hour
+		$m = _('m'); // minute
+		$s = _('s'); // second
+		$negative = _("negative") . " ";
 
 		if (!$t) return "0$d 0$h 0$m 0$s";
 		if ($t < 0) {

@@ -62,9 +62,9 @@ class Authenticated_Controller extends Ninja_Controller {
 					# explicitly whitelist the widget setting method, so that if, say, showing nagvis on an external
 					# web server, the map is changeable
 					if (Router::$controller !== 'ajax' || (Router::$method !== 'save_dynamic_widget_setting' && Router::$method !== 'widget')) {
-						echo $this->translate->_('You are currently logged on as an '.
+						echo _('You are currently logged on as an '.
 							'external widget user which means you are not authorized for this action!');
-						die(sprintf($this->translate->_('%sBack%s'), '<br /><a href="javascript:history.go(-1)">', '</a>'));
+						die(sprintf(_('%sBack%s'), '<br /><a href="javascript:history.go(-1)">', '</a>'));
 					}
 				}
 

@@ -4,7 +4,7 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php echo Kohana::config('config.product_name').': '.$this->translate->_('logged out'); ?></title>
+		<title><?php echo Kohana::config('config.product_name').': '._('logged out'); ?></title>
 		<link type="text/css" rel="stylesheet" href="<?php echo $this->add_template_path('css/default/common.css') ?>" />
 		<style type="text/css">
 			#logout-div {
@@ -24,7 +24,7 @@
 	<body>
 		<br />
 		<div id="logout-div"><br />
-		<?php echo $this->translate->_('You have been logged out. Please close all browser windows to log out completely.'); ?>
+		<?php echo _('You have been logged out. Please close all browser windows to log out completely.'); ?>
 		</div>
 		<br />
 	</body>

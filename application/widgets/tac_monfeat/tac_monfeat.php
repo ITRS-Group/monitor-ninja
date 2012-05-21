@@ -16,25 +16,24 @@ class Tac_monfeat_Widget extends widget_Base {
 
 		$current_status = $this->get_current_status();
 
-		$flap_detect_header_label = $this->translate->_('Flap Detection');
-		$notifications_header_label = $this->translate->_('Notifications');
-		$eventhandler_header_label = $this->translate->_('Event Handlers');
-		$activechecks_header_label = $this->translate->_('Active Checks');
-		$passivechecks_header_label = $this->translate->_('Passive Checks');
-		$lable_enabled = $this->translate->_('Enabled');
-		$lable_disabled = $this->translate->_('Disabled');
-		$lable_flapping = $this->translate->_('Flapping');
+		$flap_detect_header_label = _('Flap Detection');
+		$notifications_header_label = _('Notifications');
+		$eventhandler_header_label = _('Event Handlers');
+		$activechecks_header_label = _('Active Checks');
+		$passivechecks_header_label = _('Passive Checks');
+		$lable_enabled = _('Enabled');
+		$lable_disabled = _('Disabled');
+		$lable_flapping = _('Flapping');
 
-		$lable_all_services = $this->translate->_('All Services');
-		$lable_no_services = $this->translate->_('No Services');
-		$lable_service_singular = $this->translate->_('Service');
-		$lable_service_plural = $this->translate->_('Services');
+		$lable_all_services = _('All Services');
+		$lable_no_services = _('No Services');
+		$lable_service_singular = _('Service');
+		$lable_service_plural = _('Services');
 
-		$lable_all_hosts = $this->translate->_('All Hosts');
-		$lable_no_hosts = $this->translate->_('No Hosts');
-		$lable_host_singular = $this->translate->_('Host');
-		$lable_host_plural = $this->translate->_('Hosts');
-		$na_str = $this->translate->_('N/A');
+		$lable_all_hosts = _('All Hosts');
+		$lable_no_hosts = _('No Hosts');
+		$lable_host_singular = _('Host');
+		$lable_host_plural = _('Hosts');
 
 		# fetch global nagios config data
 		# try with the database first but we may use the nagios.cfg file as fallback

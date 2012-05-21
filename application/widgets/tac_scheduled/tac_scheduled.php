@@ -21,50 +21,50 @@ class Tac_scheduled_Widget extends widget_Base {
 		$current_status = $this->get_current_status();
 
 		if ($current_status->hosts_down_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Down');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Down');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_DOWN.'/'.nagstat::HOST_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->hosts_down_scheduled.' '.$this->translate->_('Scheduled hosts');
+			$problem[$i]['title'] = $current_status->hosts_down_scheduled.' '._('Scheduled hosts');
 			$i++;
 		}
 
 		if ($current_status->hosts_unreachable_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Unreachable');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/'.nagstat::HOST_UNREACHABLE.'/'.nagstat::HOST_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->hosts_unreachable_scheduled.' '.$this->translate->_('Scheduled hosts');
+			$problem[$i]['title'] = $current_status->hosts_unreachable_scheduled.' '._('Scheduled hosts');
 			$i++;
 		}
 
 		if ($current_status->hosts_up_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Up');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Up');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::HOST_UP.'/'.nagstat::HOST_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->hosts_up_scheduled.' '.$this->translate->_('Scheduled hosts');
+			$problem[$i]['title'] = $current_status->hosts_up_scheduled.' '._('Scheduled hosts');
 			$i++;
 		}
 
 		if ($current_status->services_critical_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Critical');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Critical');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_CRITICAL.'/'.nagstat::SERVICE_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->services_critical_scheduled.' '.$this->translate->_('Scheduled services');
+			$problem[$i]['title'] = $current_status->services_critical_scheduled.' '._('Scheduled services');
 			$i++;
 		}
 
 		if ($current_status->services_warning_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Warning');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Warning');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_WARNING.'/'.nagstat::SERVICE_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->services_warning_scheduled.' '.$this->translate->_('Scheduled services');
+			$problem[$i]['title'] = $current_status->services_warning_scheduled.' '._('Scheduled services');
 			$i++;
 		}
 
 		if ($current_status->services_unknown_scheduled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Unknown');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Unknown');
 			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::SERVICE_UNKNOWN.'/'.nagstat::SERVICE_SCHEDULED_DOWNTIME;
-			$problem[$i]['title'] = $current_status->services_unknown_scheduled.' '.$this->translate->_('Scheduled services');
+			$problem[$i]['title'] = $current_status->services_unknown_scheduled.' '._('Scheduled services');
 			$i++;
 		}
 

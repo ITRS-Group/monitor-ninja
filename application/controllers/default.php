@@ -29,7 +29,7 @@ class Default_Controller extends Ninja_Controller  {
 			url::redirect('default/locked_out');
 		}
 		//$this->template-> = $this->add_view('menu');
-		$this->template->title = $this->translate->_('Ninja');
+		$this->template->title = _('Ninja');
 
 	}
 
@@ -51,11 +51,11 @@ class Default_Controller extends Ninja_Controller  {
 		$this->session->delete('auth_method');
 		$this->template = $this->add_view('login');
 		$this->template->error_msg = $this->session->get('error_msg', false);
-		$this->template->form_title =$this->translate->_('Login');
-		$this->template->username =$this->translate->_('Username');
-		$this->template->password =$this->translate->_('Password');
-		$this->template->login_btn_txt =$this->translate->_('Login');
-		$this->template->title = $this->translate->_('Ninja Login');
+		$this->template->form_title =_('Login');
+		$this->template->username =_('Username');
+		$this->template->password =_('Password');
+		$this->template->login_btn_txt =_('Login');
+		$this->template->title = _('Ninja Login');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = array('application/media/js/jquery.min.js', $this->add_path('/js/login.js'));
 
@@ -105,13 +105,13 @@ class Default_Controller extends Ninja_Controller  {
 
 			# validate that we have both username and password
 			if (!$post->validate() ) {
-				$error_msg = $this->translate->_("Please supply both username and password");
+				$error_msg = _("Please supply both username and password");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
 
 			if ($this->csrf_config['csrf_token']!='' && $this->csrf_config['active'] !== false && !csrf::valid($this->input->post($this->csrf_config['csrf_token']))) {
-				$error_msg = $this->translate->_("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again.");
+				$error_msg = _("CSRF tokens did not match.<br />This often happen when your browser opens cached windows (after restarting the browser, for example).<br />Try to login again.");
 				$this->session->set_flash('error_msg', $error_msg);
 				url::redirect('default/show_login');
 			}
@@ -204,7 +204,7 @@ class Default_Controller extends Ninja_Controller  {
 		$this->session->delete('contact_id');
 
 		$this->template = $this->add_view('no_objects');
-		$this->template->error_msg = $this->translate->_("You have been denied access since you aren't authorized for any objects.");
+		$this->template->error_msg = _("You have been denied access since you aren't authorized for any objects.");
 	}
 
 	/**

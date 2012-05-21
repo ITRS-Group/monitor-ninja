@@ -15,11 +15,11 @@ if (!empty($log)) {
 			<?php if (!$create_pdf) { ?><caption style="font-weight: bold"><?php echo ((!$create_pdf) ? help::render('log_entries') : '').' '.ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption><?php } ?>
 			<thead>
 			<tr>
-				<th <?php echo ($create_pdf) ? 'style="width: 110px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo $this->translate->_('Status');?></th>
-				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo $this->translate->_('Start time');?></th>
-				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo $this->translate->_('End time');?></th>
-				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo $this->translate->_('Duration');?></th>
-				<th <?php echo ($create_pdf) ? 'style="width: 306px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo $this->translate->_('Log message');?></th>
+				<th <?php echo ($create_pdf) ? 'style="width: 110px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo _('Status');?></th>
+				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo _('Start time');?></th>
+				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo _('End time');?></th>
+				<th <?php echo ($create_pdf) ? 'style="width: 90px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left" style="width: 110px"';?>><?php echo _('Duration');?></th>
+				<th <?php echo ($create_pdf) ? 'style="width: 306px; font-weight: bold; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"';?>><?php echo _('Log message');?></th>
 			</tr>
 			</thead>
 			<tbody>

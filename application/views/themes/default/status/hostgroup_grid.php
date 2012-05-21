@@ -6,11 +6,11 @@ $state_map = array(
 	Current_status_Model::SERVICE_WARNING => 'warning',
 	Current_status_Model::SERVICE_CRITICAL => 'critical',
 	Current_status_Model::SERVICE_UNKNOWN => 'unknown');
-$t = $this->translate; ?>
+?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
 		<ul>
-		<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
+		<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 		<?php
 		if (isset($page_links)) {
 			foreach ($page_links as $label => $link) {
@@ -45,7 +45,7 @@ $t = $this->translate; ?>
 <div class="widget left w98" id="status_group-grid">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <?php echo form::open('command/multi_action'); ?>
-<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 
 <?php if (count($group_details) && !empty($group_details))
 	foreach ($group_details as $hostgroup) { ?>
@@ -53,7 +53,7 @@ $t = $this->translate; ?>
 		<caption>
 			<?php
 				if (nacoma::link()===true)
-					echo nacoma::link('configuration/configure/hostgroup/'.urlencode($hostgroup->hostgroup_name), 'icons/16x16/nacoma.png', $this->translate->_('Configure this hostgroup')).' &nbsp;';
+					echo nacoma::link('configuration/configure/hostgroup/'.urlencode($hostgroup->hostgroup_name), 'icons/16x16/nacoma.png', _('Configure this hostgroup')).' &nbsp;';
 				echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', html::specialchars($hostgroup->alias));
 				echo '<span>('.html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), html::specialchars($hostgroup->hostgroup_name)).')</span>';
 			?>
@@ -122,12 +122,12 @@ $t = $this->translate; ?>
 					echo html::anchor('status/host/?host='.urlencode($host['name']), html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';
 					if (!empty($host['action_url'])) {
 						echo '<a href="'.nagstat::process_macros($host['action_url'], $host).'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
+						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => _('Perform extra host actions'), 'title' => _('Perform extra host actions')));
 						echo '</a>&nbsp;';
 					}
 					if (!empty($host['notes_url'])) {
 						echo '<a href="'.nagstat::process_macros($host['notes_url'], $host).'" style="border: 0px" target="'.$notes_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
+						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => _('View extra host notes'), 'title' => _('View extra host notes')));
 						echo '</a>';
 					}
 
@@ -158,18 +158,18 @@ else { ?>
 } ?>
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
-			'' => $this->translate->_('Select action'),
-			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
-			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
-			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
-			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
-			'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks')
+			'' => _('Select action'),
+			'SCHEDULE_HOST_DOWNTIME' => _('Schedule downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => _('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => _('Remove problem acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => _('Disable host notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => _('Enable host notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => _('Disable notifications for all services'),
+			'DISABLE_HOST_CHECK' => _('Disable active checks'),
+			'ENABLE_HOST_CHECK' => _('Enable active checks')
 			)
 		); ?>
-	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => _('Submit'))); ?>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?>
 	<br /><span id="multi_object_submit_progress" class="item_select"></span>

@@ -1,11 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*');
-$t = $this->translate; ?>
+?>
 <div id="content-header"<?php if (isset($noheader) && $noheader) { ?> style="display:none"<?php } ?>>
 	<div class="widget left w32" id="page_links">
 		<ul>
-		<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
+		<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 		<?php
 		if (isset($page_links)) {
 			foreach ($page_links as $label => $link) {
@@ -40,7 +40,7 @@ $t = $this->translate; ?>
 <div class="widget left w98" id="status_group-grid">
 <?php echo (isset($pagination)) ? $pagination : ''; ?>
 <?php echo form::open('command/multi_action'); ?>
-<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a>
+<?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 
 <?php if (count($group_details) && !empty($group_details))
 	foreach ($group_details as $details) { ?>
@@ -48,7 +48,7 @@ $t = $this->translate; ?>
 		<caption>
 			<?php
 				if (nacoma::link()===true)
-					echo nacoma::link('configuration/configure/servicegroup/'.urlencode($details->servicegroup_name), 'icons/16x16/nacoma.png', $this->translate->_('Configure this servicegroup')).' &nbsp;';
+					echo nacoma::link('configuration/configure/servicegroup/'.urlencode($details->servicegroup_name), 'icons/16x16/nacoma.png', _('Configure this servicegroup')).' &nbsp;';
 				echo html::anchor('status/servicegroup/'.$details->servicegroup_name.'?style=detail', html::specialchars($details->alias));
 				echo '<span>('.html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($details->servicegroup_name), html::specialchars($details->servicegroup_name)).')</span>';
 			?>
@@ -56,9 +56,9 @@ $t = $this->translate; ?>
 		<tr>
 			<th class="no-sort">&nbsp;</th>
 			<th class="item_select">&nbsp;</th>
-			<th class="no-sort"><?php echo $label_host ?></th>
-			<th class="no-sort"><?php echo $label_services ?></th>
-			<th class="no-sort"><?php echo $label_actions ?></th>
+			<th class="no-sort"><?php echo _('Host') ?></th>
+			<th class="no-sort"><?php echo _('Services') ?></th>
+			<th class="no-sort"><?php echo _('Actions') ?></th>
 		</tr>
 		<tbody>
 		<?php
@@ -110,22 +110,22 @@ $t = $this->translate; ?>
 			<td style="text-align: left; width: 133px">
 				<?php
 					if (isset($nacoma_path))
-						echo html::anchor('configuration/configure/?type=host&name='.urlencode($host->host_name), html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)),array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('configuration/configure/?type=host&name='.urlencode($host->host_name), html::image($icon_path.'nacoma.png', array('alt' => _('Configure this object using NACOMA (Nagios Configuration Manager)'), 'title' => _('Configure this object using NACOMA (Nagios Configuration Manager)'))),array('style' => 'border: 0px')).'&nbsp;';
 					if (isset($pnp_path) && pnp::has_graph($host->host_name))
-						echo '<a href="'.$pnp_path.'host='.$host->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp, 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
-					echo html::anchor('extinfo/details/?type=host&host='.$host->host_name, html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).'&nbsp;';
+						echo '<a href="'.$pnp_path.'host='.$host->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
+					echo html::anchor('extinfo/details/?type=host&host='.$host->host_name, html::image($icon_path.'extended-information.gif', array('alt' => _('View Extended Information For This Host'), 'title' => _('View Extended Information For This Host'))), array('style' => 'border: 0px')).'&nbsp;';
 					if ( Kohana::config('config.nagvis_path') ) {
-						echo html::anchor('statusmap/host/'.$host->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('statusmap/host/'.$host->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => _('Locate Host On Map'), 'title' => _('Locate Host On Map'))), array('style' => 'border: 0px')).'&nbsp;';
 					}
-					echo html::anchor('status/host/?host='.urlencode($host->host_name), html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';
+					echo html::anchor('status/host/?host='.urlencode($host->host_name), html::image($icon_path.'service-details.gif', array('alt' => _('View Service Details For This Host'), 'title' => _('View Service Details For This Host'))), array('style' => 'border: 0px')).'&nbsp;';
 					if (!empty($host->host_action_url)) {
 						echo '<a href="'.nagstat::process_macros($host->host_action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
+						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => _('Perform extra host actions'), 'title' => _('Perform extra host actions')));
 						echo '</a>&nbsp;';
 					}
 					if (!empty($host->host_notes_url)) {
 						echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
+						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => _('View extra host notes'), 'title' => _('View extra host notes')));
 						echo '</a>';
 					}
 
@@ -141,22 +141,22 @@ $t = $this->translate; ?>
 			<td style="text-align: left; width: 133px">
 				<?php
 					if (isset($nacoma_path))
-						echo html::anchor('configuration/configure/host/'.$host->host_name, html::image($icon_path.'nacoma.png', array('alt' => $label_nacoma, 'title' => $label_nacoma)),array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('configuration/configure/host/'.$host->host_name, html::image($icon_path.'nacoma.png', array('alt' => _('Configure this object using NACOMA (Nagios Configuration Manager)'), 'title' => _('Configure this object using NACOMA (Nagios Configuration Manager)'))),array('style' => 'border: 0px')).'&nbsp;';
 					if (isset($pnp_path) && pnp::has_graph($host->host_name))
-						echo '<a href="'.$pnp_path.'host='.$host->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => $label_pnp, 'title' => $label_pnp, 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
-					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($icon_path.'extended-information.gif', array('alt' => $label_host_extinfo, 'title' => $label_host_extinfo)), array('style' => 'border: 0px')).'&nbsp;';
+						echo '<a href="'.$pnp_path.'host='.$host->host_name.'&srv=_HOST_" style="border: 0px">'.html::image($icon_path.'pnp.png', array('alt' => _('Show performance graph'), 'title' => _('Show performance graph'), 'class' => 'pnp_graph_icon')).'</a>&nbsp;';
+					echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), html::image($icon_path.'extended-information.gif', array('alt' => _('View Extended Information For This Host'), 'title' => _('View Extended Information For This Host'))), array('style' => 'border: 0px')).'&nbsp;';
 					if ( Kohana::config('config.nagvis_path') ) {
-						echo html::anchor('statusmap/host/'.$host->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => $label_status_map, 'title' => $label_status_map)), array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('statusmap/host/'.$host->host_name, html::image($icon_path.'locate-host-on-map.png', array('alt' => _('Locate Host On Map'), 'title' => _('Locate Host On Map'))), array('style' => 'border: 0px')).'&nbsp;';
 					}
-					echo html::anchor('status/host/'.$host->host_name, html::image($icon_path.'service-details.gif', array('alt' => $label_service_status, 'title' => $label_service_status)), array('style' => 'border: 0px')).'&nbsp;';
+					echo html::anchor('status/host/'.$host->host_name, html::image($icon_path.'service-details.gif', array('alt' => _('View Service Details For This Host'), 'title' => _('View Service Details For This Host'))), array('style' => 'border: 0px')).'&nbsp;';
 					if (!empty($host->host_action_url)) {
 						echo '<a href="'.nagstat::process_macros($host->host_action_url, $host).'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => $t->_('Perform extra host actions'), 'title' => $t->_('Perform extra host actions')));
+						echo html::image($this->add_path('icons/16x16/host-actions.png'), array('alt' => _('Perform extra host actions'), 'title' => _('Perform extra host actions')));
 						echo '</a>&nbsp;';
 					}
 					if (!empty($host->host_notes_url)) {
 						echo '<a href="'.nagstat::process_macros($host->host_notes_url, $host).'" style="border: 0px" target="'.$notes_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => $t->_('View extra host notes'), 'title' => $t->_('View extra host notes')));
+						echo html::image($this->add_path('icons/16x16/host-notes.png'), array('alt' => _('View extra host notes'), 'title' => _('View extra host notes')));
 						echo '</a>';
 					}
 
@@ -176,9 +176,9 @@ else { ?>
 	<table class="group_grid_table">
 		<thead>
 		<tr>
-			<th class="no-sort"><?php echo $label_host ?></th>
-			<th class="no-sort"><?php echo $label_services ?></th>
-			<th class="no-sort"><?php echo $label_actions ?></th>
+			<th class="no-sort"><?php echo _('Host') ?></th>
+			<th class="no-sort"><?php echo _('Services') ?></th>
+			<th class="no-sort"><?php echo _('Actions') ?></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -191,18 +191,18 @@ else { ?>
 } ?>
 <?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
 		array(
-			'' => $this->translate->_('Select action'),
-			'SCHEDULE_HOST_DOWNTIME' => $this->translate->_('Schedule downtime'),
-			'ACKNOWLEDGE_HOST_PROBLEM' => $this->translate->_('Acknowledge'),
-			'REMOVE_HOST_ACKNOWLEDGEMENT' => $this->translate->_('Remove problem acknowledgement'),
-			'DISABLE_HOST_NOTIFICATIONS' => $this->translate->_('Disable host notifications'),
-			'ENABLE_HOST_NOTIFICATIONS' => $this->translate->_('Enable host notifications'),
-			'DISABLE_HOST_SVC_NOTIFICATIONS' => $this->translate->_('Disable notifications for all services'),
-			'DISABLE_HOST_CHECK' => $this->translate->_('Disable active checks'),
-			'ENABLE_HOST_CHECK' => $this->translate->_('Enable active checks')
+			'' => _('Select action'),
+			'SCHEDULE_HOST_DOWNTIME' => _('Schedule downtime'),
+			'ACKNOWLEDGE_HOST_PROBLEM' => _('Acknowledge'),
+			'REMOVE_HOST_ACKNOWLEDGEMENT' => _('Remove problem acknowledgement'),
+			'DISABLE_HOST_NOTIFICATIONS' => _('Disable host notifications'),
+			'ENABLE_HOST_NOTIFICATIONS' => _('Enable host notifications'),
+			'DISABLE_HOST_SVC_NOTIFICATIONS' => _('Disable notifications for all services'),
+			'DISABLE_HOST_CHECK' => _('Disable active checks'),
+			'ENABLE_HOST_CHECK' => _('Enable active checks')
 			)
 		); ?>
-	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => $this->translate->_('Submit'))); ?>
+	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => _('Submit'))); ?>
 	<?php echo form::hidden('obj_type', 'host'); ?>
 	<?php echo form::close(); ?>
 	<br /><span id="multi_object_submit_progress" class="item_select"></span>

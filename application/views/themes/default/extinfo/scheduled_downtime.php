@@ -15,7 +15,7 @@ if (!empty($command_result)) {
 	<form action="">
 		<?php
 		echo form::input(array('id' => 'hostfilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-		echo form::button(array('id' => 'clearhostsearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
+		echo form::button(array('id' => 'clearhostsearch_sched', 'class' => 'clearbtn'), _('Clear'));
 		?>
 	</form>
 	<?php } ?><br />
@@ -25,7 +25,7 @@ if (!empty($command_result)) {
 				  echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($host_data)) {
-		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
+		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a><?php
 	}?>
 
 				  <div style="clear:both"></div></span>
@@ -44,16 +44,16 @@ if (!empty($command_result)) {
 				<th class="headerNone item_select" style="display:none">
 					<?php echo form::checkbox(array('name' => 'selectall_host', 'class' => 'select_all_items'), ''); ?>
 				</th>
-				<th class="headerNone"><?php echo $label_host_name ?></th>
-				<th class="headerNone"><?php echo $label_entry_time ?></th>
-				<th class="headerNone"><?php echo $label_author ?></th>
-				<th class="headerNone"><?php echo $label_comment ?></th>
-				<th class="headerNone"><?php echo $label_start_time ?></th>
-				<th class="headerNone"><?php echo $label_end_time ?></th>
-				<th class="headerNone"><?php echo $label_type ?></th>
-				<th class="headerNone"><?php echo $label_duration ?></th>
-				<th class="headerNone"><?php echo $label_trigger_id ?></th>
-				<th class="headerNone" style="width: 45px"><?php echo $label_actions ?></th>
+				<th class="headerNone"><?php echo _('Host name') ?></th>
+				<th class="headerNone"><?php echo _('Entry Time') ?></th>
+				<th class="headerNone"><?php echo _('Author') ?></th>
+				<th class="headerNone"><?php echo _('Comment') ?></th>
+				<th class="headerNone"><?php echo _('Start time') ?></th>
+				<th class="headerNone"><?php echo _('End time') ?></th>
+				<th class="headerNone"><?php echo _('Type') ?></th>
+				<th class="headerNone"><?php echo _('Duration') ?></th>
+				<th class="headerNone"><?php echo _('Trigger ID') ?></th>
+				<th class="headerNone" style="width: 45px"><?php echo _('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -70,14 +70,14 @@ if (!empty($command_result)) {
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php
 		if(empty($row->triggered_by)) {
-			echo $na_str;
+			echo _('N/A');
 		} else {
 			if(!empty($row->triggering_service)) {
 				echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
 			} elseif(!empty($row->triggering_host)) {
 				echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
 			} else {
-				echo $na_str;
+				echo _('N/A');
 			}
 		} ?></td>
 			<td style="text-align: center">
@@ -92,14 +92,14 @@ if (!empty($command_result)) {
 	</table>
 	<?php
 	echo '<div class="item_select" style="display:none">';
-	echo form::submit(array('name' => 'del_submithost'), $this->translate->_('Delete Selected'));
-	echo form::submit(array('id' => 'del_submithost_svc'), $this->translate->_('Delete for services too'));
+	echo form::submit(array('name' => 'del_submithost'), _('Delete Selected'));
+	echo form::submit(array('id' => 'del_submithost_svc'), _('Delete for services too'));
 	echo '<span class="host_feedback"></span>';
 	echo '</div></form>'; ?>
 	<br />
 	<br />
 	<?php
-	} else { echo $this->translate->_('No hosts scheduled for downtime') . "<br/><br/>"; }
+	} else { echo _('No hosts scheduled for downtime') . "<br/><br/>"; }
 
 	echo '<h2>'.$service_title_str.'</h2>';
 
@@ -107,7 +107,7 @@ if (!empty($command_result)) {
 	<form action="">
 		<?php
 		echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-		echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
+		echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), _('Clear'));
 		?>
 	</form>
 	<?php }
@@ -119,7 +119,7 @@ if (!empty($command_result)) {
 	echo html::anchor('recurring_downtime', html::image($this->add_path('icons/16x16/recurring-downtime.png'), array('alt' => '', 'title' => 'Schedule recurring downtime')), array('style' => 'border: 0px')).' &nbsp;';
 	echo html::anchor('recurring_downtime', 'Schedule recurring downtime').'&nbsp; ';
 	if (!empty($service_data)) {
-		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo $this->translate->_('Select Multiple Items') ?></a><?php
+		echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_service_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a><?php
 	} ?>
 	</span>
 
@@ -134,17 +134,17 @@ if (!empty($command_result)) {
 				<th class="headerNone item_select_service" style="display:none">
 					<?php echo form::checkbox(array('name' => 'selectall_service', 'class' => 'select_all_items_service'), ''); ?>
 				</th>
-				<th class="headerNone"><?php echo $label_host_name ?></th>
-				<th class="headerNone"><?php echo $label_service ?></th>
-				<th class="headerNone"><?php echo $label_entry_time ?></th>
-				<th class="headerNone"><?php echo $label_author ?></th>
-				<th class="headerNone"><?php echo $label_comment ?></th>
-				<th class="headerNone"><?php echo $label_start_time ?></th>
-				<th class="headerNone"><?php echo $label_end_time ?></th>
-				<th class="headerNone"><?php echo $label_type ?></th>
-				<th class="headerNone"><?php echo $label_duration ?></th>
-				<th class="headerNone"><?php echo $label_trigger_id ?></th>
-				<th class="headerNone" style="width: 45px"><?php echo $label_actions ?></th>
+				<th class="headerNone"><?php echo _('Host name') ?></th>
+				<th class="headerNone"><?php echo _('Service') ?></th>
+				<th class="headerNone"><?php echo _('Entry Time') ?></th>
+				<th class="headerNone"><?php echo _('Author') ?></th>
+				<th class="headerNone"><?php echo _('Comment') ?></th>
+				<th class="headerNone"><?php echo _('Start time') ?></th>
+				<th class="headerNone"><?php echo _('End time') ?></th>
+				<th class="headerNone"><?php echo _('Type') ?></th>
+				<th class="headerNone"><?php echo _('Duration') ?></th>
+				<th class="headerNone"><?php echo _('Trigger ID') ?></th>
+				<th class="headerNone" style="width: 45px"><?php echo _('Actions') ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -162,14 +162,14 @@ if (!empty($command_result)) {
 			<td><?php echo time::to_string($row->duration) ?></td>
 			<td><?php
 			if(empty($row->triggered_by)) {
-				echo $na_str;
+				echo _('N/A');
 			} else {
 				if(!empty($row->triggering_service)) {
 					echo html::anchor('extinfo/details/service/'.$row->triggering_service, $row->triggering_service." (ID $row->triggered_by)");
 				} elseif(!empty($row->triggering_host)) {
 					echo html::anchor('extinfo/details/host/'.$row->triggering_host, $row->triggering_host." (ID $row->triggered_by)");
 				} else {
-					echo $na_str;
+					echo _('N/A');
 				}
 			} ?></td>
 			<td style="text-align: center">
@@ -184,9 +184,9 @@ if (!empty($command_result)) {
 	</table>
 	<?php
 	echo '<div class="item_select_service" style="display:none">';
-	echo form::submit(array('name' => 'del_submitservice'), $this->translate->_('Delete Selected'));
+	echo form::submit(array('name' => 'del_submitservice'), _('Delete Selected'));
 	echo '<span  class="service_feedback"></span>';
 	echo '</div>'; ?>
-	<?php } else { echo $this->translate->_('No services scheduled for downtime'); }
+	<?php } else { echo _('No services scheduled for downtime'); }
 	echo form::close(); ?>
 </div>

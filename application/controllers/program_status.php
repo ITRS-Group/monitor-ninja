@@ -52,11 +52,11 @@ class Program_status_Controller extends Authenticated_Controller {
 		foreach($data as $row) {
 			$result[$i][]= $row->instance_name;
 			$result[$i][]= date($date_format_str, $row->last_alive);
-			$result[$i][]= ($row->is_running == 1 ? $this->translate->_('Yes') : $this->translate->_('No'));
+			$result[$i][]= ($row->is_running == 1 ? _('Yes') : _('No'));
 			$i++;
 		}
 
-		$this->template->title = $this->translate->_('Configuration').' » '.$this->translate->_('View program status');
+		$this->template->title = _('Configuration').' » '._('View program status');
 		$this->template->content = $this->add_view('program_status/index');
 		$this->template->content->data = $result;
 	}
@@ -66,6 +66,6 @@ class Program_status_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/unauthorized');
 		$this->template->disable_refresh = true;
 
-		$this->template->content->error_description = $this->translate->_('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
+		$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page and check the authorization options in your CGI configuration file.');
 	}
 }

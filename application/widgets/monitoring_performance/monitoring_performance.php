@@ -13,13 +13,7 @@ class Monitoring_performance_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$label_service_check_execution_time = $this->translate->_('Service Check Execution Time');
-		$label_service_check_latency = $this->translate->_('Service Check Latency');
-		$label_sec = $this->translate->_('sec');
-		$label_host_check_execution_time = $this->translate->_('Host Check Execution Time');
-		$label_host_check_latency = $this->translate->_('Host Check Latency');
-		$label_active_host_svc_check = $this->translate->_('# Active Host / Service Checks');
-		$label_passive_host_svc_check = $this->translate->_('# Passive Host / Service Checks');
+		$label_passive_host_svc_check = _('# Passive Host / Service Checks');
 
 		$current_status = $this->get_current_status();
 

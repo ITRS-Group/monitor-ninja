@@ -106,19 +106,18 @@ class ninja_auth_Core
 			# This brute force protection is absolutely fool-proof, as long
 			# as nobody uses evil hacker tools like curl or "Clean History"
 			$session = Session::instance();
-			$translate = zend::instance('Registry')->get('Zend_Translate');
 
 			$session->set('login_attempts', $session->get('login_attempts')+1);
 
 			$max_attempts = Kohana::config('auth.max_attempts');
 			# set login error to user
-			$error_msg = $translate->_("Login failed - please try again");
+			$error_msg = _("Login failed - please try again");
 			if ($max_attempts) {
 				$error_msg .= " (".($max_attempts - $session->get('login_attempts'))." left)";
 			}
 
 			if ($max_attempts && $session->get('login_attempts') >= $max_attempts) {
-				$error_msg = sprintf($translate->_("You have been locked out due to %s failed login attempts"), $session->get('login_attempts'));
+				$error_msg = sprintf(_("You have been locked out due to %s failed login attempts"), $session->get('login_attempts'));
 				$session->set('error_msg', $error_msg);
 				$session->set('locked_out', true);
 				return 'default/locked_out';

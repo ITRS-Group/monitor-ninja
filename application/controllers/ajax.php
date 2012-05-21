@@ -35,7 +35,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function global_search($q=false)
 	{
 		if(!request::is_ajax()) {
-			$msg = $this->translate->_('Only Ajax calls are supported here');
+			$msg = _('Only Ajax calls are supported here');
 			die($msg);
 		} else {
 			# we handle queries by trying to locate wanted filtering options separated by colon (:)
@@ -118,7 +118,7 @@ class Ajax_Controller extends Authenticated_Controller {
 					if ($data!==false) {
 						$found_rows = count($data);
 						if ($found_rows > $max_rows) {
-							$found_str = sprintf($this->translate->_('Search returned %s rows total'), $found_rows);
+							$found_str = sprintf(_('Search returned %s rows total'), $found_rows);
 						}
 						foreach ($data as $row) {
 							if ($cnt++ > $max_rows) {
@@ -135,7 +135,7 @@ class Ajax_Controller extends Authenticated_Controller {
 						}
 
 					} else {
-						$host_info = $this->translate->_('Nothing found');
+						$host_info = _('Nothing found');
 					}
 					$var = array('query' => $q, 'suggestions' => $obj_info, 'data' => $obj_data);
 					$json_str = json::encode($var);
@@ -158,7 +158,7 @@ class Ajax_Controller extends Authenticated_Controller {
 				if ($data!==false) {
 					$found_rows = count($data);
 					if ($found_rows > $max_rows) {
-						$found_str = sprintf($this->translate->_('Search returned %s rows total'),$found_rows);
+						$found_str = sprintf(_('Search returned %s rows total'),$found_rows);
 					}
 					foreach ($data as $row) {
 						if ($cnt++ > $max_rows) {
@@ -174,7 +174,7 @@ class Ajax_Controller extends Authenticated_Controller {
 						$host_data[] = array('', $found_str);
 					}
 				} else {
-					$host_info = array($this->translate->_('Nothing found'));
+					$host_info = array(_('Nothing found'));
 				}
 				$var = array('query' => $q, 'suggestions' => $host_info, 'data' => $host_data);
 				$json_str = json::encode($var);
@@ -492,7 +492,7 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$res = $model->fetch_comments($host, $service);
 		if ($res !== false) {
-			$data = "<table><tr><td><strong>".$this->translate->_('Author')."</strong></td><td><strong>".$this->translate->_('Comment')."</strong></td></tr>";
+			$data = "<table><tr><td><strong>"._('Author')."</strong></td><td><strong>"._('Comment')."</strong></td></tr>";
 			foreach ($res as $row) {
 				$data .= '<tr><td valign="top">'.$row->author_name.'</td><td width="400px">'.wordwrap($row->comment_data, '50', '<br />').'</td></tr>';
 			}
@@ -501,7 +501,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		if (!empty($data)) {
 			echo $data.'</table>';
 		} else {
-			echo $this->translate->_('Found no data');
+			echo _('Found no data');
 		}
 	}
 
@@ -569,7 +569,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		# add custom period
-		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . $this->translate->_('CUSTOM REPORT PERIOD') . " *");
+		$periods[] = array('optionValue' => 'custom', 'optionText' => "* " . _('CUSTOM REPORT PERIOD') . " *");
 
 		echo json::encode($periods);
 	}
@@ -589,7 +589,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		$scheduled_label = $this->translate->_('Scheduled');
+		$scheduled_label = _('Scheduled');
 		$scheduled_ids = array();
 		$scheduled_periods = null;
 		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($type);
@@ -601,7 +601,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		$return = false;
-		$return[] = array('optionValue' => '', 'optionText' => ' - '.$this->translate->_('Select saved report') . ' - ');
+		$return[] = array('optionValue' => '', 'optionText' => ' - '._('Select saved report') . ' - ');
 		switch ($type) {
 			case 'avail':
 			case 'summary':

@@ -11,13 +11,13 @@ function backup(){
 					+ '<td><a class="download" href="/backup/' + file + '<?php echo $suffix; ?>">' + file + '</a></td>'
 					+ '<td><a class="view" href="<?php echo url::base(); ?>index.php/backup/view/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'),
-						array('alt' => $this->translate->_('View'), 'title' => $this->translate->_('View'))); ?></a>'
+						array('alt' => _('View'), 'title' => _('View'))); ?></a>'
 					+ ' <a class="restore" href="<?php echo url::base(); ?>index.php/backup/restore/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'),
-						array('alt' => $this->translate->_('Restore'), 'title' => $this->translate->_('Restore'))); ?></a>'
+						array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>'
 					+ ' <a class="delete" href="<?php echo url::base(); ?>index.php/backup/delete/' + file
 					+ '" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'),
-						array('alt' => $this->translate->_('Delete'), 'title' => $this->translate->_('Delete'))); ?></a>'
+						array('alt' => _('Delete'), 'title' => _('Delete'))); ?></a>'
 					+ '</td></tr>');
 		}
 	});
@@ -78,19 +78,19 @@ var status = '';
 </script>
 
 <div class="widget left w98">
-	<h2><?php echo $this->translate->_('Backup/Restore'); ?></h2>
+	<h2><?php echo _('Backup/Restore'); ?></h2>
 	<div id="backupstatus">&nbsp;</div>
 	<div style="display: none">
 		<div id="restore-status"><img src="../application/media/images/loading.gif" /></div>
 	</div>
-	<p><a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => $this->translate->_('Save your current Monitor configuration'), 'title' => $this->translate->_('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?></a>
-	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo $this->translate->_('Save your current op5 Monitor configuration'); ?></a></p>
+	<p><a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup.png'),array('alt' => _('Save your current Monitor configuration'), 'title' => _('Save your current Monitor configuration'), 'style' => 'margin-bottom: -3px')); ?></a>
+	<a id="verify" href="<?php echo url::base() . 'index.php/backup/verify/'; ?>"><?php echo _('Save your current op5 Monitor configuration'); ?></a></p>
 	<br />
 	<table id="backups">
 		<thead>
 		<tr>
-			<th class="headerNone"><?php echo $this->translate->_('Backups'); ?></th>
-			<th class="headerNone" style="width: 50px"><?php echo $this->translate->_('Actions'); ?></th>
+			<th class="headerNone"><?php echo _('Backups'); ?></th>
+			<th class="headerNone" style="width: 50px"><?php echo _('Actions'); ?></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -98,9 +98,9 @@ var status = '';
 		<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 			<td><a class="download" href="/backup/<?php echo $file . $suffix; ?>"><?php echo $file; ?></a></td>
 			<td>
-				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => $this->translate->_('View'), 'title' => $this->translate->_('View'))); ?></a>
-				<a class="restore" href="#restore-status" title="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => $this->translate->_('Restore'), 'title' => $this->translate->_('Restore'))); ?></a>
-				<a class="delete" href="<?php echo url::base() . 'index.php/backup/delete/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'), array('alt' => $this->translate->_('Delete'), 'title' => $this->translate->_('Delete'))); ?></a>
+				<a class="view" href="<?php echo url::base() . 'index.php/backup/view/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-view.png'), array('alt' => _('View'), 'title' => _('View'))); ?></a>
+				<a class="restore" href="#restore-status" title="<?php echo url::base() . 'index.php/backup/restore/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-restore.png'), array('alt' => _('Restore'), 'title' => _('Restore'))); ?></a>
+				<a class="delete" href="<?php echo url::base() . 'index.php/backup/delete/' . $file; ?>" style="border: 0px"><?php echo html::image($this->add_path('/icons/16x16/backup-delete.png'), array('alt' => _('Delete'), 'title' => _('Delete'))); ?></a>
 			</td>
 		</tr>
 		<?php endforeach; ?>

@@ -181,70 +181,70 @@ class Reports_Controller extends Authenticated_Controller
 		$this->trends_graph_model = new Trends_graph_Model();
 
 		$this->abbr_month_names = array(
-			$this->translate->_('Jan'),
-			$this->translate->_('Feb'),
-			$this->translate->_('Mar'),
-			$this->translate->_('Apr'),
-			$this->translate->_('May'),
-			$this->translate->_('Jun'),
-			$this->translate->_('Jul'),
-			$this->translate->_('Aug'),
-			$this->translate->_('Sep'),
-			$this->translate->_('Oct'),
-			$this->translate->_('Nov'),
-			$this->translate->_('Dec')
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
 		);
 
 		$this->month_names = array(
-			$this->translate->_('January'),
-			$this->translate->_('February'),
-			$this->translate->_('March'),
-			$this->translate->_('April'),
-			$this->translate->_('May'),
-			$this->translate->_('June'),
-			$this->translate->_('July'),
-			$this->translate->_('August'),
-			$this->translate->_('September'),
-			$this->translate->_('October'),
-			$this->translate->_('November'),
-			$this->translate->_('December')
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
 		);
 
 		$this->abbr_day_names = array(
-			$this->translate->_('Sun'),
-			$this->translate->_('Mon'),
-			$this->translate->_('Tue'),
-			$this->translate->_('Wed'),
-			$this->translate->_('Thu'),
-			$this->translate->_('Fri'),
-			$this->translate->_('Sat')
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
 		);
 
 		$this->day_names = array(
-			$this->translate->_('Sunday'),
-			$this->translate->_('Monday'),
-			$this->translate->_('Tuesday'),
-			$this->translate->_('Wednesday'),
-			$this->translate->_('Thursday'),
-			$this->translate->_('Friday'),
-			$this->translate->_('Saturday')
+			_('Sunday'),
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday')
 		);
 
 		$this->state_values = array(
-			'OK' => $this->translate->_('OK'),
-			'WARNING' => $this->translate->_('WARNING'),
-			'UNKNOWN' => $this->translate->_('UNKNOWN'),
-			'CRITICAL' => $this->translate->_('CRITICAL'),
-			'PENDING' => $this->translate->_('PENDING'),
-			'UP' => $this->translate->_('UP'),
-			'DOWN' => $this->translate->_('DOWN'),
-			'UNREACHABLE' => $this->translate->_('UNREACHABLE')
+			'OK' => _('OK'),
+			'WARNING' => _('WARNING'),
+			'UNKNOWN' => _('UNKNOWN'),
+			'CRITICAL' => _('CRITICAL'),
+			'PENDING' => _('PENDING'),
+			'UP' => _('UP'),
+			'DOWN' => _('DOWN'),
+			'UNREACHABLE' => _('UNREACHABLE')
 		);
 
 		$this->scheduled_downtime_options = array(
-			0 => $this->translate->_('Actual state'),
-			1 => $this->translate->_('Uptime'),
-			2 => $this->translate->_('Uptime, with difference')
+			0 => _('Actual state'),
+			1 => _('Uptime'),
+			2 => _('Uptime, with difference')
 		);
 	}
 
@@ -301,10 +301,10 @@ class Reports_Controller extends Authenticated_Controller
 		if (arr::search($_REQUEST, 'del_report', false) !== false && $del_id !== false) {
 			$del_ok = Saved_reports_Model::delete_report($this->type, $del_id);
 			if ($del_ok != '') {
-				$del_msg = $this->translate->_('Report was deleted successfully.');
+				$del_msg = _('Report was deleted successfully.');
 				$del_result = 'ok';
 			} else {
-				$del_msg = $this->translate->_('An error occurred while trying to delete the report.');
+				$del_msg = _('An error occurred while trying to delete the report.');
 				$del_result = 'error';
 			}
 		}
@@ -350,8 +350,8 @@ class Reports_Controller extends Authenticated_Controller
 
 
 		$type_str = $this->type == 'avail'
-			? $this->translate->_('availability')
-			: $this->translate->_('SLA');
+			? _('availability')
+			: _('SLA');
 		if($this->err_msg) {
 			// @todo make this work work, only handled by js and a very silent redirect
 			// now since the following message never gets printed:
@@ -382,8 +382,6 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
-
-		$t = $this->translate;
 
 		# what scheduled reports are there?
 		$scheduled_ids = array();
@@ -504,17 +502,17 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		$template->json_periods = $json_periods;
 		$template->scheduled_info = $scheduled_info;
-		$scheduled_label = $t->_('Scheduled');
+		$scheduled_label = _('Scheduled');
 
-		$label_avail = $this->translate->_('Availability');
+		$label_avail = _('Availability');
 		$template->label_avail = $label_avail;
 
-		$label_sla = $t->_('SLA');
+		$label_sla = _('SLA');
 		$template->label_sla = $label_sla;
-		$label_switch_to = $this->translate->_('Switch to');
+		$label_switch_to = _('Switch to');
 		$template->label_switch_to = $label_switch_to;
 
-		$label_report = $this->translate->_('report');
+		$label_report = _('report');
 		$template->label_report = $label_report;
 
 		# fetch users date format in PHP style so we can use it
@@ -574,91 +572,40 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		$this->js_strings .= "var assumeinitialstates = '".$this->assume_initial_states."';\n";
-		$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
-		$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
+		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
+		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
 		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
 		$this->js_strings .= "var _label_avail = '".$label_avail."';\n";
 		$this->js_strings .= "var _label_sla = '".$label_sla."';\n";
 		$this->js_strings .= "var _label_switch_to = '".$label_switch_to."';\n";
 		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
-		$this->js_strings .= "var _reports_schedule_deleted = '".$t->_('Your schedule has been deleted')."';\n";
-		$this->js_strings .= "var _reports_propagate = '".$t->_('Would you like to propagate this value to all months')."';\n";
-		$this->js_strings .= "var _reports_propagate_remove = '".$t->_("Would you like to remove all values from all months")."';\n";
-		$this->js_strings .= "var _schedule_change_filename = \"".$t->_('Would you like to change the filename based on your selections?')."\";\n";
+		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
+		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
+		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
+		$this->js_strings .= "var _schedule_change_filename = \""._('Would you like to change the filename based on your selections?')."\";\n";
 
 		$this->js_strings .= reports::js_strings();
 
-		$this->js_strings .= "var _reports_name_empty = '".$t->_("Please give your report a meaningful name.")."';\n";
-		$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
-		$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
-		$this->js_strings .= "var _reports_missing_objects = \"".$t->_("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
-		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '".$t->_('Please modify the objects to include in your report below and then save it.')."';\n";
-		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
+		$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+		$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+		$this->js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
+		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
+		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
 			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
 		$this->template->inline_js = $this->inline_js;
 
 		$template->type = $this->type;
 		$template->scheduled_label = $scheduled_label;
-		$template->title_label = $t->_('schedule');
-		$template->label_select = $t->_('Select');
-		$template->label_new = $t->_('New');
-		$template->new_saved_title = sprintf($t->_('Create new saved %s report'), $type_str);
-		$template->label_delete = $t->_('Delete report');
-		$template->label_dblclick = $t->_('Double click to edit');
-		$template->label_sch_interval = $t->_('Interval');
-		$template->label_sch_recipients = $t->_('Recipients');
-		$template->label_sch_filename = $t->_('Filename');
-		$template->label_sch_description = $t->_('Description');
-		$template->label_create_new = $this->type == 'avail' ? $t->_('Availability report') : $t->_('SLA report');
-		$template->label_saved_reports = $t->_('Saved reports');
-		$template->label_hostgroups = $t->_('Hostgroups');
-		$template->label_hosts = $t->_('Hosts');
-		$template->label_servicegroups = $t->_('Servicegroups');
-		$template->label_services = $t->_('Services');
-		$template->label_available = $t->_('Available');
-		$template->label_selected = $t->_('Selected');
-		$template->label_report_period = $t->_('Reporting period');
-		$template->label_today = $t->_('Today');
-		$template->label_last24 = $t->_('Last 24 Hours');
-		$template->label_yesterday = $t->_('Yesterday');
-		$template->label_thisweek = $t->_('This Week');
-		$template->label_last7days = $t->_('Last 7 Days');
-		$template->label_lastweek = $t->_('Last Week');
-		$template->label_thismonth = $t->_('This Month');
-		$template->label_last31days = $t->_('Last 31 Days');
-		$template->label_lastmonth = $t->_('Last Month');
-		$template->label_last3months = $t->_('Last 3 Months');
-		$template->label_last6months = $t->_('Last 6 months');
-		$template->label_last12months = $t->_('Last 12 months');
-		$template->label_lastquarter = $t->_('Last Quarter');
-		$template->label_thisyear = $t->_('This Year');
-		$template->label_lastyear = $t->_('Last Year');
-		$template->label_custom_period = $t->_('CUSTOM REPORT PERIOD');
-		$template->label_startdate = $t->_('Start date');
-		$template->label_start_year = $t->_('Start year');
-		$template->label_start_month = $t->_('Start month');
-		$template->label_end_year = $t->_('End year');
-		$template->label_end_month = $t->_('End month');
-		$template->label_enddate = $t->_('End date');
-		$template->label_startdate_selector = $t->_('Date Start selector');
-		$template->label_enddate_selector = $t->_('Date End selector');
-		$template->label_click_calendar = $t->_('Click calendar to select date');
-		$template->label_rpttimeperiod = $t->_('Report time period');
-		$template->label_initialassumedhoststate = $t->_('First assumed host state');
-		$template->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
+		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
+		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
 		$template->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
 		$template->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
-		$template->label_initialassumedservicestate = $t->_('First assumed service state');
-		$template->label_assumestatesduringnotrunning = $t->_('Assume states during program downtime');
-		$template->label_assumeinitialstates = $t->_('Assume initial states');
-		$template->label_cluster_mode = $t->_('Cluster mode');
-		$template->label_propagate = $t->_('Click to propagate this value to all months');
-		$template->label_enter_sla = $t->_('Enter SLA');
 		$template->reporting_periods = $this->_get_reporting_periods();
 		$template->cluster_mode_checked = $cluster_mode_checked;
 		$template->assume_initial_states_checked = $assume_initial_states_checked;
@@ -675,15 +622,6 @@ class Reports_Controller extends Authenticated_Controller
 		$template->service_filter_status_critical_checked = $service_filter_status_critical_checked;
 		$template->service_filter_status_pending_checked = $service_filter_status_pending_checked;
 		$template->include_soft_states_checked = $include_soft_states_checked;
-		$template->label_includesoftstates = $t->_('Include soft states');
-		$template->label_sla_calc_method = $t->_('SLA calculation method');
-		$template->label_avg_sla = $t->_('Group availability (SLA)');
-		$template->label_avg = $t->_('Average');
-		$template->label_use_alias = $t->_('Use alias');
-		$template->label_csvoutput = $t->_('Output in CSV format');
-		$template->label_include_trends = $t->_('Include trends graph');
-		$template->label_create_report = $t->_('Create report');
-		$template->label_save_report = $t->_('Save report');
 		$template->use_alias_checked = $use_alias_checked;
 		$template->use_average_yes_selected = $use_average_yes_selected;
 		$template->use_average_no_selected = $use_average_no_selected;
@@ -693,10 +631,8 @@ class Reports_Controller extends Authenticated_Controller
 		$template->csv_output_checked = $csv_output_checked;
 		$template->include_trends_checked = $include_trends_checked;
 		$template->months = $this->abbr_month_names;
-		$template->is_scheduled_report = $t->_('This is a scheduled report');
-		$edit_str = $t->_('edit');
-		$template->edit_str = $edit_str;
-		$template->is_scheduled_clickstr = sprintf($t->_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
+		$edit_str = _('edit');
+		$template->is_scheduled_clickstr = sprintf(_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
 
 		if ($report_info) {
 			$date_format = $this->_get_date_format(true);
@@ -724,19 +660,11 @@ class Reports_Controller extends Authenticated_Controller
 		$report_period_strings = $this->_report_period_strings($this->type);
 
 		$report_periods = $report_period_strings["report_period_strings"];
-		$report_periods['custom'] = "* " . $template->label_custom_period . " *";
 		$template->report_periods = $report_periods;
 		$template->selected = $report_period_strings["selected"];
 
 		$new_schedule = $this->add_view('reports/'.$this->template_prefix.'new_schedule');
-		$new_schedule->label_new_schedule = $t->_('Add new schedule');
 		$new_schedule->available_schedule_periods = $periods;
-		$new_schedule->label_interval = $t->_('Report Interval');
-		$new_schedule->label_recipients = $t->_('Recipients');
-		$new_schedule->label_filename = $t->_('Filename (defaults to pdf, may end in .csv)');
-		$new_schedule->label_description = $t->_('Description');
-		$new_schedule->label_save = $t->_('Save');
-		$new_schedule->label_clear = $t->_('Clear');
 
 		# we currently only have avail and SLA reports so hard-coding
 		# this somewhat here shouldn't be a big issue.
@@ -749,34 +677,27 @@ class Reports_Controller extends Authenticated_Controller
 				$report_types[$rpt_type->id] = $rpt_type->identifier; # needed for javascript json
 				switch ($rpt_type->identifier) {
 					case 'avail':
-						$defined_report_types[$rpt_type->identifier] = $t->_('Availability Report');
+						$defined_report_types[$rpt_type->identifier] = _('Availability Report');
 						break;
 					case 'sla':
-						$defined_report_types[$rpt_type->identifier] = $t->_('SLA Report');
+						$defined_report_types[$rpt_type->identifier] = _('SLA Report');
 						break;
 					case 'summary':
-						$defined_report_types[$rpt_type->identifier] = $t->_('Alert Summary Report');
+						$defined_report_types[$rpt_type->identifier] = _('Alert Summary Report');
 						break;
 				}
 			}
 		}
 
 		$new_schedule->defined_report_types = $defined_report_types;
-		$new_schedule->label_report_type = $t->_('Select report type');
 		$avail_reports = Saved_reports_Model::get_saved_reports('avail');
 		$sla_reports = Saved_reports_Model::get_saved_reports('sla');
 		$summary_reports = Saved_reports_Model::get_saved_reports('summary');
 
 		$new_schedule->saved_reports = $avail_reports;
-		$new_schedule->label_select_report = $t->_('Select report');
-		$new_schedule->label_select_saved_report = $t->_('Select saved report');
 
 		$template->available_schedules = $this->add_view('reports/'.$this->template_prefix.'schedules');
 		$available_schedules = $template->available_schedules;
-		$available_schedules->label_no_schedules = $t->_('There are no scheduled reports');
-		$available_schedules->avail_header = $t->_('Availability Reports');
-		$available_schedules->sla_header = $t->_('SLA Reports');
-		$available_schedules->summary_header = $t->_('Alert Summary Reports');
 
 		# fetch ALL schedules (avail + SLA + Alert Summary)
 		$available_schedules->avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail');
@@ -784,12 +705,6 @@ class Reports_Controller extends Authenticated_Controller
 		$available_schedules->summary_schedules = Scheduled_reports_Model::get_scheduled_reports('summary');
 
 		# re-use parent template's translations
-		$available_schedules->label_sch_interval = $template->label_sch_interval;
-		$available_schedules->label_sch_name = $t->_('Report');
-		$available_schedules->label_sch_recipients = $template->label_sch_recipients;
-		$available_schedules->label_sch_filename = $template->label_sch_filename;
-		$available_schedules->label_sch_description = $template->label_sch_description;
-		$available_schedules->label_dblclick = $template->label_dblclick;
 
 		# add new schedule template to available_schedules template
 		$available_schedules->new_schedule = $new_schedule;
@@ -818,21 +733,21 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _saved_avail_reports = '(".json::encode($avail_reports_arr).")';\n";
 		$this->js_strings .= "var _saved_sla_reports = '(".json::encode($sla_reports_arr).")';\n";
 		$this->js_strings .= "var _saved_summary_reports = '(".json::encode($summary_reports_arr).")';\n";
-		$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
-		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
-		$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_error = '".$t->_('An error occurred when trying to send the scheduled report')."';\n";
-		$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
-		$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
-		$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
-		$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_error = '"._('An error occurred when trying to send the scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
-		$this->js_strings .= "var _reports_no_sla_str = '".$t->_('Please enter at least one SLA value')."';\n";
-		$this->js_strings .= "var _reports_sla_err_str = '".$t->_('Please check SLA values in fields marked red below and try again')."';\n";
+		$this->js_strings .= "var _reports_no_sla_str = '"._('Please enter at least one SLA value')."';\n";
+		$this->js_strings .= "var _reports_sla_err_str = '"._('Please check SLA values in fields marked red below and try again')."';\n";
 
 		$this->template->js_strings = $this->js_strings;
 
-		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Setup');
+		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
 
 		if ($this->mashing) {
 			return $template->render();
@@ -878,8 +793,6 @@ class Reports_Controller extends Authenticated_Controller
 				'regexp', $this->input->get('regexp', false)
 			)
 		);
-
-		$t = $this->translate;
 
 		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
 
@@ -1047,7 +960,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		if ($save_report_settings) {
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
-			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
+			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
 		}
 
@@ -1150,7 +1063,7 @@ class Reports_Controller extends Authenticated_Controller
 		$report_class = $this->reports_model;
 		foreach (self::$options as $controller_var => $report_model_var) {
 			if (!$report_class->set_option($report_model_var, arr::search($_REQUEST, $controller_var))) {
-				$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
+				$err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
 			}
 		}
 		// default to showing all states if none are given
@@ -1178,7 +1091,7 @@ class Reports_Controller extends Authenticated_Controller
 		$report_class->set_option('end_time', $this->end_date);
 
 		if('custom' == $report_period)
-			$report_time_formatted  = sprintf($t->_("%s to %s"), date(nagstat::date_format(), $this->start_date), date(nagstat::date_format(), $this->end_date));
+			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->start_date), date(nagstat::date_format(), $this->end_date));
 		else
 			$report_time_formatted  = (isset($report_period_strings[$report_period]) ? $report_period_strings[$report_period] : $report_period);
 
@@ -1241,7 +1154,7 @@ class Reports_Controller extends Authenticated_Controller
 			if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check]))
 				foreach ($set as $dep => $key) {
 					if (!$report_class->set_option($key, $_REQUEST[$dep])) {
-						$err_msg .= sprintf($t->_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep])."'<br />";
+						$err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep])."'<br />";
 					}
 				}
 
@@ -1310,7 +1223,7 @@ class Reports_Controller extends Authenticated_Controller
 		$get_vars .= "&initialassumedhoststate=".$this->initial_assumed_host_state;
 		$get_vars .= "&initialassumedservicestate=".$this->initial_assumed_service_state;
 
-		$template->title = $this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report');
+		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
 		$template->report_time_formatted = $report_time_formatted;
 		$template->report_id = $this->report_id;
@@ -1340,14 +1253,13 @@ class Reports_Controller extends Authenticated_Controller
 			# avail report is empty
 
 			# what objects were submitted?
-			$template->report_header = $t->_('Empty report');
+			$template->report_header = _('Empty report');
 
 			$template->error = $this->add_view('reports/'.$this->template_prefix.'error');
 
-			$template->error->error_msg = sprintf($t->_("The selected objects for this %s report doesn't seem to exist anymore.%s
+			$template->error->error_msg = sprintf(_("The selected objects for this %s report doesn't seem to exist anymore.%s
 			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->report_type, 0, strlen($this->report_type)-1)), '<br />');
 			if (!empty($objects)) {
-				$template->error->label_missing_objects = $t->_('Missing objects');
 				$template->error->missing_objects = $objects;
 			}
 		} else {
@@ -1391,8 +1303,8 @@ class Reports_Controller extends Authenticated_Controller
 					$html_options[] = array('hidden', 'month_'.$k, $d);
 				}
 			}
-			$label_report_period = $t->_('Reporting period');
-			$label_custom_period = $t->_('CUSTOM REPORT PERIOD');
+			$label_report_period = _('Reporting period');
+			$label_custom_period = _('CUSTOM REPORT PERIOD');
 
 			# decide what report periods to print
 			$report_period_strings = $this->_report_period_strings($this->type);
@@ -1404,27 +1316,14 @@ class Reports_Controller extends Authenticated_Controller
 
 				$tpl_options = $this->template->content->report_options;
 
-				$tpl_options->label_report_period = $label_report_period;
 
 				$tpl_options->report_periods = $report_periods;
 				$tpl_options->include_trends = $include_trends;
 				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
-				$tpl_options->label_settings = $t->_('Report settings');
-				$tpl_options->label_startdate = $t->_('Start date');
-				$tpl_options->label_enddate = $t->_('End date');
-				$tpl_options->label_startdate_selector = $t->_('Date Start selector');
-				$tpl_options->label_enddate_selector = $t->_('Date End selector');
-				$tpl_options->label_click_calendar = $t->_('Click calendar to select date');
 
-				$tpl_options->label_assumeinitialstates = $t->_('Assume initial states');
-				$tpl_options->label_cluster_mode = $t->_('Cluster mode');
-				$tpl_options->label_include_trends = $t->_('Include trends');
 
-				$tpl_options->label_initialassumedhoststate = $t->_('First assumed host state');
-				$tpl_options->label_scheduleddowntimeasuptime = $t->_('Count scheduled downtime as');
 				$tpl_options->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
 				$tpl_options->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
-				$tpl_options->label_initialassumedservicestate = $t->_('First assumed service state');
 				$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
 				$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
 
@@ -1443,27 +1342,13 @@ class Reports_Controller extends Authenticated_Controller
 					$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
 				}
 
-				$tpl_options->label_save_report = $t->_('Save report');
-				$tpl_options->label_as = $t->_('as');
-				$tpl_options->label_new_schedule = $t->_('New schedule');
-				$tpl_options->label_view_schedule = $t->_('View schedule');
-				$tpl_options->label_save_to_schedule = $t->_('To schedule this report, save it first');
-				$tpl_options->label_update = $t->_('Update report');
-				$tpl_options->label_interval = $t->_('Report Interval');
-				$tpl_options->label_recipients = $t->_('Recipients');
-				$tpl_options->label_edit_settings = $t->_('edit settings');
-				$tpl_options->label_sla_calc_method = $t->_('SLA calculation method');
-				$tpl_options->label_filename = $t->_('Filename');
-				$tpl_options->label_description = $t->_('Description');
-				$tpl_options->label_save = $t->_('Save');
-				$tpl_options->label_clear = $t->_('Clear');
 				$tpl_options->report_id = $this->report_id;
 				$tpl_options->report_info = $report_info;
 				$tpl_options->html_options = $html_options;
 
 				$use_average_options = array(
-					0 => $t->_('Group availability (SLA)'),
-					1 => $t->_('Average')
+					0 => _('Group availability (SLA)'),
+					1 => _('Average')
 				);
 				$tpl_options->use_average_options = $use_average_options;
 				$tpl_options->use_average_selected = $use_average_selected;
@@ -1487,10 +1372,8 @@ class Reports_Controller extends Authenticated_Controller
 				$tpl_options->available_schedule_periods = $available_schedule_periods;
 				$tpl_options->type = $this->type;
 				$tpl_options->rep_type = $this->type == 'avail' ? 1 : 2;
-				$tpl_options->lable_schedules = $t->_('Schedules for this report');
 				$tpl_options->scheduled_info = $scheduled_info;
-				$tpl_options->label_dblclick = $t->_('Double click to edit');
-				$scheduled_label = $t->_('Scheduled');
+				$scheduled_label = _('Scheduled');
 				if ($this->type == 'avail') {
 					$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
 					$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
@@ -1506,33 +1389,33 @@ class Reports_Controller extends Authenticated_Controller
 				$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
 				$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->scheduled_downtime_as_uptime."';\n";
 
-				$this->js_strings .= "var _reports_success = '".$t->_('Success')."';\n";
-				$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
-				$this->js_strings .= "var _reports_schedule_send_ok = '".$t->_('Your report was successfully sent')."';\n";
+				$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+				$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+				$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 				$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-				$this->js_strings .= "var _reports_fatal_err_str = '".$t->_('It is not possible to schedule this report since some vital information is missing.')."';\n";
-				$this->js_strings .= "var _reports_schedule_interval_error = '".$t->_(' -Please select a schedule interval')."';\n";
-				$this->js_strings .= "var _reports_schedule_recipient_error = '".$t->_(' -Please enter at least one recipient')."';\n";
-				$this->js_strings .= "var _edit_str = '".$t->_('edit')."';\n";
-				$this->js_strings .= "var _hide_str = '".$t->_('hide')."';\n";
+				$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
+				$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
+				$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
+				$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
+				$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
 				$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
-				$this->js_strings .= "var _reports_schedule_error = '".$t->_('An error occurred when saving scheduled report')."';\n";
-				$this->js_strings .= "var _reports_schedule_update_ok = '".$t->_('Your schedule has been successfully updated')."';\n";
-				$this->js_strings .= "var _reports_schedule_create_ok = '".$t->_('Your schedule has been successfully created')."';\n";
-				$this->js_strings .= "var _reports_view_schedule = '".$t->_('View schedule')."';\n";
-				$this->js_strings .= "var _reports_edit_information = '".$t->_('Double click to edit')."';\n";
-				$this->js_strings .= "var _reports_errors_found = '".$t->_('Found the following error(s)')."';\n";
-				$this->js_strings .= "var _reports_please_correct = '".$t->_('Please correct this and try again')."';\n";
+				$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+				$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+				$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+				$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
+				$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+				$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
+				$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
 
-				$this->js_strings .= "var _reports_schedule_deleted = '".$t->_('Your schedule has been deleted')."';\n";
+				$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
 
-				$this->js_strings .= "var _reports_error_name_exists = '".sprintf($t->_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+				$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
 				$this->js_strings .= reports::js_strings();
-				$this->js_strings .= "var _reports_name_empty = '".$t->_("Please give your report a meaningful name.")."';\n";
-				$this->js_strings .= "var _reports_error_name_exists_replace = \"".$t->_("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
-				$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";
-				$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf($t->_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-				$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf($t->_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+				$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
+				$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+				$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+				$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+				$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
 					"the corresponding schedule(s) will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
 				$csv_link = $this->_get_csv_link();
@@ -1545,15 +1428,15 @@ class Reports_Controller extends Authenticated_Controller
 
 			} #end if NOT create_pdf
 
-			$host_graph_items = array('TOTAL_TIME_UP' => $t->_('Up'),
-					'TOTAL_TIME_DOWN' => $t->_('Down'),
-					'TOTAL_TIME_UNREACHABLE' => $t->_('Unreachable'),
-					'TOTAL_TIME_UNDETERMINED' => $t->_('Undetermined'));
-			$service_graph_items = array('TOTAL_TIME_OK' => $t->_('Ok'),
-					'TOTAL_TIME_WARNING' => $t->_('Warning'),
-					'TOTAL_TIME_UNKNOWN' => $t->_('Unknown'),
-					'TOTAL_TIME_CRITICAL' => $t->_('Critical'),
-					'TOTAL_TIME_UNDETERMINED' => $t->_('Undetermined'));
+			$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
+					'TOTAL_TIME_DOWN' => _('Down'),
+					'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
+					'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
+			$service_graph_items = array('TOTAL_TIME_OK' => _('Ok'),
+					'TOTAL_TIME_WARNING' => _('Warning'),
+					'TOTAL_TIME_UNKNOWN' => _('Unknown'),
+					'TOTAL_TIME_CRITICAL' => _('Critical'),
+					'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
 			$graph_filter = ${$sub_type.'_graph_items'};
 
 			# hostgroups / servicegroups
@@ -1573,10 +1456,6 @@ class Reports_Controller extends Authenticated_Controller
 				}
 				$template->header->use_average = $use_average;
 
-				$template->header->label_report_period = $label_report_period;
-				$template->header->label_to = $t->_('to');
-				$template->header->label_using_avg = $t->_('using averages');
-				$template->header->label_print = $t->_('Print report');
 
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
@@ -1664,7 +1543,6 @@ class Reports_Controller extends Authenticated_Controller
 				}
 
 				$template->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
-				$template->pie->label_status = $t->_('Status overview');
 
 				// ===== SETUP PIECHART VALUES =====
 				$image_data = array();
@@ -1677,7 +1555,7 @@ class Reports_Controller extends Authenticated_Controller
 				$groups_added = 0;
 				$pie_groupname = false;
 				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
-					$tmp_title = ucfirst($sub_type).$t->_('group breakdown');
+					$tmp_title = ucfirst($sub_type)._('group breakdown');
 					$template->header->title = $tmp_title;
 					if ($this->create_pdf || $this->mashing) {
 						$this->pdf_data['title'] = $tmp_title;
@@ -1702,7 +1580,7 @@ class Reports_Controller extends Authenticated_Controller
 					}
 				} else {
 					$added_group = false;
-					$tmp_title = ucfirst($sub_type).' '.$t->_('state breakdown');
+					$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 					$template->header->title = $tmp_title;
 					if ($this->create_pdf || $this->mashing) {
 						$this->pdf_data['title'] = $tmp_title;
@@ -1767,10 +1645,6 @@ class Reports_Controller extends Authenticated_Controller
 					$csv_link = isset($csv_link) ? $csv_link : false;
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 					$template->header->pdf_link = isset($pdf_link) ? $pdf_link : false;
-					$template->header->label_report_period = $label_report_period;
-					$template->header->label_to = $t->_('to');
-					$template->header->label_using_avg = $t->_('using averages');
-					$template->header->label_print = $t->_('Print report');
 					$template->header->use_average = $use_average;
 					$template->header->use_alias = $use_alias;
 					if ($this->create_pdf) {
@@ -1783,16 +1657,6 @@ class Reports_Controller extends Authenticated_Controller
 					if ($this->type == 'avail') {
 						$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->report_type);
 						$avail = $template->content;
-						$avail->label_type_reason = $t->_('Type / Reason');
-						$avail->label_time = $t->_('Time');
-						$avail->label_tot_time = $t->_('Total time');
-						$avail->label_unscheduled = $t->_('Unscheduled');
-						$avail->label_scheduled = $t->_('Scheduled');
-						$avail->label_total = $t->_('Total');
-						$avail->label_undetermined = $t->_('Undetermined');
-						$avail->label_not_running = $t->_('Not running');
-						$avail->label_insufficient_data = $t->_('Insufficient data');
-						$avail->label_all = $t->_('All');
 						$avail->state_values = $this->state_values;
 						$avail->create_pdf = $this->create_pdf;
 
@@ -1801,7 +1665,7 @@ class Reports_Controller extends Authenticated_Controller
 						$avail->report_time_formatted = $report_time_formatted;
 						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
-						$avail->header_string = ucfirst($this->report_type)." ".$t->_('state breakdown');
+						$avail->header_string = ucfirst($this->report_type)." "._('state breakdown');
 						if ($this->create_pdf) {
 							$content = $avail;
 						}
@@ -1858,7 +1722,6 @@ class Reports_Controller extends Authenticated_Controller
 						}
 
 						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
-						$avail->pie->label_status = $t->_('Status overview');
 						$avail->pie->report_time_formatted = $report_time_formatted;
 
 						// ===== SETUP PIECHART VALUES =====
@@ -1884,7 +1747,7 @@ class Reports_Controller extends Authenticated_Controller
 
 							if ($service_states !== false) {
 								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->start_date, $this->end_date, $this->type);
-								$header_str = $t->_("Service state breakdown");
+								$header_str = _("Service state breakdown");
 								$template->svc_content = $this->add_view('reports/'.$this->template_prefix.'multiple_service_states');
 								$content = $template->svc_content;
 								$content->header_string = $header_str;
@@ -1907,7 +1770,7 @@ class Reports_Controller extends Authenticated_Controller
 						// fetch and display log messages
 						$log = arr::search($data, 'log');
 						if ($log !== false) {
-							$label_entries = $t->_("Log Entries for");
+							$label_entries = _("Log Entries for");
 							$template->log_content = $this->add_view('reports/'.$this->template_prefix.'log');
 							$log_template = $template->log_content;
 							$log_template->log = array_shift($log);
@@ -1950,7 +1813,7 @@ class Reports_Controller extends Authenticated_Controller
 									break;
 
 								$host = $hostname[0];
-								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($host);
+								$template->header->title = ucfirst($this->report_type).' '._('details for').': '.ucfirst($host);
 								$all_avail_params = "report_type=".$this->report_type.
 									 "&amp;host_name=all".
 									 "&amp;report_period=$report_period".
@@ -1965,7 +1828,7 @@ class Reports_Controller extends Authenticated_Controller
 								if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
 								if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
 
-								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = $t->_('Availability report for all hosts');
+								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = _('Availability report for all hosts');
 
 								$trends_params = "host=$host".
 									"&amp;t1=$t1".
@@ -2002,23 +1865,23 @@ class Reports_Controller extends Authenticated_Controller
 
 
 
-								$links[$this->trend_link."?".$trends_params] = $t->_('Trends');
+								$links[$this->trend_link."?".$trends_params] = _('Trends');
 
 								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
 
-								$links[$this->histogram_link . "?" . $histogram_params] = $t->_('Alert histogram');
+								$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
 
-								$links[$this->status_link.$host] = $t->_('Status detail');
+								$links[$this->status_link.$host] = _('Status detail');
 
-								$links[$this->history_link . "/" .$host] = $t->_('Alert history');
-								$links[$this->notifications_link . "/" . $host] = $t->_('Notifications');
+								$links[$this->history_link . "/" .$host] = _('Alert history');
+								$links[$this->notifications_link . "/" . $host] = _('Notifications');
 								break;
 
 							case 'services':
 
 								list($host, $service) = explode(';',$service[0]);
 
-								$template->header->title = ucfirst($this->report_type).' '.$t->_('details for').': '.ucfirst($service).' '.$t->_('on host').': '.ucfirst($host);
+								$template->header->title = ucfirst($this->report_type).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
 								if (isset($template->content)) {
 									$template->content->host = $host;
 									$template->content->service = $service;
@@ -2083,12 +1946,12 @@ class Reports_Controller extends Authenticated_Controller
 								$notifications_params = "host=$host&amp;service=$service";
 
 
-								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= $t->_('Availability report for this host');
-								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = $t->_('Availability report for all services');
-								$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = $t->_('Trends');
-								$links[$this->histogram_link . "?" . $histogram_params] 		= $t->_('Alert histogram');
-								$links[$this->history_link . "?" . $history_params] 			= $t->_('Alert history');
-								$links[$this->notifications_link . "?" . $notifications_params] = $t->_('Notifications');
+								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= _('Availability report for this host');
+								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = _('Availability report for all services');
+								$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
+								$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
+								$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
+								$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
 
 								break;
 						}
@@ -2098,13 +1961,13 @@ class Reports_Controller extends Authenticated_Controller
 							$template->trends = $trends_img_params;
 							$template->trends_link = $trends_link_params;
 							$template->source = $data['source'];
-							$template->header_string = sprintf($t->_("State breakdown for %s"), $data['source']);
+							$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
 						}
 					} else {
 						# SLA report
-						$template->header->title = $t->_('SLA breakdown');
+						$template->header->title = _('SLA breakdown');
 						if ($this->create_pdf) {
-							$this->pdf_data['title'] = $t->_('SLA breakdown');
+							$this->pdf_data['title'] = _('SLA breakdown');
 						}
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
@@ -2163,7 +2026,8 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 
-		$this->template->title = $this->translate->_('Reporting » ').($this->type == 'avail' ? $t->_('Availability Report') : $t->_('SLA Report')).(' » Report');
+		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
+		return $template;
 	}
 
 	/**
@@ -2223,7 +2087,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function save()
 	{
 		if(!request::is_ajax()) {
-			$msg = $this->translate->_('Only Ajax calls are supported here');
+			$msg = _('Only Ajax calls are supported here');
 			die($msg);
 		}
 
@@ -2290,11 +2154,11 @@ class Reports_Controller extends Authenticated_Controller
 		$return = false;
 		if ($save_report_settings && $report_name !== false && !empty($obj_value)) {
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
-			$status_msg = $this->report_id ? $this->translate->_("Report was successfully saved") : "";
+			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
 			$return = array('status' => $msg_type, 'status_msg' => $status_msg, 'report_id' => $this->report_id);
 		} else {
-			$return = array('status' => '', 'status_msg' => $this->translate->_('Unable to save this report.'));
+			$return = array('status' => '', 'status_msg' => _('Unable to save this report.'));
 		}
 		echo json::encode($return);
 	}
@@ -2365,8 +2229,8 @@ class Reports_Controller extends Authenticated_Controller
 		$graph->set_data($barvalues);
 		$graph->set_margins(7, 20);
 		$graph->set_approx_line_gap(50);
-		$graph->set_legend_y($this->translate->_('Percent (%)'));
-		$graph->set_legend_x($this->translate->_('Period'));
+		$graph->set_legend_y(_('Percent (%)'));
+		$graph->set_legend_x(_('Period'));
 
 		$graph->draw();
 		if (!is_null($path)) {
@@ -2401,9 +2265,8 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$this->template->content = $this->add_view('reports/reports_module');
 		$template = $this->template->content;
-		$template->error_msg  = $this->translate->_('Some parts in your setup is apparently missing.');
-		$template->label_missing_objects = false;
-		$template->info = $this->translate->_("make sure you install the latest version of merlin");
+		$template->error_msg  = _('Some parts in your setup is apparently missing.');
+		$template->info = _("make sure you install the latest version of merlin");
 	}
 
 	/**
@@ -2519,7 +2382,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup, $filename = false, $folder = false)
 	{
 		if (empty($data_arr)) {
-			return sprintf($this->translate->_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
+			return sprintf(_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
 		}
 		$this->auto_render=false;
 
@@ -2691,37 +2554,33 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$report_periods = false;
 		$selected = false;
-		$t = $this->translate;
-		$label_lastmonth = $t->_('Last Month');
-		$label_thisyear = $t->_('This Year');
-		$label_lastyear = $t->_('Last Year');
 
 		switch ($type) {
 			case 'avail':
 				$report_periods = array(
-					"today" => $t->_('Today'),
-					"last24hours" => $t->_('Last 24 Hours'),
-					"yesterday" => $t->_('Yesterday'),
-					"thisweek" => $t->_('This Week'),
-					"last7days" => $t->_('Last 7 Days'),
-					"lastweek" => $t->_('Last Week'),
-					"thismonth" => $t->_('This Month'),
-					"last31days" => $t->_('Last 31 Days'),
-					"lastmonth"	=> $label_lastmonth,
-					"thisyear" => $label_thisyear,
-					"lastyear" => $label_lastyear
+					"today" => _('Today'),
+					"last24hours" => _('Last 24 Hours'),
+					"yesterday" => _('Yesterday'),
+					"thisweek" => _('This Week'),
+					"last7days" => _('Last 7 Days'),
+					"lastweek" => _('Last Week'),
+					"thismonth" => _('This Month'),
+					"last31days" => _('Last 31 Days'),
+					"lastmonth" => _('Last Month'),
+					"thisyear" => _('This Year'),
+					"lastyear" => _('Last Year')
 				);
 				$selected = 'last7days';
 				break;
 			case 'sla':
 				$report_periods = array(
-					"thisyear" => $label_thisyear,
-					"lastyear" => $label_lastyear,
-					"lastmonth" => $label_lastmonth,
-					"last3months" => $t->_('Last 3 Months'),
-					"last6months" => $t->_('Last 6 months'),
-					"lastquarter" => $t->_('Last Quarter'),
-					"last12months" => $t->_('Last 12 months')
+					"thisyear" => _('This Year'),
+					"lastyear" => _('Last Year'),
+					"lastmonth" => _('Last Month'),
+					"last3months" => _('Last 3 Months'),
+					"last6months" => _('Last 6 months'),
+					"lastquarter" => _('Last Quarter'),
+					"last12months" => _('Last 12 months')
 				);
 				$selected = 'thisyear';
 				break;
@@ -3154,7 +3013,7 @@ class Reports_Controller extends Authenticated_Controller
 
 			foreach ($options as $var => $new_var) {
 				if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
-					$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
+					$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
 						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
 				}
 			}
@@ -3164,7 +3023,7 @@ class Reports_Controller extends Authenticated_Controller
 					foreach ($set as $dep => $key)
 						if (!$report_class->set_option($key, $_REQUEST[$dep])) {
 							$err_msg .= "Could not set option '".$key."' to '".$_REQUEST[$dep]."'<br />";
-							$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
+							$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
 								$key, $_REQUEST[$dep])."'<br />";
 						}
 
@@ -3266,7 +3125,7 @@ class Reports_Controller extends Authenticated_Controller
 			$rpt_class = new Reports_Model();
 			foreach ($options as $var => $new_var) {
 				if (!$rpt_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
-					$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
+					$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
 						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
 				}
 			}
@@ -3274,7 +3133,7 @@ class Reports_Controller extends Authenticated_Controller
 				if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check]))
 					foreach ($set as $dep => $key)
 						if (!$rpt_class->set_option($key, $_REQUEST[$dep]))
-							$err_msg .= sprintf($this->translate->_("Could not set option '%s' to %s'"),
+							$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
 								$key, $_REQUEST[$dep])."'<br />";
 
 			$rpt_class->set_option(substr($type, 0, strlen($type)).'_name', $$type);
@@ -3415,7 +3274,7 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 		$return .= form::hidden('csvoutput', 1);
-		$label = $this->translate->_('Download report as CSV');
+		$label = _('Download report as CSV');
 		$return .= "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png').
 			"' alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: 13px; background: none; margin-right: 7px' /></div></form>\n";
 		return $return;
@@ -3519,7 +3378,7 @@ class Reports_Controller extends Authenticated_Controller
 		$showlog = showlog::get_path();
 
 		if ($showlog === false) {
-			die($this->translate->_('Unable to find the showlog executable'));
+			die(_('Unable to find the showlog executable'));
 		}
 
 		if (PHP_SAPI !== 'cli') {
@@ -3584,7 +3443,7 @@ class Reports_Controller extends Authenticated_Controller
 		$ok = Scheduled_reports_Model::edit_report($report_id, $rep_type, $saved_report_id, $period, $recipients, $filename, $description, $local_persistent_filepath);
 
 		if (!is_int($ok)) {
-			return json::fail(sprintf($this->translate->_("An error occurred when saving scheduled report (%s)"), $ok));
+			return json::fail(sprintf(_("An error occurred when saving scheduled report (%s)"), $ok));
 		}
 		return json::ok(array('id' => $ok));
 	}
@@ -3601,7 +3460,7 @@ class Reports_Controller extends Authenticated_Controller
 	public function _get_pdf_link($report, $user_url=false, $user_options=false, $user_action_url=false)
 	{
 		$pdf_img_src = $this->add_path('icons/32x32/page-pdf.png');
-		$pdf_img_alt = $this->translate->_('Show as pdf');
+		$pdf_img_alt = _('Show as pdf');
 
 		$default_filename = 'report.pdf';
 		$default_options = array
@@ -3689,11 +3548,11 @@ class Reports_Controller extends Authenticated_Controller
 		global $l; # required for tcpdf
 
 		if (isset($l['w_page'])) { # use ninja translation
-			$l['w_page'] = $this->translate->_('Page');
+			$l['w_page'] = _('Page');
 		}
 
 		if (isset($l['w_op5'])) { # use ninja translation
-			$l['w_op5'] = $this->translate->_('This report is produced by op5 Monitor.');
+			$l['w_op5'] = _('This report is produced by op5 Monitor.');
 		}
 
 		$type = $this->type;
@@ -3701,7 +3560,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : $this->translate->_('Ninja PDF Report');
+		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : _('Ninja PDF Report');
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
 		$pdf->SetAuthor('Ninja4Nagios');
@@ -3761,7 +3620,7 @@ class Reports_Controller extends Authenticated_Controller
 						$image_string .= '<table border="1" cellpadding="5" style="width: 326px">';
 						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
 						$images[] = $img; # store absolute path to file for later removal
-						$image_string .= '<tr><td style="font-size: 0.9em; background-color: #f4f4f4; font-weight: bold">'.($this->translate->_('Status Overview').': '.$data_str[$i]['host']).'</td></tr>'.
+						$image_string .= '<tr><td style="font-size: 0.9em; background-color: #f4f4f4; font-weight: bold">'.(_('Status Overview').': '.$data_str[$i]['host']).'</td></tr>'.
 						  '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
 						$image_string .= '</table>';
 						$image_string .= ($i%2 == 0) ? '</td>' : '</td></tr></table>';
@@ -3916,7 +3775,7 @@ class Reports_Controller extends Authenticated_Controller
 				$report_class = new Reports_Model();
 				foreach (self::$options as $var => $new_var) {
 					if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-						$this->err_msg .= sprintf($this->translate->_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var));
+						$this->err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var));
 					}
 				}
 
@@ -3925,7 +3784,7 @@ class Reports_Controller extends Authenticated_Controller
 					if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check])) {
 						foreach ($set as $dep => $key) {
 							if (!$report_class->set_option($key, $_REQUEST[$dep])) {
-								$this->err_msg .= sprintf($this->translate->_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep]);
+								$this->err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep]);
 							}
 						}
 					}
@@ -4141,7 +4000,7 @@ class Reports_Controller extends Authenticated_Controller
 					$host_name = $member_parts[0];
 					$host_alias = $this->_get_host_alias($host_name);
 					$service_description = $member_parts[1];
-					$member = sprintf($this->translate->_('%s on %s(%s)'), $service_description, $host_alias, $host_alias);
+					$member = sprintf(_('%s on %s(%s)'), $service_description, $host_alias, $host_alias);
 				}
 			} else {
 				$host_alias = $this->_get_host_alias($member);
@@ -4211,74 +4070,72 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-
 		$nagios_etc_path = Kohana::config('config.nagios_etc_path');
 		$nagios_etc_path = $nagios_etc_path !== false ? $nagios_etc_path : Kohana::config('config.nagios_base_path').'/etc';
 
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'filter' => $translate->_("Free text search, matching the objects in the left list below"),
-			'report-type' => $translate->_("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
+			'filter' => _("Free text search, matching the objects in the left list below"),
+			'report-type' => _("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
 				"To include objects of the given type in the report, select the objects from the left list and click on ".
 				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
 				"and click on the left pointing arrow."),
-			'report_time_period' => $translate->_("What time should the report be created for. Tip: This can be used for SLA reporting."),
-			'scheduled_downtime' => $translate->_("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
-			'initial_states' => sprintf($translate->_("Whether to assume logging of initial states or not. Default values are YES. ".
+			'report_time_period' => _("What time should the report be created for. Tip: This can be used for SLA reporting."),
+			'scheduled_downtime' => _("Select if downtime that occurred during scheduled downtime should be counted as the actual state, as uptime, or if it should be counted as uptime but also showing the difference that makes."),
+			'initial_states' => sprintf(_("Whether to assume logging of initial states or not. Default values are YES. ".
 				"%sFor advanced users the value can be modified by editing the nagios.cfg config file located in the %s directory."), '<br /><br />', $nagios_etc_path),
-			'first_assumed_host' => $translate->_("If there is no information about the host or service in the current log file, ".
+			'first_assumed_host' => _("If there is no information about the host or service in the current log file, ".
 				"the status of the host/service will be assumed. Default value is &quot;First Real State&quot;."),
-			'first_assumed_service' => $translate->_("If there is no information about the host or service in the current log file, ".
+			'first_assumed_service' => _("If there is no information about the host or service in the current log file, ".
 				"the status of the host/service will be assumed. Default value is &quot;First Real State&quot;."),
-			'stated_during_downtime' => $translate->_("If the application is not running for some time during a report period we can by this ".
+			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime. Default value is YES."),
-			'include_soft_states' => $translate->_("A problem is classified as a SOFT problem until the number of checks has reached the ".
+			'include_soft_states' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
 				"configured max_check_attempts value. When max_check_attempts is reached the problem is reclassified as HARD."),
-			'use_average' => sprintf($translate->_("What calculation method to use for the report. %s".
+			'use_average' => sprintf(_("What calculation method to use for the report. %s".
 				"Traditional Availability reports are based on group availability (worst case). An alternative way is to use average values for ".
 				"the group or object in question. Note that using average values are by some, considered %s not %s to be actual SLA."), '<br /><br />', '<b>', '</b>'),
-			'use_alias' => $translate->_("Select if you would like to see host aliases in the generated reports instead of just the host_name"),
-			'csv_format' => $translate->_("The CSV (comma-separated values) format is a file format that stores tabular data. This format is supported ".
+			'use_alias' => _("Select if you would like to see host aliases in the generated reports instead of just the host_name"),
+			'csv_format' => _("The CSV (comma-separated values) format is a file format that stores tabular data. This format is supported ".
 				"by many applications such as MS Excel, OpenOffice and Google Spreadsheets."),
-			'save_report' => $translate->_("Check this box if you want to save the configured report for later use."),
-			'reporting_period' => $translate->_("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
+			'save_report' => _("Check this box if you want to save the configured report for later use."),
+			'reporting_period' => _("Choose from a set of predefined report periods or choose &quot;CUSTOM REPORT PERIOD&quot; ".
 				"to manually specify Start and End date."),
-			'enter-sla' => $translate->_("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
-			'report_settings_sml' => $translate->_("Here you can modify the report settings for the report you are currently viewing."),
-			'cluster_mode' => $translate->_("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
-			'log_entries' => $translate->_("Shows the actual log messages that this report was created of."),
-			'hostgroup_breakdown' => $translate->_("Here you have a list of all hosts that are member of this hostgroup and their states."),
-			'servicegroup_breakdown' => $translate->_("Here you have a list of all services that are member of this servicegroup and their states."),
-			'average_and_sla' => $translate->_("Shows the Average and SLA values for all selected services above."), // text ok?
-			'availability' => $translate->_("This table shows a breakdown of the different states. How much time that was ok, warning, unknown, critical or undetermined in both actual time and percent. Time is also divied between uncheduled and scheduled which helps you to separate unplanned and planned events."),
-			'piechart' => $translate->_("Pie chart that displays how much time in percent that was ok, warning, unknown, critical or undetermined."),
-			'sla_graph' => $translate->_("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled."),
-			'sla_breakdown' => $translate->_("Breakdown of the SLA report in actual figures."),
-			'sla_group_members' => $translate->_("Members of the selected group that the report is generated for. All members are links to individual reports."),
-			'trends' => $translate->_("Shows trends during selected report period"),
-			'saved_reports' => $translate->_("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
-			'use-sla-values' => $translate->_("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
+			'enter-sla' => _("Enter the selected SLA values for each month. Percent values (0.00-100.00) are assumed."),
+			'report_settings_sml' => _("Here you can modify the report settings for the report you are currently viewing."),
+			'cluster_mode' => _("When creating a report in cluster mode, the group logic is reversed so that the OK/UP time is calculated using the most positive service/host state of the selected objects."),
+			'log_entries' => _("Shows the actual log messages that this report was created of."),
+			'hostgroup_breakdown' => _("Here you have a list of all hosts that are member of this hostgroup and their states."),
+			'servicegroup_breakdown' => _("Here you have a list of all services that are member of this servicegroup and their states."),
+			'average_and_sla' => _("Shows the Average and SLA values for all selected services above."), // text ok?
+			'availability' => _("This table shows a breakdown of the different states. How much time that was ok, warning, unknown, critical or undetermined in both actual time and percent. Time is also divied between uncheduled and scheduled which helps you to separate unplanned and planned events."),
+			'piechart' => _("Pie chart that displays how much time in percent that was ok, warning, unknown, critical or undetermined."),
+			'sla_graph' => _("Graphical report of the SLA. Green bars meens that the SLA was fulfilled and red that it was not fulfilled."),
+			'sla_breakdown' => _("Breakdown of the SLA report in actual figures."),
+			'sla_group_members' => _("Members of the selected group that the report is generated for. All members are links to individual reports."),
+			'trends' => _("Shows trends during selected report period"),
+			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
+			'use-sla-values' => _("Load SLA-values from previously saved reports. Just select a report in the list and it will autoload."),
 
 			// new scheduled report
-			'report-type-save' => $translate->_("Select what type of report you would like to schedule the creation of"),
-			'select-report' => $translate->_("Select which report you want to you want to schedule"), // text ok?
-			'report' => $translate->_("Select the saved report to schedule"),
-			'interval' => $translate->_("Select how often the report is to be produced and delivered"),
-			'recipents' => $translate->_("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
-			'filename' => $translate->_("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
-			'description' => $translate->_("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
-			'start-date' => $translate->_("Enter the start date for the report (or use the pop-up calendar)."),
-			'end-date' => $translate->_("Enter the end date for the report (or use the pop-up calendar)."),
-			'local_persistent_filepath' => '<p>'.$translate->_("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'.$translate->_("This should be the location of a folder, for example /tmp").'</p>',
-			'include_trends' => '<p>'.$translate->_("Include a trends graph in your report.").'</p>',
-			'status_to_display' => $translate->_('Uncheck a status to exclude log entries of that kind from the report.')
+			'report-type-save' => _("Select what type of report you would like to schedule the creation of"),
+			'select-report' => _("Select which report you want to you want to schedule"), // text ok?
+			'report' => _("Select the saved report to schedule"),
+			'interval' => _("Select how often the report is to be produced and delivered"),
+			'recipents' => _("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
+			'filename' => _("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
+			'description' => _("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
+			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
+			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
+			'local_persistent_filepath' => '<p>'._("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'._("This should be the location of a folder, for example /tmp").'</p>',
+			'include_trends' => '<p>'._("Include a trends graph in your report.").'</p>',
+			'status_to_display' => _('Uncheck a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
 		} else
-			echo sprintf($translate->_("This helptext ('%s') is yet not translated"), $id);
+			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
 	}
 
 	public function _convert_special_chars($str=false) {
@@ -4358,7 +4215,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		if (!$tmp_parts) {
 			# @@@FIXME: inform user via jGrowl and echo old value somehow?
-			echo $this->translate->_("Required data is missing, unable to save changes");
+			echo _("Required data is missing, unable to save changes");
 			return false;
 		}
 
@@ -4373,7 +4230,7 @@ class Reports_Controller extends Authenticated_Controller
 			case 'local_persistent_filepath':
 				$new_value = trim($new_value);
 				if(!empty($new_value) && !is_writable(rtrim($new_value, '/').'/')) {
-					echo $this->translate->_("Can't write to '$new_value'. Provide another path.")."<br />";
+					echo _("Can't write to '$new_value'. Provide another path.")."<br />";
 					return;
 				}
 				break;
@@ -4398,8 +4255,8 @@ class Reports_Controller extends Authenticated_Controller
 				if (is_array($recipient) && !empty($recipient)) {
 					foreach ($recipient as $recip) {
 						if (strlen($recip) < 6 || !preg_match("/.+@.+/", $recip)) {
-							echo '<a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">';
-							echo sprintf($this->translate->_("'%s' is not a valid email address.%sClick here to restore saved value."), $recip, '<br />')."\n</a>";
+							echo '<a title="'._('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">';
+							echo sprintf(_("'%s' is not a valid email address.%sClick here to restore saved value."), $recip, '<br />')."\n</a>";
 							return;
 						}
 					}
@@ -4407,8 +4264,8 @@ class Reports_Controller extends Authenticated_Controller
 				break;
 			case 'filename': // remove spaces
 				if (strlen($new_value)>40) {
-					echo sprintf($this->translate->_('The entered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
-						$this->translate->_('Please').' <a title="'.$this->translate->_('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'.$this->translate->_('click here').'</a> '.$this->translate->_('to view saved value').'.';
+					echo sprintf(_('The entered value is too long. Only 40 chars allowed for filename.%sValue %s not %s modified!'), '<br />', '<strong>', '</strong>').'<br />' .
+						_('Please').' <a title="'._('Fetch saved value').'" href="#" onclick="fetch_field_value(\''.$field.'\', '.$report_id.', \''.$_REQUEST['elementid'].'\');">'._('click here').'</a> '._('to view saved value').'.';
 					exit;
 				}
 				$new_value = $this->_convert_special_chars($new_value);
@@ -4419,7 +4276,7 @@ class Reports_Controller extends Authenticated_Controller
 		$ok = Scheduled_reports_Model::update_report_field($report_id, $field, $new_value);
 
 		if ($ok!==true) {
-			echo $this->translate->_('An error occurred')."<br />";
+			echo _('An error occurred')."<br />";
 			return;
 		}
 		/*
@@ -4444,7 +4301,7 @@ class Reports_Controller extends Authenticated_Controller
 			case 'report_id':
 				$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
 				if (!$report_type) {
-					echo $this->translate->_("Unable to determine type for selected report");
+					echo _("Unable to determine type for selected report");
 				} else {
 					$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
 					if (count($saved_reports)!=0) {
@@ -4457,7 +4314,7 @@ class Reports_Controller extends Authenticated_Controller
 							}
 						}
 					} else {
-						echo $this->translate->_("Unable to fetch list of saved reports");
+						echo _("Unable to fetch list of saved reports");
 					}
 				}
 				break;
@@ -4492,7 +4349,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (Scheduled_reports_Model::delete_scheduled_report($id)) {
 			echo "OK";
 		} else {
-			echo $this->translate->_('An error occurred - unable to delete selected schedule');
+			echo _('An error occurred - unable to delete selected schedule');
 		}
 	}
 
@@ -4605,7 +4462,7 @@ class Reports_Controller extends Authenticated_Controller
 		$hours = ($duration % 86400) / 3600;
 		$minutes = ($duration % 3600) / 60;
 		$seconds = ($duration % 60);
-		printf("%s: %dd %dh %dm %ds", $this->translate->_("Duration"),
+		printf("%s: %dd %dh %dm %ds", _("Duration"),
 			   $days, $hours, $minutes, $seconds);
 
 		# we needan extra break in case of PDF
@@ -4629,13 +4486,12 @@ class Reports_Controller extends Authenticated_Controller
 			$table_border = ' border="1"';
 		}
 
-		$t = $this->translate;
 		echo "<br /><table class=\"host_alerts\"><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".$topic.' '.$t->_('for').' '.$name."</caption>".$spacer;
-		echo "<th class=\"headerNone\">" . $t->_('State') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Soft Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Hard Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . $t->_('Total Alerts') . "</th>\n";
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
+		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";
+		echo "<th class=\"headerNone\">" . _('Soft Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . _('Hard Alerts') . "</th>\n";
+		echo "<th class=\"headerNone\">" . _('Total Alerts') . "</th>\n";
 		echo "</tr>\n";
 
 		$total = array(0, 0); # soft and hard

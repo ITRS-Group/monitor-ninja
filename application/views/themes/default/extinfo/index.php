@@ -4,7 +4,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 ?>
 <div class="widget left w33" id="page_links">
 	<ul>
-	<li><?php echo $this->translate->_('View').', '.$label_view_for.':'; ?></li>
+	<li><?php echo _('View').', '.$label_view_for.':'; ?></li>
 	<?php
 	if (isset($page_links)) {
 		foreach ($page_links as $label => $link) {
@@ -45,12 +45,12 @@ if (!empty($widgets)) {
 			}
 		?>
 		<tr>
-			<td class="white" style="width: 80px"><strong><?php echo $this->translate->_('Address');?></strong></td>
+			<td class="white" style="width: 80px"><strong><?php echo _('Address');?></strong></td>
 			<td class="white"><?php echo isset($host_address) ? $host_address : ''; ?></td>
 		</tr>
 		<?php if ($parents !== false && count($parents)) { ?>
 		<tr>
-			<td class="white"><strong><?php echo $label_parents ?></strong></td>
+			<td class="white"><strong><?php echo _('Parents') ?></strong></td>
 			<td class="white">
 				<?php
 					$cnt = 0;
@@ -68,20 +68,20 @@ if (!empty($widgets)) {
 			<td class="white" style="white-space: normal"><?php echo !empty($groups) ? implode(', ', $groups) : $no_group_lable ?></td>
 		</tr>
 		<tr>
-			<td class="white"><strong><?php echo $label_notifies_to ?></strong></td>
+			<td class="white"><strong><?php echo _('Notifies to') ?></strong></td>
 			<td class="white">
 				<?php	if (!empty($contactgroups)) {
 					$c = 0;
 					foreach ($contactgroups as $cgroup) {
-						echo '<a title="'.$label_contactgroup.': '.$cgroup.', '.$lable_click_to_view.'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.$c.'">';
+						echo '<a title="'._('Contactgroup').': '.$cgroup.', '._('Click to view contacts').'" class="extinfo_contactgroup" id="extinfo_contactgroup_'.$c.'">';
 						echo $cgroup.'</a>';
 				?>
 				<table id="extinfo_contacts_<?php echo $c ?>" style="display:none;width:75%" class="extinfo_contacts">
 					<tr>
-						<th style="border: 1px solid #cdcdcd"><?php echo $lable_contact_name ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $lable_contact_alias ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $lable_contact_email ?></th>
-						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo $label_pager ?></th>
+						<th style="border: 1px solid #cdcdcd"><?php echo _('Contact name') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Alias') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Email') ?></th>
+						<th style="border: 1px solid #cdcdcd; border-left: 0px"><?php echo _('Pager') ?></th>
 					</tr>
 					<?php	foreach ($contacts[$cgroup] as $cmember) { ?>
 					<tr class="<?php echo ($c%2 == 0) ? 'even' : 'odd' ?>">
@@ -96,14 +96,14 @@ if (!empty($widgets)) {
 						$c++; 	# and extinfo_contactgroup_ table cells
 					}
 				} else {
-					echo $label_no_contactgroup;
+					echo _('No contactgroup');
 				}
 			?>
 			</td>
 		</tr>
 		<?php if (!empty($notes)) {?>
 		<tr>
-			<td class="white"><strong><?php echo $label_notes ?></strong></td>
+			<td class="white"><strong><?php echo _('Notes') ?></strong></td>
 			<td class="white"><?php echo $notes ?></td>
 		</tr>
 		<?php } ?>
@@ -112,13 +112,13 @@ if (!empty($widgets)) {
 				<?php
 					if (!empty($action_url)) {
 						echo '<a href="'.$action_url.'" style="border: 0px" target="'.$action_url_target.'">';
-						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => $this->translate->_('Perform extra host actions'),'title' => $this->translate->_('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a href="'.$action_url.'" target="'.$action_url_target.'">'.$label_action_url.'</a>';
+						echo html::image($this->add_path('icons/16x16/host-actions.png'),array('alt' => _('Perform extra host actions'),'title' => _('Perform extra host actions'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a href="'.$action_url.'" target="'.$action_url_target.'">'._('Extra actions').'</a>';
 					}
 					if (!empty($notes_url)) {
 						echo '&nbsp; <a target="'.$notes_url_target.'" href="'.$notes_url.'" style="border: 0px">';
-						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => $this->translate->_('View extra host notes'),'title' => $this->translate->_('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
-						echo '<a target="'.$notes_url_target.'" href="'.$notes_url.'">'.$label_notes_url.'</a>';
+						echo html::image($this->add_path('icons/16x16/host-notes.png'),array('alt' => _('View extra host notes'),'title' => _('View extra host notes'),'style' => 'margin: 1px 5px 0px 0px')).'</a>';
+						echo '<a target="'.$notes_url_target.'" href="'.$notes_url.'">'._('Extra notes').'</a>';
 					}
 					foreach ($extra_action_links as $label => $ary) {
 						$img_class = isset($ary['img_class']) ? ' class="'.$ary['img_class'].'"' : '';
@@ -151,7 +151,7 @@ if (!empty($widgets)) {
 			<td style="width: 160px" class="dark bt"><?php echo $lable_current_status ?></td>
 			<td class="bt">
 				<span class="status-<?php echo strtolower($current_status_str) ?>"><?php echo ucfirst(strtolower($current_status_str)) ?></span>
-				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : $na_str ?>)
+				(<?php echo $lable_for ?> <?php echo $duration ? time::to_string($duration) : _('N/A') ?>)
 			</td>
 		</tr>
 		<tr>
@@ -168,7 +168,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_check ?></td>
-			<td><?php echo $last_check ? date($date_format_str, $last_check) : $na_str ?></td>
+			<td><?php echo $last_check ? date($date_format_str, $last_check) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_check_type ?></td>
@@ -182,11 +182,11 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_next_scheduled_check ?></td>
-			<td><?php echo $next_check && $active_checks_enabled_val ? date($date_format_str, $next_check) : $na_str ?></td>
+			<td><?php echo $next_check && $active_checks_enabled_val ? date($date_format_str, $next_check) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_state_change ?></td>
-			<td><?php echo $last_state_change ? date($date_format_str, $last_state_change) : $na_str ?></td>
+			<td><?php echo $last_state_change ? date($date_format_str, $last_state_change) : _('N/A') ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_notification ?></td>
@@ -206,7 +206,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_last_update ?></td>
-			<td><?php echo $last_update ? date($date_format_str, $last_update) : $na_str ?> <?php echo $last_update_ago ?></td>
+			<td><?php echo $last_update ? date($date_format_str, $last_update) : _('N/A') ?> <?php echo $last_update_ago ?></td>
 		</tr>
 		<tr>
 			<td  class="dark" style="width: 160px"><?php echo $lable_active_checks ?></td>

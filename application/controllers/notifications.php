@@ -36,22 +36,21 @@ class Notifications_Controller extends Authenticated_Controller {
 			13 => array(nagstat::HOST_NOTIFICATION,false,nagstat::NOTIFICATION_HOST_FLAP), // host flapping ?
 		);
 
-		$t = $this->translate;
 		$this->select_strings = array(
-			0  => $t->_('All notifications'),
-			1  => $t->_('All service notifications'),
-			2  => $t->_('All host notifications'),
-			3  => $t->_('Service acknowledgements'),
-			4  => $t->_('Service warning'),
-			5  => $t->_('Service uknown'),
-			6  => $t->_('Service critical'),
-			7  => $t->_('Service recovery'),
-			8  => $t->_('Service flapping'),
-			9  => $t->_('Host acknowledgements'),
-			10 => $t->_('Host down'),
-			11 => $t->_('Host unreachable'),
-			12 => $t->_('Host recoverys'),
-			13 => $t->_('Host flapping'),
+			0  => _('All notifications'),
+			1  => _('All service notifications'),
+			2  => _('All host notifications'),
+			3  => _('Service acknowledgements'),
+			4  => _('Service warning'),
+			5  => _('Service uknown'),
+			6  => _('Service critical'),
+			7  => _('Service recovery'),
+			8  => _('Service flapping'),
+			9  => _('Host acknowledgements'),
+			10 => _('Host down'),
+			11 => _('Host unreachable'),
+			12 => _('Host recoverys'),
+			13 => _('Host flapping'),
 		);
 
 	}
@@ -73,8 +72,6 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 
-		$t = $this->translate;
-
 		if ($type != '') {
 			$value = $this->select_types[$type];
 			$note_model->where = ($value[0] === false ? '' : " notification_type = '".$value[0]."'").($value[1] === false ? '' : " AND state = '".$value[1]."'").($value[2] === false ? '' : " AND reason_type = '".$value[2]."'");
@@ -90,12 +87,12 @@ class Notifications_Controller extends Authenticated_Controller {
 		$result = $note_model->show_notifications($items_per_page, $offset, false);
 
 		$header_link_fields = array(
-			array('title' => $t->_('Host'),'sort_field_db' => 'host_name'),
-			array('title' => $t->_('Service'),'sort_field_db' => 'service_description'),
-			array('title' => $t->_('Time'), 'sort_field_db' => 'start_time'),
-			array('title' => $t->_('Contact'), 'sort_field_db' => 'contact_name'),
-			array('title' => $t->_('Notification command'), 'sort_field_db' => 'command_name'),
-			array('title' => $t->_('Information'), 'sort_field_db' => 'output')
+			array('title' => _('Host'),'sort_field_db' => 'host_name'),
+			array('title' => _('Service'),'sort_field_db' => 'service_description'),
+			array('title' => _('Time'), 'sort_field_db' => 'start_time'),
+			array('title' => _('Contact'), 'sort_field_db' => 'contact_name'),
+			array('title' => _('Notification command'), 'sort_field_db' => 'command_name'),
+			array('title' => _('Information'), 'sort_field_db' => 'output')
 		);
 
 		$header = false;
@@ -103,20 +100,19 @@ class Notifications_Controller extends Authenticated_Controller {
 		foreach ($header_link_fields as $field) {
 			$header_links[$i]['title'] = $field['title'];
 			$header_links[$i]['url_asc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'];
-			$header_links[$i]['alt_asc'] = $t->_('Sort by').' '.$t->_('last').' '.$field['title'].' ('.$t->_('ascending').')';
+			$header_links[$i]['alt_asc'] = _('Sort by').' '._('last').' '.$field['title'].' ('._('ascending').')';
 			$header_links[$i]['url_desc'] = Router::$controller.'/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'];
-			$header_links[$i]['alt_desc'] = $t->_('Sort by').' '.$field['title'].' ('.$t->_('descending').')';
+			$header_links[$i]['alt_desc'] = _('Sort by').' '.$field['title'].' ('._('descending').')';
 			$i++;
 		}
 
-		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
+		$this->template->title = _('Reporting').' » '._('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->data = $result;
 		$this->template->content->header_links = $header_links;
 		$this->template->content->noheader = $noheader;
 		$this->template->content->query_type = $query_type;
 		$this->template->content->type = $type;
-		$this->template->content->na_str = $this->translate->_('N/A');
 		$this->template->content->service = false;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->select_strings = $this->select_strings;
@@ -136,8 +132,6 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = $this->add_path('notifications/js/notifications.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
-
-		$t = $this->translate;
 
 		$service = urldecode($this->input->get('service', $service));
 		$host_name = urldecode($this->input->get('host_name', $host_name));
@@ -169,12 +163,12 @@ class Notifications_Controller extends Authenticated_Controller {
 		$result = $note_model->show_notifications($items_per_page, $offset, false);
 
 		$header_link_fields = array(
-			array('title' => $t->_('Host'),'sort_field_db' => 'host_name'),
-			array('title' => $t->_('Service'),'sort_field_db' => 'service_description'),
-			array('title' => $t->_('Time'), 'sort_field_db' => 'start_time'),
-			array('title' => $t->_('Contact'), 'sort_field_db' => 'contact_name'),
-			array('title' => $t->_('Notification command'), 'sort_field_db' => 'command_name'),
-			array('title' => $t->_('Information'), 'sort_field_db' => 'output')
+			array('title' => _('Host'),'sort_field_db' => 'host_name'),
+			array('title' => _('Service'),'sort_field_db' => 'service_description'),
+			array('title' => _('Time'), 'sort_field_db' => 'start_time'),
+			array('title' => _('Contact'), 'sort_field_db' => 'contact_name'),
+			array('title' => _('Notification command'), 'sort_field_db' => 'command_name'),
+			array('title' => _('Information'), 'sort_field_db' => 'output')
 		);
 
 		$header = false;
@@ -182,13 +176,13 @@ class Notifications_Controller extends Authenticated_Controller {
 		foreach ($header_link_fields as $field) {
 			$header_links[$i]['title'] = $field['title'];
 			$header_links[$i]['url_asc'] = Router::$controller.'/host/?type='.$type.'&sort_order='.nagstat::SORT_ASC.'&sort_field='.$field['sort_field_db'].'&amp;host_name='.$host_name.'&amp;service='.urlencode($service);
-			$header_links[$i]['alt_asc'] = $t->_('Sort by').' '.$t->_('last').' '.$field['title'].' ('.$t->_('ascending').')';
+			$header_links[$i]['alt_asc'] = _('Sort by').' '._('last').' '.$field['title'].' ('._('ascending').')';
 			$header_links[$i]['url_desc'] = Router::$controller.'/host/?type='.$type.'&sort_order='.nagstat::SORT_DESC.'&sort_field='.$field['sort_field_db'].'&amp;host_name='.$host_name.'&amp;service='.urlencode($service);
-			$header_links[$i]['alt_desc'] = $t->_('Sort by').' '.$field['title'].' ('.$t->_('descending').')';
+			$header_links[$i]['alt_desc'] = _('Sort by').' '.$field['title'].' ('._('descending').')';
 			$i++;
 		}
 
-		$this->template->title = $t->_('Reporting').' » '.$t->_('Contact Notifications');
+		$this->template->title = _('Reporting').' » '._('Contact Notifications');
 		$this->template->content = $this->add_view('notifications/index');
 		$this->template->content->header_links = $header_links;
 		$this->template->content->data = $result;
@@ -199,7 +193,6 @@ class Notifications_Controller extends Authenticated_Controller {
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->select_strings = $this->select_strings;
 		$this->template->content->selected_val = $type;
-		$this->template->content->na_str = $this->translate->_('N/A');
 		$this->template->content->date_format_str = nagstat::date_format();
 	}
 }

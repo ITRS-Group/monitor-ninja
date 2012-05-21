@@ -89,9 +89,9 @@ foreach ($params as $pname => $ary) {
 		case 'string':
 		default:
 			if ($form_name == 'cmd_param[comment]')
-				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'style' => 'width: 280px'), $dflt, '');
+				echo form::input(array('name' => $form_name, 'title' => _('Required field'), 'style' => 'width: 280px'), $dflt, '');
 			else
-				echo form::input(array('name' => $form_name, 'title' => $this->translate->_('Required field'), 'id' => 'field_'.$pname), $dflt, '');
+				echo form::input(array('name' => $form_name, 'title' => _('Required field'), 'id' => 'field_'.$pname), $dflt, '');
 			break;
 	}
 
@@ -100,9 +100,9 @@ foreach ($params as $pname => $ary) {
 
 echo '<tr><td colspan="'.($use_help ? 2 : 1).'">&nbsp;</td><td>';
 echo form::hidden('requested_command', $requested_command);
-echo form::submit('Commit', $this->translate->_('Submit'), 'class="submit"');
+echo form::submit('Commit', _('Submit'), 'class="submit"');
 if (!empty($params)) {
-	echo " &nbsp;<input type='reset' value='" . $this->translate->_("Reset") . "'>\n";
+	echo " &nbsp;<input type='reset' value='" . _("Reset") . "'>\n";
 }
 echo '</td></tr></table>';
 echo form::close();

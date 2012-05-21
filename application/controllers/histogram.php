@@ -46,86 +46,86 @@ class Histogram_Controller extends Authenticated_Controller
 		parent::__construct();
 		$this->reports_model = new Reports_Model();
 		$this->abbr_month_names = array(
-			$this->translate->_('Jan'),
-			$this->translate->_('Feb'),
-			$this->translate->_('Mar'),
-			$this->translate->_('Apr'),
-			$this->translate->_('May'),
-			$this->translate->_('Jun'),
-			$this->translate->_('Jul'),
-			$this->translate->_('Aug'),
-			$this->translate->_('Sep'),
-			$this->translate->_('Oct'),
-			$this->translate->_('Nov'),
-			$this->translate->_('Dec')
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
 		);
 
 		$this->month_names = array(
-			$this->translate->_('January'),
-			$this->translate->_('February'),
-			$this->translate->_('March'),
-			$this->translate->_('April'),
-			$this->translate->_('May'),
-			$this->translate->_('June'),
-			$this->translate->_('July'),
-			$this->translate->_('August'),
-			$this->translate->_('September'),
-			$this->translate->_('October'),
-			$this->translate->_('November'),
-			$this->translate->_('December')
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
 		);
 
 		$this->abbr_day_names = array(
-			$this->translate->_('Mon'),
-			$this->translate->_('Tue'),
-			$this->translate->_('Wed'),
-			$this->translate->_('Thu'),
-			$this->translate->_('Fri'),
-			$this->translate->_('Sat'),
-			$this->translate->_('Sun')
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat'),
+			_('Sun')
 		);
 
 		$this->day_names = array(
-			$this->translate->_('Monday'),
-			$this->translate->_('Tuesday'),
-			$this->translate->_('Wednesday'),
-			$this->translate->_('Thursday'),
-			$this->translate->_('Friday'),
-			$this->translate->_('Saturday'),
-			$this->translate->_('Sunday')
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday'),
+			_('Sunday')
 		);
 
 		$this->breakdown = array(
-			'monthly' => $this->translate->_('Month'),
-			'dayofmonth' => $this->translate->_('Day of the Month'),
-			'dayofweek' => $this->translate->_('Day of the Week'),
-			'hourly' => $this->translate->_('Hour of the Day')
+			'monthly' => _('Month'),
+			'dayofmonth' => _('Day of the Month'),
+			'dayofweek' => _('Day of the Week'),
+			'hourly' => _('Hour of the Day')
 		);
 
 		#statetypes
 		$this->statetypes = array(
-			3 => $this->translate->_("Hard and Soft States"),
-			2 => $this->translate->_("Hard States"),
-			1 => $this->translate->_("Soft States")
+			3 => _("Hard and Soft States"),
+			2 => _("Hard States"),
+			1 => _("Soft States")
 		);
 
 		#hoststates
 		$this->hoststates = array(
-			7 => $this->translate->_("All Host Events"),
-			6 => $this->translate->_("Host Problem Events"),
-			1 => $this->translate->_("Host Up Events"),
-			2 => $this->translate->_("Host Down Events"),
-			4 => $this->translate->_("Host Unreachable Events")
+			7 => _("All Host Events"),
+			6 => _("Host Problem Events"),
+			1 => _("Host Up Events"),
+			2 => _("Host Down Events"),
+			4 => _("Host Unreachable Events")
 		);
 
 		#servicestates
 		$this->servicestates = array(
-			15 => $this->translate->_("All Service Events"),
-			14 => $this->translate->_("Service Problem Events"),
-			1 => $this->translate->_("Service Ok Events"),
-			2 => $this->translate->_("Service Warning Events"),
-			4 => $this->translate->_("Service Critical Events"),
-			8 => $this->translate->_("Service Unknown Events"),
+			15 => _("All Service Events"),
+			14 => _("Service Problem Events"),
+			1 => _("Service Ok Events"),
+			2 => _("Service Warning Events"),
+			4 => _("Service Critical Events"),
+			8 => _("Service Unknown Events"),
 		);
 
 	}
@@ -141,7 +141,6 @@ class Histogram_Controller extends Authenticated_Controller
 		}
 
 		$this->template->disable_refresh = true;
-		$t = $this->translate;
 		$this->template->content = $this->add_view('histogram/setup');
 		$template = $this->template->content;
 
@@ -161,13 +160,9 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->js_strings .= reports::js_strings();
-		$this->js_strings .= "var _reports_error = '".$t->_('Error')."';\n";
+		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 
-		$template->label_create_new = $this->translate->_('Event History Report');
-		$template->label_standardreport = $this->translate->_('Standard Reports');
-		$template->label_report_mode = $this->translate->_('Report Mode');
-		$template->label_report_mode_standard = $this->translate->_('Standard');
-		$template->label_report_mode_custom = $this->translate->_('Custom');
+		$template->label_create_new = _('Event History Report');
 
 		# fetch users date format in PHP style so we can use it
 		# in date() below
@@ -194,25 +189,9 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_start_date."\n";
 		$this->inline_js .= "set_selection($('#report_type').val());\n";
 
-		$template->label_rpttimeperiod = $t->_('Report Period');
-		$template->label_startdate = $t->_('Start Date');
-		$template->label_enddate = $t->_('End Date');
-		$template->label_events_to_graph = $t->_('Events To Graph');
-		$template->label_breakdown = $t->_('Statistics Breakdown');
-		$template->label_newstatesonly = $t->_('Ignore Repeated States');
-		$template->label_statetypes_to_graph = $t->_('State Types To Graph');
-		$template->label_create_report = $t->_('Create Report!');
-		$template->label_select = $t->_('Select');
-		$template->label_startdate_selector = $t->_('Date Start selector');
-		$template->label_enddate_selector = $t->_('Date End selector');
-		$template->label_click_calendar = $t->_('Click calendar to select date');
-		$template->label_hostgroups = $t->_('Hostgroups');
-		$template->label_hosts = $t->_('Hosts');
-		$template->label_servicegroups = $t->_('Servicegroups');
-		$template->label_services = $t->_('Services');
-		$template->label_available = $t->_('Available');
-		$template->label_selected = $t->_('Selected');
-		$label_custom_period = $t->_('CUSTOM REPORT PERIOD');
+		$template->label_events_to_graph = _('Events To Graph');
+		$template->label_breakdown = _('Statistics Breakdown');
+		$label_custom_period = _('CUSTOM REPORT PERIOD');
 
 		# timeperiod
 		$report_period_strings = Reports_Controller::_report_period_strings();
@@ -229,7 +208,7 @@ class Histogram_Controller extends Authenticated_Controller
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
-		$this->template->title = $this->translate->_('Reporting » Histogram » Setup');
+		$this->template->title = _('Reporting » Histogram » Setup');
 	}
 
 	/**
@@ -256,7 +235,6 @@ class Histogram_Controller extends Authenticated_Controller
 			'servicegroup'
 		);
 
-		$t = $this->translate;
 		$this->template->disable_refresh = true;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -346,39 +324,39 @@ class Histogram_Controller extends Authenticated_Controller
 		}
 
 		$group_name = false;
-		$title = $t->_('Event history for ');
+		$title = _('Event history for ');
 		$objects = false;
 		switch ($this->report_type) {
 			case 'hostgroups':
 				$sub_type = "host";
 				$hostgroup = $in_hostgroup;
 				$group_name = $hostgroup;
-				$title .= $t->_('Hostgroup(s): ');
+				$title .= _('Hostgroup(s): ');
 				$this->object_varname = 'host_name';
 				break;
 			case 'servicegroups':
 				$sub_type = "service";
 				$servicegroup = $in_servicegroup;
 				$group_name = $servicegroup;
-				$title .= $t->_('Servicegroup(s): ');
+				$title .= _('Servicegroup(s): ');
 				$this->object_varname = 'service_description';
 				break;
 			case 'hosts':
 				$sub_type = "host";
 				$hostname = $in_host;
-				$title .= $t->_('Host(s): ');
+				$title .= _('Host(s): ');
 				$this->object_varname = 'host_name';
 				break;
 			case 'services':
 				$sub_type = "service";
 				$service = $in_service;
-				$title .= $t->_('Service(s): ');
+				$title .= _('Service(s): ');
 				$tmp_obj = false;
 				if (is_array($service)) {
 					foreach ($service as $s) {
 						if (strstr($s, ';')) {
 							$tmp = explode(';', $s);
-							$tmp_obj[] = "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
+							$tmp_obj[] = "'".$tmp[1]."' "._('On Host')." '".$tmp[0]."' ";
 						}
 					}
 					if (!empty($tmp_obj)) {
@@ -387,7 +365,7 @@ class Histogram_Controller extends Authenticated_Controller
 				} else {
 					if (strstr($service, ';')) {
 						$tmp = explode(';', $service);
-						$objects[] = "'".$tmp[1]."' ".$t->_('On Host')." '".$tmp[0]."' ";
+						$objects[] = "'".$tmp[1]."' "._('On Host')." '".$tmp[0]."' ";
 					}
 				}
 				$this->object_varname = 'service_description';
@@ -478,18 +456,18 @@ class Histogram_Controller extends Authenticated_Controller
 		switch ($this->report_type) {
 			case 'hosts': case 'hostgroups':
 				$this->state_names = array(
-					Reports_Model::HOST_UP => $t->_('UP'),
-					Reports_Model::HOST_DOWN => $t->_('DOWN'),
-					Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE')
+					Reports_Model::HOST_UP => _('UP'),
+					Reports_Model::HOST_DOWN => _('DOWN'),
+					Reports_Model::HOST_UNREACHABLE => _('UNREACHABLE')
 				);
 				$sub_type = 'host';
 				break;
 			case 'services': case 'servicegroups':
 				$this->state_names = array(
-					Reports_Model::SERVICE_OK => $t->_('OK'),
-					Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
-					Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
-					Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN')
+					Reports_Model::SERVICE_OK => _('OK'),
+					Reports_Model::SERVICE_WARNING => _('WARNING'),
+					Reports_Model::SERVICE_CRITICAL => _('CRITICAL'),
+					Reports_Model::SERVICE_UNKNOWN => _('UNKNOWN')
 				);
 				$sub_type = 'service';
 				break;
@@ -543,47 +521,32 @@ class Histogram_Controller extends Authenticated_Controller
 		$content->state_names = $this->state_names;
 
 		$content->min = $this->min;
-		$content->label_min = $t->_('MIN');
 		$content->max = $this->max;
-		$content->label_max = $t->_('MAX');
 		$content->avg = $this->avg;
-		$content->label_avg = $t->_('AVG');
 		$content->sum = $this->sum;
-		$content->label_sum = $t->_('SUM');
-		$content->label_eventtype = $t->_('EVENT TYPE');
 		$content->states = $this->state_names;
 		$content->available_states = array_keys($this->min);
 		$content->title = $title;
 		$content->objects = $objects;
 		$timeformat_str = nagstat::date_format();
-		$content->report_time = date($timeformat_str, $rpt->start_time).' '.$t->_('to').' '.date($timeformat_str, $rpt->end_time);
+		$content->report_time = date($timeformat_str, $rpt->start_time).' '._('to').' '.date($timeformat_str, $rpt->end_time);
 
 		$this->template->content->report_options = $this->add_view('histogram/options');
 		$tpl_options = $this->template->content->report_options;
 
-		$tpl_options->label_report_period = $t->_('Reporting period');;
-		$label_custom_period = $t->_('CUSTOM REPORT PERIOD');
+		$label_custom_period = _('CUSTOM REPORT PERIOD');
 		$report_period_strings = Reports_Controller::_report_period_strings();
 		$report_periods = $report_period_strings["report_period_strings"];
 		$report_periods['custom'] = "* " . $label_custom_period . " *";
 
 		$tpl_options->report_periods = $report_periods;
 		$tpl_options->selected = $report_period;
-		$tpl_options->label_settings = $t->_('Report settings');
-		$tpl_options->label_startdate = $t->_('Start date');
-		$tpl_options->label_enddate = $t->_('End date');
-		$tpl_options->label_show_event_duration = $t->_('Show event duration');
-		$tpl_options->label_startdate_selector = $t->_('Date Start selector');
-		$tpl_options->label_enddate_selector = $t->_('Date End selector');
-		$tpl_options->label_click_calendar = $t->_('Click calendar to select date');
-		$tpl_options->label_events_to_graph = $t->_('Events To Graph');
-		$tpl_options->label_breakdown = $t->_('Statistics Breakdown');
-		$tpl_options->label_newstatesonly = $t->_('Ignore Repeated States');
-		$tpl_options->label_statetypes_to_graph = $t->_('State Types To Graph');
+		$tpl_options->label_show_event_duration = _('Show event duration');
+		$tpl_options->label_events_to_graph = _('Events To Graph');
+		$tpl_options->label_breakdown = _('Statistics Breakdown');
 		$tpl_options->hoststates = $this->hoststates;
 		$tpl_options->servicestates = $this->servicestates;
 		$tpl_options->breakdown = $this->breakdown;
-		$tpl_options->label_statetypes_to_graph = $t->_('State Types To Graph');
 		$tpl_options->statetypes = $this->statetypes;
 		$tpl_options->selected_state_types = $selected_state_types;
 		$tpl_options->selected_breakdown = $this->selected_breakdown;
@@ -592,18 +555,14 @@ class Histogram_Controller extends Authenticated_Controller
 		$tpl_options->selected_newstatesonly = $newstatesonly;
 		$tpl_options->sub_type = $sub_type;
 
-		$tpl_options->label_update = $t->_('Update report');
-		$tpl_options->label_save = $t->_('Save');
-		$tpl_options->label_clear = $t->_('Clear');
 		$tpl_options->html_options = $html_options;
-		$tpl_options->label_edit_settings = $t->_('edit settings');
 		$tpl_options->start_date = date($date_format, $rpt->start_time);
 		$tpl_options->start_time = date('H:i', $rpt->start_time);
 		$tpl_options->end_date = date($date_format, $rpt->end_time);
 		$tpl_options->end_time = date('H:i', $rpt->end_time);
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
-		$this->template->title = $this->translate->_('Reporting » Histogram » Report');
+		$this->template->title = _('Reporting » Histogram » Report');
 	}
 
 	/**
@@ -668,9 +627,6 @@ class Histogram_Controller extends Authenticated_Controller
 	*/
 	public static function _helptexts($id)
 	{
-		# filter
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-
 		$nagios_etc_path = Kohana::config('config.nagios_etc_path');
 		$nagios_etc_path = $nagios_etc_path !== false ? $nagios_etc_path : Kohana::config('config.nagios_base_path').'/etc';
 
@@ -693,7 +649,7 @@ class Histogram_Controller extends Authenticated_Controller
 		$host_name = arr::search($_REQUEST, 'host', $host_name);
 		$host_name = arr::search($_REQUEST, 'host_name', $host_name);
 		if (empty($host_name)) {
-			die($this->translate->_('ERROR: No host name found'));
+			die(_('ERROR: No host name found'));
 		}
 		$service = arr::search($_REQUEST, 'service');
 		$report_type = empty($service) ? 'hosts' : 'services';
