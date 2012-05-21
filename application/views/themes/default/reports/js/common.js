@@ -841,7 +841,10 @@ function check_form_values()
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
-	if($('#display_host_status input[type="checkbox"]').length && !$('#display_host_status input[type="checkbox"]:checked').length) {
+	if($('#display_host_status').is('visible') && !$('#display_host_status input[type="checkbox"]:checked').length) {
+		errors++;
+		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
+	} else if($('#display_service_status').is('visible') && !$('#display_service_status input[type="checkbox"]:checked').length) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
 	}
