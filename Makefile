@@ -1,4 +1,4 @@
-test: test-reports test-unittest
+test: test-php-lint test-reports test-unittest
 
 test-reports:
 	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
@@ -37,6 +37,9 @@ test-coverage:
 
 test-cucumber:
 	HEADLESS=1 cucumber -f Cucumber::Formatter::Nagios -r test/cucumber/helpers/step_definitions -r test/cucumber/helpers/support -r test/cucumber/local_steps test/cucumber
+
+test-php-lint:
+	 for i in `find . -name "*.php"`; do php -l $$i || exit "Syntax error in $$i"; done
 
 docs: Documentation
 
