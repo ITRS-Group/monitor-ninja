@@ -7,6 +7,9 @@ function collapse_menu(action, save) {
 		return;
 	}
 	if (action == 'hide') {
+		var menuwidth = (parseInt($('#menu ul').height()) > parseInt(document.documentElement.clientHeight-68)) ? 50 : 37;
+		$('#menu').css('width', menuwidth+'px');
+		$('#content').css('margin-left', parseInt(menuwidth+2)+'px');
 		$('#close-menu').hide();
 		$('#show-menu').show();
 		$('.ninja_menu_links').hide();
@@ -17,6 +20,8 @@ function collapse_menu(action, save) {
 		}
 	}
 	if (action == 'show') {
+		$('#menu').css('width', '185px');
+		$('#content').css('margin-left', '187px');
 		$('#close-menu').show();
 		$('#show-menu').hide();
 		$('.ninja_menu_links').show();
