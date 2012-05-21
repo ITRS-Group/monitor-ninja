@@ -23,18 +23,23 @@ if (!empty($ninja_menu_setting) && !empty($ninja_menu_setting->setting)) {
 }
 if (isset($this) && isset($this->template->js_header))
 	$this->template->js_header->js = $this->xtra_js;
-?>
-<!DOCTYPE html>
-
+?><!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" /> <!-- Please remove me -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<?php
+			if (PHP_SAPI == 'cli') {
+				echo "<base href=\"https://localhost".url::base()."\" />";
+			}
+?>
 		<title><?php echo (isset($title)) ? Kohana::config('config.product_name').' » '.html::specialchars($title) : Kohana::config('config.product_name') ?></title>
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css' ?>" media="screen" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'status.css' ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'common.css' ?>" media="all" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'reports.css' ?>" media="all" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'screen.css' ?>" media="screen" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'status.css' ?>" media="all" />
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'print.css' ?>" media="print" />
-		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" />
+		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/'.$current_skin.'jquery-ui-custom.css' ?>" media="screen" />
 		<?php echo html::link('application/views/themes/default/icons/16x16/favicon.ico','icon','image/icon') ?>
 		<!--[If IE]>
 		<link type="text/css" rel="stylesheet" href="<?php echo url::base().'application/views/themes/default/css/default/ie7.css' ?>" />
