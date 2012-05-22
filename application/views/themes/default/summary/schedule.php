@@ -46,20 +46,20 @@ if (!$create_pdf) {
 (<span id="scheduled_report_name"><?php echo !empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name'] ?></span>)
 <?php } ?>
 </caption>
-					<tr id="schedule_header">
-						<th class="headerNone left"><?php echo _('Report Interval') ?></th>
-						<th class="headerNone left"><?php echo _('Recipients') ?></th>
-						<th class="headerNone left"><?php echo _('Filename') ?></th>
-						<th class="headerNone left"><?php echo _('Description') ?></th>
-						<th class="headerNone left" style="width: 45px"><?php echo _('Actions') ?></th>
-					</tr>
-				<?php if (!empty($scheduled_info)) {
-					$i = 0;
-					foreach ($scheduled_info as $schedule) {
-						$i++;
-						$schedule = (object)$schedule;
-						$recipients = str_replace(' ', '', $schedule->recipients);
-						$recipients = str_replace(',', ', ', $recipients); ?>
+				<tr id="schedule_header">
+					<th class="headerNone left"><?php echo _('Report Interval') ?></th>
+					<th class="headerNone left"><?php echo _('Recipients') ?></th>
+					<th class="headerNone left"><?php echo _('Filename') ?></th>
+					<th class="headerNone left"><?php echo _('Description') ?></th>
+					<th class="headerNone left" style="width: 45px"><?php echo _('Actions') ?></th>
+				</tr>
+			<?php if (!empty($scheduled_info)) {
+				$i = 0;
+				foreach ($scheduled_info as $schedule) {
+					$i++;
+					$schedule = (object)$schedule;
+					$recipients = str_replace(' ', '', $schedule->recipients);
+					$recipients = str_replace(',', ', ', $recipients); ?>
 				<tr id="report-<?php echo $schedule->id ?>" class="<?php echo ($i%2 == 0) ? 'odd' : 'even'; ?>">
 					<td class="period_select" title="<?php echo _('Double click to edit') ?>" id="period_id-<?php echo $schedule->id ?>"><?php echo $schedule->periodname ?></td>
 					<td class="iseditable" title="<?php echo _('Double click to edit') ?>" id="recipients-<?php echo $schedule->id ?>"><?php echo $recipients ?></td>
@@ -70,7 +70,7 @@ if (!$create_pdf) {
 						<div class="delete_schedule <?php echo $type ?>_del" onclick="schedule_delete(<?php echo $schedule->id ?>, 'summary')" id="delid_<?php echo $schedule->id ?>"><?php echo html::image($this->add_path('icons/16x16/delete-schedule.png'), array('alt' => _('Delete scheduled report'), 'title' => _('Delete scheduled report'),'class' => 'deleteimg')) ?></div>
 					</td>
 				</tr>
-				<?php }	} ?>
+			<?php }	} ?>
 			</table>
 		</div>
 	</div>

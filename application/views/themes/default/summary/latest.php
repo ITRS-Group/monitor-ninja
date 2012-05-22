@@ -8,7 +8,7 @@ if (isset($schedules)) {
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>
 		<tr>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em; width:20px"' : 'class="headerNone left"') ?>><?php //echo $label_state; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em; width:20px"' : 'class="headerNone left"') ?>><?php //echo _('State'); ?></th>
 			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo _('Time'); ?></th>
 			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo _('Alert Types'); ?></th>
 			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone left"') ?>><?php echo _('Host'); ?></th>

@@ -763,19 +763,6 @@ class Summary_Controller extends Authenticated_Controller
 			$this->add_view("summary/" . $views[$report_type]);
 
 		$content = $this->template->content;
-		$content->label_alert_type = _('Alert Type');
-		$content->label_host = _('Host');
-		$content->label_service = _('Service');
-		$content->label_hostgroup = _('Hostgroup');
-		$content->label_servicegroup = _('Servicegroup');
-		$content->label_host_alerts = _('Host Alerts');
-		$content->label_service_alerts = _('Service Alerts');
-		$content->label_state = _('State');
-		$content->label_hard = _('Hard');
-		$content->label_soft = _('Soft');
-		$content->label_soft_alerts = _('Soft Alerts');
-		$content->label_hard_alerts = _('Hard Alerts');
-		$content->create_pdf = $this->create_pdf;
 
 		$this->template->content->schedules = $this->add_view('summary/schedule');
 		$template = $this->template->content->schedules;
