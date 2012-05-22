@@ -288,12 +288,10 @@ class Reports_Controller extends Authenticated_Controller
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
 		# 	method param if nothing found
-		$this->type = urldecode(
-			$this->input->post(
-				'type', $this->input->get(
-					'type', $type)
-					)
-				);
+		$this->type = $this->input->post(
+			'type', $this->input->get(
+				'type', $type)
+		);
 
 		$del_id = arr::search($_REQUEST, 'del_id', false);
 
@@ -782,16 +780,12 @@ class Reports_Controller extends Authenticated_Controller
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
 		# 	method param if nothing found
-		$this->type = urldecode(
-			$this->input->post(
-				'type', $this->input->get('type', $type)
-			)
+		$this->type = $this->input->post(
+			'type', $this->input->get('type', $type)
 		);
 
-		$regexp = urldecode(
-			$this->input->post(
-				'regexp', $this->input->get('regexp', false)
-			)
+		$regexp = $this->input->post(
+			'regexp', $this->input->get('regexp', false)
 		);
 
 		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);

@@ -45,9 +45,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$host = getparams::get_raw_param('host', $host);
 			$service = getparams::get_raw_param('service', $service);
 		} else {
-			$type = urldecode($this->input->get('type', $type));
-			$host = urldecode($this->input->get('host', $host));
-			$service = urldecode($this->input->get('service', $service));
+			$type = $this->input->get('type', $type);
+			$host = $this->input->get('host', $host);
+			$service = $this->input->get('service', $service);
 		}
 
 		$this->template->title = 'Monitoring » Extinfo';
@@ -818,8 +818,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function group_details($grouptype='servicegroup', $group=false)
 	{
-		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
-		$group = urldecode($this->input->get('group', $group));
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
 		if (empty($group)) {
 			$this->template->content = $this->add_view('error');
 			$this->template->content->error_message = _("Error: No group name specified");
@@ -1339,12 +1339,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 	*/
 	public function scheduling_queue($sort_field='next_check', $sort_order='ASC')
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$back_link = '/extinfo/scheduling_queue/';
 
 		$sq_model = new Scheduling_queue_Model($items_per_page, true, true);
-		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
-		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
+		$sq_model->sort_order = $this->input->get('sort_order', $sort_order);
+		$sq_model->sort_field = $this->input->get('sort_field', $sort_field);
 
 		$auth = Nagios_auth_Model::instance();
 		if (!$auth->view_hosts_root) {

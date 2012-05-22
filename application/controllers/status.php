@@ -60,18 +60,18 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
-		$host = urldecode($this->input->get('host', $host));
-		$page = urldecode($this->input->get('page', false));
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
-		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
-		$show_services = urldecode($this->input->get('show_services', $show_services));
-		$group_type = urldecode($this->input->get('group_type', $group_type));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$noheader = urldecode($this->input->get('noheader', false));
-		$group_type = urldecode(strtolower($group_type));
+		$host = $this->input->get('host', $host);
+		$page = $this->input->get('page', false);
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$sort_order = $this->input->get('sort_order', $sort_order);
+		$sort_field = $this->input->get('sort_field', $sort_field);
+		$show_services = $this->input->get('show_services', $show_services);
+		$group_type = $this->input->get('group_type', $group_type);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$noheader = $this->input->get('noheader', false);
+		$group_type = strtolower($group_type);
 
 		$host = trim($host);
 		$hoststatustypes = strtolower($hoststatustypes);
@@ -268,18 +268,18 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
-		$name = urldecode($this->input->get('name', $name));
-		$page = urldecode($this->input->get('page', false));
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$service_props = urldecode($this->input->get('serviceprops', $service_props));
-		$service_props = urldecode($this->input->get('service_props', $service_props));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$sort_order = urldecode($this->input->get('sort_order', $sort_order));
-		$sort_field = urldecode($this->input->get('sort_field', $sort_field));
-		$group_type = urldecode($this->input->get('group_type', $group_type));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$name = $this->input->get('name', $name);
+		$page = $this->input->get('page', false);
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$service_props = $this->input->get('serviceprops', $service_props);
+		$service_props = $this->input->get('service_props', $service_props);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$sort_order = $this->input->get('sort_order', $sort_order);
+		$sort_field = $this->input->get('sort_field', $sort_field);
+		$group_type = $this->input->get('group_type', $group_type);
+		$noheader = $this->input->get('noheader', false);
 		$group_type = strtolower($group_type);
 
 		$name = trim($name);
@@ -605,12 +605,12 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$style = urldecode($this->input->get('style', $style));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$style = $this->input->get('style', $style);
 		$grouptype = 'service';
 		$this->template->title = 'Servicegroup';
 		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
@@ -626,12 +626,12 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function hostgroup($group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$style = urldecode($this->input->get('style', $style));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$style = $this->input->get('style', $style);
 		$grouptype = 'host';
 		return $this->group($grouptype, $group, $hoststatustypes, $servicestatustypes, $style, $serviceprops, $hostprops);
 	}
@@ -648,14 +648,14 @@ class Status_Controller extends Authenticated_Controller {
 	public function group($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $style='overview', $serviceprops=false, $hostprops=false)
 	{
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$style = urldecode($this->input->get('style', $style));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$style = $this->input->get('style', $style);
+		$noheader = $this->input->get('noheader', false);
 		$group = trim($group);
 		$hoststatustypes = strtolower($hoststatustypes)==='false' ? false : $hoststatustypes;
 
@@ -786,11 +786,11 @@ class Status_Controller extends Authenticated_Controller {
 	 */
 	public function servicegroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
 		$grouptype = 'service';
 		$this->template->title = _('Servicegroup » Summary');
 		return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
@@ -798,11 +798,11 @@ class Status_Controller extends Authenticated_Controller {
 
 	public function hostgroup_summary($group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
 		$grouptype = 'host';
 		return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 	}
@@ -813,13 +813,13 @@ class Status_Controller extends Authenticated_Controller {
 	public function _group_summary($grouptype='service', $group='all', $hoststatustypes=false, $servicestatustypes=false, $serviceprops=false, $hostprops=false)
 	{
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$grouptype = urldecode($this->input->get('grouptype', $grouptype));
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$serviceprops = urldecode($this->input->get('serviceprops', $serviceprops));
-		$hostprops = urldecode($this->input->get('hostprops', $hostprops));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$grouptype = $this->input->get('grouptype', $grouptype);
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$serviceprops = $this->input->get('serviceprops', $serviceprops);
+		$hostprops = $this->input->get('hostprops', $hostprops);
+		$noheader = $this->input->get('noheader', false);
 		$this->template->title = _('Monitoring » ').$grouptype._('group summary');
 
 		$group = trim($group);
@@ -954,10 +954,10 @@ class Status_Controller extends Authenticated_Controller {
 	public function hostgroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$noheader = $this->input->get('noheader', false);
 
 		$this->template->content = $this->add_view('status/hostgroup_grid');
 		$this->template->content->noheader = $noheader;
@@ -1082,10 +1082,10 @@ class Status_Controller extends Authenticated_Controller {
 	public function servicegroup_grid($group='all', $hoststatustypes=false, $servicestatustypes=false)
 	{
 		$items_per_page = $this->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
-		$group = urldecode($this->input->get('group', $group));
-		$hoststatustypes = urldecode($this->input->get('hoststatustypes', $hoststatustypes));
-		$servicestatustypes = urldecode($this->input->get('servicestatustypes', $servicestatustypes));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$group = $this->input->get('group', $group);
+		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
+		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
+		$noheader = $this->input->get('noheader', false);
 
 		$this->template->content = $this->add_view('status/servicegroup_grid');
 		$this->template->content->noheader = $noheader;

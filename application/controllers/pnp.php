@@ -23,8 +23,8 @@ class Pnp_Controller extends Authenticated_Controller {
 
 	public function index($host=false, $srv=false)
 	{
-		$host = urldecode($this->input->get('host', $host));
-		$srv = urldecode($this->input->get('srv', $srv));
+		$host = $this->input->get('host', $host);
+		$srv = $this->input->get('srv', $srv);
 
 		if(!$host) {
 			$host = '.pnp-internal';

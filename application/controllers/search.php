@@ -23,14 +23,14 @@ class Search_Controller extends Authenticated_Controller {
 	*/
 	public function lookup($query=false, $obj_type=false)
 	{
-		$obj_type = urldecode($this->input->get('obj_type', $obj_type));
+		$obj_type = $this->input->get('obj_type', $obj_type);
 
-		$host = urldecode(trim($this->input->get('host', false)));
-		$hostgroup = urldecode(trim($this->input->get('hostgroup', false)));
-		$service = urldecode(trim($this->input->get('service', false)));
-		$servicegroup = urldecode(trim($this->input->get('servicegroup', false)));
-		$comment = urldecode(trim($this->input->get('comment', false)));
-		$status = urldecode(trim($this->input->get('status', false)));
+		$host = trim($this->input->get('host', false));
+		$hostgroup = trim($this->input->get('hostgroup', false));
+		$service = trim($this->input->get('service', false));
+		$servicegroup = trim($this->input->get('servicegroup', false));
+		$comment = trim($this->input->get('comment', false));
+		$status = trim($this->input->get('status', false));
 
 		$host = !empty($host) ? 'h:'.$host : false;
 		$hostgroup = !empty($hostgroup) ? 'hg:'.$hostgroup : false;
@@ -243,8 +243,8 @@ class Search_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 		$content->date_format_str = nagstat::date_format();
 		$limit = !empty($in_limit) ? $in_limit : false;
-		$items_per_page = urldecode($this->input->get('items_per_page', false));
-		$custom_limit = urldecode($this->input->get('custom_pagination_field', false));
+		$items_per_page = $this->input->get('items_per_page', false);
+		$custom_limit = $this->input->get('custom_pagination_field', false);
 		$limit = empty($limit) ? config::get('pagination.default.items_per_page', '*') : $limit;
 		$items_per_page = !empty($custom_limit) ? $custom_limit : $items_per_page;
 

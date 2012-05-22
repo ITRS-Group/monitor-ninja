@@ -40,7 +40,6 @@ class Ajax_Controller extends Authenticated_Controller {
 		} else {
 			# we handle queries by trying to locate wanted filtering options separated by colon (:)
 			$q = $this->input->get('query', $q);
-			$q = urldecode($q);
 			$divider_str = '========================================';
 			if (strstr($q, self::FILTER_CHAR)) {
 				# some extra filtering option detected
@@ -191,7 +190,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		// Disable auto-rendering
 		$this->auto_render = FALSE;
 
-		$instance_id = urldecode($this->input->get('instance_id', false));
+		$instance_id = $this->input->get('instance_id', false);
 		$page = $this->input->get('page', false);
 
 		$data = Ninja_widget_Model::get($page, $widget, $instance_id);
@@ -210,8 +209,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_widgets_order($widget_str=false, $page=false)
 	{
-		$widget_str = urldecode($this->input->post('widget_str', $widget_str));
-		$page = urldecode($this->input->post('page', $page));
+		$widget_str = $this->input->post('widget_str', $widget_str);
+		$page = $this->input->post('page', $page);
 		$widget_str = trim($widget_str);
 		$page = trim($page);
 		if (empty($widget_str) || empty($page))
@@ -226,8 +225,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_widgets_order($page=false)
 	{
-		$page = urldecode($this->input->get('page', $page));
-		$default = urldecode($this->input->get('default', false));
+		$page = $this->input->get('page', $page);
+		$default = $this->input->get('default', false);
 		$default = (int)$default == 1 ? true : $default;
 		if (empty($page))
 			return false;
@@ -246,10 +245,10 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_widget_state()
 	{
-		$page = urldecode($this->input->post('page', false));
-		$method = urldecode($this->input->post('method', false));
-		$instance_id = urldecode($this->input->post('instance_id', false));
-		$name = urldecode($this->input->post('name', false));
+		$page = $this->input->post('page', false);
+		$method = $this->input->post('method', false);
+		$instance_id = $this->input->post('instance_id', false);
+		$name = $this->input->post('name', false);
 		if (empty($page))
 			return false;
 		# save data to database
@@ -269,9 +268,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_widget_setting()
 	{
-		$page = urldecode($this->input->post('page', false));
-		$widget = urldecode($this->input->post('widget', false));
-		$instance_id = urldecode($this->input->post('instance_id', false));
+		$page = $this->input->post('page', false);
+		$widget = $this->input->post('widget', false);
+		$instance_id = $this->input->post('instance_id', false);
 		$data = false;
 		foreach ($_POST as $key => $val) {
 			if ($key == 'page' || $key == 'widget')
@@ -291,8 +290,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_dynamic_widget_setting()
 	{
-		$page = urldecode($this->input->post('page', false));
-		$widget = urldecode($this->input->post('widget', false));
+		$page = $this->input->post('page', false);
+		$widget = $this->input->post('widget', false);
 		$instance_id = $this->input->post('instance_id', false);
 		$fieldname = $this->input->post('fieldname', false);
 		$fieldvalue = $this->input->post('fieldvalue', false);
@@ -310,8 +309,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_setting()
 	{
-		$type = urldecode($this->input->post('type', false));
-		$page = urldecode($this->input->post('page', false));
+		$type = $this->input->post('type', false);
+		$page = $this->input->post('page', false);
 		if (empty($type))
 			return false;
 		$type = trim($type);
@@ -326,8 +325,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_widget_setting()
 	{
-		$page = urldecode($this->input->post('page', false));
-		$widget = urldecode($this->input->post('widget', false));
+		$page = $this->input->post('page', false);
+		$widget = $this->input->post('widget', false);
 		$page = trim($page);
 		$widget = trim($widget);
 		$data = Ninja_widget_Model::get_widget($page, $widget, true);
@@ -340,9 +339,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_page_setting()
 	{
-		$type = urldecode($this->input->post('type', false));
-		$page = urldecode($this->input->post('page', false));
-		$setting = urldecode($this->input->post('setting', false));
+		$type = $this->input->post('type', false);
+		$page = $this->input->post('page', false);
+		$setting = $this->input->post('setting', false);
 
 		if (empty($type) || empty($page) || empty($setting))
 			return false;
@@ -354,9 +353,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function set_widget_refresh()
 	{
-		$page = urldecode($this->input->post('page', false));
-		$value = urldecode($this->input->post('value', false));
-		$type = urldecode($this->input->post('type', false));
+		$page = $this->input->post('page', false);
+		$value = $this->input->post('value', false);
+		$type = $this->input->post('type', false);
 		$success = Ninja_widget_Model::update_all_widgets($page, $value, $type);
 		echo json::encode(array('success' => $success));
 	}
@@ -391,8 +390,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_translation()
 	{
-		$controller = urldecode($this->input->post('controller', false));
-		$key = urldecode($this->input->post('key', false));
+		$controller = $this->input->post('controller', false);
+		$key = $this->input->post('key', false);
 
 		if (empty($controller) || empty($key)) {
 			return false;
@@ -427,7 +426,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function pnp_image()
 	{
-		$param = urldecode($this->input->post('param', false));
+		$param = $this->input->post('param', false);
 		$param = pnp::clean($param);
 		$pnp_path = Kohana::config('config.pnp4nagios_path');
 
@@ -459,7 +458,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	 */
 	public function pnp_default()
 	{
-		$param = urldecode($this->input->post('param', false));
+		$param = $this->input->post('param', false);
 		$param = pnp::clean($param);
 		$pnp_path = Kohana::config('config.pnp4nagios_path');
 
@@ -477,7 +476,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_comments()
 	{
-		$host = urldecode($this->input->post('host', false));
+		$host = $this->input->post('host', false);
 		$service = false;
 		$data = false;
 		$model = new Comment_Model();
@@ -511,8 +510,8 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function group_member($input=false, $type=false)
 	{
-		$input = urldecode($this->input->post('input', false));
-		$type = urldecode($this->input->post('type', false));
+		$input = $this->input->post('input', false);
+		$type = $this->input->post('type', false);
 
 		if (empty($type)) {
 			json::fail('"type" must be provided');
@@ -554,7 +553,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_report_periods()
 	{
-		$type = urldecode($this->input->post('type', 'avail'));
+		$type = $this->input->post('type', 'avail');
 		if (empty($type))
 			return false;
 
@@ -579,7 +578,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_saved_reports()
 	{
-		$type = urldecode($this->input->post('type', 'avail'));
+		$type = $this->input->post('type', 'avail');
 		if (empty($type))
 			return false;
 
@@ -633,7 +632,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	public function get_sla_from_saved_reports()
 	{
 
-		$sla_id = urldecode($this->input->post('sla_id', false));
+		$sla_id = $this->input->post('sla_id', false);
 		if (empty($sla_id))
 			return false;
 
@@ -657,9 +656,9 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_date_ranges()
 	{
-		$the_year = urldecode($this->input->post('the_year', false));
-		$type = urldecode($this->input->post('type', 'start'));
-		$item = urldecode($this->input->post('item', 'year'));
+		$the_year = $this->input->post('the_year', false);
+		$type = $this->input->post('type', 'start');
+		$item = $this->input->post('item', 'year');
 		$date_ranges = Reports_Model::get_date_ranges();
 
 		if (empty($date_ranges)) return false;
@@ -720,10 +719,10 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function save_search()
 	{
-		$search_name = urldecode($this->input->post('name', false));
-		$search_query = urldecode($this->input->post('query', false));
-		$search_description = urldecode($this->input->post('description', false));
-		$search_id = urldecode($this->input->post('search_id', false));
+		$search_name = $this->input->post('name', false);
+		$search_query = $this->input->post('query', false);
+		$search_description = $this->input->post('description', false);
+		$search_id = $this->input->post('search_id', false);
 
 		$model = new Saved_searches_Model();
 		$res = $model->save_search($search_query, $search_name, $search_description, $search_id);
@@ -736,7 +735,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function remove_search()
 	{
-		$search_id = urldecode($this->input->post('search_id', false));
+		$search_id = $this->input->post('search_id', false);
 		$res = Saved_searches_Model::remove_search($search_id);
 
 		echo $res != false ? 'OK' : 'Error';
@@ -747,8 +746,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_saved_search()
 	{
-		$search_id = urldecode($this->input->post('search_id', false));
-		$search_id = (int)$search_id;
+		$search_id = (int)$this->input->post('search_id', false);
 		if (empty($search_id)) {
 			echo "Error";
 			return false;

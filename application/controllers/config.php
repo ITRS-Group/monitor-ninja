@@ -40,7 +40,7 @@ class Config_Controller extends Authenticated_Controller {
 
 		$this->type = isset($_GET['type']) ? $_GET['type'] : $this->type;
 
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$config_model = new Config_Model($items_per_page, true, true);
 
 

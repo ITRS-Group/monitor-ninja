@@ -187,7 +187,7 @@ class Showlog_Controller extends Authenticated_Controller
 
 	public function alert_history($obj_name = false)
 	{
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$this->template->content = $this->add_view('showlog/alertlog');
 		$this->basic_setup();
 		$this->template->title = _("Reporting » Alert history");

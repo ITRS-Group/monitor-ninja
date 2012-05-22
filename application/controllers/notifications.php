@@ -60,13 +60,13 @@ class Notifications_Controller extends Authenticated_Controller {
 	 */
 	public function index($sort_field='start_time', $sort_order='DESC', $type = false, $query_type = nagstat::FIND_HOST)
 	{
-		$type = urldecode($this->input->get('type', $type));
-		$noheader = urldecode($this->input->get('noheader', false));
+		$type = $this->input->get('type', $type);
+		$noheader = $this->input->get('noheader', false);
 
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$note_model = new Notifications_Model();
-		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
-		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
+		$note_model->sort_order = $this->input->get('sort_order', $sort_order);
+		$note_model->sort_field = $this->input->get('sort_field', $sort_field);
 
 		$this->xtra_js[] = $this->add_path('notifications/js/notifications.js');
 		$this->template->js_header = $this->add_view('js_header');
@@ -122,19 +122,19 @@ class Notifications_Controller extends Authenticated_Controller {
 
 	public function host($host_name = false, $service = false, $sort_field='start_time', $sort_order='DESC', $query_type = nagstat::FIND_HOST)
 	{
-		$type = urldecode($this->input->get('type', false));
-		$noheader = urldecode($this->input->get('noheader', false));
-		$items_per_page = urldecode($this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*')));
+		$type = $this->input->get('type', false);
+		$noheader = $this->input->get('noheader', false);
+		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$note_model = new Notifications_Model($items_per_page, true, true);
-		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
-		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
+		$note_model->sort_order = $this->input->get('sort_order', $sort_order);
+		$note_model->sort_field = $this->input->get('sort_field', $sort_field);
 
 		$this->xtra_js[] = $this->add_path('notifications/js/notifications.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 
-		$service = urldecode($this->input->get('service', $service));
-		$host_name = urldecode($this->input->get('host_name', $host_name));
+		$service = $this->input->get('service', $service);
+		$host_name = $this->input->get('host_name', $host_name);
 		$sql = '';
 		if ($type != '') {
 			$value = $this->select_types[$type];

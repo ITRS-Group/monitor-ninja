@@ -91,8 +91,8 @@ class Ninja_Controller extends Template_Controller {
 
 		if ($this->input->get('sort_field', false)) {
 			$cur_data = array(
-				'sort_field' => urldecode($this->input->get('sort_field', false)),
-				'sort_order' => urldecode($this->input->get('sort_order', false))
+				'sort_field' => $this->input->get('sort_field', false),
+				'sort_order' => $this->input->get('sort_order', false)
 				);
 			$session_sort[$sort_key] = $cur_data;
 			$sort_options = $this->session->get('sort_options', false);
