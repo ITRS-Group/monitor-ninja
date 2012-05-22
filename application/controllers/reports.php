@@ -127,8 +127,6 @@ class Reports_Controller extends Authenticated_Controller
 	private $cluster_mode = false;
 	private $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
-	private $create_pdf = false;
-	public $pdf_data = false;
 	public $pdf_filename = false;
 	public $pdf_local_persistent_filepath = false;
 	public $pdf_recipients = false; # when sending reports by email
@@ -168,7 +166,6 @@ class Reports_Controller extends Authenticated_Controller
 	private $trends_graph_model = false;
 	public $start_date = false;
 	public $end_date = false;
-	public $mashing = false;
 	public $report_options = false;
 	private $in_months = false;
 	public $extra_template_data = false;
@@ -274,9 +271,6 @@ class Reports_Controller extends Authenticated_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		if ($this->mashing) {
-			$this->auto_render=false;
-		}
 		$this->template->disable_refresh = true;
 
 		# reset current_report_params and main_report_params
@@ -746,9 +740,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
 
-		if ($this->mashing) {
-			return $template->render();
-		}
+		return $template;
 	}
 
 	/**
@@ -772,9 +764,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->template->disable_refresh = true;
 
-		if (!$this->create_pdf) {
-			$this->_stash_params();
-		}
+		$this->_stash_params();
 
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
@@ -805,11 +795,6 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
-		$this->create_pdf = arr::search($_REQUEST, 'create_pdf');
-
-		if ($this->create_pdf || $this->mashing) {
-			$this->auto_render=false;
-		}
 
 		$in_host = arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
@@ -1304,122 +1289,116 @@ class Reports_Controller extends Authenticated_Controller
 			$report_periods = $report_period_strings["report_period_strings"];
 			$report_periods['custom'] = "* " . $label_custom_period . " *";
 
-			if (!$this->create_pdf) {
-				$this->template->content->report_options = $this->add_view('reports/'.$this->template_prefix.'options');
+			$this->template->content->report_options = $this->add_view('reports/'.$this->template_prefix.'options');
 
-				$tpl_options = $this->template->content->report_options;
-
-
-				$tpl_options->report_periods = $report_periods;
-				$tpl_options->include_trends = $include_trends;
-				$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
+			$tpl_options = $this->template->content->report_options;
 
 
-				$tpl_options->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
-				$tpl_options->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
-				$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
-				$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
+			$tpl_options->report_periods = $report_periods;
+			$tpl_options->include_trends = $include_trends;
+			$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
 
-				$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
-				$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
 
-				if (isset($host_filter_status)) {
-					$tpl_options->host_filter_status_up = $host_filter_status['up'];
-					$tpl_options->host_filter_status_down = $host_filter_status['down'];
-					$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
-					$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
-					$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
-					$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
-					$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
-					$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
-					$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
+			$tpl_options->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
+			$tpl_options->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
+			$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
+			$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
+
+			$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
+			$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
+
+			if (isset($host_filter_status)) {
+				$tpl_options->host_filter_status_up = $host_filter_status['up'];
+				$tpl_options->host_filter_status_down = $host_filter_status['down'];
+				$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
+				$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
+				$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
+				$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
+				$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
+				$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
+				$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
+			}
+
+			$tpl_options->report_id = $this->report_id;
+			$tpl_options->report_info = $report_info;
+			$tpl_options->html_options = $html_options;
+
+			$use_average_options = array(
+				0 => _('Group availability (SLA)'),
+				1 => _('Average')
+			);
+			$tpl_options->use_average_options = $use_average_options;
+			$tpl_options->use_average_selected = $use_average_selected;
+
+			$date_format = $this->_get_date_format(true);
+			$tpl_options->start_date = date($date_format, $this->start_date);
+			$tpl_options->start_time = date('H:i', $this->start_date);
+			$tpl_options->end_date = date($date_format, $this->end_date);
+			$tpl_options->end_time = date('H:i', $this->end_date);
+
+			$available_schedule_periods = false;
+			$json_periods = false;
+			$schedule_periods = Scheduled_reports_Model::get_available_report_periods();
+			if ($schedule_periods !== false && !empty($schedule_periods)) {
+				foreach ($schedule_periods as $s) {
+					$available_schedule_periods[$s->id] = $s->periodname;
 				}
+				$json_periods = json::encode($available_schedule_periods);
+			}
+			$tpl_options->json_periods = $json_periods;
+			$tpl_options->available_schedule_periods = $available_schedule_periods;
+			$tpl_options->type = $this->type;
+			$tpl_options->rep_type = $this->type == 'avail' ? 1 : 2;
+			$tpl_options->scheduled_info = $scheduled_info;
+			$scheduled_label = _('Scheduled');
+			if ($this->type == 'avail') {
+				$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
+				$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
+				$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
+				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->scheduled_downtime_as_uptime."');\n";
+				$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
+				$this->inline_js .= "show_calendar('".$report_period."');\n";
+				$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
+				$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
+			}
 
-				$tpl_options->report_id = $this->report_id;
-				$tpl_options->report_info = $report_info;
-				$tpl_options->html_options = $html_options;
+			$this->js_strings .= "var cluster_mode = '".(int)$cluster_mode."';\n";
+			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
+			$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->scheduled_downtime_as_uptime."';\n";
 
-				$use_average_options = array(
-					0 => _('Group availability (SLA)'),
-					1 => _('Average')
-				);
-				$tpl_options->use_average_options = $use_average_options;
-				$tpl_options->use_average_selected = $use_average_selected;
+			$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+			$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+			$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
+			$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
+			$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
+			$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
+			$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
+			$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
+			$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
+			$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
+			$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+			$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+			$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+			$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
+			$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+			$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
+			$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
 
-				$date_format = $this->_get_date_format(true);
-				$tpl_options->start_date = date($date_format, $this->start_date);
-				$tpl_options->start_time = date('H:i', $this->start_date);
-				$tpl_options->end_date = date($date_format, $this->end_date);
-				$tpl_options->end_time = date('H:i', $this->end_date);
+			$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
 
-				$available_schedule_periods = false;
-				$json_periods = false;
-				$schedule_periods = Scheduled_reports_Model::get_available_report_periods();
-				if ($schedule_periods !== false && !empty($schedule_periods)) {
-					foreach ($schedule_periods as $s) {
-						$available_schedule_periods[$s->id] = $s->periodname;
-					}
-					$json_periods = json::encode($available_schedule_periods);
-				}
-				$tpl_options->json_periods = $json_periods;
-				$tpl_options->available_schedule_periods = $available_schedule_periods;
-				$tpl_options->type = $this->type;
-				$tpl_options->rep_type = $this->type == 'avail' ? 1 : 2;
-				$tpl_options->scheduled_info = $scheduled_info;
-				$scheduled_label = _('Scheduled');
-				if ($this->type == 'avail') {
-					$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
-					$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
-					$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
-					$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->scheduled_downtime_as_uptime."');\n";
-					$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
-					$this->inline_js .= "show_calendar('".$report_period."');\n";
-					$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
-					$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
-				}
+			$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+			$this->js_strings .= reports::js_strings();
+			$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
+			$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+			$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+			$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
+			$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
+				"the corresponding schedule(s) will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 
-				$this->js_strings .= "var cluster_mode = '".(int)$cluster_mode."';\n";
-				$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
-				$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->scheduled_downtime_as_uptime."';\n";
-
-				$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
-				$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
-				$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
-				$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-				$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
-				$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
-				$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
-				$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
-				$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
-				$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';";
-				$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-				$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-				$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
-				$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
-				$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
-				$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
-				$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
-
-				$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
-
-				$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
-				$this->js_strings .= reports::js_strings();
-				$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-				$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
-				$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-				$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-				$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
-					"the corresponding schedule(s) will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
-
-				$csv_link = $this->_get_csv_link();
-				$tpl_options->csv_link = $csv_link;
-				if(!isset($_REQUEST['generating_pdf']))
-					$pdf_link = $this->_get_pdf_link($this->type);
-				else
-					$pdf_link = '';
-				$tpl_options->pdf_link = $pdf_link;
-
-			} #end if NOT create_pdf
+			$csv_link = $this->_get_csv_link();
+			$tpl_options->csv_link = $csv_link;
+			$pdf_link = $this->_get_pdf_link($this->type);
+			$tpl_options->pdf_link = $pdf_link;
 
 			$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
 					'TOTAL_TIME_DOWN' => _('Down'),
@@ -1437,12 +1416,8 @@ class Reports_Controller extends Authenticated_Controller
 
 				$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
 				$template->header->report_time_formatted = $report_time_formatted;
-				$template->header->create_pdf = $this->create_pdf;
-				if (!$this->create_pdf) {
-					$csv_link = $this->_get_csv_link();
-					$template->header->csv_link = $csv_link;
-					$template->header->pdf_link = $pdf_link;
-				} #end if NOT create_pdf
+				$template->header->csv_link = $csv_link;
+				$template->header->pdf_link = $pdf_link;
 				if ($report_period != 'custom') {
 					$template->header->str_start_date = $str_start_date;
 					$template->header->str_end_date = $str_end_date;
@@ -1505,22 +1480,11 @@ class Reports_Controller extends Authenticated_Controller
 						$template->title
 					);
 					$template->trends_graph->is_avail = true;
-					$template->trends_graph->create_pdf = $this->create_pdf;
-					if ($this->create_pdf) {
-						$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
-							$graph_data,
-							$report_class->start_time,
-							$report_class->end_time,
-							$template->title
-						);
-						$this->pdf_data['trends_graph'] = $template->trends_graph->render();
-					}
 				}
 
 				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
 				$template->content->multiple_states = $template_values;
 				$template->content->hide_host = false;
-				$template->content->create_pdf = $this->create_pdf;
 				$template->content->use_average = $use_average;
 				if (isset($host_filter_status)) {
 					$template->content->host_filter_status = $host_filter_status;
@@ -1531,9 +1495,6 @@ class Reports_Controller extends Authenticated_Controller
 				$template->content->start_time = $this->start_date;
 				$template->content->end_time = $this->end_date;
 				$template->content->report_time_formatted = $report_time_formatted;
-				if ($this->create_pdf) {
-					$content = $template->content;
-				}
 
 				$template->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
 
@@ -1550,9 +1511,6 @@ class Reports_Controller extends Authenticated_Controller
 				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
 					$tmp_title = ucfirst($sub_type)._('group breakdown');
 					$template->header->title = $tmp_title;
-					if ($this->create_pdf || $this->mashing) {
-						$this->pdf_data['title'] = $tmp_title;
-					}
 					foreach($this->data_arr as $data) { # for every group
 						$added_group = false;
 						if (is_array($data['states'])) {
@@ -1575,9 +1533,6 @@ class Reports_Controller extends Authenticated_Controller
 					$added_group = false;
 					$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 					$template->header->title = $tmp_title;
-					if ($this->create_pdf || $this->mashing) {
-						$this->pdf_data['title'] = $tmp_title;
-					}
 					if (is_array($this->data_arr['states'])) {
 						foreach ($graph_filter as $key => $val) {
 							if ($this->data_arr['states'][$key]!=0)
@@ -1615,9 +1570,6 @@ class Reports_Controller extends Authenticated_Controller
 
 					$template->pie->data_str = $data_str;
 					$template->pie->image_data = $image_data;
-					if ($this->create_pdf || $this->mashing) {
-						$this->pdf_data['pie_data'] = $data_str;
-					}
 				}
 			} else { # host/services
 				$image_data = false;
@@ -1626,7 +1578,6 @@ class Reports_Controller extends Authenticated_Controller
 					$data = $this->data_arr;
 					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
 					$template->content->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
-					$template->content->create_pdf = $this->create_pdf;
 					$template->content->start_time = $this->start_date;
 					$template->content->end_time = $this->end_date;
 
@@ -1634,24 +1585,16 @@ class Reports_Controller extends Authenticated_Controller
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->str_start_date = $str_start_date;
 					$template->header->str_end_date = $str_end_date;
-					$template->header->create_pdf = $this->create_pdf;
 					$csv_link = isset($csv_link) ? $csv_link : false;
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
-					$template->header->pdf_link = isset($pdf_link) ? $pdf_link : false;
+					$template->header->pdf_link = $pdf_link;
 					$template->header->use_average = $use_average;
 					$template->header->use_alias = $use_alias;
-					if ($this->create_pdf) {
-						$this->pdf_data['report_time_formatted'] = $report_time_formatted;
-						$this->pdf_data['str_start_date'] = $str_start_date;
-						$this->pdf_data['str_end_date'] = $str_end_date;
-						$this->pdf_data['label_report_period'] = $label_report_period;
-					}
 
 					if ($this->type == 'avail') {
 						$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->report_type);
 						$avail = $template->content;
 						$avail->state_values = $this->state_values;
-						$avail->create_pdf = $this->create_pdf;
 
 						$avail->avail_data = $avail_data;
 						$avail->source = $data['source'];
@@ -1659,9 +1602,6 @@ class Reports_Controller extends Authenticated_Controller
 						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
 						$avail->header_string = ucfirst($this->report_type)." "._('state breakdown');
-						if ($this->create_pdf) {
-							$content = $avail;
-						}
 
 						$this->xtra_css[] = $this->add_path('css/default/reports.css');
 						if($include_trends) {
@@ -1701,17 +1641,7 @@ class Reports_Controller extends Authenticated_Controller
 								$template->title
 							);
 							$template->trends_graph->report_time_formatted = $report_time_formatted;
-							$template->trends_graph->create_pdf = $this->create_pdf;
 							$this->xtra_js[] = $this->add_path('trends/js/trends.js');
-							if ($this->create_pdf) {
-								$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
-									$graph_data,
-									$report_class->start_time,
-									$report_class->end_time,
-									$template->title
-								);
-								$this->pdf_data['trends_graph'] = $template->trends_graph->render();
-							}
 						}
 
 						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
@@ -1727,12 +1657,8 @@ class Reports_Controller extends Authenticated_Controller
 
 						if ($image_data) {
 							$data_str = base64_encode(serialize($image_data));
-							if (!$this->create_pdf) {
-								$avail->pie->data_str = $data_str;
-								$avail->pie->source = $data['source'];
-							} else {
-								$this->pdf_data['pie_data'] = $data_str;
-							}
+							$avail->pie->data_str = $data_str;
+							$avail->pie->source = $data['source'];
 						}
 
 						if ($sub_type=='host') {
@@ -1754,9 +1680,7 @@ class Reports_Controller extends Authenticated_Controller
 									$content->service_filter_status = $service_filter_status;
 								$content->service_filter_status_show = false;
 								$content->source = $data['source'];
-								$content->create_pdf = $this->create_pdf;
 								$content->report_time_formatted = $report_time_formatted;
-								$this->pdf_data['svc_content'] = $template->svc_content->render();
 							}
 						}
 
@@ -1770,12 +1694,8 @@ class Reports_Controller extends Authenticated_Controller
 							$log_template->type = $sub_type;
 							$log_template->label_entries = $label_entries;
 							$log_template->source = $data['source'];
-							$log_template->create_pdf = $this->create_pdf;
 							$log_template->report_time_formatted = $report_time_formatted;
 							$log_template->date_format_str = nagstat::date_format();
-							if ($this->create_pdf) {
-								$this->pdf_data['log_data'] = $log_template->render();
-							}
 						}
 
 						$t1 = $this->start_date;
@@ -1949,19 +1869,14 @@ class Reports_Controller extends Authenticated_Controller
 								break;
 						}
 
-						if (!$this->create_pdf) {
-							$template->links = $links;
-							$template->trends = $trends_img_params;
-							$template->trends_link = $trends_link_params;
-							$template->source = $data['source'];
-							$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
-						}
+						$template->links = $links;
+						$template->trends = $trends_img_params;
+						$template->trends_link = $trends_link_params;
+						$template->source = $data['source'];
+						$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
 					} else {
 						# SLA report
 						$template->header->title = _('SLA breakdown');
-						if ($this->create_pdf) {
-							$this->pdf_data['title'] = _('SLA breakdown');
-						}
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
 						$sla->use_alias = $use_alias;
@@ -1970,55 +1885,35 @@ class Reports_Controller extends Authenticated_Controller
 				} # end if not empty. Display message to user?
 			}
 
-			if (!$this->create_pdf) {
-				# fetch users date format in PHP style so we can use it
-				# in date() below
-				$date_format = $this->_get_date_format(true);
+			# fetch users date format in PHP style so we can use it
+			# in date() below
+			$date_format = $this->_get_date_format(true);
 
-				$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-				$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-				$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-				$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-				$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-				$js_date_format = "Date.format = '".$this->_get_date_format()."';";
-				$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
+			$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
+			$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
+			$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
+			$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
+			$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
+			$js_date_format = "Date.format = '".$this->_get_date_format()."';";
+			$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
 
-				# inline js should be the
-				# var host =
-				# var service =
-				# 	etc...
-				$this->js_strings .= "\n".$js_month_names."\n";
-				$this->js_strings .= $js_abbr_month_names."\n";
-				$this->js_strings .= $js_day_names."\n";
-				$this->js_strings .= $js_abbr_day_names."\n";
-				$this->js_strings .= $js_day_of_week."\n";
-				$this->js_strings .= $js_date_format."\n";
-				$this->js_strings .= $js_start_date."\n";
+			# inline js should be the
+			# var host =
+			# var service =
+			# 	etc...
+			$this->js_strings .= "\n".$js_month_names."\n";
+			$this->js_strings .= $js_abbr_month_names."\n";
+			$this->js_strings .= $js_day_names."\n";
+			$this->js_strings .= $js_abbr_day_names."\n";
+			$this->js_strings .= $js_day_of_week."\n";
+			$this->js_strings .= $js_date_format."\n";
+			$this->js_strings .= $js_start_date."\n";
 
-				$this->template->inline_js = $this->inline_js;
-				$this->template->js_strings = $this->js_strings;
-				$this->template->css_header->css = $this->xtra_css;
-			}
+			$this->template->inline_js = $this->inline_js;
+			$this->template->js_strings = $this->js_strings;
+			$this->template->css_header->css = $this->xtra_css;
 
-			# skip the rest if pdf or mashing
-			if ($this->create_pdf || $this->mashing) {
-				$this->pdf_data['content'] = $template->content->render();
-				$this->pdf_data['header'] = $template->header->render();
-
-				if ($this->create_pdf && $this->mashing) {
-					return $this->pdf_data;
-				} elseif ($this->mashing) {
-					return $template->render();
-				}
-
-				$retval = $this->_pdf();
-				if (PHP_SAPI == "cli") {
-					echo $retval;
-				}
-				return $retval;
-			}
 		}
-
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 		return $template;
 	}
@@ -2200,13 +2095,7 @@ class Reports_Controller extends Authenticated_Controller
 		$this->auto_render = false;
 		$data = i18n::unserialize( base64_decode($in_data) );
 		charts::load('MultipleBar');
-		if (!$this->create_pdf) {
-			$graph = new MultipleBarChart(800, 600);
-		} else {
-			$graph = new MultipleBarChart(600, 400);
-			$graph->set_bar_width(20);
-			$graph->set_bar_gap(-10);
-		}
+		$graph = new MultipleBarChart(800, 600);
 
 		$barvalues = false;
 		$barcolors = false;
@@ -3526,202 +3415,6 @@ class Reports_Controller extends Authenticated_Controller
 		return $form;
 	}
 
-
-	/**
-	*	Create pdf
-	* 	Will also send the generated PDF as an attachment
-	* 	if $this->pdf_recipients is set.
-	*/
-	public function _pdf()
-	{
-		# include necessary files for PDF creation
-		pdf::start();
-		$this->auto_render=false;
-
-		global $l; # required for tcpdf
-
-		if (isset($l['w_page'])) { # use ninja translation
-			$l['w_page'] = _('Page');
-		}
-
-		if (isset($l['w_op5'])) { # use ninja translation
-			$l['w_op5'] = _('This report is produced by op5 Monitor.');
-		}
-
-		$type = $this->type;
-		$filename = $this->pdf_filename;
-
-		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-		$title = isset($this->pdf_data['title']) ? $this->pdf_data['title'] : _('Ninja PDF Report');
-		// set document information
-		$pdf->SetCreator(PDF_CREATOR);
-		$pdf->SetAuthor('Ninja4Nagios');
-		$pdf->SetSubject($title);
-		$pdf->SetKeywords('Ninja, '.Kohana::config('config.product_name').', PDF, report, '.$type);
-
-		// set header and footer fonts
-		$pdf->setFooterFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_DATA));
-
-		// set default monospaced font
-		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-		//set margins
-		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-		//set auto page breaks
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-		//set image scale factor
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-		//set some language-dependent strings
-		$pdf->setLanguageArray($l);
-
-		// ---------------------------------------------------------
-
-		// set font
-		$pdf->SetFont('helvetica', '', 10);
-
-		// add a page
-		$pdf->AddPage();
-
-		// set color for filler
-		$pdf->SetFillColor(255, 255, 0);
-		//$pdf->SetLineStyle(array('color' => array(255, 255, 255)));
-
-		// ---------------------------------------------------------
-
-		if (PHP_SAPI == 'cli') {
-			$site = Kohana::config('config.site_domain');
-			$path = realpath(dirname(__FILE__).'/../../').'/';
-			$cont = $this->pdf_data['content'];
-			$this->pdf_data['content'] = str_replace($site, $path, $cont);
-		}
-
-		$images = array();
-		if ($this->type == 'avail') {
-			$image_string = '';
-			# handle piechart data  - render images
-			if (isset($this->pdf_data['pie_data'])) {
-				if (is_array($this->pdf_data['pie_data'])) {
-					$data_str = $this->pdf_data['pie_data'];
-					for ($i = 0; $i < sizeof($data_str); $i++) {
-						$image_string .= ($i%2 == 0) ? '<table cellspacing="30"><tr><td>' : '<td>';
-						$image_string .= '<table border="1" cellpadding="5" style="width: 326px">';
-						$img = $this->piechart($data_str[$i]['img'], K_PATH_CACHE);
-						$images[] = $img; # store absolute path to file for later removal
-						$image_string .= '<tr><td style="font-size: 0.9em; background-color: #f4f4f4; font-weight: bold">'.(_('Status Overview').': '.$data_str[$i]['host']).'</td></tr>'.
-						  '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
-						$image_string .= '</table>';
-						$image_string .= ($i%2 == 0) ? '</td>' : '</td></tr></table>';
-					}
-					if (sizeof($data_str)%2 == 1)
-						$image_string .= '</tr></table>';
-				} else {
-					# generate image
-					$data_str = $this->pdf_data['pie_data'];
-					$img = $this->piechart($data_str, K_PATH_CACHE);
-					$images[] = $img;
-					$image_string .= '<table border="1" cellpadding="5" style="width: 326px">';
-					$image_string .= '<tr><td><img style="width:320px; height:210px" src="'.$img.'" /></td></tr>';
-					$image_string .= '</table>';
-				}
-			}
-		} else {
-			# sla
-			$nr = 0;
-			foreach($this->data_arr as $i => $report) {
-				$nr++;
-				$data_str = $report['data_str'];
-				$img = $this->barchart($data_str, K_PATH_CACHE);
-				$images[] = $img;
-				$this->pdf_data['content'] = str_replace("#chart_placeholder_$nr#", '<img src="'.$img.'" />', $this->pdf_data['content']);
-			}
-		}
-
-		$pdf->writeHTML($this->pdf_data['header'], true, 0, true, 0);
-
-		if (isset($this->pdf_data['trends_graph'])) {
-			$pdf->writeHTML($this->pdf_data['trends_graph'], true, 0, true, 0);
-		}
-
-		if(isset($this->pdf_data['content']) && $this->pdf_data['content']) {
-		       $pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
-		} else {
-		       $pdf->writeHTML("<p>No data found. You seem to have created a report with only non existing objects in it.</p>", true, 0, true, 0);
-		}
-
-		if (isset($image_string) && !empty($image_string)) {
-			$pdf->writeHTML($image_string, true, 0, true, 0);
-		}
-		# remove all temporary images
-		foreach ($images as $i) {
-			unlink($i);
-		}
-
-		if (isset($this->pdf_data['svc_content'])) {
-			$pdf->writeHTML($this->pdf_data['svc_content'], true, 0, true, 0);
-		}
-
-		# print log data if available
-		if (isset($this->pdf_data['log_data']) && !empty($this->pdf_data['log_data'])) {
-			$pdf->writeHTML($this->pdf_data['log_data'], true, 0, true, 0);
-		}
-
-		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
-		$filename = trim($filename);
-		$pdf_title = str_replace('_', ' ', str_replace('.pdf', '', $filename));
-		$pdf->SetTitle($pdf_title);
-
-		if (strtolower(substr($filename, -4, 4))!='.pdf') {
-			$filename .= '.pdf';
-		}
-
-		# Close and output PDF document
-		# change last parameter to 'F' to save generated file to a path ($filename)
-		# 'I' is default and pushes the file to browser for download
-		$action = 'I';
-		$send_by_mail = false;
-		if (!empty($this->pdf_recipients)) {
-			$action = 'F';
-			$filename = K_PATH_CACHE.'/'.$filename;
-			$send_by_mail = true;
-		}
-
-		$pdf->Output($filename, $action);
-
-		// the local path must be specified and there must be an original pdf
-		if($this->pdf_local_persistent_filepath && 'F' == $action) {
-			try {
-				persist_pdf::save($filename, $this->pdf_local_persistent_filepath.'/'.pathinfo($filename, PATHINFO_BASENAME));
-			} catch(Exception $e) {
-				// @todo log failure
-				echo "<pre>";
-				var_dump(__LINE__);
-				var_dump($e->getMessage());
-				var_dump('DYING');
-				die;
-			}
-		}
-
-		$mail_sent = 0;
-		if ($send_by_mail) {
-			$report_sender = new Send_report_Model();
-			$mail_sent = $report_sender->send($this->pdf_recipients, $filename, str_replace(K_PATH_CACHE.'/', '', $filename));
-
-			return $mail_sent;
-		}
-
-		if(request::is_ajax()) {
-			return json::ok();
-		}
-
-		return true;
-	}
-
 	/**
 	 * Fetch data from report_class
 	 * Uses split_month_data() to split start- and end_time
@@ -4362,7 +4055,6 @@ class Reports_Controller extends Authenticated_Controller
 			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
 		}
 
-		$request['create_pdf'] = 1;
 		$request['new_report_setup'] = 1;
 		$this->pdf_filename = $report_data['filename'];
 		$this->pdf_recipients = $report_data['recipients'];
@@ -4457,11 +4149,6 @@ class Reports_Controller extends Authenticated_Controller
 		$seconds = ($duration % 60);
 		printf("%s: %dd %dh %dm %ds", _("Duration"),
 			   $days, $hours, $minutes, $seconds);
-
-		# we needan extra break in case of PDF
-		if ($this->create_pdf) {
-			echo "<br />";
-		}
 	}
 
 	/**
@@ -4472,13 +4159,6 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	public function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
 	{
-		$spacer = '';
-		$table_border = '';
-		if ($this->create_pdf) {
-			$spacer = "<br />";
-			$table_border = ' border="1"';
-		}
-
 		echo "<br /><table class=\"host_alerts\"><tr>\n";
 		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
 		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";

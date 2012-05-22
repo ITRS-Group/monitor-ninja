@@ -96,8 +96,6 @@ class Trends_Controller extends Authenticated_Controller {
 	private $cluster_mode = false;
 	public $scheduled_downtime_as_uptime = false;
 	private $csv_output = false;
-	private $create_pdf = false;
-	private $pdf_data = false;
 
 	private $assume_initial_states = true;
 	private $initial_assumed_host_state = -3;
@@ -754,7 +752,6 @@ class Trends_Controller extends Authenticated_Controller {
 
 			if (isset($this->data_arr[0])) {
 				$avail_template = $this->add_view('trends/multiple_'.$sub_type.'_states');
-				$avail_template->create_pdf = $this->create_pdf;
 				$avail_template->hide_host = false;
 				$avail_template->get_vars = $get_vars;
 				$avail_template->report_type = $this->report_type;
@@ -867,7 +864,6 @@ class Trends_Controller extends Authenticated_Controller {
 
 				$avail_template->trend_links = $trend_links;
 				$avail_template->state_values = $this->state_values;
-				$avail_template->create_pdf = $this->create_pdf;
 
 				# hosts or services
 				if (isset($this->data_arr['log'])) {
