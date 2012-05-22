@@ -271,6 +271,7 @@ class Default_Controller extends Ninja_Controller  {
 
 		if (empty($user)) {
 			# we failed to detect a valid user so there's no use in continuing
+			echo "Couldn't find valid user, exiting\n";
 			return false;
 		}
 
