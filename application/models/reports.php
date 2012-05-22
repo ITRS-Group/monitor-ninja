@@ -220,6 +220,19 @@ class Reports_Model extends Model
 		return true;
 	}
 
+	/**
+	 * Manually excluded states are excluded here.
+	 *
+	 * @param $state int
+	 * @return int
+	 */
+	private function filter_excluded_state($state) {
+		if ((isset($this->options['service_filter_status']) && !$this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) || isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
+			return self::HOST_EXCLUDED;
+		}
+		return $state;
+	}
+
 
 	/**
 	 * Parses a timerange string
@@ -1269,6 +1282,7 @@ class Reports_Model extends Model
 			$cstate['TOTAL_TIME_ACTIVE'] += $duration;
 			$ary = explode(':', $s);
 			$is_running = intval($ary[0]);
+			$current_state = intval($ary[2]);
 			$in_dt = $ary[1] != 0;
 			$p3 = $in_dt ? '' : 'UN';
 			$p3 .= 'SCHEDULED';
@@ -1280,13 +1294,13 @@ class Reports_Model extends Model
 
 			# this is where we hack in scheduled downtime as uptime
 			if ($in_dt && $this->scheduled_downtime_as_uptime) {
-				$real_state = $conv[$ary[2]];
+				$real_state = $conv[$current_state];
 				$p2 = $conv[0];
 				if ($real_state !== 'UP' && $real_state !== 'OK')
 					$cstate['TIME_DOWN_COUNTED_AS_UP'] += $duration;
 			}
-			elseif (isset($conv[$ary[2]])) {
-				$p2 = $conv[$ary[2]];
+			elseif (isset($conv[$current_state])) {
+				$p2 = $conv[$current_state];
 
 				if ($p2 === 'PENDING')
 					$cstate['TIME_UNDETERMINED_NO_DATA'] += $duration;
@@ -1744,21 +1758,14 @@ class Reports_Model extends Model
 	{
 		if ($this->sub_reports) {
 			$func = $this->st_state_calculator;
-			$this->st_obj_state = $this->$func();
-			return;
+			$state = $this->$func();
 		}
 
 		if (!$state) {
 			$state = $this->st_real_state;
 		}
 
-		if(isset($this->options['service_filter_status']) && $this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) {
-			$state = self::SERVICE_EXCLUDED;
-		} elseif(isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
-			$state = self::HOST_EXCLUDED;
-		}
-
-		$this->st_obj_state = $state;
+		$this->st_obj_state = $this->filter_excluded_state($state);
 	}
 
 	/**
@@ -1828,7 +1835,7 @@ class Reports_Model extends Model
 		}
 		else {
 			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth($hostname, $servicename));
-			$this->st_real_state = $this->get_initial_state($hostname, $servicename);
+			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state($hostname, $servicename));
 			$this->calculate_object_state($this->st_real_state);
 		}
 
@@ -1907,6 +1914,9 @@ class Reports_Model extends Model
 
 	private function st_update_log($sub = false, $row = false)
 	{
+		if($row) {
+			$row['state'] = $this->filter_excluded_state($row['state']);
+		}
 		if (!$this->st_needs_log) {
 			$this->st_prev_row = $row;
 			return;
