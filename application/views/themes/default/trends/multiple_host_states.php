@@ -8,7 +8,7 @@
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_hosts" border="1">
 			<tr>
-				<th class="headerNone left" style="<?php echo (!$create_pdf) ? 'width: 70%;' : ''; ?>"><?php echo (!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
+				<th class="headerNone left" style="width: 70%"><?php echo (!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
 				<th class="headerNone left" style="width: 60px"><?php echo _('Actions') ?></th>
 				<th class="headerNone"><?php echo _('Up') ?></th>
 				<th class="headerNone"><?php echo _('Unreachable') ?></th>
@@ -20,9 +20,9 @@
 			<?php if (!$use_alias) {
 				$host_link = str_replace('&','&amp;',$data['host_link'][$i]);
 				$host_link = str_replace(Kohana::config('reports.reports_link').'/generate?type=avail', 'trends/generate?1', $host_link);?>
-				<td><?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.$host_link.'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
+				<td><a href="'.$host_link.'"><?php echo $data['HOST_NAME'][$i] ?></a></td>
 				<?php } else { ?>
-				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
+				<td><?php echo $this->_get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?>)</td>
 				<?php } ?>
 				<td class="data">
 					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => _('Service details for this Host'))), array('style' => 'border: 0px')) ?>

@@ -16,11 +16,10 @@ foreach($report_data as $i =>  $report) {
 
 	?>
 	<div class="setup-table members">
-		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo ((!$create_pdf) ? help::render('sla_graph') : '').' '.$str_source; ?></h2>
+		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<?php
-		if (!$create_pdf) {
-			$avail_links = html_entity_decode($report['avail_links']);
-			parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
+		$avail_links = html_entity_decode($report['avail_links']);
+		parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
 		<form action="<?php echo url::site().Kohana::config('reports.reports_link').'/generate?type=avail' ?>" method="post">
 			<input type="image" src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
 			<?php foreach($avail_links as $key => $value) {
@@ -41,34 +40,34 @@ foreach($report_data as $i =>  $report) {
 	<?php  if (!empty($report['table_data'][$report['source']])) {
 		$data = $report['table_data'][$report['source']]; ?>
 		<div class="sla_table">
-		<h2 style="margin: 15px 0px 4px 0px"><?php echo ((!$create_pdf) ? help::render('sla_breakdown') : '').' '.$str_source; ?></h2>
+		<h2 style="margin: 15px 0px 4px 0px"><?php echo help::render('sla_breakdown').' '.$str_source; ?></h2>
 		<table class="auto" border="1">
 
 			<tr>
-				<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>></th>
+				<th class="headerNone"</th>
 				<?php
 					$n = 0;
 					foreach ($data as $month => $values) {
 					$n++;
 				?>
-				<th <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"';?>><?php echo $month ?></th>
+				<th class="headerNone"<?php echo $month ?></th>
 				<?php } ?>
 			</tr>
 			<tr class="even">
-				<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo _('SLA') ?></td><?php
+				<td class="label"<?php echo _('SLA') ?></td><?php
 				$j = 0;
 				foreach ($data as $month => $value) {
 					$j++; ?>
-				<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #fafafa; font-size: 0.9em"' : 'class="data"';?>><?php echo reports::format_report_value($value[0][1]) ?> %</td>
+				<td class="data"<?php echo reports::format_report_value($value[0][1]) ?> %</td>
 				<?php
 				} ?>
 			</tr>
 			<tr class="odd">
-				<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo _('Real') ?></td><?php
+				<td><?php echo _('Real') ?></td><?php
 				$y = 0;
 				foreach ($data as $month => $value) {
 					$y++;?>
-				<td <?php echo ($create_pdf) ? 'style="text-align: right; background-color: #e2e2e2; font-size: 0.9em"' : 'class="data"';?>>
+				<td class="data"
 					<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',
@@ -81,11 +80,11 @@ foreach($report_data as $i =>  $report) {
 			</tr>
 		</table>
 	</div>
-	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0 && !$create_pdf) { ?>
+	<?php } if (isset ($report['member_links']) && count($report['member_links']) > 0) { ?>
 	<div class="setup-table members">
 
 		<table style="margin-bottom: 20px;">
-			<caption style="margin-top: 15px;"><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '._('Group members');?></caption>
+			<caption style="margin-top: 15px;"><?php echo help::render('sla_group_members').' '._('Group members');?></caption>
 			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : _('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
@@ -97,4 +96,4 @@ foreach($report_data as $i =>  $report) {
 			</table>
 			<br />
 		</div>
-	<?php } } } ?>
+	<?php } } ?>

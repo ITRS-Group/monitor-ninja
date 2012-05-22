@@ -27,16 +27,14 @@
 					echo $data['groupname'];
 				} else {
 					echo _('Services on host') .': ';
-					if (!$create_pdf)
-						echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">';
+					echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">';
 					if (!$use_alias) {
 						echo $data['HOST_NAME'][$i];
 					 } else {
 						echo $this->_get_host_alias($data['HOST_NAME'][$i]).' '.$data['HOST_NAME'][$i].')';
 						}
 					}
-					if (!$create_pdf)
-						echo '</a>';
+					echo '</a>';
 				?>
 					&nbsp; <?php
 					if(empty($data['groupname'])) {
@@ -54,19 +52,15 @@
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
 			<?php if (!$use_alias) { ?>
-				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo $create_pdf != false ? $data['HOST_NAME'][$i] :'<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
+				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } else { ?>
-				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo $create_pdf != false ? $data['HOST_NAME'][$i] : '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
+				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
 			<?php } ?>
 			</tr>
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname']; } ?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td class="label">
-					<?php if ($create_pdf) { ?>
-						<?php echo $data['SERVICE_DESCRIPTION'][$i]; ?>
-					<?php } else { ?>
 					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
-					<?php } ?>
 				</td>
 				<td class="data">
 					<?php echo html::anchor(Kohana::config('reports.reports_link').'/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('Availability report for this service'))), array('style' => 'border: 0px')) ?>
