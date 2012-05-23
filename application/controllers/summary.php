@@ -26,10 +26,6 @@ class Summary_Controller extends Authenticated_Controller
 	private $day_names = false;
 	private $first_day_of_week = 1;
 	private $month_names = false;
-	private $pdf_filename = false;
-	private $pdf_recipients = false; # when sending reports by email
-	private $pdf_savepath = false;	# when saving pdf to a path
-	public $pdf_local_persistent_filepath = false;
 	private $report_id = false;
 	private $schedule_id = false;
 	private $type = 'summary';
@@ -808,129 +804,6 @@ class Summary_Controller extends Authenticated_Controller
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = _("Reporting » Alert summary » Report");
-		$date_format = nagstat::date_format();
-		if('.csv' == substr($this->pdf_filename, -4, 4)) {
-			// @todo move this piece of ** out of the controller
-
-			// meta, array keys are there for you
-			$csv_content = array('"'.implode('", "', array(
-				'kind_of_report' => $this->_get_summary_variant_by_report_type($report_type), // @todo replace this with for example "Most recent hard alerts" (found in $report_type)
-				'start_time' => "From: ".date($date_format_str, $used_options['start_time']),
-				'end_time' => "To: ".date($date_format_str, $used_options['end_time']),
-				'human_readable_duration' => $this->_nice_format_duration($used_options['start_time'], $used_options['end_time'])
-			)).'"');
-
-			if(self::RECENT_ALERTS == $report_type) {
-				// headers
-				$csv_content[] = '"'.implode('", "', array(
-					'TIME',
-					'ALERT TYPE',
-					'HOST',
-					'SERVICE',
-					'STATE TYPE',
-					'INFORMATION'
-				)).'"';
-
-				// content
-				foreach($result as $log_entry) {
-					$csv_content[] = '"'.implode('", "', array(
-						date($date_format_str, $log_entry['timestamp']),
-						Reports_Model::event_type_to_string($log_entry['event_type'], $log_entry['service_description'] ? 'service' : 'host'),
-						$log_entry['host_name'],
-						$log_entry['service_description'] ? $log_entry['service_description'] : 'N/A',
-						$log_entry['hard'] ? _('Hard') : _('Soft'),
-						$log_entry['output']
-					)).'"';
-				}
-			} elseif(self::TOP_ALERT_PRODUCERS == $report_type) {
-				if(isset($result[0]['service_description'])) {
-					// summary of services
-					// headers
-					$csv_content[] = '"'.implode('", "', array(
-						'HOST',
-						'SERVICE',
-						'ALERT TYPE',
-						'TOTAL ALERTS'
-					)).'"';
-
-					// content
-					foreach($result as $log_entry) {
-						$csv_content[] = '"'.implode('", "', array(
-							$log_entry['host_name'],
-							$log_entry['service_description'],
-							Reports_Model::event_type_to_string($log_entry['event_type'], 'service'),
-							$log_entry['total_alerts']
-						)).'"';
-					}
-				} else {
-					// summary of hosts
-					// headers
-					$csv_content[] = '"'.implode('", "', array(
-						'HOST',
-						'ALERT TYPE',
-						'TOTAL ALERTS'
-					)).'"';
-
-					// content
-					foreach($result as $log_entry) {
-						$csv_content[] = '"'.implode('", "', array(
-							$log_entry['host_name'],
-							Reports_Model::event_type_to_string($log_entry['event_type'], 'host'),
-							$log_entry['total_alerts']
-						)).'"';
-					}
-				}
-			}
-
-			$temp_name = tempnam('/tmp', 'report');
-			// copying behavior for definition of K_PATH_CACHE (grep for it,
-			// it should be in tcpdf somewhere)
-			if(is_file($temp_name)) {
-				unlink($temp_name);
-			}
-			mkdir($temp_name);
-
-			$filename = preg_replace('/.(csv|pdf)$/', null, $this->pdf_filename).'.csv';
-			$full_path = $temp_name.'/'.$filename;
-			file_put_contents($full_path, implode("\n", $csv_content));
-
-			if($this->pdf_local_persistent_filepath) {
-				// we want to make sure the file exists forever and ever, which
-				// means that name actually matters
-
-				// once again, stealing methods from pdf to csv
-				$previous_full_path = false;
-				try {
-					$previous_full_path = $full_path;
-					$new_wanted_filename = rtrim($this->pdf_local_persistent_filepath, '/').'/'.$filename;
-					$full_path = persist_pdf::save($full_path, $new_wanted_filename);
-					$file_saved = true;
-				} catch(Exception $e) {
-					if($previous_full_path) {
-						$full_path = $previous_full_path;
-					}
-					$file_saved = false;
-				}
-			}
-
-			// Stealing the already used variable name, not touching it
-			// since it's declared public and such it may be
-			// depended upon from the outside
-			if($this->pdf_recipients) {
-				$report_sender = new Send_report_Model();
-				$mail_sent = $report_sender->send($this->pdf_recipients, $full_path, $filename);
-				if (PHP_SAPI == "cli") {
-					echo $mail_sent;
-				} elseif(request::is_ajax()) {
-					return $mail_sent ? json::ok(_("Mail sent")) : json::fail(_("Mail could not be sent"));
-				}
-				return $mail_sent;
-			}
-			if(request::is_ajax() && $this->pdf_local_persistent_filepath) {
-				return $file_saved ? json::ok(_("File saved")) : json::fail(_("File could not be saved"));
-			}
-			return true;
-		}
 
 		return $content;
 	}
@@ -1080,10 +953,6 @@ class Summary_Controller extends Authenticated_Controller
 		if ($report_data == false) {
 			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
 		}
-
-		$this->pdf_filename = $report_data['filename'];
-		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
-		$this->pdf_recipients = $report_data['recipients'];
 
 		$request['new_report_setup'] = 1;
 

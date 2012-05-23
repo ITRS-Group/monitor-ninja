@@ -126,10 +126,6 @@ class Reports_Controller extends Authenticated_Controller
 	private $include_soft_states = false;
 	private $cluster_mode = false;
 	private $scheduled_downtime_as_uptime = false;
-	private $csv_output = false;
-	public $pdf_filename = false;
-	public $pdf_local_persistent_filepath = false;
-	public $pdf_recipients = false; # when sending reports by email
 	private $schedule_id = false;
 
 	private $assume_initial_states = true;
@@ -328,7 +324,7 @@ class Reports_Controller extends Authenticated_Controller
 		$initial_assumed_service_state_selected =
 			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
 		$csv_output_checked =
-			arr::search($_REQUEST, 'csvoutput', $this->csv_output) ? 'checked="checked"' : '';
+			arr::search($_REQUEST, 'csvoutput', false) ? 'checked="checked"' : '';
 		$include_trends_checked = arr::search($_REQUEST, 'include_trends', true) ? 'checked="checked"' : '';
 		$use_alias  =
 			arr::search($_REQUEST, 'use_alias', $this->use_alias);
@@ -994,9 +990,6 @@ class Reports_Controller extends Authenticated_Controller
 
 		$this->report_type = arr::search($_REQUEST, 'report_type');
 		$in_csvoutput = arr::search($_REQUEST, 'csvoutput');
-		if(!$in_csvoutput && '.csv' == substr($this->pdf_filename, -4 , 4)) {
-			$in_csvoutput = true;
-		}
 		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
 		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
 		$report_period = arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
@@ -1212,20 +1205,7 @@ class Reports_Controller extends Authenticated_Controller
 		$template->report_template_check = $report_template_check;
 
 		# AVAIL REPORT
-		if ($in_csvoutput) {
-			Kohana::close_buffers(FALSE);
-
-			# pdf_filename will be false unless this is a scheduled report
-			if (!$this->pdf_filename)
-				$this->pdf_filename = $this->report_type . '_availability_report.csv';
-
-			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup, $this->pdf_filename, Scheduled_reports_Model::fetch_scheduled_field_value('local_persistent_filepath', $this->schedule_id));
-			if(PHP_SAPI != "cli") {
-				// request through browser
-				exit();
-			}
-			return $csv_status;
-		} elseif ($this->type == 'avail' && (empty($this->data_arr)
+		if ($this->type == 'avail' && (empty($this->data_arr)
 			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
 			|| (!isset($this->data_arr['source']) && empty($this->data_arr[0][0]['source']) ))) {
 			# avail report is empty
@@ -1585,7 +1565,6 @@ class Reports_Controller extends Authenticated_Controller
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->str_start_date = $str_start_date;
 					$template->header->str_end_date = $str_end_date;
-					$csv_link = isset($csv_link) ? $csv_link : false;
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 					$template->header->pdf_link = $pdf_link;
 					$template->header->use_average = $use_average;
@@ -2249,186 +2228,6 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	 * Generate csv output from report data. It also handles output
-	 * formatting, like setting the appropriate headers or saving
-	 * the file and/or emailing that file
-	 *
-	 * @param string $type
-	 * @param array $data_arr
-	 * @param string $sub_type
-	 * @param string $group_name = false
-	 * @param boolean $in_hostgroup
-	 * @param string $filename = false
-	 * @param string $folder = false
-	 */
-	public function _create_csv_output($type, $data_arr, $sub_type, $group_name=false, $in_hostgroup, $filename = false, $folder = false)
-	{
-		if (empty($data_arr)) {
-			return sprintf(_("No data found for selection...%sUse the browsers' back button to change report settings."), '<br />');
-		}
-		$this->auto_render=false;
-
-		// Sometimes we want to save the file instead of sending it to the browser,
-		// probably because it's scheduled and/or being triggered manually
-		$save_file = request::is_ajax();
-		if(PHP_SAPI == 'cli') {
-			$save_file = true;
-		}
-		if (!$save_file) {
-			header("Content-disposition: attachment; filename=".$filename);
-			if (isset($_SERVER['HTTP_USER_AGENT']) &&
-				(strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 7') || strpos($_SERVER['HTTP_USER_AGENT'],'MSIE 8')))
-			{
-				header("Pragma: hack");
-				header("Content-Type: application/octet-stream");
-				header("Content-Transfer-Encoding: binary");
-			} else {
-				header("Content-type: text/csv");
-			}
-		}
-
-		if('sla' == $type) {
-			// end() instead of current() because of $data_arr's structure in case of multiple host-/servicegroups
-			$current_row = end($data_arr);
-			$csv = null;
-			reset($this->time_arr); // iterate timestamps in parallel to data, reset manually due to inconsistent indexing
-			$object_arrays = array();
-			if(false !== $group_name) {
-				$object_arrays = $current_row['table_data'];
-			} else {
-				// expand array['host1,host2'] to array['host1', 'host2']
-				foreach(explode(',', key($current_row['table_data'])) as $object_name) {
-					$object_arrays[$object_name] = current($current_row['table_data']);
-				}
-			}
-			foreach($object_arrays as $object_name => $time_periods) {
-				foreach($time_periods as $time_period => $sla_result) {
-					// handles weird nesting
-					$sla_result = current($sla_result);
-					$real_value = $sla_result[0];
-					$sla_value = $sla_result[1];
-					$current_starting_time = current($this->time_arr);
-					$attributes = array(
-						'"'.$object_name.'"', // strings containing spaces or commas are better off encapsulated in "
-						date('Y', $current_starting_time['start']), // loop the copy of actual timestamps which
-						// are in the same order as these time periods. this is what you get for decorating values (timestamps) with output
-						// (jan, feb) in a too early stage
-						$time_period,
-						$real_value,
-						$sla_value,
-						(int) ($real_value >= $sla_value)
-					);
-					$csv .= implode(', ', $attributes)."\n";
-					if(false === next($this->time_arr)) {
-						// we might iterate the date array multiple times (in the case where we're expanding
-						// multiple objects), in which case we need to traverse the time_arr more than once.
-						reset($this->time_arr);
-					}
-					// for total compliance, all of the last columns' values need to be 1
-				}
-			}
-			if(false !== $group_name) {
-				$object_type = !empty($in_hostgroup) ? "HOST_GROUP" : "SERVICE_GROUP";
-			} elseif(strpos($object_name, ';') !== false) {
-				$object_type = 'SERVICE';
-			} else {
-				$object_type = 'HOST';
-			}
-			$csv = '"'.$object_type.'", "YEAR", "MONTH", "REAL VALUE", "SLA VALUE", "COMPLIANCE"'."\n".$csv;
-		} else {
-			// Availability
-
-			// headlines, not HTTP header
-			$csv = $this->_csv_header($sub_type);
-
-			// =========== GROUPS ===========
-			if ($group_name !== false) {
-				// We have host- or servicegroup(s)
-
-				// Add new csv header fields
-				$group_type = !empty($in_hostgroup) ? "HOST_GROUP, " : "SERVICE_GROUP, ";
-				$csv = $group_type . $csv;
-				foreach ($data_arr as $data_arr_group) {
-					// Add group name to csv output
-					$csv_group_name = $data_arr_group['groupname'];
-					foreach ($data_arr_group as $k => $data) {
-						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-							continue;
-						if (!empty($data['states'])) {
-							$csv .= '"'.$csv_group_name.'", ';
-							$csv .= self::_csv_content($data['states'], $sub_type)."\n";
-						}
-					}
-				}
-			} else {
-				// We're dealing with host(s) or service(s)
-
-				if (!arr::search($data_arr, 0)) {
-					// if we can't find item with index 0, we
-					// are dealing with a single item and should
-					// skip the foreach loop
-					$csv .= self::_csv_content($data_arr['states'], $sub_type)."\n";
-				} else {
-					foreach ($data_arr as $k => $data) {
-						if ($k === 'tot_time' || $k === 'source' || $k === 'states' || $k === 'groupname')
-							continue;
-
-						$csv .= self::_csv_content($data['states'], $sub_type)."\n";
-					}
-				}
-			}
-		}
-
-		if($save_file) {
-			$temp_name = tempnam('/tmp', 'report');
-			// copying behavior for definition of K_PATH_CACHE (grep for it,
-			// it should be in tcpdf somewhere)
-			if(is_file($temp_name)) {
-				unlink($temp_name);
-			}
-			mkdir($temp_name);
-			$full_path = $temp_name.'/'.$filename;
-			file_put_contents($full_path, $csv);
-			if($folder) {
-				// we want to make sure the file exists forever and ever, which
-				// means that name actually matters
-
-				// once again, stealing methods from pdf to csv
-				$previous_full_path = false;
-				try {
-					$previous_full_path = $full_path;
-					$new_wanted_filename = rtrim($folder, '/').'/'.$filename;
-					$full_path = persist_pdf::save($full_path, $new_wanted_filename);
-				} catch(Exception $e) {
-					if($previous_full_path) {
-						$full_path = $previous_full_path;
-					}
-				}
-			}
-
-			// Stealing the already used variable name, not touching it
-			// since it's declared public and such it may be
-			// depended upon from the outside
-			if($this->pdf_recipients) {
-				$report_sender = new Send_report_Model();
-				$mail_sent = $report_sender->send($this->pdf_recipients, $full_path, $filename);
-				if(request::is_ajax()) {
-					if($mail_sent) {
-						return json::ok(_("Mail sent"));
-					} else {
-						return json::fail(_("Could not send email"));
-					}
-				}
-
-				return $mail_sent;
-			}
-		} else {
-			echo $csv;
-		}
-		return true;
-	}
-
-	/**
 	*	Return report period strings depending on current
 	*	report type (avail/sla)
 	*/
@@ -2730,136 +2529,6 @@ class Reports_Controller extends Authenticated_Controller
 		}
 		return $return;
 	}
-
-	/**
-	*	Returns the fields needed for csv output.
-	* 	The order of the fields are the same as in avail.cgi
-	*/
-	public function _get_csv_fields($type=false)
-	{
-		$fields['host'] = array(
-			'HOST_NAME',
-			'TIME_UP_SCHEDULED',
-			'PERCENT_TIME_UP_SCHEDULED',
-			'PERCENT_KNOWN_TIME_UP_SCHEDULED',
-			'TIME_UP_UNSCHEDULED',
-			'PERCENT_TIME_UP_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_UP_UNSCHEDULED',
-			'TOTAL_TIME_UP',
-			'PERCENT_TOTAL_TIME_UP',
-			'PERCENT_KNOWN_TIME_UP',
-			'TIME_DOWN_SCHEDULED',
-			'PERCENT_TIME_DOWN_SCHEDULED',
-			'PERCENT_KNOWN_TIME_DOWN_SCHEDULED',
-			'TIME_DOWN_UNSCHEDULED',
-			'PERCENT_TIME_DOWN_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_DOWN_UNSCHEDULED',
-			'TOTAL_TIME_DOWN',
-			'PERCENT_TOTAL_TIME_DOWN',
-			'PERCENT_KNOWN_TIME_DOWN',
-			'TIME_UNREACHABLE_SCHEDULED',
-			'PERCENT_TIME_UNREACHABLE_SCHEDULED',
-			'PERCENT_KNOWN_TIME_UNREACHABLE_SCHEDULED',
-			'TIME_UNREACHABLE_UNSCHEDULED',
-			'PERCENT_TIME_UNREACHABLE_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_UNREACHABLE_UNSCHEDULED',
-			'TOTAL_TIME_UNREACHABLE',
-			'PERCENT_TOTAL_TIME_UNREACHABLE',
-			'PERCENT_KNOWN_TIME_UNREACHABLE',
-			'TIME_UNDETERMINED_NOT_RUNNING',
-			'PERCENT_TIME_UNDETERMINED_NOT_RUNNING',
-			'TIME_UNDETERMINED_NO_DATA',
-			'PERCENT_TIME_UNDETERMINED_NO_DATA',
-			'TOTAL_TIME_UNDETERMINED',
-			'PERCENT_TOTAL_TIME_UNDETERMINED'
-		);
-		$fields['service'] = array(
-			'HOST_NAME',
-			'SERVICE_DESCRIPTION',
-			'TIME_OK_SCHEDULED',
-			'PERCENT_TIME_OK_SCHEDULED',
-			'PERCENT_KNOWN_TIME_OK_SCHEDULED',
-			'TIME_OK_UNSCHEDULED',
-			'PERCENT_TIME_OK_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_OK_UNSCHEDULED',
-			'TOTAL_TIME_OK',
-			'PERCENT_TOTAL_TIME_OK',
-			'PERCENT_KNOWN_TIME_OK',
-			'TIME_WARNING_SCHEDULED',
-			'PERCENT_TIME_WARNING_SCHEDULED',
-			'PERCENT_KNOWN_TIME_WARNING_SCHEDULED',
-			'TIME_WARNING_UNSCHEDULED',
-			'PERCENT_TIME_WARNING_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_WARNING_UNSCHEDULED',
-			'TOTAL_TIME_WARNING',
-			'PERCENT_TOTAL_TIME_WARNING',
-			'PERCENT_KNOWN_TIME_WARNING',
-			'TIME_UNKNOWN_SCHEDULED',
-			'PERCENT_TIME_UNKNOWN_SCHEDULED',
-			'PERCENT_KNOWN_TIME_UNKNOWN_SCHEDULED',
-			'TIME_UNKNOWN_UNSCHEDULED',
-			'PERCENT_TIME_UNKNOWN_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_UNKNOWN_UNSCHEDULED',
-			'TOTAL_TIME_UNKNOWN',
-			'PERCENT_TOTAL_TIME_UNKNOWN',
-			'PERCENT_KNOWN_TIME_UNKNOWN',
-			'TIME_CRITICAL_SCHEDULED',
-			'PERCENT_TIME_CRITICAL_SCHEDULED',
-			'PERCENT_KNOWN_TIME_CRITICAL_SCHEDULED',
-			'TIME_CRITICAL_UNSCHEDULED',
-			'PERCENT_TIME_CRITICAL_UNSCHEDULED',
-			'PERCENT_KNOWN_TIME_CRITICAL_UNSCHEDULED',
-			'TOTAL_TIME_CRITICAL',
-			'PERCENT_TOTAL_TIME_CRITICAL',
-			'PERCENT_KNOWN_TIME_CRITICAL',
-			'TIME_UNDETERMINED_NOT_RUNNING',
-			'PERCENT_TIME_UNDETERMINED_NOT_RUNNING',
-			'TIME_UNDETERMINED_NO_DATA',
-			'PERCENT_TIME_UNDETERMINED_NO_DATA',
-			'TOTAL_TIME_UNDETERMINED',
-			'PERCENT_TOTAL_TIME_UNDETERMINED'
-		);
-		return $fields[$type];
-	}
-
-	/**
-	 * Returns the csv value string to be printed for the selected type (host/service)
-	 *
-	 * @param array $states = false
-	 * @param string $type = 'host'
-	 * @return boolean|string
-	 */
-	public function _csv_content(&$states=false, $type='host')
-	{
-		if (!$states) {
-			return false;
-		}
-		$csv = false;
-
-		$fields = $this->_get_csv_fields($type);
-
-		foreach ($fields as $field_name) {
-			if ($field_name == 'HOST_NAME' || $field_name == 'SERVICE_DESCRIPTION') {
-				$csv[] = '"' . $states[$field_name] . '"';
-			} else {
-				$csv[] = strstr($field_name, 'PERCENT') ? reports::format_report_value($states[$field_name]).'%' : $states[$field_name];
-			}
-		}
-		return implode(', ', $csv);
-	}
-
-	/**
-	 * Get the csv header line
-	 *
-	 * @param string $type = false
-	 */
-	public function _csv_header($type=false)
-	{
-		$fields = $this->_get_csv_fields($type);
-		$csv = implode(', ', $fields);
-		return $csv."\n";
-	}
-
 
 	/**
 	*	Convert nasty chars before creating report image file
