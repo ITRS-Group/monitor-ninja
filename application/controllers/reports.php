@@ -735,8 +735,6 @@ class Reports_Controller extends Authenticated_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Setup');
-
-		return $template;
 	}
 
 	/**
@@ -3787,7 +3785,8 @@ class Reports_Controller extends Authenticated_Controller
 				$summary = new Summary_Controller();
 				$return[] = $summary->generate($row->id);
 			} else {
-				$report = new Reports_Controller();
+				$class = get_class($this);
+				$report = new $class();
 				$return[] = $report->generate($row->identifier, $row->id);
 				unset($report);
 			}
