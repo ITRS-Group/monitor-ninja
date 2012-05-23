@@ -1761,7 +1761,7 @@ class Reports_Model extends Model
 			$state = $this->$func();
 		}
 
-		if (!$state) {
+		if (false === $state) {
 			$state = $this->st_real_state;
 		}
 
