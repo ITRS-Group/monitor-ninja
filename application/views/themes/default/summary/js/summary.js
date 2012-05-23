@@ -71,25 +71,6 @@ $(document).ready(function() {
 	});
 });
 
-
-function confirm_delete_report(the_val)
-{
-	var the_path = self.location.href;
-	the_path = the_path.replace('#', '');
-
-	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete + "\n";
-	if (the_path!="") {
-		if (is_scheduled) {
-			msg += _reports_confirm_delete_warning;
-		}
-		if (confirm(msg)) {
-			self.location.href=the_path + '?del_report=true&del_id=' + the_val;
-			return true;
-		}
-	}
-	return false;
-}
 /**
 *	Receive params as JSON object
 *	Parse fields and populate corresponding fields in form

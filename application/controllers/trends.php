@@ -242,7 +242,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/json.js');
-		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = 'application/media/js/move_options.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
@@ -309,7 +309,7 @@ class Trends_Controller extends Authenticated_Controller {
 		if($csv_output_checked)
 			$this->inline_js .= "toggle_label_weight(true, 'csvout');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
-		$this->inline_js .= "uncheck('save_report_settings', 'report_form');\n";
+		$this->inline_js .= "uncheck('save_report_settings');\n";
 		$this->inline_js .= "$('#report_save_information').hide();\n";
 
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
@@ -443,7 +443,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = 'application/media/js/move_options';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('trends/js/trends.js');

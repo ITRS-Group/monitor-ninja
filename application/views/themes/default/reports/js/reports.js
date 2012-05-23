@@ -1,14 +1,3 @@
-var startDate;
-var endDate;
-var DEBUG = false;
-var host_tmp = false;
-var host = false;
-var service_tmp = false;
-var service = false;
-
-//var _scheduled_label = '';
-var invalid_report_names = '';
-var current_filename;
 var _show_schedules;
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
@@ -150,63 +139,6 @@ $(document).ready(function() {
 	});
 
 });
-
-function js_print_date_ranges(the_year, type, item)
-{
-	show_progress('progress', _wait_str);
-	the_year = typeof the_year == 'undefined' ? 0 : the_year;
-	type = typeof type == 'undefined' ? '' : type;
-	item = typeof item == 'undefined' ? '' : item;
-
-	if (!the_year && type!='' && item!='') {
-		return false;
-	}
-	//get_date_ranges(the_year, type, item);
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "get_date_ranges/";
-	var data = {the_year: the_year, type: type, item: item};
-
-	if (type !='') {
-		empty_list(type + '_month');
-	}
-
-	set_selected_period(type);
-
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: data,
-		success: function(data) {
-			if (data != '') {
-				// OK, continue
-				data = eval( "(" + data + ")" );
-				if (data['start_year']) {
-					for (i in data['start_year']) {
-						addSelectOption('start_year', data['start_year'][i], data['start_year'][i]);
-					}
-				}
-
-				if (data['end_year']) {
-					for (i in data['end_year']) {
-						addSelectOption('end_year', data['end_year'][i], data['end_year'][i]);
-					}
-				}
-
-				if (data['type_item']) {
-					for (i in data['type_item']) {
-						addSelectOption(data['type_item'][i][0], data['type_item'][i][1], data['type_item'][i][1]);
-					}
-				}
-
-			} else {
-				// error
-				jgrowl_message('Unable to fetch date ranges...', _reports_error);
-			}
-		}
-	});
-
-	setTimeout('check_custom_months()', 1000);
-}
 
 function validate_report_form(f)
 {
@@ -453,199 +385,6 @@ function remove_scheduled_str(in_str)
 	return in_str;
 }
 
-function set_selection(val, no_erase) {
-	// start by hiding ALL rows
-	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla','display_service_status','display_host_status');
-	hide_rows(hide_these);
-	switch (val) {
-		case 'hostgroups':
-			get_members('', 'hostgroup', no_erase);
-			show_row('hostgroup_row');
-			show_row('display_host_status');
-			break;
-		case 'servicegroups':
-			get_members('', 'servicegroup', no_erase);
-			show_row('servicegroup_row');
-			show_row('display_service_status');
-			break;
-		case 'hosts':
-			get_members('', 'host', no_erase);
-			show_row('host_row_2');
-			show_row('display_host_status');
-			break;
-		case 'services':
-			get_members('', 'service', no_erase);
-			show_row('service_row_2');
-			show_row('display_service_status');
-			break;
-	}
-	show_row('settings_table');
-	if ($('input[name=type]').val() == 'sla')
-		show_row('enter_sla');
-	show_row('submit_button');
-}
-
-/**
-*	Uncheck form element by name
-*	Used to set correct initial values
-*	since some browser seem to cache checkbox state
-*/
-function uncheck(the_name, form_name)
-{
-	//document.forms[form_name].elements[the_name].checked=false;
-	$("input[name='" + the_name + "']").attr('checked', false);
-}
-
-function hide_rows(input) {
-	for (i=0;i<input.length;i++) {
-		if (document.getElementById(input[i]))
-			document.getElementById(input[i]).style.display='none';
-	}
-}
-
-/**
-*	cache the progress indicator image to show faster...
-*/
-var Image1 = new Image(16,16);
-Image1.src = _site_domain + '/application/media/images/loading.gif';
-
-/**
-*	Show a progress indicator to inform user that something
-*	is happening...
-*/
-function show_progress(the_id, info_str)
-{
-	$("#" + the_id)
-		.html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>')
-		.show();
-}
-
-function get_members(val, type, no_erase) {
-	if (type=='') return;
-	is_populated = false;
-	show_progress('progress', _wait_str);
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "group_member/";
-	var data = {input: val, type: type}
-	var field_name = false;
-	var empty_field = false;
-
-	switch(type) {
-		case 'hostgroup': case 'servicegroup':
-			field_name = type + "_tmp";
-			empty_field = type;
-			break;
-			case 'host':
-				field_name = "host_tmp";
-				empty_field = 'host_name';
-				break;
-			case 'service':
-				field_name = "service_tmp";
-				empty_field = 'service_description';
-				break;
-	}
-
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: data,
-		success: function(data) {
-			if (data.error) {
-				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
-				setup_hide_content('progress');
-				return;
-			}
-			populate_options(field_name, empty_field, data.result);
-			if(no_erase == '') {
-				empty_list(field_name);
-				empty_list(empty_field);
-			}
-		},
-		dataType: 'json'
-	});
-
-
-	sel_str = type;
-	$('#settings_table').show();
-	$('#submit_button').show();
-}
-
-/**
-*	Fetch the report periods for selected report type.
-*
-*	Result will be returned to populate_report_periods() below.
-*/
-function get_report_periods(type)
-{
-	var ajax_url = _site_domain + _index_page + '/ajax/';
-	var url = ajax_url + "get_report_periods/";
-	var data = {type: type};
-	empty_list('report_period');
-	set_selected_period(type);
-
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: data,
-		success: function(data) {
-			if (data != '') {
-				// OK, populate
-				populate_report_periods(data);
-			} else {
-				// error
-				jgrowl_message('Unable to fetch report periods...', _reports_error);
-			}
-		}
-	});
-}
-
-function show_row(the_id) {
-	$("#"+the_id).show();
-}
-
-function empty_list(field) {
-	// escape nasty [ and ]
-	field = field.replace('[', '\\[');
-	field = field.replace(']', '\\]');
-
-	// truncate select list
-	$("#"+field).removeOption(/./);
-}
-
-/**
-*	Re-populate report_period select field
-*/
-function populate_report_periods(json_data)
-{
-	json_data = eval(json_data);
-	var field_name = 'report_period';
-	for (var i = 0; i < json_data.length; i++) {
-		var val = json_data[i].optionValue;
-		var txt = json_data[i].optionText;
-		$("#" + field_name).addOption(val, txt, false);
-	}
-	disable_sla_fields($('#report_period option:selected').val());
-	setTimeout('delayed_hide_progress()', 1000);
-}
-
-/**
-*	Re-populate report_id (saved reports) select field
-*/
-function populate_saved_reports(json_data, field_name)
-{
-	json_data = eval(json_data);
-	invalid_report_names = new Array();
-	for (var i = 0; i < json_data.length; i++) {
-		var val = json_data[i].optionValue;
-		var txt = json_data[i].optionText;
-		$("#" + field_name).addOption(val, txt, false);
-		$('.sla_values').show();
-		$('#sla_report_id').addOption(val, txt, false);
-		invalid_report_names[i] = txt;
-	}
-	setTimeout('delayed_hide_progress()', 1000);
-}
-
 function populate_saved_sla_data(json_data) {
 	json_data = eval(json_data);
 	for (var i = 1; i <= 12; i++) {
@@ -661,75 +400,16 @@ function populate_saved_sla_data(json_data) {
 	setTimeout('delayed_hide_progress()', 1000);
 }
 
-/**
-*	Set selected report period to default
-*	(and disable sla fields out of scope if sla)
-*/
-function set_selected_period(val)
-{
-	$("#report_period").selectOptions(val);
-	disable_sla_fields(val);
-}
-
-// delay hiding of progress indicator
-function delayed_hide_progress()
-{
-	setup_hide_content('progress');
-}
-
-function addSelectOption(theSel, theVal)
-{
-	theSel = theSel.replace('[', '\\[');
-	theSel = theSel.replace(']', '\\]');
-	$("#"+theSel).addOption(theVal, theVal, false);
-}
-
-function setup_hide_content(d) {
-	if(d.length < 1) {
-		return;
-	}
-	$('#' + d).hide();
-}
-
-function hide_response() {setup_hide_content('response');}
-
 function show_state_options(val)
 {
 	if (val) {
-		show_row('assumed_host_state');
-		show_row('assumed_service_state');
+		$('#assumed_host_state').show();
+		$('#assumed_service_state').show();
 	} else {
 		hide_these = new Array('assumed_host_state', 'assumed_service_state');
 		hide_rows(hide_these);
 	}
 }
-function edit_state_options(val)
-{
-	var options = $('#state_options');
-	if(options == undefined)
-		return;
-
-	if (val) {
-		$('#fancybox-content #state_options').show();
-	} else {
-		$('#fancybox-content #state_options').hide();
-	}
-}
-
-function toggle_field_visibility(val, theId) {
-	var fancy_str = '';
-
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-
-	if (val) {
-		$(fancy_str + '#' + theId).show();
-	} else {
-		$(fancy_str + '#' + theId).hide();
-	}
-}
-
 
 // Propagate sla values
 function set_report_form_values(the_val)
@@ -773,7 +453,7 @@ function expand_and_populate(data)
 		set_initial_state('report_name', reportObj['report_name']);
 	} else {
 		set_initial_state('report_name', reportObj['sla_name']);
-		show_row('enter_sla');
+		$('#enter_sla').show();
 	}
 	set_initial_state('includesoftstates', reportObj['includesoftstates']);
 	if (reportObj['report_period'] == 'custom') {
@@ -907,63 +587,6 @@ function set_initial_state(what, val)
 	}
 }
 
-
-function confirm_delete_report(the_val)
-{
-	var the_path = self.location.href;
-	the_path = the_path.replace('#', '');
-
-	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
-	if (the_val!="" && the_path!="") {
-		if (is_scheduled) {
-			msg += _reports_confirm_delete_warning;
-		}
-		msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
-		if (confirm(msg)) {
-			self.location.href=the_path + '?del_report=true&del_id=' + the_val + '&type=' + type;
-			return true;
-		}
-	}
-	return false;
-}
-
-
-
-function show_response(responseText, statusText)
-{
-	var message_div_start = '<div id="statusmsg">';
-	var ok_img = '<img src="' + _site_domain + _theme_path + 'icons/16x16/shield-ok.png" alt="' + _ok_str + '" title="' + _ok_str + '"> &nbsp;'
-	var message_div_end = '</div>';
-	var time = 3000;
-	$('#response').remove();
-	$('body').prepend('<div id="response"></div>');
-	if (isNaN(responseText)) { // an error occurred
-		$('#response').css("position", "absolute").css('top', '11px').css('left', '200px').html(message_div_start + _reports_schedule_error + message_div_end);
-		time = 6000;
-	} else {
-		var report_id = $('#report_id').fieldValue();
-		if (report_id[0]) { // updated
-			jgrowl_message(_reports_schedule_update_ok, _reports_success);
-		} else { //new save
-			jgrowl_message(_reports_schedule_create_ok, _reports_success);
-			$('#schedule_report_table').append(create_new_schedule_rows(responseText));
-			$('#schedule_report_table').show();
-			schedule_is_visible = true;
-			$('#schedule_report_form').clearForm();
-			setup_editable();
-			//tb_remove();
-			update_visible_schedules(true);
-			if (nr_of_scheduled_instances > 0) {
-				$('#show_schedule').show();
-			}
-		}
-	}
-	setTimeout('hide_response()', time);
-}
-
-
 // used from setup
 function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath)
 {
@@ -992,40 +615,9 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	return true;
 }
 
-var is_visible = false;
 function toggle_edit() {
 	var $tabs = $('#report-tabs').tabs();
 	$tabs.tabs('select', 1);
-}
-
-function fetch_report_data(id)
-{
-	parts = id.split('-');
-	type_id = get_type_id(parts[0]);
-	var sType = '';
-
-	var report_types = $.parseJSON(_report_types_json);
-	sType = report_types[type_id];
-	switch (sType) {
-		case 'avail':
-		//var data = eval('(' + $('#saved_reports').text() + ')');
-			return eval(_saved_avail_reports);
-			break;
-		case 'sla':
-			return eval(_saved_sla_reports);
-			break;
-		case 'summary':
-			return eval(_saved_summary_reports);
-			break;
-		default:
-			return false;
-	}
-}
-
-function get_type_id(str)
-{
-	parts = str.split('.');
-	return parts[0];
 }
 
 /**

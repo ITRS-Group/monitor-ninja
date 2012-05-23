@@ -58,7 +58,6 @@ function show_info(action) {
 }
 
 function collapse_section(section, save){
-	var is_visible = false;
 	$('.'+section).slideToggle(200,function(){
 		if ($(this).hasClass(section + '_hidden'))
 			$(this).removeClass(section + "_hidden");
