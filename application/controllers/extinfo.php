@@ -63,15 +63,13 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# is user authenticated to view details on current object?
 		$auth = Nagios_auth_Model::instance();
-		$is_authenticated = true;
+		$is_authenticated = false;
 		switch ($type) {
 			case 'host':
-				if (!$auth->is_authorized_for_host($host))
-					$is_authenticated = false;
+				$is_authenticated = $auth->is_authorized_for_host($host);
 				break;
 			case 'service':
-				if (!$auth->is_authorized_for_service($host, $service))
-					$is_authenticated = false;
+				$is_authenticated = $auth->is_authorized_for_service($host);
 				break;
 			case 'servicegroup': case 'hostgroup':
 				return $this->group_details($type, $host);

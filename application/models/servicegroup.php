@@ -347,51 +347,8 @@ Filter: servicegroup_name = $group");
 	*/
 	public function check_group_access($groupname=false)
 	{
+<<<<<<< HEAD
 		$auth = Nagios_auth_Model::instance();
-
-		if ($auth->view_hosts_root || $auth->view_services_root) {
-			return true;
-		}
-
-		if (empty($groupname)) {
-			return false;
-		}
-
-		$db = Database::instance();
-		$cnt_services = 0;
-		$cnt_services_in_group = 0;
-
-		$sql = "SELECT COUNT(ssg.service) AS cnt FROM servicegroup sg, service_servicegroup ssg ".
-			"WHERE sg.servicegroup_name=".$db->escape($groupname)." AND ssg.servicegroup=sg.id;";
-
-		$res = $db->query($sql);
-		if ($res && count($res)) {
-			$row = $res->current();
-			$cnt_services = $row->cnt;
-		} else {
-			return false;
-		}
-
-		$sql = "SELECT  COUNT(ssg.service) AS cnt ".
-			"FROM servicegroup sg, service_servicegroup ssg, ".
-			"contact_access ca, contact c ".
-			"WHERE c.contact_name=".$db->escape(Auth::instance()->get_user()->username)." ".
-			"AND ca.contact=c.id AND ca.service=ssg.service ".
-			"AND sg.servicegroup_name=".$db->escape($groupname)." ".
-			"AND ssg.servicegroup=sg.id";
-
-		$res = $db->query($sql);
-		if ($res && count($res)) {
-			$row = $res->current();
-			$cnt_services_in_group = $row->cnt;
-		} else {
-			return false;
-		}
-
-		if ($cnt_services!=0 && $cnt_services_in_group!=0 && $cnt_services == $cnt_services_in_group) {
-			return true;
-		}
-
-		return false;
+		return $auth->is_authorized_for_servicegroup($groupname);
 	}
 }
