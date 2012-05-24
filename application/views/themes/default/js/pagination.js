@@ -59,10 +59,16 @@ function preserve_get_params(custom_val, sel_id)
 					// only iterate true objects' properties by; 1) check type, and; 2) exclude arrays
 					// (which in javascript also are typeof === object... sigh)
 					$.each($.query.keys[key], function(index) {
-						$('.pagination_form').append('<input type="hidden" name="' + key + '['+index+']" value="' + $.query.keys[key][index] + '">');
+						var val = $.query.keys[key][index];
+						if (val === true)
+							val = '';
+						$('.pagination_form').append('<input type="hidden" name="' + key + '['+index+']" value="' + val + '">');
 					});
 				} else {
-					$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + $.query.keys[key] + '">');
+					var val = $.query.keys[key];
+					if (val === true)
+						val = '';
+					$('.pagination_form').append('<input type="hidden" name="' + key + '" value="' + val + '">');
 				}
 			}
 		}
