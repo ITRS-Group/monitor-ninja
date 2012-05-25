@@ -193,6 +193,12 @@ class Reports_Model extends Model
 
 		/** The real state of the object */
 		$this->st_real_state = self::STATE_PENDING;
+		$this->st_prev_row = array(
+			'the_time' => 0,
+			'state' => self::STATE_PENDING,
+			'output' => 'No data found (are you trying to generate a report
+			with unexisting objects?)'
+		);
 	}
 
 	/**
