@@ -126,7 +126,6 @@ class Reports_Controller extends Authenticated_Controller
 	private $include_soft_states = false;
 	private $cluster_mode = false;
 	private $scheduled_downtime_as_uptime = false;
-	private $schedule_id = false;
 
 	private $assume_initial_states = true;
 	private $initial_assumed_host_state = -3;
@@ -360,6 +359,12 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = 'application/media/js/move_options.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
+
+		# this makes anything in application/media be imported before
+		# application/views before modules/whatever
+
+		# I apologize
+		sort($this->xtra_js);
 
 		$this->template->js_header->js = $this->xtra_js;
 
@@ -741,10 +746,10 @@ class Reports_Controller extends Authenticated_Controller
 	 * Generate (availability) report from parameters set in index()
 	 *
 	 * @param string $type = "avail"
-	 * @param int $schedule_id = false
+	 * @param int $report_id = false
 	 * @param array $input = false
 	 */
-	public function generate($type='avail', $schedule_id=false, $input=false)
+	public function generate($type='avail', $report_id=false, $input=false)
 	{
 
 		# check if we have all required parts installed
@@ -771,8 +776,6 @@ class Reports_Controller extends Authenticated_Controller
 			'regexp', $this->input->get('regexp', false)
 		);
 
-		$this->schedule_id = arr::search($_REQUEST, 'schedule_id', $schedule_id);
-
 		# handle direct link from other page
 		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
 			$_REQUEST['report_period'] = 'last24hours';
@@ -780,15 +783,11 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		# Handle call from cron or GUI to generate PDF report and send by email
-		#
-		# NOTE:
-		# Passing a schedule_id to this method will ignore all other data passed
-		# in $_REQUEST as data from _scheduled_report() will overwrite it
-		if ($this->schedule_id !== false) {
-			$_REQUEST = $this->_scheduled_report();
-		}
 
-		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
+		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $report_id);
+		if (!empty($this->report_id)) {
+			$_REQUEST = Saved_reports_Model::get_report_info($this->type, $this->report_id);
+		}
 
 		$in_host = arr::search($_REQUEST, 'host', false);
 		if ($in_host === false)
@@ -934,10 +933,6 @@ class Reports_Controller extends Authenticated_Controller
 			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
 			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
-		}
-
-		if (!empty($this->report_id)) {
-			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
 		}
 
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
@@ -3704,64 +3699,6 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			echo _('An error occurred - unable to delete selected schedule');
 		}
-	}
-
-	/**
-	*	Fetch informaton on a sheduled report and
-	* 	return all data in an array that will replace
-	* 	$_REQUEST.
-	*
-	* 	If called through a call from the commandline, the script will
-	* 	be authorized as the owner of the current schedule.
-	*/
-	public function _scheduled_report()
-	{
-		# Fetch info on the scheduled report
-		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
-		if ($report_data == false) {
-			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
-		}
-
-		$request['new_report_setup'] = 1;
-		$this->pdf_filename = $report_data['filename'];
-		$this->pdf_recipients = $report_data['recipients'];
-		$this->pdf_local_persistent_filepath = $report_data['local_persistent_filepath'];
-		$type = isset($report_data['sla_name']) ? 'sla' : 'avail';
-		foreach ($this->setup_keys as $k) {
-			if ($type === 'sla') {
-				if ($k === 'report_name')
-					$k = 'sla_name';
-				if ($k == 'host_filter_status' || $k == 'service_filter_status' || $k == 'include_trends')
-					continue;
-			}
-			if ($k == 'host_filter_status' || $k == 'service_filter_status') {
-				$unserialized = unserialize($report_data[$k]);
-				if(is_array($unserialized)) {
-					$report_data[$k] = array_values($unserialized);
-				}
-			}
-			$request[$k] = $report_data[$k];
-		}
-
-		if (!empty($report_data['objects'])) {
-			$var_name = self::$map_type_field[$report_data['report_type']];
-			foreach ($report_data['objects'] as $obj) {
-				$request[$var_name][] = $obj;
-			}
-		}
-
-		if ($type === 'sla' && isset($report_data['month']) && !empty($report_data['month'])) {
-			foreach ($report_data['month'] as $k => $v) {
-				$request[$k] = $v;
-			}
-		}
-
-		if (PHP_SAPI === "cli") {
-			# set current user to the owner of the report
-			# this should only be done when called through PHP CLI
-			Auth::instance()->force_login($report_data[Saved_reports_Model::USERFIELD]);
-		}
-		return $request;
 	}
 
 	/**

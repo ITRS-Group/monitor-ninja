@@ -804,8 +804,6 @@ class Summary_Controller extends Authenticated_Controller
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = _("Reporting » Alert summary » Report");
-
-		return $content;
 	}
 
 	/**
