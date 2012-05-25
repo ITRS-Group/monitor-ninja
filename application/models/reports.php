@@ -233,7 +233,7 @@ class Reports_Model extends Model
 	 * @return int
 	 */
 	private function filter_excluded_state($state) {
-		if ((isset($this->options['service_filter_status']) && !$this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) || isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
+		if ((isset($this->options['service_filter_status']) && $this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) || isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
 			return self::HOST_EXCLUDED;
 		}
 		return $state;
@@ -1993,9 +1993,6 @@ class Reports_Model extends Model
 		# gather remaining time. If they match, it'll be 0
 		$this->st_update($this->end_time);
 		$this->st_update_log();
-		#foreach ($this->sub_reports as $sr)
-		#	$sr->st_update_log();
-
 
 		$converted_state = $this->convert_state_table($this->st_raw, $this->st_text);
 
