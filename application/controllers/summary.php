@@ -1306,7 +1306,11 @@ class Summary_Controller extends Authenticated_Controller
 
 		$images = array();
 
-		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+		if(isset($this->pdf_data['content']) && $this->pdf_data['content']) {
+		       $pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+		} else {
+		       $pdf->writeHTML("<p>No data found. You seem to have created a report with only non existing objects in it.</p>", true, 0, true, 0);
+		}
 		$filename = !empty($filename) ? $filename : str_replace(' ', '_', $title);
 		$filename = trim($filename);
 		if (strtolower(substr($filename, -4, 4))!='.pdf') {

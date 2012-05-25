@@ -3791,7 +3791,11 @@ class Reports_Controller extends Authenticated_Controller
 			$pdf->writeHTML($this->pdf_data['trends_graph'], true, 0, true, 0);
 		}
 
-		$pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+		if(isset($this->pdf_data['content']) && $this->pdf_data['content']) {
+		       $pdf->writeHTML($this->pdf_data['content'], true, 0, true, 0);
+		} else {
+		       $pdf->writeHTML("<p>No data found. You seem to have created a report with only non existing objects in it.</p>", true, 0, true, 0);
+		}
 
 		if (isset($image_string) && !empty($image_string)) {
 			$pdf->writeHTML($image_string, true, 0, true, 0);
