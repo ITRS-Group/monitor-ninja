@@ -1986,7 +1986,8 @@ class Reports_Model extends Model
 	 * Finalize the report, calculating real uptime from our internal
 	 * meta-format.
 	 *
-	 * @return See 'calculate_uptime()'
+	 * @see calculate_uptime()
+	 * @return array
 	 */
 	private function st_finalize()
 	{
