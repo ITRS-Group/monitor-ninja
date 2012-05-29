@@ -953,42 +953,23 @@ class Summary_Controller extends Authenticated_Controller
 						)).'"';
 					}
 				} elseif(self::TOP_ALERT_PRODUCERS == $report_type) {
-					if(isset($result[0]['service_description'])) {
-						// summary of services
-						// headers
-						$csv_content[] = '"'.implode('", "', array(
-							'HOST',
-							'SERVICE',
-							'ALERT TYPE',
-							'TOTAL ALERTS'
-						)).'"';
+					// summary of services
+					// headers
+					$csv_content[] = '"'.implode('", "', array(
+						'HOST',
+						'SERVICE',
+						'ALERT TYPE',
+						'TOTAL ALERTS'
+					)).'"';
 
-						// content
-						foreach($result as $log_entry) {
-							$csv_content[] = '"'.implode('", "', array(
-								$log_entry['host_name'],
-								$log_entry['service_description'],
-								Reports_Model::event_type_to_string($log_entry['event_type'], 'service'),
-								$log_entry['total_alerts']
-							)).'"';
-						}
-					} else {
-						// summary of hosts
-						// headers
+					// content
+					foreach($result as $log_entry) {
 						$csv_content[] = '"'.implode('", "', array(
-							'HOST',
-							'ALERT TYPE',
-							'TOTAL ALERTS'
+							$log_entry['host_name'],
+							isset($log_entry['service_description']) ? $log_entry['service_description'] : null,
+							Reports_Model::event_type_to_string($log_entry['event_type'], 'service'),
+							$log_entry['total_alerts']
 						)).'"';
-
-						// content
-						foreach($result as $log_entry) {
-							$csv_content[] = '"'.implode('", "', array(
-								$log_entry['host_name'],
-								Reports_Model::event_type_to_string($log_entry['event_type'], 'host'),
-								$log_entry['total_alerts']
-							)).'"';
-						}
 					}
 				}
 
