@@ -45,6 +45,9 @@ class Summary_Controller extends Authenticated_Controller
 	public $statetypes = false;
 	public $template_prefix = false;
 
+	private $host_state_names = array();
+	private $service_state_names = array();
+
 
 	public function __construct($mashing=false, $obj=false)
 	{
@@ -56,6 +59,17 @@ class Summary_Controller extends Authenticated_Controller
 			$this->reports_model = new Reports_Model();
 		}
 		$t = $this->translate;
+		$this->host_state_names = array(
+			Reports_Model::HOST_UP => $t->_('UP'),
+			Reports_Model::HOST_DOWN => $t->_('DOWN'),
+			Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE')
+		);
+		$this->service_state_names = array(
+			Reports_Model::SERVICE_OK => $t->_('OK'),
+			Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
+			Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
+			Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN')
+		);
 
 		$this->abbr_month_names = array(
 			$this->translate->_('Jan'),
@@ -484,7 +498,6 @@ class Summary_Controller extends Authenticated_Controller
 		echo "<th ". ($this->create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : 'class="headerNone"') . '>' . $t->_('Total Alerts') . "</th>\n";
 		echo "</tr>\n";
 
-		$total = array(0, 0); # soft and hard
 		$i = 0;
 		foreach ($ary as $state_id => $sh) {
 			if (!isset($state_names[$state_id]))
@@ -846,15 +859,8 @@ class Summary_Controller extends Authenticated_Controller
 
 		$template->saved_reports = $saved_reports;
 
-		$content->host_state_names = array
-			(Reports_Model::HOST_UP => $t->_('UP'),
-			 Reports_Model::HOST_DOWN => $t->_('DOWN'),
-			 Reports_Model::HOST_UNREACHABLE => $t->_('UNREACHABLE'));
-		$content->service_state_names = array
-			(Reports_Model::SERVICE_OK => $t->_('OK'),
-			 Reports_Model::SERVICE_WARNING => $t->_('WARNING'),
-			 Reports_Model::SERVICE_CRITICAL => $t->_('CRITICAL'),
-			 Reports_Model::SERVICE_UNKNOWN => $t->_('UNKNOWN'));
+		$content->host_state_names = $this->host_state_names;
+		$content->service_state_names = $this->service_state_names;
 		$content->label_all_states = $t->_('All States');
 
 		$result = false;
@@ -970,6 +976,69 @@ class Summary_Controller extends Authenticated_Controller
 							Reports_Model::event_type_to_string($log_entry['event_type'], 'service'),
 							$log_entry['total_alerts']
 						)).'"';
+					}
+				} else {
+					// custom settings, even more alert types to choose from;
+					// also explains the nested layout of $result
+					$header = array(
+						'TYPE',
+						'HOST',
+						'STATE',
+						'SOFT ALERTS',
+						'HARD ALERTS',
+						'TOTAL ALERTS'
+					);
+					switch($report_type) {
+						case self::ALERT_TOTALS_HG:
+							$label = $t->_('Hostgroup');
+							array_splice($header, 1, 1, 'HOSTGROUP');
+							break;
+						case self::ALERT_TOTALS_HOST:
+							$label = $t->_('Host');
+							break;
+						case self::ALERT_TOTALS_SERVICE:
+							$label = $t->_('Service');
+							array_splice($header, 2, 0, 'SERVICE');
+							break;
+						case self::ALERT_TOTALS_SG:
+							$label = $t->_('Servicegroup');
+							array_splice($header, 1, 1, 'SERVICEGROUP');
+							break;
+					}
+					$csv_content[] = '"'.implode('", "', $header).'"';
+					foreach ($result as $host_name => $ary) {
+						$service_name = null;
+						if($report_type == self::ALERT_TOTALS_SERVICE) {
+							list($host_name, $service_name) = explode(';', $host_name);
+						}
+						foreach($ary['host'] as $state => $host) {
+							$row = array(
+								$label,
+								$host_name,
+								$this->host_state_names[$state],
+								$host[0], # soft
+								$host[1], # hard
+								$host[0] + $host[1] # total
+							);
+							if($service_name) {
+								array_splice($row, 2, 0, $service_name);
+							}
+						}
+						$csv_content[] = '"'.implode('", "', $row).'"';
+						foreach($ary['service'] as $state => $service) {
+							$row = array(
+								$label,
+								$host_name,
+								$this->service_state_names[$state],
+								$service[0], # soft
+								$service[1], # hard
+								$service[0] + $service[1] # total
+							);
+							if($service_name) {
+								array_splice($row, 2, 0, $service_name);
+							}
+						}
+						$csv_content[] = '"'.implode('", "', $row).'"';
 					}
 				}
 
@@ -1198,6 +1267,10 @@ class Summary_Controller extends Authenticated_Controller
 		$request['new_report_setup'] = 1;
 
 		$settings = i18n::unserialize($report_data['setting']);
+		if(!$settings) {
+			// we might not have any settings stored
+			$settings = array();
+		}
 		unset($report_data['setting']);
 		unset($report_data['objects']);
 		unset($report_data['filename']);
