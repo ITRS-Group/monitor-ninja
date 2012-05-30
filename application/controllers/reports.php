@@ -1323,6 +1323,11 @@ class Reports_Controller extends Authenticated_Controller
 		# AVAIL REPORT
 		if ($in_csvoutput) {
 			Kohana::close_buffers(FALSE);
+
+			# pdf_filename will be false unless this is a scheduled report
+			if (!$this->pdf_filename)
+				$this->pdf_filename = $this->report_type . '_availability_report.csv';
+
 			$csv_status = $this->_create_csv_output($this->type, $this->data_arr, $sub_type, $group_name, $in_hostgroup, $this->pdf_filename, Scheduled_reports_Model::fetch_scheduled_field_value('local_persistent_filepath', $this->schedule_id));
 			if(PHP_SAPI != "cli") {
 				// request through browser
