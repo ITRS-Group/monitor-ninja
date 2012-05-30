@@ -1916,6 +1916,7 @@ class Reports_Controller extends Authenticated_Controller
 							$log_template->source = $data['source'];
 							$log_template->create_pdf = $this->create_pdf;
 							$log_template->report_time_formatted = $report_time_formatted;
+							$log_template->date_format_str = nagstat::date_format();
 							if ($this->create_pdf) {
 								$this->pdf_data['log_data'] = $log_template->render();
 							}
@@ -4596,7 +4597,7 @@ class Reports_Controller extends Authenticated_Controller
 
 	public function _print_duration($start_time, $end_time)
 	{
-		$fmt = "Y-m-d H:i:s";
+		$fmt = nagstat::date_format();
 		echo date($fmt, $start_time) . " to " .
 			date($fmt, $end_time) . "<br />\n";
 		$duration = $end_time - $start_time;

@@ -241,6 +241,7 @@ class Search_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 
 		$content = $this->template->content;
+		$content->date_format_str = nagstat::date_format();
 		$limit = !empty($in_limit) ? $in_limit : false;
 		$items_per_page = urldecode($this->input->get('items_per_page', false));
 		$custom_limit = urldecode($this->input->get('custom_pagination_field', false));

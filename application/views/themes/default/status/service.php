@@ -190,7 +190,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				}
 			?>
 		</td>
-		<td style="width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+		<td style="width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : $na_str ?></td>
 <?php	if (isset($is_svc_details) && $is_svc_details !== false) {
 			# make sure we print service duration and not host since we have a special query result here, i.e displaying servicegroup result ?>
 		<td style="width: 110px"><?php echo $row->service_duration != $row->service_cur_time ? time::to_string($row->service_duration) : $na_str ?></td>
@@ -201,7 +201,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		<td style="white-space: normal">
 		<?php
 			if ($row->current_state == Current_status_Model::HOST_PENDING && isset($pending_output)) {
-				echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
+				echo $row->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $row->next_check)) : $nocheck_output;
 			} else {
 				$output = $row->output;
 				$output = str_replace('','', $output);

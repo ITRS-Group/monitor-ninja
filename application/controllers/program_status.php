@@ -46,11 +46,12 @@ class Program_status_Controller extends Authenticated_Controller {
 		}
 
 		$data = $ps_model->list_program_status();
+		$date_format_str = nagstat::date_format();
 
 		$i = 0;
 		foreach($data as $row) {
 			$result[$i][]= $row->instance_name;
-			$result[$i][]= date('Y-m-d H:i:s', $row->last_alive);
+			$result[$i][]= date($date_format_str, $row->last_alive);
 			$result[$i][]= ($row->is_running == 1 ? $this->translate->_('Yes') : $this->translate->_('No'));
 			$i++;
 		}

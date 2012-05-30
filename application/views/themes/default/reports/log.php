@@ -40,8 +40,8 @@ if (!empty($log)) {
 						echo '&nbsp;'.ucfirst(strtolower(${$type.'_state_txt'}[$value['state']]));
 					?>
 				</td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo date('Y-m-d, H:i:s', $value['the_time']); ?></td>
-				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo date('Y-m-d, H:i:s', $event_end_time); ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo date($date_format_str, $value['the_time']); ?></td>
+				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo date($date_format_str, $event_end_time); ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 90px; font-size: 0.9em; background-color: '.$bg_color.'"' : ''; ?>><?php echo time::to_string($value['duration']); ?></td>
 				<td <?php echo ($create_pdf) ? 'style="width: 306px; font-size: 0.9em; background-color: '.$bg_color.'"' : 'style="white-space: normal"'; ?>><?php echo htmlspecialchars($value['output']); ?></td>
 			</tr>

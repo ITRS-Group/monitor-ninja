@@ -1016,6 +1016,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$report_duration = $this->end_date - $this->start_date;
 		$content->duration = time::to_string($report_duration);
 		$content->label_duration = $t->_('Duration');
+		$content->date_format_str = nagstat::date_format();
 
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;

@@ -202,6 +202,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$result = $host_model->get_host_status();
 
+		$this->template->content->date_format_str = nagstat::date_format();
 		$this->template->content->result = $result;
 		$this->template->content->pagination = $pagination;
 		$this->template->content->total_items = $tot;
@@ -365,6 +366,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->inline_js = $this->inline_js;
 
 		$this->template->content->na_str = $this->translate->_('N/A');
+		$this->template->content->date_format_str = nagstat::date_format();
 
 		# set sort images, used in header_links() below
 		$this->img_sort_up = $this->img_path('icons/arrow-up.gif');

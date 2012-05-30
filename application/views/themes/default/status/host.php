@@ -143,12 +143,12 @@ foreach ($result as $row) {
 						}
 					?>
 				</td>
-				<td style="white-space: normal; width: 110px"><?php echo $row->last_check ? date('Y-m-d H:i:s',$row->last_check) : $na_str ?></td>
+				<td style="white-space: normal; width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : $na_str ?></td>
 				<td style="width: 110px"><?php echo $row->duration != $row->cur_time ? time::to_string($row->duration) : $na_str ?></td>
 				<td style="white-space: normal">
 					<?php
 					if ($row->current_state == Current_status_Model::HOST_PENDING)
-						echo $row->should_be_scheduled ? sprintf($pending_output, date(nagstat::date_format(), $row->next_check)) : $nocheck_output;
+						echo $row->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $row->next_check)) : $nocheck_output;
 					else {
 						$output = $row->output;
 						echo str_replace('','', $output);

@@ -558,7 +558,7 @@ class Summary_Controller extends Authenticated_Controller
 
 	public function _print_duration($start_time, $end_time)
 	{
-		$fmt = "Y-m-d H:i:s";
+		$fmt = nagstat::date_format();
 		echo date($fmt, $start_time) . " to " .
 			date($fmt, $end_time) . "<br />\n";
 
@@ -924,6 +924,7 @@ class Summary_Controller extends Authenticated_Controller
 		$content->summary_items = $rpt->summary_items;
 		$content->completion_time = $rpt->completion_time;
 		$this->template->title = $this->translate->_("Reporting » Alert summary » Report");
+		$date_format = nagstat::date_format();
 		if ($this->create_pdf || $this->mashing) {
 			if('.csv' == substr($this->pdf_filename, -4, 4)) {
 				// @todo move this piece of ** out of the controller
@@ -931,8 +932,8 @@ class Summary_Controller extends Authenticated_Controller
 				// meta, array keys are there for you
 				$csv_content = array('"'.implode('", "', array(
 					'kind_of_report' => $this->_get_summary_variant_by_report_type($report_type), // @todo replace this with for example "Most recent hard alerts" (found in $report_type)
-					'start_time' => "From: ".date('Y-m-d H:i:s', $used_options['start_time']),
-					'end_time' => "To: ".date('Y-m-d H:i:s', $used_options['end_time']),
+					'start_time' => "From: ".date($date_format, $used_options['start_time']),
+					'end_time' => "To: ".date($date_format, $used_options['end_time']),
 					'human_readable_duration' => $this->_nice_format_duration($used_options['start_time'], $used_options['end_time'])
 				)).'"');
 
@@ -950,7 +951,7 @@ class Summary_Controller extends Authenticated_Controller
 					// content
 					foreach($result as $log_entry) {
 						$csv_content[] = '"'.implode('", "', array(
-							date('Y-m-d H:i:s', $log_entry['timestamp']),
+							date($date_format, $log_entry['timestamp']),
 							Reports_Model::event_type_to_string($log_entry['event_type'], $log_entry['service_description'] ? 'service' : 'host'),
 							$log_entry['host_name'],
 							$log_entry['service_description'] ? $log_entry['service_description'] : 'N/A',
