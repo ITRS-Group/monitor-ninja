@@ -8,7 +8,7 @@
 		</tr>
 		<?php # only for hosts!
 			$i =0;
-			if ($type == 'host' && Kohana::config('nagvis.nagvis_real_path', false, false)) {
+			if ($type == 'host' && Kohana::config('config.nagvis_real_path', false, false)) {
 		?>
 		<tr>
 			<td class="dark">
