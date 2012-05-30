@@ -58,7 +58,7 @@ if (Kohana::config('config.cacti_path')) {
 	$menu_items['statistics'] = _('Statistics');
 }
 
-if ($auth->authorized_for_configuration_information || Kohana::config('config.nacoma_path')===false) {
+if ($auth->authorized_for_configuration_information && Kohana::config('config.nacoma_path') !== false) {
 	$menu_items['configure'] = _('Configure');
 }
 
