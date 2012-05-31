@@ -289,10 +289,10 @@ class Current_status_Model extends Model
 			"(SELECT SUM(latency) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS total_host_latency, \n".
 			"(SELECT MIN(execution_time) FROM host ".$access_check.$access_check_xtra." last_check!=0) AS min_host_execution_time, \n".
 			"(SELECT MAX(execution_time) FROM host ".$access_check.") AS max_host_execution_time, \n".
-			"(SELECT SUM(execution_time) FROM host ".$access_check.") AS total_host_execution_time";
+			"(SELECT SUM(execution_time) FROM host ".$access_check.") AS total_host_execution_time \n".
+			" FROM host ";
 		if (!$auth->view_hosts_root && $auth->id) {
-			$sql .= " FROM host ".
-				"INNER JOIN contact_access ON host.id=contact_access.host ".
+			$sql .= "INNER JOIN contact_access ON host.id=contact_access.host ".
 				"WHERE contact_access.service IS NULL ".
 				"AND contact_access.contact=".$auth->id.
 				" GROUP BY contact_access.contact";
@@ -423,10 +423,10 @@ class Current_status_Model extends Model
 			"(SELECT SUM(latency) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS total_service_latency, \n".
 			"(SELECT MIN(execution_time) FROM service ".$access_check.$access_check_xtra." last_check!=0) AS min_service_execution_time, \n".
 			"(SELECT MAX(execution_time) FROM service ".$access_check.") AS max_service_execution_time, \n".
-			"(SELECT SUM(execution_time) FROM service ".$access_check.") AS total_service_execution_time\n";
+			"(SELECT SUM(execution_time) FROM service ".$access_check.") AS total_service_execution_time\n".
+			" FROM service\n";
 		if (!$auth->view_hosts_root && !$auth->view_services_root && $auth->id) {
-			$sql .= " FROM service ".
-				"INNER JOIN contact_access ON service.id=contact_access.service ".
+			$sql .= "INNER JOIN contact_access ON service.id=contact_access.service ".
 				"WHERE contact_access.service IS NOT NULL ".
 				"AND contact_access.contact=".$auth->id.
 				" GROUP BY contact_access.contact";
