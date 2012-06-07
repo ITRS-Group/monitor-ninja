@@ -70,7 +70,7 @@ class Livestatus
 		$query = trim($query); // keep track of them newlines
 		if (!((strpos($query, 'GET host') === 0 && $this->auth->view_hosts_root ) ||
 			(strpos($query, 'GET service') === 0 && ($this->auth->view_hosts_root || $this->auth->view_services_root))))
-			$query .= "\nAuthUser: $username";
+			$query .= "\nAuthUser: {$this->auth->user}";
 		$query .= "\nOutputFormat: json\nKeepAlive: on\nResponseHeader: fixed16\n\n";
 		@fwrite($this->sock, $query);
 		$head = $this->read_socket($this->sock, 16);

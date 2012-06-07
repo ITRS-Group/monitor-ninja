@@ -41,8 +41,7 @@ class Outages_Model extends Model
 			return;
 
 		$status = Current_status_Model::instance();
-		if (!$status->outage_data_present)
-			$status->find_hosts_causing_outages();
+		$status->find_hosts_causing_outages();
 		$outages = array();
 
 		if (empty($status->unreachable_hosts))
@@ -57,16 +56,14 @@ class Outages_Model extends Model
 		# loop over hosts causing outages
 		foreach ($host_data as $row) {
 			$services = false;
-			if (!$status->affected_hosts[$row->host_name])
+			if (!$status->unreachable_hosts[$row->host_name])
 				continue;
 
 			$outages[$row->host_name]['current_state'] = $row->current_state;
 			$outages[$row->host_name]['duration'] = (int)$row->duration;
-			$outages[$row->host_name]['affected_hosts'] = $status->affected_hosts[$row->host_name] + 1;
+			$outages[$row->host_name]['affected_hosts'] = $status->affected_hosts[$row->host_name];
 
-			$outages[$row->host_name]['affected_services'] = $status->children_services[$row->host_id];
-			foreach ($status->unreachable_hosts[$row->host_name] as $hostid => $_)
-				$outages[$row->host_name]['affected_services'] += $status->children_services[$hostid];
+			$outages[$row->host_name]['affected_services'] = $status->affected_services[$row->host_name];
 
 			# calculate severity
 			if (!isset($outages[$row->host_name]['severity'])) {
