@@ -7,4 +7,14 @@ primarily from the tactical overview.
 
 This document should describe how to code them up, and the examples
 section will get some examples of widgets "any day now", so stay tuned.
+
+@section creating Creating an example widget
+
+Create a folder in /opt/monitor/op5/ninja/application/custom_widgets.
+
+@section find Find more widgets
+
+<a href="http://op5.org">op5.org</a> is the home of op5 extras online. There is a <a href="http://www.op5.org/community/plugin-inventory/widgets">page dedicated for widgets</a>.
+
+
 */

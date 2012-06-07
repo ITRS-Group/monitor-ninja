@@ -1,0 +1,65 @@
+/** @page API
+
+Table of contents
+
+@ref entrypoints
+
+- @ref addons
+- @ref widget
+- @ref greasy
+
+@ref push
+<hr>
+
+@section entrypoints Modifying Ninja's GUI
+
+@subsection addons Using addons
+
+Addons are small pieces of "drop-in" code that customizes the Ninja GUI without
+having to edit the source files directly. By dropping your own directory with a
+PHP file that does something nifty, you can add (or remove) page elements.
+*Addons are located in /opt/monitor/op5/ninja/application/addons.*
+
+Example: Let's say that you would like to add a link to your intranet that
+should be located in the top bar just below the Ninja logo. We start by creating
+the directory 'intranet_link' which contains a PHP file named link.php and a
+javascript file called link.js.
+
+in link.php:
+@code
+$this->xtra_js[] = 'application/addons/intranet_link/link.js';
+@endcode
+
+in link.js:
+@code
+$(document).ready(function() {
+	$('#quicklinks')
+		.append('<ul><li><a href="/path/to/intranet">Intranet</a></li></ul>');
+});
+@endcode
+
+This will make the link.js file to be included in the document header and create
+a link that will point to your intranet.
+
+@subsection widget Create your own widgets
+
+See the section on @ref Widgets.
+
+@subsection greasy Finetuning Ninja, editing existing code
+
+Coding with Ninja is to a high degree, interacting with the php framework <a
+href="http://docs.kohanaphp.com/">Kohana 2</a>. You can modify Ninja's behaviour
+in several different layers. Before you do that, remember that the files to look
+for are in /opt/monitor/op5/ninja on your Monitor server (or better yet, a test
+	server).
+
+@section push Ninja is open source
+
+Instead of keeping your changes to yourself, send an email (preferrably with a
+patch) to <a href="mailto:op5-users@lists.op5.com">op5-users@lists.op5.com</a>.
+If you solved a bug or came up with an idea that's good & general enough to
+incorporate into Ninja itself, besides making the world better; you will be
+mentioned in op5's bug tracker, git revision history, release notes and probably
+get points on Ohloh and the likes, as well.
+
+*/
