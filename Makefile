@@ -32,7 +32,10 @@ test-cucumber:
 
 docs: Documentation
 
-Documentation: ninja.doxy application/models/*.php application/helpers/*.php
+clean:
+	rm -rf Documentation
+
+Documentation: clean ninja.doxy application/models/*.php application/helpers/*.php
 	a=$$(doxygen ninja.doxy 2>&1); \
 	if [[ -n $$a ]]; then \
 		echo "$$a"; \
@@ -53,4 +56,4 @@ prepare-config:
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/nagios.cfg.in > test/configs/all-host_service-states/etc/nagios.cfg
 	@sed -e "s|@@TESTDIR@@|$$(pwd)/test/configs/all-host_service-states|" test/configs/all-host_service-states/etc/merlin.conf.in > test/configs/all-host_service-states/etc/merlin.conf
 
-.PHONY: test help test-reports
+.PHONY: test help test-reports clean

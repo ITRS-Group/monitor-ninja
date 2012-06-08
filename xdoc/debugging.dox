@@ -1,0 +1,7 @@
+/** @page Debug
+
+@section exception Showing exceptions on screen
+
+Set @code ALLOW_PRODUCTION = false; @endcode in ninja/application/controllers/authenticated.php to stop hiding exceptions and saving them to files in /tmp.
+
+*/
