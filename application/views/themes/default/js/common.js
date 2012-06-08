@@ -153,27 +153,6 @@ $(document).ready(function() {
 		}
 	});
 
-	jQuery('#service_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('#host_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('.group_grid_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('#group_summary_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('.group_overview_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-
 	$('.pnp_graph_icon').each(function() {
 			if (typeof _use_popups == 'undefined' || !_use_popups) {
 				return;
