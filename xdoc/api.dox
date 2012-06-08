@@ -6,12 +6,13 @@ Table of contents
 
 - @ref addons
 - @ref widget
+- @ref models
 - @ref greasy
 
 @ref push
 <hr>
 
-@section entrypoints Modifying Ninja's GUI
+@section entrypoints Modifying Ninja's behavior
 
 @subsection addons Using addons
 
@@ -41,9 +42,15 @@ $(document).ready(function() {
 This will make the link.js file to be included in the document header and create
 a link that will point to your intranet.
 
-@subsection widget Create your own widgets
+@subsection widget Creating your own widgets
 
 See the section on @ref Widgets.
+
+@subsection models Using Ninja's models
+
+See the detailed method documentation of <a href='annotated.html'>Data Structures</a>, in particular, look for classes
+with names ending in _Model. These will give you the data you need to use for the next
+step: coding your own solutions with Ninja as a tool to build on.
 
 @subsection greasy Finetuning Ninja, editing existing code
 
