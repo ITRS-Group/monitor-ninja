@@ -76,8 +76,6 @@ function collapse_section(section, save){
 			save_menu_section_state(section, 0);
 		}
 	}
-	// wait some for menu to get it's correct height
-	setTimeout("scroll_control()", 210)
 }
 
 /**
