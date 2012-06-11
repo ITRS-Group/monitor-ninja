@@ -78,7 +78,7 @@ class Authenticated_Controller extends Ninja_Controller {
 		return !Auth::instance()->logged_in();
 	}
 
-	public function index()
+	public function __call($name, $args)
 	{
 		# don't allow direct access
 		# redirect to logged_in_default route as set in routes config
