@@ -139,7 +139,6 @@ if (isset($this) && isset($this->template->js_header))
 		</script>
 		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
-
 	</head>
 
 	<body onload="loadScroll()" onunload="saveScroll()">
@@ -149,7 +148,6 @@ if (isset($this) && isset($this->template->js_header))
 		</div>
 		<div id="top-bar">
 			<?php echo html::image('application/views/themes/default/icons/icon.png',array('alt' => '')); ?>
-			<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 				<div id="navigation">
 					<ul>
 					<?php
@@ -167,6 +165,7 @@ if (isset($this) && isset($this->template->js_header))
 					?>
 					</ul>
 					<p><?php echo help::render('search_help', 'search') ?></p>
+					<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 					<?php
 					$query = arr::search($_REQUEST, 'query');
 					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
@@ -175,8 +174,8 @@ if (isset($this) && isset($this->template->js_header))
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 			<?php	} ?>
 					<p><?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?></p>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
 
 		<div id="quickbar">
