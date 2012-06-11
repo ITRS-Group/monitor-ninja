@@ -12,7 +12,7 @@ if (!empty($widgets)) {
 
 <div class="widget w98 left">
 
-	<h1><?php echo $label_create_new ?></h1>
+	<h1><?php echo _('Event History Report') ?></h1>
 
 	<div id="histogram_report">
 	<?php	echo form::open('histogram/generate', array('id' => 'histogram_form')); ?>
@@ -99,12 +99,12 @@ if (!empty($widgets)) {
 				<tr>
 					<td>
 						<?php echo _('Report Period') ?><br />
-						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected_report_period); ?>
+						<?php echo form::dropdown(array('name' => 'report_period'), $options->get_alternatives('report_period'), $options['report_period']); ?>
 					</td>
 					<td style="width: 18px">&nbsp;</td>
 					<td>
 						<?php echo _('State Types To Graph') ?><br />
-						<?php echo form::dropdown('state_types', $statetypes) ?>
+						<?php echo form::dropdown('state_types', $options->get_alternatives('state_types')) ?>
 					</td>
 
 				</tr>
@@ -123,24 +123,24 @@ if (!empty($widgets)) {
 				</tr>
 				<tr>
 					<td>
-						<?php echo $label_breakdown ?><br />
-						<?php echo form::dropdown('breakdown', $breakdown, 'dayofmonth') ?>
+						<?php echo _('Statistics Breakdown') ?><br />
+						<?php echo form::dropdown('breakdown', $options->get_alternatives('breakdown'), $options['breakdown']) ?>
 					</td>
 					<td style="width: 18px">&nbsp;</td>
 					<td>
 						<div id="block_host_states">
-							<?php echo $label_events_to_graph ?><br />
-							<?php echo form::dropdown('host_states', $hoststates) ?>
+							<?php echo _('Events To Graph') ?><br />
+							<?php echo form::dropdown('host_states', $options->get_alternatives('host_states')) ?>
 						</div>
 						<div id="block_service_states">
-							<?php echo $label_events_to_graph ?><br />
-							<?php echo form::dropdown('service_states', $servicestates) ?>
+							<?php echo _('Events To Graph') ?><br />
+							<?php echo form::dropdown('service_states', $options->get_alternatives('service_states')) ?>
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
-					<?php echo form::checkbox('newstatesonly', 1, true); ?>
+					<?php echo form::checkbox('newstatesonly', 1, $options['newstatesonly']); ?>
 					<?php echo _('Ignore Repeated States') ?>
 					</td>
 				</tr>

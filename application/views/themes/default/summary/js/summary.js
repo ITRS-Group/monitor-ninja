@@ -6,7 +6,6 @@ var host = false;
 var service_tmp = false;
 var service = false;
 var current_obj_type = false; // keep track of what we are viewing
-var is_populated = false; // flag list population when done
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
@@ -41,11 +40,6 @@ $(document).ready(function() {
 		return check_and_submit($(this));
 	});
 
-	$("#report_id").bind('change', function() {
-		if (check_and_submit($("#saved_report_form"))) {
-			$("#saved_report_form").trigger('submit');
-		}
-	});
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
@@ -69,10 +63,6 @@ $(document).ready(function() {
 function expand_and_populate(data)
 {
 	set_initial_state('report_type', data['obj_type']);
-	if (!is_populated && data['obj_type']) {
-		setTimeout(function() {expand_and_populate(data);}, 1000);
-		return;
-	}
 	var reportObj = data;
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
@@ -117,9 +107,6 @@ function expand_and_populate(data)
 		document.forms['summary_form'].time_end.value = reportObj['time_end'];
 		document.forms['summary_form'].end_time.value = format_date_str(endDate);
 	}
-
-	// wait for lists to populate
-	setTimeout("remove_duplicates();", 500);
 }
 
 function set_report_mode(type)
@@ -131,7 +118,7 @@ function set_report_mode(type)
 			break;
 		case 'custom':
 			$("#std_report_table").hide();
-			if (!is_populated && !report_id)
+			if (!report_id)
 				set_selection($('#report_type').val());
 			$("#custom_report").show();
 			break;

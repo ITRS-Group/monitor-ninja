@@ -1,10 +1,11 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 class report_Test extends TapUnit {
 	public function test_overlapping_timeperiods() {
-		$report = new Reports_Model();
-		$report->set_option('start_time', strtotime('1999-01-01'));
-		$report->set_option('end_time', strtotime('2012-01-01'));
-		$report->set_option('report_timeperiod', 'weird-stuff');
+		$opts = array(
+			'start_time' => strtotime('1999-01-01'),
+			'end_time' => strtotime('2012-01-01'),
+			'rpttimeperiod' => 'weird-stuff');
+		$report = Timeperiod_Model::instance($opts);
 		$report->resolve_timeperiods();
 		$this->pass('Could resolve timperiod torture-test');
 		$this->ok(!empty($report->tp_exceptions), 'There are exceptions');
@@ -33,9 +34,8 @@ class report_Test extends TapUnit {
 		// found this method while trying to memorize ninja's source code
 		// turns out, I'd just broken it and nothing told me, so let's always
 		// run this so it'll yell at me for next time
-		$this->rpt = new Reports_Model();
-		$this->rpt->set_option('start_time', 0);
-		$this->rpt->set_option('end_time', time());
+		$opts = new Avail_options(array('start_time' => 0, 'end_time' => time()));
+		$this->rpt = new Reports_Model($opts);
 		$auth = Nagios_auth_Model::instance();
 		$res = Database::instance()->query('SELECT id FROM contact LIMIT 1');
 		//whatever, as long as it's valid (and has at least one of each)

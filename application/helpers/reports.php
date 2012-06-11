@@ -110,8 +110,18 @@ class reports_Core
 	 */
 	public function get_date_ranges()
 	{
-		$reports = new Reports_Model();
-		return $reports->get_date_ranges();
+		$sql = "SELECT MIN(timestamp) AS min_date, ".
+				"MAX(timestamp) AS max_date ".
+			"FROM ".self::db_table;
+		$db = Database::instance();
+		$res = $db->query($sql);
+
+		if (!$res)
+			return false;
+		$row = $res->current();
+		$min_date = $row->min_date;
+		$max_date = $row->max_date;
+		return array($min_date, $max_date);
 	}
 
 	/**
@@ -140,32 +150,6 @@ class reports_Core
 			return true;
 
 		return false;
-	}
-
-	/// used for automatic test cases
-	public function print_test_settings($test=false)
-	{
-		# report uses reports model default settings
-		if (!isset($test['start_time']) || !isset($test['end_time'])) {
-			echo _('Empty report settings. We need start_time and end_time')."\n";
-			print_r($test);
-			exit(1);
-		}
-
-		foreach ($test as $k => $v) {
-			if (is_array($v) && count($v) === 1)
-				$v = array_pop($v);
-
-			if (is_array($v)) {
-				echo "\t$k {\n";
-				foreach ($v as $v2) {
-					echo "\t\t$v2\n";
-				}
-				echo "\t}\n";
-				continue;
-			}
-			echo "\t$k = $v\n";
-		}
 	}
 
 	/**

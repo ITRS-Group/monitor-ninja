@@ -354,7 +354,7 @@ function color_the_trends_graph($image, $passthrough, $row, $column, $extra = 0)
  * @return string|false
  */
 function phplot_color_index_by_state_color($type='host', $state=false) {
-	$arr = Reports_Controller::$colors;
+	$arr = Base_reports_Controller::$colors;
 	$colors['host'] = array(
 		Reports_Model::HOST_UP => $arr['green'],
 		Reports_Model::HOST_DOWN => $arr['red'],

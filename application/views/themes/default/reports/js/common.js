@@ -13,7 +13,6 @@ var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 var nr_of_scheduled_instances = 0;
-var is_populated = false; // flag list population when done
 var current_obj_type = false; // keep track of what we are viewing
 $(document).ready(function() {
 	// because chrome, ie AND ff differs
@@ -138,6 +137,12 @@ $(document).ready(function() {
 		confirm_delete_report($("#report_id").attr('value'));
 	});
 	$(".deleteimg").css('cursor', 'pointer');
+
+	$("#report_id").bind('change', function() {
+		if (check_and_submit($("#saved_report_form"))) {
+			$("#saved_report_form").trigger('submit');
+		}
+	});
 });
 
 function confirm_delete_report(the_val)
@@ -232,17 +237,8 @@ function send_report_now(type, id)
 		.css('width', '16px')
 		.css('float', 'left');
 
-	// since we now support reports generated in
-	// other controllers than the reports controller,
-	// we have to let the correct controller handle
-	// the actual creation and sending of the report.
-	var controller = (typeof _reports_link != 'undefined') ? _reports_link : 'reports';
-	if (type == 'summary') {
-		controller = 'summary';
-	}
-
 	$.ajax({
-		url: _site_domain + _index_page + '/' + controller + '/generate',
+		url: _site_domain + _index_page + '/' + type + '/generate',
 		type: 'POST',
 		data: {type: type, schedule_id: id},
 		success: function(data) {
@@ -355,7 +351,7 @@ function remove_schedule(id, remove_type)
 function fancybox_datepicker()
 {
 	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	$('.date-pick').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 
 	if ($('#fancybox-content #cal_start').attr('value')) {
 		var ds = Date.fromString($('#fancybox-content #cal_start').attr('value'));
@@ -402,7 +398,7 @@ function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').filter(':visible').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	$('.date-pick').filter(':visible').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
 	$('#cal_start').bind(
 		'dpClosed',
 		function(e, selectedDates)
@@ -471,7 +467,6 @@ function js_print_date_ranges(the_year, type, item)
 		success: function(data) {
 			if (data != '') {
 				// OK, continue
-				data = eval( "(" + data + ")" );
 				if (data['start_year']) {
 					for (i in data['start_year']) {
 						addSelectOption('start_year', data['start_year'][i], data['start_year'][i]);
@@ -530,39 +525,40 @@ function show_calendar(val, update) {
 	disable_sla_fields(val);
 }
 
-function set_selection(val, no_erase) {
+function set_selection(val, cb) {
 	// start by hiding ALL rows
 	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla','display_service_status','display_host_status');
 	hide_rows(hide_these);
 	show_progress('progress', _wait_str);
 	switch (val) {
-		case 'hostgroups':
-			get_members('', 'hostgroup', no_erase);
-			$('#hostgroup_row').show();
-			$('#block_host_states').show();
-			$('#display_host_state').show();
-			$('#block_service_states').hide();
-			break;
 		case 'servicegroups':
-			get_members('', 'servicegroup', no_erase);
+			get_members('', 'servicegroup', cb);
 			$('#servicegroup_row').show();
 			$('#block_service_states').show();
 			$('#display_service_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hosts':
-			get_members('', 'host', no_erase);
+			get_members('', 'host', cb);
 			$('#host_row_2').show();
 			$('#block_host_states').show();
 			$('#display_host_status').show();
 			$('#block_service_states').hide();
 			break;
 		case 'services':
-			get_members('', 'service', no_erase);
+			get_members('', 'service', cb);
 			$('#service_row_2').show();
 			$('#block_service_states').show();
 			$('#display_serviec_status').show();
 			$('#block_host_states').hide();
+			break;
+		case 'hostgroups':
+		default:
+			get_members('', 'hostgroup', cb);
+			$('#hostgroup_row').show();
+			$('#block_host_states').show();
+			$('#display_host_status').show();
+			$('#block_service_states').hide();
 			break;
 	}
 	$('#settings_table').show();
@@ -602,10 +598,8 @@ function show_progress(the_id, info_str) {
 	$("#" + the_id).html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>').show();
 }
 
-function get_members(val, type, no_erase) {
+function get_members(val, type, cb) {
 	if (type=='') return;
-	is_populated = false;
-	show_progress('progress', _wait_str);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "group_member/";
 	var data = {input: val, type: type};
@@ -617,14 +611,14 @@ function get_members(val, type, no_erase) {
 			field_name = type + "_tmp";
 			empty_field = type;
 			break;
-			case 'host':
-				field_name = "host_tmp";
-				empty_field = 'host_name';
-				break;
-			case 'service':
-				field_name = "service_tmp";
-				empty_field = 'service_description';
-				break;
+		case 'host':
+			field_name = "host_tmp";
+			empty_field = 'host_name';
+			break;
+		case 'service':
+			field_name = "service_tmp";
+			empty_field = 'service_description';
+			break;
 	}
 
 	$.ajax({
@@ -634,14 +628,14 @@ function get_members(val, type, no_erase) {
 		success: function(data) {
 			if (data.error) {
 				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
-				setup_hide_content('progress');
 				return;
 			}
+			empty_list(field_name);
 			populate_options(field_name, empty_field, data.result);
-			if(no_erase == '') {
-				empty_list(field_name);
-				empty_list(empty_field);
-			}
+			empty_list(empty_field);
+			if(typeof cb == 'function')
+				cb();
+			setup_hide_content('progress');
 		},
 		dataType: 'json'
 	});
@@ -705,9 +699,7 @@ function populate_options(tmp_field, field, json_data)
 		option.appendChild(document.createTextNode(json_data[i]));
 		fragment.appendChild(option);
 	}
-	var select = document.getElementById(tmp_field.replace('[', '\\[').replace(']', '\\]')).appendChild(fragment);
-	is_populated = true;
-	$('#progress').hide();
+	document.getElementById(tmp_field.replace('[', '\\[').replace(']', '\\]')).appendChild(fragment);
 }
 
 /**
@@ -715,7 +707,6 @@ function populate_options(tmp_field, field, json_data)
 */
 function populate_report_periods(json_data)
 {
-	json_data = eval(json_data);
 	var field_name = 'report_period';
 	for (var i = 0; i < json_data.length; i++) {
 		var val = json_data[i].optionValue;
@@ -731,7 +722,6 @@ function populate_report_periods(json_data)
 */
 function populate_saved_reports(json_data, field_name)
 {
-	json_data = eval(json_data);
 	invalid_report_names = new Array();
 	for (var i = 0; i < json_data.length; i++) {
 		var val = json_data[i].optionValue;
@@ -760,11 +750,11 @@ function delayed_hide_progress()
 	setup_hide_content('progress');
 }
 
-function addSelectOption(theSel, theVal)
+function addSelectOption(theSel, theText)
 {
 	theSel = theSel.replace('[', '\\[');
 	theSel = theSel.replace(']', '\\]');
-	$("#"+theSel).addOption(theVal, theVal, false);
+	$("#"+theSel).addOption(theText, theText, false);
 }
 
 function setup_hide_content(d) {
@@ -1074,11 +1064,6 @@ function check_and_submit(f)
 	return false;
 }
 
-function add_if_not_exist(tmp_field, val) {
-	addSelectOption(tmp_field, val);
-}
-
-
 function epoch_to_human(val){
 	var the_date = new Date(val * 1000);
 	return the_date;
@@ -1347,58 +1332,34 @@ function toggle_label_weight(val, the_id)
 	$('#fancybox-content #' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
 }
 
-/**
-*	Remove duplicate entries
-*	We need to check that we don't have items in the
-*	left (available) list that is added to the to the right (selected)
-'	Also, we need to check that the right list doesn't have items that are
-*	removed from the configuration.
-*/
-function remove_duplicates()
+function missing_objects()
 {
-	if (!current_obj_type) {
-		return false;
-	}
-	if (!is_populated) {
-		// check if lists has been populated before trying
-		// to remove duplicates and removed objects.
-		// Call self if not ready yet
-		setTimeout("remove_duplicates();", 500);
-		return false;
-	}
-	setup_hide_content('progress');
-	var field_obj = new field_maps();
-	var tmp_fields = new field_maps3();
-	var field_str = current_obj_type;
-	var field = field_obj.map[field_str]+'[]'
-	var tmp_field = $("select[name='" + tmp_fields.map[field_str]+ '[]' + "']");
-	var removed_items = new Array();
-	var i = 0;
+	this.objs = [];
+}
 
-	$("select[name='" + field + "'] option").each(function() {
-		var this_item = $(this).val();
-		if (tmp_field.containsOption(this_item)) {
-			tmp_field.removeOption(this_item);
-		} else {
-			//$("select[name='" + field + "']").removeOption(this_item);
-			removed_items[i++] = this_item;
-		}
-	});
-	if (removed_items.length) {
-		var info_str = _reports_missing_objects + ": ";
-		info_str += "<ul><li><img src=\"" + _site_domain + _theme_path + "icons/arrow-right.gif" + "\" /> " + removed_items.join('</li><li><img src="' + _site_domain + _theme_path + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
-		info_str += _reports_missing_objects_pleaseremove;
-		info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + _theme_path + '' + 'icons/12x12/cross.gif" /></a>';
-		$('#response')
-			.css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
-			.css("position", "relative")
-			.css('top', '0px')
-			.css('width','748px')
-			.css('left', '0px')
-			.css('padding','15px 2px 5px 50px')
-			.css('margin-left','5px')
-			.html(info_str);
-	}
+missing_objects.prototype.add = function(name)
+{
+	this.objs.push(name);
+}
+
+missing_objects.prototype.display_if_any = function()
+{
+	if (!this.objs.length)
+		return;
+
+	var info_str = _reports_missing_objects + ": ";
+	info_str += "<ul><li><img src=\"" + _site_domain + _theme_path + "icons/arrow-right.gif" + "\" /> " + this.objs.join('</li><li><img src="' + _site_domain + _theme_path + 'icons/arrow-right.gif' + '" /> ') + '</li></ul>';
+	info_str += _reports_missing_objects_pleaseremove;
+	info_str += '<a href="#" id="hide_response" onclick="hideMe(\'response\')" style="position:absolute;top:8px;left:700px;">Close <img src="' + _site_domain + _theme_path + '' + 'icons/12x12/cross.gif" /></a>';
+	$('#response')
+		.css('background','#f4f4ed url(' + _site_domain + _theme_path + 'icons/32x32/shield-info.png) 7px 7px no-repeat')
+		.css("position", "relative")
+		.css('top', '0px')
+		.css('width','748px')
+		.css('left', '0px')
+		.css('padding','15px 2px 5px 50px')
+		.css('margin-left','5px')
+		.html(info_str);
 }
 
 function format_date_str(date) {

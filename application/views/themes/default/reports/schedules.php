@@ -55,7 +55,7 @@
 								<th class="headerNone left"><?php echo _('Filename') ?></th>
 								<th class="headerNone left"><?php echo _('Description') ?></th>
 								<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
-								<th class="headerNone left"style='width: 60px'><?php echo _('Actions'); ?></th>
+								<th class="headerNone left" style='width: 60px'><?php echo _('Actions'); ?></th>
 							</tr>
 						</thead>
 						<?php if (!empty($sla_schedules) && count($sla_schedules)) { ?>
@@ -98,7 +98,7 @@
 								<th class="headerNone left"><?php echo _('Filename') ?></th>
 								<th class="headerNone left"><?php echo _('Description') ?></th>
 								<th class="headerNone left"><?php echo _("Local persistent filepath") ?></th>
-								<th class="headerNone left"style='width: 60px'><?php echo _('Actions'); ?></th>
+								<th class="headerNone left" style='width: 60px'><?php echo _('Actions'); ?></th>
 							</tr>
 						</thead>
 						<?php if (!empty($summary_schedules) && count($summary_schedules)) { ?>

@@ -659,7 +659,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$the_year = $this->input->post('the_year', false);
 		$type = $this->input->post('type', 'start');
 		$item = $this->input->post('item', 'year');
-		$date_ranges = Reports_Model::get_date_ranges();
+		$date_ranges = reports::get_date_ranges();
 
 		if (empty($date_ranges)) return false;
 

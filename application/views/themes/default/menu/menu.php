@@ -92,9 +92,9 @@ $section_reporting[$menu_items['alert_history']] = array('/showlog/alert_history
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
 $section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
-$section_reporting[$menu_items['availability']] = array('/'.Kohana::config('reports.reports_link').'?type=avail', 'availability',0);
-$section_reporting[$menu_items['sla']] = array('/'.Kohana::config('reports.reports_link').'?type=sla', 'sla',0);
-$section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('reports.reports_link').'?show_schedules', 'schedulereports',0);
+$section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
+$section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
+$section_reporting[$menu_items['schedule_reports']]= array('/reports/index?show_schedules', 'schedulereports',0);
 
 # base menu (all)
 $menu_base = array(

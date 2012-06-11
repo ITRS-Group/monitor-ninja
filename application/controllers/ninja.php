@@ -42,7 +42,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
-		# set base template file to current theme
 		$this->template = $this->add_view('template');
 
 		if (!$this->run_tests) {

@@ -28,7 +28,7 @@
 				} else {
 					echo _('Services on host') .': ';
 					echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">';
-					if (!$use_alias) {
+					if (!$options['use_alias']) {
 						echo $data['HOST_NAME'][$i];
 					 } else {
 						echo $this->_get_host_alias($data['HOST_NAME'][$i]).' '.$data['HOST_NAME'][$i].')';
@@ -51,7 +51,7 @@
 		<?php } ?>
 			<?php if (!$hide_host && !empty($data['groupname']) && ($data['HOST_NAME'][$i]!= $prev_hostname || $data['groupname']!= $prev_groupname)) { ?>
 			<tr class="even">
-			<?php if (!$use_alias) { ?>
+			<?php if (!$options['use_alias']) { ?>
 				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?></td>
 			<?php } else { ?>
 				<td colspan="10" class="multiple label"><?php echo _('Services on host') ?>: <?php echo get_host_alias($data['HOST_NAME'][$i]) ?> (<?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>'; ?>)</td>
@@ -63,11 +63,11 @@
 					<a href="<?php echo str_replace('&','&amp;',$data['service_link'][$i]); ?>"><?php echo $data['SERVICE_DESCRIPTION'][$i]; ?></a>
 				</td>
 				<td class="data">
-					<?php echo html::anchor(Kohana::config('reports.reports_link').'/generate?type=avail&host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('Availability report for this service'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('avail/generate?host_name[]='.$data['HOST_NAME'][$i].'&service_description[]=' . $data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('Availability report for this service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i].";".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/alert-history.png'), array('title' => _('Alert History for this Service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i]."?service=".$data['SERVICE_DESCRIPTION'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => _('Notifications for this Service'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('trends/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/trends.png'), array('title' => _('Trends for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('histogram/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => _('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('histogram/generate?host='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => _('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>
 				</td>
 				<td class="data"><?php echo reports::format_report_value($data['ok'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['ok'][$i]) > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => _('OK'), 'title' => _('OK'),'style' => 'height: 12px; width: 11px')) ?></td>
@@ -83,7 +83,7 @@
 			<?php	} } ?>
 
 			<?php if (!empty($data['groupname'])) {
-					if ($use_average==0) { ?>
+					if ($options['use_average']==0) { ?>
 			<tr class="<?php echo ($i%2 == 0 ? 'even' : 'odd'); ?>">
 				<td colspan="2"><?php echo _('Average') ?></td>
 				<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -99,7 +99,7 @@
 			</tr>
 			<?php 	} ?>
 			<tr class="<?php $i++; echo ($i%2 == 0 ? 'even' : 'odd'); ?>">
-				<td colspan="2"><?php if ($use_average==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
+				<td colspan="2"><?php if ($options['use_average']==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => _('Ok'), 'title' => _('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),
@@ -128,7 +128,7 @@
 			<th class="headerNone"><?php echo _('Critical') ?></th>
 			<th class="headerNone"><?php echo _('Undetermined') ?></th>
 		</tr>
-		<?php if ($use_average==0) { ?>
+		<?php if ($options['use_average']==0) { ?>
 		<tr class="even">
 			<td><?php echo _('Average');?></td>
 			<td class="data"><?php echo $data['average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_ok'] > 0 ? '' : 'not-').'ok.png'),
@@ -144,7 +144,7 @@
 		</tr>
 		<?php } ?>
 		<tr class="odd">
-				<td><?php if ($use_average==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
+				<td><?php if ($options['use_average']==0) { ?><?php echo _('Group availability (SLA)') ?> <?php } else { ?><?php echo _('Average') ?><?php } ?></td>
 				<td class="data"><?php echo $data['group_average_ok'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_ok'] > 0 ? '' : 'not-').'ok.png'),
 							array( 'alt' => _('Ok'), 'title' => _('Ok'),'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_average_warning'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_average_warning'] > 0 ? '' : 'not-').'warning.png'),

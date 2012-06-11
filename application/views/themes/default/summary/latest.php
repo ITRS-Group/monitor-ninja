@@ -18,7 +18,7 @@ if (isset($schedules)) {
 		</tr>
 		<?php
 		$i = 0;
-		if (count($result)>0 && !empty($result)) {
+		if (!empty($result)) {
 			foreach ($result as $ary) {
 				$i++;
 				echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'">';

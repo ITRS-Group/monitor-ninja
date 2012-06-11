@@ -11,7 +11,7 @@ if (!empty($log)) {
 ?>
 	<div id="log_entries">
 		<table id="log-table">
-			<caption style="font-weight: bold"><?php echo help::render('log_entries').' '.ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption>
+			<caption><?php echo help::render('log_entries').' '.ucfirst($type) ?> <?php echo _('Log Entries for') ?> <?php echo $source; ?><br /></caption>
 			<thead>
 			<tr>
 				<th class="headerNone left"<?php echo _('Status');?></th>
@@ -29,7 +29,6 @@ if (!empty($log)) {
 				if (isset($value['state']) && $value['state'] != -2) {
 				$event_end_time = $value['the_time'] + $value['duration'];
 			?>
-			<?php $bg_color = ($i%2 != 0) ? '#ffffff' : '#f2f2f2'; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 				<td>
 					<?php

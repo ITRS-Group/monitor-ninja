@@ -483,8 +483,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'showlog/alert_history/'.$host,
 					 _('Trends') => 'trends/host/'.$host,
-					 _('Alert histogram') => 'histogram/host/'.$host,
-					 _('Availability report') => Kohana::config('reports.reports_link').'/generate/?type=avail&host_name[]='.$host,
+					 _('Alert histogram') => 'histogram/generate?host='.$host,
+					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
 					 _('Notifications') => '/notifications/host/'.$host
 				);
 				break;
@@ -495,8 +495,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail for this host') => 'status/service/'.$host,
 					_('Alert history') => 'showlog/alert_history/'.$host.'?service='.urlencode($service),
 					_('Trends') => 'trends/host/'.$host.'?service='.urlencode($service),
-					_('Alert histogram') => 'histogram/host/'.$host.'?service='.urlencode($service),
-					_('Availability report') => Kohana::config('reports.reports_link').'/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
+					_('Alert histogram') => 'histogram/generate?host='.$host.'&service='.urlencode($service),
+					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => '/notifications/host/'.$host.'?service='.urlencode($service)
 				);
 
@@ -892,7 +892,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
-					_('Availability') => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;
@@ -902,7 +902,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
-					_('Availability') => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;

@@ -164,27 +164,28 @@ function check_setup()
 */
 function expand_and_populate(data)
 {
-	if (!is_populated) {
-		setTimeout(function() {expand_and_populate(data);}, 1000);
-		return;
-	}
 	var reportObj = data;
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
-	var field_str = reportObj['report_type'];
-	if (reportObj[field_obj.map[field_str]]) {
-		var to_id = field_obj.map[field_str];
-		var from_id = tmp_fields.map[field_str];
-		// select report objects
-		for (prop in reportObj[field_obj.map[field_str]]) {
-			$('#' + from_id).selectOptions(reportObj[field_obj.map[field_str]][prop]);
+	var field_str = reportObj.report_type;
+	set_selection(reportObj.report_type, function() {
+		var mo = new missing_objects();
+		if (reportObj[field_obj.map[field_str]]) {
+			var to_id = field_obj.map[field_str];
+			var from_id = tmp_fields.map[field_str];
+			// select report objects
+			for (prop in reportObj[field_obj.map[field_str]]) {
+				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj.objects[prop])) {
+					mo.add(reportObj.objects[prop])
+				} else {
+					$('#' + from_id).selectOptions(reportObj[field_obj.map[field_str]][prop]);
+				}
+			}
+			mo.display_if_any();
+			// move selected options from left -> right
+			moveAndSort(from_id, to_id);
 		}
-		// move selected options from left -> right
-		moveAndSort(from_id, to_id);
-	}
-
-	// wait for lists to populate
-	setTimeout("remove_duplicates();", 500);
+	});
 }
 
 function set_initial_state(what, val)

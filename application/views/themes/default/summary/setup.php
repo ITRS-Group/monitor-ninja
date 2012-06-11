@@ -1,16 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
-<?php
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
 <div id="response"></div>
 
 <div class="widget w98 left">
-		<span id="view_add_schedule"<?php if (!$report_id) {?> style="display: none;"<?php } ?> style="float: right; right: 1%; top: 0px;">
+		<span id="view_add_schedule"<?php if (!$options['report_id']) {?> style="display: none;"<?php } ?> style="float: right; right: 1%; top: 0px;">
 		<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => _('Add').' '. strtolower(_('New schedule')), 'title' => _('Add').' '. strtolower(_('New schedule')))); ?></a>
 		<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
 	</span>
@@ -25,26 +17,26 @@ if (!empty($widgets)) {
 					<option value=""> - <?php echo _('Select saved report') ?> - </option>
 					<?php	$sched_str = "";
 					foreach ($saved_reports as $info) {
-						$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
+						$sched_str = in_array($info->id, $scheduled_ids) ? " ( *"._('Scheduled')."* )" : "";
 						if (in_array($info->id, $scheduled_ids)) {
-							$sched_str = " ( *".$scheduled_label."* )";
+							$sched_str = " ( *"._('Scheduled')."* )";
 							$title_str = $scheduled_periods[$info->id]." "._('schedule');
 						} else {
 							$sched_str = "";
 							$title_str = "";
 						}
-						echo '<option title="'.$title_str.'" '.(($report_id == $info->id) ? 'selected="selected"' : '').
+						echo '<option title="'.$title_str.'" '.(($options['report_id'] == $info->id) ? 'selected="selected"' : '').
 							' value="'.$info->id.'">'.$info->report_name.$sched_str.'</option>'."\n";
 					}  ?>
 				</select>
-				<input type="hidden" name="type" value="<?php echo $type ?>" />
+				<input type="hidden" name="summary_type" value="<?php echo $options['summary_type'] ?>" />
 				<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />
-				<input type="button" class="button new" value="<?php echo _('New') ?>" name="new_report" title="<?php echo $new_saved_title ?>" id="new_report" />
+				<input type="button" class="button new" value="<?php echo _('New') ?>" name="new_report" title="<?php echo _('Create new saved Summary report') ?>" id="new_report" />
 				<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo _('Delete report') ?>" id="delete_report" />
 				<span id="autoreport_periods" style="display:none"><?php echo $json_periods ?></span>
 				<?php if (isset($is_scheduled) && $is_scheduled) { ?>
 				<div id="single_schedules" style="display:inline">
-					<span id="is_scheduled" title="<?php echo $is_scheduled_clickstr ?>">
+					<span id="is_scheduled" title="<?php echo _('This report has been scheduled. Click the icons below to change settings') ?>">
 						<?php echo _('This is a scheduled report') ?>
 					</span>
 				</div>
@@ -54,7 +46,7 @@ if (!empty($widgets)) {
 
 
 
-	<h1><?php echo $label_create_new ?></h1>
+	<h1><?php echo _('Alert Summary Report') ?></h1>
 	<h2><?php echo _('Report Mode') ?></h2>
 	<form action="" onsubmit="return false;">
 	<p><label><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo _('Standard') ?></label><br /><label><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo _('Custom') ?></label>
@@ -66,24 +58,24 @@ if (!empty($widgets)) {
 		<tr>
 			<td>
 				<?php echo _('Report Type') ?><br />
-				<?php echo form::dropdown(array('name' => 'standardreport'), $standardreport); ?>
+				<?php echo form::dropdown(array('name' => 'standardreport'), $options->get_alternatives('standardreport')); ?>
 			</td>
 			<td>
 				<?php echo _('Items to show') ?><br />
-				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
+				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2">
 				<?php echo help::render('save_report', 'reports') ?>
-				<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+				<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
 				<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
 				<label for="save_report_settings" id="save_report_label"><?php echo _('Save report') ?></label>
 				<br />
 				<span id="report_save_information" style="display:none">
-					<input type="text" name="report_name" id="report_name" value="<?php echo $report_name ?>" maxlength="255" />
+					<input type="text" name="report_name" id="report_name" value="<?php echo $options['report_name'] ?>" maxlength="255" />
 				</span>
-				<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
+				<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 			</td>
 		</tr>
 		<tr>
@@ -187,12 +179,12 @@ if (!empty($widgets)) {
 				<tr>
 					<td>
 						<?php echo _('Report Period') ?><br />
-						<?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $sel_reportperiod); ?>
+						<?php echo form::dropdown('report_period', $options->get_alternatives('report_period'), $options['report_period']); ?>
 					</td>
 					<td style="width: 18px">&nbsp;</td>
 					<td>
 						<?php echo _('Report Type') ?><br />
-						<?php echo form::dropdown('report_type', $report_types) ?>
+						<?php echo form::dropdown('summary_type', $options->get_alternatives('summary_type')) ?>
 					</td>
 				</tr>
 				<tr id="display" style="display: none; clear: both;">
@@ -212,42 +204,42 @@ if (!empty($widgets)) {
 				<tr>
 					<td>
 						<?php echo _('Alert Types') ?><br />
-						<?php echo form::dropdown('alert_types', $alerttypes, $sel_alerttype) ?>
+						<?php echo form::dropdown('alert_types', $options->get_alternatives('alert_types'), $options['alert_types']) ?>
 					</td>
 					<td>&nbsp;</td>
 					<td>
 						<?php echo _('State Types') ?><br />
-						<?php echo form::dropdown('state_types', $statetypes, $sel_statetype) ?>
+						<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<?php echo _('Host States') ?><br />
-						<?php echo form::dropdown('host_states', $hoststates, $sel_hoststate) ?>
+						<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']) ?>
 					</td>
 					<td>&nbsp;</td>
 					<td>
 						<?php echo _('Service States') ?><br />
-						<?php echo form::dropdown('service_states', $servicestates, $sel_svcstate) ?>
+						<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']) ?>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="3">
 						<?php echo _('Items to show') ?><br />
-						<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $label_default_show_items) ?>
+						<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="3">
 						<?php echo help::render('save_report', 'reports') ?>
-						<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
+						<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
 						<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information2');toggle_label_weight(this.checked, 'save_report_label')" />
 						<label for="save_report_settings" id="save_report_label"><?php echo _('Save report') ?></label>
 						<br />
 						<span id="report_save_information2" style="display:none">
-							<input type="text" name="report_name" id="report_name" value="<?php echo $report_name ?>" maxlength="255" />
+							<input type="text" name="report_name" id="report_name" value="<?php echo $options['report_name'] ?>" maxlength="255" />
 						</span>
-						<input type="hidden" name="old_report_name" value="<?php echo $report_name ?>" />
+						<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 					</td>
 				</tr>
 				<tr>
@@ -293,7 +285,7 @@ if (!empty($widgets)) {
 				</td>
 			</tr>
 		</table>
-		<div><input type="hidden" name="saved_report_id" id="saved_report_id" value="<?php echo $report_id ?>" />
+		<div><input type="hidden" name="saved_report_id" id="saved_report_id" value="<?php echo $options['report_id'] ?>" />
 		<input type="hidden" name="type" value="summary" />
 		<input type="hidden" name="module_save" id="module_save" value="1" /></div>
 		</form>
@@ -301,8 +293,7 @@ if (!empty($widgets)) {
 
 	<div id="schedule_report" style="display:none">
 		<table id="schedule_report_table">
-				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo !empty($report_info) ? (!empty($report_info['report_name']) ?
-									$report_info['report_name'] : $report_info['sla_name']) : '' ?></span>)</caption>
+				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo ($options['report_name']?$options['report_name']:$options['sla_name']) ?></span>)</caption>
 				<tr id="schedule_header">
 					<th class="headerNone left"><?php echo _('Report Interval') ?></th>
 					<th class="headerNone left"><?php echo _('Recipients') ?></th>

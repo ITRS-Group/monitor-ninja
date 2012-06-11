@@ -21,7 +21,7 @@
  *           unscheduled|unsched down| unsched down|unsched down| unsched down
  *
  * When two sub-objects have different non-OK states, the outcome depends on
- * whether scheduled_downtime_as_uptime is used or not. If the option is used,
+ * whether scheduleddowntimeasuptime is used or not. If the option is used,
  * then the service with the worst non-scheduled state is used. If the option
  * is not used, the worst state is used, prioritizing any non-scheduled state.
  *
@@ -55,12 +55,6 @@ class Reports_Model extends Model
 	const DOWNTIME_STOP = 1104; /**< Nagios code for downtime stop, either because it ended or because it was deleted */
 	const PERC_DEC = 3; /**< Nr of decimals in returned percentage */
 	const DEBUG = true; /**< Debug bool - can't see this is ever false */
-	const DATERANGE_CALENDAR_DATE = 0; 	/**< eg: 2008-12-25 - 2009-02-01 / 6 */
-	const DATERANGE_MONTH_DATE = 1;  	/**< eg: july 4 - november 15 / 3 (specific month) */
-	const DATERANGE_MONTH_DAY = 2;  	/**< eg: day 1 - 25 / 5  (generic month)  */
-	const DATERANGE_MONTH_WEEK_DAY = 3; /**< eg: thursday 1 april - tuesday 2 may / 2 (specific month) */
-	const DATERANGE_WEEK_DAY = 4;  		/**< eg: thursday 3 - monday 4 (generic month) */
-	const DATERANGE_TYPES = 5; /**< FIXME: incomprehensible magic */
 
 	var $db_start_time = 0; /**< earliest database timestamp we look at */
 	var $db_end_time = 0;   /**< latest database timestamp we look at */
@@ -68,32 +62,23 @@ class Reports_Model extends Model
 	var $completion_time = 0; /**< The time it took to generate the report */
 
 	# alert summary options
-	var $alert_types = 3; /**< Bitmask of host(1) and service(2) alerts - both by default */
-	var $state_types = 3; /**< Bitmask of soft(1) and hard(2) states - both by default */
-	var $host_states = self::HOST_ALL; /**< Bitmask of host states to include */
-	var $service_states = self::SERVICE_ALL; /**< Bitmask of service states to include */
-	var $summary_items = 25; /**< Max items to return */
 	private $summary_result = array();
 	private $summary_query = '';
 	private $host_hostgroup; /**< array(host => array(hgroup1, hgroupx...)) */
-	private $service_servicegroup; /**< same as $host_hostgroup */
+	private $service_servicegroup; /**< array(service => array(sgroup1, sgroupx...))*/
 
 	var $st_raw = array(); /**< Mapping between the raw states and the time spent there */
-	var $st_needs_log = false; /**< Generating a log of states takes time, so don't by default */
-	var $keep_sub_logs = false; /**< This will be copied to any subreports' $st_needs_log */
 	var $st_log = false; /**< The log array */
 	var $st_prev_row = array(); /**< The last db row, so we can get duration */
 	var $st_running = 0; /**< Is nagios running? */
 	var $st_last_dt_init = 1; /**< set to FALSE on nagios restart, and a timestamp on first DT start after restart, so we can exclude duplicate downtime_start */
 	var $st_dt_depth = 0; /**< The downtime depth */
 	var $st_is_service = false; /**< Whether this is a service */
-	var $st_source = false; /**< The source object */
 	var $st_inactive = 0; /**< Time we have no information about */
 	var $st_text = array(); /**< Mapping between state integers and state text */
 	var $st_sub = array(); /**< Map of sub report [state => [downtime_status => [indexes]]] */
 	var $st_sub_discrepancies = 0; /**< Sub report appears to be weirded out */
-	var $st_obj_type = ''; /**< Object type (FIXME: haven't we already covered this?) */
-	var $st_state_calculator = 'st_worst'; /**< Whether to use normal SLA (worst state) or clustered (best state) */
+	private $st_source = false; /**< The source object */
 
 	/**
 	 * The calculated state of the object, taking such things
@@ -133,29 +118,8 @@ class Reports_Model extends Model
 	   'TIME_UNDETERMINED_NO_DATA' => 0,
 	   );
 
-	public $master = false; /**< Master report, compare with sub_reports */
-	public $id = ''; /**< Another way of saving and getting the object name (FIXME: just use $st_source?) */
-	public $result = array(); /**< FIXME: If I remove this, something obscure will break, but this isn't even used, is it? */
-	public $csv_result = array(); /**< FIXME: not used? */
-	public $old_csv_result = array(); /**< FIXME: not used? */
-	public $sub_results = array(); /**< FIXME: not used? */
-	public $use_average = false; /**< Calculate average state */
-	public $assume_states_during_not_running = false; /**< If true, monitor downtime is ignored */
-	public $initial_assumed_host_state = false; /**< The state to start a host report with, if $assume_initial_states */
-	public $initial_assumed_service_state = false; /**< The state to start a service report with, if $assume_initial_states */
-	public $scheduled_downtime_as_uptime = false; /**< Cheat by calling downtimes uptime */
-	public $include_soft_states = true; /**< NOTE: defaults to true */
-	public $report_timeperiod = false; /**< Only include events and time in this timeperiod - not to be confused with the report start and stop */
-	public $timeperiods_resolved = false; /**< whether timeperiod exceptions and exclusions have been resolved */
 	public $initial_state = false; /**< Initial state actually used */
 	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
-	public $start_time = false; /**< Report start timestamp */
-	public $end_time = false; /**< Report end timestamp */
-	public $assume_initial_states = null; /**< Should we assume initial states? If yes, use initial_assumed_{host,service}_state */
-	public $host_name = false; /**< The hosts affected by this report - could be a hostgroup, could be a service's host, could be all hosts in a servicegroup. Magic and scary */
-	public $service_description = false; /**< The services affected by this report - false if report only affects hosts, but could also be a list of services that we're interested in, without the host part. FIXME: wait, so, what happens when there's a servicegroup? */
-	public $servicegroup = false; /**< The name of one or several servicegroups to generate the report for */
-	public $hostgroup = false; /**< The name of one or several hostgroups to generate the report for */
 	public $db_name = 'merlin'; /**< Report database name */
 	const db_name = 'merlin'; /**< Report database name, FIXME: again, 4 teh lulz */
 	public $db_table = 'report_data'; /**< Report table name */
@@ -163,18 +127,32 @@ class Reports_Model extends Model
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
-	public $tp_exceptions = array(); /**< Timeperiod exceptions */
-	public $tp_excludes = array(); /**< Timeperiod excludes */
+
+	static public $host_states = array(
+		self::HOST_UP => 'up',
+		self::HOST_DOWN => 'down',
+		self::HOST_UNREACHABLE => 'unreachable',
+		self::HOST_PENDING => 'pending',
+		self::HOST_EXCLUDED => 'excluded');
+
+	static public $service_states = array(
+		self::SERVICE_OK => 'ok',
+		self::SERVICE_WARNING => 'warning',
+		self::SERVICE_CRITICAL => 'critical',
+		self::SERVICE_UNKNOWN => 'unknown',
+		self::SERVICE_PENDING => 'pending',
+		self::SERVICE_EXCLUDED => 'excluded');
 
 	/** The provided options */
-	public $options = array();
+	protected $options = false;
+	protected $timeperiod;
 
 	/**
 	 * Constructor
 	 * @param $db_name Database name
 	 * @param $db_table Database name
 	 */
-	public function __construct($db_name='merlin', $db_table='report_data')
+	public function __construct(Report_options $options, $db_name='merlin', $db_table='report_data')
 	{
 		parent::__construct();
 		if (self::DEBUG === true) {
@@ -193,12 +171,15 @@ class Reports_Model extends Model
 
 		/** The real state of the object */
 		$this->st_real_state = self::STATE_PENDING;
+		/** Will be overwritten at report start, if report object exist */
 		$this->st_prev_row = array(
 			'the_time' => 0,
 			'state' => self::STATE_PENDING,
-			'output' => 'No data found (are you trying to generate a report
-			with unexisting objects?)'
+			'output' => 'No data found (are you trying to generate a report with nonexisting objects?)'
 		);
+
+		$this->options = $options;
+		$this->timeperiod = Timeperiod_Model::instance($options);
 	}
 
 	/**
@@ -233,331 +214,11 @@ class Reports_Model extends Model
 	 * @return int
 	 */
 	private function filter_excluded_state($state) {
-		if ((isset($this->options['service_filter_status']) && $this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) || isset($this->options['host_filter_status']) && !$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
+		if (($this->st_is_service && (!isset($this->options['service_filter_status'][$state]) || !$this->options['service_filter_status'][$state])) ||
+			!$this->st_is_service && (!isset($this->options['host_filter_status'][$state]) || !$this->options['host_filter_status'][$state])) {
 			return self::HOST_EXCLUDED;
 		}
 		return $state;
-	}
-
-
-	/**
-	 * Parses a timerange string
-	 * FIXME: add more validation
-	 * @param $str string
-	 * @return An array of timeranges
-	 * E.g:
-	 * $str="08:00-12:00,13:00-17:00" gives:
-	 * array
-	 * (
-	 * 		array('start' => '08:00', 'stop' => '12:00'),
-	 * 		array('start' => '13:00', 'stop' => '17:00')
-	 * );
-	 */
-	public function tp_parse_day($str)
-	{
-		if (!$str)
-			return 0;
-
-		$i = 0;
-		$ret = array();
-
-		$ents = explode(',', $str);
-		foreach ($ents as $ent) {
-			$start_stop = explode('-', $ent);
-			$start_hour_minute = explode(':', $start_stop[0]);
-			$start_hour = $start_hour_minute[0];
-			$start_minute = $start_hour_minute[1];
-			$stop_hour_minute = explode(':', $start_stop[1]);
-			$stop_hour = $stop_hour_minute[0];
-			$stop_minute = $stop_hour_minute[1];
-			$stop_hour_minute = $start_hour_minute = $stop = $start = false;
-			$start_second = ($start_hour * 3600) + ($start_minute * 60);
-			$stop_second = ($stop_hour * 3600) + ($stop_minute * 60);
-			if($start_second >= $stop_second)
-			{
-				# @@@FIXME: no print statements in models!
-				print "Error: Skipping timerange $str, stop time is before start time<br>";
-				continue;
-			}
-			$ret[$i]['start'] = $start_second;
-			$ret[$i]['stop'] = $stop_second;
-			$i++;
-		}
-
-		return $ret;
-	}
-
-	/**
-	 * Only generate the report over the provided timeperiod
-	 *
-	 * @param $period A timeperiod name
-	 * @return true on success, false otherwise
-	 */
-	public function set_report_timeperiod($period=NULL)
-	{
-		$valid_weekdays = reports::$valid_weekdays;
-
-		if (empty($period)) {
-			$this->report_timeperiod = false;
-			return true;
-		}
-
-		$this->report_timeperiod = array();
-
-		$result = Timeperiod_Model::get($period, true);
-		if (empty($result))
-			return false;
-		$timeperiod_id = $result['id'];
-		unset($result['id']);
-		unset($result['timeperiod_name']);
-		unset($result['alias']);
-		unset($result['instance_id']);
-
-		$includes = $result;
-
-		$errors = 0;
-		foreach ($includes as $k => $v) {
-			if (empty($v)) {
-				continue;
-			}
-			$errors += $this->set_option($k, $v) === false;
-		}
-
-		$result_set = Timeperiod_Model::excludes($timeperiod_id, true);
-
-		if(!empty($result_set))
-		{
-			foreach($result_set as $i => $result_row) # for each exclude
-			{
-				$this->tp_excludes[$i] = array('timeperiod'=>array(), 'exceptions'=>array());
-				unset($result_row['id']);
-				unset($result_row['timeperiod_name']);
-				unset($result_row['alias']);
-				unset($result_row['instance_id']);
-				foreach($valid_weekdays as $didx => $weekday) # each weekday
-				{
-					if(isset($result_row[$weekday]))
-						$this->tp_excludes[$i]['timeperiod'][$didx] = $this->tp_parse_day($includes[$weekday]);
-					unset($result_row[$weekday]);
-				}
-				foreach($result_row as $key => $val)
-				{
-					$this->set_timeperiod_variable($key, $val, $this->tp_excludes[$i]['exceptions']);
-				}
-			}
-		}
-
-		if ($errors)
-			return false;
-		return true;
-	}
-
-	/**
-	 * Finds next start or stop of timeperiod from a given timestamp. If
-	 * given time is in an inactive timeperiod and we're looking for a
-	 * stop, current time is returned.
-	 * Vice versa, if we're looking for start inside an active period,
-	 * the current timestamp is returned.
-	 *
-	 * @param $when Current timestamp to start from.
-	 * @param $what Whether to search for start or stop. Valid values are 'start' and 'stop'.
-	 * @return The timestamp
-	 */
-	public function tp_next($when, $what = 'start')
-	{
-		if ($this->report_timeperiod === false)
-			return $when;
-
-		# if there is a report timeperiod set that doesn't have
-		# any 'start' entry (ie, all days are empty, such as for
-		# the "none" timeperiod), we can't possibly find either
-		# start or stop, so we can break out early.
-		# Noone sane will want to take a report from such a timeperiod,
-		# but in case the user misclicks, we should behave properly.
-		if (empty($this->report_timeperiod) && empty($this->tp_exceptions))
-			return 0;
-
-		if ($what === 'start') {
-			# try to find the next valid timestamp in this timeperiod,
-			# that is not valid in any of the exceptions.
-			# if we make it through a whole loop without $when changing, we
-			# must have found next tp start.
-			$main_when = false;
-			while ($main_when !== $when && $when <= $this->end_time) {
-				$main_when = $when = $this->tp_flat_next($when, 'start');
-
-				$tp_exceptions = $this->tp_exceptions;
-				$report_timeperiod = $this->report_timeperiod;
-				$tp_excludes = $this->tp_excludes;
-				unset($this->tp_excludes);
-				foreach ($tp_excludes as $exclude) {
-					$this->tp_exceptions = $exclude['exceptions'];
-					$this->report_timeperiod = $exclude['timeperiod'];
-					$tmp_when = $this->tp_flat_next($when, 'stop');
-					if ($tmp_when !== 0) # 0 => no more tp entries => ignore
-						$when = $tmp_when;
-				}
-				$this->tp_exceptions = $tp_exceptions;
-				$this->report_timeperiod = $report_timeperiod;
-				$this->tp_excludes = $tp_excludes;
-			}
-			if ($when > $this->end_time)
-				return 0;
-			return $when;
-		}
-		else if ($what === 'stop') {
-			# when this timeperiod stops, or any of the excludes start, we
-			# have a stop, whatever happens first
-			$whens = array();
-			$whens[] = $this->tp_flat_next($when, 'stop');
-
-			$tp_exceptions = $this->tp_exceptions;
-			$report_timeperiod = $this->report_timeperiod;
-			$tp_excludes = $this->tp_excludes;
-			unset($this->tp_excludes);
-			foreach ($tp_excludes as $exclude) {
-				$this->tp_exceptions = $exclude['exceptions'];
-				$this->report_timeperiod = $exclude['timeperiod'];
-				$whens[] = $this->tp_flat_next($when, 'start');
-			}
-			$this->tp_exceptions = $tp_exceptions;
-			$this->report_timeperiod = $report_timeperiod;
-			$this->tp_excludes = $tp_excludes;
-
-			$whens = array_filter($whens); // remove any 0
-
-			if (empty($whens))
-				return 0;
-			return min($whens);
-		}
-
-		return 0;
-	}
-	
-	/**
-	 * Finds the next start or stop of timeperiod, ignoring excludes, from
-	 * a given timestamp. Really just a helper for the above.
-	 */
-	private function tp_flat_next($when, $what)
-	{
-		$other = 'stop';
-		if ($what === 'stop')
-			$other = 'start';
-
-		$tm = localtime($when, true);
-		$year = $tm['tm_year'] + 1900; # stored as offsets since 1900
-		$tm_yday = $tm['tm_yday'];
-		$day = $tm['tm_wday'];
-		$day_seconds = ($tm['tm_hour'] * 3600) + ($tm['tm_min'] * 60) + $tm['tm_sec'];
-
-		$midnight_to_when = $when - $day_seconds;
-		$ents = array();
-		# see if we have an exception first
-		if (!empty($this->tp_exceptions[$year][$tm_yday]))
-			$ents = $this->tp_exceptions[$year][$tm_yday];
-		# if not, look for regular weekday
-		elseif (!empty($this->report_timeperiod[$day]))
-			$ents = $this->report_timeperiod[$day];
-		# we have no entries today, so if we're looking for something outside
-		# a timeperiod, everything is.
-		elseif ($what === 'stop')
-			return $when;
-
-		foreach ($ents as $ent) {
-			if ($ent[$what] <= $day_seconds && $ent[$other] > $day_seconds)
-				return $when;
-
-			if ($ent[$what] > $day_seconds)
-				return $midnight_to_when + $ent[$what];
-		}
-
-		$orig_day = $day;
-		$loops = 0;
-		for ($day = $orig_day + 1; $when + ($loops * 86400) < $this->end_time; $day++) {
-			$loops++;
-			$ents = false;
-			if ($day > 6)
-				$day = 0;
-
-			$midnight_to_when += 86400;
-
-			if (!empty($this->tp_exceptions[$year][$tm_yday + $loops]))
-				$ents = $this->tp_exceptions[$year][$tm_yday + $loops];
-			elseif (!empty($this->report_timeperiod[$day]))
-				$ents = $this->report_timeperiod[$day];
-
-			# no exceptions, no timeperiod entry
-			if (!$ents)
-				continue;
-
-			foreach ($ents as $ent)
-				return $midnight_to_when + $ent[$what];
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Returns whether the given timestamp is inside timeperiod
-	 * @param $timestamp: A timestamp in the unix epoch notation
-	 * @return TRUE if the timestamp is inside the timeperiod, FALSE otherwise
-	 */
-	function tp_inside($timestamp)
-	{
-		return ($this->tp_next($timestamp, 'start') === $timestamp);
-	}
-
-	/**
-	 * Returns the number of active seconds "inside"
-	 * the timeperiod during the start -> stop interval
-	 * @param $start: A timestamp in the unix epoch notation
-	 * @param $stop: A timestamp in the unix epoch notation
-	 * @return The number of seconds included in both $stop - $start
-	 *         and the timeperiod set for this report as an integer
-	 *         in the unix epoch notation
-	 */
-	function tp_active_time($start, $stop)
-	{
-		# if no timeperiod is set, the entire duration is active
-		if ($this->report_timeperiod === false)
-			return $stop - $start;
-
-		# a timeperiod without entries will cause us to never
-		# find start or stop. otoh, it never has any active time,
-		# so we simply return 0
-		if ($start >= $stop)
-			return 0;
-
-		$nstart = $this->tp_next($start, 'start');
-		# if there is no start event inside the timeperiod, or the
-		# first ever $nstart is beyond our $stop parameter,
-		# there are no active seconds between start and stop, so
-		# break out early
-		if (!$nstart || $nstart >= $stop)
-			return 0;
-
-		$nstop = $this->tp_next($nstart, 'stop');
-		# If the first ever $nstop encountered is beyond our
-		# $stop parameter, we can return early, as we won't
-		# need to loop at all
-		if ($nstop > $stop)
-			return $stop - $nstart;
-
-		$active = $nstop - $nstart;
-		while ($nstart != 0) {
-			if (($nstart = $this->tp_next($nstop, 'start')) > $stop)
-				$nstart = $stop;
-			if (($nstop = $this->tp_next($nstart, 'stop')) > $stop)
-				$nstop = $stop;
-
-			$active += $nstop - $nstart;
-			if ($nstart >= $stop || $nstop >= $stop)
-				return $active;
-		}
-
-		# we ran out of time periods before we reached $stop, so let's
-		# show 'em what we've got, so far
-		return $active;
 	}
 
 	/**
@@ -576,556 +237,35 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Set an option, with some validation
-	 *
-	 * @param $name Option name
-	 * @param $value Option value
-	 */
-	public function set_option($name, $value)
-	{
-		$vtypes = array
-			('report_period' => 'string',
-			 'alert_types' => 'int',
-			 'state_types' => 'int',
-			 'host_states' => 'int',
-			 'service_states' => 'int',
-			 'summary_items' => 'int',
-			 'cluster_mode' => 'bool',
-			 'keep_logs' => 'bool',
-			 'keep_sub_logs' => 'bool',
-			 'report_timeperiod' => 'string',
-			 'scheduled_downtime_as_uptime' => 'int',
-			 'assume_initial_states' => 'bool',
-			 'assume_states_during_not_running' => 'bool',
-			 'initial_assumed_host_state' => 'string',
-			 'initial_assumed_service_state' => 'string',
-			 'include_soft_states' => 'bool',
-			 'host_name' => 'list',
-			 'service_description' => 'list',
-			 'hostgroup' => 'list',
-			 'hostgroup_name' => 'string',
-			 'servicegroup' => 'list',
-			 'servicegroup_name' => 'string',
-			 'start_time' => 'timestamp',
-			 'end_time' => 'timestamp',
-			 'monday' => 'string',
-			 'tuesday' => 'string',
-			 'wednesday' => 'string',
-			 'thursday' => 'string',
-			 'friday' => 'string',
-			 'saturday' => 'string',
-			 'sunday' => 'string',
-			 'exclude' => 'string',
-			 'use_average' => 'bool',
-			 'host_filter_status' => 'array',
-			 'service_filter_status' => 'array',
-			 'include_trends' => 'bool');
-
-		# this will happen for timeperiod exceptions
-		if (!isset($vtypes[$name]))
-			return $this->set_timeperiod_variable($name, $value);
-
-		switch ($vtypes[$name]) {
-		 case 'bool':
-			if ($value == 1 || !strcasecmp($value, "true") || !empty($value))
-				$value = true;
-			else
-				$value = false;
-			if (!is_bool($value))
-				return false;
-			break;
-		 case 'int':
-			if (!is_numeric($value) || $value != intval($value))
-				return false;
-			$value = intval($value);
-			break;
-		 case 'string':
-			if (!is_string($value))
-				return false;
-			break;
-		 case 'list':
-			if (is_array($value) && count($value) === 1)
-				$value = array_pop($value);
-			if (is_string($value))
-				break;
-			/* fallthrough */
-		 case 'array':
-			if (!is_array($value))
-				return false;
-			break;
-		 case 'timestamp':
-			if (!is_numeric($value)) {
-				if (strstr($value, '-') === false)
-					return false;
-				$value = strtotime($value);
-				if ($value === false)
-					return false;
-			}
-			break;
-		 default:
-			# this is an exception and should never ever happen
-			return false;
-		}
-
-		switch ($name) {
-		 case 'cluster_mode':
-			# check things in 'cluster mode' (ie, consider a group of
-			# objects ok if one of the objects is
-			if ($value === true)
-				$this->st_state_calculator = 'st_best';
-			else
-				$this->st_state_calculator = 'st_worst';
-			break;
-		 case 'report_period':
-			return $this->calculate_time($value);
-
-			# lots of fallthroughs. lowest must come first
-		 case 'state_types': case 'alert_types':
-			if ($value > 3)
-				return false;
-		 case 'host_states':
-			if ($value > 7)
-				return false;
-		 case 'service_states':
-			if ($value > 15)
-				return false;
-		 case 'summary_items':
-			if ($value < 0)
-				return false;
-			$this->$name = $value;
-			break;
-			# fallthrough end
-
-		 case 'keep_logs':
-			# caller forces us to retain or discard all log-entries
-			$this->st_needs_log = $value;
-			break;
-		 case 'keep_sub_logs':
-			$this->keep_sub_logs = $value;
-			break;
-		 case 'scheduled_downtime_as_uptime':
-			$this->scheduled_downtime_as_uptime = $value;
-			break;
-		 case 'assume_initial_states':
-			$this->assume_initial_states = $value;
-			if (!$this->assume_initial_states) {
-				$this->initial_assumed_host_state = false;
-				$this->initial_assumed_service_state = false;
-			}
-			break;
-		 case 'initial_assumed_host_state': case 'initial_assumed_service_state':
-			if ($value < -3 || !$this->assume_initial_states)
-				return false;
-			$this->$name = $value;
-			break;
-		 case 'report_timeperiod':
-			return $this->set_report_timeperiod($value);
-		 case 'start_time':
-			$this->start_time = $value;
-			break;
-		 case 'end_time':
-			$this->end_time = $value;
-			break;
-		 case 'use_average':
-			$this->use_average = $value;
-			break;
-		 case 'assume_states_during_not_running':
-			$this->assume_states_during_not_running = $value;
-			break;
-		 case 'include_soft_states':
-			$this->include_soft_states = $value;
-			break;
-		 case 'host_name':
-			$this->hostgroup = false;
-			$this->servicegroup = false;
-			$this->host_name = $value;
-			return true;
-		 case 'host_filter_status':
-		 case 'service_filter_status':
-			break;
-		 case 'include_trends':
-			if ($value === true) {
-				$this->set_option('keep_logs', true);
-				$this->set_option('keep_sub_logs', true);
-			}
-			break;
-		 case 'service_description':
-			$this->hostgroup = false;
-			$this->servicegroup = false;
-			$this->service_description = $value;
-			if (!is_array($value) && !$this->host_name && strchr($value, ';')) {
-				$parts = explode(';', $value);
-				$this->host_name = $parts[0];
-				$this->service_description = $parts[1];
-			}
-			return true;
-		 case 'hostgroup':
-			$this->hostgroup = $value;
-			break;
-		 case 'servicegroup':
-			$this->servicegroup = $value;
-			break;
-		 case 'hostgroup_name':
-			$this->host_name = false;
-			$this->service_description = false;
-			$this->servicegroup = false;
-			$this->hostgroup = $value;
-			return true;
-		 case 'servicegroup_name':
-			$this->host_name = false;
-			$this->service_description = false;
-			$this->hostgroup = false;
-			$this->servicegroup = $value;
-			return true;
-		 case 'sunday':
-			$this->report_timeperiod[0] = $this->tp_parse_day($value);
-			break;
-		 case 'monday':
-			$this->report_timeperiod[1] = $this->tp_parse_day($value);
-			break;
-		 case 'tuesday':
-			$this->report_timeperiod[2] = $this->tp_parse_day($value);
-			break;
-		 case 'wednesday':
-			$this->report_timeperiod[3] = $this->tp_parse_day($value);
-			break;
-		 case 'thursday':
-			$this->report_timeperiod[4] = $this->tp_parse_day($value);
-			break;
-		 case 'friday':
-			$this->report_timeperiod[5] = $this->tp_parse_day($value);
-			break;
-		 case 'saturday':
-			$this->report_timeperiod[6] = $this->tp_parse_day($value);
-			break;
-		 default:
-			return false;
-		}
-		$this->options[$name] = $value;
-
-		return true;
-	}
-
-	/**
-	 * Adds a timeperiod exception to the report.
-	 * FIXME: should probably validate more
-	 * @param $dateperiod_type Indicates the type of exception. Se timeperiod_class.php for valid values.
-	 * @param $syear Start year
-	 * @param $smon Start month
-	 * @param $smday Start day of month
-	 * @param $swday Start weekday
-	 * @param $swday_offset Start weekday offset
-	 * @param $eyear End year
-	 * @param $emon End month
-	 * @param $emday End day of month
-	 * @param $ewday End weekday
-	 * @param $ewday_offset End weekday offset
-	 * @param $skip_interval Interval to skip, such as: "every 3 weeks" etc
-	 * @param $timeranges Array of timeranges.
-	 * @param $ref A reference to a structure with exceptions, or False
-	 * Throws Exception if any parameter has bogus values.
-	 */
-	public function add_timeperiod_exception($dateperiod_type,
-	                                  $syear, $smon, $smday, $swday, $swday_offset,
-	                                  $eyear, $emon, $emday, $ewday, $ewday_offset,
-	                                  $skip_interval, $timeranges, &$ref)
-	{
-		if ($ref === false) {
-			$ref =& $this->tp_exceptions;
-		}
-
-		$days_per_month = reports::$days_per_month;
-
-		if (!isset($ref['unresolved']))
-			$ref['unresolved'] = array();
-
-		assert($dateperiod_type >= 0 && $dateperiod_type < self::DATERANGE_TYPES); # can only fail if programmer messed up
-		$timeranges = $this->tp_parse_day($timeranges);
-
-		$ref['unresolved'][] = array
-		(
-			'type' => $dateperiod_type,
-			'syear' => $syear,
-			'smon' => $smon,
-			'smday' => $smday,
-			'swday' => $swday,
-			'swday_offset' => $swday_offset,
-			'eyear' => $eyear,
-			'emon' => $emon,
-			'emday' => $emday,
-			'ewday' => $ewday,
-			'ewday_offset' => $ewday_offset,
-			'skip_interval' => $skip_interval,
-			'timeranges' => $timeranges,
-		);
-		$this->timeperiods_resolved = false;
-	}
-
-	/**
-	 * Update the options for the report
-	 * @param $options New options
-	 */
-	public function set_options($options)
-	{
-		$errors = false;
-		foreach ($options as $name => $value)
-			$errors |= intval(!$this->set_option($name, $value));
-
-		return $errors ? false : true;
-	}
-
-	private function resolve_timeperiods_worker($start_time, $end_time, &$all_exceptions) {
-		$start_year = date('Y', $start_time);
-		$end_year = date('Y', $end_time);
-		
-		$unres_exceptions =& $all_exceptions['unresolved'];
-		
-		/*
-		 * Goal:
-		 * For every day of year affected by this exception,
-		 * add timeranges to that day (if overlap with existing range, merge them)
-		 *
-		 * Plan: for every day within report period
-		 * {
-		 *		check conditions for current day
-		 * 		if day should be included add timeranges
-		 * }
-		 */
-		for($i=0,$n=count($unres_exceptions) ; $i<$n ; $i++)
-		{
-			$x =& $unres_exceptions[$i];
-
-			if($x['syear'] > date('Y', $end_time))
-				continue;
-
-			for($day_time = $start_time ; $day_time < $end_time ; $day_time += 86400)
-			{
-				$check_exception = true;
-
-				$day = date('z', $day_time);
-				$day_year  = date('Y', $day_time);
-				$day_month = date('n', $day_time);
-
-				# find out if there is an exception during this day
-				switch($x['type'])
-				{
-					# FIXME: More consequent scheme for adding 24h to end time
-
-				 case self::DATERANGE_CALENDAR_DATE:/* eg: 2008-12-25 */
-					# set fields: syear, smon, smday, eyear, emon, emday, skip_interval
-
-					$exp_start = mktime(0,0,0, $x['smon'], $x['smday'], $x['syear']);
-
-					# unspecified end date - two possibilities
-					if(self::is_daterange_single_day($x))
-					{
-						if($x['skip_interval'] > 1)
-						{
-							// yyyy-mm-dd / dd means endless period
-							$exp_end = $day_time + 86400;
-						}
-						else
-						{
-							// Whereas yyyy-mm-dd means single day period
-							$exp_end = $exp_start;
-						}
-					}
-					else
-						$exp_end = mktime(24,0,0, $x['emon'], $x['emday'], $x['eyear']);
-
-					break;
-				 case self::DATERANGE_MONTH_DATE:
-					/* eg: july 4 (specific month) */
-					# set fields: smon, emon, smday, emday
-
-					$exp_start = self::calculate_time_from_day_of_month($start_year, $x['smon'], $x['smday']);
-					$exp_end   = self::calculate_time_from_day_of_month($end_year, $x['emon'], $x['emday']);
-
-					# XXX: can *both* be zero here?
-					if($exp_end < $exp_start)
-					{
-						$x['eyear'] = $day_year + 1;
-						$exp_end = self::calculate_time_from_day_of_month($x['eyear'], $x['emon'], $x['emday']);
-						$exp_end += 86400;
-					}
-
-					if($exp_end == 0) {
-						echo "php is broken. goodie....\n";
-						if($x['emday'] < 0) {
-							$check_exception = false;
-						}
-						else {
-							$exp_end = self::calculate_time_from_day_of_month($x['eyear'], $x['emon'], -1);
-						}
-					}
-
-					assert($exp_end != 0);
-
-					break;
-				 case self::DATERANGE_MONTH_DAY:
-					/* eg: day 21 (generic month) */
-					# set field: smday, emday
-					$exp_start = self::calculate_time_from_day_of_month($day_year, $day_month, $x['smday']);
-					$exp_end   = self::calculate_time_from_day_of_month($day_year, $day_month, $x['emday']);
-
-					# get midnight at end of day
-					$exp_end += 86400;
-					break;
-
-				 case self::DATERANGE_MONTH_WEEK_DAY:/* eg: 3rd thursday (specific month) */
-					# set field: smon, swday, swday_offset, emon, ewday, ewday_offset, skip_interval
-					$exp_start = self::calculate_time_from_weekday_of_month($start_year, $x['smon'], $x['swday'], $x['swday_offset']);
-					$exp_end   = self::calculate_time_from_weekday_of_month($end_year,   $x['emon'], $x['ewday'], $x['ewday_offset']);
-					break;
-
-				 case self::DATERANGE_WEEK_DAY:
-					# eg: 3rd thursday (generic month)
-					# set fields: swday, swday_offset, ewday, ewday_offset, skip_interval
-					$exp_start = self::calculate_time_from_weekday_of_month($day_year, $day_month, $x['swday'], $x['swday_offset']);
-					$exp_end   = self::calculate_time_from_weekday_of_month($day_year, $day_month, $x['ewday'], $x['ewday_offset']);
-					break;
-				}
-
-				# This day might be totally uninteresting, in which case
-				# we just ignore it
-				if($x['skip_interval'] > 1) {
-					$days_since_start = ($day_time - $exp_start) / 86400;
-					$check_exception = !($days_since_start % $x['skip_interval']);
-				}
-
-				# We must add 1 day to exp_end, as times during that day must be included
-				if (!$check_exception || $exp_start > $day_time || $exp_end + 86400 < $day_time)
-					continue;
-
-				if(!isset($all_exceptions[$day_year]))
-					$all_exceptions[$day_year] = array();
-
-				if(!isset($all_exceptions[$day_year][$day]))
-					$all_exceptions[$day_year][$day] = array();
-
-				# if so, merge timeranges with existing for this day
-				$all_exceptions[$day_year][$day] = self::merge_timerange_sets($all_exceptions[$day_year][$day], $x['timeranges']);
-			}
-		}
-	}
-
-	/**
-	 * Resolve timeperiods, both the actual timeperiods and the exclusions
-	 *
-	 * FIXME: exclusions from exclusions doesn't work
-	 */
-	public function resolve_timeperiods()
-	{
-		if ($this->start_time == false || $this->end_time == false) {
-			throw new Exception("Timeperiods cannot be resolved unless report start and end time is set");
-		}
-		$start_time = $this->start_time;
-		$end_time = $this->end_time;
-
-		if ($end_time < $start_time) {
-			throw new Exception("Report time set to end before start");
-		}
-
-		$this->resolve_timeperiods_worker($start_time, $end_time, $this->tp_exceptions);
-		unset($this->tp_exceptions['unresolved']);
-
-		foreach ($this->tp_excludes as $idx => &$exclude) {
-			$this->resolve_timeperiods_worker($start_time, $end_time, $exclude['exceptions']);
-			unset($exclude['exceptions']['unresolved']);
-		}
-
-		$this->timeperiods_resolved = true;
-	}
-
-
-	/**
-	 * Set the master report, and copy required variables from it
-	 *
-	 * @param $master Master report
-	 */
-	public function set_master($master)
-	{
-		$this->master = $master;
-		$this->set_options($master->options);
-		$this->st_needs_log = $master->keep_sub_logs;
-		$this->last_shutdown = $master->last_shutdown;
-		$this->report_timeperiod = $master->report_timeperiod;
-	}
-
-	/**
 	 * Calculate uptime between two timestamps for host/service
-	 * @param $hostname If set to false, internal host_name is used.
-	 * @param $servicename If set to false, internal service_description is used
-	 * @param $start_time datetime or unix timestamp
-	 * @param $end_time datetime or unix timestamp
-	 * @param $hostgroup If set to false, internal hostgroup is used
-	 * @param $servicegroup If set to false, internal servicegroup is used
 	 * @return array or false on error
 	 *
 	 */
-	public function get_uptime($hostname=false, $servicename=false, $start_time=0,
-						$end_time=0, $hostgroup=false, $servicegroup=false)
+	public function get_uptime()
 	{
-		if (is_array($servicename) && empty($servicename))
-			$servicename = false;
-		if (empty($hostname) && !empty($this->host_name))
-			$hostname = $this->host_name;
-		if (empty($servicename) && !empty($this->service_description))
-			$servicename = $this->service_description;
-		if (empty($hostgroup) && !empty($this->hostgroup))
-			$hostgroup = $this->hostgroup;
-		if (empty($servicegroup) && !empty($this->servicegroup))
-			$servicegroup = $this->servicegroup;
-		if (empty($start_time) && !empty($this->start_time))
-			$start_time = $this->start_time;
-		if (empty($end_time) && !empty($this->end_time))
-			$end_time = $this->end_time;
-
-		if (empty($hostname) && empty($hostgroup) && empty($servicename) && empty($servicegroup)) {
+		if (!$this->options['host_name'] && !$this->options['hostgroup'] && !$this->options['service_description'] && !$this->options['servicegroup']) {
 			return false;
 		}
 
-		# stash the report settings for debugging/test-creation purposes
-		$this->options['start_time'] = $this->start_time = $start_time;
-		$this->options['end_time'] = $this->end_time = $end_time;
-
 		# register first and last possible database entry times
-		$this->register_db_time($start_time);
-		$this->register_db_time($end_time);
+		$this->register_db_time($this->options['start_time']);
+		$this->register_db_time($this->options['end_time']);
 
-		$this->debug = $this->options;
-		if (!is_array($hostname))
-			$this->debug['host_name'] = $this->host_name = $hostname;
-		if (!is_array($servicename))
-			$this->debug['service_description'] = $this->service_description = $servicename;
-		$this->debug['servicegroup_name'] = $this->servicegroup = $servicegroup;
-		$this->debug['hostgroup_name'] = $this->hostgroup = $hostgroup;
-
-		# We need to be able to see what host/service group we are fetching
-		# data for. This is actually a hack since it should be set by using
-		# set_option() but this will have to do for now...
-		if (!empty($hostgroup)) $this->hostgroup = $hostgroup;
-		if (!empty($servicegroup)) $this->servicegroup = $servicegroup;
-
-		# these get copied to sub objects automagically
-		# using the set_options() method
-		$this->set_option('start_time', $start_time);
-		$this->set_option('end_time', $end_time);
+		$this->debug = $this->options->options;
 
 		$this->get_last_shutdown();
 
-		$host 		= false;
-		$service	= false;
-		$res_group	= false;
+		$servicename = $this->options['service_description'];
+		$hostname = $this->options['host_name'];
+		$res_group = false;
 
 		# When we have a single host or service, we don't need to
 		# calculate group availability, so do that up front to
 		# get the simple case out of the way immediately
-		if (empty($hostgroup) && empty($servicegroup) &&
-		    !is_array($hostname) && !is_array($servicename))
+		if (!$this->options['hostgroup'] && !$this->options['servicegroup'] &&
+		    count($this->options['host_name']) <= 1 && count($this->options['service_description']) <= 1)
 		{
-			// == single host OR service ==
-			$ret = $this->calculate_uptime($hostname, $servicename);
+			$ret = $this->calculate_uptime();
 			foreach ($this->debug as $k => $v) {
 				if ($v === false)
 					unset($this->debug[$k]);
@@ -1135,77 +275,54 @@ class Reports_Model extends Model
 			return $ret;
 		}
 
-		if (!empty($hostgroup)) {
-			$hostname = array();
-			// == Hostgroup ==
-			$group_model = new Group_Model();
-			$res_group = $group_model->get_group_info('host', $hostgroup);
-
-			if (empty($res_group))
-				return false;
-
-			$res_group->result(false);
-
-			foreach ($res_group as $row) {
-				$hostname[$row['host_name']] = $row['host_name'];
-			}
-		} elseif (!empty($servicegroup)) {
-			$servicename = array();
-			// == Servicegroup ==
-			$group_model = new Group_Model();
-			$res_group = $group_model->get_group_info('service', $servicegroup);
-			if (!count($res_group))
-				return false;
-
-			$res_group->result(false);
-
-			foreach ($res_group as $row) {
-				$name = $row['host_name'] . ';' . $row['service_description'];
-				$servicename[$name] = $name;
-			}
+		if ($this->options['hostgroup']) {
+			$hostname = $this->options->get_report_members();
+		} elseif ($this->options['servicegroup']) {
+			$servicename = $this->options->get_report_members();
 		}
 
-		if (is_array($hostname) && is_array($servicename))
-			return false;
-
-		if (is_array($hostname)) {
-			// == multiple hosts ==
+		if (!empty($servicename)) {
+			foreach ($servicename as $service) {
+				$optclass = get_class($this->options);
+				$opts = new $optclass($this->options);
+				$opts['service_description'] = $service;
+				$opts['master'] = $this;
+				$opts['keep_logs'] = $this->options['keep_sub_logs'];
+				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
+				$sub_class->register_db_time($opts['start_time']);
+				$sub_class->register_db_time($opts['end_time']);
+				$sub_class->st_init();
+				$this->sub_reports[$service] = $sub_class;
+				if ($this->options['host_name'])
+					$this->st_source[] = $opts['host_name'] . ';' . $service;
+				else
+					$this->st_source[] = $service;
+			}
+		} else if (!empty($hostname)) {
 			foreach ($hostname as $host) {
-				$sub_class = new Reports_Model($this->db_name, $this->db_table);
-				$sub_class->set_master($this);
-				$sub_class->id = $host;
-				$sub_class->st_init($host, false);
-				$this->sub_reports[$sub_class->id] = $sub_class;
+				$optclass = get_class($this->options);
+				$opts = new $optclass($this->options);
+				$opts['keep_logs'] = $this->options['keep_sub_logs'];
+				$opts['host_name'] = $host;
+				$opts['master'] = $this;
+				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
+				$sub_class->register_db_time($opts['start_time']);
+				$sub_class->register_db_time($opts['end_time']);
+				$sub_class->st_init();
+				$this->sub_reports[$host] = $sub_class;
 			}
-		} else {
-			if (is_array($servicename)) {
-				// == multiple services ==
-				foreach ($servicename as $service) {
-					// split hostname, service_desciption on ';'
-					$service_parts = explode(';', $service);
-					$sub_class = new Reports_Model($this->db_name, $this->db_table);
-					$sub_class->set_master($this);
-					$sub_class->id = $service;
-					$sub_class->st_init($service_parts[0], $service_parts[1]);
-					$this->sub_reports[$sub_class->id] = $sub_class;
-				}
-			}
+			$this->st_source = $hostname;
 		}
 
 		# Grab master's report-results _FIRST_ as sub-reports
 		# are fed its data from the same query
-		$this->st_init($hostname, $servicename);
-		$this->st_parse_all_rows($hostname, $servicename);
+		$this->st_init();
+		$this->st_parse_all_rows();
 		$sub_return = false;
 		foreach ($this->sub_reports as $id => $rpt) {
 			$return[] = $rpt->st_finalize();
 			$this->register_db_time($rpt->db_start_time);
 			$this->register_db_time($rpt->db_end_time);
-			if (strpos($id, ';') !== false) {
-				$this->debug['service_description'][] = $id;
-			} else {
-				$this->debug['host_name'][] = $id;
-			}
 		}
 		$master_return = $this->st_finalize();
 		foreach ($master_return as $k => $v)
@@ -1213,7 +330,7 @@ class Reports_Model extends Model
 
 		# stash the debugging stuff in the return array, but only
 		# for the master report
-		if (empty($this->master)) {
+		if (empty($this->options['master'])) {
 			$this->debug['db_end_time'] = $this->db_end_time;
 			$this->debug['db_start_time'] = $this->db_start_time;
 			foreach ($this->debug as $k => $v) {
@@ -1240,14 +357,14 @@ class Reports_Model extends Model
 		# we don't really need to know when the last shutdown
 		# took place, as the initial state will be used regardless
 		# of whether or not Monitor was up and running.
-		if ($this->assume_states_during_not_running) {
+		if ($this->options['assumestatesduringnotrunning']) {
 			$this->last_shutdown = 0;
 			return 0;
 		}
 
 		$query = "SELECT timestamp, event_type FROM ".
 			$this->db_name.".".$this->db_table.
-			" WHERE timestamp <".$this->start_time.
+			" WHERE timestamp <".$this->options['start_time'].
 			" ORDER BY timestamp DESC LIMIT 1";
 		$dbr = $this->db->query($query)->result(false);
 
@@ -1299,7 +416,7 @@ class Reports_Model extends Model
 			$p1 = $is_running ? '_' : '_UNKNOWN_';
 
 			# this is where we hack in scheduled downtime as uptime
-			if ($in_dt && $this->scheduled_downtime_as_uptime) {
+			if ($in_dt && $this->options['scheduleddowntimeasuptime']) {
 				$real_state = $conv[$current_state];
 				$p2 = $conv[0];
 				if ($real_state !== 'UP' && $real_state !== 'OK')
@@ -1421,7 +538,7 @@ class Reports_Model extends Model
 	{
 		$prev_time = $this->st_prev_row['the_time'];
 		$duration = $end_time - $prev_time;
-		$active = intval($this->tp_active_time($prev_time, $end_time));
+		$active = intval($this->timeperiod->active_time($prev_time, $end_time));
 		$this->st_inactive += ($end_time - $prev_time) - $active;
 
 		$st = "$this->st_running:$this->st_dt_depth:$this->st_obj_state";
@@ -1481,7 +598,7 @@ class Reports_Model extends Model
 			print_r($disc_desc);
 			$src = $row['host_name'];
 			foreach ($this->sub_reports as $rpt) {
-				if ($rpt->st_source = $src) {
+				if ($rpt->st_source == $src) {
 					echo "Current state of offending object: "; print_r($rpt);
 					exit(1);
 				}
@@ -1536,10 +653,10 @@ class Reports_Model extends Model
 		}
 
 		$rpts = array();
-		if ($obj_name === $this->id || (is_string($this->id) && strpos($this->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
+		if ($obj_name === $this->st_source || (is_string($this->st_source) && strpos($this->st_source, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
 			$rpts[-1] = $this;
 		foreach ($this->sub_reports as $idx => $sr) {
-			if ($sr->id === $obj_name || (is_string($sr->id) && strpos($sr->id, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
+			if ($obj_name === $sr->st_source || (is_string($sr->st_source) && strpos($sr->st_source, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
 				$rpts[$idx] = $sr;
 		}
 
@@ -1565,7 +682,7 @@ class Reports_Model extends Model
 					$rpt->st_running = 1;
 				}
 				else {
-					if ($this->assume_states_during_not_running) {
+					if ($this->options['assumestatesduringnotrunning']) {
 						$row['state'] = $rpt->st_real_state;
 					} else {
 						$row['state'] = -1;
@@ -1627,7 +744,7 @@ class Reports_Model extends Model
 
 			foreach ($rpts as $idx => $rpt) {
 				# update the real state of the object
-				if ($rpt->id === $obj_name) {
+				if ($rpt->st_source === $obj_name) {
 					$rpt->st_real_state = $row['state'];
 
 					if ($rpt !== $this && $rpt->st_obj_state != $state) {
@@ -1693,7 +810,7 @@ class Reports_Model extends Model
 				if (empty($this->st_sub[$state][$in_dt]))
 					continue;
 				// This would look OK but isn't, go look for non-OK
-				if ($this->scheduled_downtime_as_uptime && $in_dt)
+				if ($this->options['scheduleddowntimeasuptime'] && $in_dt)
 					break 1;
 				// Else, we're done, this is the worst.
 				$this->st_dt_depth = $in_dt;
@@ -1702,9 +819,9 @@ class Reports_Model extends Model
 			}
 		}
 
-		// So, scheduled_downtime_as_uptime and worst not in sched_down is OK?
+		// So, scheduleddowntimeasuptime and worst not in sched_down is OK?
 		// Maybe there's a non-OK in sched_down...
-		if ($this->scheduled_downtime_as_uptime && $final_state === 0) {
+		if ($this->options['scheduleddowntimeasuptime'] && $final_state === 0) {
 			foreach ($states as $state) {
 				if ($state === 0)
 					break;
@@ -1763,7 +880,7 @@ class Reports_Model extends Model
 	public function calculate_object_state($state = false)
 	{
 		if ($this->sub_reports) {
-			$func = $this->st_state_calculator;
+			$func = $this->options['st_state_calculator'];
 			$state = $this->$func();
 		}
 
@@ -1779,69 +896,51 @@ class Reports_Model extends Model
 	 * @param $hostname The host(s) we're interested in
 	 * @param $servicename The service(s) we're interested in
 	 */
-	public function st_init($hostname = false, $servicename = false)
+	public function st_init()
 	{
-		if (!$this->timeperiods_resolved)
-			$this->resolve_timeperiods();
-
+		$this->timeperiod->resolve_timeperiods();
 		# single object reports always gets a log
-		if (!$this->master && empty($this->sub_reports)) {
-			$this->st_needs_log = true;
+		if (!$this->options['master'] && empty($this->sub_reports)) {
+			$this->options['keep_logs'] = true;
 		}
 
 		# if user asked for it, we preserve the log
-		if ($this->st_needs_log) {
+		if ($this->options['keep_logs']) {
 			$this->st_log = array();
 		}
 
-		if (!empty($servicename)) {
+		if ($this->options['service_description'] || $this->options['servicegroup']) {
 			$this->st_is_service = true;
-			$this->st_obj_type = 'Service';
-			$this->st_source = $servicename;
-			if (is_array($servicename))
-				$this->id = $servicename;
+			if ($this->options['service_description'])
+				$this->st_source = ($this->options['host_name']?$this->options['host_name'].';':'').$this->options['service_description'];
 		}
 		else {
 			# we need at least a service or a host
-			if (empty($hostname))
+			if (!$this->options['host_name'] && !$this->options['hostgroup'])
 				return false;
-			if (is_array($hostname))
-				$this->id = $hostname;
-			$this->st_obj_type = 'Host';
-			$this->st_source = $hostname;
+			if ($this->options['host_name'])
+				$this->st_source = $this->options['host_name'];
 		}
 
 		if (is_array($this->st_source))
 			$this->st_source = implode(',', $this->st_source);
 
-		$host_state_txt 	= array(0 => 'UP', 1 => 'DOWN', 2 => 'UNREACHABLE');
-		$service_state_txt 	= array(0 => 'OK', 1 => 'WARNING', 2 => 'CRITICAL', 3 => 'UNKNOWN');
-		$this->st_text = empty($servicename) ? $host_state_txt : $service_state_txt;
-		$this->st_text[self::STATE_PENDING] = 'PENDING';
-		$this->st_text[self::SERVICE_EXCLUDED] = 'EXCLUDED'; // also covers self::HOST_EXCLUDED
-
-		# id must always be set properly for single-object reports
-		if (empty($this->id)) {
-			$this->id = $hostname;
-
-			if (!empty($servicename))
-				$this->id .= ";$servicename";
-		}
+		$this->st_text = empty($this->st_is_service) ? self::$host_states : self::$service_states;
+		$this->st_text = array_map('strtoupper', $this->st_text);
 
 		# prime the state counter for sub-objects
 		if (!empty($this->sub_reports)) {
 			foreach ($this->st_text as $st => $discard)
 				$this->st_sub[$st] = array();
 			foreach ($this->sub_reports as $idx => $rpt) {
-				$rpt->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
 				$rpt->calculate_object_state();
 				$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
 			}
 			$this->calculate_object_state();
 		}
 		else {
-			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth($hostname, $servicename));
-			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state($hostname, $servicename));
+			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth($this->options['host_name'], $this->options['service_description']));
+			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state($this->options['host_name'], $this->options['service_description']));
 			$this->calculate_object_state($this->st_real_state);
 		}
 
@@ -1860,13 +959,13 @@ class Reports_Model extends Model
 		}
 		$this->st_prev_row = array
 			('state' => $this->st_obj_state,
-			 'the_time' => $this->start_time,
+			 'the_time' => $this->options['start_time'],
 			 'event_type' => $fevent_type,
 			 'downtime_depth' => $this->st_dt_depth);
 
 		# if we're actually going to use the log, we'll need
 		# to generate a faked initial message for it.
-		if ($this->st_needs_log) {
+		if ($this->options['keep_logs']) {
 			$fout = sprintf("Report period start. Daemon is%s running, " .
 			                "we're%s in scheduled downtime, state is %s (%d)",
 			                $this->st_running ? '' : ' not',
@@ -1899,20 +998,20 @@ class Reports_Model extends Model
 	 * 	'groupname' => string
 	 * 	);
 	 */
-	public function calculate_uptime($hostname=false, $servicename=false)
+	public function calculate_uptime()
 	{
-		$this->st_init($hostname, $servicename);
+		$this->st_init();
 
-		$this->st_parse_all_rows($hostname, $servicename);
+		$this->st_parse_all_rows();
 		return $this->st_finalize();
 	}
 
 	/**
 	 * Runs the main query and loops through the results one by one
 	 */
-	private function st_parse_all_rows($hostname = false, $servicename = false)
+	private function st_parse_all_rows()
 	{
-		$dbr = $this->uptime_query($hostname, $servicename);
+		$dbr = $this->uptime_query($this->options['host_name'], $this->options['service_description']);
 		foreach ($dbr as $row) {
 			$this->st_parse_row($row);
 		}
@@ -1923,15 +1022,15 @@ class Reports_Model extends Model
 		if($row) {
 			$row['state'] = $this->filter_excluded_state($row['state']);
 		}
-		if (!$this->st_needs_log) {
+		if (!$this->options['keep_logs']) {
 			$this->st_prev_row = $row;
 			return;
 		}
 
 		# called from st_finalize(), so bail out early
 		if (!$sub && !$row) {
-			$this->st_prev_row['duration'] = $this->end_time - $this->st_prev_row['the_time'];
-			$active = $this->tp_active_time($this->st_prev_row['the_time'], $this->end_time);
+			$this->st_prev_row['duration'] = $this->options['end_time'] - $this->st_prev_row['the_time'];
+			$active = $this->timeperiod->active_time($this->st_prev_row['the_time'], $this->options['end_time']);
 			if ($active > 0 || $active === $this->st_prev_row['duration'])
 				$this->st_log[] = $this->st_prev_row;
 			else
@@ -1952,7 +1051,7 @@ class Reports_Model extends Model
 			$row['output'] = '(No output)';
 
 		if ($sub) {
-			$output = $sub->id . ' went from ' . $sub->st_prev_row['state'] .
+			$output = $sub->st_source . ' went from ' . $sub->st_prev_row['state'] .
 				' to ' . $row['state'];
 			$row['hard'] = 1;
 			$row['output'] = $output;
@@ -1960,14 +1059,14 @@ class Reports_Model extends Model
 			unset($row['service_description']);
 		}
 
-		if ($this->scheduled_downtime_as_uptime && $this->st_dt_depth)
+		if ($this->options['scheduleddowntimeasuptime'] && $this->st_dt_depth)
 			$row['state'] = self::STATE_OK;
 
 		# don't save states without duration for master objects
 		$duration = $row['the_time'] - $this->st_prev_row['the_time'];
 		if ($duration || $sub) {
 			$this->st_prev_row['duration'] = $duration;
-			$active = $this->tp_active_time($this->st_prev_row['the_time'], $row['the_time']);
+			$active = $this->timeperiod->active_time($this->st_prev_row['the_time'], $row['the_time']);
 			if ($active > 0 || ($duration === $active))
 				$this->st_log[] = $this->st_prev_row;
 			else
@@ -1979,6 +1078,7 @@ class Reports_Model extends Model
 					'hard' => 1
 				);
 		}
+
 		$this->st_prev_row = $row;
 	}
 
@@ -1992,14 +1092,10 @@ class Reports_Model extends Model
 	private function st_finalize()
 	{
 		# gather remaining time. If they match, it'll be 0
-		$this->st_update($this->end_time);
+		$this->st_update($this->options['end_time']);
 		$this->st_update_log();
 
 		$converted_state = $this->convert_state_table($this->st_raw, $this->st_text);
-
-		if ($this->use_average && !empty($this->sub_reports) > 0) {
-			$converted_state = $this->calculate_average();
-		}
 
 		# state template array depends on what we are checking
 		$tpl = $this->state_tpl_host;
@@ -2010,19 +1106,19 @@ class Reports_Model extends Model
 				$converted_state[$t] = 0;
 
 		if (empty($this->sub_reports)) {
-			$converted_state['HOST_NAME'] = $this->id;
+			$converted_state['HOST_NAME'] = $this->st_source;
 			if ($this->st_is_service) {
-				$srv = explode(';', $this->id);
+				$srv = explode(';', $this->st_source);
 				$converted_state['HOST_NAME'] = $srv[0];
 				$converted_state['SERVICE_DESCRIPTION'] = $srv[1];
 			}
 		} else {
 			if ($this->st_is_service) {
 				unset($converted_state['HOST_NAME']);
-				$converted_state['SERVICE_DESCRIPTION'] = $this->id;
+				$converted_state['SERVICE_DESCRIPTION'] = $this->st_source;
 			}
 			else
-				$converted_state['HOST_NAME'] = $this->id;
+				$converted_state['HOST_NAME'] = $this->st_source;
 		}
 
 		# now add the time we didn't count due
@@ -2030,17 +1126,20 @@ class Reports_Model extends Model
 		$converted_state['TIME_INACTIVE'] = $this->st_inactive;
 
 		$this->states = $converted_state;
-		$total_time = $this->end_time - $this->start_time;
-		$groupname = $this->hostgroup != '' ? $this->hostgroup : $this->servicegroup;
+		$total_time = $this->options['end_time'] - $this->options['start_time'];
+		$groupname = $this->options['hostgroup'] ? $this->options['hostgroup'] : $this->options['servicegroup'];
+		if (count($groupname) === 1)
+			$groupname = $groupname[0];
 		if (!empty($this->sub_reports)) {
 			$log = array();
 			foreach ($this->sub_reports as $sr) {
-				$log[$sr->id] = $sr->st_log;
+				$log[$sr->st_source] = $sr->st_log;
 			}
 		}
 		else {
-			$log = array($this->id => $this->st_log);
+			$log = array($this->st_source => $this->st_log);
 		}
+
 		return array('source' => $this->st_source, 'log' => $log, 'states' => $converted_state, 'tot_time' => $total_time, 'groupname' => $groupname);
 	}
 
@@ -2065,15 +1164,18 @@ class Reports_Model extends Model
 			"state,timestamp AS the_time, hard, event_type";
 		# output is a TEXT field, so it needs an extra disk
 		# lookup to fetch and we don't always need it
-		if ($this->st_needs_log)
+		if ($this->options['keep_logs'])
 			$sql .= ", output";
 
 		$sql .= " FROM ".$this->db_name.".".$this->db_table." " .
-			"WHERE timestamp >=".$this->start_time." " .
-			"AND timestamp <=".$this->end_time." ";
+			"WHERE timestamp >=".$this->options['start_time']." " .
+			"AND timestamp <=".$this->options['end_time']." ";
 
 		if (is_array($hostname) && empty($servicename)) {
 			$sql .= "AND ((host_name IN ('" . join("', '", $hostname) . "') AND (service_description = '' OR service_description IS NULL)) OR (host_name = '' AND service_description = '')) ";
+		}
+		elseif (is_string($hostname) && is_array($servicename)) {
+			$sql .= "AND host_name = '$hostname' AND (service_description IN ('".join("', '", $servicename) . "') OR service_description = '' OR service_description IS NULL) ";
 		}
 		elseif (is_array($servicename)) {
 			$sql .= "AND (concat(concat(host_name, ';'), service_description) IN ('" .
@@ -2095,7 +1197,7 @@ class Reports_Model extends Model
 		}
 
 		$sql .= "AND ( ";
-		if (!$this->include_soft_states) {
+		if (!$this->options['includesoftstates']) {
 			# only the primary event type should care about hard/soft
 			$sql .= '(event_type=' . $event_type . ' AND hard=1)';
 		} else {
@@ -2103,7 +1205,7 @@ class Reports_Model extends Model
 		}
 		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
 			"OR event_type=" . self::DOWNTIME_STOP . ' ';
-		if(isset($this->options['host_filter_status']) && isset($this->options['host_filter_status'][3]) && $this->options['host_filter_status'][3]) {
+		if(isset($this->options['host_filter_status']) && isset($this->options['host_filter_status']['undetermined']) && $this->options['host_filter_status']['undetermined']) {
 			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
 				" OR event_type=".self::PROCESS_START;
 		}
@@ -2132,7 +1234,7 @@ class Reports_Model extends Model
 
 		$sql = "SELECT timestamp, event_type FROM " .
 			$this->db_name . "." . $this->db_table . " " .
-			"WHERE timestamp <= " . $this->start_time . " AND " .
+			"WHERE timestamp <= " . $this->options['start_time'] . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
 			" AND host_name = " . $this->db->escape($hostname);
@@ -2189,18 +1291,18 @@ class Reports_Model extends Model
 		$sql .= " AND event_type = ";
 
 		if ($service_description !='' ) {
-			$assumed_state = $this->initial_assumed_service_state;
+			$assumed_state = $this->options['initialassumedservicestate'];
 			$sql .= self::SERVICECHECK;
 		} else {
-			$assumed_state = $this->initial_assumed_host_state;
+			$assumed_state = $this->options['initialassumedhoststate'];
 			$sql .= self::HOSTCHECK;
 		}
-		if (!$this->include_soft_states)
+		if (!$this->options['includesoftstates'])
 			$sql .= ' AND hard = 1';
 
 		$sql .= ' ';
 		$base_sql = $sql;
-		$sql .= "AND timestamp < " . $this->start_time .
+		$sql .= "AND timestamp < " . $this->options['start_time'] .
 			" ORDER BY timestamp DESC LIMIT 1";
 
 		# first try to fetch the real initial state so
@@ -2258,688 +1360,6 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Calculate average values using every subreport
-	 * @return array Average values for the group
-	 */
-	public function calculate_average()
-	{
-		if (empty($this->sub_reports)) {
-			return;
-		}
-
-		$ret = array();
-		$num_subs = 0;
-		foreach($this->sub_reports as $report) {
-			$num_subs++;
-			foreach ($report->states as $k => $v) {
-				if (!isset($ret[$k]))
-					$ret[$k] = 0;
-
-				$ret[$k] += $v;
-			}
-		}
-
-		foreach ($ret as $k => $v) {
-			$ret[$k] = $v / $num_subs;
-		}
-
-		return $ret;
-	}
-
-	/**
-	 * Parses given input as a nagios 3 timeperiod variable. If valid,
-	 * it is added to the report.
-	 * Code is derived from the nagios 3 sources (xdata/xodtemplate.c)
-	 * FIXME: find better way of adding 24h to end date
-	 *
-	 * @param $name The timeperiod style variable we want to parse
-	 * @param $value The value of the timeperiod variable
-	 * @param $ref A reference to a timeperiod exception structure, or false
-	 * @return boolean
-	 */
-	public function set_timeperiod_variable($name, $value, &$ref=false)
-	{
-		$valid_weekdays = reports::$valid_weekdays;
-		$valid_months = reports::$valid_months;
-
-		$weekday_numbers = array_flip($valid_weekdays);
-		$month_numbers = array_flip($valid_months);
-
-		if(in_array($name, $valid_weekdays)) # add regular weekday include time
-		{
-			return $this->set_option($name, $value);
-		}
-
-		$input = "$name $value";
-
-		# you could put this in one line but that will be too messy
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d - %4d-%2d-%2d / %d %[0-9:, -]"));
-		if(count($items) == 8)
-		{
-			list($syear, $smon, $smday, $eyear, $emon, $emday, $skip_interval, $timeranges) = $items;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-			return true;
-		}
-
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d / %d %[0-9:, -]"));
-		if(count($items) == 5)
-		{
-			list($syear,$smon, $smday, $skip_interval, $timeranges) = $items;
-			$eyear = $syear;
-			$emon  = $smon;
-			$emday = $smday;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-			return true;
-		}
-
-		$items = array_filter(sscanf($input,"%4d-%2d-%2d - %4d-%2d-%2d %[0-9:, -]"));
-		if(count($items) == 7)
-		{
-			list($syear, $smon, $smday, $eyear, $emon, $emday, $timeranges) = $items;
-
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
-			return true;
-		}
-
-		$items=array_filter(sscanf($input,"%4d-%2d-%2d %[0-9:, -]"));
-		if(count($items)==4)
-		{
-			list($syear, $smon, $smday, $timeranges) = $items;
-			$eyear = $syear;
-			$emon = $smon;
-			$emday = $smday;
-			/* add timerange exception */
-			$this->add_timeperiod_exception(self::DATERANGE_CALENDAR_DATE,
-				$syear, $smon, $smday, 0, 0, $eyear, $emon, $emday, 0, 0, 0, $timeranges, $ref);
-			return true;
-		}
-
-		/* other types... */
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] - %[a-z] %d %[a-z] / %d %[0-9:, -]"));
-		if(count($items) == 8)
-		{
-			list($str1, $swday_offset, $str2, $str3, $ewday_offset, $str4, $skip_interval, $timeranges) = $items;
-			/* wednesday 1 january - thursday 2 july / 3 */
-
-			if(in_array($str1, $valid_weekdays) &&
-				in_array($str2, $valid_months) &&
-				in_array($str3, $valid_weekdays) &&
-				in_array($str4, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$ewday = $weekday_numbers[$str3];
-				$emon = $month_numbers[$str4];
-
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, $skip_interval,  $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %[a-z] %d / %d %[0-9:, -]"));
-		if(count($items) == 6)
-		{
-			list($str1, $smday, $str2, $emday, $skip_interval, $timeranges) = $items;
-			/* february 1 - march 15 / 3 */
-			/* monday 2 - thursday 3 / 2 */
-			/* day 4 - day 6 / 2 */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_weekdays))
-			{
-				/* monday 2 - thursday 3 / 2 */
-				$swday = $weekday_numbers[$str1];
-				$ewday = $weekday_numbers[$str2];
-				$swday_offset = $smday;
-				$ewday_offset = $emday;
-
-				/* add timeperiod exception */
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
-			{
-				$smon = $month_numbers[$str1];
-				$emon = $month_numbers[$str2];
-				/* february 1 - march 15 / 3 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
-			{
-				/* day 4 - 6 / 2 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %d / %d %[0-9:, -]"));
-		if(count($items) == 5)
-		{
-			list($str1, $smday, $emday, $skip_interval, $timeranges) = $items;
-
-			/* february 1 - 15 / 3 */
-			/* monday 2 - 3 / 2 */
-			/* day 1 - 25 / 4 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				$swday = $weekday_numbers[$str1];
-				/* thursday 2 - 4 */
-				$swday_offset = $smday;
-				$ewday = $swday;
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			else if(in_array($str1, $valid_months))
-			{
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				/* february 3 - 5 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0,
-					0, $emon, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			else if(!strcmp($str1, "day"))
-			{
-				/* day 1 - 4 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, $skip_interval, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] - %[a-z] %d %[a-z] %[0-9:, -]"));
-		if(count($items)  == 7)
-		{
-			list($str1, $swday_offset, $str2, $str3, $ewday_offset, $str4, $timeranges) = $items;
-
-			/* wednesday 1 january - thursday 2 july */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_months) &&
-				in_array($str3, $valid_weekdays) && in_array($str4, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$ewday = $weekday_numbers[$str3];
-				$emon = $month_numbers[$str4];
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items=array_filter(sscanf($input,"%[a-z] %d - %d %[0-9:, -]"));
-		if(count($items) == 4)
-		{
-			list($str1, $smday, $emday, $timeranges) = $items;
-
-			/* february 3 - 5 */
-			/* thursday 2 - 4 */
-			/* day 1 - 4 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				/* thursday 2 - 4 */
-				$swday = $weekday_numbers[$str1];
-				$swday_offset = $smday;
-				$ewday = $weekday_numbers[$swday];
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
-				return true;
-			}
-			else if(in_array($str1, $valid_months))
-			{
-				/* february 3 - 5 */
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			else if(!strcmp($str1,"day"))
-			{
-				/* day 1 - 4 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d - %[a-z] %d %[0-9:, -]"));
-		 if(count($items) == 5)
-		{
-			list($str1, $smday, $str2, $emday, $timeranges) = $items;
-			/* february 1 - march 15 */
-			/* monday 2 - thursday 3 */
-			/* day 1 - day 5 */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_weekdays))
-			{
-				/* monday 2 - thursday 3 */
-				$swday = $weekday_numbers[$str1];
-				$ewday = $weekday_numbers[$str2];
-				$swday_offset = $smday;
-				$ewday_offset = $emday;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months) && in_array($str2, $valid_months))
-			{
-				/* february 1 - march 15 */
-				$smon = $month_numbers[$str1];
-				$emon = $month_numbers[$str2];
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			else if(!strcmp($str1,"day")  && !strcmp($str2,"day"))
-			{
-				/* day 1 - day 5 */
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d%*[ \t]%[0-9:, -]"));
-		if(count($items) == 3)
-		{
-			list($str1, $smday, $timeranges) = $items;
-			/* february 3 */
-			/* thursday 2 */
-			/* day 1 */
-			if(in_array($str1, $valid_weekdays))
-			{
-				/* thursday 2 */
-				$swday = $weekday_numbers[$str1];
-				$swday_offset = $smday;
-				$ewday = $swday;
-				$ewday_offset = $swday_offset;
-				$this->add_timeperiod_exception(self::DATERANGE_WEEK_DAY,
-					0, 0, 0, $swday, $swday_offset, 0, 0, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
-				return true;
-			}
-			elseif(in_array($str1, $valid_months))
-			{
-				/* february 3 */
-				$smon = $month_numbers[$str1];
-				$emon = $smon;
-				$emday = $smday;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DATE,
-					0, $smon, $smday, 0, 0, 0, $emon, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			else if(!strcmp($str1,"day"))
-			{
-				/* day 1 */
-				$emday = $smday;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_DAY,
-					0, 0, $smday, 0, 0, 0, 0, $emday, 0, 0, 0, $timeranges, $ref);
-				return true;
-			}
-			return false;
-		}
-
-		$items = array_filter(sscanf($input,"%[a-z] %d %[a-z] %[0-9:, -]"));
-		if(count($items) == 4)
-		{
-			list($str1, $swday_offset, $str2, $timeranges) = $items;
-
-			/* thursday 3 february */
-			if(in_array($str1, $valid_weekdays) && in_array($str2, $valid_months))
-			{
-				$swday = $weekday_numbers[$str1];
-				$smon = $month_numbers[$str2];
-				$emon = $smon;
-				$ewday = $swday;
-				$ewday_offset = $swday_offset;
-				$this->add_timeperiod_exception(self::DATERANGE_MONTH_WEEK_DAY,
-					0, $smon, 0, $swday, $swday_offset, 0, $emon, 0, $ewday, $ewday_offset, 0, $timeranges, $ref);
-				return true;
-			}
-			// return false;
-		}
-
-		# syntactically incorrect variable
-		return false;
-	}
-
-	/**
-	 * Converts a date into timestamp, with some extra features such as
-	 * negative days of month to use days from the end of the month.
-	 * As for time, 00:00:00 of the day is used.
-	 *
-	 * @param $year Year.
-	 * @param $month Month.
-	 * @param $monthday - Day of month, can be negative.
-	 * @return The resulting timestamp.
-	 */
-	public function calculate_time_from_day_of_month($year, $month, $monthday)
-	{
-		$day = 0;
-
-		/* positive day (3rd day) */
-		if($monthday > 0)
-		{
-			$midnight = mktime(0,0,0, $month, $monthday, $year);
-
-			/* if we rolled over to the next month, time is invalid */
-			/* assume the user's intention is to keep it in the current month */
-			if(date("n", $midnight) != $month)
-				$midnight = 0;
-		} else {/* negative offset (last day, 3rd to last day) */
-			/* find last day in the month */
-			$day = 32;
-			do
-			{
-				/* back up a day */
-				$day--;
-
-				/* make the new time */
-				$midnight = mktime(0,0,0, $month, $day, $year);
-
-			} while(date("n", $midnight) != $month);
-
-			/* now that we know the last day, back up more */
-
-			/* -1 means last day of month, so add one to to make this correct - Mike Bird */
-			$d = date("d", $midnight) + (($monthday < -30) ? -30 : $monthday + 1);
-			$midnight = mktime(0,0,0, $month, $d, $year);
-
-			/* if we rolled over to the previous month, time is invalid */
-			/* assume the user's intention is to keep it in the current month */
-			if(date("n", $midnight) != $month)
-				$midnight = 0;
-			}
-
-		return $midnight;
-	}
-
-	/**
-	 * Nagios supports exceptions such as "third monday in november 2010" - this
-	 * converts such statements to unix timestamps.
-	 *
-	 * @param $year The year
-	 * @param $month The month number
-	 * @param $weekday The weekday's numeric presentation (0=sunday, 6=saturday)
-	 * @param $weekday_offset Which occurence of the weekday, can be negative
-	 */
-	public function calculate_time_from_weekday_of_month($year, $month, $weekday, $weekday_offset)
-	{
-		$weeks = 0;
-		$midnight = mktime(0,0,0, $month, 1, $year);
-		/* how many days must we advance to reach the first instance of the weekday this month? */
-		$days = $weekday - date("w", $midnight);
-		if($days < 0)
-			$days += 7;
-		/* positive offset (3rd thursday) */
-		if($weekday_offset > 0)
-		{
-			/* how many weeks must we advance (no more than 5 possible) */
-			$weeks = ($weekday_offset > 5) ? 5 : $weekday_offset;
-			$days += (($weeks - 1) * 7);
-
-			/* make the new time */
-			$midnight = mktime(0,0,0, $month, $days + 1, $year);
-			/* if we rolled over to the next month, time is invalid */
-			/* assume the user's intention is to keep it in the current month */
-			if(date("n", $midnight) != $month)
-				$midnight = 0;
-		} else {	/* negative offset (last thursday, 3rd to last tuesday) */
-			/* find last instance of weekday in the month */
-			$days += (5*7);
-			do
-			{
-				/* back up a week */
-				$days -= 7;
-
-				/* make the new time */
-				$midnight = mktime(0,0,0, $month, $days + 1, $year);
-
-				} while(date("n", $midnight) != $month);
-
-			/* now that we know the last instance of the weekday, back up more */
-			$weeks = ($weekday_offset < -5) ? -5 : $weekday_offset;
-			$days = (($weeks + 1) * 7);
-
-			$midnight = mktime(0,0,0, $month, $days + date("d", $midnight), $year);
-
-			/* if we rolled over to the previous month, time is invalid */
-			/* assume the user's intention is to keep it in the current month */
-			if(date("n", $midnight) != $month)
-				$midnight = 0;
-		}
-		return $midnight;
-	}
-
-	/**
-	 * Determines if two timeranges overlap
-	 * Note: stop time equal to start time in other range is NOT considered an overlap
-	 *
-	 * @param $range1 array('start'=> {timestamp}, 'stop' => {timestamp})
-	 * @param $range2 array('start'=> {timestamp}, 'stop' => {timestamp})
-	 * @param $inclusive Whether to count "straddling" periods as ovelapping,
-	 * 	(Eg: start1 == stop2 or start2 == stop1)
-	 * @return boolean
-	 */
-	public function timeranges_overlap(&$range1, &$range2, $inclusive=false)
-	{
-		if($inclusive)
-			return ($range1['start'] <= $range2['stop'] && $range2['start'] <= $range1['stop']) ||
-		           ($range2['start'] <= $range1['stop'] && $range1['start'] <= $range2['stop']);
-
-		return ($range1['start'] < $range2['stop'] && $range2['start'] < $range1['stop']) ||
-		       ($range2['start'] < $range1['stop'] && $range1['start'] < $range2['stop']);
-	}
-
-	/**
-	 * Merges two timeranges into one.
-	 *
-	 * Assumes timeranges actually overlap and timeranges are correct (stop time after start time)
-	 *
-	 * @param $src_range array
-	 * @param $dst_range array
-	 * @return array
-	 */
-	public function merge_timeranges(&$src_range, &$dst_range)
-	{
-		return array('start' => min($src_range['start'], $dst_range['start']),
-		             'stop'  => max($src_range['stop'],  $dst_range['stop']));
-	}
-	/**
-	 * Subtract one timerange from another
-	 *
-	 * Assumes proper timeranges
-	 *
-	 * @param $timerange
-	 * @param $subrange
-	 * @return array
-	 */
-	public function subtract_timerange(&$timerange, &$subrange)
-	{
-		$start = $timerange['start'];
-		$stop  = $timerange['stop'];
-
-		$sub_start = $subrange['start'];
-		$sub_stop  = $subrange['stop'];
-
-		if($sub_start > $start && $sub_stop < $stop && $sub_start < $sub_stop)
-		{
-			return array
-			(
-				array('start' => $start, 'stop' => $sub_start),
-				array('start' => $sub_stop, 'stop' => $stop)
-			);
-		}
-
-
-		if($sub_stop > $start && $sub_stop < $stop)
-			$stop = $sub_stop;
-
-		if($sub_start < $stop && $sub_start > $start)
-			$start = $sub_start;
-
-		return array(array('start' => $start, 'stop' => $stop));
-	}
-	/**
-	 * Add a new timerange to a set of timeranges.
-	 * If new range overlaps an existing range, the two are merged to one.
-	 *
-	 * Assumes timeranges contain only valid values (eg: stop time after start time)
-	 * Assumes the timerange set does not contain overlapping periods itself
-	 *
-	 * @param $range Array of range(s) to add
-	 * @param $timerange_set The timerange set to add to
-	 */
-	public function add_timerange_to_set($range, &$timerange_set)
-	{
-		for($i=0 ; $i<count($timerange_set) ; $i++)
-		{
-			$testrange = $timerange_set[$i];
-			if(self::timeranges_overlap($range, $testrange, true)) {
-				# if range overlaps with current item, merge them and continue
-				$range = self::merge_timeranges($range, $testrange);
-
-				# remove the existing range, to later re-add it in the end
-				unset($timerange_set[$i]);
-
-				# to get the numerical indices back into sequence:
-				$timerange_set = array_values($timerange_set);
-
-				# Restart so we don't miss any element
-				$i = 0;
-			}
-		}
-		$timerange_set[] = $range;
-
-		# recombobulate the indices
-		$timerange_set = array_values($timerange_set);
-	}
-
-	/**
-	 * Merge two sets of timeranges into one, with no overlapping ranges.
-	 * Assumption: The argument sets may contain overlapping timeranges,
-	 * which are wrong in principle, but we'll manage anyway.
-	 *
-	 * @param $timerange_set1 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
-	 * @param $timerange_set2 (of structure array( array('start' => 1203120, 'stop' => 120399), aray('start' => 140104, 'stop') ....)
-	 * @return array
-	 */
-	public function merge_timerange_sets(&$timerange_set1, &$timerange_set2)
-	{
-		$resulting_timerange_set = array();
-
-		# plan: add both ranges to third set, merging as we go along
-
-		foreach($timerange_set1 as $range)
-		{
-			self::add_timerange_to_set($range, $resulting_timerange_set);
-		}
-
-		foreach($timerange_set2 as $range)
-		{
-			self::add_timerange_to_set($range, $resulting_timerange_set);
-		}
-		return $resulting_timerange_set;
-	}
-
-	/**
-	 * Return true if both the start date and end date is the same day
-	 *
-	 * @param $dr A daterange
-	 * @return true if condition holds
-	 */
-	public function is_daterange_single_day(&$dr)
-	{
-		if($dr['syear'] != $dr['eyear'])
-			return false;
-		if($dr['smon'] != $dr['emon'])
-			return false;
-		if($dr['smday'] != $dr['emday'])
-			return false;
-		if($dr['swday'] != $dr['ewday'])
-			return false;
-		if($dr['swday_offset'] != $dr['ewday_offset'])
-			return false;
-
-		return true;
-	}
-
-	/**
-	 * Print the timerange $r
-	 * @param $r A timerange
-	 */
-	public function print_timerange(&$r)
-	{
-		print "$r[start]-$r[stop]";
-	}
-
-	/**
-	 * Take two sets of timeranges, and subtract all the ranges in the second
-	 * from all the ranges in the first. The first set will be modified
-	 * in-place.
-	 *
-	 * @param $set_include A set of original timeranges
-	 * @param $set_exclude A set of timeranges to remove from the first arg
-	 * @return $set_include, after manipulation
-	 */
-	public function subtract_timerange_sets(&$set_include, &$set_exclude)
-	{
-		for($i=0,$num_includes=count($set_include) ; $i<$num_includes ; $i++)
-		{
-			for($j=0,$num_excludes=count($set_exclude) ; $j<$num_excludes ; $j++)
-			{
-				$tmp = self::subtract_timerange($set_include[$i], $set_exclude[$j]);
-				$set_include[$i] = $tmp[0];
-
-				# if range was split into two, add other one at end (outside of loop)
-				if(count($tmp) > 1) {
-					$set_include[count($set_include)] = $tmp[1];
-				}
-			}
-		}
-		return $set_include;
-	}
-
-	/**
-	*	Fetch info on first and last timestamp in db
-	*/
-	public function get_date_ranges()
-	{
-		$sql = "SELECT MIN(timestamp) AS min_date, ".
-				"MAX(timestamp) AS max_date ".
-			"FROM ".self::db_table;
-		$db = Database::instance();
-		$res = $db->query($sql);
-
-		if (!$res)
-			return false;
-		$row = $res->current();
-		$min_date = $row->min_date;
-		$max_date = $row->max_date;
-		return array($min_date, $max_date);
-	}
-
-	/**
 	 * Create the base of the query to use when calculating
 	 * alert summary. Each caller is responsible for adding
 	 * sorting and limit options as necessary.
@@ -2948,14 +1368,6 @@ class Reports_Model extends Model
 	 */
 	private function build_alert_summary_query($fields = false, $auth = false)
 	{
-		$this->mangle_summary_options();
-
-		# set some few defaults
-		if (!$this->start_time)
-			$this->start_time = 0;
-		if (!$this->end_time)
-			$this->end_time = time();
-
 		# default to the most commonly used fields
 		if (!$fields) {
 			$fields = 'host_name, service_description, state, hard';
@@ -2963,10 +1375,10 @@ class Reports_Model extends Model
 
 		$hosts = false;
 		$services = false;
-		if ($this->servicegroup) {
+		if ($this->options['servicegroup']) {
 			$hosts = $services = array();
 			$smod = new Service_Model();
-			foreach ($this->servicegroup as $sg) {
+			foreach ($this->options['servicegroup'] as $sg) {
 				$res = $smod->get_services_for_group($sg);
 				foreach ($res as $o) {
 					$name = $o->host_name . ';' . $o->service_description;
@@ -2982,10 +1394,10 @@ class Reports_Model extends Model
 			}
 			$this->service_servicegroup['host'] = $hosts;
 			$this->service_servicegroup['service'] = $services;
-		} elseif ($this->hostgroup) {
+		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
 			$hmod = new Host_Model();
-			foreach ($this->hostgroup as $hg) {
+			foreach ($this->options['hostgroup'] as $hg) {
 				$res = $hmod->get_hosts_for_group($hg);
 				foreach ($res as $o) {
 					$name = $o->host_name;
@@ -2996,21 +1408,24 @@ class Reports_Model extends Model
 				}
 			}
 			$this->host_hostgroup = $hosts;
-		} elseif ($this->service_description) {
+		} elseif ($this->options['service_description']) {
 			$services = false;
-			foreach ($this->service_description as $srv) {
+			foreach ($this->options['service_description ']as $srv) {
 				$services[$srv] = $srv;
 			}
-		} elseif ($this->host_name) {
+		} elseif ($this->options['host_name']) {
 			$hosts = false;
-			foreach ($this->host_name as $hn) {
-				$hosts[$hn] = $hn;
+			if (is_array($this->options['host_name'])) {
+				foreach ($this->options['host_name'] as $hn)
+					$hosts[$hn] = $hn;
+			} else {
+				$hosts[$this->options['host_name']] = $this->options['host_name'];
 			}
 		}
 
 		if (!$auth)
 			$auth = Nagios_auth_Model::instance();
-		if (empty($hosts) && $this->alert_types & 1) {
+		if (empty($hosts) && $this->options['alert_types'] & 1) {
 			if (!$auth->view_hosts_root) {
 				$hosts = array();
 				$host_list = $auth->get_authorized_hosts_r();
@@ -3024,7 +1439,7 @@ class Reports_Model extends Model
 				$hosts = true;
 			}
 		}
-		if (empty($services) && $this->alert_types & 2) {
+		if (empty($services) && $this->options['alert_types'] & 2) {
 			if (!$auth->view_hosts_root && !$auth->view_services_root) {
 				$services = array();
 				$svc_list = $auth->get_authorized_services_r();
@@ -3086,43 +1501,43 @@ class Reports_Model extends Model
 			$fields = '*';
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
-			"\nWHERE timestamp >= " . $this->start_time . " " .
-			"AND timestamp <= " . $this->end_time . " ";
+			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
+			"AND timestamp <= " . $this->options['end_time'] . " ";
 		if (!empty($object_selection)) {
 			$query .= $object_selection . " ";
 		}
 
-		if (!$this->host_states || $this->host_states == self::HOST_ALL) {
-			$this->host_states = self::HOST_ALL;
+		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
+			$this->options['host_states'] = self::HOST_ALL;
 			$host_states_sql = 'event_type = ' . self::HOSTCHECK;
 		} else {
 			$x = array();
 			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
 				'AND state IN(';
 			for ($i = 0; $i < self::HOST_ALL; $i++) {
-				if (1 << $i & $this->host_states) {
+				if (1 << $i & $this->options['host_states']) {
 					$x[$i] = $i;
 				}
 			}
 			$host_states_sql .= join(',', $x) . '))';
 		}
 
-		if (!$this->service_states || $this->service_states == self::SERVICE_ALL) {
-			$this->service_states = self::SERVICE_ALL;
+		if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
+			$this->options['service_states'] = self::SERVICE_ALL;
 			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
 			$service_states_sql = '(event_type = ' . self::SERVICECHECK .
 				"\nAND state IN(";
 			for ($i = 0; $i < self::SERVICE_ALL; $i++) {
-				if (1 << $i & $this->service_states) {
+				if (1 << $i & $this->options['service_states']) {
 					$x[$i] = $i;
 				}
 			}
 			$service_states_sql .= join(',', $x) . '))';
 		}
 
-		switch ($this->alert_types) {
+		switch ($this->options['alert_types']) {
 		 case 1: $query .= "\nAND " . $host_states_sql . ' '; break;
 		 case 2: $query .= "\nAND " . $service_states_sql . ' '; break;
 		 case 3:
@@ -3130,7 +1545,7 @@ class Reports_Model extends Model
 				" OR " . $service_states_sql . ') '; break;
 		}
 
-		switch ($this->state_types) {
+		switch ($this->options['state_types']) {
 		 case 0: case 3: default:
 			break;
 		 case 1:
@@ -3166,13 +1581,13 @@ class Reports_Model extends Model
 	{
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
-			$this->host_states = $host_state;
+			$this->options['host_states'] = $host_state;
 			for ($service_state = 1; $service_state <= 15; $service_state++) {
-				$this->service_states = $service_state;
+				$this->options['service_states'] = $service_state;
 				for ($state_types = 1; $state_types <= 3; $state_types++) {
-					$this->state_types = $state_types;
+					$this->options['state_types'] = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
-						$this->alert_types = $alert_types;
+						$this->options['alert_types'] = $alert_types;
 						$query = $this->build_alert_summary_query(false, $auth);
 						if (!$query)
 							return "FAIL: host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
@@ -3198,10 +1613,10 @@ class Reports_Model extends Model
 	public function top_alert_producers()
 	{
 		$start = microtime(true);
-		$host_states = $this->host_states;
-		$service_states = $this->service_states;
-		$this->host_states = self::HOST_ALL;
-		$this->service_states = self::SERVICE_ALL;
+		$host_states = $this->options['host_states'];
+		$service_states = $this->options['service_states'];
+		$this->options['host_states '] = self::HOST_ALL;
+		$this->options['service_states'] = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
@@ -3241,8 +1656,8 @@ class Reports_Model extends Model
 
 		# sort the result and return only the necessary items
 		arsort($result);
-		if ($this->summary_items > 0) {
-			$result = array_slice($result, 0, $this->summary_items, true);
+		if ($this->options['summary_items'] > 0) {
+			$result = array_slice($result, 0, $this->options['summary_items'], true);
 		}
 
 		$i = 1;
@@ -3289,7 +1704,7 @@ class Reports_Model extends Model
 	{
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->host_name as $hn) {
+		foreach ($this->options['host_name'] as $hn) {
 			$result[$hn] = $template;
 		}
 		$pstate = array();
@@ -3320,7 +1735,7 @@ class Reports_Model extends Model
 	{
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->service_description as $name) {
+		foreach ($this->options['service_description'] as $name) {
 			$result[$name] = $template;
 		}
 		$type = 'service';
@@ -3345,7 +1760,7 @@ class Reports_Model extends Model
 		# from the inner loop
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->hostgroup as $hostgroup) {
+		foreach ($this->options['hostgroup'] as $hostgroup) {
 			$result[$hostgroup] = $template;
 		}
 
@@ -3378,7 +1793,7 @@ class Reports_Model extends Model
 		# from the inner loop
 		$template = $this->summary_result;
 		$result = array();
-		foreach ($this->servicegroup as $servicegroup) {
+		foreach ($this->options['servicegroup'] as $servicegroup) {
 			$result[$servicegroup] = $template;
 		}
 
@@ -3405,24 +1820,6 @@ class Reports_Model extends Model
 		return $result;
 	}
 
-	private function mangle_summary_options()
-	{
-		if (!empty($this->hostgroup) && !is_array($this->hostgroup)) {
-			$this->hostgroup = array($this->hostgroup);
-		}
-		if (!empty($this->servicegroup) && !is_array($this->servicegroup)) {
-			$this->servicegroup = array($this->servicegroup);
-		}
-		if (is_string($this->host_name) && is_string($this->service_description)) {
-			$this->service_description =
-				array($this->host_name . ';' . $this->service_description);
-			$this->host_name = false;
-		}
-		if (!empty($this->host_name) && !is_array($this->host_name)) {
-			$this->host_name = array($this->host_name);
-		}
-	}
-
 	/**
 	 * Get alert totals. This is identical to the toplist in
 	 * many respects, but the result array is different.
@@ -3437,7 +1834,6 @@ class Reports_Model extends Model
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
-			die;
 		}
 
 		# preparing the result array in advance speeds up the
@@ -3454,13 +1850,13 @@ class Reports_Model extends Model
 		$result = false;
 		# groups must be first here, since the other variables
 		# are expanded in the build_alert_summary_query() method
-		if ($this->servicegroup) {
+		if ($this->options['servicegroup']) {
 			$result = $this->alert_totals_by_servicegroup($dbr);
-		} elseif ($this->hostgroup) {
+		} elseif ($this->options['hostgroup']) {
 			$result = $this->alert_totals_by_hostgroup($dbr);
-		} elseif ($this->service_description) {
+		} elseif ($this->options['service_description']) {
 			$result = $this->alert_totals_by_service($dbr);
-		} elseif ($this->host_name) {
+		} elseif ($this->options['host_name']) {
 			$result = $this->alert_totals_by_host($dbr);
 		}
 
@@ -3471,7 +1867,7 @@ class Reports_Model extends Model
 	}
 
 	/**
-	 * Find and return the latest $this->summary_items alert
+	 * Find and return the latest $this->options['summary_items'] alert
 	 * producers according to the search criteria.
 	 */
 	public function recent_alerts()
@@ -3484,139 +1880,24 @@ class Reports_Model extends Model
 		}
 
 		$query .= " ORDER BY timestamp DESC";
-		if ($this->summary_items > 0) {
-			$query .= " LIMIT " . $this->summary_items;
+		if ($this->options['summary_items'] > 0) {
+			$query .= " LIMIT " . $this->options['summary_items'];
 		}
 		$this->summary_query = $query;
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
 			echo Kohana::debug($this->db->errorinfo(), explode("\n", $query));
-			die;
 		}
 
 		$this->summary_result = array();
 		foreach ($dbr as $row) {
-			if ($this->tp_inside($row['timestamp']))
+			if ($this->timeperiod->inside($row['timestamp']))
 				$this->summary_result[] = $row;
 		}
 
 		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
-	}
-
-	/**
-	 * Calculates $this->start_time and $this->end_time based on an
-	 * availability report style period such as "today", "last24hours"
-	 * or "lastmonth".
-	 *
-	 * @param $report_period The textual period to set our options by
-	 * @return false on errors, true on success
-	 */
-	private function calculate_time($report_period)
-	{
-		$year_now 	= date('Y', time());
-		$month_now 	= date('m', time());
-		$day_now	= date('d', time());
-		$week_now 	= date('W', time());
-		$weekday_now = date('w', time())-1;
-		$time_start	= false;
-		$time_end	= false;
-		$now = time();
-
-		switch ($report_period) {
-		 case 'today':
-			$time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			$time_end 	= time();
-			break;
-		 case 'last24hours':
-			$time_start = mktime(date('H', time()), date('i', time()), date('s', time()), $month_now, $day_now -1, $year_now);
-			$time_end 	= time();
-			break;
-		 case 'yesterday':
-			$time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
-			$time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			break;
-		 case 'thisweek':
-			$time_start = strtotime('today - '.$weekday_now.' days');
-			$time_end 	= time();
-			break;
-		 case 'last7days':
-			$time_start	= strtotime('now - 7 days');
-			$time_end	= time();
-			break;
-		 case 'lastweek':
-			$time_start = strtotime('midnight last monday -7 days');
-			$time_end	= strtotime('midnight last monday');
-			break;
-		 case 'thismonth':
-			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			$time_end	= time();
-			break;
-		 case 'last31days':
-			$time_start = strtotime('now - 31 days');
-			$time_end	= time();
-			break;
-		 case 'lastmonth':
-			$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'thisyear':
-			$time_start = strtotime('midnight '.$year_now.'-01-01');
-			$time_end	= time();
-			break;
-		 case 'lastyear':
-			$time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
-			$time_end	= strtotime('midnight '.$year_now.'-01-01');
-			break;
-		 case 'last12months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'last3months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'last6months':
-			$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
-			$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			break;
-		 case 'lastquarter':
-			$t = getdate();
-			if($t['mon'] <= 3){
-				$lqstart = ($t['year']-1)."-10-01";
-				$lqend = ($t['year']-1)."-12-31";
-			} elseif ($t['mon'] <= 6) {
-				$lqstart = $t['year']."-01-01";
-				$lqend = $t['year']."-03-31";
-			} elseif ($t['mon'] <= 9){
-				$lqstart = $t['year']."-04-01";
-				$lqend = $t['year']."-06-30";
-			} else {
-				$lqstart = $t['year']."-07-01";
-				$lqend = $t['year']."-09-30";
-			}
-			$time_start = strtotime($lqstart);
-			$time_end = strtotime($lqend);
-			break;
-		 case 'custom':
-			# we'll have "start_time" and "end_time" in
-			# the options when this happens
-			return true;
-		 default:
-			# unknown option, ie bogosity
-			return false;
-		}
-
-		if($time_start > $now)
-			$time_start = $now;
-
-		if($time_end > $now)
-			$time_end = $now;
-
-		$this->start_time = $time_start;
-		$this->end_time = $time_end;
-		return true;
 	}
 
 	/**
@@ -3679,25 +1960,17 @@ class Reports_Model extends Model
 	*/
 	public function build_alert_history_query($fields='*', $report_type=false)
 	{
-		# set some few defaults
-		if (!$this->start_time)
-			$this->start_time = 0;
-		if (!$this->end_time)
-			$this->end_time = time();
-
 		$hosts = false;
 		$services = false;
-		if ($this->servicegroup) {
+		if ($this->options['servicegroup']) {
+			$servicegroup = $this->options['servicegroup'];
 			$services = array();
 			$smod = new Service_Model();
-			if (!is_array($this->servicegroup)) {
-				$this->servicegroup = array($this->servicegroup);
-			}
 
-			foreach ($this->servicegroup as $sg) {
+			foreach ($servicegroup as $sg) {
 				$res = $smod->get_services_for_group($sg);
 				foreach ($res as $o) {
-					$name = $o->host_name . ';' . $o->service_description;
+					$name = $o->options['host_name'] . ';' . $o->options['service_description'];
 					if (empty($services[$name])) {
 						$services[$name] = array();
 					}
@@ -3705,13 +1978,11 @@ class Reports_Model extends Model
 				}
 			}
 			$this->service_servicegroup = $services;
-		} elseif ($this->hostgroup) {
+		} elseif ($this->options['hostgroup']) {
+			$hostgroup = $this->options['hostgroup'];
 			$hosts = array();
 			$hmod = new Hostgroup_Model();
-			if (!is_array($this->hostgroup)) {
-				$this->hostgroup = array($this->hostgroup);
-			}
-			foreach ($this->hostgroup as $hg) {
+			foreach ($hostgroup as $hg) {
 				$res = $hmod->get_hosts_for_group($hg);
 				foreach ($res as $o) {
 					$name = $o->host_name;
@@ -3721,24 +1992,24 @@ class Reports_Model extends Model
 					$hosts[$name][$hg] = $hg;
 				}
 			}
-			$this->host_hostgrop = $hosts;
-		} elseif ($this->service_description) {
+			$this->host_hostgroup = $hosts;
+		} elseif ($this->options['service_description']) {
 			$services = false;
-			if (is_array($this->service_description) && !empty($this->service_description)) {
-				foreach ($this->service_description as $srv) {
+			if (is_array($this->options['service_description']) && $this->options['service_description']) {
+				foreach ($this->options['service_description'] as $srv) {
 					$services[$srv] = $srv;
 				}
 			} else {
-				$services[$this->host_name.';'.$this->service_description] = $this->host_name.';'.$this->service_description;
+				$services[$this->options['host_name'].';'.$this->options['service_description']] = $this->options['host_name'].';'.$this->options['service_description'];
 			}
-		} elseif ($this->host_name) {
+		} elseif ($this->options['host_name']) {
 			$hosts = false;
-			if (is_array($this->host_name) && !empty($this->host_name)) {
-				foreach ($this->host_name as $hn) {
+			if (is_array($this->options['host_name']) && $this->options['host_name']) {
+				foreach ($this->options['host_name'] as $hn) {
 					$hosts[$hn] = $hn;
 				}
 			} else {
-				$hosts[$this->host_name] = $this->host_name;
+				$hosts[$this->host_name] = $this->options['host_name'];
 			}
 		}
 
@@ -3771,36 +2042,36 @@ class Reports_Model extends Model
 			$fields = '*';
 
 		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
-			"WHERE timestamp >= " . $this->start_time . " " .
-			"AND timestamp <= " . $this->end_time . " ";
+			"WHERE timestamp >= " . $this->options['start_time'] . " " .
+			"AND timestamp <= " . $this->options['end_time'] . " ";
 		if (!empty($object_selection)) {
 			$query .= $object_selection . " ";
 		}
 
-		if (!$this->host_states || $this->host_states == 7) {
-			$this->host_states = 7;
+		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
+			$this->options['host_states'] = self::HOST_ALL;
 			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
 		} else {
 			$x = array();
 			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
 				'AND state IN(';
 			for ($i = 0; $i < 7; $i++) {
-				if (1 << $i & $this->host_states) {
+				if (1 << $i & $this->options['host_states']) {
 					$x[$i] = $i;
 				}
 			}
 			$host_states_sql .= join(',', $x) . ')) ';
 		}
 
-		if (!$this->service_states || $this->service_states == 15) {
-			$this->service_states = 15;
+		if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
+			$this->options['service_states'] = self::SERVICE_ALL;
 			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
 		} else {
 			$x = array();
 			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
 				'AND state IN(';
 			for ($i = 0; $i < 15; $i++) {
-				if (1 << $i & $this->service_states) {
+				if (1 << $i & $this->options['service_states']) {
 					$x[$i] = $i;
 				}
 			}
@@ -3812,7 +2083,7 @@ class Reports_Model extends Model
 			case 'services': case 'servicegroups': $query .= 'AND ' . $service_states_sql; break;
 		}
 
-		switch ($this->state_types) {
+		switch ($this->options['state_types']) {
 		 case 0: case 3: default:
 			break;
 		 case 1:
@@ -3833,37 +2104,37 @@ class Reports_Model extends Model
 	* 	@param $slots array with slots to fill with data
 	* 	@return array with keys: min, max, avg, data
 	*/
-	public function alert_history($options=false, $slots=false)
+	public function alert_history($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))
 			return false;
 
-		$breakdown = $options['breakdown'];
-		$report_type = $options['report_type'];
-		$newstatesonly = $options['newstatesonly'];
+		$breakdown = $this->options['breakdown'];
+		$report_type = $this->options['report_type'];
+		$newstatesonly = $this->options['newstatesonly'];
 
 		# compute what event counters we need depending on report type
 		$events = false;
 		switch ($report_type) {
 			case 'hosts': case 'hostgroups':
-				if (!$this->host_states || $this->host_states == 7) {
+				if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
 					$events = array(0 => 0, 1 => 0, 2 => 0);
 				} else {
 					$events = array();
 					for ($i = 0; $i < 7; $i++) {
-						if (1 << $i & $this->host_states) {
+						if (1 << $i & $this->options['host_states']) {
 							$events[$i] = 0;
 						}
 					}
 				}
 				break;
 			case 'services': case 'servicegroups':
-				if (!$this->service_states || $this->service_states == 15) {
+				if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
 					$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
 				} else {
 					$events = array();
 					for ($i = 0; $i < 15; $i++) {
-						if (1 << $i & $this->service_states) {
+						if (1 << $i & $this->options['service_states']) {
 							$events[$i] = 0;
 						}
 					}

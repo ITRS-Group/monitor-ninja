@@ -13,7 +13,7 @@ if (!empty($widgets)) {
 	<div class="setup-table">
 
 		<div class="setup-table">
-			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
+			<h1 id="report_type_label"><?php echo _('Trends report'); ?></h1>
 	</div>
 
 	<?php	echo form::open('trends/generate', array('id' => 'report_form')); ?>
@@ -115,7 +115,7 @@ if (!empty($widgets)) {
 					<td>&nbsp;</td>
 				</tr>
 				<tr>
-					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?></td>
+					<td><?php echo form::dropdown(array('name' => 'report_period'), $options->get_alternatives('report_period'), $options['report_period']); ?></td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
@@ -137,14 +137,14 @@ if (!empty($widgets)) {
 					<td>
 						<?php echo help::render('stated_during_downtime') ?>
 						<input type="checkbox" class="checkbox" value="1" id="assumestatesduringnotrunning" name="assumestatesduringnotrunning"
-								onchange="toggle_label_weight(this.checked, 'assume_progdown');" <?php echo $assume_states_during_not_running_checked; ?> />
+								onchange="toggle_label_weight(this.checked, 'assume_progdown');" <?php echo $options['assumestatesduringnotrunning']?'checked="checked"':''; ?> />
 						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo _('Assume states during program downtime') ?></label>
 					</td>
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
 						<?php echo help::render('include_soft_states') ?>
 						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
-								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
+								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $options['include_soft_states']?'checked="checked"':''; ?> />
 						<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
 					</td>
 				</tr>
@@ -152,7 +152,7 @@ if (!empty($widgets)) {
 					<td>
 						<?php echo help::render('initial_states') ?>
 						<input type="checkbox" class="checkbox" value="1" id="assumeinitialstates" name="assumeinitialstates"
-								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" <?php print $assume_initial_states_checked ?> />
+								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" <?php print $options['assumeinitialstates']?'checked="checked"':'' ?> />
 						<label for="assumeinitialstates" id="assume_initial"><?php echo _('Assume initial states') ?></label>
 					</td>
 					<td colspan="2">&nbsp;</td>
@@ -166,8 +166,8 @@ if (!empty($widgets)) {
 					<td>
 						<select name="initialassumedhoststate">
 						<?php
-							foreach($initial_assumed_host_states as $host_state_value => $host_state_txt) {
-								$sel = ($host_state_value == $initial_assumed_host_state_selected ? ' selected="selected"':'');
+							foreach($options->get_alternatives('initialassumedhoststate') as $host_state_value => $host_state_txt) {
+								$sel = ($host_state_value == $options['initialassumedhoststate'] ? ' selected="selected"':'');
 								print '<option value="'.$host_state_value.'"'.$sel.'>'.$host_state_txt.'</option>'."\n";
 							}
 						 ?>
@@ -177,29 +177,15 @@ if (!empty($widgets)) {
 					<td>
 						<select name="initialassumedservicestate">
 						<?php
-							foreach($initial_assumed_service_states as $service_state_value => $service_state_txt){
-								$sel = ($service_state_value == $initial_assumed_service_state_selected ? ' selected="selected"':'');
+							foreach($options->get_alternatives('initialassumedservicestate') as $service_state_value => $service_state_txt){
+								$sel = ($service_state_value == $options['initialassumedservicestate'] ? ' selected="selected"':'');
 								print '<option value="'.$service_state_value.'"'.$sel.'>'.$service_state_txt.'</option>'."\n";
 							}
 						 ?>
 						</select>
 					</td>
 				</tr>
-<!--				<tr>
-					<td>
-						<?php echo help::render('save_report') ?>
-						<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
-						<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
-						<label for="save_report_settings" id="save_report_label"><?php echo _('Save report') ?></label>
-						<br />
-						<span id="report_save_information">
-							<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
-						</span>
-					</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
--->				<tr>
+				<tr>
 					<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Create report') ?>" class="button create-report" /></td>
 				</tr>
 			</table>

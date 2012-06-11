@@ -1,12 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
-
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="response"></div>
 <div id="progress"></div>
 <div class="report-page">
@@ -27,9 +19,11 @@ if (!empty($widgets)) {
 		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '._('Trends').'</strong>';
 		echo $trends_graph;
 	}
-	echo !empty($content) ? $content : '';
-	echo !empty($svc_content) ? $svc_content : '';
-	echo isset($pie) ? $pie : '';
-	echo !empty($log_content) ? $log_content : '';
+	if (!empty($content)) {
+		echo $content;
+		echo !empty($svc_content) ? $svc_content : '';
+		echo isset($pie) ? $pie : '';
+		echo !empty($log_content) ? $log_content : '';
+	}
 ?>
 </div>

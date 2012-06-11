@@ -5,23 +5,24 @@ foreach($report_data as $i =>  $report) {
 	$nr++;
 	$custom_group = explode(',',$report['source']);
 	if (!empty($report['data_str'])) {
-		if (count($custom_group) > 1)
+		if (count($custom_group) > 1) {
 			$str_source = 'SLA breakdown for Custom group';
+		}
 		else {
-			if (!$use_alias || $report['group_title'] !== false)
+			if (!$options['use_alias'] || $report['group_title'] !== false)
 				$str_source = _('SLA breakdown for').': '.$report['source'];
 			else
 				$str_source = _('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
 		}
-
+	}
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<?php
 		$avail_links = html_entity_decode($report['avail_links']);
 		parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
-		<form action="<?php echo url::site().Kohana::config('reports.reports_link').'/generate?type=avail' ?>" method="post">
-			<input type="image" src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
+		<form action="<?php echo url::site() ?>avail/generate" method="post">
+			<input type="image" src="<?php echo url::site() ?>public/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
 			<?php foreach($avail_links as $key => $value) {
 				if(is_array($value)) {
 					foreach($value as $value_part) { ?>
@@ -32,9 +33,6 @@ foreach($report_data as $i =>  $report) {
 				<?php }
 			} ?>
 		</form>
-		<?php } else {
-			echo "#chart_placeholder_$nr#";
-		} ?>
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
 	<?php  if (!empty($report['table_data'][$report['source']])) {
@@ -44,21 +42,21 @@ foreach($report_data as $i =>  $report) {
 		<table class="auto" border="1">
 
 			<tr>
-				<th class="headerNone"</th>
+				<th class="headerNone"></th>
 				<?php
 					$n = 0;
 					foreach ($data as $month => $values) {
 					$n++;
 				?>
-				<th class="headerNone"<?php echo $month ?></th>
+				<th class="headerNone"><?php echo $month ?></th>
 				<?php } ?>
 			</tr>
 			<tr class="even">
-				<td class="label"<?php echo _('SLA') ?></td><?php
+				<td class="label"><?php echo _('SLA') ?></td><?php
 				$j = 0;
 				foreach ($data as $month => $value) {
 					$j++; ?>
-				<td class="data"<?php echo reports::format_report_value($value[0][1]) ?> %</td>
+				<td class="data"><?php echo reports::format_report_value($value[0][1]) ?> %</td>
 				<?php
 				} ?>
 			</tr>
@@ -67,7 +65,7 @@ foreach($report_data as $i =>  $report) {
 				$y = 0;
 				foreach ($data as $month => $value) {
 					$y++;?>
-				<td class="data"
+				<td class="data">
 					<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',

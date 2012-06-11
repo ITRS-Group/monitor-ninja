@@ -29,7 +29,7 @@
 				</td>
 			</tr>
 		</table>
-		<div><input type="hidden" name="saved_report_id" id="saved_report_id" value="<?php echo $report_id ?>" />
+		<div><input type="hidden" name="saved_report_id" id="saved_report_id" value="<?php echo $options['report_id'] ?>" />
 		<input type="hidden" name="type" value="summary" />
 		<input type="hidden" name="module_save" id="module_save" value="1" /></div>
 		</form>
@@ -40,9 +40,6 @@
 	<div id="schedule_report">
 		<table id="schedule_report_table">
 			<caption><?php echo _('Schedules for this report') ?>
-<?php if(!empty($report_info)) { ?>
-(<span id="scheduled_report_name"><?php echo !empty($report_info['report_name']) ? $report_info['report_name'] : $report_info['sla_name'] ?></span>)
-<?php } ?>
 </caption>
 			<tr id="schedule_header">
 				<th class="headerNone left"><?php echo _('Report Interval') ?></th>

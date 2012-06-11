@@ -94,7 +94,6 @@ if (isset($this->template->js_header))
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 				var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
 				var _search_string_field = '<?php echo _('Search string') ?>';
 				var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';

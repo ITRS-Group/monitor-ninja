@@ -166,7 +166,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 					# show triggered dropdown if not fixed
 					$this->inline_js .= "set_initial_state('triggered_row', '".$data['fixed']."');\n";
 				}
-				$this->inline_js .= "set_selection('".$data['report_type']."');\n";
 				$schedule_info = array_merge($schedule_info, $data);
 				$json_info = json::encode($schedule_info);
 			}

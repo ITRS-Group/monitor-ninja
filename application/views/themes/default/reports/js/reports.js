@@ -7,18 +7,11 @@ var _schedule_remove = false;
 
 $(document).ready(function() {
 
-	show_state_options($('#assumeinitialstates').attr('checked'));
+	show_state_options($('#assume_initial_states').attr('checked'));
 
 	$("#saved_report_form").bind('submit', function() {
 		return check_and_submit($(this));
 	});
-
-	$("#report_id").bind('change', function() {
-		if (check_and_submit($("#saved_report_form"))) {
-			$("#saved_report_form").trigger('submit');
-		}
-	});
-
 
 	// delete single schedule
 	$(".delete_schedule").each(function() {
@@ -119,7 +112,7 @@ $(document).ready(function() {
 	$('.fancybox').click(function() {
 		// set initial states
 		if ($('input[name=type]').attr('value') != 'sla') {
-			set_initial_state('assumeinitialstates', assumeinitialstates);
+			set_initial_state('assume_initial_states', assume_initial_states);
 			set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
 		}
 		set_initial_state('cluster_mode', cluster_mode);
@@ -210,12 +203,12 @@ function trigger_ajax_save(f)
 
 function show_sla_saveresponse(responseText, statusText)
 {
-	if (responseText['status'] == 'ok' && statusText == 'success') {
-		jgrowl_message(responseText['status_msg'], _success_header);
+	if (responseText.status == 'ok' && statusText == 'success') {
+		jgrowl_message(responseText.status_msg, _success_header);
 
 		// propagate new values to form
-		$('input[name=saved_report_id]').attr('value', responseText['report_id']);
-		$('input[name=report_id]').attr('value', responseText['report_id']);
+		$('input[name=saved_report_id]').attr('value', responseText.report_id);
+		$('input[name=report_id]').attr('value', responseText.report_id);
 		$('input[name=report_name]').attr('value', $('#fancybox-content #report_name').attr('value'));
 		$('#scheduled_report_name').text($('#fancybox-content #report_name').attr('value'));
 	}
@@ -258,7 +251,7 @@ function ajax_submit(f)
 	}
 
 	if(!validate_form()) {
-		setTimeout('delayed_hide_progress()', 1000);
+		setTimeout(delayed_hide_progress, 1000);
 		return false;
 	}
 	var local_persistent_filepath = $.trim($('#local_persistent_filepath').val());
@@ -276,7 +269,7 @@ function ajax_submit(f)
 		},
 		dataType: 'json'
 	});
-	setTimeout('delayed_hide_progress()', 1000);
+	setTimeout(delayed_hide_progress, 1000);
 	return false;
 }
 
@@ -397,7 +390,7 @@ function populate_saved_sla_data(json_data) {
 		if (document.getElementById("sla_"+name).style.backgroundColor != 'rgb(205, 205, 205)')
 			$("#sla_"+name).attr('value',value);
 	}
-	setTimeout('delayed_hide_progress()', 1000);
+	setTimeout(delayed_hide_progress, 1000);
 }
 
 function show_state_options(val)
@@ -434,59 +427,64 @@ function expand_and_populate(data)
 	var reportObj = data;
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
-	var field_str = reportObj['report_type'];
-	if (reportObj['objects']) {
-		for (prop in reportObj['objects']) {
-			add_if_not_exist(field_obj.map[field_str], reportObj['objects'][prop]);
+	var field_str = reportObj.report_type;
+	set_selection(reportObj.report_type, function() {
+		var mo = new missing_objects();
+		if (reportObj.objects) {
+			for (var prop in reportObj.objects) {
+				if (!$('#'+tmp_fields.map[field_str]).containsOption(reportObj.objects[prop])) {
+					mo.add(reportObj.objects[prop]);
+				} else {
+					$('#'+tmp_fields.map[field_str]).selectOptions(reportObj.objects[prop]);
+				}
+			}
+			mo.display_if_any();
+			moveAndSort(tmp_fields.map[field_str], field_obj.map[field_str]);
 		}
-	}
-	set_selection(reportObj['report_type'], 'true');
-	set_initial_state('assumeinitialstates', reportObj['assumeinitialstates']);
-	set_initial_state('host', reportObj['initialassumedhoststate']);
-	set_initial_state('service', reportObj['initialassumedservicestate']);
-	set_initial_state('scheduleddowntimeasuptime', reportObj['scheduleddowntimeasuptime']);
-	set_initial_state('report_type', reportObj['report_type']);
-	set_initial_state('report_period', reportObj['report_period']);
-	show_calendar(reportObj['report_period']);
-	set_initial_state('rpttimeperiod', reportObj['rpttimeperiod']);
-	if (reportObj['report_name'] != undefined) {
-		set_initial_state('report_name', reportObj['report_name']);
-	} else {
-		set_initial_state('report_name', reportObj['sla_name']);
+	});
+	set_initial_state('assume_initial_states', reportObj.assume_initial_states);
+	set_initial_state('host', reportObj.initialassumedhoststate);
+	set_initial_state('service', reportObj.initialassumedservicestate);
+	set_initial_state('scheduleddowntimeasuptime', reportObj.scheduleddowntimeasuptime);
+	set_initial_state('report_type', reportObj.report_type);
+	set_initial_state('report_period', reportObj.report_period);
+	show_calendar(reportObj.report_period);
+	set_initial_state('rpttimeperiod', reportObj.rpttimeperiod);
+	if (reportObj.report_name != undefined) {
+		set_initial_state('report_name', reportObj.report_name);
+	} else if (reportObj.sla_name != undefined) {
+		set_initial_state('sla_name', reportObj.sla_name);
 		$('#enter_sla').show();
 	}
-	set_initial_state('includesoftstates', reportObj['includesoftstates']);
-	if (reportObj['report_period'] == 'custom') {
+	set_initial_state('includesoftstates', reportObj.includesoftstates);
+	if (reportObj.report_period == 'custom') {
 		if ($('input[name=type]').attr('value') == 'sla') {
-			js_print_date_ranges(reportObj['start_time'], 'start', 'month');
-			js_print_date_ranges(reportObj['end_time'], 'end', 'month');
+			js_print_date_ranges(reportObj.start_time, 'start', 'month');
+			js_print_date_ranges(reportObj.end_time, 'end', 'month');
 
-			setTimeout('set_initial_state("report_period-start", ' + reportObj['start_year'] + ')', 2000);
-			setTimeout('set_initial_state("report_period-startmonth", ' + reportObj['start_month'] + ')', 2000);
-			setTimeout('set_initial_state("report_period-end", ' + reportObj['end_year'] + ')', 2000);
-			setTimeout('set_initial_state("report_period-endmonth", ' + reportObj['end_month'] + ')', 2000);
+			setTimeout('set_initial_state("report_period-start", ' + reportObj.start_year + ')', 2000);
+			setTimeout('set_initial_state("report_period-startmonth", ' + reportObj.start_month + ')', 2000);
+			setTimeout('set_initial_state("report_period-end", ' + reportObj.end_year + ')', 2000);
+			setTimeout('set_initial_state("report_period-endmonth", ' + reportObj.end_month + ')', 2000);
 		} else {
-			startDate = epoch_to_human(reportObj['start_time']);
+			startDate = epoch_to_human(reportObj.start_time);
 			//$('#cal_start').text(format_date_str(startDate));
-			document.forms['report_form'].start_time.value = format_date_str(startDate);
-			endDate = epoch_to_human(reportObj['end_time']);
+			document.forms.report_form.start_time.value = format_date_str(startDate);
+			endDate = epoch_to_human(reportObj.end_time);
 			//$('#cal_end').text(format_date_str(endDate));
-			document.forms['report_form'].end_time.value = format_date_str(endDate);
+			document.forms.report_form.end_time.value = format_date_str(endDate);
 		}
 	}
 	current_obj_type = field_str;
-
-	// wait for lists to populate
-	setTimeout("remove_duplicates();", 500);
 }
 
 function set_initial_state(what, val)
 {
 	var rep_type = $('input[name=type]').attr('value');
-	if (document.forms['report_form_sla'] != undefined) {
-		f = document.forms['report_form_sla'];
+	if (document.forms.report_form_sla != undefined) {
+		f = document.forms.report_form_sla;
 	} else {
-		f = document.forms['report_form'];
+		f = document.forms.report_form;
 	}
 	var item = '';
 	var elem = false;
@@ -500,28 +498,28 @@ function set_initial_state(what, val)
 		case 'includesoftstates':
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
-				f.elements['includesoftstates'].checked = true;
+				f.elements.includesoftstates.checked = true;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
 				toggle_label_weight(0, 'include_softstates');
-				f.elements['includesoftstates'].checked = false;
+				f.elements.includesoftstates.checked = false;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
 			break;
-		case 'assumeinitialstates':
+		case 'assume_initial_states':
 			if (val!='0') {
 				edit_state_options(1);
 				toggle_label_weight(1, 'assume_initial');
-				//f.elements['assumeinitialstates'].checked = true;
+				//f.elements['assume_initial_states'].checked = true;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', true);
 				}
 			} else {
-				//f.elements['assumeinitialstates'].checked = false;
+				//f.elements['assume_initial_states'].checked = false;
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
@@ -543,7 +541,7 @@ function set_initial_state(what, val)
 			}
 			break;
 		case 'report_name':
-			f.elements['report_name'].value = val;
+			f.elements.report_name.value = val;
 			break;
 		case 'rpttimeperiod':
 			item = 'rpttimeperiod';
@@ -578,10 +576,12 @@ function set_initial_state(what, val)
 			item = what;
 	}
 	if (item) {
-		elem = f.elements[item];
-		for (i=0;i<elem.length;i++) {
-			if (elem.options[i].value==val) {
-				elem.options[i].selected = true;
+		elem = f[item];
+		if (elem) {
+			for (i=0;i<elem.length;i++) {
+				if (elem.options[i].value==val) {
+					elem.options[i].selected = true;
+				}
 			}
 		}
 	}
@@ -605,7 +605,7 @@ function new_schedule_rows(id, period_str, recipients, filename, description, re
 	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
 	setup_editable();
 	$('#new_schedule_report_form').clearForm();
-	setTimeout('delayed_hide_progress()', 1000);
+	setTimeout(delayed_hide_progress, 1000);
 	update_visible_schedules(false);
 	//nr_of_scheduled_instances++;
 

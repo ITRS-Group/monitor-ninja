@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="state_breakdown" style="margin-top: 15px">
-	<?php $i=1; $bg_color = ($i%2 == 0) ? '#ffffff' : '#f2f2f2'; ?>
 	<table summary="<?php echo _('Result table') ?>">
 		<!--<caption><?php echo str_replace(': ', ' '._('for').' '.$source.': ', $header_string); ?></caption>-->
 		<tr>
@@ -33,7 +32,7 @@
 			<td class="data"><?php echo reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) ?> %
 			<?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($avail_data['values']['PERCENT_TIME_' . $var_type .'_SCHEDULED']) > 0 ? '' : 'not-').strtolower($state_values[$var_type]).'.png'),
 				array('alt' => strtolower($state_values[$var_type]),'title' => strtolower($state_values[$var_type]),'style' => 'height: 12px; width: 12px')); ?>
-			<?php if ($scheduled_downtime_as_uptime == 2 && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
+			<?php if ($options['scheduleddowntimeasuptime'] == 2 && ($var_type === 'UP' || $var_type == 'OK') && ($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP'] > 0)) { print '<br />('.reports::format_report_value($avail_data['values']['PERCENT_TIME_DOWN_COUNTED_AS_UP']).'% in other states)'; } ?>
 			</td>
 		</tr>
 		<tr class="dark">

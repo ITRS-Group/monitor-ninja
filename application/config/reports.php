@@ -17,5 +17,3 @@ $config['from_email'] = '';
 *	Path to showlog executable
 */
 $config['showlog_path'] = '/opt/monitor/op5/merlin/showlog';
-
-$config['reports_link'] = "reports";

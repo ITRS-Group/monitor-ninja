@@ -15,7 +15,7 @@
 					<td>
 						<input type="hidden" name="new_report_setup" value="1" />
 						<?php //echo help::render('reporting_period');?> <?php echo _('Reporting period') ?><br />
-						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $report_periods, $selected); ?>
+						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $options->get_alternatives('report_period'), $options['report_period']); ?>
 					</td>
 				</tr>
 				<tr id="display" style="display: none; clear: both;" class="none fancydisplay">
@@ -39,19 +39,19 @@
 				<tr class="none">
 					<td>
 						<?php //echo he	lp::render('assume_initial_states'); ?>
-						<input type="checkbox" value="1" class="checkbox" id="assume" name="assumeinitialstates" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
+						<input type="checkbox" value="1" class="checkbox" id="assume" name="assume_initial_states" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
 						<label for="assume" id="assume_initial"><?php echo _('Assume initial states') ?></label>
 					</td>
 				</tr>
 				<tr id="state_options" class="none">
 					<td>
 						<?php echo _('First assumed host state') ?><br />
-						<?php echo form::dropdown(array('name' => 'initialassumedhoststate', 'class' => 'select-initial'),
-							$initial_assumed_host_states, $selected_initial_assumed_host_state); ?>
+						<?php echo form::dropdown(array('name' => 'initial_assumed_host_state', 'class' => 'select-initial'),
+							$options->get_alternatives('initial_assumed_host_state'), $options['initial_assumed_host_state']); ?>
 							<br />
 						<?php echo _('First assumed service state') ?> <br />
-						<?php echo form::dropdown(array('name' => 'initialassumedservicestate', 'class' => 'select-initial'),
-						$initial_assumed_service_states, $selected_initial_assumed_service_state); ?>
+						<?php echo form::dropdown(array('name' => 'initial_assumed_service_state', 'class' => 'select-initial'),
+							$options->get_alternatives('initial_assumed_service_state'), $options['initial_assumed_service_state']); ?>
 					</td>
 				</tr>
 				<tr class="none">
@@ -62,9 +62,7 @@
 			</table>
 
 
-		<?php	if (is_array($html_options))
-				foreach ($html_options as $html_option)
-					echo form::hidden($html_option[1], $html_option[2]); ?>
+		<?php	$options->as_form(); ?>
 			<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
 		</div>
 	</form>

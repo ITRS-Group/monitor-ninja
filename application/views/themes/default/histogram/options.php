@@ -11,12 +11,12 @@
 <?php	echo form::open('histogram/generate', array('id' => 'histogram_form', 'onsubmit' => 'return check_form_values(this);')); ?>
 			<table summary="Report settings" id="report">
 				<tr class="none">
-					<td><?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $report_periods, $selected); ?></td>
+					<td><?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $options->get_alternatives('report_period'), $options['report_period']); ?></td>
 				</tr>
 				<tr>
 					<td>
 						<?php echo _('State Types To Graph') ?><br />
-						<?php echo form::dropdown('state_types', $statetypes, $selected_state_types) ?>
+						<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 					</td>
 				</tr>
 				<tr id="display" style="display: none; clear: both;" class="none fancydisplay">
@@ -34,24 +34,24 @@
 				</tr>
 				<tr>
 					<td>
-						<?php echo $label_breakdown ?><br />
-						<?php echo form::dropdown('breakdown', $breakdown, $selected_breakdown) ?>
+						<?php echo _('Statistics Breakdown')?><br />
+						<?php echo form::dropdown('breakdown', $options->get_alternatives('breakdown'), $options['breakdown']) ?>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<?php echo $label_events_to_graph ?><br />
+						<?php echo _('Events To Graph') ?><br />
 						<?php if ($sub_type == 'host') { ?>
-							<?php echo form::dropdown('host_states', $hoststates, $selected_host_state);
+							<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']);
 							} else { ?>
-							<?php echo form::dropdown('service_states', $servicestates, $selected_service_state);
+							<?php echo form::dropdown('service_states', $options->get_alternatives('service_states'), $options['service_states']);
 							} ?>
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td>
-					<?php echo form::checkbox('newstatesonly', 1, $selected_newstatesonly); ?>
+					<?php echo form::checkbox('newstatesonly', 1, $options['newstatesonly']); ?>
 					<?php echo _('Ignore Repeated States') ?>
 					</td>
 				</tr>
@@ -61,11 +61,7 @@
 					</td>
 				</tr>
 			</table>
-
-
-		<?php	if (is_array($html_options))
-				foreach ($html_options as $html_option)
-					echo form::hidden($html_option[1], $html_option[2]); ?>
-		</div>
+			<?php echo $options->as_form(); ?>
+		</form>
 	</div>
-</form>
+</div>

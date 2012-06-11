@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
  * Reports controller
- * Requires authentication
+ *
+ * This particular reports controller is meant as a base controller for both
+ * SLA and Availability reports, mostly for hysterical reasons.
  *
  *  op5, and the op5 logo are trademarks, servicemarks, registered servicemarks
  *  or registered trademarks of op5 AB.
@@ -11,251 +13,28 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Reports_Controller extends Authenticated_Controller
+class Reports_Controller extends Base_reports_Controller
 {
-	public static $colors = array(
-		'green' => '#aade53',
-		'yellow' => '#ffd92f',
-		'orange' => '#ff9d08',
-		'red' 	=> '#f7261b',
-		'grey' 	=> '#a19e95',
-		'lightblue' => '#EAF0F2', # actual color is #ddeceb, but it is hardly visible
-		'white' => '#ffffff'
-	);
-
-	public static $options = array(
-		'rpttimeperiod' => 'report_timeperiod',
-		'scheduleddowntimeasuptime' => 'scheduled_downtime_as_uptime',
-		'assumestatesduringnotrunning' => 'assume_states_during_not_running',
-		'includesoftstates' => 'include_soft_states',
-		'assumeinitialstates' => 'assume_initial_states',
-		'cluster_mode' => 'cluster_mode',
-		'use_average' =>'use_average',
-		'host_filter_status_up' => 'host_filter_status_up',
-		'host_filter_status_down' => 'host_filter_status_down',
-		'host_filter_status_unreachable' => 'host_filter_status_unreachable',
-		'host_filter_status_undetermined' => 'host_filter_status_undetermined',
-		'service_filter_status_ok' => 'service_filter_status_ok',
-		'service_filter_status_warning' => 'service_filter_status_warning',
-		'service_filter_status_unknown' => 'service_filter_status_unknown',
-		'service_filter_status_critical' => 'service_filter_status_critical',
-		'service_filter_status_pending' => 'service_filter_status_pending',
-		'include_trends' => 'include_trends',
-	);
-
-	public static $dep_vars = array(
-		'assumeinitialstates' => array(
-			'initialassumedhoststate' => 'initial_assumed_host_state',
-			'initialassumedservicestate' => 'initial_assumed_service_state'
-		)
-	);
-
-	public $setup_keys = array(
-		'report_name',
-		'info',
-		'rpttimeperiod',
-		'report_period',
-		'start_time',
-		'end_time',
-		'report_type',
-		'initialassumedhoststate',
-		'initialassumedservicestate',
-		'assumeinitialstates',
-		'scheduleddowntimeasuptime',
-		'assumestatesduringnotrunning',
-		'includesoftstates',
-		'use_average',
-		'cluster_mode',
-		'use_alias',
-		'host_filter_status',
-		'service_filter_status',
-		'include_trends'
-	);
-
-	public static $map_type_field = array(
-		'hosts' => "host_name",
-		'services' => "service_description",
-		'hostgroups' => "hostgroup",
-		'servicegroups' => "servicegroup"
-	);
-
-	private $err_msg = '';
-
-	public static $initial_assumed_host_states = array(
-	   -1 => 'Current state',
-	   -2 => 'Unspecified',
-	   -3 => 'First Real State',
-	    0 => 'Host Up',
-	    1 => 'Host Down',
-	    2 => 'Host Unreachable',
-	);
-
-	public static $initial_assumed_service_states = array(
-	   -1 => 'Current state',
-	   -2 => 'Unspecified',
-	   -3 => 'First Real State',
-	    0 => 'Service Ok',
-	    1 => 'Service Warning',
-	    2 => 'Service Critical',
-	    3 => 'Service Unknown',
-	);
-
-	public static $sla_field_names = array(
-		'hosts' => 'PERCENT_TOTAL_TIME_UP',
-		'hostgroups' => 'PERCENT_TOTAL_TIME_UP',
-		'services' => 'PERCENT_TOTAL_TIME_OK',
-		'servicegroups' => 'PERCENT_TOTAL_TIME_OK'
-	);
-
-	public $template_prefix = false;
-
-	private $state_values = false;
-
-	private $initialassumedhoststate = -1;
-	private $initialassumedservicestate = -1;
-
-	private $abbr_month_names = false;
-	private $month_names = false;
-	private $day_names = false;
-	private $abbr_day_names = false;
-	private $first_day_of_week = 1;
-
-	# default values
-	private $assume_state_retention = true;
-	private $assume_states_during_not_running = true;
-	private $include_soft_states = false;
-	private $cluster_mode = false;
-	private $scheduled_downtime_as_uptime = false;
-
-	private $assume_initial_states = true;
-	private $initial_assumed_host_state = -3;
-	private $initial_assumed_service_state = -3;
-
-	private $host_filter_status_up = 1;
-	private $host_filter_status_down = 1;
-	private $host_filter_status_unreachable = 1;
-	private $host_filter_status_undetermined = 1;
-	private $service_filter_status_ok = 1;
-	private $service_filter_status_warning = 1;
-	private $service_filter_status_unknown = 1;
-	private $service_filter_status_critical = 1;
-	private $service_filter_status_pending = 1;
-
-	private $use_average = 0;
-	private $use_alias = 0;
-
-	private $type = false;
-	public $report_id = false;
-	public $data_arr = false;
-	private $report_type = false;
+	protected $data_arr = false;
 	private $object_varname = false;
-	private $time_arr = array();
 
 	private $status_link = "status/host/";
 	private $trend_link = "trends/generate";
-	private $histogram_link = "histogram/host";
 	private $history_link = "showlog/alert_history";
 	private $notifications_link = "notifications/host";
 
-	public $reports_model = false;
-	private $trends_graph_model = false;
-	public $start_date = false;
-	public $end_date = false;
-	public $report_options = false;
-	private $in_months = false;
-	public $extra_template_data = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-
-		$this->reports_model = new Reports_Model();
-		$this->trends_graph_model = new Trends_graph_Model();
-
-		$this->abbr_month_names = array(
-			_('Jan'),
-			_('Feb'),
-			_('Mar'),
-			_('Apr'),
-			_('May'),
-			_('Jun'),
-			_('Jul'),
-			_('Aug'),
-			_('Sep'),
-			_('Oct'),
-			_('Nov'),
-			_('Dec')
-		);
-
-		$this->month_names = array(
-			_('January'),
-			_('February'),
-			_('March'),
-			_('April'),
-			_('May'),
-			_('June'),
-			_('July'),
-			_('August'),
-			_('September'),
-			_('October'),
-			_('November'),
-			_('December')
-		);
-
-		$this->abbr_day_names = array(
-			_('Sun'),
-			_('Mon'),
-			_('Tue'),
-			_('Wed'),
-			_('Thu'),
-			_('Fri'),
-			_('Sat')
-		);
-
-		$this->day_names = array(
-			_('Sunday'),
-			_('Monday'),
-			_('Tuesday'),
-			_('Wednesday'),
-			_('Thursday'),
-			_('Friday'),
-			_('Saturday')
-		);
-
-		$this->state_values = array(
-			'OK' => _('OK'),
-			'WARNING' => _('WARNING'),
-			'UNKNOWN' => _('UNKNOWN'),
-			'CRITICAL' => _('CRITICAL'),
-			'PENDING' => _('PENDING'),
-			'UP' => _('UP'),
-			'DOWN' => _('DOWN'),
-			'UNREACHABLE' => _('UNREACHABLE')
-		);
-
-		$this->scheduled_downtime_options = array(
-			0 => _('Actual state'),
-			1 => _('Uptime'),
-			2 => _('Uptime, with difference')
-		);
-	}
-
-	public function add_view($view) {
-		$ret = parent::add_view($view);
-		if (is_array($this->extra_template_data)) {
-			foreach ($this->extra_template_data as $key => $val) {
-				$ret->$key = $val;
-			}
-		}
-		return $ret;
-	}
-
+	protected $reports_model = false;
+	protected $trends_graph_model = false;
 
 	/**
 	*	Display report selection/setup page
 	*/
-	public function index($type='avail')
+	public function index($input=false)
 	{
+		$this->setup_options_obj($input);
+		$this->reports_model = new Reports_Model($this->options);
+		$this->trends_graph_model = new Trends_graph_Model();
+
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
@@ -273,69 +52,8 @@ class Reports_Controller extends Authenticated_Controller
 		Session::instance()->set('current_report_params', null);
 		Session::instance()->set('main_report_params', null);
 
-		# 	The following basically means:
-		# 	Fetch the input variable 'type' from
-		#	either $_GET or $_POST and use default
-		# 	method param if nothing found
-		$this->type = $this->input->post(
-			'type', $this->input->get(
-				'type', $type)
-		);
-
-		$del_id = arr::search($_REQUEST, 'del_id', false);
-
-		$del_ok = $del_result = $del_msg = null;
-		if (arr::search($_REQUEST, 'del_report', false) !== false && $del_id !== false) {
-			$del_ok = Saved_reports_Model::delete_report($this->type, $del_id);
-			if ($del_ok != '') {
-				$del_msg = _('Report was deleted successfully.');
-				$del_result = 'ok';
-			} else {
-				$del_msg = _('An error occurred while trying to delete the report.');
-				$del_result = 'error';
-			}
-		}
-
-		$cluster_mode = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
-		$cluster_mode_checked =	!empty($cluster_mode) ? 'checked="checked"' : '';
-		$assume_initial_states_checked =
-			arr::search($_REQUEST, 'assumeinitialstates', $this->assume_initial_states) ? 'checked="checked"' : '';
-		$assume_states_during_not_running_checked =
-			arr::search($_REQUEST, 'assumestatesduringnotrunning', $this->assume_states_during_not_running) ? 'checked="checked"' : '';
-
-		$host_filter_status_up_checked = arr::search($_REQUEST, 'host_filter_status[0]', $this->host_filter_status_up) ? 'checked="checked"' : '';
-		$host_filter_status_down_checked = arr::search($_REQUEST, 'host_filter_status[1]', $this->host_filter_status_down) ? 'checked="checked"' : '';
-		$host_filter_status_unreachable_checked = arr::search($_REQUEST, 'host_filter_status[2]', $this->host_filter_status_unreachable) ? 'checked="checked"' : '';
-		$host_filter_status_undetermined_checked = arr::search($_REQUEST, 'host_filter_status[3]', $this->host_filter_status_undetermined) ? 'checked="checked"' : '';
-		$service_filter_status_ok_checked = arr::search($_REQUEST, 'service_filter_status[0]', $this->service_filter_status_ok) ? 'checked="checked"' : '';
-		$service_filter_status_warning_checked = arr::search($_REQUEST, 'service_filter_status[1]', $this->service_filter_status_warning) ? 'checked="checked"' : '';
-		$service_filter_status_unknown_checked = arr::search($_REQUEST, 'service_filter_status[2]', $this->service_filter_status_unknown) ? 'checked="checked"' : '';
-		$service_filter_status_critical_checked = arr::search($_REQUEST, 'service_filter_status[3]', $this->service_filter_status_critical) ? 'checked="checked"' : '';
-		$service_filter_status_pending_checked = arr::search($_REQUEST, 'service_filter_status[4]', $this->service_filter_status_pending) ? 'checked="checked"' : '';
-
-		$include_soft_states_checked = '';//'checked="checked"';
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
-		$this->report_id =
-			arr::search($_REQUEST, 'report_id', false);
-		$initial_assumed_host_state_selected =
-			arr::search($_REQUEST, 'initialassumedhoststate', $this->initial_assumed_host_state);
-		$initial_assumed_service_state_selected =
-			arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
-		$csv_output_checked =
-			arr::search($_REQUEST, 'csvoutput', false) ? 'checked="checked"' : '';
-		$include_trends_checked = arr::search($_REQUEST, 'include_trends', true) ? 'checked="checked"' : '';
-		$use_alias  =
-			arr::search($_REQUEST, 'use_alias', $this->use_alias);
-		$use_alias_checked = $use_alias ? 'checked="checked"' : '';
-
-		$use_average_yes_selected = $use_average_no_selected = '';
-		if(arr::search($_REQUEST, 'use_average', $this->use_average) == 1)
-			$use_average_yes_selected = 'selected="selected"';
-		else
-			$use_average_no_selected = 'selected="selected"';
-
-
 		$type_str = $this->type == 'avail'
 			? _('availability')
 			: _('SLA');
@@ -343,11 +61,10 @@ class Reports_Controller extends Authenticated_Controller
 			// @todo make this work work, only handled by js and a very silent redirect
 			// now since the following message never gets printed:
 			$error_msg = $this->err_msg;
-			$this->template->error = $this->add_view('reports/'.$this->template_prefix.'error');
+			$this->template->error = $this->add_view('reports/error');
 		}
-		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'setup');
+		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
-		#$this->template->content->noheader = $noheader;
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
@@ -361,10 +78,12 @@ class Reports_Controller extends Authenticated_Controller
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
 		# this makes anything in application/media be imported before
-		# application/views before modules/whatever
+		# application/views before modules/whatever, so op5reports can
+		# put random crap here as well.
 
 		# I apologize
 		sort($this->xtra_js);
+		$this->xtra_js = array_unique($this->xtra_js);
 
 		$this->template->js_header->js = $this->xtra_js;
 
@@ -401,108 +120,18 @@ class Reports_Controller extends Authenticated_Controller
 			}
 		}
 		$scheduled_info = false;
-		$report_info = false;
-		$json_report_info = false;
-		if ($this->report_id) {
-			$report_info = Saved_reports_Model::get_report_info($this->type, $this->report_id);
-			if ($report_info) {
-				if ($this->type == 'sla') {
-					if (isset($report_info['start_time'])) {
-						$report_info['start_year'] = date('Y', $report_info['start_time']);
-						$report_info['start_month'] = date('m', $report_info['start_time']);
-					}
-					if (isset($report_info['end_time'])) {
-						$report_info['end_year'] = date('Y', $report_info['end_time']);
-						$report_info['end_month'] = date('m', $report_info['end_time']-1);
-					}
-				}
-				$json_report_info = json::encode($report_info);
-			}
-			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+		if ($this->options['report_id']) {
+			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
-
-			if(isset($report_info["assumeinitialstates"]) && $report_info["assumeinitialstates"] != 0)
-				$assume_initial_states_checked = 'checked="checked"';
-			else
-				$assume_initial_states_checked = '';
-
-			if($report_info["initialassumedhoststate"] != 0)
-				$initial_assumed_host_state_selected = 'checked="checked"';
-			else
-				$initial_assumed_host_state_selected = '';
-
-			if($report_info["cluster_mode"] != 0)
-				$cluster_mode_checked = 'checked="checked"';
-			else
-				$cluster_mode_checked = '';
-
-			if($report_info["initialassumedservicestate"] != 0)
-				$initial_assumed_service_state_selected = 'checked="checked"';
-			else
-				$initial_assumed_service_state_selected = '';
-
-			if($report_info["assumestatesduringnotrunning"] != 0)
-				$assume_states_during_not_running_checked = 'checked="checked"';
-			else
-				$assume_states_during_not_running_checked = '';
-
-			if (!empty($report_info['host_filter_status'])) {
-				$hostfilterstatus = i18n::unserialize($report_info['host_filter_status']);
-				$host_filter_status_up_checked = ($hostfilterstatus['up'] != 0) ? 'checked="checked"' : '';
-				$host_filter_status_down_checked = ($hostfilterstatus['down'] != 0) ? 'checked="checked"' : '';
-				$host_filter_status_unreachable_checked = ($hostfilterstatus['unreachable'] != 0) ? 'checked="checked"' : '';
-				$host_filter_status_undetermined_checked = ($hostfilterstatus['undetermined'] != 0) ? 'checked="checked"' : '';
-			}
-			else {
-				$host_filter_status_up_checked = 'checked="checked"';
-				$host_filter_status_down_checked = 'checked="checked"';
-				$host_filter_status_unreachable_checked = 'checked="checked"';
-				$host_filter_status_undetermined_checked = 'checked="checked"';
-			}
-			if (!empty($report_info['service_filter_status'])) {
-				$servicefilterstatus = i18n::unserialize($report_info['service_filter_status']);
-				$service_filter_status_ok_checked = ($servicefilterstatus['ok'] != 0) ? 'checked="checked"' : '';
-				$service_filter_status_warning_checked = ($servicefilterstatus['warning'] != 0) ? 'checked="checked"' : '';
-				$service_filter_status_unknown_checked = ($servicefilterstatus['unknown'] != 0) ? 'checked="checked"' : '';
-				$service_filter_status_critical_checked = ($servicefilterstatus['critical'] != 0) ? 'checked="checked"' : '';
-				$service_filter_status_pending_checked = ($servicefilterstatus['pending'] != 0) ? 'checked="checked"' : '';
-			}
-			else {
-				$service_filter_status_ok_checked = 'checked="checked"';
-				$service_filter_status_warning_checked = 'checked="checked"';
-				$service_filter_status_unknown_checked = 'checked="checked"';
-				$service_filter_status_critical_checked = 'checked="checked"';
-				$service_filter_status_pending_checked = 'checked="checked"';
-			}
-
-			if($report_info["includesoftstates"] != 0)
-				$include_soft_states_checked = 'checked="checked"';
-			else
-				$include_soft_states_checked = '';
-
-			if(isset($report_info["use_average"]) && $report_info["use_average"] != 0) {
-				$use_average_no_selected = '';
-				$use_average_yes_selected = "selected='selected'";
-			} else {
-				$use_average_no_selected = "selected='selected'";
-				$use_average_yes_selected = '';
-			}
-
-			$use_alias_checked = (isset($report_info["use_alias"]) && $report_info["use_alias"] != 0) ? 'checked="checked"' : '';
-
-			$report_period = $report_info["report_period"];
 		}
 		$template->json_periods = $json_periods;
 		$template->scheduled_info = $scheduled_info;
 		$scheduled_label = _('Scheduled');
 
 		$label_avail = _('Availability');
-		$template->label_avail = $label_avail;
 
 		$label_sla = _('SLA');
-		$template->label_sla = $label_sla;
 		$label_switch_to = _('Switch to');
-		$template->label_switch_to = $label_switch_to;
 
 		$label_report = _('report');
 		$template->label_report = $label_report;
@@ -535,35 +164,30 @@ class Reports_Controller extends Authenticated_Controller
 			$this->js_strings .= "var _show_schedules = true;\n";
 		}
 
-		if ($this->report_id) {
+		if ($this->options['report_id']) {
 			$this->inline_js .= "$('#assumed_host_state').hide();
 			$('#assumed_service_state').hide();\n";
+			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
 		}
-		if (!$report_info) {
+		else {
 			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
-		} else {
-			$this->inline_js .= "expand_and_populate(" . $json_report_info . ");\n";
 		}
 
-		if($assume_initial_states_checked) {
+		if($this->options['assumeinitialstates']) {
 			$this->inline_js .= "show_state_options(true);\n";
 			$this->inline_js .= "toggle_label_weight(true, 'assume_initial');\n";
 		}
-		if($include_soft_states_checked)
+		if($this->options['includesoftstates'])
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
-		if($assume_states_during_not_running_checked)
+		if($this->options['assumestatesduringnotrunning'])
 			$this->inline_js .= "toggle_label_weight(true, 'assume_progdown');\n";
-		if($csv_output_checked)
+		if($this->options['csv_output'])
 			$this->inline_js .= "toggle_label_weight(true, 'csvout');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 		$this->inline_js .= "uncheck('save_report_settings');\n";
 		$this->inline_js .= "$('#report_save_information').hide();\n";
 
-		if (!is_null($del_ok) && !is_null($del_result)) {
-			$this->inline_js .= "show_message('".$del_result."', '".$del_msg."');\n";
-		}
-
-		$this->js_strings .= "var assumeinitialstates = '".$this->assume_initial_states."';\n";
+		$this->js_strings .= "var assumeinitialstates = '".$this->options['assumeinitialstates']."';\n";
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
 		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
@@ -581,81 +205,42 @@ class Reports_Controller extends Authenticated_Controller
 		$this->js_strings .= reports::js_strings();
 
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-		$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 		$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
 		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
-			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+		$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
+		$this->js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
+			"the corresponding schedule will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
 		$this->template->inline_js = $this->inline_js;
 
 		$template->type = $this->type;
-		$template->scheduled_label = $scheduled_label;
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
-		$template->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
-		$template->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
 		$template->reporting_periods = $this->_get_reporting_periods();
-		$template->cluster_mode_checked = $cluster_mode_checked;
-		$template->assume_initial_states_checked = $assume_initial_states_checked;
-		$template->initial_assumed_host_states = self::$initial_assumed_host_states;
-		$template->initial_assumed_service_states = self::$initial_assumed_service_states;
-		$template->assume_states_during_not_running_checked = $assume_states_during_not_running_checked;
-		$template->host_filter_status_up_checked = $host_filter_status_up_checked;
-		$template->host_filter_status_down_checked = $host_filter_status_down_checked;
-		$template->host_filter_status_unreachable_checked = $host_filter_status_unreachable_checked;
-		$template->host_filter_status_undetermined_checked = $host_filter_status_undetermined_checked;
-		$template->service_filter_status_ok_checked = $service_filter_status_ok_checked;
-		$template->service_filter_status_warning_checked = $service_filter_status_warning_checked;
-		$template->service_filter_status_unknown_checked = $service_filter_status_unknown_checked;
-		$template->service_filter_status_critical_checked = $service_filter_status_critical_checked;
-		$template->service_filter_status_pending_checked = $service_filter_status_pending_checked;
-		$template->include_soft_states_checked = $include_soft_states_checked;
-		$template->use_alias_checked = $use_alias_checked;
-		$template->use_average_yes_selected = $use_average_yes_selected;
-		$template->use_average_no_selected = $use_average_no_selected;
-		$template->initial_assumed_host_state_selected = $initial_assumed_host_state_selected;
-		$template->initial_assumed_service_state_selected = $initial_assumed_service_state_selected;
 
-		$template->csv_output_checked = $csv_output_checked;
-		$template->include_trends_checked = $include_trends_checked;
 		$template->months = $this->abbr_month_names;
-		$edit_str = _('edit');
-		$template->is_scheduled_clickstr = sprintf(_("This report has been scheduled. Click on '[%s]' to change settings"), $edit_str);
 
-		if ($report_info) {
-			$date_format = $this->_get_date_format(true);
-			# due to an old bug, some reports could have been saved
-			# with the timestamp being the year which would result in
-			# dates being printed as 1970-01-01
-			# Checking that it is > the timestamp for 1980-01-01 (315525600)
-			# will make us being possible to handle this anyway
-			$ts_check = 315525600; # 1980-01-01
-			$template->start_date = !empty($report_info['start_time']) && $report_info['start_time'] > $ts_check ? date($date_format, $report_info['start_time']) : '';
-			$template->start_time = !empty($report_info['start_time']) && $report_info['start_time'] > $ts_check ? date('H:i', $report_info['start_time']) : '08:00';
-			$template->end_date = !empty($report_info['end_time']) && $report_info['end_time'] > $ts_check ? date($date_format, $report_info['end_time']) : '';
-			$template->end_time = !empty($report_info['end_time']) && $report_info['end_time'] > $ts_check ? date('H:i', $report_info['end_time']) : '09:00';
-		}
+		$date_format = $this->_get_date_format(true);
+		# due to an old bug, some reports could have been saved
+		# with the timestamp being the year which would result in
+		# dates being printed as 1970-01-01
+		# Checking that it is > the timestamp for 1980-01-01 (315525600)
+		# will make us being possible to handle this anyway
+		$ts_check = 315525600; # 1980-01-01
+		$template->start_date = !empty($this->options['start_time']) && $this->options['start_time'] > $ts_check ? date($date_format, $this->options['start_time']) : '';
+		$template->start_time = !empty($this->options['start_time']) && $this->options['start_time'] > $ts_check ? date('H:i', $this->options['start_time']) : '08:00';
+		$template->end_date = !empty($this->options['end_time']) && $this->options['end_time'] > $ts_check ? date($date_format, $this->options['end_time']) : '';
+		$template->end_time = !empty($this->options['end_time']) && $this->options['end_time'] > $ts_check ? date('H:i', $this->options['end_time']) : '09:00';
 
-		$template->report_id = $this->report_id;
-		$template->report_info = $report_info;
-		$template->old_config_names_js = $old_config_names_js;
-		$template->old_config_names = $old_config_names;
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 		$template->saved_reports = $saved_reports;
 
-		# decide what report periods to print
-		$report_period_strings = $this->_report_period_strings($this->type);
-
-		$report_periods = $report_period_strings["report_period_strings"];
-		$template->report_periods = $report_periods;
-		$template->selected = $report_period_strings["selected"];
-
-		$new_schedule = $this->add_view('reports/'.$this->template_prefix.'new_schedule');
+		$new_schedule = $this->add_view('reports/new_schedule');
+		$new_schedule->type = $this->type;
 		$new_schedule->available_schedule_periods = $periods;
 
 		# we currently only have avail and SLA reports so hard-coding
@@ -688,7 +273,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$new_schedule->saved_reports = $avail_reports;
 
-		$template->available_schedules = $this->add_view('reports/'.$this->template_prefix.'schedules');
+		$template->available_schedules = $this->add_view('reports/schedules');
 		$available_schedules = $template->available_schedules;
 
 		# fetch ALL schedules (avail + SLA + Alert Summary)
@@ -745,153 +330,35 @@ class Reports_Controller extends Authenticated_Controller
 	/**
 	 * Generate (availability) report from parameters set in index()
 	 *
-	 * @param string $type = "avail"
-	 * @param int $report_id = false
 	 * @param array $input = false
 	 */
-	public function generate($type='avail', $report_id=false, $input=false)
+	public function generate($input=false)
 	{
+		$this->setup_options_obj($input);
+		$this->reports_model = new Reports_Model($this->options);
+		$this->trends_graph_model = new Trends_graph_Model();
 
 		# check if we have all required parts installed
 		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
 
-		if (!empty($input) && is_array($input)) {
-			$_REQUEST = $input;
-		}
-
 		$this->template->disable_refresh = true;
 
 		$this->_stash_params();
-
-		# 	Fetch the input variable 'type' from
-		#	either $_GET or $_POST and use default
-		# 	method param if nothing found
-		$this->type = $this->input->post(
-			'type', $this->input->get('type', $type)
-		);
 
 		$regexp = $this->input->post(
 			'regexp', $this->input->get('regexp', false)
 		);
 
-		# handle direct link from other page
-		if (!arr::search($_REQUEST, 'report_period') && ! arr::search($_REQUEST, 'timeperiod')) {
-			$_REQUEST['report_period'] = 'last24hours';
-			$_REQUEST['assumeinitialstates'] = 1;
-		}
+		$in_host = $this->options['host_name'];
+		$in_service = $this->options['service_description'];
+		$in_hostgroup = $this->options['hostgroup'];
+		$in_servicegroup = $this->options['servicegroup'];
 
-		# Handle call from cron or GUI to generate PDF report and send by email
-
-		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $report_id);
-		if (!empty($this->report_id)) {
-			$_REQUEST = Saved_reports_Model::get_report_info($this->type, $this->report_id);
-		}
-
-		$in_host = arr::search($_REQUEST, 'host', false);
-		if ($in_host === false)
-			$in_host = arr::search($_REQUEST, 'host_name', false);
-
-		$in_service = arr::search($_REQUEST, 'service', array());
-		if (empty($in_service))
-			$in_service = arr::search($_REQUEST, 'service_description', array());
-
-		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
-		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
-
-		$use_average_selected = arr::search($_REQUEST, 'use_average', $this->use_average);
-
-		$report_options = false;
-		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
-		$include_trends = arr::search($_REQUEST, 'include_trends', false);
-
-		if ($this->type == 'sla') {
-			// take care of start_year, end_year etc
-			$start_year = arr::search($_REQUEST, 'start_year');
-			$start_month = arr::search($_REQUEST, 'start_month');
-			$end_year = arr::search($_REQUEST, 'end_year');
-			$end_month = arr::search($_REQUEST, 'end_month');
-			if ($start_year && $start_month) {
-				$_REQUEST['start_time'] = "$start_year-$start_month-01";
-			}
-			if ($end_year && $end_month) {
-				$tmp_end_time = mktime(0, 0, 0, $end_month+1, 1, $end_year);
-				$_REQUEST['end_time'] = date('Y-m-d', $tmp_end_time);
-			}
-		}
-
-		// store all variables in array for later use
-		foreach ($_REQUEST as $key => $value) {
-			if (in_array($key, $this->setup_keys)) {
-				if ($key == 'host_filter_status') {
-					if ($value == NULL) { // for old reports without host_filter_status values defined
-						$report_options[$key] = false;
-						$host_filter_status = false;
-					}
-					elseif (!is_array($value)) { // if already serialized
-						$report_options[$key] = $value;
-						$host_filter_status = i18n::unserialize($value);
-					}
-					else {
-						$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
-						$host_filter_status = self::_create_filter_array($value,'host' );
-					}
-				}
-				elseif ($key == 'service_filter_status') {
-					if ($value == NULL) { // for old reports without service_filter_status values defined
-						$report_options[$key] = false;
-						$service_filter_status = false;
-					}
-					elseif (!is_array($value)) { // if already serialized
-						$report_options[$key] = $value;
-						$service_filter_status = i18n::unserialize($value);
-					}
-					else {
-						$report_options[$key] = serialize(self::_create_filter_array($value,'service'));
-						$service_filter_status = self::_create_filter_array($value,'service');
-					}
-				}
-				else {
-					$report_options[$key] = $value;
-				}
-				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
-					if (is_numeric($value)) {
-						$_REQUEST[$key] = date("Y-m-d H:i", $value);
-					}
-				}
-
-			}  else {
-				if ($this->type == 'sla' && preg_match('/^month/', trim($key))) {
-					$id = (int)str_replace('month_', '', $key);
-					if (trim($value) == '') continue;
-					$value = str_replace(',', '.', $value);
-					$value = (float)$value;
-					// values greater than 100 doesn't make sense
-					if ($value>100)
-						$value = 100;
-					$this->in_months[$id] = $value;
-				}
-			}
-		}
-
-		if ($this->type == 'sla') {
-			$report_name = arr::search($_REQUEST, 'report_name', false);
-			unset($report_options['include_trends']);
-			unset($report_options['report_name']);
-			$report_options['sla_name'] = $report_name;
-			unset($report_options['host_filter_status']);
-			unset($report_options['service_filter_status']);
-		}
-
-		$this->report_options = $report_options;
-		$obj_field = $report_options['report_type'] !== false ? self::$map_type_field[$report_options['report_type']] : false;
-		$obj_value = arr::search($_REQUEST, $obj_field, array());
-		// obj_value is ALWAYS an array
-
-		if (!empty($regexp) && $report_options['report_type'] !== false) {
+		if (!empty($regexp) && $this->options['report_type ']!== false) {
 			# remove last 's' from report_type to get object type
-			$obj_type = substr($report_options['report_type'], 0, -1);
+			$obj_type = substr($this->options['report_type'], 0, -1);
 			$obj_name = ucfirst($obj_type).'_Model';
 			$obj = new $obj_name();
 			$obj_res = $obj->regexp_where($obj_type.'_name', $regexp);
@@ -921,21 +388,13 @@ class Reports_Controller extends Authenticated_Controller
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
-		$this->template->content = $this->add_view('reports/'.$this->template_prefix.'index'); # base template with placeholders for all parts
+		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
 		$status_msg = false;
-		$report_info = false;
 		$msg_type = false;
-		$save_report_settings = arr::search($_REQUEST, 'save_report_settings');
 
-		if ($save_report_settings) {
-			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
-			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
-			$msg_type = $this->report_id ? "ok" : "";
-		}
-
-		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
+		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 
 		$mon_auth = Nagios_auth_Model::instance();
 		if (is_string($in_host)) {
@@ -966,9 +425,11 @@ class Reports_Controller extends Authenticated_Controller
 			$in_service = array(current($in_host).";$in_service");
 		}
 
-		foreach ($in_service as $k => $service) {
-			if (!$mon_auth->is_authorized_for_service($service))
-				unset($in_service[$k]);
+		if ($in_service !== false) {
+			foreach ($in_service as $k => $service) {
+				if (!$mon_auth->is_authorized_for_service($service))
+					unset($in_service[$k]);
+			}
 		}
 
 		foreach ($in_hostgroup as $k => $hostgroup) {
@@ -981,23 +442,11 @@ class Reports_Controller extends Authenticated_Controller
 				unset($in_servicegroup[$k]);
 		}
 
-		$this->report_type = arr::search($_REQUEST, 'report_type');
-		$in_csvoutput = arr::search($_REQUEST, 'csvoutput');
-		$start_time = arr::search($_REQUEST, 't1') ? arr::search($_REQUEST, 't1') : arr::search($_REQUEST, 'start_time');
-		$end_time = arr::search($_REQUEST, 't2') ? arr::search($_REQUEST, 't2') : arr::search($_REQUEST, 'end_time');
-		$report_period = arr::search($_REQUEST, 'timeperiod') ? arr::search($_REQUEST, 'timeperiod') : arr::search($_REQUEST, 'report_period');
-		$rpttimeperiod = arr::search($_REQUEST, 'rpttimeperiod', '');
-		$cluster_mode = arr::search($_REQUEST, 'cluster_mode', $this->cluster_mode);
 		$hostgroup = false;
 		$hostname = false;
 		$servicegroup = false;
 		$service = false;
 		$sub_type = false;
-		$time_parts = false;
-
-		# just make sure the javascript isn't messing things up for us
-		$start_time = trim($start_time) == 'undefined' ? '' : $start_time;
-		$end_time = trim($end_time) == 'undefined' ? '' : $end_time;
 
 		// cgi compatibility variables
 		// Start dates
@@ -1014,56 +463,25 @@ class Reports_Controller extends Authenticated_Controller
 		$ehour 	= (int)arr::search($_REQUEST, 'ehour');
 		$emin 	= (int)arr::search($_REQUEST, 'emin');
 		$esec 	= (int)arr::search($_REQUEST, 'esec');
-		$this->report_type = $this->_check_report_type($this->report_type, $in_host, $in_service, $servicegroup, $hostgroup);
-
-		# default to "Current state" = -1 both in new and old avail
-		if(!isset($_REQUEST['initialassumedhoststate']))
-			$_REQUEST['initialassumedhoststate'] = $this->initialassumedhoststate;
-
-		if(!isset($_REQUEST['initialassumedservicestate']))
-			$_REQUEST['initialassumedservicestate'] = $this->initialassumedservicestate;
 
 		$err_msg = "";
-		$report_class = $this->reports_model;
-		foreach (self::$options as $controller_var => $report_model_var) {
-			if (!$report_class->set_option($report_model_var, arr::search($_REQUEST, $controller_var))) {
-				$err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $report_model_var, arr::search($_REQUEST, $controller_var))."'<br />";
-			}
-		}
-		// default to showing all states if none are given
-		$report_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
-		$report_class->set_option('service_filter_status', arr::search($_REQUEST, 'service_filter_status', array(1, 1, 1, 1, 1)));
-
 		// convert report period to timestamps
-		if ($report_period == 'custom' && !empty($syear) && !empty($eyear)) {
+		if ($this->options['report_period'] == 'custom' && !empty($syear) && !empty($eyear)) {
 			// cgi compatibility
-			$time_parts[0] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
-			$time_parts[1] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
-		} elseif(!empty($report_period)) {
-			$time_parts = $this->_calculate_time($report_period, $start_time, $end_time);
-		} else {
-			# Use time from t1 and t2 - when called from trends.cgi
-			$time_parts = array($start_time, $end_time);
+			$this->options['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
+			$this->options['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
 		}
 
-		$this->start_date = $time_parts[0]; // used in calculations by lib_report
-		$this->end_date = $time_parts[1];  // used in calculations by lib_report
-		$str_start_date = date($this->_get_date_format(true), $this->start_date); // used to set calendar
-		$str_end_date 	= date($this->_get_date_format(true), $this->end_date); // used to set calendar
-
-		$report_class->set_option('start_time', $this->start_date);
-		$report_class->set_option('end_time', $this->end_date);
-
-		if('custom' == $report_period)
-			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->start_date), date(nagstat::date_format(), $this->end_date));
+		if('custom' == $this->options['report_period'])
+			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
 		else
-			$report_time_formatted  = (isset($report_period_strings[$report_period]) ? $report_period_strings[$report_period] : $report_period);
+			$report_time_formatted  = $this->options->get_value('report_period');
 
-		if($rpttimeperiod != '')
-			$report_time_formatted .= " - $rpttimeperiod";
+		if($this->options['rpttimeperiod'] != '')
+			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
 		$group_name = false;
-		switch ($this->report_type) {
+		switch ($this->options['report_type']) {
 			case 'hostgroups':
 				$sub_type = "host";
 				$hostgroup = $in_hostgroup;
@@ -1090,69 +508,22 @@ class Reports_Controller extends Authenticated_Controller
 				url::redirect(Router::$controller.'/index');
 		}
 
-		$report_class->set_option('host_name', $hostname);
-		$report_class->set_option('service_description', $service);
+		$get_vars = $this->options->as_keyval_string();
 
-		$this->scheduled_downtime_as_uptime = arr::search($_REQUEST, 'scheduleddowntimeasuptime');
-		$assume_initial_states            = arr::search($_REQUEST, 'assumeinitialstates');
-		$assume_states_during_not_running = arr::search($_REQUEST, 'assumestatesduringnotrunning');
-		$include_soft_states              = arr::search($_REQUEST, 'includesoftstates');
-		$this->initial_assumed_host_state = arr::search($_REQUEST, 'initialassumedhoststate', $this->initial_assumed_host_state);
-		$this->initial_assumed_service_state = arr::search($_REQUEST, 'initialassumedservicestate', $this->initial_assumed_service_state);
-		$use_average = arr::search($_REQUEST, 'use_average', 0);
-		$use_alias = arr::search($_REQUEST, 'use_alias', 0);
-
-		# this part is probably not needed anymore since we won't have
-		# any 'old' cgi's anymore
-		if(!isset($_REQUEST['new_report_setup']))
-		{
-			$this->initial_assumed_host_state = $this->_convert_assumed_state($this->initial_assumed_host_state, $sub_type);
-			$this->initial_assumed_service_state = $this->_convert_assumed_state($this->initial_assumed_service_state, $sub_type);
-
-			$_REQUEST['initialassumedhoststate'] = $this->initial_assumed_host_state;
-			$_REQUEST['initialassumedservicestate'] = $this->initial_assumed_service_state;
-		}
-
-		$dep_vars = self::$dep_vars;
-		foreach ($dep_vars as $check => $set)
-			if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check]))
-				foreach ($set as $dep => $key) {
-					if (!$report_class->set_option($key, $_REQUEST[$dep])) {
-						$err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep])."'<br />";
-					}
-				}
-
-
-		$get_vars = "&report_period=$report_period";
-
-		foreach (self::$options as $var => $new_var)
-			$get_vars .= '&'.$var.'='.arr::search($_REQUEST, $var);
-
-
-		# The following part is not needed when creating csv output
-		# but is placed here because we want it in both the elseif and else
-		# part later in the code. Since function calls seems to be somewhat
-		# hard to get working when creating PDF reports, it is placed here.
-		$html_options[] = array('hidden', 'report_type', $this->report_type);
 		$selected_objects = ""; // string containing selected objects for this report
-
-		# pass selected calculation method on to report options
-		$html_options[] = array('hidden', 'use_alias', $use_alias);
 
 		# $objects is an array used when creating report_error page (template).
 		# Imploded into $missing_objects
 		$objects = false;
-		if (($this->report_type == 'hosts' || $this->report_type == 'services')) {
+		if (($this->options['report_type'] == 'hosts' || $this->options['report_type'] == 'services')) {
 			if (is_array($in_host)) {
 				foreach ($in_host as $host) {
-					$html_options[] = array('hidden', 'host_name[]', $host);
 					$selected_objects .= "&host_name[]=".$host;
 					$objects[] = $host;
 				}
 			}
 			if (is_array($in_service)) {
 				foreach ($in_service as $svc) {
-					$html_options[] = array('hidden', 'service_description[]', $svc);
 					$selected_objects .= "&service_description[]=".$svc;
 					$objects[] = $svc;
 				}
@@ -1160,14 +531,12 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			if (is_array($hostgroup)) {
 				foreach ($hostgroup as $h_gr) {
-					$html_options[] = array('hidden', 'hostgroup[]', $h_gr);
 					$selected_objects .= "&hostgroup[]=".$h_gr;
 					$objects[] = $h_gr;
 				}
 			}
 			if (is_array($servicegroup)) {
 				foreach ($servicegroup as $s_gr) {
-					$html_options[] = array('hidden', 'servicegroup[]', $s_gr);
 					$selected_objects .= "&servicegroup[]=".$s_gr;
 					$objects[] = $s_gr;
 				}
@@ -1178,20 +547,15 @@ class Reports_Controller extends Authenticated_Controller
 		# avail:
 		if ($this->type == 'avail') {
 			$this->data_arr = $group_name!== false
-				? $this->_expand_group_request($group_name, substr($this->report_type, 0, strlen($this->report_type)-1), $this->start_date, $this->end_date)
-				: $report_class->get_uptime(false, false, $this->start_date, $this->end_date, $hostgroup, $servicegroup);
+				? $this->_expand_group_request($group_name, $this->options->get_value('report_type'))
+				: $this->reports_model->get_uptime();
 		} else {
-			$this->data_arr = $this->get_sla_data($this->in_months, $objects);
+			$this->data_arr = $this->get_sla_data($this->options['months'], $objects);
 		}
-
-		$get_vars .= "&initialassumedhoststate=".$this->initial_assumed_host_state;
-		$get_vars .= "&initialassumedservicestate=".$this->initial_assumed_service_state;
 
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
 		$template->report_time_formatted = $report_time_formatted;
-		$template->report_id = $this->report_id;
-		$template->report_info = $report_info;
 		$template->status_msg = $status_msg;
 		$template->msg_type = $msg_type;
 		$report_template_check = !empty($in_hostgroup) ? true : ((count($in_host) > 1) ? true : false);
@@ -1206,10 +570,10 @@ class Reports_Controller extends Authenticated_Controller
 			# what objects were submitted?
 			$template->report_header = _('Empty report');
 
-			$template->error = $this->add_view('reports/'.$this->template_prefix.'error');
+			$template->error = $this->add_view('reports/error');
 
 			$template->error->error_msg = sprintf(_("The selected objects for this %s report doesn't seem to exist anymore.%s
-			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->report_type, 0, strlen($this->report_type)-1)), '<br />');
+			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->options['report_type'], 0, strlen($this->options['report_type'])-1)), '<br />');
 			if (!empty($objects)) {
 				$template->error->missing_objects = $objects;
 			}
@@ -1217,97 +581,18 @@ class Reports_Controller extends Authenticated_Controller
 			# ==========================================
 			# ========= REPORT STARTS HERE =============
 			# ==========================================
-			$html_options[] = array('hidden', 'rpttimeperiod', $rpttimeperiod);
-			if($include_soft_states)
-				$html_options[] = array('hidden', 'includesoftstates', $include_soft_states);
-
-			if($assume_states_during_not_running)
-				$html_options[] = array('hidden', 'assumestatesduringnotrunning', $assume_states_during_not_running);
-
-			if ($this->type === 'sla') {
-				# we need to stash all the variables needed for the report
-				# to be able to save it later. In avail they are editable form elements
-
-				foreach($this->report_options as $key => $val) {
-					switch ($key) {
-						case 'start_time': case 'end_time':
-							if (is_numeric($val)) {
-								$val = date('Y-m-d H:i', $val);
-							} elseif (trim($val) == 'undefined') {
-								$val = '';
-							}
-							break;
-					}
-
-					for ($i = 0; $i< sizeof($html_options);$i++) {
-						if(isset($html_options[$i][1]) && $html_options[$i][1] === $key) {
-							unset($html_options[$i]);
-						}
-					}
-					$html_options[] = array('hidden', $key, $val);
-				}
-			}
-
-			$html_options[] = array('hidden', 'type', $this->type);
-			if (!empty($this->in_months)) {
-				foreach ($this->in_months as $k => $d) {
-					$html_options[] = array('hidden', 'month_'.$k, $d);
-				}
-			}
-			$label_report_period = _('Reporting period');
-			$label_custom_period = _('CUSTOM REPORT PERIOD');
-
-			# decide what report periods to print
-			$report_period_strings = $this->_report_period_strings($this->type);
-			$report_periods = $report_period_strings["report_period_strings"];
-			$report_periods['custom'] = "* " . $label_custom_period . " *";
-
-			$this->template->content->report_options = $this->add_view('reports/'.$this->template_prefix.'options');
+			$this->template->content->report_options = $this->add_view('reports/options');
 
 			$tpl_options = $this->template->content->report_options;
 
-
-			$tpl_options->report_periods = $report_periods;
-			$tpl_options->include_trends = $include_trends;
-			$tpl_options->selected = empty($report_period) ? $report_period_strings["selected"] : $report_period;
-
-
-			$tpl_options->scheduleddowntimeasuptime_options = $this->scheduled_downtime_options;
-			$tpl_options->scheduleddowntimeasuptime_selected = $this->scheduled_downtime_as_uptime;
-			$tpl_options->initial_assumed_host_states = self::$initial_assumed_host_states;
-			$tpl_options->selected_initial_assumed_host_state = $this->initial_assumed_host_state;
-
-			$tpl_options->initial_assumed_service_states = self::$initial_assumed_service_states;
-			$tpl_options->selected_initial_assumed_service_state = $this->initial_assumed_service_state;
-
-			if (isset($host_filter_status)) {
-				$tpl_options->host_filter_status_up = $host_filter_status['up'];
-				$tpl_options->host_filter_status_down = $host_filter_status['down'];
-				$tpl_options->host_filter_status_undetermined = $host_filter_status['undetermined'];
-				$tpl_options->host_filter_status_unreachable = $host_filter_status['unreachable'];
-				$tpl_options->service_filter_status_ok = $service_filter_status['ok'];
-				$tpl_options->service_filter_status_warning = $service_filter_status['warning'];
-				$tpl_options->service_filter_status_unknown = $service_filter_status['unknown'];
-				$tpl_options->service_filter_status_critical = $service_filter_status['critical'];
-				$tpl_options->service_filter_status_pending = $service_filter_status['pending'];
-			}
-
-			$tpl_options->report_id = $this->report_id;
-			$tpl_options->report_info = $report_info;
-			$tpl_options->html_options = $html_options;
-
-			$use_average_options = array(
-				0 => _('Group availability (SLA)'),
-				1 => _('Average')
-			);
-			$tpl_options->use_average_options = $use_average_options;
-			$tpl_options->use_average_selected = $use_average_selected;
+			$tpl_options->include_trends = $this->options['include_trends'];
+			$tpl_options->selected = $this->options['report_period'];
 
 			$date_format = $this->_get_date_format(true);
-			$tpl_options->start_date = date($date_format, $this->start_date);
-			$tpl_options->start_time = date('H:i', $this->start_date);
-			$tpl_options->end_date = date($date_format, $this->end_date);
-			$tpl_options->end_time = date('H:i', $this->end_date);
+			$tpl_options->start_date = date($date_format, $this->options['start_time']);
+			$tpl_options->start_time = date('H:i', $this->options['start_time']);
+			$tpl_options->end_date = date($date_format, $this->options['end_time']);
+			$tpl_options->end_time = date('H:i', $this->options['end_time']);
 
 			$available_schedule_periods = false;
 			$json_periods = false;
@@ -1325,19 +610,19 @@ class Reports_Controller extends Authenticated_Controller
 			$tpl_options->scheduled_info = $scheduled_info;
 			$scheduled_label = _('Scheduled');
 			if ($this->type == 'avail') {
-				$this->inline_js .= "set_initial_state('host', '".$this->initial_assumed_host_state."');\n";
-				$this->inline_js .= "set_initial_state('service', '".$this->initial_assumed_service_state."');\n";
-				$this->inline_js .= "set_initial_state('assumeinitialstates', '".$assume_initial_states."');\n";
-				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->scheduled_downtime_as_uptime."');\n";
-				$this->inline_js .= "set_initial_state('report_period', '".$report_period."');\n";
-				$this->inline_js .= "show_calendar('".$report_period."');\n";
-				$this->js_strings .= "var initial_assumed_host_state = '".$this->initial_assumed_host_state."';\n";
-				$this->js_strings .= "var initial_assumed_service_state = '".$this->initial_assumed_service_state."';\n";
+				$this->inline_js .= "set_initial_state('host', '".$this->options['initialassumedhoststate']."');\n";
+				$this->inline_js .= "set_initial_state('service', '".$this->options['initialassumedservicestate']."');\n";
+				$this->inline_js .= "set_initial_state('assumeinitialstates', '".$this->options['assumeinitialstates']."');\n";
+				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
+				$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";
+				$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
+				$this->js_strings .= "var initialassumedhoststate = '".$this->options['initialassumedhoststate']."';\n";
+				$this->js_strings .= "var initialassumedservicestate = '".$this->options['initialassumedservicestate']."';\n";
 			}
 
-			$this->js_strings .= "var cluster_mode = '".(int)$cluster_mode."';\n";
-			$this->js_strings .= "var assumeinitialstates = '".$assume_initial_states."';\n";
-			$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->scheduled_downtime_as_uptime."';\n";
+			$this->js_strings .= "var cluster_mode = '".(int)$this->options['cluster_mode']."';\n";
+			$this->js_strings .= "var assumeinitialstates = '".$this->options['assumeinitialstates']."';\n";
+			$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->options['scheduleddowntimeasuptime']."';\n";
 
 			$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 			$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
@@ -1359,14 +644,14 @@ class Reports_Controller extends Authenticated_Controller
 
 			$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
 
-			$this->js_strings .= "var _reports_error_name_exists = '".sprintf(_("You have entered a name for your report that already exists. %sPlease select a new name"), '<br />')."';\n";
+			$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
 			$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 			$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-			$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-			$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
-				"the corresponding schedule(s) will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
+			$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
+			$this->js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
+				"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
 			$csv_link = $this->_get_csv_link();
 			$tpl_options->csv_link = $csv_link;
@@ -1387,35 +672,33 @@ class Reports_Controller extends Authenticated_Controller
 			# hostgroups / servicegroups
 			if ($this->type == 'avail' && isset($this->data_arr[0])) {
 
-				$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
+				$template->header = $this->add_view('reports/header');
 				$template->header->report_time_formatted = $report_time_formatted;
 				$template->header->csv_link = $csv_link;
 				$template->header->pdf_link = $pdf_link;
-				if ($report_period != 'custom') {
-					$template->header->str_start_date = $str_start_date;
-					$template->header->str_end_date = $str_end_date;
+				if ($this->options['report_period '] != 'custom') {
+					$template->header->str_start_date = date($this->_get_date_format(true), $this->options['start_time']);
+					$template->header->str_end_date = date($this->_get_date_format(true), $this->options['end_time']);
 				}
-				$template->header->use_average = $use_average;
-
 
 				if ($group_name) {
 					foreach ($this->data_arr as $data) {
 						if (empty($data))
 							continue;
 						array_multisort($data);
-						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
+						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 					}
 				} else {
 					array_multisort($this->data_arr);
-					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->start_date, $this->end_date, $this->type);
+					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 				}
 
 				if (!empty($template_values) && count($template_values))
 					for($i=0,$num_groups=count($template_values)  ; $i<$num_groups ; $i++) {
-						$this->_reorder_by_host_and_service($template_values[$i], $this->report_type);
+						$this->_reorder_by_host_and_service($template_values[$i], $this->options['report_type']);
 					}
 
-				if($include_trends) {
+				if($this->options['include_trends']) {
 					if($group_name) {
 						// Copy-pasted from controllers/trends.php
 						foreach ($this->data_arr as $key => $data) {
@@ -1448,28 +731,20 @@ class Reports_Controller extends Authenticated_Controller
 					$template->trends_graph = $this->add_view('trends/new_report');
 					$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 						$graph_data,
-						$report_class->start_time,
-						$report_class->end_time,
+						$this->options['start_time'],
+						$this->options['end_time'],
 						$template->title
 					);
 					$template->trends_graph->is_avail = true;
 				}
 
-				$template->content = $this->add_view('reports/'.$this->template_prefix.'multiple_'.$sub_type.'_states');
+				$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
 				$template->content->multiple_states = $template_values;
 				$template->content->hide_host = false;
-				$template->content->use_average = $use_average;
-				if (isset($host_filter_status)) {
-					$template->content->host_filter_status = $host_filter_status;
-					$template->content->service_filter_status = $service_filter_status;
-				}
 				$template->content->service_filter_status_show = true;
-				$template->content->use_alias = $use_alias;
-				$template->content->start_time = $this->start_date;
-				$template->content->end_time = $this->end_date;
 				$template->content->report_time_formatted = $report_time_formatted;
 
-				$template->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
+				$template->pie = $this->add_view('reports/pie_chart');
 
 				// ===== SETUP PIECHART VALUES =====
 				$image_data = array();
@@ -1549,22 +824,19 @@ class Reports_Controller extends Authenticated_Controller
 				$data_str = '';
 				if (!empty($this->data_arr)) {
 					$data = $this->data_arr;
-					$template->content = $this->add_view('reports/'.$this->template_prefix.$this->type);
-					$template->content->scheduled_downtime_as_uptime = $this->scheduled_downtime_as_uptime;
-					$template->content->start_time = $this->start_date;
-					$template->content->end_time = $this->end_date;
+					$template->content = $this->add_view('reports/'.$this->type);
+					$template->content->options = $this->options;
 
-					$template->header = $this->add_view('reports/'.$this->template_prefix.'header');
+					$template->header = $this->add_view('reports/header');
+					$template->header->options = $this->options;
 					$template->header->report_time_formatted = $report_time_formatted;
-					$template->header->str_start_date = $str_start_date;
-					$template->header->str_end_date = $str_end_date;
+					$template->header->str_start_date = date($this->_get_date_format(true), $this->options['start_time']);
+					$template->header->str_end_date = date($this->_get_date_format(true), $this->options['end_time']);
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 					$template->header->pdf_link = $pdf_link;
-					$template->header->use_average = $use_average;
-					$template->header->use_alias = $use_alias;
 
 					if ($this->type == 'avail') {
-						$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->report_type);
+						$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
 						$avail = $template->content;
 						$avail->state_values = $this->state_values;
 
@@ -1573,10 +845,10 @@ class Reports_Controller extends Authenticated_Controller
 						$avail->report_time_formatted = $report_time_formatted;
 						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
-						$avail->header_string = ucfirst($this->report_type)." "._('state breakdown');
+						$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
 						$this->xtra_css[] = $this->add_path('css/default/reports.css');
-						if($include_trends) {
+						if($this->options['include_trends']) {
 							$trends_data = false;
 							if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
 								$trends_data = $data['log'];
@@ -1608,15 +880,15 @@ class Reports_Controller extends Authenticated_Controller
 							$template->trends_graph = $this->add_view('trends/new_report');
 							$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
 								$graph_data,
-								$report_class->start_time,
-								$report_class->end_time,
+								$this->options['start_time'],
+								$this->options['end_time'],
 								$template->title
 							);
 							$template->trends_graph->report_time_formatted = $report_time_formatted;
 							$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 						}
 
-						$avail->pie = $this->add_view('reports/'.$this->template_prefix.'pie_chart');
+						$avail->pie = $this->add_view('reports/pie_chart');
 						$avail->pie->report_time_formatted = $report_time_formatted;
 
 						// ===== SETUP PIECHART VALUES =====
@@ -1634,22 +906,16 @@ class Reports_Controller extends Authenticated_Controller
 						}
 
 						if ($sub_type=='host') {
-							$service_states = $this->_print_states_for_services($this->data_arr['source'], $this->start_date, $this->end_date, $this->report_type);
+							$service_states = $this->_print_states_for_services($this->data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
 
 							if ($service_states !== false) {
-								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->start_date, $this->end_date, $this->type);
+								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 								$header_str = _("Service state breakdown");
-								$template->svc_content = $this->add_view('reports/'.$this->template_prefix.'multiple_service_states');
+								$template->svc_content = $this->add_view('reports/multiple_service_states');
 								$content = $template->svc_content;
 								$content->header_string = $header_str;
 								$content->multiple_states = $template_values;
 								$content->hide_host = true;
-								$content->use_average = $use_average;
-								$content->use_alias = $use_alias;
-								$content->start_time = $this->start_date;
-								$content->end_time = $this->end_date;
-								if (isset($service_filter_status))
-									$content->service_filter_status = $service_filter_status;
 								$content->service_filter_status_show = false;
 								$content->source = $data['source'];
 								$content->report_time_formatted = $report_time_formatted;
@@ -1659,54 +925,51 @@ class Reports_Controller extends Authenticated_Controller
 						// fetch and display log messages
 						$log = arr::search($data, 'log');
 						if ($log !== false) {
-							$label_entries = _("Log Entries for");
-							$template->log_content = $this->add_view('reports/'.$this->template_prefix.'log');
+							$template->log_content = $this->add_view('reports/log');
 							$log_template = $template->log_content;
 							$log_template->log = array_shift($log);
 							$log_template->type = $sub_type;
-							$log_template->label_entries = $label_entries;
 							$log_template->source = $data['source'];
 							$log_template->report_time_formatted = $report_time_formatted;
 							$log_template->date_format_str = nagstat::date_format();
 						}
 
-						$t1 = $this->start_date;
-						$t2 = $this->end_date;
+						$t1 = $this->options['start_time'];
+						$t2 = $this->options['start_time'];
 
 						# assume default values for the following
-						$assume_state_retention = $this->assume_state_retention ? 1 : 0;
 						$backtrack = 1;
 
 						$links = array();
 						$trends_img_params = '';
 						$trends_link_params = '';
-						$downtime       = $this->scheduled_downtime_as_uptime;
-						$assume_initial = $assume_initial_states;
-						$not_running    = $assume_states_during_not_running;
-						$soft_states    = $include_soft_states;
+						$downtime       = $this->options['scheduleddowntimeasuptime'];
+						$assume_initial = $this->options['assumeinitialstate'];
+						$not_running    = $this->options['assumestatesduringnotrunning'];
+						$soft_states    = $this->options['includesoftstates'];
 
 						// convert "First Real State" (-3) to value returned from report_class
 						// other values are converted to old cgi value equivalent
-						$trends_assumed_initial_host_state 		= $this->initial_assumed_host_state == -3 ? $report_class->initial_state : $this->_convert_assumed_state($this->initial_assumed_host_state, $sub_type, false);
-						$trends_assumed_initial_service_state 	= $this->initial_assumed_service_state == -3 ? $report_class->initial_state : $this->_convert_assumed_state($this->initial_assumed_service_state, $sub_type, false);
+						$trends_assumed_initial_host_state 		= $this->options['initialassumedhoststate ']== -3 ? $this->options['initial_state ']: $this->_convert_assumed_state($this->options['initialassumedhoststate'], $sub_type, false);
+						$trends_assumed_initial_service_state 	= $this->options['initialassumedservicestate ']== -3 ? $this->options['initial_state ']: $this->_convert_assumed_state($this->options['initialassumedservicestate'], $sub_type, false);
 
 						# links - only for HTML reports
-						switch($this->report_type) {
+						switch($this->options['report_type']) {
 							case 'hosts':
 								# only meaningful to print these links if only one host selected
 								if(count($hostname) != 1)
 									break;
 
 								$host = $hostname[0];
-								$template->header->title = ucfirst($this->report_type).' '._('details for').': '.ucfirst($host);
-								$all_avail_params = "report_type=".$this->report_type.
+								$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
+								$all_avail_params = "report_type=".$this->options['report_type'].
 									 "&amp;host_name=all".
-									 "&amp;report_period=$report_period".
-									 "&amp;rpttimeperiod=$rpttimeperiod".
-									 "&amp;start_time=".$this->start_date.
-									 "&amp;end_time=".$this->end_date.
-									 "&amp;initialassumedhoststate=".$this->initial_assumed_host_state.
-									 "&amp;initialassumedservicestate=".$this->initial_assumed_service_state;
+									 "&amp;report_period={$this->options['report_period']}".
+									 "&amp;rpttimeperiod={$this->options['rpttimeperiod']}".
+									 "&amp;start_time=".$this->options['start_time'].
+									 "&amp;end_time=".$this->options['end_time'].
+									 "&amp;initialassumedhoststate=".$this->options['initialassumedhoststate'].
+									 "&amp;initialassumedservicestate=".$this->options['initialassumedservicestate'];
 
 								if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
 								if($assume_initial)		$all_avail_params .= "&amp;assumeinitialstates=$assume_initial";
@@ -1718,10 +981,9 @@ class Reports_Controller extends Authenticated_Controller
 								$trends_params = "host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
@@ -1730,10 +992,9 @@ class Reports_Controller extends Authenticated_Controller
 									"&amp;createimage&amp;smallimage".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
@@ -1741,10 +1002,9 @@ class Reports_Controller extends Authenticated_Controller
 									"host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
@@ -1752,7 +1012,7 @@ class Reports_Controller extends Authenticated_Controller
 
 								$links[$this->trend_link."?".$trends_params] = _('Trends');
 
-								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
+								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
 
 								$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
 
@@ -1766,7 +1026,7 @@ class Reports_Controller extends Authenticated_Controller
 
 								list($host, $service) = explode(';',$service[0]);
 
-								$template->header->title = ucfirst($this->report_type).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
+								$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
 								if (isset($template->content)) {
 									$template->content->host = $host;
 									$template->content->service = $service;
@@ -1774,14 +1034,13 @@ class Reports_Controller extends Authenticated_Controller
 								$avail_params = "&show_log_entries".
 									 "&amp;t1=$t1".
 									 "&amp;t2=$t2".
-									 "&amp;report_period=".$report_period.
-									 "&amp;rpttimeperiod=$rpttimeperiod".
+									 "&amp;report_period=".$this->options['report_period'].
+									 "&amp;rpttimeperiod=".$this->options['rpttimeperiod'].
 									 "&amp;backtrack=$backtrack".
-									 "&amp;assumestateretention=$assume_state_retention".
-									 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial_states, false).
-									 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($assume_states_during_not_running, false).
-									 "&amp;initialassumedhoststate=".$this->initialassumedhoststate.
-									 "&amp;initialassumedservicestate=".$this->initialassumedservicestate.
+									 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial, false).
+									 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($not_running, false).
+									 "&amp;initialassumedhoststate=".$this->options['initialassumedhoststate'].
+									 "&amp;initialassumedservicestate=".$this->options['initialassumedservicestate'].
 									 "&amp;show_log_entries".
 									 "&amp;showscheduleddowntime=yes";
 
@@ -1794,10 +1053,9 @@ class Reports_Controller extends Authenticated_Controller
 								$trends_params = "host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
@@ -1807,10 +1065,9 @@ class Reports_Controller extends Authenticated_Controller
 									"&amp;createimage&amp;smallimage".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
@@ -1819,14 +1076,13 @@ class Reports_Controller extends Authenticated_Controller
 									"&amp;service=$service".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumestateretention=$assume_state_retention".
-									"&amp;assumeinitialstates=".$assume_initial_states.
-									"&amp;includesoftstates=".$include_soft_states.
-									"&amp;assumestatesduringnotrunning=".$assume_states_during_not_running.
+									"&amp;assumeinitialstates=".$assume_initial.
+									"&amp;includesoftstates=".$soft_states.
+									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
 									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
-								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2&amp;assumestateretention=$assume_state_retention";
+								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";
 								$history_params       = "host=$host&amp;service=$service";
 								$notifications_params = "host=$host&amp;service=$service";
 
@@ -1851,7 +1107,6 @@ class Reports_Controller extends Authenticated_Controller
 						$template->header->title = _('SLA breakdown');
 						$sla = $template->content;
 						$sla->report_data = $this->data_arr;
-						$sla->use_alias = $use_alias;
 					}
 
 				} # end if not empty. Display message to user?
@@ -1896,46 +1151,15 @@ class Reports_Controller extends Authenticated_Controller
 	*/
 	public function _stash_params()
 	{
-		$input = false;
-		$data = false;
-		if (!empty($_POST)) {
-			$input = $_POST;
-		} elseif (!empty($_GET)) {
-			$input = $_GET;
-		}
-
-		if (empty($input)) {
-			return false;
-		}
-
 		Session::instance()->set('current_report_params', null);
 
-		$skip_keys = array(
-			'saved_report_id',
-			'time_start',
-			'time_end',
-			'cal_start',
-			'cal_end'
-		);
-		foreach ($input as $key => $val) {
-			if ($val == '' || in_array($key, $skip_keys)) {
-				continue;
-			}
-			if (is_array($val)) {
-				foreach ($val as $v) {
-					$data[] = $key.'[]='.$v;
-				}
-			} else {
-				$data[] = $key.'='.$val;
-			}
-		}
 		if (!empty($data)) {
-			if (array_key_exists('new_report_setup', $input)) {
+			if (array_key_exists('ew_report_setup', $input)) {
 				# directly from setup form - keep data for backlink
-				Session::instance()->set('main_report_params', implode('&', $data));
+				Session::instance()->set('main_report_params', $this->options->as_keyval_string(false));
 			}
 
-			Session::instance()->set('current_report_params', implode('&', $data));
+			Session::instance()->set('current_report_params', $this->options->as_keyval_string(false));
 		}
 	}
 
@@ -1944,7 +1168,7 @@ class Reports_Controller extends Authenticated_Controller
 	* 	Called from reports.js (trigger_ajax_save())
 	* 	@return JSON string
 	*/
-	public function save()
+	public function save($report_id = false)
 	{
 		if(!request::is_ajax()) {
 			$msg = _('Only Ajax calls are supported here');
@@ -1956,64 +1180,14 @@ class Reports_Controller extends Authenticated_Controller
 		# 	Fetch the input variable 'type' from
 		#	either $_GET or $_POST and use default
 		# 	method param if nothing found
-		$this->type = arr::search($_REQUEST, 'type');
-		$this->report_id = arr::search($_REQUEST, 'saved_report_id', $this->report_id);
 
-		$report_options = false;
-		foreach ($this->setup_keys as $k)	$report_options[$k] = false;
-		// store all variables in array for later use
-		foreach ($_REQUEST as $key => $value) {
-			if (in_array($key, $this->setup_keys)) {
-				if (arr::search($_REQUEST, 'report_period') == 'custom' && ($key=='start_time' || $key=='end_time')) {
-					if (is_numeric($value)) {
-						$report_options[$key] = $value;
-						$_REQUEST[$key] = date("Y-m-d H:i", $value);
-					} else {
-						$report_options[$key] = strtotime($value);
-						$_REQUEST[$key] = $value;
-					}
-				} elseif (arr::search($_REQUEST, 'host_filter_status')) {
-					$report_options[$key] = serialize(self::_create_filter_array($value, 'host'));
-					$host_filter_status = self::_create_filter_array($value,'host' );
-				}
-				elseif (is_array(arr::search($_REQUEST, 'service_filter_status')) == true) {
-					$report_options[$key] = serialize(self::_create_filter_array($value, 'service'));
-					$service_filter_status = self::_create_filter_array($value,'service' );
-				}
-				 else  {
-					$report_options[$key] = $value;
-				}
-			} else {
-				if ($this->type == 'sla' && preg_match('/^month/', trim($key))) {
-					$id = (int)str_replace('month_', '', $key);
-					if (trim($value) == '') continue;
-					$value = str_replace(',', '.', $value);
-					$value = (float)$value;
-					// values greater than 100 doesn't make sense
-					if ($value>100)
-						$value = 100;
-					$this->in_months[$id] = $value;
-				}
-			}
-		}
-
-		if ($this->type == 'sla') {
-			$report_name = arr::search($_REQUEST, 'report_name', false);
-			unset($report_options['report_name']);
-			unset($report_options['host_filter_status']);
-			unset($report_options['service_filter_status']);
-			unset($report_options['include_trends']);
-			$report_options['sla_name'] = $report_name;
-		}
-
-		$obj_field = arr::search($_REQUEST, 'report_type', false);
-		$obj_value = arr::search($_REQUEST, self::$map_type_field[$obj_field], array());
+		$obj_field = $this->options->get_val('report_type');
+		$obj_value = $this->options[$obj_field];
 
 		$save_report_settings = arr::search($_REQUEST, 'save_report_settings');
-		$report_name = arr::search($_REQUEST, 'report_name', false);
 		$return = false;
-		if ($save_report_settings && $report_name !== false && !empty($obj_value)) {
-			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->in_months);
+		if ($save_report_settings && $this->options['report_name'] !== false && !empty($obj_value)) {
+			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->options['months']);
 			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
 			$msg_type = $this->report_id ? "ok" : "";
 			$return = array('status' => $msg_type, 'status_msg' => $status_msg, 'report_id' => $this->report_id);
@@ -2024,100 +1198,13 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	*	Create a piechart
-	*/
-	public function piechart($in_data=false, $path=null)
-	{
-		$this->auto_render = false;
-		$data = i18n::unserialize( base64_decode($in_data) );
-		charts::load('Pie');
-		$graph = new PieChart(300, 200);
-		$graph->set_data($data, 'pie');
-		$graph->set_margins(30);
-
-		$graph->draw();
-		if (!is_null($path)) {
-			# save rendered image to somewhere ($path)
-			if (file_exists($path) && is_writable($path)) {
-				$image = $graph->get_image();
-
-				# create temp filename with 'pie' as prefix just to
-				# be able to tell where they come from in case of problems
-				$tmpname = tempnam($path, 'pie');
-
-				# remove the created empty file - we really just want the filename
-				unlink($tmpname);
-
-				$tmpname .= '.png';
-				file_put_contents($tmpname, $image);
-
-				# return path to file
-				return $tmpname;
-			}
-		} else {
-			$graph->display();
-		}
-	}
-
-	/**
-	*	Create a barchart
-	*/
-	public function barchart($in_data=false, $path=null)
-	{
-		$this->auto_render = false;
-		$data = i18n::unserialize( base64_decode($in_data) );
-		charts::load('MultipleBar');
-		$graph = new MultipleBarChart(800, 600);
-
-		$barvalues = false;
-		$barcolors = false;
-		foreach ($data as $tmpkey => $tmpval) {
-			$barvalues[$tmpkey] = array($tmpval[1], $tmpval[0]);
-			$barcolors[] = false;
-			$barcolors[] = $tmpval[2] ? self::$colors['red'] : self::$colors['green'];
-		}
-
-		$graph->add_bar_colors($barcolors);
-		$graph->set_background_style(null);
-		$graph->set_plot_bg_color('#fff');
-		$graph->set_data($barvalues);
-		$graph->set_margins(7, 20);
-		$graph->set_approx_line_gap(50);
-		$graph->set_legend_y(_('Percent (%)'));
-		$graph->set_legend_x(_('Period'));
-
-		$graph->draw();
-		if (!is_null($path)) {
-			# save rendered image to somewhere ($path)
-			if (file_exists($path) && is_writable($path)) {
-				$image = $graph->get_image();
-
-				# create temp filename with 'pie' as prefix just to
-				# be able to tell where they come from in case of problems
-				$tmpname = tempnam($path, 'bar');
-
-				# remove the created empty file - we really just want the filename
-				unlink($tmpname);
-
-				$tmpname .= '.png';
-				file_put_contents($tmpname, $image);
-
-				# return path to file
-				return $tmpname;
-			}
-		} else {
-			$graph->display();
-		}
-	}
-
-	/**
 	*	Print message to user about invalid setup.
 	*	This could be because of missing database or
 	* 	reports module
 	*/
 	public function invalid_setup()
 	{
-		$this->template->content = $this->add_view('reports/reports_module');
+		$this->template->content = $this->add_view('reports/'.$this->report_prefix.'reports_module');
 		$template = $this->template->content;
 		$template->error_msg  = _('Some parts in your setup is apparently missing.');
 		$template->info = _("make sure you install the latest version of merlin");
@@ -2153,377 +1240,6 @@ class Reports_Controller extends Authenticated_Controller
 	}
 
 	/**
-	 * @desc Re-order alphabetically a group to
-	 * 1) sort by host name
-	 * 2) sort by service description
-	 * A group here refers to the return value given by a call to get_multiple_state_info().
-	 * @param array &$group Return parameter.
-	 */
-	public function _reorder_by_host_and_service(&$group, $report_type=false)
-	{
-		$testcase = isset($group[';testcase;']) ? $group[';testcase;'] : false;
-		unset($group[';testcase;']);
-
-		$num_hosts = count($group['HOST_NAME']);
-
-		# Set up structure ('host1' => array(1,5,8), 'host2' =>array(2,3,4,7), ...)
-		# where the numbers are indices of services in original array.
-		$host_idxs = array();
-		for($i=0 ; $i<$num_hosts ; $i++) {
-			$h = $group['HOST_NAME'][$i];
-			if(array_key_exists($h, $host_idxs)) {
-				$host_idxs[$h][] = $i;
-			} else {
-				$host_idxs[$h] = array($i);
-			}
-		}
-
-		$new_order = array(); # The new sorting order. used to re-order every array in $group
-		ksort($host_idxs);
-
-		if(!array_key_exists('SERVICE_DESCRIPTION', $group)) {
-			$new_order = array_values($host_idxs);
-			for($i=0,$n=count($new_order) ; $i<$n ; $i++) {
-				$new_order[$i] = $new_order[$i][0];
-			}
-		} else { #services or servicegroups
-			# For every host: re-order service names by alphabet
-			foreach($host_idxs as $h => $serv_indices) {
-				$tmp_servs = array();
-				foreach($serv_indices as $i) {
-					$tmp_servs[$i] = $group['SERVICE_DESCRIPTION'][$i];
-				}
-				asort($tmp_servs);
-				$new_order = array_merge($new_order, array_keys($tmp_servs));
-			}
-		}
-		# $new_order now contains the indices to move elements of
-		# arrays as for them to become correctly ordered.
-
-		# use new order to reorder all arrays
-		$a_names = array_keys($group);
-		foreach($a_names as $a_name) {
-			$arr =& $group[$a_name];
-			if(!is_array($arr)) # only re-order arrays
-				continue;
-
-			$tmp_arr = array();
-			foreach($new_order as $new_index => $old_index) {
-				# print "moving ".$arr[$old_index]." from $old_index to $new_index\n";
-				$tmp_arr[$new_index] = $arr[$old_index];
-			}
-
-			ksort($tmp_arr);
-			$group[$a_name] = $tmp_arr;
-		}
-
-		$group[';testcase;'] = $testcase;
-	}
-
-	/**
-	*	Return report period strings depending on current
-	*	report type (avail/sla)
-	*/
-	public function _report_period_strings($type='avail')
-	{
-		$report_periods = false;
-		$selected = false;
-
-		switch ($type) {
-			case 'avail':
-				$report_periods = array(
-					"today" => _('Today'),
-					"last24hours" => _('Last 24 Hours'),
-					"yesterday" => _('Yesterday'),
-					"thisweek" => _('This Week'),
-					"last7days" => _('Last 7 Days'),
-					"lastweek" => _('Last Week'),
-					"thismonth" => _('This Month'),
-					"last31days" => _('Last 31 Days'),
-					"lastmonth" => _('Last Month'),
-					"thisyear" => _('This Year'),
-					"lastyear" => _('Last Year')
-				);
-				$selected = 'last7days';
-				break;
-			case 'sla':
-				$report_periods = array(
-					"thisyear" => _('This Year'),
-					"lastyear" => _('Last Year'),
-					"lastmonth" => _('Last Month'),
-					"last3months" => _('Last 3 Months'),
-					"last6months" => _('Last 6 months'),
-					"lastquarter" => _('Last Quarter'),
-					"last12months" => _('Last 12 months')
-				);
-				$selected = 'thisyear';
-				break;
-		}
-
-		return array('report_period_strings' => $report_periods, 'selected' => $selected);
-	}
-
-	/**
-	*	Convert report_period strings to timestamp equivalent
-	*/
-	public function _calculate_time($report_period='', $start_date=false, $end_date=false)
-	{
-		$year_now 	= date('Y', time());
-		$month_now 	= date('m', time());
-		$day_now	= date('d', time());
-		$week_now 	= date('W', time());
-		$weekday_now = date('w', time())-1;
-		$time_start	= false;
-		$time_end	= false;
-		$now = time();
-
-		switch ($report_period) {
-			case 'today':
-				$time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
-				$time_end 	= time();
-				break;
-			case 'last24hours':
-				$time_start = mktime(date('H', time()), date('i', time()), date('s', time()), $month_now, $day_now -1, $year_now);
-				$time_end 	= time();
-				break;
-			case 'yesterday':
-				$time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
-				$time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
-				break;
-			case 'thisweek':
-				$time_start = strtotime('today - '.$weekday_now.' days');
-				$time_end 	= time();
-				break;
-			case 'last7days':
-				$time_start	= strtotime('now - 7 days');
-				$time_end	= time();
-				break;
-			case 'lastweek':
-				$time_start = strtotime('midnight last monday -7 days');
-				$time_end	= strtotime('midnight last monday');
-				break;
-			case 'thismonth':
-				$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-				$time_end	= time();
-				break;
-			case 'last31days':
-				$time_start = strtotime('now - 31 days');
-				$time_end	= time();
-				break;
-			case 'lastmonth':
-				$time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
-				$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-				break;
-			case 'thisyear':
-				$time_start = strtotime('midnight '.$year_now.'-01-01');
-				$time_end	= time();
-				break;
-			case 'lastyear':
-				$time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
-				$time_end	= strtotime('midnight '.$year_now.'-01-01');
-				break;
-			case 'last12months':
-				$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
-				$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-				break;
-			case 'last3months':
-				$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
-				$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-				break;
-			case 'last6months':
-				$time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
-				$time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-				break;
-			case 'lastquarter':
-				$t = getdate();
-				if($t['mon'] <= 3){
-					$lqstart = ($t['year']-1)."-10-01";
-					$lqend = ($t['year']-1)."-12-31";
-				} elseif ($t['mon'] <= 6) {
-					$lqstart = $t['year']."-01-01";
-					$lqend = $t['year']."-03-31";
-				} elseif ($t['mon'] <= 9){
-					$lqstart = $t['year']."-04-01";
-					$lqend = $t['year']."-06-30";
-				} else {
-					$lqstart = $t['year']."-07-01";
-					$lqend = $t['year']."-09-30";
-				}
-				$time_start = strtotime($lqstart);
-				$time_end = strtotime($lqend);
-				break;
-			case 'custom':
-				$time_start = is_numeric($start_date) ? $start_date : strtotime($start_date);
-				$time_end = is_numeric($end_date) ? $end_date : strtotime($end_date);
-				break;
-			default:
-				if (empty($start_date) || !is_numeric($start_date)) {
-					# unknown report_period and no fallback available, so
-					# default to last 24 hours, like old cgi's used to do
-					return calculate_time('last24hours');
-				}
-
-				# $start_date looks sensible, so try some DWIM'ery
-				$time_start = $start_date;
-
-				# if no end-date, or end_date is bad, use $now
-				if (empty($end_date) || !is_numeric($end_date)
-				    || $end_date > $now || $end_date < $time_start)
-				{
-					$end_date = $now;
-				}
-
-				$time_end = $end_date;
-		}
-
-		if($time_start > $now)
-			$time_start = $now;
-
-		if($time_end > $now)
-			$time_end = $now;
-
-		return array($time_start, $time_end);
-	}
-
-	public function _print_state_breakdowns($source=false, $values=false, $type="hosts")
-	{
-		if (empty($values)) {
-			return false;
-		}
-		$tot_time = 0;
-		$tot_time_perc = 0;
-		$tot_time_known_perc = 0;
-		if ($type=='hosts' || $type=='hostgroups') {
-			$tot_time = $values['KNOWN_TIME_UP'] +
-				$values['KNOWN_TIME_DOWN'] +
-				$values['KNOWN_TIME_UNREACHABLE'] +
-				$values['TOTAL_TIME_UNDETERMINED'];
-			$tot_time_perc = $values['PERCENT_KNOWN_TIME_UP'] +
-				$values['PERCENT_KNOWN_TIME_DOWN'] +
-				$values['PERCENT_KNOWN_TIME_UNREACHABLE'] +
-				$values['PERCENT_TIME_UNDETERMINED_NOT_RUNNING'] +
-				$values['PERCENT_TIME_UNDETERMINED_NO_DATA'];
-			$var_types = array('UP', 'DOWN', 'UNREACHABLE');
-		} else {
-			$tot_time = $values['KNOWN_TIME_OK'] +
-				$values['KNOWN_TIME_WARNING'] +
-				$values['KNOWN_TIME_UNKNOWN'] +
-				$values['KNOWN_TIME_CRITICAL'] +
-				$values['TOTAL_TIME_UNDETERMINED'];
-			$tot_time_perc = $values['PERCENT_KNOWN_TIME_OK'] +
-				$values['PERCENT_KNOWN_TIME_WARNING'] +
-				$values['PERCENT_KNOWN_TIME_UNKNOWN'] +
-				$values['PERCENT_KNOWN_TIME_CRITICAL'] +
-				$values['PERCENT_TIME_UNDETERMINED_NOT_RUNNING'] +
-				$values['PERCENT_TIME_UNDETERMINED_NO_DATA'];
-			$var_types = array('OK', 'WARNING', 'UNKNOWN', 'CRITICAL');
-		}
-
-		return array('tot_time' => $tot_time, 'tot_time_perc' => $tot_time_perc, 'var_types' => $var_types, 'values' => $values);
-	}
-
-	/**
-	* 	@param array  $data_arr report source data, generated by report_class:get_uptime()
-	* 	@param string $sub_type The report subtype. Can be 'host' or 'service'.
-	* 	@param string $get_vars query string containing values of options for the report<br>
-	*       Contains: report_period, rpttimeperiod, scheduleddowntimeasuptime, assumestatesduringnotrunning, includesoftstates, assumeinitialstates, initialassumedhoststate, initialassumedservicestate)
-	* 	@param int $start_time Start timestamp for the report.
-	* 	@param int $end_time End timestamp for the report.
-	*
-	* 	@return	array report info divided by states
-	*/
-	public function _get_multiple_state_info(&$data_arr, $sub_type, $get_vars, $start_time, $end_time, $type)
-	{
-		$prev_host = '';
-		$php_self = url::site().Kohana::config('reports.reports_link').'/generate?type='.$type;
-		if (array_key_exists('states', $data_arr) && !empty($data_arr['states']))
-			$group_averages = $data_arr['states'];
-
-		$return = array();
-		$cnt = 0;
-		if ($sub_type=='service') {
-			$sum_ok = $sum_warning = $sum_unknown = $sum_critical = $sum_undetermined = 0;
-			foreach ($data_arr as $k => $data) {
-				if (!reports::is_proper_report_item($k, $data))
-					continue;
-
-				$host_name = $data['states']['HOST_NAME'];
-				$service_description = $data['states']['SERVICE_DESCRIPTION'];
-
-				$return['host_link'][] = $php_self . "&host_name[]=". $host_name . "&report_type=hosts" . '&start_time=' . $start_time . '&end_time=' . $end_time . '&new_avail_report_setup=1'.$get_vars;
-				$return['service_link'][] = $php_self . "&host_name[]=". $host_name . '&service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&new_avail_report_setup=1'.$get_vars;
-
-				$return['HOST_NAME'][] 				= $host_name;
-				$return['SERVICE_DESCRIPTION'][] 	= $service_description;
-				$return['ok'][] 			= $data['states']['PERCENT_KNOWN_TIME_OK'];
-				$return['warning'][] 		= $data['states']['PERCENT_KNOWN_TIME_WARNING'];
-				$return['unknown'][] 		= $data['states']['PERCENT_KNOWN_TIME_UNKNOWN'];
-				$return['critical'][] 		= $data['states']['PERCENT_KNOWN_TIME_CRITICAL'];
-				$return['undetermined'][] 	= $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
-				if ($this->scheduled_downtime_as_uptime == 2)
-					$return['counted_as_ok'][]  = $data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'];
-
-				$prev_host = $host_name;
-				$sum_ok += $data['states']['PERCENT_KNOWN_TIME_OK'];
-				$sum_warning += $data['states']['PERCENT_KNOWN_TIME_WARNING'];
-				$sum_unknown += $data['states']['PERCENT_KNOWN_TIME_UNKNOWN'];
-				$sum_critical += $data['states']['PERCENT_KNOWN_TIME_CRITICAL'];
-				$sum_undetermined += $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
-				$cnt++;
-			}
-			$return['nr_of_items'] = $cnt;
-			$return['average_ok'] = $sum_ok!=0 ? reports::format_report_value($sum_ok/$cnt) : '0';
-			$return['average_warning'] = $sum_warning!=0 ? reports::format_report_value($sum_warning/$cnt) : '0';
-			$return['average_unknown'] = $sum_unknown!=0 ? reports::format_report_value($sum_unknown/$cnt) : '0';
-			$return['average_critical'] = $sum_critical!=0 ? reports::format_report_value($sum_critical/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
-			$return['group_average_ok'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_OK']);
-			$return['group_average_warning'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_WARNING']);
-			$return['group_average_unknown'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNKNOWN']);
-			$return['group_average_critical'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_CRITICAL']);
-			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
-			$return['groupname'] = $data_arr['groupname']!='' ? 'Servicegroup: '.$data_arr['groupname'] : false;
-			$return[';testcase;'] = $data_arr[';testcase;'];
-		} else {
-			// host
-			$sum_up = $sum_down = $sum_unreachable = $sum_undetermined = 0;
-			foreach ($data_arr as $k => $data) {
-			if (!reports::is_proper_report_item($k, $data))
-					continue;
-				$host_name = $data['states']['HOST_NAME'];
-				$return['host_link'][] = $php_self . "&host_name[]=". $host_name. "&report_type=hosts" .
-				'&start_time=' . $start_time . '&end_time=' . $end_time .$get_vars;
-				$return['HOST_NAME'][] 		= $host_name;
-				$return['up'][] 			= $data['states']['PERCENT_KNOWN_TIME_UP'];
-				$return['down'][] 			= $data['states']['PERCENT_KNOWN_TIME_DOWN'];
-				$return['unreachable'][]	= $data['states']['PERCENT_KNOWN_TIME_UNREACHABLE'];
-				$return['undetermined'][]	= $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
-				if ($this->scheduled_downtime_as_uptime == 2)
-					$return['counted_as_up'][]  = $data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP'];
-
-				$sum_up += $data['states']['PERCENT_KNOWN_TIME_UP'];
-				$sum_down += $data['states']['PERCENT_KNOWN_TIME_DOWN'];
-				$sum_unreachable += $data['states']['PERCENT_KNOWN_TIME_UNREACHABLE'];
-				$sum_undetermined += $data['states']['PERCENT_TOTAL_TIME_UNDETERMINED'];
-				$cnt++;
-			}
-			$return['nr_of_items'] = $cnt;
-			$return['average_up'] = $sum_up!=0 ? reports::format_report_value($sum_up/$cnt) : '0';
-			$return['average_down'] =  $sum_down!=0 ? reports::format_report_value($sum_down/$cnt) : '0';
-			$return['average_unreachable'] = $sum_unreachable!=0 ? reports::format_report_value($sum_unreachable/$cnt) : '0';
-			$return['average_undetermined'] = $sum_undetermined!=0 ? reports::format_report_value($sum_undetermined/$cnt) : '0';
-
-			$return['group_average_up'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UP']);
-			$return['group_average_down'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_DOWN']);
-			$return['group_average_unreachable'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);
-			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
-			$return['groupname'] = $data_arr['groupname']!='' ? 'Hostgroup: '.$data_arr['groupname'] : false;
-			$return[';testcase;'] = $data_arr[';testcase;'];
-		}
-		return $return;
-	}
-
-	/**
 	*	Convert nasty chars before creating report image file
 	*/
 	public function _img_filename_convert($filename=false)
@@ -2538,8 +1254,6 @@ class Reports_Controller extends Authenticated_Controller
 
 	public function _print_states_for_services($host_name=false, $start_date=false, $end_date=false)
 	{
-		$options = self::$options;
-		$dep_vars = self::$dep_vars;
 		$err_msg = $this->err_msg;
 
 		$host_name = trim($host_name);
@@ -2551,71 +1265,18 @@ class Reports_Controller extends Authenticated_Controller
 		if (!empty($res)) {
 			$service_arr = array();
 
-			$report_class = new Reports_Model();
+			$classname = get_class($this->options);
+			$opts = new $classname($this->options);
+			$opts['host_name'] = $host_name;
 			foreach ($res as $row)
-				$service_arr[] = $host_name.";".$row->service_description;
+				$service_arr[] = $row->service_description;
+			$opts['service_description'] = $service_arr;
+			$report_class = new Reports_Model($opts);
 
-			foreach ($options as $var => $new_var) {
-				if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
-					$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
-						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
-				}
-			}
-
-			foreach ($dep_vars as $check => $set)
-				if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check]))
-					foreach ($set as $dep => $key)
-						if (!$report_class->set_option($key, $_REQUEST[$dep])) {
-							$err_msg .= "Could not set option '".$key."' to '".$_REQUEST[$dep]."'<br />";
-							$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
-								$key, $_REQUEST[$dep])."'<br />";
-						}
-
-			$report_class->set_option('host_name', $host_name);
-			$report_class->set_option('service_description', $service_arr);
-
-			$data_arr = $report_class->get_uptime($host_name, $service_arr, $start_date, $end_date, false, false);
+			$data_arr = $report_class->get_uptime();
 			return $data_arr;
 		}
 		return false;
-	}
-
-
-	public function _check_report_type($report_type=false, $in_host=false, $in_service=false, $servicegroup=false, $hostgroup=false)
-	{
-		if (empty($report_type)) {
-			if (!empty($in_host)) {
-				if (!empty($in_service)) {
-					$report_type = 'services';
-				} else {
-					$report_type = 'hosts';
-				}
-			} else {
-				if (!empty($servicegroup)) {
-					$report_type = 'servicegroups';
-				} else {
-					if (!empty($hostgroup)) {
-						$report_type = 'hostgroups';
-					}
-				}
-			}
-		}
-		return $report_type;
-	}
-
-	/**
-	*	Fetch and print information on saved timperiods
-	*/
-	public function _get_reporting_periods()
-	{
-		$res = Timeperiod_Model::get_all();
-		if (!$res)
-			return false;
-		$return = false;
-		foreach ($res as $row) {
-			$return .= '<option value="'.$row->timeperiod_name.'">'.$row->timeperiod_name.'</option>';
-		}
-		return $return;
 	}
 
 	/**
@@ -2633,101 +1294,6 @@ class Reports_Controller extends Authenticated_Controller
 		$row = $res->current();
 		return $row->alias;
 	}
-
-	/**
-	 * Expands a series of groupnames (host or service) into its member objects, and calculate uptime for each
-	 *
-	 * @uses Reports_Model::get_uptime()
-	 * @param array $arr List of groups
-	 * @param string $type The type of objects in $arr. Valid values are "hostgroup" or "servicegroup".
-	 * @param mixed $start_date datetime or unix timestamp
-	 * @param mixed $end_date datetime or unix timestamp
-	 * @global array Report options
-	 * @global array Dependent report options
-	 * @global array
-	 * @global string Error log.
-	 * @return array Calculated uptimes.
-	 */
-	public function _expand_group_request($arr=false, $type='hostgroup', $start_date, $end_date)
-	{
-		$options = self::$options;
-		$dep_vars = self::$dep_vars;
-		$err_msg = $this->err_msg;
-
-		if (empty($arr))
-			return false;
-		if ($type!='hostgroup' && $type!='servicegroup')
-			return false;
-		$hostgroup = false;
-		$servicegroup = false;
-		$data_arr = false;
-		// @todo this method should NOT traverse _REQUEST again,
-		// it should rather call $this->_set_options($rpt_class)
-		// which could also set all options on the single class,
-		// even if it's in a loop such as this
-		foreach ($arr as $$type) {
-			$rpt_class = new Reports_Model();
-			foreach ($options as $var => $new_var) {
-				if (!$rpt_class->set_option($new_var, arr::search($_REQUEST, $var, false))) {
-					$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
-						$new_var, arr::search($_REQUEST, $var, false))."'<br />";
-				}
-			}
-			foreach ($dep_vars as $check => $set)
-				if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check]))
-					foreach ($set as $dep => $key)
-						if (!$rpt_class->set_option($key, $_REQUEST[$dep]))
-							$err_msg .= sprintf(_("Could not set option '%s' to %s'"),
-								$key, $_REQUEST[$dep])."'<br />";
-
-			$rpt_class->set_option(substr($type, 0, strlen($type)).'_name', $$type);
-			$rpt_class->set_option('host_filter_status', arr::search($_REQUEST, 'host_filter_status', array(1, 1, 1, 1)));
-			$rpt_class->set_option('service_filter_status', arr::search($_REQUEST, 'service_filter_status', array(1, 1, 1, 1, 1)));
-			$data_arr[] = $rpt_class->get_uptime(false, false, $start_date, $end_date, $hostgroup, $servicegroup);
-			unset($rpt_class);
-		}
-		return $data_arr;
-	}
-
-
-	/**
-	*	Convert between yes/no and 1/0
-	* 	@param 	mixed val, value to be converted
-	* 	@param 	bool use_int, to indicate if we should use
-	* 			1/0 instead of yes/no
-	* 	@return mixed str/int
-	*/
-	public function _convert_yesno_int($val, $use_int=true)
-	{
-		$return = false;
-		if ($use_int) {
-			// This is the way that we normally do things
-			switch (strtolower($val)) {
-				case 'yes':
-					$return = 1;
-					break;
-				case 'no':
-					$return = 0;
-					break;
-				default:
-					$return = $val;
-			}
-		} else {
-			// This is the old way, using yes/no values
-			switch ($val) {
-				case 1:
-					$return = 'yes';
-					break;
-				case 0:
-					$return = 'no';
-					break;
-				default:
-					$return = $val;
-			}
-		}
-		return $return;
-	}
-
 
 	/**
 	 * Convert assumed states between old cgi's and
@@ -2794,12 +1360,12 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		$path = addslashes(trim($path));
 		$params = addslashes(trim($params));
-		$return = form::open(Kohana::config('reports.reports_link').'/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
+		$return = form::open($this->type.'/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
 		$return .= "<div>\n";
 		$url_params = '';
 		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
 
-		foreach($_REQUEST as $key => $val)
+		foreach($this->options as $key => $val)
 		{
 			if(is_array($val))
 			{
@@ -2832,22 +1398,6 @@ class Reports_Controller extends Authenticated_Controller
 		return cal::get_calendar_format($get_php);
 	}
 
-	/**
-	*	Convert a date format string back to a timestamp
-	*/
-	public function _timestamp_format($date_str=false, $format_str = false)
-	{
-		if (empty($format_str))
-			$format_str = self::_get_date_format(); # fetch if not set
-
-		$date_str = str_replace('-', '/', $date_str);
-		# use now as date if nothing supplied as input
-		$date_str = empty($date_str) ? date($format_str) : $date_str;
-		$format_str = trim($format_str);
-		$timestamp_format = false;
-		return strtotime($date_str);
-	}
-
 	public function _build_testcase_form($test, $prefix = '', $suffix = '')
 	{
 		if (!is_array($test) || empty($test))
@@ -2866,7 +1416,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		foreach ($test as $k => $v) {
 			if (is_array($v)) {
-				$test_buf .= self::_build_testcase_form($v, $k, $suffix . '[]');
+				$test_buf .= $this->_build_testcase_form($v, $k, $suffix . '[]');
 				continue;
 			}
 			$test_buf .= "\t<input type='hidden' value='$v' ";
@@ -2877,7 +1427,7 @@ class Reports_Controller extends Authenticated_Controller
 			$test_buf .= " />\n";
 		}
 		if (!$prefix)
-			$test_buf .= "<input type='submit' name='action' value='Make testcase' />" .
+			$test_buf .= "<input class='testcase' type='submit' name='action' value='Make testcase' />" .
 			"</form>\n";
 
 		return $test_buf;
@@ -3011,7 +1561,7 @@ class Reports_Controller extends Authenticated_Controller
 		(
 			'create_pdf' => true
 		);
-		$default_action_url = Kohana::config('reports.reports_link').'/generate';
+		$default_action_url = $this->type.'/generate';
 
 		if (PHP_SAPI != "cli") {
 			# never try to use $_SERVER variables when
@@ -3039,7 +1589,7 @@ class Reports_Controller extends Authenticated_Controller
 		$form .= "<input type='hidden' name='report' value='$report' />\n";
 		$url_params = '';
 		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
-		foreach($_REQUEST as $key => $val)
+		foreach($this->options as $key => $val)
 		{
 			if(is_array($val))
 			{
@@ -3096,14 +1646,13 @@ class Reports_Controller extends Authenticated_Controller
 
 		// OK, we have start and end but we will have to split
 		// this time into parts according to sla_periods (months)
-		$this->time_arr = $this->_split_month_data($months, $this->start_date, $this->end_date);
+		$time_arr = $this->_split_month_data($months, $this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
 		$option_name = false;
 		$data = false;
-		if (preg_match('/groups$/', $this->report_type)) {
-			foreach ($this->time_arr as $mnr => $dates) {
-				$data_tmp = $this->_expand_group_request($objects, substr($this->report_options['report_type'], 0,
-					strlen($this->report_options['report_type'])-1), $dates['start'], $dates['end']);
+		if (preg_match('/groups$/', $this->options['report_type'])) {
+			foreach ($time_arr as $mnr => $dates) {
+				$data_tmp = $this->_expand_group_request($objects, $this->options->get_value('report_type'));
 				if (!empty($data_tmp))
 					foreach ($data_tmp as $val) {
 						if ($val !== false)
@@ -3116,29 +1665,18 @@ class Reports_Controller extends Authenticated_Controller
 							);
 					}
 			}
+
 			$report_data = $this->_sla_group_data($data);
 		} else {
-			$option_name = preg_match('/hosts/', $this->report_type) ? 'host_name' : 'service_description';
-			foreach ($this->time_arr as $mnr => $dates) {
-				$report_class = new Reports_Model();
-				foreach (self::$options as $var => $new_var) {
-					if (!$report_class->set_option($new_var, arr::search($_REQUEST, $var))) {
-						$this->err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $new_var, arr::search($_REQUEST, $var));
-					}
-				}
-
-				// assumed initial state
-				foreach (self::$dep_vars as $check => $set) {
-					if (isset($_REQUEST[$check]) && !empty($_REQUEST[$check])) {
-						foreach ($set as $dep => $key) {
-							if (!$report_class->set_option($key, $_REQUEST[$dep])) {
-								$this->err_msg .= sprintf(_("Could not set option '%s' to '%s'"), $key, $_REQUEST[$dep]);
-							}
-						}
-					}
-				}
-				$report_class->set_option($option_name, $objects);
-				$data_tmp = $report_class->get_uptime(false, false, $dates['start'], $dates['end']);
+			$option_name = preg_match('/hosts/', $this->options['report_type']) ? 'host_name' : 'service_description';
+			foreach ($time_arr as $mnr => $dates) {
+				$optclass = get_class($this->options);
+				$opts = new $optclass($this->options);
+				$opts[$option_name] = $objects;
+				$opts['start_time'] = $dates['start'];
+				$opts['end_time'] = $dates['end'];
+				$report_class = new Reports_Model($opts);
+				$data_tmp = $report_class->get_uptime();
 
 				# The next line extracts _GROUPWIDE STATES_, discards individual member info (numeric indices)
 				$data[$mnr] = array(
@@ -3161,22 +1699,22 @@ class Reports_Controller extends Authenticated_Controller
 	{
 		foreach ($sla_data as $months_key => $period_data) {
 			$sourcename = $this->_get_sla_group_name($period_data);
-			if (array_key_exists($months_key, $this->in_months)) {
+			if (array_key_exists($months_key, $this->options['months'])) {
 				if (arr::search($period_data, 'states')) {
-					$real_val = $period_data['states'][self::$sla_field_names[$this->report_options['report_type']]];
+					$real_val = $period_data['states'][self::$sla_field_names[$this->options['report_type']]];
 
 					# control colour of bar depending on value
 					# true = green, false = red
-					$sla_ok = $this->in_months[$months_key] > $real_val ? true : false;
+					$sla_ok = $this->options['months'][$months_key] > $real_val ? true : false;
 				} else {
 					$sla_ok = false;
 					$real_val = 0;
 				}
-				$data[$this->abbr_month_names[$months_key-1]] = array($real_val, $this->in_months[$months_key], $sla_ok);
-				if ($this->scheduled_downtime_as_uptime == 2)
-					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->in_months[$months_key], $period_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
+				$data[$this->abbr_month_names[$months_key-1]] = array($real_val, $this->options['months'][$months_key], $sla_ok);
+				if ($this->options['scheduleddowntimeasuptime']== 2)
+					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->options['months'][$months_key], $period_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
 				else
-					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->in_months[$months_key]);
+					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->options['months'][$months_key]);
 			}
 		}
 
@@ -3188,9 +1726,9 @@ class Reports_Controller extends Authenticated_Controller
 			foreach($members as $member) {
 				$member_links[] = $this->_generate_sla_member_link($member, $this->object_varname);
 			}
-			$avail_links = $this->_generate_avail_member_link($members, $this->object_varname);
+			$avail_links = $this->_generate_avail_member_link($members);
 		} else {
-			$avail_links = $this->_generate_avail_member_link($sourcename, $this->object_varname);
+			$avail_links = $this->_generate_avail_member_link($sourcename);
 		}
 
 		$report_data = array(array(
@@ -3222,15 +1760,15 @@ class Reports_Controller extends Authenticated_Controller
 			foreach ($period_data as $key => $tmp_data) {
 				// 'jan' => array(99.8, 99.6), (real, sla)
 				$months_key = ($key - 1);
-				if (array_key_exists($key, $this->in_months)) {
+				if (array_key_exists($key, $this->options['months'])) {
 					if (arr::search($tmp_data, 'states')) {
 
 						# eg: $tmp_data['states']['PERCENT_TOTAL_TIME_UP']
-						$real_val = $tmp_data['states'][self::$sla_field_names[$this->report_options['report_type']]];
+						$real_val = $tmp_data['states'][self::$sla_field_names[$this->options['report_type']]];
 
 						# control colour of bar depending on value
 						# true = green, false = red
-						$sla_ok = $this->in_months[$key] > $real_val ? true : false;
+						$sla_ok = $this->options['months'][$key] > $real_val ? true : false;
 
 
 					} else {
@@ -3240,12 +1778,12 @@ class Reports_Controller extends Authenticated_Controller
 					}
 
 					# eg: $data['Jan'] = array(99.99999, 99.5)
-					$data[$this->abbr_month_names[$months_key]] = array($real_val, $this->in_months[$key], $sla_ok);
+					$data[$this->abbr_month_names[$months_key]] = array($real_val, $this->options['months'][$key], $sla_ok);
 					# eg: $table_data['groupnameX']['Jan'] = array(98,342342, 98)
-					if ($this->scheduled_downtime_as_uptime == 2)
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->in_months[$key], $tmp_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
+					if ($this->options['scheduleddowntimeasuptime'] == 2)
+						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->options['months'][$key], $tmp_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
 					else
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->in_months[$key]);
+						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->options['months'][$key]);
 				}
 
 				if (is_null($members) && arr::search($tmp_data, 'states')) {
@@ -3259,6 +1797,7 @@ class Reports_Controller extends Authenticated_Controller
 			$data_str = base64_encode(serialize($data));
 
 			$member_links = array();
+			$members = explode(',', $members);
 			foreach($members as $member) {
 				$member_links[] = $this->_generate_sla_member_link($member, $this->object_varname);
 			}
@@ -3317,14 +1856,9 @@ class Reports_Controller extends Authenticated_Controller
 	 */
 	private function _generate_sla_member_link($member)
 	{
-		$return = '<a href="'.url::site().Kohana::config('reports.reports_link').'/generate?type=sla&amp;'.$this->object_varname.'[]='.$member;
-		foreach($this->report_options as $key => $val) {
+		$return = '<a href="'.url::site().'sla/generate?'.$this->object_varname.'[]='.$member;
+		foreach($this->options as $key => $val) {
 			switch ($key) {
-				case 'report_type':
-					$val = array_search($this->object_varname, self::$map_type_field);
-					if($val === FALSE)  // if custom group
-						$val = $this->object_varname;
-					break;
 				case 'start_time': case 'end_time':
 					if (is_numeric($val)) {
 						$val = date('Y-m-d H:i', $val);
@@ -3333,13 +1867,13 @@ class Reports_Controller extends Authenticated_Controller
 			}
 			$return .= "&amp;$key=$val";
 		}
-		foreach($this->in_months as $month => $sla) {
+		foreach($this->options['months'] as $month => $sla) {
 			$return .= '&amp;month_'.$month.'='.$sla;
 		}
 		$host_alias = '';
 		$service_description = '';
 		$host_name = '';
-		if (array_key_exists('use_alias', $this->report_options) && $this->report_options['use_alias'] == 1) {
+		if ($this->options['use_alias']) {
 			# use alias with host_name
 			if (strstr($member, ';')) {
 				# we have host_name;service_description so we neeed to split this
@@ -3367,27 +1901,12 @@ class Reports_Controller extends Authenticated_Controller
 	private function _generate_avail_member_link($members)
 	{
 		$objects = '';
-		$return = url::site().Kohana::config('reports.reports_link').'/generate?type=avail&amp;';
+		$return = url::site().'avail/generate?';
+		$return .= $this->options->as_keyval_string();
 		if (is_array($members)) {
-			$objects .= implode('&amp;'.$this->object_varname.'[]=',$members);
+			$return .= implode('&amp;'.$this->object_varname.'[]=',$members);
 		} else {
-			$objects = $members;
-		}
-		$return .= $this->object_varname.'[]='.$objects;
-		foreach($this->report_options as $key => $val) {
-			switch ($key) {
-				case 'report_type':
-					$val = array_search($this->object_varname, self::$map_type_field);
-					if($val === false)  // if custom group
-						$val = $this->object_varname;
-					break;
-				case 'start_time': case 'end_time':
-					if (is_numeric($val)) {
-						$val = date('Y-m-d H:i', $val);
-					}
-					break;
-			}
-			$return .= "&amp;$key=$val";
+			$return .= '&amp;'.$this->object_varname.'[]='.$members;
 		}
 		return $return;
 	}
@@ -3439,7 +1958,7 @@ class Reports_Controller extends Authenticated_Controller
 				"the status of the host/service will be assumed. Default value is &quot;First Real State&quot;."),
 			'stated_during_downtime' => _("If the application is not running for some time during a report period we can by this ".
 				"option decide to assume states for hosts and services during the downtime. Default value is YES."),
-			'include_soft_states' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
+			'includesoftstates' => _("A problem is classified as a SOFT problem until the number of checks has reached the ".
 				"configured max_check_attempts value. When max_check_attempts is reached the problem is reclassified as HARD."),
 			'use_average' => sprintf(_("What calculation method to use for the report. %s".
 				"Traditional Availability reports are based on group availability (worst case). An alternative way is to use average values for ".
@@ -3476,8 +1995,8 @@ class Reports_Controller extends Authenticated_Controller
 			'description' => _("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
-			'local_persistent_filepath' => '<p>'._("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'</p><p>'._("This should be the location of a folder, for example /tmp").'</p>',
-			'include_trends' => '<p>'._("Include a trends graph in your report.").'</p>',
+			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),
+			'include_trends' => _("Check this to include a trends graph in your report."),
 			'status_to_display' => _('Uncheck a status to exclude log entries of that kind from the report.')
 		);
 		if (array_key_exists($id, $helptexts)) {
@@ -3656,8 +2175,8 @@ class Reports_Controller extends Authenticated_Controller
 						foreach ($saved_reports as $report) {
 							if ($report->id == $new_value) {
 								echo $report_type == 'avail' || $report_type == 'summary'
-									? $report->report_name
-									: $report->sla_name;
+									? $report->options->report_name
+									: $report->options->sla_name;
 								break;
 							}
 						}
@@ -3701,47 +2220,6 @@ class Reports_Controller extends Authenticated_Controller
 		}
 	}
 
-	/**
-	*	Receive call from cron to check for scheduled reports
-	*/
-	public function cron($period_str=false)
-	{
-		if (PHP_SAPI !== "cli") {
-			die("illegal call\n");
-		}
-		$this->auto_render=false;
-
-		$res = Scheduled_reports_Model::get_period_schedules($period_str);
-		if ($res === false) {
-			return false;
-		}
-
-		$return = false;
-		foreach ($res as $row) {
-			if ($row->identifier == 'summary') {
-				$summary = new Summary_Controller();
-				$return[] = $summary->generate($row->id);
-			} else {
-				$class = get_class($this);
-				$report = new $class();
-				$return[] = $report->generate($row->identifier, $row->id);
-				unset($report);
-			}
-		}
-
-		# remove temp files
-		$tmpfiles = glob('/tmp/report*', GLOB_ONLYDIR);
-		if (is_array($tmpfiles) && !empty($tmpfiles)) {
-			foreach ($tmpfiles as $file) {
-				# only remove files older than or equal to 1 day
-				if (time() - filemtime($file) >= 86400) {
-					exec('rm -rf '.$file);
-				}
-			}
-		}
-		return $return;
-	}
-
 	public function _print_duration($start_time, $end_time)
 	{
 		$fmt = nagstat::date_format();
@@ -3754,45 +2232,6 @@ class Reports_Controller extends Authenticated_Controller
 		$seconds = ($duration % 60);
 		printf("%s: %dd %dh %dm %ds", _("Duration"),
 			   $days, $hours, $minutes, $seconds);
-	}
-
-	/**
-	 * Print one alert totals table. Since they all look more or
-	 * less the same, we can re-use the same function for all of
-	 * them, provided we get the statenames (OK, UP etc) from the
-	 * caller, along with the array of state totals.
-	 */
-	public function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
-	{
-		echo "<br /><table class=\"host_alerts\"><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
-		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Soft Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Hard Alerts') . "</th>\n";
-		echo "<th class=\"headerNone\">" . _('Total Alerts') . "</th>\n";
-		echo "</tr>\n";
-
-		$total = array(0, 0); # soft and hard
-		$i = 0;
-		foreach ($ary as $state_id => $sh) {
-			if (!isset($state_names[$state_id]))
-				continue;
-			$i++;
-			echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\">\n";
-			echo "<td>" . $state_names[$state_id] . "</td>\n"; # topic
-			echo "<td>" . $sh[0] . "</td>\n"; # soft
-			echo "<td>" . $sh[1] . "</td>\n"; # hard
-			$tot = $sh[0] + $sh[1];
-			echo "<td>" . $tot . "</td>\n"; # soft + hard
-			echo "</tr>\n";
-		}
-		$i++;
-		echo "<tr class=\"".($i%2 == 0 ? 'odd' : 'even')."\"><td>Total</td>\n";
-		echo "<td>" . $totals['soft'] . "</td>\n";
-		echo "<td>" . $totals['hard'] . "</td>\n";
-		$tot = $totals['soft'] + $totals['hard'];
-		echo "<td>" . $tot . "</td>\n";
-		echo "</tr></table><br />\n";
 	}
 
 	/**
@@ -3811,26 +2250,6 @@ class Reports_Controller extends Authenticated_Controller
 		} else {
 			echo 'error';
 		}
-	}
-
-	public function _create_filter_array($array, $type = 'host') {
-
-		$new_array = false;
-
-		if ($type == 'host') {
-			$new_array['up'] = (!array_key_exists(0, $array) || $array[0] == 0)  ? 0 : 1;
-			$new_array['down'] = (!array_key_exists(1, $array) || $array[1] == 0)? 0 : 1;
-			$new_array['unreachable'] = (!array_key_exists(2, $array) || $array[2] == 0) ? 0 : 1;
-			$new_array['undetermined'] = (!array_key_exists(3, $array) || $array[3] == 0) ? 0 : 1;
-		} else {
-			$new_array['ok'] = (!array_key_exists(0, $array) || $array[0] == 0) ? 0 : 1;
-			$new_array['warning'] = (!array_key_exists(1, $array) || $array[1] == 0) ? 0 : 1;
-			$new_array['unknown'] = (!array_key_exists(2, $array) || $array[2] == 0) ? 0 : 1;
-			$new_array['critical'] = (!array_key_exists(3, $array) || $array[3] == 0) ? 0 : 1;
-			$new_array['pending'] = (!array_key_exists(4, $array) || $array[4] == 0) ? 0 : 1;
-		}
-
-		return $new_array;
 	}
 }
 
