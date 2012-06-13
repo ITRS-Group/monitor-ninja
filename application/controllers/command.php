@@ -315,7 +315,7 @@ class Command_Controller extends Authenticated_Controller
 						array(
 							$start_as_seconds,
 							$param['host_name'],
-							"Host has entered a period of retroactively added scheduled downtime"
+							"Host has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 						)
 					);
 					Database::instance()->query(
@@ -339,7 +339,7 @@ class Command_Controller extends Authenticated_Controller
 						array(
 							$start_as_seconds,
 							$param['host_name'],
-							"Host has entered a period of retroactively added scheduled downtime"
+							"Host has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 						)
 					);
 					if($end_as_seconds < $now) {
@@ -364,7 +364,7 @@ class Command_Controller extends Authenticated_Controller
 							array(
 								$end_as_seconds,
 								$param['host_name'],
-								"Host has exited a period of retroactively added scheduled downtime"
+								"Host has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 							)
 						);
 						Database::instance()->query(
@@ -388,7 +388,7 @@ class Command_Controller extends Authenticated_Controller
 							array(
 								$end_as_seconds,
 								$param['host_name'],
-								"Host has exited a period of retroactively added scheduled downtime"
+								"Host has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 							)
 						);
 					}
@@ -500,7 +500,7 @@ class Command_Controller extends Authenticated_Controller
 						$start_as_seconds,
 						$host,
 						$service,
-						"Service has entered a period of retroactively added scheduled downtime"
+						"Service has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 					)
 				);
 				Database::instance()->query(
@@ -527,7 +527,7 @@ class Command_Controller extends Authenticated_Controller
 						$start_as_seconds,
 						$host,
 						$service,
-						"Service has entered a period of retroactively added scheduled downtime"
+						"Service has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 					)
 				);
 				if($end_as_seconds < $now) {
@@ -555,7 +555,7 @@ class Command_Controller extends Authenticated_Controller
 							$end_as_seconds,
 							$host,
 							$service,
-							"Service has exited a period of retroactively added scheduled downtime"
+							"Service has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 						)
 					);
 					Database::instance()->query(
@@ -582,7 +582,7 @@ class Command_Controller extends Authenticated_Controller
 							$end_as_seconds,
 							$host,
 							$service,
-							"Service has exited a period of retroactively added scheduled downtime"
+							"Service has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
 						)
 					);
 				}
