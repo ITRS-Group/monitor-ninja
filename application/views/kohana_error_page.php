@@ -42,4 +42,7 @@ $title = 'Error';
 require('themes/default/menu/menu.php');
 $links = $menu_base;
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+	$disable_refresh = true;
+
 require('themes/default/template.php');
