@@ -456,6 +456,8 @@ final class Kohana {
 		{
 			// Load the application configuration file
 			require APPPATH.'config/config'.EXT;
+			if (is_file(APPPATH.'config/custom/config'.EXT))
+				include APPPATH.'config/custom/config'.EXT;
 
 			if ( ! isset($config['site_domain']))
 			{
@@ -481,6 +483,18 @@ final class Kohana {
 				if (isset($config) AND is_array($config))
 				{
 					// Merge in configuration
+					$configuration = array_merge($configuration, $config);
+				}
+			}
+		}
+
+		if ($files = self::find_file('config/custom', $name, false))
+		{
+			foreach ($files as $file)
+			{
+				require $file;
+				if (isset($config) and is_array($config))
+				{
 					$configuration = array_merge($configuration, $config);
 				}
 			}
@@ -1099,7 +1113,7 @@ final class Kohana {
 		// Nothing found, yet
 		$found = NULL;
 
-		if ($directory === 'config' OR $directory === 'i18n')
+		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'config/custom')
 		{
 			// Search in reverse, for merging
 			$paths = array_reverse($paths);

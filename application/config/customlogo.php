@@ -24,11 +24,3 @@ $config['pattern'] = '/^(.*)-.*$/';
  * those who don't have a matching image file
  */
 $config['default_icon'] = 'icon.png';
-
-
-# check for custom config files that
-# won't be overwritten on upgrade
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}
-

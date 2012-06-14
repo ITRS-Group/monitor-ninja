@@ -291,9 +291,3 @@ $config['show_notes_chars'] = 80;
 *  in the Service detail view.
 */
 $config['service_long_output_enabled'] = false;
-
-# check for custom config files that
-# won't be overwritten on upgrade
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}

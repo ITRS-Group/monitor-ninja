@@ -68,9 +68,3 @@ $config['min_username_chars'] = 2;
  * Warning: this is insecure! Do know what you're doing!
  */
 $config['use_get_auth'] = false;
-
-# check for custom config files that
-# won't be overwritten on upgrade
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}
