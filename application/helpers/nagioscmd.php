@@ -1100,6 +1100,13 @@ class nagioscmd_Core
 			return floatval($value) * 3600;
 		}
 
+		if('comment' == $name) {
+			// nagios terminates string on ;, whether it's quoted or not,
+			// we need to get rid of it
+			// @see http://nagios.sourceforge.net/docs/3_0/objectdefinitions.html
+			return str_replace(';', ',', $value);
+		}
+
 		# notification_delay is given in minutes,
 		# but nagios wants a unix timestamp
 		if ($name === 'notification_delay') {
