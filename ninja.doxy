@@ -2,6 +2,7 @@ PROJECT_NAME = ninja
 PROJECT_NUMBER = git
 
 INPUT            = application/models application/helpers xdoc/
+DOTFILE_DIRS     = xdoc
 QUIET            = YES
 RECURSIVE        = YES
 FILE_PATTERNS    = *.php *.dox

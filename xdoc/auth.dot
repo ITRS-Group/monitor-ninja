@@ -1,0 +1,45 @@
+digraph FlowChart {
+
+graph [ nodesep=0 ]
+
+node [
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+]
+
+edge [
+	fontname = "Bitstream Vera Sans"
+	fontsize = 8
+	fontcolor = "Red"
+]
+
+start [label="<form> submitted"]
+gui [label="Default_Controller::do_login()"]
+login [label="ninja_auth_Core::login_user()"]
+
+// special nodes
+config_driver [label="$config['driver'] in application/config/auth.php"]
+default [label="No, default to ..."]
+ninja_valid_password [label="ninja_auth_Core::valid_password()"]
+apache_login [label="$config['apache_login']"]
+ldap_details [label="call ldap_* functions"]
+logged_in [label="Kohana::config('routes.logged_in_default')"]
+
+// relations
+start -> gui
+gui -> login
+login -> config_driver
+config_driver -> default [style=dotted]
+config_driver -> "Ninja.php" [label="modules/auth/libraries/drivers/Auth/Ninja.php"]
+config_driver -> "apache.php" [label="modules/..."]
+config_driver -> "LDAP.php" [label="modules/..."]
+default -> "Ninja.php"
+"apache.php" -> apache_login [label="redirect to.."]
+"LDAP.php" -> ldap_details
+"Ninja.php" -> ninja_valid_password [label="driver::login($username, $password)"]
+
+apache_login -> black_magic -> logged_in [label="redirects to path found in..."]
+ninja_valid_password -> logged_in [label="redirects to path found in..."]
+ldap_details -> logged_in [label="redirects to path found in..."]
+
+}
