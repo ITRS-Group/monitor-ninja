@@ -463,6 +463,11 @@ EOQ
 		}
 	}
 
+	/**
+	 * Fetch information regarding the various merlin nodes
+	 * @param $host Unused
+	 * @return Array with various info elements
+	 */
 	public function get_merlin_node_status($host=null)
 	{
 		$sql = false;
