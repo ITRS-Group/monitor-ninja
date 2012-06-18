@@ -53,13 +53,7 @@ class Status_totals_Widget extends widget_Base {
 			$host_data = Group_Model::state_breakdown($this->grouptype, 'host', $this->host);
 			$service_data = Group_Model::state_breakdown($this->grouptype, 'service', $this->host);
 		} else {
-			if ($current_status->host_data_present !== true) {
-				$current_status->host_status();
-			}
-
-			if ($current_status->service_data_present !== true) {
-				$current_status->service_status();
-			}
+			$current_status->analyze_status_data();
 		}
 
 		$grouptype = !empty($this->grouptype) ? $this->grouptype.'group' : false;

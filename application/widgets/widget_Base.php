@@ -48,8 +48,7 @@ class widget_Base
 
 	public static function get_current_status() {
 		$current_status = Current_status_Model::instance();
-		if (!$current_status->data_present())
-			$current_status->analyze_status_data();
+		$current_status->analyze_status_data();
 		return $current_status;
 	}
 
