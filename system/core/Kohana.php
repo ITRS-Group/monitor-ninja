@@ -338,13 +338,9 @@ final class Kohana {
 			// Add APPPATH as the first path
 			self::$include_paths = array(APPPATH);
 
-			foreach (self::$configuration['core']['modules'] as $path)
+			foreach (glob(MODPATH.'*', GLOB_ONLYDIR) as $path)
 			{
-				if ($path = str_replace('\\', '/', realpath($path)))
-				{
-					// Add a valid path
-					self::$include_paths[] = $path.'/';
-				}
+				self::$include_paths[] = $path.'/';
 			}
 
 			// Add SYSPATH as the last path

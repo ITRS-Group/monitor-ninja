@@ -8,7 +8,7 @@ help:
 test: test-php-lint test-reports test-unittest
 
 test-reports:
-	php index.php ninja_unit_test/reports modules/unit_test/reports/*.tst
+	php index.php ninja_unit_test/reports test/unit_test/reports/*.tst
 
 test-unittest: test-ci-prepare
 	php index.php ninja_unit_test

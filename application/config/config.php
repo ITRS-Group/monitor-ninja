@@ -107,24 +107,6 @@ $config['autoload'] = array
 );
 
 /**
- * Additional resource paths, or "modules". Each path can either be absolute
- * or relative to the docroot. Modules can include any resource that can exist
- * in your application directory, configuration files, controllers, views, etc.
- */
-$config['modules'] = array
-(
-	MODPATH.'auth',      // Authentication
-	// MODPATH.'forge',     // Form generation
-	// MODPATH.'kodoc',     // Self-generating documentation
-	// MODPATH.'media',     // Media caching and compression
-	// MODPATH.'gmaps',     // Google Maps integration
-	// MODPATH.'archive',   // Archive utility
-	// MODPATH.'payment',   // Online payments
-	// MODPATH.'unit_test', // Unit testing
-	// MODPATH.'object_db', // New OOP Database library (testing only!)
-);
-
-/**
  * 	Base path to the location of Nagios.
  * 	This is used if we need to read some
  * 	configuration from the config files.
