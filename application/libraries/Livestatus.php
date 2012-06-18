@@ -1,11 +1,16 @@
 <?php
 
 /**
+ * Custom exception for Livestatus errors
+ */
+class LivestatusException extends Exception {}
+
+/**
  * Livestatus communication handler
  */
 class Livestatus
 {
-	static $auth = false;
+	private $auth = false;
 	private $sock = false;
 	private static $instance = false;
 	/**
@@ -15,18 +20,8 @@ class Livestatus
 	private function open_livestatus_socket()
 	{
 		$sock = @fsockopen('unix:///opt/monitor/var/rw/live', null, $errno, $errstr);
-		if ($errno) {
-			$i = 0;
-			while ($i < 5) {
-				sleep(1);
-				$sock = @fsockopen('unix:///opt/monitor/var/rw/live', null, $errno, $errstr);
-				if (!$errno) {
-					break;
-				}
-			}
-		}
 		if ($errno)
-			throw new Exception("Couldn't open livestatus socket: " . $errstr);
+			throw new LivestatusException("Couldn't open livestatus socket: " . $errstr);
 		return $sock;
 	}
 
@@ -41,7 +36,7 @@ class Livestatus
 		$res = '';
 
 		while ($offset < $len) {
-			$data = fread($socket, $len - $offset);
+			$data = @fread($socket, $len - $offset);
 			if (empty($data))
 				break;
 			$res .= $data;
@@ -75,14 +70,18 @@ class Livestatus
 		@fwrite($this->sock, $query);
 		$head = $this->read_socket($this->sock, 16);
 		if (empty($head)) {
-			throw new Exception("Couldn't read livestatus header");
+			throw new LivestatusException("Couldn't read livestatus header");
 		}
 		$out = $this->read_socket($this->sock, substr($head, 4, 15));
 		if (substr($head, 0, 3) !== '200')
-			throw new Exception("Invalid request $head: $out");
+			throw new LivestatusException("Invalid request $head: $out");
 		else if (empty($out))
-			throw new Exception("No output");
+			throw new LivestatusException("No output");
 
-		return json_decode($out);
+		$res = json_decode($out);
+		if ($res === null) {
+			throw new LivestatusException("Invalid output");
+		}
+		return $res;
 	}
 }

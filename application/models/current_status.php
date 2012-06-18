@@ -168,43 +168,44 @@ class Current_status_Model extends Model
 			$disabled_checks_condition = "Stats: active_checks_enabled != 1";
 		}
 
-		$ls = Livestatus::instance();
-		$cols = array(
-			'total_hosts' => 'Stats: state != 9999', // "any", as recommended by ls docs
-			'flap_disabled_hosts' => 'Stats: flap_detection_enabled != 1',
-			'flapping_hosts' => 'Stats: is_flapping = 1',
-			'notification_disabled_hosts' => 'Stats: notifications_enabled != 1',
-			'event_handler_disabled_hosts' => 'Stats: event_handler_enabled != 1',
-			'active_checks_disabled_hosts' => $disabled_checks_condition,
-			'passive_checks_disabled_hosts' => 'Stats: accept_passive_checks != 1',
-			'hosts_up_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
-			'hosts_up_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
-			'hosts_up' => 'Stats: state = 0',
-			'hosts_down_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
-			'hosts_down_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
-			'hosts_down_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
-			'hosts_down_unacknowledged' => "Stats: state = 1\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
-			'hosts_down' => 'Stats: state = 1',
-			'hosts_unreachable_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
-			'hosts_unreachable_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
-			'hosts_unreachable_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
-			'hosts_unreach_unacknowledged' => "Stats: state = 2\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
-			'hosts_unreachable' => "Stats: state = 2",
-			'hosts_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
-			'hosts_pending' => 'Stats: has_been_checked = 0',
-			'total_active_host_checks' => 'Stats: check_type = 0',
-			'total_passive_host_checks' => 'Stats: check_type > 0',
-			'min_host_latency' => 'Stats: min latency',
-			'max_host_latency' => 'Stats: max latency',
-			'total_host_latency' => 'Stats: sum latency',
-			'avg_host_latency' => 'Stats: avg latency',
-			'min_host_execution_time' => 'Stats: min execution_time',
-			'max_host_execution_time' => 'Stats: max execution_time',
-			'total_host_execution_time' => 'Stats: sum execution_time',
-			'avg_host_execution_time' => 'Stats: avg execution_time',
-		);
-		$res = $ls->query("GET hosts\n".implode("\n", $cols));
-		if ($res === false) {
+		try {
+			$ls = Livestatus::instance();
+			$cols = array(
+				'total_hosts' => 'Stats: state != 9999', // "any", as recommended by ls docs
+				'flap_disabled_hosts' => 'Stats: flap_detection_enabled != 1',
+				'flapping_hosts' => 'Stats: is_flapping = 1',
+				'notification_disabled_hosts' => 'Stats: notifications_enabled != 1',
+				'event_handler_disabled_hosts' => 'Stats: event_handler_enabled != 1',
+				'active_checks_disabled_hosts' => $disabled_checks_condition,
+				'passive_checks_disabled_hosts' => 'Stats: accept_passive_checks != 1',
+				'hosts_up_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
+				'hosts_up_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
+				'hosts_up' => 'Stats: state = 0',
+				'hosts_down_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
+				'hosts_down_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
+				'hosts_down_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
+				'hosts_down_unacknowledged' => "Stats: state = 1\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
+				'hosts_down' => 'Stats: state = 1',
+				'hosts_unreachable_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
+				'hosts_unreachable_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
+				'hosts_unreachable_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
+				'hosts_unreach_unacknowledged' => "Stats: state = 2\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
+				'hosts_unreachable' => "Stats: state = 2",
+				'hosts_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
+				'hosts_pending' => 'Stats: has_been_checked = 0',
+				'total_active_host_checks' => 'Stats: check_type = 0',
+				'total_passive_host_checks' => 'Stats: check_type > 0',
+				'min_host_latency' => 'Stats: min latency',
+				'max_host_latency' => 'Stats: max latency',
+				'total_host_latency' => 'Stats: sum latency',
+				'avg_host_latency' => 'Stats: avg latency',
+				'min_host_execution_time' => 'Stats: min execution_time',
+				'max_host_execution_time' => 'Stats: max execution_time',
+				'total_host_execution_time' => 'Stats: sum execution_time',
+				'avg_host_execution_time' => 'Stats: avg execution_time',
+			);
+			$res = $ls->query("GET hosts\n".implode("\n", $cols));
+		} catch (LivestatusException $ex) {
 			return false;
 		}
 
@@ -243,54 +244,55 @@ class Current_status_Model extends Model
 			$disabled_checks_condition = "Stats: active_checks_enabled != 1";
 		}
 
-		$ls = Livestatus::instance();
-		$cols = array(
-			'total_services' => 'Stats: state != 9999', // "any", as recommended by ls docs
-			'flap_disabled_services' => 'Stats: flap_detection_enabled != 1',
-			'flapping_services' => 'Stats: is_flapping = 1',
-			'notification_disabled_services' => 'Stats: notifications_enabled != 1',
-			'event_handler_disabled_svcs' => 'Stats: event_handler_enabled != 1',
-			'active_checks_disabled_svcs' => $disabled_checks_condition,
-			'passive_checks_disabled_svcs' => 'Stats: accept_passive_checks != 1',
-			'services_ok_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
-			'services_ok_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
-			'services_ok' => 'Stats: state = 0',
-			'services_warning_host_problem' => "Stats: state = 1\nStats: host_state > 0\nStatsAnd: 2",
-			'services_warning_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-			'services_warning_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
-			'services_warning_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
-			'svcs_warning_unacknowledged' => "Stats: state = 1\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-			'services_warning' => 'Stats: state = 1',
-			'services_critical_host_problem' => "Stats: state = 2\nStats: host_state > 0\nStatsAnd: 2",
-			'services_critical_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-			'services_critical_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
-			'services_critical_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
-			'svcs_critical_unacknowledged' => "Stats: state = 2\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-			'services_critical' => 'Stats: state = 2',
-			'services_unknown_host_problem' => "Stats: state = 3\nStats: host_state > 0\nStatsAnd: 2",
-			'services_unknown_scheduled' => "Stats: state = 3\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-			'services_unknown_acknowledged' => "Stats: state = 3\nStats: acknowledged = 1\nStatsAnd: 2",
-			'services_unknown_disabled' => "Stats: state = 3\n$disabled_checks_condition\nStatsAnd: 2",
-			'svcs_unknown_unacknowledged' => "Stats: state = 3\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-			'services_unknown' => 'Stats: state = 3',
-			'services_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
-			'services_pending' => 'Stats: has_been_checked = 0',
-			'total_active_service_checks' => 'Stats: check_type = 0',
-			'total_passive_service_checks' => 'Stats: check_type > 0',
-			'min_service_latency' => 'Stats: min latency',
-			'max_service_latency' => 'Stats: max latency',
-			'sum_service_latency' => 'Stats: sum latency',
-			'avg_service_latency' => 'Stats: avg latency',
-			'min_service_execution_time' => 'Stats: min execution_time',
-			'max_service_execution_time' => 'Stats: max execution_time',
-			'sum_service_execution_time' => 'Stats: sum execution_time',
-			'avg_service_execution_time' => 'Stats: avg execution_time',
-		);
-		$res = $ls->query("GET services\n".implode("\n", $cols));
-
-		if ($res === false) {
+		try {
+			$ls = Livestatus::instance();
+			$cols = array(
+				'total_services' => 'Stats: state != 9999', // "any", as recommended by ls docs
+				'flap_disabled_services' => 'Stats: flap_detection_enabled != 1',
+				'flapping_services' => 'Stats: is_flapping = 1',
+				'notification_disabled_services' => 'Stats: notifications_enabled != 1',
+				'event_handler_disabled_svcs' => 'Stats: event_handler_enabled != 1',
+				'active_checks_disabled_svcs' => $disabled_checks_condition,
+				'passive_checks_disabled_svcs' => 'Stats: accept_passive_checks != 1',
+				'services_ok_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
+				'services_ok_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
+				'services_ok' => 'Stats: state = 0',
+				'services_warning_host_problem' => "Stats: state = 1\nStats: host_state > 0\nStatsAnd: 2",
+				'services_warning_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
+				'services_warning_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
+				'services_warning_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
+				'svcs_warning_unacknowledged' => "Stats: state = 1\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
+				'services_warning' => 'Stats: state = 1',
+				'services_critical_host_problem' => "Stats: state = 2\nStats: host_state > 0\nStatsAnd: 2",
+				'services_critical_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
+				'services_critical_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
+				'services_critical_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
+				'svcs_critical_unacknowledged' => "Stats: state = 2\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
+				'services_critical' => 'Stats: state = 2',
+				'services_unknown_host_problem' => "Stats: state = 3\nStats: host_state > 0\nStatsAnd: 2",
+				'services_unknown_scheduled' => "Stats: state = 3\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
+				'services_unknown_acknowledged' => "Stats: state = 3\nStats: acknowledged = 1\nStatsAnd: 2",
+				'services_unknown_disabled' => "Stats: state = 3\n$disabled_checks_condition\nStatsAnd: 2",
+				'svcs_unknown_unacknowledged' => "Stats: state = 3\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
+				'services_unknown' => 'Stats: state = 3',
+				'services_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
+				'services_pending' => 'Stats: has_been_checked = 0',
+				'total_active_service_checks' => 'Stats: check_type = 0',
+				'total_passive_service_checks' => 'Stats: check_type > 0',
+				'min_service_latency' => 'Stats: min latency',
+				'max_service_latency' => 'Stats: max latency',
+				'sum_service_latency' => 'Stats: sum latency',
+				'avg_service_latency' => 'Stats: avg latency',
+				'min_service_execution_time' => 'Stats: min execution_time',
+				'max_service_execution_time' => 'Stats: max execution_time',
+				'sum_service_execution_time' => 'Stats: sum execution_time',
+				'avg_service_execution_time' => 'Stats: avg execution_time',
+			);
+			$res = $ls->query("GET services\n".implode("\n", $cols));
+		} catch (LivestatusException $ex) {
 			return false;
 		}
+
 		$data = $res[0];
 		reset($data);
 		foreach ($cols as $col => $_) {
@@ -336,32 +338,33 @@ class Current_status_Model extends Model
 	{
 		if ($this->outage_data_present)
 			return true;
-		$ls = Livestatus::instance();
+		try {
+			$ls = Livestatus::instance();
 
-		$result = $ls->query(<<<EOQ
+			$result = $ls->query(<<<EOQ
 GET hosts
 Filter: state = 1
 Columns: name services childs
 EOQ
 );
 
-		if (empty($result))
-			return false;
-
-		foreach ($result as $res){
-			$this->unreachable_hosts[$res[0]] = count($res[2]);
-			$this->affected_hosts[$res[0]] = count($res[2]) + 1;
-			$this->affected_services[$res[0]] = count($res[1]);
-			# check if each host has any affected child hosts
-			foreach ($res[2] as $sub) {
-				if (!($children = $this->get_child_hosts($sub)))
-					$this->total_nonblocking_outages++;
-				else
-					$this->total_blocking_outages++;
-				$this->affected_hosts[$res[0]] += $children['hosts'];
-				$this->unreachable_hosts[$res[0]] += $children['hosts'];
-				$this->affected_services[$res[0]]+= $children['services'];
+			foreach ($result as $res){
+				$this->unreachable_hosts[$res[0]] = count($res[2]);
+				$this->affected_hosts[$res[0]] = count($res[2]) + 1;
+				$this->affected_services[$res[0]] = count($res[1]);
+				# check if each host has any affected child hosts
+				foreach ($res[2] as $sub) {
+					if (!($children = $this->get_child_hosts($sub)))
+						$this->total_nonblocking_outages++;
+					else
+						$this->total_blocking_outages++;
+					$this->affected_hosts[$res[0]] += $children['hosts'];
+					$this->unreachable_hosts[$res[0]] += $children['hosts'];
+					$this->affected_services[$res[0]]+= $children['services'];
+				}
 			}
+		} catch (LivestatusException $ex) {
+			return false;
 		}
 
 		$this->outage_data_present = true;
