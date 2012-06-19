@@ -19,7 +19,8 @@ class Livestatus
 	 */
 	private function open_livestatus_socket()
 	{
-		$sock = @fsockopen('unix:///opt/monitor/var/rw/live', null, $errno, $errstr);
+		$ls = Kohana::config('config.livestatus');
+		$sock = @fsockopen('unix://'.$ls, null, $errno, $errstr);
 		if ($errno)
 			throw new LivestatusException("Couldn't open livestatus socket: " . $errstr);
 		return $sock;

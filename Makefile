@@ -5,6 +5,11 @@ test-reports:
 
 test-unittest: test-ci-prepare
 	php index.php ninja_unit_test
+	make test-ci-cleanup
+
+test-ci-cleanup:
+	/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd
+	rm application/config/custom/config.php
 
 test-ci-prepare: prepare-config
 	mkdir -m 0777 -p /tmp/ninja-test/
@@ -14,14 +19,15 @@ test-ci-prepare: prepare-config
 	/opt/monitor/op5/merlin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
 	/bin/sleep 5
-	/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd
 	php index.php 'cli/insert_user_data'
 	git checkout test/configs/all-host_service-states/var/status.sav || :
 	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
+	sed -e 's#/opt/monitor/var/rw/live#/tmp/ninja-test/live#' application/config/config.php > application/config/custom/config.php
 
 test-ci: test-ci-prepare
 	sh test/ci/testsuite.sh .
 	sh test/ci/testsuite.sh . test/ci/limited_tests.txt
+	make test-ci-cleanup
 
 test-coverage:
 	@make test-ci-prepare &> /dev/null

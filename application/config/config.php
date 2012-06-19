@@ -292,6 +292,8 @@ $config['show_notes_chars'] = 80;
 */
 $config['service_long_output_enabled'] = false;
 
+$config['livestatus'] = '/opt/monitor/var/rw/live';
+
 # check for custom config files that
 # won't be overwritten on upgrade
 if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
