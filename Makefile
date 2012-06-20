@@ -8,21 +8,23 @@ test-unittest: test-ci-prepare
 	make test-ci-cleanup
 
 test-ci-cleanup:
-	/bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd
-	rm application/config/custom/config.php
+	git checkout test/configs/all-host_service-states/var/status.sav || :
+	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
+	if [ -f /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; fi
+	/bin/sleep 5 # give nagios some time to read
+	rm -rf /tmp/ninja-test # 'pparently, sockets can't always be created otherwise. Weird.
+	rm -f application/config/custom/config.php
+	rm -rf test/configs/all-host_service-states/var/spool/checkresults # bugs could cause this to become *huge* if we don't do some trimming
 
-test-ci-prepare: prepare-config
+test-ci-prepare: test-ci-cleanup prepare-config
 	mkdir -m 0777 -p /tmp/ninja-test/
 	mkdir -m 0777 -p test/configs/all-host_service-states/var/spool/checkresults
 	chmod 777 test/configs/all-host_service-states/var/
-	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
 	/opt/monitor/op5/merlin/merlind -c test/configs/all-host_service-states/etc/merlin.conf
 	/opt/monitor/bin/monitor -d test/configs/all-host_service-states/etc/nagios.cfg
-	/bin/sleep 5
 	php index.php 'cli/insert_user_data'
-	git checkout test/configs/all-host_service-states/var/status.sav || :
-	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
 	sed -e 's#/opt/monitor/var/rw/live#/tmp/ninja-test/live#' application/config/config.php > application/config/custom/config.php
+	/bin/sleep 5
 
 test-ci: test-ci-prepare
 	sh test/ci/testsuite.sh .
