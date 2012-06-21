@@ -168,7 +168,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 					$properties += 16;
 				}
 			?>
-			</span><span class="obj_prop_service _<?php echo str_replace('.', '_', $row->host_name).'__'.(preg_replace(array('/\./', '/ /'), '_', $row->service_description)) ?>" style="display:none"><?php echo $properties ?></span>
+			</span><span class="obj_prop_service _<?php echo preg_replace('/[^a-zA-Z0-9-_]/', '_', $row->host_name.'__'.$row->service_description) ?>" style="display:none"><?php echo $properties ?></span>
 		</td>
 		<td>
 			<?php

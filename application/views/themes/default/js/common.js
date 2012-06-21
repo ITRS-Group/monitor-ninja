@@ -70,7 +70,7 @@ $(document).ready(function() {
 	$('#menu a').click(function() {_is_refreshing = true;});
 
 	if (_use_contextmenu) {
-		$(".obj_properties").contextMenu({
+		$(".obj_properties").not('.white').contextMenu({
 				menu: 'property_menu', use_prop:true
 			},
 			function(action, elem){
