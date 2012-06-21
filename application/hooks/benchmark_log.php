@@ -25,7 +25,8 @@ class benchmark_log {
 
 		$output = array(
 			'timestamp' => time(),
-			'user' => Auth::instance()->get_user()->username,
+			// we want to be able to pipe to cut -d ' ', hence: no spaces in username
+			'user' => Auth::instance()->get_user() ? str_replace(' ', '_', Auth::instance()->get_user()->username) : '[not_logged_in]',
 			'url' => url::current(true),
 			'execution_time' => $benchmark['time'].'s',
 			'memory_usage' => number_format($memory, 2).'MB'
