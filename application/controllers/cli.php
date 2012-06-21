@@ -130,6 +130,7 @@ class Cli_Controller extends Authenticated_Controller {
 				" WHERE username=".$db->escape($old));
 			}
 		}
+		$db->query('DELETE FROM roles_users WHERE user_id NOT IN (SELECT id FROM users)');
 	}
 
 	/**
