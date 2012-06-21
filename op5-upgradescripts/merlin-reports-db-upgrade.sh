@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Upgrades the reports tables in merlin database.
 #
