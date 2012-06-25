@@ -58,7 +58,7 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 
 		# check if user is an admin
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_admin = $auth->view_hosts_root ? true : false;
 		$template->is_admin = $is_admin;
 		unset($auth);
@@ -369,7 +369,7 @@ class User_Controller extends Authenticated_Controller {
 		$item_str=false, $link_info=false)
 	{
 		# check if current user is an admin
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_admin = $auth->view_hosts_root ? true : false;
 		unset($auth);
 
@@ -402,7 +402,7 @@ class User_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		# check if current user is an admin
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_admin = $auth->view_hosts_root ? true : false;
 		$content->is_admin = $is_admin;
 		unset($auth);
@@ -513,7 +513,7 @@ class User_Controller extends Authenticated_Controller {
 	{
 		# check if current user is an admin
 		# and prevent access if not
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_admin = $auth->view_hosts_root ? true : false;
 		unset($auth);
 		if (!$is_admin) {

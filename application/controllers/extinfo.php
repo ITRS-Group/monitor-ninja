@@ -62,7 +62,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		# is user authenticated to view details on current object?
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_authenticated = true;
 		switch ($type) {
 			case 'host':
@@ -579,7 +579,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function show_process_info()
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}
@@ -1478,7 +1478,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->view_hosts_root) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}

@@ -19,7 +19,7 @@ class Upload_Controller extends Authenticated_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->view_hosts_root) {
 			# redirect to default start page if not
 			# properly authorized

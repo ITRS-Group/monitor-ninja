@@ -18,7 +18,7 @@ class Servicegroup_Model extends Ninja_Model
 		if (empty($value) || empty($field)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (empty($auth_objects))
 			return false;
@@ -40,7 +40,7 @@ class Servicegroup_Model extends Ninja_Model
 			$limit_str = " LIMIT $items_per_page OFFSET $offset";
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (empty($auth_objects))
 			return false;
@@ -60,7 +60,7 @@ class Servicegroup_Model extends Ninja_Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (empty($auth_objects))
 			return false;
@@ -80,7 +80,7 @@ class Servicegroup_Model extends Ninja_Model
 	{
 		if (empty($value)) return false;
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (empty($auth_objects))
 			return false;
@@ -158,7 +158,7 @@ class Servicegroup_Model extends Ninja_Model
 		foreach ($group as $g) {
 			$sg[$g] = $this->db->escape($g);
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$contact = $auth->id;
 
 		$ca_access = '';
@@ -188,7 +188,7 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public static function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		$auth_services = $auth->get_authorized_services();
 		if (!is_array($auth_objects))
@@ -418,7 +418,7 @@ class Servicegroup_Model extends Ninja_Model
 			return false;
 		}
 		if (!isset($this->auth) || !is_object($this->auth)) {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			$auth_obj = $auth->get_authorized_servicegroups();
 		} else {
 			$auth_obj = $this->auth->get_authorized_servicegroups();
@@ -449,7 +449,7 @@ class Servicegroup_Model extends Ninja_Model
 	*/
 	public function check_group_access($groupname=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		if ($auth->view_hosts_root || $auth->view_services_root) {
 			return true;

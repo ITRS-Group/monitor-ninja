@@ -4,7 +4,7 @@ $authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
 
-	$auth = new Nagios_auth_Model();
+	$auth = Nagios_auth_Model::instance();
 	if ($auth->view_hosts_root) {
 		$authorized = true;
 	}

@@ -39,7 +39,7 @@ class Config_Model extends Model {
 	{
 
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$result_mod = array();
 
 		if ($auth->view_hosts_root) {

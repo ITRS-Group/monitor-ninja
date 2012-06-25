@@ -17,7 +17,7 @@ class Notifications_Model extends Model {
 	{
 
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$num_per_page = (int)$num_per_page;
 

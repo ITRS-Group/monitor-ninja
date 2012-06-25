@@ -27,7 +27,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 		if (PHP_SAPI != 'cli') {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			if (!$auth->view_hosts_root && Router::$method !== 'unauthorized') {
 				url::redirect('recurring_downtime/unauthorized');
 			}

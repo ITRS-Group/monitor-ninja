@@ -70,7 +70,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	$curr_host = false;
 	$a = 0;
 	$c=0;
-	$auth = new Nagios_auth_Model();
+	$auth = Nagios_auth_Model::instance();
 	$auth_hosts = $auth->get_authorized_hosts();
 	if (!empty($result)) {
 		foreach ($result as $row) {

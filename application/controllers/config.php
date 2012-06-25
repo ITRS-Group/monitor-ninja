@@ -33,7 +33,7 @@ class Config_Controller extends Authenticated_Controller {
 	public function index()
 	{
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}
@@ -52,7 +52,7 @@ class Config_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}

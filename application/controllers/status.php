@@ -43,7 +43,7 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		unset($contact);
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$this->cmd_host_ok = $auth->command_hosts_root;
 		$this->cmd_svc_ok = $auth->command_services_root;
 		unset($auth);
@@ -729,7 +729,7 @@ class Status_Controller extends Authenticated_Controller {
 		$group_details = false;
 		$groupname_tmp = false;
 		if ($group == 'all') {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			if ($grouptype == 'host') {
 				$auth_groups = $auth->get_authorized_hostgroups();
 			} else {
@@ -919,7 +919,7 @@ class Status_Controller extends Authenticated_Controller {
 		$auth_groups = false;
 		$group_info_res = false;
 		if (strtolower($group) == 'all') {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			if ($grouptype == 'host') {
 				$auth_groups = $auth->get_authorized_hostgroups();
 			} else {
@@ -1122,7 +1122,7 @@ class Status_Controller extends Authenticated_Controller {
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			if ($grouptype == 'host') {
 				$auth_groups = $auth->get_authorized_hostgroups();
 			} else {

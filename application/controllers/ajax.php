@@ -535,7 +535,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			json::fail('"type" must be provided');
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$return = false;
 		$items = false;

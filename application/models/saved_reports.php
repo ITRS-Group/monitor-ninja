@@ -21,7 +21,7 @@ class Saved_reports_Model extends Model
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		switch ($type) {
 			case 'avail':
 			case 'summary':
@@ -486,7 +486,7 @@ class Saved_reports_Model extends Model
 	public function get_sla_from_saved_reports($sla_id, $user=false)
 	{
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$sql = "SELECT name, value FROM sla_periods WHERE sla_id = '".$sla_id."'";
 		if (!$auth->view_hosts_root) {

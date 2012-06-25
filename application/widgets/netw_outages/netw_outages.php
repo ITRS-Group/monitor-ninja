@@ -13,7 +13,7 @@ class Netw_outages_Widget extends widget_Base {
 		# fetch widget view path
 		$view_path = $this->view_path('view');
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		# fetch info on outages
 		$outages = new Outages_Model();

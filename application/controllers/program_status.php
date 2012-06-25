@@ -31,7 +31,7 @@ class Program_status_Controller extends Authenticated_Controller {
 	public function index()
 	{
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}
@@ -40,7 +40,7 @@ class Program_status_Controller extends Authenticated_Controller {
 		//$ps_model = new Program_status_Model($items_per_page, true, true);
 		$ps_model = new Program_status_Model();
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
 			url::redirect('extinfo/unauthorized/0');
 		}

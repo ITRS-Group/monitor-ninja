@@ -26,7 +26,7 @@ class Outages_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**

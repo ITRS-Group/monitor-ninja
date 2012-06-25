@@ -15,7 +15,7 @@ class Hostgroup_Model extends Ninja_Model
 	{
 		$value = trim($value);
 		$field = trim($field);
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_hostgroups();
 		if (empty($value) || empty($field) || empty($auth_objects)) {
 			return false;
@@ -37,7 +37,7 @@ class Hostgroup_Model extends Ninja_Model
 		if (!empty($items_per_page)) {
 			$limit_str = " LIMIT ".$items_per_page." OFFSET ".$offset;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			$sql = "SELECT * FROM hostgroup ".$limit_str;
 		} else {
@@ -62,7 +62,7 @@ class Hostgroup_Model extends Ninja_Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_hostgroups();
 		if (empty($auth_objects))
 			return false;
@@ -82,7 +82,7 @@ class Hostgroup_Model extends Ninja_Model
 	{
 		if (empty($value)) return false;
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_hostgroups();
 		if (empty($auth_objects))
 			return false;
@@ -160,7 +160,7 @@ class Hostgroup_Model extends Ninja_Model
 		foreach ($group as $g) {
 			$hg[$g] = $this->db->escape($g);
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$contact = $auth->id;
 
 		$ca_access = '';
@@ -191,7 +191,7 @@ class Hostgroup_Model extends Ninja_Model
 	 */
 	public static function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_hostgroups();
 		$auth_hosts = $auth->get_authorized_hosts();
 		if (!is_array($auth_objects))
@@ -444,7 +444,7 @@ class Hostgroup_Model extends Ninja_Model
 			return false;
 		}
 		if (!isset($this->auth) || !is_object($this->auth)) {
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			$auth_obj = $auth->get_authorized_hostgroups();
 		} else {
 			$auth_obj = $this->auth->get_authorized_hostgroups();
@@ -475,7 +475,7 @@ class Hostgroup_Model extends Ninja_Model
 	*/
 	public function check_group_access($groupname=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			return true;
 		}

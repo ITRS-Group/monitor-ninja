@@ -25,7 +25,7 @@ class Group_Model extends Model
 			return false;
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$filter_sql = '';
 		$extra_join = '';
 		$state_filter = false;
@@ -163,7 +163,7 @@ class Group_Model extends Model
 		$service_props_sql = Host_Model::build_service_props_query($service_props, 's.', 'h.');
 		$host_props_sql = Host_Model::build_host_props_query($host_props, 'h.');
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if ($auth->view_hosts_root || ($auth->view_services_root && $grouptype == 'service')) {
 			$auth_str = "";
@@ -275,7 +275,7 @@ class Group_Model extends Model
 	public function state_breakdown($grouptype='host', $what='host', $name=false)
 	{
 		$name = trim($name);
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$name = empty($name) ? 'all' : $name;
 		$db = Database::instance();
@@ -382,7 +382,7 @@ class Group_Model extends Model
 	*/
 	public static function group_overview($type='service', $group=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_objects = array();
 		if ($type == 'service') {
 			$auth_objects = $auth->get_authorized_servicegroups();

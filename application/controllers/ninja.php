@@ -285,7 +285,7 @@ class Ninja_Controller extends Template_Controller {
 		unset($data);
 
 		# check permissions
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (nacoma::link()===true && $auth->authorized_for_configuration_information
 			&& $auth->authorized_for_system_commands && $auth->view_hosts_root) {
 			$nacoma = Database::instance('nacoma');

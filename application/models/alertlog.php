@@ -39,7 +39,7 @@ class Alertlog_Model extends Model
 	 */
 	function get_log_entries($options=false, $limit=false, $offset=0, $count=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$db = Database::instance();
 		if ($count !== true)
 			$sql = 'SELECT report_data.* FROM report_data';

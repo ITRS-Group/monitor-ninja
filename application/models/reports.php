@@ -3009,7 +3009,7 @@ class Reports_Model extends Model
 		}
 
 		if (!$auth)
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 		if (empty($hosts) && $this->alert_types & 1) {
 			if (!$auth->view_hosts_root) {
 				$hosts = array();

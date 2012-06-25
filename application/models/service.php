@@ -44,7 +44,7 @@ class Service_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
@@ -78,7 +78,7 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -132,7 +132,7 @@ class Service_Model extends Model
 		if (empty($group) || empty($type)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.host = h.id AND ca.contact = ".$auth->id;
@@ -172,7 +172,7 @@ class Service_Model extends Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$sql_join = false;
 		$sql_where = false;
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
@@ -208,7 +208,7 @@ class Service_Model extends Model
 			return false;
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -262,7 +262,7 @@ class Service_Model extends Model
 	public function search($value=false, $limit=false, $filter_service_on_state=false)
 	{
 		if (empty($value)) return false;
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -356,7 +356,7 @@ class Service_Model extends Model
 	 */
 	public function service_status()
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -381,7 +381,7 @@ class Service_Model extends Model
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -446,7 +446,7 @@ class Service_Model extends Model
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root) {
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
@@ -510,7 +510,7 @@ class Service_Model extends Model
 		if ($field == 'service_name') {
 			$field = 'service_description';
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$auth_str = '';
 		if (!$auth->view_hosts_root && !$auth->view_services_root)
 			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;

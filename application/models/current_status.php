@@ -134,7 +134,7 @@ class Current_status_Model extends Model
 	{
 		parent::__construct();
 		$this->base_path = Kohana::config('config.nagios_base_path');
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**

@@ -36,7 +36,7 @@ class report_Test extends TapUnit {
 		$this->rpt = new Reports_Model();
 		$this->rpt->set_option('start_time', 0);
 		$this->rpt->set_option('end_time', time());
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$res = Database::instance()->query('SELECT id FROM contact LIMIT 1');
 		//whatever, as long as it's valid (and has at least one of each)
 		$auth->id = $res->current()->id;

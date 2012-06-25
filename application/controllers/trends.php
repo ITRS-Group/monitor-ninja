@@ -525,7 +525,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
 
-		$mon_auth = new Nagios_auth_Model();
+		$mon_auth = Nagios_auth_Model::instance();
 		if (is_string($in_host)) {
 			# @@@FIXME: is the following still valid?
 			// shorthand aliases - host=all is used for 'View trends for all hosts'

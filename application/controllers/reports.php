@@ -1057,7 +1057,7 @@ class Reports_Controller extends Authenticated_Controller
 
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->report_id);
 
-		$mon_auth = new Nagios_auth_Model();
+		$mon_auth = Nagios_auth_Model::instance();
 		if (is_string($in_host)) {
 			// shorthand aliases - host=all is used for 'View avail for all hosts'
 			if ($in_host == 'all') {
@@ -3450,7 +3450,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (!is_array($test) || empty($test))
 			return '';
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->view_hosts_root) {
 			return false;
 		}

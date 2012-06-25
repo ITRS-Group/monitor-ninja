@@ -62,7 +62,7 @@ class Host_Model extends Model {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Host_Model extends Model {
 			return false;
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$sql_join = false;
 		$sql_where = false;
 		if (!$auth->view_hosts_root) {
@@ -657,7 +657,7 @@ class Host_Model extends Model {
 		if (empty($host_name)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$service_description = trim($service_description);
 		# check credentials for host
@@ -758,7 +758,7 @@ class Host_Model extends Model {
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			$ca = '';
 		} else {
@@ -824,7 +824,7 @@ class Host_Model extends Model {
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root || $auth->authorized_for_system_information) {
 			$ca = '';
 			$ca_w_alias = '';
@@ -901,7 +901,7 @@ class Host_Model extends Model {
 			return false;
 		}
 		if (!isset($this->auth) || !is_object($this->auth))
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 		else
 			$auth = $this->auth;
 
@@ -935,7 +935,7 @@ class Host_Model extends Model {
 		} else {
 			$db = $this->db;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$sql = "SELECT service_description FROM service";
 		if (!$auth->view_hosts_root && !$auth->view_services_root)

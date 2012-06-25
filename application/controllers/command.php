@@ -716,7 +716,7 @@ class Command_Controller extends Authenticated_Controller
 		# the type of command we're looking at and, if so, if
 		# we can bypass fetching all the objects we're authorized
 		# to see
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (strstr($cmd, '_HOST_') !== false) {
 			if ($auth->command_hosts_root) {
 				return true;

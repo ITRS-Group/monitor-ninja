@@ -54,7 +54,7 @@ class Livestatus
 	}
 
 	private function __construct() {
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 		$this->sock = $this->open_livestatus_socket();
 	}
 
