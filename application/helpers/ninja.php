@@ -13,9 +13,9 @@ class ninja_Core {
 	 * Return the base path to the current theme
 	 */
 	public static function get_theme_path() {
-		$registry = zend::instance('Registry');
 		if (self::$theme_path)
 			return self::$theme_path;
+		$registry = zend::instance('Registry');
 
 		if ($registry->isRegistered('theme_path')) {
 			self::$theme_path = $registry->get('theme_path');
