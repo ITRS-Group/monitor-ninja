@@ -1,6 +1,6 @@
 #!/bin/sh
-prefix="/opt/monitor/op5/ninja"
-AP2CONFDIR="/etc/opt/csw/apache2"
+prefix='/opt/monitor/op5/ninja'
+AP2CONFDIR='/etc/opt/csw/apache2'
 AP2_NINJA_CONF="/etc/opt/csw/apache2/extra/ninja.conf"
 
 /usr/xpg4/bin/grep -q "Include $AP2_NINJA_CONF" $AP2CONFDIR/httpd.conf || echo "Include $AP2_NINJA_CONF" >> $AP2CONFDIR/httpd.conf
