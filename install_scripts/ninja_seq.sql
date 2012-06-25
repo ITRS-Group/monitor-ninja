@@ -1,11 +1,6 @@
 SPOOL ninja_seq.out
 SET DEFINE OFF;
 SET SCAN OFF;
--- PROMPT Creating User ninja ...
--- CREATE USER ninja IDENTIFIED BY ninja DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
--- GRANT CREATE SESSION, RESOURCE, CREATE VIEW, CREATE MATERIALIZED VIEW, CREATE SYNONYM TO ninja;
--- connect ninja/ninja;
-connect merlin/merlin;
 
 -- DROP SEQUENCE ninja_widgets_id_SEQ;
 
