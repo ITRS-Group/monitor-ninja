@@ -777,19 +777,15 @@ class Command_Controller extends Authenticated_Controller
 				}
 				# if the user isn't specifically configured for the service, he/she
 				# can still submit commands for it if he/she is a contact for the host
-				$auth->get_authorized_services_r();
-				if (isset($auth->services_r[$host_name . ';' . $service])) {
+				if ($auth->is_authorized_for_service($host_name, $service))
 					return true;
-				}
 			}
 		}
 
 		if ($host_names) {
 			foreach ($host_names as $host_name) {
-				$auth->get_authorized_hosts_r();
-				if (isset($auth->hosts_r[$host_name])) {
+				if ($auth->is_authorized_for_host($host_name))
 					return true;
-				}
 			}
 		}
 		return false;

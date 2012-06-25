@@ -26,11 +26,8 @@ class Group_Model extends Model
 		}
 
 		$auth = new Nagios_auth_Model();
-		$hostlist = Host_Model::authorized_hosts();
-		if (!$auth->view_hosts_root && !$auth->view_services_root && empty($hostlist)) {
-			return false;
-		}
 		$filter_sql = '';
+		$extra_join = '';
 		$state_filter = false;
 		if (!empty($hoststatus)) {
 			$bits = db::bitmask_to_string($hoststatus);
@@ -55,8 +52,7 @@ class Group_Model extends Model
 		$member_match = $grouptype == 'service' ? "s.id=ssg.".$grouptype : "h.id=ssg.".$grouptype;
 
 		if (!$auth->view_hosts_root && !($auth->view_services_root && $grouptype == 'service')) {
-			$hostlist_str = implode(',', $hostlist);
-			$filter_sql = "AND h.id IN (".$hostlist_str.") ".$filter_sql;
+			$extra_join = "INNER JOIN contact_access ca ON ca.host = h.id AND ca.contact = ".$db->escape($auth->id);
 		}
 
 		$fields = 'h.host_name, h.current_state, h.address, h.action_url, h.notes_url, h.icon_image, h.icon_image_alt,';
@@ -84,14 +80,13 @@ class Group_Model extends Model
 				INNER JOIN (SELECT current_state, COUNT(current_state) AS state_count, MAX(id) AS id, host_name FROM service GROUP BY host_name, current_state) s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON ssg.{$grouptype}group = sg.id
+				$extra_join
 				WHERE
 					{$all_sql}
 					{$filter_sql}
 				ORDER BY
 					h.host_name";
 		} else {
-			$hostlist_str = implode(',', $hostlist);
-
 			$sql = "
 				SELECT $fields
 					s.current_state AS service_state,
@@ -101,6 +96,7 @@ class Group_Model extends Model
 				INNER JOIN (SELECT current_state, COUNT(current_state) AS state_count, MAX(id) AS id, host_name FROM service GROUP BY host_name, current_state) s ON s.host_name = h.host_name
 				INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
 				INNER JOIN {$grouptype}group sg ON sg.id = ssg.".$grouptype."group
+				$extra_join
 				WHERE
 					".$all_sql."
 					".$filter_sql."
@@ -150,9 +146,6 @@ class Group_Model extends Model
 		}
 
 		$limit_str = !empty($limit) ? trim($limit) : '';
-		$hostlist = Host_Model::authorized_hosts();
-
-		$hostlist_str = !empty($hostlist) ? implode(',', $hostlist) : false;
 
 		$db = Database::instance();
 		$all_sql = $groupname != 'all' ? "AND sg.".$grouptype."group_name=".$db->escape($groupname)." " : '';
@@ -175,9 +168,7 @@ class Group_Model extends Model
 		if ($auth->view_hosts_root || ($auth->view_services_root && $grouptype == 'service')) {
 			$auth_str = "";
 		} else {
-			if (empty($hostlist_str))
-				return false;
-			$auth_str = " AND h.id IN (".$hostlist_str.")";
+			$auth_str = " INNER JOIN contact_access ca ON ca.host = h.id AND ca.contact = ".$db->escape($auth->id)." ";
 		}
 		$sql = "SELECT ".
 				"h.host_name,".
@@ -222,8 +213,9 @@ class Group_Model extends Model
 			"LEFT JOIN service s ON h.host_name=s.host_name ".
 			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
 			"INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group ".
+			$auth_str .
 			"WHERE 1 = 1 ".
-				"{$all_sql} {$auth_str} {$filter_sql} {$service_props_sql} ".
+				"{$all_sql} {$filter_sql} {$service_props_sql} ".
 				"{$host_props_sql} ".
 			"ORDER BY ".$sort_string." ".$limit_str;
 #echo $sql;
@@ -236,56 +228,37 @@ class Group_Model extends Model
 	 * Accepts either object ID or object name.
 	 * @param $type Host or service
 	 * @param $id The id of the object
-	 * @param $name The name of the object (host;service for services)
 	 * @return Array of group objects the requested object is a member of
 	 */
-	public function get_groups_for_object($type='host', $id=false, $name=false)
+	public function get_groups_for_object($type='host', $id=false)
 	{
 		$name = trim($name);
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		switch (strtolower($type)) {
 			case 'host':
-				$host_list = $auth->get_authorized_hosts();
-				$host_list_r = $auth->get_authorized_hosts_r();
+				if (!$auth->is_authorized_for_host($id))
+					return false;
 				break;
 			case 'service':
-				$service_list = $auth->get_authorized_services();
-				$service_list_r = $auth->get_authorized_services_r();
+				if (!$auth->is_authorized_for_service($id))
+					return false;
 				break;
 			default:
 				return false;
 		}
 
-		$db = Database::instance();
-		$all_sql = $name != 'all' ? "sg.".$type."group_name=".$db->escape($name)." AND" : '';
-
-		# we need to match against different field depending on if host- or servicegroup
-		$member_match = $type == 'service' ? "s.id=ssg.".$type : "h.id=ssg.".$type;
-
-		if ($id === false && !empty($name) && array_key_exists($name, ${$type.'_list_r'})) {
-			$id = ${$type.'_list_r'}[$name];
-		}
-
-		# check for authentication
-		if ($id !== false) {
-			# we have an ID
-			# check that user is allowed to see this
-			if (!array_key_exists($id, ${$type.'_list'})) {
-				return false;
-			}
-			$sql = "
-				SELECT
-					gr.*
-				FROM
-					".$type."_".$type."group g,
-					".$type."group gr
-				WHERE
-					g.".$type."=".$id." AND
-					gr.id=g.".$type."group";
-		} else {
-			# abort if both id and name are empty
+		if ($id === false)
 			return false;
-		}
+
+		$sql = "
+			SELECT
+				gr.*
+			FROM
+				".$type."_".$type."group g,
+				".$type."group gr
+			WHERE
+				g.".$type."=".$id." AND
+				gr.id=g.".$type."group";
 
 		$db = Database::instance();
 		$result = $db->query($sql);

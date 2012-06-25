@@ -5,8 +5,8 @@
  */
 class Host_Model extends Model {
 	private $auth = false;
-	private $host_list = false; # List of hosts to get status for
-	private $service_host_list = false;
+	private $host_list = false; /**< List of hosts to get status for. NOTE: Always IDs, always authed to see OR magical string 'all'. */
+	private $service_host_list = false; /**< List of services to get status for. NOTE: Always IDs, always authed to see. */
 	private $table = "host";
 
 	public $total_host_execution_time = 0; /**< Total host check execution time */
@@ -74,24 +74,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Determine if user is authorized to view info on a specific host.
-	 * Accepts either hostID or host_name as input. Setting both is undefined.
-	 *
-	 * @param $name The host_name of the host.
-	 * @param $id The id of the host
-	 * @return True if authorized, false if not.
-	 */
-	public function authorized_for($name=false, $id=false)
-	{
-		if ($name !== false)
-			return $this->auth->get_authorized_for_host($name);
-		else if ($id !== false)
-			return $this->auth->get_authorized_for_host($id);
-		else
-			return false;
-	}
-
-	/**
 	*
 	*	Fetch host info filtered on specific field and value
 	*/
@@ -133,12 +115,10 @@ class Host_Model extends Model {
 	public function search($value=false, $limit=false, $xtra_query = false)
 	{
 		if (empty($value)) return false;
-		$auth_hosts = $this->auth->get_authorized_hosts();
-		$host_ids = array_keys($auth_hosts);
-		if (empty($host_ids))
-			return false;
+		$auth_str = '';
+		if (!$this->auth->view_hosts_root)
+			$auth_str = 'INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$db->escape($this->auth->id);
 
-		$host_ids = implode(',', $host_ids);
 		$limit_str = sql::limit_parse($limit);
 		$sql_xtra = false;
 		if (!empty($xtra_query)) {
@@ -164,7 +144,7 @@ class Host_Model extends Model {
 			foreach ($value as $val) {
 				$query_str = '';
 				$val = '%'.$val.'%';
-				$query_str = "SELECT id FROM host WHERE (LCASE(host_name)".
+				$query_str = "SELECT id FROM host $auth_str WHERE (LCASE(host_name)".
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
@@ -175,7 +155,6 @@ class Host_Model extends Model {
 				} else {
 					$query_str .= " OR LCASE(output) LIKE LCASE(".$this->db->escape($val)."))";
 				}
-				$query_str .= " AND id IN (".$host_ids.") ";
 				$query[] = $query_str;
 			}
 			if (!empty($query)) {
@@ -183,14 +162,14 @@ class Host_Model extends Model {
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
+			$sql = "SELECT * FROM host $auth_str WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
 			" LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
 			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
-			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
+			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value).")))".
+			" ORDER BY host_name ".$limit_str;
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
@@ -226,24 +205,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Fetch hosts for current user and return
-	 * array of host IDs
-	 * @return array host IDs or false
-	 */
-	public static function authorized_hosts()
-	{
-		# fetch hosts for current user
-		$auth = new Nagios_auth_Model();
-		$user_hosts = $auth->get_authorized_hosts();
-		$hostlist = array_keys($user_hosts);
-		if (!is_array($hostlist) || empty($hostlist)) {
-			return false;
-		}
-		sort($hostlist);
-		return $hostlist;
-	}
-
-	/**
 	*	Wrapper to set internal sort_field value
 	*/
 	public function set_sort_field($val)
@@ -270,86 +231,43 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	Public method to set the private host_list variable.
-	*	This is because we always want to validate authorization
-	* 	etc for all hosts passed in.
+	* Public method to set the private host_list variable.
+	* This is because we always want to validate authorization
+	* etc for all hosts passed in.
 	*/
 	public function set_host_list($host_names=false)
 	{
+		if (is_string($host_names) && strtolower($host_names) === 'all') {
+			$this->host_list = 'all';
+			return;
+		}
 		if (!is_array($host_names)) {
-			$host_names = trim($host_names);
+			$host_names = array(trim($host_names));
 		}
 		if (empty($host_names)) {
 			return false;
 		}
 		$retval = false;
-		if (!$this->show_services) {
-			# fetch available hosts for user
-			$hosts = $this->auth->get_authorized_hosts();
-			$host_r = $this->auth->hosts_r; # flipped array => host_names are keys, ID is value
+		if (!is_array($host_names))
+			$host_names = array($host_names);
+		foreach ($host_names as $idx => $hn)
+			$host_names[$idx] = $this->db->escape(trim($host_names));
+		$host_names = implode(',', $host_names);
 
-			if (is_array($host_names)) {
-				foreach ($host_names as $temp_host) {
-					$temp_host = trim($temp_host);
-					if (array_key_exists($temp_host, $host_r)) {
-						$retval[] = $host_r[$temp_host];
-					}
-				}
-			} else {
-				if (strtolower($host_names) === 'all') {
-					# return all to fetch all relations
-					# via contact and contactgroups
-					$retval = 'all';
-				} elseif (array_key_exists($host_names, $host_r)) {
-					$retval[] = $host_r[$host_names];
-				}
+		if (!$this->show_services) {
+			$query = 'SELECT host_name FROM contact_access ca INNER JOIN host ON host.id = ca.host WHERE host.host_name IN ('.$host_names.') AND contact = '.$this->auth->id;
+			$res = $this->db->query($query);
+			foreach ($res as $row) {
+				$this->service_host_list[] = $row->host_name;
 			}
 		} else {
-			$services = $this->get_host_on_services();
-			if (!empty($services) && is_array($services)) {
-				if (is_array($host_names)) {
-					foreach ($host_names as $temp_host) {
-						$temp_host = trim($temp_host);
-						if (in_array($temp_host, $services)) {
-							$this->service_host_list[] = $this->db->escape($temp_host);
-						}
-					}
-				} else {
-					if (strtolower($host_names) === 'all') {
-						# return all to fetch all relations
-						# via contact and contactgroups
-						$retval = 'all';
-					} elseif (in_array($host_names, $services)) {
-						$this->service_host_list[] = $this->db->escape($host_names);
-					}
-				}
+			$query = 'SELECT host_name FROM contact_access ca INNER JOIN service ON service.id = ca.service INNER JOIN host ON host.id = service.host_name WHERE host.host_name IN ('.$host_names.') AND contact = '.$this->auth->id;
+			$res = $this->db->query($query);
+			foreach ($res as $row) {
+				$this->service_host_list[] = $row->host_name;
 			}
 		}
 		$this->host_list = $retval;
-	}
-
-	/**
-	*	Fetch info on what hosts current user
-	* 	has services.
-	*/
-	public function get_host_on_services()
-	{
-		$services = $this->auth->get_authorized_services();
-
-		if (empty($services)) {
-			return false;
-		}
-
-		$service_hosts = array();
-		foreach ($services as $s) {
-			$parts = explode(';', $s);
-			if (!empty($parts)) {
-				if (!in_array($parts[0], $service_hosts)) {
-					$service_hosts[] = $parts[0];
-				}
-			}
-		}
-		return !empty($service_hosts) ? $service_hosts : false;
 	}
 
 	/**
@@ -534,32 +452,6 @@ class Host_Model extends Model {
 					$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
-			if (is_array($this->host_list)) {
-				$host_list = false;
-				$hosts = $this->auth->get_authorized_hosts();
-				if (!empty($this->host_list) && is_array($this->host_list)) {
-					foreach ($this->host_list as $host) {
-						if (array_key_exists($host, $hosts)) {
-							$host_list[] = $this->db->escape($hosts[$host]);
-						}
-					}
-				}
-			}
-
-			if (!empty($host_list) && is_array($host_list)) {
-				$where_str = ' service.host_name IN ('.implode(',', $host_list).')';
-			} elseif (is_array($this->service_host_list)) {
-				$where_str = ' service.host_name IN ('.implode(',', $this->service_host_list).')';
-			} elseif ($this->host_list !== 'all') {
-				# should mean that we have a request for services
-				# on a host that doesn't have any services
-				return false;
-			}
-
-			if (!empty($where_str)) {
-				$sql .= ' AND '.$where_str;
-			}
-
 			$sql .= " ORDER BY ".$this->sort_field." ".$this->sort_order;
 
 		}
@@ -579,7 +471,6 @@ class Host_Model extends Model {
 			if (!$this->show_services) {
 
 				if (is_array($this->host_list)) {
-					#$hosts = $this->auth->get_authorized_hosts();
 					$host_ids = implode(',', $this->host_list);
 					$where_str = ' id IN('.$host_ids.')';
 				}

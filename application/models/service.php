@@ -351,26 +351,6 @@ class Service_Model extends Model
 	}
 
 	/**
-	 * Fetch services for current user and return
-	 * an array of service IDs
-	 * @return array service IDs or false
-	 */
-	public static function authorized_services()
-	{
-		# fetch services for current user
-		$auth = new Nagios_auth_Model();
-		$user_services = $auth->get_authorized_services();
-		$servicelist = array_keys($user_services);
-		# servicelist is an hash array with serviceID => host_name;service_description
-		# since we have the serviceID we might as well use it
-		if (!is_array($servicelist) || empty($servicelist)) {
-			return false;
-		}
-		sort($servicelist);
-		return $servicelist;
-	}
-
-	/**
 	 * Fetch and calculate status for all services for current user
 	 * @return bool
 	 */

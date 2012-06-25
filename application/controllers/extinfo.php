@@ -66,18 +66,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$is_authenticated = true;
 		switch ($type) {
 			case 'host':
-				$auth->get_authorized_hosts();
-				if (!array_key_exists($host, $auth->hosts_r)) {
-					# user not allowed to view info on selected host
+				if (!$auth->is_authorized_for_host($host))
 					$is_authenticated = false;
-				}
 				break;
 			case 'service':
-				$auth->get_authorized_services();
-				if (!array_key_exists($host.';'.$service, $auth->services_r)) {
-					# user not allowed to view info on selected service
+				if (!$auth->is_authorized_for_service($host, $service))
 					$is_authenticated = false;
-				}
 				break;
 			case 'servicegroup': case 'hostgroup':
 				return $this->group_details($type, $host);
