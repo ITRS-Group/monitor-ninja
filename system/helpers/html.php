@@ -393,7 +393,7 @@ class html_Core {
 			$attributes['alt'] = $alt;
 		}
 
-		if (strpos($attributes['src'], '://') === FALSE)
+		if ($attributes['src'][0] != '/' && strpos($attributes['src'], '://') === FALSE)
 		{
 			// Make the src attribute into an absolute URL
 			$attributes['src'] = url::base($index).$attributes['src'];
