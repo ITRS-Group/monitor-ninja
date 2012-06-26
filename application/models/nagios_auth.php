@@ -450,8 +450,9 @@ class Nagios_auth_Model extends Model
 	 * second is service description. This is quite quick, but not quite as quick
 	 * as the first option.
 	 *
-	 * Or it can be called with a string containing ';' representing the complete
-	 * host_name/service_description in one argument. This is by far the slowest.
+	 * Or it can be called with a string containing ';' representing the
+	 * complete host_name/service_description in one argument, which is
+	 * slightly slower than both the other two.
 	 *
 	 * Returns TRUE if user is authorized, FALSE otherwise.
 	 */
@@ -460,14 +461,29 @@ class Nagios_auth_Model extends Model
 		if ($this->view_services_root === true)
 			return true;
 
-		if ($desc)
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description) = '.$this->db->escape($desc).' AND contact = '.$this->id;
-		else if (is_numeric($service))
+		/*
+		 * we must check if $desc is false here so we properly
+		 * handle hosts named '1', '2' etc.
+		 */
+		if (is_int($service) || (is_numeric($service) && $desc === false)) {
 			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
-		else if (strpos($service, ';'))
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE concat(concat(service.host_name, ";"), service.service_description) = '.$this->db->escape($service).' AND contact = '.$this->id;
-		else
-			return false;
+		} else {
+			if ($desc === false) {
+				if (strpos($service, ';') < 1)
+					return false; /* bogus input */
+
+				$ary = explode(';', $service, 1);
+				$desc = $ary[1];
+				$service = $ary[0];
+			}
+
+			/* text arguments */
+			if ($desc === false) {
+
+			}
+			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description) = '.$this->db->escape($desc).' AND contact = '.$this->id;
+		}
+
 		$res = $this->db->query($query);
 		return ($res->current()->cnt != '0');
 	}
