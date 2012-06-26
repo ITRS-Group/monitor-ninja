@@ -69,7 +69,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		$this->xtra_js[] = $this->add_path('notifications/js/notifications');
+		$this->xtra_js[] = $this->add_path('notifications/js/notifications.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 
@@ -133,7 +133,7 @@ class Notifications_Controller extends Authenticated_Controller {
 		$note_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$note_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		$this->xtra_js[] = $this->add_path('notifications/js/notifications');
+		$this->xtra_js[] = $this->add_path('notifications/js/notifications.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->js_header->js = $this->xtra_js;
 

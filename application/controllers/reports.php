@@ -364,23 +364,23 @@ class Reports_Controller extends Authenticated_Controller
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = $this->add_path('reports/js/json');
-		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('reports/js/reports');
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = $this->add_path('reports/js/json.js');
+		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
-		$this->xtra_css[] = $this->add_path('css/default/reports');
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$t = $this->translate;
@@ -1018,19 +1018,19 @@ class Reports_Controller extends Authenticated_Controller
 		}
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('reports/js/reports');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
 		$this->template->js_header->js = $this->xtra_js;
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('css/default/reports');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header = $this->add_view('css_header');
 
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
@@ -1806,7 +1806,7 @@ class Reports_Controller extends Authenticated_Controller
 							$content = $avail;
 						}
 
-						$this->xtra_css[] = $this->add_path('css/default/reports');
+						$this->xtra_css[] = $this->add_path('css/default/reports.css');
 						if($include_trends) {
 							$trends_data = false;
 							if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
@@ -1845,7 +1845,7 @@ class Reports_Controller extends Authenticated_Controller
 							);
 							$template->trends_graph->report_time_formatted = $report_time_formatted;
 							$template->trends_graph->create_pdf = $this->create_pdf;
-							$this->xtra_js[] = $this->add_path('trends/js/trends');
+							$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 							if ($this->create_pdf) {
 								$template->trends_graph->graph_chart_pdf_src = $this->trends_graph_model->get_graph_pdf_src_for_data(
 									$graph_data,

@@ -42,7 +42,7 @@ class Hello_world_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_js[] = 'modules/hello_world/views/themes/default/hello_world/js/hello';
+		$this->xtra_js[] = 'modules/hello_world/views/themes/default/hello_world/js/hello.js';
 
 		# add our javascript file to master template
 		$this->template->js_header->js = $this->xtra_js;
