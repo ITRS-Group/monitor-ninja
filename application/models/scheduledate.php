@@ -92,10 +92,10 @@ class ScheduleDate_Model extends Model
 			if(strlen($matches[6][0]) == 0) {
 				$matches[6][0] = $matches[5][0];
 			}
-			$matches[5][0] = 5;
+			$matches[5][0] = 6;
 		} else if(preg_match("/[a-z]/i",$matches[6][0])) {
 			if(strlen($matches[5][0]) <= 0) {
-				$matches[5][0] = 5;   // if max week days is not specified, set it to max (maybe 6?)
+				$matches[5][0] = 6;   // if max week days is not specified, set it to max (maybe 6?)
 			}
 		}
 		return true;
@@ -303,7 +303,7 @@ class ScheduleDate_Model extends Model
 				$this->TransformWeek($this->matches[6][0]);
 				$d=date("w",strtotime($this->date)) + 1;
 				if($d > 6)
-					$d = 0;
+					$d = 1;
 				$this->CheckPattern($this->dayPattern, $d, $this->dateArray['day']);
 				$this->dateArray['day'] = $this->dateArray['day'] - ($d - 1);
 				if($this->dateArray['day'] <= 0) {
