@@ -14,7 +14,6 @@
 */
 class Authenticated_Controller extends Ninja_Controller {
 
-	const ALLOW_PRODUCTION = FALSE;
 	public $widgets = array();
 
 	public function __construct()
