@@ -182,8 +182,7 @@ CREATE TABLE avail_config (
   alert_types NUMBER(3,0) DEFAULT '0',
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
-  service_states NUMBER(3,0) DEFAULT '0',
-  include_trends NUMBER(3,0) DEFAULT '1'
+  service_states NUMBER(3,0) DEFAULT '0'
 );
 
 
@@ -381,7 +380,6 @@ CREATE TABLE ninja_widgets (
   page VARCHAR2(200 CHAR) DEFAULT 'tac/index' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
   friendly_name VARCHAR2(255 CHAR) NOT NULL,
-  instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
 
