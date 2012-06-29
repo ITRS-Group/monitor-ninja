@@ -463,7 +463,7 @@ class Nagios_auth_Model extends Model
 		 * we must check if $desc is false here so we properly
 		 * handle hosts named '1', '2' etc.
 		 */
-		if (is_int($service) || (is_numeric($service) && $desc === false)) {
+		if ((is_int($service) || is_numeric($service)) && $desc === false) {
 			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
 		} else {
 			if ($desc === false) {
@@ -475,10 +475,6 @@ class Nagios_auth_Model extends Model
 				$service = $ary[0];
 			}
 
-			/* text arguments */
-			if ($desc === false) {
-
-			}
 			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description) = '.$this->db->escape($desc).' AND contact = '.$this->id;
 		}
 
