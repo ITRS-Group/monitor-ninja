@@ -232,7 +232,6 @@ class Group_Model extends Model
 	 */
 	public function get_groups_for_object($type='host', $id=false)
 	{
-		$name = trim($name);
 		$auth = Nagios_auth_Model::instance();
 		switch (strtolower($type)) {
 			case 'host':
