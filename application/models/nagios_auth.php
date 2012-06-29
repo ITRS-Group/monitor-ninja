@@ -373,11 +373,9 @@ class Nagios_auth_Model extends Model
 				return false;
 
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
-				"servicegroup sg, service_servicegroup ssg ".
+				"servicegroup sg INNER JOIN service_servicegroup ssg ON sg.id = ssg.servicegroup ".
 				"INNER JOIN contact_access ON contact_access.service=ssg.service ".
-				"WHERE sg.id=ssg.servicegroup ".
-				"AND ssg.service IS NOT NULL ".
-				"AND contact_access.contact=".$this->id.
+				"WHERE contact_access.contact=".$this->id.
 				" GROUP BY sg.id, sg.servicegroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result)) {
