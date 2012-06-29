@@ -251,7 +251,7 @@ class Host_Model extends Model {
 		if (!is_array($host_names))
 			$host_names = array($host_names);
 		foreach ($host_names as $idx => $hn)
-			$host_names[$idx] = $this->db->escape(trim($host_names));
+			$host_names[$idx] = $this->db->escape(trim($hn));
 		$host_names = implode(',', $host_names);
 
 		if (!$this->show_services) {
