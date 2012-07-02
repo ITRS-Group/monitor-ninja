@@ -12,6 +12,7 @@ class Livestatus
 {
 	private $auth = false;
 	private $sock = false;
+	private $config = false;
 	private static $instance = false;
 	/**
 	 * @throws Api_Error_Response
@@ -19,8 +20,10 @@ class Livestatus
 	 */
 	private function open_livestatus_socket()
 	{
-		$ls = Kohana::config('config.livestatus');
-		$sock = @fsockopen('unix://'.$ls, null, $errno, $errstr);
+		$ls = $this->config['path'];
+		if (strpos($ls, '://') === false)
+			$ls .= 'unix://';
+		$sock = @fsockopen($ls, null, $errno, $errstr);
 		if ($errno)
 			throw new LivestatusException("Couldn't open livestatus socket: " . $errstr);
 		return $sock;
@@ -46,15 +49,17 @@ class Livestatus
 		return $res;
 	}
 
-	public function instance() {
+	public function instance($config = null) {
 		if (self::$instance === false)
-			return new Livestatus();
+			return new Livestatus($config);
 		else
 			return $ls;
 	}
 
-	private function __construct() {
+	private function __construct($config = null) {
 		$this->auth = Nagios_auth_Model::instance();
+		$config = $config ? $config : 'livestatus';
+		$this->config = Kohana::config('database.'.$config);
 		$this->sock = $this->open_livestatus_socket();
 	}
 
@@ -64,6 +69,7 @@ class Livestatus
 
 	public function query($query) {
 		$query = trim($query); // keep track of them newlines
+		$start = microtime(true);
 		if (!((strpos($query, 'GET host') === 0 && $this->auth->view_hosts_root ) ||
 			(strpos($query, 'GET service') === 0 && ($this->auth->view_hosts_root || $this->auth->view_services_root))))
 			$query .= "\nAuthUser: {$this->auth->user}";
@@ -80,6 +86,11 @@ class Livestatus
 			throw new LivestatusException("No output");
 
 		$res = json_decode($out);
+		$stop = microtime(true);
+		if ($this->config['benchmark'] == TRUE)
+		{
+			Database::$benchmarks[] = array('query' => $query, 'time' => $stop - $start, 'rows' => count($res));
+		}
 		if ($res === null) {
 			throw new LivestatusException("Invalid output");
 		}
