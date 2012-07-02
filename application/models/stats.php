@@ -1,8 +1,11 @@
 <?php
 
+/**
+ * A model for generating statistics from livestatus
+ */
 class Stats_Model extends Model {
-	public $host_cols = false;
-	public $service_cols = false;
+	public $host_cols = false; /**< The list of legal host columns */
+	public $service_cols = false; /**< The list of legal service columns */
 	private $host_col_defs = false;
 	private $service_col_defs = false;
 	public function __construct() {

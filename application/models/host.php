@@ -526,6 +526,9 @@ class Host_Model extends Model {
 		return $rc;
 	}
 
+	/**
+	*	Build a string to be used in a livestatus query to filter on different service properties
+	*/
 	public static function build_service_livestatus_props($serviceprops=false)
 	{
 		if (empty($serviceprops))
@@ -644,8 +647,8 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Warning: This assumes we're not including this in a service query
-	 */
+	*	Build a string to be used in a livestatus query to filter on different host properties
+	*/
 	public static function build_host_livestatus_props($hostprops)
 	{
 		if (empty($hostprops))
