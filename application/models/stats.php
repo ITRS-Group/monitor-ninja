@@ -6,8 +6,7 @@ class Stats_Model extends Model {
 	private $host_col_defs = false;
 	private $service_col_defs = false;
 	public function __construct() {
-		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
-		if ($show_passive_as_active) {
+		if (config::get('checks.show_passive_as_active', '*')) {
 			$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
 			$disabled_checks_condition = "Stats: active_checks_enabled != 1\nStats: accept_passive_checks != 1\nStatsAnd: 2";
 		} else {

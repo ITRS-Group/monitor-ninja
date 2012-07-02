@@ -526,6 +526,63 @@ class Host_Model extends Model {
 		return $rc;
 	}
 
+	public static function build_service_livestatus_props($serviceprops=false)
+	{
+		if (empty($serviceprops))
+			return false;
+		$ret = array();
+		if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME)
+			$ret[] = "Filter: scheduled_downtime_depth > 0\nFilter: host_scheduled_downtime_depth > 0\nOr: 2";
+		if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME)
+			$ret[] = "Filter: scheduled_downtime_depth = 0\nFilter: host_scheduled_downtime_depth = 0";
+		if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged != 0';
+		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 0';
+		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 0\nFilter: passive_checks_enabled = 0\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 0';
+		}
+		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 1\nFilter: passive_checks_enabled = 1\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 1';
+		}
+		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED)
+			$ret[] = 'Filter: event_handler_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED)
+			$ret[] = 'Filter: event_handler_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_IS_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 1';
+		if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 0';
+		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED)
+			$ret[] = 'Filter: notifications_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED)
+			$ret[] = 'Filter: notifications_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK)
+			$ret[] = 'Filter: check_type = 0';
+		if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK)
+			$ret[] = 'Filter: check_type > 0';
+		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
+			$ret[] = 'Filter: state_type = 1';
+		if ($serviceprops & nagstat::SERVICE_SOFT_STATE)
+			$ret[] = 'Filter: state_type = 0';
+
+		return implode("\n", $ret);
+	}
+
 	/**
 	*	Build a string to be used in a sql query to filter on different service properties
 	*/
@@ -584,6 +641,66 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'state_type=0 ';
 
 		return $ret_str;
+	}
+
+	/**
+	 * Warning: This assumes we're not including this in a service query
+	 */
+	public static function build_host_livestatus_props($hostprops)
+	{
+		if (empty($hostprops))
+			return false;
+		$ret = array();
+		if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME)
+			$ret[] = 'Filter: scheduled_downtime_depth > 0';
+		if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME)
+			$ret[] = 'Filter: scheduled_downtime_depth = 0';
+		if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 1';
+		if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 0';
+		if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 0\nFilter: passive_checks_enabled = 0";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 0';
+		}
+		if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 1\nFilter: passive_checks_enabled = 1\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 1';
+		}
+		if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED)
+			$ret[] = 'Filter: event_handler_enabled = 0';
+		if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED)
+			$ret[] = 'Filter: event_handler_enabled = 1';
+		if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 0';
+		if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 1';
+		if ($hostprops & nagstat::HOST_IS_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 1';
+		if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 0';
+		if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED)
+			$ret[] = 'Filter: notifications_enabled = 0';
+		if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED)
+			$ret[] = 'Filter: notifications_enabled = 1';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 0';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 1';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECK)
+			$ret[] = 'Filter: check_type > 0';
+		if ($hostprops & nagstat::HOST_ACTIVE_CHECK)
+			$ret[] = 'Filter: check_type = 0';
+		if ($hostprops & nagstat::HOST_HARD_STATE)
+			$ret[] = 'Filter: state_type = 1';
+		if ($hostprops & nagstat::HOST_SOFT_STATE)
+			$ret[] = 'Filter: state_type = 0';
+
+		return implode("\n", $ret);
 	}
 
 	/**

@@ -190,223 +190,125 @@ class Servicegroup_Model extends Ninja_Model
 	{
 		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
-		$auth_services = $auth->get_authorized_services();
-		if (!is_array($auth_objects))
-			return false;
-		$auth_service_ids = array_keys($auth_services);
-		$auth_ids = array_keys($auth_objects);
-		if (empty($auth_ids) || empty($groups))
+		if (!is_array($auth_objects) || empty($auth_objects) || empty($groups))
 			return false;
 
 		$groups_to_find = false;
 		if (is_numeric($groups)) {
-			if (in_array($groups, $auth_ids)) {
-				$groups_to_find = array((int)$groups);
+			if (isset($auth_objects[$groups])) {
+				$groups_to_find = array($auth_objects[$groups]);
 			}
 		} elseif (is_string($groups) && $groups !== 'all') {
 			# we have a named group
 			if (array_key_exists($groups, $auth->servicegroups_r)) {
 				# groups_to_find should always be an array
-				$groups_to_find = array($auth->servicegroups_r[$groups]);
+				$groups_to_find = array($groups);
 			}
 		} else {
 			if ($groups === 'all') {
-				$groups_to_find = $auth_ids;
+				$groups_to_find = $auth_objects;
 			}
 		}
-		if (empty($groups_to_find) || empty($auth_service_ids)) {
+		if (empty($groups_to_find)) {
 			# no access
 			return false;
 		}
 
-		$limit_str = "";
 		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT $items_per_page OFFSET $offset";
+			$groups_to_find = array_splice($groups_to_find, $offset, $items_per_page);
 		}
 
-		$service_match = $auth->view_hosts_root || $auth->view_services_root ? '' : " AND service.id IN(".implode(',', $auth_service_ids).") ";
+		$host_match = array();
+		$service_match = array();
 
-		$host_match = false;
 		if (!empty($hostprops)) {
-			$host_match .= Host_Model::build_host_props_query($hostprops, 'host.');
+			$host_match .= Host_Model::build_host_livestatus_props($hostprops);
 		}
 
 		if (!empty($serviceprops)) {
-			$service_match .= Host_Model::build_service_props_query($serviceprops, 'service.', 'host.');
+			$service_match .= Host_Model::build_service_livestatus_props($serviceprops);
 		}
 
-		$filter_host_sql = false;
-		$filter_service_sql = false;
 		if (!empty($hoststatustypes)) {
 			$bits = db::bitmask_to_string($hoststatustypes);
-			$filter_host_sql = " AND host.current_state IN ($bits) ";
+			$host_match[] = "Filter: state = ". implode("\nFilter: state = ", $bits)."\nOr: ".count($bits);
 		}
 		if (!empty($servicestatustypes)) {
 			$bits = db::bitmask_to_string($servicestatustypes);
-			$filter_service_sql = " AND service.current_state IN ($bits) ";
+			$service_match[] = "Filter: state = ". implode("\nFilter: state = ", $bits)."\nOr: ".count($bits);
 		}
 
-		if (config::get('checks.show_passive_as_active', '*')) {
-			$host_check_enabled = ' AND (host.active_checks_enabled=1 OR host.passive_checks_enabled=1) ';
-			$host_check_disabled = ' AND (host.active_checks_enabled=0 AND host.passive_checks_enabled=0) ';
-			$service_check_enabled = ' AND (service.active_checks_enabled=1 OR service.passive_checks_enabled=1) ';
-			$service_check_disabled = ' AND (service.active_checks_enabled=0 AND service.passive_checks_enabled=0) ';
-		} else {
-			$host_check_enabled = ' AND host.active_checks_enabled=1 ';
-			$host_check_disabled = ' AND host.active_checks_enabled=0 ';
-			$service_check_enabled = ' AND service.active_checks_enabled=1 ';
-			$service_check_disabled = ' AND service.active_checks_enabled=0 ';
+		$res = array();
+		$stats = new Stats_Model();
+		foreach ($groups_to_find as $group) {
+			$service_match[] = "Filter: servicegroup_name = $group";
+		}
+		$service_match[] = 'Or: '.count($groups_to_find);
+
+		// We *could* extract all data from one service query,
+		// but then the stats model would need to be a lot more
+		// flexible, which would cost some of the performance we should win,
+		// so bleh.
+		$services = $stats->get_stats('servicesbygroup',
+			array(
+				'services_ok',
+				'services_warning',
+				'services_warning_unacknowledged',
+				'services_warning_host_problem',
+				'services_warning_scheduled',
+				'services_warning_acknowledged',
+				'services_warning_disabled',
+				'services_unknown',
+				'services_unknown_unacknowledged',
+				'services_unknown_host_problem',
+				'services_unknown_scheduled',
+				'services_unknown_acknowledged',
+				'services_unknown_disabled',
+				'services_critical',
+				'services_critical_unacknowledged',
+				'services_critical_host_problem',
+				'services_critical_scheduled',
+				'services_critical_acknowledged',
+				'services_critical_disabled',
+				'services_pending'
+			),
+			$service_match,
+			array('servicegroup_name', 'servicegroup_alias')
+		);
+		$ret = array();
+		$ls = Livestatus::instance();
+		foreach ($services as $service) {
+			$group = $service['servicegroup_name'];
+			$ret[$group] = $service;
+			$host_names = $ls->query("GET servicesbygroup
+Columns: host_name
+Filter: servicegroup_name = $group");
+			$this_match = $host_match;
+			foreach ($host_names as $host) {
+				$this_match[] = "Filter: host_name = {$host[0]}";
+			}
+			$this_match[] = 'Or: '.count($host_names);
+			$host_stat = $stats->get_stats('hosts',
+				array(
+					'hosts_up',
+					'hosts_down',
+					'hosts_down_unacknowledged',
+					'hosts_down_scheduled',
+					'hosts_down_acknowledged',
+					'hosts_down_disabled',
+					'hosts_unreachable',
+					'hosts_unreachable_unacknowledged',
+					'hosts_unreachable_scheduled',
+					'hosts_unreachable_acknowledged',
+					'hosts_unreachable_disabled',
+					'hosts_pending'
+				),
+				$this_match
+			);
+			$ret[$group] = array_merge($service, $host_stat[0]);
 		}
 
-		$base_query = "SELECT COUNT(DISTINCT host.id) ".
-			    "FROM service_servicegroup ".
-			    "INNER JOIN service ON service.id = service_servicegroup.service ".
-			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE servicegroup.id = service_servicegroup.servicegroup ".$service_match.$host_match.$filter_host_sql;
-		$base_svc_query = "SELECT COUNT(*) from service_servicegroup ".
-			    "INNER JOIN service ON service.id = service_servicegroup.service ".
-			    "INNER JOIN host ON host.host_name = service.host_name ".
-			    "WHERE service_servicegroup.servicegroup = servicegroup.id ".$service_match.$filter_service_sql;
-
-		$sql = "SELECT servicegroup.id,servicegroup_name AS groupname, servicegroup.alias,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UP.
-			") AS hosts_up,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			") AS hosts_down,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			    " AND host.problem_has_been_acknowledged = 0 ".
-			    "AND host.scheduled_downtime_depth=0 ".
-			    $host_check_enabled.
-			") AS hosts_down_unhandled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			    " AND host.scheduled_downtime_depth=1".
-			") AS hosts_down_scheduled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			    " AND host.problem_has_been_acknowledged=1".
-			") AS hosts_down_acknowledged,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_DOWN.
-			    $host_check_disabled.
-			") AS hosts_down_disabled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			") AS hosts_unreachable,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			    " AND host.problem_has_been_acknowledged = 0 ".
-			    "AND host.scheduled_downtime_depth=0 ".
-			    $host_check_enabled.
-			") AS hosts_unreachable_unhandled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			    " AND host.scheduled_downtime_depth=1".
-			") AS hosts_unreachable_scheduled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			    " AND host.problem_has_been_acknowledged = 1".
-			") AS hosts_unreachable_acknowledged,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_UNREACHABLE.
-			    $host_check_disabled.
-			") AS hosts_unreachable_disabled,".
-			"(".$base_query.
-			    "AND host.current_state = ".Current_status_Model::HOST_PENDING.
-			") AS hosts_pending,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_OK.
-			") AS services_ok,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			") AS services_warning,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
-			    "AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)=0 ".
-			    "AND service.problem_has_been_acknowledged=0 ".
-			    $service_check_enabled.
-			") AS services_warning_unhandled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    " AND (host.current_state=".Current_status_Model::HOST_DOWN." OR host.current_state=".Current_status_Model::HOST_UNREACHABLE.") ".
-			") AS services_warning_host_problem,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    " AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)>0".
-			") AS services_warning_scheduled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    " AND service.problem_has_been_acknowledged=1".
-			") AS services_warning_acknowledged,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_WARNING.
-			    $service_check_disabled.
-			") AS services_warning_disabled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			") AS services_unknown,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
-			    "AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)=0 ".
-			    "AND service.problem_has_been_acknowledged=0 ".
-			    $service_check_enabled.
-			") AS services_unknown_unhandled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    " AND (host.current_state=".Current_status_Model::HOST_DOWN ." OR host.current_state=".Current_status_Model::HOST_UNREACHABLE.")".
-			") AS services_unknown_host_problem,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    " AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)>0".
-			") AS services_unknown_scheduled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    " AND service.problem_has_been_acknowledged=1".
-			") AS services_unknown_acknowledged,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_UNKNOWN.
-			    $service_check_disabled.
-			") AS services_unknown_disabled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			") AS services_critical,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    " AND (host.current_state!=".Current_status_Model::HOST_DOWN." AND host.current_state!=".Current_status_Model::HOST_UNREACHABLE.") ".
-			    " AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)=0 ".
-			    "AND service.problem_has_been_acknowledged=0 ".
-			    $service_check_enabled.
-			") AS services_critical_unhandled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    " AND (host.current_state=".Current_status_Model::HOST_DOWN." OR host.current_state=".Current_status_Model::HOST_UNREACHABLE.") ".
-			") AS services_critical_host_problem,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    " AND (service.scheduled_downtime_depth + host.scheduled_downtime_depth)>0".
-			") AS services_critical_scheduled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    " AND service.problem_has_been_acknowledged=1".
-			") AS services_critical_acknowledged,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_CRITICAL.
-			    $service_check_disabled.
-			") AS services_critical_disabled,".
-			"(".$base_svc_query.
-			    "AND service.current_state = ".Current_status_Model::SERVICE_PENDING.
-			") AS services_pending ".
-			"FROM servicegroup ".
-			"WHERE servicegroup.id IN(".implode(',', $groups_to_find).") ".$limit_str;
-		#echo $sql."<br />";
-		$db = Database::instance();
-		$obj_info = $db->query($sql);
-		return count($obj_info) > 0 ? $obj_info : false;
+		return $ret;
 	}
 
 	/**
