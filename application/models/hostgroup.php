@@ -6,26 +6,20 @@
 class Hostgroup_Model extends Ninja_Model
 {
 	/**
-	 * Fetch hostgroup where field matches value
-	 * @param $field The field to fetch
-	 * @param $value The value to search for
+	 * Fetch hostgroup by name
+	 * @param $name The name of the object
 	 * @return false on errors, array on success
 	 */
-	public function get_by_field_value($field=false, $value=false)
+	public function get($name=false)
 	{
-		$value = trim($value);
-		$field = trim($field);
+		$name = trim($name);
 		$auth = Nagios_auth_Model::instance();
-		$auth_objects = $auth->get_authorized_hostgroups();
-		if (empty($value) || empty($field) || empty($auth_objects)) {
+		if (!$auth->is_authorized_for_hostgroup($name))
 			return false;
-		}
-		$obj_ids = array_keys($auth_objects);
 		$db = Database::instance();
-		$sql = "SELECT * FROM hostgroup WHERE $field=".$db->escape($value).' AND '.
-			'id IN('.implode(',', $obj_ids).')';
+		$sql = "SELECT * FROM hostgroup WHERE hostgroup_name=".$db->escape($name);
 		$data = $db->query($sql);
-		return count($data)>0 ? $data : false;
+		return $data;
 	}
 
 	/**

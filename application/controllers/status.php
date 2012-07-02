@@ -747,8 +747,8 @@ class Status_Controller extends Authenticated_Controller {
 			$group_details = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
 		} else {
 			$group_details = $grouptype == 'service' ?
-				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
-				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+				Servicegroup_Model::get($group) :
+				Hostgroup_Model::get($group);
 		}
 
 		$this->template->content->group_details = $group_details;
@@ -942,8 +942,8 @@ class Status_Controller extends Authenticated_Controller {
 		} else {
 			# make sure we have the correct group
 			$group_info_res = $grouptype == 'service' ?
-				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
-				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+				Servicegroup_Model::get($group) :
+				Hostgroup_Model::get($group);
 			if ($group_info_res) {
 				$group_info_res = $group_info_res->current();
 				$group = $group_info_res->{$grouptype.'group_name'}; # different field depending on object type
@@ -1144,8 +1144,8 @@ class Status_Controller extends Authenticated_Controller {
 		} else {
 			# make sure we have the correct servicegroup
 			$group_info_res = $grouptype == 'service' ?
-				Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
-				Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+				Servicegroup_Model::get($group) :
+				Hostgroup_Model::get($group);
 			$label_header = $grouptype == 'service' ? $t->_('Status Grid For Service Group ') : $t->_('Status Grid For Host Group ');
 			$content->label_header = $label_header."'".$group."'";
 		}

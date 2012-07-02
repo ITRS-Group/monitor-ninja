@@ -890,8 +890,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$group_info_res = $grouptype == 'servicegroup' ?
-			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
-			Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+			Servicegroup_Model::get($group) :
+			Hostgroup_Model::get($group);
 
 		if ($group_info_res === false) {
 			$this->template->content = $this->add_view('error');
