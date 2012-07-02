@@ -22,6 +22,12 @@ class benchmark_log {
 	function log_to_file() {
 		$benchmark = Benchmark::get(SYSTEM_BENCHMARK.'_total_execution');
 		$memory = function_exists('memory_get_usage') ? (memory_get_usage() / 1024 / 1024) : 0;
+        $sqltime=0.0;
+        $sqlrows=0;
+        foreach (Database::$benchmarks as $key => $value){
+            $sqltime += $value["time"];
+            $sqlrows += $value["rows"];
+        }
 
 		$output = array(
 			'timestamp' => time(),
@@ -29,7 +35,11 @@ class benchmark_log {
 			'user' => Auth::instance()->get_user() ? str_replace(' ', '_', Auth::instance()->get_user()->username) : '[not_logged_in]',
 			'url' => url::current(true),
 			'execution_time' => $benchmark['time'].'s',
-			'memory_usage' => number_format($memory, 2).'MB'
+			'memory_usage' => number_format($memory, 2).'MB',
+			'num_sql' => count(Database::$benchmarks),
+            'sqltime' => $sqltime,
+            'sqlrows' => $sqlrows
+ 
 		);
 
 		file_put_contents($this->filename, implode(' ', $output)."\n", FILE_APPEND);
