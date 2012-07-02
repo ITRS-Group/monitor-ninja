@@ -34,21 +34,21 @@ class Current_status_Model extends Model
 	public $services_warning_scheduled = 0; /**< Number of services in warning in scheduled downtime */
 	public $services_warning_acknowledged = 0; /**< Number of services in warning that are acknowledged */
 	public $services_warning_disabled = 0; /**< Number of services in warning with active checks disabled */
-	public $svcs_warning_unacknowledged = 0; /**< Number of services in warning that are unacknowledged */
+	public $services_warning_unacknowledged = 0; /**< Number of services in warning that are unacknowledged */
 	public $services_warning = 0; /**< Number of services in warning */
 
 	public $services_unknown_host_problem = 0; /**< Number of services in unknown on problem hosts */
 	public $services_unknown_scheduled = 0; /**< Number of services in unknown in scheduled downtime */
 	public $services_unknown_acknowledged = 0; /**< Number of services in unknown that are acknowledged */
 	public $services_unknown_disabled = 0; /**< Number of services in unknown with active checks disabled */
-	public $svcs_unknown_unacknowledged = 0; /**< Number of services in unknown that are unacknowledged */
+	public $services_unknown_unacknowledged = 0; /**< Number of services in unknown that are unacknowledged */
 	public $services_unknown = 0; /**< Number of services in unknown */
 
 	public $services_critical_host_problem = 0; /**< Number of services in critical on problem hosts */
 	public $services_critical_scheduled = 0; /**< Number of services in critical in scheduled downtime */
 	public $services_critical_acknowledged = 0; /**< Number of services in critical that are acknowledged */
 	public $services_critical_disabled = 0; /**< Number of services in critical with active checks disabled */
-	public $svcs_critical_unacknowledged = 0; /**< Number of services in critical that are unacknowledged */
+	public $services_critical_unacknowledged = 0; /**< Number of services in critical that are unacknowledged */
 	public $services_critical = 0; /**< Number of services in critical */
 
 	public $services_pending_disabled = 0; /**< Number of pending services with active checks disabled */
@@ -88,7 +88,7 @@ class Current_status_Model extends Model
 	public $hosts_unreachable_scheduled = 0; /**< Number of hosts that are unreachable and in scheduled downtime */
 	public $hosts_unreachable_acknowledged = 0; /**< Number of hosts that are unreachable and acknowledged */
 	public $hosts_unreachable_disabled = 0; /**< Number of hosts that are unreachable and disabled */
-	public $hosts_unreach_unacknowledged = 0; /**< Number of hosts that are unreachable and unacknowledged */
+	public $hosts_unreachable_unacknowledged = 0; /**< Number of hosts that are unreachable and unacknowledged */
 	public $hosts_unreachable = 0; /**< Number of hosts that are unreachable */
 
 	public $hosts_pending_disabled = 0; /**< Number of pending hosts with active checks disabled */
@@ -152,70 +152,22 @@ class Current_status_Model extends Model
 
 	/**
 	 * Fetch current host status from db for current user
-	 * return bool
+	 * @return bool indicating whether query worked
 	 */
 	public function host_status()
 	{
 		if ($this->host_data_present)
 			return true;
 
-		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
-		if ($show_passive_as_active) {
-			$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
-			$disabled_checks_condition = "Stats: active_checks_enabled != 1\nStats: accept_passive_checks != 1\nStatsAnd: 2";
-		} else {
-			$active_checks_condition = "Stats: active_checks_enabled = 1";
-			$disabled_checks_condition = "Stats: active_checks_enabled != 1";
-		}
-
-		try {
-			$ls = Livestatus::instance();
-			$cols = array(
-				'total_hosts' => 'Stats: state != 9999', // "any", as recommended by ls docs
-				'flap_disabled_hosts' => 'Stats: flap_detection_enabled != 1',
-				'flapping_hosts' => 'Stats: is_flapping = 1',
-				'notification_disabled_hosts' => 'Stats: notifications_enabled != 1',
-				'event_handler_disabled_hosts' => 'Stats: event_handler_enabled != 1',
-				'active_checks_disabled_hosts' => $disabled_checks_condition,
-				'passive_checks_disabled_hosts' => 'Stats: accept_passive_checks != 1',
-				'hosts_up_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
-				'hosts_up_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
-				'hosts_up' => 'Stats: state = 0',
-				'hosts_down_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
-				'hosts_down_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
-				'hosts_down_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
-				'hosts_down_unacknowledged' => "Stats: state = 1\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
-				'hosts_down' => 'Stats: state = 1',
-				'hosts_unreachable_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
-				'hosts_unreachable_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
-				'hosts_unreachable_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
-				'hosts_unreach_unacknowledged' => "Stats: state = 2\nStats: scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 4",
-				'hosts_unreachable' => "Stats: state = 2",
-				'hosts_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
-				'hosts_pending' => 'Stats: has_been_checked = 0',
-				'total_active_host_checks' => 'Stats: check_type = 0',
-				'total_passive_host_checks' => 'Stats: check_type > 0',
-				'min_host_latency' => 'Stats: min latency',
-				'max_host_latency' => 'Stats: max latency',
-				'total_host_latency' => 'Stats: sum latency',
-				'avg_host_latency' => 'Stats: avg latency',
-				'min_host_execution_time' => 'Stats: min execution_time',
-				'max_host_execution_time' => 'Stats: max execution_time',
-				'total_host_execution_time' => 'Stats: sum execution_time',
-				'avg_host_execution_time' => 'Stats: avg execution_time',
-			);
-			$res = $ls->query("GET hosts\n".implode("\n", $cols));
-		} catch (LivestatusException $ex) {
+		$stats = new Stats_Model();
+		$res = $stats->get_stats('hosts', $stats->host_cols);
+		if ($res == false)
 			return false;
-		}
 
-		$data = $res[0];
-		reset($data);
-		foreach ($cols as $col => $_) {
-			$this->$col = current($data);
-			next($data);
-		}
+		foreach ($res[0] as $key => $val)
+			$this->$key = $val;
 
+		// this excludes pending
 		$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable;
 		if ($all == 0)
 			$this->percent_host_health = 0.0;
@@ -228,80 +180,24 @@ class Current_status_Model extends Model
 
 	/**
 	 * Fetch and calculate status for all services for current user
-	 * @return bool
+	 * @return bool indicating whether query worked
 	 */
 	public function service_status()
 	{
 		if ($this->service_data_present)
 			return true;
 
-		$show_passive_as_active = config::get('checks.show_passive_as_active', '*');
-		if ($show_passive_as_active) {
-			$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
-			$disabled_checks_condition = "Stats: active_checks_enabled != 1\nStats: accept_passive_checks != 1\nStatsAnd: 2";
-		} else {
-			$active_checks_condition = "Stats: active_checks_enabled = 1";
-			$disabled_checks_condition = "Stats: active_checks_enabled != 1";
-		}
-
-		try {
-			$ls = Livestatus::instance();
-			$cols = array(
-				'total_services' => 'Stats: state != 9999', // "any", as recommended by ls docs
-				'flap_disabled_services' => 'Stats: flap_detection_enabled != 1',
-				'flapping_services' => 'Stats: is_flapping = 1',
-				'notification_disabled_services' => 'Stats: notifications_enabled != 1',
-				'event_handler_disabled_svcs' => 'Stats: event_handler_enabled != 1',
-				'active_checks_disabled_svcs' => $disabled_checks_condition,
-				'passive_checks_disabled_svcs' => 'Stats: accept_passive_checks != 1',
-				'services_ok_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
-				'services_ok_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
-				'services_ok' => 'Stats: state = 0',
-				'services_warning_host_problem' => "Stats: state = 1\nStats: host_state > 0\nStats: service_scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStatsAnd: 4",
-				'services_warning_scheduled' => "Stats: state = 1\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-				'services_warning_acknowledged' => "Stats: state = 1\nStats: acknowledged = 1\nStatsAnd: 2",
-				'services_warning_disabled' => "Stats: state = 1\n$disabled_checks_condition\nStatsAnd: 2",
-				'svcs_warning_unacknowledged' => "Stats: state = 1\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-				'services_warning' => 'Stats: state = 1',
-				'services_critical_host_problem' => "Stats: state = 2\nStats: host_state > 0\nStats: service_scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStatsAnd: 4",
-				'services_critical_scheduled' => "Stats: state = 2\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-				'services_critical_acknowledged' => "Stats: state = 2\nStats: acknowledged = 1\nStatsAnd: 2",
-				'services_critical_disabled' => "Stats: state = 2\n$disabled_checks_condition\nStatsAnd: 2",
-				'svcs_critical_unacknowledged' => "Stats: state = 2\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-				'services_critical' => 'Stats: state = 2',
-				'services_unknown_host_problem' => "Stats: state = 3\nStats: host_state > 0\nStats: service_scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStatsAnd: 4",
-				'services_unknown_scheduled' => "Stats: state = 3\nStats: scheduled_downtime_depth > 0\nStats: host_scheduled_downtime_depth > 0\nStatsOr: 2\nStatsAnd: 2",
-				'services_unknown_acknowledged' => "Stats: state = 3\nStats: acknowledged = 1\nStatsAnd: 2",
-				'services_unknown_disabled' => "Stats: state = 3\n$disabled_checks_condition\nStatsAnd: 2",
-				'svcs_unknown_unacknowledged' => "Stats: state = 3\nStats: host_state != 1\nStats: host_state != 2\nStats: scheduled_downtime_depth = 0\nStats: host_scheduled_downtime_depth = 0\nStats: acknowledged != 1\n$active_checks_condition\nStatsAnd: 7",
-				'services_unknown' => 'Stats: state = 3',
-				'services_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
-				'services_pending' => 'Stats: has_been_checked = 0',
-				'total_active_service_checks' => 'Stats: check_type = 0',
-				'total_passive_service_checks' => 'Stats: check_type > 0',
-				'min_service_latency' => 'Stats: min latency',
-				'max_service_latency' => 'Stats: max latency',
-				'sum_service_latency' => 'Stats: sum latency',
-				'avg_service_latency' => 'Stats: avg latency',
-				'min_service_execution_time' => 'Stats: min execution_time',
-				'max_service_execution_time' => 'Stats: max execution_time',
-				'sum_service_execution_time' => 'Stats: sum execution_time',
-				'avg_service_execution_time' => 'Stats: avg execution_time',
-			);
-			$res = $ls->query("GET services\n".implode("\n", $cols));
-		} catch (LivestatusException $ex) {
+		$stats = new Stats_Model();
+		$res = $stats->get_stats('services', $stats->service_cols);
+		if ($res == false)
 			return false;
-		}
 
-		$data = $res[0];
-		reset($data);
-		foreach ($cols as $col => $_) {
-			$this->$col = current($data);
-			next($data);
-		}
+		foreach ($res[0] as $key => $val)
+			$this->$key = $val;
 
+		// this excludes pending
 		$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown;
-		if ($all == 0)
+		if ($this->total_services == 0)
 			$this->percent_service_health = 0.0;
 		else
 			$this->percent_service_health = number_format($this->services_ok/$all*100, 1);
