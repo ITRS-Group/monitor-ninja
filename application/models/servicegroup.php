@@ -232,12 +232,16 @@ class Servicegroup_Model extends Ninja_Model
 
 		$res = array();
 		$stats = new Stats_Model();
-		foreach ($groups_to_find as $group) {
-			$service_match[] = "Filter: servicegroup_name = $group";
+		// If there are fewer servicegroups to look for than we wanted, that means we want all of them
+		// or:ing too much can be slow.
+		if (!empty($items_per_page) && $items_per_page <= count($groups_to_find)) {
+			foreach ($groups_to_find as $group) {
+				$service_match[] = "Filter: servicegroup_name = $group";
+			}
+			$service_match[] = 'Or: '.count($groups_to_find);
 		}
-		$service_match[] = 'Or: '.count($groups_to_find);
 
-		// We *could* extract all data from one service query,
+		// We *could* extract all host data from the service result,
 		// but then the stats model would need to be a lot more
 		// flexible, which would cost some of the performance we should win,
 		// so bleh.
