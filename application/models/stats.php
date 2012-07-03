@@ -6,8 +6,8 @@
 class Stats_Model extends Model {
 	public $host_cols = false; /**< The list of legal host columns */
 	public $service_cols = false; /**< The list of legal service columns */
-	private $host_col_defs = false;
-	private $service_col_defs = false;
+	private $host_defs = false;
+	private $service_defs = false;
 	public function __construct() {
 		if (config::get('checks.show_passive_as_active', '*')) {
 			$active_checks_condition = "Stats: active_checks_enabled = 1\nStats: accept_passive_checks = 1\nStatsOr: 2";
@@ -17,7 +17,7 @@ class Stats_Model extends Model {
 			$disabled_checks_condition = "Stats: active_checks_enabled != 1";
 		}
 
-		$this->host_col_defs = array(
+		$this->host_defs = array(
 			'total_hosts' => 'Stats: state != 9999', // "any", as recommended by ls docs
 			'flap_disabled_hosts' => 'Stats: flap_detection_enabled != 1',
 			'flapping_hosts' => 'Stats: is_flapping = 1',
@@ -40,6 +40,7 @@ class Stats_Model extends Model {
 			'hosts_unreachable' => "Stats: state = 2",
 			'hosts_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
 			'hosts_pending' => 'Stats: has_been_checked = 0',
+			'hosts_problem' => 'Stats: state > 0',
 			'total_active_host_checks' => 'Stats: check_type = 0',
 			'total_passive_host_checks' => 'Stats: check_type > 0',
 			'min_host_latency' => 'Stats: min latency',
@@ -51,9 +52,9 @@ class Stats_Model extends Model {
 			'total_host_execution_time' => 'Stats: sum execution_time',
 			'avg_host_execution_time' => 'Stats: avg execution_time',
 		);
-		$this->host_cols = array_keys($this->host_col_defs);
+		$this->host_cols = array_keys($this->host_defs);
 
-		$this->service_col_defs = array(
+		$this->service_defs = array(
 			'total_services' => 'Stats: state != 9999', // "any", as recommended by ls docs
 			'flap_disabled_services' => 'Stats: flap_detection_enabled != 1',
 			'flapping_services' => 'Stats: is_flapping = 1',
@@ -84,6 +85,7 @@ class Stats_Model extends Model {
 			'services_unknown' => 'Stats: state = 3',
 			'services_pending_disabled' => "Stats: has_been_checked = 0\n$disabled_checks_condition\nStatsAnd: 2",
 			'services_pending' => 'Stats: has_been_checked = 0',
+			'services_problem' => 'Stats: state > 0',
 			'total_active_service_checks' => 'Stats: check_type = 0',
 			'total_passive_service_checks' => 'Stats: check_type > 0',
 			'min_service_latency' => 'Stats: min latency',
@@ -95,7 +97,7 @@ class Stats_Model extends Model {
 			'sum_service_execution_time' => 'Stats: sum execution_time',
 			'avg_service_execution_time' => 'Stats: avg execution_time',
 		);
-		$this->service_cols = array_keys($this->service_col_defs);
+		$this->service_cols = array_keys($this->service_defs);
 	}
 
 	/**
@@ -108,7 +110,7 @@ class Stats_Model extends Model {
 	 */
 	public function get_stats($table, $cols, $filter=false, $xtra_columns=false) {
 		try {
-			$defs = (strpos($table, 'service') === 0) ? $this->service_col_defs : $this->host_col_defs;
+			$defs = (strpos($table, 'service') === 0) ? $this->service_defs : $this->host_defs;
 			$ls = Livestatus::instance();
 			$query = "GET $table";
 			if ($filter) {

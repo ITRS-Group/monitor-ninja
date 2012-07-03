@@ -11,7 +11,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Status_Controller extends Authenticated_Controller {
-	public $current = false;
 	public $img_sort_up = false;
 	public $img_sort_down = false;
 	public $logos_path = '';
@@ -28,8 +27,6 @@ class Status_Controller extends Authenticated_Controller {
 		parent::__construct();
 
 		# load current status for host/service status totals
-		$this->current = Current_status_Model::instance();
-		$this->current->analyze_status_data();
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$this->logos_path = Kohana::config('config.logos_path');
