@@ -292,10 +292,12 @@ class Hostgroup_Model extends Ninja_Model
 			array('hostgroup_name', 'hostgroup_alias')
 		);
 		$ret = array();
-		foreach ($hosts as $res)
-			$ret[$res['hostgroup_name']] = $res;
-		foreach ($services as $res)
-			$ret[$res['hostgroup_name']] = array_merge($ret[$res['hostgroup_name']], $res);
+		if (is_array($hosts))
+			foreach ($hosts as $res)
+				$ret[$res['hostgroup_name']] = $res;
+		if (is_array($services))
+			foreach ($services as $res)
+				$ret[$res['hostgroup_name']] = array_merge($ret[$res['hostgroup_name']], $res);
 
 		return $ret;
 	}

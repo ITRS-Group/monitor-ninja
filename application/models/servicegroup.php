@@ -268,36 +268,40 @@ class Servicegroup_Model extends Ninja_Model
 			array('servicegroup_name', 'servicegroup_alias')
 		);
 		$ret = array();
-		$ls = Livestatus::instance();
-		foreach ($services as $service) {
-			$group = $service['servicegroup_name'];
-			$ret[$group] = $service;
-			$host_names = $ls->query("GET servicesbygroup
+		try {
+			$ls = Livestatus::instance();
+			foreach ($services as $service) {
+				$group = $service['servicegroup_name'];
+				$ret[$group] = $service;
+				$host_names = $ls->query("GET servicesbygroup
 Columns: host_name
 Filter: servicegroup_name = $group");
-			$this_match = $host_match;
-			foreach ($host_names as $host) {
-				$this_match[] = "Filter: host_name = {$host[0]}";
+				$this_match = $host_match;
+				foreach ($host_names as $host) {
+					$this_match[] = "Filter: host_name = {$host[0]}";
+				}
+				$this_match[] = 'Or: '.count($host_names);
+				$host_stat = $stats->get_stats('hosts',
+					array(
+						'hosts_up',
+						'hosts_down',
+						'hosts_down_unacknowledged',
+						'hosts_down_scheduled',
+						'hosts_down_acknowledged',
+						'hosts_down_disabled',
+						'hosts_unreachable',
+						'hosts_unreachable_unacknowledged',
+						'hosts_unreachable_scheduled',
+						'hosts_unreachable_acknowledged',
+						'hosts_unreachable_disabled',
+						'hosts_pending'
+					),
+					$this_match
+				);
+				$ret[$group] = array_merge($service, $host_stat[0]);
 			}
-			$this_match[] = 'Or: '.count($host_names);
-			$host_stat = $stats->get_stats('hosts',
-				array(
-					'hosts_up',
-					'hosts_down',
-					'hosts_down_unacknowledged',
-					'hosts_down_scheduled',
-					'hosts_down_acknowledged',
-					'hosts_down_disabled',
-					'hosts_unreachable',
-					'hosts_unreachable_unacknowledged',
-					'hosts_unreachable_scheduled',
-					'hosts_unreachable_acknowledged',
-					'hosts_unreachable_disabled',
-					'hosts_pending'
-				),
-				$this_match
-			);
-			$ret[$group] = array_merge($service, $host_stat[0]);
+		} catch (LivestatusException $ex) {
+			return false;
 		}
 
 		return $ret;
