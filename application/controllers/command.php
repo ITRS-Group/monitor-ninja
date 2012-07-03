@@ -288,7 +288,7 @@ class Command_Controller extends Authenticated_Controller
 					$cmd = 'SCHEDULE_AND_PROPAGATE_HOST_DOWNTIME';
 				}
 			}
-			if(1 == $param['fixed']) {
+			if(isset($param['fixed']) && $param['fixed']) {
 				// we can't add a scheduled downtime to a flexible event
 				$now = time();
 				$start_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['start_time']);
