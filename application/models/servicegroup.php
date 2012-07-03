@@ -241,10 +241,6 @@ class Servicegroup_Model extends Ninja_Model
 			$service_match[] = 'Or: '.count($groups_to_find);
 		}
 
-		// We *could* extract all host data from the service result,
-		// but then the stats model would need to be a lot more
-		// flexible, which would cost some of the performance we should win,
-		// so bleh.
 		$services = $stats->get_stats('servicesbygroup',
 			array(
 				'services_ok',
