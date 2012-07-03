@@ -71,7 +71,6 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	$a = 0;
 	$c=0;
 	$auth = Nagios_auth_Model::instance();
-	$auth_hosts = $auth->get_authorized_hosts();
 	if (!empty($result)) {
 		foreach ($result as $row) {
 		$a++;
@@ -79,7 +78,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			$c++;
 	?>
 	<tr class="<?php echo ($a %2 == 0) ? 'odd' : 'even'; ?>">
-		<td class="icon <?php if ($this->cmd_ok && $this->cmd_host_ok && array_key_exists($row->host_name, $auth->hosts_r)) { ?>obj_properties <?php } ?> <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?> id="<?php echo 'host|'.$row->host_name ?>" title="<?php echo Current_status_Model::status_text($row->host_state); ?>"><em><?php echo Current_status_Model::status_text($row->host_state); ?></em></td>
+		<td class="icon <?php if ($this->cmd_ok && $this->cmd_host_ok && $auth->is_authorized_for_host($row->host_name)) { ?>obj_properties <?php } ?> <?php echo strtolower(Current_status_Model::status_text($row->host_state)).' '.(($curr_host != $row->host_name) ? ($c == 1 && $a != 1 ? ' bt' : '') : 'white') ?>" <?php echo ($curr_host != $row->host_name) ? '' : 'colspan="1"' ?> id="<?php echo 'host|'.$row->host_name ?>" title="<?php echo Current_status_Model::status_text($row->host_state); ?>"><em><?php echo Current_status_Model::status_text($row->host_state); ?></em></td>
 		<?php if ($curr_host != $row->host_name) { ?>
 		<td class="service_hostname w80<?php echo ($c == 1 && $a != 1) ? ' bt' : '';?>" style="white-space: normal; border-right: 1px solid #dcdcdc;">
 				<span style="float: left"><?php echo html::anchor('extinfo/details/?host='.urlencode($row->host_name), html::specialchars($row->host_name), array('title' => $row->address)) ?></span>
