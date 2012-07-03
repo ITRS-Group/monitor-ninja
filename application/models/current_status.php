@@ -197,7 +197,7 @@ class Current_status_Model extends Model
 
 		// this excludes pending
 		$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown;
-		if ($this->total_services == 0)
+		if ($all == 0)
 			$this->percent_service_health = 0.0;
 		else
 			$this->percent_service_health = number_format($this->services_ok/$all*100, 1);
