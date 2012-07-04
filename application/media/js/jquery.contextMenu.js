@@ -133,12 +133,12 @@ if(jQuery)( function() {
 					d.innerHeight = document.body.clientHeight;
 					d.innerWidth = document.body.clientWidth;
 				}
-				(e.pageX) ? x = e.pageX : x = e.clientX + d.scrollLeft;
-				(e.pageY) ? y = e.pageY : y = e.clientY + d.scrollTop;
+				x = e.clientX;
+				y = e.clientY;
 
 				// Show the menu
 				$(document).unbind('click');
-				$(menu).css({ top: y, left: x }).fadeIn(o.inSpeed);
+				$(menu).css({ top: y, left: x , position: 'fixed'}).fadeIn(o.inSpeed);
 				// Hover events
 				$(menu).find('A').mouseover( function() {
 					$(menu).find('LI.hover').removeClass('hover');
