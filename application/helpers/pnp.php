@@ -20,8 +20,8 @@ class pnp_Core
 				$service = urldecode($service);
 				$query .= "GET services\nFilter: host_name = $host\nFilter: description = $service\n";
 			$query .= "Columns: pnpgraph_present";
-			$res =$ls->query($query);
-			if ($res[0][0] === 1)
+			$res = $ls->query($query);
+			if (isset($res[0]) && isset($res[0][0]) && $res[0][0] === 1)
 				return true;
 		} catch (LivestatusException $ex) {}
 		return false;
