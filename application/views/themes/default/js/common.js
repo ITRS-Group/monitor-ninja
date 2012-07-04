@@ -69,21 +69,19 @@ $(document).ready(function() {
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
 
-	if (_use_contextmenu) {
-		$(".obj_properties").not('.white').contextMenu({
-				menu: 'property_menu', use_prop:true
-			},
-			function(action, elem){
-				object_action(action, elem.attr('id'));
-		});
+	$("body").contextMenu({
+			menu: 'property_menu', use_prop:true
+		},
+		function(action, elem){
+			object_action(action, elem.attr('id'));
+		}, ".obj_properties:not(.white)");
 
-		$(".svc_obj_properties").contextMenu({
-				menu: 'svc_property_menu', use_prop:true
-			},
-			function(action, elem){
-				object_action(action, elem.attr('id'));
-		});
-	}
+	$("body").contextMenu({
+			menu: 'svc_property_menu', use_prop:true
+		},
+		function(action, elem){
+			object_action(action, elem.attr('id'));
+		},".svc_obj_properties");
 
 	/**
 	*	Bind some functionality to the checkbox state change event

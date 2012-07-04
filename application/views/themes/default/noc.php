@@ -76,7 +76,6 @@ if (isset($this->template->js_header))
 			}
 		</style>
 		<?php
-			$use_contextmenu = false;
 			echo (!empty($css_header)) ? $css_header : '';
 			echo html::script('application/media/js/jquery.min.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
@@ -90,11 +89,7 @@ if (isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
 			echo html::script('application/media/js/jmenu.js');
-			if (Router::$controller == 'status') {
-				$use_contextmenu = true;
-				# only required for status controller so no need to always include it
-				echo html::script('application/media/js/jquery.contextMenu.js');
-			}
+			echo html::script('application/media/js/jquery.contextMenu.js');
 			echo html::script($this->add_path('js/collapse_menu.js'));
 			echo html::script($this->add_path('js/global_search.js'));
 			echo html::script($this->add_path('js/pagination.js'));
@@ -136,7 +131,6 @@ if (isset($this->template->js_header))
 				var _wait_str='<?php echo $this->translate->_('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo $this->translate->_('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo $this->translate->_('Page refresh has been restored.') ?>';
-				var _use_contextmenu=<?php echo $use_contextmenu === true ? 1 : 0; ?>;
 				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 				var _search_save_error = '<?php echo $this->translate->_("Length of \'%s\' must be between %s and %s characters.") ?>';
 				var _search_string_field = '<?php echo $this->translate->_('Search string') ?>';

@@ -208,7 +208,7 @@ if(jQuery)( function() {
 		el.add($('UL.contextMenu')).bind('contextmenu', function() { return false; });
 	};
 	$.extend($.fn, {
-		contextMenu: function(o, callback) {
+		contextMenu: function(o, callback, sel) {
 			// Defaults
 			if( o.menu == undefined ) return false;
 			if( o.inSpeed == undefined ) o.inSpeed = 150;
@@ -217,12 +217,12 @@ if(jQuery)( function() {
 			if( o.inSpeed == 0 ) o.inSpeed = -1;
 			if( o.outSpeed == 0 ) o.outSpeed = -1;
 			var el = $(this);
-			el.mousedown(function(e) {
+			el.on('mousedown', sel, function(e) {
 				e.stopPropagation();
 				if(3 !== e.which) {
 					return false;
 				}
-				show_context_menu(el, e, o, callback);
+				show_context_menu($(this), e, o, callback);
 			});
 			return $(this);
 		},
