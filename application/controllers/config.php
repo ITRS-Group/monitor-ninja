@@ -170,16 +170,11 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= '<a name="'.$row->host_name.'"></a>'.$row->host_name;
 						$result[$i][]= $row->alias;
 						$result[$i][]= $row->address;
-					    if(isset($row->parent)) {
-								$parents = explode(',',$row->parent);
-					      $tmp = false;
-					      foreach ($parents as $parent) {
-									$tmp[] = html::anchor(Router::$controller.'/?type=hosts#'.$parent, $parent);
-								}
-								$result[$i][] = implode(', ',$tmp);
-					    } else {
-								$result[$i][]= '';
-					    }
+						$tmp = array();
+						foreach ($row->parent as $parent) {
+							$tmp[] = html::anchor(Router::$controller.'/?type=hosts#'.$parent, $parent);
+						}
+						$result[$i][] = implode(', ',$tmp);
 						$result[$i][]= $row->max_check_attempts;
 						$result[$i][]= time::to_string($row->check_interval*60);
 						$result[$i][]= time::to_string($row->retry_interval*60);
@@ -190,21 +185,14 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->passive_checks_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
-					    $cg_link = false;
-					    $c_link = false;
-					    if(isset($row->contactgroup_name)) {
-							$tmp = explode(",", $row->contactgroup_name);
-							foreach($tmp as $cg){
-								$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
-							}
-					    }
-					    if(isset($row->contact_name)){
-							$tmp = explode(",", $row->contact_name);
-							foreach($tmp as $c){
-								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
-							}
-					    }
-					    $result[$i][] = (($c_link !== false) ? implode(', ', $c_link).', ' : '').(($cg_link !== false) ? implode(', ', $cg_link) : '');
+					    $c_link = array();
+						foreach($row->contactgroup_name as $cg){
+							$c_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+						}
+						foreach($row->contact_name as $c){
+							$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+						}
+						$result[$i][] = implode(', ', $c_link);
 
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 						$result[$i][]= time::to_string($row->first_notification_delay);
@@ -303,26 +291,19 @@ class Config_Controller extends Authenticated_Controller {
 						$result[$i][]= $row->check_freshness == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->freshness_threshold == 0 ? $t->_('Auto-determined value') : $row->freshness_threshold.' '.$t->_('seconds');
 
-					    $cg_link = false;
-					    $c_link = false;
-					    if(isset($row->contactgroup_name)) {
-							$tmp = explode(",", $row->contactgroup_name);
-							foreach($tmp as $cg){
-								$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
-							}
-					    }
-					    if(isset($row->contact_name)){
-							$tmp = explode(",", $row->contact_name);
-							foreach($tmp as $c){
-								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
-							}
-					    }
-					    $result[$i][] = (($c_link !== false) ? implode(', ', $c_link).', ' : '').(($cg_link !== false) ? implode(', ', $cg_link) : '');
+						$c_link = array();
+						foreach($row->contactgroup_name as $cg){
+							$c_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
+						}
+						foreach($row->contact_name as $c){
+							$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
+						}
+						$result[$i][] = implode(', ', $c_link);
 
 						$result[$i][]= $row->notifications_enabled == 1 ? $t->_('Yes') : $t->_('No');
 						$result[$i][]= $row->notification_interval == 0 ? $t->_('No Re-notification') : $row->notification_interval;
 						$notification_options = explode(',',$row->notification_options);
-							$tmp = false;
+							$tmp = array();
 							foreach($notification_options as $option) {
 								$tmp[] = $options['service']['notification'][$option];
 							}

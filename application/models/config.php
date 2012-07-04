@@ -56,7 +56,7 @@ class Config_Model extends Model {
 				case 'hosts':
 					if (!$count) {
 						$sql = "SELECT ".
-							 "h.host_name, h.alias, h.address,  h.max_check_attempts, h.check_interval,".
+							 "h.id, h.host_name, h.alias, h.address,  h.max_check_attempts, h.check_interval,".
 							 "h.retry_interval, h.check_command, h.check_period, h.notification_interval,".
 							 "h.notes, h.notes_url, h.action_url, h.icon_image, h.icon_image_alt,".
 							 "h.obsess_over_host, h.active_checks_enabled, h.passive_checks_enabled, h.check_freshness,".
@@ -74,7 +74,7 @@ class Config_Model extends Model {
 				case 'services':
 					if (!$count) {
 						$sql = "SELECT ".
-									"host_name, service_description, max_check_attempts, check_interval,".
+									"id, host_name, service_description, max_check_attempts, check_interval,".
 									"retry_interval, check_command, check_period, parallelize_check, is_volatile,".
 									"obsess_over_service, active_checks_enabled, passive_checks_enabled,".
 									"check_freshness, freshness_threshold, notifications_enabled,".
@@ -202,89 +202,59 @@ class Config_Model extends Model {
 			$result = $this->query($db,$sql);
 			$result_mod = array();
 
-			# We special case host/services since there are one to many relationships
-			# parents, contacts + contactgroups need to fetched separatly so we do this here
-		    if ($type === 'hosts' && $count == false) {
-				$parent_child = $this->query($db, "select host.host_name, host2.host_name as parent from host left join host_parents on host.id=host_parents.host " .
-										   "left join host host2 on host2.id=host_parents.parents ORDER BY host.host_name ".$offset_limit);
-				$contactgroups = $this->query($db, "select host.host_name,contactgroup.contactgroup_name  from host left join host_contactgroup on host.id = host_contactgroup.host " .
-											"left join contactgroup on host_contactgroup.contactgroup = contactgroup.id ORDER BY host.host_name ".$offset_limit);
-				$contacts = $this->query($db, "select host.host_name,contact.contact_name from host left join host_contact on host.id = host_contact.host " .
-									   "left join contact on host_contact.contact = contact.id ORDER BY host.host_name ".$offset_limit);
-				foreach($parent_child as $row){
-					if (isset($parent_array[$row->host_name] )){
-						$parent_array[$row->host_name] = $parent_array[$row->host_name] . "," . $row->parent;
-					} else {
-						$parent_array[$row->host_name] = $row->parent;
-					}
-				}
-				foreach($contactgroups as $row){
-					if (isset($contactgroups_array[$row->host_name] )) {
-						$contactgroups_array[$row->host_name] = $contactgroups_array[$row->host_name] . "," . $row->contactgroup_name;
-					} else {
-						$contactgroups_array[$row->host_name] = $row->contactgroup_name;
-					}
-				}
-				foreach($contacts as $row){
-					if (isset($contacts_array[$row->host_name] )) {
-						$contacts_array[$row->host_name] = $contacts_array[$row->host_name] . "," . $row->contact_name;
-					} else {
-						$contacts_array[$row->host_name] = $row->contact_name;
-					}
-				}
-				foreach($result as $row){
-					if(isset($parent_array[$row->host_name])){
-						$row->parent = $parent_array[$row->host_name];
-					}
-					if(isset($contactgroups_array[$row->host_name])){
-						$row->contactgroup_name = $contactgroups_array[$row->host_name];
-					}
-					if(isset($contacts_array[$row->host_name])){
-						$row->contact_name = $contacts_array[$row->host_name];
-					}
-					$result_mod[] = $row;
-				}
-				return $result_mod;
-		    }
-		    if ($type === 'services' && $count == false) {
-                        $s_contactgroups = $this->query($db,"select service.host_name, service.service_description, contactgroup.contactgroup_name " .
-											  "from service left join service_contactgroup on service.id = service_contactgroup.service " .
-											  "left join contactgroup on service_contactgroup.contactgroup = contactgroup.id ORDER BY service.host_name, service.service_description ".$offset_limit);
-				$s_contacts = $this->query($db, "select service.host_name, service.service_description, contact.contact_name " .
-										 "from service left join service_contact on service.id = service_contact.service " .
-										 "left join contact on service_contact.contact = contact.id ORDER BY service.host_name, service.service_description ".$offset_limit);
-				foreach($s_contactgroups as $row){
-					if(isset($s_contactgroups_array[$row->host_name][$row->service_description])) {
-						$s_contactgroups_array[$row->host_name][$row->service_description] = $s_contactgroups_array[$row->host_name][$row->service_description] . "," . $row->contactgroup_name;
-					} else {
-						$s_contactgroups_array[$row->host_name][$row->service_description] = $row->contactgroup_name;
-					}
-				}
-				foreach($s_contacts as $row){
-					if(isset($s_contacts_array[$row->host_name][$row->service_description])) {
-						$s_contacts_array[$row->host_name][$row->service_description] = $s_contacts_array[$row->host_name][$row->service_description] . "," . $row->contact_name;
-					} else {
-						$s_contacts_array[$row->host_name][$row->service_description] = $row->contact_name;
-					}
-				}
-				foreach($result as $row){
-					if(isset($s_contactgroups_array[$row->host_name][$row->service_description])){
-						$row->contactgroup_name = $s_contactgroups_array[$row->host_name][$row->service_description];
-					}
-					if(isset($s_contacts_array[$row->host_name][$row->service_description])){
-						$row->contact_name = $s_contacts_array[$row->host_name][$row->service_description];
-					}
-					$result_mod[] = $row;
-				}
-				return $result_mod;
-		    }
-			# End host/service special casing #
-
 		    if ($count) {
 				return $result[0]->count;
 		    }
+
+			# We special case host/services since there are one to many relationships
+			# parents, contacts + contactgroups need to fetched separatly so we do this here
+			if ($type === 'hosts') {
+				foreach ($result as &$row) {
+					$parents = $this->query($db, "select host.host_name as parent from host_parents " .
+						"inner join host on host.id=host_parents.parents WHERE host_parents.host=".$row->id);
+					$contactgroups = $this->query($db, "select contactgroup.contactgroup_name from host_contactgroup " .
+						"inner join contactgroup on host_contactgroup.contactgroup = contactgroup.id WHERE host_contactgroup.host=".$row->id);
+					$contacts = $this->query($db, "select contact.contact_name from host_contact " .
+						"inner join contact on host_contact.contact = contact.id WHERE host_contact.host=".$row->id);
+					$row->parent = array();
+					foreach ($parents as $parent) {
+						if ($parent->parent)
+							$row->parent[] = $parent->parent;
+					}
+					$row->contactgroup_name = array();
+					foreach ($contactgroups as $cg) {
+						if ($cg->contactgroup_name)
+							$row->contactgroup_name[] = $cg->contactgroup_name;
+					}
+					$row->contact_name = array();
+					foreach ($contacts as $ctct) {
+						if ($ctct->contact_name)
+							$row->contact_name[] = $ctct->contact_name;
+					}
+
+					unset($row->id);
+				}
+			}
+			if ($type === 'services') {
+				foreach ($result as &$row) {
+					$contactgroups = $this->query($db,"select contactgroup.contactgroup_name from service_contactgroup " .
+						"inner join contactgroup on service_contactgroup.contactgroup = contactgroup.id WHERE service_contactgroup.service=".$row->id);
+					$contacts = $this->query($db, "select contact.contact_name FROM service_contact " .
+						"inner join contact on service_contact.contact = contact.id WHERE service_contact.service=".$row->id);
+					$row->contactgroup_name = array();
+					foreach($contactgroups as $cg){
+						if ($cg->contactgroup_name)
+							$row->contactgroup_name[] = $cg->contactgroup_name;
+					}
+					$row->contact_name = array();
+					foreach($contacts as $ctct){
+						if ($ctct->contact_name)
+						$row->contact_name[] = $ctct->contact_name;
+					}
+				}
+			}
+
 		    return count($result) ? $result : false;
-                        //$result->count() ? $result->result(): false;
 		}
 		else
 			return false;
