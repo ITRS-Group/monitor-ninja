@@ -1,3 +1,10 @@
+help:
+	@echo
+	@echo Available make targets:
+	@echo -----------------------
+	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
+	@echo
+
 test: test-php-lint test-reports test-unittest
 
 test-reports:
@@ -52,13 +59,6 @@ Documentation: clean ninja.doxy application/models/*.php application/helpers/*.p
 		echo "$$a"; \
 		exit 1; \
 	fi;
-
-help:
-	@echo
-	@echo Available make targets:
-	@echo -----------------------
-	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
-	@echo
 
 wipe:
 	php index.php ninja_unit_test/wipe_tables
