@@ -133,7 +133,6 @@ if (isset($this) && isset($this->template->js_header))
 			//-->
 		</script>
 		<?php echo html::script('application/views/themes/default/js/common.js'); ?>
-		<?php echo html::script('application/views/themes/default/js/init.js'); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
 	</head>

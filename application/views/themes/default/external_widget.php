@@ -129,7 +129,6 @@ if (isset($this->template->js_header))
 			//-->
 		</script>
 		<?php echo html::script($this->add_path('js/common.js')); ?>
-		<?php echo html::script($this->add_path('js/init.js')); ?>
 		<?php echo (!empty($js_header)) ? $js_header : ''; ?>
 
 	</head>
