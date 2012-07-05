@@ -404,7 +404,10 @@ class Ajax_Controller extends Authenticated_Controller {
 
 	/**
 	*	Check that we are still getting data from merlin.
-	*	If not, user should be alerted
+	*
+	*	Wrapped in a json object for indicating success,
+	*	returns either the current time, or the time
+	*	since merlin last fed data into the database.
 	*/
 	public function is_alive()
 	{
@@ -412,28 +415,10 @@ class Ajax_Controller extends Authenticated_Controller {
 		$stale_data_limit = Kohana::config('config.stale_data_limit');
 		$diff = time() - $last_alive;
 		$return = 0;
-		if ($diff  > $stale_data_limit) {
-			$return = $diff;
-		}
-		echo $return;
-	}
-
-	/**
-	*	Return current time to be used to update in GUI
-	*/
-	public function current_time()
-	{
-		$sURL = urldecode($this->input->post('sURL', false));
-		if (Auth::instance()->logged_in()) {
-			$time = date(nagstat::date_format());
-			echo $time;
+		if ($diff <= $stale_data_limit) {
+			echo json::ok(date(nagstat::date_format()));
 		} else {
-			if (!empty($sURL)) {
-				$this->session->set('requested_uri', $sURL);
-			}?>
-			<script type="text/javascript">
-				window.location.replace('<?php echo Kohana::config('config.site_domain')?>');
-			</script><?php
+			echo json::fail(date(nagstat::date_format()));
 		}
 	}
 
