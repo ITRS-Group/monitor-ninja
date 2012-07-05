@@ -56,7 +56,7 @@ class Outages_Model extends Model
 		# loop over hosts causing outages
 		foreach ($host_data as $row) {
 			$services = false;
-			if (!$status->unreachable_hosts[$row->host_name])
+			if (!isset($status->unreachable_hosts[$row->host_name]) || !$status->unreachable_hosts[$row->host_name])
 				continue;
 
 			$outages[$row->host_name]['current_state'] = $row->current_state;
