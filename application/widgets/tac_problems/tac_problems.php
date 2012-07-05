@@ -118,7 +118,7 @@ class Tac_problems_Widget extends widget_Base {
 			$i++;
 		}
 
-		$this->js = array('js/tac_problems', 'application/media/js/mColorPicker.min');
+		$this->js = array('js/tac_problems', 'application/media/js/mColorPicker');
 		$this->css = array('css/tac_problems');
 		require($view_path);
 	}
