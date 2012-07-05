@@ -119,29 +119,31 @@ class widget_Base
 			}
 			$content .= '<div class="widget '.implode(' ', $widget_classes).'" id="widget-'.$widget_id.'" data-name="'.$this->model->name.'" data-instance_id="'.$this->model->instance_id.'">';
 			$content .= '<div class="widget-header"><span class="'.$widget_id.'_editable" id="'.$widget_id.'_title">'.$this->model->friendly_name.'</span></div>';
-			$content .= '<div class="widget-editbox">';
-			$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
-			$content .= '<fieldset>';
-			if (!isset(self::$loaded_widgets[$this->model->name]))
-				$this->inline_js .= "widget.register_widget_load('".$this->model->name."', function() {";
-			foreach ($options as $option) {
-				if (is_string($option)) {
-					$content .= $option;
+			if (!empty($options) && $this->editable) {
+				$content .= '<div class="widget-editbox">';
+				$content .= form::open('ajax/save_widget_setting', array('id' => $widget_id.'_form', 'onsubmit' => 'return false;'));
+				$content .= '<fieldset>';
+				if (!isset(self::$loaded_widgets[$this->model->name]))
+					$this->inline_js .= "widget.register_widget_load('".$this->model->name."', function() {";
+				foreach ($options as $option) {
+					if (is_string($option)) {
+						$content .= $option;
+					}
+					else {
+						$content .= $option->render_label($this->model->instance_id);
+						$content .= $option->render_widget($this->model->instance_id, $this->model->setting);
+						$js = $option->render_js();
+						if (!empty($js) && !isset(self::$loaded_widgets[$this->model->name]))
+							$this->inline_js .= "($js)(this);\n";
+					}
+					$content .= '<br/>';
 				}
-				else {
-					$content .= $option->render_label($this->model->instance_id);
-					$content .= $option->render_widget($this->model->instance_id, $this->model->setting);
-					$js = $option->render_js();
-					if (!empty($js) && !isset(self::$loaded_widgets[$this->model->name]))
-						$this->inline_js .= "($js)(this);\n";
-				}
-				$content .= '<br/>';
+				if (!isset(self::$loaded_widgets[$this->model->name]))
+					$this->inline_js .= "});\n";
+				$content .= '</fieldset>';
+				$content .= form::close();
+				$content .= '</div>';
 			}
-			if (!isset(self::$loaded_widgets[$this->model->name]))
-				$this->inline_js .= "});\n";
-			$content .= '</fieldset>';
-			$content .= form::close();
-			$content .= '</div>';
 			$content .= '<div class="widget-content">';
 		}
 		ob_start();

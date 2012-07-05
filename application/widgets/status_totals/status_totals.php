@@ -11,6 +11,7 @@ class Status_totals_Widget extends widget_Base {
 	protected $movable=false;
 	protected $removable=false;
 	protected $closeconfirm=false;
+	protected $editable=false;
 
 	private $host = 'all';
 	private $hoststatus = false;
