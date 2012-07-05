@@ -11,7 +11,7 @@ widget.register_widget_load('tac_problems', function() {
 		var row = $(row_selector);
 		if(row.length) {
 			// when the widget's registered, we might not have host problems, for example,
-			// but there may be after any upgrades, which will be handle by live() above
+			// but there may be after any updates, which will be handled by live() above
 			adjust_colors(row, rgb_to_hex(row.css('backgroundColor')));
 		}
 	};
@@ -26,6 +26,8 @@ widget.register_widget_load('tac_problems', function() {
 
 function rgb_to_hex(rgb_string) {
 	var parts = rgb_string.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	if (!parts) // hey, perhaps it's hex already?
+		return rgb_string;
 
 	delete (parts[0]);
 	for (var i = 1; i <= 3; ++i) {
