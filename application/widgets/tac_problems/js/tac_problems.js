@@ -34,14 +34,14 @@ function rgb_to_hex(rgb_string) {
 		parts[i] = parseInt(parts[i]).toString(16);
 		if (parts[i].length == 1) parts[i] = '0' + parts[i];
 	}
-	return '#'+parts.join('');
+	return parts.join('');
 }
 
 function get_contrast(hexcolor){
 	var r = parseInt(hexcolor.substr(0,2),16);
 	var g = parseInt(hexcolor.substr(2,2),16);
 	var b = parseInt(hexcolor.substr(4,2),16);
-	if(r > 120 || g > 120 || b > 120) {
+	if((r * 299) + (g * 587) + (b * 114) > 127500) {
 		return 'black';
 	}
 	return 'white';
