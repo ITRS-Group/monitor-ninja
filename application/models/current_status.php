@@ -169,7 +169,10 @@ class Current_status_Model extends Model
 			$this->$key = $val;
 
 		// this excludes pending
-		$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable;
+		if ($this->hosts_unreachable_scheduled + $this->hosts_down_scheduled == 0)
+			$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable;
+		else
+			$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable - $this->hosts_down_scheduled - $this->hosts_unreachable_scheduled;
 		if ($all == 0)
 			$this->percent_host_health = 0.0;
 		else
@@ -197,7 +200,10 @@ class Current_status_Model extends Model
 			$this->$key = $val;
 
 		// this excludes pending
-		$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown;
+		if ($this->services_critical_scheduled + $this->services_warning_scheduled + $this->services_unknown_scheduled == 0)
+			$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown;
+		else
+			$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown - $this->services_critical_scheduled - $this->services_warning_scheduled - $this->services_unknown_scheduled;
 		if ($all == 0)
 			$this->percent_service_health = 0.0;
 		else
