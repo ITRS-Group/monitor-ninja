@@ -225,6 +225,64 @@ class Command_Controller extends Authenticated_Controller
 		}
 	}
 
+	protected function schedule_retrospectively($selector_type, $target_type, $obj_names, $start_time, $end_time, $comment)
+	{
+		$start_time = nagstat::timestamp_format(nagstat::date_format(), $start_time);
+		$end_time = nagstat::timestamp_format(nagstat::date_format(), $end_time);
+		$now = time();
+
+		if ($start_time + $this->grace_time_in_s >= $now)
+			return;
+
+		if (!is_array($obj_names))
+			$obj_names = array($obj_names);
+
+		// Some Assembly Required
+		if ($selector_type != $target_type) {
+			if (strpos($selector_type, 'group')) {
+				$svc = new Service_Model();
+				$method = 'get_'.$target_type.'s_for_group';
+				$individual_objs = array();
+				foreach ($obj_names as $obj) {
+					foreach ($svc->$method($obj, $selector_type) as $row) {
+						$individual_objs[] = $row->host_name.($target_type === 'service' ? ';'.$row->service_description : '');
+					}
+				}
+				$obj_names = $individual_objs;
+			}
+			else if ($target_type === 'service' && $selector_type === 'host') {
+				$individual_objs = array();
+				$host = new Host_Model();
+				foreach ($individual_objs as $hname) {
+					foreach ($host->get_services($hname) as $row) {
+						$individual_objs[] = $row->host_name.';'.$row->service_description;
+					}
+				}
+				$obj_names = $individual_objs;
+			}
+		}
+
+		$db = Database::instance();
+		foreach ($obj_names as $obj_name) {
+			if ($target_type == 'service') {
+				list($host_name, $service_desc) = explode(';', $obj_name);
+				$host_name = $db->escape($host_name);
+				$service_desc = $db->escape($service_desc);
+			}
+			else {
+				$host_name = $db->escape($obj_name);
+				$service_desc = "''";
+			}
+			$start_msg = $db->escape(ucfirst($selector_type)." has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$comment."'");
+			$end_msg = $db->escape(ucfirst($selector_type)." has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$comment."'");
+
+			$db->query("INSERT INTO report_data(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($start_time, 1103, $host_name, $service_desc, 1, $start_msg)");
+			$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($start_time, 1103, $host_name, $service_desc, 1, $start_msg)");
+			$db->query("INSERT INTO report_data(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name, $service_desc, 0, $end_msg)");
+			$db->query("INSERT INTO report_data_extras(timestamp, event_type, host_name, service_description, downtime_depth, output) VALUES ($end_time, 1104, $host_name, $service_desc, 0, $end_msg)");
+		}
+	}
+
 	/**
 	 * Takes the command parameters given by the "submit" function
 	 * and creates a Nagios command that gets fed to Nagios through
@@ -289,120 +347,24 @@ class Command_Controller extends Authenticated_Controller
 				}
 			}
 			if(isset($param['fixed']) && $param['fixed']) {
-				// we can't add a scheduled downtime to a flexible event
-				$now = time();
-				$start_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['start_time']);
-				$end_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['end_time']);
-				if(($start_as_seconds + $this->grace_time_in_s) < $now) {
-					Database::instance()->query(
-						"INSERT INTO
-							report_data
-							(
-								timestamp,
-								event_type,
-								host_name,
-								downtime_depth,
-								output
-							)
-						VALUES
-						(
-							?,
-							1103,
-							?,
-							1,
-							?
-						)",
-						array(
-							$start_as_seconds,
-							$param['host_name'],
-							"Host has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-						)
-					);
-					Database::instance()->query(
-						"INSERT INTO
-							report_data_extras
-							(
-								timestamp,
-								event_type,
-								host_name,
-								downtime_depth,
-								output
-							)
-						VALUES
-						(
-							?,
-							1103,
-							?,
-							1,
-							?
-						)",
-						array(
-							$start_as_seconds,
-							$param['host_name'],
-							"Host has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-						)
-					);
-					if($end_as_seconds < $now) {
-						Database::instance()->query(
-							"INSERT INTO
-								report_data
-								(
-									timestamp,
-									event_type,
-									host_name,
-									downtime_depth,
-									output
-								)
-							VALUES
-							(
-								?,
-								1104,
-								?,
-								0,
-								?
-							)",
-							array(
-								$end_as_seconds,
-								$param['host_name'],
-								"Host has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-							)
-						);
-						Database::instance()->query(
-							"INSERT INTO
-								report_data_extras
-								(
-									timestamp,
-									event_type,
-									host_name,
-									downtime_depth,
-									output
-								)
-							VALUES
-							(
-								?,
-								1104,
-								?,
-								0,
-								?
-							)",
-							array(
-								$end_as_seconds,
-								$param['host_name'],
-								"Host has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-							)
-						);
-					}
-				}
+				$this->schedule_retrospectively('host', 'host', $param['host_name'], $param['start_time'], $param['end_time'], $param['comment']);
 			}
 			$fallthrough = true;
 			# fallthrough to services-too handling
 		 case 'SCHEDULE_HOSTGROUP_HOST_DOWNTIME':
+			if(!$fallthrough && isset($param['fixed']) && $param['fixed']) {
+				$this->schedule_retrospectively('hostgroup', 'host', $param['hostgroup_name'], $param['start_time'], $param['end_time'], $param['comment']);
+			}
 			if (!empty($param['_services-too'])) {
 				unset($param['_services-too']);
 				if ($fallthrough) {
 					$nagios_commands = array_merge($this->_build_command('SCHEDULE_HOST_SVC_DOWNTIME', $param), $nagios_commands);
 				} else {
 					$nagios_commands = array_merge($this->_build_command('SCHEDULE_HOSTGROUP_SVC_DOWNTIME', $param), $nagios_commands);
+				}
+				if(isset($param['fixed']) && $param['fixed']) {
+					$grouptype = $fallthrough?'host':'hostgroup';
+					$this->schedule_retrospectively($grouptype, 'service', $param[$grouptype.'_name'], $param['start_time'], $param['end_time'], $param['comment']);
 				}
 			}
 			break;
@@ -454,6 +416,12 @@ class Command_Controller extends Authenticated_Controller
 		 case 'DISABLE_SERVICEGROUP_SVC_NOTIFICATIONS':
 		 case 'SCHEDULE_HOSTGROUP_SVC_DOWNTIME':
 		 case 'SCHEDULE_SERVICEGROUP_SVC_DOWNTIME':
+			if(strpos($cmd, 'DOWNTIME') && isset($param['fixed']) && $param['fixed']) {
+				$grouptype = strtolower(substr($cmd, 9, strpos($cmd, '_', 10) - 9));
+				$this->schedule_retrospectively($grouptype, 'service', $param[$grouptype.'_name'], $param['start_time'], $param['end_time'], $param['comment']);
+				if (!empty($param['_host-too']))
+					$this->schedule_retrospectively($grouptype, 'host', $param[$grouptype.'_name'], $param['start_time'], $param['end_time'], $param['comment']);
+			}
 			if (!empty($param['_host-too'])) {
 				unset($param['_host-too']);
 				$xcmd = str_replace('SVC', 'HOST', $cmd);
@@ -461,131 +429,14 @@ class Command_Controller extends Authenticated_Controller
 			}
 			break;
 		 case 'SCHEDULE_SVC_DOWNTIME':
+			if(isset($param['fixed']) && $param['fixed']) {
+				$this->schedule_retrospectively('service', 'service', $param['service'], $param['start_time'], $param['end_time'], $param['comment']);
+			}
 			$date_validation_result = $this->_validate_dates($param['start_time'], $param['end_time']);
 			if($date_validation_result !== true) {
 				$this->template->content->result = false;
 				$this->template->content->error = $date_validation_result;
 				return;
-			}
-			if(1 != $param['fixed']) {
-				// we can't add a scheduled downtime to a flexible event
-				break;
-			}
-			$now = time();
-			$start_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['start_time']);
-			$end_as_seconds = nagstat::timestamp_format(nagstat::date_format(), $param['end_time']);
-			list($host, $service) = explode(';', $param['service']);
-			if(($start_as_seconds + $this->grace_time_in_s) < $now) {
-				Database::instance()->query(
-					"INSERT INTO
-						report_data
-						(
-							timestamp,
-							event_type,
-							host_name,
-							service_description,
-							downtime_depth,
-							output
-						)
-					VALUES
-					(
-						?,
-						1103,
-						?,
-						?,
-						1,
-						?
-					)",
-					array(
-						$start_as_seconds,
-						$host,
-						$service,
-						"Service has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-					)
-				);
-				Database::instance()->query(
-					"INSERT INTO
-						report_data_extras
-						(
-							timestamp,
-							event_type,
-							host_name,
-							service_description,
-							downtime_depth,
-							output
-						)
-					VALUES
-					(
-						?,
-						1103,
-						?,
-						?,
-						1,
-						?
-					)",
-					array(
-						$start_as_seconds,
-						$host,
-						$service,
-						"Service has entered a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-					)
-				);
-				if($end_as_seconds < $now) {
-					Database::instance()->query(
-						"INSERT INTO
-							report_data
-							(
-								timestamp,
-								event_type,
-								host_name,
-								service_description,
-								downtime_depth,
-								output
-							)
-						VALUES
-						(
-							?,
-							1104,
-							?,
-							?,
-							0,
-							?
-						)",
-						array(
-							$end_as_seconds,
-							$host,
-							$service,
-							"Service has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-						)
-					);
-					Database::instance()->query(
-						"INSERT INTO
-							report_data_extras
-							(
-								timestamp,
-								event_type,
-								host_name,
-								service_description,
-								downtime_depth,
-								output
-							)
-						VALUES
-						(
-							?,
-							1104,
-							?,
-							?,
-							0,
-							?
-						)",
-						array(
-							$end_as_seconds,
-							$host,
-							$service,
-							"Service has exited a period of retroactively added scheduled downtime, reported by '".Auth::instance()->get_user()->username."', reason: '".$param['comment']."'"
-						)
-					);
-				}
 			}
 			break;
 		 case 'ACKNOWLEDGE_HOST_PROBLEM':
@@ -605,6 +456,11 @@ class Command_Controller extends Authenticated_Controller
 						$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
 					}
 				}
+			}
+			break;
+		 case 'SCHEDULE_SERVICEGROUP_HOST_DOWNTIME':
+			if(isset($param['fixed']) && $param['fixed']) {
+				$this->schedule_retrospectively('servicegroup', 'host', $param['servicegroup_name'], $param['start_time'], $param['end_time'], $param['comment']);
 			}
 			break;
 		}

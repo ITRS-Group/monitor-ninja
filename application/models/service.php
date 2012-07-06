@@ -75,6 +75,8 @@ class Service_Model extends Model
 	public function get_services_for_group($group=false, $type='service')
 	{
 		$type = trim($type);
+		if (strpos($type, 'group'))
+			$type = substr($type, 0, -5);
 		if (empty($group) || empty($type)) {
 			return false;
 		}
@@ -118,7 +120,7 @@ class Service_Model extends Model
 		}
 		if (!empty($sql)) {
 			$result = self::query($this->db,$sql);
-			return count($result) > 0 ? $result : false;
+			return $result;
 		}
 		return false;
 	}
@@ -150,14 +152,27 @@ class Service_Model extends Model
 					sg.servicegroup_name=".$db->escape($group)." AND
 					ssg.servicegroup = sg.id AND
 					s.id=ssg.service AND
-					h.host_name=s.host_name AND
+					h.host_name=s.host_name
 				ORDER BY
 					h.host_name";
-				case 'hostgroup':
+				break;
+			case 'hostgroup':
+				$sql = "SELECT
+					DISTINCT h.*
+				FROM
+					host h ".$auth_str.",
+					hostgroup sg,
+					host_hostgroup ssg
+				WHERE
+					sg.hostgroup_name=".$db->escape($group)." AND
+					ssg.hostgroup = sg.id AND
+					h.id=ssg.host
+				ORDER BY
+					h.host_name";
 				break;
 		}
 		if (!empty($sql)) {
-                    $result = self::query($db,$sql);
+			$result = self::query($db,$sql);
 			return $result;
 		}
 		return false;
