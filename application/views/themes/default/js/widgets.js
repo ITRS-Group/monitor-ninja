@@ -360,9 +360,6 @@ widget.prototype.update_display = function() {
 
 				// remove load image
 				$("#" + self.widget_id + ' .widget-header .widget_loadimg').remove();
-				if (widget.widgets[self.name])
-					for (var i in widget.widgets[self.name])
-						widget.widgets[self.name][i].call(self);
 			}
 		});
 	}
