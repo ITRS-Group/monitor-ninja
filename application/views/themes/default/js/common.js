@@ -12,7 +12,8 @@ $(document).ready(function() {
 		_save_scroll = false;
 	});
 
-	collapse_menu(_ninja_menu_state);
+	if (window.collapse_menu)
+		collapse_menu(_ninja_menu_state);
 	/**
 	*	Show the checkbox to show/hide "page header" if
 	*	we find the content-header div in the current page
@@ -69,19 +70,21 @@ $(document).ready(function() {
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
 
-	$("body").contextMenu({
-			menu: 'property_menu', use_prop:true
-		},
-		function(action, elem){
-			object_action(action, elem.attr('id'));
-		}, ".obj_properties:not(.white)");
+	if ($.contextMenu) {
+		$("body").contextMenu({
+				menu: 'property_menu', use_prop:true
+			},
+			function(action, elem){
+				object_action(action, elem.attr('id'));
+			}, ".obj_properties:not(.white)");
 
-	$("body").contextMenu({
-			menu: 'svc_property_menu', use_prop:true
-		},
-		function(action, elem){
-			object_action(action, elem.attr('id'));
-		},".svc_obj_properties");
+		$("body").contextMenu({
+				menu: 'svc_property_menu', use_prop:true
+			},
+			function(action, elem){
+				object_action(action, elem.attr('id'));
+			},".svc_obj_properties");
+	}
 
 	/**
 	*	Bind some functionality to the checkbox state change event

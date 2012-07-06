@@ -9,29 +9,6 @@
 class Tac_problems_Widget extends widget_Base {
 	protected $duplicatable = true;
 
-	public function options()
-	{
-		$options = parent::options();
-		$cols = array(
-			'col_outages' => 'Network Outages',
-			'col_host_down' => 'Host Down',
-			'col_host_unreachable' => 'Host Unreachable',
-			'col_service_critical' => 'Service Critical',
-			'col_service_warning' => 'Service Warning',
-			'col_service_unknown' => 'Service Unknown');
-		$args = array(
-			'type' => 'color',
-			'data-text' => 'hidden',
-			'data-hex' => 'true',
-			'style' => 'height:10px;width:10px;');
-		foreach ($cols as $col => $label) {
-			$opt = new option($this->model->name, $col, $label, 'input', $args, '#ffffff');
-			$opt->should_render_js(false);
-			$options[] = $opt;
-		}
-		return $options;
-	}
-
 	public function index()
 	{
 		$arguments = $this->get_arguments();
@@ -53,7 +30,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['title'] = count($outage_data).' '.$this->translate->_('Network outages');
 			$problem[$i]['no'] = 0;
 			$problem[$i]['html_id'] = 'id_outages'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_outages'];
 			$i++;
 		}
 
@@ -64,7 +40,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['title'] = $current_status->hosts_down_unacknowledged.' '.$this->translate->_('Unhandled problems');
 			$problem[$i]['no'] = 0;
 			$problem[$i]['html_id'] = 'id_host_down'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_host_down'];
 			$i++;
 		}
 
@@ -77,7 +52,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['onhost'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.nagstat::SERVICE_CRITICAL;
 			$problem[$i]['title2'] = $current_status->services_critical_host_problem.' '.$this->translate->_('on problem hosts');
 			$problem[$i]['html_id'] = 'id_service_critical'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_service_critical'];
 			$i++;
 		}
 
@@ -87,7 +61,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.(nagstat::HOST_NO_SCHEDULED_DOWNTIME|nagstat::HOST_STATE_UNACKNOWLEDGED|nagstat::HOST_CHECKS_ENABLED);
 			$problem[$i]['title'] = $current_status->hosts_unreachable_unacknowledged.' '.$this->translate->_('Unhandled problems');
 			$problem[$i]['html_id'] = 'id_host_unreachable'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_host_unreachable'];
 			$problem[$i]['no'] = 0;
 			$i++;
 		}
@@ -101,7 +74,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['onhost'] = 'status/service/all/?hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE).'&servicestatustypes='.nagstat::SERVICE_WARNING;
 			$problem[$i]['title2'] = $current_status->services_warning_host_problem.' '.$this->translate->_('on problem hosts');
 			$problem[$i]['html_id'] = 'id_service_warning'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_service_warning'];
 			$i++;
 		}
 
@@ -114,7 +86,6 @@ class Tac_problems_Widget extends widget_Base {
 			$problem[$i]['onhost'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&hoststatustypes='.(nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE);
 			$problem[$i]['title2'] = $current_status->services_unknown_host_problem.' '.$this->translate->_('on problem hosts');
 			$problem[$i]['html_id'] = 'id_service_unknown'.$this->model->instance_id;
-			$problem[$i]['bgcolor'] = $arguments['col_service_unknown'];
 			$i++;
 		}
 
