@@ -36,6 +36,14 @@ class Tac_scheduled_Widget extends widget_Base {
 			$i++;
 		}
 
+		if ($current_status->hosts_up_scheduled) {
+			$problem[$i]['type'] = $this->translate->_('Host');
+			$problem[$i]['status'] = $this->translate->_('Up');
+			$problem[$i]['url'] = 'status/service/all/0/'.nagstat::HOST_UP.'/'.nagstat::HOST_SCHEDULED_DOWNTIME;
+			$problem[$i]['title'] = $current_status->hosts_up_scheduled.' '.$this->translate->_('Scheduled hosts');
+			$i++;
+		}
+
 		if ($current_status->services_critical_scheduled) {
 			$problem[$i]['type'] = $this->translate->_('Service');
 			$problem[$i]['status'] = $this->translate->_('Critical');

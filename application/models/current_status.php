@@ -75,6 +75,7 @@ class Current_status_Model extends Model
 	public $active_checks_disabled_hosts = 0; /**< Number of hosts with active checks disabled */
 	public $passive_checks_disabled_hosts = 0; /**< Number of hosts with passive checks disabled */
 
+	public $hosts_up_scheduled = 0; /**< Number of hosts that are up and in scheduled downtime */
 	public $hosts_up_disabled = 0; /**< Number of hosts that are up with active checks disabled */
 	public $hosts_up_unacknowledged = 0; /**< FIXME: Number of hosts that are up with active checks enabled. Makes no sense. */
 	public $hosts_up = 0; /**< Number of hosts that are up */

@@ -25,6 +25,7 @@ class Stats_Model extends Model {
 			'event_handler_disabled_hosts' => 'Stats: event_handler_enabled != 1',
 			'active_checks_disabled_hosts' => $disabled_checks_condition,
 			'passive_checks_disabled_hosts' => 'Stats: accept_passive_checks != 1',
+			'hosts_up_scheduled' => "Stats: state = 0\nStats: scheduled_downtime_depth > 0\nStatsAnd: 2",
 			'hosts_up_disabled' => "Stats: state = 0\n$disabled_checks_condition\nStatsAnd: 2",
 			'hosts_up_unacknowledged' => "Stats: state = 0\nStats: acknowledged != 1\nStatsAnd: 2",
 			'hosts_up' => 'Stats: state = 0',
