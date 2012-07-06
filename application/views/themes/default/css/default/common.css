@@ -971,7 +971,7 @@ table.ext tr td.dark img {
 	display: block;
 }
 
-table.showlog { width: auto; border-spacing: 0px; border-collapse: 0px; 	margin-top: -10px;}
+table.showlog { width: auto; border-spacing: 0px; border-collapse: 0px; margin-top: -10px; margin-bottom: 10px;}
 table.schedule_search { width: auto; }
 
 table.showlog tr td {
