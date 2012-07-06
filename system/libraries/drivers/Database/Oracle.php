@@ -328,6 +328,11 @@ class Oracle_Result extends Database_Result {
 		return $rows;
 	}
 
+	public function as_array($object = NULL, $type = false)
+	{
+		return $this->result_array($object, $type);
+	}
+
 	public function list_fields()
 	{
 		throw new Kohana_Database_Exception('database.not_implemented', __FUNCTION__);
