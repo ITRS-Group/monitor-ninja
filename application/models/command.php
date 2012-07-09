@@ -23,7 +23,7 @@ class Command_Model extends Model
 		# the underscore is an implementation detail ("don't pass this straight
 		# to nagios") that should not be exposed in config/nagdefault.php
 		$setting = 'nagdefault.'.ltrim($setting, '_');
-		$value = config::get($setting);
+		$value = config::get($setting, '*', false, true);
 		return $value;
 	}
 
