@@ -64,7 +64,8 @@ html, body {
 	color: #414141;
 }
 body {
-	font: 59% Helvetica, Arial, sans-serif;
+	font-size: 1.2em;
+	font: Helvetica, Arial, sans-serif;
 	font-weight: normal;
 	font-style: normal;
 	margin: 0px;
