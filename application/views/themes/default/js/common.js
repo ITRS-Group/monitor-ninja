@@ -399,6 +399,25 @@ $(document).ready(function() {
 		} else {
 			$('.select_all_items').attr('checked', false);
 			$(".item_select input[type='checkbox']").not('.select_all_items').each(function() {
+				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
+					$(this).attr('checked', true);
+				}
+				else if ($(this).is(':hidden')) {
+					$(this).attr('checked', false);
+				}
+			});
+		}
+	});
+	$('.select_group_items').live('click', function() {
+		var group = $(this).val();
+		if ($(this).attr('checked')) {
+			$(this).attr('checked', true);
+			$('.checkbox_group_' + group).each(function() {
+				$(this).attr('checked', true);
+			});
+		} else {
+			$(this).attr('checked', false);
+			$('.checkbox_group_' + group).each(function() {
 				$(this).attr('checked', false);
 			});
 		}

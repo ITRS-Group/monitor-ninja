@@ -64,7 +64,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		</caption>
 			<tr>
 				<th><em><?php echo $this->translate->_('Status');?></em></th>
-				<th class="item_select">&nbsp;</th>
+				<th class="item_select"><input type="checkbox" class="select_group_items" title="Click to select/deselect group" value="<?php echo $j; ?>" /></th>
 				<th colspan="2"><?php echo $lable_host ?></th>
 				<th class="no-sort"><?php echo $lable_services ?></th>
 				<th class="no-sort"><?php echo $lable_actions ?></th>
@@ -81,7 +81,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 				} ?>
 			<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd' ?>">
 				<td class="icon bl <?php if ($this->cmd_ok && $this->cmd_host_ok) { ?>obj_properties <?php } echo strtolower(Current_status_Model::status_text($group->current_state, 'host')); ?>" id="<?php echo 'host|'.$group->host_name ?>"><em><?php echo Current_status_Model::status_text($group->current_state, 'host');?></em></td>
-				<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $group->host_name ?>" /></td>
+				<td class="item_select"><input type="checkbox" name="object_select[]" value="<?php echo $group->host_name ?>" class="checkbox_group_<?php echo $j; ?>" /></td>
 				<td style="width: 180px"><a href="<?php echo url::base(true).'status/service?name='.urlencode($group->host_name).'&amp;hoststatustypes='.$this->hoststatustypes.'&amp;servicestatustypes='.(int)$servicestatustypes ?>" title="<?php echo $group->address ?>"><?php echo html::specialchars($group->host_name) ?></a></td>
 				<td class="icon"><?php echo !empty($host_icon) ? $host_icon : '' ?></td>
 				<td><?php
