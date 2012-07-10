@@ -1,10 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Auth_Dummy_User_Model extends Auth_User_Model {
+class Auth_LDAP_User_Model extends Auth_User_Model {
 
 	protected $fields = array(
-		'username' => 'monitor',
-		'password' => 'monitor'
+		'username' => false
 	);
 
 	public function __set($key, $value)
@@ -17,7 +16,10 @@ class Auth_Dummy_User_Model extends Auth_User_Model {
 		return $this->fields[$key];
 	}
 
-	public function __construct() {
+	public function __construct( $user_info ) {
+		$auth = Auth::instance(); /* Is a LDAP_Auth instance; this code runs... TODO: Nicer way to do this? */
+		
+		$this->username = $user_info[ $auth->config['LDAP_USERKEY'] ];
 	}
 
 	/**
@@ -26,7 +28,7 @@ class Auth_Dummy_User_Model extends Auth_User_Model {
 	*/
 	public function authorized_for($auth_point)
 	{
-		return true;
+		return false;
 	}
 
 	/**

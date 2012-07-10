@@ -9,6 +9,8 @@
  */
 abstract class Auth_Core {
 
+	private $user = false;
+
 	/**
 	 * Create an instance of Auth.
 	 *
@@ -45,14 +47,21 @@ abstract class Auth_Core {
 	 * @param   string   role name
 	 * @return  boolean
 	 */
-	abstract public function logged_in($role = NULL);
+	public function logged_in($role = NULL) {
+		return $this->user !== false; /* FIXME: role */
+	}
 
 	/**
 	 * Returns the currently logged in user, or FALSE.
 	 *
 	 * @return  mixed
 	 */
-	abstract public function get_user();
+	public function get_user() {
+		if( $this->user === false ) {
+			$this->user = Session::instance()->get( $this->config['session_key'] );
+		}
+		return $this->user;
+	}
 	
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
@@ -93,5 +102,11 @@ abstract class Auth_Core {
 	 */
 	public function logout($destroy = FALSE) {
 		Session::instance()->destroy();
+	}
+	
+	
+	protected function setuser( $user ) {
+		$this->user = $user;
+		Session::instance()->set( $this->config['session_key'], $user );
 	}
 } // End Auth

@@ -6,7 +6,7 @@
  * users objects (and thus also database tables).
  * Authentication stuff should *not* end up here.
  */
-class User_Model extends Auth_User_Model {
+class User_Model extends Model {
 	/** The name of the authorization table */
 	public static $auth_table = 'ninja_user_authorization';
 
@@ -258,21 +258,6 @@ class User_Model extends Auth_User_Model {
 	*/
 	public static function get_user($username=false)
 	{
-		$db = Database::instance();
-		if (!empty($username)) {
-			$username = trim($username);
-			$sql = 'SELECT * FROM users WHERE username='.$db->escape($username);
-		} else {
-			$sql = 'SELECT * FROM users'.
-				' INNER JOIN roles_users ON roles_users.user_id=users.id'.
-				' INNER JOIN roles ON roles.id=1'.
-				' WHERE roles_users.user_id=users.id';
-		}
-		$user = $db->query($sql);
-		if (count($user)>0) {
-			$cur = $user->current();
-			return $cur;
-		}
 		return false;
 	}
 

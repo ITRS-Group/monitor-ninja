@@ -9,39 +9,20 @@
  */
 class LDAP_Auth_Core extends Auth_Core {
 
-	private $config;
+	public $config;
 
 	public function __construct( $config ) {
-		$this->config = $config;
-		$this->ldap_config = $this->read_ldap_config();
+		$this->config = array_merge( $config, $this->read_ldap_config() );
 
-		print_R( $this->ldap_config );
+		print_R( $this->config );
 
-		$this->conn = ldap_connect( $this->ldap_config['LDAP_SERVER'] );
+		$this->conn = ldap_connect( $this->config['LDAP_SERVER'] );
 		
-		if( isset( $this->ldap_config['LDAP_VERSION'] ) ) {
-			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->ldap_config['LDAP_VERSION'] );
+		if( isset( $this->config['LDAP_VERSION'] ) ) {
+			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_VERSION'] );
 		}
-	}
-
-	/**
-	 * Check if there is an active session. Optionally allows checking for a
-	 * specific role.
-	 *
-	 * @param   string   role name
-	 * @return  boolean
-	 */
-	public function logged_in($role = NULL) {
-		return false;
-	}
-
-	/**
-	 * Returns the currently logged in user, or FALSE.
-	 *
-	 * @return  mixed
-	 */
-	public function get_user() {
-		return new Auth_Dummy_User_Model();
+		
+		print_r( $_SESSION );
 	}
 	
 	/**
@@ -60,32 +41,60 @@ class LDAP_Auth_Core extends Auth_Core {
 		}
 
 		/* Lookup user */
-		$user_dn = $this->get_dn_for_user( $username );
-		if( $user_dn === false ) {
+		$user_info = $this->get_info_for_user( $username );
+		if( $user_info === false ) {
 			Kohana::log( 'debug', 'LDAP: User not found: '.$username );
 			return false;
 		}
 
 		/* Try to bind as user to authenticate */
-		if( !$this->bind() ) {
-			Kohana::log( 'notice', 'LDAP: Authentication failed for '.$user_dn );
+		if( !$this->bind( $user_info['dn'], $password ) ) {
+			Kohana::log( 'debug', 'LDAP: Authentication failed for '.$user_info['dn'] );
 			return false;
 		}
 
-		return false;
+		$user = new Auth_LDAP_User_Model( $user_info  );
+		$this->setuser( $user );
+		return $user;
 	}
 
-	private function get_dn_for_user( $username ) {
-		$filter = sprintf( '(&(%s=%s)(%s))', 'uid', $username, '' ); /* FIXME */
+	private function get_info_for_user( $username ) {
+		$res = $this->ldap_query( array(
+				$this->config['LDAP_USERKEY'] => $username
+			),
+			$this->config['LDAP_USERS'],
+			$this->config['LDAP_USER_FILTER'],
+			array('dn')
+			);
+		$entries = ldap_get_entries( $this->conn, $res );
+		ldap_free_result( $res );
+		
+		if( $entries['count'] != 1 ) {
+			return false;
+		}
+		
+		return $entries[0];
 	}
 
 	private function bind( $dn = false, $password = false ) {
 		if( $dn === false ) {
-			return ldap_bind( $this->conn ); /* FIXME: Allow non-anonymous bind */
+			return @ldap_bind( $this->conn ); /* FIXME: Allow non-anonymous bind */
 		} else {
-			return ldap_bind( $this->conn, $dn, $password );
+			return @ldap_bind( $this->conn, $dn, $password );
 		}
 	}
+	
+	private function ldap_query( $matches, $base_dn, $filter='', $attributes=null ) {
+		if( count( $matches ) > 0 ) {
+			foreach( $matches as $key => $value ) {
+				$filter .= sprintf( '(%s=%s)', $key, $this->ldap_escape( $value ) );
+			}
+			$filter = '(&'.$filter.')';
+		}
+		
+		return ldap_search( $this->conn, $base_dn, $filter );
+	}
+		
 
 	private function ldap_escape( $str, $from_dn = false ) {
 		$dn_ccodes = array(0x5c, 0x20, 0x22, 0x23, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x3b, 0x3c, 0x3e);
