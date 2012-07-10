@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Auth_User_Model extends Model {
+/*
+TODO: Authorized for.
+*/
+
+abstract class Auth_User_Model extends Model {
 
 	// Relationships
 	protected $has_many = array('user_tokens');
@@ -20,6 +24,12 @@ class Auth_User_Model extends Model {
 
 		parent::__set($key, $value);
 	}
+
+	/**
+	* @param 	string 		authorization point
+	* @return 	boolean 	
+	*/
+	abstract public function authorized_for($auth_point);
 
 	/**
 	 * Validates and optionally saves a new user record from an array.
@@ -115,20 +125,6 @@ class Auth_User_Model extends Model {
 		}
 
 		return $status;
-	}
-
-	/**
-	 * Tests if a username exists in the database. This can be used as a
-	 * Valdidation rule.
-	 *
-	 * @param   mixed    id to check
-	 * @return  boolean
-	 */
-	public function username_exists($id)
-	{
-		return (bool) $this->db
-			->where($this->unique_key($id), $id)
-			->count_records($this->table_name);
 	}
 
 	/**
