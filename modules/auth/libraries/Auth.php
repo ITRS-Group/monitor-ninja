@@ -91,5 +91,7 @@ abstract class Auth_Core {
 	 * @param   boolean  completely destroy the session
 	 * @return  boolean
 	 */
-	abstract public function logout($destroy = FALSE);
+	public function logout($destroy = FALSE) {
+		Session::instance()->destroy();
+	}
 } // End Auth

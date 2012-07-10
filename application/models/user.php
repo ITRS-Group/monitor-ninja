@@ -51,6 +51,10 @@ class User_Model extends Auth_User_Model {
 		return $password;
 	}
 
+	public function authorized_for($auth_point) {
+		return false;
+	}
+
 	/**
 	 * Write user obj to database.
 	 *

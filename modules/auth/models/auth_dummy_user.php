@@ -4,7 +4,7 @@
 TODO: Authorized for.
 */
 
-class Dummy_User_Model extends Auth_User_Model {
+class Auth_Dummy_User_Model extends Auth_User_Model {
 
 	protected $fields = array(
 		'username' => 'monitor',
