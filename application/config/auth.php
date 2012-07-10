@@ -9,7 +9,7 @@
  * to let the user choose. The array keys will be the auth method's name, and
  * it's values will be the user-visible string Ninja will use.
 */
-$config['driver'] = 'LDAP';
+$config['driver'] = 'Dummy';
 
 /**
 * 	By switching to the apache driver above and creating

@@ -25,7 +25,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 * @return  mixed
 	 */
 	public function get_user() {
-		return new Dummy_User();
+		return new Dummy_User_Model();
 	}
 	
 	/**
@@ -38,7 +38,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 */
 	public function login($username, $password, $remember = FALSE) {
 		if( $username == 'monitor' && $password == 'monitor' ) {
-			return new Dummy_User();
+			return new Dummy_User_Model();
 		}
 		return false;
 	}
