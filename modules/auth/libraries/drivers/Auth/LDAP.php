@@ -7,18 +7,14 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (empty($user) || empty($password))
 			return false;
 
-		if (!is_object($user)) {
-			$db = Database::instance();
+		if (is_object($user)) {
+			$username = $user->username;
+		} else {
 			$username = $user;
-			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
-			if (!count($users)) {
-				Kohana::log('error', "No known user called $user");
-				return false;
-			}
-			$user = $users->current();
 		}
 
-		$username = $this->ldap_escape($user->username);
+		$user = new ldap_user_Model();
+		$user->username = $username;
 
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false) {
 			Kohana::log('error', 'Trying to perform LDAP authentication, but LDAP authentication is not configured');
@@ -41,6 +37,8 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			Kohana::log('error', 'Trying to perform LDAP authentication, but no LDAP server specified');
 			return false;
 		}
+
+		ldap_set_option( $ds, LDAP_OPT_PROTOCOL_VERSION, 3 );
 
 		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
 			&& isset($config['LDAP_UPNSUFFIX']))

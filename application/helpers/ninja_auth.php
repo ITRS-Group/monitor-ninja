@@ -85,22 +85,7 @@ class ninja_auth_Core
 		# this enables incremental import
 		Cli_Controller::insert_user_data();
 
-		# Kohana is stupid (well, it's Auth module is anyways) and
-		# refuses to *not* hash the password it passes on to the
-		# driver. However, that doesn't fly well with our need to
-		# support multiple password hash algorithms, so if we're
-		# using the Ninja authenticator we must call the driver
-		# explicitly
-		switch (Kohana::config('auth.driver')) {
-		 case 'Ninja':
-		 case 'LDAP':
-		 case 'apache':
-			$result = $auth->driver->login($username, $password, false);
-			break;
-		 default:
-			$result = $auth->login($username, $password);
-			break;
-		}
+		$result = $auth->login($username, $password);
 
 		if (!$result) {
 			# This brute force protection is absolutely fool-proof, as long
