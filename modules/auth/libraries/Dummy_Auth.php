@@ -24,7 +24,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 *
 	 * @return  mixed
 	 */
-	abstract public function get_user() {
+	public function get_user() {
 		return new Dummy_User();
 	}
 	
@@ -36,7 +36,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 * @param   boolean  enable auto-login
 	 * @return  user	 user object or FALSE
 	 */
-	abstract public function login($username, $password, $remember = FALSE) {
+	public function login($username, $password, $remember = FALSE) {
 		if( $username == 'monitor' && $password == 'monitor' ) {
 			return new Dummy_User();
 		}
@@ -49,6 +49,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 * @param   boolean  completely destroy the session
 	 * @return  boolean
 	 */
-	abstract public function logout($destroy = FALSE) {
+	public function logout($destroy = FALSE) {
+		return true;
 	}
 } // End Auth
