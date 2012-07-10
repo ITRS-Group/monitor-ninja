@@ -6,7 +6,6 @@
 class Host_Model extends Model {
 	private $auth = false;
 	private $host_list = false; /**< List of hosts to get status for. NOTE: Always IDs, always authed to see OR magical string 'all'. */
-	private $service_host_list = false; /**< List of services to get status for. NOTE: Always IDs, always authed to see. */
 	private $table = "host";
 
 	public $total_host_execution_time = 0; /**< Total host check execution time */
@@ -116,8 +115,10 @@ class Host_Model extends Model {
 	{
 		if (empty($value)) return false;
 		$auth_str = '';
-		if (!$this->auth->view_hosts_root)
+		if (!$this->auth->view_hosts_root) {
+			$db = Database::instance();
 			$auth_str = 'INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$db->escape($this->auth->id);
+		}
 
 		$limit_str = sql::limit_parse($limit);
 		$sql_xtra = false;
@@ -237,17 +238,15 @@ class Host_Model extends Model {
 	*/
 	public function set_host_list($host_names=false)
 	{
+		$this->host_list = false;
 		if (is_string($host_names) && strtolower($host_names) === 'all') {
 			$this->host_list = 'all';
 			return;
 		}
-		if (!is_array($host_names)) {
-			$host_names = array(trim($host_names));
-		}
 		if (empty($host_names)) {
 			return false;
 		}
-		$retval = false;
+
 		if (!is_array($host_names))
 			$host_names = array($host_names);
 		foreach ($host_names as $idx => $hn)
@@ -255,19 +254,26 @@ class Host_Model extends Model {
 		$host_names = implode(',', $host_names);
 
 		if (!$this->show_services) {
-			$query = 'SELECT host_name FROM contact_access ca INNER JOIN host ON host.id = ca.host WHERE host.host_name IN ('.$host_names.') AND contact = '.$this->auth->id;
+			$ca = '';
+			if (!$this->auth->view_hosts_root) {
+				$ca = ' INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$this->auth->id;
+			}
+			$query = "SELECT host.id FROM host $ca WHERE host.host_name IN ($host_names)";
 			$res = $this->db->query($query);
 			foreach ($res as $row) {
-				$this->service_host_list[] = $row->host_name;
+				$this->host_list[$row->id] = $row->id;
 			}
 		} else {
-			$query = 'SELECT host_name FROM contact_access ca INNER JOIN service ON service.id = ca.service INNER JOIN host ON host.id = service.host_name WHERE host.host_name IN ('.$host_names.') AND contact = '.$this->auth->id;
+			$ca = '';
+			if (!$this->auth->view_hosts_root) {
+				$ca = 'INNER JOIN service ON host.host_name = service.host_name INNER JOIN contact_access ca ON service.id = ca.service AND ca.contact= '.$this->auth->id;
+			}
+			$query = "SELECT host.id FROM host $ca WHERE host.host_name IN ($host_names)";
 			$res = $this->db->query($query);
 			foreach ($res as $row) {
-				$this->service_host_list[] = $row->host_name;
+				$this->host_list[$row->id] = $row->id;
 			}
 		}
-		$this->host_list = $retval;
 	}
 
 	/**
@@ -295,13 +301,7 @@ class Host_Model extends Model {
 		}
 
 		if (!$this->show_services) {
-			# host query part
-			if (!$this->auth->view_hosts_root) {
-				$from .= ', contact_access ca ';
-				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
-			} else {
-				$where = 'WHERE 1=1 ';
-			}
+			$where = 'WHERE 1=1 ';
 
 			if (!empty($filter_host_sql)) {
 				$filter_sql .= sprintf($filter_host_sql, 'host.');
@@ -331,6 +331,10 @@ class Host_Model extends Model {
 			if ($this->host_list !== 'all' && !empty($host_str)) {
 				$where .= empty($where) ?  "" : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
+			}
+			else if (!$this->auth->view_hosts_root) {
+				$from .= ', contact_access ca ';
+				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
 			}
 
 			# only host listing
@@ -447,75 +451,23 @@ class Host_Model extends Model {
 				$where .= empty($where) ?  "" : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
 			}
-
 			$sql = "SELECT ".$field_list." FROM ".
 					$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			$sql .= " ORDER BY ".$this->sort_field." ".$this->sort_order;
-
-		}
-
-		if ($this->count == false && !empty($this->num_per_page) && $this->offset !== false) {
-			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
-		}
-
-		if ($this->count === true && empty($filter_sql) && empty($hostprops_sql)
-			&& empty($serviceprops_sql) && !empty($this->auth->id)) {
-
-			$where_str = false;
-
-			# this is one of the most common queries for this method
-			# so we try to speed up this by making special case.
-			# We are only interested in how many hosts or services there are (for this user)
-			if (!$this->show_services) {
-
-				if (is_array($this->host_list)) {
-					$host_ids = implode(',', $this->host_list);
-					$where_str = ' id IN('.$host_ids.')';
-				}
-				$sql = "SELECT COUNT(1) AS cnt FROM host";
-				if (!$this->auth->view_hosts_root) {
-					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
-						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
-					if (!empty($where_str)) {
-						$sql .= ' AND '.$where_str;
-					}
-				} else {
-					if (!empty($where_str)) {
-						$sql .= ' WHERE '.$where_str;
-					}
-				}
-			} else {
-				if (!empty($host_list) && is_array($host_list)) {
-					$where_str = ' host_name IN ('.implode(',', $host_list).')';
-				} elseif (is_array($this->service_host_list)) {
-					$where_str = ' host_name IN ('.implode(',', $this->service_host_list).')';
-				}
-				$sql = "SELECT COUNT(*) AS cnt FROM service";
-				if (!$this->auth->view_hosts_root && !$this->auth->view_services_root) {
-					$sql .= " INNER JOIN contact_access ca ON service.id=ca.service ".
-						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NOT NULL";
-					if (!empty($where_str)) {
-						$sql .= ' AND '.$where_str;
-					}
-				} else {
-					if (!empty($where_str)) {
-						$sql .= ' WHERE '.$where_str;
-					}
-				}
+			if (!empty($this->num_per_page) && $this->offset !== false) {
+				$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 			}
-
-			$result = $this->query($this->db,$sql);
-			$rc = $result ? $result[0]->cnt : 0;
-			unset($result);
-			return $rc;
 		}
+
+		if ($this->count) {
+			$sql = "SELECT COUNT(1) AS cnt FROM $from$where$filter_sql$hostprops_sql$serviceprops_sql";
+		}
+
 		$result = $this->query($this->db,$sql);
 		if ($this->count === true) {
-			$rc = $result ? count($result) : 0;
-			unset($result);
-			return $rc;
+			return $result[0]->cnt;
 		}
 		$rc = array();
 		foreach( $result as $row )

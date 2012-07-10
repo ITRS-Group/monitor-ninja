@@ -470,12 +470,12 @@ class Nagios_auth_Model extends Model
 				if (strpos($service, ';') < 1)
 					return false; /* bogus input */
 
-				$ary = explode(';', $service, 1);
+				$ary = explode(';', $service, 2);
 				$desc = $ary[1];
 				$service = $ary[0];
 			}
 
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description) = '.$this->db->escape($desc).' AND contact = '.$this->id;
+			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description = '.$this->db->escape($desc).' AND contact = '.$this->id;
 		}
 
 		$res = $this->db->query($query);
