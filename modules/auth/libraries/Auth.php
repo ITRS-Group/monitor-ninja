@@ -17,8 +17,8 @@ abstract class Auth_Core {
 	public static function factory($config = array())
 	{
 		$config += Kohana::config('auth');
-
-		return new $config['auth_driver']($config);
+		$class = $config['driver'] . '_Auth';
+		return new $class($config);
 	}
 
 	/**
