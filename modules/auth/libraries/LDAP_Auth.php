@@ -14,7 +14,7 @@ class LDAP_Auth_Core extends Auth_Core {
 	public function __construct( $config ) {
 		$this->config = array_merge( $config, $this->read_ldap_config() );
 
-		print_R( $this->config );
+		Kohana::log( 'debug', var_export( $this->config, true ) );
 
 		$this->conn = ldap_connect( $this->config['LDAP_SERVER'] );
 		
@@ -22,8 +22,9 @@ class LDAP_Auth_Core extends Auth_Core {
 			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_VERSION'] );
 		}
 		
-		var_export( $_SESSION );
+		Kohana::log( 'debug', var_export( $_SESSION, true ) );
 	}
+	
 	
 	/**
 	 * Attempt to log in a user by using an ORM object and plain-text password.
@@ -55,6 +56,9 @@ class LDAP_Auth_Core extends Auth_Core {
 
 		$user = new Auth_LDAP_User_Model( $user_info  );
 		$this->setuser( $user );
+		
+		Kohana::log( 'debug', var_export( $this->resolve_group_names( $user_info['dn'] ), true ) );
+		
 		return $user;
 	}
 
@@ -76,6 +80,83 @@ class LDAP_Auth_Core extends Auth_Core {
 		return $entries[0];
 	}
 
+	/************************ Authorization *********************************/
+	
+	/**
+	 * Returns a list of group names:s for which contains a certain DN.
+	 *
+	 * Depending on config, it resolves the groups recursively
+	 *
+	 * @param   array   Base DN to search
+	 * @return  array   Array of group names:s
+	 */
+	private function resolve_group_names( $object_dn ) {
+		$groups = $this->resolve_groups( $object_dn );
+		return array_map( function($dn) { $parts = ldap_explode_dn($dn, 1); return $parts[0]; }, $groups );
+	}
+	
+	/**
+	 * Returns a list of group DN:s for which contains a certain DN.
+	 *
+	 * Depending on config, it resolves the groups recursively
+	 *
+	 * @param   array   Base DN to search
+	 * @return  array   Array of group DN:s
+	 */
+	private function resolve_groups( $object_dn ) {
+		$tosearch = array( $object_dn );
+		$groups = array();
+		$recursive = $this->config['LDAP_RECURSIVE_GROUPS'];
+		
+		while( count( $tosearch ) > 0 ) {
+			$cur = array_pop( $tosearch );
+			foreach( $this->resolve_groups_nonrecursive( $cur ) as $group ) {
+				if( !in_array( $group, $groups ) ) {
+					$groups[] = $group;
+					if( $recursive ) {
+						$tosearch[] = $group;
+					}
+				}
+			}
+		}
+		return $groups;
+	}
+
+	/**
+	 * Returns a list of group DN:s for which contains a certain DN.
+	 *
+	 * Used internally by resolve_groups.
+	 *
+	 * @param   array   Base DN to search
+	 * @param   boolean To search recursivly
+	 * @return  array   Array of group DN:s
+	 */	
+	private function resolve_groups_nonrecursive( $object_dn ) {
+		$res = $this->ldap_query( array(
+			$this->config['LDAP_MEMBERKEY'] => $this->config['LDAP_MEMBERKEY_IS_DN'] ? $object_dn : $object_dn /*FIXME*/
+			),
+			$this->config['LDAP_GROUPS'],
+			$this->config['LDAP_GROUP_FILTER'],
+			array( 'dn' )
+			);
+		
+		$groups = array();
+		
+		$entry = ldap_first_entry( $this->conn, $res );
+		while( $entry !== false ) {
+			$group = ldap_get_dn( $this->conn, $entry );
+			$groups[] = $group;
+			Kohana::log( 'debug', "Got group: $group" );
+			$entry = ldap_next_entry( $this->conn, $entry );
+		}
+		ldap_free_result( $res );
+		
+		return $groups;
+	}
+
+
+	/************************ LDAP Access ***********************************/
+
 	private function bind( $dn = false, $password = false ) {
 		if( $dn === false ) {
 			return @ldap_bind( $this->conn ); /* FIXME: Allow non-anonymous bind */
@@ -84,13 +165,16 @@ class LDAP_Auth_Core extends Auth_Core {
 		}
 	}
 	
+	
 	private function ldap_query( $matches, $base_dn, $filter='', $attributes=null ) {
 		if( count( $matches ) > 0 ) {
 			foreach( $matches as $key => $value ) {
-				$filter .= sprintf( '(%s=%s)', $key, $this->ldap_escape( $value ) );
+				$filter .= sprintf( '(%s=%s)', $key, $this->ldap_escape( $value, true ) );
 			}
 			$filter = '(&'.$filter.')';
 		}
+		
+		Kohana::log( 'debug', "LDAP: Searching for $filter at $base_dn" );
 		
 		return ldap_search( $this->conn, $base_dn, $filter );
 	}
@@ -127,6 +211,8 @@ class LDAP_Auth_Core extends Auth_Core {
 
 		return $str;
 	}
+	
+	/*********************************** Config *****************************/
 
 	private function read_ldap_config() {
 		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false) {

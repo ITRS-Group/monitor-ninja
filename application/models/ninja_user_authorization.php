@@ -64,6 +64,7 @@ class Ninja_user_authorization_Model extends Model
 	*/
 	public static function get_auth_data($username=false, $user_id=false)
 	{
+		Kohana::log( 'debug', 'Ninja_user_authorization_Model::get_auth_data: FIXME! DON\'T USE!!!' );
 		$auth_data = array(); /* FIXME FIXME */
 		foreach (self::$auth_fields as $field) {
 			$auth_data['authorized_for_'.$field] = true;
