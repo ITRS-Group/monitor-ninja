@@ -19,7 +19,7 @@ class Auth_LDAP_User_Model extends Auth_User_Model {
 	public function __construct( $user_info ) {
 		$auth = Auth::instance(); /* Is a LDAP_Auth instance; this code runs... TODO: Nicer way to do this? */
 		
-		$this->username = $user_info[ $auth->config['LDAP_USERKEY'] ];
+		$this->username = $user_info[ $auth->config['LDAP_USERKEY'] ][0];
 	}
 
 	/**

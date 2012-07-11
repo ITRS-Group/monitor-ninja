@@ -22,7 +22,7 @@ class LDAP_Auth_Core extends Auth_Core {
 			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_VERSION'] );
 		}
 		
-		print_r( $_SESSION );
+		var_export( $_SESSION );
 	}
 	
 	/**

@@ -64,36 +64,10 @@ class Ninja_user_authorization_Model extends Model
 	*/
 	public static function get_auth_data($username=false, $user_id=false)
 	{
-		if (empty($username) && empty($user_id)) {
-			$user_id = Auth::instance()->get_user()->id;
+		$auth_data = array(); /* FIXME FIXME */
+		foreach (self::$auth_fields as $field) {
+			$auth_data['authorized_for_'.$field] = true;
 		}
-		if (empty($user_id)) {
-			# fetch user_id
-			if (empty($username))
-				return false;
-			$user = User_Model::get_user($username);
-			if ($user != false) {
-				$user_id = $user->id;
-			} else
-				return false;
-		}
-		$auth_data = false;
-
-		# fetch auth data for the user_id
-		$db = Database::instance();
-		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".(int)$user_id;
-		$res = $db->query($sql);
-		if (count($res)!=0) {
-			$auth_fields = self::$auth_fields;
-			$auth = $res->current();
-			foreach ($auth_fields as $field) {
-				if ($auth->{$field}) {
-					$auth_data['authorized_for_'.$field] = $auth->{$field};
-				}
-			}
-			unset($res);
-			return $auth_data;
-		}
-		return false;
+		return $auth_data;
 	}
 }
