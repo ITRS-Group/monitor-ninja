@@ -55,6 +55,26 @@ class User_Test extends TapUnit {
 		$this->ok($db->table_exists($table), "Unable to find table $table");
 	}
 
+	public function disabled_test_ldap_case_sensitivity() /* TODO */
+	{
+		$ldapauth = Auth::factory( array( 'driver' => 'LDAP' ) );
+		
+		$this->ok( is_object( $ldapauth ), "Could not create LDAP Auth module" );
+		$this->ok( $ldapauth->driver instanceof Auth_LDAP_Driver, "Auth is not an Auth_LDAP_Driver. Auth is a ".get_class( $ldapauth->driver ) );
+		
+		$this->ok( $ldapauth->driver->login( 'test2', 'losen', false ), "Could not authenticate with LDAP user, correct case." );
+		$user1 = $ldapauth->get_user();
+		$this->ok( $user1->username == 'test2', "Returned username isn't the same as database username with, using correct case for login" );
+		
+		$this->ok( $ldapauth->driver->login( 'TEst2', 'losen', false ), "Could not authenticate with LDAP user, incorrect case." );
+		$user2 = $ldapauth->get_user();
+		$this->ok( $user2->username == 'test2', "Returned username isn't the same as database username with, using incorrect case for login" );
+		
+		$this->ok( $user1->id == $user2->id, "Same username with different case returns different user id:s" );
+		
+		unset( $ldapauth );
+	}
+
 	/**
 	 * Check that we have the ninja_user_authorization table
 	 */
