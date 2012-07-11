@@ -2,13 +2,43 @@
 
 abstract class Auth_User_Model {
 
-	abstract public function __set($key, $value);
+	protected $fields = array(
+		'username'  => false,
+		'auth_data' => array(
+		    'authorized_for_system_information'        => false,
+		    'authorized_for_configuration_information' => false,
+		    'authorized_for_system_commands'           => false,
+		    'authorized_for_all_services'              => false,
+		    'authorized_for_all_hosts'                 => false,
+		    'authorized_for_all_service_commands'      => false,
+		    'authorized_for_all_host_commands'         => false,
+		)
+	);
 
+	public function __set($key, $value)
+	{
+		$this->fields[$key] = $value;
+	}
+
+	public function __get($key)
+	{
+		return $this->fields[$key];
+	}
+
+
+	public function __construct( $fields ) {
+		$this->fields    = $fields;
+	}
+	
+	
 	/**
 	* @param 	string 		authorization point
-	* @return 	boolean 	
+	* @return 	boolean 	true if user has access to that authorization point
 	*/
-	abstract public function authorized_for($auth_point);
+	public function authorized_for($auth_point)
+	{
+		return $this->auth_data[ $auth_point ];
+	}
 
 	/**
 	 * Updates the password of the user.

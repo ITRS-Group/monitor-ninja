@@ -13,13 +13,12 @@ class LDAP_Auth_Core extends Auth_Core {
 
 	public function __construct( $config ) {
 		$this->config = array_merge( $config, $this->read_ldap_config() );
-
-		Kohana::log( 'debug', var_export( $this->config, true ) );
+		$this->rights = $this->read_ldap_rights();
 
 		$this->conn = ldap_connect( $this->config['LDAP_SERVER'] );
 		
-		if( isset( $this->config['LDAP_VERSION'] ) ) {
-			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_VERSION'] );
+		if( isset( $this->config['LDAP_PROTOCOL_VERSION'] ) ) {
+			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_PROTOCOL_VERSION'] );
 		}
 		
 		Kohana::log( 'debug', var_export( $_SESSION, true ) );
@@ -53,11 +52,15 @@ class LDAP_Auth_Core extends Auth_Core {
 			Kohana::log( 'debug', 'LDAP: Authentication failed for '.$user_info['dn'] );
 			return false;
 		}
+		$groups    = $this->resolve_group_names( $user_info['dn'] );
+		$auth_data = $this->get_rights_for_groups( $groups );
 
-		$user = new Auth_LDAP_User_Model( $user_info  );
+		$user = new Auth_LDAP_User_Model( array(
+			'username'  => $user_info[ $this->config['LDAP_USERKEY'] ][0],
+			'groups'    => $groups,
+			'auth_data' => $auth_data
+			) );
 		$this->setuser( $user );
-		
-		Kohana::log( 'debug', var_export( $this->resolve_group_names( $user_info['dn'] ), true ) );
 		
 		return $user;
 	}
@@ -81,6 +84,28 @@ class LDAP_Auth_Core extends Auth_Core {
 	}
 
 	/************************ Authorization *********************************/
+	
+	/**
+	 * Returns an array with keys representing the nagios autorization points
+	 * with a boolean as value representing if the user has access, given a
+	 * list of groups the user is member of.
+	 *
+	 * @param   array   list of groups to search
+	 * @return  array   Array of authorization data
+	 */
+	private function get_rights_for_groups( $groups ) {
+		$auth_data = array();
+		foreach( $this->rights as $auth_point => $auth_groups ) {
+			$access = false;
+			foreach( $auth_groups as $auth_group ) {
+				if( in_array( $auth_group, $groups ) ) {
+					$access = true;
+				}
+			}
+			$auth_data[ $auth_point ] = $access;
+		}
+		return $auth_data;
+	}
 	
 	/**
 	 * Returns a list of group names:s for which contains a certain DN.
@@ -135,7 +160,7 @@ class LDAP_Auth_Core extends Auth_Core {
 		$res = $this->ldap_query( array(
 			$this->config['LDAP_MEMBERKEY'] => $this->config['LDAP_MEMBERKEY_IS_DN'] ? $object_dn : $object_dn /*FIXME*/
 			),
-			$this->config['LDAP_GROUPS'],
+			$this->config['LDAP_GROUP'],
 			$this->config['LDAP_GROUP_FILTER'],
 			array( 'dn' )
 			);
@@ -232,5 +257,32 @@ class LDAP_Auth_Core extends Auth_Core {
 				$config[$key] = $value;
 		}
 		return $config;
+	}
+
+	private function read_ldap_rights() {
+		if (($raw_config = @file('/opt/op5sys/etc/ldaprights.cfg')) === false) {
+			Kohana::log('error', 'Trying to perform LDAP authentication, but ldaprights.cfg is missing');
+			return false;
+		}
+		
+		$rights = array();
+		foreach ($raw_config as $line)
+		{
+			if ($line[0] == '#')
+				continue;
+
+			$groups = array();
+			
+			$key = strtok(trim($line), ' ');
+			while( $value = strtok(',') ) {
+				$value = trim( $value );
+				if( $value ) {
+					$groups[] = $value;
+				}
+			}
+			
+			$rights[ $key ] = $groups;
+		}
+		return $rights;
 	}
 } // End Auth
