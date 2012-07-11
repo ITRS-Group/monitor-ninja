@@ -628,8 +628,7 @@ class Command_Controller extends Authenticated_Controller
 					}
 				}
 				else {
-					# FIXME: both host_name and service can't be an array, can they?
-					$host_name = $host_names;
+					$host_name = end($host_names);
 				}
 				# if the user isn't specifically configured for the service, he/she
 				# can still submit commands for it if he/she is a contact for the host
