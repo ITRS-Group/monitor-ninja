@@ -93,7 +93,6 @@ CREATE TABLE avail_config (
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
   service_states NUMBER(3,0) DEFAULT '0',
-  include_trends NUMBER(3,0) DEFAULT '1'
 );
 ALTER TABLE avail_config ADD CONSTRAINT avail_config_pk PRIMARY KEY(id) ENABLE;
 CREATE INDEX user_1 ON avail_config(username);
@@ -168,7 +167,6 @@ CREATE TABLE ninja_widgets (
   page VARCHAR2(200 CHAR) DEFAULT 'tac/index' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
   friendly_name VARCHAR2(255 CHAR) NOT NULL,
-  instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
 ALTER TABLE ninja_widgets ADD CONSTRAINT ninja_widgets_pk PRIMARY KEY(id) ENABLE;
