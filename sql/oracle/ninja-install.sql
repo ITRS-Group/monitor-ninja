@@ -1,129 +1,56 @@
-SPOOL ninja_seq.out
-SET DEFINE OFF;
-SET SCAN OFF;
-
--- DROP SEQUENCE ninja_widgets_id_SEQ;
-
-
-PROMPT Creating Sequence ninja_widgets_id_SEQ ...
 CREATE SEQUENCE  ninja_widgets_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE recurring_downtime_id_SEQ;
-
-
-PROMPT Creating Sequence recurring_downtime_id_SEQ ...
 CREATE SEQUENCE  recurring_downtime_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE scheduled_report_types_id_SEQ;
-
-
-PROMPT Creating Sequence scheduled_report_types_id_SEQ ...
 CREATE SEQUENCE  scheduled_report_types_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE avail_config_objects_id_SEQ;
-
-
-PROMPT Creating Sequence avail_config_objects_id_SEQ ...
 CREATE SEQUENCE  avail_config_objects_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE roles_id_SEQ;
-
-
-PROMPT Creating Sequence roles_id_SEQ ...
 CREATE SEQUENCE  roles_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE ninja_user_authorization_id_SE;
-
-
-PROMPT Creating Sequence ninja_user_authorization_id_SE ...
 CREATE SEQUENCE  ninja_user_authorization_id_SE
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE scheduled_report_periods_id_SE;
-
-
-PROMPT Creating Sequence scheduled_report_periods_id_SE ...
 CREATE SEQUENCE  scheduled_report_periods_id_SE
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE users_id_SEQ;
-
-
-PROMPT Creating Sequence users_id_SEQ ...
 CREATE SEQUENCE  users_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE sla_periods_id_SEQ;
-
-
-PROMPT Creating Sequence sla_periods_id_SEQ ...
 CREATE SEQUENCE  sla_periods_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE sla_config_id_SEQ;
-
-
-PROMPT Creating Sequence sla_config_id_SEQ ...
 CREATE SEQUENCE  sla_config_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE ninja_settings_id_SEQ;
-
-
-PROMPT Creating Sequence ninja_settings_id_SEQ ...
 CREATE SEQUENCE  ninja_settings_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE scheduled_reports_id_SEQ;
-
-
-PROMPT Creating Sequence scheduled_reports_id_SEQ ...
 CREATE SEQUENCE  scheduled_reports_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE sla_config_objects_id_SEQ;
-
-
-PROMPT Creating Sequence sla_config_objects_id_SEQ ...
 CREATE SEQUENCE  sla_config_objects_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE user_tokens_id_SEQ;
-
-
-PROMPT Creating Sequence user_tokens_id_SEQ ...
 CREATE SEQUENCE  user_tokens_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE avail_config_id_SEQ;
-
-
-PROMPT Creating Sequence avail_config_id_SEQ ...
 CREATE SEQUENCE  avail_config_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
--- DROP SEQUENCE ninja_db_version_id_SEQ;
-
-
-PROMPT Creating Sequence ninja_db_version_id_SEQ ...
 CREATE SEQUENCE  ninja_db_version_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
-PROMPT Creating Sequence summary_config_id_SEQ ...
 CREATE SEQUENCE  summary_config_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
 
- PROMPT Creating Sequence saved_searches_id_SEQ ...
 CREATE SEQUENCE saved_searches_id_SEQ
   MINVALUE 1 MAXVALUE 999999999999999999999999 INCREMENT BY 1  NOCYCLE ;
-
-
--- DROP TABLE ninja_saved_searches CASCADE CONSTRAINTS;
 
 CREATE TABLE ninja_saved_searches (
 	id NUMBER(10,0) NOT NULL,
@@ -132,26 +59,9 @@ CREATE TABLE ninja_saved_searches (
 	search_query VARCHAR2(255 CHAR) NOT NULL,
 	search_description VARCHAR2(255 CHAR) NOT NULL
 );
+ALTER TABLE ninja_saved_searches ADD CONSTRAINT ninja_saved_searches_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX n_s_s_username ON ninja_saved_searches(username);
 
-PROMPT Creating Primary Key Constraint ninja_saved_searches_pk on table ninja_saved_searches ...
-ALTER TABLE ninja_saved_searches
-ADD CONSTRAINT ninja_saved_searches_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-
-CREATE INDEX n_s_s_username ON ninja_saved_searches
-(
-	username
-)
-;
-
--- DROP TABLE avail_config CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table avail_config ...
 CREATE TABLE avail_config (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(255 CHAR) DEFAULT NULL,
@@ -185,120 +95,42 @@ CREATE TABLE avail_config (
   service_states NUMBER(3,0) DEFAULT '0',
   include_trends NUMBER(3,0) DEFAULT '1'
 );
+ALTER TABLE avail_config ADD CONSTRAINT avail_config_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX user_1 ON avail_config(username);
 
-
-PROMPT Creating Primary Key Constraint avail_config_pk on table avail_config ...
-ALTER TABLE avail_config
-ADD CONSTRAINT avail_config_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index user__1 on avail_config ...
-CREATE INDEX user_1 ON avail_config
-(
-  username
-)
-;
-
--- DROP TABLE avail_config_objects CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table avail_config_objects ...
 CREATE TABLE avail_config_objects (
   id NUMBER(10,0) NOT NULL,
   avail_id NUMBER(10,0) DEFAULT '0' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL
 );
+ALTER TABLE avail_config_objects ADD CONSTRAINT avail_config_objects_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX avail_id ON avail_config_objects(avail_id);
 
-
-PROMPT Creating Primary Key Constraint avail_config_objects_pk on table avail_config_objects ...
-ALTER TABLE avail_config_objects
-ADD CONSTRAINT avail_config_objects_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index avail_id on avail_config_objects ...
-CREATE INDEX avail_id ON avail_config_objects
-(
-  avail_id
-)
-;
-
--- DROP TABLE avail_db_version CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table avail_db_version ...
 CREATE TABLE avail_db_version (
   version NUMBER(10,0) DEFAULT '0' NOT NULL
 );
-
-
-
 INSERT INTO avail_db_version VALUES(7);
 commit;
 
-
--- DROP TABLE summary_config CASCADE CONSTRAINTS;
-
-PROMPT Creating Table summary_config ...
 CREATE TABLE summary_config (
   id NUMBER(11,0) NOT NULL,
   username varchar2(200 CHAR) NOT NULL,
   report_name varchar2(200 CHAR) NOT NULL,
   setting CLOB NOT NULL
 );
-
-
-PROMPT Creating Primary Key Constraint summary_config_pk on table summary_config ...
-ALTER TABLE summary_config
-ADD CONSTRAINT summary_config_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index username_sum_conf on summary_config ...
-CREATE INDEX username_sum_conf ON summary_config
-(
-  username
-)
-;
-
-
--- DROP TABLE ninja_db_version CASCADE CONSTRAINTS;
-
+ALTER TABLE summary_config ADD CONSTRAINT summary_config_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX username_sum_conf ON summary_config(username);
 
 PROMPT Creating Table ninja_db_version ...
 CREATE TABLE ninja_db_version (
   id NUMBER(10,0) NOT NULL,
   version NUMBER(10,0) DEFAULT '0' NOT NULL
 );
-
-
-PROMPT Creating Primary Key Constraint ninja_db_version_pk on table ninja_db_version ...
-ALTER TABLE ninja_db_version
-ADD CONSTRAINT ninja_db_version_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-
---
--- Data for table `ninja_db_version`
---
+ALTER TABLE ninja_db_version ADD CONSTRAINT ninja_db_version_pk PRIMARY KEY(id) ENABLE;
 
 INSERT INTO ninja_db_version (id, version) VALUES(1, 1);
 commit;
 
--- DROP TABLE ninja_settings CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table ninja_settings ...
 CREATE TABLE ninja_settings (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(200 CHAR) DEFAULT NULL,
@@ -307,43 +139,15 @@ CREATE TABLE ninja_settings (
   setting CLOB DEFAULT NULL,
   widget_id NUMBER(10,0)
 );
-
-
-PROMPT Creating Primary Key Constraint ninja_settings_pk on table ninja_settings ...
-ALTER TABLE ninja_settings
-ADD CONSTRAINT ninja_settings_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index user_3 on ninja_settings ...
-CREATE INDEX user_3 ON ninja_settings
-(
-  username
-)
-;
-PROMPT Creating Index page on ninja_settings ...
-CREATE INDEX page ON ninja_settings
-(
-  page
-)
-;
-PROMPT Creating Index widget_id on ninja_settings ...
-CREATE INDEX widget_id ON ninja_settings
-(
-  widget_id
-)
-;
+ALTER TABLE ninja_settings ADD CONSTRAINT ninja_settings_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX user_3 ON ninja_settings(username);
+CREATE INDEX page ON ninja_settings(page);
+CREATE INDEX widget_id ON ninja_settings(widget_id);
 
 INSERT INTO ninja_settings (id,username,page, type, setting)
  VALUES(1, '', 'tac/index', 'widget_order', 'widget-placeholder=widget-netw_outages,widget-tac_scheduled,widget-monitoring_performance|widget-placeholder1=widget-tac_disabled,widget-tac_acknowledged|widget-placeholder2=widget-netw_health,widget-geomap|widget-placeholder3=widget-tac_hosts,widget-tac_services,widget-tac_monfeat,widget-tac_problems');
 commit;
 
--- DROP TABLE ninja_user_authorization CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table ninja_user_authorization ...
 CREATE TABLE ninja_user_authorization (
   id NUMBER(10,0) NOT NULL,
   user_id NUMBER(10,0) NOT NULL,
@@ -355,26 +159,9 @@ CREATE TABLE ninja_user_authorization (
   all_service_commands NUMBER(10,0) DEFAULT '0' NOT NULL,
   all_host_commands NUMBER(10,0) DEFAULT '0' NOT NULL
 );
+ALTER TABLE ninja_user_authorization ADD CONSTRAINT ninja_user_authorization_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX user_id ON ninja_user_authorization(user_id);
 
-
-PROMPT Creating Primary Key Constraint ninja_user_authorization_pk on table ninja_user_authorization ...
-ALTER TABLE ninja_user_authorization
-ADD CONSTRAINT ninja_user_authorization_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index user_id on ninja_user_authorization ...
-CREATE INDEX user_id ON ninja_user_authorization
-(
-  user_id
-)
-;
-
--- DROP TABLE ninja_widgets CASCADE CONSTRAINTS;
-
-PROMPT Creating Table ninja_widgets ...
 CREATE TABLE ninja_widgets (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(200 CHAR) DEFAULT NULL,
@@ -384,25 +171,8 @@ CREATE TABLE ninja_widgets (
   instance_id NUMBER(10,0) DEFAULT NULL,
   setting CLOB DEFAULT NULL
 );
-
-PROMPT Creating Primary Key Constraint ninja_widgets_pk on table ninja_widgets ...
-ALTER TABLE ninja_widgets
-ADD CONSTRAINT ninja_widgets_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index user on ninja_widgets ...
-CREATE INDEX username ON ninja_widgets
-(
-  username
-)
-;
-
---
--- Data for table `ninja_widgets`
---
+ALTER TABLE ninja_widgets ADD CONSTRAINT ninja_widgets_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX username ON ninja_widgets(username);
 
 INSERT INTO ninja_widgets (id, username, page, name, friendly_name, setting) VALUES 	(1, '', 'tac/index', 'tac_problems', 'Unhandled problems', '');
 INSERT INTO ninja_widgets (id, username, page, name, friendly_name, setting) VALUES 	(2, '', 'tac/index', 'netw_health', 'Network health', '');
@@ -418,10 +188,6 @@ INSERT INTO ninja_widgets (id, username, page, name, friendly_name, setting) VAL
 INSERT INTO ninja_widgets (id, username, page, name, friendly_name, setting) VALUES 	(12, '', 'tac/index', 'geomap', 'Geomap', '');
 commit;
 
--- DROP TABLE recurring_downtime CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table recurring_downtime ...
 CREATE TABLE recurring_downtime (
   id NUMBER(10,0) NOT NULL,
   author VARCHAR2(255 CHAR) NOT NULL,
@@ -429,117 +195,40 @@ CREATE TABLE recurring_downtime (
   data CLOB NOT NULL,
   last_update NUMBER(10,0) DEFAULT '0' NOT NULL
 );
+ALTER TABLE recurring_downtime ADD CONSTRAINT recurring_downtime_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX author ON recurring_downtime(author);
+CREATE INDEX downtime_type ON recurring_downtime(downtime_type);
 
-
-PROMPT Creating Primary Key Constraint recurring_downtime_pk on table recurring_downtime ...
-ALTER TABLE recurring_downtime
-ADD CONSTRAINT recurring_downtime_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index author on recurring_downtime ...
-CREATE INDEX author ON recurring_downtime
-(
-  author
-)
-;
-PROMPT Creating Index downtime_type on recurring_downtime ...
-CREATE INDEX downtime_type ON recurring_downtime
-(
-  downtime_type
-)
-;
-
--- DROP TABLE roles CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table roles ...
 CREATE TABLE roles (
   id NUMBER(10,0) NOT NULL,
   name VARCHAR2(100 CHAR) NOT NULL,
   description VARCHAR2(255 CHAR) NOT NULL
 );
-
-
-PROMPT Creating Primary Key Constraint roles_pk on table roles ...
-ALTER TABLE roles
-ADD CONSTRAINT roles_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Unique Index uniq_name on roles...
-CREATE UNIQUE INDEX uniq_name ON roles
-(
-  name
-)
-;
-
---
--- Data for table `roles`
---
+ALTER TABLE roles ADD CONSTRAINT roles_pk PRIMARY KEY(id) ENABLE;
+CREATE UNIQUE INDEX uniq_name ON roles(name);
 
 INSERT INTO roles (id, name, description) VALUES (1, 'login', 'Login privileges, granted after account confirmation');
 INSERT INTO roles (id, name, description) VALUES (2, 'admin', 'Administrative user, has access to everything.');
 commit;
 
--- DROP TABLE roles_users CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table roles_users ...
 CREATE TABLE roles_users (
   user_id NUMBER(10,0) NOT NULL,
   role_id NUMBER(10,0) NOT NULL
 );
+ALTER TABLE roles_users ADD CONSTRAINT roles_users_pk PRIMARY KEY(user_id, role_id) ENABLE;
+CREATE INDEX fk_role_id ON roles_users(role_id);
 
-
-PROMPT Creating Primary Key Constraint roles_users_pk on table roles_users ...
-ALTER TABLE roles_users
-ADD CONSTRAINT roles_users_pk PRIMARY KEY
-(
-  user_id,
-  role_id
-)
-ENABLE
-;
-PROMPT Creating Index fk_role_id on roles_users ...
-CREATE INDEX fk_role_id ON roles_users
-(
-  role_id
-)
-;
-
--- DROP TABLE scheduled_report_periods CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table scheduled_report_periods ...
 CREATE TABLE scheduled_report_periods (
   id NUMBER(10,0) NOT NULL,
   periodname VARCHAR2(100 CHAR) NOT NULL
 );
-
-
-PROMPT Creating Primary Key Constraint scheduled_report_periods_pk on table scheduled_report_periods ...
-ALTER TABLE scheduled_report_periods
-ADD CONSTRAINT scheduled_report_periods_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
+ALTER TABLE scheduled_report_periods ADD CONSTRAINT scheduled_report_periods_pk PRIMARY KEY(id) ENABLE;
 
 INSERT INTO scheduled_report_periods (id, periodname) VALUES (1, 'Weekly');
 INSERT INTO scheduled_report_periods (id, periodname) VALUES (2, 'Monthly');
 INSERT INTO scheduled_report_periods (id, periodname) VALUES (3, 'Daily');
 commit;
 
--- DROP TABLE scheduled_report_types CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table scheduled_report_types ...
 CREATE TABLE scheduled_report_types (
   id NUMBER(10,0) NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL,
@@ -547,32 +236,14 @@ CREATE TABLE scheduled_report_types (
   script_reports_run VARCHAR2(255 CHAR) NOT NULL,
   identifier VARCHAR2(50 CHAR) NOT NULL
 );
-
-
-PROMPT Creating Primary Key Constraint scheduled_report_types_pk on table scheduled_report_types ...
-ALTER TABLE scheduled_report_types
-ADD CONSTRAINT scheduled_report_types_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index identifier on scheduled_report_types ...
-CREATE INDEX identifier ON scheduled_report_types
-(
-  identifier
-)
-;
+ALTER TABLE scheduled_report_types ADD CONSTRAINT scheduled_report_types_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX identifier ON scheduled_report_types(identifier);
 
 INSERT INTO scheduled_report_types (id, name, script_reports_path, script_reports_run, identifier) VALUES (1, ' ', ' ', ' ', 'avail');
 INSERT INTO scheduled_report_types (id, name, script_reports_path, script_reports_run, identifier) VALUES (2, ' ', ' ', ' ', 'sla');
 INSERT INTO scheduled_report_types (id, name, script_reports_path, script_reports_run, identifier) VALUES (3, ' ', ' ', ' ', 'summary');
 commit;
 
--- DROP TABLE scheduled_reports CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table scheduled_reports ...
 CREATE TABLE scheduled_reports (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(255 CHAR) DEFAULT NULL,
@@ -583,48 +254,16 @@ CREATE TABLE scheduled_reports (
   period_id NUMBER(10,0) DEFAULT '0' NOT NULL,
   filename VARCHAR2(255 CHAR) NOT NULL
 );
+ALTER TABLE scheduled_reports ADD CONSTRAINT scheduled_reports_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX report_type_id ON scheduled_reports(report_type_id);
+CREATE INDEX user_2 ON scheduled_reports(username);
 
-ALTER TABLE scheduled_reports
-  ADD local_persistent_filepath VARCHAR2(200 CHAR) DEFAULT NULL;
-
-PROMPT Creating Primary Key Constraint scheduled_reports_pk on table scheduled_reports ...
-ALTER TABLE scheduled_reports
-ADD CONSTRAINT scheduled_reports_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index report_type_id on scheduled_reports ...
-CREATE INDEX report_type_id ON scheduled_reports
-(
-  report_type_id
-)
-;
-PROMPT Creating Index user_2 on scheduled_reports ...
-CREATE INDEX user_2 ON scheduled_reports
-(
-  username
-)
-;
-
--- DROP TABLE scheduled_reports_db_version CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table scheduled_reports_db_version ...
 CREATE TABLE scheduled_reports_db_version (
   version VARCHAR2(10 CHAR) NOT NULL
 );
-
-
-
 INSERT INTO scheduled_reports_db_version VALUES('1.0.0');
 commit;
 
--- DROP TABLE sla_config CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table sla_config ...
 CREATE TABLE sla_config (
   id NUMBER(10,0) NOT NULL,
   username VARCHAR2(255 CHAR) DEFAULT NULL,
@@ -655,87 +294,31 @@ CREATE TABLE sla_config (
   host_states NUMBER(3,0) DEFAULT '0',
   service_states NUMBER(3,0) DEFAULT '0'
 );
+ALTER TABLE sla_config ADD CONSTRAINT sla_config_pk PRIMARY KEY(id) ENABLE;
 
-
-PROMPT Creating Primary Key Constraint sla_config_pk on table sla_config ...
-ALTER TABLE sla_config
-ADD CONSTRAINT sla_config_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-
--- DROP TABLE sla_config_objects CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table sla_config_objects ...
 CREATE TABLE sla_config_objects (
   id NUMBER(10,0) NOT NULL,
   sla_id NUMBER(10,0) DEFAULT '0' NOT NULL,
   name VARCHAR2(255 CHAR) NOT NULL
 );
+ALTER TABLE sla_config_objects ADD CONSTRAINT sla_config_objects_pk PRIMARY KEY(id)ENABLE;
+CREATE INDEX sla_id ON sla_config_objects(sla_id);
 
-
-PROMPT Creating Primary Key Constraint sla_config_objects_pk on table sla_config_objects ...
-ALTER TABLE sla_config_objects
-ADD CONSTRAINT sla_config_objects_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index sla_id on sla_config_objects ...
-CREATE INDEX sla_id ON sla_config_objects
-(
-  sla_id
-)
-;
-
--- DROP TABLE sla_db_version CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table sla_db_version ...
 CREATE TABLE sla_db_version (
   version NUMBER(10,0) DEFAULT '0' NOT NULL
 );
-
-
-
 INSERT INTO sla_db_version VALUES(7);
 commit;
 
--- DROP TABLE sla_periods CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table sla_periods ...
 CREATE TABLE sla_periods (
   id NUMBER(10,0) NOT NULL,
   sla_id NUMBER(10,0) DEFAULT '0' NOT NULL,
   name VARCHAR2(20 CHAR) NOT NULL,
   value FLOAT DEFAULT '0' NOT NULL
 );
+ALTER TABLE sla_periods ADD CONSTRAINT sla_periods_pk PRIMARY KEY(id) ENABLE;
+CREATE INDEX sla_id_1 ON sla_periods(sla_id);
 
-
-PROMPT Creating Primary Key Constraint sla_periods_pk on table sla_periods ...
-ALTER TABLE sla_periods
-ADD CONSTRAINT sla_periods_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Index sla_id_1 on sla_periods ...
-CREATE INDEX sla_id_1 ON sla_periods
-(
-  sla_id
-)
-;
-
--- DROP TABLE user_tokens CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table user_tokens ...
 CREATE TABLE user_tokens (
   id NUMBER(10,0) NOT NULL,
   user_id NUMBER(10,0) NOT NULL,
@@ -746,31 +329,10 @@ CREATE TABLE user_tokens (
 );
 
 
-PROMPT Creating Primary Key Constraint user_tokens_pk on table user_tokens ...
-ALTER TABLE user_tokens
-ADD CONSTRAINT user_tokens_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Unique Index uniq_token on user_tokens...
-CREATE UNIQUE INDEX uniq_token ON user_tokens
-(
-  token
-)
-;
-PROMPT Creating Index fk_user_id on user_tokens ...
-CREATE INDEX fk_user_id ON user_tokens
-(
-  user_id
-)
-;
+ALTER TABLE user_tokens ADD CONSTRAINT user_tokens_pk PRIMARY KEY(id) ENABLE;
+CREATE UNIQUE INDEX uniq_token ON user_tokens(token);
+CREATE INDEX fk_user_id ON user_tokens(user_id);
 
--- DROP TABLE users CASCADE CONSTRAINTS;
-
-
-PROMPT Creating Table users ...
 CREATE TABLE users (
   id NUMBER(10,0) NOT NULL,
   realname VARCHAR2(100 CHAR) DEFAULT NULL, -- originally: NOT NULL
@@ -781,24 +343,9 @@ CREATE TABLE users (
   logins NUMBER(10,0) DEFAULT '0' NOT NULL,
   last_login NUMBER(10,0)
 );
+ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY(id) ENABLE;
+CREATE UNIQUE INDEX uniq_username ON users(username);
 
-
-PROMPT Creating Primary Key Constraint users_pk on table users ...
-ALTER TABLE users
-ADD CONSTRAINT users_pk PRIMARY KEY
-(
-  id
-)
-ENABLE
-;
-PROMPT Creating Unique Index uniq_username on users...
-CREATE UNIQUE INDEX uniq_username ON users
-(
-  username
-)
-;
-
---connect merlin/merlin;
 
 CREATE OR REPLACE TRIGGER ninja_widgets_id_TRG BEFORE INSERT OR UPDATE ON ninja_widgets
 FOR EACH ROW

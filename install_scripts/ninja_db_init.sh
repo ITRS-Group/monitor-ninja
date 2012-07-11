@@ -35,7 +35,7 @@ if [ "$db_ver" = '' ]
 then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
-	run_sql_file "$db_login_opts" "$prefix/install_scripts/ninja.sql"
+	run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja.sql"
 	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" merlin 2>/dev/null | sed -n \$p)
 fi
 
@@ -50,7 +50,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	1)
 		# add table for recurring_downtime
 		echo "Installing database table for Recurring Downtime"
-		run_sql_file "$db_login_opts" "$prefix/install_scripts/recurring_downtime.sql"
+		run_sql_file "$db_login_opts" "$prefix/sql/mysql/recurring_downtime.sql"
 
 		# check if we should import data fr monitor_reports
 		is_new_reports=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" merlin 2>/dev/null)
@@ -85,7 +85,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	*)
 		new_ver=`expr $db_ver + 1`
 		echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
-		run_sql_file "$db_login_opts" "$prefix/op5-upgradescripts/ninja_db_v${db_ver}_to_v${new_ver}.sql"
+		run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
 		mysql $db_login_opts merlin -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
 		db_ver=$new_ver
 		;;

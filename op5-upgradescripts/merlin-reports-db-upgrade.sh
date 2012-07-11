@@ -44,7 +44,7 @@ sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" merlin 2
 if [ "$sla_ver" = "" ]
 then
 	echo "Installing database tables for SLA report configuration"
-	run_sql_file "$db_login_opts" "$prefix/op5-upgradescripts/sla_v1.sql"
+	run_sql_file "$db_login_opts" "$prefix/sql/mysql/sla_v1.sql"
 	sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version"   merlin 2>/dev/null | sed -n \$p)
 fi
 
@@ -54,11 +54,11 @@ do
 	case "$sla_ver" in
 	[5-7])
 		new_ver='8'
-		upgrade_script="$prefix/op5-upgradescripts/sla_v5_to_v8.sql"
+		upgrade_script="$prefix/sql/mysql/sla_v5_to_v8.sql"
 		;;
 	*)
 		new_ver=`expr $sla_ver + 1 `
-		upgrade_script="$prefix/op5-upgradescripts/sla_v${sla_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
 		;;
 	esac
 
@@ -82,7 +82,7 @@ avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merl
 if [ "$avail_ver" = "" ]
 then
 	echo "Installing database tables for AVAIL report configuration"
-	run_sql_file "$db_login_opts" "$prefix/op5-upgradescripts/avail_v1.sql"
+	run_sql_file "$db_login_opts" "$prefix/sql/mysql/avail_v1.sql"
 	avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" merlin 2>/dev/null | sed -n \$p)
 fi
 
@@ -92,15 +92,15 @@ do
 	case "$avail_ver" in
 	[2-4])
 		new_ver=5
-		upgrade_script="$prefix/op5-upgradescripts/avail_v2_to_v5.sql"
+		upgrade_script="$prefix/sql/mysql/avail_v2_to_v5.sql"
 		;;
 	[6-7])
 		new_ver=8
-		upgrade_script="$prefix/op5-upgradescripts/avail_v6_to_v8.sql"
+		upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
 		;;
 	*)
 		new_ver=`expr $avail_ver + 1 `
-		upgrade_script="$prefix/op5-upgradescripts/avail_v${avail_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
 
 		;;
 	esac
@@ -127,7 +127,7 @@ then
 	# old scheduled reports hasn't yet been moved into merlin
 	# from monitor_gui so let's do so and set the db_version properly
 	echo "Installing database tables for scheduled reports configuration"
-	upgrade_script="$prefix/op5-upgradescripts/scheduled_reports.sql"
+	upgrade_script="$prefix/sql/mysql/scheduled_reports.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
 	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version"   merlin 2>/dev/null | sed -n \$p)
 fi
@@ -138,11 +138,11 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	[1-5])
 		sched_db_ver=5
 		new_ver=6
-		upgrade_script="$prefix/op5-upgradescripts/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
 		;;
 	*)
 		new_ver=`expr $sched_db_ver + 1`
-		upgrade_script="$prefix/op5-upgradescripts/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$prefix/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
 		;;
 	esac
 
@@ -174,7 +174,7 @@ if [ "$old_sched_db_ver" != "" ]
 then
 	# import old schedules if any
 	echo "Importing old scheduled reports"
-	/usr/bin/env php "$prefix/op5-upgradescripts/import_schedules.php"
+	/usr/bin/env php "$prefix/sql/mysql/import_schedules.php"
 fi
 
 echo "Database upgrade complete."
