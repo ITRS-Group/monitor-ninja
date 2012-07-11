@@ -63,6 +63,8 @@ class Database_Oracle_Driver extends Database_Driver {
 		// LCASE is called LOWER
 		$sql = str_replace('LCASE', 'LOWER', $sql);
 
+		$sql = str_ireplace('ORDER BY output', 'ORDER BY dbms_lob.substr(output, 4000)', $sql);
+
 		return new Oracle_Result(false, $this->link, $this->db_config['object'], $sql);
 	}
 
@@ -326,6 +328,11 @@ class Oracle_Result extends Database_Result {
 		foreach ($this as $row)
 			$rows[] = $row;
 		return $rows;
+	}
+
+	public function as_array($object = NULL, $type = false)
+	{
+		return $this->result_array($object, $type);
 	}
 
 	public function list_fields()
