@@ -46,6 +46,9 @@ abstract class Auth_User_Model {
 	 * @param  string    new password
 	 * @return boolean
 	 */
-	abstract public function change_password( $password );
+	public function change_password( $password )
+	{
+		return false;
+	}
 
 } // End Auth User Model

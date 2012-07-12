@@ -56,9 +56,10 @@ class LDAP_Auth_Core extends Auth_Core {
 		$auth_data = $this->get_rights_for_groups( $groups );
 
 		$user = new Auth_LDAP_User_Model( array(
-			'username'  => $user_info[ $this->config['LDAP_USERKEY'] ][0],
-			'groups'    => $groups,
-			'auth_data' => $auth_data
+			'username'   => $user_info[ $this->config['LDAP_USERKEY'] ][0],
+			'groups'     => $groups,
+			'auth_data'  => $auth_data,
+			'commonname' => $user_info[ $this->config['LDAP_USERKEY_PRINTABLE'] ][0]
 			) );
 		$this->setuser( $user );
 		

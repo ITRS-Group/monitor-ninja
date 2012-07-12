@@ -48,10 +48,7 @@ abstract class Auth_Core {
 	 * @return  boolean
 	 */
 	public function logged_in($role = NULL) {
-		if( $this->user === false ) {
-			$this->user = Session::instance()->get( $this->config['session_key'] );
-		}
-		return $this->user !== false; /* FIXME: role */
+		return $this->get_user() !== false; /* FIXME: role */
 	}
 
 	/**

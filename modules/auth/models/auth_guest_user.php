@@ -1,24 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Auth_Dummy_User_Model extends Auth_User_Model {
+class Auth_Guest_User_Model extends Auth_User_Model {
 
 	protected $fields = array(
-		'username' => 'monitor',
-		'password' => 'monitor'
+		'username'   => 'guest',
+		'commonname' => 'Guest'
 	);
-
-	public function __set($key, $value)
-	{
-		$this->fields[$key] = $value;
-	}
-
-	public function __get($key)
-	{
-		return $this->fields[$key];
-	}
-
+	
 	public function __construct() {
 	}
+	
 
 	/**
 	* @param 	string 		authorization point
@@ -26,7 +17,7 @@ class Auth_Dummy_User_Model extends Auth_User_Model {
 	*/
 	public function authorized_for($auth_point)
 	{
-		return true;
+		return false;
 	}
 
 	/**

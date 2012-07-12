@@ -25,7 +25,7 @@ class Dummy_Auth_Core extends Auth_Core {
 	 * @return  mixed
 	 */
 	public function get_user() {
-		return new Auth_Dummy_User_Model();
+		return new Auth_Guest_User_Model();
 	}
 	
 	/**
