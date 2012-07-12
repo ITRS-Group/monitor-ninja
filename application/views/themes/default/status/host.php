@@ -182,7 +182,7 @@ foreach ($result as $row) {
 		'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_HOST'] = $this->translate->_('Delete selected host(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'), $options);
