@@ -78,19 +78,6 @@ class User_Model extends Model {
 	 */
 	public static function complete_login()
 	{
-		if (!Session::instance()->get(Kohana::config('auth.session_key'), false)) {
-			return Kohana::config('routes._default');
-		}
-
-		# set logged_in to current timestamp if db
-		$auth_type = Kohana::config('auth.driver');
-		if ($auth_type == 'db' || $auth_type === 'Ninja' || $auth_type === 'LDAP' || $auth_type == 'apache') {
-			$db = Database::instance();
-			$sql = "UPDATE users SET last_login=".time()." WHERE username=".
-				$db->escape(Auth::instance()->get_user()->username);
-			$db->query($sql);
-		}
-
 		# cache nagios_access session information
 		System_Model::nagios_access();
 
@@ -154,26 +141,16 @@ class User_Model extends Model {
 		return ORM::validate($array, $save);
 	}
 
+
 	/**
 	 * Takes care of setting a user as logged out
 	 * and destroying the session
 	 */
 	public static function logout_user()
 	{
-		$db = Database::instance();
-		$auth_type = Kohana::config('auth.driver');
-		if ($auth_type == 'db') {
-			$db->query('UPDATE user SET logged_in = 0 WHERE id='.(int)user::session('id'));
-
-			# reset users logged_in value when they have been logged in
-			# more than sesssion.expiration (default 7200 sec)
-			$session_length = Kohana::config('session.expiration');
-			$db->query('UPDATE user SET logged_in = 0 WHERE logged_in!=0 AND logged_in < '.(time()-$session_length));
-		}
-		Session::instance()->destroy();
+		Auth::instance()->logout();
 		return true;
 	}
-
 	/**
 	*	Check if user exists and if so we pass the supplied
 	* 	$options data to Nninja_user_authorization_Model to let

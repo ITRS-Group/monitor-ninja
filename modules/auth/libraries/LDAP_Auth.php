@@ -59,10 +59,15 @@ class LDAP_Auth_Core extends Auth_Core {
 			'username'   => $user_info[ $this->config['LDAP_USERKEY'] ][0],
 			'groups'     => $groups,
 			'auth_data'  => $auth_data,
-			'commonname' => $user_info[ $this->config['LDAP_USERKEY_PRINTABLE'] ][0]
+			'realname'   => array_key_exists( $this->config['LDAP_USERKEY_REALNAME'], $user_info ) ?
+								$user_info[ $this->config['LDAP_USERKEY_REALNAME'] ][0] :
+								$user_info[ $this->config['LDAP_USERKEY'] ][0],
+			'email   '   => array_key_exists( $this->config['LDAP_USERKEY_EMAIL'], $user_info ) ?
+								$user_info[ $this->config['LDAP_USERKEY_EMAIL'] ][0] :
+								''
 			) );
-		$this->setuser( $user );
 		
+		$this->setuser( $user );
 		return $user;
 	}
 

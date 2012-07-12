@@ -103,6 +103,7 @@ abstract class Auth_Core {
 	public function logout($destroy = FALSE) {
 		$this->user = false;
 		Session::instance()->destroy();
+		return true;
 	}
 	
 	
