@@ -102,9 +102,9 @@ $t = $this->translate; ?>
 				if (empty($services))
 					continue;
 				?>
-				<img src="<?= ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?= $service_state ?>" title="<?= $service_state ?>" class="status=<?= $service_state ?>" />
+				<img src="<?php echo ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?php echo $service_state ?>" title="<?php echo $service_state ?>" class="status=<?php echo $service_state ?>" />
 				<?php foreach ($services as $service) { ?>
-					<a href="extinfo/details/?type=service&host=<?= urlencode($host['name']) ?>&service=<?= urlencode($service)?>" class="status-<?= $service_state ?>"><?= $service ?></a>
+					<a href="extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service)?>" class="status-<?php echo $service_state ?>"><?php echo $service ?></a>
 				<?php } ?>
 				<br />
 			<?php } ?>
