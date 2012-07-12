@@ -174,7 +174,7 @@ if [ "$old_sched_db_ver" != "" ]
 then
 	# import old schedules if any
 	echo "Importing old scheduled reports"
-	/usr/bin/env php "$prefix/sql/mysql/import_schedules.php"
+	/usr/bin/env php "$prefix/op5-upgradescripts/import_schedules.php"
 fi
 
 echo "Database upgrade complete."
