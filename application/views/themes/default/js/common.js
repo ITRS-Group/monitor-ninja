@@ -8,7 +8,7 @@ var _save_scroll = true;
 $(document).ready(function() {
 	// make scroll memory cookie to be reset
 	// when actively clicking on a link.
-	$('a').click(function() {
+	$('body').on('click', 'a', function() {
 		_save_scroll = false;
 	});
 
