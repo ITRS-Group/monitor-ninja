@@ -252,7 +252,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);

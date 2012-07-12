@@ -202,13 +202,13 @@ class Command_Controller extends Authenticated_Controller
 			// Delete the host/service then route to NACOMA SAVE_CONFIG page
 			if (isset($params['service'])) {
 				foreach ($params['service'] as $service) {
-					Nacoma::delService($service);
+					nacoma::delService($service);
 				}
 			}
 
 			if (isset($params['host_name'])) {
 				foreach ($params['host_name'] as $host) {
-					Nacoma::delHost($host);
+					nacoma::delHost($host);
 				}
 			}
 

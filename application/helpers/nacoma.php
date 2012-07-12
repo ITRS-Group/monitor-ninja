@@ -63,7 +63,7 @@ class nacoma_Core {
 	*	@param $host string host to be deleted
 	*/
 	public function delHost ($host) {
-		if (!Nacoma::allowed()) {
+		if (!nacoma::allowed()) {
 			return false;
 		}
 		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t host -n "' . $host . '" -a delete -u >/dev/null', $retval);
@@ -75,7 +75,7 @@ class nacoma_Core {
 	*	@param $service string service to be deleted, format HOST;SERVICE
 	*/
 	public function delService ($service) {
-		if (!Nacoma::allowed()) {
+		if (!nacoma::allowed()) {
 			return false;
 		}
 		$out = @system('php /opt/monitor/op5/nacoma/api/monitor.php -u ' . Auth::instance()->get_user()->username . ' -t service -n "' . $service . '" -a delete -u >/dev/null', $retval);
