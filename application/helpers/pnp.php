@@ -14,11 +14,12 @@ class pnp_Core
 		try {
 			$ls = Livestatus::instance();
 			$query = '';
-			if (empty($service))
+			if (empty($service)) {
 				$query .= "GET hosts\nFilter: name = $host\n";
-			else
+			} else {
 				$service = urldecode($service);
 				$query .= "GET services\nFilter: host_name = $host\nFilter: description = $service\n";
+			}
 			$query .= "Columns: pnpgraph_present";
 			$res = $ls->query($query);
 			if (isset($res[0]) && isset($res[0][0]) && $res[0][0] === 1)
