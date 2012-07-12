@@ -24,6 +24,7 @@ class Hypermap_Controller extends Authenticated_Controller {
 	public function index()
 	{
 
+		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('hypermap/hypermap');
 		$content = $this->template->content;
 		$this->template->js_header = $this->add_view('js_header');
