@@ -67,12 +67,14 @@ class Livestatus
 		fclose($this->sock);
 	}
 
-	public function query($query) {
+	public function query($query, $columns=false) {
 		$query = trim($query); // keep track of them newlines
 		$start = microtime(true);
 		if (!((strpos($query, 'GET host') === 0 && $this->auth->view_hosts_root ) ||
 			(strpos($query, 'GET service') === 0 && ($this->auth->view_hosts_root || $this->auth->view_services_root))))
 			$query .= "\nAuthUser: {$this->auth->user}";
+		if ($columns)
+			$query .= "\nColumns: ".implode(' ', $columns);
 		$query .= "\nOutputFormat: json\nKeepAlive: on\nResponseHeader: fixed16\n\n";
 		@fwrite($this->sock, $query);
 		$head = $this->read_socket($this->sock, 16);
@@ -86,6 +88,15 @@ class Livestatus
 			throw new LivestatusException("No output");
 
 		$res = json_decode($out);
+		if ($columns) {
+			foreach ($res as $rownum => $row) {
+				$new_row = array();
+				foreach ($row as $idx => $val) {
+					$new_row[$columns[$idx]] = $val;
+				}
+				$res[$rownum] = $new_row;
+			}
+		}
 		$stop = microtime(true);
 		if ($this->config['benchmark'] == TRUE)
 		{

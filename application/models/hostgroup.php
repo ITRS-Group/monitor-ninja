@@ -391,4 +391,14 @@ class Hostgroup_Model extends Ninja_Model
 		}
 		return false;
 	}
+
+	/**
+	 * Fetch all host data over livestatus.
+	 * This includes some information about the host's services
+	 */
+	public static function get_group_hosts($group_name) {
+		$ls = Livestatus::instance();
+		$res = $ls->query("GET hostsbygroup\nFilter: hostgroup_name = $group_name", array('icon_image', 'icon_image_alt', 'name', 'services_with_state', 'action_url', 'action_url', 'notes_url','pnpgraph_present'));
+		return $res;
+	}
 }
