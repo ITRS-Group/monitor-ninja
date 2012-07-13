@@ -120,7 +120,31 @@ abstract class Auth_Core {
 		$user = $this->get_user();
 		if( $user === false )
 			return false;
-		return $user->authorized_for( $authroization_point );
+
+		if( $user->authorized_for( $authorization_point ) ) {
+			Kohana::log( 'debug', 'Auth::authroized_for: Using long tag' ); /* FIXME: Remove */
+			return true;
+		}
+
+		/* TODO: autorized_for_: fix short names better than this... */
+		if( $user->authorized_for( 'authorized_for_' . $authorization_point ) ) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Returns an array of authentication methods with keys representing the
+	 * internal name of the authentication mehtod, and the value is a user
+	 * readable name
+	 *
+	 * @return  array  list of authentication methods, or false if only a single
+	 *                 is avalible
+	 */
+	public function get_authentication_methods() {
+		return false;
 	}
 	
 	

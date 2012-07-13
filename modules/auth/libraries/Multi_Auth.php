@@ -90,4 +90,16 @@ class Multi_Auth_Core extends Auth_Core {
 		Session::instance()->delete( 'auth_method' );
 		return $this->drivers[$driver]->logout( $destroy );
 	}
+
+	/**
+	 * Returns an array of authentication methods with keys representing the
+	 * internal name of the authentication mehtod, and the value is a user
+	 * readable name
+	 *
+	 * @return  array  list of authentication methods, or false if only a single
+	 *                 is avalible
+	 */
+	public function get_authentication_methods() {
+		return $this->config['driver'];
+	}
 } // End Auth
