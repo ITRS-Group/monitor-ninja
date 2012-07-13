@@ -263,7 +263,7 @@ if (isset($this->template->js_header))
 					<li <?php if (!isset($is_searches) || empty($is_searches)) { ?>style="display:none"<?php } ?> id="my_saved_searches"><?php echo html::image($this->add_path('icons/24x24/save_search.png'), array('title' => $this->translate->_('Click to view your saved searches'), 'id' => 'my_saved_searches_img')) ?></li>
 				</ul>
 			</div>
-			<p align="right" style="padding-top:10px;"><?php echo $this->translate->_('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?> &nbsp; </p>
+			<p align="right" style="padding-top:10px;"><?php echo $this->translate->_('Welcome'); ?> <?php echo Auth::instance()->get_user()->realname ?> | <?php echo html::anchor('default/logout', html::specialchars($this->translate->_('Log out'))) ?> &nbsp; </p>
 			<div id="navigation" style="padding-right:450px;padding-top:10px">
 			<?php
 			$query = arr::search($_REQUEST, 'query');

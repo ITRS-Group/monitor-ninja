@@ -55,8 +55,8 @@ class Backup_Controller extends Authenticated_Controller {
 				$this->files2backup[]=trim($cfg_dir[1]) . " ";
 		}
 
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_configuration_information || !$auth->authorized_for_system_commands) {
+		$auth = Auth::instance()->get_user()->auth_data;
+		if (!$auth['authorized_for_configuration_information'] || !$auth['authorized_for_system_commands']) {
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the backup interface.");
 			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization for more information.');

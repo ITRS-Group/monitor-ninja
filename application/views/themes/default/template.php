@@ -175,7 +175,7 @@ if (isset($this) && isset($this->template->js_header))
 					<?php } else { ?>
 					<input type="text" name="query" id="query" class="textbox" value="<?php echo _('Search')?>" onfocus="this.value=''" onblur="this.value='<?php echo _('Search')?>'" />
 			<?php	} ?>
-					<p><?php echo _('Welcome'); ?> <?php echo user::session('username') ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?></p>
+					<p><?php echo _('Welcome'); ?> <?php echo Auth::instance()->get_user()->realname ?> | <?php echo html::anchor('default/logout', html::specialchars(_('Log out'))) ?></p>
 				</div>
 			</form>
 		</div>

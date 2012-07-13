@@ -79,7 +79,7 @@ $config['log_threshold'] = 4;
 /**
  * Message logging directory.
  */
-$config['log_directory'] = APPPATH.'logs';
+$config['log_directory'] = '/tmp/logs';
 
 /**
  * Enable or disable displaying of Kohana error pages. This will not affect

@@ -571,19 +571,18 @@ class Command_Controller extends Authenticated_Controller
 		# second we check if this contact is allowed to submit
 		# the type of command we're looking at and, if so, if
 		# we can bypass fetching all the objects we're authorized
-		# to see
-		$auth = new Nagios_auth_Model();
+		# to see		
 		if (strstr($cmd, '_HOST_') !== false) {
-			if ($auth->command_hosts_root) {
+			if (Auth::instance()->authorized_for('all_host_commands')) {
 				return true;
 			}
 		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
-			if ($auth->command_services_root) {
+			if (Auth::instance()->authorized_for('all_service_commands')) {
 				return true;
 			}
 		} else {
 			# must be a system command
-			if ($auth->authorized_for_system_commands) {
+			if (Auth::instance()->authorized_for('system_commands')) {
 				return true;
 			}
 
