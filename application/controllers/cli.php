@@ -290,19 +290,6 @@ class Cli_Controller extends Authenticated_Controller {
 		# figure out path from argv
 		$path = $GLOBALS['argv'][0];
 
-		$user = false;
-		if ($cli_access == 1) {
-			exec('/usr/bin/php '.$path.' default/get_a_user ', $user, $retval);
-			$user = $user[0];
-		} else {
-			# username is hard coded so let's use this
-			$user = $cli_access;
-		}
-		if (empty($user)) {
-			# we failed to detect a valid user so there's no use in continuing
-			return false;
-		}
-
 		// Saved reports:
 		$saved_reports_model = new Saved_reports_Model();
 		$report_types = array('avail', 'sla', 'summary');
@@ -356,19 +343,6 @@ class Cli_Controller extends Authenticated_Controller {
 
 		# figure out path from argv
 		$path = $GLOBALS['argv'][0];
-
-		$user = false;
-		if ($cli_access == 1) {
-			exec('/usr/bin/php '.$path.' default/get_a_user ', $user, $retval);
-			$user = $user[0];
-		} else {
-			# username is hard coded so let's use this
-			$user = $cli_access;
-		}
-		if (empty($user)) {
-			# we failed to detect a valid user so there's no use in continuing
-			return false;
-		}
 
 		// Saved reports:
 		$saved_reports_model = new Saved_reports_Model();
