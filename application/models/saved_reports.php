@@ -219,6 +219,16 @@ class Saved_reports_Model extends Model
 
 		if (empty($objects) || empty($id)) return false;
 
+		if ($type === 'summary') {
+			$info = self::get_report_info($type, $id);
+			var_dump($info);
+			$settings = unserialize($info['settings']);
+			$settings['objects'] = $objects;
+			$info->settings = serialize($settings);
+			self::edit_report_info($type, $id, $info);
+			return true;
+		}
+
 		// remove old records (if any)
 		$sql = "DELETE FROM ".$type."_config_objects WHERE ".$type."_id=".$id;
 		$db = Database::instance();
