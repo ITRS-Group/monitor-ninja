@@ -305,11 +305,15 @@ class Cli_Controller extends Authenticated_Controller {
 
 		// Saved reports:
 		$saved_reports_model = new Saved_reports_Model();
-		$report_types = array('avail', 'sla');
+		$report_types = array('avail', 'sla', 'summary');
 		foreach ($report_types as $report_type) {
-			$reports = $saved_reports_model->get_saved_reports($report_type, $user);
+			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
+				if ($report_type == 'summary') {
+					$report_data = unserialize($report_data['setting']);
+					$report_data['report_type'] = $report_data['obj_type'];
+				}
 				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $svc) {
