@@ -109,6 +109,10 @@ abstract class Auth_Core {
 	
 	protected function setuser( $user ) {
 		$this->user = $user;
-		Session::instance()->set( $this->config['session_key'], $user );
+		$sess = Session::instance();
+		$sess->set( $this->config['session_key'], $user );
+		/* Nacoma hack */
+		$sess->set( 'nacoma_user', $user->username );
+		$sess->set( 'nacoma_auth', array_filter( $user->auth_data ) );
 	}
 } // End Auth
