@@ -7,6 +7,7 @@
  */
 class Nagios_auth_Model extends Model
 {
+	private static $instance = false;
 	public $session = false; /**< FIXME: Another user session variable, that the ninja model already provides, except we've decided not to use it */
 	public $id = false; /**< The user id */
 	public $user = ''; /**< The username */
@@ -28,6 +29,20 @@ class Nagios_auth_Model extends Model
 	public $authorized_for_all_service_commands = false; /**< Alias for command_services_root */
 	public $authorized_for_configuration_information = false; /**< Is the user authorized to see information about the global configuration? */
 
+	/**
+	 * Return the singleton instance of the auth model
+	 */
+	public static function instance() {
+		if (!self::$instance)
+			self::$instance = new Nagios_auth_Model();
+		return self::$instance;
+	}
+
+	/**
+	 * Almost anything you can do with this model is expensive and cached.
+	 * Thus, do /NOT/ call this constructor directly - use self::instance()
+	 * instead.
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -284,10 +299,9 @@ class Nagios_auth_Model extends Model
 				return false;
 
 			$query2 = "SELECT hg.id, hg.hostgroup_name AS groupname, COUNT(hhg.host) AS cnt FROM ".
-				"hostgroup hg, host_hostgroup hhg ".
+				"hostgroup hg INNER JOIN host_hostgroup hhg ON hg.id=hhg.hostgroup ".
 				"INNER JOIN contact_access ON contact_access.host=hhg.host ".
-				"WHERE hg.id=hhg.hostgroup ".
-				"AND contact_access.contact=".$this->id.
+				"WHERE contact_access.contact=".$this->id.
 				" GROUP BY hg.id, hg.hostgroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result)) {
@@ -359,11 +373,9 @@ class Nagios_auth_Model extends Model
 				return false;
 
 			$query2 = "SELECT sg.id, sg.servicegroup_name AS groupname, COUNT(ssg.service) AS cnt FROM ".
-				"servicegroup sg, service_servicegroup ssg ".
+				"servicegroup sg INNER JOIN service_servicegroup ssg ON sg.id = ssg.servicegroup ".
 				"INNER JOIN contact_access ON contact_access.service=ssg.service ".
-				"WHERE sg.id=ssg.servicegroup ".
-				"AND ssg.service IS NOT NULL ".
-				"AND contact_access.contact=".$this->id.
+				"WHERE contact_access.contact=".$this->id.
 				" GROUP BY sg.id, sg.servicegroup_name";
 			$user_result = $this->db->query($query2);
 			if (!count($user_result)) {
@@ -428,17 +440,44 @@ class Nagios_auth_Model extends Model
 
 	/**
 	 * Return a boolean saying if we're authorized for the service name or id provided
+	 *
+	 * This function can be called with one numeric argument, in which case
+	 * it's assumed to be a service ID - the resulting query is quick.
+	 *
+	 * It can be called with two arguments, where the first is host name, and the
+	 * second is service description. This is quite quick, but not quite as quick
+	 * as the first option.
+	 *
+	 * Or it can be called with a string containing ';' representing the
+	 * complete host_name/service_description in one argument, which is
+	 * slightly slower than both the other two.
+	 *
+	 * Returns TRUE if user is authorized, FALSE otherwise.
 	 */
-	public function is_authorized_for_service($service)
+	public function is_authorized_for_service($service, $desc = false)
 	{
 		if ($this->view_services_root === true)
 			return true;
 
-		// should always return "0" or "1"
-		if (is_numeric($service))
+		/*
+		 * we must check if $desc is false here so we properly
+		 * handle hosts named '1', '2' etc.
+		 */
+		if ((is_int($service) || is_numeric($service)) && $desc === false) {
 			$query = 'SELECT count(1) AS cnt FROM contact_access WHERE host = '.$service.' AND contact = '.$this->id;
-		else
-			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE concat(concat(service.host_name, ";"), service.service_description) = '.$this->db->escape($service).' AND contact = '.$this->id;
+		} else {
+			if ($desc === false) {
+				if (strpos($service, ';') < 1)
+					return false; /* bogus input */
+
+				$ary = explode(';', $service, 2);
+				$desc = $ary[1];
+				$service = $ary[0];
+			}
+
+			$query = 'SELECT count(1) AS cnt FROM contact_access ca INNER JOIN service ON service.id = ca.service WHERE service.host_name = '.$this->db->escape($service).' AND service.service_description = '.$this->db->escape($desc).' AND contact = '.$this->id;
+		}
+
 		$res = $this->db->query($query);
 		return ($res->current()->cnt != '0');
 	}

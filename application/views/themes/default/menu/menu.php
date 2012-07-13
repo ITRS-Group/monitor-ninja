@@ -2,7 +2,7 @@
 if (isset($user_auth)) {
 	$auth = $user_auth;
 } else {
-	$auth = new Nagios_auth_Model();
+	$auth = Nagios_auth_Model::instance();
 }
 
 # translate menu labels

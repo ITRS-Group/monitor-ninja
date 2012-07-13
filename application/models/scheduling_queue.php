@@ -22,45 +22,55 @@ class Scheduling_queue_Model extends Model {
 	{
 
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
-		if ($auth->view_hosts_root) {
-
-			$num_per_page = (int)$num_per_page;
-			$search_sql_host = false;
-			$search_sql_svc = false;
-			$prevent_host_query = false;
-			if (!empty($this->host_qry)) {
-				$search_sql_host = ' AND LCASE(host_name) LIKE LCASE('.$this->db->escape($this->host_qry).') ';
-			}
-
-			if (!empty($this->svc_qry)) {
-				$search_sql_svc = ' AND LCASE(service_description) LIKE LCASE('.$this->db->escape($this->svc_qry).') ';
-				$prevent_host_query = ' AND 2=1';
-			}
-
-			# only use LIMIT when NOT counting
-			if ($offset !== false)
-				$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-			else
-				$offset_limit = '';
-
-			$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled ".
-							"FROM service ".
-							"WHERE should_be_scheduled=1".$search_sql_svc.$search_sql_host.
-							") UNION ALL (".
-							"SELECT host_name, CONCAT('', '') as service_description, next_check, last_check, check_type, active_checks_enabled ".
-							"FROM host ".
-							"WHERE should_be_scheduled=1".$search_sql_host.$prevent_host_query.
-							") ORDER BY ".$this->sort_field." ".$this->sort_order." ".$offset_limit;
-
-			$result = $db->query($sql);
-
-			if ($count !== false) {
-				return $result ? count($result) : 0;
-			}
-			return $result->count() ? $result->result(): false;
+		if (!$auth->view_hosts_root) {
+			return false;
 		}
+
+		$num_per_page = (int)$num_per_page;
+		$search_sql_host = false;
+		$search_sql_svc = false;
+		$prevent_host_query = false;
+		$offset_limit = '';
+		$per_obj_limit = '';
+		if (!empty($this->host_qry)) {
+			$search_sql_host = ' AND LCASE(host_name) LIKE LCASE('.$this->db->escape($this->host_qry).') ';
+		}
+
+		if (!empty($this->svc_qry)) {
+			$search_sql_svc = ' AND LCASE(service_description) LIKE LCASE('.$this->db->escape($this->svc_qry).') ';
+			$prevent_host_query = ' AND 2=1';
+		}
+
+		if ($count) {
+			$sql = 'SELECT (SELECT count(1) FROM service WHERE should_be_scheduled=1'.$search_sql_svc.$search_sql_host.') + (SELECT count(1) FROM service WHERE should_be_scheduled=1'.$search_sql_host.$prevent_host_query.') AS num';
+			$result = $db->query($sql);
+			return current($result->as_array())->num;
+		}
+
+		# only use LIMIT when NOT counting
+		if ($offset !== false) {
+			$offset_limit = " LIMIT " . $num_per_page." OFFSET ".$offset;
+			// shortcut: never ask for more of each than real offset + limit, as we *know* we won't need it.
+			// for the common case of 100 items for page 1, this means 200 rows returned, unioned, sorted,
+			// divided up and returned, while without this we'd union potentially hundreds of thousands and
+			// then throw them all away.
+			$per_obj_limit = ' ORDER BY '.$this->sort_field." ".$this->sort_order.'  LIMIT '.($num_per_page+$offset);
+		}
+
+		$sql = "(SELECT host_name, service_description, next_check, last_check, check_type, active_checks_enabled ".
+						"FROM service ".
+						"WHERE should_be_scheduled=1".$search_sql_svc.$search_sql_host.$per_obj_limit.
+						") UNION ALL (".
+						"SELECT host_name, CONCAT('', '') as service_description, next_check, last_check, check_type, active_checks_enabled ".
+						"FROM host ".
+						"WHERE should_be_scheduled=1".$search_sql_host.$prevent_host_query.$per_obj_limit.
+						") ORDER BY ".$this->sort_field." ".$this->sort_order." ".$offset_limit;
+
+		$result = $db->query($sql);
+
+		return $result->count() ? $result->result(): false;
 	}
 
 	/**

@@ -48,9 +48,9 @@ $t = $this->translate; ?>
 		<caption>
 			<?php
 				if (nacoma::link()===true)
-					echo nacoma::link('configuration/configure/'.$grouptype.'group/'.urlencode($details->{$grouptype.'group_name'}), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype)).' &nbsp;';
-				echo html::anchor('status/'.$grouptype.'group/'.$details->{$grouptype.'group_name'}.'?style=detail', html::specialchars($details->alias));
-				echo '<span>('.html::anchor('extinfo/details/?type='.$grouptype.'group&host='.urlencode($details->{$grouptype.'group_name'}), html::specialchars($details->{$grouptype.'group_name'})).')</span>';
+					echo nacoma::link('configuration/configure/servicegroup/'.urlencode($details->servicegroup_name), 'icons/16x16/nacoma.png', $this->translate->_('Configure this servicegroup')).' &nbsp;';
+				echo html::anchor('status/servicegroup/'.$details->servicegroup_name.'?style=detail', html::specialchars($details->alias));
+				echo '<span>('.html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($details->servicegroup_name), html::specialchars($details->servicegroup_name)).')</span>';
 			?>
 		</caption>
 		<tr>
@@ -63,7 +63,7 @@ $t = $this->translate; ?>
 		<tbody>
 		<?php
 		$i = 0;
-		$result = Group_Model::get_group_info($grouptype, $details->{$grouptype.'group_name'});
+		$result = Group_Model::get_group_info('service', $details->servicegroup_name);
 		$prev_host = false;
 		$next = false;
 		$tmp = 0;

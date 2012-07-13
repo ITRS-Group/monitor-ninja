@@ -58,26 +58,18 @@ class refresh_Core {
 					$.ajax({
 						url: url,
 						type: 'GET',
+						dataType: 'json',
 						success: function(data) {
-							if (data !='' && data > 0) {
-								$('#infobar-sml').show();
-							} else {
+							if (data.result) {
+								$('#page_last_updated').html(data.result);
 								$('#infobar-sml').hide();
+							} else {
+								$('#infobar-sml').show();
+								$('#page_last_updated').html(data.error);
 							}
-						}
-					});
-
-					var url = _site_domain + _index_page + "/ajax/current_time/";
-					sURL = (typeof sURL != 'undefined' ? sURL : false);
-					var data = {sURL: escape(sURL)};
-					$.ajax({
-						url: url,
-						data: data,
-						type: 'POST',
-						success: function(data) {
-							if (data !='') {
-								$('#page_last_updated').html(data);
-							} // don't touch in case of error
+						},
+						error: function() {
+							$('#infobar-sml').show();
 						}
 					});
 

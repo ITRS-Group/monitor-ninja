@@ -410,8 +410,8 @@
 	position: absolute;
 	width: 120px;
 	z-index: 99999;
-	border: solid 1px #CCC;
-	background: #EEE;
+	border: solid 1px #ff9922 !important;
+	background: #5d5d5d !important;
 	padding: 0px;
 	margin: 0px;
 	display: none;
@@ -424,7 +424,7 @@
 }
 
 .contextMenu A {
-	color: #333;
+	color: #ff6600 !important;
 	text-decoration: none;
 	display: block;
 	line-height: 20px;
@@ -437,12 +437,12 @@
 }
 
 .contextMenu LI.hover A {
-	color: #FFF;
-	background-color: #3399FF;
+	color: #444444 !important;
+	background-color: #444444 !important;
 }
 
 .contextMenu LI.disabled A {
-	color: #AAA;
+	color: #ff6600 !important;
 	cursor: default;
 }
 
@@ -451,7 +451,7 @@
 }
 
 .contextMenu LI.separator {
-	border-top: solid 1px #CCC;
+	border-top: solid 1px #ff9922 !important;
 }
 
 /*

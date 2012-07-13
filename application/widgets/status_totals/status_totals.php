@@ -11,6 +11,7 @@ class Status_totals_Widget extends widget_Base {
 	protected $movable=false;
 	protected $removable=false;
 	protected $closeconfirm=false;
+	protected $editable=false;
 
 	private $host = 'all';
 	private $hoststatus = false;
@@ -48,19 +49,50 @@ class Status_totals_Widget extends widget_Base {
 		$view_path = $this->view_path('view');
 
 		$current_status = $this->get_current_status();
+		$host_cols = array(
+			'total_hosts',
+			'hosts_up',
+			'hosts_down',
+			'hosts_unreachable',
+			'hosts_pending',
+			'hosts_problem'
+		);
+		$svc_cols = array(
+			'total_services',
+			'services_ok',
+			'services_warning',
+			'services_critical',
+			'services_unknown',
+			'services_pending',
+			'services_problem'
+		);
 
-		if (!empty($this->grouptype) && $this->host != 'all') {
-			$host_data = Group_Model::state_breakdown($this->grouptype, 'host', $this->host);
-			$service_data = Group_Model::state_breakdown($this->grouptype, 'service', $this->host);
+		$stats = new Stats_Model();
+		if (empty($this->grouptype) || $this->host == 'all' || !$this->host) {
+			$hosts = $stats->get_stats('hosts', $host_cols);
+			$services = $stats->get_stats('services', $svc_cols);
+		} else if ($this->grouptype == 'host') {
+			$hosts = $stats->get_stats('hostsbygroup', $host_cols, array('Filter: hostgroup_name = '.$this->host));
+			$services = $stats->get_stats('servicesbyhostgroup', $svc_cols, array('Filter: hostgroup_name = '.$this->host));
 		} else {
-			if ($current_status->host_data_present !== true) {
-				$current_status->host_status();
+			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host));
+			$ls = Livestatus::instance();
+			foreach ($services as $service) {
+				$group = $service['servicegroup_name'];
+				$ret[$group] = $service;
+				$host_names = $ls->query("GET servicesbygroup
+Columns: host_name
+Filter: servicegroup_name = $group");
+				$this_match = array();
+				foreach ($host_names as $host) {
+					$this_match[] = "Filter: host_name = {$host[0]}";
+				}
+				$this_match[] = 'Or: '.count($host_names);
 			}
-
-			if ($current_status->service_data_present !== true) {
-				$current_status->service_status();
-			}
+			$hosts = $stats->get_stats('hosts', $host_cols, $this_match);
 		}
+		$hosts = $hosts[0];
+		$services = $services[0];
 
 		$grouptype = !empty($this->grouptype) ? $this->grouptype.'group' : false;
 
@@ -80,89 +112,12 @@ class Status_totals_Widget extends widget_Base {
 		$service_title = $this->translate->_('Service Status Totals');
 		$target_method = 'host';
 
-		$total_up = 0;
-		$total_down = 0;
-		$total_unreachable = 0;
-		$total_pending = 0;
-		$total_hosts = 0;
-		$total_problems = 0;
-
-		$svc_total_ok = 0;
-		$svc_total_warning = 0;
-		$svc_total_unknown = 0;
-		$svc_total_critical = 0;
-		$svc_total_pending = 0;
-		$svc_total_services = 0;
-		$svc_total_problems = 0;
-
-		# host data
-		if (isset($host_data) && count($host_data) && !empty($host_data)) {
-			foreach ($host_data as $data) {
-				switch ($data->current_state) {
-					case Current_status_Model::HOST_UP:
-						$total_up = $data->cnt;
-						break;
-					case Current_status_Model::HOST_DOWN:
-						$total_down = $data->cnt;
-						break;
-					case Current_status_Model::HOST_UNREACHABLE:
-						$total_unreachable = $data->cnt;
-						break;
-					case Current_status_Model::HOST_PENDING:
-						$total_pending = $data->cnt;
-						break;
-				}
-				$total_hosts += $data->cnt;
-			}
-			$total_problems = $total_down + $total_unreachable;
-
-			if (isset($service_data) && count($service_data) && !empty($service_data)) {
-				foreach ($service_data as $data) {
-					switch ($data->current_state) {
-						case Current_status_Model::SERVICE_OK:
-							$svc_total_ok = $data->cnt;
-							break;
-						case Current_status_Model::SERVICE_WARNING:
-							$svc_total_warning = $data->cnt;
-							break;
-						case Current_status_Model::SERVICE_UNKNOWN:
-							$svc_total_unknown = $data->cnt;
-							break;
-						case Current_status_Model::SERVICE_CRITICAL:
-							$svc_total_critical = $data->cnt;
-							break;
-						case Current_status_Model::SERVICE_PENDING:
-							$svc_total_pending = $data->cnt;
-							break;
-					}
-					$svc_total_services += $data->cnt;
-				}
-				$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-			}
-		} else {
-			$total_up = $current_status->hosts_up;
-			$total_down = $current_status->hosts_down;
-			$total_unreachable = $current_status->hosts_unreachable;
-			$total_pending = $current_status->hosts_pending;
-			$total_hosts = $current_status->total_hosts;
-			$total_problems = $current_status->hosts_down + $current_status->hosts_unreachable;
-
-			# service data
-			$svc_total_ok = $current_status->services_ok;
-			$svc_total_warning = $current_status->services_warning;
-			$svc_total_unknown = $current_status->services_unknown;
-			$svc_total_critical = $current_status->services_critical;
-			$svc_total_pending = $current_status->services_pending;
-			$svc_total_services = $current_status->total_services;
-			$svc_total_problems = $svc_total_unknown + $svc_total_warning + $svc_total_critical;
-		}
-
 		$grouptype_arg = $grouptype ? 'group_type='.$grouptype : '';
 		$host_header = array(
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $total_up, 'status' => $label_up, 'status_id' => nagstat::HOST_UP),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $total_down, 'status' => $label_down, 'status_id' => nagstat::HOST_DOWN),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $total_unreachable, 'status' => $label_unreachable, 'status_id' => nagstat::HOST_UNREACHABLE),
-			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $total_pending, 'status' => $label_pending, 'status_id' => nagstat::HOST_PENDING)
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UP.'&'.$grouptype_arg, 'lable' => $hosts['hosts_up'], 'status' => $label_up, 'status_id' => nagstat::HOST_UP),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_DOWN.'&'.$grouptype_arg, 'lable' => $hosts['hosts_down'], 'status' => $label_down, 'status_id' => nagstat::HOST_DOWN),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&'.$grouptype_arg, 'lable' => $hosts['hosts_unreachable'], 'status' => $label_unreachable, 'status_id' => nagstat::HOST_UNREACHABLE),
+			array('url' => 'status/'.$target_method.'/'.$this->host.'/?hoststatustypes='.nagstat::HOST_PENDING.'&'.$grouptype_arg, 'lable' => $hosts['hosts_pending'], 'status' => $label_pending, 'status_id' => nagstat::HOST_PENDING)
 		);
 
 		$svc_label_ok = $this->translate->_('Ok');
@@ -172,11 +127,11 @@ class Status_totals_Widget extends widget_Base {
 		$svc_label_pending = $this->translate->_('Pending');
 
 		$service_header = array(
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $svc_total_ok, 'status' => $svc_label_ok, 'status_id' => nagstat::SERVICE_OK),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $svc_total_warning, 'status' => $svc_label_warning, 'status_id' => nagstat::SERVICE_WARNING),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $svc_total_unknown, 'status' => $svc_label_unknown, 'status_id' => nagstat::SERVICE_UNKNOWN),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $svc_total_critical, 'status' => $svc_label_critical, 'status_id' => nagstat::SERVICE_CRITICAL),
-			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $svc_total_pending, 'status' => $svc_label_pending, 'status_id' => nagstat::SERVICE_PENDING)
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_OK.'&'.$grouptype_arg, 'lable' => $services['services_ok'], 'status' => $svc_label_ok, 'status_id' => nagstat::SERVICE_OK),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_WARNING.'&'.$grouptype_arg, 'lable' => $services['services_warning'], 'status' => $svc_label_warning, 'status_id' => nagstat::SERVICE_WARNING),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&'.$grouptype_arg, 'lable' => $services['services_unknown'], 'status' => $svc_label_unknown, 'status_id' => nagstat::SERVICE_UNKNOWN),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_CRITICAL.'&'.$grouptype_arg, 'lable' => $services['services_critical'], 'status' => $svc_label_critical, 'status_id' => nagstat::SERVICE_CRITICAL),
+			array('url' => 'status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&servicestatustypes='.nagstat::SERVICE_PENDING.'&'.$grouptype_arg, 'lable' => $services['services_pending'], 'status' => $svc_label_pending, 'status_id' => nagstat::SERVICE_PENDING)
 		);
 
 		$this->js = array('js/status_totals');

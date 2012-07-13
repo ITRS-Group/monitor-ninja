@@ -19,7 +19,7 @@ class Upload_Controller extends Authenticated_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if (!$auth->view_hosts_root) {
 			# redirect to default start page if not
 			# properly authorized
@@ -40,7 +40,7 @@ class Upload_Controller extends Authenticated_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_js[] = $this->add_path('upload/js/upload.js');
-		$this->xtra_css[] = $this->add_path('upload/css/upload');
+		$this->xtra_css[] = $this->add_path('upload/css/upload.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->js_header->js = $this->xtra_js;
 	}

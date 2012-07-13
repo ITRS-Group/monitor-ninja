@@ -11,7 +11,7 @@ class Command_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
@@ -23,7 +23,7 @@ class Command_Model extends Model
 		# the underscore is an implementation detail ("don't pass this straight
 		# to nagios") that should not be exposed in config/nagdefault.php
 		$setting = 'nagdefault.'.ltrim($setting, '_');
-		$value = config::get($setting);
+		$value = config::get($setting, '*', false, true);
 		return $value;
 	}
 
@@ -79,12 +79,10 @@ class Command_Model extends Model
 			return array(1);
 
 		if ($command_name != 'DEL_HOST_COMMENT') {
-			$objs = $this->auth->get_authorized_services_r();
 			$query = "SELECT comment_id, ".
 				sql::concat('host_name', ';', 'service_description').
 				" AS obj_name FROM comment_tbl WHERE service_description != '' OR service_description is not NULL";
 		} else {
-			$objs = $this->auth->get_authorized_hosts_r();
 			$query = 'SELECT comment_id, host_name as objname FROM comment_tbl ' .
 				"WHERE (service_description = '' OR service_description IS NULL)";
 		}

@@ -46,11 +46,9 @@ class Ninja_Controller extends Template_Controller {
 		# set base template file to current theme
 		$this->template = $this->add_view('template');
 
-		#$this->profiler = new Profiler;
-		if (Authenticated_Controller::ALLOW_PRODUCTION !== true && $this->run_tests === false) {
-			$this->profiler = new Fire_Profiler;
-		}
-		else if ($this->run_tests !== false) {
+		if (!$this->run_tests) {
+			$this->profiler = new Profiler;
+		} else if ($this->run_tests !== false) {
 			unittest::instance();
 		}
 

@@ -87,7 +87,7 @@ class User_Model extends Model {
 		if (empty($access)) {
 			# not any authorized_for_ variables set so lets check
 			# if user is authorized for any objects
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 			$hosts = $auth->get_authorized_hosts();
 
 			$redirect = false;

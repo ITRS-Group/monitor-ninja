@@ -13,9 +13,9 @@ class ninja_Core {
 	 * Return the base path to the current theme
 	 */
 	public static function get_theme_path() {
-		$registry = zend::instance('Registry');
 		if (self::$theme_path)
 			return self::$theme_path;
+		$registry = zend::instance('Registry');
 
 		if ($registry->isRegistered('theme_path')) {
 			self::$theme_path = $registry->get('theme_path');
@@ -32,6 +32,9 @@ class ninja_Core {
 	 * return the full path.
 	 */
 	public static function add_path($rel_path) {
+		static $url_base = false;
+		if (!$url_base)
+			$url_base = url::base();
 		$rel_path = trim($rel_path);
 		if (empty($rel_path)) {
 			return false;
@@ -41,6 +44,6 @@ class ninja_Core {
 		$path = 'application/views/'.self::get_theme_path().$rel_path;
 		# make sure we didn't mix up start/end slashes
 		$path = str_replace('//', '/', $path);
-		return $path;
+		return $url_base . $path;
 	}
 }

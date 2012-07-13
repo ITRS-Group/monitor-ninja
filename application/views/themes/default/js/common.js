@@ -8,11 +8,12 @@ var _save_scroll = true;
 $(document).ready(function() {
 	// make scroll memory cookie to be reset
 	// when actively clicking on a link.
-	$('a').click(function() {
+	$('body').on('click', 'a', function() {
 		_save_scroll = false;
 	});
 
-	collapse_menu(_ninja_menu_state);
+	if (window.collapse_menu)
+		collapse_menu(_ninja_menu_state);
 	/**
 	*	Show the checkbox to show/hide "page header" if
 	*	we find the content-header div in the current page
@@ -69,20 +70,20 @@ $(document).ready(function() {
 	// on a menu
 	$('#menu a').click(function() {_is_refreshing = true;});
 
-	if (_use_contextmenu) {
-		$(".obj_properties").contextMenu({
+	if ($.contextMenu) {
+		$("body").contextMenu({
 				menu: 'property_menu', use_prop:true
 			},
 			function(action, elem){
 				object_action(action, elem.attr('id'));
-		});
+			}, ".obj_properties:not(.white)");
 
-		$(".svc_obj_properties").contextMenu({
+		$("body").contextMenu({
 				menu: 'svc_property_menu', use_prop:true
 			},
 			function(action, elem){
 				object_action(action, elem.attr('id'));
-		});
+			},".svc_obj_properties");
 	}
 
 	/**
@@ -151,27 +152,6 @@ $(document).ready(function() {
 				collapse_section(section);
 			}
 		}
-	});
-
-	jQuery('#service_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('#host_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('.group_grid_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('#group_summary_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
-	});
-	jQuery('.group_overview_table').floatHeader({
-		fadeIn: 25,
-		fadeOut: 25
 	});
 
 	$('.pnp_graph_icon').each(function() {
@@ -419,6 +399,25 @@ $(document).ready(function() {
 		} else {
 			$('.select_all_items').attr('checked', false);
 			$(".item_select input[type='checkbox']").not('.select_all_items').each(function() {
+				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
+					$(this).attr('checked', true);
+				}
+				else if ($(this).is(':hidden')) {
+					$(this).attr('checked', false);
+				}
+			});
+		}
+	});
+	$('.select_group_items').live('click', function() {
+		var group = $(this).val();
+		if ($(this).attr('checked')) {
+			$(this).attr('checked', true);
+			$('.checkbox_group_' + group).each(function() {
+				$(this).attr('checked', true);
+			});
+		} else {
+			$(this).attr('checked', false);
+			$('.checkbox_group_' + group).each(function() {
 				$(this).attr('checked', false);
 			});
 		}

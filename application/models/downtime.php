@@ -24,7 +24,7 @@ class Downtime_Model extends Model
 			}
 		}
 		$bits = substr($bits, 1);
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			if($generate_links_for_downtime_id) {
 				$query = "SELECT
@@ -207,7 +207,7 @@ class Downtime_Model extends Model
 			return false;
 		}
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$from = 'FROM scheduled_downtime d';
 		$where = 'WHERE d.host_name = '.$db->escape($host);
@@ -252,7 +252,7 @@ class Downtime_Model extends Model
 		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$sql = 'SELECT d.* FROM scheduled_downtime d';
 

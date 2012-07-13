@@ -39,7 +39,7 @@ class Alertlog_Model extends Model
 	 */
 	function get_log_entries($options=false, $limit=false, $offset=0, $count=false)
 	{
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$db = Database::instance();
 		if ($count !== true)
 			$sql = 'SELECT report_data.* FROM report_data';
@@ -67,7 +67,7 @@ class Alertlog_Model extends Model
 		if (isset($options['hosts']) && !empty($options['hosts'])) {
 			$host_cond = array();
 			foreach ($options['hosts'] as $host)
-				$host_cond[] = '(report_data.host_name = '.$db->escape($host).' AND report_data.service_description = \'\')';
+				$host_cond[] = 'report_data.host_name = '.$db->escape($host);
 			$objsel[] = implode(' OR ', $host_cond);
 		}
 		if (isset($options['services']) && !empty($options['services'])) {

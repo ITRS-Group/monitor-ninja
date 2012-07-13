@@ -5,8 +5,7 @@
  */
 class Host_Model extends Model {
 	private $auth = false;
-	private $host_list = false; # List of hosts to get status for
-	private $service_host_list = false;
+	private $host_list = false; /**< List of hosts to get status for. NOTE: Always IDs, always authed to see OR magical string 'all'. */
 	private $table = "host";
 
 	public $total_host_execution_time = 0; /**< Total host check execution time */
@@ -62,7 +61,7 @@ class Host_Model extends Model {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->auth = new Nagios_auth_Model();
+		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
@@ -71,24 +70,6 @@ class Host_Model extends Model {
 	private static function query($db,$sql)
 	{
 		return $db->query($sql)->result_array();
-	}
-
-	/**
-	 * Determine if user is authorized to view info on a specific host.
-	 * Accepts either hostID or host_name as input. Setting both is undefined.
-	 *
-	 * @param $name The host_name of the host.
-	 * @param $id The id of the host
-	 * @return True if authorized, false if not.
-	 */
-	public function authorized_for($name=false, $id=false)
-	{
-		if ($name !== false)
-			return $this->auth->get_authorized_for_host($name);
-		else if ($id !== false)
-			return $this->auth->get_authorized_for_host($id);
-		else
-			return false;
 	}
 
 	/**
@@ -101,7 +82,7 @@ class Host_Model extends Model {
 			return false;
 		}
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$sql_join = false;
 		$sql_where = false;
 		if (!$auth->view_hosts_root) {
@@ -133,12 +114,12 @@ class Host_Model extends Model {
 	public function search($value=false, $limit=false, $xtra_query = false)
 	{
 		if (empty($value)) return false;
-		$auth_hosts = $this->auth->get_authorized_hosts();
-		$host_ids = array_keys($auth_hosts);
-		if (empty($host_ids))
-			return false;
+		$auth_str = '';
+		if (!$this->auth->view_hosts_root) {
+			$db = Database::instance();
+			$auth_str = 'INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$db->escape($this->auth->id);
+		}
 
-		$host_ids = implode(',', $host_ids);
 		$limit_str = sql::limit_parse($limit);
 		$sql_xtra = false;
 		if (!empty($xtra_query)) {
@@ -164,7 +145,7 @@ class Host_Model extends Model {
 			foreach ($value as $val) {
 				$query_str = '';
 				$val = '%'.$val.'%';
-				$query_str = "SELECT id FROM host WHERE (LCASE(host_name)".
+				$query_str = "SELECT id FROM host $auth_str WHERE (LCASE(host_name)".
 				" LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
 				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
@@ -175,7 +156,6 @@ class Host_Model extends Model {
 				} else {
 					$query_str .= " OR LCASE(output) LIKE LCASE(".$this->db->escape($val)."))";
 				}
-				$query_str .= " AND id IN (".$host_ids.") ";
 				$query[] = $query_str;
 			}
 			if (!empty($query)) {
@@ -183,14 +163,14 @@ class Host_Model extends Model {
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "SELECT * FROM host WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
+			$sql = "SELECT * FROM host $auth_str WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
 			" LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
 			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value)."))".
-			" AND id IN (".$host_ids.")) ORDER BY host_name ".$limit_str;
+			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value).")))".
+			" ORDER BY host_name ".$limit_str;
 		}
 		#echo Kohana::debug($sql);
 		$host_info = $this->query($this->db,$sql);
@@ -226,24 +206,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	 * Fetch hosts for current user and return
-	 * array of host IDs
-	 * @return array host IDs or false
-	 */
-	public static function authorized_hosts()
-	{
-		# fetch hosts for current user
-		$auth = new Nagios_auth_Model();
-		$user_hosts = $auth->get_authorized_hosts();
-		$hostlist = array_keys($user_hosts);
-		if (!is_array($hostlist) || empty($hostlist)) {
-			return false;
-		}
-		sort($hostlist);
-		return $hostlist;
-	}
-
-	/**
 	*	Wrapper to set internal sort_field value
 	*/
 	public function set_sort_field($val)
@@ -270,86 +232,48 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	Public method to set the private host_list variable.
-	*	This is because we always want to validate authorization
-	* 	etc for all hosts passed in.
+	* Public method to set the private host_list variable.
+	* This is because we always want to validate authorization
+	* etc for all hosts passed in.
 	*/
 	public function set_host_list($host_names=false)
 	{
-		if (!is_array($host_names)) {
-			$host_names = trim($host_names);
+		$this->host_list = false;
+		if (is_string($host_names) && strtolower($host_names) === 'all') {
+			$this->host_list = 'all';
+			return;
 		}
 		if (empty($host_names)) {
 			return false;
 		}
-		$retval = false;
-		if (!$this->show_services) {
-			# fetch available hosts for user
-			$hosts = $this->auth->get_authorized_hosts();
-			$host_r = $this->auth->hosts_r; # flipped array => host_names are keys, ID is value
 
-			if (is_array($host_names)) {
-				foreach ($host_names as $temp_host) {
-					$temp_host = trim($temp_host);
-					if (array_key_exists($temp_host, $host_r)) {
-						$retval[] = $host_r[$temp_host];
-					}
-				}
-			} else {
-				if (strtolower($host_names) === 'all') {
-					# return all to fetch all relations
-					# via contact and contactgroups
-					$retval = 'all';
-				} elseif (array_key_exists($host_names, $host_r)) {
-					$retval[] = $host_r[$host_names];
-				}
+		if (!is_array($host_names))
+			$host_names = array($host_names);
+		foreach ($host_names as $idx => $hn)
+			$host_names[$idx] = $this->db->escape(trim($hn));
+		$host_names = implode(',', $host_names);
+
+		if (!$this->show_services) {
+			$ca = '';
+			if (!$this->auth->view_hosts_root) {
+				$ca = ' INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$this->auth->id;
+			}
+			$query = "SELECT host.id FROM host $ca WHERE host.host_name IN ($host_names)";
+			$res = $this->db->query($query);
+			foreach ($res as $row) {
+				$this->host_list[$row->id] = $row->id;
 			}
 		} else {
-			$services = $this->get_host_on_services();
-			if (!empty($services) && is_array($services)) {
-				if (is_array($host_names)) {
-					foreach ($host_names as $temp_host) {
-						$temp_host = trim($temp_host);
-						if (in_array($temp_host, $services)) {
-							$this->service_host_list[] = $this->db->escape($temp_host);
-						}
-					}
-				} else {
-					if (strtolower($host_names) === 'all') {
-						# return all to fetch all relations
-						# via contact and contactgroups
-						$retval = 'all';
-					} elseif (in_array($host_names, $services)) {
-						$this->service_host_list[] = $this->db->escape($host_names);
-					}
-				}
+			$ca = '';
+			if (!$this->auth->view_hosts_root) {
+				$ca = 'INNER JOIN service ON host.host_name = service.host_name INNER JOIN contact_access ca ON service.id = ca.service AND ca.contact= '.$this->auth->id;
+			}
+			$query = "SELECT host.id FROM host $ca WHERE host.host_name IN ($host_names)";
+			$res = $this->db->query($query);
+			foreach ($res as $row) {
+				$this->host_list[$row->id] = $row->id;
 			}
 		}
-		$this->host_list = $retval;
-	}
-
-	/**
-	*	Fetch info on what hosts current user
-	* 	has services.
-	*/
-	public function get_host_on_services()
-	{
-		$services = $this->auth->get_authorized_services();
-
-		if (empty($services)) {
-			return false;
-		}
-
-		$service_hosts = array();
-		foreach ($services as $s) {
-			$parts = explode(';', $s);
-			if (!empty($parts)) {
-				if (!in_array($parts[0], $service_hosts)) {
-					$service_hosts[] = $parts[0];
-				}
-			}
-		}
-		return !empty($service_hosts) ? $service_hosts : false;
 	}
 
 	/**
@@ -377,13 +301,7 @@ class Host_Model extends Model {
 		}
 
 		if (!$this->show_services) {
-			# host query part
-			if (!$this->auth->view_hosts_root) {
-				$from .= ', contact_access ca ';
-				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
-			} else {
-				$where = 'WHERE 1=1 ';
-			}
+			$where = 'WHERE 1=1 ';
 
 			if (!empty($filter_host_sql)) {
 				$filter_sql .= sprintf($filter_host_sql, 'host.');
@@ -413,6 +331,10 @@ class Host_Model extends Model {
 			if ($this->host_list !== 'all' && !empty($host_str)) {
 				$where .= empty($where) ?  "" : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
+			}
+			else if (!$this->auth->view_hosts_root) {
+				$from .= ', contact_access ca ';
+				$where = ' WHERE ca.contact='.$this->auth->id.' AND ca.service IS NULL AND ca.host=host.id ';
 			}
 
 			# only host listing
@@ -529,102 +451,23 @@ class Host_Model extends Model {
 				$where .= empty($where) ?  "" : " AND ";
 				$where .= "host.id IN(".$host_str.") ";
 			}
-
 			$sql = "SELECT ".$field_list." FROM ".
 					$from.$where.
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
-			if (is_array($this->host_list)) {
-				$host_list = false;
-				$hosts = $this->auth->get_authorized_hosts();
-				if (!empty($this->host_list) && is_array($this->host_list)) {
-					foreach ($this->host_list as $host) {
-						if (array_key_exists($host, $hosts)) {
-							$host_list[] = $this->db->escape($hosts[$host]);
-						}
-					}
-				}
-			}
-
-			if (!empty($host_list) && is_array($host_list)) {
-				$where_str = ' service.host_name IN ('.implode(',', $host_list).')';
-			} elseif (is_array($this->service_host_list)) {
-				$where_str = ' service.host_name IN ('.implode(',', $this->service_host_list).')';
-			} elseif ($this->host_list !== 'all') {
-				# should mean that we have a request for services
-				# on a host that doesn't have any services
-				return false;
-			}
-
-			if (!empty($where_str)) {
-				$sql .= ' AND '.$where_str;
-			}
-
 			$sql .= " ORDER BY ".$this->sort_field." ".$this->sort_order;
-
-		}
-
-		if ($this->count == false && !empty($this->num_per_page) && $this->offset !== false) {
-			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
-		}
-
-		if ($this->count === true && empty($filter_sql) && empty($hostprops_sql)
-			&& empty($serviceprops_sql) && !empty($this->auth->id)) {
-
-			$where_str = false;
-
-			# this is one of the most common queries for this method
-			# so we try to speed up this by making special case.
-			# We are only interested in how many hosts or services there are (for this user)
-			if (!$this->show_services) {
-
-				if (is_array($this->host_list)) {
-					#$hosts = $this->auth->get_authorized_hosts();
-					$host_ids = implode(',', $this->host_list);
-					$where_str = ' id IN('.$host_ids.')';
-				}
-				$sql = "SELECT COUNT(1) AS cnt FROM host";
-				if (!$this->auth->view_hosts_root) {
-					$sql .= " INNER JOIN contact_access ca ON host.id=ca.host ".
-						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NULL";
-					if (!empty($where_str)) {
-						$sql .= ' AND '.$where_str;
-					}
-				} else {
-					if (!empty($where_str)) {
-						$sql .= ' WHERE '.$where_str;
-					}
-				}
-			} else {
-				if (!empty($host_list) && is_array($host_list)) {
-					$where_str = ' host_name IN ('.implode(',', $host_list).')';
-				} elseif (is_array($this->service_host_list)) {
-					$where_str = ' host_name IN ('.implode(',', $this->service_host_list).')';
-				}
-				$sql = "SELECT COUNT(*) AS cnt FROM service";
-				if (!$this->auth->view_hosts_root && !$this->auth->view_services_root) {
-					$sql .= " INNER JOIN contact_access ca ON service.id=ca.service ".
-						"WHERE ca.contact=".$this->auth->id." AND ca.service IS NOT NULL";
-					if (!empty($where_str)) {
-						$sql .= ' AND '.$where_str;
-					}
-				} else {
-					if (!empty($where_str)) {
-						$sql .= ' WHERE '.$where_str;
-					}
-				}
+			if (!empty($this->num_per_page) && $this->offset !== false) {
+				$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 			}
-
-			$result = $this->query($this->db,$sql);
-			$rc = $result ? $result[0]->cnt : 0;
-			unset($result);
-			return $rc;
 		}
+
+		if ($this->count) {
+			$sql = "SELECT COUNT(1) AS cnt FROM $from$where$filter_sql$hostprops_sql$serviceprops_sql";
+		}
+
 		$result = $this->query($this->db,$sql);
 		if ($this->count === true) {
-			$rc = $result ? count($result) : 0;
-			unset($result);
-			return $rc;
+			return $result[0]->cnt;
 		}
 		$rc = array();
 		foreach( $result as $row )
@@ -633,6 +476,66 @@ class Host_Model extends Model {
 		}
 		unset($result);
 		return $rc;
+	}
+
+	/**
+	*	Build a string to be used in a livestatus query to filter on different service properties
+	*/
+	public static function build_service_livestatus_props($serviceprops=false)
+	{
+		if (empty($serviceprops))
+			return false;
+		$ret = array();
+		if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME)
+			$ret[] = "Filter: scheduled_downtime_depth > 0\nFilter: host_scheduled_downtime_depth > 0\nOr: 2";
+		if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME)
+			$ret[] = "Filter: scheduled_downtime_depth = 0\nFilter: host_scheduled_downtime_depth = 0";
+		if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged != 0';
+		if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 0';
+		if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 0\nFilter: passive_checks_enabled = 0\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 0';
+		}
+		if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 1\nFilter: passive_checks_enabled = 1\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 1';
+		}
+		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED)
+			$ret[] = 'Filter: event_handler_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED)
+			$ret[] = 'Filter: event_handler_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_IS_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 1';
+		if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 0';
+		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED)
+			$ret[] = 'Filter: notifications_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED)
+			$ret[] = 'Filter: notifications_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 0';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 1';
+		if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK)
+			$ret[] = 'Filter: check_type = 0';
+		if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK)
+			$ret[] = 'Filter: check_type > 0';
+		if ($serviceprops & nagstat::SERVICE_HARD_STATE)
+			$ret[] = 'Filter: state_type = 1';
+		if ($serviceprops & nagstat::SERVICE_SOFT_STATE)
+			$ret[] = 'Filter: state_type = 0';
+
+		return implode("\n", $ret);
 	}
 
 	/**
@@ -693,6 +596,66 @@ class Host_Model extends Model {
 			$ret_str .= ' AND '.$table_alias.'state_type=0 ';
 
 		return $ret_str;
+	}
+
+	/**
+	*	Build a string to be used in a livestatus query to filter on different host properties
+	*/
+	public static function build_host_livestatus_props($hostprops)
+	{
+		if (empty($hostprops))
+			return false;
+		$ret = array();
+		if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME)
+			$ret[] = 'Filter: scheduled_downtime_depth > 0';
+		if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME)
+			$ret[] = 'Filter: scheduled_downtime_depth = 0';
+		if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 1';
+		if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED)
+			$ret[] = 'Filter: acknowledged = 0';
+		if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 0\nFilter: passive_checks_enabled = 0";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 0';
+		}
+		if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
+			if (config::get('checks.show_passive_as_active', '*'))
+				$ret[] = "Filter: active_checks_enabled = 1\nFilter: passive_checks_enabled = 1\nOr: 2";
+			else
+				$ret[] = 'Filter: active_checks_enabled = 1';
+		}
+		if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED)
+			$ret[] = 'Filter: event_handler_enabled = 0';
+		if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED)
+			$ret[] = 'Filter: event_handler_enabled = 1';
+		if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 0';
+		if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED)
+			$ret[] = 'Filter: flap_detection_enabled = 1';
+		if ($hostprops & nagstat::HOST_IS_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 1';
+		if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING)
+			$ret[] = 'Filter: is_flapping = 0';
+		if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED)
+			$ret[] = 'Filter: notifications_enabled = 0';
+		if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED)
+			$ret[] = 'Filter: notifications_enabled = 1';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 0';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED)
+			$ret[] = 'Filter: passive_checks_enabled = 1';
+		if ($hostprops & nagstat::HOST_PASSIVE_CHECK)
+			$ret[] = 'Filter: check_type > 0';
+		if ($hostprops & nagstat::HOST_ACTIVE_CHECK)
+			$ret[] = 'Filter: check_type = 0';
+		if ($hostprops & nagstat::HOST_HARD_STATE)
+			$ret[] = 'Filter: state_type = 1';
+		if ($hostprops & nagstat::HOST_SOFT_STATE)
+			$ret[] = 'Filter: state_type = 0';
+
+		return implode("\n", $ret);
 	}
 
 	/**
@@ -766,7 +729,7 @@ class Host_Model extends Model {
 		if (empty($host_name)) {
 			return false;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$service_description = trim($service_description);
 		# check credentials for host
@@ -867,7 +830,7 @@ class Host_Model extends Model {
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			$ca = '';
 		} else {
@@ -933,7 +896,7 @@ class Host_Model extends Model {
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root || $auth->authorized_for_system_information) {
 			$ca = '';
 			$ca_w_alias = '';
@@ -1010,7 +973,7 @@ class Host_Model extends Model {
 			return false;
 		}
 		if (!isset($this->auth) || !is_object($this->auth))
-			$auth = new Nagios_auth_Model();
+			$auth = Nagios_auth_Model::instance();
 		else
 			$auth = $this->auth;
 
@@ -1044,7 +1007,7 @@ class Host_Model extends Model {
 		} else {
 			$db = $this->db;
 		}
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		$sql = "SELECT service_description FROM service";
 		if (!$auth->view_hosts_root && !$auth->view_services_root)

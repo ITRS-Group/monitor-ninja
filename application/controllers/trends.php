@@ -238,23 +238,23 @@ class Trends_Controller extends Authenticated_Controller {
 
 		# we should set the required js-files
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = $this->add_path('reports/js/json');
-		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('trends/js/trends');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = $this->add_path('reports/js/json.js');
+		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('trends/js/trends.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 
 
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
-		$this->xtra_css[] = $this->add_path('css/default/reports');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
 
 		$t = $this->translate;
@@ -496,19 +496,19 @@ class Trends_Controller extends Authenticated_Controller {
 		// obj_value is ALWAYS an array
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = $this->add_path('reports/js/move_options');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('trends/js/trends');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 
 		$this->template->js_header->js = $this->xtra_js;
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('css/default/reports');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->css_header->css = $this->xtra_css;
 
@@ -525,7 +525,7 @@ class Trends_Controller extends Authenticated_Controller {
 		$in_hostgroup 		= arr::search($_REQUEST, 'hostgroup', array());
 		$in_servicegroup	= arr::search($_REQUEST, 'servicegroup', array());
 
-		$mon_auth = new Nagios_auth_Model();
+		$mon_auth = Nagios_auth_Model::instance();
 		if (is_string($in_host)) {
 			# @@@FIXME: is the following still valid?
 			// shorthand aliases - host=all is used for 'View trends for all hosts'

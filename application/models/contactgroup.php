@@ -20,7 +20,7 @@ class Contactgroup_Model extends Model
 		$view_hosts_root = false;
 		$sql_auth_str = false;
 
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		if ($auth->view_hosts_root) {
 			$view_hosts_root = true;
 		} else {

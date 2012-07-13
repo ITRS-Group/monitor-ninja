@@ -1,0 +1,676 @@
+@import url("../default/common.css");
+
+
+/**************************************************************************************************/
+html, body {
+	color: #ff9922;
+}
+body {
+	background-color: #333;
+}
+a { color: #ff9600; }
+
+/**************************************************************************************************/
+cite em,
+cite em:first-child {
+	background: #444 url(images/input-bg-right.png) no-repeat;
+}
+cite em:first-child {
+	background: #444 url(images/input-bg-left.png) no-repeat;
+}
+input[type=submit],
+input[type=reset],
+input[type=button] {
+	font: 11px arial,sans-serif;
+	border: 1px solid #855e36;
+	outline:  1px solid #855e36;
+	background: #444444 url(images/bg.png) repeat-x;
+}
+input[type=text] {
+	font: 11px arial,sans-serif;
+	border: 1px solid #855e36;
+	border:  1px solid #855e36;
+
+}
+input.text {
+	background: #333 url(images/input-bg.png) repeat-x;
+
+}
+input.i160 {
+	background: #333 url(images/input-160.png) no-repeat;
+}
+select {
+	border:1px solid #855e36;
+	outline:#855e36;
+}
+
+input.textbox {
+	color: #414141 !important;
+}
+
+/* login ****************************************************************************************/
+#login-table {
+	background: transparent url(images/login.png) no-repeat top center;
+}
+
+#login-table table tr td {
+	background: #444444;
+}
+#login-table hr {
+	color: #333333;
+	background-color: #444444;
+}
+
+/* content ****************************************************************************************/
+#infobar {
+	color: #444444;
+	background: #333333 url(images/licensebarbg.png);
+}
+#infobar-sml {
+	background: #333 url(images/licensebarbg.png);
+	/*display: none;*/
+}
+#top-bar {
+	border-left:1px solid #855e36;
+	border-right:1px solid #855e36;
+}
+#navigation ul li {
+	background: url(images/menu-arrow.png) no-repeat;
+}
+#navigation a {
+	color: #ff9600;
+text-decoration: none;
+}
+#navigation p {
+	color: #ff9600;
+}
+#navigation p a {
+	color: #ff9600;
+	border-bottom:1px solid #777777;
+}
+
+#navigation input {
+	background: transparent url(images/input-270.png) no-repeat;
+	color: #999999;
+}
+#quickbar {
+	border:1px solid #855e36;
+}
+#quicklinks ul {
+	background: #333 url(images/bg.png) repeat-x;
+}
+#notification_checks ul li, #quicklinks ul li {
+	background: url(../../icons/16x16/shield-warning.png) no-repeat;
+	font-weight: bold;
+}
+#icons {
+	background: #333 /*url(images/bg.png) repeat-x*/;
+	border-bottom:1px solid #855e36;
+}
+#icons ul li {
+	background: url(images/menu-divider.png) 0px 0px no-repeat;
+}
+#status {
+	color: #555555;
+}
+#menu {
+	background-color: #333;
+	border-left:1px solid #855e36;
+	border-right:1px solid #855e36;
+}
+#menu ul li em {
+	border: 1px solid #855e36;
+	background:#333;
+	color:#ccc;
+}
+#menu ul li {
+	border-bottom: 1px solid #855e36;
+}
+#menu ul li.hr {
+	background: #333;
+	border-bottom: 1px solid #855e36;
+}
+#menu ul li a:hover{
+	color:#ffc333;
+	/*background-color:#e2edf9;*/
+}
+#close-menu {
+	background: transparent url(images/menu_hide.png) no-repeat;
+}
+#show-menu {
+	background: transparent url(images/menu_show.png) no-repeat;
+}
+
+#version_info,
+#page_settings {
+	border: 1px solid #855e36;
+	background-color: #333;
+	/*display: none;*/
+	z-index: 10000;
+}
+
+#version_info ul li,
+#page_settings ul li {
+	border-bottom:1px solid #855e36;
+	background: #333 url(images/bg.png) repeat-x;
+}
+#page_settings ul li.selected {
+	background: transparent url(images/checkbox-selected.png) 4px 3px no-repeat;
+}
+#page_settings ul li.unselected {
+	background: transparent url(images/checkbox.png) 4px 3px no-repeat;
+}
+#page_settings ul li a {
+	border-bottom:1px solid #855e36;
+}
+#page_links ul {
+	background: /*transparent url(images/bg.png) repeat-x #000*/none;
+	border-bottom: 1px solid #855e36;
+}
+/* pagination *************************************************************************************/
+
+#content{
+	top: 66px !important;
+}
+#content p.pagination strong,
+#content p.pagination a {
+	border:1px solid #855e36;
+	background: #333 url(images/bg.png) repeat-x;
+}
+
+#content p.pagination strong {
+	background-color: #333;
+	background: #333 url(images/bg.png) repeat-x;
+}
+
+#content p.pagination a.img {
+	border:1px solid #855e36;
+	background-color: transparent;
+}
+#content form.pagination_form input,
+#content form.pagination_form select,
+#content form.pagination_form input[type=button] {
+	border:1px solid #855e36;
+}
+/* generic classes ********************************************************************************/
+
+caption {
+	color: #ff9922;
+}
+tr td.white {
+	background: #333;
+}
+table.white-table tr td input,
+table.white-table tr td select,
+table.white-table tr td textarea {
+	background: #333;
+	border:1px solid #855e36;
+}
+table.white-table tr td input[type=submit],
+table.white-table tr td input[type=reset] {
+	/*background: #333 url(images/bg.png) repeat-x;*/
+	border:1px solid #855e36;
+}
+/* health css *************************************************************************************/
+table.health {
+	border: 1px solid #855e36;
+	background-color: #333;
+}
+.service-totals tr td.status:first-child,
+.w-table.w50 tr td.status:first-child { border-left:#855e36;
+}
+/* extinfo table **********************************************************************************/
+table.extinfo {
+	background-color: #333;
+}
+/* widgdet style **********************************************************************************/
+.widget-header {
+	color: #ff9922;
+	border:1px solid #855e36;
+}
+.widget-placeholder {
+  border:#855e36;
+}
+.widget-editbox{
+	background-color: #333;
+	border:1px solid #855e36;
+/* 	display: none;*/
+}
+/* status *****************************************************************************************/
+tr.odd td.bl,
+tr.even td.bl { border-left:1px solid #855e36; }
+tr.odd td.bt,
+tr.even td.bt { border-top:1px solid #855e36; }
+th.white,
+#service_table tr.even td.white,
+#service_table tr.odd td.white {
+	background: #333;
+	border:1px solid #855e36;
+}
+#content a {
+	border-bottom:1px solid #855e36;
+}
+tr.even td {
+	border:1px solid #855e36;
+	background: /*#2f2f2f*/ !important;
+}
+tr.odd td {
+	border:1px solid #855e36;
+	background: /*#333333*/ !important;
+}
+tr.odd td:first-child,
+tr.even td:first-child {
+	border-left:1px solid #855e36 !important;
+}
+tr.even td.status {
+}
+td.white table tr td {
+	border:#855e36 !important;
+}
+td.white:first-child table tr td:first-child {
+	border-left:#855e36 1px solid !important;
+}
+.w-table tr td {
+	border-right:1px solid #855e36;
+	border-bottom:1px solid #855e36;
+}
+.w-table tr td.dark {
+	border-left:1px solid #855e36 !important;
+}
+th.disabled_monfeat em,
+th.enabled_monfeat em {
+	background: transparent url(../../icons/arrow-down.gif) right no-repeat;
+}
+table.ext {
+	background-color: #855e36;
+}
+table.showlog tr td input[type=text] {
+	background-color: #333;
+}
+
+table.showlog tr td input[type=submit] {
+	background-color: #333;
+}
+/* widget thingy  ********************************************************************************/
+#widget-tac_hosts table tr th,
+#widget-tac_services table tr th,
+#widget-tac_monfeat table tr th {
+	border:1px solid #855e36;
+}
+#widget-tac_hosts table tr th:first-child,
+#widget-tac_services table tr th:first-child,
+#widget-tac_monfeat table tr th:first-child {
+	border-left:1px solid #855e36;
+}
+.widget w98 left config_header{
+	top: 57px;
+	position: fixed;
+	background-color: #333;
+	padding: 10px 1%;
+}
+/* table sorter styles ****************************************************************************/
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+th.headerSortUp,
+th.headerSortDown,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
+th.header {
+	background: #000 url(images/sort.png) top right !important;
+	border-bottom:1px solid #855e36;
+	border-right:1px solid #855e36;
+	border-top:1px solid #855e36;
+}
+.group_grid_table th.header:first-child,
+.group_overview_table th.header:first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
+th.header:first-child {
+	background: #000 url(images/sort.png) top right !important;
+	border-left:1px solid #855e36;
+}
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#service_table th.headerNone,
+th.headerNone,
+#host_table th,
+#host_table th.no-sort {
+	background:#cc9966 !important;
+	border-bottom:1px solid #855e36;
+	border-right:1px solid #855e36;
+	border-top:1px solid #855e36;
+	background: url(images/sort-none.png) top right !important;
+}
+.group_grid_table th:first-child,
+.group_overview_table th:first-child,
+.comments_table th:first-child,
+th.headerNone:first-child,
+#group_summary_table th:first-child,
+#service_table th:first-child,
+#host_table th:first-child,
+#host_table th.no-sort:first-child {
+	border-left:1px solid #855e36;
+}
+.group_grid_table th.headerSortDown,
+.group_overview_table th.headerSortDown,
+.comments_table th.headerSortDown,
+#group_summary_table th.headerSortDown,
+#service_table th.headerSortDown,
+#host_table th.headerSortDown,
+th.headerSortDown {
+	background: #000 url(images/sort-down.png) top right !important;
+}
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
+th.headerSortDown:first-child {
+	background: #000 url(images/sort-down.png) top right !important;
+	border-left:1px solid #855e36;
+}
+.group_grid_table th.headerSortUp,
+.group_overview_table th.headerSortUp,
+.comments_table th.headerSortUp,
+#group_summary_table th.headerSortUp,
+#service_table th.headerSortUp,
+#host_table th.headerSortUp,
+th.headerSortUp {
+	background: #000 url(images/sort-up.png) top right !important;
+}
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:first-child,
+th.headerSortUp:first-child {
+	background: #000 url(images/sort-up.png) top right !important;
+	border-left:1px solid #855e36;
+}
+/* autocomplete styles ****************************************************************************/
+.autocomplete {
+	border:1px solid #855e36;
+	background:#f1f1f1;
+}
+.autocomplete .selected {
+	background:#f1f1f1;
+}
+.autocomplete strong {
+	color:#3399ff;
+}
+/* pnp ********************************************************************************************/
+#pnp_navigation {
+	border:1px solid #855e36;
+}
+#pnp_navigation hr {
+	background-color: #855e36;
+}
+/** Cross Browser Styling **/
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color:#333333;
+	color:#f1f1f1;
+}
+/* Component containers
+----------------------------------*/
+
+.ui-widget-content { border:1px solid #855e36; background: #000 50% 50% repeat-x;}
+
+.ui-widget-header { border:1px solid #855e36; background: #000 50% 50% repeat-x;font-weight: bold; }
+
+.ui-state-default, .ui-widget-content .ui-state-default { border:1px solid #855e36; background: #000 50% 50% repeat-x; outline: none; }
+
+/***************************************************************************************************
+*	COLOURS!
+***************************************************************************************************/
+td.white table tr td,
+td.white:first-child table tr td:first-child,
+#widget-tac_hosts table tr th,
+#widget-tac_services table tr th,
+#widget-tac_monfeat table tr th,
+#widget-tac_hosts table tr th:first-child,
+#widget-tac_services table tr th:first-child,
+#widget-tac_monfeat table tr th:first-child,
+#top-bar,
+#menu,
+#menu ul,
+#page_settings ul li,
+#menu ul li,
+#page_settings,
+.widget-editbox {
+	border-color: #855e36;
+}
+
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:first-child,
+th.headerSortUp:first-child,
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
+th.headerSortDown:first-child,
+.group_grid_table th:first-child,
+.group_overview_table th:first-child,
+.comments_table th:first-child,
+th.headerNone:first-child,
+#group_summary_table th:first-child,
+#service_table th:first-child,
+#host_table th:first-child,
+#host_table th.no-sort:first-child,
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#service_table th.headerNone,
+th.headerNone,
+#host_table th,
+#host_table th.no-sort,
+.group_grid_table th.header:first-child,
+.group_overview_table th.header:first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
+th.header:first-child,
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
+th.header,
+.autocomplete,
+tr.odd td:first-child,
+tr.even td:first-child,
+tr.even td,
+tr.odd td,
+tr.odd td.bl,
+tr.even td.bl,
+tr.odd td.bt,
+tr.even td.bt,
+.widget-placeholder,
+.widget-header,
+table.health,
+#quickbar{
+	border-color: #855e36;
+}
+#host_table th.header:first-child {
+	border-left: #855e36;
+}
+
+#menu ul li.hr {
+	border-color: ##855e36;
+}
+
+input[type=submit],
+input[type=reset],
+input[type=button],
+input[type=text],
+select {
+	border:##855e36;
+	outline:##855e36;
+}
+#top-bar{
+	background:#000 url(images/bg.png) repeat-x;
+}
+
+#page_settings ul li,
+#quickbar,
+#menu ul li {
+	background:#333;
+}
+
+tr td,
+table.health tr td div.border {
+	background:#000 url(images/bg.png) repeat;
+}
+
+.widget-header.dark,
+.status,
+th,
+tr td.dark,
+tr.even td.status {
+	background:#000 url(images/bg.png) repeat;
+
+}
+.w-table,
+table.extinfo {
+	background: #333;
+}
+
+#menu ul li.hr {
+background: #333;
+}
+
+tr.even td 	{ background: #333; }
+tr.odd td,
+#menu,
+#page_settings,
+.autocomplete .selected { background-color: #333; }
+
+.group_grid_table th.header,
+.group_overview_table th.header,
+.comments_table th.header,
+#group_summary_table th.header,
+#service_table th.header,
+#host_table th.header,
+th.header,
+.group_grid_table th.header:first-child,
+.group_overview_table th.header:first-child,
+.comments_table th.header:first-child,
+#group_summary_table th.header:first-child,
+#service_table th.header:first-child,
+#host_table th.header:first-child,
+th.header:first-child {
+	/*background: #333 url(images/sort.png) top right;*/
+}
+
+.group_grid_table th,
+.group_overview_table th,
+.comments_table th,
+#group_summary_table th,
+#service_table th,
+#service_table th.headerNone,
+th.headerNone,
+#host_table th,
+#host_table th.no-sort {
+	background:#000 url(images/bg.png) repeat-x !important;
+}
+
+.group_grid_table th.headerSortDown,
+.group_overview_table th.headerSortDown,
+.comments_table th.headerSortDown,
+#group_summary_table th.headerSortDown,
+#service_table th.headerSortDown,
+#host_table th.headerSortDown,
+th.headerSortDown,
+.group_grid_table th.headerSortDown:first-child,
+.group_overview_table th.headerSortDown:first-child,
+.comments_table th.headerSortDown:first-child,
+#group_summary_table th.headerSortDown:first-child,
+#service_table th.headerSortDown:first-child,
+#host_table th.headerSortDown:first-child,
+th.headerSortDown:first-child {
+	/*background: #333 url(images/sort-down.png) top right;*/
+
+}
+
+.group_grid_table th.headerSortUp,
+.group_overview_table th.headerSortUp,
+.comments_table th.headerSortUp,
+#group_summary_table th.headerSortUp,
+#service_table th.headerSortUp,
+#host_table th.headerSortUp,
+th.headerSortUp,
+.group_grid_table th.headerSortUp:first-child,
+.group_overview_table th.headerSortUp:first-child,
+.comments_table th.headerSortUp:first-child,
+#group_summary_table th.headerSortUp:first-child,
+#service_table th.headerSortUp:first-child,
+#host_table th.headerSortUp:first-child,
+th.headerSortUp:first-child {
+	/*background: #333 url(images/sort-up.png) top right;
+*/
+}
+
+/* Reports */
+div.setup-table tr.odd td,
+div.setup-table tr.even td {
+	border-bottom:#855e36;
+	background: #333;
+}
+
+tr#service_row_2 td.bl,
+tr#host_row_2 td.bl,
+tr#hostgroup_row td.bl,
+tr#servicegroup_row td.bl {
+	border-left:#855e36;
+}
+
+div.setup-table tr.even td:first-child,
+div.setup-table tr.odd td:first-child {
+	border-left:#855e36;
+}
+
+div.setup-table tr.odd td {
+	background: #333;
+}
+
+tr#hostgroup_row td {
+	border:#855e36;
+}
+
+
+td a.help, a.help {
+	color: #0186b3;
+}
+
+hr {
+	background-color: #333;
+}
+
+/***************************************************************************
+    CSS - here can  you change colors and backgrounds for your monitor
+****************************************************************************/
+
+
+
+
+/***************************************************************************************************
+*	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
+***************************************************************************************************/

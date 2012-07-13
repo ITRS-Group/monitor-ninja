@@ -29,8 +29,10 @@ foreach ($result as $node) {
 }
 
 if (is_array($data)) {
-	foreach ($data as $host => $parent) {
-		echo '<edge source="'.$parent.'" target="'.$host.'"/>';
+	foreach ($data as $host => $parents) {
+		foreach ($parents as $parent) {
+			echo '<edge source="'.$parent.'" target="'.$host.'"/>';
+		}
 	}
 }
 

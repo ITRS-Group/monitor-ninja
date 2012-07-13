@@ -146,17 +146,17 @@ class Histogram_Controller extends Authenticated_Controller
 		$template = $this->template->content;
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('histogram/js/move_options');
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('histogram/js/histogram');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('histogram/js/move_options.js');
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('histogram/css/histogram');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 
@@ -260,11 +260,11 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->template->disable_refresh = true;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_js[] = 'application/media/js/jquery.flot.min';
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
+		$this->xtra_js[] = 'application/media/js/jquery.flot.min.js';
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 
 		# fetch users date format in PHP style so we can use it
 		# in date() below
@@ -290,11 +290,11 @@ class Histogram_Controller extends Authenticated_Controller
 		$this->inline_js .= $js_date_format."\n";
 		$this->inline_js .= $js_start_date."\n";
 
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('histogram/js/histogram');
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('histogram/css/histogram');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('histogram/js/histogram.js');
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('histogram/css/histogram.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$rpt = new Reports_Model();
 

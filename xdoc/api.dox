@@ -1,16 +1,6 @@
 /** @page API
 
-Table of contents
-
-@ref entrypoints
-
-- @ref addons
-- @ref widget
-- @ref models
-- @ref greasy
-
-@ref push
-<hr>
+[TOC]
 
 @section entrypoints Modifying Ninja's behavior
 
@@ -44,21 +34,24 @@ a link that will point to your intranet.
 
 @subsection widget Creating your own widgets
 
-See the section on @ref Widgets.
-
-@subsection models Using Ninja's models
-
-See the detailed method documentation of <a href='annotated.html'>Data Structures</a>, in particular, look for classes
-with names ending in _Model. These will give you the data you need to use for the next
-step: coding your own solutions with Ninja as a tool to build on.
+See the documentation section on @ref Widgets.
 
 @subsection greasy Finetuning Ninja, editing existing code
+
+There is a "Hello World" bundle located in ninja/xdoc/demo_module_hello_world. Read
+through the controller-file to grasp how you can add any code you would like to your
+Ninja installation.
 
 Coding with Ninja is to a high degree, interacting with the php framework <a
 href="http://docs.kohanaphp.com/">Kohana 2</a>. You can modify Ninja's behaviour
 in several different layers. Before you do that, remember that the files to look
 for are in /opt/monitor/op5/ninja on your Monitor server (or better yet, a test
-	server).
+ server).
+
+To reuse built-in features, read the detailed method documentation of
+<a href='annotated.html'>Data Structures</a>, in particular, look for classes with
+names ending in _Model. These will give you the data you need to use for the next
+step: coding your own solutions with Ninja as a tool to build on.
 
 @section push Ninja is open source
 

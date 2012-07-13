@@ -277,19 +277,19 @@ class Summary_Controller extends Authenticated_Controller
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 
 		$this->template->js_header = $this->add_view('js_header');
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		#$this->xtra_js[] = $this->add_path('summary/js/json');
-		$this->xtra_js[] = $this->add_path('summary/js/move_options');
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('summary/js/summary');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		#$this->xtra_js[] = $this->add_path('summary/js/json.js');
+		$this->xtra_js[] = $this->add_path('summary/js/move_options.js');
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('css/default/reports');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
@@ -605,14 +605,14 @@ class Summary_Controller extends Authenticated_Controller
 
 		$t = $this->translate;
 		$this->template->disable_refresh = true;
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('summary/js/summary');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
-		$this->xtra_css[] = $this->add_path('css/default/reports');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
+		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
 		$date_format = cal::get_calendar_format(true);

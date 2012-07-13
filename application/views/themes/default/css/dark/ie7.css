@@ -1,0 +1,62 @@
+#content{padding-left: 1%}
+#content.ie7conf { padding-left: 0px }
+table{border-collapse:collapse}
+#login-table hr {margin: 0px;}
+.w98 { width: 99%;}
+.w49 { padding-right: 10px }
+.service-totals {margin-top:-75px;}
+
+.icon {padding: 0px 7px;max-width: 16px;}
+.icon img {margin: 0px;}
+input[type=text],
+select {
+	border:  1px solid #ff9922;
+}
+#service_table tr.even td.white,
+#service_table tr.odd td.white {
+	border-right: 1px solid #ff9922;
+	border: 0px;
+}
+#service_table tr.even td.white:first-child,
+#service_table tr.odd td.white:first-child {
+	border: 0px;
+}
+#service_table tr.even td.service_hostname.w80.bt,
+#service_table tr.odd td.service_hostname.w80.bt {
+	border: 1px solid #ff99222;
+}
+#content p.pagination {
+	padding-top: 3px;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+}
+#extinfo_info,#nagios_commands { padding-left: 1%;}
+#filters{height: 130px;}
+
+#page_links {
+	margin-top: 1px;
+	/*margin-left: -1%;/*evil*/
+	width: 99%;
+}
+
+table.ext {
+	border-collapse: separate;
+}
+
+th.enabled_monfeat cite {
+	float: left;
+}
+
+th.item_select {
+ border-right: 0px !important;
+}
+
+.widget-header {
+	height: 14px;
+}
+.ie-pag-config {
+	margin-top: -68px;
+}
+#availability_toolbox {
+	margin-top: -32px;
+}

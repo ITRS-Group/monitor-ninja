@@ -4,7 +4,7 @@ $authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
 
-	$auth = new Nagios_auth_Model();
+	$auth = Nagios_auth_Model::instance();
 	if ($auth->view_hosts_root) {
 		$authorized = true;
 	}
@@ -41,7 +41,6 @@ if (isset($this) && isset($this->template->js_header))
 		<?php echo (Router::$controller.'/'.Router::$method == 'histogram/generate') ? html::script('application/media/js/excanvas.compiled.js') : ''; ?>
 		<![endif]-->
 		<?php
-			$use_contextmenu = false;
 			echo (!empty($css_header)) ? $css_header : '';
 			echo html::script('application/media/js/jquery.min.js');
 			echo html::script('application/media/js/jquery-ui.min.js');
@@ -52,14 +51,9 @@ if (isset($this) && isset($this->template->js_header))
 			echo html::script('application/media/js/jquery.jeditable.min');
 			echo html::script('application/media/js/jquery.query.js');
 			echo html::script('application/media/js/jquery.jgrowl.js');
-			echo html::script('application/media/js/jquery.floatheader.js');
 			echo html::script('application/media/js/jquery.qtip.min.js');
 			echo html::script('application/media/js/jquery.hotkeys.min.js');
-			if (Router::$controller == 'status') {
-				$use_contextmenu = true;
-				# only required for status controller so no need to always include it
-				echo html::script('application/media/js/jquery.contextMenu.js');
-			}
+			echo html::script('application/media/js/jquery.contextMenu.js');
 			echo html::script('application/views/themes/default/js/collapse_menu.js');
 			echo html::script('application/views/themes/default/js/global_search.js');
 			echo html::script('application/views/themes/default/js/pagination.js');
@@ -101,7 +95,6 @@ if (isset($this) && isset($this->template->js_header))
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _use_contextmenu=<?php echo $use_contextmenu === true ? 1 : 0; ?>;
 				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 				var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
 				var _search_string_field = '<?php echo _('Search string') ?>';
@@ -340,7 +333,6 @@ if (isset($this) && isset($this->template->js_header))
 		<div id="content"<?php echo (isset($nacoma) && $nacoma == true) ? ' class="ie7conf"' : ''?>>
 
 			<?php if (isset($content)) { echo $content; } else { url::redirect(Kohana::config('routes.logged_in_default')); }?>
-			<!--<p>Rendered in {execution_time} seconds, using {memory_usage} of memory</p> -->
 		</div>
 		<?php if (isset($saved_searches) && !empty($saved_searches)) {
 			echo $saved_searches;

@@ -133,18 +133,18 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
-		$this->xtra_js[] = 'application/media/js/date';
-		$this->xtra_js[] = 'application/media/js/jquery.datePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.timePicker';
-		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min';
-		$this->xtra_js[] = $this->add_path('reports/js/common');
-		$this->xtra_js[] = $this->add_path('showlog/js/showlog');
+		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('reports/js/common.js');
+		$this->xtra_js[] = $this->add_path('showlog/js/showlog.js');
 
 		$this->template->js_header->js = $this->xtra_js;
 
-		$this->xtra_css[] = $this->add_path('reports/css/datePicker');
-		$this->xtra_css[] = $this->add_path('showlog/css/showlog');
-		$this->xtra_css[] = 'application/media/css/jquery.fancybox';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('showlog/css/showlog.css');
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
 		# fetch users date format in PHP style so we can use it
 		# in date() below

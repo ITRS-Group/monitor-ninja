@@ -62,22 +62,23 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		# is user authenticated to view details on current object?
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$is_authenticated = true;
 		switch ($type) {
 			case 'host':
+
 				$auth->get_authorized_hosts(); ## FIXME: Change once the authorization on hosts are rewritten 
 				if (!array_key_exists($host, $auth->hosts_r)) {
 					# user not allowed to view info on selected host
+				if (!$auth->is_authorized_for_host($host))
 					$is_authenticated = false;
-				}
 				break;
 			case 'service':
 				$auth->get_authorized_services(); ## FIXME: Change once the authorization on services are rewritten
 				if (!array_key_exists($host.';'.$service, $auth->services_r)) {
 					# user not allowed to view info on selected service
+				if (!$auth->is_authorized_for_service($host, $service))
 					$is_authenticated = false;
-				}
 				break;
 			case 'servicegroup': case 'hostgroup':
 				return $this->group_details($type, $host);
@@ -895,8 +896,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 
 		$group_info_res = $grouptype == 'servicegroup' ?
-			Servicegroup_Model::get_by_field_value('servicegroup_name', $group) :
-			Hostgroup_Model::get_by_field_value('hostgroup_name', $group);
+			Servicegroup_Model::get($group) :
+			Hostgroup_Model::get($group);
 
 		if ($group_info_res === false) {
 			$this->template->content = $this->add_view('error');
@@ -1483,7 +1484,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		if (!Auth::instance()->authorized_for('all_hosts')) {
+		if (!Auth::instance()->authorized_for('all_hosts')) {->view_hosts_root) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 

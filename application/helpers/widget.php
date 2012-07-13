@@ -3,7 +3,9 @@ require_once(Kohana::find_file(Kohana::config('widget.dirname'), 'widget_Base'))
 
 function widget_error_handler($a, $b, $c, $d)
 {
-	throw new ErrorException($b, 0, $a, $c, $d);
+	if (error_reporting() & $a) { # Ignore errors not in current level
+		throw new ErrorException($b, 0, $a, $c, $d);
+	}
 }
 
 /**
@@ -85,7 +87,7 @@ class widget_Core
 	{
 		if (!isset($widget_obj->id) || !$widget_obj->id)
 			return;
-		set_error_handler('widget_error_handler', error_reporting());
+		set_error_handler('widget_error_handler');
 		try {
 			$obj = self::get($widget_obj);
 			$out = $obj->render('index', self::$with_chrome);

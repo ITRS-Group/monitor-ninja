@@ -28,7 +28,7 @@ class Comment_Model extends Model {
 			return false;
 		}
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		# service comments or not?
 		$svc_selection = empty($service) ?
@@ -122,7 +122,7 @@ class Comment_Model extends Model {
 		$service = trim($service);
 		$num_per_page = (int)$num_per_page;
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 
 		# service comments or not?
 		$svc_selection = empty($service) ?
@@ -209,7 +209,7 @@ class Comment_Model extends Model {
 	{
 		if (empty($value)) return false;
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$contact_id = (int)$auth->id;
 		$limit_str = sql::limit_parse($limit);
 		$join_host = false;
@@ -276,7 +276,7 @@ class Comment_Model extends Model {
 			return false;
 		}
 		$db = Database::instance();
-		$auth = new Nagios_auth_Model();
+		$auth = Nagios_auth_Model::instance();
 		$field = trim($field);
 		$value = trim($value);
 		$contact_id = (int)$auth->id;
