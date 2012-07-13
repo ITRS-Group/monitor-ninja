@@ -109,6 +109,19 @@ abstract class Auth_Core {
 		Session::instance()->destroy();
 		return true;
 	}
+
+	/**
+	 * Returns true if current session has access for a given authorization point
+	 *
+	 * @param   string   authorization point
+     * @return  boolean  true if access
+	 */
+	public function authorized_for( $authorization_point ) {
+		$user = $this->get_user();
+		if( $user === false )
+			return false;
+		return $user->authorized_for( $authroization_point );
+	}
 	
 	
 	protected function setuser( $user ) {
