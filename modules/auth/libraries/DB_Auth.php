@@ -27,6 +27,9 @@ class DB_Auth_Core extends Auth_Core {
 		$this->config = $config;
 		$this->db     = Database::instance();
 
+		/* Say that we have user administration support */
+		$this->backend_supports['user_administration'] = true;
+		
 		Kohana::log( 'debug', var_export( $_SESSION, true ) );
 	}
 	
@@ -50,6 +53,8 @@ class DB_Auth_Core extends Auth_Core {
 		}
 		
 		$auth_data = $this->authorize_user( $userdata );
+		
+		$auth_data['ninja_change_password'] = true;
 
 		$user = new Auth_DB_User_Model( $userdata + array( 'auth_data' => $auth_data ) );
 		$this->setuser( $user );

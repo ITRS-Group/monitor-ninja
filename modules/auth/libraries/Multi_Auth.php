@@ -14,6 +14,9 @@ class Multi_Auth_Core extends Auth_Core {
 	{
 		$this->config = $config;
 		
+		/* Say that we have support for multiple backends */
+		$this->backend_supports['multiple_backends'] = true;
+		
 		$drivers = $config['driver'];
 		foreach( $drivers as $drv_class => $drv_name ) {
 			$class = $drv_class . '_Auth';
@@ -101,5 +104,17 @@ class Multi_Auth_Core extends Auth_Core {
 	 */
 	public function get_authentication_methods() {
 		return $this->config['driver'];
+	}
+	
+	
+	public function support_for( $task ) {
+		if( in_array( $task, $this->supports ) )
+			return true;
+		foreach( $this->drivers as $driver ) {
+			if( $driver->supports( $task ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 } // End Auth

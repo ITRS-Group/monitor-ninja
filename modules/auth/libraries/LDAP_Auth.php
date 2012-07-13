@@ -14,6 +14,9 @@ class LDAP_Auth_Core extends Auth_Core {
 	public function __construct( $config ) {
 		$this->config = array_merge( $config, $this->read_ldap_config() );
 		$this->rights = $this->read_ldap_rights();
+		
+		/* Say that we have groups support */
+		$this->backend_supports['groups'] = true;
 
 		$this->conn = ldap_connect( $this->config['LDAP_SERVER'] );
 		

@@ -20,15 +20,4 @@ class Auth_Guest_User_Model extends Auth_User_Model {
 		return false;
 	}
 
-	/**
-	 * Updates the password of the user.
-	 *
-	 * @param  string    new password
-	 * @return boolean
-	 */
-	public function change_password( $password )
-	{
-		return false;
-	}
-
-} // End Auth User Model
+} // End Auth Guest User Model

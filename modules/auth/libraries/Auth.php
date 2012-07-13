@@ -10,6 +10,8 @@
 abstract class Auth_Core {
 
 	protected $user = false;
+	protected $backend_supports = array();
+	
 
 	/**
 	 * Create an instance of Auth.
@@ -147,6 +149,20 @@ abstract class Auth_Core {
 		return false;
 	}
 	
+	/**
+	 * Returns true if the backend supports a certain task.
+	 *
+	 * Tasks avalible:
+	 *    groups
+	 *    user_administration
+	 *    multiple_backends
+	 *
+	 * @param   string   name of task
+	 * @return  boolean  if backend has the support
+	 */
+	public function support_for( $task ) {
+		return in_array( $task, $this->supports );
+	}
 	
 	protected function setuser( $user ) {
 		$this->user = $user;
