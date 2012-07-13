@@ -26,8 +26,7 @@ class Configuration_Controller extends Authenticated_Controller {
 	 */
 	public function configure($type=false, $name=false)
 	{
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_configuration_information) {
+		if( !Auth::instance()->authorized_for('authorized_for_configuration_information')) {
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the configuration interface.");
 			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization in the CGIs for more information.');

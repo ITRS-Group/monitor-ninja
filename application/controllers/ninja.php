@@ -270,9 +270,10 @@ class Ninja_Controller extends Template_Controller {
 		unset($data);
 
 		# check permissions
-		$auth = new Nagios_auth_Model();
-		if (nacoma::link()===true && $auth->authorized_for_configuration_information
-			&& $auth->authorized_for_system_commands && $auth->view_hosts_root) {
+		$auth = Auth::instance()->get_user()->auth_data;
+		//var_dump($auth);
+		if (nacoma::link()===true && $auth['authorized_for_configuration_information']
+			&& $auth['authorized_for_system_commands'] && $auth['authorized_for_all_hosts']) {
 			$nacoma = Database::instance('nacoma');
 			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results WHERE visibility != 0');
 			$query->result(false);
