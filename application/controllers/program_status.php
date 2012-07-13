@@ -30,20 +30,13 @@ class Program_status_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
-
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_system_information) {
+		if (!Auth::instance()->authorized_for('system_information') {
 			url::redirect('extinfo/unauthorized/0');
 		}
 
 		//$items_per_page = 20;
 		//$ps_model = new Program_status_Model($items_per_page, true, true);
 		$ps_model = new Program_status_Model();
-
-		$auth = new Nagios_auth_Model();
-		if (!$auth->authorized_for_system_information) {
-			url::redirect('extinfo/unauthorized/0');
-		}
 
 		$data = $ps_model->list_program_status();
 		$date_format_str = nagstat::date_format();
