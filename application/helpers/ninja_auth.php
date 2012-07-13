@@ -78,14 +78,10 @@ class ninja_auth_Core
 	 * @param $password The user's password
 	 * @returns TRUE if everything was OK, or a string controller you're suggested to redirect to
 	 */
-	public static function login_user($username, $password) {
-		$auth = Auth::factory();
+	public static function login_user($username, $password, $auth_method = false) {
+		$auth = Auth::instance();
 
-		# check if new authorization data is available in cgi.cfg
-		# this enables incremental import
-		Cli_Controller::insert_user_data();
-
-		$result = $auth->login($username, $password);
+		$result = $auth->login($username, $password, $auth_method);
 
 		if (!$result) {
 			# This brute force protection is absolutely fool-proof, as long

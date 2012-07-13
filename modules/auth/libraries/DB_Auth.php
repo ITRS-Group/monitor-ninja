@@ -36,10 +36,10 @@ class DB_Auth_Core extends Auth_Core {
 	 *
 	 * @param   string   username to log in
 	 * @param   string   password to check against
-	 * @param   boolean  enable auto-login
+	 * @param   string   specifies the authentication method, if multiple is avalible, ignore otherwise
 	 * @return  user	 user object or FALSE
 	 */
-	public function login($username, $password, $remember = FALSE) {
+	public function login($username, $password, $auth_method = false) {
 		if (empty($username) || empty($password))
 			return false;
 		

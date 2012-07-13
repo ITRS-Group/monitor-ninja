@@ -9,7 +9,7 @@
  */
 abstract class Auth_Core {
 
-	private $user = false;
+	protected $user = false;
 
 	/**
 	 * Create an instance of Auth.
@@ -19,8 +19,12 @@ abstract class Auth_Core {
 	public static function factory($config = array())
 	{
 		$config += Kohana::config('auth');
-		$class = $config['driver'] . '_Auth';
-		return new $class($config);
+		$driver = $config['driver'];
+		if( is_array( $driver ) ) {
+			$driver = 'Multi';
+		}
+		$class = $driver . '_Auth';
+		return new $class( $config );
 	}
 
 	/**
@@ -71,7 +75,7 @@ abstract class Auth_Core {
 	 * @param   boolean  enable auto-login
 	 * @return  user	 user object or FALSE
 	 */
-	abstract public function login($username, $password, $remember = FALSE);
+	abstract public function login($username, $password, $auth_method = false);
 	
 	/**
 	 * Attempt to automatically log a user in.

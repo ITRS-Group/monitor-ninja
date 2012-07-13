@@ -35,6 +35,7 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
+		/* FIXME: use some more generic method in Auth module
 		if (Kohana::config('auth.driver') == 'apache') {
 			if (isset($_SESSION['username'])) {
 				Auth::instance()->driver->login($_SESSION['username'], false, false);
@@ -44,6 +45,7 @@ class Default_Controller extends Ninja_Controller  {
 			}
 			exit;
 		}
+		*/
 
 		$this->session->delete('auth_user');
 		$this->session->delete('nagios_access');
@@ -116,16 +118,11 @@ class Default_Controller extends Ninja_Controller  {
 				url::redirect('default/show_login');
 			}
 
-			$username = $this->input->post('username', false);
-			$password = $this->input->post('password', false);
-
+			$username    = $this->input->post('username', false);
+			$password    = $this->input->post('password', false);
 			$auth_method = $this->input->post('auth_method', false);
-			if (!empty($auth_method)) {
-				$_SESSION['auth_method'] = $auth_method;
-				Kohana::config_set('auth.driver', $auth_method);
-			}
 
-			$res = ninja_auth::login_user($username, $password);
+			$res = ninja_auth::login_user($username, $password, $auth_method);
 			if ($res !== true) {
 				url::redirect($res);
 			}

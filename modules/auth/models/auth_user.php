@@ -4,6 +4,8 @@ abstract class Auth_User_Model {
 
 	protected $fields = array(
 		'username'  => false,
+		'realname'  => false,
+		'email'     => false,
 		'auth_data' => array(
 		    'authorized_for_system_information'        => false,
 		    'authorized_for_configuration_information' => false,
@@ -30,14 +32,15 @@ abstract class Auth_User_Model {
 		$this->fields    = $fields;
 	}
 	
-	
 	/**
-	* @param 	string 		authorization point
-	* @return 	boolean 	true if user has access to that authorization point
-	*/
+	 * Returns if a user is authorized for a certain authorization point
+	 *
+	 * @param 	string 		authorization point
+	 * @return 	boolean 	true if user has access to that authorization point
+	 */
 	public function authorized_for($auth_point)
 	{
-		return $this->auth_data[ $auth_point ];
+		return isset( $this->auth_data[ $auth_point ] ) ? $this->auth_data[ $auth_point ] : false;
 	}
 
 	/**

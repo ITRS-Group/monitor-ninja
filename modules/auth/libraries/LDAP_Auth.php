@@ -30,10 +30,10 @@ class LDAP_Auth_Core extends Auth_Core {
 	 *
 	 * @param   string   username to log in
 	 * @param   string   password to check against
-	 * @param   boolean  enable auto-login
+	 * @param   string   specifies the authentication method, if multiple is avalible, ignore otherwise
 	 * @return  user	 user object or FALSE
 	 */
-	public function login($username, $password, $remember = FALSE) {
+	public function login($username, $password, $auth_method = false) {
 		/* Bind with service account (or anonymously) */
 		if( !$this->bind() ) {
 			Kohana::log( 'error', 'LDAP: Could not do initial binding' );

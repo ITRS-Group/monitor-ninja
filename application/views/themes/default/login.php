@@ -45,7 +45,7 @@
 					<td><?php echo form::password('password','','class="i160"') ?></td>
 				</tr>
 				<?php
-				$auth_methods = Kohana::config('auth.auth_methods');
+				$auth_methods = Kohana::config('auth.driver');
 				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
 				<tr>
 					<td><?php echo $this->translate->_('Login method') ?></td>

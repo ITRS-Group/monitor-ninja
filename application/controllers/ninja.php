@@ -127,21 +127,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$saved_searches = false;
 
-		Kohana::config_set('auth.auth_methods', Kohana::config('auth.driver'));
-		// set auth.driver to the currently used authentication method
-		$auth_methods = Kohana::config('auth.auth_methods');
-		if (isset($_SESSION['auth_method']))
-			Kohana::config_set('auth.driver', $_SESSION['auth_method']);
-		else if (is_array($auth_methods) && count($auth_methods) == 1)
-			Kohana::config_set('auth.driver', array_pop(array_keys($auth_methods)));
-		else if (!is_array($auth_methods))
-			Kohana::config_set('auth.driver', $auth_methods);
-		else {
-			// this can never be unset, so find some nice default
-			// (should only happen when user is logged out)
-			Kohana::config_set('auth.driver', "Ninja");
-		}
-
 		if (Auth::instance()->logged_in() && PHP_SAPI !== "cli") {
 			# warning! do not set anything in xlinks, as it isn't working properly
 			# and cannot (easily) be fixed
@@ -151,7 +136,7 @@ class Ninja_Controller extends Template_Controller {
 			# create the user menu
 			$this->template->links = $this->create_menu();
 
-			if (Kohana::config('auth.driver') == 'LDAP')
+			if (Kohana::config('auth.driver') == 'LDAP') /* FIXME: handle in a more generic way! */
 				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
 
 			foreach ($this->xlinks as $link)

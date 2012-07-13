@@ -41,11 +41,7 @@ class Authenticated_Controller extends Ninja_Controller {
 			if (!Auth::instance()->logged_in()) {
 				if (Kohana::config('auth.use_get_auth') === true && isset($_GET['username']) && isset($_GET['password'])) {
 					$auth_method = $this->input->get('auth_method', false);
-					if (!empty($auth_method)) {
-						$_SESSION['auth_method'] = $auth_method;
-						Kohana::config_set('auth.driver', $auth_method);
-					}
-					$res = ninja_auth::login_user($_GET['username'], $_GET['password']);
+					$res = ninja_auth::login_user($_GET['username'], $_GET['password'], $auth_method);
 					if ($res !== true)
 						die('The provided authorization is invalid');
 				} else {
