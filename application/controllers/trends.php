@@ -530,21 +530,21 @@ class Trends_Controller extends Authenticated_Controller {
 			# @@@FIXME: is the following still valid?
 			// shorthand aliases - host=all is used for 'View trends for all hosts'
 			if ($in_host == 'all') {
-				$in_host = $mon_auth->get_authorized_hosts();
+				$in_host = $mon_auth->get_authorized_hosts(); ## FIXME: Change once the host authorization has been rewritten
 			} elseif($in_host == 'null' && is_string($in_service) && $in_service == 'all') {
 				// Used for link 'View avail for all services'
-				$in_host = $mon_auth->get_authorized_hosts();
-				$in_service = $mon_auth->get_authorized_services();
+				$in_host = $mon_auth->get_authorized_hosts(); ## FIXME: Change once the host authorization has been rewritten
+				$in_service = $mon_auth->get_authorized_services(); ## FIXME: Change once the service authorization has been rewritten
 			} else {
 				// handle call from trends.cgi, which does not pass host parameter as array
-				if ($mon_auth->is_authorized_for_host($in_host))
+				if ($mon_auth->is_authorized_for_host($in_host)) ## FIXME: Change once the host authorization has been rewritten
 					$in_host = array($in_host);
 				else
 					$in_host = array();
 			}
 		} elseif (is_array($in_host) && !empty($in_host)) {
 			foreach ($in_host as $k => $host) {
-				if (!$mon_auth->is_authorized_for_host($host))
+				if (!$mon_auth->is_authorized_for_host($host)) ## FIXME: Change once the host authorization has been rewritten
 					unset($in_host[$k]);
 			}
 		}

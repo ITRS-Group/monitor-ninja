@@ -92,8 +92,12 @@ class showlog_Core
 			zend::instance('Registry')->get('theme_path') .
 			'/icons/16x16/';
 
+<<<<<<< Updated upstream
 		$auth = Nagios_auth_Model::instance();
 		if (!$auth->authorized_for_system_information) {
+=======
+		if (!Auth::instance()->authorized_for('system_information')) {
+>>>>>>> Stashed changes
 			$cmd .= ' --hide-process --hide-commands ';
 		}
 

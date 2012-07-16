@@ -66,12 +66,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$is_authenticated = true;
 		switch ($type) {
 			case 'host':
-
 				$auth->get_authorized_hosts(); ## FIXME: Change once the authorization on hosts are rewritten 
 				if (!array_key_exists($host, $auth->hosts_r)) {
 					# user not allowed to view info on selected host
 				if (!$auth->is_authorized_for_host($host))
 					$is_authenticated = false;
+				}
 				break;
 			case 'service':
 				$auth->get_authorized_services(); ## FIXME: Change once the authorization on services are rewritten
@@ -79,6 +79,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					# user not allowed to view info on selected service
 				if (!$auth->is_authorized_for_service($host, $service))
 					$is_authenticated = false;
+				}
 				break;
 			case 'servicegroup': case 'hostgroup':
 				return $this->group_details($type, $host);
@@ -1484,7 +1485,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_order = urldecode($this->input->get('sort_order', $sort_order));
 		$sq_model->sort_field = urldecode($this->input->get('sort_field', $sort_field));
 
-		if (!Auth::instance()->authorized_for('all_hosts')) {->view_hosts_root) {
+		if (!Auth::instance()->authorized_for('all_hosts')) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 

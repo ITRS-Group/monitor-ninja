@@ -19,8 +19,7 @@ class Upload_Controller extends Authenticated_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->view_hosts_root) {
+		if (!Auth::instance()->authorized_for('all_hosts')) {
 			# redirect to default start page if not
 			# properly authorized
 			url::redirect(Kohana::config('routes.logged_in_default'));

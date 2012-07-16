@@ -40,9 +40,9 @@ class Status_Controller extends Authenticated_Controller {
 		}
 		unset($contact);
 
-		$auth = Nagios_auth_Model::instance();
-		$this->cmd_host_ok = $auth->command_hosts_root;
-		$this->cmd_svc_ok = $auth->command_services_root;
+		$auth = Auth::instance()->get_user()->auth_data;
+		$this->cmd_host_ok = $auth['authorized_for_all_host_commands'];
+		$this->cmd_svc_ok = $auth['authorized_for_all_service_commands'];
 		unset($auth);
 
 		# add context menu items (hidden in html body)
@@ -728,9 +728,9 @@ class Status_Controller extends Authenticated_Controller {
 		if ($group == 'all') {
 			$auth = Nagios_auth_Model::instance();
 			if ($grouptype == 'host') {
-				$auth_groups = $auth->get_authorized_hostgroups();
+				$auth_groups = $auth->get_authorized_hostgroups(); ## FIXME: Change once hostgroup authorization has been rewritten
 			} else {
-				$auth_groups = $auth->get_authorized_servicegroups();
+				$auth_groups = $auth->get_authorized_servicegroups(); ## FIXME: Change once servicegroup authorization has been rewritten
 			}
 			$tot = count($auth_groups);
 			$pagination = new Pagination(
@@ -918,9 +918,9 @@ class Status_Controller extends Authenticated_Controller {
 		if (strtolower($group) == 'all') {
 			$auth = Nagios_auth_Model::instance();
 			if ($grouptype == 'host') {
-				$auth_groups = $auth->get_authorized_hostgroups();
+				$auth_groups = $auth->get_authorized_hostgroups(); ## FIXME: Change once hostgroup authorization has been rewritten
 			} else {
-				$auth_groups = $auth->get_authorized_servicegroups();
+				$auth_groups = $auth->get_authorized_servicegroups(); ## FIXME: Change once servicegroup authorization has been rewritten
 			}
 			$tot = count($auth_groups);
 			$pagination = new Pagination(
@@ -1218,8 +1218,13 @@ class Status_Controller extends Authenticated_Controller {
 
 		$group_details = false;
 		if (strtolower($group) == 'all') {
-			$auth = Nagios_auth_Model::instance();
-			$auth_groups = $auth->get_authorized_servicegroups();
+
+			$auth = new Nagios_auth_Model();
+			if ($grouptype == 'host') {
+				$auth_groups = $auth->get_authorized_hostgroups(); ## FIXME: Change once hostgroup authorization has been rewritten
+			} else {
+				$auth_groups = $auth->get_authorized_servicegroups(); ## FIXME: Change once servicegroup authorization has been rewritten
+			}
 
 			$tot = count($auth_groups);
 			$pagination = new Pagination(

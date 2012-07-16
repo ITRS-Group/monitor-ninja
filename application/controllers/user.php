@@ -58,10 +58,8 @@ class User_Controller extends Authenticated_Controller {
 		$this->template->js_header = $this->add_view('js_header');
 
 		# check if user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
+		$is_admin = Auth::instance()->authorized_for('all_hosts');
 		$template->is_admin = $is_admin;
-		unset($auth);
 
 		$this->template->content->widgets = $this->widgets;
 
@@ -369,9 +367,7 @@ class User_Controller extends Authenticated_Controller {
 		$item_str=false, $link_info=false)
 	{
 		# check if current user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
-		unset($auth);
+		$is_admin = Auth::instance()->authorized_for('all_hosts');
 
 		if (!$is_admin
 			|| empty($menu_links)
@@ -402,10 +398,8 @@ class User_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		# check if current user is an admin
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
+		$is_admin = Auth::instance()->authorized_for('all_hosts');
 		$content->is_admin = $is_admin;
-		unset($auth);
 
 		$content->noadmin_msg = $this->translate->_("You don't have access to this page. Only visible to administrators.");
 		$content->select_user_message = $this->translate->_("Select the user below to edit the menu for.");
@@ -513,9 +507,7 @@ class User_Controller extends Authenticated_Controller {
 	{
 		# check if current user is an admin
 		# and prevent access if not
-		$auth = Nagios_auth_Model::instance();
-		$is_admin = $auth->view_hosts_root ? true : false;
-		unset($auth);
+		$is_admin = Auth::instance()->authorized_for('all_hosts');
 		if (!$is_admin) {
 			url::redirect(Router::$controller.'/index');
 		}

@@ -32,7 +32,7 @@ class Config_Controller extends Authenticated_Controller {
 	 */
 	public function index()
 	{
-		if (Auth::instance()->authorized_for('system_information') {
+		if (Auth::instance()->authorized_for('system_information')) {
 
 			url::redirect('extinfo/unauthorized/0');
 		}
