@@ -8,3 +8,6 @@ UPDATE ninja_db_version SET version=5;
 
 ALTER TABLE avail_config ADD include_trends NUMBER(1) DEFAULT 1;
 UPDATE avail_db_version SET version=9;
+
+INSERT INTO ninja_widgets ( page, name, friendly_name, setting) VALUES ('tac/index', 'nagvis', 'Nagvis', '');
+COMMIT;
