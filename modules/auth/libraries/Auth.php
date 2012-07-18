@@ -124,12 +124,12 @@ abstract class Auth_Core {
 			return false;
 
 		if( $user->authorized_for( $authorization_point ) ) {
-			Kohana::log( 'debug', 'Auth::authroized_for: Using long tag' ); /* FIXME: Remove */
+			Kohana::log( 'debug', 'Auth::authorized_for: Using long tag' ); /* FIXME: Remove */
 			return true;
 		}
 
 		/* TODO: autorized_for_: fix short names better than this... */
-		if( $user->authorized_for( 'authorized_for_' . $authorization_point ) ) {
+		if( $user->authorized_for( $authorization_point ) ) {
 			return true;
 		}
 
@@ -169,7 +169,12 @@ abstract class Auth_Core {
 		$sess = Session::instance();
 		$sess->set( $this->config['session_key'], $user );
 		/* Nacoma hack */
+		$nacoma_auth = array();
+		foreach ($user->auth_data as $key => $value) {
+			if ($key != 'ninja_change_password')
+				$nacoma_auth['authorized_for_'.$key] = $value;
+		}
 		$sess->set( 'nacoma_user', $user->username );
-		$sess->set( 'nacoma_auth', array_filter( $user->auth_data ) );
+		$sess->set( 'nacoma_auth', array_filter( $nacoma_auth ) );
 	}
 } // End Auth

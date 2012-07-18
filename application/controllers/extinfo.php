@@ -587,7 +587,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 	 */
 	public function show_process_info()
 	{
-		echo Auth::instance()->authorized_for('system_information');
 		if (!Auth::instance()->authorized_for('system_information')) {
 			url::redirect('extinfo/unauthorized/0');
 		}

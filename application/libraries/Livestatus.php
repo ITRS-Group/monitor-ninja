@@ -57,7 +57,7 @@ class Livestatus
 	}
 
 	private function __construct($config = null) {
-		$this->auth = Nagios_auth_Model::instance();
+		$this->auth = Auth::instance()->get_user();
 		$config = $config ? $config : 'livestatus';
 		$this->config = Kohana::config('database.'.$config);
 		$this->sock = $this->open_livestatus_socket();
@@ -70,12 +70,13 @@ class Livestatus
 	public function query($query, $columns=false) {
 		$query = trim($query); // keep track of them newlines
 		$start = microtime(true);
-		if (!((strpos($query, 'GET host') === 0 && $this->auth->view_hosts_root ) ||
-			(strpos($query, 'GET service') === 0 && ($this->auth->view_hosts_root || $this->auth->view_services_root))))
-			$query .= "\nAuthUser: {$this->auth->user}";
+		if (!((strpos($query, 'GET host') === 0 && $this->auth->authorized_for('all_hosts') ) ||
+			(strpos($query, 'GET service') === 0 && ($this->auth->authorized_for('all_hosts') || $this->auth->authorized_for('all_services')))))
+			$query .= "\nAuthUser: {$this->auth->username}";
 		if ($columns)
 			$query .= "\nColumns: ".implode(' ', $columns);
 		$query .= "\nOutputFormat: json\nKeepAlive: on\nResponseHeader: fixed16\n\n";
+		#Kohana::log('debug', 'Livestatus query: ' . $query);
 		@fwrite($this->sock, $query);
 		$head = $this->read_socket($this->sock, 16);
 		if (empty($head)) {

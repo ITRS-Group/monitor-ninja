@@ -7,13 +7,13 @@ abstract class Auth_User_Model {
 		'realname'  => false,
 		'email'     => false,
 		'auth_data' => array(
-		    'authorized_for_system_information'        => false,
-		    'authorized_for_configuration_information' => false,
-		    'authorized_for_system_commands'           => false,
-		    'authorized_for_all_services'              => false,
-		    'authorized_for_all_hosts'                 => false,
-		    'authorized_for_all_service_commands'      => false,
-		    'authorized_for_all_host_commands'         => false,
+		    'system_information'        => false,
+		    'configuration_information' => false,
+		    'system_commands'           => false,
+		    'all_services'              => false,
+		    'all_hosts'                 => false,
+		    'all_service_commands'      => false,
+		    'all_host_commands'         => false,
 		)
 	);
 

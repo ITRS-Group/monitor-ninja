@@ -52,7 +52,7 @@ class LDAP_Auth_Core extends Auth_Core {
 
 		/* Try to bind as user to authenticate */
 		if( !$this->bind( $user_info['dn'], $password ) ) {
-			Kohana::log( 'debug', 'LDAP: Authentication failed for '.$user_info['dn'] );
+			Kohana::log( 'debug', 'LDAP: Authentication failed for '.$user_info['dn'] . '. ' . ldap_error($this->conn));
 			return false;
 		}
 		$groups    = $this->resolve_group_names( $user_info['dn'] );

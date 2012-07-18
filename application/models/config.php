@@ -39,10 +39,9 @@ class Config_Model extends Model {
 	{
 
 		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
 		$result_mod = array();
 
-		if ($auth->view_hosts_root) {
+		if (Auth::instance()->authorized_for('all_hosts')) {
 
 			$num_per_page = (int)$num_per_page;
 

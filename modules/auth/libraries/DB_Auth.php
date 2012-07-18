@@ -100,7 +100,7 @@ class DB_Auth_Core extends Auth_Core {
 			$auth = $res->current();
 			foreach ($auth_fields as $field) {
 				if ($auth[$field]) {
-					$auth_data['authorized_for_'.$field] = (false != $auth[$field] );
+					$auth_data[$field] = (false != $auth[$field] );
 				}
 			}
 			unset($res);

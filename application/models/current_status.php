@@ -128,14 +128,12 @@ class Current_status_Model extends Model
 	private $outage_data_present = false;
 
 	private $base_path = '';
-	private $auth = false;
 	private static $instance = false;
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->base_path = Kohana::config('config.nagios_base_path');
-		$this->auth = Nagios_auth_Model::instance();
 	}
 
 	/**
