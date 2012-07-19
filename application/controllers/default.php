@@ -185,7 +185,9 @@ class Default_Controller extends Ninja_Controller  {
 			die('Error!');
 		}
 
-		User_Model::complete_login();
+		if (User_Model::complete_login()) {
+			url::redirect('default/do_login');
+		}
 	}
 
 	/**
