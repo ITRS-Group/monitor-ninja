@@ -10,4 +10,9 @@ ALTER TABLE avail_config ADD include_trends NUMBER(1) DEFAULT 1;
 UPDATE avail_db_version SET version=9;
 
 INSERT INTO ninja_widgets ( page, name, friendly_name, setting) VALUES ('tac/index', 'nagvis', 'Nagvis', '');
+INSERT INTO ninja_widgets ( name, page, friendly_name, setting) VALUES ('tac_synergy', 'tac/index', 'Business Processes', '');
+INSERT INTO ninja_widgets ( name, page, friendly_name, setting) VALUES ('tac_hostperf', 'tac/index', 'Host performance', '');
+INSERT INTO ninja_widgets ( name, page, friendly_name, setting) VALUES ('tac_services_unacknowledged', 'tac/index', 'Unacknowledged service problems', '');
+INSERT INTO ninja_widgets ( name, page, friendly_name, setting) VALUES ('tac_services_acknowledged', 'tac/index', 'Acknowledged service problems', '');
+
 COMMIT;
