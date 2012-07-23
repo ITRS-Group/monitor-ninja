@@ -32,7 +32,8 @@ $('#verify').live('click', function(){
 });
 $('a.restore').live('click', function(){
 	var link = $(this);
-	$('#backupstatus').load($(link).attr('href'));
+	if (confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?'))
+		$('#backupstatus').load($(link).attr('href'));
 	return false;
 });
 $('a.delete').live('click', function(){
