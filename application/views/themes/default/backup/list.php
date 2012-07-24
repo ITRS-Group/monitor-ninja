@@ -30,6 +30,7 @@ $(document).ready(function() {
 			'hideOnOverlayClick' : false,
 			'titleShow' : false,
 			'showCloseButton' : false,
+			'enableEscapeButton' : false,
 			'autoDimensions' : false,
 			'width' : 250,
 			'height' : 70
