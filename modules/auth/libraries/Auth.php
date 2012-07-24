@@ -66,6 +66,9 @@ abstract class Auth_Core {
 		if( $this->user === false ) {
 			$this->user = Session::instance()->get( $this->config['session_key'] );
 		}
+		if( $this->user === false ) {
+			return new Auth_NoAuth_User_Model();
+		}
 		return $this->user;
 	}
 	
@@ -120,8 +123,9 @@ abstract class Auth_Core {
 	 */
 	public function authorized_for( $authorization_point ) {
 		$user = $this->get_user();
-		if( $user === false )
+		if( $user === false ) {
 			return false;
+		}
 
 		if( $user->authorized_for( $authorization_point ) ) {
 			Kohana::log( 'debug', 'Auth::authorized_for: Using long tag' ); /* FIXME: Remove */
@@ -129,7 +133,7 @@ abstract class Auth_Core {
 		}
 
 		/* TODO: autorized_for_: fix short names better than this... */
-		if( $user->authorized_for( $authorization_point ) ) {
+		if( $user->authorized_for( 'authorized_for_' . $authorization_point ) ) {
 			return true;
 		}
 
@@ -164,15 +168,20 @@ abstract class Auth_Core {
 		return in_array( $task, $this->supports );
 	}
 	
+	
+	
 	protected function setuser( $user ) {
 		$this->user = $user;
 		$sess = Session::instance();
 		$sess->set( $this->config['session_key'], $user );
+		
+		/* Authorize user */
+		Authorization::instance()->authorize( $user );
+		
 		/* Nacoma hack */
 		$nacoma_auth = array();
 		foreach ($user->auth_data as $key => $value) {
-			if ($key != 'ninja_change_password')
-				$nacoma_auth['authorized_for_'.$key] = $value;
+			$nacoma_auth['authorized_for_'.$key] = $value;
 		}
 		$sess->set( 'nacoma_user', $user->username );
 		$sess->set( 'nacoma_auth', array_filter( $nacoma_auth ) );

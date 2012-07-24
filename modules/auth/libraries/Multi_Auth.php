@@ -33,7 +33,7 @@ class Multi_Auth_Core extends Auth_Core {
 	{
 		$driver = Session::instance()->get( 'auth_method' );
 		if( !$driver ) {
-			return false;
+			return new Auth_NoAuth_User_Model();
 		}
 		return $this->drivers[$driver]->get_user();
 	}

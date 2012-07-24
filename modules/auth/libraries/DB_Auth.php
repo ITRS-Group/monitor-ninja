@@ -52,11 +52,11 @@ class DB_Auth_Core extends Auth_Core {
 			return false;
 		}
 		
-		$auth_data = $this->authorize_user( $userdata );
+		$groups = array();
 		
-		$auth_data['ninja_change_password'] = true;
+		/* FIXME: Resolve groups */
 
-		$user = new Auth_DB_User_Model( $userdata + array( 'auth_data' => $auth_data ) );
+		$user = new Auth_DB_User_Model( $userdata + array( 'groups' => $groups ) );
 		$this->setuser( $user );
 		
 		return $user;
@@ -79,32 +79,6 @@ class DB_Auth_Core extends Auth_Core {
 		$user = $user_res->current();
 		if (ninja_auth::valid_password($password, $user['password'], $user['password_algo']) === true) { /* FIXME */
 			return $user;
-		}
-		return false;
-	}
-	
-	/***************************** Authorization *****************************/
-	
-	/**
-	 * Finish up the login, do authorization checks.
-	 *
-	 * @param   array   user data, which represents the user from the database.
-	 * @return  array   list of permissions. key=authorization point,
-	 *                  value = boolean, representing access
-	 */
-	private function authorize_user( $userdata ) {
-		$sql = "SELECT * FROM ninja_user_authorization WHERE user_id=".intval($userdata['id']);
-		$res = $this->db->query($sql)->result(false);
-		if (count($res)!=0) {
-			$auth_fields = self::$auth_fields;
-			$auth = $res->current();
-			foreach ($auth_fields as $field) {
-				if ($auth[$field]) {
-					$auth_data[$field] = (false != $auth[$field] );
-				}
-			}
-			unset($res);
-			return $auth_data;
 		}
 		return false;
 	}

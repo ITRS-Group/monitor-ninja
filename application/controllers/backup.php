@@ -55,8 +55,8 @@ class Backup_Controller extends Authenticated_Controller {
 				$this->files2backup[]=trim($cfg_dir[1]) . " ";
 		}
 
-		$auth = Auth::instance()->get_user()->auth_data;
-		if (!$auth['configuration_information'] || !$auth['system_commands']) {
+		$user = Auth::instance()->get_user();
+		if (!$user->authorized_for('configuration_information') || !$user->authroized_for('system_commands')) {
 
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the backup interface.");

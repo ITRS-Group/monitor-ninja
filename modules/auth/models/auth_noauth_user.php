@@ -1,14 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
-class Auth_Guest_User_Model extends Auth_User_Model {
+class Auth_NoAuth_User_Model extends Auth_User_Model {
 
 	protected $fields = array(
-		'username'   => 'guest',
-		'realname'   => 'Guest'
+		'username'   => 'notauthenticated',
+		'realname'   => 'Not Logged in'
 	);
 	
 	public function __construct() {
 	}
+	
 
 	/**
 	* @param 	string 		authorization point

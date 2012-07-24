@@ -268,10 +268,9 @@ class Ninja_Controller extends Template_Controller {
 		unset($data);
 
 		# check permissions
-		$auth = Auth::instance()->get_user()->auth_data;
-		//var_dump($auth);
-		if (nacoma::link()===true && $auth['configuration_information']
-			&& $auth['system_commands'] && $auth['all_hosts']) {
+		$user = Auth::instance()->get_user();
+		if (nacoma::link()===true && $user->authorized_for('configuration_information')
+			&& $user->authorized_for('system_commands') && $user->authorized_for('all_hosts')) {
 			$nacoma = Database::instance('nacoma');
 			$query = $nacoma->query('SELECT COUNT(id) AS cnt FROM autoscan_results WHERE visibility != 0');
 			$query->result(false);

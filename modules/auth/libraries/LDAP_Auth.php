@@ -13,7 +13,6 @@ class LDAP_Auth_Core extends Auth_Core {
 
 	public function __construct( $config ) {
 		$this->config = array_merge( $config, $this->read_ldap_config() );
-		$this->rights = $this->read_ldap_rights();
 		
 		/* Say that we have groups support */
 		$this->backend_supports['groups'] = true;
@@ -56,12 +55,10 @@ class LDAP_Auth_Core extends Auth_Core {
 			return false;
 		}
 		$groups    = $this->resolve_group_names( $user_info['dn'] );
-		$auth_data = $this->get_rights_for_groups( $groups );
 
 		$user = new Auth_LDAP_User_Model( array(
 			'username'   => $user_info[ $this->config['LDAP_USERKEY'] ][0],
 			'groups'     => $groups,
-			'auth_data'  => $auth_data,
 			'realname'   => array_key_exists( $this->config['LDAP_USERKEY_REALNAME'], $user_info ) ?
 								$user_info[ $this->config['LDAP_USERKEY_REALNAME'] ][0] :
 								$user_info[ $this->config['LDAP_USERKEY'] ][0],
@@ -92,29 +89,7 @@ class LDAP_Auth_Core extends Auth_Core {
 		return $entries[0];
 	}
 
-	/************************ Authorization *********************************/
-	
-	/**
-	 * Returns an array with keys representing the nagios autorization points
-	 * with a boolean as value representing if the user has access, given a
-	 * list of groups the user is member of.
-	 *
-	 * @param   array   list of groups to search
-	 * @return  array   Array of authorization data
-	 */
-	private function get_rights_for_groups( $groups ) {
-		$auth_data = array();
-		foreach( $this->rights as $auth_point => $auth_groups ) {
-			$access = false;
-			foreach( $auth_groups as $auth_group ) {
-				if( in_array( $auth_group, $groups ) ) {
-					$access = true;
-				}
-			}
-			$auth_data[ $auth_point ] = $access;
-		}
-		return $auth_data;
-	}
+	/************************ Groups *********************************/
 	
 	/**
 	 * Returns a list of group names:s for which contains a certain DN.
@@ -266,32 +241,5 @@ class LDAP_Auth_Core extends Auth_Core {
 				$config[$key] = $value;
 		}
 		return $config;
-	}
-
-	private function read_ldap_rights() {
-		if (($raw_config = @file('/opt/op5sys/etc/ldaprights.cfg')) === false) {
-			Kohana::log('error', 'Trying to perform LDAP authentication, but ldaprights.cfg is missing');
-			return false;
-		}
-		
-		$rights = array();
-		foreach ($raw_config as $line)
-		{
-			if ($line[0] == '#')
-				continue;
-
-			$groups = array();
-			
-			$key = strtok(trim($line), ' ');
-			while( $value = strtok(',') ) {
-				$value = trim( $value );
-				if( $value ) {
-					$groups[] = $value;
-				}
-			}
-			
-			$rights[ $key ] = $groups;
-		}
-		return $rights;
 	}
 } // End Auth
