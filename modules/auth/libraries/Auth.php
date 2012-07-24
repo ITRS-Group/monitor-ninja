@@ -54,11 +54,11 @@ abstract class Auth_Core {
 	 * @return  boolean
 	 */
 	public function logged_in($role = NULL) {
-		return $this->get_user() !== false; /* FIXME: role */
+		return $this->get_user()->logged_in(); /* FIXME: role */
 	}
 
 	/**
-	 * Returns the currently logged in user, or FALSE.
+	 * Returns the currently logged in user, or NoAuth user.
 	 *
 	 * @return  mixed
 	 */

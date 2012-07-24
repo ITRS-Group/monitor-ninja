@@ -54,4 +54,14 @@ abstract class Auth_User_Model {
 		return false;
 	}
 
+	/**
+	 * Returns true if logged in
+	 *
+	 * @return  boolean   always true (normal users are logged in, notauth overrides)
+	 */
+	public function logged_in()
+	{
+		return true;
+	}
+
 } // End Auth User Model

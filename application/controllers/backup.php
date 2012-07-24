@@ -56,7 +56,7 @@ class Backup_Controller extends Authenticated_Controller {
 		}
 
 		$user = Auth::instance()->get_user();
-		if (!$user->authorized_for('configuration_information') || !$user->authroized_for('system_commands')) {
+		if (!$user->authorized_for('configuration_information') || !$user->authorized_for('system_commands')) {
 
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the backup interface.");

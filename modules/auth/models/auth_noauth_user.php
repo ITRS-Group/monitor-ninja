@@ -20,4 +20,14 @@ class Auth_NoAuth_User_Model extends Auth_User_Model {
 		return false;
 	}
 
+	/**
+	 * Returns true if logged in
+	 *
+	 * @return  boolean   always false (never logged in)
+	 */
+	public function logged_in()
+	{
+		return false;
+	}
+
 } // End Auth Guest User Model
