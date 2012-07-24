@@ -13,7 +13,12 @@ Requires: merlin-apps >= 0.8.0
 Requires: merlin
 Requires: op5auth >= 1.2.0
 Requires: php
+%if 0%{?rhel} >= 6
 Requires: php-process
+%else
+Requires: php-json
+%endif
+
 Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
 %description
