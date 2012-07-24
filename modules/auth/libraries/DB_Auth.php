@@ -52,7 +52,7 @@ class DB_Auth_Core extends Auth_Core {
 			return false;
 		}
 		
-		$groups = array();
+		$groups = $this->get_groups( $userdata );
 		
 		/* FIXME: Resolve groups */
 
@@ -62,6 +62,25 @@ class DB_Auth_Core extends Auth_Core {
 		return $user;
 	}
 	
+	/******************************* Groups **********************************/
+	
+	/**
+	 * Fetch a list of groups for a given user.
+	 *
+	 * @param    array   an array representing the user data from the database
+	 * @return   array   list of group names. Is names to be compatible with other auth modules, like LDAP
+	 */
+	
+	private function get_groups($userdata)
+	{
+		$group_res = $this->db->query( 'SELECT g.name FROM user_groups ug LEFT JOIN auth_groups g ON g.id=ug.group WHERE ug.user = ?', $userdata['id'] );
+		
+		$groups = array();
+		foreach( $group_res as $group ) {
+			$groups[] = $group->name;
+		}
+		return $groups;
+	}
 	
 	/***************************** Authentication ****************************/
 	
