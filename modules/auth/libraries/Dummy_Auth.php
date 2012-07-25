@@ -37,9 +37,6 @@ class Dummy_Auth_Core extends Auth_Core {
 	 * @return  user	 user object or FALSE
 	 */
 	public function login($username, $password, $auth_method = false) {
-		if( $username == 'monitor' && $password == 'monitor' ) {
-			return new Auth_Dummy_User_Model();
-		}
-		return false;
+		return new Auth_Guest_User_Model();
 	}
 } // End Auth

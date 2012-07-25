@@ -10,18 +10,6 @@
 class DB_Auth_Core extends Auth_Core {
 
 	public $config;
-	/**
-	 * The different db fields that contains authorization info
-	 */
-	public static $auth_fields = array(
-				'system_information',
-				'configuration_information',
-				'system_commands',
-				'all_services',
-				'all_hosts',
-				'all_service_commands',
-				'all_host_commands'
-			);
 
 	public function __construct( $config ) {
 		$this->config = $config;
