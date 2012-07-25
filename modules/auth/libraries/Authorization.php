@@ -50,6 +50,11 @@ class Authorization_Core {
 		/* Also allow the per-user-group */
 		$groups[] = 'user_' . $user->username;
 		
+		Kohana::log( 'debug', "Authorization: Got groups:");
+		foreach( $groups as $group ) {
+			Kohana::log( 'debug', "Authorization: group: " . $group);
+		}
+		
 		/* Build IN(xxx)-string */
 		$groupstring = "'" . implode( "','", $groups ) . "'"; /* FIXME: SQL Escape */
 		

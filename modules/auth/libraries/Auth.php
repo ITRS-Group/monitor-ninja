@@ -53,7 +53,8 @@ abstract class Auth_Core {
 	 * @param   string   role name
 	 * @return  boolean
 	 */
-	public function logged_in($role = NULL) {
+	public function logged_in($role = NULL)
+	{
 		return $this->get_user()->logged_in(); /* FIXME: role */
 	}
 
@@ -62,7 +63,8 @@ abstract class Auth_Core {
 	 *
 	 * @return  mixed
 	 */
-	public function get_user() {
+	public function get_user()
+	{
 		if( $this->user === false ) {
 			$this->user = Session::instance()->get( $this->config['session_key'] );
 		}
@@ -109,7 +111,8 @@ abstract class Auth_Core {
 	 * @param   boolean  completely destroy the session
 	 * @return  boolean
 	 */
-	public function logout($destroy = FALSE) {
+	public function logout($destroy = FALSE)
+	{
 		$this->user = false;
 		Session::instance()->destroy();
 		return true;
@@ -121,7 +124,8 @@ abstract class Auth_Core {
 	 * @param   string   authorization point
      * @return  boolean  true if access
 	 */
-	public function authorized_for( $authorization_point ) {
+	public function authorized_for( $authorization_point )
+	{
 		$user = $this->get_user();
 		if( $user === false ) {
 			return false;
@@ -149,28 +153,15 @@ abstract class Auth_Core {
 	 * @return  array  list of authentication methods, or false if only a single
 	 *                 is avalible
 	 */
-	public function get_authentication_methods() {
+	public function get_authentication_methods()
+	{
 		return false;
 	}
 	
-	/**
-	 * Returns true if the backend supports a certain task.
-	 *
-	 * Tasks avalible:
-	 *    groups
-	 *    user_administration
-	 *    multiple_backends
-	 *
-	 * @param   string   name of task
-	 * @return  boolean  if backend has the support
-	 */
-	public function support_for( $task ) {
-		return in_array( $task, $this->supports );
-	}
 	
 	
-	
-	protected function setuser( $user ) {
+	protected function setuser( $user )
+	{
 		$this->user = $user;
 		$sess = Session::instance();
 		$sess->set( $this->config['session_key'], $user );

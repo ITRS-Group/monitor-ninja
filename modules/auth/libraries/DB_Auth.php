@@ -17,8 +17,6 @@ class DB_Auth_Core extends Auth_Core {
 
 		/* Say that we have user administration support */
 		$this->backend_supports['user_administration'] = true;
-		
-		Kohana::log( 'debug', var_export( $_SESSION, true ) );
 	}
 	
 	
