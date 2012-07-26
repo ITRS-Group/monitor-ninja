@@ -42,7 +42,6 @@ class Authorization_Core {
 	public function __construct($config)
 	{
 		$this->config = $config;
-		Kohana::log( 'debug', "Authorization: groups: " . print_r( $this->config, true ));
 	}
 	
 	public function authorize( $user ) {

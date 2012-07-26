@@ -7,16 +7,13 @@
  * @copyright  
  * @license    
  */
-class DB_Auth_Core extends Auth_Core {
+class Default_Auth_Core extends Auth_Core {
 
 	public $config;
 
 	public function __construct( $config ) {
 		$this->config = $config;
 		$this->db     = Database::instance();
-
-		/* Say that we have user administration support */
-		$this->backend_supports['user_administration'] = true;
 	}
 	
 	
@@ -34,38 +31,17 @@ class DB_Auth_Core extends Auth_Core {
 		
 		$userdata = $this->authenticate_user( $username, $password );
 		if( $userdata === false ) {
-			Kohana::log( 'debug', 'DB_Auth: Authentication of '.$username.' failed' );
+			Kohana::log( 'debug', 'Default_Auth: Authentication of '.$username.' failed' );
 			return false;
 		}
 		
-		$groups = $this->get_groups( $userdata );
-		
-		/* FIXME: Resolve groups */
+		/* username shuold be part of the user object, but is only the key in auth_users.json */
+		$userdata['username'] = $username;
 
-		$user = new Auth_DB_User_Model( $userdata + array( 'groups' => $groups ) );
+		$user = new Auth_Default_User_Model( $userdata );
 		$this->setuser( $user );
 		
 		return $user;
-	}
-	
-	/******************************* Groups **********************************/
-	
-	/**
-	 * Fetch a list of groups for a given user.
-	 *
-	 * @param    array   an array representing the user data from the database
-	 * @return   array   list of group names. Is names to be compatible with other auth modules, like LDAP
-	 */
-	
-	private function get_groups($userdata)
-	{
-		$group_res = $this->db->query( 'SELECT g.name FROM user_groups ug LEFT JOIN auth_groups g ON g.id=ug.group WHERE ug.user = ?', $userdata['id'] );
-		
-		$groups = array();
-		foreach( $group_res as $group ) {
-			$groups[] = $group->name;
-		}
-		return $groups;
 	}
 	
 	/***************************** Authentication ****************************/
@@ -80,10 +56,15 @@ class DB_Auth_Core extends Auth_Core {
 	 */
 	
 	private function authenticate_user( $username, $password ) {
-		$user_res = $this->db->query( 'SELECT * FROM users WHERE username=' . $this->db->escape( $username ) )->result(false);
-		$user = $user_res->current();
-		if (ninja_auth::valid_password($password, $user['password'], $user['password_algo']) === true) { /* FIXME */
-			return $user;
+		$users = Op5Config::instance()->getConfig('auth_users');
+	
+		if( !isset( $users->{$username} ) ) {
+			return false;
+		}
+		
+		$user = $users->{$username};
+		if (ninja_auth::valid_password($password, $user->password, $user->password_algo) === true) { /* FIXME */
+			return get_object_vars($user);
 		}
 		return false;
 	}

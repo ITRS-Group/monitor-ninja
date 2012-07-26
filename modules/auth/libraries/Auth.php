@@ -10,7 +10,6 @@
 abstract class Auth_Core {
 
 	protected $user = false;
-	protected $backend_supports = array();
 	
 
 	/**
@@ -23,7 +22,7 @@ abstract class Auth_Core {
 		$config = Op5Config::instance()->getConfig('auth');
 		
 		$driver = $config->driver;
-		if( is_array( $driver ) ) {
+		if( is_object( $driver ) ) {
 			$driver = 'Multi';
 		}
 		$class = $driver . '_Auth';

@@ -6,15 +6,6 @@ abstract class Auth_User_Model {
 		'username'  => false,
 		'realname'  => false,
 		'email'     => false,
-		'auth_data' => array(
-		    'system_information'        => false,
-		    'configuration_information' => false,
-		    'system_commands'           => false,
-		    'all_services'              => false,
-		    'all_hosts'                 => false,
-		    'all_service_commands'      => false,
-		    'all_host_commands'         => false,
-		)
 	);
 
 	public function __set($key, $value)
