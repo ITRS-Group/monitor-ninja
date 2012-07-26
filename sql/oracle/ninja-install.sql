@@ -92,7 +92,7 @@ CREATE TABLE avail_config (
   alert_types NUMBER(3,0) DEFAULT '0',
   state_types NUMBER(3,0) DEFAULT '0',
   host_states NUMBER(3,0) DEFAULT '0',
-  service_states NUMBER(3,0) DEFAULT '0',
+  service_states NUMBER(3,0) DEFAULT '0'
 );
 ALTER TABLE avail_config ADD CONSTRAINT avail_config_pk PRIMARY KEY(id) ENABLE;
 CREATE INDEX user_1 ON avail_config(username);
