@@ -161,14 +161,6 @@ class Default_Controller extends Ninja_Controller  {
 	public function logout()
 	{
 		User_Model::logout_user();
-		if (Kohana::config('auth.driver') == 'apache') {
-			# unset some session variables
-			$this->session->delete('auth_user');
-			$this->session->delete('nagios_access');
-			$this->session->delete('contact_id');
-			$this->template = $this->add_view('logged_out');
-			return;
-		}
 		url::redirect('default/show_login');
 	}
 

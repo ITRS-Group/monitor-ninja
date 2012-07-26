@@ -114,6 +114,7 @@ $config['autoload'] = array
 $config['modules'] = array
 (
 	MODPATH.'auth',      // Authentication
+	MODPATH.'op5config',		// To read op5 global configuration
 	// MODPATH.'forge',     // Form generation
 	// MODPATH.'kodoc',     // Self-generating documentation
 	// MODPATH.'media',     // Media caching and compression

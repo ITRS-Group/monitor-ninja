@@ -20,8 +20,9 @@ abstract class Auth_Core {
 	 */
 	public static function factory($config = array())
 	{
-		$config += Kohana::config('auth');
-		$driver = $config['driver'];
+		$config = Op5Config::instance()->getConfig('auth');
+		
+		$driver = $config->driver;
 		if( is_array( $driver ) ) {
 			$driver = 'Multi';
 		}
@@ -66,7 +67,7 @@ abstract class Auth_Core {
 	public function get_user()
 	{
 		if( $this->user === false ) {
-			$this->user = Session::instance()->get( $this->config['session_key'] );
+			$this->user = Session::instance()->get( $this->config->session_key );
 		}
 		if( $this->user === false ) {
 			return new Auth_NoAuth_User_Model();
@@ -164,7 +165,7 @@ abstract class Auth_Core {
 	{
 		$this->user = $user;
 		$sess = Session::instance();
-		$sess->set( $this->config['session_key'], $user );
+		$sess->set( $this->config->session_key, $user );
 		
 		/* Authorize user */
 		Authorization::instance()->authorize( $user );

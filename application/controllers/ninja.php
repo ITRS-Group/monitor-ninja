@@ -134,9 +134,6 @@ class Ninja_Controller extends Template_Controller {
 			# create the user menu
 			$this->template->links = $this->create_menu();
 
-			if (Kohana::config('auth.driver') == 'LDAP') /* FIXME: handle in a more generic way! */
-				unset ($this->template->links[$this->translate->_('Configuration')][$this->translate->_('Change password')]);
-
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 

@@ -13,8 +13,9 @@ class Authorization_Core {
 	 *
 	 * @return  object
 	 */
-	public static function factory($config = array())
+	public static function factory()
 	{
+		$config = Op5Config::instance()->getConfig('auth_groups');
 		return new self( $config );
 	}
 
@@ -36,11 +37,12 @@ class Authorization_Core {
 	}
 	
 	
-	private $db = false;
+	private $config = false;
 	
 	public function __construct($config)
 	{
-		$this->db = Database::instance(); 	
+		$this->config = $config;
+		Kohana::log( 'debug', "Authorization: groups: " . print_r( $this->config, true ));
 	}
 	
 	public function authorize( $user ) {
@@ -54,17 +56,20 @@ class Authorization_Core {
 		foreach( $groups as $group ) {
 			Kohana::log( 'debug', "Authorization: group: " . $group);
 		}
-		
-		/* Build IN(xxx)-string */
-		$groupstring = "'" . implode( "','", $groups ) . "'"; /* FIXME: SQL Escape */
-		
-		/* Fetch all permissions given a list of groups. Do grouping in SQL, to make it to make it possible for the database engine to optimize */
-		$perms_res = $this->db->query( 'SELECT p.name FROM auth_group_permission AS p LEFT JOIN auth_groups AS g ON g.id = p.group WHERE g.name IN ('.$groupstring.') GROUP BY p.name' );
-		
+	
+
 		/* Fetch the name column as an array from the result */
 		$auth_data = array();
-		foreach( $perms_res as $perm ) {
-			$auth_data[ $perm->name ] = true;
+		foreach( $groups as $group ) {
+			if( isset( $this->config->{$group} ) ) {
+				foreach( $this->config->{$group} as $perm ) {
+					$auth_data[ $perm ] = true;
+				}
+			}
+		}
+		
+		foreach( $auth_data as $perm => $val ) {
+			Kohana::log( 'debug', "Authorization: permission: " . $perm);
 		}
 		
 		/* Store as auth_data */

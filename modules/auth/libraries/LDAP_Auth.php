@@ -13,26 +13,12 @@ class LDAP_Auth_Core extends Auth_Core {
 
 	public function __construct( $config )
 	{
-		/* Defaults is primarly for AD */
-		$defaults = array(
-			'LDAP_MEMBERKEY_IS_DN'  => 1,
-			'LDAP_MEMBERKEY'        => 'member',
-			'LDAP_GROUP_FILTER'     => '(objectClass=group)',
-			'LDAP_USER_FILTER'      => '(objectClass=person)',
-			'LDAP_USERKEY_UPN'      => 'userprincipalname',
-			'LDAP_USERKEY_REALNAME' => 'cn',
-			'LDAP_USERKEY_EMAIL'    => 'email',
-			'LDAP_RECURSIVE_GROUPS' => 1,
-			'LDAP_PROTOCOL_VERSION' => 3,
-			'LDAP_USERKEY_IS_UPN'   => 1 /* This doesn't hurt even if username isn't UPN, and doesn't contain @ */
-			);
-	
-		$this->config = array_merge( $defaults, $config, $this->read_ldap_config() );
+		$this->config = $config;
 
-		$this->conn = ldap_connect( $this->config['LDAP_SERVER'] );
+		$this->conn = ldap_connect( $this->config->ldap->server );
 		
-		if( isset( $this->config['LDAP_PROTOCOL_VERSION'] ) ) {
-			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config['LDAP_PROTOCOL_VERSION'] );
+		if( isset( $this->config->ldap->protocol_version ) ) {
+			ldap_set_option( $this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->config->ldap->protocol_version );
 		}
 	}
 	
@@ -47,7 +33,7 @@ class LDAP_Auth_Core extends Auth_Core {
 	 */
 	public function login($username, $password, $auth_method = false)
 	{
-		if( isset( $this->config['LDAP_IS_AD'] ) && $this->config['LDAP_IS_AD'] ) {
+		if( isset( $this->config->ldap->is_ad ) && $this->config->ldap->is_ad ) {
 			$user_info = $this->do_ad_login( $username, $password );
 		}
 		else {
@@ -60,8 +46,8 @@ class LDAP_Auth_Core extends Auth_Core {
 		
 		$groups = $this->resolve_group_names( $user_info['dn'] );
 
-		$username = $user_info[ strtolower( $this->config['LDAP_USERKEY'] ) ][0];
-		if( $this->config['LDAP_USERKEY_IS_UPN'] ) {
+		$username = $user_info[ strtolower( $this->config->ldap->userkey ) ][0];
+		if( $this->config->ldap->userkey_is_upn ) {
 			$parts = explode( '@', $username, 2 );
 			$username = $parts[0];
 		}
@@ -69,11 +55,11 @@ class LDAP_Auth_Core extends Auth_Core {
 		$user = new Auth_LDAP_User_Model( array(
 			'username'   => $username,
 			'groups'     => $groups,
-			'realname'   => array_key_exists( $this->config['LDAP_USERKEY_REALNAME'], $user_info ) ?
-								$user_info[ $this->config['LDAP_USERKEY_REALNAME'] ][0] :
+			'realname'   => array_key_exists( $this->config->ldap->userkey_realname, $user_info ) ?
+								$user_info[ $this->config->ldap->userkey_realname ][0] :
 								$username,
-			'email   '   => array_key_exists( $this->config['LDAP_USERKEY_EMAIL'], $user_info ) ?
-								$user_info[ $this->config['LDAP_USERKEY_EMAIL'] ][0] :
+			'email   '   => array_key_exists( $this->config->ldap->userkey_email, $user_info ) ?
+								$user_info[ $this->config->ldap->userkey_email ][0] :
 								''
 			) );
 		
@@ -84,8 +70,8 @@ class LDAP_Auth_Core extends Auth_Core {
 	private function get_info_for_user( $filter )
 	{
 		$res = $this->ldap_query( $filter,
-			$this->config['LDAP_USERS'],
-			$this->config['LDAP_USER_FILTER'],
+			$this->config->ldap->user_base_dn,
+			$this->config->ldap->user_filter,
 			array('dn')
 			);
 		$entries = ldap_get_entries( $this->conn, $res );
@@ -109,7 +95,7 @@ class LDAP_Auth_Core extends Auth_Core {
 
 		/* Lookup user */
 		$user_info = $this->get_info_for_user( array(
-				$this->config['LDAP_USERKEY'] => $username
+				$this->config->ldap->userkey => $username
 			) );
 		if( $user_info === false ) {
 			Kohana::log( 'debug', 'LDAP: User not found: '.$username );
@@ -127,7 +113,7 @@ class LDAP_Auth_Core extends Auth_Core {
 	}
 	
 	protected function do_ad_login( $username, $password ) {
-		$upn = $username . '@' . $this->config['LDAP_UPNSUFFIX'];
+		$upn = $username . '@' . $this->config->ldap->upn_suffix;
 	
 		/* Try to bind as user to authenticate */
 		if( !$this->bind( $upn, $password ) ) {
@@ -137,7 +123,7 @@ class LDAP_Auth_Core extends Auth_Core {
 
 		/* Lookup user */
 		$user_info = $this->get_info_for_user( array(
-				$this->config['LDAP_USERKEY_UPN'] => $upn
+				$this->config->ldap->userkey => $upn
 			) );
 
 		if( $user_info === false ) {
@@ -177,7 +163,7 @@ class LDAP_Auth_Core extends Auth_Core {
 	{
 		$tosearch = array( $object_dn );
 		$groups = array();
-		$recursive = $this->config['LDAP_RECURSIVE_GROUPS'];
+		$recursive = $this->config->ldap->group_recursive;
 		
 		while( count( $tosearch ) > 0 ) {
 			$cur = array_pop( $tosearch );
@@ -205,10 +191,10 @@ class LDAP_Auth_Core extends Auth_Core {
 	protected function resolve_groups_nonrecursive( $object_dn )
 	{
 		$res = $this->ldap_query( array(
-			$this->config['LDAP_MEMBERKEY'] => $this->config['LDAP_MEMBERKEY_IS_DN'] ? $object_dn : $object_dn /*FIXME*/
+			$this->config->ldap->memberkey => $this->config->ldap->memberkey_is_dn ? $object_dn : $object_dn /*FIXME*/
 			),
-			$this->config['LDAP_GROUP'],
-			$this->config['LDAP_GROUP_FILTER'],
+			$this->config->ldap->group_base_dn,
+			$this->config->ldap->group_filter,
 			array( 'dn' )
 			);
 		
@@ -285,28 +271,5 @@ class LDAP_Auth_Core extends Auth_Core {
 			$str = str_replace($chr, sprintf('\%02X', $val), $str);
 
 		return $str;
-	}
-	
-	/*********************************** Config *****************************/
-
-	protected function read_ldap_config()
-	{
-		if (($raw_config = @file('/opt/op5sys/etc/ldapserver')) === false) {
-			Kohana::log('error', 'Trying to perform LDAP authentication, but LDAP authentication is not configured');
-			return false;
-		}
-
-		$ldapbindpw = @file_get_contents('/opt/op5sys/etc/ldapbindpw');
-		$ldapbindpw = chop($ldapbindpw);
-	
-		$config = array();
-		foreach ($raw_config as $line)
-		{
-			$key = strtok(trim($line), '=');
-			$value = strtok('');
-			if ($key[0] != '#')
-				$config[$key] = $value;
-		}
-		return $config;
 	}
 } // End Auth
