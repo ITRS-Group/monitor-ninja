@@ -162,12 +162,15 @@ abstract class Auth_Core {
 	
 	protected function setuser( $user )
 	{
+		/* Authorize user */
+		if( !Authorization::instance()->authorize( $user ) ) {
+			return false;
+		}
+		
 		$this->user = $user;
 		$sess = Session::instance();
 		$sess->set( $this->config->session_key, $user );
 		
-		/* Authorize user */
-		Authorization::instance()->authorize( $user );
 		
 		/* Nacoma hack */
 		$nacoma_auth = array();
@@ -176,5 +179,7 @@ abstract class Auth_Core {
 		}
 		$sess->set( 'nacoma_user', $user->username );
 		$sess->set( 'nacoma_auth', array_filter( $nacoma_auth ) );
+		
+		return true;
 	}
 } // End Auth
