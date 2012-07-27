@@ -199,7 +199,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 			$xaction[$label] =
 				array('url' => $url,
-					  'img' => url::base(false) . $this->img_path('icons/16x16/nacoma.png'),
+					  'img' => $this->img_path('icons/16x16/nacoma.png'),
 					  'alt' => $alt
 					);
 		}
@@ -214,7 +214,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 			$xaction[$label] = array
 				('url' => $url,
-				 'img' => url::base(false) . $this->img_path('icons/16x16/pnp.png'),
+				 'img' => $this->img_path('icons/16x16/pnp.png'),
 				 'alt' => $label,
 				 'img_class' => 'pnp_graph_icon'
 				 );
