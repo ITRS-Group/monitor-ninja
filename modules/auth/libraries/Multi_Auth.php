@@ -10,14 +10,14 @@
 class Multi_Auth_Core extends Auth_Core {
 	private $drivers = array();
 
-	public function __construct( $config )
+	public function __construct( $drivers, $config )
 	{
-		$this->config = $config;
+		$this->drivers = $drivers;
+		$this->config  = $config;
 		
-		$drivers = $config->driver;
-		foreach( $drivers as $drv_class => $drv_name ) {
+		foreach( $drivers as $drv_name => $drv_class ) {
 			$class = $drv_class . '_Auth';
-			$this->drivers[$drv_class] = new $class( $config );
+			$this->drivers[$drv_name] = new $class( $config->{$drv_name} );
 		}
 	}
 
@@ -30,6 +30,9 @@ class Multi_Auth_Core extends Auth_Core {
 	{
 		$driver = Session::instance()->get( 'auth_method' );
 		if( !$driver ) {
+			return new Auth_NoAuth_User_Model();
+		}
+		if( !isset( $this->drivers[$driver] ) ) {
 			return new Auth_NoAuth_User_Model();
 		}
 		return $this->drivers[$driver]->get_user();
@@ -102,21 +105,9 @@ class Multi_Auth_Core extends Auth_Core {
 	public function get_authentication_methods() {
 		$drivers = array();
 		/* Works both for objects and arrays */
-		foreach( $this->config->driver as $class=>$name ) {
-			$drivers[ $class ] = $name;
+		foreach( $this->drivers as $name=>$class ) {
+			$drivers[ $name ] = $name; /* Class is irrelevant outside this class */
 		}
 		return $drivers;
-	}
-	
-	
-	public function support_for( $task ) {
-		if( in_array( $task, $this->supports ) )
-			return true;
-		foreach( $this->drivers as $driver ) {
-			if( $driver->supports( $task ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 } // End Auth

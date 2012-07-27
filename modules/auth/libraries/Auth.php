@@ -11,6 +11,8 @@ abstract class Auth_Core {
 
 	protected $user = false;
 	
+	private static $session_key = false;
+	
 
 	/**
 	 * Create an instance of Auth.
@@ -20,13 +22,28 @@ abstract class Auth_Core {
 	public static function factory($config = array())
 	{
 		$config = Op5Config::instance()->getConfig('auth');
+		self::$session_key = $config->session_key;
 		
-		$driver = $config->driver;
-		if( is_object( $driver ) ) {
-			$driver = 'Multi';
+		$drivers = array();
+		foreach( $config as $name => $driverconf ) {
+			if( isset( $driverconf->driver ) ) {
+				$drivers[ $name ] = $driverconf->driver;
+			}
 		}
+
+		if( count( $drivers ) == 0 ) {
+			throw new Exception( 'No authentication driver specified' );
+		}
+		if( count( $drivers ) > 1 ) {
+			return new Multi_Auth( $drivers, $config );
+		}
+		
+		/* Only a single one left... */
+		reset( $drivers );
+		list( $drivername, $driver ) = each( $drivers );
+		
 		$class = $driver . '_Auth';
-		return new $class( $config );
+		return new $class( $config->{$drivername} );
 	}
 
 	/**
@@ -66,7 +83,7 @@ abstract class Auth_Core {
 	public function get_user()
 	{
 		if( $this->user === false ) {
-			$this->user = Session::instance()->get( $this->config->session_key );
+			$this->user = Session::instance()->get( self::$session_key );
 		}
 		if( $this->user === false ) {
 			return new Auth_NoAuth_User_Model();
@@ -169,7 +186,7 @@ abstract class Auth_Core {
 		
 		$this->user = $user;
 		$sess = Session::instance();
-		$sess->set( $this->config->session_key, $user );
+		$sess->set( self::$session_key, $user );
 		
 		
 		/* Nacoma hack */
