@@ -34,14 +34,22 @@ class url_Core {
 	 */
 	public static function base($index = FALSE, $protocol = FALSE)
 	{
+		static $default_protocol;
 		if ($protocol == FALSE)
 		{
-			// Use the default configured protocol
-			$protocol = Kohana::config('core.site_protocol');
+			if($default_protocol) {
+				// Use the default configured protocol
+				$protocol = $default_protocol;
+			} else {
+				$default_protocol = $protocol = Kohana::config('core.site_protocol');
+			}
 		}
 
 		// Load the site domain
-		$site_domain = (string) Kohana::config('core.site_domain', TRUE);
+		static $site_domain;
+		if(!$site_domain) {
+			$site_domain = (string) Kohana::config('core.site_domain', TRUE);
+		}
 
 		if ($protocol == FALSE)
 		{
@@ -70,7 +78,11 @@ class url_Core {
 			}
 		}
 
-		if ($index === TRUE AND $index = Kohana::config('core.index_page'))
+		static $core_index_page;
+		if(!$core_index_page) {
+			$core_index_page = Kohana::config('core.index_page');
+		}
+		if ($index === TRUE AND $index = $core_index_page)
 		{
 			// Append the index page
 			$base_url = $base_url.$index;
@@ -99,8 +111,12 @@ class url_Core {
 
 		if ($path = trim(parse_url($uri, PHP_URL_PATH), '/'))
 		{
+			static $core_url_suffix;
+			if(!$core_url_suffix) {
+				$core_url_suffix = Kohana::config('core.url_suffix');
+			}
 			// Add path suffix
-			$path .= Kohana::config('core.url_suffix');
+			$path .= $core_url_suffix;
 		}
 
 		if ($query = parse_url($uri, PHP_URL_QUERY))
