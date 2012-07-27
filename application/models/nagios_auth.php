@@ -422,7 +422,8 @@ class Nagios_auth_Model extends Model
 	}
 
 	/**
-	 * Return a boolean saying if we're authorized for the host name or id provided
+	 * @param $host string
+	 * @return boolean
 	 */
 	public function is_authorized_for_host($host)
 	{
@@ -452,7 +453,9 @@ class Nagios_auth_Model extends Model
 	 * complete host_name/service_description in one argument, which is
 	 * slightly slower than both the other two.
 	 *
-	 * Returns TRUE if user is authorized, FALSE otherwise.
+	 * @param $service string hostname if second arg is given, otherwize "host;service"
+	 * @param $desc string = false see previous arg
+	 * @return boolean
 	 */
 	public function is_authorized_for_service($service, $desc = false)
 	{
@@ -483,7 +486,8 @@ class Nagios_auth_Model extends Model
 	}
 
 	/**
-	 * Return a boolean saying if we're authorized for the hostgroup name or id provided
+	 * @param $hostgroup string
+	 * @return boolean
 	 */
 	public function is_authorized_for_hostgroup($hostgroup)
 	{
@@ -504,7 +508,8 @@ class Nagios_auth_Model extends Model
 	}
 
 	/**
-	 * Return a boolean saying if we're authorized for the servicegroup name or id provided
+	 * @param $servicegroup string
+	 * @return boolean
 	 */
 	public function is_authorized_for_servicegroup($servicegroup)
 	{

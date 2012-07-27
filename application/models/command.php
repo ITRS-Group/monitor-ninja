@@ -127,10 +127,10 @@ class Command_Model extends Model
 	 * Complete with information and data needed to request input
 	 * regarding a particular command.
 	 *
-	 * @param $cmd The name (or 'id') of the command
-	 * @param $defaults Default values for command parameters
-	 * @param $dryrun Testing variable. Ignore.
-	 * @return Indexed array
+	 * @param $cmd string The name (or 'id') of the command
+	 * @param $defaults array = false Default values for command parameters
+	 * @param $dryrun boolean = false Testing variable. Ignore.
+	 * @return false|indexed array
 	 */
 	public function get_command_info($cmd, $defaults = false, $dryrun = false)
 	{
@@ -253,19 +253,45 @@ class Command_Model extends Model
 			 case 'contactgroup_name':
 			 case 'host_name':
 			 case 'hostgroup_name':
-				if (!isset($ary['name']))
+				if (!isset($ary['name'])) {
 					$ary['name'] = ucfirst(substr($param_name, 0, -5));
+				}
 			 case 'timeperiod':
-				if (!isset($ary['name']))
+				if (!isset($ary['name'])) {
 					$ary['name'] = $translate->_('Timeperiod');
+				}
 			 case 'notification_timeperiod':
-				if (!isset($ary['name']))
+				if (!isset($ary['name'])) {
 					$ary['name'] = $translate->_('Notification Timeperiod');
+				}
 			 case 'check_timeperiod':
-				if (!isset($ary['name']))
+				if (!isset($ary['name'])) {
 					$ary['name'] = $translate->_('Check Timeperiod');
+				}
 				$ary['type'] = 'select';
-				$ary['options'] = $this->get_object_list($param_name);
+				if($defaults) {
+					if(isset($defaults['host_name'])) {
+						if(isset($defaults['service'])) {
+							if($this->auth->is_authorized_for_service($defaults['host_name'], $defaults['service'])) {
+								$ary['options'] = array($defaults['host_name'].":".$defaults['service']);
+							}
+						} elseif($this->auth->is_authorized_for_host($defaults['host_name'])) {
+							$ary['options'] = array($defaults['host_name']);
+						}
+					} elseif(isset($defaults['hostgroup_name']) && $this->auth->is_authorized_for_hostgroup($defaults['hostgroup_name'])) {
+						$ary['options'] = array($defaults['hostgroup_name']);
+					} elseif(isset($defaults['servicegroup_name']) && $this->auth->is_authorized_for_servicegroup($defaults['servicegroup_name'])) {
+						$ary['options'] = array($defaults['servicegroup_name']);
+					}
+				}
+				if(!isset($ary['options'])) {
+					$ary['options'] = $this->get_object_list($param_name, $defaults);
+				}
+				if(count($ary['options']) == 1 && (!is_array($ary['options']) || count(current($ary['options'])) == 1)) {
+					// Must check for inner array's length since the same method call is
+					// used by both "single" and "multiple" versions of submitting commands
+					$ary['type'] = 'immutable';
+				}
 				break;
 			 case 'notification_delay':
 				$ary = array('type' => 'int', 'default' => 5);
