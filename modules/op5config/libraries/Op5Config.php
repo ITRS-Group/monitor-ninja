@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Op5Config_Core {
+	protected $config = false;
+
 	/**
 	 * Create an instance of Auth.
 	 *
@@ -35,12 +37,16 @@ class Op5Config_Core {
 	}
 	
 	
+	protected function getPathForNamespace( $namespace )
+	{
+		return '/opt/op5sys/etc/' . $namespace . '.json';
+	}
 	
 	public function getConfig( $namespace )
 	{
 		/* FIXME: Configurable paths */
 		
-		$path   = '/opt/op5sys/etc/' . $namespace . '.json';
+		$path   = $this->getPathForNamespace( $namespace );
 		$file   = file_get_contents( $path );
 		$object = json_decode( $file );
 		/* TODO: Error handling */
@@ -50,17 +56,30 @@ class Op5Config_Core {
 		
 		return $object;
 	}
+	
+	public function setConfig( $namespace, $object )
+	{
+		/* FIXME: Configurable paths */
+		$path   = $this->getPathForNamespace( $namespace );
+		file_put_contents( $path, json_encode( $object ) );
+	}
 
 	private function handle_error()
 	{
-		switch (json_last_error()) {
-			case JSON_ERROR_NONE:           $msg = 'JSON: No error';                                                 break;
-			case JSON_ERROR_DEPTH:          $msg = 'JSON: Maximum stack depth exceeded';                             break;
-			case JSON_ERROR_STATE_MISMATCH: $msg = 'JSON: Underflow or the modes mismatch';                          break;
-			case JSON_ERROR_CTRL_CHAR:      $msg = 'JSON: Unexpected control character found';                       break;
-			case JSON_ERROR_SYNTAX:         $msg = 'JSON: Syntax error, malformed JSON';                             break;
-			case JSON_ERROR_UTF8:           $msg = 'JSON: Malformed UTF-8 characters, possibly incorrectly encoded'; break;
-			default:                        $msg = 'JSON: Unknown error';                                            break;
+		$messages = array(
+			JSON_ERROR_NONE           => 'JSON: No error',
+			JSON_ERROR_DEPTH          => 'JSON: Maximum stack depth exceeded',
+			JSON_ERROR_STATE_MISMATCH => 'JSON: Underflow or the modes mismatch',
+			JSON_ERROR_CTRL_CHAR      => 'JSON: Unexpected control character found',
+			JSON_ERROR_SYNTAX         => 'JSON: Syntax error, malformed JSON',
+			JSON_ERROR_UTF8           => 'JSON: Malformed UTF-8 characters, possibly incorrectly encoded',
+		 );
+		 
+		 $err = json_last_error();
+		 if( !isset( $messages[ $err ] ) ) {
+		 	$msg = 'JSON: Unknown error: ' . $err;
+		 } else {
+		 	$msg = $messages[ $err ];
 		 }
 		 throw new Exception( $msg );
 	}

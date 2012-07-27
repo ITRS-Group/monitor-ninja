@@ -88,7 +88,7 @@ class LDAP_Auth_Core extends Auth_Core {
 	
 	protected function do_ldap_login( $username, $password ) {
 		/* Bind with service account (or anonymously) */
-		if( !$this->bind() ) {
+		if( !$this->bind( $this->config->ldap->bind_dn, $this->config->ldap->bind_secret ) ) {
 			Kohana::log( 'error', 'LDAP: Could not do initial binding' );
 			return false;
 		}
