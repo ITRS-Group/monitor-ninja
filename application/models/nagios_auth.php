@@ -48,7 +48,7 @@ class Nagios_auth_Model extends Model
 		parent::__construct();
 		$this->session = Session::instance();
 
-		if (!Auth::instance()->logged_in()) {
+		if (!Auth_Core::instance()->logged_in()) {
 			return false;
 		}
 		$this->user = Auth::instance()->get_user()->username;

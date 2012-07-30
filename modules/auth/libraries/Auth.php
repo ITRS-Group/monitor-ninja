@@ -1,4 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
+require_once( 'auth/Op5Auth.php' );
+
 /**
  * User authentication and authorization library.
  *
@@ -7,12 +10,8 @@
  * @copyright  
  * @license    
  */
-abstract class Auth_Core {
-
-	protected $user = false;
-	
-	private static $session_key = false;
-	
+class Auth_Core {
+	private $op5auth = false; /* Op5Auth object */
 
 	/**
 	 * Create an instance of Auth.
@@ -21,29 +20,7 @@ abstract class Auth_Core {
 	 */
 	public static function factory($config = array())
 	{
-		$config = Op5Config::instance()->getConfig('auth');
-		self::$session_key = $config->session_key;
-		
-		$drivers = array();
-		foreach( $config as $name => $driverconf ) {
-			if( isset( $driverconf->driver ) ) {
-				$drivers[ $name ] = $driverconf->driver;
-			}
-		}
-
-		if( count( $drivers ) == 0 ) {
-			throw new Exception( 'No authentication driver specified' );
-		}
-		if( count( $drivers ) > 1 ) {
-			return new Multi_Auth( $drivers, $config );
-		}
-		
-		/* Only a single one left... */
-		reset( $drivers );
-		list( $drivername, $driver ) = each( $drivers );
-		
-		$class = $driver . '_Auth';
-		return new $class( $config->{$drivername} );
+		return new self();
 	}
 
 	/**
@@ -63,6 +40,10 @@ abstract class Auth_Core {
 		return $instance;
 	}
 
+	public function __construct( $config = NULL ) {
+		$this->op5auth = Op5Auth::instance( $config );
+	}
+
 	/**
 	 * Check if there is an active session. Optionally allows checking for a
 	 * specific role.
@@ -72,7 +53,7 @@ abstract class Auth_Core {
 	 */
 	public function logged_in($role = NULL)
 	{
-		return $this->get_user()->logged_in(); /* FIXME: role */
+		return $this->op5auth->logged_in( $role );
 	}
 
 	/**
@@ -82,13 +63,9 @@ abstract class Auth_Core {
 	 */
 	public function get_user()
 	{
-		if( $this->user === false ) {
-			$this->user = Session::instance()->get( self::$session_key );
-		}
-		if( $this->user === false ) {
-			return new Auth_NoAuth_User_Model();
-		}
-		return $this->user;
+		$user = $this->op5auth->get_user();
+		Kohana::log( 'debug', 'User: ' . var_export( $user, true ) );
+		return $user;
 	}
 	
 	/**
@@ -97,9 +74,14 @@ abstract class Auth_Core {
 	 * @param   string   username to log in
 	 * @param   string   password to check against
 	 * @param   boolean  enable auto-login
-	 * @return  user	 user object or FALSE
+	 * @return  boolean	True on success
 	 */
-	abstract public function login($username, $password, $auth_method = false);
+	public function login($username, $password, $auth_method = false)
+	{
+		$res = $this->op5auth->login( $username, $password, $auth_method );
+		Kohana::log( 'debug', 'Login: ' . var_export( $res, true ) );
+		return $res;
+	}
 	
 	/**
 	 * Attempt to automatically log a user in.
@@ -130,9 +112,7 @@ abstract class Auth_Core {
 	 */
 	public function logout($destroy = FALSE)
 	{
-		$this->user = false;
-		Session::instance()->destroy();
-		return true;
+		return $this->op5auth->logout( $destroy );
 	}
 
 	/**
@@ -143,23 +123,7 @@ abstract class Auth_Core {
 	 */
 	public function authorized_for( $authorization_point )
 	{
-		$user = $this->get_user();
-		if( $user === false ) {
-			return false;
-		}
-
-		if( $user->authorized_for( $authorization_point ) ) {
-			Kohana::log( 'debug', 'Auth::authorized_for: Using long tag' ); /* FIXME: Remove */
-			return true;
-		}
-
-		/* TODO: autorized_for_: fix short names better than this... */
-		if( $user->authorized_for( 'authorized_for_' . $authorization_point ) ) {
-			return true;
-		}
-
-		return false;
-
+		return $this->op5auth->authorized_for( $authorization_point );
 	}
 
 	/**
@@ -172,31 +136,6 @@ abstract class Auth_Core {
 	 */
 	public function get_authentication_methods()
 	{
-		return false;
-	}
-	
-	
-	
-	protected function setuser( $user )
-	{
-		/* Authorize user */
-		if( !Authorization::instance()->authorize( $user ) ) {
-			return false;
-		}
-		
-		$this->user = $user;
-		$sess = Session::instance();
-		$sess->set( self::$session_key, $user );
-		
-		
-		/* Nacoma hack */
-		$nacoma_auth = array();
-		foreach ($user->auth_data as $key => $value) {
-			$nacoma_auth['authorized_for_'.$key] = $value;
-		}
-		$sess->set( 'nacoma_user', $user->username );
-		$sess->set( 'nacoma_auth', array_filter( $nacoma_auth ) );
-		
-		return true;
+		return $this->op5auth->get_authentication_methods();
 	}
 } // End Auth

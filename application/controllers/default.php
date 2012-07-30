@@ -35,18 +35,6 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function show_login()
 	{
-		/* FIXME: use some more generic method in Auth module
-		if (Kohana::config('auth.driver') == 'apache') {
-			if (isset($_SESSION['username'])) {
-				Auth::instance()->driver->login($_SESSION['username'], false, false);
-				$this->apache_login();
-			} else {
-				header('location: ' . Kohana::config('auth.apache_login'));
-			}
-			exit;
-		}
-		*/
-
 		$this->session->delete('auth_user');
 		$this->session->delete('nagios_access');
 		$this->session->delete('contact_id');
