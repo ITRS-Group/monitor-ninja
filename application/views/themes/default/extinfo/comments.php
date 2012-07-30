@@ -12,12 +12,12 @@ if (!empty($command_result)) {
 
 <a name="comments"></a>
 <div class="widget left w98">
+	<form action="">
 	<?php
-	echo form::open('', array('onsubmit' => 'return false'));
 	echo form::input(array('id' => ($service == false ? 'host' : 'service').'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
 	echo form::button('clear'.($service == false ? 'host' : 'service').'search', $this->translate->_('Clear'));
-	echo form::close();
 	?>
+	</form>
 <!--<div style="position: absolute; right: 0px; margin-right: 1%; margin-top: -20px">
 	<?php echo html::image($this->add_path('icons/16x16/add-comment.png'), array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
 	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>

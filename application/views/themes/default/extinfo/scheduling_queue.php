@@ -3,10 +3,10 @@
 	<h2><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></h2>
 	<table cellpadding="2" cellspacing="0" class="schedule_search" border=1>
 		<tr>
-			<?php echo form::open('', array('onsubmit' => 'return false'));?>
+			<form action="">
 			<td><?php echo $this->translate->_('Filter').': '; ?>
 			<td colspan="2"><?php echo form::input(array('id' => 'hostfilterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string).' '.form::button('clearhostsearch', $this->translate->_('Clear')); ?></td>
-			<?php echo form::close(); ?>
+			</form>
 		</tr>
 		<tr>
 			<?php echo form::open('extinfo/scheduling_queue', array('method' => 'get')); ?>

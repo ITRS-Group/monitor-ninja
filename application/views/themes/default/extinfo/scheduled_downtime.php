@@ -11,14 +11,14 @@ if (!empty($command_result)) {
 <div class="widget left w98">
 
 	<h2><?php echo $host_title_str ?></h2>
-	<?php
-	if (!empty($host_data)) {
-		echo form::open('', array('onsubmit' => 'return false'));
+	<?php if (!empty($host_data)) { ?>
+	<form action="">
+		<?php
 		echo form::input(array('id' => 'hostfilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
 		echo form::button(array('id' => 'clearhostsearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
-		echo form::close();
-	}
-	?><br />
+		?>
+	</form>
+	<?php } ?><br />
 
 	<span style="float: right; margin-top: -30px"><?php echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME', html::image($this->add_path('icons/16x16/scheduled-downtime.png')), array('style' => 'border: 0px; float: left; margin-right: 5px;')).
 				  html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_DOWNTIME',$host_link_text).' &nbsp; ';
@@ -103,12 +103,14 @@ if (!empty($command_result)) {
 
 	echo '<h2>'.$service_title_str.'</h2>';
 
-	if (!empty($service_data)) {
-		echo form::open('', array('onsubmit' => 'return false'));
+	if (!empty($service_data)) { ?>
+	<form action="">
+		<?php
 		echo form::input(array('id' => 'servicefilterbox_sched', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
 		echo form::button(array('id' => 'clearservicesearch_sched', 'class' => 'clearbtn'), $this->translate->_('Clear'));
-		echo form::close();
-	}
+		?>
+	</form>
+	<?php }
 	echo "<br />";
 
 	echo '<span style="float: right; margin-top: -30px; ">';

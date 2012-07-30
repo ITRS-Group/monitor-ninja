@@ -53,6 +53,12 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.filterboxfield')
+		.parents('form')
+			.submit(function(ev) {
+				ev.preventDefault();
+			});
+
 	// service comments
 	if ($.tablesorter)
 		$('#servicecomments_table').tablesorter({headers:{0:{sorter:false}}});

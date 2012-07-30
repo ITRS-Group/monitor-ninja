@@ -99,14 +99,14 @@
 			</td>
 		</tr>
 		</table>
-	<?php echo form::close(); ?>
-<?php
-	echo form::open('', array('onsubmit' => 'return false'));
-	echo form::input(array('id' => 'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-	echo form::button('clearfilterbox', $this->translate->_('Clear'));
-	echo form::close();
-
-	echo (isset($pagination)) ? $pagination : ''; ?>
+	</form>
+	<form action="">
+	<?php
+		echo form::input(array('id' => 'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+		echo form::button('clearfilterbox', $this->translate->_('Clear'));
+	?>
+	</form>
+<?php echo (isset($pagination)) ? $pagination : ''; ?>
 <table id="showlog">
 <?php
 $headers = '<tr class="alertlog_header"><th></th><th colspan="7">%s:00</th></tr>';

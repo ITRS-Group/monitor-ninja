@@ -11,7 +11,6 @@ if (!empty($log)) {
 ?>
 	<div id="log_entries">
 		<?php if ($create_pdf) echo '<h4>'.ucfirst($type).' '.$label_entries.' '.$source.'</h4>'; ?>
-		<!--<form onsubmit="return false;" action=""><div><input type="text" size="60" name="filterbox" id="filterbox" value="Enter text to filter" /></div></form>-->
 		<table id="log-table" <?php echo ($create_pdf) ? 'style="border: 1px solid #cdcdcd" cellpadding="5"' : '';?>>
 			<?php if (!$create_pdf) { ?><caption style="font-weight: bold"><?php echo ((!$create_pdf) ? help::render('log_entries') : '').' '.ucfirst($type) ?> <?php echo $label_entries ?> <?php echo $source; ?><br /></caption><?php } ?>
 			<thead>
