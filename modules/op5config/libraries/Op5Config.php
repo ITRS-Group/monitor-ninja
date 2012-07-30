@@ -39,12 +39,12 @@ class Op5Config_Core {
 	
 	protected function getPathForNamespace( $namespace )
 	{
+		/* FIXME: Configurable paths */
 		return '/opt/op5sys/etc/' . $namespace . '.json';
 	}
 	
 	public function getConfig( $namespace )
 	{
-		/* FIXME: Configurable paths */
 		
 		$path   = $this->getPathForNamespace( $namespace );
 		$file   = file_get_contents( $path );
@@ -59,9 +59,10 @@ class Op5Config_Core {
 	
 	public function setConfig( $namespace, $object )
 	{
-		/* FIXME: Configurable paths */
-		$path   = $this->getPathForNamespace( $namespace );
-		file_put_contents( $path, json_encode( $object ) );
+		$path = $this->getPathForNamespace( $namespace );
+		$json = json_encode( $object );
+		$json = $this->prettyprint( $json );
+		file_put_contents( $path, $json );
 	}
 
 	private function handle_error()
@@ -82,6 +83,69 @@ class Op5Config_Core {
 		 	$msg = $messages[ $err ];
 		 }
 		 throw new Exception( $msg );
+	}
+	
+	private function prettyprint( $json ) {
+		$state = 'default';
+		$outp = '';
+		
+		$indent = 0;
+		
+		for( $i=0; $i<strlen($json); $i++ ) {
+			$chr = $json[$i];
+			switch( $state ) {
+				case 'default':
+					switch( $chr ) {
+						case '"':
+							$outp .= $chr;
+							$state = 'string';
+							break;
+						case "{":
+						case "[":
+							$indent++;
+							$outp .= $chr;
+							$outp .= "\n".str_repeat("\t",$indent);
+							break;
+						case "}":
+						case "]":
+							$indent--;
+							$outp .= "\n".str_repeat("\t",$indent);
+							$outp .= $chr;
+							break;
+						case ':':
+							$outp .= $chr;
+							$outp .= " ";
+							break;
+						case ",":
+							$outp .= $chr;
+							$outp .= "\n".str_repeat("\t",$indent);
+							break;
+						default:
+							$outp .= $chr;
+					}
+					break;
+				case 'string':
+					switch( $chr ) {
+						case '"':
+							$outp .= $chr;
+							$state = 'default';
+							break;
+						case '\\':
+							$outp .= $chr;
+							$state = 'string_esc';
+							break;
+						default:
+							$outp .= $chr;
+					}
+					break;
+				case 'string_esc':
+					$state = 'string';
+					$outp .= $chr;
+					break;
+			}
+		}
+		
+		return $outp;
 	}
 }
 
