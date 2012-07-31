@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 require_once( 'auth/Op5Auth.php' );
+require_once( 'auth/Op5User_NoAuth.php' );
 
 /**
  * User authentication and authorization library.
@@ -12,6 +13,8 @@ require_once( 'auth/Op5Auth.php' );
  */
 class Auth_Core {
 	private $op5auth = false; /* Op5Auth object */
+
+	private static $instance = false;
 
 	/**
 	 * Create an instance of Auth.
@@ -30,17 +33,22 @@ class Auth_Core {
 	 */
 	public static function instance($config = array())
 	{
-		static $instance;
-		
 		// Load the Auth instance
-		if (empty($instance)) {
-			$instance = self::factory($config);
+		if (empty(self::$instance)) {
+			try {
+				self::$instance = self::factory($config);
+			}
+			catch( Exception $e ) {
+				self::$instance = new Auth_NoAuth_Core();
+				throw $e;
+			}
 		}
 
-		return $instance;
+		return self::$instance;
 	}
 
-	public function __construct( $config = NULL ) {
+	public function __construct( $config = NULL )
+	{
 		$this->op5auth = Op5Auth::instance( $config );
 	}
 
@@ -139,3 +147,48 @@ class Auth_Core {
 		return $this->op5auth->get_authentication_methods();
 	}
 } // End Auth
+
+
+/**
+ * This class is just to fill in as Auth_Core if exception if thrown in factory.
+ *
+ * When showing an error page (as from exception in factory method), the instance
+ * needs to be set, so not a new exception will be thrown when rendering the error
+ * page
+ */
+class Auth_NoAuth_Core extends Auth_Core {
+
+	public function __construct($config = NULL)
+	{
+	}
+	
+	public function logged_in($role = NULL)
+	{
+		return false;
+	}
+	
+	public function get_user()
+	{
+		return new Op5User_NoAuth();
+	}
+	
+	public function login($username, $password, $auth_method = false)
+	{
+		return false;
+	}
+	
+	public function logout($destroy = FALSE)
+	{
+		return false;
+	}
+	
+	public function authorized_for( $authorization_point )
+	{
+		return false;
+	}
+	
+	public function get_authentication_methods()
+	{
+		return false;
+	}
+}
