@@ -169,7 +169,7 @@ function populate_options(tmp_field, field, json_data)
 	json_data = eval(json_data);
 	show_progress('progress', 'Please wait...');
 	for (var i = 0; i < json_data.length; i++) {
-		addSelectOption(tmp_field, json_data[i].optionValue, json_data[i].optionValue, document.forms['avail_form'].elements[field]);
+		addSelectOption(tmp_field, json_data[i], json_data[i], document.forms['avail_form'].elements[field]);
 	}
 	is_populated = true;
 	setTimeout('delayed_hide_progress()', 1000);

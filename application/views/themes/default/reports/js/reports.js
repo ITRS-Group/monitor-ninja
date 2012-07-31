@@ -620,7 +620,7 @@ function populate_options(tmp_field, field, json_data)
 	json_data = eval(json_data);
 	show_progress('progress', _wait_str);
 	for (var i = 0; i < json_data.length; i++) {
-		var val = json_data[i].optionValue;
+		var val = json_data[i];
 		addSelectOption(tmp_field, val);
 	}
 	is_populated = true;

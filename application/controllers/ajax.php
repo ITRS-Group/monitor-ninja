@@ -522,8 +522,7 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$auth = Nagios_auth_Model::instance();
 
-		$return = false;
-		$items = false;
+		$items = array();
 		switch ($type) {
 			case 'hostgroup': case 'servicegroup':
 				$field_name = $type."_tmp";
@@ -550,11 +549,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		sort($items);
-		$return_data = array();
-		foreach ($items as $k => $item) {
-			$return_data[] = array('optionValue' => $item, 'optionText' => $item);
-		}
-		json::ok($return_data);
+		json::ok(array_values($items));
 	}
 
 	/**
