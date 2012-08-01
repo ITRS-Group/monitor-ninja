@@ -49,7 +49,7 @@ class Auth_Core {
 
 	public function __construct( $config = NULL )
 	{
-		$this->op5auth = Op5Auth::instance( $config );
+		$this->op5auth = Op5Auth::factory( $config );
 	}
 
 	/**
