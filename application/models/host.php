@@ -369,9 +369,7 @@ class Host_Model extends Model {
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			$order = " ORDER BY ".$this->sort_field." ".$this->sort_order;
-
 			$sql .= $order;
-
 		} else {
 			$from .= ', service';
 			$where = '';
@@ -456,9 +454,9 @@ class Host_Model extends Model {
 					$filter_sql.$hostprops_sql.$serviceprops_sql;
 
 			$sql .= " ORDER BY ".$this->sort_field." ".$this->sort_order;
-			if (!empty($this->num_per_page) && $this->offset !== false) {
-				$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
-			}
+		}
+		if (!empty($this->num_per_page) && $this->offset !== false) {
+			$sql .= ' LIMIT '.$this->num_per_page.' OFFSET '.$this->offset;
 		}
 
 		if ($this->count) {

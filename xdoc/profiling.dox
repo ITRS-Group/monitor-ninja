@@ -1,0 +1,69 @@
+/** @page Profiling
+
+@section xhprof XHProf
+
+How to install XHProf on CentOS 6.3 for a dev machine:
+
+@code
+# yum install php-pear
+# pecl config-set preferred_state beta
+# pecl install xhprof
+@endcode
+
+If this does not work, upgrade PEAR. Related discussion: https://bugs.php.net/bug.php?id=58650
+
+@code
+# cat > /etc/php.d/xhprof.ini
+extension=xhprof.so
+^C
+@endcode
+
+Now XHProf is installed and should show up when you type $ php -i | grep -i xhprof
+
+Caveat: I might have installed some "hidden" prerequisites prior to installing xhprof, add them here if you find them (and remove this note).
+
+We will now continue to install the GUI:
+
+Add:
+
+@code
+php_value auto_prepend_file /usr/share/pear/xhprof_external/header.php
+php_value auto_append_file /usr/share/pear/xhprof_external/footer.php
+@endcode
+
+to /etc/httpd/conf.d/monitor.conf
+
+@code
+# mkdir -p /usr/share/pear/xhprof_external
+# cat > /usr/share/pear/xhprof_external/header.php
+<?php
+
+if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && extension_loaded('xhprof')) {
+	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+	require dirname(__FILE__).'/../xhprof_lib/display/xhprof.php';
+}
+^C
+# cat > /usr/share/pear/xhprof_external/footer.php
+<?php
+
+if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && extension_loaded('xhprof')) {
+	$profiler_namespace = 'ninja';
+	$xhprof_data = xhprof_disable();
+	$xhprof_runs = new XHProfRuns_Default();
+	$run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+
+	$profiler_url = sprintf('/xhprof/?run=%s&source=%s', $run_id, $profiler_namespace);
+	$js = '<script>$(document).ready(function() {
+		$("#quicklinks")
+			.append("<ul><li><a href=\"'.$profiler_url.'\">Profiler output</a></li></ul>");
+	});</script>';
+	echo $js;
+}
+^C
+# ln -s /usr/share/pear/xhprof_html /var/www/html/xhprof
+# mkdir -p /tmp/xhprof
+# chgrp apache /tmp/xhprof
+# service httpd restart
+@endcode
+
+*/

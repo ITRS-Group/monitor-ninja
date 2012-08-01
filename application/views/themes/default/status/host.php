@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php $t = $this->translate;
+$nacoma_link = nacoma::link()===true;
+$has_pnp_path = Kohana::config('config.pnp4nagios_path')!==false;
 $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
 $action_url_target = config::get('nagdefault.action_url_target', '*'); ?>
@@ -125,11 +127,11 @@ foreach ($result as $row) {
 				<td style="width: 105px">
 					<?php
 						echo html::anchor('status/service/?name='.urlencode($row->host_name), html::image($this->add_path('icons/16x16/service-details.gif'), array('alt' => $t->_('View service details for this host'), 'title' => $t->_('View service details for this host'))), array('style' => 'border: 0px')).' &nbsp;';
-						if (nacoma::link()===true)
+						if ($nacoma_link)
 							// @todo: figure out how nacoma want's its links and wrap
 							// $row->host_name in urlencode()
 							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->host_name), 'icons/16x16/nacoma.png', $t->_('Configure this host')).' &nbsp;';
-						if (Kohana::config('config.pnp4nagios_path')!==false)
+						if ($has_pnp_path)
 							echo (pnp::has_graph($row->host_name)) ? html::anchor('pnp/?host='.urlencode($row->host_name).'&srv=_HOST_', html::image($this->add_path('icons/16x16/pnp.png'), array('alt' => $t->_('Show performance graph'), 'title' => $t->_('Show performance graph'), 'class' => 'pnp_graph_icon')), array('style' => 'border: 0px')).' &nbsp;' : '';
 						if (!empty($row->action_url)) {
 							echo '<a href="'.nagstat::process_macros($row->action_url, $row).'" style="border: 0px" target="'.$action_url_target.'">';
@@ -182,7 +184,7 @@ foreach ($result as $row) {
 		'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_HOST'] = $this->translate->_('Delete selected host(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'), $options);

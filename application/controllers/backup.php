@@ -69,7 +69,12 @@ class Backup_Controller extends Authenticated_Controller {
 	{
 		if ($this->unauthorized)
 			return;
-
+		$this->template->js_header = $this->add_view('js_header');
+		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->template->js_header->js = $this->xtra_js;
+		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
+		$this->template->css_header = $this->add_view('css_header');
+		$this->template->css_header->css = $this->xtra_css;
 		$this->template->content = $this->add_view('backup/list');
 		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;

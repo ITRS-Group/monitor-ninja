@@ -290,26 +290,17 @@ class Cli_Controller extends Authenticated_Controller {
 		# figure out path from argv
 		$path = $GLOBALS['argv'][0];
 
-		$user = false;
-		if ($cli_access == 1) {
-			exec('/usr/bin/php '.$path.' default/get_a_user ', $user, $retval);
-			$user = $user[0];
-		} else {
-			# username is hard coded so let's use this
-			$user = $cli_access;
-		}
-		if (empty($user)) {
-			# we failed to detect a valid user so there's no use in continuing
-			return false;
-		}
-
 		// Saved reports:
 		$saved_reports_model = new Saved_reports_Model();
-		$report_types = array('avail', 'sla');
+		$report_types = array('avail', 'sla', 'summary');
 		foreach ($report_types as $report_type) {
-			$reports = $saved_reports_model->get_saved_reports($report_type, $user);
+			$reports = $saved_reports_model->get_saved_reports($report_type);
 			foreach ($reports as $report) {
 				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
+				if ($report_type == 'summary') {
+					$report_data = unserialize($report_data['setting']);
+					$report_data['report_type'] = $report_data['obj_type'];
+				}
 				if ($report_data['report_type'] === 'services' && $type === 'host') {
 					$savep = false;
 					foreach ($report_data['objects'] as $idx => $svc) {
@@ -338,6 +329,53 @@ class Cli_Controller extends Authenticated_Controller {
 	 */
 	public function handle_deletion($type, $name)
 	{
+		if (PHP_SAPI !== "cli") {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+
+		# figure out path from argv
+		$path = $GLOBALS['argv'][0];
+
+		// Saved reports:
+		$saved_reports_model = new Saved_reports_Model();
+		$report_types = array('avail', 'sla', 'summary');
+		foreach ($report_types as $report_type) {
+			$reports = $saved_reports_model->get_saved_reports($report_type);
+			foreach ($reports as $report) {
+				$report_data = $saved_reports_model->get_report_info($report_type, $report->id);
+				if ($report_type == 'summary') {
+					$report_data = unserialize($report_data['setting']);
+					$report_data['report_type'] = $report_data['obj_type'];
+				}
+				if ($report_data['report_type'] === 'services' && $type === 'host') {
+					$savep = false;
+					foreach ($report_data['objects'] as $idx => $svc) {
+						$parts = explode(';', $svc);
+						if ($parts[0] === $old_name) {
+							unset($report_data['objects'][$idx]);
+							$savep = true;
+						}
+					}
+					if ($savep)
+						$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
+				}
+				if ($report_data['report_type'] !== ($type . 's'))
+					continue;
+				$key = array_search($old_name, $report_data['objects']);
+				if ($key === false)
+					continue;
+				unset($report_data['objects'][$key]);
+				$saved_reports_model->save_config_objects($report_type, $report->id, $report_data['objects']);
+			}
+		}
 	}
 
 	public function save_widget()

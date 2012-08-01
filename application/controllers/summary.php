@@ -280,8 +280,7 @@ class Summary_Controller extends Authenticated_Controller
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		#$this->xtra_js[] = $this->add_path('summary/js/json.js');
-		$this->xtra_js[] = $this->add_path('summary/js/move_options.js');
+		$this->xtra_js[] = $this->add_path('reports/js/move_options.js');
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
@@ -290,7 +289,6 @@ class Summary_Controller extends Authenticated_Controller
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
-		#$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_confirm_delete = '".$t->_("Are you really sure that you would like to remove this saved report?")."';\n";

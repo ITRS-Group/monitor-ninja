@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 $style = isset($style) ? $style : false;
+$link_to_nacoma = nacoma::link()===true;
 $show_passive_as_active = config::get('checks.show_passive_as_active', '*');
 $notes_chars = config::get('config.show_notes_chars', '*');
 $notes_url_target = config::get('nagdefault.notes_url_target', '*');
@@ -114,7 +115,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 						if ($row->host_state == Current_status_Model::HOST_DOWN || $row->host_state == Current_status_Model::HOST_UNREACHABLE) {
 							$host_props += 16;
 						}
-						if (nacoma::link()===true) {
+						if ($link_to_nacoma) {
 							echo nacoma::link('configuration/configure/?type=host&name='.urlencode($row->host_name), 'icons/16x16/nacoma.png', $this->translate->_('Configure this host')).' &nbsp;';
 						}
 
@@ -171,7 +172,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		</td>
 		<td>
 			<?php
-				if (nacoma::link()===true)
+				if ($link_to_nacoma)
 					echo nacoma::link('configuration/configure/?type=service&name='.urlencode($row->host_name).'&service='.urlencode($row->service_description), 'icons/16x16/nacoma.png', $this->translate->_('Configure this service')).' &nbsp;';
 				if (Kohana::config('config.pnp4nagios_path')!==false) {
 					if (pnp::has_graph($row->host_name, urlencode($row->service_description)))
@@ -252,7 +253,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);

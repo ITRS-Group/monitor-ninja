@@ -130,7 +130,7 @@ if (isset($host_result) ) {
 		'ADD_HOST_COMMENT' => $this->translate->_('Add host comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_HOST'] = $this->translate->_('Delete selected host(s)');
 	}
 	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'), $options);
@@ -268,7 +268,7 @@ if (isset($service_result) ) {
 		'ADD_SVC_COMMENT' => $this->translate->_('Add service comment')
 		);
 
-	if (Nacoma::allowed()) {
+	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_SERVICE'] = $this->translate->_('Delete selected service(s)');
 	}
 

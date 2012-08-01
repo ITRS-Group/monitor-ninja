@@ -202,13 +202,13 @@ class Command_Controller extends Authenticated_Controller
 			// Delete the host/service then route to NACOMA SAVE_CONFIG page
 			if (isset($params['service'])) {
 				foreach ($params['service'] as $service) {
-					Nacoma::delService($service);
+					nacoma::delService($service);
 				}
 			}
 
 			if (isset($params['host_name'])) {
 				foreach ($params['host_name'] as $host) {
-					Nacoma::delHost($host);
+					nacoma::delHost($host);
 				}
 			}
 
@@ -451,9 +451,12 @@ class Command_Controller extends Authenticated_Controller
 				$xparam = $param;
 				unset($xparam['host_name']);
 				foreach ($host_names as $host_name) {
-					foreach($host->get_services($host_name) as $service) {
-						$xparam['service'] = $host_name.';'.$service->service_description;
-						$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
+					$services = $host->get_services($host_name);
+					if($services) {
+						foreach($services as $service) {
+							$xparam['service'] = $host_name.';'.$service->service_description;
+							$nagios_commands = $this->_build_command($xcmd, $xparam, $nagios_commands);
+						}
 					}
 				}
 			}

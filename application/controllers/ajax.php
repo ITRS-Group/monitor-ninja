@@ -452,7 +452,6 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		echo '<img src="'.$pnp_path.'" />';
-		#echo $pnp_path;
 	}
 
 	/**
@@ -478,7 +477,6 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function fetch_comments()
 	{
-		#$obj_type = urldecode($this->input->post('obj_type', false));
 		$host = urldecode($this->input->post('host', false));
 		$service = false;
 		$data = false;
@@ -522,13 +520,11 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$auth = Nagios_auth_Model::instance();
 
-		$return = false;
-		$items = false;
+		$items = array();
 		switch ($type) {
 			case 'hostgroup': case 'servicegroup':
 				$field_name = $type."_tmp";
 				$empty_field = $type;
-				#$res = get_host_servicegroups($type);
 				$res = $auth->{'get_authorized_'.$type.'s'}();
 				if (!$res) {
 					json::fail("The current user could not be authorized for checking '$type'. Check your configuration.");
@@ -550,11 +546,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		}
 
 		sort($items);
-		$return_data = array();
-		foreach ($items as $k => $item) {
-			$return_data[] = array('optionValue' => $item, 'optionText' => $item);
-		}
-		json::ok($return_data);
+		json::ok(array_values($items));
 	}
 
 	/**
@@ -692,14 +684,11 @@ class Ajax_Controller extends Authenticated_Controller {
 		if (empty($type)) {
 			// Print all years
 			for ($i=$start_year;$i<=$end_year;$i++) {
-				#$objResponse->call("addSelectOption", "start_year", $i, $i);
-				#$objResponse->call("addSelectOption", "end_year", $i, $i);
 				$arr_start[] = $i;
 				$arr_end[] = $i;
 			}
 		} else {
 			// empty month list
-			#$objResponse->call("empty_list", $type."_month");
 			if (!empty($the_year)) {
 				// end month should always be 12 unless we only
 				// have data for a single year
@@ -709,7 +698,6 @@ class Ajax_Controller extends Authenticated_Controller {
 				} else {
 					$end_num = $the_year == $current_year ? $current_month: 12;
 					$start_num = $the_year == $start_year ? $start_month : 1;
-					#$objResponse->call("log","end_num: $end_num, current_year: $current_year, current_month: $current_month");
 				}
 			} else {
 				return false;
@@ -718,9 +706,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			for ($i=$start_num;$i<=$end_num;$i++) {
 				$arr_start = $type == 'start' ? $the_year : false;
 				$arr_end = $type == 'end' ? $the_year : false;
-				#$objResponse->call("addSelectOption", $type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
 				$type_item[] = array($type."_".$item, str_pad($i, 2, '0', STR_PAD_LEFT), $i);
-				#echo $i."\n";
 			}
 		}
 
