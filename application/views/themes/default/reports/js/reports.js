@@ -613,25 +613,6 @@ function empty_list(field) {
 }
 
 /**
-*	Populate HTML select list with supplied JSON data
-*/
-function populate_options(tmp_field, field, json_data)
-{
-	json_data = eval(json_data);
-	show_progress('progress', _wait_str);
-	var fragment = document.createDocumentFragment();
-	for (var i = 0; i < json_data.length; i++) {
-		var option = document.createElement("option");
-		option.setAttribute("value", json_data[i]);
-		option.appendChild(document.createTextNode(json_data[i]));
-		fragment.appendChild(option);
-	}
-	var select = document.getElementById(tmp_field.replace('[', '\\[').replace(']', '\\]')).appendChild(fragment);
-	is_populated = true;
-	setTimeout('delayed_hide_progress()', 1000);
-}
-
-/**
 *	Re-populate report_period select field
 */
 function populate_report_periods(json_data)
