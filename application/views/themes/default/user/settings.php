@@ -12,7 +12,7 @@ if (!empty($updated_str)) {
 	echo '<div id="saved_msg">'.html::image($this->add_path('/icons/16x16/shield-ok.png'),array('alt' => '', 'style' => 'margin-bottom: -3px; margin-right: 4px')).$updated_str.'</div><br />';
 }
 
-if (Kohana::config('auth.driver') != 'LDAP') {
+if (Auth::instance()->authorized_for('own_user_change_password')) {
 	echo '<div style="float: right">'.html::anchor('change_password', $this->translate->_('Change Password')).'</div>';
 }
 
