@@ -120,7 +120,36 @@ class Auth_Core {
 	 */
 	public function logout($destroy = FALSE)
 	{
-		return $this->op5auth->logout( $destroy );
+		return $this->op5auth->logout();
+	}
+
+	/**
+	 * Verify password for a logged in user.
+	 *
+	 * Usable for form validation of critical user data, for example validate a
+	 * password change.
+	 *
+	 * This method doesn't use APC
+	 *
+	 * @param $user     Op5User User object to verify
+	 * @param $password string  Password to test
+	 * @return          boolean true if password is ok
+	 */
+	public function verify_password( $user, $password )
+	{
+		return $this->op5auth->verify_password( $user, $password );
+	}
+
+	/**
+	 * Update password for a given user.
+	 *
+	 * @param $user     Op5User User object to verify
+	 * @param $password string  New password
+	 * @return          boolean true if password is ok
+	 */
+	public function update_password( $user, $password )
+	{
+		return $this->op5auth->update_password( $user, $password );
 	}
 
 	/**
@@ -177,7 +206,17 @@ class Auth_NoAuth_Core extends Auth_Core {
 		return false;
 	}
 	
-	public function logout($destroy = FALSE)
+	public function logout()
+	{
+		return false;
+	}
+
+	public function verify_password( $user, $password )
+	{
+		return false;
+	}
+
+	public function update_password( $user, $password )
 	{
 		return false;
 	}

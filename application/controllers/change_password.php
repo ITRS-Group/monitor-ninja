@@ -40,12 +40,16 @@ class Change_Password_Controller extends Authenticated_Controller {
 		}
 		elseif ($new_password == $new_password2)
 		{
-			$user = Auth::instance()->get_user();
-			if ($user->password == ninja_auth::hash_password($current_password))
+			$auth = Auth::instance();
+			$user = $auth->get_user();
+			if ($auth->verify_password($user, $current_password))
 			{
-				$user->password = User_Model::update_password($user->username, $new_password);
-				User_Model::save_user($user);
-				$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+				if( $auth->update_password($user, $new_password) ) {
+					$this->template->content->status_msg = $this->translate->_('The password has been changed.');
+				}
+				else {
+					$this->template->content->status_msg = $this->translate->_('Authentication backend reported that password could not be updated.');
+				}
 			}
 			else
 				$this->template->content->status_msg = $this->translate->_('You entered incorrect current password.');
