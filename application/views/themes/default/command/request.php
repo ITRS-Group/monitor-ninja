@@ -80,6 +80,9 @@ foreach ($params as $pname => $ary) {
 			echo form::input(array('name' => $form_name, 'id' => 'field_'.$pname), $dflt, 'size="10"');
 			break;
 		case 'immutable':
+			if(is_array($dflt)) {
+				$dflt = current($dflt);
+			}
 			echo form::hidden($form_name, $dflt);
 			echo $dflt;
 			break;
