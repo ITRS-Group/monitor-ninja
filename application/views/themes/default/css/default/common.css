@@ -1577,6 +1577,10 @@ hr {
 .clearservice{
 	        clear: both;
 }
+
+#command_form {
+	margin-top: 1em;
+}
 /***************************************************************************
     CSS - here can  you change colors and backgrounds for your monitor
 ****************************************************************************/
