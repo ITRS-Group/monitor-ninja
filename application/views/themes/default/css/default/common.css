@@ -308,6 +308,7 @@ input.textbox {
 }
 #navigation input {
 	float: right;
+	font-weight: normal;
 	border: 0px;
 	outline: 0px;
 	margin-top: 5px;
