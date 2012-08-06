@@ -63,7 +63,7 @@ digraph databaseConversion {
 	 	DBTable	[label="Existing Database Table", color=Dodgerblue, fontcolor=Dodgerblue]
 	 	RAValue [label="Conditional, dependant on the user already having a certain authorization point or not"]
 		DAValue [label="Relation values"]
-		RedArrow -> RAValue [style=vis,color=Red]
+		RedArrow -> RAValue [style=solid,color=Red]
 		DottedArrow -> DAValue [style=dotted color=Sienna]		 
 	}
 }
