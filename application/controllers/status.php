@@ -718,10 +718,8 @@ class Status_Controller extends Authenticated_Controller {
 			case 'detail': case 'details':
 				$this->template->title = $grouptype.$this->translate->_('group » Details');
 				return $this->service($group, $hoststatustypes, $servicestatustypes, $serviceprops, false, false, $grouptype.'group', $hostprops);
-				break;
 			case 'summary':
 				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
-				break;
 		}
 		$group_details = false;
 		$groupname_tmp = false;

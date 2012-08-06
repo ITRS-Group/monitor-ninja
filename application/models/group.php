@@ -170,55 +170,54 @@ class Group_Model extends Model
 		} else {
 			$auth_str = " INNER JOIN contact_access ca ON ca.host = h.id AND ca.contact = ".$db->escape($auth->id)." ";
 		}
-		$sql = "SELECT ".
-				"h.host_name,".
-				"h.address,".
-				"h.alias,".
-				"h.current_state AS host_state,".
-				"(UNIX_TIMESTAMP() - h.last_state_change) AS duration,".
-				"UNIX_TIMESTAMP() AS cur_time,".
-				"h.output AS host_output,".
-				"h.long_output AS host_long_output,".
-				"h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,".
-				"h.scheduled_downtime_depth AS hostscheduled_downtime_depth,".
-				"h.notifications_enabled AS host_notifications_enabled,".
-				"h.active_checks_enabled AS host_active_checks_enabled,".
-				"h.action_url AS host_action_url,".
-				"h.icon_image AS host_icon_image,".
-				"h.icon_image_alt AS host_icon_image_alt,".
-				"h.is_flapping AS host_is_flapping,".
-				"h.notes_url AS host_notes_url,".
-				"h.display_name AS host_display_name,".
-				"s.id AS service_id,".
-				"s.current_state AS service_state,".
-				"(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,".
-				"UNIX_TIMESTAMP() AS service_cur_time,".
-				"s.active_checks_enabled,".
-				"s.current_state,".
-				"s.problem_has_been_acknowledged,".
-				"(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,".
-				"s.last_check,".
-				"s.output,".
-				"s.long_output,".
-				"s.notes_url,".
-				"s.action_url,".
-				"s.current_attempt,".
-				"s.max_check_attempts,".
-				"s.should_be_scheduled,".
-				"s.next_check,".
-				"s.notifications_enabled,".
-				"s.service_description,".
-				"s.display_name AS display_name ".
-			"FROM host h ".
-			"LEFT JOIN service s ON h.host_name=s.host_name ".
-			"INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match} ".
-			"INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group ".
-			$auth_str .
-			"WHERE 1 = 1 ".
-				"{$all_sql} {$filter_sql} {$service_props_sql} ".
-				"{$host_props_sql} ".
-			"ORDER BY ".$sort_string." ".$limit_str;
-#echo $sql;
+		$sql = "SELECT
+				h.host_name,
+				h.address,
+				h.alias,
+				h.current_state AS host_state,
+				(UNIX_TIMESTAMP() - h.last_state_change) AS duration,
+				UNIX_TIMESTAMP() AS cur_time,
+				h.output AS host_output,
+				h.long_output AS host_long_output,
+				h.problem_has_been_acknowledged AS hostproblem_is_acknowledged,
+				h.scheduled_downtime_depth AS hostscheduled_downtime_depth,
+				h.notifications_enabled AS host_notifications_enabled,
+				h.active_checks_enabled AS host_active_checks_enabled,
+				h.action_url AS host_action_url,
+				h.icon_image AS host_icon_image,
+				h.icon_image_alt AS host_icon_image_alt,
+				h.is_flapping AS host_is_flapping,
+				h.notes_url AS host_notes_url,
+				h.display_name AS host_display_name,
+				s.id AS service_id,
+				s.current_state AS service_state,
+				(UNIX_TIMESTAMP() - s.last_state_change) AS service_duration,
+				UNIX_TIMESTAMP() AS service_cur_time,
+				s.active_checks_enabled,
+				s.current_state,
+				s.problem_has_been_acknowledged,
+				(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,
+				s.last_check,
+				s.output,
+				s.long_output,
+				s.notes_url,
+				s.action_url,
+				s.current_attempt,
+				s.max_check_attempts,
+				s.should_be_scheduled,
+				s.next_check,
+				s.notifications_enabled,
+				s.service_description,
+				s.display_name AS display_name
+			FROM host h
+			LEFT JOIN service s ON h.host_name=s.host_name
+			INNER JOIN {$grouptype}_{$grouptype}group ssg ON {$member_match}
+			INNER JOIN {$grouptype}group sg ON sg.id = ssg.{$grouptype}group
+			$auth_str
+			WHERE 1 = 1
+				{$all_sql} {$filter_sql} {$service_props_sql}
+				{$host_props_sql}
+			ORDER BY ".$sort_string." ".$limit_str;
 		$result = $db->query($sql);
 		return $result;
 	}
