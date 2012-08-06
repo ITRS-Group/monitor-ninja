@@ -1,0 +1,74 @@
+digraph databaseConversion {
+
+	nodesep=0.4
+	Title [label="Converting database to json; Auth 6.0", fontsize=18, shape=none]
+
+	node [color=Black, fontname=Tahoma, fontsize=10, shape=box]
+	edge [color=Blue, dir=back]
+
+
+	//Declare nodes
+	
+	auth_users	[label="auth_users.json", color=Aquamarine4, fontcolor=Aquamarine4]
+	auth_groups	[label="auth_groups.json", color=Aquamarine4, fontcolor=Aquamarine4]]
+
+	user_array [label="Array of users"]
+	user_group_array [label="Array of associated groups"]
+	group_perm_array [label="Array of associated group permissions"]
+	group_array [label="Array of groups"]
+
+	//Merlin Database with affected tables
+	muser_groups [label="merlin:user_groups", color=Dodgerblue, fontcolor=Dodgerblue]
+	musers [label="merlin:users", color=Dodgerblue, fontcolor=Dodgerblue]
+	mauth_groups [label="merlin:auth_groups", color=Dodgerblue, fontcolor=Dodgerblue]
+	mauth_group_perm [label="merlin:auth_group_permission", color=Dodgerblue, fontcolor=Dodgerblue]
+	mninja_user_auth [label="merlin:ninja_user_authorization", color=Dodgerblue, fontcolor=Dodgerblue]
+
+	//Nacoma Database with affected tables
+	nusername_role [label="nacoma:username_role", color=Dodgerblue, fontcolor=Dodgerblue]
+	nrole [label="nacoma:role", color=Dodgerblue, fontcolor=Dodgerblue]
+	nrole_perm [label="nacoma:role_permissions", color=Dodgerblue, fontcolor=Dodgerblue]
+
+
+	//Hierarchy
+	Title -> auth_users [style=invis]
+	Title -> auth_groups [style=invis]
+	auth_users -> user_array
+	user_array -> user_group_array
+	auth_groups -> group_array
+	group_array -> group_perm_array
+	group_array -> mauth_groups
+	group_array -> nrole
+	user_group_array -> muser_groups
+	user_group_array -> nusername_role
+	group_array -> musers [color=Red, fontcolor=Red]
+	group_perm_array -> mninja_user_auth [color=Red, fontcolor=Red]
+	group_perm_array -> nrole_perm
+	user_array -> musers
+
+	mninja_user_auth -> musers [style=dotted color=Sienna]
+	muser_groups -> musers [style=dotted color=Sienna]
+	muser_groups -> mauth_groups [style=dotted color=Sienna]
+	nrole -> nusername_role [style=dotted color=Sienna]
+	group_perm_array ->mauth_group_perm
+	
+	//Grouping
+	{rank = same; auth_users, auth_groups}
+	{rank = same; user_array, group_array}
+	{rank = same; user_group_array, group_perm_array}
+
+	//Legend
+	{
+	 	rank=sink;
+	 	edge [style=invis, dir=forward]
+	 	Legend [label="Legend:", fontsize=18, shape=none]
+	 	RedArrow [shape=point]
+	 	DottedArrow [shape=point]
+	 	ConfFile	[label="New config file", color=Aquamarine4, fontcolor=Aquamarine4]
+	 	DBTable	[label="Existing Database Table", color=Dodgerblue, fontcolor=Dodgerblue]
+	 	RAValue [label="Conditional, dependant on the user already having a certain authorization point or not"]
+		DAValue [label="Relation values"]
+		RedArrow -> RAValue [style=vis,color=Red]
+		DottedArrow -> DAValue [style=dotted color=Sienna]		 
+	}
+}
