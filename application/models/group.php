@@ -175,7 +175,7 @@ class Group_Model extends Model
 				h.address,
 				h.alias,
 				h.current_state AS host_state,
-				(UNIX_TIMESTAMP() - h.last_state_change) AS duration,
+				(UNIX_TIMESTAMP() - ".($grouptype == 'service' ? 's' : 'h').".last_state_change) AS duration,
 				UNIX_TIMESTAMP() AS cur_time,
 				h.output AS host_output,
 				h.long_output AS host_long_output,
@@ -218,8 +218,7 @@ class Group_Model extends Model
 				{$all_sql} {$filter_sql} {$service_props_sql}
 				{$host_props_sql}
 			ORDER BY ".$sort_string." ".$limit_str;
-		$result = $db->query($sql);
-		return $result;
+		return $db->query($sql);
 	}
 
 	/**
