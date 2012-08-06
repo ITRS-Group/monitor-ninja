@@ -1,17 +1,19 @@
 digraph databaseConversion {
-
+	//Node separation
 	nodesep=0.4
+
+	//Title
 	Title [label="Converting database to json; Auth 6.0", fontsize=18, shape=none]
 
+	//Default styling
 	node [color=Black, fontname=Tahoma, fontsize=10, shape=box]
 	edge [color=Blue, dir=back]
-
-
-	//Declare nodes
 	
+	//Filse
 	auth_users	[label="auth_users.json", color=Aquamarine4, fontcolor=Aquamarine4]
-	auth_groups	[label="auth_groups.json", color=Aquamarine4, fontcolor=Aquamarine4]]
+	auth_groups	[label="auth_groups.json", color=Aquamarine4, fontcolor=Aquamarine4]
 
+	//arrays
 	user_array [label="Array of users"]
 	user_group_array [label="Array of associated groups"]
 	group_perm_array [label="Array of associated group permissions"]
@@ -29,7 +31,6 @@ digraph databaseConversion {
 	nrole [label="nacoma:role", color=Dodgerblue, fontcolor=Dodgerblue]
 	nrole_perm [label="nacoma:role_permissions", color=Dodgerblue, fontcolor=Dodgerblue]
 
-
 	//Hierarchy
 	Title -> auth_users [style=invis]
 	Title -> auth_groups [style=invis]
@@ -45,7 +46,6 @@ digraph databaseConversion {
 	group_perm_array -> mninja_user_auth [color=Red, fontcolor=Red]
 	group_perm_array -> nrole_perm
 	user_array -> musers
-
 	mninja_user_auth -> musers [style=dotted color=Sienna]
 	muser_groups -> musers [style=dotted color=Sienna]
 	muser_groups -> mauth_groups [style=dotted color=Sienna]
