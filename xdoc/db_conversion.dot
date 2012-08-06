@@ -50,13 +50,8 @@ digraph databaseConversion {
 	muser_groups -> musers [style=dotted color=Sienna]
 	muser_groups -> mauth_groups [style=dotted color=Sienna]
 	nrole -> nusername_role [style=dotted color=Sienna]
-	group_perm_array ->mauth_group_perm
+	group_perm_array -> mauth_group_perm
 	
-	//Grouping
-	{rank = same; auth_users, auth_groups}
-	{rank = same; user_array, group_array}
-	{rank = same; user_group_array, group_perm_array}
-
 	//Legend
 	{
 	 	rank=sink;
