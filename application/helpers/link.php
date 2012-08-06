@@ -38,4 +38,15 @@ class link_Core
 		}
 		return rawurldecode(base64_decode($str));
 	}
+
+	/**
+	 * Primitively 'detect' URI:s in a text and wrap
+	 * in a html anchor element.
+	 *
+	 * @param $text string
+	 * @return string
+	 */
+	public static function linkify($text) {
+		return preg_replace('~((ftp|https?)://[^ ]+)~', '<a target="_blank" href="$1">$1</a>', $text);
+	}
 }

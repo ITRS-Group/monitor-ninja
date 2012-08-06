@@ -248,7 +248,7 @@ if (!empty($widgets)) {
 			foreach($custom_variables as $custom_variable) { ?>
 				<tr>
 					<td class="dark"><?php echo $custom_variable['variable'] ?></td>
-					<td><?php echo $custom_variable['value'] ?></td>
+					<td><?php echo link::linkify($custom_variable['value']) ?></td>
 				</tr>
 		<?php
 			}
