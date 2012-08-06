@@ -75,7 +75,7 @@ class Status_totals_Widget extends widget_Base {
 			$hosts = $stats->get_stats('hostsbygroup', $host_cols, array('Filter: hostgroup_name = '.$this->host));
 			$services = $stats->get_stats('servicesbyhostgroup', $svc_cols, array('Filter: hostgroup_name = '.$this->host));
 		} else {
-			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host));
+			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host), array('servicegroup_name'));
 			$ls = Livestatus::instance();
 			foreach ($services as $service) {
 				$group = $service['servicegroup_name'];
