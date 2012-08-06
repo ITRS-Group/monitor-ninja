@@ -70,7 +70,6 @@ $('a.delete').live('click', function(){
 
 window.onbeforeunload = function(event){
   event = event || window.event;
-  console.log(status);
   if(status == 'restoring'){
     return event.returnValue = "The process of restoring a backup is underway!"
   }
