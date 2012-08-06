@@ -22,6 +22,7 @@ function backup(){
 		}
 	});
 }
+
 $(document).ready(function() {
 	$('a.restore').fancybox({
 			'overlayOpacity'	:	0.7,
@@ -47,8 +48,12 @@ $('#verify').live('click', function(){
 $('a.restore').live('click', function(){
 	var link = $(this);
 	if (confirm('Do you really want to restore the backup ' + $(link).closest('tr').find('.download').text() + ' ?')) {
+		$('#backupstatus').text('Restoring backup');
+		status = 'restoring';
 		$('#fancybox-content').load($(link).attr('title'), function() {
-			$('#fancybox-close').show();	
+			$('#fancybox-close').show();
+			status = '';
+			$('#backupstatus').text($('#fancybox-content').text());			
 		});
 	}
 	return false;
@@ -62,6 +67,15 @@ $('a.delete').live('click', function(){
 		});
 	return false;
 });
+
+window.onbeforeunload = function(event){
+  event = event || window.event;
+  console.log(status);
+  if(status == 'restoring'){
+    return event.returnValue = "The process of restoring a backup is underway!"
+  }
+}
+var status = '';
 </script>
 
 <div class="widget left w98">

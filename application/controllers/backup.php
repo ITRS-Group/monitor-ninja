@@ -178,11 +178,12 @@ class Backup_Controller extends Authenticated_Controller {
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
 			return;
 		}
-
+		
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
-		exec($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status == 0)
 			$this->template->message = "Could not reload the configuration '{$file}'";
 		else
