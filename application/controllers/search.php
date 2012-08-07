@@ -473,17 +473,16 @@ class Search_Controller extends Authenticated_Controller {
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
-			'search_help' => sprintf($translate->_("The search result is currently limited to %s rows (for each object type).
-					<br />To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to
-					disable the limit entirely.<br /><br />
-					You may also perform an AND search on hosts and services: 'h:web AND s:ping' will search for
-					all services called something like ping on hosts called something like web.<br />
-					Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail
-					in any of the searchable fields.<br />
-					Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br />
-					Use si:some_status to search for Status Information like some_status"), config::get('pagination.default.items_per_page', '*')),
-			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the
-			icon just below the search field at the top of the page.')
+			'search_help' => sprintf($translate->_("You may perform an AND search on hosts and services: 'h:web AND s:ping' will search for	all services called something like ping on hosts called something like web.<br /><br />
+			Furthermore, it's possible to make OR searches: 'h:web OR mail' to search for hosts with web or mail in any of the searchable fields.<br /><br />
+			Combine AND with OR: 'h:web OR mail AND s:ping OR http'<br /><br />
+			Use si:critical to search for status information like critical<br /><br />
+			Read the manual for more tips on searching.<br /><br />
+
+			The search result is currently limited to %s rows (for each object type).<br /><br />
+			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page', '*')
+			),
+			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];

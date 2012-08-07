@@ -314,6 +314,9 @@ $(document).ready(function() {
 					width: 0,
 					radius: 4
 				},
+				width: {
+					min: "150"
+				},
 				name: 'light' // Use the default light style
 			}
 		});

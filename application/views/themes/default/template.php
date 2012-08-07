@@ -161,6 +161,7 @@ if (isset($this) && isset($this->template->js_header))
 					}
 					?>
 					</ul>
+					<p><?php echo help::render('search_help', 'search') ?></p>
 					<?php
 					$query = arr::search($_REQUEST, 'query');
 					if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') { ?>
