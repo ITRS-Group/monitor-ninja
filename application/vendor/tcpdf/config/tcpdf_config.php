@@ -46,7 +46,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	}
 
 	// Automatic calculation for the following K_PATH_MAIN constant
-	$k_path_main = dirname(pdf::path()).'/';#str_replace( '\\', '/', realpath(substr(dirname(__FILE__), 0, 0-strlen('config'))));
+	$k_path_main = dirname(pdf::path()).'/';
 	if (substr($k_path_main, -1) != '/') {
 		$k_path_main .= '/';
 	}
@@ -105,7 +105,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 *images directory
 	 */
-	define ('K_PATH_IMAGES', dirname(APPPATH).'/'.$this->add_path('icons').'/');
+	define ('K_PATH_IMAGES', dirname(APPPATH).'/application/views/themes/default/icons/');
 
 	/**
 	 * blank image

@@ -4769,6 +4769,7 @@ if (!class_exists('TCPDF', false)) {
 				$imsize = @getimagesize($file);
 				if ($imsize === FALSE) {
 					#$this->Error('[Image] No such file or directory in '.$file);
+					return false;
 				}
 			}
 			// get original image width and height in pixels
