@@ -49,7 +49,7 @@
 				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
 				<tr>
 					<td><?php echo $this->translate->_('Login method') ?></td>
-					<td><?php echo form::dropdown('auth_method', $auth_methods) ?></td>
+					<td><?php echo form::dropdown('auth_method', array_combine( $auth_methods, $auth_methods ) ) ?></td>
 				</tr>
 				<?php
 				}?>

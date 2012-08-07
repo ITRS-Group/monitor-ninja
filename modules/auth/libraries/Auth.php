@@ -164,9 +164,7 @@ class Auth_Core {
 	}
 
 	/**
-	 * Returns an array of authentication methods with keys representing the
-	 * internal name of the authentication mehtod, and the value is a user
-	 * readable name
+	 * Returns an array of authentication methods.
 	 *
 	 * @return  array  list of authentication methods, or false if only a single
 	 *                 is avalible
