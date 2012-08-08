@@ -3,15 +3,15 @@ digraph databaseConversion {
 	nodesep=0.4
 
 	//Title
-	Title [label="Converting database to json; Auth 6.0", fontsize=18, shape=none]
+	Title [label="Converting database to YAML; Auth 6.0", fontsize=18, shape=none]
 
 	//Default styling
 	node [color=Black, fontname=Tahoma, fontsize=10, shape=box]
 	edge [color=Blue, dir=back]
 	
 	//Filse
-	auth_users	[label="auth_users.json", color=Aquamarine4, fontcolor=Aquamarine4]
-	auth_groups	[label="auth_groups.json", color=Aquamarine4, fontcolor=Aquamarine4]
+	auth_users	[label="auth_users.yml", color=Aquamarine4, fontcolor=Aquamarine4]
+	auth_groups	[label="auth_groups.yml", color=Aquamarine4, fontcolor=Aquamarine4]
 
 	//arrays
 	user_array [label="Array of users"]
@@ -61,7 +61,7 @@ digraph databaseConversion {
 	 	DottedArrow [shape=point]
 	 	ConfFile	[label="New config file", color=Aquamarine4, fontcolor=Aquamarine4]
 	 	DBTable	[label="Existing Database Table", color=Dodgerblue, fontcolor=Dodgerblue]
-	 	RAValue [label="Conditional, dependant on the user already having a certain authorization point or not"]
+	 	RAValue [label="Conditional, dependent on the user already having a certain authorization point or not"]
 		DAValue [label="Relation values"]
 		RedArrow -> RAValue [style=solid,color=Red]
 		DottedArrow -> DAValue [style=dotted color=Sienna]		 
