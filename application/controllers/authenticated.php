@@ -38,11 +38,13 @@ class Authenticated_Controller extends Ninja_Controller {
 			}
 		} else {
 			if (!Auth::instance()->logged_in()) {
-				if (Kohana::config('auth.use_get_auth') === true && isset($_GET['username']) && isset($_GET['password'])) {
-					$auth_method = $this->input->get('auth_method', false);
-					$res = ninja_auth::login_user($_GET['username'], $_GET['password'], $auth_method);
+				$auth_method = $this->input->get('auth_method', false);
+				$username    = $this->input->get('username', false);
+				$password    = $this->input->get('password', false);
+				if (Kohana::config('auth.use_get_auth') === true && $username !== false && $password !== false) {
+					$res = ninja_auth::login_user($username, $password, $auth_method);
 					if ($res !== true)
-						die('The provided authorization is invalid');
+						die('The provided authentication is invalid');
 				} else {
 					# store requested uri in session for later redirect
 					$this->session->set('requested_uri', url::current(true));
@@ -67,11 +69,6 @@ class Authenticated_Controller extends Ninja_Controller {
 				$this->user = Auth::instance()->get_user();
 			}
 		}
-	}
-
-	public function is_authenticated()
-	{
-		return !Auth::instance()->logged_in();
 	}
 
 	public function index()
