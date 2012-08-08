@@ -8,9 +8,8 @@
 class Nagios_auth_Model extends Model
 {
 	private static $instance = false;
-	public $session = false; /**< FIXME: Another user session variable, that the ninja model already provides, except we've decided not to use it */
 	public $id = false; /**< The user id */
-	public $user = ''; /**< The username */
+	private $user = false; /**< The user object */
 	public $hosts = array(); /**< An id->host_name map of hosts the user is authorized to see */
 	public $hosts_r = array(); /**< An host_name->id map of hosts the user is authorized to see */
 	public $services = array(); /**< An id->service map of servicesthe user is authorized to see */
@@ -46,15 +45,14 @@ class Nagios_auth_Model extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		$this->session = Session::instance();
 
-		if (!Auth_Core::instance()->logged_in()) {
+		if (!Auth::instance()->logged_in()) {
 			return false;
 		}
-		$this->user = Auth::instance()->get_user()->username;
+		$this->user = Auth::instance()->get_user();
 		$this->check_rootness();
 
-		if (empty($this->user))
+		if ($this->user === false)
 			return false;
 
 		$this->get_contact_id();
@@ -77,47 +75,39 @@ class Nagios_auth_Model extends Model
 	 */
 	public function check_rootness()
 	{
-		$access = System_Model::nagios_access($this->user);
-		if (empty($access))
-			return;
-
-		if (is_array($access) && !empty($access)) {
-			$user_access = array_keys($access);
-		}
-
-		if (in_array('authorized_for_all_hosts', $user_access)) {
+		if ($this->user->authorized_for('all_hosts')) {
 			$this->view_hosts_root = true;
 		}
 
-		if (in_array('authorized_for_all_services', $user_access)) {
+		if ($this->user->authorized_for('all_services')) {
 			$this->view_services_root = true;
 		}
 
-		if (in_array('authorized_for_system_information', $user_access)) {
+		if ($this->user->authorized_for('system_information')) {
 			$this->authorized_for_system_information = true;
 		}
 
-		if (in_array('authorized_for_system_commands', $user_access)) {
+		if ($this->user->authorized_for('system_commands')) {
 			$this->authorized_for_system_commands = true;
 		}
 
-		if (in_array('authorized_for_all_host_commands', $user_access)) {
+		if ($this->user->authorized_for('all_host_commands')) {
 			$this->authorized_for_all_host_commands = true;
 		}
 
-		if (in_array('authorized_for_all_service_commands', $user_access)) {
+		if ($this->user->authorized_for('all_service_commands')) {
 			$this->authorized_for_all_service_commands = true;
 		}
 
-		if (in_array('authorized_for_all_host_commands', $user_access)) {
+		if ($this->user->authorized_for('all_host_commands')) {
 			$this->command_hosts_root = true;
 		}
 
-		if (in_array('authorized_for_all_service_commands', $user_access)) {
+		if ($this->user->authorized_for('all_service_commands')) {
 			$this->command_services_root = true;
 		}
 
-		if (in_array('authorized_for_configuration_information', $user_access)) {
+		if ($this->user->authorized_for('configuration_information')) {
 			$this->authorized_for_configuration_information = true;
 		}
 
@@ -158,7 +148,7 @@ class Nagios_auth_Model extends Model
 		$contact_id = Session::instance()->get('contact_id', false);
 		if (empty($contact_id)) {
 			$query = "SELECT id FROM contact WHERE contact_name = " .
-				$this->db->escape($this->user);
+				$this->db->escape($this->user->username);
 
 			$result = $this->db->query($query);
 			$contact_id = $result->count() ? $result->current()->id : -1;

@@ -113,24 +113,6 @@ class System_Model extends Model
 	}
 
 	/**
-	 * Fetch authentication information
-	 * for a named user.
-	 * Use cached authorization data from session if available.
-	 */
-	public static function nagios_access($username=false)
-	{
-		$access = Session::instance()->get('nagios_access', null);
-
-		$db = Database::instance();
-
-		if (is_null($access)) {
-			$access = Ninja_user_authorization_Model::get_auth_data($username);
-			//Session::instance()->set('nagios_access', $access);
-		}
-		return $access;
-	}
-
-	/**
 	*	Fetch status info from nagios log file
 	*/
 	public static function get_status_info($file = 'status.log', $section = 'programstatus')

@@ -25,7 +25,7 @@ class Default_Controller extends Ninja_Controller  {
 
 	public function index()
 	{
-		if ($this->is_locked_out()) {
+		if (ninja_auth::is_locked_out()) {
 			url::redirect('default/locked_out');
 		}
 		//$this->template-> = $this->add_view('menu');
@@ -59,20 +59,6 @@ class Default_Controller extends Ninja_Controller  {
 	public function locked_out()
 	{
 		echo $this->session->get('error_msg');
-	}
-
-	/**
-	 * Check if the user has tried
-	 * to login too many times
-	 *
-	 * @return bool
-	 */
-	public function is_locked_out()
-	{
-		if ($this->session->get('locked_out') && Kohana::config('auth.max_attempts')) {
-			return true;
-		}
-		return false;
 	}
 	/**
 	 * Collect user input from login form, authenticate against
@@ -148,22 +134,8 @@ class Default_Controller extends Ninja_Controller  {
 	 */
 	public function logout()
 	{
-		User_Model::logout_user();
+		Auth::instance()->logout();
 		url::redirect('default/show_login');
-	}
-
-	/**
-	*	Finalize login using the apache driver
-	*/
-	public function apache_login()
-	{
-		if (empty($_SESSION['username']) || !Auth::instance()->logged_in()) {
-			die('Error!');
-		}
-
-		if (User_Model::complete_login()) {
-			url::redirect('default/do_login');
-		}
 	}
 
 	/**

@@ -7,16 +7,6 @@
 class ninja_auth_Core
 {
 	/**
-	 * Generates a password hash
-	 * @param $pass Plaintext password
-	 * @return Password hash
-	 */
-	public static function hash_password($pass)
-	{
-		return base64_encode(sha1($pass, true));
-	}
-
-	/**
 	 * Does the required steps to log in a user via the specified auth_method
 	 * (the last bit means you have to make sure that session/config has properly
 	 * stringified auth_method).
@@ -30,6 +20,9 @@ class ninja_auth_Core
 
 		$result = $auth->login($username, $password, $auth_method);
 
+		/*
+		 * If no user: Not authenticated, handle event...
+		 */
 		if (!$result) {
 			# This brute force protection is absolutely fool-proof, as long
 			# as nobody uses evil hacker tools like curl or "Clean History"
@@ -55,6 +48,51 @@ class ninja_auth_Core
 			$session->set_flash('error_msg', $error_msg);
 			return 'default/show_login';
 		}
-		return User_Model::complete_login();
+		else {
+			/* FIXME: Is limited user? Treat all as limited for now...
+			 * above else should be: else if(limited user) {
+			 */
+	
+			/**
+			 * Take care of access for limited users
+			 * 
+			 * Check that user has access to view some objects
+			 * or logout with a message
+			 */
+			
+			$nagauth = Nagios_auth_Model::instance();
+			$hosts = $nagauth->get_authorized_hosts();
+
+			$redirect = false;
+			if (empty($hosts)) {
+				$services = $nagauth->get_authorized_services();
+				if (empty($services)) {
+					$redirect = true;
+				}
+			}
+
+			if ($redirect !== false) {
+				$translate = zend::instance('Registry')->get('Zend_Translate');
+				Session::instance()->set_flash('error_msg',
+					$translate->_("You have been denied access since you aren't authorized for any objects."));
+				return 'default/show_login';
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Check if the user has tried
+	 * to login too many times
+	 *
+	 * @return bool
+	 */
+	public static function is_locked_out()
+	{
+		$session = Session::instance();
+		if ($session->get('locked_out') && Kohana::config('auth.max_attempts')) {
+			return true;
+		}
+		return false;
 	}
 }
