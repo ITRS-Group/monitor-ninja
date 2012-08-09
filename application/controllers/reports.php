@@ -4219,6 +4219,7 @@ class Reports_Controller extends Authenticated_Controller
 		# Tag unfinished helptexts with @@@HELPTEXT:<key> to make it
 		# easier to find those later
 		$helptexts = array(
+			'filter' => $translate->_("Free text search, matching the objects in the left list below"),
 			'report-type' => $translate->_("Select the preferred report type. Hostgroup, Host, Servicegroup or Service. ".
 				"To include objects of the given type in the report, select the objects from the left list and click on ".
 				"the right pointing arrow. To exclude objects from the report, select the objects from the right list ".
