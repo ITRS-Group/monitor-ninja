@@ -80,12 +80,14 @@ class Config_Controller extends Authenticated_Controller {
 			'notification_failure' => array(
 				'd' => $t->_('Down'),
 				'u' => $t->_('Unreachable'),
+				'p' => $t->_('Pending'),
 				'o' => $t->_('OK'),
 				'n' => false
 			),
 			'execution_failure' => array(
 				'd' => $t->_('Down'),
 				'u' => $t->_('Unreachable'),
+				'p' => $t->_('Pending'),
 				'o' => $t->_('OK'),
 				'n' => false
 			),
@@ -112,6 +114,7 @@ class Config_Controller extends Authenticated_Controller {
 				'c' => $t->_('Critical'),
 				'w' => $t->_('Warning'),
 				'u' => $t->_('Unknown'),
+				'p' => $t->_('Pending'),
 				'o' => $t->_('OK'),
 				'n' => false
 			),
@@ -119,6 +122,7 @@ class Config_Controller extends Authenticated_Controller {
 				'c' => $t->_('Critical'),
 				'w' => $t->_('Warning'),
 				'u' => $t->_('Unknown'),
+				'p' => $t->_('Pending'),
 				'o' => $t->_('OK'),
 				'n' => false
 			),
