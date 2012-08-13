@@ -1,18 +1,29 @@
 $(document).ready(function(){
 	$('#config_table').tablesorter({});
 
-	$('#filterbox').keyup(function(){
-		filter_table(this, 'config_table');})
-		.focus(function(){
+	$('#filterbox')
+		.keyup(function() {
+			filter_table(this, 'config_table');
+		})
+		.focus(function() {
 			if(this.value==_filter_label) {
 				this.value='';
 			}
-	})
-	.blur(function() {
-		if (this.value == '') {
-			this.value = _filter_label;
-		}
-	});
+		})
+		.blur(function() {
+			if (this.value == '') {
+				this.value = _filter_label;
+			}
+		});
+
+	$('#search_all_pages')
+		.parents('form')
+			.submit(function() {
+				var filterbox = $('#filterbox');
+				if(filterbox.val() == _filter_label) {
+					filterbox.val('');
+				}
+			});
 });
 
 function filter_table (phrase, _id){

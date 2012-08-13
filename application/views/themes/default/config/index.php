@@ -17,15 +17,14 @@
 		<option value="contact_groups"<?php echo $type == 'contact_groups' ? ' selected="selected"' : '';?>><?php echo $t->_('Contact Groups');?>
 		<option value="timeperiods"<?php echo $type == 'timeperiods' ? ' selected="selected"' : '';?>><?php echo $t->_('Timeperiods');?>
 		<option value="commands"<?php echo $type == 'commands' ? ' selected="selected"' : '';?>><?php echo $t->_('Commands');?>
-		<!--<option value="extended_host_information"<?php echo $type == 'extended_host_information' ? ' selected="selected"' : '';?>><?php echo $t->_('Extended Host Information');?>
-		<option value="extended_service_information"<?php echo $type == 'extended_service_information' ? ' selected="selected"' : '';?>><?php echo $t->_('Extended Service Information');?>-->
 	</select>
-	<?php echo form::input(array('id' => 'filterbox', 'style' => 'color:grey'), $filter_string) ?>
+	<input type="text" id="filterbox" name="filterbox" value="<?php echo $filter_string ?>" />
+	<input type="submit" value="Search through all result pages"  />
+	<?php echo help::render('filterbox', 'search'); ?>
 	</form>
 </div>
 <div class="widget w98 left" style="margin-top: 40px">
 	<table id="config_table">
-		<!--<caption><?php echo ucfirst(str_replace('_',' ',$type)); ?></caption>-->
 		<thead>
 		<tr>
 			<?php $i = 0; foreach ($header as $item) {

@@ -482,7 +482,8 @@ class Search_Controller extends Authenticated_Controller {
 			The search result is currently limited to %s rows (for each object type).<br /><br />
 			To temporarily change this for your search, use limit=&lt;number&gt; (e.g limit=100) or limit=0 to disable the limit entirely."), config::get('pagination.default.items_per_page', '*')
 			),
-			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.')
+			'saved_search_help' => $translate->_('Click to save this search for later use. Your saved searches will be available by clicking on the icon just below the search field at the top of the page.'),
+			'filterbox' => $translate->_('When you start to type, the visible content gets filtered immediately.<br /><br />If you press <kbd>enter</kbd> or the button "Search through all result pages", you filter all result pages but <strong>only through its primary column</strong> (<em>host name</em> for host objects, etc).')
 		);
 		if (array_key_exists($id, $helptexts)) {
 			echo $helptexts[$id];
