@@ -47,6 +47,6 @@ class link_Core
 	 * @return string
 	 */
 	public static function linkify($text) {
-		return preg_replace('~((ftp|https?)://[^ ]+)~', '<a target="_blank" href="$1">$1</a>', $text);
+		return preg_replace('~((ftp|https?)://[^ ]+)~', '<a target="'.config::get('nagdefault.notes_url_target', '*').'" href="$1">$1</a>', $text);
 	}
 }
