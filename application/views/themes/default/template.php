@@ -163,7 +163,7 @@ if (isset($this) && isset($this->template->js_header))
 					}
 					?>
 					</ul>
-					<p><?php echo help::render('search_help', 'search') ?></p>
+					<p><?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?></p>
 					<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 					<?php
 					$query = arr::search($_REQUEST, 'query');
