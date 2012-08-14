@@ -256,7 +256,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_SERVICE'] = _('Delete selected service(s)');
 	}
-	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service', 'id' => 'multi_action_select_service'), $options);
+	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select_service auto', 'id' => 'multi_action_select_service'), $options);
 ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit_service', 'class' => 'item_select_service', 'value' => _('Submit'))); ?>
 	<br /><span id="multi_object_submit_progress_service" class="item_select_service"></span>

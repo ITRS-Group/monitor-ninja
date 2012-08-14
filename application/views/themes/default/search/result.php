@@ -132,7 +132,7 @@ if (isset($host_result) ) {
 	if (nacoma::allowed()) {
 		$options['NACOMA_DEL_HOST'] = _('Delete selected host(s)');
 	}
-	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'), $options);
+	echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'), $options);
 ?>
 	<?php echo form::submit(array('id' => 'multi_object_submit', 'class' => 'item_select', 'value' => _('Submit'))); ?>
 	<br /><span id="multi_object_submit_progress" class="item_select"></span>

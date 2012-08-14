@@ -121,8 +121,7 @@ $label_next = html::image(
 
 <form class="pagination_form" action="<?php echo basename($_SERVER['PHP_SELF']) ?>" method="get">
 		<fieldset>
-		<?php //echo _('Show') ?>
-		<select id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
+		<select class="auto" id="sel_items_<?php echo $_SESSION['_pagination_id_'] ?>" class="items_per_page" name="items_per_page" onchange="preserve_get_params('sel', $(this).attr('id'));this.form.submit()">
 	<?php
 		if ($total_items < $paging_step) {
 			?>

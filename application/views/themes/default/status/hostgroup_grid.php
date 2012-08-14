@@ -156,7 +156,7 @@ else { ?>
 	</table>
 	<?php
 } ?>
-<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select', 'id' => 'multi_action_select'),
+<?php echo form::dropdown(array('name' => 'multi_action', 'class' => 'item_select auto', 'id' => 'multi_action_select'),
 		array(
 			'' => _('Select action'),
 			'SCHEDULE_HOST_DOWNTIME' => _('Schedule downtime'),

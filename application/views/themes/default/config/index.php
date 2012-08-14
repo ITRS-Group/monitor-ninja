@@ -3,7 +3,7 @@
 	<div class="ie-pag-config" style="position: absolute; right: 235px;"><?php echo (isset($pagination)) ? $pagination : ''; ?></div>
 	<form method="get" action="">
 	<?php echo _('Object type'); ?>:
-	<select name="type" onchange="submit()">
+	<select class="auto" name="type" onchange="submit()">
 		<option value="hosts"<?php echo $type == 'hosts' ? ' selected="selected"' : '';?>><?php echo _('Hosts');?>
 		<option value="host_dependencies"<?php echo $type == 'host_dependencies' ? ' selected="selected"' : '';?>><?php echo _('Host Dependencies');?>
 		<option value="host_escalations"<?php echo $type == 'host_escalations' ? ' selected="selected"' : '';?>><?php echo _('Host Escalations');?>
