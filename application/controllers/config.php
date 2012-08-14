@@ -190,14 +190,12 @@ class Config_Controller extends Authenticated_Controller {
 					    $cg_link = false;
 					    $c_link = array();
 					    if(isset($row->contactgroup_name)) {
-							$tmp = explode(",", $row->contactgroup_name);
-							foreach($tmp as $cg){
+							foreach($row->contactgroup_name as $cg){
 								$cg_link[] = html::anchor(Router::$controller.'/?type=contact_groups#'.$cg, $cg);
 							}
 					    }
 					    if(isset($row->contact_name)){
-							$tmp = explode(",", $row->contact_name);
-							foreach($tmp as $c){
+							foreach($row->contact_name as $c){
 								$c_link[] = html::anchor(Router::$controller.'/?type=contacts#'.$c, $c);
 							}
 					    }
@@ -715,7 +713,6 @@ class Config_Controller extends Authenticated_Controller {
 						else
 							$result[$i][]= '';
 
-						//$result[$i][]= html::anchor(Router::$controller.'/?type=contactgroup#'.$row->contactgroup_name, $row->contactgroup_name);
 						$result[$i][]= $row->first_notification;
 						$result[$i][]= $row->last_notification;
 						$result[$i][]= time::to_string($row->notification_interval*60);
