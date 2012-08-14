@@ -347,7 +347,6 @@ Filter: servicegroup_name = $group");
 	*/
 	public function check_group_access($groupname=false)
 	{
-<<<<<<< HEAD
 		$auth = Nagios_auth_Model::instance();
 		return $auth->is_authorized_for_servicegroup($groupname);
 	}
