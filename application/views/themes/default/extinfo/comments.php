@@ -18,13 +18,6 @@ if (!empty($command_result)) {
 	echo form::button('clear'.($service == false ? 'host' : 'service').'search', _('Clear'));
 	?>
 	</form>
-<!--<div style="position: absolute; right: 0px; margin-right: 1%; margin-top: -20px">
-	<?php echo html::image($this->add_path('icons/16x16/add-comment.png'), array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
-	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_add_comment, $label_add_comment); ?>
-	&nbsp; &nbsp;
-	<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => _('Delete all comments'), 'title' => _('Delete all comments'), 'style' => 'margin-bottom: -4px')) ?>
-	<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, _('Delete all comments')); ?>
-</div>-->
 <a name="comments"></a>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<?php if (Router::$method == 'show_comments') { echo form::open('extinfo/show_comments'); } ?>
