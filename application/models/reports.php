@@ -993,8 +993,7 @@ class Reports_Model extends Model
 					$check_exception = !($days_since_start % $x['skip_interval']);
 				}
 
-				# We must add 1 day to exp_end, as times during that day must be included
-				if (!$check_exception || $exp_start > $day_time || $exp_end + 86400 < $day_time)
+				if (!$check_exception || $exp_start < $day_time || $exp_end > 86400 + $day_time)
 					continue;
 
 				if(!isset($all_exceptions[$day_year]))
