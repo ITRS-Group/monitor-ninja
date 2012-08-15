@@ -25,9 +25,17 @@ $(document).ready(function() {
 	$("#report_mode_standard").click(function() {
 		set_report_mode('standard');
 	});
-	$("#report_mode_custom").click(function() {
-		set_report_mode('custom');
-	});
+	$("#report_mode_custom")
+		.click(function() {
+			set_report_mode('custom');
+		})
+		.map(function() {
+			if(this.checked) {
+				// detect on load as well, e.g. when going
+				// back from a generated report
+				set_report_mode('custom');
+			}
+		});
 
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
