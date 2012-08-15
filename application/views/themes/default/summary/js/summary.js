@@ -64,16 +64,7 @@ $(document).ready(function() {
 	$("#show_scheduled").click(function() {
 		self.location.href = _site_domain + _index_page + '/reports?show_schedules#summary_schedules';
 	});
-/*
-	$("#fancy_content .send_report_now").live('click', function() {
-		var type_id = $(this).attr('id');
-		type_id = type_id.replace('send_now_', '');
-		type_id = type_id.split('_');
-		var type = type_id[0];
-		var id = type_id[1];
-		send_report_now(type, id);
-	});
-	*/
+
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
 	});
