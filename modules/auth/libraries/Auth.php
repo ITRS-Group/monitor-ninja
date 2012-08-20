@@ -173,6 +173,11 @@ class Auth_Core {
 	{
 		return $this->op5auth->get_authentication_methods();
 	}
+
+	public function get_default_auth()
+	{
+		return $this->op5auth->get_default_auth();
+	}
 } // End Auth
 
 

@@ -45,11 +45,13 @@
 					<td><?php echo form::password('password','','class="i160"') ?></td>
 				</tr>
 				<?php
-				$auth_methods = Auth::instance()->get_authentication_methods();
+				$auth = Auth::instance();
+				$auth_methods = $auth->get_authentication_methods();
+				$default_auth = $auth->get_default_auth();
 				if (!empty($auth_methods) && is_array($auth_methods) && count($auth_methods) > 1) {	?>
 				<tr>
 					<td><?php echo $this->translate->_('Login method') ?></td>
-					<td><?php echo form::dropdown('auth_method', array_combine( $auth_methods, $auth_methods ) ) ?></td>
+					<td><?php echo form::dropdown('auth_method', array_combine( $auth_methods, $auth_methods ), $default_auth ) ?></td>
 				</tr>
 				<?php
 				}?>
