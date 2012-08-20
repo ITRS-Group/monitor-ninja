@@ -55,15 +55,9 @@ if (!empty($widgets)) {
 
 
 	<h1><?php echo $label_create_new ?></h1>
-
-	<form onsubmit="return false;">
-		<table id="report_mode_select">
-			<caption><?php echo _('Report Mode') ?></caption>
-			<tr>
-				<td id="td_std"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo _('Standard') ?></td>
-				<td id="td_cust"><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo _('Custom') ?></td>
-			</tr>
-		</table>
+	<h2><?php echo _('Report Mode') ?></h2>
+	<form action="" onsubmit="return false;">
+	<p><label><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_standard'), 'standard', true); ?> <?php echo _('Standard') ?></label><br /><label><?php echo form::radio(array('name' => 'report_mode', 'id' => 'report_mode_custom'), 'custom'); ?> <?php echo _('Custom') ?></label>
 	</form>
 	<br />
 

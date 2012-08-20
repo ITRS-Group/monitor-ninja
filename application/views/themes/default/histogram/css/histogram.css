@@ -128,10 +128,8 @@ h2 { font-weight: normal; font-size: 13px; margin: 7px 0px 15px 3px}
 caption { padding-left:0px}
 
 #settings_table,
-#std_report_table,
-#report_mode_select { width: auto; }
+#std_report_table { width: auto; }
 #settings_table tr td,
-#report_mode_select tr td,
 #history_report_table tr td  { padding: 0px 5px 0px 0px; background: none;}
 
 .time_error {
