@@ -49,7 +49,7 @@ class Livestatus
 		return $res;
 	}
 
-	public function instance($config = null) {
+	public static function instance($config = null) {
 		if (self::$instance === false)
 			return new Livestatus($config);
 		else

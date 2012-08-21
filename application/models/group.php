@@ -228,7 +228,7 @@ class Group_Model extends Model
 	 * @param $id The id of the object
 	 * @return Array of group objects the requested object is a member of
 	 */
-	public function get_groups_for_object($type='host', $id=false)
+	public static function get_groups_for_object($type='host', $id=false)
 	{
 		$auth = Nagios_auth_Model::instance();
 		switch (strtolower($type)) {

@@ -199,7 +199,7 @@ class Downtime_Model extends Model
 	*	Fetch saved downtime comments for host or service
 	* 	This is usually used to display comments on extinfo page
 	*/
-	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);

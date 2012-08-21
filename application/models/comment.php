@@ -20,7 +20,7 @@ class Comment_Model extends Model {
 	*	Fetch saved comments for host or service
 	*
 	*/
-	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
+	public static function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
