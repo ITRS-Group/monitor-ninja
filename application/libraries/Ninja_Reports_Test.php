@@ -1,6 +1,6 @@
 <?php
 
-class Ninja_Reports_Test_Core
+class Ninja_Reports_Test_Core extends Reports_Model
 {
 	public $test_file = false;
 	public $total = 0;
@@ -80,8 +80,11 @@ class Ninja_Reports_Test_Core
 
 	public function run_test($params)
 	{
+		$timeperiods = array();
 		foreach ($this->test_globals as $k => $v) {
-			if (!isset($params[$k]))
+			if ($k === 'timeperiod')
+				$timeperiods[] = $v;
+			else if (!isset($params[$k]))
 				$params[$k] = $v;
 		}
 
@@ -94,10 +97,24 @@ class Ninja_Reports_Test_Core
 		}
 		$start_time = arr::search($params, 'start_time');
 		$end_time = arr::search($params, 'end_time');
+		$timeperiod = arr::search($params, 'timeperiod');
+		if ($timeperiod)
+			$timeperiods[] =& $timeperiod;
 		unset($params['correct']);
+		unset($params['timeperiod']);
 
 		if (!$this->verify_correct($end_time - $start_time, $correct))
 			return -1;
+
+		Timeperiod_Model::$precreated = array();
+		foreach ($timeperiods as $idx => &$tp) {
+			if (!isset($tp['timeperiod_name']))
+				$tp['timeperiod_name'] = 'the_timeperiod'.$idx;
+
+			$tpobj = Timeperiod_Model::instance(array('start_time' => $start_time, 'end_time' => $end_time, 'rpttimeperiod' => $tp['timeperiod_name']));
+			$tpobj->set_timeperiod_data($tp);
+			$tpobj->resolve_timeperiods();
+		}
 
 		$this->sub_reports = 0;
 		$rpt = new Reports_Model('merlin', $this->table_name);
@@ -109,6 +126,7 @@ class Ninja_Reports_Test_Core
 			if (!$rpt->set_option($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
+		$opts['rpttimeperiod'] = $timeperiod['timeperiod_name'];
 
 		# force logs to be kept so we can analyze them and make
 		# sure the durations add up
