@@ -117,22 +117,23 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		}
 
 		$this->sub_reports = 0;
-		$rpt = new Reports_Model('merlin', $this->table_name);
+		$opts = new Avail_options();
 		foreach ($params as $k => $v) {
 			if (!$this->sub_reports && is_array($v)) {
 				if ($k === 'host_name' || $k === 'service_description')
 					$this->sub_reports = count($v);
 			}
-			if (!$rpt->set_option($k, $v))
+			if (!$opts->set($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
 		$opts['rpttimeperiod'] = $timeperiod['timeperiod_name'];
 
 		# force logs to be kept so we can analyze them and make
 		# sure the durations add up
-		$rpt->set_option('keep_logs', true);
-		$rpt->set_option('keep_sub_logs', true);
+		$opts['keep_logs'] = true;
+		$opts['keep_sub_logs'] = true;
 
+		$rpt = new Reports_Model($opts, 'merlin', $this->table_name);
 		$return_arr = $rpt->get_uptime();
 		$this->result = $return_arr;
 		$this->report_objects[$this->cur_test] = $rpt;
@@ -333,8 +334,6 @@ class Ninja_Reports_Test_Core extends Reports_Model
 				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles);
 				echo "$cmd\n";
-			#	exit(0);
-                        #echo "Running command: $cmd\n";
 			system($cmd, $retval);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
@@ -342,7 +341,6 @@ class Ninja_Reports_Test_Core extends Reports_Model
 				$db->query("DROP TABLE ".$this->table_name);
 				return -1;
 			}
-                        #echo "Import finished :).\n";
 		}
 
 		return true;
@@ -442,15 +440,15 @@ class Ninja_Reports_Test_Core extends Reports_Model
 		if (!empty($rpt->sub_reports)) {
 			foreach ($rpt->sub_reports as $r) {
 				$duration = $this->log_duration($r->st_log);
-				if ($duration != $r->end_time - $r->start_time) {
-					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration (expected ".($r->end_time - $r->start_time).", was $duration)";
+				if ($duration != $r->options['end_time'] - $r->options['start_time']) {
+					$failed['st_log ' . $r->id] = "Log duration doesn't match report period duration (expected ".($r->options['end_time'] - $r->options['start_time']).", was $duration)";
 				}
 			}
 		}
 		# also check the master report
 		$duration = $this->log_duration($rpt->st_log);
-		if ($duration != $rpt->end_time - $rpt->start_time) {
-			$failed['st_log'] = "Log duration doesn't match report period duration (expected ".($r->end_time - $r->start_time).", was $duration)";
+		if ($duration != $rpt->options['end_time'] - $rpt->options['start_time']) {
+			$failed['st_log'] = "Log duration doesn't match report period duration (expected ".($rpt->options['end_time'] - $rpt->options['start_time']).", was $duration)";
 		}
 
 		if (empty($failed)) {
