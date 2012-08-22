@@ -38,8 +38,7 @@ cp op5build/login.png   $tempdir$prefix/application/views/themes/default/css/def
 cp op5build/favicon.ico $tempdir$prefix/application/views/themes/default/icons/16x16/
 cp op5build/icon.png $tempdir$prefix/application/views/themes/default/icons/
 
-find $tempdir -exec 'chmod a+r' {} \;
-find $tempdir -type d -exec 'chmod {}' \;
+chmod -R a+r $tempdir
 
 mkdir -p $tempdir/etc/cron.d/
 install -m 644 -c $tempdir/etc/cron.d/ install_scripts/scheduled_reports.crontab
@@ -68,7 +67,7 @@ chmod 775 $tempdir$prefix/application/custom_widgets
 mkdir -p $tempdir/var/www/html
 ln -sf $prefix $tempdir/var/www/html/monitor
 ln -sf $prefix $tempdir/var/www/html/ninja
-# recursive symbolic link, so must be after all 'find' stuff above
+# recursive symbolic link, so must be after all chmod stuff above
 ln -s ../ $tempdir$prefix/op5
 
 mkdir -p $tempdir$AP2CONFDIR
