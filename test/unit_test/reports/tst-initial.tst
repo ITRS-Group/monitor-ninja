@@ -4,8 +4,8 @@ logfile = assume_initial_states.log
 assume whatever and get real state from db {
 	start_time = 1202857200
 	end_time = 1202943600
-	assume_initial_states = 1
-	initial_assumed_host_state = -1
+	assumeinitialstates = 1
+	initialassumedhoststate = -1
 	host_name = testhost
 	correct {
 		TIME_DOWN_UNSCHEDULED = 86400
@@ -16,8 +16,8 @@ assume whatever and get real state from db {
 assume current state {
 	start_time = 1202684400
 	end_time = 1202770800
-	assume_initial_states = 1
-	initial_assumed_host_state = -1
+	assumeinitialstates = 1
+	initialassumedhoststate = -1
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 82800
@@ -29,8 +29,8 @@ assume current state {
 assume state unreachable {
 	start_time = 1202684400
 	end_time = 1202770800
-	assume_initial_states = 1
-	initial_assumed_host_state = 2
+	assumeinitialstates = 1
+	initialassumedhoststate = 2
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 82800
@@ -42,8 +42,8 @@ assume state unreachable {
 assume first real state {
 	start_time = 1202684400
 	end_time = 1202770800
-	assume_initial_states = 1
-	initial_assumed_host_state = -3
+	assumeinitialstates = 1
+	initialassumedhoststate = -3
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 86400
@@ -55,8 +55,8 @@ assume first real state {
 assume first real state outside report period end {
 	start_time = 1202598000
 	end_time = 1202684400
-	assume_initial_states = 1
-	initial_assumed_host_state = -3
+	assumeinitialstates = 1
+	initialassumedhoststate = -3
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 86400

@@ -30,7 +30,7 @@ Group availability including soft states, reversed host order {
 Group availability excluding soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	host_name {
 		testhost
 		testhost2
@@ -44,7 +44,7 @@ Group availability excluding soft states {
 Group availability excluding soft states, reversed host order {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	host_name {
 		testhost2
 		testhost
@@ -84,7 +84,7 @@ Cluster mode availability including soft states, reversed host order {
 Cluster mode availability excluding soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	cluster_mode = 1
 	host_name {
 		testhost
@@ -98,7 +98,7 @@ Cluster mode availability excluding soft states {
 Cluster mode availability excluding soft states, reversed host order {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	cluster_mode = 1
 	host_name {
 		testhost2

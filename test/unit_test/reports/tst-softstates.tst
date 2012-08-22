@@ -4,7 +4,7 @@ logfile = softstates.log
 Include soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 1
+	includesoftstates = 1
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 82800
@@ -15,7 +15,7 @@ Include soft states {
 Exclude soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	host_name = testhost
 	correct {
 		TIME_UP_UNSCHEDULED = 83400

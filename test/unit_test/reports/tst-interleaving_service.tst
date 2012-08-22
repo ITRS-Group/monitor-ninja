@@ -26,7 +26,7 @@ worst state, down as up {
 		host2;PING
 		host2;PING2
 	}
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_UNSCHEDULED = 140
 		TIME_OK_SCHEDULED = 859
@@ -62,7 +62,7 @@ best state, down as up {
 		host2;PING
 		host2;PING2
 	}
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	cluster_mode = 1
 	correct {
 		TIME_OK_UNSCHEDULED = 2800

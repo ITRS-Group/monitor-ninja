@@ -4,7 +4,7 @@ logfile = softstates_service.log
 Include service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 1
+	includesoftstates = 1
 	host_name = testhost
 	service_description = PING
 	correct {
@@ -16,7 +16,7 @@ Include service soft states {
 Exclude service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
+	includesoftstates = 0
 	host_name = testhost
 	service_description = PING
 	correct {

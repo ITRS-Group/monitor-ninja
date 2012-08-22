@@ -1,7 +1,7 @@
 description = count scheduled service downtime as uptime
 logfile = scheddownasup_service.log
 global_vars {
-	include_soft_states = 0
+	includesoftstates = 0
 }
 
 scheduled service downtime as uptime {
@@ -9,7 +9,7 @@ scheduled service downtime as uptime {
 	end_time = 1202770800
 	host_name = testhost
 	service_description = PING
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_SCHEDULED = 3600
 		TIME_OK_UNSCHEDULED = 75600
@@ -23,7 +23,7 @@ host in scheduled downtime, service as uptime {
 	end_time = 1202770800
 	host_name = testhost2
 	service_description = PING
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_SCHEDULED = 3600
 		TIME_OK_UNSCHEDULED = 75600
@@ -39,7 +39,7 @@ host in scheduled downtime, service as uptime, 2 services {
 		testhost;PING
 		testhost2;PING
 	}
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_SCHEDULED = 3500
 		TIME_OK_UNSCHEDULED = 75600
@@ -67,7 +67,7 @@ host in dt before report_period starts, service never in dt {
 	end_time = 1202770800
 	host_name = testhost3
 	service_description = PING
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_SCHEDULED = 2100
 		TIME_CRITICAL_UNSCHEDULED = 84300
@@ -82,7 +82,7 @@ host with two services {
 		testhost2;PING
 		testhost2;PING2
 	}
-	scheduled_downtime_as_uptime = 1
+	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_OK_SCHEDULED = 3600
 		TIME_OK_UNSCHEDULED = 75600

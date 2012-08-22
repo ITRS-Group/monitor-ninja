@@ -4,8 +4,8 @@ logfile = bakelit.log
 ixx konstruktions-bakelit {
 	start_time = 1209160800
 	end_time = 1209247200
-	assume_initial_states = 1
-	initial_assumed_host_state = -1
+	assumeinitialstates = 1
+	initialassumedhoststate = -1
 	host_name = kb-nas1.kb-01.konstruktions-bakelit.com
 	correct {
 		TIME_UP_UNSCHEDULED = 83303
