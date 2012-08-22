@@ -2,7 +2,7 @@ description = Interleaving downtimes and multiple states, services
 logfile = interleaving_states_service.log
 
 worst state, down as down {
-	start_time = 000000000
+	start_time = 000000001
 	end_time = 000005000
 	service_description {
 		host1;PING
@@ -10,7 +10,7 @@ worst state, down as down {
 		host2;PING2
 	}
 	correct {
-		TIME_OK_UNSCHEDULED = 140
+		TIME_OK_UNSCHEDULED = 139
 		TIME_OK_SCHEDULED = 0
 		TIME_WARNING_UNSCHEDULED = 700
 		TIME_WARNING_SCHEDULED = 859
@@ -19,7 +19,7 @@ worst state, down as down {
 	}
 }
 worst state, down as up {
-	start_time = 000000000
+	start_time = 000000001
 	end_time = 000005000
 	service_description {
 		host1;PING
@@ -28,7 +28,7 @@ worst state, down as up {
 	}
 	scheduleddowntimeasuptime = 1
 	correct {
-		TIME_OK_UNSCHEDULED = 140
+		TIME_OK_UNSCHEDULED = 139
 		TIME_OK_SCHEDULED = 859
 		TIME_WARNING_UNSCHEDULED = 1600
 		TIME_WARNING_SCHEDULED = 0
@@ -37,7 +37,7 @@ worst state, down as up {
 	}
 }
 best state, down as down {
-	start_time = 000000000
+	start_time = 000000001
 	end_time = 000005000
 	service_description {
 		host1;PING
@@ -46,7 +46,7 @@ best state, down as down {
 	}
 	cluster_mode = 1
 	correct {
-		TIME_OK_UNSCHEDULED = 2800
+		TIME_OK_UNSCHEDULED = 2799
 		TIME_OK_SCHEDULED = 404
 		TIME_WARNING_UNSCHEDULED = 1100
 		TIME_WARNING_SCHEDULED = 696
@@ -55,7 +55,7 @@ best state, down as down {
 	}
 }
 best state, down as up {
-	start_time = 000000000
+	start_time = 000000001
 	end_time = 000005000
 	service_description {
 		host1;PING
@@ -65,7 +65,7 @@ best state, down as up {
 	scheduleddowntimeasuptime = 1
 	cluster_mode = 1
 	correct {
-		TIME_OK_UNSCHEDULED = 2800
+		TIME_OK_UNSCHEDULED = 2799
 		TIME_OK_SCHEDULED = 1100
 		TIME_WARNING_UNSCHEDULED = 1100
 		TIME_WARNING_SCHEDULED = 0
