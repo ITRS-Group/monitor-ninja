@@ -1,34 +1,39 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Handle timeperiod data
+ * A model used by reports to lookup when report times and timeperiods start
+ * and stop. This sounds real easy, until you start to look at nagios'
+ * less trivial timeperiod definitions.
  *
- * On one hand, it can be non-trivial to resolve timeperiods, and we want one
- * timeperiod instance per report object. On the other hand, non-trivial
- * timeperiods will exclude other timeperiods, and those might exclude even
- * further.
- *
- * Therefore, you should call the instance() method to get a timeperiod instance,
- * which might be shared with other users, and this class will call instance()
+ * You should call the instance() method to get a timeperiod instance,
+ * which might be shared with other users. This class will call instance()
  * itself, so exceptions to exceptions work.
  */
 class Timeperiod_Model extends Model
 {
-	static $precreated = array();
+	/** Please do not touch this outside of tests, it's a cache for performance purposes */
+	static public $precreated = array();
+	/** Definition of the regular (weekday) timeperiod definitions */
 	protected $period = false;
+	/** Report start */
 	public $start_time = false;
+	/** Report stop */
 	public $end_time = false;
 
 	public $tp_exceptions = array(); /**< Timeperiod exceptions */
 	public $tp_excludes = array(); /**< Timeperiod excludes */
 
-	const DATERANGE_CALENDAR_DATE = 0;
+	const DATERANGE_CALENDAR_DATE = 0; /**< eg: 2001-01-01 - 2010-11-21 / 3 (specific complete calendar date) */
 	const DATERANGE_MONTH_DATE = 1;  	/**< eg: july 4 - november 15 / 3 (specific month) */
 	const DATERANGE_MONTH_DAY = 2;  	/**< eg: day 1 - 25 / 5  (generic month)  */
 	const DATERANGE_MONTH_WEEK_DAY = 3; /**< eg: thursday 1 april - tuesday 2 may / 2 (specific month) */
 	const DATERANGE_WEEK_DAY = 4;  		/**< eg: thursday 3 - monday 4 (generic month) */
 	const DATERANGE_TYPES = 5; /**< FIXME: incomprehensible magic */
 
+	/**
+	 * Return an instance from a Report_options object
+	 * @param $options Report_options class, or possibly an array mock
+	 */
 	public function instance($options) {
 		$key = $options['rpttimeperiod'].$options['start_time'].$options['end_time'];
 		if (isset(self::$precreated[$key]))
@@ -38,6 +43,9 @@ class Timeperiod_Model extends Model
 		return $obj;
 	}
 
+	/**
+	 * Warning: you should not use this directly
+	 */
 	public function __construct($options) {
 		$this->start_time = $options['start_time'];
 		$this->end_time = $options['end_time'];
@@ -1092,7 +1100,6 @@ class Timeperiod_Model extends Model
 	 * Fetch info on a timeperiod
 	 *
 	 * @param $period string: Timeperiod name
-	 * @param $include_exceptions bool: If true, include the exceptions for the timeperiod
 	 * @return an array of the timeperiod's properties
 	 */
 	public static function get($period)

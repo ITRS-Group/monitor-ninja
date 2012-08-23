@@ -128,6 +128,7 @@ class Reports_Model extends Model
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
 
+	/** A map of state ID => state name for hosts. FIXME: one of a gazillion */
 	static public $host_states = array(
 		self::HOST_UP => 'up',
 		self::HOST_DOWN => 'down',
@@ -135,6 +136,7 @@ class Reports_Model extends Model
 		self::HOST_PENDING => 'pending',
 		self::HOST_EXCLUDED => 'excluded');
 
+	/** A map of state ID => state name for services. FIXME: one of a gazillion */
 	static public $service_states = array(
 		self::SERVICE_OK => 'ok',
 		self::SERVICE_WARNING => 'warning',
@@ -145,10 +147,12 @@ class Reports_Model extends Model
 
 	/** The provided options */
 	protected $options = false;
+	/** The timeperiod associated with this report */
 	protected $timeperiod;
 
 	/**
 	 * Constructor
+	 * @param $options An instance of Report_options
 	 * @param $db_name Database name
 	 * @param $db_table Database name
 	 */
@@ -893,8 +897,6 @@ class Reports_Model extends Model
 
 	/**
 	 * Initialize the the state machine for this report
-	 * @param $hostname The host(s) we're interested in
-	 * @param $servicename The service(s) we're interested in
 	 */
 	public function st_init()
 	{
@@ -984,9 +986,6 @@ class Reports_Model extends Model
 	/**
 	 * The work-horse of the availability and SLA reports. This is
 	 * generally the entry-point for all reports when options are set.
-	 *
-	 * @param $hostname The host(s) we're interested in.
-	 * @param $servicename The service(s) we're interested in.
 	 *
 	 * @return FALSE on errors. Array of calculated uptime on succes.
 	 * The array is in the form:
@@ -2100,7 +2099,6 @@ class Reports_Model extends Model
 
 	/**
 	*	Fetch alert history for histogram report
-	* 	@param $options array with values needed for report
 	* 	@param $slots array with slots to fill with data
 	* 	@return array with keys: min, max, avg, data
 	*/
