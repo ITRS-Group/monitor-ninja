@@ -22,6 +22,10 @@ popd
 make docs
 
 cp -r . $ninja_dir
+
+# The build script always looks for the op5build dir in the build root,
+# to use it *for* packaging, not include it *in* the package.
+mv $ninja_dir/op5build $builddir
 for d in test monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
 do
 	rm -rf $ninja_dir/$d
