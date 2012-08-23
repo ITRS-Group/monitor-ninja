@@ -12,7 +12,8 @@ PATH_DEF=`echo $PATH`
 PATH=/usr/sbin:/usr/bin:/opt/csw/bin/:/opt/csw/gcc3/bin:/usr/ccs/bin
 
 rm -rf $builddir
-mkdir -p $builddir$prefix
+ninja_dir=$builddir$prefix
+mkdir -p $ninja_dir
 
 pushd cli-helpers
         make clean
@@ -20,26 +21,27 @@ pushd cli-helpers
 popd
 make docs
 
+cp -r . $ninja_dir
 for d in test monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
 do
-	rm -rf $d
+	rm -rf $ninja_dir/$d
 done
 
 /opt/csw/bin/gsed -i -e "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
-        $builddir$prefix/index.php
+        $ninja_dir/index.php
 
 /opt/csw/bin/gsed -i \
         -e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
         -e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
         -e 's/^\(.config..show_cgi_links.. = .\)true/\1false/' \
         -e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
-        $builddir$prefix/application/config/config.php
+        $ninja_dir/application/config/config.php
 
-cp op5build/login.png   $builddir$prefix/application/views/themes/default/css/default/images
-cp op5build/favicon.ico $builddir$prefix/application/views/themes/default/icons/16x16/
-cp op5build/icon.png $builddir$prefix/application/views/themes/default/icons/
+cp op5build/login.png   $ninja_dir/application/views/themes/default/css/default/images
+cp op5build/favicon.ico $ninja_dir/application/views/themes/default/icons/16x16/
+cp op5build/icon.png $ninja_dir/application/views/themes/default/icons/
 
-chmod -R a+r .
+chmod -R a+r $ninja_dir
 
 mkdir -p $builddir/etc/cron.d/
 install -m 644 -c $builddir/etc/cron.d/ install_scripts/scheduled_reports.crontab
@@ -58,11 +60,11 @@ install -m 644 -c $builddir/etc/cron.d/ install_scripts/recurring_downtime.cront
 # executables
 for f in cli-helpers/apr_md5_validate install_scripts/ninja_db_init.sh;
 do
-	chmod 755 $builddir$prefix/$f
+	chmod 755 $ninja_dir/$f
 done
 
 # The custom_widgets dir need to be writable by the apache user
-chmod 775 $builddir$prefix/application/custom_widgets
+chmod 775 $ninja_dir/application/custom_widgets
 
 mkdir -p $builddir/var/www/html
 ln -sf $prefix $builddir/var/www/html/monitor
