@@ -37,7 +37,7 @@ $ninja_dir
 
 # The build script always looks for the op5build dir in the build root,
 # to use it *for* packaging, not include it *in* the package.
-mv $ninja_dir/op5build $builddir
+mv op5build $builddir
 
 /opt/csw/bin/gsed -i -e "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
         $ninja_dir/index.php
