@@ -21,15 +21,23 @@ pushd cli-helpers
 popd
 make docs
 
-cp -r . $ninja_dir
+# Whitelist instead of blacklist
+cp -r Documentation \
+Kohana_License.html \
+NinjaPDO.inc.php \
+README \
+application \
+cli-helpers \
+docs \
+generateKohanaDbFieldData.php \
+geomap-thumb.php \
+modules \
+system \
+$ninja_dir
 
 # The build script always looks for the op5build dir in the build root,
 # to use it *for* packaging, not include it *in* the package.
 mv $ninja_dir/op5build $builddir
-for d in test monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
-do
-	rm -rf $ninja_dir/$d
-done
 
 /opt/csw/bin/gsed -i -e "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
         $ninja_dir/index.php
@@ -41,9 +49,10 @@ done
         -e 's/^\(.config..version_info.. = .\)\/etc\/ninja-release/\1\/etc\/op5-monitor-release/' \
         $ninja_dir/application/config/config.php
 
-cp op5build/login.png   $ninja_dir/application/views/themes/default/css/default/images
-cp op5build/favicon.ico $ninja_dir/application/views/themes/default/icons/16x16/
-cp op5build/icon.png $ninja_dir/application/views/themes/default/icons/
+# Used for the enterprise edition of Ninja
+cp $builddir/op5build/login.png   $ninja_dir/application/views/themes/default/css/default/images
+cp $builddir/op5build/favicon.ico $ninja_dir/application/views/themes/default/icons/16x16/
+cp $builddir/op5build/icon.png $ninja_dir/application/views/themes/default/icons/
 
 chmod -R a+r $ninja_dir
 
@@ -75,7 +84,7 @@ ln -sf $prefix $builddir/var/www/html/monitor
 ln -sf $prefix $builddir/var/www/html/ninja
 
 mkdir -p $builddir$AP2CONFDIR
-cp op5build/solaris/ninja.httpd-conf $builddir$AP2CONFDIR/ninja.conf
+cp $builddir/op5build/solaris/ninja.httpd-conf $builddir$AP2CONFDIR/ninja.conf
 
 
 PATH=$PATH_DEF
