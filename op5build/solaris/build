@@ -15,13 +15,11 @@ pushd cli-helpers
         make clean
         make
 popd
-#make test docs
+make docs
 
-# copy everything and then remove what we don't want to ship
-cp -r * $tempdir$prefix
-for d in test op5build monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
+for d in test monitor-ninja.spec install_old.php php2doxy.sh example.htaccess
 do
-  	rm -rf $tempdir$prefix/$d
+	rm -rf $d
 done
 
 /opt/csw/bin/gsed -i -e "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
@@ -55,7 +53,6 @@ install -m 644 -c $tempdir/etc/cron.d/ install_scripts/recurring_downtime.cronta
 /opt/csw/bin/gsed -i 's#tar tfz#/opt/csw/bin/gtar tfz#' $tempdir/opt/monitor/op5/ninja/application/controllers/backup.php
 
 # executables
-
 for f in cli-helpers/apr_md5_validate install_scripts/ninja_db_init.sh;
 do
   	chmod 755 $tempdir$prefix/$f
@@ -67,8 +64,6 @@ chmod 775 $tempdir$prefix/application/custom_widgets
 mkdir -p $tempdir/var/www/html
 ln -sf $prefix $tempdir/var/www/html/monitor
 ln -sf $prefix $tempdir/var/www/html/ninja
-# recursive symbolic link, so must be after all chmod stuff above
-ln -s ../ $tempdir$prefix/op5
 
 mkdir -p $tempdir$AP2CONFDIR
 cp $curdir/op5build/solaris/ninja.httpd-conf $tempdir$AP2CONFDIR/ninja.conf
