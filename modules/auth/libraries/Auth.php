@@ -174,6 +174,12 @@ class Auth_Core {
 		return $this->op5auth->get_authentication_methods();
 	}
 
+	/**
+	 * Returns name of default authentication method.
+	 *
+	 * @return 	string 	default authentication method
+	 *
+	 */
 	public function get_default_auth()
 	{
 		return $this->op5auth->get_default_auth();
