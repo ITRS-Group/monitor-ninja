@@ -71,7 +71,7 @@ ln -sf $prefix $builddir/var/www/html/monitor
 ln -sf $prefix $builddir/var/www/html/ninja
 
 mkdir -p $builddir$AP2CONFDIR
-cp $curdir/op5build/solaris/ninja.httpd-conf $builddir$AP2CONFDIR/ninja.conf
+cp op5build/solaris/ninja.httpd-conf $builddir$AP2CONFDIR/ninja.conf
 
 
 PATH=$PATH_DEF
