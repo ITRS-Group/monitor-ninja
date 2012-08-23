@@ -30,7 +30,8 @@ application \
 cli-helpers \
 docs \
 generateKohanaDbFieldData.php \
-geomap-thumb.php \
+geomap-thumb.png \
+install_scripts \
 modules \
 system \
 $ninja_dir
