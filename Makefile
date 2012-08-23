@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 test: test-reports test-unittest
 
 test-reports:
