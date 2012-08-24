@@ -12,8 +12,13 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 			$username = $user;
 			$users = $db->query('SELECT * FROM users WHERE username = '.$db->escape($username));
 			if (!count($users)) {
-				Kohana::log('error', "No known user called $user");
-				return false;
+				# username not found in database, try again case insensitively as AD servers are (usually?) not case sensitive
+				$users = $db->query('SELECT * FROM users WHERE lower(username) = '.strtolower($db->escape($username)));
+
+				if (!count($users)) {
+						Kohana::log('error', "No known user called $user");
+						return false;
+				}
 			}
 			$user = $users->current();
 		}
@@ -40,6 +45,9 @@ class Auth_LDAP_Driver extends Auth_ORM_Driver {
 		if (!isset($config['LDAP_SERVER']) || !($ds = ldap_connect($config['LDAP_SERVER']))) {
 			Kohana::log('error', 'Trying to perform LDAP authentication, but no LDAP server specified');
 			return false;
+		}
+		if (isset($config['LDAP_PROTOCOL_VERSION'])) {
+			ldap_set_option( $ds, LDAP_OPT_PROTOCOL_VERSION, $config['LDAP_PROTOCOL_VERSION'] );
 		}
 
 		if (isset($config['LDAP_IS_AD']) && $config['LDAP_IS_AD'] == '1'
