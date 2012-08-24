@@ -57,7 +57,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 		$group_res = Group_Model::group_overview($grouptype, $groupname, $this->hostprops, $this->serviceprops, $this->hoststatustypes, $this->servicestatustypes); ?>
 		<table class="group_overview_table">
 			<caption>
-			<?php echo html::anchor('status/'.$grouptype.'group/'.$groupname.'?style=detail', $group_info->alias) ?>
+			<?php echo html::anchor('status/'.$grouptype.'group/'.$groupname.'?style=detail', htmlspecialchars($group_info->alias)) ?>
 			<span>(<?php echo html::anchor('extinfo/details/?type='.$grouptype.'group&host='.$groupname, $groupname) ?>)</span>
 			<?php if ($nacoma_link===true)
 				echo nacoma::link('configuration/configure/?type='.$grouptype.'group&name='.urlencode($groupname), 'icons/16x16/nacoma.png', sprintf($this->translate->_('Configure this %sgroup'), $grouptype));?>

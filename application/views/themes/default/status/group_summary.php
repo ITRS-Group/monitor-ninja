@@ -48,7 +48,7 @@
 			<?php $i=0; foreach ($group_details as $details) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even'?>">
 				<td class="bl" style="white-space: normal">
-					<?php echo html::anchor('status/'.$grouptype.'group/?group='.urlencode($details->groupname).'&style=overview', $details->alias) ?><br />
+					<?php echo html::anchor('status/'.$grouptype.'group/?group='.urlencode($details->groupname).'&style=overview', htmlspecialchars($details->alias)) ?><br />
 					(<?php echo html::anchor('extinfo/details/?type='.$grouptype.'group&host='.urlencode($details->groupname), $details->groupname) ?>)
 				</td>
 				<td class="icon">
