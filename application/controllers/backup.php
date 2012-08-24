@@ -165,14 +165,16 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
 			return;
 		}
 
-		exec($this->cmd_verify, $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
