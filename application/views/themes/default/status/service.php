@@ -220,7 +220,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 <?php	}
 
 		if ($show_notes) { ?>
-		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer" title="<?php echo $row->notes ?>"><?php echo !empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes; } ?></td>
+		<td style="white-space: normal"<?php if (!empty($row->notes)) { ?>class="notescontainer" title="<?php echo htmlspecialchars($row->notes) ?>"><?php echo htmlspecialchars(!empty($notes_chars) ? text::limit_chars($row->notes, $notes_chars, '...') : $row->notes); } ?></td>
 <?php 	} ?>
 	</tr>
 

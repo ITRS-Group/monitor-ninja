@@ -132,7 +132,7 @@ foreach ($entries as $entry) {
 	echo "<td>".strtoupper($parts['state'])."</td>\n";
 	echo "<td>{$parts['softorhard']}</td>\n";
 	echo "<td>{$parts['retry']}</td>\n";
-	echo "<td>$entry->output</td>\n";
+	echo "<td>".htmlspecialchars($entry->output)."</td>\n";
 	echo "</tr>\n";
 	$evenodd = $evenodd === 'even' ? 'odd' : 'even';
 }
