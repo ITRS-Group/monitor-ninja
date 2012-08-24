@@ -1025,7 +1025,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$command_success = $this->session->get('error_msg', $command_success);
 
 		if ($all === true) {
-			$tot = Comment_Model::fetch_all_comments($host, $service, false, false, true);
+			$tot = Comment_Model::count_comments_by_user($service != false, false, false, true);
 		} else {
 			$tot = 0;
 		}
@@ -1040,8 +1040,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$comment_data = $all ? Comment_Model::fetch_all_comments($host, $service, $items_per_page, $offset) :Comment_Model::fetch_comments($host, $service, $items_per_page, $offset);
-		$schedule_downtime_comments = $all ? Downtime_Model::fetch_all_comments($host, $service, $items_per_page, $offset) : Downtime_Model::fetch_comments($host, $service, $items_per_page, $offset);;
+		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$schedule_downtime_comments = $all ? Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 
 		$comment = false;
 		$i = 0;

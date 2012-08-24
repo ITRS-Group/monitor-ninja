@@ -489,7 +489,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			}
 		}
 
-		$res = $model->fetch_comments($host, $service);
+		$res = $model->fetch_comments_by_object($host, $service);
 		if ($res !== false) {
 			$data = "<table><tr><td><strong>"._('Author')."</strong></td><td><strong>"._('Comment')."</strong></td></tr>";
 			foreach ($res as $row) {
