@@ -36,7 +36,7 @@ class Comment_Model extends Model {
 
 		$sql = 'SELECT '.$fields.' FROM '.static::TABLE_NAME.' c '.$filter.' ';
 
-		return $sql
+		return $sql;
 	}
 	/**
 	 * Fetch saved comments for host or service
@@ -158,37 +158,6 @@ class Comment_Model extends Model {
 	}
 
 	/**
-	*	Fetch comment counts for all objects that has comments
-	*	Returned array will contain object name as key and count
-	* 	as value for all objects with comments.
-	*/
-	public static function count_comments_by_object($service=false)
-	{
-		if ($service === false) { # only host comments
-			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM {static::TABLE_NAME} WHERE ".
-			"service_description = '' OR service_description is NULL ".
-			"GROUP BY host_name ORDER BY host_name";
-		} else { # service comments
-			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM {static::TABLE_NAME} WHERE ".
-			"service_description != '' OR service_description is not NULL) tmpname ".
-			"GROUP BY obj_name ORDER BY obj_name";
-		}
-
-		$db = Database::instance();
-		$result = $db->query($sql);
-		if (!$result || count($result) == 0) {
-			return false;
-		}
-		$data = false;
-		foreach ($result as $row) {
-			if ($row->cnt != 0) {
-				$data[$row->obj_name] = $row->cnt;
-			}
-		}
-		return $data;
-	}
-
-		/**
 	*	Search through several fields for a specific value
 	*/
 	public function search($value=false, $limit=false)
