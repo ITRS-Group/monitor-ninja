@@ -244,7 +244,7 @@ class Status_Controller extends Authenticated_Controller {
 		}
 
 		# fetch all comments to be able to detect if we should display comment icon
-		$host_comments = Comment_Model::count_comments_by_object();
+		$host_comments = Comment_Model::count_all_comments_by_object();
 		$this->template->content->host_comments = $host_comments;
 		$this->template->content->items_per_page = $items_per_page;
 		$this->template->content->page = $page;
@@ -547,10 +547,10 @@ class Status_Controller extends Authenticated_Controller {
 		}
 
 		# fetch all comments to be able to detect if we should display comment icon
-		$host_comments = Comment_Model::count_comments_by_object();
+		$host_comments = Comment_Model::count_all_comments_by_object();
 		$this->template->content->host_comments = $host_comments;
 
-		$svc_comments = Comment_Model::count_comments_by_object(true);
+		$svc_comments = Comment_Model::count_all_comments_by_object(true);
 		$this->template->content->comments = $svc_comments;
 		$this->template->content->items_per_page = $items_per_page;
 		$this->template->content->page = $page;

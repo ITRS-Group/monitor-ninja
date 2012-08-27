@@ -42,7 +42,7 @@ if (isset($host_result) ) {
 		<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>
 		<td>
 			<div style="float: left"><?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name), $host->host_name) ?></div>
-			<?php	$host_comments = Comment_Model::count_comments($host->host_name);
+			<?php	$host_comments = Comment_Model::count_comments_by_object($host->host_name);
 				if ($host_comments!=0) { ?>
 			<span style="float: right">
 				<?php echo html::anchor('extinfo/details/?type=host&host='.urlencode($host->host_name).'#comments',
