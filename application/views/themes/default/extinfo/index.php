@@ -156,7 +156,7 @@ if (!empty($widgets)) {
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_status_information ?></td>
-			<td style="white-space: normal"><?php echo htmlspecialchars($status_info) ?></td>
+			<td style="white-space: normal"><?php echo $status_info ?></td>
 		</tr>
 		<tr>
 			<td class="dark"><?php echo $lable_perf_data ?></td>
