@@ -347,27 +347,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->_stash_params();
 
-		$regexp = $this->input->post(
-			'regexp', $this->input->get('regexp', false)
-		);
-
-		$in_host = $this->options['host_name'];
-		$in_service = $this->options['service_description'];
-		$in_hostgroup = $this->options['hostgroup'];
-		$in_servicegroup = $this->options['servicegroup'];
-
-		if (!empty($regexp) && $this->options['report_type ']!== false) {
-			# remove last 's' from report_type to get object type
-			$obj_type = substr($this->options['report_type'], 0, -1);
-			$obj_name = ucfirst($obj_type).'_Model';
-			$obj = new $obj_name();
-			$obj_res = $obj->regexp_where($obj_type.'_name', $regexp);
-			unset(${'in_'.$obj_type});
-			foreach ($obj_res as $row) {
-				${'in_'.$obj_type}[] = $row->{$obj_type.'_name'};
-			}
-		}
-
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';

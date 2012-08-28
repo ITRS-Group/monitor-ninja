@@ -963,36 +963,6 @@ class Host_Model extends Model {
 	}
 
 	/**
-	*	Fetch host info from regexp query
-	*/
-	public function regexp_where($field=false, $regexp=false, $limit=false)
-	{
-		if (empty($field) || empty($regexp)) {
-			return false;
-		}
-		if (!isset($this->auth) || !is_object($this->auth))
-			$auth = Nagios_auth_Model::instance();
-		else
-			$auth = $this->auth;
-
-		if ($auth->view_hosts_root)
-			$ca = '';
-		else
-			$ca = " INNER JOIN contact_access ca ON ca.host = host.id AND ca.contact = $auth->id ";
-
-		$limit_str = sql::limit_parse($limit);
-		if (!isset($this->db) || !is_object($this->db)) {
-			$db = Database::instance();
-		} else {
-			$db = $this->db;
-		}
-
-		$sql = "SELECT * FROM host $ca WHERE ".$field." REGEXP ".$db->escape($regexp)." ".$limit_str;
-		$host_info = self::query($db,$sql);
-		return count($host_info)>0 ? $host_info : false;
-	}
-
-	/**
 	*	Fetch all services for a single host
 	*/
 	public function get_services($host_name=false)

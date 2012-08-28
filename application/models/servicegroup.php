@@ -308,34 +308,6 @@ Filter: servicegroup_name = $group");
 	}
 
 	/**
-	*	Fetch info from regexp query
-	*/
-	public function regexp_where($field=false, $regexp=false, $limit=false)
-	{
-		if (empty($field) || empty($regexp)) {
-			return false;
-		}
-		if (!isset($this->auth) || !is_object($this->auth)) {
-			$auth = Nagios_auth_Model::instance();
-			$auth_obj = $auth->get_authorized_servicegroups();
-		} else {
-			$auth_obj = $this->auth->get_authorized_servicegroups();
-		}
-		$obj_ids = array_keys($auth_obj);
-		$limit_str = sql::limit_parse($limit);
-		if (!isset($this->db) || !is_object($this->db)) {
-			$db = Database::instance();
-		} else {
-			$db = $this->db;
-		}
-
-		$sql = "SELECT * FROM servicegroup WHERE ".$field." REGEXP ".$db->escape($regexp)." ".
-		 "AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $db->query($sql);
-		return count($obj_info)>0 ? $obj_info : false;
-	}
-
-/**
 	*	Verify that user has access to a specific group
 	*	by comparing nr of authorized services with nr of
 	* 	services in a group.
