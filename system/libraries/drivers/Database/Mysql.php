@@ -315,6 +315,7 @@ class Database_Mysql_Driver extends Database_Driver {
 
 	public function field_data($table)
 	{
+		throw Exception("You're not supposed to be here");
 		$columns = array();
 
 		if ($query = mysql_query('SHOW COLUMNS FROM '.$this->escape_table($table), $this->link))
