@@ -303,7 +303,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		$sla_reports_arr = false;
 		foreach ($sla_reports as $rep) {
-			$sla_reports_arr[$rep->id] = $rep->sla_name;
+			$sla_reports_arr[$rep->id] = $rep->report_name;
 		}
 
 		$this->js_strings .= "var _report_types_json = '(".json::encode($report_types).")';\n";
@@ -2153,9 +2153,7 @@ class Reports_Controller extends Base_reports_Controller
 					if (count($saved_reports)!=0) {
 						foreach ($saved_reports as $report) {
 							if ($report->id == $new_value) {
-								echo $report_type == 'avail' || $report_type == 'summary'
-									? $report->options->report_name
-									: $report->options->sla_name;
+								echo $report->options['report_name'];
 								break;
 							}
 						}

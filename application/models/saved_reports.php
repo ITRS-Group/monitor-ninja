@@ -22,23 +22,14 @@ class Saved_reports_Model extends Model
 			return false;
 		$db = Database::instance();
 		$auth = Nagios_auth_Model::instance();
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$name_field = 'report_name';
-				break;
-			case 'sla':
-				$name_field = 'sla_name';
-				break;
-		}
 
-		$sql = "SELECT id, ".$name_field." FROM ".$type."_config ";
+		$sql = "SELECT id, report_name FROM ".$type."_config ";
 		if (!$auth->view_hosts_root) {
 			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
 			$sql .= "WHERE ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
 		}
 
-		$sql .= " ORDER BY ".$name_field;
+		$sql .= " ORDER BY report_name";
 
 		$res = $db->query($sql);
 		return $res ? $res : false;
@@ -58,7 +49,7 @@ class Saved_reports_Model extends Model
 	 * @param $months If an SLA report, change what months are affected
 	 * @return false on error, or the id of the saved report
 	 */
-	public function edit_report_info($type='avail', $id=false, $options=false, $objects=false, $months=false)
+	public function edit_report_info($type, $id, Report_options $options, $objects=false, $months=false)
 	{
 		$update = false;
 		$type = strtolower($type);
@@ -69,15 +60,6 @@ class Saved_reports_Model extends Model
 			return false;
 		}
 
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$name_field = 'report_name';
-				break;
-			case 'sla':
-				$name_field = 'sla_name';
-				break;
-		}
 		$db = Database::instance();
 
 		# check options for start_time or end_time
@@ -101,14 +83,33 @@ class Saved_reports_Model extends Model
 		if (!empty($id))
 			$update = true;
 		else {
-			$id = self::insert_id($type, $options[$name_field], $name_field);
+			$id = self::insert_id($type, $options['report_name']);
 			$update = $id !== false;
 		}
 		if (!$update) {
 			if ($type == 'summary') {
-				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", ".$name_field.", setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".$options['report_name']."', '".serialize($options)."')";
+				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", report_name, setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", ".$db->escape($options['report_name']).", ".$db->escape(serialize($options)).")";
 			} else {
-				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", ".implode(', ', array_keys($options)).") VALUES(".$db->escape(Auth::instance()->get_user()->username).", '".implode('\',\'', array_values($options))."')";
+				$keys = '';
+				$values = '';
+				foreach ($options as $key => $val) {
+					// fuck you, special cases
+					switch ($key) {
+					 case 'host_name':
+					 case 'service_description':
+					 case 'hostgroup':
+					 case 'servicegroup':
+						break; # these are added in save_config_objects
+					 case 'host_filter_status':
+					 case 'service_filter_status':
+						$val = serialize($val);
+					 default:
+						$keys .= ', '.$key; # safe to use, because Report_options shouldn't allow misc keys
+						$values .= ', '.$db->escape($val);
+					}
+				}
+
+				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.$keys.") VALUES(".$db->escape(Auth::instance()->get_user()->username).$values.")";
 			}
 		} else {
 			if ($type == 'summary') {
@@ -117,7 +118,19 @@ class Saved_reports_Model extends Model
 			} else {
 				$sql = "UPDATE ".$type."_config SET ";
 				foreach ($options as $key => $value) {
-					$a_sql[] = $key." = ".$db->escape($value);
+					// fuck you, special cases
+					switch ($key) {
+					 case 'host_name':
+					 case 'service_description':
+					 case 'hostgroup':
+					 case 'servicegroup':
+						break; # these are added in save_config_objects
+					 case 'host_filter_status':
+					 case 'service_filter_status':
+						$value = serialize($value);
+					 default:
+						$a_sql[] = $key." = ".$db->escape($value);
+					}
 				}
 				$sql .= implode(', ', $a_sql);
 				$sql .= ", updated = NOW()";
@@ -129,7 +142,7 @@ class Saved_reports_Model extends Model
 
 		unset($res);
 		// continue with objects
-		if (!$update) $id = (int)self::insert_id($type, $options[$name_field], $name_field);
+		if (!$update) $id = (int)self::insert_id($type, $options['report_name']);
 
 		// insert/update <type>_config_objects
 		if ($type!= 'summary' && !self::save_config_objects($type, $id, $objects)) {
@@ -147,14 +160,11 @@ class Saved_reports_Model extends Model
 	/**
 	 * Fetch the ID of a saved report
 	 *
-	 * FIXME: we shouldn't ask for $name_field, we can figure it out ourselves.
-	 *
 	 * @param $type The report type
 	 * @param $name The report name
-	 * @param $name_field The name of the database field containing the report name
 	 * @return The id of the report
 	 */
-	public function insert_id($type='avail', $name=false, $name_field='report_name')
+	public function insert_id($type='avail', $name=false)
 	{
 		$name = trim($name);
 		if (empty($name)) {
@@ -164,7 +174,7 @@ class Saved_reports_Model extends Model
 		$db = Database::instance();
 		$sql = 'SELECT id FROM '.$type.'_config WHERE '.self::USERFIELD.'='.
 			$db->escape(Auth::instance()->get_user()->username).' AND '.
-			$name_field.'='.$db->escape($name);
+			'report_name ='.$db->escape($name);
 		$res = $db->query($sql);
 		if (count($res)>0) {
 			$cur = $res->current();
@@ -206,7 +216,7 @@ class Saved_reports_Model extends Model
 	 * Save information on what objects are related to this	report
 	 * (hosts/services/-groups) and stores the name of the objects.
 	 *
-	 * @param $type string: Type of report {avail, sla}
+	 * @param $type string: Type of report {avail, sla, summary}
 	 * @param $id Id of the schedule.
 	 * @param $objects Objects this scheduled report concerns
 	 * @return true on success, false on errors.
@@ -251,7 +261,7 @@ class Saved_reports_Model extends Model
 
 	/**
 	 * Delete info on a saved report
-	 * @param $type string: Report type { avail, sla }
+	 * @param $type string: Report type { avail, sla, summary }
 	 * @param $id Id of the report to delete.
 	 * @return true on success, false on errors
 	 */
@@ -300,18 +310,9 @@ class Saved_reports_Model extends Model
 			return false;
 
 		$db = Database::instance();
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$name_field = 'report_name';
-				break;
-			case 'sla':
-				$name_field = 'sla_name';
-				break;
-		}
 
-		$sql = "SELECT ".$name_field." FROM ".$type."_config WHERE ".self::USERFIELD."=".$db->escape(Auth::instance()->get_user()->username).
-			" ORDER BY ".$name_field;
+		$sql = "SELECT report_name FROM ".$type."_config WHERE ".self::USERFIELD."=".$db->escape(Auth::instance()->get_user()->username).
+			" ORDER BY report_name";
 		$res = $db->query($sql);
 		if (!$res || count($res)==0)
 			return false;
@@ -319,7 +320,7 @@ class Saved_reports_Model extends Model
 		$names = array();
 		foreach($res as $row)
 		{
-			$names[] = $row->{$name_field};
+			$names[] = $row->report_name;
 		}
 		return $names;
 	}

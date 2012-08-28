@@ -293,7 +293,7 @@
 
 	<div id="schedule_report" style="display:none">
 		<table id="schedule_report_table">
-				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo ($options['report_name']?$options['report_name']:$options['sla_name']) ?></span>)</caption>
+				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo $options['report_name'] ?></span>)</caption>
 				<tr id="schedule_header">
 					<th class="headerNone left"><?php echo _('Report Interval') ?></th>
 					<th class="headerNone left"><?php echo _('Recipients') ?></th>

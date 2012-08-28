@@ -17,8 +17,6 @@ class Sla_options_Core extends Report_options {
 			"last12months" => _('Last 12 months')
 		));
 		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
-		$this->vtypes['sla_name'] = $this->vtypes['report_name'];
-		static::$rename_options['report_name'] = 'sla_name';
 
 		parent::__construct($options);
 	}

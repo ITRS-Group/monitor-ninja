@@ -60,20 +60,6 @@ class Scheduled_reports_Model extends Model
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
-		$fieldname = false;
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$fieldname = 'report_name';
-				break;
-			case 'sla':
-				$fieldname = 'sla_name';
-				break;
-		}
-		if (empty($fieldname)) {
-			return false;
-		}
-
 		$db = Database::instance();
 
 		$sql_xtra = '';
@@ -85,7 +71,7 @@ class Scheduled_reports_Model extends Model
 		$sql = "SELECT
 				sr.*,
 				rp.periodname,
-				r.".$fieldname." AS reportname
+				r.report_name AS reportname
 			FROM
 				scheduled_reports sr,
 				scheduled_report_types rt,

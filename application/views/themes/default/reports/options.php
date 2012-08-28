@@ -154,11 +154,11 @@ if ($type == 'avail') { ?>
 			<td style="vertical-align:middle"><label for="report_name" id="save_report_label"><?php echo _('Save as') ?></label></td>
 			<td><div id="report_setup">
 						<input type="text" name="report_name" id="report_name" class="input-save-name"
-						value="<?php echo isset($options['sla_name']) && !empty($options['sla_name']) ? $options['sla_name'] : '' ?>" maxlength="255" style="margin: 0px" />
+						value="<?php echo $options['report_name'] ?>" maxlength="255" style="margin: 0px" />
 					<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
 					<input type="hidden" name="sla_save" value="1" />
 					<input type="hidden" name="save_report_settings" value="1" />
-					<input type="hidden" name="old_report_name" value="<?php echo $options['sla_name'] ?>" />
+					<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 					<input type="submit" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20" id="options_submit" />
 				</div>
 			</td>
@@ -217,8 +217,7 @@ if ($type == 'avail') { ?>
 
 	<div id="schedule_report">
 		<table id="schedule_report_table">
-				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo !empty($options['report_name']) ?
-									$options['report_name'] : $options['sla_name'] ?></span>)</caption>
+				<caption><?php echo _('Schedules for this report') ?> (<span id="scheduled_report_name"><?php echo $options['report_name'] ?></span>)</caption>
 				<tr id="schedule_header">
 					<th class="headerNone left"><?php echo _('Report Interval') ?></th>
 					<th class="headerNone left"><?php echo _('Recipients') ?></th>

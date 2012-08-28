@@ -50,7 +50,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 										$title_str = "";
 									}
 									echo '<option title="'.$title_str.'" '.(($options['report_id'] == $info->id) ? 'selected="selected"' : '').
-										' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
+										' value="'.$info->id.'">'.$info->report_name.$sched_str.'</option>'."\n";
 								}
 							} ?>
 						</select>
@@ -316,22 +316,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 								</select>
 							</td>
 						</tr>
-						<?php if (isset($extra_options)) {
-							echo $extra_options;
-						} ?>
 						<tr>
-							<td>
-								<?php echo help::render('save_report') ?>
-								<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
-								<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
-								<label for="save_report_settings" id="save_report_label"><?php echo _('Save report') ?></label>
-								<br />
-								<span id="report_save_information">
-									<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
-								</span>
-								<input type="hidden" name="old_report_name" value="<?php echo ($type == 'avail' ? $options['report_name'] : $options['sla_name']) ?>" />
-							</td>
-							<td>&nbsp;</td>
 							<td class="avail_display">
 								<?php if('avail' == $type) { ?>
 								<?php echo help::render('include_trends') ?>
@@ -341,16 +326,9 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 								<?php } ?>
 							</td>
 						</tr>
-						<tr>
-							<td id="csv_cell" style="vertical-align: top">
-								<?php echo help::render('csv_format') ?>
-								<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
-										onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $options['csv_output']?'checked="checked"':''; ?> />
-								<label for="csvoutput" id="csvout"><?php echo _('Output in CSV format') ?></label>
-							</td>
-							<td></td>
-							<td></td>
-						</tr>
+						<?php if (isset($extra_options)) {
+							echo $extra_options;
+						} ?>
 					</table>
 				</div>
 				<br />
@@ -374,7 +352,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 											$title_str = "";
 										}
 										echo '<option title="'.$title_str.'" '.(($options['report_id'] == $info->id) ? 'selected="selected"' : '').
-											' value="'.$info->id.'">'.($type == 'avail' ? $info->report_name : $info->sla_name).$sched_str.'</option>'."\n";
+											' value="'.$info->id.'">'.$info->report_name.$sched_str.'</option>'."\n";
 									}  ?>
 								</select>
 							</td>
@@ -403,6 +381,34 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 				<div class="setup-table">
 					<input id="reports_submit_button" type="submit" name="" value="<?php echo _('Create report') ?>" class="button create-report" />
+				</div>
+				<br />
+				<div class="setup-table" id="meta_table">
+					<table class="setup-tbl meta">
+						<caption>Meta</caption>
+						<tr>
+							<td><?php echo help::render('save_report').' '._('Save report') ?></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
+								<span id="report_save_information">
+									<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
+									<input type="button" name="save_report" id="save_report" value="Save" />
+								</span>
+								<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
+							</td>
+							<td id="csv_cell" style="vertical-align: top">
+								<?php echo help::render('csv_format') ?>
+								<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
+										onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $options['csv_output']?'checked="checked"':''; ?> />
+								<label for="csvoutput" id="csvout"><?php echo _('Output in CSV format') ?></label>
+							</td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>
 				</div>
 			</form>
 		</div>

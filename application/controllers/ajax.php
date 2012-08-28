@@ -581,6 +581,14 @@ class Ajax_Controller extends Authenticated_Controller {
 		$type = $this->input->post('type', 'avail');
 		if (empty($type))
 			return false;
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+			case 'sla':
+				break;
+			default:
+				return false;
+		}
 
 		$saved_reports = Saved_reports_Model::get_saved_reports($type);
 		if (count($saved_reports) == 0) {
@@ -601,19 +609,6 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$return = false;
 		$return[] = array('optionValue' => '', 'optionText' => ' - '._('Select saved report') . ' - ');
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$field_name = 'report_name';
-				break;
-			case 'sla':
-				$field_name = 'sla_name';
-				break;
-		}
-
-		if (!isset($field_name)) {
-			return false;
-		}
 
 		foreach ($saved_reports as $info) {
 			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
@@ -622,7 +617,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			} else {
 				$sched_str = "";
 			}
-			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->{$field_name}.$sched_str);
+			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->report_name.$sched_str);
 		}
 
 		echo json::encode($return);

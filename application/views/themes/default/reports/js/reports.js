@@ -452,9 +452,6 @@ function expand_and_populate(data)
 	set_initial_state('rpttimeperiod', reportObj.rpttimeperiod);
 	if (reportObj.report_name != undefined) {
 		set_initial_state('report_name', reportObj.report_name);
-	} else if (reportObj.sla_name != undefined) {
-		set_initial_state('sla_name', reportObj.sla_name);
-		$('#enter_sla').show();
 	}
 	set_initial_state('includesoftstates', reportObj.includesoftstates);
 	if (reportObj.report_period == 'custom') {
