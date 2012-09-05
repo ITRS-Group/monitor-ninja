@@ -105,6 +105,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 				2 => _('Service Warning States'),
 				4 => _('Service Critical States'),
 				8 => _('Service Unknown States'));
+		$this->vtypes['skin']['default'] = config::get('config.current_skin', '*');
 		if ($options)
 			$this->set_options($options);
 	}

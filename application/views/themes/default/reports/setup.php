@@ -371,7 +371,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					<tr>
 						<td>
 							<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
-							<input type="text" name="skin" id="skin" value="" />
+							<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
 						</td>
 					</tr>
 				</table>

@@ -227,6 +227,13 @@ class Reports_Controller extends Base_reports_Controller
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
+		if ($this->options['skin']) {
+			if (substr($this->options['skin'], -1, 1) != '/') {
+				$this->options['skin'] .= '/';
+			}
+			$this->template->current_skin = $this->options['skin'];
+		}
+
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
