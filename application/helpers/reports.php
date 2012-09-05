@@ -195,6 +195,11 @@ class reports_Core
 		$js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
 		$js_strings .= "var _reports_invalid_email = '"._('You have entered an invalid email address')."';\n";
 		$js_strings .= "var _label_direct_link = '"._('Direct link')."';\n";
+		$js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+		$js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
+		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
+			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
+
 
 		$month_names = array(
 			_('January'),

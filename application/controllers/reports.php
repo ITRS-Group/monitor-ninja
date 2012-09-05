@@ -154,10 +154,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
-		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
-			"the corresponding schedule will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
 		$this->template->inline_js = $this->inline_js;
 
@@ -446,10 +442,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
 			$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
-			$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-			$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
-			$this->js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
-				"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
 			$csv_link = $this->_get_csv_link();
 			$tpl_options->csv_link = $csv_link;

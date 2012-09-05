@@ -102,10 +102,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
-		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
-			"the corresponding schedule will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
 		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
@@ -309,10 +305,6 @@ class Summary_Controller extends Base_reports_Controller
 
 
 		$this->js_strings .= reports::js_strings();
-		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
-		$this->js_strings .= "var _reports_confirm_delete_schedule = \"".sprintf(_("Do you really want to delete this schedule?%sThis action can't be undone."), '\n')."\";\n";
-		$this->js_strings .= "var _reports_confirm_delete_warning = '".sprintf(_("Please note that this is a scheduled report and if you decide to delete it, %s" .
-			"the corresponding schedule will be deleted as well.%s Are you really sure that this is what you want?"), '\n', '\n\n')."';\n";
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
 		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
