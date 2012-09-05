@@ -224,7 +224,47 @@ class Summary_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
+		if ($this->options['output_format'] == 'pdf') {
+			return $this->generate_pdf($input);
+		}
+
 		$this->reports_model = new Reports_Model($this->options);
+
+		$result = false;
+		switch ($this->options['summary_type']) {
+		 case self::TOP_ALERT_PRODUCERS:
+			$result = $this->reports_model->top_alert_producers();
+			break;
+
+		 case self::RECENT_ALERTS:
+			$result = $this->reports_model->recent_alerts();
+			break;
+
+		 case self::ALERT_TOTALS:
+		 case self::ALERT_TOTALS_HG:
+		 case self::ALERT_TOTALS_SG:
+		 case self::ALERT_TOTALS_HOST:
+			$result = $this->reports_model->alert_totals();
+			break;
+
+		case self::ALERT_TOTALS_SERVICE:
+			$this->options['service_description'] = $this->_populate_services();
+			$result = $this->reports_model->alert_totals();
+			break;
+
+		 default:
+			echo Kohana::debug("Case fallthrough");
+			exit(1);
+		}
+
+		if ($this->options['output_format'] == 'csv') {
+			csv::csv_http_headers($this->type, $this->options);
+			$this->template =
+				$this->add_view('summary/csv');
+			$this->template->summary_type = $this->options['summary_type'];
+			$this->template->result = $result;
+			return;
+		}
 
 		$this->template->disable_refresh = true;
 		$this->xtra_js[] = 'application/media/js/date.js';
@@ -322,32 +362,6 @@ class Summary_Controller extends Base_reports_Controller
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
 
-		$result = false;
-		switch ($this->options['summary_type']) {
-		 case self::TOP_ALERT_PRODUCERS:
-			$result = $this->reports_model->top_alert_producers();
-			break;
-
-		 case self::RECENT_ALERTS:
-			$result = $this->reports_model->recent_alerts();
-			break;
-
-		 case self::ALERT_TOTALS:
-		 case self::ALERT_TOTALS_HG:
-		 case self::ALERT_TOTALS_SG:
-		 case self::ALERT_TOTALS_HOST:
-			$result = $this->reports_model->alert_totals();
-			break;
-
-		case self::ALERT_TOTALS_SERVICE:
-			$this->options['service_description'] = $this->_populate_services();
-			$result = $this->reports_model->alert_totals();
-			break;
-
-		 default:
-			echo Kohana::debug("Case fallthrough");
-			exit(1);
-		}
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";

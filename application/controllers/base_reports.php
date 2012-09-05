@@ -52,6 +52,61 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	abstract public function index($input = false);
 	abstract public function generate($input = false);
 
+	/**
+	 * Generate a PDF, via shell. Should be called by the regular generate
+	 * method based on the output_format setting, if applicable. Assumes
+	 * $this->options has been set.
+	 */
+	protected function generate_pdf()
+	{
+		// for fun infinite loops, remove these:
+		$this->options['output_format'] = 'html';
+		unset($this->options['filename']);
+
+		$stropts = $this->options->as_keyval_string(false);
+
+		# not using exec, so STDERR (used for status info) will be loggable
+		$pipe_desc = array(
+			0 => array('pipe', 'r'),
+			1 => array('pipe', 'w'),
+			2 => array('pipe', 'w'));
+		$pipes = false;
+		$product = Kohana::config('config.product_name');
+		$command = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($this->type.'/generate?'.$stropts).' '.escapeshellarg(Auth::instance()->get_user()->username).' | wkhtmltopdf -q --print-media-type --footer-left '.escapeshellarg("Produced by ".$product).' --footer-center '.escapeshellarg('(Page [page]/toPage])').' --footer-right '.escapeshellarg('<img src="/application/views/themes/default/icons/icon.png" />').' - -';
+		Kohana::log('debug', "Running pdf generation command '$command'");
+		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
+
+		if (is_resource($process)) {
+			$this->auto_render = false;
+			$filename = $this->type.'.pdf';
+			if ($this->options['schedule_id']) {
+				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
+				if ($schedule_info)
+					$filename = $schedule_info['filename'];
+			}
+
+			fwrite($pipes[0], "\n");
+			fclose($pipes[0]);
+			$out = stream_get_contents($pipes[1]);
+			$err = stream_get_contents($pipes[2]);
+			if (trim($out)) {
+				header("Content-disposition: attachment; filename=$filename");
+				header('Content-Type: application/pdf');
+				echo $out;
+			}
+			else {
+				echo $err;
+			}
+			if ($err)
+				Kohana::log('error', $err);
+			fclose($pipes[1]);
+			fclose($pipes[2]);
+			proc_close($process);
+		} else {
+			echo "Tried running command $command but was unsuccessful";
+		}
+	}
+
 	protected function setup_options_obj($input = false, $type = false)
 	{
 		if ($this->options) // If a child class has already set this, leave it alone

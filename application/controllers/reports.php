@@ -309,6 +309,9 @@ class Reports_Controller extends Base_reports_Controller
 	public function generate($input=false)
 	{
 		$this->setup_options_obj($input);
+		if ($this->options['output_format'] == 'pdf') {
+			return $this->generate_pdf($input);
+		}
 		$this->reports_model = new Reports_Model($this->options);
 		$this->trends_graph_model = new Trends_graph_Model();
 
@@ -502,6 +505,14 @@ class Reports_Controller extends Base_reports_Controller
 				: $this->reports_model->get_uptime();
 		} else {
 			$this->data_arr = $this->get_sla_data($this->options['months'], $objects);
+		}
+
+		if ($this->options['output_format'] == 'csv') {
+			csv::csv_http_headers($this->type, $this->options);
+			$this->template = $this->add_view('reports/'.$this->type.'csv');
+			$this->template->type = $this->options['report_type'];
+			$this->template->data_arr = $data_arr;
+			return;
 		}
 
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
