@@ -101,16 +101,14 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 * @uses Reports_Model::get_uptime()
 	 * @param array $arr List of groups
 	 * @param string $type The type of objects in $arr. Valid values are "hostgroup" or "servicegroup".
-	 * @param mixed $start_date datetime or unix timestamp
-	 * @param mixed $end_date datetime or unix timestamp
-	 * @global array Report options
-	 * @global array Dependent report options
-	 * @global array
-	 * @global string Error log.
 	 * @return array Calculated uptimes.
 	 */
-	protected function _expand_group_request($arr=false, $type='hostgroup')
+	protected function _expand_group_request($arr, $type, $options = false)
 	{
+		if (!$options) {
+			$optclass = get_class($this->options);
+			$options = new $optclass($this->options);
+		}
 		$err_msg = $this->err_msg;
 
 		if (empty($arr))
@@ -120,13 +118,11 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		$hostgroup = false;
 		$servicegroup = false;
 		$data_arr = false;
-		$real_group = $this->options[$type];
 		foreach ($arr as $data) {
-			$this->options[$type] = array($data);
-			$model = new Reports_model($this->options);
+			$options[$type] = array($data);
+			$model = new Reports_model($options);
 			$data_arr[] = $model->get_uptime();
 		}
-		$this->options[$type] = $real_group;
 		return $data_arr;
 	}
 
