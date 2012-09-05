@@ -84,9 +84,6 @@
 			</tr>
 
 			<?php } ?>
-			<tr id="pdf-hide">
-				<td colspan="5" class="testcase-button"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
-			</tr>
 		</table>
 <?php } ?>
 </div>

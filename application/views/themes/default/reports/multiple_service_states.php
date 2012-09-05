@@ -150,9 +150,6 @@
 				</td>
 			</tr>
 <?php } ?>
-		<tr id="pdf-hide">
-			<td colspan="6"><?php echo $this->_build_testcase_form($data[';testcase;']); ?></td>
-		</tr>
 	</table>
 </div>
 

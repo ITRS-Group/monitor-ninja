@@ -269,7 +269,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$return['group_average_critical'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_CRITICAL']);
 			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
 			$return['groupname'] = !empty($data_arr['groupname']) ? 'Servicegroup: '.(is_array($data_arr['groupname'])?implode(', ', $data_arr['groupname']):$data_arr['groupname']) : false;
-			$return[';testcase;'] = $data_arr[';testcase;'];
 		} else {
 			// host
 			$sum_up = $sum_down = $sum_unreachable = $sum_undetermined = 0;
@@ -304,7 +303,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$return['group_average_unreachable'] = reports::format_report_value($group_averages['PERCENT_KNOWN_TIME_UNREACHABLE']);
 			$return['group_average_undetermined'] = reports::format_report_value($group_averages['PERCENT_TOTAL_TIME_UNDETERMINED']);
 			$return['groupname'] = !empty($data_arr['groupname']) ? 'Hostgroup: '.(is_array($data_arr['groupname'])?implode(', ', $data_arr['groupname']):$data_arr['groupname']) : false;
-			$return[';testcase;'] = $data_arr[';testcase;'];
 		}
 		return $return;
 	}
@@ -318,9 +316,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 */
 	protected function _reorder_by_host_and_service(&$group, $report_type=false)
 	{
-		$testcase = isset($group[';testcase;']) ? $group[';testcase;'] : false;
-		unset($group[';testcase;']);
-
 		$num_hosts = count($group['HOST_NAME']);
 
 		# Set up structure ('host1' => array(1,5,8), 'host2' =>array(2,3,4,7), ...)
@@ -373,8 +368,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			ksort($tmp_arr);
 			$group[$a_name] = $tmp_arr;
 		}
-
-		$group[';testcase;'] = $testcase;
 	}
 
 	public function _print_state_breakdowns($source=false, $values=false, $type="hosts")

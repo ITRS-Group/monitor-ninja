@@ -805,7 +805,6 @@ class Reports_Controller extends Base_reports_Controller
 						$avail->avail_data = $avail_data;
 						$avail->source = $data['source'];
 						$avail->report_time_formatted = $report_time_formatted;
-						$avail->testbutton = $this->_build_testcase_form($data[';testcase;']);
 
 						$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
@@ -1334,102 +1333,6 @@ class Reports_Controller extends Base_reports_Controller
 	public function _get_date_format($get_php=false)
 	{
 		return cal::get_calendar_format($get_php);
-	}
-
-	public function _build_testcase_form($test, $prefix = '', $suffix = '')
-	{
-		if (!is_array($test) || empty($test))
-			return '';
-
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->view_hosts_root) {
-			return false;
-		}
-		unset($auth);
-
-		if (!$prefix)
-			$test_buf = form::open('reports/mktest');
-		else
-			$test_buf = '';
-
-		foreach ($test as $k => $v) {
-			if (is_array($v)) {
-				$test_buf .= $this->_build_testcase_form($v, $k, $suffix . '[]');
-				continue;
-			}
-			$test_buf .= "\t<input type='hidden' value='$v' ";
-			if ($prefix)
-				$test_buf .= "name='test[$prefix]$suffix'";
-			else
-				$test_buf .= "name='test[$k]$suffix'";
-			$test_buf .= " />\n";
-		}
-		if (!$prefix)
-			$test_buf .= "<input class='testcase' type='submit' name='action' value='Make testcase' />" .
-			"</form>\n";
-
-		return $test_buf;
-	}
-
-	/**
-	*	Create testcase
-	*/
-	public function mktest($desc='auto-created test')
-	{
-		$this->auto_render=false;
-		Kohana::close_buffers(FALSE);
-		$test = array();
-		$correct = array();
-
-		$table = 'report_data';
-		if (!isset($_REQUEST['test'])) {
-			die("No test data to produce test-case from");
-		}
-		$test = $_REQUEST['test'];
-		if (isset($_REQUEST['correct']))
-			$correct = $_REQUEST['correct'];
-		if (!isset($test['db_start_time']) && isset($test['start_time']))
-			$test['db_start_time'] = $test['start_time'];
-		if (!isset($test['db_end_time']) && isset($test['end_time']))
-			$test['db_end_time'] = $test['end_time'];
-		if (!isset($test['start_time']) && isset($test['db_start_time']))
-			$test['start_time'] = $test['db_start_time'];
-		if (!isset($test['end_time']) && isset($test['db_end_time']))
-			$test['end_time'] = $test['db_start_time'];
-
-		if (!isset($test['db_start_time']))
-			die("No db_start_time defined\n");
-		if (!isset($test['db_end_time']))
-			die("No db_end_time defined\n");
-
-		$db_start_time = $test['db_start_time'];
-		$db_end_time = $test['db_end_time'];
-		unset($test['db_start_time']);
-		unset($test['db_end_time']);
-
-		$showlog = showlog::get_path();
-
-		if ($showlog === false) {
-			die(_('Unable to find the showlog executable'));
-		}
-
-		if (PHP_SAPI !== 'cli') {
-			header("Content-Type: text/plain");
-			header("Content-Disposition: attachment; filename=report-test.txt");
-		}
-
-		$retcode = 0;
-		echo "$desc {\n";
-		reports::print_test_settings($test);
-		echo Reports_Model::print_db_lines("\t\t", $table, $test, $db_start_time, $db_end_time);
-		echo "\tlog {\n";
-		$nagios_path = Kohana::config('config.nagios_base_path');
-		$cmd = "$showlog ".$nagios_path."/var/nagios.log";
-		passthru($cmd, $retcode);
-		echo "\t}\n\n";
-
-		echo "}\n";
-		die();
 	}
 
 	/**

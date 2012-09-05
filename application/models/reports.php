@@ -341,7 +341,6 @@ class Reports_Model extends Model
 				if ($v === false)
 					unset($this->debug[$k]);
 			}
-			$return[';testcase;'] = $this->debug;
 
 			return $return;
 		}
