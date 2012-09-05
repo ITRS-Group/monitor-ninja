@@ -45,6 +45,8 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			'DOWN' => _('DOWN'),
 			'UNREACHABLE' => _('UNREACHABLE')
 		);
+
+		$this->template->disable_refresh = true;
 	}
 
 	abstract public function index($input = false);

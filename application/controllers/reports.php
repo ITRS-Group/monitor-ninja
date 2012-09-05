@@ -45,8 +45,6 @@ class Reports_Controller extends Base_reports_Controller
 			unset($_SESSION['report_err_msg']);
 		}
 
-		$this->template->disable_refresh = true;
-
 		# reset current_report_params and main_report_params
 		# just to be sure they're not left behind
 		Session::instance()->set('current_report_params', null);
@@ -318,8 +316,6 @@ class Reports_Controller extends Base_reports_Controller
 		if (!$this->reports_model->_self_check()) {
 			url::redirect(Router::$controller.'/invalid_setup');
 		}
-
-		$this->template->disable_refresh = true;
 
 		$this->_stash_params();
 
