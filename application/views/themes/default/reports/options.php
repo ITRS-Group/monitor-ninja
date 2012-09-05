@@ -88,23 +88,6 @@ if ($type == 'avail') { ?>
 				</tr>
 				<tr class="none">
 					<td>
-						<input type="checkbox" value="1" class="checkbox" id="assume" name="assumeinitialstates" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
-						<label for="assume" id="assume_initial"><?php echo _('Assume initial states') ?></label>
-					</td>
-				</tr>
-				<tr id="state_options" class="none">
-					<td>
-						<?php echo _('First assumed host state') ?><br />
-						<?php echo form::dropdown(array('name' => 'initialassumedhoststate', 'class' => 'select-initial'),
-							$options->get_alternatives('initialassumedhoststate'), $options['initialassumedhoststate']); ?>
-							<br />
-						<?php echo _('First assumed service state') ?> <br />
-						<?php echo form::dropdown(array('name' => 'initialassumedservicestate', 'class' => 'select-initial'),
-							$options->get_alternatives('initialassumedservicestate'), $options['initialassumedservicestate']); ?>
-					</td>
-				</tr>
-				<tr class="none">
-					<td>
 						<input type="checkbox" value="1" class="checkbox" id="cluster_mode" name="cluster_mode" onchange="toggle_label_weight(this.checked, 'cluster_mode_label');" />
 						<label for="cluster_mode" id="cluster_mode_label"><?php echo _('Cluster mode') ?></label>
 					</td>

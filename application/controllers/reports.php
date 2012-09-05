@@ -121,18 +121,12 @@ class Reports_Controller extends Base_reports_Controller
 		$template->label_report = $label_report;
 
 		if ($this->options['report_id']) {
-			$this->inline_js .= "$('#assumed_host_state').hide();
-			$('#assumed_service_state').hide();\n";
 			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
 		}
 		else {
 			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 
-		if($this->options['assumeinitialstates']) {
-			$this->inline_js .= "show_state_options(true);\n";
-			$this->inline_js .= "toggle_label_weight(true, 'assume_initial');\n";
-		}
 		if($this->options['includesoftstates'])
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
 		if($this->options['assumestatesduringnotrunning'])
@@ -141,7 +135,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->inline_js .= "toggle_label_weight(true, 'csvout');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
-		$this->js_strings .= "var assumeinitialstates = '".$this->options['assumeinitialstates']."';\n";
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
 		$this->js_strings .= "var _label_avail = '".$label_avail."';\n";
@@ -424,18 +417,12 @@ class Reports_Controller extends Base_reports_Controller
 			$tpl_options->rep_type = $this->type == 'avail' ? 1 : 2;
 			$tpl_options->scheduled_info = $scheduled_info;
 			if ($this->type == 'avail') {
-				$this->inline_js .= "set_initial_state('host', '".$this->options['initialassumedhoststate']."');\n";
-				$this->inline_js .= "set_initial_state('service', '".$this->options['initialassumedservicestate']."');\n";
-				$this->inline_js .= "set_initial_state('assumeinitialstates', '".$this->options['assumeinitialstates']."');\n";
 				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
 				$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";
 				$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
-				$this->js_strings .= "var initialassumedhoststate = '".$this->options['initialassumedhoststate']."';\n";
-				$this->js_strings .= "var initialassumedservicestate = '".$this->options['initialassumedservicestate']."';\n";
 			}
 
 			$this->js_strings .= "var cluster_mode = '".(int)$this->options['cluster_mode']."';\n";
-			$this->js_strings .= "var assumeinitialstates = '".$this->options['assumeinitialstates']."';\n";
 			$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->options['scheduleddowntimeasuptime']."';\n";
 
 			$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
@@ -754,14 +741,8 @@ class Reports_Controller extends Base_reports_Controller
 						$trends_img_params = '';
 						$trends_link_params = '';
 						$downtime       = $this->options['scheduleddowntimeasuptime'];
-						$assume_initial = $this->options['assumeinitialstate'];
 						$not_running    = $this->options['assumestatesduringnotrunning'];
 						$soft_states    = $this->options['includesoftstates'];
-
-						// convert "First Real State" (-3) to value returned from report_class
-						// other values are converted to old cgi value equivalent
-						$trends_assumed_initial_host_state 		= $this->options['initialassumedhoststate ']== -3 ? $this->options['initial_state ']: $this->_convert_assumed_state($this->options['initialassumedhoststate'], $sub_type, false);
-						$trends_assumed_initial_service_state 	= $this->options['initialassumedservicestate ']== -3 ? $this->options['initial_state ']: $this->_convert_assumed_state($this->options['initialassumedservicestate'], $sub_type, false);
 
 						# links - only for HTML reports
 						switch($this->options['report_type']) {
@@ -777,12 +758,9 @@ class Reports_Controller extends Base_reports_Controller
 									 "&amp;report_period={$this->options['report_period']}".
 									 "&amp;rpttimeperiod={$this->options['rpttimeperiod']}".
 									 "&amp;start_time=".$this->options['start_time'].
-									 "&amp;end_time=".$this->options['end_time'].
-									 "&amp;initialassumedhoststate=".$this->options['initialassumedhoststate'].
-									 "&amp;initialassumedservicestate=".$this->options['initialassumedservicestate'];
+									 "&amp;end_time=".$this->options['end_time'];
 
 								if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-								if($assume_initial)		$all_avail_params .= "&amp;assumeinitialstates=$assume_initial";
 								if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
 								if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
 
@@ -791,10 +769,8 @@ class Reports_Controller extends Base_reports_Controller
 								$trends_params = "host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
 								$trends_img_params = $this->trend_link."?".
@@ -802,20 +778,16 @@ class Reports_Controller extends Base_reports_Controller
 									"&amp;createimage&amp;smallimage".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
 								$trends_link_params = $this->trend_link."?".
 									"host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedhoststate=".$trends_assumed_initial_host_state.
 									"&amp;backtrack=$backtrack";
 
 
@@ -847,26 +819,20 @@ class Reports_Controller extends Base_reports_Controller
 									 "&amp;report_period=".$this->options['report_period'].
 									 "&amp;rpttimeperiod=".$this->options['rpttimeperiod'].
 									 "&amp;backtrack=$backtrack".
-									 "&amp;assumeinitialstates=".$this->_convert_yesno_int($assume_initial, false).
 									 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($not_running, false).
-									 "&amp;initialassumedhoststate=".$this->options['initialassumedhoststate'].
-									 "&amp;initialassumedservicestate=".$this->options['initialassumedservicestate'].
 									 "&amp;show_log_entries".
 									 "&amp;showscheduleddowntime=yes";
 
 
 								if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-								if($assume_initial)		$avail_params .= "&amp;assumeinitialstates=$assume_initial";
 								if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
 								if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
 
 								$trends_params = "host=$host".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
 								$trends_img_params = $this->trend_link."?".
@@ -875,10 +841,8 @@ class Reports_Controller extends Base_reports_Controller
 									"&amp;createimage&amp;smallimage".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
 								$trends_link_params = $this->trend_link."?".
@@ -886,10 +850,8 @@ class Reports_Controller extends Base_reports_Controller
 									"&amp;service=$service".
 									"&amp;t1=$t1".
 									"&amp;t2=$t2".
-									"&amp;assumeinitialstates=".$assume_initial.
 									"&amp;includesoftstates=".$soft_states.
 									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;initialassumedservicestate=".$trends_assumed_initial_service_state.
 									"&amp;backtrack=$backtrack";
 
 								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";

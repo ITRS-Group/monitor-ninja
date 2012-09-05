@@ -9,8 +9,6 @@ var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
-	//show_state_options($('#assumeinitialstates').attr('checked'));
-
 	$("#report_form").bind('submit', function() {
 		loopElements();
 		return check_form_values();
@@ -59,22 +57,11 @@ $(document).ready(function() {
 
 	$('.fancybox').click(function() {
 		// set initial states
-		set_initial_state('assumeinitialstates', assumeinitialstates);
 		if (typeof assumestatesduringnotrunning != 'undefined') {
 			set_initial_state('assumestatesduringnotrunning', assumestatesduringnotrunning);
 		}
-		show_state_options(assumeinitialstates=='1' ? true:false);
 	});
 });
-
-function show_state_options(val)
-{
-	if (val) {
-		$('#fancy_content #state_options').show();
-	} else {
-		$('#fancy_content #state_options').hide();
-	}
-}
 
 function set_initial_state(what, val)
 {
@@ -82,12 +69,6 @@ function set_initial_state(what, val)
 	var item = '';
 	var elem = false;
 	switch (what) {
-		case 'host':
-			item = 'initialassumedhoststate';
-			break;
-		case 'service':
-			item = 'initialassumedservicestate';
-			break;
 		case 'includesoftstates':
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
@@ -101,23 +82,6 @@ function set_initial_state(what, val)
 				if ($('#fancy_content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
-			}
-			break;
-		case 'assumeinitialstates':
-			if (val=='1') {
-				edit_state_options(1);
-				toggle_label_weight(1, 'assume_initial');
-				$('input[name=' + what + ']').attr('checked', true);
-				if ($('#fancy_content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				$('input[name=' + what + ']').attr('checked', false);
-				if ($('#fancy_content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-				edit_state_options(0);
-				toggle_label_weight(0, 'assume_initial');
 			}
 			break;
 		case 'assumestatesduringnotrunning':

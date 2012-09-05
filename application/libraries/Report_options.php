@@ -31,24 +31,6 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
 		'rpttimeperiod' => array('type' => 'string', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
-		'assumeinitialstates' => array('type' => 'bool', 'default' => -1),
-		'initialassumedhoststate' => array('type' => 'enum', 'default' => -1, 'options' => array(
-			-1 => 'Current state',
-			-2 => 'Unspecified',
-			-3 => 'First Real State',
-			 0 => 'Host Up',
-			 1 => 'Host Down',
-			 2 => 'Host Unreachable'
-		)),
-		'initialassumedservicestate' => array('type' => 'enum', 'default' => -1, 'options' => array(
-			-1 => 'Current state',
-			-2 => 'Unspecified',
-			-3 => 'First Real State',
-			 0 => 'Service Ok',
-			 1 => 'Service Warning',
-			 2 => 'Service Critical',
-			 3 => 'Service Unknown'
-		)),
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
 		'host_name' => array('type' => 'list', 'default' => false), /**< Hosts to include */
@@ -420,17 +402,6 @@ class Report_options_core implements ArrayAccess, Iterator {
 				return false;
 			break;
 		 # fallthrough end
-
-		 case 'assumeinitialstates':
-			if (!$value) {
-				$this->set('initialassumedhoststate', false);
-				$this->set('initialassumedservicestate', false);
-			}
-			break;
-		 case 'initialassumedhoststate': case 'initialassumedservicestate':
-			if ($value < -3 || !$this['assumeinitialstates'])
-				return false;
-			break;
 		 case 'host_filter_status':
 		 case 'service_filter_status':
 			if ($value === null)

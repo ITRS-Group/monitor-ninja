@@ -5,8 +5,6 @@ var _schedule_remove = false;
 
 $(document).ready(function() {
 
-	show_state_options($('#assume_initial_states').attr('checked'));
-
 	$("#saved_report_form").bind('submit', function() {
 		return check_and_submit($(this));
 	});
@@ -52,11 +50,6 @@ $(document).ready(function() {
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
 		// set initial states
-		if ($('input[name=type]').attr('value') != 'sla') {
-			set_initial_state('assume_initial_states', assume_initial_states);
-			set_initial_state('scheduleddowntimeasuptime', scheduleddowntimeasuptime);
-		}
-		set_initial_state('cluster_mode', cluster_mode);
 	});
 
 	$('#filename').blur(function() {
@@ -334,17 +327,6 @@ function populate_saved_sla_data(json_data) {
 	setTimeout(delayed_hide_progress, 1000);
 }
 
-function show_state_options(val)
-{
-	if (val) {
-		$('#assumed_host_state').show();
-		$('#assumed_service_state').show();
-	} else {
-		hide_these = new Array('assumed_host_state', 'assumed_service_state');
-		hide_rows(hide_these);
-	}
-}
-
 // Propagate sla values
 function set_report_form_values(the_val)
 {
@@ -383,9 +365,6 @@ function expand_and_populate(data)
 			moveAndSort(tmp_fields.map[field_str], field_obj.map[field_str]);
 		}
 	});
-	set_initial_state('assume_initial_states', reportObj.assume_initial_states);
-	set_initial_state('host', reportObj.initialassumedhoststate);
-	set_initial_state('service', reportObj.initialassumedservicestate);
 	set_initial_state('scheduleddowntimeasuptime', reportObj.scheduleddowntimeasuptime);
 	set_initial_state('report_type', reportObj.report_type);
 	set_initial_state('report_period', reportObj.report_period);
@@ -427,12 +406,6 @@ function set_initial_state(what, val)
 	var item = '';
 	var elem = false;
 	switch (what) {
-		case 'host':
-			item = 'initialassumedhoststate';
-			break;
-		case 'service':
-			item = 'initialassumedservicestate';
-			break;
 		case 'includesoftstates':
 			if (val!='0') {
 				toggle_label_weight(1, 'include_softstates');
@@ -446,23 +419,6 @@ function set_initial_state(what, val)
 				if ($('#fancybox-content').is(':visible')) {
 					$('input[name=' + what + ']').attr('checked', false);
 				}
-			}
-			break;
-		case 'assume_initial_states':
-			if (val!='0') {
-				edit_state_options(1);
-				toggle_label_weight(1, 'assume_initial');
-				//f.elements['assume_initial_states'].checked = true;
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', true);
-				}
-			} else {
-				//f.elements['assume_initial_states'].checked = false;
-				if ($('#fancybox-content').is(':visible')) {
-					$('input[name=' + what + ']').attr('checked', false);
-				}
-				edit_state_options(0);
-				toggle_label_weight(0, 'assume_initial');
 			}
 			break;
 		case 'cluster_mode':

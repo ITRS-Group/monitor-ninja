@@ -149,43 +149,6 @@ if (!empty($widgets)) {
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<?php echo help::render('initial_states') ?>
-						<input type="checkbox" class="checkbox" value="1" id="assumeinitialstates" name="assumeinitialstates"
-								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" <?php print $options['assumeinitialstates']?'checked="checked"':'' ?> />
-						<label for="assumeinitialstates" id="assume_initial"><?php echo _('Assume initial states') ?></label>
-					</td>
-					<td colspan="2">&nbsp;</td>
-				</tr>
-				<tr id="assumed_host_state">
-					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '._('First assumed host state') ?></td>
-					<td>&nbsp;</td>
-					<td style="padding-top: 10px"><?php echo help::render('first_assumed_service').' '._('First assumed service state') ?></td>
-				</tr>
-				<tr id="assumed_service_state">
-					<td>
-						<select name="initialassumedhoststate">
-						<?php
-							foreach($options->get_alternatives('initialassumedhoststate') as $host_state_value => $host_state_txt) {
-								$sel = ($host_state_value == $options['initialassumedhoststate'] ? ' selected="selected"':'');
-								print '<option value="'.$host_state_value.'"'.$sel.'>'.$host_state_txt.'</option>'."\n";
-							}
-						 ?>
-						</select>
-					</td>
-					<td>&nbsp;</td>
-					<td>
-						<select name="initialassumedservicestate">
-						<?php
-							foreach($options->get_alternatives('initialassumedservicestate') as $service_state_value => $service_state_txt){
-								$sel = ($service_state_value == $options['initialassumedservicestate'] ? ' selected="selected"':'');
-								print '<option value="'.$service_state_value.'"'.$sel.'>'.$service_state_txt.'</option>'."\n";
-							}
-						 ?>
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Create report') ?>" class="button create-report" /></td>
 				</tr>
 			</table>

@@ -53,17 +53,11 @@ class Trends_Controller extends Base_reports_Controller {
 		$label_report = _('report');
 
 		if ($this->options['report_id']) {
-			$this->inline_js .= "$('#assumed_host_state').hide();
-			$('#assumed_service_state').hide();\n";
 			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
 		} else {
 			$this->inline_js .= "set_selection(document.getElementsByName('report_type').item(0).value);\n";
 		}
 
-		if($this->options['assumeinitialstates']) {
-			$this->inline_js .= "show_state_options(true);\n";
-			$this->inline_js .= "toggle_label_weight(true, 'assume_initial');\n";
-		}
 		if($this->options['includesoftstates'])
 			$this->inline_js .= "toggle_label_weight(true, 'include_softstates');\n";
 		if($this->options['assumestatesduringnotrunning'])
@@ -287,15 +281,9 @@ class Trends_Controller extends Base_reports_Controller {
 			$tpl_options->end_date = date($date_format, $this->options['end_time']);
 			$tpl_options->end_time = date('H:i', $this->options['end_time']);
 
-			$this->inline_js .= "set_initial_state('host', '".$this->options['initialassumedhoststate']."');\n";
-			$this->inline_js .= "set_initial_state('service', '".$this->options['initialassumedservicestate']."');\n";
-			$this->inline_js .= "set_initial_state('assumeinitialstates', '".$this->options['assumeinitialstates']."');\n";
 			$this->inline_js .= "set_initial_state('assumestatesduringnotrunning', '".$this->options['assumestatesduringnotrunning']."');\n";
 			$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
 			$this->js_strings .= reports::js_strings();
-			$this->js_strings .= "var assumeinitialstates = '".$this->options['assumeinitialstates']."';\n";
-			$this->js_strings .= "var initial_assumed_host_state = '".$this->options['initia_assumedhoststate']."';\n";
-			$this->js_strings .= "var initial_assumed_service_state = '".$this->options['initialassumedservicestate']."';\n";
 			$this->js_strings .= "var assumestatesduringnotrunning = '".$this->options['assumestatesduringnotrunning']."';\n";
 			$this->js_strings .= "var report_period = '".$this->options['report_period']."';\n";
 

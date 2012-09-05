@@ -37,24 +37,6 @@
 				</tr>
 				<tr class="none">
 					<td>
-						<?php //echo he	lp::render('assume_initial_states'); ?>
-						<input type="checkbox" value="1" class="checkbox" id="assume" name="assume_initial_states" onchange="edit_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" />
-						<label for="assume" id="assume_initial"><?php echo _('Assume initial states') ?></label>
-					</td>
-				</tr>
-				<tr id="state_options" class="none">
-					<td>
-						<?php echo _('First assumed host state') ?><br />
-						<?php echo form::dropdown(array('name' => 'initial_assumed_host_state', 'class' => 'select-initial'),
-							$options->get_alternatives('initial_assumed_host_state'), $options['initial_assumed_host_state']); ?>
-							<br />
-						<?php echo _('First assumed service state') ?> <br />
-						<?php echo form::dropdown(array('name' => 'initial_assumed_service_state', 'class' => 'select-initial'),
-							$options->get_alternatives('initial_assumed_service_state'), $options['initial_assumed_service_state']); ?>
-					</td>
-				</tr>
-				<tr class="none">
-					<td>
 						<input type="submit" name="s1" value="<?php echo _('Update report') ?>" class="button update-report20" id="options_submit" />
 					</td>
 				</tr>

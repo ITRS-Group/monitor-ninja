@@ -118,7 +118,6 @@ class Reports_Model extends Model
 	   'TIME_UNDETERMINED_NO_DATA' => 0,
 	   );
 
-	public $initial_state = false; /**< Initial state actually used */
 	public $initial_dt_depth = false; /**< The initial downtime depth. NOTE: this is scary, what if there's a dozen 365 day long downtimes active at once or bugs caused us to forget to end downtimes? */
 	public $db_name = 'merlin'; /**< Report database name */
 	const db_name = 'merlin'; /**< Report database name, FIXME: again, 4 teh lulz */
@@ -1289,10 +1288,8 @@ class Reports_Model extends Model
 		$sql .= " AND event_type = ";
 
 		if ($service_description !='' ) {
-			$assumed_state = $this->options['initialassumedservicestate'];
 			$sql .= self::SERVICECHECK;
 		} else {
-			$assumed_state = $this->options['initialassumedhoststate'];
 			$sql .= self::HOSTCHECK;
 		}
 		if (!$this->options['includesoftstates'])
@@ -1307,54 +1304,11 @@ class Reports_Model extends Model
 		# we don't have to assume
 		$dbr = $this->db->query($sql)->result(false);
 		if ($dbr && ($row = $dbr->current())) {
-			$this->initial_state = $row['state'];
-			return $this->initial_state;
-		}
-
-		# There is no real initial state, so check if we should
-		# assume something. If it's a real state, return early
-		if ($assumed_state > 0) {
-			$this->initial_state = $assumed_state;
-			return $this->initial_state;
-		}
-
-		# we must reset $dbr here to work around a bug in PDO or PHP
-		$dbr = $sql = false;
-		$state = $assumed_state;
-		# state == -1 is magic for "use current state as initial"
-		# it's fairly bonkers to do that, and will yield different
-		# results for historical data based on present state, but
-		# it's supported in the old cgi's, so we must keep this
-		# mouldering wreck of insanity alive...
-		if ($state == -1) {
-			$dbr = $this->db->query($base_sql . "ORDER BY timestamp DESC LIMIT 1");
-		}
-
-		# Using the first real state found in the database as
-		# the assumed initial state is a lot less evil than the
-		# above black voodoo, as reports for last year will always
-		# look the same, no matter what the current state is.
-		elseif ($state == -3) {
-			$dbr = $this->db->query($base_sql . "ORDER BY timestamp ASC LIMIT 1");
-		}
-
-		if ($dbr && ($row = $dbr->result(false)->current())) {
-			$state = $row['state'];
+			$initial_state = $row['state'];
 		} else {
-			# this is only reached if there is no state at all
-			# in the database. It should usually be an error,
-			# unless one tries to take a report from, say, last
-			# year on a host that was added less than 30 seconds
-			# ago. Either way, we're out of options so do nothing.
-			# $state will default to STATE_PENDING further down
+			$initial_state = self::STATE_PENDING;
 		}
-		/* state assumption logic end */
-
-		if ($state === false || $state < 0 || is_null($state))
-			$state = self::STATE_PENDING;
-
-		$this->initial_state = $state;
-		return $state;
+		return $initial_state;
 	}
 
 	/**
