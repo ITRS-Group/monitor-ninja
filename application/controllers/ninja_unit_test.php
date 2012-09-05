@@ -97,7 +97,12 @@ class Ninja_unit_test_Controller extends Ninja_Controller {
 					echo "    " . $test->test_file . ", '" . $test->description . "'\n";
 			}
 		}
-		echo "$passed/".($passed+$failed)." tests passed.".($failed==0?" Hooray!":"")."\n";
+		if (empty($all)) {
+			echo "Error: No tests found\n";
+			$failed += 1;
+		} else {
+			echo "$passed/".($passed+$failed)." tests passed.".($failed==0?" Hooray!":"")."\n";
+		}
 		if ($failed)
 			exit(1);
 		exit(0); //removing this causes ninja to print a 302 to tac
