@@ -333,16 +333,15 @@ class Summary_Controller extends Base_reports_Controller
 			$this->options['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
 			$this->options['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
 		}
+		$views = array(
+			self::TOP_ALERT_PRODUCERS => 'toplist',
+			self::RECENT_ALERTS => 'latest',
+			self::ALERT_TOTALS_HG => 'alert_totals',
+			self::ALERT_TOTALS_HOST => 'alert_totals',
+			self::ALERT_TOTALS_SERVICE => 'alert_totals',
+			self::ALERT_TOTALS_SG => 'alert_totals',
+		);
 
-		$views = array
-			(self::TOP_ALERT_PRODUCERS => 'toplist',
-			 self::RECENT_ALERTS => 'latest',
-			 self::ALERT_TOTALS => 'alert_totals',
-			 self::ALERT_TOTALS_HG => 'alert_totals_hg',
-			 self::ALERT_TOTALS_HOST => 'alert_totals_host',
-			 self::ALERT_TOTALS_SERVICE => 'alert_totals_service',
-			 self::ALERT_TOTALS_SG => 'alert_totals_sg',
-			 );
 		$this->template->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 

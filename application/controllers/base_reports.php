@@ -472,9 +472,17 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	 * less the same, we can re-use the same function for all of
 	 * them, provided we get the statenames (OK, UP etc) from the
 	 * caller, along with the array of state totals.
+	 *
+	 * @param $topic Name of the type (host/service)
+	 * @param $ary An array of alerts, with a certain magical elements
+	 * @param $state_names A state-name-mapping for this type of objects
+	 * @param $totals Something to print out once we're done
+	 * @param $name The name of what we're iterating over
 	 */
 	protected function _print_alert_totals_table($topic, $ary, $state_names, $totals, $name)
 	{
+		if (!$ary)
+			return;
 		echo "<br /><table class=\"host_alerts\"><tr>\n";
 		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
 		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";
