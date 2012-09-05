@@ -248,61 +248,8 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
-		$status_msg = false;
-		$msg_type = false;
-
 		$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 
-		$mon_auth = Nagios_auth_Model::instance();
-		if (is_string($in_host)) {
-			// shorthand aliases - host=all is used for 'View avail for all hosts'
-			if ($in_host == 'all') {
-				$in_host = $mon_auth->get_authorized_hosts();
-			} elseif($in_host == 'null' && is_string($in_service) && $in_service == 'all') {
-				// Used for link 'View avail for all services'
-				$in_host = $mon_auth->get_authorized_hosts();
-				$in_service = $mon_auth->get_authorized_services();
-			} else {
-				// handle call from trends.cgi, which does not pass host parameter as array
-				if ($mon_auth->is_authorized_for_host($in_host))
-					$in_host = array($in_host);
-				else
-					$in_host = array();
-			}
-		} elseif (is_array($in_host) && !empty($in_host)) {
-			foreach ($in_host as $k => $host) {
-				if (!$mon_auth->is_authorized_for_host($host))
-					unset($in_host[$k]);
-			}
-		}
-
-		# Service report in old system sends host and service as separate parameters.
-		# Anyone knows a nicer way to check this?
-		if(is_string($in_service) && strpos($in_service, ';') === false && count($in_host) == 1) {
-			$in_service = array(current($in_host).";$in_service");
-		}
-
-		if ($in_service !== false) {
-			foreach ($in_service as $k => $service) {
-				if (!$mon_auth->is_authorized_for_service($service))
-					unset($in_service[$k]);
-			}
-		}
-
-		foreach ($in_hostgroup as $k => $hostgroup) {
-			if (!$mon_auth->is_authorized_for_hostgroup($hostgroup))
-				unset($in_hostgroup[$k]);
-		}
-
-		foreach ($in_servicegroup as $k => $servicegroup) {
-			if (!$mon_auth->is_authorized_for_servicegroup($servicegroup))
-				unset($in_servicegroup[$k]);
-		}
-
-		$hostgroup = false;
-		$hostname = false;
-		$servicegroup = false;
-		$service = false;
 		$sub_type = false;
 
 		if('custom' == $this->options['report_period'])
@@ -313,29 +260,26 @@ class Reports_Controller extends Base_reports_Controller
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
-		$group_name = false;
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
 				$sub_type = "host";
-				$hostgroup = $in_hostgroup;
-				$group_name = $hostgroup;
 				$this->object_varname = 'host_name';
+				$is_group = true;
 				break;
 			case 'servicegroups':
 				$sub_type = "service";
-				$servicegroup = $in_servicegroup;
-				$group_name = $servicegroup;
 				$this->object_varname = 'service_description';
+				$is_group = true;
 				break;
 			case 'hosts':
 				$sub_type = "host";
-				$hostname = $in_host;
 				$this->object_varname = 'host_name';
+				$is_group = false;
 				break;
 			case 'services':
 				$sub_type = "service";
-				$service = $in_service;
 				$this->object_varname = 'service_description';
+				$is_group = false;
 				break;
 			default:
 				url::redirect(Router::$controller.'/index');
@@ -352,7 +296,7 @@ class Reports_Controller extends Base_reports_Controller
 
 		# fetch data
 		if ($this->type == 'avail') {
-			$data_arr = $group_name
+			$data_arr = $is_group
 				? $this->_expand_group_request($objects, $this->options->get_value('report_type'))
 				: $this->reports_model->get_uptime();
 		} else {
@@ -370,10 +314,6 @@ class Reports_Controller extends Base_reports_Controller
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
 		$template->report_time_formatted = $report_time_formatted;
-		$template->status_msg = $status_msg;
-		$template->msg_type = $msg_type;
-		$report_template_check = !empty($in_hostgroup) ? true : ((count($in_host) > 1) ? true : false);
-		$template->report_template_check = $report_template_check;
 
 		# AVAIL REPORT
 		if ($this->type == 'avail' && (empty($data_arr)
@@ -478,7 +418,7 @@ class Reports_Controller extends Base_reports_Controller
 					$template->header->str_end_date = date($this->_get_date_format(true), $this->options['end_time']);
 				}
 
-				if ($group_name) {
+				if ($is_group) {
 					foreach ($data_arr as $data) {
 						if (empty($data))
 							continue;
@@ -496,7 +436,7 @@ class Reports_Controller extends Base_reports_Controller
 					}
 
 				if($this->options['include_trends']) {
-					if($group_name) {
+					if($is_group) {
 						// Copy-pasted from controllers/trends.php
 						foreach ($data_arr as $key => $data) {
 							# >= 2 hosts or services won't have the extra
@@ -650,7 +590,7 @@ class Reports_Controller extends Base_reports_Controller
 								$trends_data = $data['log'];
 							}
 
-							if($group_name) {
+							if($is_group) {
 								// Copy-pasted from controllers/trends.php
 								foreach ($data_arr as $key => $data) {
 									# >= 2 hosts or services won't have the extra

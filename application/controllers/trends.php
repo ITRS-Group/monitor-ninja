@@ -14,7 +14,6 @@
 class Trends_Controller extends Base_reports_Controller {
 	public $type = 'trends';
 	private $data_arr = false;
-	private $object_varname = false;
 
 	public function __construct()
 	{
@@ -130,42 +129,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$this->template->content = $this->add_view('trends/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
-		$in_host = $this->options['host_name'];
-		$in_service = $this->options['service_description'];
-		$in_hostgroup = $this->options['hostgroup'];
-		$in_servicegroup = $this->options['servicegroup'];
-
-		$mon_auth = Nagios_auth_Model::instance();
-		if (is_string($in_host)) {
-			// shorthand aliases - host=all is used for 'View trends for all hosts'
-			if ($in_host == 'all') {
-				$in_host = $mon_auth->get_authorized_hosts();
-			} elseif($in_host == 'null' && is_string($in_service) && $in_service == 'all') {
-				// Used for link 'View avail for all services'
-				$in_host = $mon_auth->get_authorized_hosts();
-				$in_service = $mon_auth->get_authorized_services();
-			} else {
-				// handle call from trends.cgi, which does not pass host parameter as array
-				if ($mon_auth->is_authorized_for_host($in_host))
-					$in_host = array($in_host);
-				else
-					$in_host = array();
-			}
-		} elseif (is_array($in_host) && !empty($in_host)) {
-			foreach ($in_host as $k => $host) {
-				if (!$mon_auth->is_authorized_for_host($host))
-					unset($in_host[$k]);
-			}
-		}
-
-		$hostgroup			= false;
-		$hostname			= false;
-		$servicegroup		= false;
-		$service			= false;
-		$sub_type			= false;
-
-		$err_msg = "";
-
 		$str_start_date = date(nagstat::date_format(), $this->options['start_date']); // used to set calendar
 		$str_end_date 	= date(nagstat::date_format(), $this->options['end_date']); // used to set calendar
 
@@ -177,77 +140,39 @@ class Trends_Controller extends Base_reports_Controller {
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
 
-		$group_name = false;
-		$statuslink_prefix = '';
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
 				$sub_type = "host";
-				$hostgroup = $in_hostgroup;
-				$group_name = $hostgroup;
-				$label_type = _('Hostgroup(s)');
-				$this->object_varname = 'host_name';
+				$is_group = true;
 				break;
 			case 'servicegroups':
 				$sub_type = "service";
-				$servicegroup = $in_servicegroup;
-				$group_name = $servicegroup;
-				$label_type = _('Servicegroup(s)');
-				$this->object_varname = 'service_description';
+				$is_group = true;
 				break;
 			case 'hosts':
 				$sub_type = "host";
-				$statuslink_prefix = 'service/';
-				$hostname = $in_host;
-				$label_type = _('Host(s)');
-				$this->object_varname = 'host_name';
+				$is_group = false;
 				break;
 			case 'services':
 				$sub_type = "service";
-				$service = $in_service;
-				$label_type = _('Services(s)');
-				$this->object_varname = 'service_description';
+				$is_group = false;
 				break;
 			default:
 				url::redirect(Router::$controller.'/index');
 		}
+		$var = $this->options->get_value('report_type');
+		$objects = false;
+		$mon_auth = Nagios_auth_Model::instance();
+		foreach ($this->options[$var] as $obj) {
+			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
+				$objects[] = $obj;
+		}
+		$selected_objects = '&'.$var.'[]='.implode('&'.$var.'[]=', $objects);
 
 		$get_vars = $this->options->as_keyval_string();
 
-		$selected_objects = ""; // string containing selected objects for this report
-
-		# $objects is an array used when creating report_error page (template).
-		# Imploded into $missing_objects
-		$objects = false;
-		if (($this->options['report_type'] == 'hosts' || $this->options['report_type'] == 'services')) {
-			if (is_array($in_host)) {
-				foreach ($in_host as $host) {
-					$selected_objects .= "&host_name[]=".$host;
-					$objects[] = $host;
-				}
-			}
-			if (is_array($in_service)) {
-				foreach ($in_service as $svc) {
-					$selected_objects .= "&service_description[]=".$svc;
-					$objects[] = $svc;
-				}
-			}
-		} else {
-			if (is_array($hostgroup)) {
-				foreach ($hostgroup as $h_gr) {
-					$selected_objects .= "&hostgroup[]=".$h_gr;
-					$objects[] = $h_gr;
-				}
-			}
-			if (is_array($servicegroup)) {
-				foreach ($servicegroup as $s_gr) {
-					$selected_objects .= "&servicegroup[]=".$s_gr;
-					$objects[] = $s_gr;
-				}
-			}
-		}
-
-		$this->data_arr = $group_name!== false
-			? $this->_expand_group_request($report_class, $group_name, $this->options->get_value('report_type'))
+		$this->data_arr = $is_group
+			? $this->_expand_group_request($objects, $this->options->get_value('report_type'))
 			: $report_class->get_uptime();
 
 		if ((empty($this->data_arr) || (sizeof($this->data_arr)==1 && empty($this->data_arr[0])))) {
@@ -295,7 +220,7 @@ class Trends_Controller extends Base_reports_Controller {
 				$avail_template->selected_objects = $selected_objects;
 
 				# prepare avail data
-				if ($group_name) { # {host,service}group
+				if ($is_group) { # {host,service}group
 					foreach ($this->data_arr as $data) {
 						if (empty($data))
 							continue;
