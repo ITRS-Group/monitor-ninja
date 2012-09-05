@@ -12,7 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Default_Controller extends Ninja_Controller  {
-
 	public $csrf_config = false;
 	public $route_config = false;
 
@@ -279,11 +278,10 @@ class Default_Controller extends Ninja_Controller  {
 		if ($period_str === 'downtime') {
 			exec('/usr/bin/php '.$path.' recurring_downtime/check_schedules/ '.$user, $return);
 		} else {
-			exec('/usr/bin/php '.$path.' reports/cron/'.$period_str.' '.$user, $return);
+			exec('/usr/bin/php '.$path.' schedule/cron/'.$period_str.' '.$user, $return);
 			$sent_mail = array_sum($return);
 			$retval = !empty($sent_mail) ? 0:1;
 		}
 		exit($retval);
 	}
-
 }

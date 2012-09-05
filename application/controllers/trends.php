@@ -50,10 +50,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
 
-		$saved_reports = null;
-		$scheduled_ids = array();
-		$scheduled_periods = null;
-		$scheduled_label = _('Scheduled');
 		$label_report = _('report');
 
 		if ($this->options['report_id']) {
@@ -78,11 +74,9 @@ class Trends_Controller extends Base_reports_Controller {
 
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
-		$this->js_strings .= "var _scheduled_label = '".$scheduled_label."';\n";
 		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
 		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
-		$this->js_strings .= "var _reports_schedule_deleted = '"._('Your schedule has been deleted')."';\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 
@@ -102,8 +96,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$template->type = $this->type;
 		$template->reporting_periods = $this->_get_reporting_periods();
 
-		$template->scheduled_ids = $scheduled_ids;
-		$template->scheduled_periods = $scheduled_periods;
 		$template->saved_reports = $saved_reports;
 
 		$this->js_strings .= "var _reports_successs = '"._('Success')."';\n";

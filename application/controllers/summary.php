@@ -76,15 +76,11 @@ class Summary_Controller extends Base_reports_Controller
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
-		$json_periods = false;
 		$periods = array();
 		$periods_res = Scheduled_reports_Model::get_available_report_periods();
 		if ($periods_res) {
 			foreach ($periods_res as $period_row) {
 				$periods[$period_row->id] = $period_row->periodname;
-			}
-			if (!empty($periods)) {
-				$json_periods = json::encode($periods);
 			}
 		}
 
@@ -121,7 +117,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
 
-		$template->json_periods = $json_periods;
 		$template->type = $this->type;
 		$template->old_config_names_js = $old_config_names_js;
 		$template->old_config_names = $old_config_names;
@@ -282,32 +277,16 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
-
-		# what scheduled reports are there?
-		$scheduled_ids = array();
-		$scheduled_periods = null;
-		$scheduled_res = Scheduled_reports_Model::get_scheduled_reports($this->type);
-		if ($scheduled_res && count($scheduled_res)!=0) {
-			foreach ($scheduled_res as $sched_row) {
-				$scheduled_ids[] = $sched_row->report_id;
-				$scheduled_periods[$sched_row->report_id] = $sched_row->periodname;
-			}
-		}
-
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
-		$json_periods = false;
 		$periods = array();
 		$periods_res = Scheduled_reports_Model::get_available_report_periods();
 		if ($periods_res) {
 			foreach ($periods_res as $period_row) {
 				$periods[$period_row->id] = $period_row->periodname;
-			}
-			if (!empty($periods)) {
-				$json_periods = json::encode($periods);
 			}
 		}
 
@@ -324,18 +303,6 @@ class Summary_Controller extends Base_reports_Controller
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 
 		$content = $this->template->content;
-
-		$this->template->content->schedules = $this->add_view('summary/schedule');
-		$template = $this->template->content->schedules;
-		$template->json_periods = $json_periods;
-		$template->type = $this->type;
-		$template->old_config_names_js = $old_config_names_js;
-		$template->old_config_names = $old_config_names;
-		$template->scheduled_ids = $scheduled_ids;
-		$template->scheduled_periods = $scheduled_periods;
-		$template->available_schedule_periods = $periods;
-
-		$template->saved_reports = $saved_reports;
 
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
@@ -435,41 +402,5 @@ class Summary_Controller extends Base_reports_Controller
 			echo $helptexts[$id];
 		} else
 			echo sprintf(_("This helptext ('%s') is yet not translated"), $id);
-	}
-
-	/**
-	*	Fetch informaton on a sheduled report and
-	* 	return all data in an array that will replace
-	* 	$_REQUEST.
-	*
-	* 	If called through a call from the commandline, the script will
-	* 	be authorized as the owner of the current schedule.
-	*/
-	public function _scheduled_report()
-	{
-		# Fetch info on the scheduled report
-		$report_data = Scheduled_reports_Model::get_scheduled_data($this->schedule_id);
-		if ($report_data == false) {
-			die("No data returned for schedule (ID:".$this->schedule_id.")\n");
-		}
-
-		$request['new_report_setup'] = 1;
-
-		$settings = i18n::unserialize($report_data['setting']);
-		if(!$settings) {
-			// we might not have any settings stored
-			$settings = array();
-		}
-		unset($report_data['setting']);
-		unset($report_data['objects']);
-		unset($report_data['filename']);
-		unset($report_data['recipients']);
-
-		if (PHP_SAPI === "cli") {
-			# set current user to the owner of the report
-			# this should only be done when called through PHP CLI
-			Auth::instance()->force_login($report_data[Saved_reports_Model::USERFIELD]);
-		}
-		return array_merge($request, $settings, $report_data);
 	}
 }

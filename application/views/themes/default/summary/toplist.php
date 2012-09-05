@@ -1,9 +1,4 @@
-<?php defined('SYSPATH') OR die("No direct access allowed");
-if (isset($schedules)) {
-	echo $schedules;
-}
-?>
-
+<?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <div class="left w98">
 	<h1><?php echo _('Top hard alert producers'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>

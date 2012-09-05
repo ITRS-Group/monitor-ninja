@@ -132,12 +132,6 @@ $(document).ready(function() {
 		send_report_now(type, id);
 	});
 
-	// delete the report (and all the schedules if any)
-	$("#delete_report").click(function() {
-		confirm_delete_report($("#report_id").attr('value'));
-	});
-	$(".deleteimg").css('cursor', 'pointer');
-
 	$("#report_id").bind('change', function() {
 		if (check_and_submit($("#saved_report_form"))) {
 			$("#saved_report_form").trigger('submit');
@@ -172,7 +166,7 @@ function setup_editable(mode)
 	if (mode == 'fancy') {
 		var mode_str = '#fancybox-content ';
 	}
-	var save_url = _site_domain + _index_page + "/reports/save_schedule_item/";
+	var save_url = _site_domain + _index_page + "/schedule/save_schedule_item/";
 	$(mode_str +".iseditable").editable(save_url, {
 		id   : 'elementid',
 		name : 'newvalue',
@@ -221,132 +215,6 @@ function setup_editable(mode)
 
 var loadimg = new Image(16,16);
 loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
-
-function send_report_now(type, id)
-{
-	if (type=='' || id =='') {
-		// missing info
-		return false;
-	}
-
-	var html_id = 'send_now_' + type + '_' + id;
-
-	$('#' + html_id)
-		.css('background', 'url(' + loadimg.src + ') no-repeat scroll 0 0 transparent')
-		.css('height', '16px')
-		.css('width', '16px')
-		.css('float', 'left');
-
-	$.ajax({
-		url: _site_domain + _index_page + '/' + type + '/generate',
-		type: 'POST',
-		data: {type: type, schedule_id: id},
-		success: function(data) {
-			if (data == '' || !data.error) {
-				jgrowl_message(_reports_schedule_send_ok, _reports_success);
-			} else {
-				if(data.error) {
-					jgrowl_message(_reports_schedule_send_error + ': ' + data.error, _reports_error);
-				} else {
-					jgrowl_message(_reports_schedule_send_error, _reports_error);
-				}
-				setTimeout(function() {restore_sendimg(html_id)}, 1000);
-			}
-		},
-		dataType: 'json'
-	});
-
-}
-
-function schedule_delete(id, remove_type)
-{
-	if (!confirm(_reports_confirm_delete_schedule)) {
-		return false;
-	}
-
-	var img_src = $('#' + id + " img").attr('src');
-	var in_id = id;
-
-	$('#' + in_id + ' img').attr('src', loadimg.src);
-
-	// clean input id from prefix (from setup template)
-	if (isNaN(id)) {
-		id = id.replace('delid_', '');  // from single report listing
-		id = id.replace('alldel_', ''); // from all schedules list
-	}
-
-	var time = 6000;
-
-	$.ajax({
-		url:_site_domain + _index_page + '/reports/delete_schedule?id=' + id,
-		success: function(data) {
-			if (data == 'OK') {
-				// item deleted
-				remove_schedule(id, remove_type);
-			} else {
-				jgrowl_message(data, _reports_error);
-				setTimeout('hide_response()', time);
-				setTimeout(function() {restore_delimg(in_id, img_src)}, 1000);
-			}
-		}
-	});
-}
-
-function restore_sendimg(id)
-{
-	var old_icon = _site_domain + _theme_path + "icons/16x16/send-report.png";
-	$('#' + id)
-		.css('background', 'url(' + old_icon + ') no-repeat scroll 0 0 transparent')
-		.css('height', '16px')
-		.css('width', '16px').css('float', 'left');
-
-}
-
-function restore_delimg(id, src)
-{
-	$('#' + id + ' img').attr('src', src);
-}
-
-function remove_schedule(id, remove_type)
-{
-	var time = 3000;
-
-	update_visible_schedules(true);
-
-	// remove row for deleted ID (both in fancybox and in original table)
-	$('#report-' + id).remove();
-	$('#fancybox-content #report-' + id).remove();
-
-	// fancybox workaound
-	if (remove_type == 'summary' && $('#fancybox-content #schedule_report_table').is(':visible')) {
-		nr_of_scheduled_instances = $('#fancybox-content #schedule_report_table tr').not('#schedule_header').length;
-	}
-	if (nr_of_scheduled_instances == 0) {
-		// last item deleted
-		$('#schedule_report').hide(); // hide entire table/div
-		$('#show_schedule').hide(); // remove 'View schedules' button
-		$('#is_scheduled').remove();
-		if ($('#report_id')) {
-			var chk_text = '';
-			chk_text = $('#report_id option:selected').text();
-			chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
-			$('#report_id option:selected').text(chk_text);
-		}
-		if ($(".fancybox").is(':visible')) {
-			$.fancybox.close();
-		}
-	}
-
-	if (remove_type!='' && remove_type != 'undefined') {
-		if ($('#' + remove_type + '_scheduled_reports_table tbody').not('.no-result').length == 0) {
-			$('#' + remove_type + '_headers').hide();
-			$('#' + remove_type + '_no_result').show();
-		}
-	}
-
-	jgrowl_message(_reports_schedule_deleted, _reports_success);
-	setTimeout('hide_response()', time);
-}
 
 function fancybox_datepicker()
 {
@@ -1395,11 +1263,11 @@ function trigger_schedule_save(f)
 	var description = $('#fancybox-content #description').attr('value');
 
 	$.ajax({
-		url:_site_domain + _index_page + '/reports/schedule',
+		url:_site_domain + _index_page + '/schedule/schedule',
 		type: 'POST',
 		data: {
 			report_id: report_id,
-			rep_type: rep_type,
+			type: rep_type,
 			saved_report_id: saved_report_id,
 			period: period,
 			recipients: recipients,
@@ -1481,18 +1349,17 @@ function fetch_report_data(id)
 	type_id = get_type_id(parts[0]);
 	var sType = '';
 
-	var report_types = $.parseJSON(_report_types_json);
-	sType = report_types[type_id];
+	sType = report_types_json[type_id];
 	switch (sType) {
 		case 'avail':
 		//var data = eval('(' + $('#saved_reports').text() + ')');
-			return eval(_saved_avail_reports);
+			return _saved_avail_reports;
 			break;
 		case 'sla':
-			return eval(_saved_sla_reports);
+			return _saved_sla_reports;
 			break;
 		case 'summary':
-			return eval(_saved_summary_reports);
+			return _saved_summary_reports;
 			break;
 		default:
 			return false;
@@ -1503,54 +1370,6 @@ function get_type_id(str)
 {
 	parts = str.split('.');
 	return parts[0];
-}
-
-var avail_schedules = 0;
-var sla_schedules = 0;
-var summary_schedules = 0;
-function update_visible_schedules(count)
-{
-	if ($('#avail_scheduled_reports_table').is(':visible')) {
-		avail_schedules = $('#avail_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
-		if (count) {
-			avail_schedules--;
-		}
-	}
-
-	if ($('#sla_scheduled_reports_table').is(':visible')) {
-		sla_schedules = $('#sla_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
-		if (count) {
-			sla_schedules--;
-		}
-	}
-
-	if ($('#summary_scheduled_reports_table').is(':visible')) {
-		summary_schedules = $('#summary_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
-		if (count) {
-			summary_schedules--;
-		}
-	}
-
-	// special case for summary reports in fancybox
-	if ($('#fancybox-content #summary_scheduled_reports_table').is(':visible')) {
-		summary_schedules = $('#summary_scheduled_reports_table tbody tr').filter(':visible').not('.no-result').length;
-		if (count) {
-			summary_schedules--;
-		}
-	}
-
-	if ($('#schedule_report_table').is(':visible')) {
-		// setup and options templates
-		if ($('#fancybox-content').is(':visible')) {
-			// check the fancybox layer (options template)
-			nr_of_scheduled_instances = $('#fancybox-content #schedule_report_table tr').not('#schedule_header').length;
-		} else {
-			nr_of_scheduled_instances = $('#schedule_report_table tr').not('#schedule_header').length;
-		}
-		if (count) {
-			nr_of_scheduled_instances--;
-		}
-	}
 }
 
 jQuery.extend(

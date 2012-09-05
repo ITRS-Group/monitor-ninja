@@ -578,7 +578,7 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_saved_reports()
 	{
-		$type = $this->input->post('type', 'avail');
+		$type = $this->input->get('type');
 		if (empty($type))
 			return false;
 		switch ($type) {

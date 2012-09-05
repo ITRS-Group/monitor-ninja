@@ -520,6 +520,13 @@ class Report_options_core implements ArrayAccess, Iterator {
 			if (!is_numeric($value))
 				$value = strtotime($value);
 			break;
+		 case 'filename':
+			if (strpos($value, '.pdf') !== false) {
+				$this->options['output_format'] = 'pdf';
+			}
+			if (strpos($value, '.csv') !== false)
+				$this->options['output_format'] = 'csv';
+			break;
 		 default:
 			break;
 		}

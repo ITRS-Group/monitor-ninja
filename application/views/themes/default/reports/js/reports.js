@@ -1,5 +1,3 @@
-var _show_schedules;
-
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
 var end_time_bkup = '';
@@ -11,26 +9,6 @@ $(document).ready(function() {
 
 	$("#saved_report_form").bind('submit', function() {
 		return check_and_submit($(this));
-	});
-
-	// delete single schedule
-	$(".delete_schedule").each(function() {
-		$(this).click(function() {
-			if ($(this).attr('class').indexOf('avail_del') > -1) {
-				_schedule_remove = 'avail';
-			} else {
-				if ($(this).attr('class').indexOf('sla_del') > -1) {
-					_schedule_remove = 'sla';
-				}
-				if ($(this).attr('class').indexOf('summary_del') > -1) {
-					_schedule_remove = 'summary';
-				}
-			}
-			if (!_schedule_remove) {
-				_schedule_remove = $('input[name=type]').attr('value');
-			}
-			schedule_delete($(this).attr('id'), _schedule_remove);
-		})
 	});
 
 	// reset options and reload page
@@ -69,47 +47,10 @@ $(document).ready(function() {
 	});
 
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
-	$("#show_scheduled").click(function(){toggle_edit()});
 	setup_editable();
-
-	$("#switch_report_type").click(function() {
-		switch_report_type();
-		return false;
-	});
-
-	var $tabs = $('#report-tabs').tabs();
-	if (_show_schedules) {
-		$tabs.tabs('select', 1);
-	}
-
-	$("#rep_type").change(function() {
-		var rep_type_val = $(this).fieldValue();
-		get_saved_reports(rep_type_val[0], true);
-	});
-
-	$("#saved_report_id").change(function() {
-		create_filename();
-	});
-	$("#period").change(function() {
-		var sel_report = $("#saved_report_id").fieldValue();
-		if (sel_report[0] != '')
-			create_filename();
-	});
 
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
-
-		$("#fancybox-content .send_report_now").click(function() {
-			var type_id = $(this).attr('id');
-			type_id = type_id.replace('send_now_', '');
-			type_id = type_id.split('_');
-			var type = type_id[0];
-			var id = type_id[1];
-			send_report_now(type, id);
-		});
-	});
-
-	$('.fancybox').click(function() {
 		// set initial states
 		if ($('input[name=type]').attr('value') != 'sla') {
 			set_initial_state('assume_initial_states', assume_initial_states);

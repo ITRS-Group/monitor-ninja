@@ -46,10 +46,6 @@ $(document).ready(function() {
 		self.location.href = base_uri;
 	});
 
-	$("#show_scheduled").click(function() {
-		self.location.href = _site_domain + _index_page + '/reports?show_schedules#summary_schedules';
-	});
-
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
 	});

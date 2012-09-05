@@ -1,13 +1,13 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div id="new_schedule_area">
-<?php echo form::open($type.'/schedule', array('id' => 'new_schedule_report_form', 'onsubmit' => 'return ajax_submit(this)')); ?>
+<?php echo form::open('schedule/schedule', array('id' => 'new_schedule_report_form', 'onsubmit' => 'return submit_new_schedule(this)')); ?>
 		<h1><?php echo _('New schedule') ?></h1>
 		<table id="new_schedule_report_table">
 			<tr>
 				<td>
-					<label for="rep_type"><?php echo help::render('report-type-save').' '._('Select report type') ?></label><br />
-					<?php echo form::dropdown(array('name' => 'rep_type'), $defined_report_types); ?><br />
+					<label for="type"><?php echo help::render('report-type-save').' '._('Select report type') ?></label><br />
+					<?php echo form::dropdown(array('name' => 'type'), $defined_report_types); ?><br />
 					<?php if (!empty($available_schedule_periods)) { ?>
 						<label for="period"><?php echo help::render('interval').' '._('Report Interval') ?></label><br />
 						<select name="period" id="period">
