@@ -16,21 +16,9 @@ class Trends_Controller extends Base_reports_Controller {
 	private $data_arr = false;
 	private $object_varname = false;
 
-	private $trends_graph_model;
-
 	public function __construct()
 	{
 		parent::__construct();
-		$this->trends_graph_model = new Trends_graph_Model();
-	}
-
-	/**
-	 * Display chart for $chart_key
-	 *
-	 * @param string $chart_key
-	 */
-	public function line_point_chart($chart_key) {
-		$this->trends_graph_model->display_chart($chart_key);
 	}
 
 	/**
@@ -466,7 +454,8 @@ class Trends_Controller extends Base_reports_Controller {
 
 		$this->template->content->content = $this->add_view('trends/new_report');
 		$content = $this->template->content->content;
-		$content->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+		$trends_graph_model = new Trends_graph_Model();
+		$content->graph_image_source = $trends_graph_model->get_graph_src_for_data(
 			$container,
 			$this->options['start_time'],
 			$this->options['end_time'],

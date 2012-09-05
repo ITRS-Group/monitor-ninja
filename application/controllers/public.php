@@ -94,4 +94,27 @@ class Public_Controller extends Controller {
 			$graph->display();
 		}
 	}
+
+	/**
+	 * Display chart for $chart_key
+	 *
+	 * Warning: this is actually potentially secret, but we need it from localhost
+	 * for reports, so we must manually check for source IP or username.
+	 *
+	 * @param string $chart_key
+	 */
+	public function line_point_chart($chart_key) {
+		// No current user
+		if (!Auth::instance()->get_user()) {
+			$addr = ip2long($_SERVER['REMOTE_ADDR']);
+			// And we don't come from ::1 or 127.0.0.0/8
+			if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) || !($_SERVER['REMOTE_ADDR'] == '::1' || ($addr & (127 << 24)) !== (127 << 24))) {
+				// So we won't do anything
+				die("Invalid request");
+			}
+		}
+
+		$trends_graph_model = new Trends_graph_Model();
+		$trends_graph_model->display_chart($chart_key);
+	}
 }
