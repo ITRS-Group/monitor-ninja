@@ -78,13 +78,6 @@ class Authenticated_Controller extends Ninja_Controller {
 		return !Auth::instance()->logged_in();
 	}
 
-	public function __call($name, $args)
-	{
-		# don't allow direct access
-		# redirect to logged_in_default route as set in routes config
-		url::redirect(Kohana::config('routes.logged_in_default'));
-	}
-
 	public function to_template(array $content)
 	{
 		$this->output = array_merge($content, $this->output);
