@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$current_skin = 'default/';
 $authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
@@ -7,12 +6,6 @@ if (Auth::instance()->logged_in()) {
 	$auth = Nagios_auth_Model::instance();
 	if ($auth->view_hosts_root) {
 		$authorized = true;
-	}
-
-	# fetch info on current skin
-	$current_skin = config::get('config.current_skin', '*', true);
-	if (substr($current_skin, -1, 1) != '/') {
-		$current_skin .= '/';
 	}
 }
 
