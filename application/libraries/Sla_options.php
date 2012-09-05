@@ -2,10 +2,6 @@
 
 class Sla_options_Core extends Report_options {
 	public function __construct($options) {
-		$this->vtypes['start_year'] = array('type' => 'int', 'default' => false);
-		$this->vtypes['start_month'] = array('type' => 'int', 'default' => false);
-		$this->vtypes['end_year'] = array('type' => 'int', 'default' => false);
-		$this->vtypes['end_month'] = array('type' => 'int', 'default' => false);
 		unset($this->vtypes['include_trends']);
 		$this->vtypes['report_period'] = array('type' => 'enum', 'default' => 'thisyear', 'options' => array(
 			"thisyear" => _('This Year'),
@@ -38,35 +34,5 @@ class Sla_options_Core extends Report_options {
 			return true;
 		}
 		return $resp;
-	}
-
-	public function update_value($name, $value) {
-		switch ($name) {
-		 case 'start_time':
-			if (!is_numeric($value))
-				$value = strtotime($value);
-			$this->set('start_year', date('Y', $value));
-			$this->set('start_month', date('m', $value));
-			break;
-		 case 'end_time':
-			$this->set('end_year', date('Y', $value));
-			$this->set('end_month', date('m', $value));
-			break;
-		 case 'start_year':
-		 case 'start_month':
-			if ($this['start_year'] && $this['start_month'])
-				$this->options['start_time'] = mktime(0, 0, 0, $this['start_month'], 1, $this['start_year']);
-			$this->options[$name] = $value;
-			return true;
-		 case 'end_year':
-		 case 'end_month':
-			if ($this['end_year'] && $this['end_month']) {
-				$this->options['end_time'] = mktime(0, 0, 0, $this['end_month']+1, 1, $this['end_year']);
-			}
-			$this->options[$name] = $value;
-			return true;
-		 default:
-			return parent::update_value($name, $value);
-		}
 	}
 }

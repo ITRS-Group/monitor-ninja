@@ -15,8 +15,6 @@
  */
 class Reports_Controller extends Base_reports_Controller
 {
-	private $object_varname = false;
-
 	private $status_link = "status/host/";
 	private $trend_link = "trends/generate";
 	private $history_link = "showlog/alert_history";
@@ -263,22 +261,22 @@ class Reports_Controller extends Base_reports_Controller
 		switch ($this->options['report_type']) {
 			case 'hostgroups':
 				$sub_type = "host";
-				$this->object_varname = 'host_name';
+				$object_varname = 'host_name';
 				$is_group = true;
 				break;
 			case 'servicegroups':
 				$sub_type = "service";
-				$this->object_varname = 'service_description';
+				$object_varname = 'service_description';
 				$is_group = true;
 				break;
 			case 'hosts':
 				$sub_type = "host";
-				$this->object_varname = 'host_name';
+				$object_varname = 'host_name';
 				$is_group = false;
 				break;
 			case 'services':
 				$sub_type = "service";
-				$this->object_varname = 'service_description';
+				$object_varname = 'service_description';
 				$is_group = false;
 				break;
 			default:
@@ -300,7 +298,7 @@ class Reports_Controller extends Base_reports_Controller
 				? $this->_expand_group_request($objects, $this->options->get_value('report_type'))
 				: $this->reports_model->get_uptime();
 		} else {
-			$data_arr = $this->get_sla_data($this->options['months'], $objects);
+			$data_arr = $this->get_sla_data($this->options['months'], $objects, $object_varname);
 		}
 
 		if ($this->options['output_format'] == 'csv') {
@@ -1179,7 +1177,7 @@ class Reports_Controller extends Base_reports_Controller
 	 * @param $objects = false
 	 * @return array
 	 */
-	public function get_sla_data($months=false, $objects=false)
+	public function get_sla_data($months, $objects, $object_varname)
 	{
 		if (empty($months) || empty($objects)) {
 			return false;
@@ -1191,38 +1189,42 @@ class Reports_Controller extends Base_reports_Controller
 		// this time into parts according to sla_periods (months)
 		$time_arr = $this->_split_month_data($months, $this->options['start_time'], $this->options['end_time']);
 		// only use month entered by the user regardless of start- or endtime
-		$option_name = false;
 		$data = false;
-		if (preg_match('/groups$/', $this->options['report_type'])) {
+		$optclass = get_class($this->options);
+		$opts = new $optclass($this->options);
+		$opts[$this->options->get_value('report_type')] = $objects;
+		unset($opts['report_period']);
+		switch ($this->options['report_type']) {
+		 case 'hostgroups':
+		 case 'servicegroups':
 			foreach ($time_arr as $mnr => $dates) {
-				$data_tmp = $this->_expand_group_request($objects, $this->options->get_value('report_type'));
+				$opts['start_time'] = $dates['start'];
+				$opts['end_time'] = $dates['end'];
+				$data_tmp = $this->_expand_group_request($objects, $this->options->get_value('report_type'), $opts);
 				if (!empty($data_tmp))
-					foreach ($data_tmp as $val) {
-						if ($val !== false)
-						# @@@DEBUG: groupname empty?
-						$data[$val['groupname']][$mnr] = array(
-							'source' => $val['source'],
-							'states' => $val['states'],
-							'tot_time' => $val['tot_time'],
-							'groupname' => $val['groupname']
-							);
+					foreach ($data_tmp as $group => $val) {
+						if ($val !== false) {
+							$data[$group][$mnr] = array(
+								'source' => $val['source'],
+								'states' => $val['states'],
+								'tot_time' => $val['tot_time'],
+								'groupname' => $val['groupname']
+								);
+						}
 					}
 			}
-
-			$report_data = $this->_sla_group_data($data);
-		} else {
-			$option_name = preg_match('/hosts/', $this->options['report_type']) ? 'host_name' : 'service_description';
+			$report_data = $this->_sla_group_data($data, $object_varname);
+			break;
+		 case 'hosts':
+		 case 'services':
 			foreach ($time_arr as $mnr => $dates) {
-				$optclass = get_class($this->options);
-				$opts = new $optclass($this->options);
-				$opts[$option_name] = $objects;
 				$opts['start_time'] = $dates['start'];
 				$opts['end_time'] = $dates['end'];
 				$report_class = new Reports_Model($opts);
 				$data_tmp = $report_class->get_uptime();
 
 				# The next line extracts _GROUPWIDE STATES_, discards individual member info (numeric indices)
-				$data[$mnr] = array(
+				$data[0][$mnr] = array(
 					'source' => $data_tmp['source'],
 					'states' => $data_tmp['states'],
 					'tot_time' => $data_tmp['tot_time'],
@@ -1230,176 +1232,85 @@ class Reports_Controller extends Base_reports_Controller
 				);
 				unset($report_class);
 			}
-			$report_data = $this->_sla_object_data($data);
+			$report_data = $this->_sla_group_data($data, $object_varname);
+			break;
+		 default:
+			die("ooops, didn't see {$this->options['report_type']} comming");
 		}
-		return $report_data;
-	}
-
-	/**
-	*	Mangle SLA data for host(s) or service(s)
-	*/
-	public function _sla_object_data($sla_data = false)
-	{
-		foreach ($sla_data as $months_key => $period_data) {
-			$sourcename = $this->_get_sla_group_name($period_data);
-			if (array_key_exists($months_key, $this->options['months'])) {
-				if (arr::search($period_data, 'states')) {
-					$real_val = $period_data['states'][self::$sla_field_names[$this->options['report_type']]];
-
-					# control colour of bar depending on value
-					# true = green, false = red
-					$sla_ok = $this->options['months'][$months_key] > $real_val ? true : false;
-				} else {
-					$sla_ok = false;
-					$real_val = 0;
-				}
-				$data[$this->abbr_month_names[$months_key-1]] = array($real_val, $this->options['months'][$months_key], $sla_ok);
-				if ($this->options['scheduleddowntimeasuptime']== 2)
-					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->options['months'][$months_key], $period_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
-				else
-					$table_data[$sourcename][$this->abbr_month_names[$months_key-1]][] = array($real_val, $this->options['months'][$months_key]);
-			}
-		}
-
-		$data_str = base64_encode(serialize($data));
-		$member_links = array();
-		$avail_links = false;
-		if(strpos($sourcename, ',') !== false) {
-			$members = explode(',', $sourcename);
-			foreach($members as $member) {
-				$member_links[] = $this->_generate_sla_member_link($member, $this->object_varname);
-			}
-			$avail_links = $this->_generate_avail_member_link($members);
-		} else {
-			$avail_links = $this->_generate_avail_member_link($sourcename);
-		}
-
-		$report_data = array(array(
-			'data' => $data,
-			'source' => $sourcename,
-			'data_str' => $data_str,
-			'table_data' => $table_data,
-			'group_title' => false,
-			'member_links' => $member_links,
-			'avail_links' => $avail_links
-		));
-
 		return $report_data;
 	}
 
 	/**
 	*	Mangle SLA data for host- and servicegroups
 	*/
-	public function _sla_group_data($sla_data = false)
+	public function _sla_group_data($sla_data, $object_varname)
 	{
 		if (empty($sla_data))
 			return false;
 		$report_data = false;
-		foreach ($sla_data as $source => $period_data) {
-			$members = null;
-			$sourcename = $this->_get_sla_group_name($period_data);
-
+		foreach ($sla_data as $group_idx => $period_data) {
+			$table_data = false;
+			$data = false;
+			$name = false;
+			$members = false;
 			// loop over whole period for current group
-			foreach ($period_data as $key => $tmp_data) {
-				// 'jan' => array(99.8, 99.6), (real, sla)
-				$months_key = ($key - 1);
-				if (array_key_exists($key, $this->options['months'])) {
+			foreach ($period_data as $period_start => $tmp_data) {
+				$month_idx = date('n', $period_start);
+				if (array_key_exists($month_idx, $this->options['months'])) {
 					if (arr::search($tmp_data, 'states')) {
 
-						# eg: $tmp_data['states']['PERCENT_TOTAL_TIME_UP']
+						# $tmp_data['states']['PERCENT_TOTAL_TIME_{UP,OK}']
 						$real_val = $tmp_data['states'][self::$sla_field_names[$this->options['report_type']]];
 
 						# control colour of bar depending on value
 						# true = green, false = red
-						$sla_ok = $this->options['months'][$key] > $real_val ? true : false;
-
-
+						$sla_ok = $this->options['months'][$month_idx] > $real_val ? true : false;
 					} else {
 						// create empty 'real' values
 						$sla_ok = false;
 						$real_val = 0;
 					}
 
-					# eg: $data['Jan'] = array(99.99999, 99.5)
-					$data[$this->abbr_month_names[$months_key]] = array($real_val, $this->options['months'][$key], $sla_ok);
-					# eg: $table_data['groupnameX']['Jan'] = array(98,342342, 98)
+					$data[date('M', $period_start)] = array($real_val, $this->options['months'][$month_idx], $sla_ok);
 					if ($this->options['scheduleddowntimeasuptime'] == 2)
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->options['months'][$key], $tmp_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
+						$table_data[$period_start] = array($real_val, $this->options['months'][$month_idx], $tmp_data['states']['PERCENT_TIME_DOWN_COUNTED_AS_UP']);
 					else
-						$table_data[$sourcename][$this->abbr_month_names[$months_key]][] = array($real_val, $this->options['months'][$key]);
+						$table_data[$period_start] = array($real_val, $this->options['months'][$month_idx]);
 				}
-
-				if (is_null($members) && arr::search($tmp_data, 'states')) {
-					if(isset($tmp_data['states']['SERVICE_DESCRIPTION']))
-						$members = $tmp_data['states']['SERVICE_DESCRIPTION'];
-					else
-						$members = $tmp_data['states']['HOST_NAME'];
-				}
+				// the same for all iterations of this loop, but we need it after
+				$source = $tmp_data['source'];
+				$name = $tmp_data['groupname'];
 			}
+
+			if (!$name && count($source) == 1)
+				$name = $source;
 
 			$data_str = base64_encode(serialize($data));
 
 			$member_links = array();
-			$members = explode(',', $members);
-			foreach($members as $member) {
-				$member_links[] = $this->_generate_sla_member_link($member, $this->object_varname);
+			foreach($source as $member) {
+				$member_links[] = $this->_generate_sla_member_link($member, $object_varname);
 			}
 
 			$report_data[] = array(
-				'data' => $data,
+				'name' => $name,
 				'table_data' => $table_data,
 				'data_str' => $data_str,
-				'source' => $sourcename,
-				'group_title'=>$sourcename,
+				'source' => $source,
 				'member_links' => $member_links,
-				'avail_links' => $this->_generate_avail_member_link($members, $this->object_varname)
+				'avail_link' => $this->_generate_avail_member_link(),
 			);
 		}
 		return $report_data;
 	}
 
 	/**
-	 * Discovers name of a report data object
-	 *
-	 * @param array $sla_data
-	 * @return mixed String name of object if found, false else.
-	 */
-	public function _get_sla_group_name(&$sla_data)
-	{
-		if (empty($sla_data)) return false;
-
-		$first_elem = each($sla_data);
-		if(is_numeric($first_elem['key']))
-			$sla_entry = current($sla_data) != false ? current($sla_data) : $first_elem['value'];
-		else
-			$sla_entry =& $sla_data;
-
-		// hostgroup or servicegroup
-		if(!empty($sla_entry['groupname']))
-			return $sla_entry['groupname'];
-
-		// custom group
-		if(strpos($sla_entry['source'], ',') !== false)
-		{
-			return $sla_entry['source'];
-		}
-
-		// single service
-		if(arr::search($sla_entry['states'], 'SERVICE_DESCRIPTION'))
-			// concatenate with host since lib_reports return service without that part
-			return $sla_entry['states']['HOST_NAME'].';'.$sla_entry['states']['SERVICE_DESCRIPTION'];
-
-		// single host
-		return $sla_entry['states']['HOST_NAME'];
-	}
-
-	/**
 	 * @param string $member
-	 * @return array Links to SLA report for individual members
+	 * @return array HTML containing a link to SLA report for the one member
 	 */
-	private function _generate_sla_member_link($member)
+	private function _generate_sla_member_link($member, $varname)
 	{
-		$return = '<a href="'.url::site().'sla/generate?'.$this->object_varname.'[]='.$member;
+		$return = '<a href="'.url::site().'sla/generate?'.$varname.'[]='.$member;
 		foreach($this->options as $key => $val) {
 			switch ($key) {
 				case 'start_time': case 'end_time':
@@ -1438,19 +1349,14 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * @param 	string $members
-	 * @return 	array Links to Availability report for individual members
+	 * @param string $members
+	 * @return string A link to an Availability report for all members
 	 */
-	private function _generate_avail_member_link($members)
+	private function _generate_avail_member_link()
 	{
 		$objects = '';
 		$return = url::site().'avail/generate?';
-		$return .= $this->options->as_keyval_string();
-		if (is_array($members)) {
-			$return .= implode('&amp;'.$this->object_varname.'[]=',$members);
-		} else {
-			$return .= '&amp;'.$this->object_varname.'[]='.$members;
-		}
+		$return .= $this->options->as_keyval_string(false);
 		return $return;
 	}
 
@@ -1469,7 +1375,7 @@ class Reports_Controller extends Base_reports_Controller
 		$date = $start_time;
 		while ($date < $end_time) {
 			$end = strtotime('+1 month', $date);
-			$return[date('n', $date)] = array('start' => $date, 'end' => $end);
+			$return[$date] = array('start' => $date, 'end' => $end);
 			$date = $end;
 		}
 		return $return;

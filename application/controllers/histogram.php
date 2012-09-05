@@ -294,12 +294,12 @@ class Histogram_Controller extends Base_reports_Controller
 					$this->labels[] = "'".$key."'";
 					break;
 				case 'monthly':
-					$return[] = '['.$i.', "'.$this->month_names[$key-1].'"]';
-					$this->labels[] = "'".$this->month_names[$key-1]."'";
+					$return[] = '['.$i.', "'.date('F', $key).'"]';
+					$this->labels[] = "'".date('F', $key)."'";
 					break;
 				case 'dayofweek':
-					$return[] = '['.$i.', "'.$this->day_names[$key-1].'"]';
-					$this->labels[] = "'".$this->day_names[$key-1]."'";
+					$return[] = '['.$i.', "'.date('l', $key).'"]';
+					$this->labels[] = "'".date('l', $key)."'";
 					break;
 				case 'hourly':
 					$return[] = '['.$i.', "'.$key.':00'.'"]';

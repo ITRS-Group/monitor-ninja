@@ -3,27 +3,27 @@
 $nr = 0;
 foreach($report_data as $i =>  $report) {
 	$nr++;
-	$custom_group = explode(',',$report['source']);
 	if (!empty($report['data_str'])) {
-		if (count($custom_group) > 1) {
+		if (!$report['name']) {
 			$str_source = 'SLA breakdown for Custom group';
 		}
 		else {
-			if (!$options['use_alias'] || $report['group_title'] !== false)
-				$str_source = _('SLA breakdown for').': '.$report['source'];
+			if (!$options['use_alias'] || count($report['source']) > 1)
+				$str_source = _('SLA breakdown for').': '.$report['name'];
 			else
-				$str_source = _('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
+				$str_source = _('SLA breakdown for').': '.$this->_get_host_alias($report['name']).' ('.$report['name'].')';
 		}
 	}
 	?>
 	<div class="setup-table members">
 		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
 		<?php
-		$avail_links = html_entity_decode($report['avail_links']);
-		parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
+		// FIXME: find where to by what the person writing this was smoking - looks like good shit
+		$avail_link = html_entity_decode($report['avail_link']);
+		parse_str(substr($avail_link, strpos($avail_link, '?')+1), $avail_link); ?>
 		<form action="<?php echo url::site() ?>avail/generate" method="post">
 			<input type="image" src="<?php echo url::site() ?>public/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
-			<?php foreach($avail_links as $key => $value) {
+			<?php foreach($avail_link as $key => $value) {
 				if(is_array($value)) {
 					foreach($value as $value_part) { ?>
 					<input type="hidden" name="<?php echo $key ?>[]" value="<?php echo $value_part ?>" />
@@ -35,8 +35,8 @@ foreach($report_data as $i =>  $report) {
 		</form>
 	</div>
 	<div id="slaChart<?php echo $nr ?>"></div>
-	<?php  if (!empty($report['table_data'][$report['source']])) {
-		$data = $report['table_data'][$report['source']]; ?>
+	<?php  if (!empty($report['table_data'])) {
+		$data = $report['table_data']; ?>
 		<div class="sla_table">
 		<h2 style="margin: 15px 0px 4px 0px"><?php echo help::render('sla_breakdown').' '.$str_source; ?></h2>
 		<table class="auto" border="1">
@@ -48,7 +48,7 @@ foreach($report_data as $i =>  $report) {
 					foreach ($data as $month => $values) {
 					$n++;
 				?>
-				<th class="headerNone"><?php echo $month ?></th>
+				<th class="headerNone"><?php echo date('M', $month) ?></th>
 				<?php } ?>
 			</tr>
 			<tr class="even">
@@ -56,7 +56,7 @@ foreach($report_data as $i =>  $report) {
 				$j = 0;
 				foreach ($data as $month => $value) {
 					$j++; ?>
-				<td class="data"><?php echo reports::format_report_value($value[0][1]) ?> %</td>
+				<td class="data"><?php echo reports::format_report_value($value[1]) ?> %</td>
 				<?php
 				} ?>
 			</tr>
@@ -66,13 +66,13 @@ foreach($report_data as $i =>  $report) {
 				foreach ($data as $month => $value) {
 					$y++;?>
 				<td class="data">
-					<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
+					<?php echo reports::format_report_value($value[0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0] < $value[1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',
-							'title' => $value[0][0] < $value[0][1] ? _('Below SLA') : _('OK'),
+							'title' => $value[0] < $value[1] ? _('Below SLA') : _('OK'),
 							'style' => 'width: 11px; height: 12px'));
-					if (isset($value[0][2]) && $value[0][2] > 0) {
-						echo "<br />(" . reports::format_report_value($value[0][2]) ."% in other states)";
+					if (isset($value[2]) && $value[2] > 0) {
+						echo "<br />(" . reports::format_report_value($value[2]) ."% in other states)";
 					}?></td>
 				<?php } ?>
 			</tr>
@@ -83,7 +83,7 @@ foreach($report_data as $i =>  $report) {
 
 		<table style="margin-bottom: 20px;">
 			<caption style="margin-top: 15px;"><?php echo help::render('sla_group_members').' '._('Group members');?></caption>
-			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : _('Custom group') ?></th></tr>
+			<tr><th class="headerNone"><?php echo is_string($report['name']) ? $report['name'] : _('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
 				foreach($report['member_links'] as $member_link) {
