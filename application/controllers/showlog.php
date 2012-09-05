@@ -16,68 +16,12 @@ class Showlog_Controller extends Authenticated_Controller
 	private $logos_path = '';
 	private $options = array();
 
-	private $abbr_month_names = false;
-	private $month_names = false;
-	private $day_names = false;
-	private $abbr_day_names = false;
-	private $first_day_of_week = 1;
-
 	public function __construct()
 	{
 		parent::__construct();
 
 		$this->logos_path = Kohana::config('config.logos_path');
 		$this->get_options();
-
-		$this->abbr_month_names = array(
-			_('Jan'),
-			_('Feb'),
-			_('Mar'),
-			_('Apr'),
-			_('May'),
-			_('Jun'),
-			_('Jul'),
-			_('Aug'),
-			_('Sep'),
-			_('Oct'),
-			_('Nov'),
-			_('Dec')
-		);
-
-		$this->month_names = array(
-			_('January'),
-			_('February'),
-			_('March'),
-			_('April'),
-			_('May'),
-			_('June'),
-			_('July'),
-			_('August'),
-			_('September'),
-			_('October'),
-			_('November'),
-			_('December')
-		);
-
-		$this->abbr_day_names = array(
-			_('Sun'),
-			_('Mon'),
-			_('Tue'),
-			_('Wed'),
-			_('Thu'),
-			_('Fri'),
-			_('Sat')
-		);
-
-		$this->day_names = array(
-			_('Sunday'),
-			_('Monday'),
-			_('Tuesday'),
-			_('Wednesday'),
-			_('Thursday'),
-			_('Friday'),
-			_('Saturday')
-		);
 	}
 
 	protected function get_options()
@@ -144,29 +88,6 @@ class Showlog_Controller extends Authenticated_Controller
 		$this->xtra_css[] = $this->add_path('showlog/css/showlog.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header->css = $this->xtra_css;
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->js_strings .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 		$this->js_strings .= reports::js_strings();
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;

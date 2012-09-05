@@ -23,12 +23,6 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 	protected $state_values = false;
 
-	protected $abbr_month_names = false;
-	protected $month_names = false;
-	protected $day_names = false;
-	protected $abbr_day_names = false;
-	protected $first_day_of_week = 1;
-
 	protected $histogram_link = "histogram/generate";
 
 	public $type = false;
@@ -37,59 +31,9 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 	public function __construct() {
 		if ($this->type === false)
-			die("You must set $type in ".get_class($this));
+			die("You must set \$type in ".get_class($this));
 
 		parent::__construct();
-
-		$this->abbr_month_names = array(
-			_('Jan'),
-			_('Feb'),
-			_('Mar'),
-			_('Apr'),
-			_('May'),
-			_('Jun'),
-			_('Jul'),
-			_('Aug'),
-			_('Sep'),
-			_('Oct'),
-			_('Nov'),
-			_('Dec')
-		);
-
-		$this->month_names = array(
-			_('January'),
-			_('February'),
-			_('March'),
-			_('April'),
-			_('May'),
-			_('June'),
-			_('July'),
-			_('August'),
-			_('September'),
-			_('October'),
-			_('November'),
-			_('December')
-		);
-
-		$this->abbr_day_names = array(
-			_('Sun'),
-			_('Mon'),
-			_('Tue'),
-			_('Wed'),
-			_('Thu'),
-			_('Fri'),
-			_('Sat')
-		);
-
-		$this->day_names = array(
-			_('Sunday'),
-			_('Monday'),
-			_('Tuesday'),
-			_('Wednesday'),
-			_('Thursday'),
-			_('Friday'),
-			_('Saturday')
-		);
 
 		$this->state_values = array(
 			'OK' => _('OK'),

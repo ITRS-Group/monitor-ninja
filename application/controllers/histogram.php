@@ -51,29 +51,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 		$this->inline_js .= "set_selection($('#report_type').val());\n";
 
 		$this->template->inline_js = $this->inline_js;
@@ -95,30 +72,6 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
-
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');

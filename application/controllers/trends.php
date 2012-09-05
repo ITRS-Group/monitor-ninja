@@ -68,30 +68,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$scheduled_label = _('Scheduled');
 		$label_report = _('report');
 
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
-
 		if ($this->options['report_id']) {
 			$this->inline_js .= "$('#assumed_host_state').hide();
 			$('#assumed_service_state').hide();\n";
@@ -137,7 +113,6 @@ class Trends_Controller extends Base_reports_Controller {
 
 		$template->type = $this->type;
 		$template->reporting_periods = $this->_get_reporting_periods();
-		$template->months = $this->abbr_month_names;
 
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
@@ -291,24 +266,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$get_vars = $this->options->as_keyval_string();
 
 		$selected_objects = ""; // string containing selected objects for this report
-
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 
 		# $objects is an array used when creating report_error page (template).
 		# Imploded into $missing_objects

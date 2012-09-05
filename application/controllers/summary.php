@@ -131,29 +131,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$template->saved_reports = $saved_reports;
 
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
 
 		if ($this->options['report_id']!==false) {
@@ -260,26 +237,9 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
-		$date_format = cal::get_calendar_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".cal::get_calendar_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->inline_js .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
 		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
 
 		// cgi compatibility variables

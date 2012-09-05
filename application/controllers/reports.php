@@ -136,30 +136,6 @@ class Reports_Controller extends Base_reports_Controller
 		$label_report = _('report');
 		$template->label_report = $label_report;
 
-		# fetch users date format in PHP style so we can use it
-		# in date() below
-		$date_format = $this->_get_date_format(true);
-
-		$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-		$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-		$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-		$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-		$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-		$js_date_format = "Date.format = '".$this->_get_date_format()."';";
-		$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-		# inline js should be the
-		# var host =
-		# var service =
-		# 	etc...
-		$this->inline_js .= "\n".$js_month_names."\n";
-		$this->inline_js .= $js_abbr_month_names."\n";
-		$this->inline_js .= $js_day_names."\n";
-		$this->inline_js .= $js_abbr_day_names."\n";
-		$this->inline_js .= $js_day_of_week."\n";
-		$this->js_strings .= $js_date_format."\n";
-		$this->inline_js .= $js_start_date."\n";
-
 		if (arr::search($_REQUEST, 'show_schedules') !== false) {
 			$this->js_strings .= "var _show_schedules = true;\n";
 		}
@@ -221,7 +197,7 @@ class Reports_Controller extends Base_reports_Controller
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
 		$template->reporting_periods = $this->_get_reporting_periods();
 
-		$template->months = $this->abbr_month_names;
+		$template->months = reports::abbr_month_names();
 
 		$date_format = $this->_get_date_format(true);
 		# due to an old bug, some reports could have been saved
@@ -1090,30 +1066,6 @@ class Reports_Controller extends Base_reports_Controller
 
 				} # end if not empty. Display message to user?
 			}
-
-			# fetch users date format in PHP style so we can use it
-			# in date() below
-			$date_format = $this->_get_date_format(true);
-
-			$js_month_names = "Date.monthNames = ".json::encode($this->month_names).";";
-			$js_abbr_month_names = 'Date.abbrMonthNames = '.json::encode($this->abbr_month_names).';';
-			$js_day_names = 'Date.dayNames = '.json::encode($this->day_names).';';
-			$js_abbr_day_names = 'Date.abbrDayNames = '.json::encode($this->abbr_day_names).';';
-			$js_day_of_week = 'Date.firstDayOfWeek = '.$this->first_day_of_week.';';
-			$js_date_format = "Date.format = '".$this->_get_date_format()."';";
-			$js_start_date = "_start_date = '".date($date_format, mktime(0,0,0,1, 1, 1996))."';";
-
-			# inline js should be the
-			# var host =
-			# var service =
-			# 	etc...
-			$this->js_strings .= "\n".$js_month_names."\n";
-			$this->js_strings .= $js_abbr_month_names."\n";
-			$this->js_strings .= $js_day_names."\n";
-			$this->js_strings .= $js_abbr_day_names."\n";
-			$this->js_strings .= $js_day_of_week."\n";
-			$this->js_strings .= $js_date_format."\n";
-			$this->js_strings .= $js_start_date."\n";
 
 			$this->template->inline_js = $this->inline_js;
 			$this->template->js_strings = $this->js_strings;
