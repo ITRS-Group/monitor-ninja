@@ -369,7 +369,7 @@ class Trends_Controller extends Base_reports_Controller {
 				$host_name = $avail_data['values']['HOST_NAME'];
 				$avail_link = '/reports/generate?type=avail'.
 				"&host_name[]=". $host_name .
-				'&start_time=' . $this->options['start_date'] . '&end_time=' . $this->options['end_date'] .$get_vars;
+				'&start_time=' . $this->options['start_date'] . '&end_time=' . $this->options['end_date'] .'&' . $get_vars;
 				$avail_link_icon = 'availability';
 				$notification_icon = 'notify';
 				$status_icon = 'hoststatus';

@@ -425,41 +425,15 @@ class Reports_Controller extends Base_reports_Controller
 			default:
 				url::redirect(Router::$controller.'/index');
 		}
+		$var = $this->options->get_value('report_type');
+		$objects = false;
+		$mon_auth = Nagios_auth_Model::instance();
+		foreach ($this->options[$var] as $obj) {
+			if ($mon_auth->{'is_authorized_for_'.substr($this->options['report_type'], 0, -1)}($obj))
+				$objects[] = $obj;
+		}
 
 		$get_vars = $this->options->as_keyval_string();
-
-		$selected_objects = ""; // string containing selected objects for this report
-
-		# $objects is an array used when creating report_error page (template).
-		# Imploded into $missing_objects
-		$objects = false;
-		if (($this->options['report_type'] == 'hosts' || $this->options['report_type'] == 'services')) {
-			if (is_array($in_host)) {
-				foreach ($in_host as $host) {
-					$selected_objects .= "&host_name[]=".$host;
-					$objects[] = $host;
-				}
-			}
-			if (is_array($in_service)) {
-				foreach ($in_service as $svc) {
-					$selected_objects .= "&service_description[]=".$svc;
-					$objects[] = $svc;
-				}
-			}
-		} else {
-			if (is_array($hostgroup)) {
-				foreach ($hostgroup as $h_gr) {
-					$selected_objects .= "&hostgroup[]=".$h_gr;
-					$objects[] = $h_gr;
-				}
-			}
-			if (is_array($servicegroup)) {
-				foreach ($servicegroup as $s_gr) {
-					$selected_objects .= "&servicegroup[]=".$s_gr;
-					$objects[] = $s_gr;
-				}
-			}
-		}
 
 		# fetch data
 		# avail:

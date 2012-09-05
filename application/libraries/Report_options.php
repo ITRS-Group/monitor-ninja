@@ -536,8 +536,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 	 *                   If false, all options will be kept, completely describing
 	 *                   this exact report.
 	 */
-	public function as_keyval_string($anonymous=true) {
-		$opts = $this->options;
+	public function as_keyval_string($anonymous=false, $obj_only=false) {
 		if ($anonymous) {
 			unset($opts['host_name']);
 			unset($opts['service_description']);
@@ -546,7 +545,9 @@ class Report_options_core implements ArrayAccess, Iterator {
 			unset($opts['report_type']);
 		}
 		$opts_str = '';
-		foreach ($opts as $key => $val) {
+		foreach ($this as $key => $val) {
+			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+				continue;
 			if (is_array($val)) {
 				foreach ($val as $vk => $member) {
 					$opts_str .= "&{$key}[$vk]=$member";
@@ -555,18 +556,29 @@ class Report_options_core implements ArrayAccess, Iterator {
 			}
 			$opts_str .= "&$key=$val";
 		}
-		return $opts_str;
+		return substr($opts_str, 1);
 	}
 
-	public function as_form() {
+	public function as_form($anonymous=false, $obj_only=false) {
+		if ($anonymous) {
+			$opts = $this;
+			unset($opts['host_name']);
+			unset($opts['service_description']);
+			unset($opts['hostgroup']);
+			unset($opts['servicegroup']);
+			unset($opts['report_type']);
+		}
+
 		$html_options = '';
-		foreach (array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type') as $opt) {
-			if (is_array($this[$opt])) {
-				foreach ($this[$opt] as $k => $v)
-				$html_options .= form::hidden($opt.'['.$k.']', $v);
+		foreach ($this as $key => $val) {
+			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+				continue;
+			if (is_array($val)) {
+				foreach ($val as $k => $v)
+				$html_options .= form::hidden($key.'['.$k.']', $v);
 			}
 			else {
-				$html_options .= form::hidden($opt, $this[$opt]);
+				$html_options .= form::hidden($key, $val);
 			}
 		}
 		return $html_options;

@@ -13,7 +13,6 @@
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
 					<td>
-						<input type="hidden" name="new_report_setup" value="1" />
 						<?php //echo help::render('reporting_period');?> <?php echo _('Reporting period') ?><br />
 						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $options->get_alternatives('report_period'), $options['report_period']); ?>
 					</td>
@@ -62,7 +61,7 @@
 			</table>
 
 
-		<?php	$options->as_form(); ?>
+		<?php	$options->as_form(false, true); ?>
 			<input type="hidden" name="report_id" value="<?php echo isset($report_id) ? $report_id : 0 ?>" />
 		</div>
 	</form>

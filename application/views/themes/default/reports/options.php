@@ -47,7 +47,7 @@ if ($type == 'avail') { ?>
 			</td>
 		</tr>
 	</table>
-	<?php echo $options->as_form(); ?>
+	<?php echo $options->as_form(false, true); ?>
 	<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 </form>
 </div>
@@ -139,7 +139,7 @@ if ($type == 'avail') { ?>
 					</td>
 				</tr>
 			</table>
-		<?php echo $options->as_form(); ?>
+		<?php echo $options->as_form(false, true); ?>
 		<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 	</form>
 	</div>
@@ -165,7 +165,7 @@ if ($type == 'avail') { ?>
 		</tr>
 
 	</table>
-	<?php echo $options->as_form(); ?>
+	<?php echo $options->as_form(false, true); ?>
 	<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 </form>
 </div>

@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <br />
 <?php
-	echo html::anchor('avail/generate?report_type='.$options['report_type'].$selected_objects.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; margin-bottom: -4px; display: block; float: left'));
-	echo html::anchor('avail/generate?report_type='.$options['report_type'].$selected_objects.$get_vars, _('View corresponding Availability report'));
+	echo html::anchor('avail/generate?report_type='.$options['report_type'].$selected_objects.'&'.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('View corresponding Availability report'))), array('style' => 'border: 0px; margin-right: 5px; margin-bottom: -4px; display: block; float: left'));
+	echo html::anchor('avail/generate?report_type='.$options['report_type'].$selected_objects.'&'.$get_vars, _('View corresponding Availability report'));
 ?>
 <div class="host_breakdown wide" style="margin-top: 15px;">
 <?php foreach ($multiple_states as $data) { ?>
@@ -26,7 +26,7 @@
 				<?php } ?>
 				<td class="data">
 					<?php echo html::anchor('status/service?name='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/service-details.gif'), array('title' => _('Service details for this Host'))), array('style' => 'border: 0px')) ?>
-					<?php echo html::anchor('avail/generate?host_name[]='.$data['HOST_NAME'][$i].$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
+					<?php echo html::anchor('avail/generate?host_name[]='.$data['HOST_NAME'][$i].'&'.$get_vars, html::image($this->add_path('icons/16x16/availability.png'), array('title' => _('Availability report for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('showlog/alert_history/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/alert-history.png'), array('title' => _('Alert History for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('notifications/host/'.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/notify.png'), array('title' => _('Notifications for this Host'))), array('style' => 'border: 0px')) ?>
 					<?php echo html::anchor('histogram/generate?host='.$data['HOST_NAME'][$i], html::image($this->add_path('icons/16x16/histogram.png'), array('title' => _('Alert Histogram for this Host'))), array('style' => 'border: 0px')) ?>

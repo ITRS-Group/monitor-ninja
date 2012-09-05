@@ -61,7 +61,7 @@
 					</td>
 				</tr>
 			</table>
-			<?php echo $options->as_form(); ?>
+			<?php echo $options->as_form(false, true); ?>
 		</form>
 	</div>
 </div>
