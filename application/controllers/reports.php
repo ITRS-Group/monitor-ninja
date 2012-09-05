@@ -817,40 +817,6 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Save a report via ajax call
-	* 	Called from reports.js (trigger_ajax_save())
-	* 	@return JSON string
-	*/
-	public function save($report_id = false)
-	{
-		if(!request::is_ajax()) {
-			$msg = _('Only Ajax calls are supported here');
-			die($msg);
-		}
-
-		$this->auto_render=false;
-
-		# 	Fetch the input variable 'type' from
-		#	either $_GET or $_POST and use default
-		# 	method param if nothing found
-
-		$obj_field = $this->options->get_val('report_type');
-		$obj_value = $this->options[$obj_field];
-
-		$save_report_settings = arr::search($_REQUEST, 'save_report_settings');
-		$return = false;
-		if ($save_report_settings && $this->options['report_name'] !== false && !empty($obj_value)) {
-			$this->report_id = Saved_reports_Model::edit_report_info($this->type, $this->report_id, $report_options, $obj_value, $this->options['months']);
-			$status_msg = $this->report_id ? _("Report was successfully saved") : "";
-			$msg_type = $this->report_id ? "ok" : "";
-			$return = array('status' => $msg_type, 'status_msg' => $status_msg, 'report_id' => $this->report_id);
-		} else {
-			$return = array('status' => '', 'status_msg' => _('Unable to save this report.'));
-		}
-		echo json::encode($return);
-	}
-
-	/**
 	*	Print message to user about invalid setup.
 	*	This could be because of missing database or
 	* 	reports module

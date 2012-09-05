@@ -107,6 +107,34 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		}
 	}
 
+	/**
+	*	Save a report via ajax call
+	* 	Called from reports.js (trigger_ajax_save())
+	* 	@return JSON string
+	*/
+	public function save($input = false)
+	{
+		if(!request::is_ajax()) {
+			$msg = _('Only Ajax calls are supported here');
+			die($msg);
+		}
+
+		$this->setup_options_obj($input);
+
+		$this->auto_render=false;
+
+		$objects = $this->options[$this->options->get_value('report_type')];
+
+		$return = false;
+		if ($this->options['report_name'] !== false) {
+			$report_id = Saved_reports_Model::edit_report_info($this->type, $this->options['report_id'], $this->options, $objects, $this->options['months']);
+			if ($report_id) {
+				return json::ok(array('status_msg' => _("Report was successfully saved"), 'report_id' => $report_id));
+			}
+		}
+		return json::fail(_('Unable to save this report.'));
+	}
+
 	protected function setup_options_obj($input = false, $type = false)
 	{
 		if ($this->options) // If a child class has already set this, leave it alone

@@ -128,9 +128,34 @@ $(document).ready(function() {
 			$("#saved_report_form").trigger('submit');
 		}
 	});
-});
 
+	$('.save_report_btn').bind('click', function() {
+		loopElements();
+		if (!validate_report_form()) {
+			return;
 		}
+		var btn = $(this);
+		btn.after(loadimg);
+		$.ajax({
+			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
+			type: 'POST',
+			data: $(this.form).serialize(),
+			success: function(data) {
+				if (!data.error) {
+					jgrowl_message(data.result.status_msg, _reports_success);
+				} else {
+					jgrowl_message(data.error, _reports_error);
+				}
+				btn.parent().find('img:last').remove();
+			},
+			error: function(data) {
+				jgrowl_message(_reports_error, _reports_error);
+				btn.parent().find('img:last').remove();
+			},
+			dataType: 'json'
+		});
+	});
+});
 
 function setup_editable(mode)
 {
