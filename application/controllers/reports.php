@@ -15,7 +15,6 @@
  */
 class Reports_Controller extends Base_reports_Controller
 {
-	protected $data_arr = false;
 	private $object_varname = false;
 
 	private $status_link = "status/host/";
@@ -356,13 +355,12 @@ class Reports_Controller extends Base_reports_Controller
 		$get_vars = $this->options->as_keyval_string();
 
 		# fetch data
-		# avail:
 		if ($this->type == 'avail') {
-			$this->data_arr = $group_name!== false
-				? $this->_expand_group_request($group_name, $this->options->get_value('report_type'))
+			$data_arr = $group_name
+				? $this->_expand_group_request($objects, $this->options->get_value('report_type'))
 				: $this->reports_model->get_uptime();
 		} else {
-			$this->data_arr = $this->get_sla_data($this->options['months'], $objects);
+			$data_arr = $this->get_sla_data($this->options['months'], $objects);
 		}
 
 		if ($this->options['output_format'] == 'csv') {
@@ -382,9 +380,9 @@ class Reports_Controller extends Base_reports_Controller
 		$template->report_template_check = $report_template_check;
 
 		# AVAIL REPORT
-		if ($this->type == 'avail' && (empty($this->data_arr)
-			|| (sizeof($this->data_arr)==1 && empty($this->data_arr[0]))
-			|| (!isset($this->data_arr['source']) && empty($this->data_arr[0][0]['source']) ))) {
+		if ($this->type == 'avail' && (empty($data_arr)
+			|| (sizeof($data_arr)==1 && empty($data_arr[0]))
+			|| (!isset($data_arr['source']) && empty($data_arr[0][0]['source']) ))) {
 			# avail report is empty
 
 			# what objects were submitted?
@@ -483,7 +481,7 @@ class Reports_Controller extends Base_reports_Controller
 			$graph_filter = ${$sub_type.'_graph_items'};
 
 			# hostgroups / servicegroups
-			if ($this->type == 'avail' && isset($this->data_arr[0])) {
+			if ($this->type == 'avail' && isset($data_arr[0])) {
 
 				$template->header = $this->add_view('reports/header');
 				$template->header->report_time_formatted = $report_time_formatted;
@@ -495,15 +493,15 @@ class Reports_Controller extends Base_reports_Controller
 				}
 
 				if ($group_name) {
-					foreach ($this->data_arr as $data) {
+					foreach ($data_arr as $data) {
 						if (empty($data))
 							continue;
 						array_multisort($data);
 						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 					}
 				} else {
-					array_multisort($this->data_arr);
-					$template_values[] = $this->_get_multiple_state_info($this->data_arr, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
+					array_multisort($data_arr);
+					$template_values[] = $this->_get_multiple_state_info($data_arr, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 				}
 
 				if (!empty($template_values) && count($template_values))
@@ -514,16 +512,16 @@ class Reports_Controller extends Base_reports_Controller
 				if($this->options['include_trends']) {
 					if($group_name) {
 						// Copy-pasted from controllers/trends.php
-						foreach ($this->data_arr as $key => $data) {
+						foreach ($data_arr as $key => $data) {
 							# >= 2 hosts or services won't have the extra
 							# depth in the array, so we break out early
 							if (empty($data['log']) || !is_array($data['log'])) {
-								if(isset($this->data_arr['log'])) {
-									$graph_data = $this->data_arr['log'];
-								} elseif(isset($this->data_arr[0]['log'])) {
+								if(isset($data_arr['log'])) {
+									$graph_data = $data_arr['log'];
+								} elseif(isset($data_arr[0]['log'])) {
 									// fixes the case of multiple groups when at least one of them
 									// has a '/' in its name
-									$graph_data = $this->data_arr[0]['log'];
+									$graph_data = $data_arr[0]['log'];
 								}
 								break;
 							}
@@ -538,7 +536,7 @@ class Reports_Controller extends Base_reports_Controller
 						} # end foreach
 					} else {
 						// We are not checking groups
-						$graph_data = $this->data_arr['log'];
+						$graph_data = $data_arr['log'];
 					}
 
 					$template->trends_graph = $this->add_view('trends/new_report');
@@ -569,10 +567,10 @@ class Reports_Controller extends Base_reports_Controller
 
 				$groups_added = 0;
 				$pie_groupname = false;
-				if(!isset($this->data_arr['groupname'])) { # actual hostgroup/servicegroup.
+				if(!isset($data_arr['groupname'])) { # actual hostgroup/servicegroup.
 					$tmp_title = ucfirst($sub_type)._('group breakdown');
 					$template->header->title = $tmp_title;
-					foreach($this->data_arr as $data) { # for every group
+					foreach($data_arr as $data) { # for every group
 						$added_group = false;
 						if (is_array($data['states'])) {
 							foreach ($graph_filter as $key => $val) {
@@ -594,14 +592,14 @@ class Reports_Controller extends Base_reports_Controller
 					$added_group = false;
 					$tmp_title = ucfirst($sub_type).' '._('state breakdown');
 					$template->header->title = $tmp_title;
-					if (is_array($this->data_arr['states'])) {
+					if (is_array($data_arr['states'])) {
 						foreach ($graph_filter as $key => $val) {
-							if ($this->data_arr['states'][$key]!=0)
+							if ($data_arr['states'][$key]!=0)
 							{
 								if (isset($image_data[0][strtoupper($val)])) {
-									$image_data[0][strtoupper($val)] += $this->data_arr['states'][$key];
+									$image_data[0][strtoupper($val)] += $data_arr['states'][$key];
 								} else {
-									$image_data[0][strtoupper($val)] = $this->data_arr['states'][$key];
+									$image_data[0][strtoupper($val)] = $data_arr['states'][$key];
 								}
 								$added_group = true;
 							}
@@ -635,8 +633,8 @@ class Reports_Controller extends Base_reports_Controller
 			} else { # host/services
 				$image_data = false;
 				$data_str = '';
-				if (!empty($this->data_arr)) {
-					$data = $this->data_arr;
+				if (!empty($data_arr)) {
+					$data = $data_arr;
 					$template->content = $this->add_view('reports/'.$this->type);
 					$template->content->options = $this->options;
 
@@ -668,11 +666,11 @@ class Reports_Controller extends Base_reports_Controller
 
 							if($group_name) {
 								// Copy-pasted from controllers/trends.php
-								foreach ($this->data_arr as $key => $data) {
+								foreach ($data_arr as $key => $data) {
 									# >= 2 hosts or services won't have the extra
 									# depth in the array, so we break out early
 									if (empty($data['log']) || !is_array($data['log'])) {
-										$graph_data = $this->data_arr['log'];
+										$graph_data = $data_arr['log'];
 										break;
 									}
 
@@ -686,7 +684,7 @@ class Reports_Controller extends Base_reports_Controller
 								} # end foreach
 							} else {
 								// We are not checking groups
-								$graph_data = $this->data_arr['log'];
+								$graph_data = $data_arr['log'];
 							}
 
 							$template->trends_graph = $this->add_view('trends/new_report');
@@ -718,7 +716,7 @@ class Reports_Controller extends Base_reports_Controller
 						}
 
 						if ($sub_type=='host') {
-							$service_states = $this->_print_states_for_services($this->data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
+							$service_states = $this->_print_states_for_services($data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
 
 							if ($service_states !== false) {
 								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
@@ -918,7 +916,7 @@ class Reports_Controller extends Base_reports_Controller
 						# SLA report
 						$template->header->title = _('SLA breakdown');
 						$sla = $template->content;
-						$sla->report_data = $this->data_arr;
+						$sla->report_data = $data_arr;
 					}
 
 				} # end if not empty. Display message to user?
