@@ -182,30 +182,8 @@ class Trends_Controller extends Base_reports_Controller {
 		$service			= false;
 		$sub_type			= false;
 
-		// cgi compatibility variables
-		// Start dates
-		$syear 	= (int)arr::search($_REQUEST, 'syear');
-		$smon 	= (int)arr::search($_REQUEST, 'smon');
-		$sday 	= (int)arr::search($_REQUEST, 'sday');
-		$shour 	= (int)arr::search($_REQUEST, 'shour');
-		$smin 	= (int)arr::search($_REQUEST, 'smin');
-		$ssec 	= (int)arr::search($_REQUEST, 'ssec');
-		// end dates
-		$eyear 	= (int)arr::search($_REQUEST, 'eyear');
-		$emon 	= (int)arr::search($_REQUEST, 'emon');
-		$eday 	= (int)arr::search($_REQUEST, 'eday');
-		$ehour 	= (int)arr::search($_REQUEST, 'ehour');
-		$emin 	= (int)arr::search($_REQUEST, 'emin');
-		$esec 	= (int)arr::search($_REQUEST, 'esec');
-
 		$err_msg = "";
 
-		// convert report period to timestamps
-		if ($this->options['report_period'] == 'custom' && !empty($syear) && !empty($eyear)) {
-			// cgi compatibility
-			$this->options['start_time'] = mktime($shour, $smin, $ssec, $smon, $sday, $syear);
-			$this->options['end_time'] = mktime($ehour, $emin, $esec, $emon, $eday, $eyear);
-		}
 		$str_start_date = date(nagstat::date_format(), $this->options['start_date']); // used to set calendar
 		$str_end_date 	= date(nagstat::date_format(), $this->options['end_date']); // used to set calendar
 
