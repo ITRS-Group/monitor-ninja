@@ -129,9 +129,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$this->template->content = $this->add_view('trends/index'); # base template with placeholders for all parts
 		$template = $this->template->content;
 
-		$str_start_date = date(nagstat::date_format(), $this->options['start_date']); // used to set calendar
-		$str_end_date 	= date(nagstat::date_format(), $this->options['end_date']); // used to set calendar
-
 		if('custom' == $this->options['report_period'])
 			$report_time_formatted  = sprintf(_("%s to %s"), $str_start_date, $str_end_date);
 		else
@@ -196,11 +193,6 @@ class Trends_Controller extends Base_reports_Controller {
 			# decide what report periods to print
 			$this->template->content->report_options = $this->add_view('trends/options');
 			$tpl_options = $this->template->content->report_options;
-
-			$tpl_options->start_date = date($date_format, $this->options['start_time']);
-			$tpl_options->start_time = date('H:i', $this->options['start_time']);
-			$tpl_options->end_date = date($date_format, $this->options['end_time']);
-			$tpl_options->end_time = date('H:i', $this->options['end_time']);
 
 			$this->inline_js .= "set_initial_state('assumestatesduringnotrunning', '".$this->options['assumestatesduringnotrunning']."');\n";
 			$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";

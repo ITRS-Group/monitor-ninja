@@ -487,7 +487,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'start_time':
 		 case 'end_time':
 			// value "impossible", or value already set by report_period
-			if ($value <= 0 || $value === 'undefined' || $this[$name])
+			// (we consider anything before 1980 impossible, or at least unreasonable)
+			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period'])))
 				return false;
 			if (!is_numeric($value))
 				$value = strtotime($value);
@@ -572,6 +573,15 @@ class Report_options_core implements ArrayAccess, Iterator {
 			unset($opts[$this->get_value('report_type')]);
 		}
 		return json_encode($opts);
+	}
+
+	public function get_date($var) {
+		$format = cal::get_calendar_format(true);
+		return date($format, $this[$var]);
+	}
+
+	public function get_time($var) {
+		return date('H:i', $this[$var]);
 	}
 
 	function rewind() { reset($this->options); }

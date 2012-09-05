@@ -30,7 +30,7 @@
 
 		?>
 
-		<p style="margin-top: -13px; margin-bottom: 10px"><?php echo $str_start_date ?> - <?php echo $str_end_date ?>
+		<p style="margin-top: -13px; margin-bottom: 10px"><?php echo $options->get_date('start_time') ?> - <?php echo $options->get_date('end_time') ?>
 		(<?php echo _('Duration') ?>: <?php echo $duration ?>)</p>
 	</div>
 

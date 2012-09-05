@@ -266,10 +266,6 @@ class Histogram_Controller extends Base_reports_Controller
 
 		$tpl_options->sub_type = $sub_type;
 
-		$tpl_options->start_date = date($date_format, $this->options['start_time']);
-		$tpl_options->start_time = date('H:i', $this->options['start_time']);
-		$tpl_options->end_date = date($date_format, $this->options['end_time']);
-		$tpl_options->end_time = date('H:i', $this->options['end_time']);
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->title = _('Reporting » Histogram » Report');

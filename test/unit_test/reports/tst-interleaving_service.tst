@@ -1,9 +1,12 @@
 description = Interleaving downtimes and multiple states, services
 logfile = interleaving_states_service.log
 
+global_vars {
+	start_time = 400000001
+	end_time = 400005000
+}
+
 worst state, down as down {
-	start_time = 000000001
-	end_time = 000005000
 	service_description {
 		host1;PING
 		host2;PING
@@ -19,8 +22,6 @@ worst state, down as down {
 	}
 }
 worst state, down as up {
-	start_time = 000000001
-	end_time = 000005000
 	service_description {
 		host1;PING
 		host2;PING
@@ -37,8 +38,6 @@ worst state, down as up {
 	}
 }
 best state, down as down {
-	start_time = 000000001
-	end_time = 000005000
 	service_description {
 		host1;PING
 		host2;PING
@@ -55,8 +54,6 @@ best state, down as down {
 	}
 }
 best state, down as up {
-	start_time = 000000001
-	end_time = 000005000
 	service_description {
 		host1;PING
 		host2;PING

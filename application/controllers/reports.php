@@ -162,18 +162,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->months = reports::abbr_month_names();
 
-		$date_format = $this->_get_date_format(true);
-		# due to an old bug, some reports could have been saved
-		# with the timestamp being the year which would result in
-		# dates being printed as 1970-01-01
-		# Checking that it is > the timestamp for 1980-01-01 (315525600)
-		# will make us being possible to handle this anyway
-		$ts_check = 315525600; # 1980-01-01
-		$template->start_date = !empty($this->options['start_time']) && $this->options['start_time'] > $ts_check ? date($date_format, $this->options['start_time']) : '';
-		$template->start_time = !empty($this->options['start_time']) && $this->options['start_time'] > $ts_check ? date('H:i', $this->options['start_time']) : '08:00';
-		$template->end_date = !empty($this->options['end_time']) && $this->options['end_time'] > $ts_check ? date($date_format, $this->options['end_time']) : '';
-		$template->end_time = !empty($this->options['end_time']) && $this->options['end_time'] > $ts_check ? date('H:i', $this->options['end_time']) : '09:00';
-
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
 		$template->saved_reports = $saved_reports;
@@ -337,15 +325,6 @@ class Reports_Controller extends Base_reports_Controller
 
 			$tpl_options = $this->template->content->report_options;
 
-			$tpl_options->include_trends = $this->options['include_trends'];
-			$tpl_options->selected = $this->options['report_period'];
-
-			$date_format = $this->_get_date_format(true);
-			$tpl_options->start_date = date($date_format, $this->options['start_time']);
-			$tpl_options->start_time = date('H:i', $this->options['start_time']);
-			$tpl_options->end_date = date($date_format, $this->options['end_time']);
-			$tpl_options->end_time = date('H:i', $this->options['end_time']);
-
 			$available_schedule_periods = false;
 			$schedule_periods = Scheduled_reports_Model::get_available_report_periods();
 			if ($schedule_periods !== false && !empty($schedule_periods)) {
@@ -411,10 +390,6 @@ class Reports_Controller extends Base_reports_Controller
 				$template->header->report_time_formatted = $report_time_formatted;
 				$template->header->csv_link = $csv_link;
 				$template->header->pdf_link = $pdf_link;
-				if ($this->options['report_period '] != 'custom') {
-					$template->header->str_start_date = date($this->_get_date_format(true), $this->options['start_time']);
-					$template->header->str_end_date = date($this->_get_date_format(true), $this->options['end_time']);
-				}
 
 				if ($is_group) {
 					foreach ($data_arr as $data) {
@@ -565,8 +540,6 @@ class Reports_Controller extends Base_reports_Controller
 					$template->header = $this->add_view('reports/header');
 					$template->header->options = $this->options;
 					$template->header->report_time_formatted = $report_time_formatted;
-					$template->header->str_start_date = date($this->_get_date_format(true), $this->options['start_time']);
-					$template->header->str_end_date = date($this->_get_date_format(true), $this->options['end_time']);
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 					$template->header->pdf_link = $pdf_link;
 
@@ -1075,12 +1048,6 @@ class Reports_Controller extends Base_reports_Controller
 		return $return;
 	}
 
-	/**
-	*	decide what date format to use for calendar
-	*/
-	public function _get_date_format($get_php=false)
-	{
-		return cal::get_calendar_format($get_php);
 	}
 
 	/**
