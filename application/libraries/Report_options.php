@@ -588,4 +588,52 @@ class Report_options_core implements ArrayAccess, Iterator {
 	function key() { return key($this->options); }
 	function next() { return next($this->options); }
 	function valid() { return array_key_exists(key($this->options), $this->options); }
+
+	protected static function discover_options($type, $input = false)
+	{
+		# not using $_REQUEST, because that includes weird, scary session vars
+		if (!empty($input)) {
+			$report_info = $input;
+		} else if (!empty($_POST)) {
+			$report_info = $_POST;
+		} else {
+			$report_info = $_GET;
+		}
+
+		if (isset($report_info['report_id'])) {
+			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
+			if ($saved_report_info) {
+				foreach ($saved_report_info as $key => $sri) {
+					if (!isset($report_info->options[$key]) || $report_info->options[$key] === $report_info->vtypes[$key]['default']) {
+						$report_info[$key] = $sri;
+					}
+				}
+			}
+		}
+		return $report_info;
+	}
+
+	protected static function create_options_obj($type, $report_info = false) {
+		$class = ucfirst($type) . '_options';
+		if (!class_exists($class))
+			$class = 'Report_options';
+		if (isset($report_info['report_id']) && !isset($report_info['objects'])) {
+			// empty reports are no reports at all
+			// this can happen when a user deletes a report and re-requests the old ID
+			unset($report_info['report_id']);
+		}
+		$options = new $class($report_info);
+		if (isset($report_info['report_id'])) {
+			# now that report_type is set, ship off objects to the correct var
+			$options[$options->get_value('report_type')] = $report_info['objects'];
+		}
+		return $options;
+	}
+
+	public static function setup_options_obj($type, $input = false)
+	{
+		$report_info = self::discover_options($type, $input);
+		$options = self::create_options_obj($type, $report_info);
+		return $options;
+	}
 }

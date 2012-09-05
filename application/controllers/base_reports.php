@@ -52,46 +52,11 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 	abstract public function index($input = false);
 	abstract public function generate($input = false);
 
-	protected function discover_options($input = false)
-	{
-		# not using $_REQUEST, because that includes weird, scary session vars
-		if (!empty($input)) {
-			$report_info = $input;
-		} else if (!empty($_POST)) {
-			$report_info = $_POST;
-		} else {
-			$report_info = $_GET;
-		}
-
-		if (isset($report_info['report_id'])) {
-			$saved_report_info = Saved_reports_Model::get_report_info($this->type, $report_info['report_id']);
-			if ($saved_report_info) {
-				$report_info = array_merge($saved_report_info, $report_info);
-			}
-		}
-		return $report_info;
-	}
-
-	protected function create_options_obj($report_info = false, $type = false)
-	{
-		$class = ucfirst($type ? $type : $this->type) . '_options';
-		if (!class_exists($class))
-			$class = 'Report_options';
-		$options = new $class($report_info);
-		if (isset($report_info['report_id'])) {
-			# now that report_type is set, ship off objects to the correct var
-			$options[$options->get_value('report_type')] = $report_info['objects'];
-		}
-		return $options;
-	}
-
 	protected function setup_options_obj($input = false, $type = false)
 	{
 		if ($this->options) // If a child class has already set this, leave it alone
 			return;
-
-		$report_info = $this->discover_options($input);
-		$this->options = $this->create_options_obj($report_info, $type);
+		$this->options = Report_options::setup_options_obj($type ? $type : $this->type, $input);
 		$this->template->set_global('options', $this->options);
 	}
 
