@@ -106,23 +106,11 @@ class Reports_Controller extends Base_reports_Controller
 		# get all saved reports for user
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
-		$json_periods = false;
-		$periods = array();
-		$periods_res = Scheduled_reports_Model::get_available_report_periods();
-		if ($periods_res) {
-			foreach ($periods_res as $period_row) {
-				$periods[$period_row->id] = $period_row->periodname;
-			}
-			if (!empty($periods)) {
-				$json_periods = json::encode($periods);
-			}
-		}
 		$scheduled_info = false;
 		if ($this->options['report_id']) {
 			$scheduled_info = Scheduled_reports_Model::report_is_scheduled($this->type, $this->options['report_id']);
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 		}
-		$template->json_periods = $json_periods;
 		$template->scheduled_info = $scheduled_info;
 		$scheduled_label = _('Scheduled');
 
