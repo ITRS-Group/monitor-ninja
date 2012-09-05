@@ -7,7 +7,6 @@
  */
 class json_Core
 {
-
 	/**
 	 * Kills the request after echoing a structured json response
 	 *
@@ -15,6 +14,7 @@ class json_Core
 	 * @param int $exit_code = 0
 	 */
 	private static function _send_response($response = null, $exit_code = 0) {
+		header('Content-Type: application/json');
 		echo self::encode($response);
 		exit($exit_code);
 	}
