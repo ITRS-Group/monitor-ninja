@@ -123,13 +123,9 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(".send_report_now").click(function() {
-		var type_id = $(this).attr('id');
-		type_id = type_id.replace('send_now_', '');
-		type_id = type_id.split('_');
-		var type = type_id[0];
-		var id = type_id[1];
-		send_report_now(type, id);
+	$('body').on('click', '.send_report_now', function() {
+		var elem = $(this);
+		send_report_now.call(this, elem.data('type'), elem.data('schedule'), elem.data('report_id'));
 	});
 
 	$("#report_id").bind('change', function() {
