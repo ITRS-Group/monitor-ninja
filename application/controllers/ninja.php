@@ -21,7 +21,7 @@ class Ninja_Controller extends Template_Controller {
 	public $locale = false;
 	public $registry = false;
 	public $defaultlanguage = 'en';
-	public $template = "template";
+	public $template;
 	public $user = false;
 	public $profiler = false;
 	public $xtra_js = array();
