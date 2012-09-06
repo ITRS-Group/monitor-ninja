@@ -271,7 +271,7 @@ class Reports_Model extends Model
 			$servicename = $this->options->get_report_members();
 		}
 
-		if (!empty($servicename)) {
+		if ($servicename) {
 			foreach ($servicename as $service) {
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
