@@ -932,8 +932,9 @@ class Reports_Model extends Model
 			else
 				$fevent_type = self::HOSTCHECK;
 		}
+		$state = ($this->st_running || $this->options['assumestatesduringnotrunning']) ? $this->st_obj_state : -1;
 		$this->st_prev_row = array
-			('state' => $this->st_obj_state,
+			('state' => $state,
 			 'the_time' => $this->options['start_time'],
 			 'event_type' => $fevent_type,
 			 'downtime_depth' => $this->st_dt_depth);
@@ -945,7 +946,7 @@ class Reports_Model extends Model
 			                "we're%s in scheduled downtime, state is %s (%d)",
 			                $this->st_running ? '' : ' not',
 			                $this->st_dt_depth ? '' : ' not',
-			                $this->st_text[$this->st_obj_state], $this->st_obj_state);
+			                $this->st_text[$state], $state);
 			$this->st_prev_row['output'] = $fout;
 
 			if (!empty($hostname) && is_string($hostname))

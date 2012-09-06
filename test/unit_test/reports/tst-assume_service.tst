@@ -14,3 +14,21 @@ assumed service states during program downtime #1 {
 		TIME_UNDETERMINED_NOT_RUNNING = 0
 	}
 }
+
+first state is undetermined {
+	start_time = 1202690000
+	end_time = 1202699000
+	service_description {
+		testhost;PING
+	}
+	correct {
+		TIME_OK_UNSCHEDULED = 3800
+		TIME_UNDETERMINED_NOT_RUNNING = 5200
+		subs {
+			testhost;PING {
+				TIME_OK_UNSCHEDULED = 3800
+				TIME_UNDETERMINED_NOT_RUNNING = 5200
+			}
+		}
+	}
+}
