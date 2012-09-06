@@ -12,25 +12,25 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'servicegroup_name' => 'servicegroup'
 	);
 	protected $vtypes = array(
-		'report_id' => array('type' => 'int', 'default' => false),
-		'report_name' => array('type' => 'string', 'default' => false),
-		'report_type' => array('type' => 'enum', 'default' => false, 'options' => array(
+		'report_id' => array('type' => 'int', 'default' => false), /**< Saved report id - not to be confused with schedule_id */
+		'report_name' => array('type' => 'string', 'default' => false), /**< Name of the report */
+		'report_type' => array('type' => 'enum', 'default' => false, 'options' => array( /**< The type of objects in the report, set automatically by setting the actual objects */
 			'hosts' => 'host_name',
 			'services' => 'service_description',
 			'hostgroups' => 'hostgroup',
 			'servicegroups' => 'servicegroup')),
-		'report_period' => array('type' => 'enum', 'default' => false),
-		'alert_types' => array('type' => 'enum', 'default' => 3),
-		'state_types' => array('type' => 'enum', 'default' => 3),
-		'host_states' => array('type' => 'enum', 'default' => 7),
-		'service_states' => array('type' => 'enum', 'default' => 15),
-		'summary_items' => array('type' => 'int', 'default' => 25),
-		'cluster_mode' => array('type' => 'bool', 'default' => false),
+		'report_period' => array('type' => 'enum', 'default' => false), /**< A report period to generate the report over, may automatically set {start,end}_time */
+		'alert_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of alerts to include (host, service, both) */
+		'state_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of states to include (soft, hard, both) */
+		'host_states' => array('type' => 'enum', 'default' => 7), /**< Bitmap of the host states to include (up, down, unreachable, etc) */
+		'service_states' => array('type' => 'enum', 'default' => 15), /**< Bitmap of the service states to include (ok, warning, critical, etc) */
+		'summary_items' => array('type' => 'int', 'default' => 25), /**< Number of summary items to include in reports */
+		'cluster_mode' => array('type' => 'bool', 'default' => false), /**< Whether to use best or worst case metrics */
 		'st_state_calculator' => array('type' => 'string', 'default' => 'st_worst'),
-		'keep_logs' => array('type' => 'bool', 'default' => false),
-		'keep_sub_logs' => array('type' => 'bool', 'default' => false),
-		'rpttimeperiod' => array('type' => 'string', 'default' => false),
-		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0),
+		'keep_logs' => array('type' => 'bool', 'default' => false), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
+		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
+		'rpttimeperiod' => array('type' => 'string', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
+		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumeinitialstates' => array('type' => 'bool', 'default' => -1),
 		'initialassumedhoststate' => array('type' => 'enum', 'default' => -1, 'options' => array(
 			-1 => 'Current state',
@@ -49,29 +49,29 @@ class Report_options_core implements ArrayAccess, Iterator {
 			 2 => 'Service Critical',
 			 3 => 'Service Unknown'
 		)),
-		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false),
-		'includesoftstates' => array('type' => 'bool', 'default' => true),
-		'host_name' => array('type' => 'list', 'default' => false),
-		'service_description' => array('type' => 'list', 'default' => false),
-		'hostgroup' => array('type' => 'array', 'default' => array()),
-		'servicegroup' => array('type' => 'array', 'default' => array()),
+		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
+		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
+		'host_name' => array('type' => 'list', 'default' => false), /**< Hosts to include */
+		'service_description' => array('type' => 'list', 'default' => false), /**< Services to include */
+		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include */
+		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include */
 		'options' => array('type' => 'array', 'default' => false),
-		'start_time' => array('type' => 'timestamp', 'default' => 0),
-		'end_time' => array('type' => 'timestamp', 'default' => 0),
-		'use_average' => array('type' => 'enum', 'default' => 0),
-		'host_filter_status' => array('type' => 'array', 'default' => array(
+		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
+		'end_time' => array('type' => 'timestamp', 'default' => 0), /**< End time for report, timestamp or date-like string */
+		'use_average' => array('type' => 'enum', 'default' => 0), /**< Whether to hide any SLA values and stick to averages */
+		'host_filter_status' => array('type' => 'array', 'default' => array( /**< Only include these host states in results */
 			Reports_Model::HOST_UP => 1,
 			Reports_Model::HOST_DOWN => 1,
 			Reports_Model::HOST_UNREACHABLE => 1,
 			Reports_Model::HOST_PENDING => 1)),
-		'service_filter_status' => array('type' => 'array', 'default' => array(
+		'service_filter_status' => array('type' => 'array', 'default' => array( /**< Only include these service states in results */
 			Reports_Model::SERVICE_OK => 1,
 			Reports_Model::SERVICE_WARNING => 1,
 			Reports_Model::SERVICE_CRITICAL => 1,
 			Reports_Model::SERVICE_UNKNOWN => 1,
 			Reports_Model::SERVICE_PENDING => 1)),
-		'include_trends' => array('type' => 'bool', 'default' => false),
-		'master' => array('type' => 'object', 'default' => false));
+		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
+		'master' => array('type' => 'object', 'default' => false), /**< The master report, if one */
 
 	public $options = array();
 

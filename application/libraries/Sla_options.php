@@ -16,6 +16,7 @@ class Sla_options_Core extends Report_options {
 			"lastquarter" => _('Last Quarter'),
 			"last12months" => _('Last 12 months')
 		));
+		// Warning! months is 1-indexed
 		$this->vtypes['months'] = array('type' => 'array', 'default' => false);
 
 		parent::__construct($options);
