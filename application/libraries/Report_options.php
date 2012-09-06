@@ -26,7 +26,6 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'service_states' => array('type' => 'enum', 'default' => 15), /**< Bitmap of the service states to include (ok, warning, critical, etc) */
 		'summary_items' => array('type' => 'int', 'default' => 25), /**< Number of summary items to include in reports */
 		'cluster_mode' => array('type' => 'bool', 'default' => false), /**< Whether to use best or worst case metrics */
-		'st_state_calculator' => array('type' => 'string', 'default' => 'st_worst'),
 		'keep_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
 		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
 		'rpttimeperiod' => array('type' => 'string', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
@@ -386,14 +385,6 @@ class Report_options_core implements ArrayAccess, Iterator {
 	protected function update_value($name, $value)
 	{
 		switch ($name) {
-		 case 'cluster_mode':
-			# check things in 'cluster mode' (ie, consider a group of
-			# objects ok if one of the objects is)
-			if ($value === true)
-				$this->options['st_state_calculator'] = 'st_best';
-			else
-				$this->options['st_state_calculator'] = 'st_worst';
-			break;
 		 case 'report_period':
 			if (!$this->calculate_time($value))
 				return false;

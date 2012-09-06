@@ -126,6 +126,7 @@ class Reports_Model extends Model
 	public $sub_reports = array(); /**< An array of sub-reports for this report */
 	public $last_shutdown = false; /**< Last nagios shutdown event- 0 if we started it again */
 	public $states = array(); /**< The final array of report states */
+	private $st_state_calculator = 'st_best';
 
 	/** A map of state ID => state name for hosts. FIXME: one of a gazillion */
 	static public $host_states = array(
@@ -882,7 +883,7 @@ class Reports_Model extends Model
 	public function calculate_object_state($state = false)
 	{
 		if ($this->sub_reports) {
-			$func = $this->options['st_state_calculator'];
+			$func = $this->st_state_calculator;
 			$state = $this->$func();
 		}
 
@@ -979,6 +980,7 @@ class Reports_Model extends Model
 			if (!empty($servicename) && is_string($servicename))
 				$this->st_prev_row['service_description'] = $servicename;
 		}
+		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
 	}
 
 	/**
