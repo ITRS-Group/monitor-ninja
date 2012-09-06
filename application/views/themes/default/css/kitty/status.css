@@ -1,3 +1,5 @@
+@import url("../default/status.css");
+
 td.status.icon.ok,
 td.status.icon.up,
 td.status.icon.critical,
@@ -24,9 +26,6 @@ tr.odd td.unknown,
 tr.even td.pending,
 tr.odd td.pending {
 	color: #ffffff;
-	text-align: left;
-	background-image: url(images/bg-dark.png);
-	background-repeat: repeat-x;
 }
 
 .active,
@@ -90,7 +89,6 @@ tr.odd td.pending {
 
 .status-total {
 	background-color: lightblue; /* blue */
-	border-bottom: 0px !important;
 }
 
 .active,
@@ -113,12 +111,6 @@ tr.odd td.pending {
 .status-unknown,
 .status-pending {
 	color: #ffffff;
-	padding: 0px 4px;
-	border: 0px !important;
-}
-
-.status-default {
-	display: none;
 }
 
 td.status-ok,
@@ -131,7 +123,6 @@ td.status-unreachable,
 td.status-unknown,
 td.status-pending {
 	color: #ffffff;
-	background-image: url(images/bg-dark.png);
 }
 
 td.status-ok a,
@@ -159,5 +150,4 @@ td.status-unreachable a {
 tr.even td.white,
 tr.odd td.white {
 	color: #ffffff;
-	visibility: hidden;
 }
