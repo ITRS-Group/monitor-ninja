@@ -4,19 +4,6 @@
  */
 class Alertlog_Model extends Model
 {
-	private static function combine() {
-		$args = func_get_args();
-		$function = array_shift($args);
-		$res = false;
-		foreach ($args as $arg) {
-			if (!empty($arg))
-				$res[] = $arg;
-		}
-		if (!empty($res))
-			$res = '(' . implode(') '.$function.' (', $res) . ')';
-		return $res;
-	}
-
 	private $host_ccode_to_ncode = array(
 		'r' => 0,
 		'd' => 1,
@@ -142,18 +129,18 @@ class Alertlog_Model extends Model
 		$objsel = implode(') OR (', $objsel);
 
 		$sql_where =
-			self::combine('and',
+			sql::combine('and',
 				$time_first,
 				$time_last,
-				self::combine('or',
+				sql::combine('or',
 					$process,
-					self::combine('and',
+					sql::combine('and',
 						$objsel,
-						self::combine('or',
+						sql::combine('or',
 							$downtime,
-							self::combine('and',
+							sql::combine('and',
 								$softorhard,
-								self::combine('or',
+								sql::combine('or',
 									$hostopts,
 									$svcopts))))));
 		if (!empty($sql_join)) {
