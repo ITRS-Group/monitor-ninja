@@ -78,7 +78,9 @@ class Reports_Model extends Model
 	var $st_text = array(); /**< Mapping between state integers and state text */
 	var $st_sub = array(); /**< Map of sub report [state => [downtime_status => [indexes]]] */
 	var $st_sub_discrepancies = 0; /**< Sub report appears to be weirded out */
-	private $st_source = false; /**< The source object */
+	private $st_source = false; /**< The source object. Can be object array, can be host_name, can be host_name;service_description */
+	private $host_name = false; /**< The source object's host name, if it's just one. Set for services. */
+	private $service_description = false; /**< The source object's service description, if it's just one. Only description for services */
 
 	/**
 	 * The calculated state of the object, taking such things
@@ -279,14 +281,16 @@ class Reports_Model extends Model
 				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
+				$sub_class->st_source = $service;
+				$srv = explode(';', $service);
+				$sub_class->host_name =  $srv[0];
+				$sub_class->service_description = $srv[1];
+				$sub_class->last_shutdown = $this->last_shutdown;
 				$sub_class->st_init();
 				$this->sub_reports[$service] = $sub_class;
-				if ($this->options['host_name'])
-					$this->st_source[] = $opts['host_name'] . ';' . $service;
-				else
-					$this->st_source[] = $service;
 			}
-		} else if (!empty($hostname)) {
+			$this->st_source = $servicename;
+		} else if ($hostname) {
 			foreach ($hostname as $host) {
 				$optclass = get_class($this->options);
 				$opts = new $optclass($this->options);
@@ -296,10 +300,15 @@ class Reports_Model extends Model
 				$sub_class = new Reports_Model($opts, $this->db_name, $this->db_table);
 				$sub_class->register_db_time($opts['start_time']);
 				$sub_class->register_db_time($opts['end_time']);
+				$sub_class->st_source = $host;
+				$sub_class->host_name = $host;
+				$sub_class->last_shutdown = $this->last_shutdown;
 				$sub_class->st_init();
 				$this->sub_reports[$host] = $sub_class;
 			}
 			$this->st_source = $hostname;
+		} else {
+			return false;
 		}
 
 		# Grab master's report-results _FIRST_ as sub-reports
@@ -886,19 +895,12 @@ class Reports_Model extends Model
 
 		if ($this->options['service_description'] || $this->options['servicegroup']) {
 			$this->st_is_service = true;
-			if ($this->options['service_description'])
-				$this->st_source = ($this->options['host_name']?$this->options['host_name'].';':'').$this->options['service_description'];
 		}
 		else {
 			# we need at least a service or a host
 			if (!$this->options['host_name'] && !$this->options['hostgroup'])
 				return false;
-			if ($this->options['host_name'])
-				$this->st_source = $this->options['host_name'];
 		}
-
-		if (is_array($this->st_source))
-			$this->st_source = implode(',', $this->st_source);
 
 		$this->st_text = empty($this->st_is_service) ? self::$host_states : self::$service_states;
 		$this->st_text = array_map('strtoupper', $this->st_text);
@@ -914,8 +916,8 @@ class Reports_Model extends Model
 			$this->calculate_object_state();
 		}
 		else {
-			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth($this->options['host_name'], $this->options['service_description']));
-			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state($this->options['host_name'], $this->options['service_description']));
+			$this->st_dt_depth = intval(!!$this->get_initial_dt_depth());
+			$this->st_real_state = $this->filter_excluded_state($this->get_initial_state());
 			$this->calculate_object_state($this->st_real_state);
 		}
 
@@ -963,7 +965,7 @@ class Reports_Model extends Model
 	 */
 	private function st_parse_all_rows()
 	{
-		$dbr = $this->uptime_query($this->options['host_name'], $this->options['service_description']);
+		$dbr = $this->uptime_query();
 		foreach ($dbr as $row) {
 			$this->st_parse_row($row);
 		}
@@ -1057,12 +1059,9 @@ class Reports_Model extends Model
 				$converted_state[$t] = 0;
 
 		if (empty($this->sub_reports)) {
-			$converted_state['HOST_NAME'] = $this->st_source;
-			if ($this->st_is_service) {
-				$srv = explode(';', $this->st_source);
-				$converted_state['HOST_NAME'] = $srv[0];
-				$converted_state['SERVICE_DESCRIPTION'] = $srv[1];
-			}
+			$converted_state['HOST_NAME'] = $this->host_name;
+			if ($this->st_is_service)
+				$converted_state['SERVICE_DESCRIPTION'] = $this->service_description;
 		} else {
 			if ($this->st_is_service) {
 				unset($converted_state['HOST_NAME']);
@@ -1097,14 +1096,12 @@ class Reports_Model extends Model
 	/**
 	 * Get log details for host/service
 	 *
-	 * @param $hostname The host(s) we're interested in.
-	 * @param $servicename The service(s) we're interested in.
 	 * @return PDO result object on success. FALSE on error.
 	 */
-	public function uptime_query($hostname=false, $servicename=false)
+	public function uptime_query()
 	{
 		$event_type = self::HOSTCHECK;
-		if ($servicename) {
+		if ($this->st_is_service) {
 			$event_type = self::SERVICECHECK;
 		}
 
@@ -1118,51 +1115,74 @@ class Reports_Model extends Model
 		if ($this->options['keep_logs'])
 			$sql .= ", output";
 
-		$sql .= " FROM ".$this->db_name.".".$this->db_table." " .
-			"WHERE timestamp >=".$this->options['start_time']." " .
-			"AND timestamp <=".$this->options['end_time']." ";
+		$sql .= " FROM ".$this->db_name.".".$this->db_table." ";
 
-		if (is_array($hostname) && empty($servicename)) {
-			$sql .= "AND ((host_name IN ('" . join("', '", $hostname) . "') AND (service_description = '' OR service_description IS NULL)) OR (host_name = '' AND service_description = '')) ";
-		}
-		elseif (is_string($hostname) && is_array($servicename)) {
-			$sql .= "AND host_name = '$hostname' AND (service_description IN ('".join("', '", $servicename) . "') OR service_description = '' OR service_description IS NULL) ";
-		}
-		elseif (is_array($servicename)) {
-			$sql .= "AND (concat(concat(host_name, ';'), service_description) IN ('" .
-				join("', '", $servicename) . "') ";
-			if (empty($hostname) || !is_array($hostname)) {
-				$hostname = array();
-				foreach ($servicename as $hst_srv) {
-					$ary = explode(';', $hst_srv, 2);
-					$hostname[$ary[0]] = $ary[0];
-				}
-			}
-			$sql .= " OR (host_name IN ('" . join("', '", $hostname) . "') AND (" .
-				"service_description = '' OR service_description IS NULL)) OR (host_name = '' AND service_description = '')) ";
-		}
-		else {
-			if (empty($servicename)) $servicename = '';
-			$sql .= "AND ((host_name=".$this->db->escape($hostname)." " .
-				"AND (service_description IS NULL OR service_description = '' OR service_description=".$this->db->escape($servicename).")) OR (host_name = '' AND service_description = ''))";
-		}
+		$time_first = 'timestamp >='.$this->options['start_time'];
+		$time_last = 'timestamp <='.$this->options['end_time'];
+		$process = false;
+		$purehost = false;
+		$objsel = false;
+		$downtime = 'event_type=' . self::DOWNTIME_START . ' OR event_type=' . self::DOWNTIME_STOP;
+		$softorhardcheck = 'event_type=' . ($this->st_is_service ? self::SERVICECHECK : self::HOSTCHECK);
 
-		$sql .= "AND ( ";
+		if (!$this->options['assumestatesduringnotrunning'])
+			$process = 'event_type < 200';
+
 		if (!$this->options['includesoftstates']) {
-			# only the primary event type should care about hard/soft
-			$sql .= '(event_type=' . $event_type . ' AND hard=1)';
-		} else {
-			$sql .= 'event_type=' . $event_type . ' ';
-		}
-		$sql .= "OR event_type=" . self::DOWNTIME_START . ' ' .
-			"OR event_type=" . self::DOWNTIME_STOP . ' ';
-		if(isset($this->options['host_filter_status']) && isset($this->options['host_filter_status']['undetermined']) && $this->options['host_filter_status']['undetermined']) {
-			$sql .= "OR event_type=".self::PROCESS_SHUTDOWN.
-				" OR event_type=".self::PROCESS_START;
+			$softorhardcheck .= ' AND hard=1';
 		}
 
-		$sql .= ") ";
-		$sql .= ' ORDER BY timestamp';
+		if ($this->st_is_service) {
+			$hostname = array();
+			$servicename = array();
+			foreach ($this->st_source as $hst_srv) {
+				$ary = explode(';', $hst_srv, 2);
+				$hostname[] = $this->db->escape($ary[0]);
+				$servicename[] = $this->db->escape($ary[1]);
+			}
+			$purehost = "host_name IN (".join(", ", $hostname) . ") AND (service_description = '' OR service_description IS NULL)";
+
+			if (count($hostname) == 1) {
+				$hostname = array_pop($hostname);
+				$objsel = "host_name = $hostname AND service_description IN (".join(", ", $servicename) . ")";
+			} else {
+				foreach ($hostname as $i => $host) {
+					$svc = $servicename[$i];
+					$objsel[] = "host_name = $host AND service_description = $svc";
+				}
+				$objsel = '('.implode(') OR (', $objsel).')';
+			}
+
+			$sql_where = sql::combine('and',
+				$time_first,
+				$time_last,
+				sql::combine('or',
+					$process,
+					sql::combine('or',
+						sql::combine('and',
+							$purehost,
+							$downtime),
+						sql::combine('and',
+							$objsel,
+							sql::combine('or',
+								$downtime,
+								$softorhardcheck)))));
+		} else {
+			$objsel = "host_name IN ('" . join("', '", $this->st_source) . "') AND (service_description = '' OR service_description IS NULL)";
+
+			$sql_where = sql::combine('and',
+				$time_first,
+				$time_last,
+				sql::combine('or',
+					$process,
+					sql::combine('and',
+						$objsel,
+						sql::combine('or',
+							$downtime,
+							$softorhardcheck))));
+		}
+
+		$sql .= 'WHERE ' .$sql_where . ' ORDER BY timestamp';
 
 		return $this->db->query($sql)->result(false);
 	}
@@ -1174,12 +1194,12 @@ class Reports_Model extends Model
 	 * @param $service_description string: The service we're interested in.
 	 * @return Depth of initial downtime.
 	 */
-	public function get_initial_dt_depth($hostname=false, $service_description=false)
+	public function get_initial_dt_depth()
 	{
 		if ($this->initial_dt_depth != false)
 			return $this->initial_dt_depth;
 
-		if (empty($hostname)) {
+		if (is_array($this->st_source)) {
 			return false;
 		}
 
@@ -1188,14 +1208,13 @@ class Reports_Model extends Model
 			"WHERE timestamp <= " . $this->options['start_time'] . " AND " .
 			"(event_type = " . self::DOWNTIME_START .
 			" OR event_type = " .self::DOWNTIME_STOP . ") " .
-			" AND host_name = " . $this->db->escape($hostname);
+			" AND host_name = ".$this->db->escape($this->host_name);
 
-		if (empty($service_description))
-			$sql .= " AND service_description IS NULL OR service_description = '' ";
+		if (empty($this->service_description))
+			$sql .= " AND service_description IS NULL OR service_description = ''";
 		else
 			$sql .= " AND (service_description IS NULL OR service_description = '' " .
-				"OR service_description=".$this->db->escape($service_description) .
-				")";
+				"OR service_description = ".$this->db->escape($this->service_description).')';
 		
 		$sql .= " ORDER BY timestamp DESC LIMIT 1";
 
@@ -1214,34 +1233,23 @@ class Reports_Model extends Model
 	 * time doesn't exactly match a record in db. Note that initial
 	 * state can only be obtained for a single object.
 	 *
-	 * @param $host_name string: The host we're interested in.
-	 * @param $service_description string: The service we're interested in.
-	 *
 	 * @return FALSE on error. Record from database on success.
 	 */
-	public function get_initial_state($host_name = '', $service_description = '')
+	public function get_initial_state()
 	{
-		$assumed_state = $state = false;
-
-		if ($this->initial_state !== false)
-			return $this->initial_state;
-
-		// we always need timestamp and at least a host_name
-		if (empty($host_name)) {
+		if (empty($this->host_name) && empty($this->service_description))
 			return false;
-		}
 
-		$service_description = $service_description === false ? '' : $service_description;
 		$sql = "SELECT timestamp, state FROM " .
 			$this->db_name . "." . $this->db_table .
-			" WHERE host_name = " . $this->db->escape($host_name);
-		if (!$service_description)
+			" WHERE host_name = ".$this->db->escape($this->host_name);
+		if (!$this->service_description)
 			$sql .= " AND (service_description = '' OR service_description IS NULL)";
 		else
-			$sql .= " AND service_description = " . $this->db->escape($service_description);
+			$sql .= " AND service_description = " . $this->db->escape($this->service_description);
 		$sql .= " AND event_type = ";
 
-		if ($service_description !='' ) {
+		if ($this->service_description) {
 			$sql .= self::SERVICECHECK;
 		} else {
 			$sql .= self::HOSTCHECK;
