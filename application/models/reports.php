@@ -263,22 +263,6 @@ class Reports_Model extends Model
 		$hostname = $this->options['host_name'];
 		$res_group = false;
 
-		# When we have a single host or service, we don't need to
-		# calculate group availability, so do that up front to
-		# get the simple case out of the way immediately
-		if (!$this->options['hostgroup'] && !$this->options['servicegroup'] &&
-		    count($this->options['host_name']) <= 1 && count($this->options['service_description']) <= 1)
-		{
-			$ret = $this->calculate_uptime();
-			foreach ($this->debug as $k => $v) {
-				if ($v === false)
-					unset($this->debug[$k]);
-			}
-
-			$ret[';testcase;'] = $this->debug;
-			return $ret;
-		}
-
 		if ($this->options['hostgroup']) {
 			$hostname = $this->options->get_report_members();
 		} elseif ($this->options['servicegroup']) {
@@ -656,17 +640,14 @@ class Reports_Model extends Model
 		}
 
 		$rpts = array();
-		if ($obj_name === $this->st_source || (is_string($this->st_source) && strpos($this->st_source, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
-			$rpts[-1] = $this;
 		foreach ($this->sub_reports as $idx => $sr) {
-			if ($obj_name === $sr->st_source || (is_string($sr->st_source) && strpos($sr->st_source, $obj_name.';') === 0 && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
+			if ($obj_name === $sr->st_source || ($obj_name === $sr->host_name && $row['event_type'] >= self::DOWNTIME_START) || $row['event_type'] <= self::PROCESS_SHUTDOWN)
 				$rpts[$idx] = $sr;
 		}
 
 		$this->st_update($row['the_time']);
 		foreach ($rpts as $rpt) {
-			if ($rpt !== $this)
-				$rpt->st_update($row['the_time']);
+			$rpt->st_update($row['the_time']);
 		}
 
 		switch($row['event_type']) {
@@ -678,19 +659,18 @@ class Reports_Model extends Model
 			else {
 				$row['output'] = 'Monitor shut down';
 			}
+			// meta-obj or not, we need to get is_running right
+			$rpts[] = $this;
 			foreach ($rpts as $rpt) {
 				$rpt->st_last_dt_init = false;
 				if ($row['event_type'] == self::PROCESS_START) {
 					$row['state'] = $rpt->st_real_state;
 					$rpt->st_running = 1;
-				}
-				else {
-					if ($this->options['assumestatesduringnotrunning']) {
-						$row['state'] = $rpt->st_real_state;
-					} else {
-						$row['state'] = -1;
-						$rpt->st_running = 0;
-					}
+				} else if ($this->options['assumestatesduringnotrunning']) {
+					$row['state'] = $rpt->st_real_state;
+				} else {
+					$row['state'] = -1;
+					$rpt->st_running = 0;
 				}
 				$rpt->st_update_log(false, $row);
 			}
@@ -716,11 +696,9 @@ class Reports_Model extends Model
 
 				if ($add) {
 					$rpt->st_dt_depth++;
-					if ($rpt !== $this) {
-						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth-1][$idx]);
-						$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
-						$rpt->calculate_object_state();
-					}
+					unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth-1][$idx]);
+					$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
+					$rpt->calculate_object_state();
 				}
 			}
 			break;
@@ -733,11 +711,9 @@ class Reports_Model extends Model
 				# never decrement if we're already at 0.
 				if ($rpt->st_dt_depth) {
 					$rpt->st_dt_depth--;
-					if ($rpt !== $this) {
-						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth+1][$idx]);
-						$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
-						$rpt->calculate_object_state();
-					}
+					unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth+1][$idx]);
+					$this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx] = $idx;
+					$rpt->calculate_object_state();
 				}
 			}
 			break;
@@ -750,13 +726,12 @@ class Reports_Model extends Model
 				if ($rpt->st_source === $obj_name) {
 					$rpt->st_real_state = $row['state'];
 
-					if ($rpt !== $this && $rpt->st_obj_state != $state) {
+					if ($rpt->st_obj_state != $state) {
 						unset($this->st_sub[$rpt->st_obj_state][$rpt->st_dt_depth][$idx]);
 						$this->st_sub[$state][$rpt->st_dt_depth][$idx] = $idx;
 					}
 				}
-				if ($rpt !== $this)
-					$rpt->calculate_object_state();
+				$rpt->calculate_object_state();
 			}
 			break;
 		 default:
@@ -775,8 +750,7 @@ class Reports_Model extends Model
 				break;
 			}
 			$rpt->st_update_log(false, $row);
-			if (!in_array($this, $rpts))
-				$this->st_update_log($rpt, $row);
+			$this->st_update_log($rpt, $row);
 		}
 	}
 
@@ -980,29 +954,8 @@ class Reports_Model extends Model
 			if (!empty($servicename) && is_string($servicename))
 				$this->st_prev_row['service_description'] = $servicename;
 		}
+
 		$this->st_state_calculator = $this->options['cluster_mode'] ? 'st_best' : 'st_worst';
-	}
-
-	/**
-	 * The work-horse of the availability and SLA reports. This is
-	 * generally the entry-point for all reports when options are set.
-	 *
-	 * @return FALSE on errors. Array of calculated uptime on succes.
-	 * The array is in the form:
-	 * array(
-	 * 	'source' => string,
-	 * 	'log' => array,
-	 * 	'states' => array,
-	 * 	'tot_time' => int,
-	 * 	'groupname' => string
-	 * 	);
-	 */
-	public function calculate_uptime()
-	{
-		$this->st_init();
-
-		$this->st_parse_all_rows();
-		return $this->st_finalize();
 	}
 
 	/**
@@ -1085,7 +1038,6 @@ class Reports_Model extends Model
 	 * Finalize the report, calculating real uptime from our internal
 	 * meta-format.
 	 *
-	 * @see calculate_uptime()
 	 * @return array
 	 */
 	private function st_finalize()

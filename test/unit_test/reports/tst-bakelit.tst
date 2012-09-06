@@ -4,7 +4,9 @@ logfile = bakelit.log
 ixx konstruktions-bakelit {
 	start_time = 1209160800
 	end_time = 1209247200
-	host_name = kb-nas1.kb-01.konstruktions-bakelit.com
+	host_name {
+		kb-nas1.kb-01.konstruktions-bakelit.com
+	}
 	correct {
 		TIME_UP_UNSCHEDULED = 83303
 		TIME_UP_SCHEDULED = 2869

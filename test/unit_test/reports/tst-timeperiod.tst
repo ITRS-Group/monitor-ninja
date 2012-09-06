@@ -8,7 +8,9 @@ global_vars {
 	start_time = 1202684400
 	# tue feb 12 00:00:00 CET 2008
 	end_time = 1202770800
-	host_name = testhost
+	host_name {
+		testhost
+	}
 	timeperiod {
 		timeperiod_name = an_exclude
 		2008-02-11 = 22:00-23:30

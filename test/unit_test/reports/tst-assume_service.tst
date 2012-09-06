@@ -5,8 +5,9 @@ assumed service states during program downtime #1 {
 	assumestatesduringnotrunning = true
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name = testhost
-	service_description = PING
+	service_description {
+		testhost;PING
+	}
 	correct {
 		TIME_OK_SCHEDULED = 0
 		TIME_OK_UNSCHEDULED = 86400

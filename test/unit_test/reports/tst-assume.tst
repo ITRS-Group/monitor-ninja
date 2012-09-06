@@ -5,7 +5,9 @@ assumed states during program downtime #1 {
 	assumestatesduringnotrunning = true
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name = testhost
+	host_name {
+		testhost
+	}
 	correct {
 		TIME_UP_SCHEDULED = 0
 		TIME_UP_UNSCHEDULED = 86400

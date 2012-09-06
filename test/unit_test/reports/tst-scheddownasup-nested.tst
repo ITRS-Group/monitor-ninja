@@ -8,7 +8,9 @@ global_vars {
 }
 
 down_dtstart_dtstart_dtend_dtend: normal {
-	host_name = down_dtstart_dtstart_dtend_dtend
+	host_name {
+		down_dtstart_dtstart_dtend_dtend
+	}
 	scheduleddowntimeasuptime = 0
 	correct {
 		TIME_DOWN_UNSCHEDULED = 78600
@@ -17,7 +19,9 @@ down_dtstart_dtstart_dtend_dtend: normal {
 }
 
 down_dtstart_dtstart_dtend_dtend: scheduled downtime as uptime {
-	host_name = down_dtstart_dtstart_dtend_dtend
+	host_name {
+		down_dtstart_dtstart_dtend_dtend
+	}
 	scheduleddowntimeasuptime = 1
 	correct {
 		TIME_UP_SCHEDULED = 7800

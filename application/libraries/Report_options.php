@@ -32,11 +32,10 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
-		'host_name' => array('type' => 'list', 'default' => false), /**< Hosts to include */
-		'service_description' => array('type' => 'list', 'default' => false), /**< Services to include */
-		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include */
-		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include */
-		'options' => array('type' => 'array', 'default' => false),
+		'host_name' => array('type' => 'array', 'default' => false), /**< Hosts to include (note: array) */
+		'service_description' => array('type' => 'array', 'default' => false), /**< Services to include (note: array) */
+		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
+		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include (note: array) */
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
 		'end_time' => array('type' => 'timestamp', 'default' => 0), /**< End time for report, timestamp or date-like string */
 		'use_average' => array('type' => 'enum', 'default' => 0), /**< Whether to hide any SLA values and stick to averages */
@@ -419,57 +418,33 @@ class Report_options_core implements ArrayAccess, Iterator {
 			break;
 		 case 'host_name':
 			if (!$value)
-				return;
+				return false;
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = array();
+			$this->options['service_description'] = array();
 			$this->options['host_name'] = $value;
-			$this->options['report_type'] = isset($this->options['service_description']) && $this->options['service_description'] ? 'services' : 'hosts';
+			$this->options['report_type'] = 'hosts';
 			$this->hosts = array();
 			return true;
 		 case 'service_description':
 			if (!$value)
-				return;
-			if (!is_array($value))
-				$value = array($value);
+				return false;
+			foreach ($value as $svc) {
+				if (strpos($svc, ';') === false)
+					return false;
+			}
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = array();
-			$host = arr::search($this->options, 'host_name');
-			$new_val = array();
-			foreach ($value as $name) {
-				if (strpos($name, ';') === false) {
-					// no hostname involved here - let's just see if we find
-					// a common host among the others and assume it's supposed
-					// to be here too
-					$new_val[] = $name;
-					continue;
-				}
-				$parts = explode(';', $name);
-				if ($host === false) {
-					$host = $parts[0];
-				}
-				else if ($host !== $parts[0]) {
-					// different hosts, so bail
-					$host = false;
-					$new_val = false;
-					break;
-				}
-				$new_val[] = $parts[1];
-			}
-			if (empty($new_val))
-				$this->options['service_description'] = $value;
-			else
-				$this->options['service_description'] = $new_val;
-			if (count($this->options['service_description']) === 1)
-				$this->options['service_description'] = array_pop($this->options['service_description']);
-			$this->options['host_name'] = $host;
+			$this->options['host_name'] = array();
+			$this->options['service_description'] = $value;
 			$this->options['report_type'] = 'services';
 			$this->services = array();
 			return true;
 		 case 'hostgroup':
 			if (!$value)
-				return;
-			$this->options['host_name'] = false;
-			$this->options['service_description'] = false;
+				return false;
+			$this->options['host_name'] = array();
+			$this->options['service_description'] = array();
 			$this->options['servicegroup'] = array();
 			$this->options['hostgroup'] = $value;
 			$this->options['report_type'] = 'hostgroups';
@@ -477,9 +452,9 @@ class Report_options_core implements ArrayAccess, Iterator {
 			return true;
 		 case 'servicegroup':
 			if (!$value)
-				return;
-			$this->options['host_name'] = false;
-			$this->options['service_description'] = false;
+				return false;
+			$this->options['host_name'] = array();
+			$this->options['service_description'] = array();
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = $value;
 			$this->options['report_type'] = 'servicegroups';

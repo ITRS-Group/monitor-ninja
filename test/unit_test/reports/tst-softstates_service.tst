@@ -5,8 +5,9 @@ Include service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 1
-	host_name = testhost
-	service_description = PING
+	service_description {
+		testhost;PING
+	}
 	correct {
 		TIME_OK_UNSCHEDULED = 82800
 		TIME_WARNING_UNSCHEDULED = 3600
@@ -17,8 +18,9 @@ Exclude service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
 	includesoftstates = 0
-	host_name = testhost
-	service_description = PING
+	service_description {
+		testhost;PING
+	}
 	correct {
 		TIME_OK_UNSCHEDULED = 83400
 		TIME_WARNING_UNSCHEDULED = 3000
