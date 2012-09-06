@@ -52,8 +52,7 @@
 
 /* id:s *********************************************************************/
 
-#display_service_status,
-#autoreport_periods {
+#display_service_status {
 	display: none;
 }
 
