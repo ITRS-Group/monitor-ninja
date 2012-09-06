@@ -809,8 +809,6 @@ class Reports_Model extends Model
 		// Maybe there's a non-OK in sched_down...
 		if ($this->options['scheduleddowntimeasuptime'] && $final_state === 0) {
 			foreach ($states as $state) {
-				if ($state === 0)
-					break;
 				foreach ($this->st_sub[$state] as $dt_depth => $ary) {
 					if (!empty($ary)) {
 						$this->st_dt_depth = $dt_depth;
