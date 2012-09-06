@@ -255,6 +255,8 @@ class nagstat_Core {
 	/**
 	*	Format a Nagios date format string to the
 	*	PHP equivalent.
+	*
+	*	NOTE!!! nagstat::date_format has the same thing, without time
 	*/
 	public static function date_format($nagios_format_name=false)
 	{

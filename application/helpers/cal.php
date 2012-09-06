@@ -6,6 +6,8 @@ class cal_Core
 {
 	/**
 	*	decide what date format to use for calendar
+	*
+	*	NOTE!!! nagstat::date_format has the same thing, with time
 	*/
 	public static function get_calendar_format($get_php=false)
 	{
