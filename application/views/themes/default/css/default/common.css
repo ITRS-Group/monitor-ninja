@@ -809,7 +809,6 @@ input.i160 { border: 0px; outline: 0px; }
 	background:#e0e0e0 url(images/bg.png) repeat-x;
 }
 
-tr td,
 table.health tr td div.border {
 	background:#ccc url(images/bg.png) repeat;
 }
