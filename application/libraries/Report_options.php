@@ -54,6 +54,16 @@ class Report_options_core implements ArrayAccess, Iterator {
 			Reports_Model::SERVICE_PENDING => 1)),
 		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
 		'master' => array('type' => 'object', 'default' => false, 'generated' => true), /**< The master report, if one */
+		'schedule_id' => array('type' => 'int', 'default' => false), /**< A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included */
+		'output_format' => array('type' => 'enum', 'default' => 'html', 'options' => array( /**< What type of report to generate (manually selected in web UI, generated from filename for saved reports) */
+			'html' => 'html',
+			'csv' => 'csv',
+			'pdf' => 'csv'), 'generated' => true),
+		'skin' => array('type' => 'string', 'default' => ''), /**< Use the following skin for rendering the report */
+		'recipients' => array('type' => 'string', 'default' => ''), /**< Comma separated email addresses to report recipients */
+		'filename' => array('type' => 'string', 'default' => ''), /**< Filename to use for saving the report, used to set output_format */
+		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
+	);
 
 	public $options = array();
 
@@ -622,15 +632,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 		$class = ucfirst($type) . '_options';
 		if (!class_exists($class))
 			$class = 'Report_options';
-		if (isset($report_info['report_id']) && !isset($report_info['objects'])) {
-			// empty reports are no reports at all
-			// this can happen when a user deletes a report and re-requests the old ID
-			unset($report_info['report_id']);
-		}
 		$options = new $class($report_info);
 		if (isset($report_info['report_id'])) {
 			# now that report_type is set, ship off objects to the correct var
-			$options[$options->get_value('report_type')] = $report_info['objects'];
+			if (!$options[$options->get_value('report_type')] && isset($report_info['objects']))
+				$options[$options->get_value('report_type')] = $report_info['objects'];
 		}
 		return $options;
 	}

@@ -32,7 +32,7 @@ class Saved_reports_Model extends Model
 		$sql .= " ORDER BY report_name";
 
 		$res = $db->query($sql);
-		return $res ? $res : false;
+		return $res ? $res->result_array(true) : false;
 	}
 
 

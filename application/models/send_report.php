@@ -6,15 +6,11 @@
 class Send_report_Model extends Model {
 	/**
 	 * @param $recipient one email or a string composed of comma separated strings
-	 * @param $path_to_file either '/path/to/*.pdf' or '/path/to/*.csv'
-	 * @param $label_filename either '*.pdf' or '*.csv'
 	 * @throws RuntimeException if file is not readable
 	 * @return boolean
 	 */
-	public function send($recipient, $path_to_file, $label_filename) {
-		if(!is_readable($path_to_file)) {
-			throw new RuntimeException("Can not read '$path_to_file' in ".__METHOD__);
-		}
+	public function send($data, $filename, $format, $recipient)
+	{
 
 		$to = $recipient;
 		if (strstr($to, ',')) {
@@ -45,15 +41,25 @@ class Send_report_Model extends Model {
 		}
 
 		$plain = sprintf(_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-		$subject = _('Scheduled report').": $label_filename";
+		$subject = _('Scheduled report').": $filename";
 
-		$filetype = 'pdf';
-		if('.csv' == substr($label_filename, -4, 4)) {
-			$filetype = 'csv';
+		switch ($format) {
+		 case 'pdf':
+			$mime = 'application/pdf';
+			break;
+		 case 'csv':
+			$mime = 'application/csv';
+			break;
+		 case 'html':
+			$mime = 'application/csv';
+			break;
+		 default:
+			$mime = 'application/binary';
+			break;
 		}
 
 		# $mail_sent will contain the nr of mail sent - not used at the moment
-		$mail_sent = email::send_multipart($to, $from, $subject, $plain, '', array($path_to_file => $filetype));
+		$mail_sent = email::send_report($to, $from, $subject, $plain, $mime, $filename, $data);
 
 		return (boolean) $mail_sent;
 	}

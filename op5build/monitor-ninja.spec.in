@@ -18,6 +18,7 @@ Requires: php-process
 %else
 Requires: php-json
 %endif
+Requires: wkhtmltopdf
 
 Conflicts: monitor-gui-core <= 4.0.7
 Source: %name-%version.tar.gz
