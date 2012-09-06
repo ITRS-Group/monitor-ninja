@@ -486,27 +486,4 @@ class Saved_reports_Model extends Model
 
 		return (!$res || count($res)==0) ? false : $res;
 	}
-
-	/**
-	 * Given the ID of a saved SLA report, returns the SLA values stored
-	 *
-	 * @param $sla_id ID of the SLA report
-	 * @param $user The user that we should run as, or false to grab username from session
-	 * @return The database result object of (name, value) pairs, or false on error or empty.
-	 */
-	public function get_sla_from_saved_reports($sla_id, $user=false)
-	{
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
-
-		$sql = "SELECT name, value FROM sla_periods WHERE sla_id = '".$sla_id."'";
-		if (!$auth->view_hosts_root) {
-			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
-			$sql .= " AND ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
-		}
-
-		$res = $db->query($sql);
-		return $res ? $res : false;
-	}
-
 }

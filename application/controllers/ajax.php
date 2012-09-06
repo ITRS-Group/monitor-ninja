@@ -631,7 +631,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		if (empty($sla_id))
 			return false;
 
-		$saved_sla = Saved_reports_Model::get_sla_from_saved_reports($sla_id);
+		$saved_sla = Saved_reports_Model::get_period_info($sla_id);
 		if (count($saved_sla) == 0) {
 			echo '';
 			return false;
