@@ -27,7 +27,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'summary_items' => array('type' => 'int', 'default' => 25), /**< Number of summary items to include in reports */
 		'cluster_mode' => array('type' => 'bool', 'default' => false), /**< Whether to use best or worst case metrics */
 		'st_state_calculator' => array('type' => 'string', 'default' => 'st_worst'),
-		'keep_logs' => array('type' => 'bool', 'default' => false), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
+		'keep_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether to keep logs around - this turns on if (for example) include_trends is activated */
 		'keep_sub_logs' => array('type' => 'bool', 'default' => false, 'generated' => true), /**< Whether sub-reports should keep their logs around too - report_model generally keeps track of this */
 		'rpttimeperiod' => array('type' => 'string', 'default' => false), /**< If we are to mask the alerts by a certain (nagios) timeperiod, and if so, which one */
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
@@ -53,7 +53,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			Reports_Model::SERVICE_UNKNOWN => 1,
 			Reports_Model::SERVICE_PENDING => 1)),
 		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
-		'master' => array('type' => 'object', 'default' => false), /**< The master report, if one */
+		'master' => array('type' => 'object', 'default' => false, 'generated' => true), /**< The master report, if one */
 
 	public $options = array();
 
@@ -587,7 +587,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 	function rewind() { reset($this->options); }
 	function current() { return current($this->options); }
 	function key() { return key($this->options); }
-	function next() { return next($this->options); }
+	function next() {
+		do {
+			$x = next($this->options);
+		} while ($x !== false && isset($this->vtypes[key($this->options)]['generated']));
+	}
 	function valid() { return array_key_exists(key($this->options), $this->options); }
 
 	protected static function discover_options($type, $input = false)
