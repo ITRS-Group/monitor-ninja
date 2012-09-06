@@ -1,3 +1,14 @@
+/*
+ * NOTE: we'll be able to do way cooler things here when
+ * https://bugs.webkit.org/show_bug.cgi?id=85062 is resolved.
+ *
+ * (so when you look at this in the future, go ahead an click and see what you
+ * find)
+ */
+body {
+	color: #000;
+	background-color: #fff;
+}
 table {
 	border-spacing: 10;
 }
@@ -22,7 +33,8 @@ h1 {
 .report-links,
 #availability_toolbox,
 .testcase,
-.helptext_target
+.helptext_target,
+#version_info
 {
 	display: none;
 }
