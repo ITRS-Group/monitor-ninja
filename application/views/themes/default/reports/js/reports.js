@@ -481,34 +481,6 @@ function set_initial_state(what, val)
 	}
 }
 
-// used from setup
-function new_schedule_rows(id, period_str, recipients, filename, description, rep_type_str, report_type_id, local_persistent_filepath)
-{
-	var return_str = '';
-	var reportname = $("#saved_report_id option:selected").text();
-	reportname = remove_scheduled_str(reportname);
-	return_str += '<tr id="report-' + id + '" class="odd">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
-	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type_str + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" onclick="send_report_now(\'' + rep_type_str + '\', ' + id + ')"></form>';
-	return_str += '<div class="delete_schedule ' + rep_type_str + '_del" onclick="schedule_delete(' + id + ', \'' + rep_type_str + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" title="Delete scheduled report" /></td></tr>';
-	$('#' + rep_type_str + '_scheduled_reports_table').append(return_str);
-	setup_editable();
-	$('#new_schedule_report_form').clearForm();
-	setTimeout(delayed_hide_progress, 1000);
-	update_visible_schedules(false);
-	//nr_of_scheduled_instances++;
-
-	// make sure we hide message about no schedules and show table headers
-	$('#' + rep_type_str + '_no_result').hide();
-	$('#' + rep_type_str + '_headers').show();
-	return true;
-}
-
 function toggle_edit() {
 	var $tabs = $('#report-tabs').tabs();
 	$tabs.tabs('select', 1);
