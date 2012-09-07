@@ -17,7 +17,6 @@ if (!empty($widgets)) {
 	</div>
 
 	<?php	echo form::open('trends/generate', array('id' => 'report_form')); ?>
-			<input type="hidden" name="new_report_setup" value="1" />
 			<input type="hidden" name="type" value="<?php echo $type ?>" />
 			<table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 				<tr>

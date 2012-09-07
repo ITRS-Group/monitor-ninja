@@ -65,7 +65,6 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		</div>
 
 		<?php echo form::open($type.'/generate', array('id' => 'report_form')); ?>
-			<input type="hidden" name="new_report_setup" value="1" />
 			<input type="hidden" name="type" value="<?php echo $type ?>" />
 			<table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 				<tr>
@@ -340,12 +339,11 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					</tr>
 					<tr>
 						<td>
-							<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
+							<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 							<span id="report_save_information">
 								<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
 								<input type="button" name="save_report_btn" class="save_report_btn" value="Save" />
 							</span>
-							<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 						</td>
 					</tr>
 					<tr>
