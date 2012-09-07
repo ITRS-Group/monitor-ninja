@@ -383,7 +383,7 @@ a > img { border: 0px; }
 	font-style: italic;
 	margin-left: 5px;
 }
-tr.even td {
+tr.even {
 	border: 1px solid #ccc;
 	border-left: 0px;
 	border-top: 0px;
@@ -391,7 +391,7 @@ tr.even td {
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
-tr.odd td {
+tr.odd {
 	border: 1px solid #ccc;
 	border-left: 0px;
 	background: #fafafa;
@@ -924,11 +924,11 @@ div.setup-table tr.odd td:first-child {
 	border-left: 1px solid #ccc;
 }
 
-div.setup-table tr.odd td {
+div.setup-table tr.odd {
 	background: #f1f1f1;
 }
 
-div#schedule_report tr.odd td {
+div#schedule_report tr.odd {
 	padding-left: 7px;
 }
 div.setup-table {
