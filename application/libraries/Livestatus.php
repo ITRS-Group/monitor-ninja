@@ -22,7 +22,7 @@ class Livestatus
 	{
 		$ls = $this->config['path'];
 		if (strpos($ls, '://') === false)
-			$ls .= 'unix://';
+			$ls = 'unix://' . $ls;
 		$sock = @fsockopen($ls, null, $errno, $errstr);
 		if ($errno)
 			throw new LivestatusException("Couldn't open livestatus socket: " . $errstr);
