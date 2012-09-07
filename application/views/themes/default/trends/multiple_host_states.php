@@ -45,7 +45,7 @@
 				<td class="data"><?php echo reports::format_report_value($data['undetermined'][$i]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(reports::format_report_value($data['undetermined'][$i]) > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
-			<?php endfor; if ($options['use_average']==0): ?>
+			<?php endfor; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'; $i++?>">
 				<td colspan="2"><?php echo _('Average'); ?></td>
 				<td class="data"><?php echo $data['average_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_up'] > 0 ? '' : 'not-').'up.png'),
@@ -57,9 +57,9 @@
 				<td class="data"><?php echo $data['average_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['average_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
-			<?php endif; ?>
+			<?php if ($options['use_average']==0): ?>
 			<tr class="group-average <?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
-				<td colspan="2"><?php echo ($options['use_average']==0) ? _('Group availability (SLA)') : _('Average'); ?></td>
+				<td colspan="2"><?php echo _('Group availability (SLA)'); ?></td>
 				<td class="data"><?php echo $data['group_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_up'] > 0 ? '' : 'not-').'up.png'),
 							array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 11px')) ?></td>
 				<td class="data"><?php echo $data['group_unreachable'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_unreachable'] > 0 ? '' : 'not-').'unreachable.png'),
@@ -69,6 +69,7 @@
 				<td class="data"><?php echo $data['group_undetermined'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_undetermined'] > 0 ? '' : 'not-').'pending.png'),
 							array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 11px')) ?></td>
 			</tr>
+			<?php endif; ?>
 		</table>
 <?php } ?>
 </div>
