@@ -131,7 +131,7 @@ $(document).ready(function() {
 
 	$('.save_report_btn').bind('click', function() {
 		loopElements();
-		if (!validate_report_form()) {
+		if (!(check_form_values())) {
 			return;
 		}
 		var btn = $(this);

@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 	$("#report_form").bind('submit', function() {
 		loopElements();
-		return validate_report_form();
+		return check_form_values();
 	});
 
 	$("#report_period").bind('change', function() {
@@ -65,58 +65,11 @@ $(document).ready(function() {
 		input.val(filename);
 	});
 
+	// delete the report (and all the schedules if any)
+	$("#delete_report").click(function() {
+		confirm_delete_report(this, $("#report_id").attr('value'));
+	});
 });
-
-function validate_report_form(f)
-{
-	var is_ok = check_form_values();
-	if (!is_ok) {
-		return false;
-	}
-	var errors = 0;
-	var err_str = '';
-	var jgrowl_err_str = '';
-
-	var fancy_str = '';
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-
-	// only run this part if report should be saved
-	if ($(fancy_str + "#save_report_settings").attr('checked') == true || $('input[name=save_report_settings]').is(':checked')) {
-		var report_name = $.trim($('input[name=report_name]').attr('value'));
-		if (report_name == '') {
-			// fancybox is stupid and copies the form so we have to force
-			// this script to check the form in the fancybox_content div
-			report_name = $.trim($(fancy_str + '#report_name').attr('value'));
-		}
-
-		// these 2 fields should be the same no matter where on the
-		// page they are found
-		var saved_report_id = $('input[name=saved_report_id]').attr('value');
-		var old_report_name = $.trim($('input[name=old_report_name]').attr('value'));
-
-		if (report_name == '') {
-			errors++;
-			jgrowl_err_str += _reports_name_empty + "\n";
-			err_str += "<li>" + _reports_name_empty + ".</li>";
-		}
-
-		// display err_str if any
-
-		if (errors) {
-			// clear all style info from progress
-			$('#response').attr("style", "");
-			$('#response').html("<ul class=\"error\">" + err_str + "</ul>");
-			window.scrollTo(0,0); // make sure user sees the error message
-
-			jgrowl_message(jgrowl_err_str, _error_header);
-			return false;
-		}
-	}
-	$('#response').html('').hide();
-	return true;
-}
 
 function trigger_ajax_save(f)
 {
@@ -127,7 +80,7 @@ function trigger_ajax_save(f)
 	// ajax post form options for SLA save generated report
 	var sla_options = {
 		target:			'#response',		// target element(s) to be updated with server response
-		beforeSubmit:	validate_report_form,	// pre-submit callback
+		beforeSubmit:	check_form_values,	// pre-submit callback
 		success:		show_sla_saveresponse,	// post-submit callback
 		dataType: 'json'
 	};
