@@ -130,26 +130,7 @@ $(document).ready(function() {
 	});
 });
 
-function confirm_delete_report(the_val)
-{
-	var the_path = self.location.href;
-	the_path = the_path.replace('#', '');
-
-	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
-	if (the_val!="" && the_path!="") {
-		if (is_scheduled) {
-			msg += _reports_confirm_delete_warning;
 		}
-		msg = msg.replace("this saved report", "the saved report '"+$('#report_id option[selected=selected]').text()+"'");
-		if (confirm(msg)) {
-			self.location.href=the_path + '?del_report=true&del_id=' + the_val + '&type=' + type;
-			return true;
-		}
-	}
-	return false;
-}
 
 function setup_editable(mode)
 {
