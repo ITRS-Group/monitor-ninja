@@ -642,7 +642,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$return[] = array('name' => $info->name, 'value' => $info->value);
 		}
 
-		echo json::encode($return);
+		echo json::ok($return);
 		return true;
 	}
 

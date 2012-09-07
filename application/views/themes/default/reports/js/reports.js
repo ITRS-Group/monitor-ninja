@@ -546,15 +546,14 @@ function get_sla_values() {
 		type: 'POST',
 		data: data,
 		success: function(data) {
-			if (data != '') {
-				// OK, populate
-				populate_saved_sla_data(data);
-				$('.sla_values').show();
-			} else {
-				// error
+			if (data.error) {
 				jgrowl_message('Unable to fetch saved sla values...', _reports_error);
+			} else {
+				populate_saved_sla_data(data.result);
+				$('.sla_values').show();
 			}
-		}
+		},
+		dataType: 'json'
 	});
 }
 
