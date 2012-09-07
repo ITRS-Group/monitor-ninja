@@ -56,7 +56,7 @@
 							array( 'alt' => _('Undetermined'), 'title' => _('Undetermined'), 'style' => 'height: 12px; width: 12px')) ?></td>
 			</tr>
 			<?php endif; if ($options['use_average'] == 0 && $no > 0) { ?>
-			<tr class="group-average <?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
+			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
 				<td><?php echo _('Group availability (SLA)') ?></td>
 				<td class="data_green"><?php echo $data['group_up'] ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.($data['group_up'] > 0 ? '' : 'not-').'up.png'),
 							array( 'alt' => _('Up'), 'title' => _('Up'), 'style' => 'height: 12px; width: 12px')) ?></td>
