@@ -583,23 +583,6 @@ function populate_report_periods(json_data)
 }
 
 /**
-*	Re-populate report_id (saved reports) select field
-*/
-function populate_saved_reports(json_data, field_name)
-{
-	invalid_report_names = new Array();
-	for (var i = 0; i < json_data.length; i++) {
-		var val = json_data[i].optionValue;
-		var txt = json_data[i].optionText;
-		$("#" + field_name).addOption(val, txt, false);
-		$('.sla_values').show();
-		$('#sla_report_id').addOption(val, txt, false);
-		invalid_report_names[i] = txt;
-	}
-	setTimeout('delayed_hide_progress()', 1000);
-}
-
-/**
 *	Set selected report period to default
 *	(and disable sla fields out of scope if sla)
 */
