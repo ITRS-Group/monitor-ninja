@@ -12,11 +12,9 @@ if ($type == 'avail') { ?>
 			<td><div id="report_setup">
 					<input type="text" name="report_name" id="report_name" class="input-save-name"
 						value="<?php echo $options['report_name'] ?>" maxlength="255" style="margin: 0px" />
-					<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
+					<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 					<input type="hidden" name="include_trends" value="<?php echo $options['include_trends'] ?>" />
-					<input type="hidden" name="save_report_settings" value="1" />
-					<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
-					<input type="submit" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20" id="options_submit" />
+					<input type="button" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20 save_report_btn" />
 				</div>
 			</td>
 		</tr>
@@ -31,7 +29,6 @@ if ($type == 'avail') { ?>
 			<table summary="Report settings" id="report" style="width: 350px">
 				<tr class="none">
 					<td>
-						<input type="hidden" name="new_report_setup" value="1" />
 						<?php echo _('Reporting period') ?><br />
 						<?php echo form::dropdown(array('name' => 'report_period', 'onchange' => 'show_calendar(this.value);'), $options->get_alternatives('report_period'), $options['report_period']); ?>
 					</td>
@@ -82,9 +79,6 @@ if ($type == 'avail') { ?>
 							foreach (Reports_Model::$service_states as $key => $name) {
 								echo '<input type="hidden" name="service_filter_status['.$key.']" value="'.isset($set_opts[$key])."\"/>\n";
 							} ?>
-
-							<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
-							<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 						</div>
 					</td>
 				</tr>
@@ -110,11 +104,7 @@ if ($type == 'avail') { ?>
 			<td><div id="report_setup">
 						<input type="text" name="report_name" id="report_name" class="input-save-name"
 						value="<?php echo $options['report_name'] ?>" maxlength="255" style="margin: 0px" />
-					<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
-					<input type="hidden" name="sla_save" value="1" />
-					<input type="hidden" name="save_report_settings" value="1" />
-					<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
-					<input type="submit" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20" id="options_submit" />
+					<input type="button" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20 save_report_btn" />
 				</div>
 			</td>
 		</tr>
