@@ -610,6 +610,19 @@ hr {
 	margin-top: 1em;
 }
 
+.report-links * {
+	display: block;
+	float: right;
+	border: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.report-links a,
+.report-links form {
+	margin-left: 5px !important;
+}
+
 /***************************************************************************************************
 *	DO NOT ADD ANY STYLE BELOW THE COLOURS SECTION. i.e. below this line
 ***************************************************************************************************/

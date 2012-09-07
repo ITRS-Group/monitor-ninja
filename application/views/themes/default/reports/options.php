@@ -1,30 +1,4 @@
 <div style="display:none" id="link_container"></div>
-<div id="availability_toolbox">
-<?php if ($type == 'avail') { ?>
-	<?php if (!$options['report_id']) { ?>
-	<a href="#save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('To schedule this report, save it first'), 'title' => _('To schedule this report, save it first'))); ?></a>
-	<?php } ?>
-	<a href="#options" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
-<?php } else {?>
-<a href="#sla_options" id="sla_save_report" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
-<?php } ?>
-<span id="view_add_schedule"<?php if (!$options['report_id']) {?> style="display: none;"<?php } ?>>
-	<a id="new_schedule_btn" href="#new_schedule_form_area" class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-add-schedule.png'), array('alt' => _('Add').' '. strtolower(_('New schedule')), 'title' => _('Add').' '. strtolower(_('New schedule')))); ?></a>
-	<a id="show_schedule" href="#schedule_report"<?php echo (empty($scheduled_info)) ? ' style="display:none;"' : ''; ?> class="fancybox" style="border: 0px"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
-</span>
-<?php
-if (Session::instance()->get('main_report_params', false)
-	!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
-	# we have main_report_params and we are NOT showing the report (i.e we are showing a sub report)
-	# => show backlink
-	echo '&nbsp;'.html::anchor($type.'/generate?'.Session::instance()->get('main_report_params'), html::image($this->add_path('/icons/32x32/square-back.png'), array('title' => _('Back'), 'alt' => '')), array('title' => _('Back to original report'), 'style' => 'border: 0px')).'&nbsp;';
-}
-if (Session::instance()->get('current_report_params', false)) {
-	# make it possible to get the link (GET) to the current report
-	echo '&nbsp;'.html::anchor($type.'/generate?'.Session::instance()->get('current_report_params'), html::image($this->add_path('/icons/32x32/square-link.png'),array('alt' => '','title' => _('Direct link'))), array('id' => 'current_report_params', 'title' => _('Direct link to this report. Right click to copy or click to view.'),'style' => 'border: 0px'));
-}
-?>
-</div>
 <span id="save_to_schedule"><?php echo (!$options['report_id'] && $type != 'avail') ? '<em>'._('To schedule this report, save it first').'</em>' : ''; ?></span>
 <div style="display: none;">
 <?php

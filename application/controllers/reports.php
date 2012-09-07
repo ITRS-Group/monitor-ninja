@@ -366,9 +366,7 @@ class Reports_Controller extends Base_reports_Controller
 			$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 
 			$csv_link = $this->_get_csv_link();
-			$tpl_options->csv_link = $csv_link;
-			$pdf_link = $this->_get_pdf_link($this->type);
-			$tpl_options->pdf_link = $pdf_link;
+			$pdf_link = $this->_get_pdf_link();
 
 			$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
 					'TOTAL_TIME_DOWN' => _('Down'),
@@ -537,7 +535,7 @@ class Reports_Controller extends Base_reports_Controller
 
 					$template->header = $this->add_view('reports/header');
 					$template->header->report_time_formatted = $report_time_formatted;
-					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
+					$template->header->csv_link = $csv_link;
 					$template->header->pdf_link = $pdf_link;
 
 					if ($this->type == 'avail') {
@@ -1011,122 +1009,34 @@ class Reports_Controller extends Base_reports_Controller
 	}
 
 
-	public function _get_csv_link($path=false, $params=false)
+	public function _get_csv_link()
 	{
-		$path = addslashes(trim($path));
-		$params = addslashes(trim($params));
-		$return = form::open($this->type.'/generate', array('style' => 'display:block; position: absolute; top: 0px; right: 71px'));
-		$return .= "<div>\n";
-		$url_params = '';
-		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
-
-		foreach($this->options as $key => $val)
-		{
-			if(is_array($val))
-			{
-				# note: only support arrays of depth==1
-				foreach($val as $subval)
-				{
-					$return .= "<input type='hidden' name='{$key}[]' value='$subval' />\n";
-				}
-			}
-			else
-			{
-				if (strstr($key, 'month_'))
-					continue;
-				if(!in_array($key, $url_params_to_skip))
-					$return .= "<input type='hidden' name='$key' value='$val' />\n";
-			}
-		}
-		$return .= form::hidden('csvoutput', 1);
+		$opts = Report_options::setup_options_obj($this->type, $this->options);
+		$opts['filename'] = ($opts['report_name'] ? $opts['report_name'] : $this->type).'.csv';
+		$return = form::open($this->type.'/generate');
+		$return .= $opts->as_form();
 		$label = _('Download report as CSV');
 		$return .= "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png').
-			"' alt='".$label."' title='".$label."' style='border: 0px; width: 32px; height: 32px; margin-top: 13px; background: none; margin-right: 7px' /></div></form>\n";
+			"' alt='".$label."' title='".$label."'/></form>\n";
 		return $return;
-	}
-
 	}
 
 	/**
 	 * Generate "show as pdf" link with icon, as a small html form.
 	 *
-	 * @param string $report   The type of report to produce. Currently supported values are 'sla' and 'avail'.
-	 * @param string $user_url The url to convert to PDF. If none is given, the calling script is used. All request variables are passed to the url.
-	 * @param array $user_options Custom options sent to html2ps
-	 * @param string $action_url The html2ps script that handles the link
 	 * @return string Complete HTML for the resulting link
 	 */
-	public function _get_pdf_link($report, $user_url=false, $user_options=false, $user_action_url=false)
+	public function _get_pdf_link()
 	{
 		$pdf_img_src = $this->add_path('icons/32x32/page-pdf.png');
 		$pdf_img_alt = _('Show as pdf');
+		$opts = Report_options::setup_options_obj($this->type, $this->options);
+		$opts['filename'] = ($opts['report_name'] ? $opts['report_name'] : $this->type).'.pdf';
 
-		$default_filename = 'report.pdf';
-		$default_options = array
-		(
-			'create_pdf' => true
-		);
-		$default_action_url = $this->type.'/generate';
-
-		if (PHP_SAPI != "cli") {
-			# never try to use $_SERVER variables when
-			# called from commandline (test and such)
-			$url = $_SERVER['SERVER_ADDR'].$_SERVER['PHP_SELF'];
-		}
-
-		if($user_url)
-			$url = $user_url;
-
-
-		$options = $default_options;
-		if($user_options)
-		{
-			foreach($user_options as $opt => $val)
-				$options[$opt] = $val;
-		}
-
-		$action_url = $default_action_url;
-		if($user_action_url)
-			$action_url = $user_action_url;
-
-		$form = form::open($action_url, array('style' => 'display:block; position: absolute; top: -1px; right: 39px;'));
-		$form .= '<div>';
-		$form .= "<input type='hidden' name='report' value='$report' />\n";
-		$url_params = '';
-		$url_params_to_skip = array('js_start_time', 'js_end_time', 's1'); # params that just f--k up things
-		foreach($this->options as $key => $val)
-		{
-			if(is_array($val))
-			{
-				# note: only support arrays of depth==1
-				foreach($val as $subval)
-				{
-					$form .= "<input type='hidden' name='{$key}[]' value='$subval' />\n";
-				}
-			}
-			else
-			{
-				if(!in_array($key, $url_params_to_skip))
-					$form .= "<input type='hidden' name='$key' value='$val' />\n";
-			}
-		}
-
-		foreach($options as $opt => $val)
-		{
-			if(is_array($val))
-			{
-				foreach($val as $subkey => $subval)
-					$form .= '<input type="hidden" name="'.$opt[$subkey].'" value="'.$subval.'" />'."\n";
-			}
-			else
-				$form .= "<input type='hidden' name='$opt' value='$val' />\n";
-		}
-
+		$form = form::open($this->type.'/generate');
+		$form .= $opts->as_form();
 		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
-			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" style="border: 0px; width: 32px; height: 32px; margin-top: 14px; background: none" />';
-
-
-		$form .= '</div>';
+			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" />';
 		$form .= "</form>";
 
 		return $form;
