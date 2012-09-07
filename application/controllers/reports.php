@@ -270,6 +270,7 @@ class Reports_Controller extends Base_reports_Controller
 			default:
 				url::redirect(Router::$controller.'/index');
 		}
+		$this->template->set_global('type', $this->type);
 		$var = $this->options->get_value('report_type');
 		$objects = false;
 		$mon_auth = Nagios_auth_Model::instance();
@@ -292,7 +293,6 @@ class Reports_Controller extends Base_reports_Controller
 		if ($this->options['output_format'] == 'csv') {
 			csv::csv_http_headers($this->type, $this->options);
 			$this->template = $this->add_view('reports/'.$this->type.'csv');
-			$this->template->type = $this->options['report_type'];
 			$this->template->data_arr = $data_arr;
 			return;
 		}
@@ -333,8 +333,6 @@ class Reports_Controller extends Base_reports_Controller
 				}
 			}
 			$tpl_options->available_schedule_periods = $available_schedule_periods;
-			$tpl_options->type = $this->type;
-			$tpl_options->rep_type = $this->type == 'avail' ? 1 : 2;
 			$tpl_options->scheduled_info = $scheduled_info;
 			if ($this->type == 'avail') {
 				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
@@ -538,7 +536,6 @@ class Reports_Controller extends Base_reports_Controller
 					$template->content->options = $this->options;
 
 					$template->header = $this->add_view('reports/header');
-					$template->header->options = $this->options;
 					$template->header->report_time_formatted = $report_time_formatted;
 					$template->header->csv_link = $this->type == 'avail' ? $csv_link : false;
 					$template->header->pdf_link = $pdf_link;
