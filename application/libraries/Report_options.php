@@ -476,6 +476,10 @@ class Report_options_core implements ArrayAccess, Iterator {
 			if (strpos($value, '.csv') !== false)
 				$this->options['output_format'] = 'csv';
 			break;
+		 case 'output_format':
+			# this is the only thing preventing summary reports from breaking when saved as HTML reports
+			if (isset($this->options['filename']))
+				return false;
 		 default:
 			break;
 		}
