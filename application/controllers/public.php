@@ -1,17 +1,29 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * A controller that is available without authorization.
- * The methods here should therefore be comletely "pure", and only access
- * their parameters.
+ * A controller that is sometimes available without authorization.
  *
- * @TODO: still, we should check that the user comes from a sane place.
+ * That is, things here shouldn't expose secrets, but for DoS reasons,
+ * they're still not available from anybody who's both non-localhost (reports)
+ * and non-logged-in (actual users)
  */
 class Public_Controller extends Controller {
+	public function __construct()
+	{
+		// No current user
+		if (!Auth::instance()->get_user()) {
+			// And we don't come from ::1 or 127.0.0.0/8
+			if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) || !($_SERVER['REMOTE_ADDR'] == '::1' || (ip2long($_SERVER['REMOTE_ADDR']) & (127 << 24)) !== (127 << 24))) {
+				// So we won't do anything
+				die("Invalid request");
+			}
+		}
+	}
+
 	/**
 	*	Create a piechart
 	*/
-	public function piechart($in_data=false, $path=null)
+	public function piechart($in_data)
 	{
 		$this->auto_render = false;
 		$data = i18n::unserialize( base64_decode($in_data) );
@@ -21,33 +33,13 @@ class Public_Controller extends Controller {
 		$graph->set_margins(30);
 
 		$graph->draw();
-		if (!is_null($path)) {
-			# save rendered image to somewhere ($path)
-			if (file_exists($path) && is_writable($path)) {
-				$image = $graph->get_image();
-
-				# create temp filename with 'pie' as prefix just to
-				# be able to tell where they come from in case of problems
-				$tmpname = tempnam($path, 'pie');
-
-				# remove the created empty file - we really just want the filename
-				unlink($tmpname);
-
-				$tmpname .= '.png';
-				file_put_contents($tmpname, $image);
-
-				# return path to file
-				return $tmpname;
-			}
-		} else {
-			$graph->display();
-		}
+		$graph->display();
 	}
 
 	/**
 	*	Create a barchart
 	*/
-	public function barchart($in_data=false, $path=null)
+	public function barchart($in_data)
 	{
 		$this->auto_render = false;
 		$data = i18n::unserialize( base64_decode($in_data) );
@@ -72,27 +64,7 @@ class Public_Controller extends Controller {
 		$graph->set_legend_x(_('Period'));
 
 		$graph->draw();
-		if (!is_null($path)) {
-			# save rendered image to somewhere ($path)
-			if (file_exists($path) && is_writable($path)) {
-				$image = $graph->get_image();
-
-				# create temp filename with 'pie' as prefix just to
-				# be able to tell where they come from in case of problems
-				$tmpname = tempnam($path, 'bar');
-
-				# remove the created empty file - we really just want the filename
-				unlink($tmpname);
-
-				$tmpname .= '.png';
-				file_put_contents($tmpname, $image);
-
-				# return path to file
-				return $tmpname;
-			}
-		} else {
-			$graph->display();
-		}
+		$graph->display();
 	}
 
 	/**
@@ -103,17 +75,9 @@ class Public_Controller extends Controller {
 	 *
 	 * @param string $chart_key
 	 */
-	public function line_point_chart($chart_key) {
-		// No current user
-		if (!Auth::instance()->get_user()) {
-			$addr = ip2long($_SERVER['REMOTE_ADDR']);
-			// And we don't come from ::1 or 127.0.0.0/8
-			if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) || !($_SERVER['REMOTE_ADDR'] == '::1' || ($addr & (127 << 24)) !== (127 << 24))) {
-				// So we won't do anything
-				die("Invalid request");
-			}
-		}
-
+	public function line_point_chart($chart_key)
+	{
+		$this->auto_render = false;
 		$trends_graph_model = new Trends_graph_Model();
 		$trends_graph_model->display_chart($chart_key);
 	}
