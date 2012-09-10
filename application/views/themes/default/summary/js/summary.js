@@ -13,21 +13,20 @@ var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
-	// handle standard/custom report switching
-	$("#td_std").click(function() {
-		$("#report_mode_standard").attr('checked', true);
-		set_report_mode('standard');
-	});
-	$("#td_cust").click(function() {
-		$("#report_mode_custom").attr('checked', true);
-		set_report_mode('custom');
-	});
 	$("#report_mode_standard").click(function() {
 		set_report_mode('standard');
 	});
-	$("#report_mode_custom").click(function() {
-		set_report_mode('custom');
-	});
+	$("#report_mode_custom")
+		.click(function() {
+			set_report_mode('custom');
+		})
+		.map(function() {
+			if(this.checked) {
+				// detect on load as well, e.g. when going
+				// back from a generated report
+				set_report_mode('custom');
+			}
+		});
 
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).attr('value'));
@@ -56,40 +55,12 @@ $(document).ready(function() {
 	$("#show_scheduled").click(function() {
 		self.location.href = _site_domain + _index_page + '/reports?show_schedules#summary_schedules';
 	});
-/*
-	$("#fancy_content .send_report_now").live('click', function() {
-		var type_id = $(this).attr('id');
-		type_id = type_id.replace('send_now_', '');
-		type_id = type_id.split('_');
-		var type = type_id[0];
-		var id = type_id[1];
-		send_report_now(type, id);
-	});
-	*/
+
 	$('.fancybox').click(function() {
 		setup_editable('fancy');
 	});
 });
 
-
-function confirm_delete_report(the_val)
-{
-	var the_path = self.location.href;
-	the_path = the_path.replace('#', '');
-
-	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
-	var msg = _reports_confirm_delete + "\n";
-	if (the_path!="") {
-		if (is_scheduled) {
-			msg += _reports_confirm_delete_warning;
-		}
-		if (confirm(msg)) {
-			self.location.href=the_path + '?del_report=true&del_id=' + the_val;
-			return true;
-		}
-	}
-	return false;
-}
 /**
 *	Receive params as JSON object
 *	Parse fields and populate corresponding fields in form
@@ -157,17 +128,12 @@ function set_report_mode(type)
 		case 'standard':
 			$("#std_report_table").show();
 			$("#custom_report").hide();
-			$(this).parent().css('font-weight', 'bold');
-			$("#td_std").css('font-weight', 'bold');
-			$("#td_cust").css('font-weight', 'normal');
 			break;
 		case 'custom':
 			$("#std_report_table").hide();
 			if (!is_populated && !report_id)
 				set_selection($('#report_type').val());
 			$("#custom_report").show();
-			$('#td_cust').css('font-weight', 'bold');
-			$("#td_std").css('font-weight', 'normal');
 			break;
 	}
 }

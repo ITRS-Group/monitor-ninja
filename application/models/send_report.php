@@ -4,13 +4,6 @@
  * Model for sending out reports in different ways
  */
 class Send_report_Model extends Model {
-
-	private $translate;
-
-	public function __construct() {
-		$this->translate = zend::instance('Registry')->get('Zend_Translate');
-	}
-
 	/**
 	 * @param $recipient one email or a string composed of comma separated strings
 	 * @param $path_to_file either '/path/to/*.pdf' or '/path/to/*.csv'
@@ -51,8 +44,8 @@ class Send_report_Model extends Model {
 			}
 		}
 
-		$plain = sprintf($this->translate->_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
-		$subject = $this->translate->_('Scheduled report').": $label_filename";
+		$plain = sprintf(_('Scheduled report sent from %s'),!empty($config['from']) ? $config['from'] : $from);
+		$subject = _('Scheduled report').": $label_filename";
 
 		$filetype = 'pdf';
 		if('.csv' == substr($label_filename, -4, 4)) {

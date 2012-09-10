@@ -20,74 +20,74 @@ class Tac_disabled_Widget extends widget_Base {
 		$i = 0;
 
 		if ($current_status->hosts_up_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Up');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Up');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_UP.'&hostprops='.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_up_disabled.' '.$this->translate->_('Disabled hosts');
+			$problem[$i]['title'] = $current_status->hosts_up_disabled.' '._('Disabled hosts');
 			$i++;
 		}
 
 		if ($current_status->hosts_down_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Down');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Down');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_DOWN.'&hostprops='.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_down_disabled.' '.$this->translate->_('Disabled hosts');
+			$problem[$i]['title'] = $current_status->hosts_down_disabled.' '._('Disabled hosts');
 			$i++;
 		}
 
 		if ($current_status->hosts_unreachable_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Unreachable');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Unreachable');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_UNREACHABLE.'&hostprops='.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_unreachable_disabled.' '.$this->translate->_('Disabled hosts');
+			$problem[$i]['title'] = $current_status->hosts_unreachable_disabled.' '._('Disabled hosts');
 			$i++;
 		}
 
 		if ($current_status->hosts_pending_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Host');
-			$problem[$i]['status'] = $this->translate->_('Pending');
+			$problem[$i]['type'] = _('Host');
+			$problem[$i]['status'] = _('Pending');
 			$problem[$i]['url'] = 'status/host/all/?hoststatustypes='.nagstat::HOST_PENDING.'&hostprops='.nagstat::HOST_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->hosts_pending_disabled.' '.$this->translate->_('Disabled hosts');
+			$problem[$i]['title'] = $current_status->hosts_pending_disabled.' '._('Disabled hosts');
 			$i++;
 		}
 
 		if ($current_status->services_ok_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('OK');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('OK');
 			$problem[$i]['url'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_OK.'&serviceprops='.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_ok_disabled.' '.$this->translate->_('Disabled services');
+			$problem[$i]['title'] = $current_status->services_ok_disabled.' '._('Disabled services');
 			$i++;
 		}
 
 		if ($current_status->services_warning_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Warning');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Warning');
 			$problem[$i]['url'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_WARNING.'&serviceprops='.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_warning_disabled.' '.$this->translate->_('Disabled services');
+			$problem[$i]['title'] = $current_status->services_warning_disabled.' '._('Disabled services');
 			$i++;
 		}
 
 		if ($current_status->services_critical_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Critical');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Critical');
 			$problem[$i]['url'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_CRITICAL.'&serviceprops='.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_critical_disabled.' '.$this->translate->_('Disabled services');
+			$problem[$i]['title'] = $current_status->services_critical_disabled.' '._('Disabled services');
 			$i++;
 		}
 
 		if ($current_status->services_unknown_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Unknown');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Unknown');
 			$problem[$i]['url'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_UNKNOWN.'&serviceprops='.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_unknown_disabled.' '.$this->translate->_('Disabled services');
+			$problem[$i]['title'] = $current_status->services_unknown_disabled.' '._('Disabled services');
 			$i++;
 		}
 
 		if ($current_status->services_pending_disabled) {
-			$problem[$i]['type'] = $this->translate->_('Service');
-			$problem[$i]['status'] = $this->translate->_('Pending');
+			$problem[$i]['type'] = _('Service');
+			$problem[$i]['status'] = _('Pending');
 			$problem[$i]['url'] = 'status/service/all/?servicestatustypes='.nagstat::SERVICE_PENDING.'&serviceprops='.nagstat::SERVICE_CHECKS_DISABLED;
-			$problem[$i]['title'] = $current_status->services_pending_disabled.' '.$this->translate->_('Disabled services');
+			$problem[$i]['title'] = $current_status->services_pending_disabled.' '._('Disabled services');
 			$i++;
 		}
 

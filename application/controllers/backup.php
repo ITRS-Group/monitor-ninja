@@ -59,8 +59,8 @@ class Backup_Controller extends Authenticated_Controller {
 		if (!$user->authorized_for('configuration_information') || !$user->authorized_for('system_commands')) {
 
 			$this->template->content = $this->add_view('unauthorized');
-			$this->template->content->error_message = $this->translate->_("It appears as though you aren't authorized to access the backup interface.");
-			$this->template->content->error_description = $this->translate->_('Read the section of the documentation that deals with authentication and authorization for more information.');
+			$this->template->content->error_message = _("It appears as though you aren't authorized to access the backup interface.");
+			$this->template->content->error_description = _('Read the section of the documentation that deals with authentication and authorization for more information.');
 			$this->unauthorized = true;
 		}
 	}
@@ -76,7 +76,7 @@ class Backup_Controller extends Authenticated_Controller {
 		$this->template->css_header = $this->add_view('css_header');
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->content = $this->add_view('backup/list');
-		$this->template->title = $this->translate->_('Configuration » Backup/Restore');
+		$this->template->title = _('Configuration » Backup/Restore');
 		$this->template->content->suffix = $this->backup_suffix;
 
 		$files = @scandir($this->backups_location);
@@ -99,7 +99,7 @@ class Backup_Controller extends Authenticated_Controller {
 			return;
 
 		$this->template->content = $this->add_view('backup/view');
-		$this->template->title = $this->translate->_('Configuration » Backup/Restore » View');
+		$this->template->title = _('Configuration » Backup/Restore » View');
 		$this->template->content->backup = $file;
 
 		$contents = array();
@@ -166,24 +166,27 @@ class Backup_Controller extends Authenticated_Controller {
 
 		$status = 0;
 		$output = array();
-		exec($this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_restore . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "Could not restore the configuration '{$file}'";
 			return;
 		}
 
-		exec($this->cmd_verify, $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_verify, $output, $status);
 		if ($status != 0)
 		{
 			$this->template->message = "The configuration '{$file}' has been restored but seems to be invalid";
 			return;
 		}
-
+		
 		$time = time();
 		$this->cmd_reload = str_replace('{TIME}', $time , $this->cmd_reload);
 		$this->cmd_reload = str_replace('{TIME2}', $time + 2 , $this->cmd_reload);
-		exec($this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
+		//No hangup to prevent the restore from being inclompete if ajax execution is interrupted
+		exec('nohup ' .$this->cmd_reload . $this->backups_location . '/' . $file . $this->backup_suffix . ' 2>/dev/null', $output, $status);
 		if ($status == 0)
 			$this->template->message = "Could not reload the configuration '{$file}'";
 		else

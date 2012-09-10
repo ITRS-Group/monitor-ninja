@@ -1,18 +1,18 @@
 <div class="widget w98 left">
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
-	<h2><?php echo (isset($label_title)) ? $label_title : $this->translate->_('Scheduling queue'); ?></h2>
+	<h2><?php echo (isset($label_title)) ? $label_title : _('Scheduling queue'); ?></h2>
 	<table cellpadding="2" cellspacing="0" class="schedule_search" border=1>
 		<tr>
 			<form action="">
-			<td><?php echo $this->translate->_('Filter').': '; ?>
-			<td colspan="2"><?php echo form::input(array('id' => 'hostfilterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string).' '.form::button('clearhostsearch', $this->translate->_('Clear')); ?></td>
+			<td><?php echo _('Filter').': '; ?>
+			<td colspan="2"><?php echo form::input(array('id' => 'hostfilterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string).' '.form::button('clearhostsearch', _('Clear')); ?></td>
 			</form>
 		</tr>
 		<tr>
 			<?php echo form::open('extinfo/scheduling_queue', array('method' => 'get')); ?>
-			<td><?php echo $this->translate->_('Search Host').': '; ?></td>
-			<td><?php echo form::input(array('id' => 'hostsearch', 'name' => 'host_name')).' '.$this->translate->_('Service').': '.form::input(array('id' => 'svcsearch', 'name' => 'service')).' '.form::button('submitsearch', $this->translate->_('Search'));; ?></td>
-			<td><?php echo $search_active ? form::button(array('id' => 'reload_page', 'name' => 'reload_page'), $this->translate->_('Clear Search')) : '&nbsp;'; ?></td>
+			<td><?php echo _('Search Host').': '; ?></td>
+			<td><?php echo form::input(array('id' => 'hostsearch', 'name' => 'host_name')).' '._('Service').': '.form::input(array('id' => 'svcsearch', 'name' => 'service')).' '.form::button('submitsearch', _('Search'));; ?></td>
+			<td><?php echo $search_active ? form::button(array('id' => 'reload_page', 'name' => 'reload_page'), _('Clear Search')) : '&nbsp;'; ?></td>
 			<?php echo form::close(); ?>
 		</tr>
 	</table>
@@ -35,9 +35,9 @@
 					}
 				}
 			?>
-			<th class="headerNone"><?php echo $this->translate->_('Type'); ?></th>
-			<th class="headerNone"><?php echo $this->translate->_('Active checks'); ?></th>
-			<th class="headerNone"><?php echo $this->translate->_('Actions'); ?></th>
+			<th class="headerNone"><?php echo _('Type'); ?></th>
+			<th class="headerNone"><?php echo _('Active checks'); ?></th>
+			<th class="headerNone"><?php echo _('Actions'); ?></th>
 		</tr>
 		<?php
 			$i = 0;
@@ -53,32 +53,32 @@
 			<td>
 				<?php
 					if($row->check_type == nagstat::CHECK_OPTION_NONE)
-						echo $this->translate->_('Normal');
+						echo _('Normal');
 					else{
 						if($row->check_type == nagstat::CHECK_OPTION_FORCE_EXECUTION)
-							echo $this->translate->_('Forced');
+							echo _('Forced');
 						if($row->check_type == nagstat::CHECK_OPTION_FRESHNESS_CHECK)
-							echo $this->translate->_('Freshness');
+							echo _('Freshness');
 						if($row->check_type == nagstat::CHECK_OPTION_ORPHAN_CHECK)
-							echo $this->translate->_('Orphan');
+							echo _('Orphan');
 					}
 				?>
 			</td>
-			<td><span class="<?php echo ($row->active_checks_enabled == true ? 'enabled' : 'disabled');?>"><?php	echo $row->active_checks_enabled == true ? $this->translate->_('ENABLED') : $this->translate->_('DISABLED');?></span></td>
+			<td><span class="<?php echo ($row->active_checks_enabled == true ? 'enabled' : 'disabled');?>"><?php	echo $row->active_checks_enabled == true ? _('ENABLED') : _('DISABLED');?></span></td>
 			<td class="icon">
 				<?php
 					if ($row->active_checks_enabled == true)
-						echo html::anchor('command/submit?cmd_typ=DISABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/disable-active-checks.png'), array('alt' => $this->translate->_('Disable active checks of this host'), 'title' => $this->translate->_('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+						echo html::anchor('command/submit?cmd_typ=DISABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/disable-active-checks.png'), array('alt' => _('Disable active checks of this host'), 'title' => _('Disable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
 					else
-						echo html::anchor('command/submit?cmd_typ=ENABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => $this->translate->_('Enable active checks of this host'), 'title' => $this->translate->_('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
+						echo html::anchor('command/submit?cmd_typ=ENABLE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/enable.png'), array('alt' => _('Enable active checks of this host'), 'title' => _('Enable active checks of this host'))),array('style' => 'border: 0px')).'&nbsp; ';
 
-					echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => $this->translate->_('Re-schedule this host check'), 'title' => $this->translate->_('Re-schedule this host check'))),array('style' => 'border: 0px'));
+					echo html::anchor('command/submit?cmd_typ=SCHEDULE_HOST_CHECK&host='.urlencode($row->host_name),html::image($this->add_path('icons/16x16/re-schedule.png'), array('alt' => _('Re-schedule this host check'), 'title' => _('Re-schedule this host check'))),array('style' => 'border: 0px'));
 				?>
 			</td>
 		</tr>
 		<?php } } else { ?>
 		<tr class="even">
-			<td colspan="7"><?php echo $this->translate->_('Nothing scheduled'); ?></td>
+			<td colspan="7"><?php echo _('Nothing scheduled'); ?></td>
 		</tr>
 		<?php } ?>
 	</table>

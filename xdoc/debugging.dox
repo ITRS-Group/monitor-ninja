@@ -2,6 +2,6 @@
 
 @section exception Showing exceptions on screen
 
-Set @code ALLOW_PRODUCTION = false; @endcode in ninja/application/controllers/authenticated.php to stop hiding exceptions and saving them to files in /tmp.
+Set IN_PRODUCTION to FALSE in ninja/index.php to stop hiding exceptions and saving them to files in /tmp.
 
 */

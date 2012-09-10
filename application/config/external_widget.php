@@ -19,7 +19,3 @@
 */
 $config['widget_name'] = 'netw_health';
 $config['username'] = false;
-
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}

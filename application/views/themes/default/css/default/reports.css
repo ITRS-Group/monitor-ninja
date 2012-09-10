@@ -217,34 +217,18 @@ table#multiple_hosts tr.even td.data {
 	white-space: nowrap;
 }
 
-/* röd fältet för summan */
-
-tr.dark td.data_red
-tr.odd td.data_red,
-table.multiple_services tr.odd td.data_red,
-table#multiple_hosts tr.odd td.data_red,
-tr.even td.data_red,
-table.multiple_services tr.even td.data_red,
-table#multiple_hosts tr.even td.data_red
- {
+.data_red
+{
 	text-align: right;
 	white-space: nowrap;
-	background-color:#FFE8E8;
-	background: url(../../reports/images/redbgimg.png) repeat-x;
+	background: url(../../reports/images/redbgimg.png) #FFE8E8 repeat-x;
 }
 
-tr.dark td.data_green
-tr.odd td.data_green,
-table.multiple_services tr.odd td.data_green,
-table#multiple_hosts tr.odd td.data_green,
-tr.even td.data_green,
-table.multiple_services tr.even td.data_green,
-table#multiple_hosts tr.even td.data_green
- {
+.data_green
+{
 	text-align: right;
 	white-space: nowrap;
-	background-color:#e3f8dc;
-	background: url(../../reports/images/greenbgimg.png) repeat-x;
+	background: url(../../reports/images/greenbgimg.png) #e3f8dc repeat-x;
 }
 
 
@@ -390,7 +374,8 @@ input[type=button],
 input[type=submit],
 input[type=reset],
 input[type=checkbox],
-input[type=radio] {
+input[type=radio],
+select.auto {
 	width: auto;
 }
 
@@ -547,79 +532,6 @@ select#period.popup {
 	list-style: disc;
 }
 
-.trend_event{
-	padding:0;
-	border-top: 1px solid white;
-	border-bottom: 1px solid white;
-}
-
-div#trend_event_display {
-	background:#ffffff;
-	padding:10px;
-	position:absolute;
-	left:20px;
-	top:10px;
-	width:200px;
-	border:1px solid #d0d0d0;
-	display:none;
-}
-.trend_event_highlight {
-	border-top: 1px solid #b0b0b0;
-	border-bottom: 1px solid #b0b0b0;
-}
-
-.trend_time{
-	padding:0;
-	font-size: 8px;
-}
-.trend_time:first-child{
-	border-left:1px solid #d0d0d0;
-	padding-left:2px;
-}
-table.time_table{
-	background:#ffffff;
-	padding:0;
-	border-right:1px solid #d0d0d0;
-	border-bottom:1px solid #d0d0d0;
-}
-
-div#trend_event_display.trend_up_d,
-div#trend_event_display.trend_down_d,
-div#trend_event_display.trend_unreachable_d,
-div#trend_event_display.trend_ok_d,
-div#trend_event_display.trend_warning_d,
-div#trend_event_display.trend_critical_d,
-div#trend_event_display.trend_pending_d,
-div#trend_event_display.trend_unknown_d{
-	background: #ffffff 10px 8px no-repeat ;
-	padding-left:35px;
-}
-
-div#trend_event_display.trend_up_d{
-	background-image: url(../../icons/16x16/shield-up.png);
-}
-div#trend_event_display.trend_down_d{
-	background-image: url(../../icons/16x16/shield-down.png);
-}
-div#trend_event_display.trend_unreachable_d{
-	background-image: url(../../icons/16x16/shield-unreachable.png);
-}
-div#trend_event_display.trend_ok_d{
-	background-image: url(../../icons/16x16/shield-ok.png);
-}
-div#trend_event_display.trend_warning_d{
-	background-image: url(../../icons/16x16/shield-warning.png);
-}
-div#trend_event_display.trend_critical_d{
-	background-image: url(../../icons/16x16/shield-critical.png);
-}
-div#trend_event_display.trend_pending_d{
-	background-image: url(../../icons/16x16/shield-pending.png);
-}
-div#trend_event_display.trend_unknown_d{
-	background-image: url(../../icons/16x16/shield-unknown.png);
-}
-
 /* alert summary specifics *********************************************/
 
 input#summary_items{
@@ -627,13 +539,11 @@ input#summary_items{
 }
 
 #settings_table,
-#std_report_table,
-#report_mode_select {
+#std_report_table {
 	width: auto;
 }
 
 #settings_table tr td,
-#report_mode_select tr td,
 #std_report_table tr td  {
 	padding: 0px 5px 0px 0px;
 	background: none;

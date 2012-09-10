@@ -178,10 +178,9 @@ class Scheduled_reports_Model extends Model
 		$xajax = get_xajax::instance();
 		$objResponse = new xajaxResponse();
 
-		$translate = zend::instance('Registry')->get('Zend_Translate');
-		$objResponse->call("show_progress", "progress", $translate->_('Please wait...'));
+		$objResponse->call("show_progress", "progress", _('Please wait...'));
 		if (!$id) {
-			$objResponse->assign("err_msg","innerHTML", $translate->_("Missing ID so nothing to delete"));
+			$objResponse->assign("err_msg","innerHTML", _("Missing ID so nothing to delete"));
 			return $objResponse;
 		}
 		$sql = "DELETE FROM scheduled_reports WHERE id=".$id;
@@ -214,7 +213,7 @@ class Scheduled_reports_Model extends Model
 	{
 		$local_persistent_filepath = trim($local_persistent_filepath);
 		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
-			return $this->translate->_("File path '$local_persistent_filepath' is not writable");
+			return _("File path '$local_persistent_filepath' is not writable");
 		}
 		$db = Database::instance();
 		$id = (int)$id;
@@ -226,7 +225,7 @@ class Scheduled_reports_Model extends Model
 		$description = trim($description);
 		$user = Auth::instance()->get_user()->username;
 
-		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return $this->translate->_('Missing data');
+		if (!$rep_type || !$saved_report_id || !$period || empty($recipients)) return _('Missing data');
 
 		// some users might use ';' to separate email adresses
 		// just replace it with ',' and continue
@@ -252,7 +251,7 @@ class Scheduled_reports_Model extends Model
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
-			return $this->translate->_('DATABASE ERROR').": {$e->getMessage()}; $sql";
+			return _('DATABASE ERROR').": {$e->getMessage()}; $sql";
 		}
 
 		if (!$id) {

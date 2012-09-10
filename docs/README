@@ -8,6 +8,7 @@ php, php-pdo and php-cli 5.1.6+
 MySQL 5+ (4 might also work but is not tested)
 Nagios 3.0.x+ (needs to run on the same server)
 Merlin
+mk_livestatus
 
 
 Installation
@@ -45,16 +46,18 @@ cp ninja/op5build/ninja.httpd-conf /etc/httpd/conf.d
 service httpd restart
 
 6. Configure Ninja. An example config file exists in ninja/op5build/index.php,
-   edit the $ninja_base variable and copy it to the ninja root dir. There are
-   more configuration files located in ninja/application/config/ but you should
-   normally not require to edit them. Take a look at database.php if you
-   modified any of the default database settings when installing Merlin.
+   edit the $ninja_base variable and copy it to the ninja root dir.
 
 vim ninja/op5build/index.php
 
-  $ninja_base = '/usr/local/nagios/addons/ninja';
+   $ninja_base = '/usr/local/nagios/addons/ninja';
 
 cp ninja/op5build/index.php ninja/
+
+   Edit the database connection settings and livestatus path in
+   ninja/application/config/database.php
+   There are more configuration files located in ninja/application/config/ but
+   you should normally not require to edit them.
 
 7. Setup the db tables required for Ninja by executing 
 

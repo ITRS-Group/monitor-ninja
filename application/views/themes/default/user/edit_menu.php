@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate;
+<?php
 
 # don't allow access for non admins
 if (!$is_admin) { ?>
@@ -11,16 +11,16 @@ if (!$is_admin) { ?>
 	echo form::open('user/menu_edit', array('id' => 'editmenu_form')); ?>
 	<div class="left">
 	<div>
-		<p><?php echo html::anchor(Router::$controller, $this->translate->_('Back')) ?></p>
-		<h3><?php echo $this->translate->_('Edit user menu') ?></h3>
+		<p><?php echo html::anchor(Router::$controller, _('Back')) ?></p>
+		<h3><?php echo _('Edit user menu') ?></h3>
 	</div>
 	<?php
 	if (!empty($limited_users)) {
 		echo $select_user_message.'<br />';
-		echo $this->translate->_('Username').': ';
+		echo _('Username').': ';
 		echo form::dropdown(array('name' => 'username', 'id' => 'editmenu_username', 'style' => 'padding-right:10px'), $limited_users, $selected_user);
 	} else {
-		echo $this->translate->_("No limited users found in the system so there's nothing we can do here.");
+		echo _("No limited users found in the system so there's nothing we can do here.");
 	}
 	echo form::close();
 
@@ -32,8 +32,8 @@ if (!$is_admin) { ?>
 		?>
 	<table style="width:250px;padding-top:10px;">
 	<tr>
-		<th><?php echo $t->_('Menu item') ?></th>
-		<th><?php echo $t->_('Remove') ?></th>
+		<th><?php echo _('Menu item') ?></th>
+		<th><?php echo _('Remove') ?></th>
 	</tr><?php
 	foreach ($sections as $section) {
 		$section_str = 'section_'.$section;
@@ -76,7 +76,7 @@ if (!$is_admin) { ?>
 	} ?>
 		<tr>
 			<td colspan="2"><br />
-				<?php echo form::submit('s1', $t->_('Save')) ?>
+				<?php echo form::submit('s1', _('Save')) ?>
 			</td>
 		</tr>
 	</table>

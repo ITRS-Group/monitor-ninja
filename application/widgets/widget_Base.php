@@ -18,7 +18,6 @@ class widget_Base
 	public $inline_js = false;
 	public $widget_base_path = false;# base_path to widget
 	public $widget_full_path = false;
-	public $translate = false;
 	public $model = false;
 	private static $loaded_widgets = array();
 
@@ -30,9 +29,6 @@ class widget_Base
 		$this->auto_render = FALSE;
 
 		$this->theme_path = zend::instance('Registry')->get('theme_path');
-
-		# fetch our translation instance
-		$this->translate = zend::instance('Registry')->get('Zend_Translate');
 
 		$path = Kohana::find_file(Kohana::config('widget.custom_dirname').$widget_model->name, $widget_model->name, false);
 		if ($path === false) {

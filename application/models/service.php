@@ -297,8 +297,7 @@ class Service_Model extends Model
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
 				$query = "SELECT id FROM service s ". $auth_str . "
-					WHERE (LCASE(s.host_name) LIKE LCASE(".$this->db->escape($val).")
-					OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")
+					WHERE (LCASE(s.service_description) LIKE LCASE(".$this->db->escape($val).")
 					OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($val).")".
 					sprintf($sql_notes, $this->db->escape($val)).
 					" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($val)."))";
@@ -354,8 +353,7 @@ class Service_Model extends Model
 				s.start_time, s.end_time, s.early_timeout, s.return_code,
 				h.current_state AS host_state, h.address, (h.scheduled_downtime_depth + s.scheduled_downtime_depth) as scheduled_downtime_depth ".
 			"FROM service s ".$auth_str.", host h WHERE s.id in (SELECT DISTINCT id FROM service s ".
-			"WHERE ((LCASE(s.host_name) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
+			"WHERE ((LCASE(s.service_description) LIKE LCASE(".$this->db->escape($value).")".
 			" OR LCASE(s.display_name) LIKE LCASE(".$this->db->escape($value).") ".
 			sprintf($sql_notes, $this->db->escape($value)).
 			" OR LCASE(s.output) LIKE LCASE(".$this->db->escape($value)."))))".

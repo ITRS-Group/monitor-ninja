@@ -17,20 +17,56 @@ class Comment_Model extends Model {
 	const TABLE_NAME = 'comment_tbl'; /**< The name of the comment table */
 
 	/**
-	*	Fetch saved comments for host or service
-	*
-	*/
-	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
+	 * Generate basic SQL for fetching comments. Takes care to join correctly with contact_access
+	 *
+	 * Used by both fetch_comments_by_* methods.
+	 */
+	protected static function gen_fetch_comment_query($for_services = false, $count = false) {
+		$auth = Nagios_auth_Model::instance();
+
+		if ($auth->{'view_'.($for_services?'services':'hosts').'_root'}) {
+			$filter = '';
+		} else if ($for_services) {
+			$filter = 'INNER JOIN service s ON c.host_name = s.host_name '.
+				'AND c.service_description = s.service_description '.
+				'INNER JOIN contact_access ca ON s.id = ca.service '.
+				'AND ca.contact = '.$auth->id;
+		} else {
+			$filter = 'INNER JOIN host h ON c.host_name = h.host_name '.
+				'INNER JOIN contact_access ca ON h.id = ca.host '.
+				'AND ca.contact = '.$auth->id;
+		}
+
+		$fields = $count? 'COUNT(1) AS cnt' : 'c.*';
+
+		$sql = 'SELECT '.$fields.' FROM '.static::TABLE_NAME.' c '.$filter.' ';
+
+		return $sql;
+	}
+	/**
+	 * Fetch saved comments for host or service
+	 *
+	 * @param $host string Host name - must be set
+	 * @param $service string Service description, or false to get comments for a host
+	 * @param $num_per_page int Number of rows to retrieve
+	 * @param $offset int Number of rows to skip before retrieving first row
+	 * @param $count bool Completely ignore the two previous options - return the total number of comments instead of the comments themselves
+	 * @returns If $count is true, then the number of rows as an int, otherwise the database result of comments
+	 */
+	public static function fetch_comments_by_object($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
 	{
 		$host = trim($host);
 		$service = trim($service);
+		$num_per_page = (int)$num_per_page;
+		$offset = (int)$offset;
 		if (empty($host)) {
 			return false;
 		}
 		$db = Database::instance();
 		$auth = Nagios_auth_Model::instance();
 
-		# service comments or not?
+		$base_sql = static::gen_fetch_comment_query($service != false, $count);
+
 		$svc_selection = empty($service) ?
 			'AND c.service_description IS NULL' :
 			'AND c.service_description='.$db->escape($service);
@@ -38,40 +74,46 @@ class Comment_Model extends Model {
 		# only use LIMIT when NOT counting
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		if ($auth->view_hosts_root || ($auth->view_services_root && !empty($service))) {
-			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c ' .
-			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
-		} else {
-			if (!empty($service)) {
-				$svc_from = ' INNER JOIN service s ' .
-				            'ON c.service_description = s.service_description ' .
-				            'AND c.host_name = s.host_name';
-				$by_ca = 'ca.service = s.id';
-			} else {
-				$svc_from = '';
-				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
-			}
-			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
-			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
-			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
-			       "AND ca.contact = $auth->id " .
-			       'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
-		}
+		$sql = $base_sql.'WHERE c.host_name='.$db->escape($host).' '.$svc_selection;
+		if (!$count)
+			$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
 
-		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
-
-		$result = $db->query($sql);
+		$result = $db->query($sql)->result();
 		if ($count !== false) {
-			if( $result ) {
-				$count = count($result);
-				unset($result);
-			}
-			else {
-				$count = 0;
-			}
-			return $count;
+			return $result ? $result->current()->cnt : 0;
 		}
-		return $result->count() ? $result->result(): false;
+		return $result;
+	}
+
+	/**
+	 * Fetch all host or all service comments the current user may see
+	 *
+	 * @param $for_services bool If true, fetch service comments, else fetch host comments
+	 * @param $num_per_page int Number of rows to retrieve
+	 * @param $offset int Number of rows to skip before retrieving first row
+	 * @param $count bool Completely ignore the two previous options - return the total number of comments instead of the comments themselves
+	 * @returns If $count is true, then the number of rows as an int, otherwise the database result of comments
+	 */
+	public static function fetch_comments_by_user($for_services=false, $num_per_page=false, $offset=false, $count=false)
+	{
+		$num_per_page = (int)$num_per_page;
+		$offset = (int)$offset;
+
+		$db = Database::instance();
+		$auth = Nagios_auth_Model::instance();
+
+		$sql = static::gen_fetch_comment_query($for_services, $count);
+
+		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
+
+		if (!$count)
+			$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
+		$result = $db->query($sql)->result();
+		if ($count !== false) {
+			return $result ? $result->current()->cnt : 0;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -81,21 +123,20 @@ class Comment_Model extends Model {
 	 * @param $service_description Service description, or empty to fetch for host
 	 * @return DB result, or false on error or empty
 	 */
-	public function fetch_all_comment_types($entry_type, $host_name, $service_description) {
+	public static function fetch_all_comment_types($entry_type, $host_name, $service_description) {
 
 		$db = Database::instance();
 		switch ($entry_type) {
 			case 1: // user comment
-				$type = self::TABLE_NAME;
+			case 3: // flapping
+			case 4: // acknowledged
+				$type = static::TABLE_NAME;
 				break;
 			case 2: // downtime
 				$type = 'scheduled_downtime';
 				break;
-			case 3: // flapping
-				$type = self::TABLE_NAME;
-				break;
-			case 4: // acknowledged
-				$type = self::TABLE_NAME;
+			default:
+				die("What did you do!?");
 				break;
 		}
 		$and = empty($service_description) ? '' : " AND service_description='".$service_description."'";
@@ -108,67 +149,17 @@ class Comment_Model extends Model {
 	/**
 	*	Wrapper method to fetch nr of comments for host or service
 	*/
-	public static function count_comments($host=false, $service=false)
+	public static function count_comments_by_object($host=false, $service=false)
 	{
-		return self::fetch_comments($host, $service, false, false, true);
-	}
-
-	/**
-	*	Fetch all host- or service comments
-	*/
-	public static function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
-	{
-		$host = trim($host);
-		$service = trim($service);
-		$num_per_page = (int)$num_per_page;
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
-
-		# service comments or not?
-		$svc_selection = empty($service) ?
-			'WHERE c.service_description IS NULL' :
-			'WHERE c.service_description IS NOT NULL';
-
-		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-
-		if ($auth->view_hosts_root || ($auth->view_services_root && $service)) {
-			$sql = 'SELECT * FROM '.self::TABLE_NAME.' c '.$svc_selection;
-		} else {
-			if (!empty($service)) {
-				$svc_from = ' INNER JOIN service s ' .
-				            'ON c.service_description = s.service_description ' .
-				            'AND c.host_name = s.host_name';
-				$by_ca = 'ca.service = s.id';
-			} else {
-				$svc_from = '';
-				$by_ca = 'ca.host = h.id AND ca.service IS NULL';
-			}
-			$sql = 'SELECT c.* FROM '.self::TABLE_NAME.' c'.$svc_from .
-			       ' INNER JOIN host h ON c.host_name = h.host_name ' .
-			       'INNER JOIN contact_access ca ON '.$by_ca.' ' .
-			       'INNER JOIN contact ON ca.contact = contact.id ' .
-			       "AND contact.contact_name = $auth->id " .
-			       $svc_selection;
-		}
-
-		$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
-		#echo $sql."<br />";
-
-		$result = $db->query($sql);
-		if ($count !== false) {
-			return $result ? count($result) : 0;
-		}
-
-		return $result;
+		return static::fetch_comments_by_object($host, $service, false, false, true);
 	}
 
 	/**
 	*	Wrapper method to fetch a count of all service- or host comments
 	*/
-	public function count_all_comments($host=false, $service=false)
+	public function count_comments_by_user($host=false, $service=false)
 	{
-		return self::fetch_all_comments($host, $service, false, false, true);
+		return static::fetch_comments_by_user($host, $service, false, false, true);
 	}
 
 	/**
@@ -176,14 +167,14 @@ class Comment_Model extends Model {
 	*	Returned array will contain object name as key and count
 	* 	as value for all objects with comments.
 	*/
-	public static function count_comments_by_object($service=false)
+	public static function count_all_comments_by_object($service=false)
 	{
 		if ($service === false) { # only host comments
-			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".self::TABLE_NAME." WHERE ".
+			$sql = "SELECT COUNT(*) as cnt, host_name as obj_name FROM ".static::TABLE_NAME." WHERE ".
 			"service_description = '' OR service_description is NULL ".
 			"GROUP BY host_name ORDER BY host_name";
 		} else { # service comments
-			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".self::TABLE_NAME." WHERE ".
+			$sql = "SELECT count(*) as cnt, obj_name FROM (SELECT ".sql::concat('host_name', ';', 'service_description')." AS obj_name FROM ".static::TABLE_NAME." WHERE ".
 			"service_description != '' OR service_description is not NULL) tmpname ".
 			"GROUP BY obj_name ORDER BY obj_name";
 		}
@@ -228,37 +219,37 @@ class Comment_Model extends Model {
 			$sql = false;
 			foreach ($value as $val) {
 				$val = '%'.$val.'%';
-				$query[] = "SELECT c.id FROM ".self::TABLE_NAME." c ".
+				$query[] = "SELECT c.id FROM ".static::TABLE_NAME." c ".
 				" INNER JOIN host on host.host_name = c.host_name ".$join_host.
 				" WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($val).") OR ".
-				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($val).") ) ".
+				"LCASE(c.host_name) LIKE LCASE(".$db->escape($val).") ) ".
 				" AND c.service_description IS NULL ".$where_host.
 				" UNION ".
-				"SELECT c.id FROM ".self::TABLE_NAME." c ".
+				"SELECT c.id FROM ".static::TABLE_NAME." c ".
 				"INNER JOIN host on host.host_name = c.host_name ".
 				"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
 				" WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($val).") OR ".
-				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($val).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$db->escape($val).") OR ".
 				"LCASE(c.service_description) LIKE LCASE(".$db->escape($val).") ) ".
 				" AND c.service_description IS NOT NULL ".
 				"AND service.host_name = host.host_name ".$where_svc;
 			}
 			if (!empty($query)) {
-				$sql = 'SELECT * FROM '.self::TABLE_NAME.' WHERE id IN ('.implode(' UNION ', $query).') ORDER BY host_name, service_description, entry_time '.$limit_str;
+				$sql = 'SELECT * FROM '.static::TABLE_NAME.' WHERE id IN ('.implode(' UNION ', $query).') ORDER BY host_name, service_description, entry_time '.$limit_str;
 			}
 		} else {
 			$value = '%'.$value.'%';
-			$sql = "(SELECT c.* FROM ".self::TABLE_NAME." c ".
+			$sql = "(SELECT c.* FROM ".static::TABLE_NAME." c ".
 				" INNER JOIN host on host.host_name = c.host_name ".$join_host.
 				"WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($value).") OR ".
-				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($value).") )".
+				"LCASE(c.host_name) LIKE LCASE(".$db->escape($value).") )".
 				" AND c.service_description IS NULL ".$where_host.
 				") UNION ALL (".
-				"SELECT c.* FROM ".self::TABLE_NAME." c ".
+				"SELECT c.* FROM ".static::TABLE_NAME." c ".
 				"INNER JOIN host on host.host_name = c.host_name ".
 				"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
 				"WHERE (LCASE(comment_data) LIKE LCASE(".$db->escape($value).") OR ".
-				"LCASE(c.host_name) LIKE LCASE(".$this->db->escape($value).") OR ".
+				"LCASE(c.host_name) LIKE LCASE(".$db->escape($value).") OR ".
 				"LCASE(c.service_description) LIKE LCASE(".$db->escape($value).") ) ".
 				"AND c.service_description IS NOT NULL ".
 				"AND service.host_name = host.host_name ".$where_svc." )".$limit_str;
@@ -294,18 +285,18 @@ class Comment_Model extends Model {
 
 		$limit_str = sql::limit_parse($limit);
 		$value = '%' . $value . '%';
-		$sql = "(SELECT c.* FROM ".self::TABLE_NAME." c ".
+		$sql = "(SELECT c.* FROM ".static::TABLE_NAME." c ".
 			" INNER JOIN host on host.host_name = c.host_name ".$join_host.
 			"WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).")".
 			" AND c.service_description IS NULL ".$where_host.
 			") UNION ALL (".
-			"SELECT c.* FROM ".self::TABLE_NAME." c ".
+			"SELECT c.* FROM ".static::TABLE_NAME." c ".
 			"INNER JOIN host on host.host_name = c.host_name ".
 			"INNER JOIN service ON service.service_description = c.service_description ".$join_svc.
 			"WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".
 			"AND c.service_description IS NOT NULL ".
 			"AND service.host_name = host.host_name ".$where_svc." )".$limit_str;
-		$obj_info = $this->db->query($sql);
+		$obj_info = $db->query($sql);
 		return count($obj_info) > 0 ? $obj_info : false;
 	}
 

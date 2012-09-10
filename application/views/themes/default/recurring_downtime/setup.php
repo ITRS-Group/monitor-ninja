@@ -14,8 +14,8 @@ if (!empty($widgets)) {
 
 	<div id="schedule-tabs-container">
 		<ul>
-			<li><a href="#create-tab" style="border: 0px"><?php echo $this->translate->_('Create new') ?></a></li>
-			<li><a href="#schedules-tab" style="border: 0px"><?php echo $this->translate->_('Schedules') ?></a></li>
+			<li><a href="#create-tab" style="border: 0px"><?php echo _('Create new') ?></a></li>
+			<li><a href="#schedules-tab" style="border: 0px"><?php echo _('Schedules') ?></a></li>
 		</ul>
 		<div id="create-tab">
 			<?php
@@ -24,7 +24,7 @@ if (!empty($widgets)) {
 			<div class="setup-table"><br />
 		<?php	if (isset($schedule_id) && !empty($schedule_id)) {
 					# show link to create new recurring schedule
-					echo '&nbsp'.html::anchor('recurring_downtime/', $this->translate->_('Add New Downtime Schedule')).'<br /><br />';
+					echo '&nbsp'.html::anchor('recurring_downtime/', _('Add New Downtime Schedule')).'<br /><br />';
 				}
 
 				if (isset($schedule_id) && !empty($schedule_id)) {?>
@@ -39,12 +39,12 @@ if (!empty($widgets)) {
 								<input type="hidden" name="host_name[]" value="<?php echo $_GET['host'];?>" />
 								<?php
 									if (isset($_GET['service'])) {
-										echo '<h2>'.$this->translate->_('Schedule downtime for service').' <strong>'.$_GET['service'].'</strong> on host <strong>'.$_GET['host'].'</strong></h2>';
+										echo '<h2>'._('Schedule downtime for service').' <strong>'.$_GET['service'].'</strong> on host <strong>'.$_GET['host'].'</strong></h2>';
 										echo '<input type="hidden" name="report_type" id="report_type" value="services">';
 										echo '<input type="hidden" name="service_description[]" value="'.$_GET['host'].';'.$_GET['service'].'" />';
 									}
 									else {
-										echo '<h2>'.$this->translate->_('Schedule downtime for host').' <strong>'.$_GET['host'].'</strong></h2>';
+										echo '<h2>'._('Schedule downtime for host').' <strong>'.$_GET['host'].'</strong></h2>';
 										echo '<input type="hidden" name="report_type" id="report_type" value="hosts">';
 									}
 								?>
@@ -54,26 +54,26 @@ if (!empty($widgets)) {
 						<tr>
 							<td colspan="3">
 								<select name="report_type" id="report_type" onchange="set_selection(this.value);">
-									<option value="hostgroups"><?php echo $label_hostgroups ?></option>
-									<option value="hosts"><?php echo $label_hosts ?></option>
-									<option value="servicegroups"><?php echo $label_servicegroups ?></option>
-									<option value="services"><?php echo $label_services ?></option>
+									<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
+									<option value="hosts"><?php echo _('Hosts') ?></option>
+									<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
+									<option value="services"><?php echo _('Services') ?></option>
 								</select>
-								<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+								<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo _('Select') ?>" />
 								<div id="progress"></div>
 								&nbsp;
 							</td>
 						</tr>
 						<tr id="filter_row">
 							<td colspan="3">
-								<?php echo $this->translate->_('Filter:') ?><br />
+								<?php echo _('Filter:') ?><br />
 								<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
-								<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>">
+								<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
 							</td>
 						</tr>
 						<tr id="hostgroup_row">
 							<td>
-								<?php echo $label_available.' '.$label_hostgroups ?><br />
+								<?php echo _('Available').' '._('Hostgroups') ?><br />
 								<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
 								</select>
 							</td>
@@ -82,14 +82,14 @@ if (!empty($widgets)) {
 								<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
 							</td>
 							<td>
-								<?php echo $label_selected.' '.$label_hostgroups ?><br />
+								<?php echo _('Selected').' '._('Hostgroups') ?><br />
 								<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
 						</tr>
 						<tr id="servicegroup_row">
 							<td>
-								<?php echo $label_available.' '.$label_servicegroups ?><br />
+								<?php echo _('Available').' '._('Servicegroups') ?><br />
 								<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
 								</select>
 							</td>
@@ -98,14 +98,14 @@ if (!empty($widgets)) {
 								<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
 							</td>
 							<td>
-								<?php echo $label_selected.' '.$label_servicegroups ?><br />
+								<?php echo _('Selected').' '._('Servicegroups') ?><br />
 								<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
 						</tr>
 						<tr id="host_row_2">
 							<td>
-								<?php echo $label_available.' '.$label_hosts ?><br />
+								<?php echo _('Available').' '._('Hosts') ?><br />
 								<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
@@ -114,14 +114,14 @@ if (!empty($widgets)) {
 								<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
 							</td>
 							<td>
-								<?php echo $label_selected.' '.$label_hosts ?><br />
+								<?php echo _('Selected').' '._('Hosts') ?><br />
 								<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
 						</tr>
 						<tr id="service_row_2">
 							<td>
-								<?php echo $label_available.' '.$label_services ?><br />
+								<?php echo _('Available').' '._('Services') ?><br />
 								<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
@@ -130,7 +130,7 @@ if (!empty($widgets)) {
 								<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
 							</td>
 							<td>
-								<?php echo $label_selected.' '.$label_services ?><br />
+								<?php echo _('Selected').' '._('Services') ?><br />
 								<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
 								</select>
 							</td>
@@ -143,35 +143,35 @@ if (!empty($widgets)) {
 					<table class="setup-tbl" style="width: 785px">
 						<tr>
 							<td colspan="3">
-								<?php echo $label_comment ?> <em>*</em><br />
+								<?php echo _('Comment') ?> <em>*</em><br />
 								<textarea cols="40" rows="4" name="comment" style="width: 770px; padding: 5px;"><?php echo $comment ?></textarea>
 							</td>
 						</tr>
 						<tr>
 							<td colspan="3">
-								<input type="checkbox" name="fixed" id="checkbox_fixed" value="1"<?php if ($fixed) { ?> checked=checked<?php } ?>> <?php echo $label_fixed ?>
+								<input type="checkbox" name="fixed" id="checkbox_fixed" value="1"<?php if ($fixed) { ?> checked=checked<?php } ?>> <?php echo _('Fixed') ?>
 							</td>
 						</tr>
 						<tr id="triggered_row" style="display:none">
 							<td colspan="3">
-								<?php echo $label_triggered_by ?><br />
+								<?php echo _('Triggered By') ?><br />
 								<?php echo form::dropdown('triggered_by', ($current_dt_type == 'host' ? $host_downtime_ids : $svc_downtime_ids), $triggered_by) ?>
 							</td>
 						</tr>
 						<tr>
 							<td style="width: 100px">
-								<?php echo $label_time ?> (hh:mm) <em>*</em><br />
+								<?php echo _('Time') ?> (hh:mm) <em>*</em><br />
 								<input class="recurrence_input time-picker" type='text' maxlength="5" name='time' autocomplete="off" id="time_input" value='<?php echo $time ?>'>
 							</td>
 							<td>
-								<?php echo $label_duration ?> (hh:mm) <em>*</em><br />
+								<?php echo _('Duration') ?> (hh:mm) <em>*</em><br />
 								<input class="recurrence_input time-picker" type='text' maxlength="5" id="duration" name='duration' value='<?php echo $duration ?>'>
 							</td>
 							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo $label_days_of_week ?><br />
+								<?php echo _('Days of week') ?><br />
 								<table style="margin-top: 5px;width: 560px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 										<?php foreach ($day_index as $i) {
@@ -189,7 +189,7 @@ if (!empty($widgets)) {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<?php echo $label_months ?><br />
+								<?php echo _('Months') ?><br />
 								<table style="margin-top: 5px; width: 480px; border-collapse: collapse; border-spacing: 0px">
 									<tr>
 									<?php 	$i = 0;
@@ -213,7 +213,7 @@ if (!empty($widgets)) {
 				</div>
 
 				<div class="setup-table">
-					<input id="reports_submit_button" type="submit" name="" value="<?php echo $schedule_id ? $label_update_schedule : $label_add_schedule ?>" class="button create-report" />
+					<input id="reports_submit_button" type="submit" name="" value="<?php echo $schedule_id ? _('Update schedule') : _('Add Schedule') ?>" class="button create-report" />
 				</div>
 			</form>
 		</div>
@@ -224,18 +224,18 @@ if (isset($saved_info) && !empty($saved_info)) {
 		if (!isset($saved_info[$dt_type])) {
 			continue;
 		} ?>
-	<h1><?php echo sprintf($this->translate->_('Recurring %s Downtime'), $translated); ?></h1>
+	<h1><?php echo sprintf(_('Recurring %s Downtime'), $translated); ?></h1>
 	<table class="recurrence_table" id="table_<?php echo $dt_type ?>" style="margin-top: -5px">
 		<tr>
-			<th class="headerNone left"><?php echo sprintf($this->translate->_('%s Name'), $translated); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Author'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Comment'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Time'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Duration'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Type'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Weekdays'); ?></th>
-			<th class="headerNone left"><?php echo $this->translate->_('Months'); ?></th>
-			<th class="headerNone left" style="width: 40px"><?php echo $this->translate->_('Actions'); ?></th>
+			<th class="headerNone left"><?php echo sprintf(_('%s Name'), $translated); ?></th>
+			<th class="headerNone left"><?php echo _('Author'); ?></th>
+			<th class="headerNone left"><?php echo _('Comment'); ?></th>
+			<th class="headerNone left"><?php echo _('Time'); ?></th>
+			<th class="headerNone left"><?php echo _('Duration'); ?></th>
+			<th class="headerNone left"><?php echo _('Type'); ?></th>
+			<th class="headerNone left"><?php echo _('Weekdays'); ?></th>
+			<th class="headerNone left"><?php echo _('Months'); ?></th>
+			<th class="headerNone left" style="width: 40px"><?php echo _('Actions'); ?></th>
 		</tr>
 	<?php	foreach ($saved_info[$dt_type] as $data) {
 				$days = isset($data['data']['recurring_day']) ? $data['data']['recurring_day'] : '';
@@ -263,9 +263,9 @@ if (isset($saved_info) && !empty($saved_info)) {
 				$object_list_wrap = substr($object_list, 0, $max_objlist_len);
 				if (strlen($object_list_wrap) < strlen($object_list)) {
 					echo '<span class="show_all_subobjects" title="'.
-						$this->translate->_('Click to show/hide all objects defined for this schedule').
+						_('Click to show/hide all objects defined for this schedule').
 						'" id="show_all_objects_'.$data['id'].'"><strong>['.
-						$this->translate->_('Show/Hide').']</strong></span><br />';
+						_('Show/Hide').']</strong></span><br />';
 
 					echo '<span id="objects_small_'.$data['id'].'">'.$object_list_wrap."... </span>";
 
@@ -280,16 +280,16 @@ if (isset($saved_info) && !empty($saved_info)) {
 			<td><?php echo $data['data']['time'] ?></td>
 			<td><?php echo $data['data']['duration'] ?></td>
 			<td><?php 	if (isset($data['data']['fixed'])) {
-							echo $data['data']['fixed'] ? $this->translate->_('Fixed') : $this->translate->_('Flexible');
+							echo $data['data']['fixed'] ? _('Fixed') : _('Flexible');
 						} else {
-							echo $this->translate->_('Fixed');
+							echo _('Fixed');
 						}
 				?></td>
 			<td><?php echo $weekdays ?></td>
 			<td><?php echo $month_list ?></td>
 			<td style="text-align: center">
-				<?php echo html::anchor('recurring_downtime/index/'.$data['id'], html::image($this->add_path('/icons/16x16/edit.png'), array('title' => $this->translate->_('Edit'), 'alt' => '', 'style' => 'margin-bottom: -2px')),array('style' => 'border: 0px')); ?>
-				<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], html::image($this->add_path('/icons/16x16/delete-doc.png'), array('title' => $this->translate->_('Delete'), 'alt' => '', 'style' => 'margin-bottom: -2px')), array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete', 'style' => 'border: 0px')); ?>
+				<?php echo html::anchor('recurring_downtime/index/'.$data['id'], html::image($this->add_path('/icons/16x16/edit.png'), array('title' => _('Edit'), 'alt' => '', 'style' => 'margin-bottom: -2px')),array('style' => 'border: 0px')); ?>
+				<?php echo html::anchor('recurring_downtime/delete/'.$data['id'], html::image($this->add_path('/icons/16x16/delete-doc.png'), array('title' => _('Delete'), 'alt' => '', 'style' => 'margin-bottom: -2px')), array('id' => 'recurring_delete_'.$data['id'], 'class' => 'recurring_delete', 'style' => 'border: 0px')); ?>
 			</td>
 		</tr>
 	<?php 	} ?>
@@ -297,7 +297,7 @@ if (isset($saved_info) && !empty($saved_info)) {
 <?php
 	}
 } else {
-	echo $this->translate->_('There are no saved recurring downtime schedules yet.');
+	echo _('There are no saved recurring downtime schedules yet.');
 }
 ?>
 </div>

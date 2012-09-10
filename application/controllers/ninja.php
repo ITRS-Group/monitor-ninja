@@ -21,7 +21,6 @@ class Ninja_Controller extends Template_Controller {
 	public $locale = false;
 	public $registry = false;
 	public $defaultlanguage = 'en';
-	public $translate = false;
 	public $template = "template";
 	public $user = false;
 	public $profiler = false;
@@ -92,8 +91,8 @@ class Ninja_Controller extends Template_Controller {
 
 		if ($this->input->get('sort_field', false)) {
 			$cur_data = array(
-				'sort_field' => urldecode($this->input->get('sort_field', false)),
-				'sort_order' => urldecode($this->input->get('sort_order', false))
+				'sort_field' => $this->input->get('sort_field', false),
+				'sort_order' => $this->input->get('sort_order', false)
 				);
 			$session_sort[$sort_key] = $cur_data;
 			$sort_options = $this->session->get('sort_options', false);
@@ -115,13 +114,14 @@ class Ninja_Controller extends Template_Controller {
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
 
-		$this->translate = zend::translate('gettext', $this->locale->getLanguage(), $this->locale);
-
-		if (!$this->translate) {
-			# no language file found for requested language
-			# use default language set above
-			$this->translate = zend::translate('gettext', $this->defaultlanguage, $this->defaultlanguage);
+		$locales = $this->locale->getOrder();
+		foreach ($locales as $locale) {
+			putenv('LC_ALL='.$locale);
+			setlocale(LC_ALL, $locale);
+			break;
 		}
+		bindtextdomain('ninja', APPPATH.'/languages');
+		textdomain('ninja');
 
 		$saved_searches = false;
 
@@ -149,8 +149,6 @@ class Ninja_Controller extends Template_Controller {
 				$this->template->is_searches = true;
 			}
 		}
-
-		$this->registry->set('Zend_Translate', $this->translate);
 
 		$items_per_page = arr::search($_GET, 'items_per_page');
 		if ($items_per_page !== false) {
@@ -252,15 +250,15 @@ class Ninja_Controller extends Template_Controller {
 		if ($data !== false) {
 			$this->notifications_disabled = !$data->notifications_enabled;
 			if ($this->notifications_disabled == true) {
-				$notifications[] = array($this->translate->_('Notifications are disabled'), false);
+				$notifications[] = array(_('Notifications are disabled'), false);
 			}
 
 			$this->checks_disabled = !$data->active_service_checks_enabled;
 			if ($this->checks_disabled == true) {
-				$notifications[] = array($this->translate->_('Service checks are disabled'), false);
+				$notifications[] = array(_('Service checks are disabled'), false);
 			}
 		} else {
-			$notifications[] = array($this->translate->_('Unable to determine if notifications or service checks are disabled'), false);
+			$notifications[] = array(_('Unable to determine if notifications or service checks are disabled'), false);
 		}
 		unset($data);
 
@@ -273,7 +271,7 @@ class Ninja_Controller extends Template_Controller {
 			$query->result(false);
 			$row = $query->current();
 			if ($row !== false && $row['cnt'] > 0) {
-				$notifications[] = array($row['cnt'] . $this->translate->_(' unmonitored hosts present.'), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
+				$notifications[] = array($row['cnt'] . _(' unmonitored hosts present.'), "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/configuration/configure?scan=autoscan_complete");
 			}
 		}
 
@@ -306,7 +304,7 @@ class Ninja_Controller extends Template_Controller {
 		// By defining a __call method, all pages routed to this controller
 		// that result in 404 errors will be handled by this method, instead of
 		// being displayed as "Page Not Found" errors.
-		echo $this->translate->_("The requested page doesn't exist") . " ($method)";
+		echo _("The requested page doesn't exist") . " ($method)";
 	}
 
 	/**

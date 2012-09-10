@@ -38,7 +38,7 @@ to /etc/httpd/conf.d/monitor.conf
 # cat > /usr/share/pear/xhprof_external/header.php
 <?php
 
-if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && extension_loaded('xhprof')) {
+if(extension_loaded('xhprof')) {
 	xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 	require dirname(__FILE__).'/../xhprof_lib/display/xhprof.php';
 }
@@ -46,18 +46,19 @@ if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQ
 # cat > /usr/share/pear/xhprof_external/footer.php
 <?php
 
-if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && extension_loaded('xhprof')) {
+if(extension_loaded('xhprof')) {
 	$profiler_namespace = 'ninja';
 	$xhprof_data = xhprof_disable();
 	$xhprof_runs = new XHProfRuns_Default();
 	$run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
-
-	$profiler_url = sprintf('/xhprof/?run=%s&source=%s', $run_id, $profiler_namespace);
-	$js = '<script>$(document).ready(function() {
+	if((!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') && 0 !== strpos($_SERVER['REQUEST_URI'], "/api")) {
+		$profiler_url = sprintf('/xhprof/?source=%s&run=%s', $profiler_namespace, $run_id);
+		$js = '<script>$(document).ready(function() {
 		$("#quicklinks")
 			.append("<ul><li><a href=\"'.$profiler_url.'\">Profiler output</a></li></ul>");
-	});</script>';
-	echo $js;
+		});</script>';
+		echo $js;
+	}
 }
 ^C
 # ln -s /usr/share/pear/xhprof_html /var/www/html/xhprof

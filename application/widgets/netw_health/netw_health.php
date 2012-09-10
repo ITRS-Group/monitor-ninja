@@ -41,10 +41,10 @@ class Netw_health_Widget extends widget_Base {
 		$options = parent::options();
 		$options[] = new option($this->model->name, 'health_warning_percentage', 'Warning Percentage Level', 'input', array(
 			'style' => 'width:20px',
-			'title' => sprintf($this->translate->_('Default value: %s%%'), 90)), $this->health_warning_percentage);
+			'title' => sprintf(_('Default value: %s%%'), 90)), $this->health_warning_percentage);
 		$options[] = new option($this->model->name, 'health_critical_percentage', 'Critical Percentage Level', 'input', array(
 			'style' => 'width:20px',
-			'title' => sprintf($this->translate->_('Default value: %s%%'), 75)), $this->health_warning_percentage);
+			'title' => sprintf(_('Default value: %s%%'), 75)), $this->health_warning_percentage);
 		return $options;
 	}
 
@@ -64,8 +64,8 @@ class Netw_health_Widget extends widget_Base {
 		$health_warning_percentage = $this->health_warning_percentage;
 		$health_critical_percentage = $this->health_critical_percentage;
 
-		$host_label = $this->translate->_('HOSTS');
-		$service_label = $this->translate->_('SERVICES');
+		$host_label = _('HOSTS');
+		$service_label = _('SERVICES');
 		$host_value 	= $this->host_val;
 		$service_value 	= $this->service_val;
 		$host_image 	= $this->widget_full_path.$this->host_img;

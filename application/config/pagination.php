@@ -36,9 +36,3 @@ $config['max_items_per_page'] = 10000;
 # and having the default paging step (100) for
 # groups will make the pages quite slow
 $config['group_items_per_page'] = 10;
-
-# check for custom config files that
-# won't be overwritten on upgrade
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}

@@ -3,8 +3,9 @@
 /**
  * Fetch downtime info from downtime table
  */
-class Downtime_Model extends Model
+class Downtime_Model extends Comment_Model
 {
+	const TABLE_NAME = 'scheduled_downtime';
 	/**
 	 * Fetch current downtime information
 	 * 
@@ -193,101 +194,5 @@ class Downtime_Model extends Model
 			return count($res) ? true : false;
 		}
 		return false;
-	}
-
-	/**
-	*	Fetch saved downtime comments for host or service
-	* 	This is usually used to display comments on extinfo page
-	*/
-	public function fetch_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
-	{
-		$host = trim($host);
-		$service = trim($service);
-		if (empty($host)) {
-			return false;
-		}
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
-
-		$from = 'FROM scheduled_downtime d';
-		$where = 'WHERE d.host_name = '.$db->escape($host);
-		if ($service) {
-			$where .= ' AND d.service_description = '.$db->escape($service);
-			if (!$auth->view_services_root) {
-				$from .= ' INNER JOIN service s '.
-				         'ON d.host_name = s.host_name '.
-				         'AND d.service_description = s.service_description '.
-				         'INNER JOIN host h ON d.host_name = h.host_name '.
-				         'INNER JOIN contact_access ca '.
-				         'ON s.id = ca.service';
-				$where .= " AND ca.contact=$auth->id";
-			}
-		} else {
-			$where .= ' AND d.service_description IS NULL';
-			if (!$auth->view_hosts_root) {
-				$from .= ' INNER JOIN host h ON d.host_name = h.host_name '.
-				         'INNER JOIN contact_access ca ON h.id = ca.host';
-				$where .= " AND ca.host IS NULL AND ca.contact=$auth->id";
-			}
-		}
-
-		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-
-		$sql = "SELECT d.* $from $where $offset_limit";
-
-		$result = $db->query($sql);
-		if ($count !== false) {
-			return $result ? count($result) : 0;
-		}
-		return $result->count() ? $result->result(): false;
-	}
-
-	/**
-	*	Fetch all host- or service comments
-	*/
-	public static function fetch_all_comments($host=false, $service=false, $num_per_page=false, $offset=false, $count=false)
-	{
-		$host = trim($host);
-		$service = trim($service);
-		$num_per_page = (int)$num_per_page;
-		$db = Database::instance();
-		$auth = Nagios_auth_Model::instance();
-
-		$sql = 'SELECT d.* FROM scheduled_downtime d';
-
-		if ($service) {
-			if (!$auth->view_services_root)
-				$sql .= ' INNER JOIN service s '.
-				        'ON d.service_description=s.service_description '.
-				        'AND d.host_name = s.host_name '.
-				        'INNER JOIN host h '.
-				        'ON h.host_name = d.host_name '.
-				        'INNER JOIN contact_access ca '.
-				        'ON s.id = ca.service';
-			$sql .= ' WHERE d.service_description IS NOT NULL';
-			if (!$auth->view_services_root)
-				$sql .= " AND ca.contact = {$auth->id}";
-		} else {
-			if (!$auth->view_hosts_root)
-				$sql .= ' INNER JOIN host h ON d.host_name = h.host_name '.
-				        'INNER JOIN contact_access ca ON h.id = ca.host';
-			$sql .= ' WHERE d.service_description IS NULL';
-			if (!$auth->view_hosts_root)
-				$sql .= " AND ca.contact = {$auth->id} AND ca.service IS NULL";
-		}
-
-		# only use LIMIT when NOT counting
-		$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-
-		$sql .= $offset_limit;
-		#echo $sql."<br />";
-
-		$result = $db->query($sql);
-		if ($count !== false) {
-			return $result ? count($result) : 0;
-		}
-
-		return $result;
 	}
 }

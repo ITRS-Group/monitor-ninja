@@ -16,7 +16,7 @@ if (!$user_has_access) { ?>
 	<?php } else { ?>
 	<tr>
 		<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-critical.png'), array('alt' => $label)) ?></td>
-		<td><?php echo html::anchor('outages/index/', html::specialchars($this->translate->_('N/A'))); ?></td>
+		<td><?php echo html::anchor('outages/index/', html::specialchars(_('N/A'))); ?></td>
 	</tr>
 	<?php } ?>
 </table>

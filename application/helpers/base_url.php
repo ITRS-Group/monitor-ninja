@@ -22,6 +22,9 @@ class base_url_Core {
 		if(!$host && isset($_SERVER['HTTP_HOST']) && !empty($_SERVER['HTTP_HOST'])) {
 			$host = $_SERVER['HTTP_HOST'];
 		}
+		// trim port from $host since we append it just below
+		$host_parts = explode(":", $host);
+		$host = $host_parts[0];
 		$port = '';
 		if(isset($_SERVER['SERVER_PORT']) && $check_port != $_SERVER['SERVER_PORT']) {
 			$port = ':'.$_SERVER['SERVER_PORT'];

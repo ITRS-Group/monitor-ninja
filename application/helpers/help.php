@@ -29,13 +29,12 @@ class help_Core
 		$img_rel_path = 'icons/12x12/help.png';
 		$img_path = url::base(false).'application/views/'.$theme_path.$img_rel_path;
 
-		$translate = zend::instance('Registry')->get('Zend_Translate');
 		$controller = !empty($controller) ? $controller : Router::$controller;
 
 		# build the element ID with random nr | controller | help key
 		$id = 'help_'.rand(0, 10000).'|'.$controller.'|'.$key;
 
 		return '<a class="helptext_target" style="border:0" id="'.$id.'" href="#">'.
-		'<img src="'.$img_path.'" title="'.$translate->_('Click for help').'" alt="'.$translate->_('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
+		'<img src="'.$img_path.'" title="'._('Click for help').'" alt="'._('Click for help').'" style="width: 12px; height: 12px; margin-bottom: -1px" /></a>';
 	}
 }

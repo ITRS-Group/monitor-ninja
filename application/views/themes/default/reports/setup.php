@@ -24,8 +24,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 <div id="report-tabs">
 	<ul>
-		<li><a href="#report-tab" style="border: 0px"><?php echo $this->translate->_('Reports') ?></a></li>
-		<li><a href="#schedule-tab" style="border: 0px"><?php echo $this->translate->_('Schedules') ?></a></li>
+		<li><a href="#report-tab" style="border: 0px"><?php echo _('Reports') ?></a></li>
+		<li><a href="#schedule-tab" style="border: 0px"><?php echo _('Schedules') ?></a></li>
 	</ul>
 	<div id="report-tab">
 
@@ -52,16 +52,16 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 
 	<?php echo form::open('reports/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;')); ?>
 			<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
-				<?php echo help::render('saved_reports') ?> <?php echo $label_saved_reports ?><br />
+				<?php echo help::render('saved_reports') ?> <?php echo _('Saved reports') ?><br />
 				<select name="report_id" id="report_id">
-					<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
+					<option value=""> - <?php echo _('Select saved report') ?> - </option>
 					<?php	$sched_str = "";
 					if ($saved_reports_exists) {
 						foreach ($saved_reports as $info) {
 							$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
 							if (in_array($info->id, $scheduled_ids)) {
 								$sched_str = " ( *".$scheduled_label."* )";
-								$title_str = $scheduled_periods[$info->id]." ".$title_label;
+								$title_str = $scheduled_periods[$info->id]." "._('schedule');
 							} else {
 								$sched_str = "";
 								$title_str = "";
@@ -72,15 +72,15 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					} ?>
 				</select>
 				<input type="hidden" name="type" value="<?php echo $type ?>" />
-				<input type="submit" class="button select" value="<?php echo $label_select ?>" name="fetch_report" />
-				<input type="button" class="button new" value="<?php echo $label_new ?>" name="new_report" title="<?php echo $new_saved_title ?>" id="new_report" />
-				<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo $label_delete ?>" id="delete_report" />
+				<input type="submit" class="button select" value="<?php echo _('Select') ?>" name="fetch_report" />
+				<input type="button" class="button new" value="<?php echo _('New') ?>" name="new_report" title="<?php echo $new_saved_title ?>" id="new_report" />
+				<input type="button" class="button delete" value="Delete" name="delete_report" title="<?php echo _('Delete report') ?>" id="delete_report" />
 				<span id="autoreport_periods"><?php echo $json_periods ?></span>
 				<?php if (isset($is_scheduled) && $is_scheduled) { ?>
 				<div id="single_schedules" style="display:inline">
 					<span id="is_scheduled" title="<?php echo $is_scheduled_clickstr ?>">
-						<?php echo $is_scheduled_report ?>
-						<a href="#" id="show_scheduled" class="help">[<?php echo $edit_str ?>]</a>
+						<?php echo _('This is a scheduled report') ?>
+						<a href="#" id="show_scheduled" class="help">[<?php echo _('edit') ?>]</a>
 					</span>
 				</div>
 			<?php	} ?>
@@ -94,27 +94,27 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<table summary="Select report type" class="setup-tbl"><!--id="main_table"-->
 				<tr>
 					<td colspan="3">
-						<?php echo help::render('report-type').' '.$this->translate->_('Report type'); ?><br />
+						<?php echo help::render('report-type').' '._('Report type'); ?><br />
 						<select name="report_type" id="report_type" onchange="set_selection(this.value);">
-							<option value="hostgroups"><?php echo $label_hostgroups ?></option>
-							<option value="hosts"><?php echo $label_hosts ?></option>
-							<option value="servicegroups"><?php echo $label_servicegroups ?></option>
-							<option value="services"><?php echo $label_services ?></option>
+							<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
+							<option value="hosts"><?php echo _('Hosts') ?></option>
+							<option value="servicegroups"><?php echo _('Servicegroups') ?></option>
+							<option value="services"><?php echo _('Services') ?></option>
 						</select>
-						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo $label_select ?>" />
+						<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['report_form'].report_type.value);" value="<?php echo _('Select') ?>" />
 						<div id="progress"></div>
 					</td>
 				</tr>
 				<tr id="filter_row">
 					<td colspan="3">
-						<?php echo help::render('filter').' '.$this->translate->_('Filter') ?><br />
+						<?php echo help::render('filter').' '._('Filter') ?><br />
 						<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
-						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo $this->translate->_('Clear') ?>">
+						<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
 					</td>
 				</tr>
 				<tr id="hostgroup_row">
 					<td>
-						<?php echo $label_available.' '.$label_hostgroups ?><br />
+						<?php echo _('Available').' '._('Hostgroups') ?><br />
 						<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
@@ -123,14 +123,14 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="button" value="&lt;" id="mv_hg_l" class="button arrow-left" />
 					</td>
 					<td>
-						<?php echo $label_selected.' '.$label_hostgroups ?><br />
+						<?php echo _('Selected').' '._('Hostgroups') ?><br />
 						<select name="hostgroup[]" id="hostgroup" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
 				<tr id="servicegroup_row">
 					<td>
-						<?php echo $label_available.' '.$label_servicegroups ?><br />
+						<?php echo _('Available').' '._('Servicegroups') ?><br />
 						<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
 						</select>
 					</td>
@@ -139,14 +139,14 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="button" value="&lt;" id="mv_sg_l" class="button arrow-left" />
 					</td>
 					<td>
-						<?php echo $label_selected.' '.$label_servicegroups ?><br />
+						<?php echo _('Selected').' '._('Servicegroups') ?><br />
 						<select name="servicegroup[]" id="servicegroup" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
 				<tr id="host_row_2">
 					<td>
-						<?php echo $label_available.' '.$label_hosts ?><br />
+						<?php echo _('Available').' '._('Hosts') ?><br />
 						<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
@@ -155,14 +155,14 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="button" value="&lt;" id="mv_h_l" class="button arrow-left" />
 					</td>
 					<td>
-						<?php echo $label_selected.' '.$label_hosts ?><br />
+						<?php echo _('Selected').' '._('Hosts') ?><br />
 						<select name="host_name[]" id="host_name" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
 				</tr>
 				<tr id="service_row_2">
 					<td>
-						<?php echo $label_available.' '.$label_services ?><br />
+						<?php echo _('Available').' '._('Services') ?><br />
 						<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
@@ -171,7 +171,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<input type="button" value="&lt;" id="mv_s_l" class="button arrow-left"  />
 					</td>
 					<td>
-						<?php echo $label_selected.' '.$label_services ?><br />
+						<?php echo _('Selected').' '._('Services') ?><br />
 						<select name="service_description[]" id="service_description" multiple="multiple" size="8" class="multiple">
 						</select>
 					</td>
@@ -182,9 +182,9 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<div class="setup-table" id="settings_table">
 			<table class="setup-tbl">
 				<tr>
-					<td><?php echo help::render('reporting_period').' '.$label_report_period ?></td>
+					<td><?php echo help::render('reporting_period').' '._('Reporting period') ?></td>
 					<td style="width: 18px">&nbsp;</td>
-					<td><?php echo help::render('report_time_period').' '.$label_rpttimeperiod ?></td>
+					<td><?php echo help::render('report_time_period').' '._('Report Period') ?></td>
 				</tr>
 				<tr>
 					<td><?php echo form::dropdown(array('name' => 'report_period'), $report_periods, $selected); ?></td>
@@ -197,37 +197,37 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					</td>
 				</tr>
 				<tr id="display" style="display: none; clear: both;">
-					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('start-date').' '.$label_startdate ?> (<em id="start_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
-						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo isset($start_date) ? $start_date : '' ?>" class="date-pick datepick-start" title="<?php echo $label_startdate_selector ?>" />
+					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('start-date').' '._('Start date') ?> (<em id="start_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+						<input type="text" id="cal_start" name="cal_start" maxlength="10" autocomplete="off" value="<?php echo isset($start_date) ? $start_date : '' ?>" class="date-pick datepick-start" title="<?php echo _('Date Start selector') ?>" />
 						<input type="hidden" name="start_time" id="start_time"  value="<?php echo isset($start_date) ? $start_date : '' ?>"/>
 						<input type="text" maxlength="5" name="time_start" id="time_start" class="time_start" value="<?php echo isset($start_time) ? $start_time : '08:00' ?>">
 					</td>
 					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>>&nbsp;</td>
-					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '.$label_enddate ?> (<em id="end_time_tmp"><?php echo $label_click_calendar ?></em>)<br />
-						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo isset($end_date) ? $end_date : '' ?>" class="date-pick datepick-end" title="<?php echo $label_enddate_selector ?>" />
+					<td class="avail_display"<?php if ($type == 'sla') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?> (<em id="end_time_tmp"><?php echo _('Click calendar to select date') ?></em>)<br />
+						<input type="text" id="cal_end" name="cal_end" maxlength="10" autocomplete="off" value="<?php echo isset($end_date) ? $end_date : '' ?>" class="date-pick datepick-end" title="<?php echo _('Date End selector') ?>" />
 						<input type="hidden" name="end_time" id="end_time" value="<?php echo isset($end_date) ? $end_date : '' ?>" />
 						<input type="text" maxlength="5" name="time_end" id="time_end" class="time_end" value="<?php echo isset($end_time) ? $end_time : '09:00' ?>">
 					</td>
 					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>
-						<?php echo help::render('start-date').' '.$label_startdate ?>
+						<?php echo help::render('start-date').' '._('Start date') ?>
 						<table summary="Reporting time" style="margin-left: -4px">
 							<tr>
-								<td><?php echo $label_start_year ?></td>
+								<td><?php echo _('Start year') ?></td>
 								<td><select name="start_year" id="start_year"  style="width: 50px" onchange="js_print_date_ranges(this.value, 'start', 'month');"><option value=""></option></select></td>
-								<td><?php echo $label_start_month ?></td>
+								<td><?php echo _('Start month') ?></td>
 								<td><select name="start_month" id="start_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
 							</tr>
 						</table>
 					</td>
 					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>>&nbsp;</td>
-					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '.$label_enddate ?>
+					<td class="sla_display"<?php if ($type == 'avail') { ?> style="display:none"<?php } ?>><?php echo help::render('end-date').' '._('End date') ?>
 						<input type="hidden" name="start_time" id="start_time" value="" />
 						<input type="hidden" name="end_time" id="end_time" value="" />
 						<table summary="Reporting time" style="margin-left: -4px">
 							<tr>
-								<td><?php echo $label_end_year ?></td>
+								<td><?php echo _('End year') ?></td>
 								<td><select name="end_year" id="end_year" style="width: 50px" onchange="js_print_date_ranges(this.value, 'end', 'month');"><option value=""></option></select></td>
-								<td><?php echo $label_end_month ?></td>
+								<td><?php echo _('End month') ?></td>
 								<td><select name="end_month" id="end_month" style="width: 50px" onchange="check_custom_months();"><option value=""></option></select></td>
 							</tr>
 						</table>
@@ -235,16 +235,16 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				</tr>
 				<tr>
 					<td>
-						<?php echo help::render('use_average').' '.$label_sla_calc_method ?><br />
+						<?php echo help::render('use_average').' '._('SLA calculation method') ?><br />
 						<select name='use_average'>
-							<option value='0' <?php print $use_average_no_selected ?>><?php echo $label_avg_sla ?></option>
-							<option value='1' <?php print $use_average_yes_selected ?>><?php echo $label_avg ?></option>
+							<option value='0' <?php print $use_average_no_selected ?>><?php echo _('Group availability (SLA)') ?></option>
+							<option value='1' <?php print $use_average_yes_selected ?>><?php echo _('Average') ?></option>
 						</select>
 					</td>
 					<td>&nbsp;</td>
 					<td<?php echo ($type == 'sla') ? ' style="display:none"' : ''?>>
 						<?php echo help::render('status_to_display') ?>
-						<?php echo $this->translate->_('Status to display'); ?><br>
+						<?php echo _('Status to display'); ?><br>
 						<div id="display_host_status">
 							<?php //print_r($host_filter_status); ?>
 							<input type="checkbox" name="host_filter_status[0]" id="up" value="1" <?php echo $host_filter_status_up_checked ?> style="margin-top: 4px; margin-left: 14px"> <label for="up">Up</label>
@@ -263,7 +263,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				</tr>
 				<tr>
 					<td>
-						<?php echo help::render('scheduled_downtime').' '.$label_scheduleddowntimeasuptime?><br />
+						<?php echo help::render('scheduled_downtime').' '._('Count scheduled downtime as')?><br />
 						<?php echo form::dropdown(array('name' => 'scheduleddowntimeasuptime'), $scheduleddowntimeasuptime_options, $scheduleddowntimeasuptime_selected) ?>
 					</td>
 					<td>&nbsp;</td>
@@ -271,7 +271,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('use_alias') ?>
 						<input type="checkbox" class="checkbox" value="1" id="use_alias" name="use_alias"
 								onchange="toggle_label_weight(this.checked, 'usealias');" <?php print $use_alias_checked; ?> />
-						<label for="use_alias" id="usealias"><?php echo $label_use_alias ?></label>
+						<label for="use_alias" id="usealias"><?php echo _('Use alias') ?></label>
 					</td>
 				</tr>
 				<tr>
@@ -279,14 +279,14 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('stated_during_downtime') ?>
 						<input type="checkbox" class="checkbox" value="1" id="assumestatesduringnotrunning" name="assumestatesduringnotrunning"
 								onchange="toggle_label_weight(this.checked, 'assume_progdown');" <?php echo $assume_states_during_not_running_checked; ?> />
-						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo $label_assumestatesduringnotrunning ?></label>
+						<label for="assumestatesduringnotrunning" id="assume_progdown"><?php echo _('Assume states during program downtime') ?></label>
 					</td>
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
 						<?php echo help::render('include_soft_states') ?>
 						<input type="checkbox" class="checkbox" value="1" id="includesoftstates" name="includesoftstates"
 								onchange="toggle_label_weight(this.checked, 'include_softstates');" <?php echo $include_soft_states_checked; ?> />
-						<label for="includesoftstates" id="include_softstates"><?php echo $label_includesoftstates ?></label>
+						<label for="includesoftstates" id="include_softstates"><?php echo _('Include soft states') ?></label>
 					</td>
 				</tr>
 				<tr>
@@ -294,20 +294,20 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('initial_states') ?>
 						<input type="checkbox" class="checkbox" value="1" id="assumeinitialstates" name="assumeinitialstates"
 								onchange="show_state_options(this.checked);toggle_label_weight(this.checked, 'assume_initial');" <?php print $assume_initial_states_checked ?> />
-						<label for="assumeinitialstates" id="assume_initial"><?php echo $label_assumeinitialstates ?></label>
+						<label for="assumeinitialstates" id="assume_initial"><?php echo _('Assume initial states') ?></label>
 					</td>
 					<td>&nbsp;</td>
 					<td style="vertical-align:top">
 						<?php echo help::render('cluster_mode') ?>
 						<input type="checkbox" class="checkbox" value="1" id="cluster_mode" name="cluster_mode"
 								onchange="toggle_label_weight(this.checked, 'cluster_mode');" <?php print $cluster_mode_checked ?> />
-						<label for="cluster_mode" id="cluster_mode"><?php echo $label_cluster_mode ?></label>
+						<label for="cluster_mode" id="cluster_mode"><?php echo _('Cluster mode') ?></label>
 					</td>
 				</tr>
 				<tr id="assumed_host_state">
-					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '.$label_initialassumedhoststate ?></td>
+					<td style="padding-top: 10px"><?php echo help::render('first_assumed_host').' '._('First assumed host state') ?></td>
 					<td>&nbsp;</td>
-					<td style="padding-top: 10px"><?php echo help::render('first_assumed_service').' '.$label_initialassumedservicestate ?></td>
+					<td style="padding-top: 10px"><?php echo help::render('first_assumed_service').' '._('First assumed service state') ?></td>
 				</tr>
 				<tr id="assumed_service_state">
 					<td>
@@ -337,7 +337,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('save_report') ?>
 						<input type="hidden" name="saved_report_id" value="<?php echo $report_id ?>" />
 						<input type="checkbox" class="checkbox" name="save_report_settings" id="save_report_settings" value="1" onclick="toggle_field_visibility(this.checked, 'report_save_information');toggle_label_weight(this.checked, 'save_report_label')" />
-						<label for="save_report_settings" id="save_report_label"><?php echo $label_save_report ?></label>
+						<label for="save_report_settings" id="save_report_label"><?php echo _('Save report') ?></label>
 						<br />
 						<span id="report_save_information">
 							<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
@@ -350,7 +350,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('include_trends') ?>
 						<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
 								onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $include_trends_checked; ?> />
-						<label for="include_trends"><?php echo $label_include_trends ?></label>
+						<label for="include_trends"><?php echo _('Include trends graph') ?></label>
 						<?php } ?>
 					</td>
 				</tr>
@@ -359,7 +359,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo help::render('csv_format') ?>
 						<input type="checkbox" class="checkbox" value="1" id="csvoutput" name="csvoutput"
 								onchange="toggle_label_weight(this.checked, 'csvout');" <?php print $csv_output_checked; ?> />
-						<label for="csvoutput" id="csvout"><?php echo $label_csvoutput ?></label>
+						<label for="csvoutput" id="csvout"><?php echo _('Output in CSV format') ?></label>
 					</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
@@ -370,18 +370,18 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<div class="setup-table<?php if ($type != 'sla') { ?> hidden<?php } ?>" id="enter_sla">
 			<table style="width: 810px">
 				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
-					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> <?php echo $this->translate->_('Use SLA-values from saved report') ?></td>
+					<td style="padding-left: 0px" colspan="12"><?php echo help::render('use-sla-values'); ?> <?php echo _('Use SLA-values from saved report') ?></td>
 				</tr>
 				<tr class="sla_values" <?php if (!$saved_reports_exists) { ?>style="display:none"<?php } ?>>
 					<td style="padding-left: 0px" colspan="12">
 						<select name="sla_report_id" id="sla_report_id" onchange="get_sla_values()">
-							<option value=""> - <?php echo $this->translate->_('Select saved report') ?> - </option>
+							<option value=""> - <?php echo _('Select saved report') ?> - </option>
 							<?php	$sched_str = "";
 							foreach ($saved_reports as $info) {
 								$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
 								if (in_array($info->id, $scheduled_ids)) {
 									$sched_str = " ( *".$scheduled_label."* )";
-									$title_str = $scheduled_periods[$info->id]." ".$title_label;
+									$title_str = $scheduled_periods[$info->id]." "._('schedule');
 								} else {
 									$sched_str = "";
 									$title_str = "";
@@ -393,7 +393,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 					</td>
 				</tr>
 				<tr>
-					<td style="padding-left: 0px" colspan="12"><?php echo help::render('enter-sla').' '.$label_enter_sla ?></td>
+					<td style="padding-left: 0px" colspan="12"><?php echo help::render('enter-sla').' '._('Enter SLA') ?></td>
 				</tr>
 				<tr>
 					<?php foreach ($months as $key => $month) { ?>
@@ -401,8 +401,8 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 						<?php echo html::image($this->add_path('icons/16x16/copy.png'),
 							array(
 								'id' => 'month_'.($key+1),
-								'alt' => $label_propagate,
-								'title' => $label_propagate,
+								'alt' => _('Click to propagate this value to all months'),
+								'title' => _('Click to propagate this value to all months'),
 								'style' => 'cursor: pointer; margin-bottom: -4px',
 								'class' => 'autofill')
 							) ?>
@@ -415,11 +415,11 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		</div>
 
 		<div class="setup-table">
-			<input id="reports_submit_button" type="submit" name="" value="<?php echo $label_create_report ?>" class="button create-report" />
+			<input id="reports_submit_button" type="submit" name="" value="<?php echo _('Create report') ?>" class="button create-report" />
 		</div>
 	</form>
 </div>
 
 	</div>
-	<div id="schedule-tab"><?php echo (isset($available_schedules) && !empty($available_schedules) ) ? $available_schedules : $label_no_schedules; ?></div>
+	<div id="schedule-tab"><?php echo (isset($available_schedules) && !empty($available_schedules) ) ? $available_schedules : _('There are no scheduled reports'); ?></div>
 </div>

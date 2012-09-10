@@ -15,7 +15,7 @@ if (!empty($widgets)) {
 	echo !empty($header) ? $header : '';
 	echo !empty($report_options) ? $report_options : '';
 	if (isset($links)) {
-		echo '<br /><br />'.$this->translate->_('View').': ';
+		echo '<br /><br />'._('View').': ';
 		$html_links = array();
 		foreach($links as $url => $name) {
 			$html_links[] = html::anchor(url::site($url),html::image($this->add_path('/icons/16x16/'.strtolower(str_replace(' ','-',$name))).'.png',array('alt' => $name, 'title' => $name, 'style' => 'margin-bottom: -3px')),array('style' => 'border: 0px')).
@@ -24,7 +24,7 @@ if (!empty($widgets)) {
 		echo implode(', &nbsp;', $html_links);
 	}
 	if (!empty($trends_graph)) {
-		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '.$this->translate->_('Trends').'</strong>';
+		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '._('Trends').'</strong>';
 		echo $trends_graph;
 	}
 	echo !empty($content) ? $content : '';

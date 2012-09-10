@@ -71,7 +71,7 @@ class Outages_Model extends Model
 			}
 
 			$outages[$row->host_name]['severity'] += sprintf('%d', ($outages[$row->host_name]['affected_hosts'] + ($outages[$row->host_name]['affected_services']/self::SERVICE_SEVERITY_DIVISOR)));
-			$comment_data = Comment_Model::count_comments($row->host_name);
+			$comment_data = Comment_Model::count_comments_by_object($row->host_name);
 			if (!isset($outages[$row->host_name]['comments'])) {
 				$outages[$row->host_name]['comments'] = 0;
 			}

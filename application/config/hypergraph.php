@@ -17,9 +17,3 @@ if (!is_file(APPPATH.$config['nagios_props']))
 	$config['nagios_props'] = false;
 if (!is_file(APPPATH.$config['hyper_dtd']))
 	$config['hyper_dtd'] = false;
-
-# check for custom config files that
-# won't be overwritten on upgrade
-if (file_exists(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__))) {
-	include(realpath(dirname(__FILE__)).'/custom/'.basename(__FILE__));
-}

@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
-<?php $t = $this->translate; ?>
 <?php
 $nr = 0;
 foreach($report_data as $i =>  $report) {
@@ -10,9 +9,9 @@ foreach($report_data as $i =>  $report) {
 			$str_source = 'SLA breakdown for Custom group';
 		else {
 			if (!$use_alias || $report['group_title'] !== false)
-				$str_source = $t->_('SLA breakdown for').': '.$report['source'];
+				$str_source = _('SLA breakdown for').': '.$report['source'];
 			else
-				$str_source = $t->_('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
+				$str_source = _('SLA breakdown for').': '.$this->_get_host_alias($report['source']).' ('.$report['source'].')';
 		}
 
 	?>
@@ -23,7 +22,7 @@ foreach($report_data as $i =>  $report) {
 			$avail_links = html_entity_decode($report['avail_links']);
 			parse_str(substr($avail_links, strpos($avail_links, '?')+1), $avail_links); ?>
 		<form action="<?php echo url::site().Kohana::config('reports.reports_link').'/generate?type=avail' ?>" method="post">
-			<input type="image" src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" title="<?php echo $t->_('Uptime');?>" />
+			<input type="image" src="<?php echo url::site() ?>reports/barchart/<?php echo $report['data_str'] ?>" title="<?php echo _('Uptime');?>" />
 			<?php foreach($avail_links as $key => $value) {
 				if(is_array($value)) {
 					foreach($value as $value_part) { ?>
@@ -56,7 +55,7 @@ foreach($report_data as $i =>  $report) {
 				<?php } ?>
 			</tr>
 			<tr class="even">
-				<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo $t->_('SLA') ?></td><?php
+				<td <?php echo ($create_pdf) ? 'style="background-color: #fafafa; font-size: 0.9em"' : 'class="label"';?>><?php echo _('SLA') ?></td><?php
 				$j = 0;
 				foreach ($data as $month => $value) {
 					$j++; ?>
@@ -65,7 +64,7 @@ foreach($report_data as $i =>  $report) {
 				} ?>
 			</tr>
 			<tr class="odd">
-				<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo $t->_('Real') ?></td><?php
+				<td <?php echo ($create_pdf) ? 'style="background-color: #e2e2e2; font-size: 0.9em"' : '';?>><?php echo _('Real') ?></td><?php
 				$y = 0;
 				foreach ($data as $month => $value) {
 					$y++;?>
@@ -73,7 +72,7 @@ foreach($report_data as $i =>  $report) {
 					<?php echo reports::format_report_value($value[0][0]) ?> % <?php echo html::image($this->add_path('icons/12x12/shield-'.(($value[0][0] < $value[0][1]) ? 'down' : 'up').'.png'),
 							array(
 							'alt' => '',
-							'title' => $value[0][0] < $value[0][1] ? $t->_('Below SLA') : $t->_('OK'),
+							'title' => $value[0][0] < $value[0][1] ? _('Below SLA') : _('OK'),
 							'style' => 'width: 11px; height: 12px'));
 					if (isset($value[0][2]) && $value[0][2] > 0) {
 						echo "<br />(" . reports::format_report_value($value[0][2]) ."% in other states)";
@@ -86,8 +85,8 @@ foreach($report_data as $i =>  $report) {
 	<div class="setup-table members">
 
 		<table style="margin-bottom: 20px;">
-			<caption style="margin-top: 15px;"><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '.$this->translate->_('Group members');?></caption>
-			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : $this->translate->_('Custom group') ?></th></tr>
+			<caption style="margin-top: 15px;"><?php echo ((!$create_pdf) ? help::render('sla_group_members') : '').' '._('Group members');?></caption>
+			<tr><th class="headerNone"><?php echo !empty($report['group_title']) ? $report['group_title'] : _('Custom group') ?></th></tr>
 			<?php
 				$x = 0;
 				foreach($report['member_links'] as $member_link) {

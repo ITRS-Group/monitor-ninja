@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php $t = $this->translate;
+<?php
 
 if (!empty($widgets)) {
 	foreach ($widgets as $widget) {
@@ -8,7 +8,7 @@ if (!empty($widgets)) {
 }
 
 if (!empty($errors)) {
-	echo $t->_("Your settings couldn't be saved since the following errors were encountered:");
+	echo _("Your settings couldn't be saved since the following errors were encountered:");
 	echo "<br /><ul>";
 	foreach ($errors as $e) {
 		echo '<li>'.$e.'</li>';
@@ -17,6 +17,6 @@ if (!empty($errors)) {
 	?>
 		<br />
 		Check your values entered for the fields above and try again.<br />
-		<form><input type="button" onclick="history.back(1)" value="<?php echo $t->_('Back') ?>"></form>
+		<form><input type="button" onclick="history.back(1)" value="<?php echo _('Back') ?>"></form>
 	<?php
 }

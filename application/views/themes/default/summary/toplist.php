@@ -5,15 +5,15 @@ if (isset($schedules)) {
 ?>
 
 <div class="left w98">
-	<h1><?php echo $this->translate->_('Top hard alert producers'); ?></h1>
+	<h1><?php echo _('Top hard alert producers'); ?></h1>
 	<p style="margin-top:-10px; margin-bottom: 14px"><?php $this->_print_duration($options['start_time'], $options['end_time']); ?></p>
 	<table <?php echo ($create_pdf ? 'style="margin-top: 15px" border="1"' : '') ?>>
 		<tr>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;width:40px"' : 'class="headerNone left"') ?>><?php echo $label_rank; ?></th>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo $label_producer_type; ?></th>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo $label_host; ?></th>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo $label_service; ?></th>
-			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo $label_total_alerts; ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;width:40px"' : 'class="headerNone left"') ?>><?php echo _('Rank'); ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo ('Producer Type'); ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo _('Host'); ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo _('Service'); ?></th>
+			<th <?php echo ($create_pdf ? 'style="background-color: #e2e2e2; font-size: 0.9em;"' : 'class="headerNone left"') ?>><?php echo _('Total Alerts'); ?></th>
 		</tr>
 		<?php
 		$i=0;
@@ -22,10 +22,10 @@ if (isset($schedules)) {
 			$i++;
 			echo '<tr class="'.($i%2 == 0 ? 'odd' : 'even').'">';
 			if (empty($ary['service_description'])) {
-				$producer = $label_host;
+				$producer = _('Host');
 				$ary['service_description'] = 'N/A';
 			} else {
-				$producer = $label_service;
+				$producer = _('Service');
 				$ary['service_description'] = html::anchor(base_url::get().'extinfo/details/?type=service&host='.urlencode($ary['host_name']).'&service='.urlencode($ary['service_description']), $ary['service_description']);
 			}
 		?>

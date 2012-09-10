@@ -4,7 +4,7 @@ require_once unittest::tap_path();
 
 class Ninja_Unit_Test {
 	function __construct() {
-		$paths = array(MODPATH . 'unit_test');
+		$paths = array('test/unit_test');
 		ob_end_clean();
 		$main_tap = new phptap("Ninja unit test suite");
 

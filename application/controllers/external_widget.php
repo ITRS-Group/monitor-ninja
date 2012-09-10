@@ -33,7 +33,7 @@ class External_widget_Controller extends Ninja_Controller {
 			Auth::instance()->force_login($username);
 		} else {
 			if (empty($username)) {
-				die($this->translate->_('You are trying to access an '.
+				die(_('You are trying to access an '.
 					'external widget but the system isn\'t configured properly for this!'.
 					'<br />Please configure the config/external_widget.php config file first.'));
 			}
@@ -42,14 +42,14 @@ class External_widget_Controller extends Ninja_Controller {
 		if (is_null($name)) {
 			$name = Kohana::config('external_widget.widget_name');
 			if (empty($name)) {
-				die($this->translate->_("Don't know what widget to show since no ".
+				die(_("Don't know what widget to show since no ".
 					"default widget is specified in config file (config/external_widget.php)."));
 			}
 		}
 
 
 		$this->template->content = $this->add_view('single_widget');
-		$this->template->title = $this->translate->_('External widget');
+		$this->template->title = _('External widget');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 
 		$this->template->js_header = $this->add_view('js_header');

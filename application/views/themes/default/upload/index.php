@@ -2,15 +2,15 @@
 
 <div style="padding:30px">
 	<p>
-		<?php echo $this->translate->_('You may upload a new widget as long as you meet the requirements below.') ?><br /><br />
+		<?php echo _('You may upload a new widget as long as you meet the requirements below.') ?><br /><br />
 
 		<ul class="upload_list">
-			<li><?php echo $this->translate->_('The widget must be a zip file') ?></li>
-			<li><?php echo $this->translate->_('It must contain all the required files') ?></li>
-			<li title="<?php echo $this->translate->_('Click to show info') ?>"><a href="" id="dummy_href"><?php echo $this->translate->_('It must contain a manifest file (xml)') ?></a></li>
+			<li><?php echo _('The widget must be a zip file') ?></li>
+			<li><?php echo _('It must contain all the required files') ?></li>
+			<li title="<?php echo _('Click to show info') ?>"><a href="" id="dummy_href"><?php echo _('It must contain a manifest file (xml)') ?></a></li>
 		</ul>
 		<div id="xml_info" style="display:none;padding-top:10px">
-			<?php echo $this->translate->_('The xml file should contain the following info:'); ?>
+			<?php echo _('The xml file should contain the following info:'); ?>
 <pre>
 
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -24,11 +24,11 @@
 &lt;/widget_content&gt;
 
 </pre>
-		<?php echo $this->translate->_('The xml file should be placed in the root of the widget folder') ?>
+		<?php echo _('The xml file should be placed in the root of the widget folder') ?>
 		</div>
 	</p><br />
 
-	<?php echo $this->translate->_('Use the form below to upload and install a new widget:') ?><br /><br />
+	<?php echo _('Use the form below to upload and install a new widget:') ?><br /><br />
 <?php
 	echo form::open_multipart('upload/handle_upload', array('id' => 'upload_form'));
 	echo form::upload(array('id' => 'upload_file', 'name' => 'upload_file', 'type' => 'file'))."<br /><br />";

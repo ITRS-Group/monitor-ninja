@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 if (!isset($hyperapplet_path)) {
-	echo $this->translate->_('Hyperapplet does not seem to be correctly set up.');
+	echo _('Hyperapplet does not seem to be correctly set up.');
 	die();
 }
 ?>
@@ -9,8 +9,8 @@ if (!isset($hyperapplet_path)) {
 <div class="widget w32" id="page_links">
 	<ul>
 		<li>View, for all hosts:</li>
-		<li><?php echo html::anchor('status/host/all', $this->translate->_('Status Detail')) ?></li>
-		<li><?php echo html::anchor('status/hostgroup?items_per_page='.config::get('pagination.group_items_per_page', '*'), $this->translate->_('Status Overview')) ?></li>
+		<li><?php echo html::anchor('status/host/all', _('Status Detail')) ?></li>
+		<li><?php echo html::anchor('status/hostgroup?items_per_page='.config::get('pagination.group_items_per_page', '*'), _('Status Overview')) ?></li>
 	</ul>
 </div>
 

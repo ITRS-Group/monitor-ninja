@@ -15,7 +15,7 @@ class Noc_Controller extends Authenticated_Controller {
 	public function index()
 	{
 		$this->template->content = $this->add_view('tac/index');
-		$this->template->title = $this->translate->_('Monitoring » Tactical overview (NOC)');
+		$this->template->title = _('Monitoring » Tactical overview (NOC)');
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
 		$this->template->disable_refresh = true;
 
