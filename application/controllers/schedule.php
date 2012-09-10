@@ -244,6 +244,8 @@ class Schedule_Controller extends Authenticated_Controller
 		if (PHP_SAPI !== "cli") {
 			die("illegal call\n");
 		}
+		if (!$period_str)
+			die("Missing period string");
 		$this->auto_render=false;
 
 		$res = Scheduled_reports_Model::get_period_schedules($period_str);
