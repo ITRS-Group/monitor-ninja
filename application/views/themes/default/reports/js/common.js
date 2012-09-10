@@ -771,7 +771,7 @@ function check_form_values()
 		}
 	}
 
-	if ($("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
+	if (!$('#report_mode_standard:checked').length && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
