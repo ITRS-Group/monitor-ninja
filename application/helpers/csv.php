@@ -1,7 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
+/**
+ * Helper for CSV functionality
+ */
 class csv_Core
 {
+	/**
+	 * Set HTTP headers appropriate for CSV files
+	 *
+	 * This is trickier than it should be, due to IE
+	 */
 	public static function csv_http_headers($type, $options) {
 		$filename = $type . '.csv';
 		if ($options['schedule_id']) {
@@ -21,6 +29,9 @@ class csv_Core
 		}
 	}
 
+	/**
+	 * Return the fields used in an avail report
+	 */
 	public static function avail_fields($type)
 	{
 		$fields['hosts'] = array(

@@ -1189,8 +1189,6 @@ class Reports_Model extends Model
 	/**
 	 * Fetch information about SCHEDULED_DOWNTIME status
 	 *
-	 * @param $hostname string: The host we're interested in.
-	 * @param $service_description string: The service we're interested in.
 	 * @return Depth of initial downtime.
 	 */
 	public function get_initial_dt_depth()

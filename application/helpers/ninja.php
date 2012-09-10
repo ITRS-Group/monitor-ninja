@@ -47,6 +47,9 @@ class ninja_Core {
 		return $url_base . $path;
 	}
 
+	/**
+	 * Return array of all installed skins
+	 */
 	public static function get_skins() {
 		$available_skins = array();
 		$required_css = array('common.css', 'status.css', 'reports.css');

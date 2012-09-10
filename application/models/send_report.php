@@ -5,6 +5,9 @@
  */
 class Send_report_Model extends Model {
 	/**
+	 * @param $data The actual data to send
+	 * @param $filename The filename to use when sending this
+	 * @param $format The filetype - 'pdf', 'csv' or 'html'
 	 * @param $recipient one email or a string composed of comma separated strings
 	 * @throws RuntimeException if file is not readable
 	 * @return boolean

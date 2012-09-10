@@ -44,9 +44,6 @@ class Saved_reports_Model extends Model
 	 * @param $options The new options to save. For summary reports, this will
 	 *        first unset any old options and then set these, for other report
 	 *        types only the options that are set will be overwritten.
-	 * @param $objects The objects included in this report. Not used for
-	 *        summary reports, can be false to not do any changes
-	 * @param $months If an SLA report, change what months are affected
 	 * @return false on error, or the id of the saved report
 	 */
 	public function edit_report_info($type, $id, Report_options $options)

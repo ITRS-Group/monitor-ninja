@@ -161,6 +161,9 @@ class email_Core {
 		return email::$mail->send($message);
 	}
 
+	/**
+	 * Send out a report
+	 */
 	public static function send_report($to, $from, $subject, $content, $mime, $filename, $data)
 	{
 		// Connect to SwiftMailer

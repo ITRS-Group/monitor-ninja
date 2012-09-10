@@ -152,6 +152,9 @@ class reports_Core
 		return false;
 	}
 
+	/**
+	 * Return array of shortened month names
+	 */
 	public static function abbr_month_names()
 	{
 		return array(
