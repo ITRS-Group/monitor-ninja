@@ -32,23 +32,23 @@ class Summary_options_Core extends Report_options
 				return false;
 			$this['report_period'] = 'last7days';
 			if ($value < 4)
-				$this->options['summary_type'] = Summary_Controller::RECENT_ALERTS;
+				$this['summary_type'] = Summary_Controller::RECENT_ALERTS;
 			else
-				$this->options['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
+				$this['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
 			switch ($value) {
 			 case 1: case 4:
-				$this->options['alert_types'] = 3;
-				$this->options['state_types'] = 2;
+				$this['alert_types'] = 3;
+				$this['state_types'] = 2;
 				break;
 
 			 case 2: case 5:
-				$this->options['alert_types'] = 1;
-				$this->options['state_types'] = 2;
+				$this['alert_types'] = 1;
+				$this['state_types'] = 2;
 				break;
 
 			 case 3: case 6:
-				$this->options['alert_types'] = 2;
-				$this->options['state_types'] = 2;
+				$this['alert_types'] = 2;
+				$this['state_types'] = 2;
 				break;
 
 			 default:
