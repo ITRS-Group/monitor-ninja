@@ -149,7 +149,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
 		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
-		$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report doesn't exist anymore and has been removed")."\";\n";
 		$this->js_strings .= "var _reports_missing_objects_pleaseremove = '"._('Please modify the objects to include in your report below and then save it.')."';\n";
 
@@ -363,7 +362,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
 			$this->js_strings .= reports::js_strings();
 			$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-			$this->js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
 
 			$csv_link = $this->_get_csv_link();
 			$pdf_link = $this->_get_pdf_link();
