@@ -66,3 +66,7 @@ h1 {
 #content form.pagination_form {
 	float: right;
 }
+
+.pie-chart {
+	page-break-inside: avoid;
+}
