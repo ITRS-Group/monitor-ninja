@@ -51,10 +51,10 @@ class Scheduled_reports_Model extends Model
 	/**
 	 * Fetches all scheduled reports of current report type (avail/sla)
 	 *
-	 * @param $type string: {avail, sla}
+	 * @param $type string: {avail, sla, summary}
 	 * @return res
 	 */
-	public static function get_scheduled_reports($type='avail')
+	public static function get_scheduled_reports($type)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
