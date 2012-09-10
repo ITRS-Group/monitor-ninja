@@ -106,8 +106,14 @@ class Comment_Model extends Model {
 
 		$offset_limit = $count!==false || empty($num_per_page) ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
 
-		if (!$count)
+		if (!$count) {
+			if($for_services) {
+				$sql .= " WHERE c.service_description IS NOT NULL ";
+			} else {
+				$sql .= " WHERE c.service_description IS NULL ";
+			}
 			$sql .= " ORDER BY c.entry_time, c.host_name ".$offset_limit;
+		}
 		$result = $db->query($sql)->result();
 		if ($count !== false) {
 			return $result ? $result->current()->cnt : 0;
@@ -159,7 +165,7 @@ class Comment_Model extends Model {
 	*/
 	public static function count_comments_by_user($host=false, $service=false)
 	{
-		return static::fetch_comments_by_user($host, $service, false, false, true);
+		return static::fetch_comments_by_user($service, false, false, true);
 	}
 
 	/**

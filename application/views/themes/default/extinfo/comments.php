@@ -10,18 +10,16 @@ if (!empty($command_result)) {
 
 ?>
 
-<a name="comments"></a>
 <div class="widget left w98">
 	<form action="">
 	<?php
-	echo form::input(array('id' => ($service == false ? 'host' : 'service').'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
-	echo form::button('clear'.($service == false ? 'host' : 'service').'search', _('Clear'));
+	echo form::input(array('id' => ($service ? 'service' : 'host').'filterbox', 'style' => 'color:grey', 'class' => 'filterboxfield'), $filter_string);
+	echo form::button('clear'.($service ? 'service' : 'host').'search', _('Clear'));
 	?>
 	</form>
-<a name="comments"></a>
 	<?php echo (isset($pagination)) ? $pagination : ''; ?>
 	<?php if (Router::$method == 'show_comments') { echo form::open('extinfo/show_comments'); } ?>
-	<table class="comments_table" id="<?php echo ($service == false ? 'host' : 'service') ?>comments_table">
+	<table class="comments_table" id="<?php echo ($service ? 'service' : 'host') ?>comments_table">
 		<caption>
 			<?php echo (isset($label_title)) ? $label_title : _('Comments'); ?>:
 			<?php echo html::image($this->add_path('icons/16x16/add-comment.png'), array('alt' => $label_add_comment, 'title' => $label_add_comment, 'style' => 'margin-bottom: -4px')) ?>
@@ -30,14 +28,14 @@ if (!empty($command_result)) {
 			<?php echo html::image($this->add_path('icons/16x16/delete-comments.png'), array('alt' => _('Delete all comments'), 'title' => _('Delete all comments'), 'style' => 'margin-bottom: -4px')) ?>
 			<?php echo html::anchor('command/submit?host='.$host.'&service='.urlencode($service).'&cmd_typ='.$cmd_delete_all_comments, _('Delete all'), array('style' => 'font-weight: normal')); ?>
 			<?php if (Router::$method == 'show_comments') {
-				echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple<?php echo ($service == false ? '' : '_service') ?>_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
+				echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple<?php echo ($service ? '_service' : '') ?>_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 			<?php } ?>
 		</caption>
 		<thead>
 			<tr>
 			<?php if (Router::$method == 'show_comments') { ?>
-				<th class="item_select<?php echo ($service == false ? '' : '_service') ?>">
-					<?php echo form::checkbox(array('name' => 'selectall_'.($service == false ? 'host' : 'service'), 'class' => 'select_all_items'.($service == false ? '' : '_service')), ''); ?>
+				<th class="item_select<?php echo ($service ? '_service' : '') ?>">
+					<?php echo form::checkbox(array('name' => 'selectall_'.($service ? 'service' : 'host'), 'class' => 'select_all_items'.($service ? '_service' : '')), ''); ?>
 				</th>
 				<th style="white-space: nowrap">
 					<?php echo _('Host name') ?>
@@ -53,7 +51,6 @@ if (!empty($command_result)) {
 				<th><?php echo _('Persistent') ?></th>
 				<th><?php echo _('Type') ?></th>
 				<th colspan="2"><?php echo _('Expires') ?></th>
-				<!--<th style="widt: 25px" class="no-sort"><?php //echo _('Actions') ?></th>-->
 			</tr>
 			</thead>
 			<tbody>
@@ -62,9 +59,9 @@ if (!empty($command_result)) {
 			$i=0;foreach ($data as $row) { $i++; ?>
 			<tr class="<?php echo ($i%2 == 0) ? 'odd' : 'even' ?>">
 			<?php if (Router::$method == 'show_comments') { ?>
-				<td class="item_select<?php echo ($service == false ? '' : '_service') ?>"><?php echo form::checkbox(array('name' => 'del_'.$row['comment_type'].'[]', 'class' => 'deletecommentbox_'.($service == false ? 'host' : 'service')), $row['comment_id']); ?></td>
+				<td class="item_select<?php echo ($service ? '_service' : '') ?>"><?php echo form::checkbox(array('name' => 'del_'.$row['comment_type'].'[]', 'class' => 'deletecommentbox_'.(($service ? 'service' : 'host'))), $row['comment_id']); ?></td>
 				<td style="white-space: nowrap"><?php echo html::anchor('extinfo/details/host/'.$row['host_name'], $row['host_name']) ?></td>
-				<?php if (isset($row['service_description']) && !empty($row['service_description'])) { ?>
+				<?php if ($service) { ?>
 				<td style="white-space: normal"><?php echo html::anchor('extinfo/details/service/'.$row['host_name'].'?service='.urlencode($row['service_description']), $row['service_description']) ?></td>
 				<?php }
 				} ?>
@@ -124,8 +121,8 @@ if (!empty($command_result)) {
 	</table>
 	<?php
 		if (Router::$method == 'show_comments') {
-			echo '<div class="item_select'.($service == false ? '' : '_service').'">';
-			echo form::submit(array('name' => 'del_submit'.($service == false ? 'host' : 'service')), _('Delete Selected'));
+			echo '<div class="item_select'.($service ? '_service' : '').'">';
+			echo form::submit(array('name' => 'del_submit'.($service ? 'service' : 'host')), _('Delete Selected'));
 			echo '</div>';
 			echo form::close();
 		}

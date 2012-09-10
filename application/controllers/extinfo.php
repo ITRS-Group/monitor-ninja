@@ -510,7 +510,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
-			$comments = $this->_comments($host, $service, $type);
+			$comments = $this->_comments($host, $service);
 	}
 
 	/**
@@ -917,12 +917,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 	/**
 	*	Print comments for host or service
 	*/
-	public function _comments($host=false, $service=false, $type=false, $all=false, $items_per_page=false)
+	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
 		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
 		$host = trim($host);
 		$service = trim($service);
-		$type = trim($type);
+		$type = $service ? 'service' : 'host';
 		if (empty($all) && empty($host)) {
 			return false;
 		}
@@ -1025,7 +1025,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$command_success = $this->session->get('error_msg', $command_success);
 
 		if ($all === true) {
-			$tot = Comment_Model::count_comments_by_user($service != false, false, false, true);
+			$tot = Comment_Model::count_comments_by_user($host, $service);
 		} else {
 			$tot = 0;
 		}
@@ -1040,7 +1040,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 		$schedule_downtime_comments = $all ? Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 
 		$comment = false;
@@ -1050,8 +1050,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (!empty($comment_data)) {
 			foreach ($comment_data as $row) {
 				$comment[$i]['host_name'] = $row->host_name;
-				if (isset($row->service_description))
-					$comment[$i]['service_description'] = $row->service_description;
+				$comment[$i]['service_description'] = $row->service_description;
 				$comment[$i]['entry_time'] = $row->entry_time;
 				$comment[$i]['author_name'] = $row->author_name;
 				$comment[$i]['entry_time'] = $row->entry_time;
@@ -1076,8 +1075,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					continue;
 				}
 				$comment[$i]['host_name'] = $row->host_name;
-				if (isset($row->service_description))
-					$comment[$i]['service_description'] = $row->service_description;
+				$comment[$i]['service_description'] = $row->service_description;
 				$comment[$i]['entry_time'] = $row->entry_time;
 				$comment[$i]['author_name'] = $row->author_name;
 				$comment[$i]['entry_time'] = $row->entry_time;
@@ -1151,8 +1149,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/all_comments');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->template->content->host_comments = $this->_comments(true, false, 'host', true, $items_per_page);
-		$this->template->content->service_comments = $this->_comments(true, true, 'service', true, $items_per_page);
+		$this->template->content->host_comments = $this->_comments(true, false, true, $items_per_page);
+		$this->template->content->service_comments = $this->_comments(true, true, true, $items_per_page);
 		$this->template->title = _('Monitoring » All comments');
 	}
 
