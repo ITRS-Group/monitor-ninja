@@ -49,14 +49,14 @@ class Saved_reports_Model extends Model
 	 * @param $months If an SLA report, change what months are affected
 	 * @return false on error, or the id of the saved report
 	 */
-	public function edit_report_info($type, $id, Report_options $options, $objects=false, $months=false)
+	public function edit_report_info($type, $id, Report_options $options)
 	{
 		$update = false;
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
 
-		if (empty($options) || ($type!= 'summary' && empty($objects)) ) {
+		if (empty($options)) {
 			return false;
 		}
 
@@ -79,6 +79,23 @@ class Saved_reports_Model extends Model
 			unset($options['end_time']);
 		}
 
+		if ($type != 'summary') {
+			$objects = $options[$options->get_value('report_type')];
+			unset($options[$options->get_value('report_type')]);
+			
+			$actual_options = array();
+			foreach ($options as $option => $val) {
+				$actual_options[$option] = $val;
+			}
+			$options['id'] = $options['report_id'];
+			unset($options['report_id']);
+		}
+
+		if ($type == 'sla') {
+			$months = $options['months'];
+			unset($options['months']);
+		}
+
 		// INSERT or UPDATE?
 		if (!empty($id))
 			$update = true;
@@ -88,7 +105,7 @@ class Saved_reports_Model extends Model
 		}
 		if (!$update) {
 			if ($type == 'summary') {
-				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", report_name, setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", ".$db->escape($options['report_name']).", ".$db->escape(serialize($options)).")";
+				$sql = "INSERT INTO ".$type."_config (".self::USERFIELD.", report_name, setting) VALUES(".$db->escape(Auth::instance()->get_user()->username).", ".$db->escape($options['report_name']).", ".$db->escape(serialize($options->options)).")";
 			} else {
 				$keys = '';
 				$values = '';
@@ -114,7 +131,7 @@ class Saved_reports_Model extends Model
 		} else {
 			if ($type == 'summary') {
 				$sql = "UPDATE ".$type."_config SET report_name = ".$db->escape($options['report_name']).", ".
-					"setting=".$db->escape(serialize($options))." WHERE id=".$id;
+					"setting=".$db->escape(serialize($options->options))." WHERE id=".$id;
 			} else {
 				$sql = "UPDATE ".$type."_config SET ";
 				foreach ($options as $key => $value) {
@@ -348,6 +365,13 @@ class Saved_reports_Model extends Model
 
 		$res->result(false);
 		$return = $res->current();
+		$return['report_id'] = $return['id'];
+		if ($type == 'summary') {
+			$ret = unserialize($return['setting']);
+			$ret['report_id'] = $return['id'];
+			return $ret;
+		}
+
 		if ($type == 'sla') {
 			$period_info = self::get_period_info($id);
 			if ($period_info !== false) {
