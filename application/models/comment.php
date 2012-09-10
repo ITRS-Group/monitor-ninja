@@ -157,7 +157,7 @@ class Comment_Model extends Model {
 	/**
 	*	Wrapper method to fetch a count of all service- or host comments
 	*/
-	public function count_comments_by_user($host=false, $service=false)
+	public static function count_comments_by_user($host=false, $service=false)
 	{
 		return static::fetch_comments_by_user($host, $service, false, false, true);
 	}
@@ -193,7 +193,7 @@ class Comment_Model extends Model {
 		return $data;
 	}
 
-		/**
+	/**
 	*	Search through several fields for a specific value
 	*/
 	public function search($value=false, $limit=false)
