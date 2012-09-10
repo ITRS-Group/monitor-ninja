@@ -185,7 +185,7 @@ function expand_and_populate(data)
 function set_initial_state(what, val)
 {
 	var rep_type = $('input[name=type]').attr('value');
-	f = $('#report_form');
+	f = $('#report_form').get(0);
 	var item = '';
 	var elem = false;
 	switch (what) {
