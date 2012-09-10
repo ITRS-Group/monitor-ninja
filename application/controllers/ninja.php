@@ -194,7 +194,8 @@ class Ninja_Controller extends Template_Controller {
 			}
 		}
 
-		$current_skin = config::get('config.current_skin', '*', true);
+		# user might not be logged in due to CLI scripts, be quiet
+		$current_skin = @config::get('config.current_skin', '*', true);
 		if (!$current_skin) {
 			$current_skin = 'default/';
 		}
