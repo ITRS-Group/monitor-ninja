@@ -52,7 +52,7 @@
 	</form>
 	<br />
 
-	<form action="summary/generate" method="post" id="summary_form_std">
+	<form action="<?php echo url::base(true) ?>/summary/generate" method="post" id="summary_form_std">
 		<table id="std_report_table">
 			<tr>
 				<td>
@@ -72,12 +72,11 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
+						<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 						<span id="report_save_information">
-							<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
+						<input type="text" name="report_name" id="report_name" value="<?php echo $options['report_name'] ?>" maxlength="255" />
 							<input type="button" name="save_report_btn" class="save_report_btn" value="Save" />
 						</span>
-						<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 					</td>
 				<tr>
 					<td><?php echo help::render('output_format') ?><label for="output_format" id="outfmt"><?php echo _('Output format') ?></label></td>
@@ -257,12 +256,11 @@
 					</tr>
 					<tr>
 						<td>
-							<input type="hidden" name="saved_report_id" value="<?php echo $options['report_id'] ?>" />
+							<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 							<span id="report_save_information">
-								<input type="text" name="report_name" id="report_name" value="" maxlength="255" />
+							<input type="text" name="report_name" id="report_name" value="<?php echo $options['report_name'] ?>" maxlength="255" />
 								<input type="button" name="save_report_btn" class="save_report_btn" value="Save" />
 							</span>
-							<input type="hidden" name="old_report_name" value="<?php echo $options['report_name'] ?>" />
 						</td>
 						<td style="vertical-align: top">
 							<?php echo help::render('output_format') ?>

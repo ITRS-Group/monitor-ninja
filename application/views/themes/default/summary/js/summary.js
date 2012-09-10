@@ -24,6 +24,8 @@ $(document).ready(function() {
 				// detect on load as well, e.g. when going
 				// back from a generated report
 				set_report_mode('custom');
+			} else {
+				set_report_mode('standard');
 			}
 		});
 
