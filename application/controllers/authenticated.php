@@ -28,7 +28,6 @@ class Authenticated_Controller extends Ninja_Controller {
 				if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
 					Auth::instance()->force_login($_SERVER['argv'][2]);
 				}
-
 			} else if ($cli_access !== false) {
 				Auth::instance()->force_login($cli_access);
 			} else {
@@ -48,7 +47,8 @@ class Authenticated_Controller extends Ninja_Controller {
 						die('The provided authorization is invalid');
 				} else {
 					# store requested uri in session for later redirect
-					$this->session->set('requested_uri', url::current(true));
+					if ($this->session)
+						$this->session->set('requested_uri', url::current(true));
 
 					if (Router::$controller != 'default') {
 						url::redirect(Kohana::config('routes.log_in_form'));
