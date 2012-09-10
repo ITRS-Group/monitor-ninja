@@ -152,7 +152,7 @@ foreach ($result as $row) {
 						echo $row->should_be_scheduled ? sprintf($pending_output, date($date_format_str, $row->next_check)) : _('Host is not scheduled to be checked...');
 					else {
 						$output = $row->output;
-						echo str_replace('','', $output);
+						echo htmlspecialchars(str_replace('','', $output));
 					}
 					?>
 				</td>

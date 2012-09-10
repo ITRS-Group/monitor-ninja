@@ -205,10 +205,10 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			} else {
 				$output = $row->output;
 				$output = str_replace('','', $output);
-				echo str_replace('\n','<br />', $output);
+				echo str_replace('\n','<br />', htmlspecialchars($output));
 				if (config::get('config.service_long_output_enabled', '*')) {
 					if ($row->long_output) {
-						echo '<br />' . str_replace('\n','</br />', $row->long_output);
+						echo '<br />' . str_replace('\n','</br />', htmlspecialchars($row->long_output));
 					}
 				}
 			}
