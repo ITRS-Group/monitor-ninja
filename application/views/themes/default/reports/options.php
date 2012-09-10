@@ -12,7 +12,6 @@ if ($type == 'avail') { ?>
 			<td><div id="report_setup">
 					<input type="text" name="report_name" id="report_name" class="input-save-name"
 						value="<?php echo $options['report_name'] ?>" maxlength="255" style="margin: 0px" />
-					<input type="hidden" name="report_id" value="<?php echo $options['report_id'] ?>" />
 					<input type="hidden" name="include_trends" value="<?php echo $options['include_trends'] ?>" />
 					<input type="button" name="s1" value="<?php echo (!empty($options['report_id'])) ? _('Update report') : _('Save') ?>" class="button update-report20 save_report_btn" />
 				</div>
