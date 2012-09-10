@@ -370,7 +370,7 @@ class Scheduled_reports_Model extends Model
 
 		$sql = "SELECT rt.identifier, r.id FROM scheduled_report_types rt " .
 			"INNER JOIN scheduled_reports r ON rt.id=r.report_type_id " .
-			"INNER JOIN scheduled_report_periods p ON r.period_id=p.id".
+			"INNER JOIN scheduled_report_periods p ON r.period_id=p.id ".
 			"WHERE p.periodname=".$db->escape($period_str);
 		$res = $db->query($sql);
 		return count($res) != 0 ? $res : false;
