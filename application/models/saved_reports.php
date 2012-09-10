@@ -248,7 +248,6 @@ class Saved_reports_Model extends Model
 
 		if ($type === 'summary') {
 			$info = self::get_report_info($type, $id);
-			var_dump($info);
 			$settings = unserialize($info['settings']);
 			$settings['objects'] = $objects;
 			$info->settings = serialize($settings);
