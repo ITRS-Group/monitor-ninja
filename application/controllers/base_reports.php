@@ -71,8 +71,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w'));
 		$pipes = false;
-		$product = Kohana::config('config.product_name');
-		$command = 'php '.DOCROOT.KOHANA.' '.escapeshellarg($this->type.'/generate?'.$stropts).' '.escapeshellarg(Auth::instance()->get_user()->username).' | wkhtmltopdf -q --print-media-type --footer-left '.escapeshellarg("Produced by ".$product).' --footer-center '.escapeshellarg('(Page [page]/toPage])').' --footer-right '.escapeshellarg('<img src="/application/views/themes/default/icons/icon.png" />').' - -';
+		$command = '/usr/bin/php '.DOCROOT.KOHANA.' '.escapeshellarg($this->type.'/generate?'.$stropts).' '.escapeshellarg(Auth::instance()->get_user()->username).' | '.Kohana::config('reports.pdf_command');
 		Kohana::log('debug', "Running pdf generation command '$command'");
 		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
 
