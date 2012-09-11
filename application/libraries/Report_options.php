@@ -1,8 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Report_options_core implements ArrayAccess, Iterator {
-	protected $hosts = array();
-	protected $services = array();
 	protected static $rename_options = array(
 		't1' => 'start_time',
 		't2' => 'end_time',
@@ -167,14 +165,16 @@ class Report_options_core implements ArrayAccess, Iterator {
 			return $this[$this->get_value('report_type')];
 		 case 'hostgroups':
 			$model = new Hostgroup_Model();
+			$hosts = array();
 			foreach ($this[$this->get_value('report_type')] as $group)
-				$this->hosts = $model->member_names($group);
-			return $this->hosts;
+				$hosts = array_merge($hosts, $model->member_names($group));
+			return $hosts;
 		 case 'servicegroups':
 			$model = new Servicegroup_Model();
+			$services = array();
 			foreach ($this[$this->get_value('report_type')] as $group)
-				$this->services = $model->member_names($group);
-			return $this->services;
+				$services = array_merge($services, $model->member_names($group));
+			return $services;
 		}
 		return false;
 	}
