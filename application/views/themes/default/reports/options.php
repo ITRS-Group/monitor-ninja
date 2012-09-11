@@ -1,5 +1,4 @@
 <div style="display:none" id="link_container"></div>
-<span id="save_to_schedule"><?php echo (!$options['report_id']) ? '<em>'._('To schedule this report, save it first').'</em>' : ''; ?></span>
 <div style="display: none;">
 <?php
 if ($type == 'avail') { ?>
