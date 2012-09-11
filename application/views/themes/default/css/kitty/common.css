@@ -213,7 +213,7 @@ tr.even td {
 }
 tr.odd td {
 	border: 1px solid #dcdccd;
-	background: #f8f8f3;
+	background: #ffccff;
 }
 tr.odd td:first-child,
 tr.even td:first-child {
@@ -570,7 +570,7 @@ th.headerSortUp:first-child {
 div.setup-table tr.odd td,
 div.setup-table tr.even td {
 	border-bottom: 1px solid #dcdccd;
-	background: #f8f8f3;
+	background: #ffccff;
 }
 
 tr#service_row_2 td.bl,
