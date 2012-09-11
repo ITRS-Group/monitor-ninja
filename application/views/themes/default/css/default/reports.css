@@ -548,10 +548,6 @@ input#summary_items{
 	background: none;
 }
 
-tr.none td#scheduled_btn_ctrl {
-	padding-top: 7px;
-}
-
 .iseditable_txtarea {
 	width: 80%;
 }

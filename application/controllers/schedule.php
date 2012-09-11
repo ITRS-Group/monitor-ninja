@@ -130,6 +130,21 @@ class Schedule_Controller extends Authenticated_Controller
 	}
 
 	/**
+	 * Kills request with headers and content à la json
+	 *
+	 * @param $type string
+	 */
+	public function list_by_type($type)
+	{
+		$this->auto_render = false;
+		$scheduled_reports = Saved_reports_Model::get_saved_reports($type);
+		if(!$scheduled_reports) {
+			return json::fail(_("No reports found for that type"));
+		}
+		return json::ok($scheduled_reports);
+	}
+
+	/**
 	*	Schedule a report
 	*/
 	public function schedule()
@@ -450,7 +465,8 @@ class Schedule_Controller extends Authenticated_Controller
 			}
 		return false;
 	}
-		private function _convert_special_chars($str=false) {
+
+	private function _convert_special_chars($str=false) {
 		$str = trim($str);
 		if (empty($str)) return false;
 		$return_str = '';

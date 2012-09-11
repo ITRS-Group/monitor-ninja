@@ -59,96 +59,85 @@ $(document).ready(function() {
 	$(".deleteimg").css('cursor', 'pointer');
 
 	$("#type").change(function() {
-		var rep_type_val = $(this).fieldValue();
-		get_saved_reports(rep_type_val[0], true);
+		var report_type = $(this).fieldValue()[0];
+		$.getJSON(
+			_site_domain + _index_page + "/schedule/list_by_type/"+report_type,
+			function(response) {
+				if(response.error) {
+					alert(response.error);
+					return;
+				}
+				var saved_reports = document.getElementById("saved_report_id");
+				var child;
+				while(child = saved_reports.firstChild) {
+					saved_reports.removeChild(child);
+				}
+				if(!response.result.length) {
+					return;
+				}
+				var options = document.createDocumentFragment();
+				for(var i = 0; i < response.result.length; i++) {
+					var option = document.createElement("option");
+					var result = response.result[i];
+					option.appendChild(document.createTextNode(result.report_name));
+					option.setAttribute("value", result.id);
+					options.appendChild(option);
+				}
+				saved_reports.appendChild(options);
+			}
+		);
 	});
-});
 
-function submit_new_schedule(f)
-{
-	show_progress('progress', _wait_str);
-	// fetch values from form
-	var report_id = 0;
+	$('#new_schedule_report_form').submit(function(ev) {
+		ev.preventDefault();
 
-	var rep_type = $('#type').fieldValue();
-	rep_type = rep_type[0];
-	var rep_type_str = $('#type option:selected').val();
+		var rep_type_str = $('#type option:selected').val();
 
-	var saved_report_id = $('#saved_report_id').fieldValue()[0];
+		var recipients = $.trim($('#recipients').fieldValue()[0]);
+		if (recipients.indexOf('@') === -1) {
+			alert(_reports_invalid_email);
+			return false;
+		}
 
-	var period = $('#period').fieldValue()[0];
-
-	var recipients = $.trim($('#recipients').fieldValue()[0]);
-
-	if (!check_email(recipients)) {
-		alert(_reports_invalid_email);
-		return false;
-	}
-
-	var filename = $('#filename').fieldValue()[0];
-
-	var description = $('#description').fieldValue()[0];
-
-	if(!validate_form()) {
-		setTimeout(delayed_hide_progress, 1000);
-		return false;
-	}
-	var local_persistent_filepath = $.trim($('#local_persistent_filepath').val());
-	$.ajax({
-		url:_site_domain + _index_page + '/schedule/schedule',
-		type: 'POST',
-		data: {report_id: report_id, type: rep_type, saved_report_id: saved_report_id, period: period, recipients: recipients, filename: filename, description: description, local_persistent_filepath: local_persistent_filepath},
-		success: function(data) {
-			if (data.error) {
-				jgrowl_message(data.error, _reports_error);
-			} else {
+		if(!validate_form()) {
+			return false;
+		}
+		show_progress('progress', _wait_str);
+		$.ajax({
+			url: _site_domain + _index_page + '/schedule/schedule',
+			type: 'POST',
+			data: {
+				report_id: 0,
+				type: $('#type').fieldValue()[0],
+				saved_report_id: $('#saved_report_id').fieldValue()[0],
+				period: $('#period').fieldValue()[0],
+				recipients: recipients,
+				filename: $('#filename').fieldValue()[0],
+				description: $('#description').fieldValue()[0],
+				local_persistent_filepath: $.trim($('#local_persistent_filepath').val())
+			},
+			complete: function() {
+				$('#progress').hide();
+				// make sure we hide message about no schedules and show table headers
+				$('#' + rep_type_str + '_no_result').hide();
+				$('#' + rep_type_str + '_headers').show();
+			},
+			success: function(data) {
+				if (data.error) {
+					jgrowl_message(data.error, _reports_error);
+					return;
+				}
 				str = create_new_schedule_rows(data.result.id, $('html'));
 				$('#' + rep_type_str + '_scheduled_reports_table').append(str);
 				setup_editable();
 				$('#new_schedule_report_form').clearForm();
-				setTimeout(delayed_hide_progress, 1000);
-				//nr_of_scheduled_instances++;
 
-				// make sure we hide message about no schedules and show table headers
-				$('#' + rep_type_str + '_no_result').hide();
-				$('#' + rep_type_str + '_headers').show();
 				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-			}
-		},
-		dataType: 'json'
+			},
+			dataType: 'json'
+		});
 	});
-	setTimeout(delayed_hide_progress, 1000);
-	return false;
-}
-
-
-function check_email(mail_str)
-{
-	var emailRegex= new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i );
-	var mail_list = mail_str.split(',');
-	var result = false;
-	if (mail_list.length > 1) {
-		for (var i=0;i<mail_list.length;i++) {
-			if ($.trim(mail_list[i]) != '') {
-				var m = emailRegex.exec($.trim(mail_list[i]));
-				if (!m) {
-					return false;
-				} else {
-					result = true;
-				}
-			}
-		}
-	} else {
-		mail_str = $.trim(mail_str);
-		var m = emailRegex.exec(mail_str);
-		if (!m) {
-			result = false;
-		} else {
-			result = true;
-		}
-	}
-	return result;
-}
+});
 
 function schedule_delete(id, remove_type)
 {

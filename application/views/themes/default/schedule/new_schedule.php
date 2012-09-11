@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <div id="new_schedule_area">
-<?php echo form::open('schedule/schedule', array('id' => 'new_schedule_report_form', 'onsubmit' => 'return submit_new_schedule(this)')); ?>
+	<form action="schedule/schedule" id="new_schedule_report_form">
 		<h1><?php echo _('New schedule') ?></h1>
 		<table id="new_schedule_report_table">
 			<tr>
@@ -17,12 +17,11 @@
 						</select><br />
 					<?php } ?>
 					<label for="saved_report_id"><?php echo help::render('select-report').' '._('Select report') ?></label><br />
-					<!--	saved_report_id as drop-down depending on type		-->
 					<select name="saved_report_id" id="saved_report_id">
 						<option value=""> - <?php echo _('Select saved report') ?> - </option>
-					<?php	foreach ($saved_reports as $report) { ?>
+						<?php foreach ($saved_reports as $report) { ?>
 						<option value="<?php echo $report->id ?>"><?php echo $report->report_name ?></option>
-					<?php	} ?>
+						<?php } ?>
 					</select><br />
 					<label for="recipients"><?php echo help::render('recipents').' '._('Recipients') ?></label><br /><input type="text" class="schedule" name="recipients" id="recipients" value="" />
 				</td>
@@ -32,12 +31,10 @@
 					<label for="local_persistent_filepath"><?php echo help::render('local_persistent_filepath').' '._("Save report in this local folder") ?></label><br /><input type="text" class="schedule" name="local_persistent_filepath" id="local_persistent_filepath" value="" />
 				</td>
 			</tr>
-			<tr>
-				<td id="scheduled_btn_ctrl" colspan="2">
-					<input type="submit" class="button save" name="sched_subm" id="sched_subm" value="<?php echo _('Save') ?>" />
-					<input type="reset" class="button clear" name="reset_frm" id="reset_frm" value="<?php echo _('Clear') ?>" />
-				</td>
-			</tr>
 		</table>
+		<p>
+			<input type="submit" class="button save" value="<?php echo _('Save') ?>" />
+			<input type="reset" class="button clear" value="<?php echo _('Clear') ?>" />
+		</p>
 	</form>
 </div>
