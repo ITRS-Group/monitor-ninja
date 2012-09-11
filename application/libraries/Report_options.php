@@ -498,16 +498,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 	 *                   this exact report.
 	 */
 	public function as_keyval_string($anonymous=false, $obj_only=false) {
-		if ($anonymous) {
-			unset($opts['host_name']);
-			unset($opts['service_description']);
-			unset($opts['hostgroup']);
-			unset($opts['servicegroup']);
-			unset($opts['report_type']);
-		}
 		$opts_str = '';
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+				continue;
+			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $vk => $member) {
@@ -521,18 +516,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 	}
 
 	public function as_form($anonymous=false, $obj_only=false) {
-		if ($anonymous) {
-			$opts = $this;
-			unset($opts['host_name']);
-			unset($opts['service_description']);
-			unset($opts['hostgroup']);
-			unset($opts['servicegroup']);
-			unset($opts['report_type']);
-		}
-
 		$html_options = '';
 		foreach ($this as $key => $val) {
 			if ($obj_only && !in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
+				continue;
+			if ($anonymous && in_array($key, array('host_name', 'service_description', 'hostgroup', 'servicegroup', 'report_type')))
 				continue;
 			if (is_array($val)) {
 				foreach ($val as $k => $v)
