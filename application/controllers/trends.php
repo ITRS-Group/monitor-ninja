@@ -84,8 +84,6 @@ class Trends_Controller extends Base_reports_Controller {
 		$template->type = $this->type;
 		$template->reporting_periods = $this->_get_reporting_periods();
 
-		$template->saved_reports = $saved_reports;
-
 		$this->js_strings .= "var _reports_successs = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
