@@ -316,8 +316,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 	 */
 	public function set($name, $value)
 	{
-		if (isset(self::$rename_options[$name]))
-			$name = self::$rename_options[$name];
+		if (isset(static::$rename_options[$name]))
+			$name = static::$rename_options[$name];
 
 		if (!$this->validate_value($name, $value)) {
 			return false;
@@ -614,8 +614,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 
 	public static function setup_options_obj($type, $input = false)
 	{
-		$report_info = self::discover_options($type, $input);
-		$options = self::create_options_obj($type, $report_info);
+		$report_info = static::discover_options($type, $input);
+		$options = static::create_options_obj($type, $report_info);
 		return $options;
 	}
 }
