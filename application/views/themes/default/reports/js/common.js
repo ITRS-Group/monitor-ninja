@@ -391,62 +391,34 @@ function show_calendar(val, update) {
 }
 
 function set_selection(val, cb) {
-	// start by hiding ALL rows
-	hide_these = Array('hostgroup_row', 'servicegroup_row', 'host_row_2', 'service_row_2', 'settings_table', 'submit_button', 'enter_sla','display_service_status','display_host_status');
-	hide_rows(hide_these);
+	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #settings_table, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
 	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'servicegroups':
 			get_members('', 'servicegroup', cb);
-			$('#servicegroup_row').show();
-			$('#block_service_states').show();
-			$('#display_service_status').show();
+			$('#servicegroup_row, #block_service_states, #display_service_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hosts':
 			get_members('', 'host', cb);
-			$('#host_row_2').show();
-			$('#block_host_states').show();
-			$('#display_host_status').show();
+			$('#host_row_2, #block_host_states, #display_host_status').show();
 			$('#block_service_states').hide();
 			break;
 		case 'services':
 			get_members('', 'service', cb);
-			$('#service_row_2').show();
-			$('#block_service_states').show();
-			$('#display_serviec_status').show();
+			$('#service_row_2, #block_service_states, #display_serviec_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hostgroups':
 		default:
 			get_members('', 'hostgroup', cb);
-			$('#hostgroup_row').show();
-			$('#block_host_states').show();
-			$('#display_host_status').show();
+			$('#hostgroup_row, #block_host_states, #display_host_status').show();
 			$('#block_service_states').hide();
 			break;
 	}
-	$('#settings_table').show();
+	$('#settings_table, #submit_button').show();
 	if ($('input[name=type]').val() == 'sla')
 		$('#enter_sla').show();
-	$('#submit_button').show();
-}
-
-/**
-*	Uncheck form element by name
-*	Used to set correct initial values
-*	since some browser seem to cache checkbox state
-*/
-function uncheck(the_name, form_name)
-{
-	$("input[name='" + the_name + "']").attr('checked', false);
-}
-
-function hide_rows(input) {
-	for (i=0;i<input.length;i++) {
-		if (document.getElementById(input[i]))
-			$("#" + input[i]).hide();
-	}
 }
 
 /**
@@ -463,11 +435,10 @@ function show_progress(the_id, info_str) {
 	$("#" + the_id).html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>').show();
 }
 
-function get_members(val, type, cb) {
+function get_members(filter, type, cb) {
 	if (type=='') return;
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "group_member/";
-	var data = {input: val, type: type};
 	var field_name = false;
 	var empty_field = false;
 
@@ -489,7 +460,7 @@ function get_members(val, type, cb) {
 	$.ajax({
 		url: url,
 		type: 'POST',
-		data: data,
+		data: {input: filter, type: type},
 		success: function(data) {
 			if (data.error) {
 				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
@@ -505,10 +476,7 @@ function get_members(val, type, cb) {
 		dataType: 'json'
 	});
 
-
-	sel_str = type;
-	$('#settings_table').show();
-	$('#submit_button').show();
+	$('#settings_table, #submit_button').show();
 }
 
 /**
@@ -546,8 +514,13 @@ function empty_list(field) {
 	field = field.replace('[', '\\[');
 	field = field.replace(']', '\\]');
 
+	var select = document.getElementById(field);
+	var child;
+	while(child = select.firstChild) {
+		select.removeChild(child);
+	}
 	// truncate select list
-	$("#"+field).removeOption(/./);
+	//$("#"+field).removeOption(/./);
 }
 
 /**

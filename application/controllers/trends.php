@@ -62,7 +62,7 @@ class Trends_Controller extends Base_reports_Controller {
 		if($this->options['assumestatesduringnotrunning'])
 			$this->inline_js .= "toggle_label_weight(true, 'assume_progdown');\n";
 		$this->inline_js .= "invalid_report_names = false;\n";
-		$this->inline_js .= "uncheck('save_report_settings');\n";
+		$this->inline_js .= "$(\"input[name='save_report_settings']\").attr('checked', false);\n";
 		$this->inline_js .= "$('#report_save_information').hide();\n";
 
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
