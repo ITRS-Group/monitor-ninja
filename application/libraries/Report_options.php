@@ -602,6 +602,10 @@ class Report_options_core implements ArrayAccess, Iterator {
 
 	public static function setup_options_obj($type, $input = false)
 	{
+		if (is_a($input, 'Report_options')) {
+			$class = get_class($input);
+			return new $class($input);
+		}
 		$report_info = static::discover_options($type, $input);
 		$options = static::create_options_obj($type, $report_info);
 		return $options;
