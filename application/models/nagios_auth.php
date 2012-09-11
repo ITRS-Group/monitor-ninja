@@ -75,11 +75,11 @@ class Nagios_auth_Model extends Model
 	 */
 	public function check_rootness()
 	{
-		if ($this->user->authorized_for('all_hosts')) {
+		if ($this->user->authorized_for('host_view_all')) {
 			$this->view_hosts_root = true;
 		}
 
-		if ($this->user->authorized_for('all_services')) {
+		if ($this->user->authorized_for('service_view_all')) {
 			$this->view_services_root = true;
 		}
 
@@ -91,19 +91,19 @@ class Nagios_auth_Model extends Model
 			$this->authorized_for_system_commands = true;
 		}
 
-		if ($this->user->authorized_for('all_host_commands')) {
+		if ($this->user->authorized_for('host_edit_all')) {
 			$this->authorized_for_all_host_commands = true;
 		}
 
-		if ($this->user->authorized_for('all_service_commands')) {
+		if ($this->user->authorized_for('service_edit_all')) {
 			$this->authorized_for_all_service_commands = true;
 		}
 
-		if ($this->user->authorized_for('all_host_commands')) {
+		if ($this->user->authorized_for('host_edit_all')) {
 			$this->command_hosts_root = true;
 		}
 
-		if ($this->user->authorized_for('all_service_commands')) {
+		if ($this->user->authorized_for('service_edit_all')) {
 			$this->command_services_root = true;
 		}
 
