@@ -184,30 +184,6 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * @param int $start_time unix timestamp
-	 * @param int $end_time unix timestamp
-	 * @return string
-	 */
-	private function _nice_format_duration($start_time, $end_time) {
-		$duration = $end_time - $start_time;
-		$days = $duration / 86400;
-		$hours = ($duration % 86400) / 3600;
-		$minutes = ($duration % 3600) / 60;
-		$seconds = ($duration % 60);
-		return sprintf("%s: %dd %dh %dm %ds", _("Duration"),
-			   $days, $hours, $minutes, $seconds);
-	}
-
-	public function _print_duration($start_time, $end_time)
-	{
-		$fmt = nagstat::date_format();
-		echo date($fmt, $start_time) . " to " .
-			date($fmt, $end_time) . "<br />\n";
-
-		echo $this->_nice_format_duration($start_time, $end_time);
-	}
-
-	/**
 	 * Generates an alert summary report
 	 */
 	public function generate($input=false)
