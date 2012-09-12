@@ -278,7 +278,7 @@ class Reports_Controller extends Base_reports_Controller
 				$objects[] = $obj;
 		}
 
-		$get_vars = $this->options->as_keyval_string();
+		$get_vars = $this->options->as_keyval_string(true);
 
 		# fetch data
 		if ($this->type == 'avail') {
