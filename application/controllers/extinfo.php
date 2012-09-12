@@ -554,6 +554,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		# check if nagios is running, will affect wich template to use
+/*
 		$status = Program_status_Model::get_local();
 		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
 		if (!$is_running) {
@@ -572,11 +573,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			}
 			$this->template->content->commands->info_message_extra = $info_message;
 		} else {
+*/
 			$this->template->content->commands = $this->add_view('extinfo/nagios_commands');
+/*
 		}
-
-		# instance_name = NULL
-		# instance_id = NULL
+*/
 
 		$commands = $this->template->content->commands;
 
@@ -592,97 +593,33 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status_res = Program_status_Model::get_local();
+		$status= Program_status_Model::get_local();
 
-		# --------------------------------------
-		# Fetch program version from status.log
-		# --------------------------------------
-		# where is status.log on this system?
-		$nagios_config = System_Model::parse_config_file('nagios.cfg');
-		$status_file = $nagios_config['status_file'];
+		$content->program_status = $status;
+		$content->run_time = time::to_string(time() - $status->program_start);
+		$content->program_start = date($date_format_str, $status->program_start);
+		$content->last_log_rotation = $status->last_log_rotation ? date($date_format_str, $status->last_log_rotation) : 'never';
 
-		# use grep + awk to find version
-		exec("/bin/grep -m1 version= ".$status_file."|/bin/awk -F = {'print $2'}", $version_output, $result);
-
-		# check return values
-		if ($result==0 && !empty($version_output)) {
-			$version = $version_output[0];
-		} else {
-			$version = $na_str;
-		}
-
-		# assign program version to template
-		$this->template->content->program_version = $version;
-
-		if (!empty($status_res) && count($status_res) > 0) {
-			$status = $status_res->current();
-			$content->program_start = date($date_format_str, $status->program_start);
-			$run_time_str = time::to_string(time() - $status->program_start);
-			$content->run_time = $run_time_str;
-
-			$content->last_command_check = $status->last_command_check;
-			$content->last_log_rotation = $status->last_log_rotation;
-			$content->nagios_pid = $status->pid;
-			$content->notifications_enabled = $status->notifications_enabled;
-			$content->execute_service_checks = $status->active_service_checks_enabled;
-			$content->accept_passive_service_checks = $status->passive_service_checks_enabled;
-			$content->execute_host_checks = $status->active_host_checks_enabled;
-			$content->accept_passive_host_checks = $status->passive_service_checks_enabled;
-			$content->enable_event_handlers = $status->event_handlers_enabled;
-			$content->obsess_over_services = $status->obsess_over_services;
-			$content->obsess_over_hosts = $status->obsess_over_hosts;
-			$content->flap_detection_enabled = $status->flap_detection_enabled;
-			$content->enable_failure_prediction = $status->failure_prediction_enabled;
-			$content->process_performance_data = $status->process_performance_data;
-		} else {
-			# nothing found in program_status
-			# fetch what we can find from nagios.cfg for now
-
-			$content->notifications_enabled = isset($nagios_config['enable_notifications']) ? $nagios_config['enable_notifications'] : false;
-			$content->flap_detection_enabled = isset($nagios_config['enable_flap_detection']) ? $nagios_config['enable_flap_detection'] : false;
-			$content->enable_event_handlers = isset($nagios_config['enable_event_handlers']) ? $nagios_config['enable_event_handlers'] : false;
-			$content->execute_service_checks = isset($nagios_config['execute_service_checks']) ? $nagios_config['execute_service_checks'] : false;
-			$content->accept_passive_service_checks = isset($nagios_config['accept_passive_service_checks']) ? $nagios_config['accept_passive_service_checks'] : false;
-			$content->obsess_over_services = isset($nagios_config['obsess_over_services']) ? $nagios_config['obsess_over_services'] : false;
-			$content->execute_host_checks = isset($nagios_config['execute_host_checks']) ? $nagios_config['execute_host_checks'] : false;
-			$content->accept_passive_host_checks = isset($nagios_config['accept_passive_host_checks']) ? $nagios_config['accept_passive_host_checks'] : false;
-			$content->obsess_over_hosts = isset($nagios_config['obsess_over_hosts']) ? $nagios_config['obsess_over_hosts'] : false;
-			$content->process_performance_data = isset($nagios_config['process_performance_data']) ? $nagios_config['process_performance_data'] : false;
-
-			# set the following values to some default since we can't seem to determine
-			# the correct value at the moment
-			$content->enable_failure_prediction = false;
-			$content->program_start = $na_str;
-			$content->run_time = $na_str;
-			$run_time = false;
-			$content->last_command_check = $na_str;
-			$content->last_log_rotation = $na_str;
-
-			# are we runnig monitor or nagios?
-			$process_name = strstr(__FILE__, 'op5') ? 'monitor' : 'nagios';
-			$content->nagios_pid = exec("pidof ".$process_name."|awk {'print $1'}");
-		}
-
-		$content->notifications_class = $content->notifications_enabled ? 'notificationsENABLED' : 'notificationsDISABLED';
-		$content->notifications_str = $content->notifications_enabled ? $yes : $no;
-		$content->servicechecks_class = $content->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->servicechecks_str = $content->execute_service_checks ? $yes : $no;
-		$content->passive_servicechecks_class = $content->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->passive_servicechecks_str = $content->accept_passive_service_checks ? $yes : $no;
-		$content->hostchecks_class = $content->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->hostchecks_str = $content->execute_host_checks ? $yes : $no;
-		$content->passive_hostchecks_class = $content->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
-		$content->passive_hostchecks_str = $content->accept_passive_host_checks ? $yes : $no;
-		$content->eventhandler_class = $content->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
-		$content->eventhandler_str = $content->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_services_class = $content->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_services_str = $content->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->obsess_host_class = $content->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
-		$content->obsess_hosts_str = $content->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->flap_detection_class = $content->flap_detection_enabled ? 'checksENABLED' : 'checksDISABLED';
-		$content->flap_detection_str = $content->flap_detection_enabled ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
-		$content->performance_data_class = $content->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
-		$content->performance_data_str = $content->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->notifications_class = $status->enable_notifications ? 'notificationsENABLED' : 'notificationsDISABLED';
+		$content->notifications_str = $status->enable_notifications ? $yes : $no;
+		$content->servicechecks_class = $status->execute_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->servicechecks_str = $status->execute_service_checks ? $yes : $no;
+		$content->passive_servicechecks_class = $status->accept_passive_service_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->passive_servicechecks_str = $status->accept_passive_service_checks ? $yes : $no;
+		$content->hostchecks_class = $status->execute_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->hostchecks_str = $status->execute_host_checks ? $yes : $no;
+		$content->passive_hostchecks_class = $status->accept_passive_host_checks ? 'checksENABLED' : 'checksDISABLED';
+		$content->passive_hostchecks_str = $status->accept_passive_host_checks ? $yes : $no;
+		$content->eventhandler_class = $status->enable_event_handlers ? 'checksENABLED' : 'checksDISABLED';
+		$content->eventhandler_str = $status->enable_event_handlers ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_services_class = $status->obsess_over_services ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_services_str = $status->obsess_over_services ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->obsess_host_class = $status->obsess_over_hosts ? 'checksENABLED' : 'checksDISABLED';
+		$content->obsess_hosts_str = $status->obsess_over_hosts ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->flap_detection_class = $status->enable_flap_detection ? 'checksENABLED' : 'checksDISABLED';
+		$content->flap_detection_str = $status->enable_flap_detection ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
+		$content->performance_data_class = $status->process_performance_data ? 'checksENABLED' : 'checksDISABLED';
+		$content->performance_data_str = $status->process_performance_data ? ucfirst(strtolower($yes)) : ucfirst(strtolower($no));
 
 		# Assign commands variables
 		$commands->title = _('Process Commands');
@@ -691,7 +628,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$commands->label_restart_nagios = sprintf(_('Restart the %s process'), Kohana::config('config.product_name'));
 		$commands->link_restart_nagios = $this->command_link(nagioscmd::command_id('RESTART_PROCESS'), false, false, $commands->label_restart_nagios);
 
-		if ($content->notifications_enabled) {
+		if ($status->enable_notifications) {
 			$commands->label_notifications = _('Disable notifications');
 			$commands->link_notifications = $this->command_link(nagioscmd::command_id('DISABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		} else {
@@ -699,7 +636,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_notifications = $this->command_link(nagioscmd::command_id('ENABLE_NOTIFICATIONS'), false, false, $commands->label_notifications);
 		}
 
-		if ($content->execute_service_checks) {
+		if ($status->execute_service_checks) {
 			$commands->label_execute_service_checks = _('Stop executing service checks');
 			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		} else {
@@ -707,7 +644,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_execute_service_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_SVC_CHECKS'), false, false, $commands->label_execute_service_checks);
 		}
 
-		if ($content->accept_passive_service_checks) {
+		if ($status->accept_passive_service_checks) {
 			$commands->label_passive_service_checks = _('Stop accepting passive service checks');
 			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		} else {
@@ -715,7 +652,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_passive_service_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_SVC_CHECKS'), false, false, $commands->label_passive_service_checks);
 		}
 
-		if ($content->execute_host_checks) {
+		if ($status->execute_host_checks) {
 			$commands->label_execute_host_checks = _('Stop executing host checks');
 			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('STOP_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		} else {
@@ -723,7 +660,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_execute_host_checks = $this->command_link(nagioscmd::command_id('START_EXECUTING_HOST_CHECKS'), false, false, $commands->label_execute_host_checks);
 		}
 
-		if ($content->accept_passive_host_checks) {
+		if ($status->accept_passive_host_checks) {
 			$commands->label_accept_passive_host_checks = _('Stop accepting passive host checks');
 			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('STOP_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		} else {
@@ -731,7 +668,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_accept_passive_host_checks = $this->command_link(nagioscmd::command_id('START_ACCEPTING_PASSIVE_HOST_CHECKS'), false, false, $commands->label_accept_passive_host_checks);
 		}
 
-		if ($content->enable_event_handlers) {
+		if ($status->enable_event_handlers) {
 			$commands->label_enable_event_handlers = _('Disable event handlers');
 			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('DISABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		} else {
@@ -739,7 +676,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_enable_event_handlers = $this->command_link(nagioscmd::command_id('ENABLE_EVENT_HANDLERS'), false, false, $commands->label_enable_event_handlers);
 		}
 
-		if ($content->obsess_over_services) {
+		if ($status->obsess_over_services) {
 			$commands->label_obsess_over_services = _('Stop obsessing over services');
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		} else {
@@ -747,7 +684,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_obsess_over_services = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_SVC_CHECKS'), false, false, $commands->label_obsess_over_services);
 		}
 
-		if ($content->obsess_over_hosts) {
+		if ($status->obsess_over_hosts) {
 			$commands->label_obsess_over_hosts = _('Stop obsessing over hosts');
 			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('STOP_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		} else {
@@ -755,7 +692,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_obsess_over_hosts = $this->command_link(nagioscmd::command_id('START_OBSESSING_OVER_HOST_CHECKS'), false, false, $commands->label_obsess_over_hosts);
 		}
 
-		if ($content->flap_detection_enabled) {
+		if ($status->enable_flap_detection) {
 			$commands->label_flap_detection_enabled = _('Disable flap detection');
 			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('DISABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		} else {
@@ -763,7 +700,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$commands->link_flap_detection_enabled = $this->command_link(nagioscmd::command_id('ENABLE_FLAP_DETECTION'), false, false, $commands->label_flap_detection_enabled);
 		}
 
-		if ($content->process_performance_data) {
+		if ($status->process_performance_data) {
 			$commands->label_process_performance_data = _('Disable performance data');
 			$commands->link_process_performance_data = $this->command_link(nagioscmd::command_id('DISABLE_PERFORMANCE_DATA'), false, false, $commands->label_process_performance_data);
 		} else {

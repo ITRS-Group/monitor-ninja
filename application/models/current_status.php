@@ -5,6 +5,8 @@
  */
 class Current_status_Model extends Model
 {
+	private static $instance = false;
+
 	const HOST_UP =  0; /**< Nagios' host up code */
 	const HOST_DOWN = 1; /**< Nagios' host down code */
 	const HOST_UNREACHABLE = 2; /**< Nagios' host unreachable code */
@@ -20,123 +22,10 @@ class Current_status_Model extends Model
 	const SERVICE_CHECK_ACTIVE = 0; /**< Nagios performed the service check */
 	const SERVICE_CHECK_PASSIVE = 1; /**< the service check result was submitted by an external source */
 
-	public $flapping_services = 0; /**< Number of flapping services */
-	public $notification_disabled_services = 0; /**< Number of services with disabled notifications */
-	public $event_handler_disabled_svcs = 0; /**< Number of services with disabled event handler */
-	public $active_checks_disabled_svcs = 0; /**< Number of services with disabled active checks */
-	public $passive_checks_disabled_svcs = 0; /**< Number of services with disabled passive checks */
-
-	public $services_ok_disabled = 0; /**< Number of ok services with disabled active checks */
-	public $services_ok_unacknowledged = 0; /**< FIXME: Number of ok services that are actively checked. The fuck? */
-	public $services_ok = 0; /**< Number of ok services */
-
-	public $services_warning_host_problem = 0; /**< Number of services in warning on problem hosts */
-	public $services_warning_scheduled = 0; /**< Number of services in warning in scheduled downtime */
-	public $services_warning_acknowledged = 0; /**< Number of services in warning that are acknowledged */
-	public $services_warning_disabled = 0; /**< Number of services in warning with active checks disabled */
-	public $services_warning_unacknowledged = 0; /**< Number of services in warning that are unacknowledged */
-	public $services_warning = 0; /**< Number of services in warning */
-
-	public $services_unknown_host_problem = 0; /**< Number of services in unknown on problem hosts */
-	public $services_unknown_scheduled = 0; /**< Number of services in unknown in scheduled downtime */
-	public $services_unknown_acknowledged = 0; /**< Number of services in unknown that are acknowledged */
-	public $services_unknown_disabled = 0; /**< Number of services in unknown with active checks disabled */
-	public $services_unknown_unacknowledged = 0; /**< Number of services in unknown that are unacknowledged */
-	public $services_unknown = 0; /**< Number of services in unknown */
-
-	public $services_critical_host_problem = 0; /**< Number of services in critical on problem hosts */
-	public $services_critical_scheduled = 0; /**< Number of services in critical in scheduled downtime */
-	public $services_critical_acknowledged = 0; /**< Number of services in critical that are acknowledged */
-	public $services_critical_disabled = 0; /**< Number of services in critical with active checks disabled */
-	public $services_critical_unacknowledged = 0; /**< Number of services in critical that are unacknowledged */
-	public $services_critical = 0; /**< Number of services in critical */
-
-	public $services_pending_disabled = 0; /**< Number of pending services with active checks disabled */
-	public $services_pending = 0; /**< Number of pending services */
-
-	public $total_service_health = 0; /**< Strange total health algorithm as copied from nagios */
-	public $potential_service_health = 0; /**< Strange potential health algorithm as copied from nagios */
-
-	public $total_active_service_checks = 0; /**< Number of services where last check was active */
-	public $min_service_latency = -1.0; /**< Minimum service check latency */
-	public $max_service_latency = -1.0; /**< Maximum service check latency */
-	public $min_service_execution_time = -1.0; /**< Minimum service check execution time */
-	public $max_service_execution_time = -1.0; /**< Maximum service check execution time */
-	public $total_service_latency = 0; /**< Total service check latency */
-	public $total_service_execution_time = 0; /**< Total service check execution time */
-	public $total_passive_service_checks = 0; /**< Number of services where last check was passive */
-	public $total_services = 0; /**< The total number of services */
-
-	public $flap_disabled_hosts = 0; /**< Number of hosts with flap detection disabled */
-	public $flap_disabled_services = 0; /**< Number of services with flap detection disabled */
-	public $flapping_hosts = 0; /**< Number of flapping hosts */
-	public $notification_disabled_hosts = 0; /**< Number of hosts with notification disabled */
-	public $event_handler_disabled_hosts = 0; /**< Number of hosts with event handlers disabled */
-	public $active_checks_disabled_hosts = 0; /**< Number of hosts with active checks disabled */
-	public $passive_checks_disabled_hosts = 0; /**< Number of hosts with passive checks disabled */
-
-	public $hosts_up_scheduled = 0; /**< Number of hosts that are up and in scheduled downtime */
-	public $hosts_up_disabled = 0; /**< Number of hosts that are up with active checks disabled */
-	public $hosts_up_unacknowledged = 0; /**< FIXME: Number of hosts that are up with active checks enabled. Makes no sense. */
-	public $hosts_up = 0; /**< Number of hosts that are up */
-
-	public $hosts_down_scheduled = 0; /**< Number of hosts that are down and in scheduled downtime */
-	public $hosts_down_acknowledged = 0; /**< Number of hosts that are down and acknowledged */
-	public $hosts_down_disabled = 0; /**< Number of hosts that are down and disabled */
-	public $hosts_down_unacknowledged = 0; /**< Number of hosts that are down and unacknowledged */
-	public $hosts_down = 0; /**< Number of hosts that are down */
-
-	public $hosts_unreachable_scheduled = 0; /**< Number of hosts that are unreachable and in scheduled downtime */
-	public $hosts_unreachable_acknowledged = 0; /**< Number of hosts that are unreachable and acknowledged */
-	public $hosts_unreachable_disabled = 0; /**< Number of hosts that are unreachable and disabled */
-	public $hosts_unreachable_unacknowledged = 0; /**< Number of hosts that are unreachable and unacknowledged */
-	public $hosts_unreachable = 0; /**< Number of hosts that are unreachable */
-
-	public $hosts_pending_disabled = 0; /**< Number of pending hosts with active checks disabled */
-	public $hosts_pending = 0; /**< Number of pending hosts */
-
-	public $total_active_host_checks = 0; /**< Number of hosts where last check was active */
-
-	public $min_host_latency = -1.0; /**< Minimum host check latency */
-	public $max_host_latency = -1.0; /**< Maximum host check latency */
-	public $min_host_execution_time = -1.0; /**< Minimum host check execution time */
-	public $max_host_execution_time = -1.0; /**< Maximum host check execution time */
-
-	public $total_host_latency = 0; /**< Total host check latency */
-	public $total_host_execution_time = 0; /**< Total host check execution time */
-	public $total_passive_host_checks = 0; /**< Number of hosts where last check was passive */
-
-	public $total_hosts = 0; /**< Total number of hosts */
-
-	# health
-	public $percent_service_health = 0; /**< Percentage of total service health by potential service health */
-	public $percent_host_health = 0; /**< Percentage of total host health by potential host health */
-
-	public $average_service_latency = 0; /**< Average latency for service checks */
-	public $average_host_latency = 0; /**< Average latency for host checks */
-	public $average_service_execution_time = 0; /**< Average execution time for service checks */
-	public $average_host_execution_time = 0; /**< Average execution time for host checks */
-
-	public $total_blocking_outages = 0; /**< Number of blocking outages */
-	public $total_nonblocking_outages = 0; /**< Number of nonblocking outages */
-	public $affected_hosts = array(); /**< Number of hosts affected by outages */
-	public $unreachable_hosts = array(); /**< hosts being unreachable because of network outages */
-	public $affected_services = array(); /**< Number of services affected by outages */
-
+	private $program_data_present = false;
 	private $host_data_present = false;
 	private $service_data_present = false;
 	private $outage_data_present = false;
-
-	private $base_path = '';
-	private $auth = false;
-	private static $instance = false;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->base_path = Kohana::config('config.nagios_base_path');
-		$this->auth = Nagios_auth_Model::instance();
-	}
 
 	/**
 	 * Use this class as a singleton, as it is quite slow
@@ -155,31 +44,38 @@ class Current_status_Model extends Model
 	 * Fetch current host status from db for current user
 	 * @return bool indicating whether query worked
 	 */
+	public function program_status()
+	{
+		if ($this->program_data_present)
+			return;
+
+		$stats = new Program_status_Model();
+		$this->ps = $stats->get_local();
+		$this->program_data_present = true;
+		return;
+	}
+
+	/**
+	 * Fetch current host status from db for current user
+	 * @return bool indicating whether query worked
+	 */
 	public function host_status()
 	{
 		if ($this->host_data_present)
-			return true;
+			return;
 
 		$stats = new Stats_Model();
-		$res = $stats->get_stats('hosts', $stats->host_cols);
-		if ($res == false)
-			return false;
+		$this->hst = $stats->get_stats('host_totals');
+		$this->hst_perf = $stats->get_stats('host_performance', null, $this->ps->program_start);
 
-		foreach ($res[0] as $key => $val)
-			$this->$key = $val;
-
-		// this excludes pending
-		if ($this->hosts_unreachable_scheduled + $this->hosts_down_scheduled == 0)
-			$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable;
-		else
-			$all = $this->hosts_up + $this->hosts_down + $this->hosts_unreachable - $this->hosts_down_scheduled - $this->hosts_unreachable_scheduled;
+		$all = $this->hst->up + $this->hst->down + $this->hst->unreachable;
 		if ($all == 0)
 			$this->percent_host_health = 0.0;
 		else
-			$this->percent_host_health = number_format($this->hosts_up/$all*100, 1);
+			$this->percent_host_health = number_format($this->hst->up/$all*100, 1);
 
 		$this->host_data_present = true;
-		return true;
+		return;
 	}
 
 	/**
@@ -189,28 +85,20 @@ class Current_status_Model extends Model
 	public function service_status()
 	{
 		if ($this->service_data_present)
-			return true;
+			return;
 
 		$stats = new Stats_Model();
-		$res = $stats->get_stats('services', $stats->service_cols);
-		if ($res == false)
-			return false;
+		$this->svc = $stats->get_stats('service_totals');
+		$this->svc_perf = $stats->get_stats('service_performance', null, $this->ps->program_start);
 
-		foreach ($res[0] as $key => $val)
-			$this->$key = $val;
-
-		// this excludes pending
-		if ($this->services_critical_scheduled + $this->services_warning_scheduled + $this->services_unknown_scheduled == 0)
-			$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown;
-		else
-			$all = $this->services_ok + $this->services_warning + $this->services_critical + $this->services_unknown - $this->services_critical_scheduled - $this->services_warning_scheduled - $this->services_unknown_scheduled;
+		$all = $this->svc->ok + $this->svc->warning + $this->svc->critical + $this->svc->unknown;
 		if ($all == 0)
 			$this->percent_service_health = 0.0;
 		else
-			$this->percent_service_health = number_format($this->services_ok/$all*100, 1);
+			$this->percent_service_health = number_format($this->svc->ok/$all*100, 1);
 
 		$this->service_data_present = true;
-		return true;
+		return;
 	}
 
 	/**
@@ -222,14 +110,9 @@ class Current_status_Model extends Model
 	 */
 	public function analyze_status_data()
 	{
-		$errors = false;
-		if (!$this->host_status()) {
-			$errors[] = 'Faled to fetch host_status';
-		}
-
-		if (!$this->service_status()) {
-			$errors[] = 'Failed to fetch service_status';
-		}
+		$this->program_status();
+		$this->host_status();
+		$this->service_status();
 		return empty($errors) ? true : false;
 	}
 
@@ -239,6 +122,9 @@ class Current_status_Model extends Model
 	 */
 	public function find_hosts_causing_outages()
 	{
+throw new Exception('implement');
+/*
+TODO: implement
 		if ($this->outage_data_present)
 			return true;
 		try {
@@ -272,6 +158,7 @@ EOQ
 
 		$this->outage_data_present = true;
 		return true;
+*/
 	}
 
 	/**
@@ -281,6 +168,10 @@ EOQ
 	 */
 	private function get_child_hosts($host_name=false)
 	{
+throw new Exception('implement');
+return false;
+/*
+TODO: implement
 		$ls = Livestatus::instance();
 
 		$result = $ls->query(<<<EOQ
@@ -302,6 +193,7 @@ EOQ
 			}
 		}
 		return array('hosts' => $children, 'services' => $children_services);
+*/
 	}
 
 	/**

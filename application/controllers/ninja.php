@@ -273,23 +273,15 @@ class Ninja_Controller extends Template_Controller {
 	*/
 	public function _global_notification_checks()
 	{
-		$data = Program_status_Model::notifications_checks();
 		$notifications = false;
-		$data = $data ? $data->current() : false;
-		if ($data !== false) {
-			$this->notifications_disabled = !$data->notifications_enabled;
-			if ($this->notifications_disabled == true) {
-				$notifications[] = array(_('Notifications are disabled'), false);
-			}
-
-			$this->checks_disabled = !$data->active_service_checks_enabled;
-			if ($this->checks_disabled == true) {
-				$notifications[] = array(_('Service checks are disabled'), false);
-			}
-		} else {
-			$notifications[] = array(_('Unable to determine if notifications or service checks are disabled'), false);
+		$status = Program_status_Model::get_local();
+		if ($status->enable_notifications !== 1) {
+			$notifications[] = array(_('Notifications are disabled'), false);
 		}
-		unset($data);
+		if ($status->execute_service_checks !== 1) {
+			$notifications[] = array(_('Service checks are disabled'), false);
+		}
+		unset($status);
 
 		# check permissions
 		$auth = Nagios_auth_Model::instance();

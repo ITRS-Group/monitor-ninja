@@ -5,7 +5,7 @@
 	<tr><th class="headerNone" colspan="2" style="border-left:0px"><?php echo _('Process Information'); ?></th></tr>
 	<tr>
 		<td class="dark"><?php echo _('Program version') ?></td>
-		<td><?php echo $program_version ?></td>
+		<td><?php echo $program_status->program_version ?></td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo _('Program start time') ?></td>
@@ -17,7 +17,7 @@
 	</tr>
 	<tr>
 		<td class="dark"><?php echo _('Last external command check') ?></td>
-		<td><?php echo $last_command_check != 0 ? date(cal::get_calendar_format(true).' H:i:s', $last_command_check) : _('N/A') ?></td>
+		<td><?php echo $program_status->last_command_check != 0 ? date(cal::get_calendar_format(true).' H:i:s', $program_status->last_command_check) : _('N/A') ?></td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo _('Last log file rotation') ?></td>
@@ -25,7 +25,7 @@
 	</tr>
 	<tr>
 		<td class="dark"><?php echo $lable_pid ?></td>
-		<td><?php echo $nagios_pid ?></td>
+		<td><?php echo $program_status->nagios_pid ?></td>
 	</tr>
 	<tr>
 		<td class="dark"><?php echo _('Notifications enabled?') ?></td>

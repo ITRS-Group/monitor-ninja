@@ -8,11 +8,11 @@
 		<col style="width: 20%" />
 	</colgroup>
 	<tr>
-		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_CRITICAL, $current_status->services_critical.' '._('Critical')) ?></th>
-		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_WARNING, $current_status->services_warning.' '._('Warning'))?></th>
-		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_UNKNOWN, $current_status->services_unknown.' '._('Unknown')) ?></th>
-		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_OK, $current_status->services_ok.' '._('OK')) ?></th>
-		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_PENDING, $current_status->services_pending.' '._('Pending')) ?></th>
+		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_CRITICAL, $current_status->svc->critical.' '._('Critical')) ?></th>
+		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_WARNING, $current_status->svc->warning.' '._('Warning'))?></th>
+		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_UNKNOWN, $current_status->svc->unknown.' '._('Unknown')) ?></th>
+		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_OK, $current_status->svc->ok.' '._('OK')) ?></th>
+		<th><?php echo html::anchor('status/service/all?servicestatustypes='.nagstat::SERVICE_PENDING, $current_status->svc->pending.' '._('Pending')) ?></th>
 	</tr>
 	<tr>
 		<td style="padding:0px; white-space:normal;" class="white">
@@ -77,17 +77,17 @@
 		</td>
 		<td style="padding:0px; white-space:normal;" class="white">
 			<table>
-					<?php	if ($current_status->services_ok > 0) { ?>
+					<?php	if ($current_status->svc->ok > 0) { ?>
 					<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-ok.png'),_('OK')) ?></td>
-						<td class="status-ok" style="white-space:normal"><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->services_ok.' '._('OK'))) ?></td>
+						<td class="status-ok" style="white-space:normal"><?php echo html::anchor('status/service/all?servicestatustypes=1', html::specialchars($current_status->svc->ok.' '._('OK'))) ?></td>
 					</tr>
 					<?php }	if (count($services_ok_disabled) > 0) { foreach ($services_ok_disabled as $url => $title) { ?>
 					<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-disabled.png'),_('Disabled')) ?></td>
 						<td style="white-space:normal"><?php echo html::anchor($url, html::specialchars($title)) ?></td>
 					</tr>
-					<?php } } if (count($services_ok_disabled) == 0 && $current_status->services_ok == 0) { ?>
+					<?php } } if (count($services_ok_disabled) == 0 && $current_status->svc->ok == 0) { ?>
 					<tr>
 						<td class="dark"><?php echo html::image($this->add_path('icons/16x16/shield-not-ok.png'),_('OK')) ?></td>
 						<td><?php echo html::anchor($default_links['ok'], _('N/A')) ?></td>
