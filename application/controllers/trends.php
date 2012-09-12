@@ -198,7 +198,7 @@ class Trends_Controller extends Base_reports_Controller {
 			$this->js_strings .= "var report_period = '".$this->options['report_period']."';\n";
 
 			$avail_data = false;
-			$raw_trends_data = false;
+			$raw_trends_data = array();
 			$multiple_items = false; # structure of avail_data
 
 			if (isset($this->data_arr[0])) {
@@ -232,18 +232,7 @@ class Trends_Controller extends Base_reports_Controller {
 				# hostgroups / servicegroups or >= 2 hosts or services
 				$i=0;
 				foreach ($this->data_arr as $key => $data) {
-					# >= 2 hosts or services won't have the extra
-					# depth in the array, so we break out early
-					if (empty($data['log']) || !is_array($data['log'])) {
-						$raw_trends_data = $this->data_arr['log'];
-						break;
-					}
-
-					# $data is the outer array (with, source, log,
-					# states etc)
-					if (empty($raw_trends_data)) {
-						$raw_trends_data = $data['log'];
-					} else {
+					if (isset($data['log'])) {
 						$raw_trends_data = array_merge($data['log'], $raw_trends_data);
 					}
 				} # end foreach

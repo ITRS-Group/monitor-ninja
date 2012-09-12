@@ -300,193 +300,141 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->report_time_formatted = $report_time_formatted;
 
-		# AVAIL REPORT
-		if ($this->type == 'avail' && (empty($data_arr)
-			|| (sizeof($data_arr)==1 && empty($data_arr[0]))
-			|| (!isset($data_arr['source']) && empty($data_arr[0][0]['source']) ))) {
-			# avail report is empty
+		# ==========================================
+		# ========= REPORT STARTS HERE =============
+		# ==========================================
+		$this->template->content->report_options = $this->add_view('reports/options');
 
-			# what objects were submitted?
-			$template->report_header = _('Empty report');
+		$tpl_options = $this->template->content->report_options;
 
-			$template->error = $this->add_view('reports/error');
+		$tpl_options->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
+		$tpl_options->scheduled_info = $scheduled_info;
+		if ($this->type == 'avail') {
+			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
+			$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";
+			$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
+		}
 
-			$template->error->error_msg = sprintf(_("The selected objects for this %s report doesn't seem to exist anymore.%s
-			The reason for this is most likely that they have been removed or renamed in your configuration."), ucfirst(substr($this->options['report_type'], 0, strlen($this->options['report_type'])-1)), '<br />');
-			if (!empty($objects)) {
-				$template->error->missing_objects = $objects;
+		$this->js_strings .= "var cluster_mode = '".(int)$this->options['cluster_mode']."';\n";
+		$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->options['scheduleddowntimeasuptime']."';\n";
+
+		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
+		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
+		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
+		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
+		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
+		$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
+		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
+		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
+		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
+		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
+		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
+		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
+		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
+		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
+		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
+
+		$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
+		$this->js_strings .= reports::js_strings();
+		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
+
+		$csv_link = $this->_get_csv_link();
+		$pdf_link = $this->_get_pdf_link();
+
+		$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
+				'TOTAL_TIME_DOWN' => _('Down'),
+				'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
+				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
+		$service_graph_items = array('TOTAL_TIME_OK' => _('Ok'),
+				'TOTAL_TIME_WARNING' => _('Warning'),
+				'TOTAL_TIME_UNKNOWN' => _('Unknown'),
+				'TOTAL_TIME_CRITICAL' => _('Critical'),
+				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
+		$graph_filter = ${$sub_type.'_graph_items'};
+
+		# more than one object
+		if ($this->type == 'avail' && isset($data_arr[0])) {
+
+			$template->header = $this->add_view('reports/header');
+			$template->header->report_time_formatted = $report_time_formatted;
+			$template->header->csv_link = $csv_link;
+			$template->header->pdf_link = $pdf_link;
+
+			if ($is_group) {
+				foreach ($data_arr as $data) {
+					if (empty($data))
+						continue;
+					array_multisort($data);
+					$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
+				}
+			} else {
+				array_multisort($data_arr);
+				$template_values[] = $this->_get_multiple_state_info($data_arr, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
 			}
-		} else {
-			# ==========================================
-			# ========= REPORT STARTS HERE =============
-			# ==========================================
-			$this->template->content->report_options = $this->add_view('reports/options');
 
-			$tpl_options = $this->template->content->report_options;
-
-			$tpl_options->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
-			$tpl_options->scheduled_info = $scheduled_info;
-			if ($this->type == 'avail') {
-				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
-				$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";
-				$this->inline_js .= "show_calendar('".$this->options['report_period']."');\n";
-			}
-
-			$this->js_strings .= "var cluster_mode = '".(int)$this->options['cluster_mode']."';\n";
-			$this->js_strings .= "var scheduleddowntimeasuptime = '".$this->options['scheduleddowntimeasuptime']."';\n";
-
-			$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
-			$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
-			$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
-			$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-			$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
-			$this->js_strings .= "var _reports_schedule_interval_error = '"._(' -Please select a schedule interval')."';\n";
-			$this->js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
-			$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
-			$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
-			$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
-			$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
-			$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
-			$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
-			$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
-			$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
-			$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
-
-			$this->js_strings .= "var _reports_error_name_exists = '"._("You have entered a name for your report that already exists. <br />Please select a new name")."';\n";
-			$this->js_strings .= reports::js_strings();
-			$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
-
-			$csv_link = $this->_get_csv_link();
-			$pdf_link = $this->_get_pdf_link();
-
-			$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
-					'TOTAL_TIME_DOWN' => _('Down'),
-					'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
-					'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
-			$service_graph_items = array('TOTAL_TIME_OK' => _('Ok'),
-					'TOTAL_TIME_WARNING' => _('Warning'),
-					'TOTAL_TIME_UNKNOWN' => _('Unknown'),
-					'TOTAL_TIME_CRITICAL' => _('Critical'),
-					'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
-			$graph_filter = ${$sub_type.'_graph_items'};
-
-			# hostgroups / servicegroups
-			if ($this->type == 'avail' && isset($data_arr[0])) {
-
-				$template->header = $this->add_view('reports/header');
-				$template->header->report_time_formatted = $report_time_formatted;
-				$template->header->csv_link = $csv_link;
-				$template->header->pdf_link = $pdf_link;
-
-				if ($is_group) {
-					foreach ($data_arr as $data) {
-						if (empty($data))
-							continue;
-						array_multisort($data);
-						$template_values[] = $this->_get_multiple_state_info($data, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
-					}
-				} else {
-					array_multisort($data_arr);
-					$template_values[] = $this->_get_multiple_state_info($data_arr, $sub_type, $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
+			if (!empty($template_values) && count($template_values))
+				for($i=0,$num_groups=count($template_values)  ; $i<$num_groups ; $i++) {
+					$this->_reorder_by_host_and_service($template_values[$i], $this->options['report_type']);
 				}
 
-				if (!empty($template_values) && count($template_values))
-					for($i=0,$num_groups=count($template_values)  ; $i<$num_groups ; $i++) {
-						$this->_reorder_by_host_and_service($template_values[$i], $this->options['report_type']);
-					}
-
-				if($this->options['include_trends']) {
-					if($is_group) {
-						// Copy-pasted from controllers/trends.php
-						foreach ($data_arr as $key => $data) {
-							# >= 2 hosts or services won't have the extra
-							# depth in the array, so we break out early
-							if (empty($data['log']) || !is_array($data['log'])) {
-								if(isset($data_arr['log'])) {
-									$graph_data = $data_arr['log'];
-								} elseif(isset($data_arr[0]['log'])) {
-									// fixes the case of multiple groups when at least one of them
-									// has a '/' in its name
-									$graph_data = $data_arr[0]['log'];
-								}
-								break;
-							}
-
-							# $data is the outer array (with, source, log,
-							# states etc)
-							if (empty($graph_data)) {
-								$graph_data = $data['log'];
-							} else {
-								$graph_data = array_merge($data['log'], $graph_data);
-							}
-						} # end foreach
-					} else {
-						// We are not checking groups
-						$graph_data = $data_arr['log'];
-					}
-
-					$template->trends_graph = $this->add_view('trends/new_report');
-					$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-						$graph_data,
-						$this->options['start_time'],
-						$this->options['end_time'],
-						$template->title
-					);
-					$template->trends_graph->is_avail = true;
-				}
-
-				$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
-				$template->content->multiple_states = $template_values;
-				$template->content->hide_host = false;
-				$template->content->service_filter_status_show = true;
-				$template->content->report_time_formatted = $report_time_formatted;
-
-				$template->pie = $this->add_view('reports/pie_chart');
-
-				// ===== SETUP PIECHART VALUES =====
-				$image_data = array();
-				foreach($graph_filter as $key => $val) { $image_data[strtoupper($val)] = 0; }
-
-				# We've either got
-				# 1) custom group
-				# 2) hostgroup / servicegroup
-
-				$groups_added = 0;
-				$pie_groupname = false;
-				if(!isset($data_arr['groupname'])) { # actual hostgroup/servicegroup.
-					$tmp_title = ucfirst($sub_type)._('group breakdown');
-					$template->header->title = $tmp_title;
-					foreach($data_arr as $data) { # for every group
-						$added_group = false;
-						if (is_array($data['states'])) {
-							foreach ($graph_filter as $key => $val) {
-								if ($data['states'][$key]!=0) {
-									if (isset($image_data[$groups_added][strtoupper($val)])) {
-										$image_data[$groups_added][strtoupper($val)] += $data['states'][$key];
-									} else {
-										$image_data[$groups_added][strtoupper($val)] = $data['states'][$key];
-									}
-									$pie_groupname[$groups_added] = $data['groupname'];
-									$added_group = true;
-								}
-							}
+			if($this->options['include_trends']) {
+				$graph_data = array();
+				if($is_group) {
+					foreach ($data_arr as $key => $data) {
+						# $data is the outer array (with, source, log,
+						# states etc)
+						if (isset($data['log'])) {
+							$graph_data = array_merge($data['log'], $graph_data);
 						}
-						if($added_group)
-							$groups_added++;
-					}
+					} # end foreach
 				} else {
+					// We are not checking groups
+					$graph_data = $data_arr['log'];
+				}
+
+				$template->trends_graph = $this->add_view('trends/new_report');
+				$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+					$graph_data,
+					$this->options['start_time'],
+					$this->options['end_time'],
+					$template->title
+				);
+				$template->trends_graph->is_avail = true;
+			}
+
+			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
+			$template->content->multiple_states = $template_values;
+			$template->content->hide_host = false;
+			$template->content->service_filter_status_show = true;
+			$template->content->report_time_formatted = $report_time_formatted;
+
+			$template->pie = $this->add_view('reports/pie_chart');
+
+			// ===== SETUP PIECHART VALUES =====
+			$image_data = array();
+			foreach($graph_filter as $key => $val) { $image_data[strtoupper($val)] = 0; }
+
+			# We've either got
+			# 1) custom group
+			# 2) hostgroup / servicegroup
+
+			$groups_added = 0;
+			$pie_groupname = false;
+			if(!isset($data_arr['groupname'])) { # actual hostgroup/servicegroup.
+				$tmp_title = ucfirst($sub_type)._('group breakdown');
+				$template->header->title = $tmp_title;
+				foreach($data_arr as $data) { # for every group
 					$added_group = false;
-					$tmp_title = ucfirst($sub_type).' '._('state breakdown');
-					$template->header->title = $tmp_title;
-					if (is_array($data_arr['states'])) {
+					if (is_array($data['states'])) {
 						foreach ($graph_filter as $key => $val) {
-							if ($data_arr['states'][$key]!=0)
-							{
-								if (isset($image_data[0][strtoupper($val)])) {
-									$image_data[0][strtoupper($val)] += $data_arr['states'][$key];
+							if ($data['states'][$key]!=0) {
+								if (isset($image_data[$groups_added][strtoupper($val)])) {
+									$image_data[$groups_added][strtoupper($val)] += $data['states'][$key];
 								} else {
-									$image_data[0][strtoupper($val)] = $data_arr['states'][$key];
+									$image_data[$groups_added][strtoupper($val)] = $data['states'][$key];
 								}
+								$pie_groupname[$groups_added] = $data['groupname'];
 								$added_group = true;
 							}
 						}
@@ -494,297 +442,316 @@ class Reports_Controller extends Base_reports_Controller
 					if($added_group)
 						$groups_added++;
 				}
-
-				if ($groups_added > 0) {
-					foreach($graph_filter as $key => $val) {
-						for($i = 0; $i < $groups_added; $i++) {
-							if(isset($image_data[$i][strtoupper($val)]) && $image_data[$i][strtoupper($val)] == 0)
-								unset($image_data[$i][strtoupper($val)]);
-							else {
-								if (isset($image_data[$i][strtoupper($val)]))
-									$image_data[$i][strtoupper($val)] /= $groups_added;
-							}
-						}
-					}
-					$charts = false;
-					$page_js = '';
-					for($i = 0; $i < $groups_added; $i++) {
-						$data_str[$i]['img'] = base64_encode(serialize($image_data[$i]));
-						$data_str[$i]['host'] = $pie_groupname[$i];
-					}
-
-					$template->pie->data_str = $data_str;
-					$template->pie->image_data = $image_data;
-				}
-			} else { # host/services
-				$image_data = false;
-				$data_str = '';
-				if (!empty($data_arr)) {
-					$data = $data_arr;
-					$template->content = $this->add_view('reports/'.$this->type);
-					$template->content->options = $this->options;
-
-					$template->header = $this->add_view('reports/header');
-					$template->header->report_time_formatted = $report_time_formatted;
-					$template->header->csv_link = $csv_link;
-					$template->header->pdf_link = $pdf_link;
-
-					if ($this->type == 'avail') {
-						$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
-						$avail = $template->content;
-						$avail->state_values = $this->state_values;
-
-						$avail->avail_data = $avail_data;
-						$avail->source = $data['source'];
-						$avail->report_time_formatted = $report_time_formatted;
-
-						$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
-
-						$this->xtra_css[] = $this->add_path('css/default/reports.css');
-						if($this->options['include_trends']) {
-							$trends_data = false;
-							if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
-								$trends_data = $data['log'];
-							}
-
-							if($is_group) {
-								// Copy-pasted from controllers/trends.php
-								foreach ($data_arr as $key => $data) {
-									# >= 2 hosts or services won't have the extra
-									# depth in the array, so we break out early
-									if (empty($data['log']) || !is_array($data['log'])) {
-										$graph_data = $data_arr['log'];
-										break;
-									}
-
-									# $data is the outer array (with, source, log,
-									# states etc)
-									if (empty($graph_data)) {
-										$graph_data = $data['log'];
-									} else {
-										$graph_data = array_merge($data['log'], $graph_data);
-									}
-								} # end foreach
+			} else {
+				$added_group = false;
+				$tmp_title = ucfirst($sub_type).' '._('state breakdown');
+				$template->header->title = $tmp_title;
+				if (is_array($data_arr['states'])) {
+					foreach ($graph_filter as $key => $val) {
+						if ($data_arr['states'][$key]!=0)
+						{
+							if (isset($image_data[0][strtoupper($val)])) {
+								$image_data[0][strtoupper($val)] += $data_arr['states'][$key];
 							} else {
-								// We are not checking groups
-								$graph_data = $data_arr['log'];
+								$image_data[0][strtoupper($val)] = $data_arr['states'][$key];
 							}
-
-							$template->trends_graph = $this->add_view('trends/new_report');
-							$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-								$graph_data,
-								$this->options['start_time'],
-								$this->options['end_time'],
-								$template->title
-							);
-							$template->trends_graph->report_time_formatted = $report_time_formatted;
-							$this->xtra_js[] = $this->add_path('trends/js/trends.js');
+							$added_group = true;
 						}
-
-						$avail->pie = $this->add_view('reports/pie_chart');
-						$avail->pie->report_time_formatted = $report_time_formatted;
-
-						// ===== SETUP PIECHART VALUES =====
-						if (is_array($data['states'])) {
-							foreach ($graph_filter as $key => $val) {
-								if ($data['states'][$key]!=0)
-									$image_data[strtoupper($val)] = $data['states'][$key];
-							}
-						}
-
-						if ($image_data) {
-							$data_str = base64_encode(serialize($image_data));
-							$avail->pie->data_str = $data_str;
-							$avail->pie->source = $data['source'];
-						}
-
-						if ($sub_type=='host') {
-							$service_states = $this->_print_states_for_services($data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
-
-							if ($service_states !== false) {
-								$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
-								$header_str = _("Service state breakdown");
-								$template->svc_content = $this->add_view('reports/multiple_service_states');
-								$content = $template->svc_content;
-								$content->header_string = $header_str;
-								$content->multiple_states = $template_values;
-								$content->hide_host = true;
-								$content->service_filter_status_show = false;
-								$content->source = $data['source'];
-								$content->report_time_formatted = $report_time_formatted;
-							}
-						}
-
-						// fetch and display log messages
-						$log = arr::search($data, 'log');
-						if ($log !== false) {
-							$template->log_content = $this->add_view('reports/log');
-							$log_template = $template->log_content;
-							$log_template->log = array_shift($log);
-							$log_template->type = $sub_type;
-							$log_template->source = $data['source'];
-							$log_template->report_time_formatted = $report_time_formatted;
-							$log_template->date_format_str = nagstat::date_format();
-						}
-
-						$t1 = $this->options['start_time'];
-						$t2 = $this->options['start_time'];
-
-						# assume default values for the following
-						$backtrack = 1;
-
-						$links = array();
-						$trends_img_params = '';
-						$trends_link_params = '';
-						$downtime       = $this->options['scheduleddowntimeasuptime'];
-						$not_running    = $this->options['assumestatesduringnotrunning'];
-						$soft_states    = $this->options['includesoftstates'];
-
-						# links - only for HTML reports
-						switch($this->options['report_type']) {
-							case 'hosts':
-								# only meaningful to print these links if only one host selected
-								if(count($hostname) != 1)
-									break;
-
-								$host = $hostname[0];
-								$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
-								$all_avail_params = "report_type=".$this->options['report_type'].
-									 "&amp;host_name=all".
-									 "&amp;report_period={$this->options['report_period']}".
-									 "&amp;rpttimeperiod={$this->options['rpttimeperiod']}".
-									 "&amp;start_time=".$this->options['start_time'].
-									 "&amp;end_time=".$this->options['end_time'];
-
-								if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-								if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-								if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
-
-								$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = _('Availability report for all hosts');
-
-								$trends_params = "host=$host".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-								$trends_img_params = $this->trend_link."?".
-									"host=$host".
-									"&amp;createimage&amp;smallimage".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-								$trends_link_params = $this->trend_link."?".
-									"host=$host".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-
-
-								$links[$this->trend_link."?".$trends_params] = _('Trends');
-
-								$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
-
-								$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
-
-								$links[$this->status_link.$host] = _('Status detail');
-
-								$links[$this->history_link . "/" .$host] = _('Alert history');
-								$links[$this->notifications_link . "/" . $host] = _('Notifications');
-								break;
-
-							case 'services':
-
-								list($host, $service) = explode(';',$service[0]);
-
-								$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
-								if (isset($template->content)) {
-									$template->content->host = $host;
-									$template->content->service = $service;
-								}
-								$avail_params = "&show_log_entries".
-									 "&amp;t1=$t1".
-									 "&amp;t2=$t2".
-									 "&amp;report_period=".$this->options['report_period'].
-									 "&amp;rpttimeperiod=".$this->options['rpttimeperiod'].
-									 "&amp;backtrack=$backtrack".
-									 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($not_running, false).
-									 "&amp;show_log_entries".
-									 "&amp;showscheduleddowntime=yes";
-
-
-								if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-								if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-								if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
-
-								$trends_params = "host=$host".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-								$trends_img_params = $this->trend_link."?".
-									"host=$host".
-									"&amp;service=$service".
-									"&amp;createimage&amp;smallimage".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-								$trends_link_params = $this->trend_link."?".
-									"host=$host".
-									"&amp;service=$service".
-									"&amp;t1=$t1".
-									"&amp;t2=$t2".
-									"&amp;includesoftstates=".$soft_states.
-									"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
-									"&amp;backtrack=$backtrack";
-
-								$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";
-								$history_params       = "host=$host&amp;service=$service";
-								$notifications_params = "host=$host&amp;service=$service";
-
-
-								$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= _('Availability report for this host');
-								$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = _('Availability report for all services');
-								$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
-								$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
-								$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
-								$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
-
-								break;
-						}
-
-						$template->links = $links;
-						$template->trends = $trends_img_params;
-						$template->trends_link = $trends_link_params;
-						$template->source = $data['source'];
-						$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
-					} else {
-						# SLA report
-						$template->header->title = _('SLA breakdown');
-						$sla = $template->content;
-						$sla->report_data = $data_arr;
 					}
-
-				} # end if not empty. Display message to user?
+				}
+				if($added_group)
+					$groups_added++;
 			}
 
-			$this->template->inline_js = $this->inline_js;
-			$this->template->js_strings = $this->js_strings;
-			$this->template->css_header->css = $this->xtra_css;
+			if ($groups_added > 0) {
+				foreach($graph_filter as $key => $val) {
+					for($i = 0; $i < $groups_added; $i++) {
+						if(isset($image_data[$i][strtoupper($val)]) && $image_data[$i][strtoupper($val)] == 0)
+							unset($image_data[$i][strtoupper($val)]);
+						else {
+							if (isset($image_data[$i][strtoupper($val)]))
+								$image_data[$i][strtoupper($val)] /= $groups_added;
+						}
+					}
+				}
+				$charts = false;
+				$page_js = '';
+				for($i = 0; $i < $groups_added; $i++) {
+					$data_str[$i]['img'] = base64_encode(serialize($image_data[$i]));
+					$data_str[$i]['host'] = $pie_groupname[$i];
+				}
 
+				$template->pie->data_str = $data_str;
+				$template->pie->image_data = $image_data;
+			}
+		} else { # host/services
+			$image_data = false;
+			$data_str = '';
+			if (!empty($data_arr)) {
+				$data = $data_arr;
+				$template->content = $this->add_view('reports/'.$this->type);
+				$template->content->options = $this->options;
+
+				$template->header = $this->add_view('reports/header');
+				$template->header->report_time_formatted = $report_time_formatted;
+				$template->header->csv_link = $csv_link;
+				$template->header->pdf_link = $pdf_link;
+
+				if ($this->type == 'avail') {
+					$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
+					$avail = $template->content;
+					$avail->state_values = $this->state_values;
+
+					$avail->avail_data = $avail_data;
+					$avail->source = $data['source'];
+					$avail->report_time_formatted = $report_time_formatted;
+
+					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
+
+					$this->xtra_css[] = $this->add_path('css/default/reports.css');
+					if($this->options['include_trends']) {
+						$trends_data = false;
+						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
+							$trends_data = $data['log'];
+						}
+
+						if($is_group) {
+							// Copy-pasted from controllers/trends.php
+							foreach ($data_arr as $key => $data) {
+								# >= 2 hosts or services won't have the extra
+								# depth in the array, so we break out early
+								if (empty($data['log']) || !is_array($data['log'])) {
+									$graph_data = $data_arr['log'];
+									break;
+								}
+
+								# $data is the outer array (with, source, log,
+								# states etc)
+								if (empty($graph_data)) {
+									$graph_data = $data['log'];
+								} else {
+									$graph_data = array_merge($data['log'], $graph_data);
+								}
+							} # end foreach
+						} else {
+							// We are not checking groups
+							$graph_data = $data_arr['log'];
+						}
+
+						$template->trends_graph = $this->add_view('trends/new_report');
+						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+							$graph_data,
+							$this->options['start_time'],
+							$this->options['end_time'],
+							$template->title
+						);
+						$template->trends_graph->report_time_formatted = $report_time_formatted;
+						$this->xtra_js[] = $this->add_path('trends/js/trends.js');
+					}
+
+					$avail->pie = $this->add_view('reports/pie_chart');
+					$avail->pie->report_time_formatted = $report_time_formatted;
+
+					// ===== SETUP PIECHART VALUES =====
+					if (is_array($data['states'])) {
+						foreach ($graph_filter as $key => $val) {
+							if ($data['states'][$key]!=0)
+								$image_data[strtoupper($val)] = $data['states'][$key];
+						}
+					}
+
+					if ($image_data) {
+						$data_str = base64_encode(serialize($image_data));
+						$avail->pie->data_str = $data_str;
+						$avail->pie->source = $data['source'];
+					}
+
+					if ($sub_type=='host') {
+						$service_states = $this->_print_states_for_services($data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
+
+						if ($service_states !== false) {
+							$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
+							$header_str = _("Service state breakdown");
+							$template->svc_content = $this->add_view('reports/multiple_service_states');
+							$content = $template->svc_content;
+							$content->header_string = $header_str;
+							$content->multiple_states = $template_values;
+							$content->hide_host = true;
+							$content->service_filter_status_show = false;
+							$content->source = $data['source'];
+							$content->report_time_formatted = $report_time_formatted;
+						}
+					}
+
+					// fetch and display log messages
+					$log = arr::search($data, 'log');
+					if ($log !== false) {
+						$template->log_content = $this->add_view('reports/log');
+						$log_template = $template->log_content;
+						$log_template->log = array_shift($log);
+						$log_template->type = $sub_type;
+						$log_template->source = $data['source'];
+						$log_template->report_time_formatted = $report_time_formatted;
+						$log_template->date_format_str = nagstat::date_format();
+					}
+
+					$t1 = $this->options['start_time'];
+					$t2 = $this->options['start_time'];
+
+					# assume default values for the following
+					$backtrack = 1;
+
+					$links = array();
+					$trends_img_params = '';
+					$trends_link_params = '';
+					$downtime       = $this->options['scheduleddowntimeasuptime'];
+					$not_running    = $this->options['assumestatesduringnotrunning'];
+					$soft_states    = $this->options['includesoftstates'];
+
+					# links - only for HTML reports
+					switch($this->options['report_type']) {
+						case 'hosts':
+							# only meaningful to print these links if only one host selected
+							if(count($hostname) != 1)
+								break;
+
+							$host = $hostname[0];
+							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
+							$all_avail_params = "report_type=".$this->options['report_type'].
+								 "&amp;host_name=all".
+								 "&amp;report_period={$this->options['report_period']}".
+								 "&amp;rpttimeperiod={$this->options['rpttimeperiod']}".
+								 "&amp;start_time=".$this->options['start_time'].
+								 "&amp;end_time=".$this->options['end_time'];
+
+							if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
+							if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
+							if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
+
+							$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = _('Availability report for all hosts');
+
+							$trends_params = "host=$host".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+							$trends_img_params = $this->trend_link."?".
+								"host=$host".
+								"&amp;createimage&amp;smallimage".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+							$trends_link_params = $this->trend_link."?".
+								"host=$host".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+
+
+							$links[$this->trend_link."?".$trends_params] = _('Trends');
+
+							$histogram_params = "host=$host&amp;t1=$t1&amp;t2=$t2";
+
+							$links[$this->histogram_link . "?" . $histogram_params] = _('Alert histogram');
+
+							$links[$this->status_link.$host] = _('Status detail');
+
+							$links[$this->history_link . "/" .$host] = _('Alert history');
+							$links[$this->notifications_link . "/" . $host] = _('Notifications');
+							break;
+
+						case 'services':
+
+							list($host, $service) = explode(';',$service[0]);
+
+							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
+							if (isset($template->content)) {
+								$template->content->host = $host;
+								$template->content->service = $service;
+							}
+							$avail_params = "&show_log_entries".
+								 "&amp;t1=$t1".
+								 "&amp;t2=$t2".
+								 "&amp;report_period=".$this->options['report_period'].
+								 "&amp;rpttimeperiod=".$this->options['rpttimeperiod'].
+								 "&amp;backtrack=$backtrack".
+								 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($not_running, false).
+								 "&amp;show_log_entries".
+								 "&amp;showscheduleddowntime=yes";
+
+
+							if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
+							if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
+							if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
+
+							$trends_params = "host=$host".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+							$trends_img_params = $this->trend_link."?".
+								"host=$host".
+								"&amp;service=$service".
+								"&amp;createimage&amp;smallimage".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+							$trends_link_params = $this->trend_link."?".
+								"host=$host".
+								"&amp;service=$service".
+								"&amp;t1=$t1".
+								"&amp;t2=$t2".
+								"&amp;includesoftstates=".$soft_states.
+								"&amp;assumestatesduringnotrunning=".$this->options['assumestatesduringnotrunning'].
+								"&amp;backtrack=$backtrack";
+
+							$histogram_params     = "host=$host&amp;service=$service&amp;t1=$t1&amp;t2=$t2";
+							$history_params       = "host=$host&amp;service=$service";
+							$notifications_params = "host=$host&amp;service=$service";
+
+
+							$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= _('Availability report for this host');
+							$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = _('Availability report for all services');
+							$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
+							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
+							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
+							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
+
+							break;
+					}
+
+					$template->links = $links;
+					$template->trends = $trends_img_params;
+					$template->trends_link = $trends_link_params;
+					$template->source = $data['source'];
+					$template->header_string = sprintf(_("State breakdown for %s"), $data['source']);
+				} else {
+					# SLA report
+					$template->header->title = _('SLA breakdown');
+					$sla = $template->content;
+					$sla->report_data = $data_arr;
+				}
+
+			} # end if not empty. Display message to user?
 		}
+
+		$this->template->inline_js = $this->inline_js;
+		$this->template->js_strings = $this->js_strings;
+		$this->template->css_header->css = $this->xtra_css;
+
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
 		return $template;
 	}
