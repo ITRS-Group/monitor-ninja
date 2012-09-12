@@ -67,6 +67,8 @@ h1 {
 	float: right;
 }
 
-.pie-chart {
+.setup-table,
+.pie-chart,
+.sla_table {
 	page-break-inside: avoid;
 }
