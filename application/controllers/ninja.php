@@ -257,6 +257,8 @@ class Ninja_Controller extends Template_Controller {
 	*/
 	public function _is_alive()
 	{
+/* TODO: check if still needed */
+		return true;
 		$last_alive = Program_status_Model::last_alive();
 		$stale_data_limit = Kohana::config('config.stale_data_limit');
 		$diff = time() - $last_alive;;

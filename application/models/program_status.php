@@ -33,20 +33,11 @@ class Program_status_Model extends Model {
 	*/
 	public static function last_alive()
 	{
-		return true;
-		$res = false;
 		try {
-			$ls = Livestatus::instance();
-			$status = $ls->get_local();
-			if($status->program_status) {
-				$res = true;
+			if(self::get_local()) {
+				return true;
 			}
-		} catch (LivestatusException $e) {
-			/* FIXME: This should be logged to file perhaps? */
-			openlog("ninja", LOG_PID, LOG_USER);
-			syslog(LOG_ERR, "last_alive() failed: $e");
-			closelog();
-		}
-		return $res;
+		}catch(Exception $ex) {}
+		return false;
 	}
 }
