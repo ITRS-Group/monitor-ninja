@@ -584,24 +584,8 @@ class Reports_Controller extends Base_reports_Controller
 					# links - only for HTML reports
 					switch($this->options['report_type']) {
 						case 'hosts':
-							# only meaningful to print these links if only one host selected
-							if(count($hostname) != 1)
-								break;
-
-							$host = $hostname[0];
+							$host = $this->options['host_name'][0];
 							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($host);
-							$all_avail_params = "report_type=".$this->options['report_type'].
-								 "&amp;host_name=all".
-								 "&amp;report_period={$this->options['report_period']}".
-								 "&amp;rpttimeperiod={$this->options['rpttimeperiod']}".
-								 "&amp;start_time=".$this->options['start_time'].
-								 "&amp;end_time=".$this->options['end_time'];
-
-							if($downtime)			$all_avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-							if($not_running)		$all_avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-							if($soft_states)		$all_avail_params .= "&amp;includesoftstates=$soft_states";
-
-							$links[Router::$controller.'/'.Router::$method."?".$all_avail_params] = _('Availability report for all hosts');
 
 							$trends_params = "host=$host".
 								"&amp;t1=$t1".
@@ -649,20 +633,6 @@ class Reports_Controller extends Base_reports_Controller
 								$template->content->host = $host;
 								$template->content->service = $service;
 							}
-							$avail_params = "&show_log_entries".
-								 "&amp;t1=$t1".
-								 "&amp;t2=$t2".
-								 "&amp;report_period=".$this->options['report_period'].
-								 "&amp;rpttimeperiod=".$this->options['rpttimeperiod'].
-								 "&amp;backtrack=$backtrack".
-								 "&amp;assumestatesduringnotrunning=".$this->_convert_yesno_int($not_running, false).
-								 "&amp;show_log_entries".
-								 "&amp;showscheduleddowntime=yes";
-
-
-							if($downtime)			$avail_params .= "&amp;scheduleddowntimeasuptime=$downtime";
-							if($not_running)		$avail_params .= "&amp;assumestatesduringnotrunning=$not_running";
-							if($soft_states)		$avail_params .= "&amp;includesoftstates=$soft_states";
 
 							$trends_params = "host=$host".
 								"&amp;t1=$t1".
@@ -695,8 +665,6 @@ class Reports_Controller extends Base_reports_Controller
 							$notifications_params = "host=$host&amp;service=$service";
 
 
-							$links[Router::$controller.'/'.Router::$method."?host=$host$avail_params"] 			= _('Availability report for this host');
-							$links[Router::$controller.'/'.Router::$method."?host=null&amp;service=all$avail_params"] = _('Availability report for all services');
 							$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
 							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
 							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
