@@ -354,8 +354,7 @@ class Reports_Controller extends Base_reports_Controller
 		$graph_filter = ${$sub_type.'_graph_items'};
 
 		# more than one object
-		if ($this->type == 'avail' && isset($data_arr[0])) {
-
+		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
 			$template->header = $this->add_view('reports/header');
 			$template->header->report_time_formatted = $report_time_formatted;
 			$template->header->csv_link = $csv_link;
@@ -387,7 +386,7 @@ class Reports_Controller extends Base_reports_Controller
 						if (isset($data['log'])) {
 							$graph_data = array_merge($data['log'], $graph_data);
 						}
-					} # end foreach
+					}
 				} else {
 					// We are not checking groups
 					$graph_data = $data_arr['log'];
@@ -488,7 +487,7 @@ class Reports_Controller extends Base_reports_Controller
 			$image_data = false;
 			$data_str = '';
 			if (!empty($data_arr)) {
-				$data = $data_arr;
+				$data = $data_arr[0];
 				$template->content = $this->add_view('reports/'.$this->type);
 				$template->content->options = $this->options;
 
@@ -510,33 +509,7 @@ class Reports_Controller extends Base_reports_Controller
 
 					$this->xtra_css[] = $this->add_path('css/default/reports.css');
 					if($this->options['include_trends']) {
-						$trends_data = false;
-						if (isset($data['log']) && isset($data['source']) && !empty($data['source'])) {
-							$trends_data = $data['log'];
-						}
-
-						if($is_group) {
-							// Copy-pasted from controllers/trends.php
-							foreach ($data_arr as $key => $data) {
-								# >= 2 hosts or services won't have the extra
-								# depth in the array, so we break out early
-								if (empty($data['log']) || !is_array($data['log'])) {
-									$graph_data = $data_arr['log'];
-									break;
-								}
-
-								# $data is the outer array (with, source, log,
-								# states etc)
-								if (empty($graph_data)) {
-									$graph_data = $data['log'];
-								} else {
-									$graph_data = array_merge($data['log'], $graph_data);
-								}
-							} # end foreach
-						} else {
-							// We are not checking groups
-							$graph_data = $data_arr['log'];
-						}
+						$graph_data = $data_arr['log'];
 
 						$template->trends_graph = $this->add_view('trends/new_report');
 						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
@@ -567,7 +540,7 @@ class Reports_Controller extends Base_reports_Controller
 					}
 
 					if ($sub_type=='host') {
-						$service_states = $this->_print_states_for_services($data_arr['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
+						$service_states = $this->_print_states_for_services($data['source'], $this->options['start_time'], $this->options['end_time'], $this->options['report_type']);
 
 						if ($service_states !== false) {
 							$template_values[] = $this->_get_multiple_state_info($service_states, 'service', $get_vars, $this->options['start_time'], $this->options['end_time'], $this->type);
@@ -669,8 +642,7 @@ class Reports_Controller extends Base_reports_Controller
 							break;
 
 						case 'services':
-
-							list($host, $service) = explode(';',$service[0]);
+							list($host, $service) = explode(';',$this->options['service_description'][0]);
 
 							$template->header->title = ucfirst($this->options['report_type']).' '._('details for').': '.ucfirst($service).' '._('on host').': '.ucfirst($host);
 							if (isset($template->content)) {
@@ -844,9 +816,8 @@ class Reports_Controller extends Base_reports_Controller
 
 			$classname = get_class($this->options);
 			$opts = new $classname($this->options);
-			$opts['host_name'] = $host_name;
 			foreach ($res as $row)
-				$service_arr[] = $row->service_description;
+				$service_arr[] = $host_name . ';' . $row->service_description;
 			$opts['service_description'] = $service_arr;
 			$report_class = new Reports_Model($opts);
 

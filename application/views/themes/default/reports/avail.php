@@ -75,8 +75,5 @@
 			<td class="data"><?php echo time::to_string($avail_data['tot_time']) ?></td>
 			<td class="data"><?php echo reports::format_report_value($avail_data['tot_time_perc']) ?> %</td>
 		</tr>
-		<tr id="pdf-hide">
-			<td colspan="5" style="padding: 7px 0px 0px 0px; border: 0px; background-color: transparent"><?php echo $testbutton ?></td>
-		</tr>
 	</table>
 </div>
