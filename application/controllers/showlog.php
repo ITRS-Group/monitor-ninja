@@ -13,14 +13,12 @@
 class Showlog_Controller extends Authenticated_Controller
 {
 	private $show;
-	private $logos_path = '';
 	private $options = array();
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		$this->logos_path = Kohana::config('config.logos_path');
 		$this->get_options();
 	}
 

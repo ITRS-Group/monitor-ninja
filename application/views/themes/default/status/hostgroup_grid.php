@@ -80,7 +80,7 @@ $state_map = array(
 			<td class="icon bl">
 				<?php
 					if (!empty($host['icon_image'])) {
-						echo html::anchor('extinfo/details/?type=host&host='.$host['name'], html::image('application/media/images/logos/'.$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
+						echo html::anchor('extinfo/details/?type=host&host='.$host['name'], html::image(Kohana::config('config.logos_path').$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
 					} ?>
 			</td>
 			<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host['name']); ?></td>

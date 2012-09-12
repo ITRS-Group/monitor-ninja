@@ -120,7 +120,7 @@ foreach ($result as $row) {
 				</td>
 				<td class="icon">
 				<?php if (!empty($row->icon_image)) {
-					echo html::anchor('extinfo/details/?host='.urlencode($row->host_name),html::image('application/media/images/logos/'.$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
+					echo html::anchor('extinfo/details/?host='.urlencode($row->host_name),html::image(Kohana::config('config.logos_path').$row->icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->icon_image_alt, 'title' => $row->icon_image_alt)),array('style' => 'border: 0px'));
 				} ?>
 				</td>
 				<td style="width: 105px">

@@ -83,7 +83,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 			<td class="icon bl">
 				<?php
 					if (!empty($host->host_icon_image)) {
-						echo html::anchor('extinfo/details/?type=host&host='.$host->host_name, html::image('application/media/images/logos/'.$host->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->host_icon_image_alt, 'title' => $host->host_icon_image_alt)),array('style' => 'border: 0px'));
+						echo html::anchor('extinfo/details/?type=host&host='.$host->host_name, html::image(Kohana::config('config.logos_path').$host->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $host->host_icon_image_alt, 'title' => $host->host_icon_image_alt)),array('style' => 'border: 0px'));
 					} ?>
 			</td>
 			<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host->host_name); ?></td>

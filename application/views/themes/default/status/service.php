@@ -120,7 +120,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 						}
 
 						if (!empty($row->host_icon_image)) {
-							echo html::anchor('extinfo/details/?host='.urlencode($row->host_name),html::image('application/media/images/logos/'.$row->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->host_icon_image_alt, 'title' => $row->host_icon_image_alt)),array('style' => 'border: 0px'));
+							echo html::anchor('extinfo/details/?host='.urlencode($row->host_name),html::image(Kohana::config('config.logos_path').$row->host_icon_image, array('style' => 'height: 16px; width: 16px', 'alt' => $row->host_icon_image_alt, 'title' => $row->host_icon_image_alt)),array('style' => 'border: 0px'));
 						} ?>
 					<span class="obj_prop _<?php echo $row->host_name ?>" style="display:none"><?php echo $host_props ?></span>
 				</span>

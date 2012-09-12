@@ -12,14 +12,6 @@
  */
 class Extinfo_Controller extends Authenticated_Controller {
 	public $current = false;
-	public $logos_path = '';
-
-	public function __construct()
-	{
-		parent::__construct();
-
-		$this->logos_path = Kohana::config('config.logos_path');
-	}
 
 	/**
 	 * Default controller method
