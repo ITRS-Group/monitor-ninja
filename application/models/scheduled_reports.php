@@ -120,14 +120,22 @@ class Scheduled_reports_Model extends Model
 
 	/**
 	 * Get available report periods
-	 * @return Database result object on success. False on errors.
+	 * @return array [id] => string. False on errors.
 	 */
 	public static function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
 		$db = Database::instance();
 		$res = $db->query($sql);
-		return (!$res || count($res)==0) ? false : $res;
+		if(!$res || count($res)==0) {
+			return false;
+		}
+
+		$periods = array();
+		foreach ($res as $period_row) {
+			$periods[$period_row->id] = $period_row->periodname;
+		}
+		return $periods;
 	}
 
 	/**

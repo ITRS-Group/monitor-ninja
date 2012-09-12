@@ -24,16 +24,8 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->template->content = $this->add_view('schedule/schedules');
 		$available_schedules = $this->template->content;
 
-		$periods = array();
-		$periods_res = Scheduled_reports_Model::get_available_report_periods();
-		if ($periods_res) {
-			foreach ($periods_res as $period_row) {
-				$periods[$period_row->id] = $period_row->periodname;
-			}
-		}
-
 		$new_schedule = $this->add_view('schedule/new_schedule');
-		$new_schedule->available_schedule_periods = $periods;
+		$new_schedule->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
 
 		# we currently only have avail and SLA reports so hard-coding
 		# this somewhat here shouldn't be a big issue.
@@ -393,16 +385,10 @@ class Schedule_Controller extends Authenticated_Controller
 				}
 				break;
 			case 'period_id':
-				$period = false;
 				$periods = Scheduled_reports_Model::get_available_report_periods();
-				if ($periods !== false) {
-					foreach ($periods as $row) {
-						$period[$row->id] = $row->periodname;
-					}
-					echo (is_array($period) && array_key_exists($new_value, $period))
-						? $period[$new_value]
-						: '';
-				}
+				echo is_array($periods) && array_key_exists($new_value, $periods)
+					? $periods[$new_value]
+					: '';
 				break;
 			case 'recipients':
 				$new_value = str_replace(',', ', ', $new_value);

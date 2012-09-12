@@ -324,14 +324,7 @@ class Reports_Controller extends Base_reports_Controller
 
 			$tpl_options = $this->template->content->report_options;
 
-			$available_schedule_periods = false;
-			$schedule_periods = Scheduled_reports_Model::get_available_report_periods();
-			if ($schedule_periods !== false && !empty($schedule_periods)) {
-				foreach ($schedule_periods as $s) {
-					$available_schedule_periods[$s->id] = $s->periodname;
-				}
-			}
-			$tpl_options->available_schedule_periods = $available_schedule_periods;
+			$tpl_options->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
 			$tpl_options->scheduled_info = $scheduled_info;
 			if ($this->type == 'avail') {
 				$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";

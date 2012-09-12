@@ -76,14 +76,6 @@ class Summary_Controller extends Base_reports_Controller
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
-		$periods = array();
-		$periods_res = Scheduled_reports_Model::get_available_report_periods();
-		if ($periods_res) {
-			foreach ($periods_res as $period_row) {
-				$periods[$period_row->id] = $period_row->periodname;
-			}
-		}
-
 		$old_config_names = Saved_reports_Model::get_all_report_names($this->type);
 		$old_config_names_js = empty($old_config_names) ? "false" : "new Array('".implode("', '", $old_config_names)."');";
 
@@ -118,7 +110,8 @@ class Summary_Controller extends Base_reports_Controller
 		$template->old_config_names = $old_config_names;
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
-		$template->available_schedule_periods = $periods;
+
+		$template->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
 
 		$template->saved_reports = $saved_reports;
 
@@ -251,14 +244,6 @@ class Summary_Controller extends Base_reports_Controller
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
-
-		$periods = array();
-		$periods_res = Scheduled_reports_Model::get_available_report_periods();
-		if ($periods_res) {
-			foreach ($periods_res as $period_row) {
-				$periods[$period_row->id] = $period_row->periodname;
-			}
-		}
 
 		$views = array(
 			self::TOP_ALERT_PRODUCERS => 'toplist',
