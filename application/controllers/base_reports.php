@@ -256,8 +256,8 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 				$host_name = $data['states']['HOST_NAME'];
 				$service_description = $data['states']['SERVICE_DESCRIPTION'];
 
-				$return['host_link'][] = $php_self . "?host_name[]=". $host_name . "&report_type=hosts&new_avail_report_setup=1&".$get_vars;
-				$return['service_link'][] = $php_self . "?host_name[]=". $host_name . '&service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&new_avail_report_setup=1&'.$get_vars;
+				$return['host_link'][] = $php_self . "?host_name[]=". $host_name . "&report_type=hosts&".$get_vars;
+				$return['service_link'][] = $php_self . '?service_description[]=' . "$host_name;$service_description" . '&report_type=services&start_time=' . $start_time . '&end_time=' . $end_time . '&'.$get_vars;
 
 				$return['HOST_NAME'][] 				= $host_name;
 				$return['SERVICE_DESCRIPTION'][] 	= $service_description;
