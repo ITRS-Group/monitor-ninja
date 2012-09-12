@@ -19,7 +19,7 @@ class Livestatus {
         $config           = $config ? $config : 'livestatus';
         $this->config     = Kohana::config('database.'.$config);
         $this->auth       = Nagios_auth_Model::instance();
-        $this->connection = new LivestatusConnection($this->config['path']);
+        $this->connection = new LivestatusConnection(array('path' => $this->config['path']));
     }
 
     /* singleton */
@@ -378,7 +378,11 @@ TODO: implement
      * INTERNAL FUNCTIONS
      *******************************************************/
     private function getTable($table, $options = null) {
-        $query  = "Columns: ".join(" ", $options['columns'])."\n";
+        $columns = $options['columns'];
+        if(is_array($options['columns'])) {
+            $columns = join(" ", $options['columns']);
+        }
+        $query  = "Columns: ".$columns."\n";
         if(isset($options['filter'])) {
             $query .= $this->getQueryFilter(false, $options['filter']);
         }
@@ -445,12 +449,17 @@ TODO: implement
                     case '-and': $query .= $this->getQueryFilter($stats, $val, $op, $name, 'And');
                                  break;
                     case  '=':
-                    case '!=':
+                    case  '~':
+                    case  '=~':
+                    case  '~~':
                     case  '<':
                     case  '>':
-                    case  '>=':
                     case  '<=':
-                    case  '~~':
+                    case  '>=':
+                    case  '~':
+                    case '!=':
+                    case '!~':
+                    case '!=~':
                     case '!~~':  $query .= $this->getQueryFilter($stats, $val, $key, $name, 'And');
                                  break;
                     case '-sum':
@@ -491,11 +500,15 @@ TODO: implement
     }
 
     private function objects2Assoc($objects, $columns) {
+        $cols = $columns;
+        if(!is_array($cols)) {
+            $cols = array($columns);
+        }
         $result = array();
         foreach($objects as $o) {
             $n = array();
             $i = 0;
-            foreach($columns as $c) {
+            foreach($cols as $c) {
                 $n[$c] = $o[$i];
                 $i++;
             }
@@ -512,8 +525,8 @@ class LivestatusConnection {
     private $connection  = null;
     private $timeout     = 10;
 
-    public function __construct($connectionString) {
-        $this->connectionString = $connectionString;
+    public function __construct($options) {
+        $this->connectionString = $options['path'];
         $this->connect();
         return $this;
     }

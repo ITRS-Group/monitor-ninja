@@ -11,19 +11,19 @@ class pnp_Core
 	*/
 	public static function has_graph($host=false, $service=false)
 	{
+/* TODO: integrate in normal query instead calling it for every host / service */
 		try {
 			$ls = Livestatus::instance();
-			$query = '';
+			$objects = null;
 			if (empty($service)) {
-				$query .= "GET hosts\nFilter: name = $host\n";
+				$objects = $ls->getHosts(array('filter' => array('name' => $host), 'columns' => 'pnpgraph_present'));
 			} else {
 				$service = urldecode($service);
-				$query .= "GET services\nFilter: host_name = $host\nFilter: description = $service\n";
+				$objects = $ls->getServices(array('filter' => array('host_name' => $host, 'description' => $service), 'columns' => 'pnpgraph_present'));
 			}
-			$query .= "Columns: pnpgraph_present";
-			$res = $ls->query($query);
-			if (isset($res[0]) && isset($res[0][0]) && $res[0][0] === 1)
+			if (isset($objects) and isset($objects[0]) and $objects[0]['pnpgraph_present'] === 1) {
 				return true;
+			}
 		} catch (LivestatusException $ex) {}
 		return false;
 	}
