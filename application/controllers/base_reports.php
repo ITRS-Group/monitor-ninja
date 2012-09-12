@@ -156,17 +156,10 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			$optclass = get_class($this->options);
 			$options = new $optclass($this->options);
 		}
-		$err_msg = $this->err_msg;
 
-		if (empty($arr))
-			return false;
-		if ($type!='hostgroup' && $type!='servicegroup')
-			return false;
-		$hostgroup = false;
-		$servicegroup = false;
 		$data_arr = false;
 		foreach ($arr as $data) {
-			$options[$type] = array($data);
+			$options[$options->get_value('report_type')] = array($data);
 			$model = new Reports_model($options);
 			$data_arr[] = $model->get_uptime();
 		}
