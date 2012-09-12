@@ -53,9 +53,11 @@ class Status_totals_Widget extends widget_Base {
 			$hosts    = $stats->get_stats('host_totals');
 			$services = $stats->get_stats('service_totals');
 		} else if ($this->grouptype == 'host') {
-			$hosts    = $stats->get_stats('host_totals',    array('filter' => array(      'group' => array('>=' => $this->host))));
-			$services = $stats->get_stats('service_totals', array('filter' => array( 'host_group' => array('>=' => $this->host))));
+			$hosts    = $stats->get_stats('host_totals',    array('filter' => array(      'groups' => array('>=' => $this->host))));
+			$services = $stats->get_stats('service_totals', array('filter' => array( 'host_groups' => array('>=' => $this->host))));
 		} else {
+throw new Exception('implement');
+/* TODO: implement */
 			$services = $stats->get_stats('servicesbygroup', $svc_cols, array('Filter: servicegroup_name = '.$this->host), array('servicegroup_name'));
 			$ls = Livestatus::instance();
 			foreach ($services as $service) {

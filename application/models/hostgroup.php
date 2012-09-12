@@ -323,8 +323,8 @@ class Hostgroup_Model extends Ninja_Model
 	 * This includes some information about the host's services
 	 */
 	public static function get_group_hosts($group_name) {
+/* TODO: check if this is really needed or can be included in default query */
 		$ls = Livestatus::instance();
-		$res = $ls->query("GET hostsbygroup\nFilter: hostgroup_name = $group_name", array('icon_image', 'icon_image_alt', 'name', 'services_with_state', 'action_url', 'action_url', 'notes_url','pnpgraph_present'));
-		return $res;
+		return $ls->getHostsByGroup(array('filter' => array('hostgroup_name' => array('>=' => $group_name))));
 	}
 }

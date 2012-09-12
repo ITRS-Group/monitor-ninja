@@ -68,6 +68,17 @@ class Livestatus {
         return $this->getTable('hostgroups', $options);
     }
 
+    /* getHostsByGroup */
+    public function getHostsByGroup($options = null) {
+        if(!isset($options['columns'])) {
+            $options['columns'] = array(
+                'icon_image', 'icon_image_alt', 'name', 'services_with_state', 'action_url',
+                'action_url', 'notes_url','pnpgraph_present'
+            );
+        }
+        return $this->getTable('hostsbygroup', $options);
+    }
+
     /* getServices */
     public function getServices($options = null) {
         if(!isset($options['columns'])) {
