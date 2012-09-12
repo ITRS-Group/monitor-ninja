@@ -2,7 +2,7 @@
 
 class Avail_options extends Report_options {
 	public function __construct($options = false) {
-		parent::__construct($options);
 		$this->vtypes['report_period']['default'] = 'last7days';
+		parent::__construct($options);
 	}
 }

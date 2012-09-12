@@ -113,6 +113,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 				8 => _('Service Unknown States'));
 		if (isset($this->vtypes['skin']))
 			$this->vtypes['skin']['default'] = config::get('config.current_skin', '*');
+		if (isset($this->vtypes['report_period']) && isset($this->vtypes['report_period']['default']))
+			$this['report_period'] = $this['report_period'];
 		if ($options)
 			$this->set_options($options);
 	}
