@@ -4,6 +4,9 @@
  * A model for generating statistics from livestatus
  */
 class Stats_Model extends Model {
+	/**
+	 * return statistics for given type
+	 */
 	public function get_stats($type, $options = null, $last_program_start = null) {
 		try {
 			$ls = Livestatus::instance();

@@ -294,16 +294,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
-		# check if nagios is running, will affect wich template to use
-		$status = Program_status_Model::get_local();
-		$is_running = empty($status) || count($status)==0 ? false : $status->current()->is_running;
-		if (empty($status) || !$is_running) {
-			$this->template->content->commands = $this->add_view('extinfo/not_running');
-			$this->template->content->commands->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
-			$this->template->content->commands->info_message_extra = sprintf(_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars(_('here'))), Kohana::config('config.product_name'));
-		} else {
-			$this->template->content->commands = $this->add_view('extinfo/commands');
-		}
+		$this->template->content->commands = $this->add_view('extinfo/commands');
 
 		$commands = $this->template->content->commands;
 		if ($type == 'host') {
