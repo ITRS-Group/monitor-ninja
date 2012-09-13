@@ -97,11 +97,6 @@ input[type=button] {
 	border: 1px solid #cccccc;
 }
 
-form.directlink {
-	background: #cdcdcd url(images/bg.png) repeat-x;
-	border: 1px solid #dcdcdc;
-}
-
 input.wide,
 input.sla_month,
 input#cal_end,

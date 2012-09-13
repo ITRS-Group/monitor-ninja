@@ -100,8 +100,7 @@ class Reports_Controller extends Base_reports_Controller
 			}
 		}
 
-		# get all saved reports for user
-		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		$this->template->content->report_options = $this->add_view('reports/options');
 
 		$scheduled_info = false;
 		if ($this->options['report_id']) {
@@ -109,14 +108,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->is_scheduled = empty($scheduled_info) ? false: true;
 		}
 		$template->scheduled_info = $scheduled_info;
-
-		$label_avail = _('Availability');
-
-		$label_sla = _('SLA');
-		$label_switch_to = _('Switch to');
-
-		$label_report = _('report');
-		$template->label_report = $label_report;
 
 		if ($this->options['report_id']) {
 			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
@@ -132,6 +123,11 @@ class Reports_Controller extends Base_reports_Controller
 		if($this->options['csv_output'])
 			$this->inline_js .= "toggle_label_weight(true, 'csvout');\n";
 		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
+
+		$label_avail = _('Availability');
+		$label_sla = _('SLA');
+		$label_switch_to = _('Switch to');
+		$label_report = _('report');
 
 		$this->js_strings .= "var _edit_str = '"._('edit')."';\n";
 		$this->js_strings .= "var _hide_str = '"._('hide')."';\n";
@@ -154,16 +150,17 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->inline_js = $this->inline_js;
 
-		$template->type = $this->type;
+		$this->template->set_global('type', $this->type);
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
-		$template->reporting_periods = $this->_get_reporting_periods();
+		$template->report_options->reporting_periods = $this->_get_reporting_periods();
+		$template->report_options->months = reports::abbr_month_names();
 
-		$template->months = reports::abbr_month_names();
-
+		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		$template->report_options->saved_reports = $saved_reports;
+		$template->saved_reports = $saved_reports;
 		$template->scheduled_ids = $scheduled_ids;
 		$template->scheduled_periods = $scheduled_periods;
-		$template->saved_reports = $saved_reports;
 
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
@@ -306,9 +303,11 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->content->report_options = $this->add_view('reports/options');
 
 		$tpl_options = $this->template->content->report_options;
+		$tpl_options->reporting_periods = $this->_get_reporting_periods();
+		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
+		$tpl_options->saved_reports = $saved_reports;
+		$tpl_options->months = reports::abbr_month_names();
 
-		$tpl_options->available_schedule_periods = Scheduled_reports_Model::get_available_report_periods();
-		$tpl_options->scheduled_info = $scheduled_info;
 		if ($this->type == 'avail') {
 			$this->inline_js .= "set_initial_state('scheduleddowntimeasuptime', '".$this->options['scheduleddowntimeasuptime']."');\n";
 			$this->inline_js .= "set_initial_state('report_period', '".$this->options['report_period']."');\n";

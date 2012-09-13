@@ -101,14 +101,14 @@ $(document).ready(function() {
 		// .html('<form><input type="text" size="200" value="' + $('#current_report_params').attr('href') + '"></form>')
 		if (!direct_link_visible) {
 			$('#link_container')
-				.html('<form class="directlink">'+_label_direct_link+' <input class="wide" type="text" value="'
+				.html('<form>'+_label_direct_link+' <input class="wide" type="text" value="'
 					+ document.location.protocol + '//'
 					+ document.location.host
 					+ $('#current_report_params').attr('href')
 					+ '"></form>')
 				.css('position', 'absolute')
-				.css('top', 20)
-				.css('left', '1%')
+				.css('top', this.offsetHeight + this.offsetTop + 5)
+				.css('right', '0')
 				.show();
 				direct_link_visible = true;
 		} else {
@@ -117,6 +117,22 @@ $(document).ready(function() {
 		}
 		return false;
 	});
+
+	$('#save_report').click(function() {
+		if (!direct_link_visible) {
+			$('#save_report_form')
+				.css('position', 'absolute')
+				.css('top', this.offsetHeight + this.offsetTop + 5)
+				.css('right', '0')
+				.show();
+				direct_link_visible = true;
+		} else {
+			$('#save_report_form').hide();
+			direct_link_visible = false;
+		}
+		return false;
+	});
+
 
 	$('body').on('click', '.send_report_now', function() {
 		var elem = $(this);
@@ -143,6 +159,9 @@ $(document).ready(function() {
 			success: function(data) {
 				if (!data.error) {
 					jgrowl_message(data.result.status_msg, _reports_success);
+					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
+					if (!btn[0].form.report_id)
+						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
 				} else {
 					jgrowl_message(data.error, _reports_error);
 				}
@@ -156,74 +175,6 @@ $(document).ready(function() {
 		});
 	});
 });
-
-function setup_editable(mode)
-{
-	var mode_str = '';
-	if (mode == 'fancy') {
-		var mode_str = '#fancybox-content ';
-	}
-	var save_url = _site_domain + _index_page + "/schedule/save_schedule_item/";
-	$(mode_str +".iseditable").editable(save_url, {
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'text',
-		event : 'dblclick',
-		width : 'auto',
-		height : '14px',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".period_select").editable(save_url, {
-		data : function(value) {
-			var intervals = [];
-			$('#period option').map(function() {
-				 intervals.push("'"+$(this).val()+"': '"+$(this).text()+"' ");
-			});
-			intervals = "{"+intervals.join(",")+"}";
-			return intervals;
-		},
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : _ok_str,
-		cancel : _cancel_str
-	});
-	$(mode_str +".iseditable_txtarea").editable(save_url, {
-		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'textarea',
-		event : 'dblclick',
-		rows: '3',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		cssclass: "txtarea",
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".report_name").editable(save_url, {
-		data : function (){
-			switch (_report_types_json[this.id.split('-')[0].split('.')[0]]) {
-				case 'avail':
-					return _saved_avail_reports;
-				case 'sla':
-					return _saved_sla_reports;
-				case 'summary':
-					return _saved_summary_reports;
-			}
-			return false;
-		},
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : 'OK',
-		cancel : 'cancel'
-	});
-
-}
 
 var loadimg = new Image(16,16);
 loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
@@ -406,7 +357,7 @@ function show_calendar(val, update) {
 }
 
 function set_selection(val, cb) {
-	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #settings_table, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
+	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
 	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'servicegroups':
@@ -431,7 +382,7 @@ function set_selection(val, cb) {
 			$('#block_service_states').hide();
 			break;
 	}
-	$('#settings_table, #submit_button').show();
+	$('#submit_button').show();
 	if ($('input[name=type]').val() == 'sla')
 		$('#enter_sla').show();
 }
@@ -601,25 +552,6 @@ function setup_hide_content(d) {
 }
 
 function hide_response() {setup_hide_content('response');}
-
-function edit_state_options(val)
-{
-	var options = $('#state_options');
-	if(options == undefined)
-		return;
-
-	if (val) {
-		$('#state_options').show();
-		if ($('#fancybox-content').is(':visible')) {
-			$('tr#state_options').show();
-		}
-	} else {
-		$('#state_options').hide();
-		if ($('#fancybox-content').is(':visible')) {
-			$('tr#state_options').hide();
-		}
-	}
-}
 
 function toggle_field_visibility(val, theId) {
 	var fancy_str = '';

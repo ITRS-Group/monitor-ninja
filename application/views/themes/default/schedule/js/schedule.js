@@ -261,3 +261,66 @@ function remove_schedule(id, remove_type, msg)
 
 	jgrowl_message(msg, _reports_success);
 }
+
+function setup_editable()
+{
+	var save_url = _site_domain + _index_page + "/schedule/save_schedule_item/";
+	$(".iseditable").editable(save_url, {
+		id   : 'elementid',
+		name : 'newvalue',
+		type : 'text',
+		event : 'dblclick',
+		width : 'auto',
+		height : '14px',
+		submit : _ok_str,
+		cancel : _cancel_str,
+		placeholder:_reports_edit_information
+	});
+	$(".period_select").editable(save_url, {
+		data : function(value) {
+			var intervals = [];
+			$('#period option').map(function() {
+				intervals.push("'"+$(this).val()+"': '"+$(this).text()+"' ");
+			});
+			intervals = "{"+intervals.join(",")+"}";
+			return intervals;
+		},
+		id   : 'elementid',
+		name : 'newvalue',
+		event : 'dblclick',
+		type : 'select',
+		submit : _ok_str,
+		cancel : _cancel_str
+	});
+	$(".iseditable_txtarea").editable(save_url, {
+		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
+		id   : 'elementid',
+		name : 'newvalue',
+		type : 'textarea',
+		event : 'dblclick',
+		rows: '3',
+		submit : _ok_str,
+		cancel : _cancel_str,
+		cssclass: "txtarea",
+		placeholder:_reports_edit_information
+	});
+	$(".report_name").editable(save_url, {
+		data : function (){
+			switch (_report_types_json[this.id.split('-')[0].split('.')[0]]) {
+				case 'avail':
+					return _saved_avail_reports;
+				case 'sla':
+					return _saved_sla_reports;
+				case 'summary':
+					return _saved_summary_reports;
+			}
+			return false;
+		},
+		id   : 'elementid',
+		name : 'newvalue',
+		event : 'dblclick',
+		type : 'select',
+		submit : 'OK',
+		cancel : 'cancel'
+	});
+}

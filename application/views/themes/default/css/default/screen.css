@@ -21,22 +21,6 @@ dd {
 	float: left;
 	padding: 2px 0px;
 }
-
-h1 {
-	font-size: 108%;
-	margin-bottom: 10px;
-}
-
-h2 {
-	font-size: 105%;
-	margin: 7px 0px 15px 0px;
-}
-
-h3 {
-	font-size: 100%;
-	font-weight: bold;
-	margin: 14px 0px 3px 0px;
-}
 input.wide {
 	border: 0px;
 	outline: 0px;

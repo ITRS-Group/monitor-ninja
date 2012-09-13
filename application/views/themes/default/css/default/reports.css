@@ -398,11 +398,16 @@ input[type=button] {
 	margin-bottom: 5px;
 }
 
-form.directlink {
-	display: inline;
+.form-dropdown {
 	padding: 10px;
 	background: #cdcdcd url(images/bg.png) repeat-x;
 	border: 1px solid #dcdcdc;
+	display: none;
+}
+
+.form-dropdown input,
+.form-dropdown form {
+	margin: 0;
 }
 
 input.wide,

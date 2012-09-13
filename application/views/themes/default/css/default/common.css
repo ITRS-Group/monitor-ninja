@@ -948,9 +948,7 @@ div.setup-table table tr td, div.setup-table table tr th {
 #host_row_3{display:none;}
 #service_row_1{display:none;}
 #service_row_2{display:none;}
-#settings_table{display:none;}
 #submit_button{display:none;}
-#enter_sla{display:none;}
 #sla_setup{display:none;}
 
 tr#hostgroup_row td {

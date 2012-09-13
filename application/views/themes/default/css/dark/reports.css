@@ -112,7 +112,7 @@ input[type=button] {
 	border: 1px solid #855e36;
 }
 
-form.directlink {
+.form-dropdown {
 	background: #444444 url(images/bg.png) repeat-x;
 	border: 1px solid #855e36;
 }

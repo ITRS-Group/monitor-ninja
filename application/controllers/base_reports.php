@@ -108,7 +108,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 
 	/**
 	*	Save a report via ajax call
-	* 	Called from reports.js (trigger_ajax_save())
+	* 	Called from reports.js
 	* 	@return JSON string
 	*/
 	public function save($input = false)

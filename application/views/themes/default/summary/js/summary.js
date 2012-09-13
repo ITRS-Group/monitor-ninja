@@ -47,10 +47,6 @@ $(document).ready(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
 		self.location.href = base_uri;
 	});
-
-	$('.fancybox').click(function() {
-		setup_editable('fancy');
-	});
 });
 
 /**
