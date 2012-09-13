@@ -77,7 +77,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 				"last31days" => _('Last 31 Days'),
 				"lastmonth" => _('Last Month'),
 				"thisyear" => _('This Year'),
-				"lastyear" => _('Last Year'));
+				"lastyear" => _('Last Year'),
+				'custom' => _('Custom'));
 		if (isset($this->vtypes['scheduleddowntimeasuptime']))
 			$this->vtypes['scheduleddowntimeasuptime']['options'] = array(
 				0 => _('Actual state'),
