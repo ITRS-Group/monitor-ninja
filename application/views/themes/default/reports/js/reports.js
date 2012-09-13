@@ -45,12 +45,6 @@ $(document).ready(function() {
 	});
 
 	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
-	setup_editable();
-
-	$('.fancybox').click(function() {
-		setup_editable('fancy');
-		// set initial states
-	});
 
 	$('#filename').blur(function() {
 		// Make sure the filename is explicit by adding it when focus leaves input
@@ -70,39 +64,6 @@ $(document).ready(function() {
 		confirm_delete_report(this, $("#report_id").attr('value'));
 	});
 });
-
-function trigger_ajax_save(f)
-{
-	// first we need to make sure we get the correct field information
-	// for report_name since fancybox is pretty stupid
-	$('input[name=report_name]').attr('value', $('#fancybox-content #report_name').attr('value'));
-
-	// ajax post form options for SLA save generated report
-	var sla_options = {
-		target:			'#response',		// target element(s) to be updated with server response
-		beforeSubmit:	check_form_values,	// pre-submit callback
-		success:		show_sla_saveresponse,	// post-submit callback
-		dataType: 'json'
-	};
-	$('#fancybox-content #report_form_sla').ajaxSubmit(sla_options);
-	return false;
-}
-
-function show_sla_saveresponse(responseText, statusText)
-{
-	if (responseText.status == 'ok' && statusText == 'success') {
-		jgrowl_message(responseText.status_msg, _success_header);
-
-		// propagate new values to form
-		$('input[name=saved_report_id]').attr('value', responseText.report_id);
-		$('input[name=report_id]').attr('value', responseText.report_id);
-		$('input[name=report_name]').attr('value', $('#fancybox-content #report_name').attr('value'));
-		$('#scheduled_report_name').text($('#fancybox-content #report_name').attr('value'));
-	}
-	$('#view_add_schedule').show();
-	$('#save_to_schedule').hide();
-	$.fancybox.close();
-}
 
 function populate_saved_sla_data(json_data) {
 	json_data = eval(json_data);

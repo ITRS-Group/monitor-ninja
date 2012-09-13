@@ -59,6 +59,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'recipients' => array('type' => 'string', 'default' => ''), /**< Comma separated email addresses to report recipients */
 		'filename' => array('type' => 'string', 'default' => ''), /**< Filename to use for saving the report, used to set output_format */
 		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
+		'use_alias' => array('type' => 'bool', 'default' => false)
 	);
 
 	public $options = array();

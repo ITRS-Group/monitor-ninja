@@ -101,14 +101,14 @@ $(document).ready(function() {
 		// .html('<form><input type="text" size="200" value="' + $('#current_report_params').attr('href') + '"></form>')
 		if (!direct_link_visible) {
 			$('#link_container')
-				.html('<form class="directlink">'+_label_direct_link+' <input class="wide" type="text" value="'
+				.html('<form>'+_label_direct_link+' <input class="wide" type="text" value="'
 					+ document.location.protocol + '//'
 					+ document.location.host
 					+ $('#current_report_params').attr('href')
 					+ '"></form>')
 				.css('position', 'absolute')
-				.css('top', 20)
-				.css('left', '1%')
+				.css('top', this.offsetHeight + this.offsetTop + 5)
+				.css('right', '0')
 				.show();
 				direct_link_visible = true;
 		} else {
@@ -117,6 +117,22 @@ $(document).ready(function() {
 		}
 		return false;
 	});
+
+	$('#save_report').click(function() {
+		if (!direct_link_visible) {
+			$('#save_report_form')
+				.css('position', 'absolute')
+				.css('top', this.offsetHeight + this.offsetTop + 5)
+				.css('right', '0')
+				.show();
+				direct_link_visible = true;
+		} else {
+			$('#save_report_form').hide();
+			direct_link_visible = false;
+		}
+		return false;
+	});
+
 
 	$('body').on('click', '.send_report_now', function() {
 		var elem = $(this);
@@ -143,6 +159,9 @@ $(document).ready(function() {
 			success: function(data) {
 				if (!data.error) {
 					jgrowl_message(data.result.status_msg, _reports_success);
+					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
+					if (!btn[0].form.report_id)
+						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
 				} else {
 					jgrowl_message(data.error, _reports_error);
 				}
@@ -156,59 +175,6 @@ $(document).ready(function() {
 		});
 	});
 });
-
-function setup_editable(mode)
-{
-	var mode_str = '';
-	if (mode == 'fancy') {
-		var mode_str = '#fancybox-content ';
-	}
-	var save_url = _site_domain + _index_page + "/schedule/save_schedule_item/";
-	$(mode_str +".iseditable").editable(save_url, {
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'text',
-		event : 'dblclick',
-		width : 'auto',
-		height : '14px',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".period_select").editable(save_url, {
-		data : $('#autoreport_periods').text(),
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : _ok_str,
-		cancel : _cancel_str
-	});
-	$(mode_str +".iseditable_txtarea").editable(save_url, {
-		indicator : "<img src='" + _site_domain + "application/media/images/loading.gif'>",
-		id   : 'elementid',
-		name : 'newvalue',
-		type : 'textarea',
-		event : 'dblclick',
-		rows: '3',
-		submit : _ok_str,
-		cancel : _cancel_str,
-		cssclass: "txtarea",
-		placeholder:_reports_edit_information
-	});
-	$(mode_str +".report_name").editable(save_url, {
-		data : function (){
-			return fetch_report_data(this.id);
-		},
-		id   : 'elementid',
-		name : 'newvalue',
-		event : 'dblclick',
-		type : 'select',
-		submit : 'OK',
-		cancel : 'cancel'
-	});
-
-}
 
 var loadimg = new Image(16,16);
 loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
@@ -391,7 +357,7 @@ function show_calendar(val, update) {
 }
 
 function set_selection(val, cb) {
-	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #settings_table, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
+	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
 	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'servicegroups':
@@ -416,7 +382,7 @@ function set_selection(val, cb) {
 			$('#block_service_states').hide();
 			break;
 	}
-	$('#settings_table, #submit_button').show();
+	$('#submit_button').show();
 	if ($('input[name=type]').val() == 'sla')
 		$('#enter_sla').show();
 }
@@ -586,25 +552,6 @@ function setup_hide_content(d) {
 }
 
 function hide_response() {setup_hide_content('response');}
-
-function edit_state_options(val)
-{
-	var options = $('#state_options');
-	if(options == undefined)
-		return;
-
-	if (val) {
-		$('#state_options').show();
-		if ($('#fancybox-content').is(':visible')) {
-			$('tr#state_options').show();
-		}
-	} else {
-		$('#state_options').hide();
-		if ($('#fancybox-content').is(':visible')) {
-			$('tr#state_options').hide();
-		}
-	}
-}
 
 function toggle_field_visibility(val, theId) {
 	var fancy_str = '';
@@ -1302,35 +1249,6 @@ function create_new_schedule_rows(id, root)
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
 	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
 	return return_str;
-}
-
-function fetch_report_data(id)
-{
-	parts = id.split('-');
-	type_id = get_type_id(parts[0]);
-	var sType = '';
-
-	sType = report_types_json[type_id];
-	switch (sType) {
-		case 'avail':
-		//var data = eval('(' + $('#saved_reports').text() + ')');
-			return _saved_avail_reports;
-			break;
-		case 'sla':
-			return _saved_sla_reports;
-			break;
-		case 'summary':
-			return _saved_summary_reports;
-			break;
-		default:
-			return false;
-	}
-}
-
-function get_type_id(str)
-{
-	parts = str.split('.');
-	return parts[0];
 }
 
 jQuery.extend(

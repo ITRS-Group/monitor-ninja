@@ -141,7 +141,6 @@ function show_response(responseText, statusText)
 			$('#schedule_report_table').show();
 			schedule_is_visible = true;
 			$('#schedule_report_form').clearForm();
-			setup_editable();
 			//tb_remove();
 			nr_of_scheduled_instances++;
 			if (nr_of_scheduled_instances==1) {
@@ -153,4 +152,23 @@ function show_response(responseText, statusText)
 		}
 	}
 	setTimeout('hide_response()', time);
+}
+
+function edit_state_options(val)
+{
+	var options = $('#state_options');
+	if(options == undefined)
+		return;
+
+	if (val) {
+		$('#state_options').show();
+		if ($('#fancybox-content').is(':visible')) {
+			$('tr#state_options').show();
+		}
+	} else {
+		$('#state_options').hide();
+		if ($('#fancybox-content').is(':visible')) {
+			$('tr#state_options').hide();
+		}
+	}
 }
