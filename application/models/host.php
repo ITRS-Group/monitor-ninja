@@ -4,49 +4,6 @@
  * Model for host objects
  */
 class Host_Model extends Model {
-	private $auth = false;
-	private $host_list = false; /**< List of hosts to get status for. NOTE: Always IDs, always authed to see OR magical string 'all'. */
-	private $table = "host";
-
-	public $total_host_execution_time = 0; /**< Total host check execution time */
-	public $min_host_execution_time = 0; /**< Minimum host check execution time */
-	public $max_host_execution_time = 0; /**< Maximum host check execution time */
-	public $total_host_percent_change_a = 0; /**< Total host percentage change for active checks */
-	public $min_host_percent_change_a = 0; /**< Minimum host percentage change for active checks */
-	public $max_host_percent_change_a = 0; /**< Maximum host percentage change for active checks */
-	public $total_host_latency = 0; /**< Total host check latency */
-	public $min_host_latency = 0; /**< Minimum host check latency */
-	public $max_host_latency = 0; /**< Maximum host check latency */
-
-	/***** ACTIVE HOST CHECKS *****/
-	public $total_active_host_checks = 0; /**< The total number of active host checks */
-	public $active_host_checks_1min = 0; /**< The number of executed host checks the last minute */
-	public $active_host_checks_5min = 0; /**< The number of executed host checks the last 5 minutes */
-	public $active_host_checks_15min = 0; /**< The number of executed host checks the last 15 minutes */
-	public $active_host_checks_1hour = 0; /**< The number of executed host checks the last hour */
-	public $active_host_checks_start = 0; /**< The number of executed host checks since program start */
-	public $active_host_checks_ever = 0; /**< The number of executed host checks ever recorded */
-
-	/***** PASSIVE HOST CHECKS *****/
-	public $total_passive_host_checks = 0; /**< The total number of passive host checks */
-	public $passive_host_checks_1min = 0; /**< The number of received passive host checks the last minute */
-	public $passive_host_checks_5min = 0; /**< The number of received passive host checks the last 5 minutes */
-	public $passive_host_checks_15min = 0; /**< The number of received passive host checks the last 15 minutes */
-	public $passive_host_checks_1hour = 0; /**< The number of received passive host checks the last hour */
-	public $passive_host_checks_start = 0; /**< The number of received passive host checks since program start */
-	public $passive_host_checks_ever = 0; /**< The number of received passive host checks ever recorded */
-
-	public $total_host_percent_change_b = 0; /**< Total host percentage change for passive checks */
-	public $min_host_percent_change_b = 0; /**< Minimum host percentage change for passive checks */
-	public $max_host_percent_change_b = 0; /**< Maximum host percentage change for passive checks */
-
-	/**
-	* Only show services
-	* for each host if this is set to true
-	* Accepts 'all' as input, which will return
-	* all hosts the user has been granted access to.
-	*/
-	public $show_services = false;
 
 	public $state_filter = false; /**< value of current_state to filter for */
 	public $sort_field ='';/**< Field to sort on */
@@ -58,20 +15,6 @@ class Host_Model extends Model {
 	public $offset = false; /**< Number of results to skip before getting rows */
 	public $count = false; /**< Skip getting any results, only count the number of matches */
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->auth = Nagios_auth_Model::instance();
-	}
-
-	/**
-	 * Useless indirection
-	 */
-	private static function query($db,$sql)
-	{
-		return $db->query($sql)->result_array();
-	}
-
 	/**
 	*
 	*	Fetch host info filtered on specific field and value
@@ -81,31 +24,10 @@ class Host_Model extends Model {
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-
-		$auth = Nagios_auth_Model::instance();
-		$sql_join = false;
-		$sql_where = false;
-		if (!$auth->view_hosts_root) {
-			$sql_join = ' INNER JOIN contact_access ON contact_access.host=host.id';
-			$sql_where = ' AND contact_access.contact='.(int)$auth->id;
-		}
-
-		$limit_str = sql::limit_parse($limit);
-		if (!isset($this->db) || !is_object($this->db)) {
-			$db = Database::instance();
-		} else {
-			$db = $this->db;
-		}
-
-		if (!$exact) {
-			$value = '%' . $value . '%';
-			$sql = "SELECT * FROM host ".$sql_join." WHERE LCASE(".$field.") LIKE LCASE(".$db->escape($value).") ".$sql_where;
-		} else {
-			$sql = "SELECT * FROM host ".$sql_join." WHERE ".$field." = ".$db->escape($value)." ".$sql_where;
-		}
-		$sql .= $limit_str;
-		$host_info = $db->query($sql);
-		return count($host_info)>0 ? $host_info : false;
+		$ls   = Livestatus::instance();
+		$op   = $exact ? '=' : '~~';
+		$data = $ls->getHosts(array('filter' => array($field => array($op => $value)), 'limit' => $limit));
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
@@ -114,68 +36,15 @@ class Host_Model extends Model {
 	public function search($value=false, $limit=false, $xtra_query = false)
 	{
 		if (empty($value)) return false;
-		$auth_str = '';
-		if (!$this->auth->view_hosts_root) {
-			$db = Database::instance();
-			$auth_str = 'INNER JOIN contact_access ca ON host.id = ca.host AND ca.contact = '.$db->escape($this->auth->id);
-		}
-
-		$limit_str = sql::limit_parse($limit);
-		$sql_xtra = false;
-		if (!empty($xtra_query)) {
-			if (is_array($xtra_query)) {
-				foreach ($xtra_query as $x) {
-					$sql_xtra[] = " AND LCASE(output) LIKE LCASE(".$this->db->escape($x).") ";
-				}
-			} else {
-				$sql_xtra[] = " AND LCASE(output) LIKE LCASE(".$this->db->escape($xtra_query).") ";
-			}
-			if (!empty($sql_xtra)) {
-				$sql_xtra = implode(' ', $sql_xtra);
-			}
-		}
-
-		$sql_notes = '';
-		if (config::get('config.show_notes', '*')) {
-			$sql_notes = " OR LCASE(notes) LIKE LCASE(%s)";
-		}
-		if (is_array($value) && !empty($value)) {
-			$query = false;
-			$sql = false;
-			foreach ($value as $val) {
-				$query_str = '';
-				$val = '%'.$val.'%';
-				$query_str = "SELECT id FROM host $auth_str WHERE (LCASE(host_name)".
-				" LIKE LCASE(".$this->db->escape($val).")".
-				" OR LCASE(alias) LIKE LCASE(".$this->db->escape($val).")".
-				" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($val).")".
-				sprintf($sql_notes, $this->db->escape($val)).
-				" OR LCASE(address) LIKE LCASE(".$this->db->escape($val).")";
-				if (!empty($sql_xtra)) {
-					$query_str = $query_str.') '. $sql_xtra;
-				} else {
-					$query_str .= " OR LCASE(output) LIKE LCASE(".$this->db->escape($val)."))";
-				}
-				$query[] = $query_str;
-			}
-			if (!empty($query)) {
-				$sql = 'SELECT * FROM host WHERE id IN ('.implode(' UNION ALL ', $query).') ORDER BY host_name '.$limit_str;
-			}
-		} else {
-			$value = '%'.$value.'%';
-			$sql = "SELECT * FROM host $auth_str WHERE id IN (SELECT DISTINCT id FROM host WHERE (LCASE(host_name)".
-			" LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(alias) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(display_name) LIKE LCASE(".$this->db->escape($value).")".
-			sprintf($sql_notes, $this->db->escape($value)).
-			" OR LCASE(address) LIKE LCASE(".$this->db->escape($value).")".
-			" OR LCASE(output) LIKE LCASE(".$this->db->escape($value).")))".
-			" ORDER BY host_name ".$limit_str;
-		}
-		#echo Kohana::debug($sql);
-		$host_info = $this->query($this->db,$sql);
-		#print $sql."\n";
-		return $host_info;
+		$ls   = Livestatus::instance();
+		$data = $ls->getHosts(array('filter' => array('-or' => array(array('alias' 	   => array('~~' => $value)),
+									     array('name'  	   => array('~~' => $value)),
+									     array('display_name'  => array('~~' => $value)),
+									     array('address'  	   => array('~~' => $value)),
+									     array('plugin_output' => array('~~' => $value))
+									)),
+						    'limit'  => $limit));
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
@@ -183,6 +52,8 @@ class Host_Model extends Model {
 	*/
 	public function get_parents($host_name=false)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		if (empty($host_name))
 			return false;
 
@@ -210,6 +81,7 @@ class Host_Model extends Model {
 	*/
 	public function set_sort_field($val)
 	{
+/* TODO: implement */
 		$this->sort_field = trim($val);
 	}
 
@@ -218,6 +90,7 @@ class Host_Model extends Model {
 	*/
 	public function set_sort_order($val)
 	{
+/* TODO: implement */
 		$val = trim($val);
 		$val = strtoupper($val);
 		switch ($val) {
@@ -238,6 +111,8 @@ class Host_Model extends Model {
 	*/
 	public function set_host_list($host_names=false)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		$this->host_list = false;
 		if (is_string($host_names) && strtolower($host_names) === 'all') {
 			$this->host_list = 'all';
@@ -282,6 +157,8 @@ class Host_Model extends Model {
 	 */
 	public function get_host_status()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate */
 		if (!empty($this->host_list) && $this->host_list !== 'all')
 			$host_str = implode(', ', $this->host_list);
 
@@ -481,6 +358,8 @@ class Host_Model extends Model {
 	*/
 	public static function build_service_livestatus_props($serviceprops=false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if (empty($serviceprops))
 			return false;
 		$ret = array();
@@ -541,6 +420,8 @@ class Host_Model extends Model {
 	*/
 	public static function build_service_props_query($serviceprops=false, $table_alias='', $host_table_alias='')
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if (empty($serviceprops))
 			return false;
 		$ret_str = false;
@@ -601,6 +482,8 @@ class Host_Model extends Model {
 	*/
 	public static function build_host_livestatus_props($hostprops)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if (empty($hostprops))
 			return false;
 		$ret = array();
@@ -661,6 +544,8 @@ class Host_Model extends Model {
 	*/
 	public static function build_host_props_query($hostprops=false, $table_alias='')
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if (empty($hostprops))
 			return false;
 		$ret_str = false;
@@ -723,101 +608,13 @@ class Host_Model extends Model {
 	 */
 	public static function object_status($host_name=false, $service_description=false)
 	{
-		$host_name = trim($host_name);
-		if (empty($host_name)) {
-			return false;
-		}
-		$auth = Nagios_auth_Model::instance();
-
-		$service_description = trim($service_description);
-		# check credentials for host
-		if (!$auth->is_authorized_for_host($host_name) && ($service_description == false || !$auth->is_authorized_for_service($host_name .';'.$service_description)))
-			return false;
-
-		$db = Database::instance();
-		if (empty($service_description)) {
-			$sql = "SELECT host.*, (UNIX_TIMESTAMP() - last_state_change) AS duration, UNIX_TIMESTAMP() AS cur_time FROM host WHERE host_name='".$host_name."'";
+		$ls   = Livestatus::instance();
+		if(empty($service_description)) {
+			$data = $ls->getHosts(array('filter' => array('name' => $host_name)));
 		} else {
-			if (!$auth->is_authorized_for_service($host_name.';'.$service_description))
-				return false;
-
-			$sql = "
-				SELECT
-					h.id AS host_id,
-					h.host_name,
-					h.address,
-					h.alias,
-					h.current_state AS host_state,
-					h.problem_has_been_acknowledged AS host_problem_is_acknowledged,
-					h.scheduled_downtime_depth AS host_scheduled_downtime_depth,
-					h.notifications_enabled AS host_notifications_enabled,
-					h.action_url AS host_action_url,
-					h.notes_url AS host_notes_url,
-					h.notes,
-					h.last_host_notification,
-					h.icon_image AS host_icon_image,
-					h.icon_image_alt AS host_icon_image_alt,
-					h.is_flapping AS host_is_flapping,
-					h.state_type AS host_state_type,
-					h.next_check AS host_next_check,
-					h.last_update AS host_last_update,
-					h.percent_state_change AS host_percent_state_change,
-					h.perf_data AS host_perf_data,
-					h.flap_detection_enabled AS host_flap_detection_enabled,
-					h.current_notification_number AS host_current_notification_num,
-					h.check_type AS host_check_type,
-					h.latency AS host_latency,
-					h.execution_time AS host_execution_time,
-					h.last_state_change AS host_last_state_change,
-					h.last_check AS host_last_check,
-					h.obsess_over_host,
-					h.event_handler_enabled AS host_event_handler_enabled,
-					s.id AS service_id,
-					s.service_description,
-					s.current_state,
-					s.obsess_over_service,
-					s.last_check,
-					s.notifications_enabled,
-					s.active_checks_enabled,
-					s.action_url,
-					s.notes_url,
-					s.notes AS service_notes,
-					s.last_notification,
-					s.flap_detection_enabled,
-					s.percent_state_change,
-					s.icon_image,
-					s.perf_data,
-					s.current_notification_number,
-					s.icon_image_alt,
-					s.passive_checks_enabled,
-					s.problem_has_been_acknowledged,
-					(s.scheduled_downtime_depth + h.scheduled_downtime_depth) AS scheduled_downtime_depth,
-					s.is_flapping,
-					(UNIX_TIMESTAMP() - s.last_state_change) AS duration,
-					UNIX_TIMESTAMP() AS cur_time,
-					s.last_state_change,
-					s.current_attempt,
-					s.state_type,
-					s.check_type,
-					s.max_attempts,
-					s.last_update,
-					s.latency,
-					s.execution_time,
-					s.next_check,
-					s.event_handler_enabled,
-					s.output,
-					s.long_output
-				FROM
-					host h
-				INNER JOIN
-					service s ON h.host_name=s.host_name
-				WHERE
-					h.host_name=".$db->escape($host_name)." AND
-					s.service_description=".$db->escape($service_description);
+			$data = $ls->getServices(array('filter' => array('host_name' => $host_name, 'description' => $service_description)));
 		}
-		$result = self::query($db,$sql);
-		#echo $sql;
-		return $result;
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
@@ -825,6 +622,8 @@ class Host_Model extends Model {
 	*/
 	public function performance_data($checks_state=1)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate, use stats model instead */
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
@@ -891,6 +690,8 @@ class Host_Model extends Model {
 	*/
 	public function compute_last_check($checks_state=1, $time_arg=false, $prog_start=false)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate, use stats model instead */
 		# only allow 0/1
 		$checks_state = $checks_state==1 ? 1 : 0;
 		$active_passive = $checks_state == 1 ? 'active' : 'passive';
@@ -947,6 +748,8 @@ class Host_Model extends Model {
 	 */
 	public function get_hosts_for_group($name)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate, use filter instead */
 		$hostgroup_model = new Hostgroup_Model();
 		return $hostgroup_model->get_hosts_for_group($name);
 	}
@@ -958,6 +761,8 @@ class Host_Model extends Model {
 	*/
 	public function get_performance_data()
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate, use stats model instead */
 		$this->performance_data(1);	# generate active check performance data
 		$this->performance_data(0);	# generate passive check performance data
 	}
@@ -967,6 +772,8 @@ class Host_Model extends Model {
 	*/
 	public function get_services($host_name=false)
 	{
+throw new Exception('deprecated');
+/* TODO: deprecate, use service model with filter instead */
 		if (empty($host_name)) {
 			return false;
 		}

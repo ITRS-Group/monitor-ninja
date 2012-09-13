@@ -149,6 +149,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		# here we should fetch members of group if group_type is set and pass to get_host_status()
 		$host_model = new Host_Model();
+/* TODO: implement */
+/*
 		$host_model->show_services = $show_services;
 		$host_model->state_filter = $hoststatustypes;
 		$host_model->set_sort_field($sort_field);
@@ -180,6 +182,11 @@ class Status_Controller extends Authenticated_Controller {
 		}
 
 		$result_cnt = $host_model->get_host_status();
+*/
+
+		$ls   = Livestatus::instance();
+		$result = $ls->getHosts(array('limit' => $items_per_page));
+		$result_cnt = count($result);
 
 		$tot = $result_cnt !== false ? $result_cnt : 0;
 		$pagination = new Pagination(
@@ -188,12 +195,14 @@ class Status_Controller extends Authenticated_Controller {
 				'items_per_page' => $items_per_page
 			)
 		);
+		/*
 		$offset = $pagination->sql_offset;
 		$host_model->count = false;
 		$host_model->num_per_page = $items_per_page;
 		$host_model->offset = $offset;
 
 		$result = $host_model->get_host_status();
+		*/
 
 		$this->template->content->date_format_str = nagstat::date_format();
 		$this->template->content->result = $result;

@@ -13,13 +13,9 @@ class Servicegroup_Model extends Ninja_Model
 	public function get($name=false)
 	{
 		$name = trim($name);
-		$auth = Nagios_auth_Model::instance();
-		if (!$auth->is_authorized_for_servicegroup($name))
-			return false;
-		$db = Database::instance();
-		$sql = "SELECT * FROM servicegroup WHERE servicegroup_name=".$db->escape($name);
-		$data = $db->query($sql);
-		return $data;
+		$ls = Livestatus::instance();
+		$data = $ls->getServicegroups(array('filter' => array('name' => $name)));
+		return count($data)>0 ? $data[0] : false;
 	}
 
 	/**
@@ -27,20 +23,8 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public static function get_all($items_per_page = false, $offset = false)
 	{
-		$limit_str = "";
-		if (!empty($items_per_page)) {
-			$limit_str = " LIMIT $items_per_page OFFSET $offset";
-		}
-
-		$auth = Nagios_auth_Model::instance();
-		$auth_objects = $auth->get_authorized_servicegroups();
-		if (empty($auth_objects))
-			return false;
-		$obj_ids = array_keys($auth_objects);
-
-		$sql = "SELECT * FROM servicegroup WHERE id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$db = Database::instance();
-		$data = $db->query($sql);
+		$ls   = Livestatus::instance();
+		$data = $ls->getServicegroups(array('limit' => $items_per_page, 'offset' => $offset));
 		return count($data)>0 ? $data : false;
 	}
 
@@ -52,17 +36,9 @@ class Servicegroup_Model extends Ninja_Model
 		if (empty($field) || empty($value)) {
 			return false;
 		}
-		$auth = Nagios_auth_Model::instance();
-		$auth_objects = $auth->get_authorized_servicegroups();
-		if (empty($auth_objects))
-			return false;
-		$obj_ids = array_keys($auth_objects);
-		$limit_str = sql::limit_parse($limit);
-		$value = '%' . $value . '%';
-		$sql = "SELECT * FROM servicegroup WHERE LCASE(".$field.") LIKE LCASE(".$this->db->escape($value).") ".
-		"AND id IN(".implode(',', $obj_ids).") ".$limit_str;
-		$obj_info = $this->db->query($sql);
-		return count($obj_info) > 0 ? $obj_info : false;
+		$ls   = Livestatus::instance();
+		$data = $ls->getServicegroups(array('filter' => array($field => array('~~' => $value)), 'limit' => $limit));
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
@@ -72,36 +48,12 @@ class Servicegroup_Model extends Ninja_Model
 	{
 		if (empty($value)) return false;
 
-		$auth = Nagios_auth_Model::instance();
-		$auth_objects = $auth->get_authorized_servicegroups();
-		if (empty($auth_objects))
-			return false;
-		$obj_ids = array_keys($auth_objects);
-
-		$obj_ids = implode(',', $obj_ids);
-		$limit_str = sql::limit_parse($limit);
-		if (is_array($value) && !empty($value)) {
-			$query = false;
-			$sql = false;
-			foreach ($value as $val) {
-				$val = '%'.$val.'%';
-				$query[] = "SELECT DISTINCT id FROM servicegroup WHERE ".
-			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($val).") OR ".
-			"LCASE(alias) LIKE LCASE(".$this->db->escape($val).")) ".
-			"AND id IN (".$obj_ids.") ";
-			}
-			if (!empty($query)) {
-				$sql = 'SELECT * FROM servicegroup WHERE id IN ('.implode(' UNION ', $query).') ORDER BY servicegroup_name '.$limit_str;
-			}
-		} else {
-			$value = '%'.$value.'%';
-			$sql = "SELECT DISTINCT * FROM servicegroup WHERE ".
-			"(LCASE(servicegroup_name) LIKE LCASE(".$this->db->escape($value).") OR ".
-			"LCASE(alias) LIKE LCASE(".$this->db->escape($value).")) ".
-			"AND id IN (".$obj_ids.") ORDER BY servicegroup_name ".$limit_str;
-		}
-		$obj_info = $this->db->query($sql);
-		return $obj_info;
+		$ls   = Livestatus::instance();
+		$data = $ls->getServicegroups(array('filter' => array('-or' => array(array('alias' => array('~~' => $value)),
+										     array('name'  => array('~~' => $value))
+									)),
+						    'limit'  => $limit));
+		return count($data)>0 ? $data : false;
 	}
 
 	/**
@@ -111,6 +63,8 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public function get_servicegroup_hoststatus($servicegroup=false, $hoststatus=false, $servicestatus=false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		$grouptype = 'service';
 		return Group_Model::get_group_hoststatus($grouptype, $servicegroup, $hoststatus, $servicestatus);
 	}
@@ -122,6 +76,8 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public function member_names($group = false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		$objs = $this->get_services_for_group($group);
 		if ($objs === false)
 			return false;
@@ -140,6 +96,8 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public function get_services_for_group($group=false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		if (empty($group)) {
 			return false;
 		}
@@ -180,6 +138,8 @@ class Servicegroup_Model extends Ninja_Model
 	 */
 	public static function summary($groups='all', $items_per_page=false, $offset=false, $hostprops=false, $serviceprops=false, $hoststatustypes=false, $servicestatustypes=false)
 	{
+throw new Exception('implement');
+/* TODO: implement */
 		$auth = Nagios_auth_Model::instance();
 		$auth_objects = $auth->get_authorized_servicegroups();
 		if (!is_array($auth_objects) || empty($auth_objects) || empty($groups))

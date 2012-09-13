@@ -42,7 +42,7 @@ class Livestatus {
                 'accept_passive_checks', 'acknowledged', 'action_url', 'action_url_expanded',
                 'active_checks_enabled', 'address', 'alias', 'check_command', 'check_freshness', 'check_interval',
                 'check_options', 'check_period', 'check_type', 'checks_enabled', 'childs', 'comments', 'current_attempt',
-                'current_notification_number', 'event_handler_enabled', 'execution_time',
+                'current_notification_number', 'display_name', 'event_handler_enabled', 'execution_time',
                 'custom_variable_names', 'custom_variable_values',
                 'first_notification_delay', 'flap_detection_enabled', 'groups', 'has_been_checked',
                 'high_flap_threshold', 'icon_image', 'icon_image_alt', 'icon_image_expanded',
@@ -53,6 +53,7 @@ class Livestatus {
                 'num_services_pending', 'num_services_unknown', 'num_services_warn', 'num_services', 'obsess_over_host',
                 'parents', 'percent_state_change', 'perf_data', 'plugin_output', 'process_performance_data',
                 'retry_interval', 'scheduled_downtime_depth', 'state', 'state_type', 'modified_attributes_list',
+                'pnpgraph_present'
             );
         }
         return $this->getTable('hosts', $options);
@@ -397,6 +398,10 @@ TODO: implement
         if(isset($options['filter'])) {
             $query .= $this->getQueryFilter(false, $options['filter']);
         }
+        if(!isset($options['auth']) || $options['auth'] !== false) {
+/* TODO: implement cgi.cfg */
+            $query .= "AuthUser: ".$this->auth->user."\n";
+        }
         $objects = $this->query($table, $query, $options['columns']);
         return $this->objects2Assoc($objects, $options['columns']);
     }
@@ -410,6 +415,10 @@ TODO: implement
         foreach($stats as $key => $filter) {
             $queryFilter .= $this->getQueryFilter(true, $filter, null, null, 'And');
             array_push($columns, $key);
+        }
+        if(!isset($options['auth']) || $options['auth'] !== false) {
+/* TODO: implement cgi.cfg */
+            $queryFilter .= "AuthUser: ".$this->auth->user."\n";
         }
         $objects = $this->query($table, $queryFilter, $columns);
         $objects = $this->objects2Assoc($objects, $columns);
