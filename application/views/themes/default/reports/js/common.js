@@ -48,35 +48,12 @@ $(document).ready(function() {
 		hideMe('response');
 	});
 
-	// only init datepicker onload on setup page
-	// when we already have a report it is initialized on demand
-	if (_current_uri.indexOf('generate') == -1){
-		init_datepicker();
-	}
-
 	$(".fancybox").fancybox({
 		'overlayOpacity'	:	0.7,
 		'overlayColor'		:	'#ffffff',
 		'hideOnContentClick' : false,
 		'autoScale':true,
 		'autoDimensions': true,
-		'callbackOnShow': function() {
-			if ($("#report_period").val() == 'custom' && $('input[name=sla_save]').attr('value') == '') {
-				$(".fancydisplay").each(function() {
-					$(this).show();
-				});
-				init_timepicker();
-			}
-		}
-	});
-
-	$('.fancybox').click(function() {
-		// check if we should re-initialize datepicker
-		// NOT for alert summary as this will result in an error
-		if (_current_uri != 'summary/generate'){
-			fancybox_datepicker();
-		}
-		init_timepicker();
 	});
 
 	init_regexpfilter();
@@ -178,52 +155,6 @@ $(document).ready(function() {
 
 var loadimg = new Image(16,16);
 loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
-
-function fancybox_datepicker()
-{
-	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-
-	if ($('#fancybox-content #cal_start').attr('value')) {
-		var ds = Date.fromString($('#fancybox-content #cal_start').attr('value'));
-		$('#fancybox-content #cal_end').dpSetStartDate(ds.asString());
-	}
-	if ($('#fancybox-content #cal_end').attr('value')) {
-		var ds = Date.fromString($('#fancybox-content #cal_end').attr('value'));
-		$('#fancybox-content #cal_start').dpSetEndDate(ds.asString());
-	}
-
-	$('.datepick-start').bind(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				startDate = d.asString();
-				$('#fancybox-content #start_time').attr('value', d.asString());
-				$("input[name=start_time]").attr('value', d.asString());
-				$('#fancybox-content #cal_end').dpSetStartDate(d.asString());
-			}
-		}
-	);
-
-	$('.datepick-end').bind(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				endDate = d.asString();
-				$('#fancybox-content #end_time').attr('value', d.asString());
-				$("input[name=end_time]").attr('value', d.asString());
-				$('#fancybox-content #cal_start').dpSetEndDate(d.asString());
-			}
-		}
-	);
-}
-
 
 function init_datepicker()
 {
@@ -915,12 +846,6 @@ function init_timepicker()
 	// Use default timepicker settings
 	if ($("#time_start").is(':visible')) {
 		$("#time_start, #time_end").timePicker();
-	} else {
-		if ($("#fancybox-content #time_start").is(':visible')) {
-			$("#fancybox-content #time_start, #fancybox-content #time_end").timePicker();
-		} else {
-			return false;
-		}
 	}
 
 	// Store time used by duration.
