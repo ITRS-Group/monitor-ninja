@@ -176,7 +176,14 @@ function setup_editable(mode)
 		placeholder:_reports_edit_information
 	});
 	$(mode_str +".period_select").editable(save_url, {
-		data : $('#autoreport_periods').text(),
+		data : function(value) {
+			var intervals = [];
+			$('#period option').map(function() {
+				 intervals.push("'"+$(this).val()+"': '"+$(this).text()+"' ");
+			});
+			intervals = "{"+intervals.join(",")+"}";
+			return intervals;
+		},
 		id   : 'elementid',
 		name : 'newvalue',
 		event : 'dblclick',
@@ -198,7 +205,15 @@ function setup_editable(mode)
 	});
 	$(mode_str +".report_name").editable(save_url, {
 		data : function (){
-			return fetch_report_data(this.id);
+			switch (_report_types_json[this.id.split('-')[0].split('.')[0]]) {
+				case 'avail':
+					return _saved_avail_reports;
+				case 'sla':
+					return _saved_sla_reports;
+				case 'summary':
+					return _saved_summary_reports;
+			}
+			return false;
 		},
 		id   : 'elementid',
 		name : 'newvalue',
@@ -1302,35 +1317,6 @@ function create_new_schedule_rows(id, root)
 	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
 	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
 	return return_str;
-}
-
-function fetch_report_data(id)
-{
-	parts = id.split('-');
-	type_id = get_type_id(parts[0]);
-	var sType = '';
-
-	sType = report_types_json[type_id];
-	switch (sType) {
-		case 'avail':
-		//var data = eval('(' + $('#saved_reports').text() + ')');
-			return _saved_avail_reports;
-			break;
-		case 'sla':
-			return _saved_sla_reports;
-			break;
-		case 'summary':
-			return _saved_summary_reports;
-			break;
-		default:
-			return false;
-	}
-}
-
-function get_type_id(str)
-{
-	parts = str.split('.');
-	return parts[0];
 }
 
 jQuery.extend(

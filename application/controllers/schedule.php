@@ -370,20 +370,19 @@ class Schedule_Controller extends Authenticated_Controller
 				$report_type = Scheduled_reports_Model::get_typeof_report($report_id);
 				if (!$report_type) {
 					echo _("Unable to determine type for selected report");
-				} else {
-					$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
-					if (count($saved_reports)!=0) {
-						foreach ($saved_reports as $report) {
-							if ($report->id == $new_value) {
-								echo $report->options['report_name'];
-								break;
-							}
-						}
-					} else {
-						echo _("Unable to fetch list of saved reports");
+					return;
+				}
+				$saved_reports = Saved_reports_Model::get_saved_reports($report_type);
+				if (!count($saved_reports)) {
+					echo _("Unable to fetch list of saved reports");
+					return;
+				}
+				foreach ($saved_reports as $report) {
+					if ($report->id == $new_value) {
+						echo $report->report_name;
+						return;
 					}
 				}
-				break;
 			case 'period_id':
 				$periods = Scheduled_reports_Model::get_available_report_periods();
 				echo is_array($periods) && array_key_exists($new_value, $periods)
