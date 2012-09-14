@@ -58,8 +58,6 @@ class Status_Controller extends Authenticated_Controller {
 	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = $this->input->get('host', $host);
-		$page = $this->input->get('page', false);
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$sort_order = $this->input->get('sort_order', $sort_order);
 		$sort_field = $this->input->get('sort_field', $sort_field);
@@ -99,7 +97,6 @@ class Status_Controller extends Authenticated_Controller {
 		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
 		$widget->set_host($host);
 		$widget->set_hoststatus($hoststatustypes);
-		//$this->xtra_css = array_merge($this->xtra_css, array($this->add_path('/css/default/common.css')));
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
@@ -184,30 +181,11 @@ class Status_Controller extends Authenticated_Controller {
 		$result_cnt = $host_model->get_host_status();
 */
 
-		$ls   = Livestatus::instance();
-		$result = $ls->getHosts(array('limit' => $items_per_page));
-		$result_cnt = count($result);
-
-		$tot = $result_cnt !== false ? $result_cnt : 0;
-		$pagination = new Pagination(
-			array(
-				'total_items'=> $tot,
-				'items_per_page' => $items_per_page
-			)
-		);
-		/*
-		$offset = $pagination->sql_offset;
-		$host_model->count = false;
-		$host_model->num_per_page = $items_per_page;
-		$host_model->offset = $offset;
-
-		$result = $host_model->get_host_status();
-		*/
+		$ls         = Livestatus::instance();
+		$result     = $ls->getHosts(array('paging' => $this));
 
 		$this->template->content->date_format_str = nagstat::date_format();
 		$this->template->content->result = $result;
-		$this->template->content->pagination = $pagination;
-		$this->template->content->total_items = $tot;
 
 		if (empty($group_type)) {
 			if ($host == 'all') {
@@ -251,8 +229,6 @@ class Status_Controller extends Authenticated_Controller {
 		# fetch all comments to be able to detect if we should display comment icon
 		$host_comments = Comment_Model::count_all_comments_by_object();
 		$this->template->content->host_comments = $host_comments;
-		$this->template->content->items_per_page = $items_per_page;
-		$this->template->content->page = $page;
 
 
 		if (isset($page_links)) {

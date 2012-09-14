@@ -390,19 +390,20 @@ TODO: implement
      * INTERNAL FUNCTIONS
      *******************************************************/
     private function getTable($table, $options = null) {
+        $filter = "";
+        if(isset($options['filter'])) {
+            $filter = $this->getQueryFilter(false, $options['filter']);
+        }
+        $this->page_step1($table, $options);
+
         $columns = $options['columns'];
         if(is_array($options['columns'])) {
             $columns = join(" ", $options['columns']);
         }
         $query  = "Columns: ".$columns."\n";
-        if(isset($options['filter'])) {
-            $query .= $this->getQueryFilter(false, $options['filter']);
-        }
-        if(!isset($options['auth']) || $options['auth'] !== false) {
-/* TODO: implement cgi.cfg */
-            $query .= "AuthUser: ".$this->auth->user."\n";
-        }
+        $query .= $filter;
         $objects = $this->query($table, $query, $options['columns']);
+        $objects = $this->page_step2($objects, $options);
         return $this->objects2Assoc($objects, $options['columns']);
     }
 
@@ -416,13 +417,75 @@ TODO: implement
             $queryFilter .= $this->getQueryFilter(true, $filter, null, null, 'And');
             array_push($columns, $key);
         }
-        if(!isset($options['auth']) || $options['auth'] !== false) {
-/* TODO: implement cgi.cfg */
-            $queryFilter .= "AuthUser: ".$this->auth->user."\n";
-        }
+        $queryFilter .= $this->auth($table, $options);
         $objects = $this->query($table, $queryFilter, $columns);
         $objects = $this->objects2Assoc($objects, $columns);
         return $objects[0];
+    }
+
+    private function auth($table, $options = null) {
+        if(isset($options['auth']) && $options['auth'] === true) {
+            return "";
+        }
+/* TODO: implement cgi.cfg */
+        return "AuthUser: ".$this->auth->user."\n";
+    }
+
+    private function page_step1($table, $options = null) {
+        if(!isset($options['paging'])) {
+            return;
+        }
+        $page           = $options['paging'];
+        $current_page   = $page->input->get('page', false);
+        $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+        $custom_limit   = $page->input->get('custom_pagination_field', false);
+        $items_per_page = $custom_limit ? $custom_limit : $items_per_page;
+
+        $total = $this->get_query_size($table, $options);
+        if(isset($total)) {
+            # then set the limit for the real query
+            $options['options']['limit'] = $current_page * $items_per_page + 1;
+        }
+
+        $pagination = new Pagination(array(
+                            'total_items'     => $total,
+                            'items_per_page'  => $items_per_page,
+                          ));
+        $page->template->content->pagination     = $pagination;
+        $page->template->content->total_items    = $total;
+        $page->template->content->items_per_page = $items_per_page;
+        $page->template->content->page           = $current_page;
+        return;
+    }
+
+    private function page_step2($result, $options = null) {
+        if(!isset($options['paging'])) {
+            return $result;
+        }
+        $page           = $options['paging'];
+        $items_per_page = $page->template->content->items_per_page;
+        $current_page   = $page->template->content->page;
+        $offset         = ($current_page-1) * $items_per_page;
+        $result         = array_splice($result, $offset, $items_per_page);
+        return $result;
+    }
+
+    private function get_query_size($table, $options = null) {
+        if(!isset($options['paging'])) { return; }
+/* TODO: use paging only when using default sorting */
+
+        switch($table) {
+            case 'services':
+            case 'hosts':    $key = 'name';
+                             break;
+            default:         throw new LivestatusException("table $table not implemented in get_query_size()");
+
+        }
+        $stats = array(
+            'total' => array($key => array('!=' => ''))
+        );
+        $data = $this->getStats($table, $stats, $options);
+        return $data['total'];
     }
 
     private function query($table, $filter, $columns) {
