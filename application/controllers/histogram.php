@@ -22,11 +22,6 @@ class Histogram_Controller extends Base_reports_Controller
 	*/
 	public function index($input = false)
 	{
-		# check if we have all required parts installed
-		if (!$this->_self_check()) {
-			url::redirect('reports/invalid_setup');
-		}
-
 		$this->setup_options_obj($input);
 
 		$this->template->disable_refresh = true;
@@ -290,12 +285,12 @@ class Histogram_Controller extends Base_reports_Controller
 					$this->labels[] = "'".$key."'";
 					break;
 				case 'monthly':
-					$return[] = '['.$i.', "'.date('F', $key).'"]';
-					$this->labels[] = "'".date('F', $key)."'";
+					$return[] = '['.$i.', "'.$key.'"]';
+					$this->labels[] = "'".$key."'";
 					break;
 				case 'dayofweek':
-					$return[] = '['.$i.', "'.date('l', $key).'"]';
-					$this->labels[] = "'".date('l', $key)."'";
+					$return[] = '['.$i.', "'.$key.'"]';
+					$this->labels[] = "'".$key."'";
 					break;
 				case 'hourly':
 					$return[] = '['.$i.', "'.$key.':00'.'"]';
@@ -325,7 +320,6 @@ class Histogram_Controller extends Base_reports_Controller
 			$i++;
 		}
 		return $return;
-
 	}
 
 	/**
@@ -343,6 +337,5 @@ class Histogram_Controller extends Base_reports_Controller
 			echo $helptexts[$id];
 		} else
 			return parent::_helptexts($id);
-
 	}
 }
