@@ -16,10 +16,6 @@ class Summary_Controller extends Base_reports_Controller
 	const RECENT_ALERTS = 1;
 	const ALERT_TOTALS = 2;
 	const TOP_ALERT_PRODUCERS = 3;
-	const ALERT_TOTALS_HG = 4;
-	const ALERT_TOTALS_HOST = 5;
-	const ALERT_TOTALS_SERVICE = 6;
-	const ALERT_TOTALS_SG = 7;
 
 	public $type = 'summary';
 	public $reports_model = false;
@@ -157,27 +153,6 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * @param int $report_type
-	 * @return string
-	 * @throws InvalidArgumentException
-	 */
-	private function _get_summary_variant_by_report_type($report_type) {
-		$types = array(
-			self::RECENT_ALERTS => _("Most recent hard alerts"),
-			self::ALERT_TOTALS => _("Most recent hard host alerts"),
-			self::TOP_ALERT_PRODUCERS => _("Top hard alert producers"),
-			self::ALERT_TOTALS_HG => _('Overall totals'),
-			self::ALERT_TOTALS_HOST => _('Overall totals'),
-			self::ALERT_TOTALS_SERVICE => _('Overall totals'),
-			self::ALERT_TOTALS_SG => _('Overall totals')
-		);
-		if(!array_key_exists($report_type, $types)) {
-			throw new InvalidArgumentException("Invalid report type");
-		}
-		return $types[$report_type];
-	}
-
-	/**
 	 * Generates an alert summary report
 	 */
 	public function generate($input=false)
@@ -200,14 +175,6 @@ class Summary_Controller extends Base_reports_Controller
 			break;
 
 		 case self::ALERT_TOTALS:
-		 case self::ALERT_TOTALS_HG:
-		 case self::ALERT_TOTALS_SG:
-		 case self::ALERT_TOTALS_HOST:
-			$result = $this->reports_model->alert_totals();
-			break;
-
-		case self::ALERT_TOTALS_SERVICE:
-			$this->options['service_description'] = $this->_populate_services();
 			$result = $this->reports_model->alert_totals();
 			break;
 
@@ -260,10 +227,7 @@ class Summary_Controller extends Base_reports_Controller
 		$views = array(
 			self::TOP_ALERT_PRODUCERS => 'toplist',
 			self::RECENT_ALERTS => 'latest',
-			self::ALERT_TOTALS_HG => 'alert_totals',
-			self::ALERT_TOTALS_HOST => 'alert_totals',
-			self::ALERT_TOTALS_SERVICE => 'alert_totals',
-			self::ALERT_TOTALS_SG => 'alert_totals',
+			self::ALERT_TOTALS => 'alert_totals',
 		);
 
 		$this->template->set_global('type', $this->type);

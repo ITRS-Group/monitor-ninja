@@ -1726,14 +1726,19 @@ class Reports_Model extends Model
 		$result = false;
 		# groups must be first here, since the other variables
 		# are expanded in the build_alert_summary_query() method
-		if ($this->options['servicegroup']) {
+		switch ($this->options['report_type']) {
+		 case 'servicegroups':
 			$result = $this->alert_totals_by_servicegroup($dbr);
-		} elseif ($this->options['hostgroup']) {
+			break;
+		 case 'hostgroups':
 			$result = $this->alert_totals_by_hostgroup($dbr);
-		} elseif ($this->options['service_description']) {
+			break;
+		 case 'services':
 			$result = $this->alert_totals_by_service($dbr);
-		} elseif ($this->options['host_name']) {
+			break;
+		 case 'hosts':
 			$result = $this->alert_totals_by_host($dbr);
+			break;
 		}
 
 		$this->set_alert_total_totals($result);
