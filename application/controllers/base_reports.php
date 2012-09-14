@@ -459,7 +459,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		if (!$ary)
 			return;
 		echo "<br /><table class=\"host_alerts\"><tr>\n";
-		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>".$spacer;
+		echo "<caption style=\"margin-top: 15px\">".$topic.' '._('for').' '.$name."</caption>";
 		echo "<th class=\"headerNone\">" . _('State') . "</th>\n";
 		echo "<th class=\"headerNone\">" . _('Soft Alerts') . "</th>\n";
 		echo "<th class=\"headerNone\">" . _('Hard Alerts') . "</th>\n";
