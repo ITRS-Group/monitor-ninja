@@ -17,8 +17,20 @@
 			)
 		)
 	);
-	echo isset($csv_link) ? $csv_link : '';
-	echo isset($pdf_link) ? $pdf_link : '';
+
+	echo form::open($this->type.'/generate');
+	echo $options->as_form();
+	echo '<input type="hidden" name="output_format" value="csv" />';
+	$csv_alt = _('Download report as CSV');
+	echo "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png')."' alt='".$csv_alt."' title='".$csv_alt."'/>";
+	echo "</form>\n";
+
+	echo form::open($type.'/generate');
+	echo $options->as_form();
+	echo '<input type="hidden" name="output_format" value="pdf" />';
+	$pdf_alt = _('Show as pdf');
+	echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
+	echo '</form>';
 	?>
 	<a href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
 	<a href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
