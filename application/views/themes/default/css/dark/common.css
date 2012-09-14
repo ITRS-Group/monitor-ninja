@@ -220,6 +220,7 @@ td.white:first-child table tr td:first-child {
 	border-left:#855e36 1px solid !important;
 }
 .w-table tr td {
+	background: black url(images/bg.png) repeat;
 	border-right:1px solid #855e36;
 	border-bottom:1px solid #855e36;
 }
@@ -232,6 +233,9 @@ th.enabled_monfeat em {
 }
 table.ext {
 	background-color: #855e36;
+}
+table.ext tr td {
+	background: black url(images/bg.png) repeat;
 }
 table.showlog tr td input[type=text] {
 	background-color: #333;
