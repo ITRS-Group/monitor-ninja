@@ -88,7 +88,7 @@ class Livestatus {
                 'active_checks_enabled', 'check_command', 'check_interval', 'check_options',
                 'check_period', 'check_type', 'checks_enabled', 'comments', 'current_attempt',
                 'current_notification_number', 'description', 'event_handler', 'event_handler_enabled',
-                'custom_variable_names', 'custom_variable_values',
+                'custom_variable_names', 'custom_variable_values', 'display_name',
                 'execution_time', 'first_notification_delay', 'flap_detection_enabled', 'groups',
                 'has_been_checked', 'high_flap_threshold', 'host_acknowledged', 'host_action_url_expanded',
                 'host_active_checks_enabled', 'host_address', 'host_alias', 'host_checks_enabled', 'host_check_type',
@@ -101,7 +101,7 @@ class Livestatus {
                 'notes_url', 'notes_url_expanded', 'notification_interval', 'notification_period',
                 'notifications_enabled', 'obsess_over_service', 'percent_state_change', 'perf_data',
                 'plugin_output', 'process_performance_data', 'retry_interval', 'scheduled_downtime_depth',
-                'state', 'state_type', 'modified_attributes_list',
+                'state', 'state_type', 'modified_attributes_list', 'pnpgraph_present'
             );
         }
         return $this->getTable('services', $options);
@@ -438,8 +438,7 @@ TODO: implement
         $page           = $options['paging'];
         $current_page   = $page->input->get('page', false);
         $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
-        $custom_limit   = $page->input->get('custom_pagination_field', false);
-        $items_per_page = $custom_limit ? $custom_limit : $items_per_page;
+        $items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
 
         $total = $this->get_query_size($table, $options);
         if(isset($total)) {
@@ -476,13 +475,13 @@ TODO: implement
 
         switch($table) {
             case 'services':
-            case 'hosts':    $key = 'name';
+            case 'hosts':    $key = 'state';
                              break;
             default:         throw new LivestatusException("table $table not implemented in get_query_size()");
 
         }
         $stats = array(
-            'total' => array($key => array('!=' => ''))
+            'total' => array($key => array('!=' => 0))
         );
         $data = $this->getStats($table, $stats, $options);
         return $data['total'];

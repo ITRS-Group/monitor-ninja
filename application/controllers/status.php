@@ -144,10 +144,10 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->sub_title = $sub_title;
 		$this->template->content->pending_output = _('Host check scheduled for %s');
 
-		# here we should fetch members of group if group_type is set and pass to get_host_status()
-		$host_model = new Host_Model();
 /* TODO: implement */
 /*
+		# here we should fetch members of group if group_type is set and pass to get_host_status()
+		$host_model = new Host_Model();
 		$host_model->show_services = $show_services;
 		$host_model->state_filter = $hoststatustypes;
 		$host_model->set_sort_field($sort_field);
@@ -250,8 +250,6 @@ class Status_Controller extends Authenticated_Controller {
 	public function service($name='all', $hoststatustypes=false, $servicestatustypes=false, $service_props=false, $sort_order='ASC', $sort_field='host_name', $group_type=false, $hostprops=false)
 	{
 		$name = $this->input->get('name', $name);
-		$page = $this->input->get('page', false);
-		$items_per_page = $this->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
 		$servicestatustypes = $this->input->get('servicestatustypes', $servicestatustypes);
 		$service_props = $this->input->get('serviceprops', $service_props);
@@ -298,6 +296,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->title = $title;
 
+/* TODO: implement */
+/*
 		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
 		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
 
@@ -306,19 +306,22 @@ class Status_Controller extends Authenticated_Controller {
 		$this->servicestatustypes = $servicestatustypes;
 		$this->serviceprops = $service_props;
 		$filters = $this->_show_filters();
+*/
 
 		$this->template->content = $this->add_view('status/service');
 		$this->template->content->noheader = $noheader;
-		$this->template->content->filters = $filters;
+#		$this->template->content->filters = $filters;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
 		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
+/*
 		$widget->set_host($name);
 		$widget->set_hoststatus($hoststatustypes);
 		$widget->set_servicestatus($servicestatustypes);
 		$widget->set_grouptype($group_type);
+*/
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
@@ -368,6 +371,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		$shown = strtolower($name) == 'all' ? _('All hosts') : _('Host')." '".$name."'";
 
+/* TODO: implement */
+/*
 		# handle host- or servicegroup details
 		$host_model = new Host_Model();
 		$host_model->show_services = true;
@@ -377,6 +382,10 @@ class Status_Controller extends Authenticated_Controller {
 		$host_model->set_sort_order($sort_order);
 		$host_model->serviceprops = $service_props;
 		$host_model->hostprops = $hostprops;
+*/
+
+		$ls         = Livestatus::instance();
+		$result     = $ls->getServices(array('paging' => $this));
 
 		$this->template->content->is_svc_details = false;
 
@@ -434,6 +443,8 @@ class Status_Controller extends Authenticated_Controller {
 				$result = $host_model->get_host_status();
 			}
 		} else {
+/* TODO: implement */
+/*
 			$host_model->num_per_page = false;
 			$host_model->offset = false;
 			$host_model->count = true;
@@ -461,13 +472,13 @@ class Status_Controller extends Authenticated_Controller {
 
 			$host_model->set_host_list($name);
 			$result = $host_model->get_host_status();
+*/
 		}
 		$sub_title = _('Service Status Details For').' '.$shown;
 		$this->template->content->sub_title = $sub_title;
 
 		$this->template->content->pending_output = _('Service check scheduled for %s');
 		$this->template->content->result = $result;
-		$this->template->content->pagination = isset($pagination) ? $pagination : false;
 		$this->template->content->style = 'detail';
 		if (empty($group_type)) {
 			if ($name == 'all') {
@@ -532,8 +543,6 @@ class Status_Controller extends Authenticated_Controller {
 
 		$svc_comments = Comment_Model::count_all_comments_by_object(true);
 		$this->template->content->comments = $svc_comments;
-		$this->template->content->items_per_page = $items_per_page;
-		$this->template->content->page = $page;
 
 		if (isset($page_links)) {
 			$this->template->content->page_links = $page_links;
