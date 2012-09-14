@@ -43,7 +43,7 @@
 	<?php echo ($i%2 == 1) ? '</tr>' : ''; ?>
 	<?php  $i++; } ?>
 		<td class="status icon" style="padding: 4px 7px"><?php echo html::image($this->add_path('icons/12x12/shield-info.png'),array('title' => $label_all_types, 'alt' => $label_all_types, 'style' => 'margin-bottom: -2px')); ?></td>
-		<td><?php echo html::anchor('status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&'.$grouptype_arg, html::specialchars($services['total_services'].' Services'), array('class' => 'status-warning')) ?></td>
+		<td><?php echo html::anchor('status/service/'.$this->host.'/?hoststatustypes='.$this->hoststatus.'&'.$grouptype_arg, html::specialchars($services['total_services'].' Services'), array('class' => 'status-total')) ?></td>
 	</tr>
 	<tr>
 		<td class="status icon" style="padding: 4px 7px">

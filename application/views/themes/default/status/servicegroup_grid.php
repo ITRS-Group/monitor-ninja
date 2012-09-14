@@ -42,15 +42,16 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 <?php echo form::open('command/multi_action'); ?>
 <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 
-<?php if (count($group_details) && !empty($group_details))
+<?php if (count($group_details) && !empty($group_details)) {
+	$nacoma_link = nacoma::link()===true;
 	foreach ($group_details as $details) { ?>
 	<table class="group_grid_table">
 		<caption>
 			<?php
-				if (nacoma::link()===true)
+				if ($nacoma_link)
 					echo nacoma::link('configuration/configure/servicegroup/'.urlencode($details->servicegroup_name), 'icons/16x16/nacoma.png', _('Configure this servicegroup')).' &nbsp;';
 				echo html::anchor('status/servicegroup/'.$details->servicegroup_name.'?style=detail', html::specialchars($details->alias));
-				echo '<span>('.html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($details->servicegroup_name), html::specialchars($details->servicegroup_name)).')</span>';
+				echo ' <span>('.html::anchor('extinfo/details/?type=servicegroup&host='.urlencode($details->servicegroup_name), html::specialchars($details->servicegroup_name)).')</span>';
 			?>
 		</caption>
 		<tr>
@@ -170,7 +171,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');
 		</tbody>
 	</table>
 
-<?php
+<?php }
 }	# end each group
 else { ?>
 	<table class="group_grid_table">
