@@ -469,7 +469,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'end_time':
 			// value "impossible", or value already set by report_period
 			// (we consider anything before 1980 impossible, or at least unreasonable)
-			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period'])))
+			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period']) && $this->options['report_period'] != 'custom'))
 				return false;
 			if (!is_numeric($value))
 				$value = strtotime($value);
