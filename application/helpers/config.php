@@ -6,44 +6,39 @@
 class config_Core
 {
 	/**
-	*	Fetch config item from db or config file
-	*	If $page is set it will fetch for a page-specific
-	* 	setting for current user
-	*/
+        *       Fetch config item from db or config file
+        *       If $page is set it will fetch for a page-specific
+        *       setting for current user
+        */
 	public static function get($config_str=false, $page='', $save=false, $skip_session=false)
 	{
 		$config_str = trim($config_str);
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
-		$setting_session = null;
 		# first check for cached session value
 		$page_val = empty($page) ? '' : '.'.$page;
-		if (!$skip_session) {
-			$setting_session = Session::instance()->get($config_str.$page_val, null);
-		} else {
+		$setting = false;
+		if ($skip_session) {
 			Session::instance()->delete($config_str.$page_val);
-		}
-
-		if (!is_null($setting_session)) {
-			$setting = $setting_session;
+		} else {
+			$setting = Session::instance()->get($config_str.$page_val, null);
 		}
 
 		# then check for database value
-		if (!isset($setting)) {
+		if ($setting === false) {
 			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
 			if ($cfg!==false) {
-				$setting =  $cfg->setting;
+				$setting = $cfg->setting;
 			}
 		}
 
-		if (!isset($setting)) {
+		if ($setting === false) {
 			# if nothing was found - try the config file
 			$setting = Kohana::config($config_str, false, false);
 			if (is_array($setting) && empty($setting)) {
 				$setting = false;
-			}
-			if ($save === true && isset($setting)) {
+			} elseif ($save) {
 				# save to database and session as user setting
 				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
@@ -54,7 +49,7 @@ class config_Core
 			Session::instance()->set($config_str.$page_val, $setting);
 		}
 
-		return isset($setting) ? $setting : false;
+		return $setting;
 	}
 
 	/**
