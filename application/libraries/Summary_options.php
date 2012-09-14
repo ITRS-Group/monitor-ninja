@@ -35,16 +35,19 @@ class Summary_options_Core extends Report_options
 			 case 1: case 4:
 				$this['alert_types'] = 3;
 				$this['state_types'] = 2;
+				$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
 				break;
 
 			 case 2: case 5:
 				$this['alert_types'] = 1;
 				$this['state_types'] = 2;
+				$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
 				break;
 
 			 case 3: case 6:
 				$this['alert_types'] = 2;
 				$this['state_types'] = 2;
+				$this['service_description'] = Nagios_auth_Model::instance()->get_authorized_services();
 				break;
 
 			 default:
