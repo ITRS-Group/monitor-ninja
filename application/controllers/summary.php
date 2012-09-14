@@ -70,6 +70,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('summary/setup');
+		$this->template->content->report_options = $this->add_view('summary/options');
 		$template = $this->template->content;
 
 		# get all saved reports for user
