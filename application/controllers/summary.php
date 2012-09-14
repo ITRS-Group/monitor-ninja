@@ -215,12 +215,15 @@ class Summary_Controller extends Base_reports_Controller
 			exit(1);
 		}
 
+
 		if ($this->options['output_format'] == 'csv') {
 			csv::csv_http_headers($this->type, $this->options);
-			$this->template =
-				$this->add_view('summary/csv');
+			$this->template = $this->add_view('summary/csv');
+			$this->template->options = $this->options;
 			$this->template->summary_type = $this->options['summary_type'];
 			$this->template->result = $result;
+			$this->template->date_format = nagstat::date_format();
+
 			return;
 		}
 

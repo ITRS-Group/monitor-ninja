@@ -1,13 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-
 $csv_content = array('"'.implode('", "', array(
-	$this->_get_summary_variant_by_report_type($report_type),
-	'From: '.$used_options->get_date('start_time'),
-	'To: '.$used_options->get_date('end_time'),
+	 $this->options->get_value('summary_type'),
+	'From: '.$options->get_date('start_time'),
+	'To: '.$options->get_date('end_time'),
 	'Duration: '.($options['end_time'] - $options['start_time'])
 )).'"');
 
-if(self::RECENT_ALERTS == $report_type) {
+if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
 	// headers
 	$csv_content[] = '"'.implode('", "', array(
 		'TIME',
@@ -22,13 +21,14 @@ if(self::RECENT_ALERTS == $report_type) {
 	foreach($result as $log_entry) {
 		$csv_content[] = '"'.implode('", "', array(
 			date($date_format, $log_entry['timestamp']),
-			Reports_Model::event_type_to_string($log_entry['event_type'], $log_entry['service_description'] ? 'service' : 'host'),                                                $log_entry['host_name'],
-			$log_entry['service_description'] ? $log_entry['service_description'] : 'N/A',
+			Reports_Model::event_type_to_string($log_entry['event_type']),
+			isset($log_entry['host_name'])?$log_entry['host_name']:'',
+			isset($log_entry['service_description'])? $log_entry['service_description'] : 'N/A',
 			$log_entry['hard'] ? _('Hard') : _('Soft'),
 			$log_entry['output']
 		)).'"';
 	}
-} elseif(self::TOP_ALERT_PRODUCERS == $report_type) {
+} elseif(Summary_Controller::TOP_ALERT_PRODUCERS == $options['summary_type']) {
 	// summary of services
 	// headers
 	$csv_content[] = '"'.implode('", "', array(
@@ -58,19 +58,19 @@ if(self::RECENT_ALERTS == $report_type) {
 		'HARD ALERTS',
 		'TOTAL ALERTS'
 	);
-	switch($report_type) {
-		case self::ALERT_TOTALS_HG:
+	switch($options['summary_type']) {
+		case Summary_Controller::ALERT_TOTALS_HG:
 			$label = _('Hostgroup');
 			array_splice($header, 1, 1, 'HOSTGROUP');
 			break;
-		case self::ALERT_TOTALS_HOST:
+		case Summary_Controller::ALERT_TOTALS_HOST:
 			$label = _('Host');
 			break;
-		case self::ALERT_TOTALS_SERVICE:
+		case Summary_Controller::ALERT_TOTALS_SERVICE:
 			$label = _('Service');
 			array_splice($header, 2, 0, 'SERVICE');
 			break;
-		case self::ALERT_TOTALS_SG:
+		case Summary_Controller::ALERT_TOTALS_SG:
 			$label = _('Servicegroup');
 			array_splice($header, 1, 1, 'SERVICEGROUP');
 			break;
@@ -78,7 +78,7 @@ if(self::RECENT_ALERTS == $report_type) {
 	$csv_content[] = '"'.implode('", "', $header).'"';
 	foreach ($result as $host_name => $ary) {
 		$service_name = null;
-		if($report_type == self::ALERT_TOTALS_SERVICE) {
+		if($options['summary_type'] == Summary_Controller::ALERT_TOTALS_SERVICE) {
 			list($host_name, $service_name) = explode(';', $host_name);
 		}
 		foreach($ary['host'] as $state => $host) {
@@ -112,3 +112,4 @@ if(self::RECENT_ALERTS == $report_type) {
 	}
 }
 
+echo implode($csv_content, "\n")."\n";
