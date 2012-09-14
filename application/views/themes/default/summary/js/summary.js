@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 	$(".to_check").bind('submit', function() {
 		loopElements();
-		return check_form_values();
+		return check_form_values(this.form);
 	});
 
 	$("#saved_report_form").bind('submit', function() {

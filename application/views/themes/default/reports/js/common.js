@@ -122,7 +122,7 @@ $(document).ready(function() {
 
 	$('.save_report_btn').bind('click', function() {
 		loopElements();
-		if (!(check_form_values())) {
+		if (!(check_form_values(this.form))) {
 			return;
 		}
 		var btn = $(this);
@@ -515,27 +515,25 @@ function field_maps3()
 	this.map['servicegroups']="servicegroup_tmp";
 }
 
-function check_form_values()
+function check_form_values(form)
 {
+	if (!form)
+		form = document.documentElement;
 	var errors = 0;
 	var err_str = '';
 	var field_obj = new field_maps();
-	var fancy_str = '';
 	var curval_starttime = '';
 	var curval_endtime = '';
 
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-	var rpt_type = $("input[name=report_type]").val();
+	var rpt_type = $("input[name=report_type]", form).val();
 	if (rpt_type == '' || rpt_type == undefined) {
-		var rpt_type = $("select[name=report_type]").val();
+		var rpt_type = $("select[name=report_type]", form).val();
 	}
-	if ($(fancy_str + "#report_period").val() == 'custom') {
-		if ($('input[name=type]').val() != 'sla') {
+	if ($("#report_period", form).val() == 'custom') {
+		if ($('input[name=type]', form).val() != 'sla') {
 			// date validation
-			var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
-			var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
+			var cur_startdate = Date.fromString($("input[name=cal_start]", form).attr('value'));
+			var cur_enddate = Date.fromString($("input[name=cal_end]", form).attr('value'));
 			var now = new Date();
 			if (!cur_startdate || !cur_enddate) {
 				if (!cur_startdate) {
@@ -547,11 +545,11 @@ function check_form_values()
 					err_str += "<li>" + _reports_invalid_enddate + ".</li>";
 				}
 			} else {
-				if (endDate > now) {
+				if (cur_enddate > now) {
 					if (!confirm(_reports_enddate_infuture)) {
 						return false;
 					} else {
-						endDate = now;
+						cur_enddate = now;
 					}
 				}
 			}
@@ -562,33 +560,22 @@ function check_form_values()
 				err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
 			}
 
-			// date and time seems OK so let's add time to date field
-			// since fancybox has the (bad) habit of duplicating
-			// the element that is shows, it means that the contained form
-			// values will be duplicated as well.
-			// By looping through these fields (class names) we can use the last one for
-			// the correct value. If we are NOT using fancybox, we will get
-			// the (only) value anyway.
-			$(fancy_str + ".time_start").each(function() {
-				curval_starttime = $(this).val();
-			});
-			$(fancy_str + ".time_end").each(function() {
-				curval_endtime = $(this).val();
-			});
+			curval_starttime = $(".time_start", form).val();
+			curval_endtime = $(".time_end", form).val();
 
-			if (endDate < startDate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
+			if (cur_enddate < cur_startdate || ($("input[name=cal_start]", form).val() === $("input[name=cal_end]", form).val() && curval_endtime < curval_starttime) ) {
 				errors++;
 				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
-				$(".datepick-start").addClass("time_error");
-				$(".datepick-end").addClass("time_error");
+				$(".datepick-start", form).addClass("time_error");
+				$(".datepick-end", form).addClass("time_error");
 			} else {
-				$(".datepick-start").removeClass("time_error");
-				$(".datepick-end").removeClass("time_error");
+				$(".datepick-start", form).removeClass("time_error");
+				$(".datepick-end", form).removeClass("time_error");
 			}
 		} else {
 			// verify that we have years and month fields
-			if ($('#start_year').val() == '' || $('#start_month').val() == ''
-			|| $('#end_year').val() == '' || $('#end_month').val() == '') {
+			if ($('#start_year', form).val() == '' || $('#start_month', form).val() == ''
+			|| $('#end_year', form).val() == '' || $('#end_month', form).val() == '') {
 				errors++;
 				//@@@Fixme: Add translated string
 				err_str += "<li>Please select year and month for both start and end. ";
@@ -597,20 +584,20 @@ function check_form_values()
 		}
 	}
 
-	if (!$('#report_mode_standard:checked').length && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
-	if($('#display_host_status').is('visible') && !$('#display_host_status input[type="checkbox"]:checked').length) {
+	if($('#display_host_status', form).is('visible') && !$('#display_host_status input[type="checkbox"]:checked', form).length) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
-	} else if($('#display_service_status').is('visible') && !$('#display_service_status input[type="checkbox"]:checked').length) {
+	} else if($('#display_service_status', form).is('visible') && !$('#display_service_status input[type="checkbox"]:checked', form).length) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
 	}
 
-	if ($("#enter_sla").is(":visible")) {
+	if ($("#enter_sla", form).is(":visible")) {
 		// check for sane SLA values
 		var red_error = false;
 		var max_val = 100;
@@ -618,20 +605,20 @@ function check_form_values()
 
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
-			var value = $('input[name=' + field_name + ']').attr('value');
+			var value = $('input[name=' + field_name + ']', form).attr('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
-				$('input[name=' + field_name + ']').css('background', sla_month_error_color);
+				$('input[name=' + field_name + ']', form).css('background', sla_month_error_color);
 				errors++;
 				red_error = true;
 			} else {
 				if (value != '') {
 					nr_of_slas++;
 				}
-				if ($("input[name='" + field_name + "']").attr('disabled'))
-					$('input[name=' + field_name + ']').css('background', sla_month_disabled_color);
+				if ($("input[name='" + field_name + "']", form).attr('disabled'))
+					$('input[name=' + field_name + ']', form).css('background', sla_month_disabled_color);
 				else
-					$('input[name=' + field_name + ']').css('background', sla_month_enabled_color);
+					$('input[name=' + field_name + ']', form).css('background', sla_month_enabled_color);
 			}
 		}
 		if (red_error) {
@@ -655,10 +642,10 @@ function check_form_values()
 		return false;
 	};
 
-	var report_name 	= $(fancy_str + "input[name=report_name]").attr('value');
+	var report_name 	= $("input[name=report_name]", form).attr('value');
 	report_name = $.trim(report_name);
-	var saved_report_id = $("input[name=saved_report_id]").attr('value');
-	var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').is(':checked') ? 1 : 0;
+	var saved_report_id = $("input[name=saved_report_id]", form).attr('value');
+	var do_save_report 	= $('input[name=save_report_settings]', form).is(':checked') ? 1 : 0;
 
 	/*
 	*	Only perform checks if:
@@ -666,9 +653,9 @@ function check_form_values()
 	*		- User checked the 'Save Report' checkbox
 	*		- We are currently editing a report (i.e. have saved_report_id)
 	*/
-	if ($('#report_id') && do_save_report && saved_report_id) {
+	if ($('#report_id', form) && do_save_report && saved_report_id) {
 		// Saved reports exists
-		$('#report_id option').each(function(i) {
+		$('#report_id option', form).each(function(i) {
 			if ($(this).val()) {// first item is empty
 				if (saved_report_id != $(this).val()) {
 					// check all the other saved reports
@@ -693,7 +680,7 @@ function check_form_values()
 
 	// display err_str if any
 	if (!errors) {
-		$('#response').html('');
+		$('#response', form).html('');
 
 		// check if report name is unique
 		if(report_name && saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
@@ -710,20 +697,15 @@ function check_form_values()
 		if (curval_endtime) {
 			curval_endtime = ' ' + curval_endtime;
 		}
-		if ($('#fancybox-content').is(':visible')) {
-			$('#fancybox-content #start_time').attr('value', $('#fancybox-content #cal_start').attr('value') + curval_starttime);
-			$('#fancybox-content #end_time').attr('value', $('#fancybox-content #cal_end').attr('value') + curval_endtime);
-		} else {
-			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + curval_starttime);
-			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + curval_endtime);
-		}
-		$('#response').hide();
+		$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
+		$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
+		$('#response', form).hide();
 		return true;
 	}
 
 	// clear all style info from progress
-	$('#response').attr("style", "");
-	$('#response').html("<ul class=\"error\">" + err_str + "</ul>");
+	$('#response', form).attr("style", "");
+	$('#response', form).html("<ul class=\"error\">" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
 }
