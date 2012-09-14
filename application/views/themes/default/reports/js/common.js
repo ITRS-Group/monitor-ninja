@@ -1,5 +1,3 @@
-var startDate;
-var endDate;
 var DEBUG = false;
 var host_tmp = false;
 var host = false;
@@ -160,21 +158,19 @@ function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').filter(':visible').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-	$('#cal_start').bind(
+	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	$('#cal_start').on(
 		'dpClosed',
 		function(e, selectedDates)
 		{
 			var d = selectedDates[0];
 			if (d) {
 				d = new Date(d);
-				startDate = d.asString();
-				$('#start_time').attr('value', d.asString());
 				$('#cal_end').dpSetStartDate(d.asString());
 			}
 		}
 	);
-	$('#cal_end').bind(
+	$('#cal_end').on(
 		'dpClosed',
 		function(e, selectedDates)
 		{
@@ -182,8 +178,6 @@ function init_datepicker()
 			if (d) {
 				d = new Date(d);
 				$('#cal_start').dpSetEndDate(d.asString());
-				$('#end_time').attr('value', d.asString());
-				endDate = d.asString();
 			}
 		}
 	);
@@ -211,7 +205,6 @@ function js_print_date_ranges(the_year, type, item)
 	if (!the_year && type!='' && item!='') {
 		return false;
 	}
-	//get_date_ranges(the_year, type, item);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "get_date_ranges/";
 	var data = {the_year: the_year, type: type, item: item};
@@ -260,12 +253,7 @@ function js_print_date_ranges(the_year, type, item)
 function show_calendar(val, update) {
 	$('#response').html('');
 	if (val=='custom') {
-		if ($('input[name=type]').val() != 'sla') {
-			$("#display").show();
-
-			$(".fancydisplay").each(function() {
-				$(this).show();
-			});
+		$("#display").show();
 
 			init_timepicker();
 			init_datepicker();
@@ -274,15 +262,8 @@ function show_calendar(val, update) {
 				$('input[name=start_time]').attr('value', '');
 				$('input[name=end_time]').attr('value', '');
 			}
-		} else {
-			$("#display").show();
-			js_print_date_ranges();
-		}
 	} else {
 		$("#display").hide();
-		$(".fancydisplay").each(function() {
-			$(this).hide();
-		});
 	}
 	disable_sla_fields(val);
 }
@@ -485,16 +466,10 @@ function setup_hide_content(d) {
 function hide_response() {setup_hide_content('response');}
 
 function toggle_field_visibility(val, theId) {
-	var fancy_str = '';
-
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-
 	if (val) {
-		$(fancy_str + '#' + theId).show();
+		$('#' + theId).show();
 	} else {
-		$(fancy_str + '#' + theId).hide();
+		$('#' + theId).hide();
 	}
 }
 
@@ -843,41 +818,7 @@ function validate_form(formData, jqForm, options) {
 // init timepicker once it it is shown
 function init_timepicker()
 {
-	// Use default timepicker settings
-	if ($("#time_start").is(':visible')) {
-		$("#time_start, #time_end").timePicker();
-	}
-
-	// Store time used by duration.
-	var oldTime = $.timePicker("#time_start").getTime();
-
-	// Keep the duration between the two inputs.
-	$("#time_start").change(function() {
-		if (!validate_time($("#time_start").val())) {
-			$(this).addClass("time_error");
-			_time_error_start = true;
-		} else {
-			$(this).removeClass("time_error");
-			_time_error_start = false;
-		}
-		if ($("#time_end").val()) { // Only update when second input has a value.
-			// Calculate duration.
-			var duration = ($.timePicker("#time_end").getTime() - oldTime);
-			var time = $.timePicker("#time_start").getTime();
-			// Calculate and update the time in the second input.
-			$.timePicker("#time_end").setTime(new Date(new Date(time.getTime() + duration)));
-			oldTime = time;
-		}
-	});
-}
-
-function validate_time(tmp_time)
-{
-	var time_parts = tmp_time.split(':');
-	if (time_parts.length!=2 || isNaN(time_parts[0]) || isNaN(time_parts[1])) {
-		return false;
-	}
-	return true;
+	$("#time_start, #time_end").timePicker();
 }
 
 function disable_sla_fields(report_period)
@@ -1022,7 +963,6 @@ function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
 	$('#' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
-	$('#fancybox-content #' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
 }
 
 function missing_objects()
@@ -1067,57 +1007,6 @@ function format_date_str(date) {
 	mm = mm<10 ? '0' + mm : mm;
 	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
 	return ret_val;
-}
-
-function trigger_schedule_save(f)
-{
-	// ajax post form options
-	show_progress('progress', _wait_str);
-	// fetch values from form
-	var report_id = 0; // new schedule has no ID
-	var rep_type = $('input[name=type]').attr('value');
-	if (!rep_type) {
-		rep_type = $('#fancybox-content input[name=type]').attr('value');
-	}
-	var saved_report_id = $('#fancybox-content #saved_report_id').attr('value');
-	var period = $('#fancybox-content #period').attr('value');
-	var period_str = $('#fancybox-content #period option:selected').text();
-	var recipients = $('#fancybox-content #recipients').attr('value');
-	var filename = $('#fancybox-content #filename').attr('value');
-	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
-	var description = $('#fancybox-content #description').attr('value');
-
-	$.ajax({
-		url:_site_domain + _index_page + '/schedule/schedule',
-		type: 'POST',
-		data: {
-			report_id: report_id,
-			type: rep_type,
-			saved_report_id: saved_report_id,
-			period: period,
-			recipients: recipients,
-			filename: filename,
-			local_persistent_filepath: local_persistent_filepath,
-			description: description
-		},
-		success: function(data) {
-			if (data.error) {
-				jgrowl_message(data.error, _reports_error);
-			} else {
-				// @todo: remove this row, we should fetch that information on each click
-				// on that button since that data might be a bad cache, i.e. it's NEVER guaranteed
-				// to be 1:1 vs the stored data
-				$('#schedule_report_table').append(create_new_schedule_rows(data.result.id));
-				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-				$('#show_schedule').show(); // show the link to view available schedules
-				$.fancybox.close();
-			}
-		},
-		dataType: 'json'
-	});
-
-	setTimeout('delayed_hide_progress()', 1000);
-	return false;
 }
 
 function create_new_schedule_rows(id, root)

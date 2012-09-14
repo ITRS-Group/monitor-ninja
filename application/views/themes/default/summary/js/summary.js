@@ -1,5 +1,3 @@
-var startDate;
-var endDate;
 var DEBUG = false;
 var host_tmp = false;
 var host = false;

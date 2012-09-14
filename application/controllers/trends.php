@@ -15,11 +15,6 @@ class Trends_Controller extends Base_reports_Controller {
 	public $type = 'trends';
 	private $data_arr = false;
 
-	public function __construct()
-	{
-		parent::__construct();
-	}
-
 	/**
 	*	Display report selection/setup page
 	*/
