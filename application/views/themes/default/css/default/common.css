@@ -692,7 +692,7 @@ div.jGrowl div.jGrowl-closer {
 /*.ui-widget-content a { color: #222222; }*/
 .ui-widget-header { border: 1px solid #ccc; background: #f6f6f6 50% 50% repeat-x;/* color: #222222; */font-weight: bold; }
 /*.ui-widget-header a { color: #222222; }*/
-.ui-corner-all { -moz-border-radius: 4px/; -webkit-border-radius: 4px; }
+.ui-corner-all { -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 .ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #ccc; background: #f6f6f6 50% 50% repeat-x; /*font-weight: normal; color: #c3c3c3; */outline: none; }
 #tac_problems_slider{width:200px}
 .headerNone.left a {
