@@ -427,7 +427,12 @@ TODO: implement
         if(isset($options['auth']) && $options['auth'] === true) {
             return "";
         }
-/* TODO: implement cgi.cfg */
+        if($table == 'hosts' && $this->auth->view_hosts_root) {
+            return "";
+        }
+        if($table == 'services' && $this->auth->view_services_root) {
+            return "";
+        }
         return "AuthUser: ".$this->auth->user."\n";
     }
 
@@ -481,7 +486,7 @@ TODO: implement
 
         }
         $stats = array(
-            'total' => array($key => array('!=' => 0))
+            'total' => array($key => array('!=' => 999))
         );
         $data = $this->getStats($table, $stats, $options);
         return $data['total'];
