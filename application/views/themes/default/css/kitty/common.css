@@ -226,6 +226,7 @@ td.white:first-child table tr td:first-child {
 	border-left: 1px solid #ff66ff;
 }
 .w-table tr td {
+	background: #ff33ff url(images/bg.png) repeat;
 	border-right: 1px solid #d0d0d0;
 	border-bottom:1px solid #d0d0d0;
 }
