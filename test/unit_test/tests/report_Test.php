@@ -21,7 +21,7 @@ class report_Test extends TapUnit {
 		if ($auth->view_services_root)
 			$msg .= ' with view_services_root';
 		try {
-			$res = $this->rpt->test_summary_queries($auth);
+			$res = $this->rpt->test_summary_queries();
 			$this->ok(is_array($res), $msg);
 			if (!is_array($res))
 				$this->diag($res);

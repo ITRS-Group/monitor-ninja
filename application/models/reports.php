@@ -1453,8 +1453,9 @@ class Reports_Model extends Model
 	/**
 	 * Used by summary model to generate debug information for queries
 	 */
-	public function test_summary_queries($auth = false)
+	public function test_summary_queries()
 	{
+		$this->options['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$this->options['host_states'] = $host_state;
@@ -1464,7 +1465,7 @@ class Reports_Model extends Model
 					$this->options['state_types'] = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
 						$this->options['alert_types'] = $alert_types;
-						$query = $this->build_alert_summary_query(false, $auth);
+						$query = $this->build_alert_summary_query(false);
 						if (!$query)
 							return "FAIL: host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
 						$result[$query] = $this->test_summary_query($query);
