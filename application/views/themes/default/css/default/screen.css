@@ -234,6 +234,7 @@ input.textbox {
 	width: 182px;
 	top: 68px;
 	left: 0px;
+	bottom: 0px;
 	z-index: 0;
 	background-color: #f1f1f1;
 	border-left: 1px solid #ccc;
