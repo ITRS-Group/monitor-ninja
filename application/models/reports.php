@@ -1277,7 +1277,7 @@ class Reports_Model extends Model
 	 *
 	 * @param $fields Database fields the caller needs
 	 */
-	private function build_alert_summary_query($fields = false, $auth = false)
+	private function build_alert_summary_query($fields = false)
 	{
 		# default to the most commonly used fields
 		if (!$fields) {
@@ -1334,38 +1334,6 @@ class Reports_Model extends Model
 			}
 		}
 
-		if (!$auth)
-			$auth = Nagios_auth_Model::instance();
-		if (empty($hosts) && $this->options['alert_types'] & 1) {
-			if (!$auth->view_hosts_root) {
-				$hosts = array();
-				$host_list = $auth->get_authorized_hosts_r();
-				if (!empty($host_list)) {
-					foreach ($host_list as $h => $v) {
-						$hosts[$h] = $h;
-					}
-				}
-			}
-			else {
-				$hosts = true;
-			}
-		}
-		if (empty($services) && $this->options['alert_types'] & 2) {
-			if (!$auth->view_hosts_root && !$auth->view_services_root) {
-				$services = array();
-				$svc_list = $auth->get_authorized_services_r();
-				if (!empty($svc_list)) {
-					foreach ($svc_list as $s => $v) {
-						$services[$s] = $s;
-					}
-				}
-			}
-			else {
-				$services = true;
-			}
-		}
-
-		# still empty?
 		if (empty($hosts) && empty($services)) {
 			return false;
 		}
@@ -1407,9 +1375,6 @@ class Reports_Model extends Model
 			$object_selection = "\nAND host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
 		}
-
-		if (empty($fields))
-			$fields = '*';
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
 			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
