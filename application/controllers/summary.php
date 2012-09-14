@@ -249,6 +249,14 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
+		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
+			$report_time_formatted  = $this->options->get_value('report_period');
+		else
+			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
+
+		if($this->options['rpttimeperiod'] != '')
+			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
+
 		$views = array(
 			self::TOP_ALERT_PRODUCERS => 'toplist',
 			self::RECENT_ALERTS => 'latest',
@@ -258,10 +266,16 @@ class Summary_Controller extends Base_reports_Controller
 			self::ALERT_TOTALS_SG => 'alert_totals',
 		);
 
-		$this->template->content =
+		$this->template->set_global('type', $this->type);
+
+		$this->template->content = $this->add_view('reports/index');
+		$this->template->content->header = $this->add_view('reports/header');
+		$this->template->content->report_options = $this->add_view('summary/options');
+		$this->template->content->header->report_time_formatted = $report_time_formatted;
+		$this->template->content->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 
-		$content = $this->template->content;
+		$content = $this->template->content->content;
 
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
@@ -281,8 +295,8 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$content->result = $result;
-		$content->completion_time = $this->reports_model->completion_time;
 		$this->template->title = _("Reporting » Alert summary » Report");
+		$this->template->content->header->title = $this->options->get_value('summary_type');
 	}
 
 	/**

@@ -12,28 +12,17 @@ var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
-	$("#report_mode_standard").click(function() {
-		set_report_mode('standard');
+	$('#report_mode_form input').on('change', function() {
+		set_report_mode(this.value);
 	});
-	$("#report_mode_custom")
-		.click(function() {
-			set_report_mode('custom');
-		})
-		.map(function() {
-			if(this.checked) {
-				// detect on load as well, e.g. when going
-				// back from a generated report
-				set_report_mode('custom');
-			} else {
-				set_report_mode('standard');
-			}
-		});
+	set_report_mode($('#report_mode_form input[checked]').val());
 
 	$("#report_period").bind('change', function() {
-		show_calendar($(this).attr('value'));
+		show_calendar($(this).val());
 	});
+	show_calendar($('#report_period').val());
 
-	$("#summary_form").bind('submit', function() {
+	$(".to_check").bind('submit', function() {
 		loopElements();
 		return check_form_values();
 	});
@@ -56,7 +45,6 @@ $(document).ready(function() {
 */
 function expand_and_populate(data)
 {
-	set_initial_state('report_type', data['obj_type']);
 	var reportObj = data;
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
@@ -71,50 +59,23 @@ function expand_and_populate(data)
 		// move selected options from left -> right
 		moveAndSort(from_id, to_id);
 	}
-
-	if (data['standardreport']) {
-		var val = data['standardreport'][0];
-		if ($('#standardreport').is(':visible')) {
-			$('#standardreport option').each(function() {
-				if ($(this).val() == val) {
-					$(this).attr('selected', true);
-				}
-			});
-		}
-	}
-
-	set_initial_state('report_type', reportObj['report_type']);
-	show_calendar(reportObj['report_period']);
-
-	if (reportObj['report_name'] != undefined) {
-		set_initial_state('report_name', reportObj['report_name']);
-	}
-
-	if (reportObj['report_period'] == 'custom') {
-		startDate = epoch_to_human(reportObj['start_time']);
-		document.forms['summary_form'].cal_start.value = reportObj['cal_start'];
-		document.forms['summary_form'].time_start.value = reportObj['time_start'];
-		document.forms['summary_form'].start_time.value = format_date_str(startDate);
-
-		endDate = epoch_to_human(reportObj['end_time']);
-		document.forms['summary_form'].cal_end.value = reportObj['cal_end'];
-		document.forms['summary_form'].time_end.value = reportObj['time_end'];
-		document.forms['summary_form'].end_time.value = format_date_str(endDate);
-	}
 }
 
 function set_report_mode(type)
 {
 	switch (type) {
 		case 'standard':
-			$("#std_report_table").show();
-			$("#custom_report").hide();
+			$('.standard').show();
+			$('.custom').hide();
+			$.fancybox.resize();
 			break;
 		case 'custom':
-			$("#std_report_table").hide();
+			$('.standard').hide();
+			$('.custom').show();
 			if (!report_id)
 				set_selection($('#report_type').val());
-			$("#custom_report").show();
+			$('#standardreport').val(''); // FIXME: this is broken
+			$.fancybox.center();
 			break;
 	}
 }

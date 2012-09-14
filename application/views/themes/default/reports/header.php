@@ -1,5 +1,5 @@
 <div id="header">
-	<h1 style="margin-top: 0px !important;"><?php echo isset($title) ? $title : _('SLA Breakdown'); ?></h1>
+	<h1 style="margin-top: 0px !important;"><?php echo $title ?></h1>
 	<p><?php echo _('Reporting period').': '.$report_time_formatted; ?>
 	<?php echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
 	if ($options['use_average']) echo " <strong>("._('using averages').")</strong>"; ?>

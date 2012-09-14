@@ -1,13 +1,34 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<form action="<?php echo url::base(true) ?>/summary/generate" method="post" id="summary_form">
-	<table class="setup-tbl">
-		<tr class="standard">
-			<td colspan="3">
-				<?php echo _('Report Type') ?><br />
-				<?php echo form::dropdown(array('name' => 'standardreport'), $options->get_alternatives('standardreport')); ?>
+<form action="<?php echo url::base(true) ?>/summary/generate" method="post" class="to_check">
+	<table class="setup-tbl standard">
+		<tr>
+			<td>
+				<?php echo help::render('standardreport') ?>
+				<label for="standardreport"><?php echo _('Report Type') ?></label>
+			</td>
+			<td></td>
+			<td>
+				<?php echo help::render('summary_items') ?>
+				<label for="summary_items"><?php echo _('Items to show') ?></label>
 			</td>
 		</tr>
-		<tr class="custom">
+		<tr>
+			<td>
+				<?php echo form::dropdown(array('name' => 'standardreport'), $options->get_alternatives('standardreport'), $options['standardreport']); ?>
+			</td>
+			<td></td>
+			<td>
+				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Show report') ?>" class="button create-report" /></td>
+		</tr>
+	</table>
+</form>
+<form action="<?php echo url::base(true) ?>/summary/generate" method="post" class="to_check">
+	<table class="setup-tbl custom">
+		<tr>
 			<td colspan="3">
 				<select name="report_type" id="report_type" onchange="set_selection(this.value);">
 					<option value="hostgroups"><?php echo _('Hostgroups') ?></option>
@@ -18,14 +39,14 @@
 				<input type="button" id="sel_report_type" class="button select20" onclick="set_selection(document.forms['summary_form'].report_type.value);" value="<?php echo _('Select') ?>" /><div id="progress"></div>
 			</td>
 		</tr>
-		<tr id="filter_row" class="custom">
+		<tr id="filter_row">
 			<td colspan="3">
 				<?php echo _('Filter:') ?><br />
 				<input type="text" name="filter_field" id="filter_field" autocomplete=off size="10" value="">
 				<input type="button" name="clear_filter" id="clear_filter" value="<?php echo _('Clear') ?>">
 			</td>
 		</tr>
-		<tr id="hostgroup_row" class="custom">
+		<tr id="hostgroup_row">
 			<td>
 				<?php echo _('Available').' '._('Hostgroups') ?><br />
 				<select name="hostgroup_tmp[]" id="hostgroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -41,7 +62,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="servicegroup_row" class="custom">
+		<tr id="servicegroup_row">
 			<td>
 				<?php echo _('Available').' '._('Servicegroups') ?><br />
 				<select name="servicegroup_tmp[]" id="servicegroup_tmp" multiple="multiple" size='8' class="multiple">
@@ -57,7 +78,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="host_row_2" class="custom">
+		<tr id="host_row_2">
 			<td>
 				<?php echo _('Available').' '._('Hosts') ?><br />
 				<select name="host_tmp[]" id="host_tmp" multiple="multiple" size="8" class="multiple">
@@ -73,7 +94,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr id="service_row_2" class="custom">
+		<tr id="service_row_2">
 			<td>
 				<?php echo _('Available').' '._('Services') ?><br />
 				<select name="service_tmp[]" id="service_tmp" multiple="multiple" size="8" class="multiple">
@@ -89,7 +110,7 @@
 				</select>
 			</td>
 		</tr>
-		<tr class="custom">
+		<tr>
 			<td>
 				<?php echo _('Report Period') ?><br />
 				<?php echo form::dropdown('report_period', $options->get_alternatives('report_period'), $options['report_period']); ?>
@@ -114,7 +135,7 @@
 			</td>
 		</tr>
 
-		<tr class="custom">
+		<tr>
 			<td>
 				<?php echo _('Alert Types') ?><br />
 				<?php echo form::dropdown('alert_types', $options->get_alternatives('alert_types'), $options['alert_types']) ?>
@@ -125,7 +146,7 @@
 				<?php echo form::dropdown('state_types', $options->get_alternatives('state_types'), $options['state_types']) ?>
 			</td>
 		</tr>
-		<tr class="custom">
+		<tr>
 			<td>
 				<?php echo _('Host States') ?><br />
 				<?php echo form::dropdown('host_states', $options->get_alternatives('host_states'), $options['host_states']) ?>
