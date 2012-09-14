@@ -1321,7 +1321,7 @@ class Reports_Model extends Model
 			$this->host_hostgroup = $hosts;
 		} elseif ($this->options['service_description']) {
 			$services = false;
-			foreach ($this->options['service_description ']as $srv) {
+			foreach ($this->options['service_description'] as $srv) {
 				$services[$srv] = $srv;
 			}
 		} elseif ($this->options['host_name']) {
