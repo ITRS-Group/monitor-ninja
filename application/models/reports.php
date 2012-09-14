@@ -624,9 +624,9 @@ class Reports_Model extends Model
 			case self::HOSTCHECK:
 				return _('Host alert');
 			case self::DOWNTIME_START:
-				return _($obj_type . ' has entered a period of scheduled downtime');
+				return _($object_type . ' has entered a period of scheduled downtime');
 			case self::DOWNTIME_STOP:
-				return _($obj_type . ' has exited a period of scheduled downtime');
+				return _($object_type . ' has exited a period of scheduled downtime');
 			default:
 				throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
 		}
