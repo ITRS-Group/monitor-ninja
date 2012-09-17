@@ -3302,7 +3302,7 @@ class Reports_Controller extends Authenticated_Controller
 		if (!is_array($test) || empty($test))
 			return '';
 
-		if (!Auth::instance()->authorized_for('all_hosts')) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			return false;
 		}
 		unset($auth);
