@@ -70,8 +70,8 @@ class Livestatus
 	public function query($query, $columns=false) {
 		$query = trim($query); // keep track of them newlines
 		$start = microtime(true);
-		if (!((strpos($query, 'GET host') === 0 && $this->auth->authorized_for('all_hosts') ) ||
-			(strpos($query, 'GET service') === 0 && ($this->auth->authorized_for('all_hosts') || $this->auth->authorized_for('all_services')))))
+		if (!((strpos($query, 'GET host') === 0 && $this->auth->authorized_for('host_view_all') ) ||
+			(strpos($query, 'GET service') === 0 && ($this->auth->authorized_for('host_view_all') || $this->auth->authorized_for('service_view_all')))))
 			$query .= "\nAuthUser: {$this->auth->username}";
 		if ($columns)
 			$query .= "\nColumns: ".implode(' ', $columns);
