@@ -60,4 +60,7 @@
 			<input type="button" class="save_report_btn" value="<?php echo _('Save report') ?>" />
 		</form>
 	</div>
+	<div>
+		<?php echo nl2br($options['description']) ?>
+	</div>
 </div>

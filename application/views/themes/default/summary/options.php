@@ -178,6 +178,17 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				<?php echo help::render('description') ?>
+				<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo form::textarea('description', $options['description']); ?>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="3"><input id="reports_submit_button" type="submit" name="" value="<?php echo _('Show report') ?>" class="button create-report" /></td>
 		</tr>
 	</table>
