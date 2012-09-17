@@ -58,19 +58,19 @@ if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
 		'HARD ALERTS',
 		'TOTAL ALERTS'
 	);
-	switch($options['summary_type']) {
-		case Summary_Controller::ALERT_TOTALS_HG:
+	switch($options['report_type']) {
+		case 'hostgroups':
 			$label = _('Hostgroup');
 			array_splice($header, 1, 1, 'HOSTGROUP');
 			break;
-		case Summary_Controller::ALERT_TOTALS_HOST:
+		case 'hosts':
 			$label = _('Host');
 			break;
-		case Summary_Controller::ALERT_TOTALS_SERVICE:
+		case 'services':
 			$label = _('Service');
 			array_splice($header, 2, 0, 'SERVICE');
 			break;
-		case Summary_Controller::ALERT_TOTALS_SG:
+		case 'servicegroups':
 			$label = _('Servicegroup');
 			array_splice($header, 1, 1, 'SERVICEGROUP');
 			break;
@@ -78,14 +78,14 @@ if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
 	$csv_content[] = '"'.implode('", "', $header).'"';
 	foreach ($result as $host_name => $ary) {
 		$service_name = null;
-		if($options['summary_type'] == Summary_Controller::ALERT_TOTALS_SERVICE) {
+		if($options['report_type'] == 'services') {
 			list($host_name, $service_name) = explode(';', $host_name);
 		}
 		foreach($ary['host'] as $state => $host) {
 			$row = array(
 				$label,
 				$host_name,
-				$this->host_state_names[$state],
+				$host_state_names[$state],
 				$host[0], # soft
 				$host[1], # hard
 				$host[0] + $host[1] # total
@@ -99,7 +99,7 @@ if(Summary_Controller::RECENT_ALERTS == $options['summary_type']) {
 			$row = array(
 				$label,
 				$host_name,
-				$this->service_state_names[$state],
+				$service_state_names[$state],
 				$service[0], # soft
 				$service[1], # hard
 				$service[0] + $service[1] # total

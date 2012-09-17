@@ -191,6 +191,8 @@ class Summary_Controller extends Base_reports_Controller
 			$this->template->summary_type = $this->options['summary_type'];
 			$this->template->result = $result;
 			$this->template->date_format = nagstat::date_format();
+			$this->template->host_state_names = $this->host_state_names;
+			$this->template->service_state_names = $this->service_state_names;
 
 			return;
 		}
