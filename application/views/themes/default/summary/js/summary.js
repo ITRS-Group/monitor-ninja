@@ -13,7 +13,7 @@ $(document).ready(function() {
 	$('#report_mode_form input').on('change', function() {
 		set_report_mode(this.value);
 	});
-	set_report_mode($('#report_mode_form input[checked]').val());
+	set_report_mode($('#report_mode_form input:checked').val());
 
 	$("#report_period").bind('change', function() {
 		show_calendar($(this).val());
