@@ -233,9 +233,11 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->set_global('type', $this->type);
 
 		$this->template->content = $this->add_view('reports/index');
-		$this->template->content->header = $this->add_view('reports/header');
+		$this->template->content->header = $this->add_view('summary/header');
+		$this->template->content->header->standard_header = $this->add_view('reports/header');
+		$header = $this->template->content->header->standard_header;
 		$this->template->content->report_options = $this->add_view('summary/options');
-		$this->template->content->header->report_time_formatted = $report_time_formatted;
+		$header->report_time_formatted = $report_time_formatted;
 		$this->template->content->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 
@@ -260,7 +262,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		$content->result = $result;
 		$this->template->title = _("Reporting » Alert summary » Report");
-		$this->template->content->header->title = $this->options->get_value('summary_type');
+		$header->title = $this->options->get_value('summary_type');
 	}
 
 	/**

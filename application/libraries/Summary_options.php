@@ -8,7 +8,7 @@ class Summary_options_Core extends Report_options
 			Summary_Controller::RECENT_ALERTS => _('Most Recent Alerts'),
 			Summary_Controller::ALERT_TOTALS => _('Alert Totals'),
 			Summary_Controller::TOP_ALERT_PRODUCERS => _('Top Alert Producers')));
-		$this->vtypes['standardreport'] = array('type' => 'enum', 'default' => 1, 'options' => array(
+		$this->vtypes['standardreport'] = array('type' => 'enum', 'default' => '', 'options' => array(
 			1 => _('Most Recent Hard Alerts'),
 			2 => _('Most Recent Hard Host Alerts'),
 			3 => _('Most Recent Hard Service Alerts'),
