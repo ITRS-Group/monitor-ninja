@@ -805,8 +805,6 @@ function init_timepicker()
 
 function disable_sla_fields(report_period)
 {
-	if (!$("#enter_sla").is(":visible"))
-		return;
 	$('#csv_cell').hide();
 	var now = new Date();
 	var this_month = now.getMonth()+1;
