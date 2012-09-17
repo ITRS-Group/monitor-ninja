@@ -27,7 +27,7 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 	{
 		parent::__construct();
 		if (PHP_SAPI != 'cli') {
-			if (!Auth::instance()->authorized_for('all_hosts') && Router::$method !== 'unauthorized') {
+			if (!Auth::instance()->authorized_for('host_view_all') && Router::$method !== 'unauthorized') {
 				url::redirect('recurring_downtime/unauthorized');
 			}
 		}
