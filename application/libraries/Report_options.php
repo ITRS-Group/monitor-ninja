@@ -77,7 +77,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 				"last31days" => _('Last 31 Days'),
 				"lastmonth" => _('Last Month'),
 				"thisyear" => _('This Year'),
-				"lastyear" => _('Last Year'));
+				"lastyear" => _('Last Year'),
+				'custom' => _('Custom'));
 		if (isset($this->vtypes['scheduleddowntimeasuptime']))
 			$this->vtypes['scheduleddowntimeasuptime']['options'] = array(
 				0 => _('Actual state'),
@@ -468,7 +469,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'end_time':
 			// value "impossible", or value already set by report_period
 			// (we consider anything before 1980 impossible, or at least unreasonable)
-			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period'])))
+			if ($value <= 315525600 || $value === 'undefined' || (isset($this->options[$name]) && isset($this->options['report_period']) && $this->options['report_period'] != 'custom'))
 				return false;
 			if (!is_numeric($value))
 				$value = strtotime($value);

@@ -1,5 +1,3 @@
-var startDate;
-var endDate;
 var DEBUG = false;
 var host_tmp = false;
 var host = false;
@@ -48,35 +46,12 @@ $(document).ready(function() {
 		hideMe('response');
 	});
 
-	// only init datepicker onload on setup page
-	// when we already have a report it is initialized on demand
-	if (_current_uri.indexOf('generate') == -1){
-		init_datepicker();
-	}
-
 	$(".fancybox").fancybox({
 		'overlayOpacity'	:	0.7,
 		'overlayColor'		:	'#ffffff',
 		'hideOnContentClick' : false,
 		'autoScale':true,
 		'autoDimensions': true,
-		'callbackOnShow': function() {
-			if ($("#report_period").val() == 'custom' && $('input[name=sla_save]').attr('value') == '') {
-				$(".fancydisplay").each(function() {
-					$(this).show();
-				});
-				init_timepicker();
-			}
-		}
-	});
-
-	$('.fancybox').click(function() {
-		// check if we should re-initialize datepicker
-		// NOT for alert summary as this will result in an error
-		if (_current_uri != 'summary/generate'){
-			fancybox_datepicker();
-		}
-		init_timepicker();
 	});
 
 	init_regexpfilter();
@@ -147,7 +122,7 @@ $(document).ready(function() {
 
 	$('.save_report_btn').bind('click', function() {
 		loopElements();
-		if (!(check_form_values())) {
+		if (!(check_form_values(this.form))) {
 			return;
 		}
 		var btn = $(this);
@@ -179,71 +154,23 @@ $(document).ready(function() {
 var loadimg = new Image(16,16);
 loadimg.src = _site_domain + 'application/media/images/loading_small.gif';
 
-function fancybox_datepicker()
-{
-	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-
-	if ($('#fancybox-content #cal_start').attr('value')) {
-		var ds = Date.fromString($('#fancybox-content #cal_start').attr('value'));
-		$('#fancybox-content #cal_end').dpSetStartDate(ds.asString());
-	}
-	if ($('#fancybox-content #cal_end').attr('value')) {
-		var ds = Date.fromString($('#fancybox-content #cal_end').attr('value'));
-		$('#fancybox-content #cal_start').dpSetEndDate(ds.asString());
-	}
-
-	$('.datepick-start').bind(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				startDate = d.asString();
-				$('#fancybox-content #start_time').attr('value', d.asString());
-				$("input[name=start_time]").attr('value', d.asString());
-				$('#fancybox-content #cal_end').dpSetStartDate(d.asString());
-			}
-		}
-	);
-
-	$('.datepick-end').bind(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				endDate = d.asString();
-				$('#fancybox-content #end_time').attr('value', d.asString());
-				$("input[name=end_time]").attr('value', d.asString());
-				$('#fancybox-content #cal_start').dpSetEndDate(d.asString());
-			}
-		}
-	);
-}
-
-
 function init_datepicker()
 {
 	// datePicker Jquery plugin
 	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').filter(':visible').datepicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-	$('#cal_start').bind(
+	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
+	$('#cal_start').on(
 		'dpClosed',
 		function(e, selectedDates)
 		{
 			var d = selectedDates[0];
 			if (d) {
 				d = new Date(d);
-				startDate = d.asString();
-				$('#start_time').attr('value', d.asString());
 				$('#cal_end').dpSetStartDate(d.asString());
 			}
 		}
 	);
-	$('#cal_end').bind(
+	$('#cal_end').on(
 		'dpClosed',
 		function(e, selectedDates)
 		{
@@ -251,8 +178,6 @@ function init_datepicker()
 			if (d) {
 				d = new Date(d);
 				$('#cal_start').dpSetEndDate(d.asString());
-				$('#end_time').attr('value', d.asString());
-				endDate = d.asString();
 			}
 		}
 	);
@@ -280,7 +205,6 @@ function js_print_date_ranges(the_year, type, item)
 	if (!the_year && type!='' && item!='') {
 		return false;
 	}
-	//get_date_ranges(the_year, type, item);
 	var ajax_url = _site_domain + _index_page + '/ajax/';
 	var url = ajax_url + "get_date_ranges/";
 	var data = {the_year: the_year, type: type, item: item};
@@ -329,12 +253,7 @@ function js_print_date_ranges(the_year, type, item)
 function show_calendar(val, update) {
 	$('#response').html('');
 	if (val=='custom') {
-		if ($('input[name=type]').val() != 'sla') {
-			$("#display").show();
-
-			$(".fancydisplay").each(function() {
-				$(this).show();
-			});
+		$("#display").show();
 
 			init_timepicker();
 			init_datepicker();
@@ -343,15 +262,8 @@ function show_calendar(val, update) {
 				$('input[name=start_time]').attr('value', '');
 				$('input[name=end_time]').attr('value', '');
 			}
-		} else {
-			$("#display").show();
-			js_print_date_ranges();
-		}
 	} else {
 		$("#display").hide();
-		$(".fancydisplay").each(function() {
-			$(this).hide();
-		});
 	}
 	disable_sla_fields(val);
 }
@@ -554,16 +466,10 @@ function setup_hide_content(d) {
 function hide_response() {setup_hide_content('response');}
 
 function toggle_field_visibility(val, theId) {
-	var fancy_str = '';
-
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-
 	if (val) {
-		$(fancy_str + '#' + theId).show();
+		$('#' + theId).show();
 	} else {
-		$(fancy_str + '#' + theId).hide();
+		$('#' + theId).hide();
 	}
 }
 
@@ -609,27 +515,25 @@ function field_maps3()
 	this.map['servicegroups']="servicegroup_tmp";
 }
 
-function check_form_values()
+function check_form_values(form)
 {
+	if (!form)
+		form = document.documentElement;
 	var errors = 0;
 	var err_str = '';
 	var field_obj = new field_maps();
-	var fancy_str = '';
 	var curval_starttime = '';
 	var curval_endtime = '';
 
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-	var rpt_type = $("input[name=report_type]").val();
+	var rpt_type = $("input[name=report_type]", form).val();
 	if (rpt_type == '' || rpt_type == undefined) {
-		var rpt_type = $("select[name=report_type]").val();
+		var rpt_type = $("select[name=report_type]", form).val();
 	}
-	if ($(fancy_str + "#report_period").val() == 'custom') {
-		if ($('input[name=type]').val() != 'sla') {
+	if ($("#report_period", form).val() == 'custom') {
+		if ($('input[name=type]', form).val() != 'sla') {
 			// date validation
-			var cur_startdate = startDate = Date.fromString($("input[name=cal_start]").attr('value'));
-			var cur_enddate = endDate = Date.fromString($("input[name=cal_end]").attr('value'));
+			var cur_startdate = Date.fromString($("input[name=cal_start]", form).attr('value'));
+			var cur_enddate = Date.fromString($("input[name=cal_end]", form).attr('value'));
 			var now = new Date();
 			if (!cur_startdate || !cur_enddate) {
 				if (!cur_startdate) {
@@ -641,11 +545,11 @@ function check_form_values()
 					err_str += "<li>" + _reports_invalid_enddate + ".</li>";
 				}
 			} else {
-				if (endDate > now) {
+				if (cur_enddate > now) {
 					if (!confirm(_reports_enddate_infuture)) {
 						return false;
 					} else {
-						endDate = now;
+						cur_enddate = now;
 					}
 				}
 			}
@@ -656,33 +560,22 @@ function check_form_values()
 				err_str += "<li>" + _reports_invalid_timevalue + ".</li>";
 			}
 
-			// date and time seems OK so let's add time to date field
-			// since fancybox has the (bad) habit of duplicating
-			// the element that is shows, it means that the contained form
-			// values will be duplicated as well.
-			// By looping through these fields (class names) we can use the last one for
-			// the correct value. If we are NOT using fancybox, we will get
-			// the (only) value anyway.
-			$(fancy_str + ".time_start").each(function() {
-				curval_starttime = $(this).val();
-			});
-			$(fancy_str + ".time_end").each(function() {
-				curval_endtime = $(this).val();
-			});
+			curval_starttime = $(".time_start", form).val();
+			curval_endtime = $(".time_end", form).val();
 
-			if (endDate < startDate || ($("input[name=cal_start]").val() === $("input[name=cal_end]").val() && curval_endtime < curval_starttime) ) {
+			if (cur_enddate < cur_startdate || ($("input[name=cal_start]", form).val() === $("input[name=cal_end]", form).val() && curval_endtime < curval_starttime) ) {
 				errors++;
 				err_str += "<li>" + _reports_enddate_lessthan_startdate + ".</li>";
-				$(".datepick-start").addClass("time_error");
-				$(".datepick-end").addClass("time_error");
+				$(".datepick-start", form).addClass("time_error");
+				$(".datepick-end", form).addClass("time_error");
 			} else {
-				$(".datepick-start").removeClass("time_error");
-				$(".datepick-end").removeClass("time_error");
+				$(".datepick-start", form).removeClass("time_error");
+				$(".datepick-end", form).removeClass("time_error");
 			}
 		} else {
 			// verify that we have years and month fields
-			if ($('#start_year').val() == '' || $('#start_month').val() == ''
-			|| $('#end_year').val() == '' || $('#end_month').val() == '') {
+			if ($('#start_year', form).val() == '' || $('#start_month', form).val() == ''
+			|| $('#end_year', form).val() == '' || $('#end_month', form).val() == '') {
 				errors++;
 				//@@@Fixme: Add translated string
 				err_str += "<li>Please select year and month for both start and end. ";
@@ -691,20 +584,20 @@ function check_form_values()
 		}
 	}
 
-	if (!$('#report_mode_standard:checked').length && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option').length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
 
-	if($('#display_host_status').is('visible') && !$('#display_host_status input[type="checkbox"]:checked').length) {
+	if($('#display_host_status', form).is('visible') && !$('#display_host_status input[type="checkbox"]:checked', form).length) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
-	} else if($('#display_service_status').is('visible') && !$('#display_service_status input[type="checkbox"]:checked').length) {
+	} else if($('#display_service_status', form).is('visible') && !$('#display_service_status input[type="checkbox"]:checked', form).length) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_nostatus + ".</li>";
 	}
 
-	if ($("#enter_sla").is(":visible")) {
+	if ($("#enter_sla", form).is(":visible")) {
 		// check for sane SLA values
 		var red_error = false;
 		var max_val = 100;
@@ -712,20 +605,20 @@ function check_form_values()
 
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
-			var value = $('input[name=' + field_name + ']').attr('value');
+			var value = $('input[name=' + field_name + ']', form).attr('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
-				$('input[name=' + field_name + ']').css('background', sla_month_error_color);
+				$('input[name=' + field_name + ']', form).css('background', sla_month_error_color);
 				errors++;
 				red_error = true;
 			} else {
 				if (value != '') {
 					nr_of_slas++;
 				}
-				if ($("input[name='" + field_name + "']").attr('disabled'))
-					$('input[name=' + field_name + ']').css('background', sla_month_disabled_color);
+				if ($("input[name='" + field_name + "']", form).attr('disabled'))
+					$('input[name=' + field_name + ']', form).css('background', sla_month_disabled_color);
 				else
-					$('input[name=' + field_name + ']').css('background', sla_month_enabled_color);
+					$('input[name=' + field_name + ']', form).css('background', sla_month_enabled_color);
 			}
 		}
 		if (red_error) {
@@ -749,10 +642,10 @@ function check_form_values()
 		return false;
 	};
 
-	var report_name 	= $(fancy_str + "input[name=report_name]").attr('value');
+	var report_name 	= $("input[name=report_name]", form).attr('value');
 	report_name = $.trim(report_name);
-	var saved_report_id = $("input[name=saved_report_id]").attr('value');
-	var do_save_report 	= $(fancy_str + 'input[name=save_report_settings]').is(':checked') ? 1 : 0;
+	var saved_report_id = $("input[name=saved_report_id]", form).attr('value');
+	var do_save_report 	= $('input[name=save_report_settings]', form).is(':checked') ? 1 : 0;
 
 	/*
 	*	Only perform checks if:
@@ -760,9 +653,9 @@ function check_form_values()
 	*		- User checked the 'Save Report' checkbox
 	*		- We are currently editing a report (i.e. have saved_report_id)
 	*/
-	if ($('#report_id') && do_save_report && saved_report_id) {
+	if ($('#report_id', form) && do_save_report && saved_report_id) {
 		// Saved reports exists
-		$('#report_id option').each(function(i) {
+		$('#report_id option', form).each(function(i) {
 			if ($(this).val()) {// first item is empty
 				if (saved_report_id != $(this).val()) {
 					// check all the other saved reports
@@ -787,7 +680,7 @@ function check_form_values()
 
 	// display err_str if any
 	if (!errors) {
-		$('#response').html('');
+		$('#response', form).html('');
 
 		// check if report name is unique
 		if(report_name && saved_report_id == '' && invalid_report_names && invalid_report_names.has(report_name))
@@ -804,20 +697,15 @@ function check_form_values()
 		if (curval_endtime) {
 			curval_endtime = ' ' + curval_endtime;
 		}
-		if ($('#fancybox-content').is(':visible')) {
-			$('#fancybox-content #start_time').attr('value', $('#fancybox-content #cal_start').attr('value') + curval_starttime);
-			$('#fancybox-content #end_time').attr('value', $('#fancybox-content #cal_end').attr('value') + curval_endtime);
-		} else {
-			$("input[name=start_time]").attr('value', $("input[name=cal_start]").attr('value') + curval_starttime);
-			$("input[name=end_time]").attr('value', $("input[name=cal_end]").attr('value') + curval_endtime);
-		}
-		$('#response').hide();
+		$("input[name=start_time]", form).attr('value', $("input[name=cal_start]", form).attr('value') + curval_starttime);
+		$("input[name=end_time]", form).attr('value', $("input[name=cal_end]", form).attr('value') + curval_endtime);
+		$('#response', form).hide();
 		return true;
 	}
 
 	// clear all style info from progress
-	$('#response').attr("style", "");
-	$('#response').html("<ul class=\"error\">" + err_str + "</ul>");
+	$('#response', form).attr("style", "");
+	$('#response', form).html("<ul class=\"error\">" + err_str + "</ul>");
 	window.scrollTo(0,0); // make sure user sees the error message
 	return false;
 }
@@ -912,47 +800,7 @@ function validate_form(formData, jqForm, options) {
 // init timepicker once it it is shown
 function init_timepicker()
 {
-	// Use default timepicker settings
-	if ($("#time_start").is(':visible')) {
-		$("#time_start, #time_end").timePicker();
-	} else {
-		if ($("#fancybox-content #time_start").is(':visible')) {
-			$("#fancybox-content #time_start, #fancybox-content #time_end").timePicker();
-		} else {
-			return false;
-		}
-	}
-
-	// Store time used by duration.
-	var oldTime = $.timePicker("#time_start").getTime();
-
-	// Keep the duration between the two inputs.
-	$("#time_start").change(function() {
-		if (!validate_time($("#time_start").val())) {
-			$(this).addClass("time_error");
-			_time_error_start = true;
-		} else {
-			$(this).removeClass("time_error");
-			_time_error_start = false;
-		}
-		if ($("#time_end").val()) { // Only update when second input has a value.
-			// Calculate duration.
-			var duration = ($.timePicker("#time_end").getTime() - oldTime);
-			var time = $.timePicker("#time_start").getTime();
-			// Calculate and update the time in the second input.
-			$.timePicker("#time_end").setTime(new Date(new Date(time.getTime() + duration)));
-			oldTime = time;
-		}
-	});
-}
-
-function validate_time(tmp_time)
-{
-	var time_parts = tmp_time.split(':');
-	if (time_parts.length!=2 || isNaN(time_parts[0]) || isNaN(time_parts[1])) {
-		return false;
-	}
-	return true;
+	$("#time_start, #time_end").timePicker();
 }
 
 function disable_sla_fields(report_period)
@@ -1097,7 +945,6 @@ function toggle_label_weight(val, the_id)
 {
 	var val_str = val ? 'bold' : 'normal';
 	$('#' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
-	$('#fancybox-content #' + the_id + ', label[for='+the_id+']').css('font-weight', val_str);
 }
 
 function missing_objects()
@@ -1142,57 +989,6 @@ function format_date_str(date) {
 	mm = mm<10 ? '0' + mm : mm;
 	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
 	return ret_val;
-}
-
-function trigger_schedule_save(f)
-{
-	// ajax post form options
-	show_progress('progress', _wait_str);
-	// fetch values from form
-	var report_id = 0; // new schedule has no ID
-	var rep_type = $('input[name=type]').attr('value');
-	if (!rep_type) {
-		rep_type = $('#fancybox-content input[name=type]').attr('value');
-	}
-	var saved_report_id = $('#fancybox-content #saved_report_id').attr('value');
-	var period = $('#fancybox-content #period').attr('value');
-	var period_str = $('#fancybox-content #period option:selected').text();
-	var recipients = $('#fancybox-content #recipients').attr('value');
-	var filename = $('#fancybox-content #filename').attr('value');
-	var local_persistent_filepath = $('#fancybox-content #local_persistent_filepath').attr('value');
-	var description = $('#fancybox-content #description').attr('value');
-
-	$.ajax({
-		url:_site_domain + _index_page + '/schedule/schedule',
-		type: 'POST',
-		data: {
-			report_id: report_id,
-			type: rep_type,
-			saved_report_id: saved_report_id,
-			period: period,
-			recipients: recipients,
-			filename: filename,
-			local_persistent_filepath: local_persistent_filepath,
-			description: description
-		},
-		success: function(data) {
-			if (data.error) {
-				jgrowl_message(data.error, _reports_error);
-			} else {
-				// @todo: remove this row, we should fetch that information on each click
-				// on that button since that data might be a bad cache, i.e. it's NEVER guaranteed
-				// to be 1:1 vs the stored data
-				$('#schedule_report_table').append(create_new_schedule_rows(data.result.id));
-				jgrowl_message(_reports_schedule_create_ok, _reports_success);
-				$('#show_schedule').show(); // show the link to view available schedules
-				$.fancybox.close();
-			}
-		},
-		dataType: 'json'
-	});
-
-	setTimeout('delayed_hide_progress()', 1000);
-	return false;
 }
 
 function create_new_schedule_rows(id, root)

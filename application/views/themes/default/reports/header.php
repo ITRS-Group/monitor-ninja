@@ -1,5 +1,5 @@
 <div id="header">
-	<h1 style="margin-top: 0px !important;"><?php echo isset($title) ? $title : _('SLA Breakdown'); ?></h1>
+	<h1 style="margin-top: 0px !important;"><?php echo $title ?></h1>
 	<p><?php echo _('Reporting period').': '.$report_time_formatted; ?>
 	<?php echo (isset($str_start_date) && isset($str_end_date)) ? ' ('.$str_start_date.' '._('to').' '.$str_end_date.')' : '';
 	if ($options['use_average']) echo " <strong>("._('using averages').")</strong>"; ?>
@@ -17,8 +17,20 @@
 			)
 		)
 	);
-	echo isset($csv_link) ? $csv_link : '';
-	echo isset($pdf_link) ? $pdf_link : '';
+
+	echo form::open($this->type.'/generate');
+	echo $options->as_form();
+	echo '<input type="hidden" name="output_format" value="csv" />';
+	$csv_alt = _('Download report as CSV');
+	echo "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png')."' alt='".$csv_alt."' title='".$csv_alt."'/>";
+	echo "</form>\n";
+
+	echo form::open($type.'/generate');
+	echo $options->as_form();
+	echo '<input type="hidden" name="output_format" value="pdf" />';
+	$pdf_alt = _('Show as pdf');
+	echo '<input type="image" src="'.$this->add_path('icons/32x32/page-pdf.png').'" title="'.$pdf_alt.'" alt="'.$pdf_alt.'" />';
+	echo '</form>';
 	?>
 	<a href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
 	<a href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>

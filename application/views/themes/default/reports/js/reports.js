@@ -209,7 +209,6 @@ function fetch_field_value(type, id, elem_id)
 		url: _site_domain + _index_page + '/reports/fetch_field_value?id=' + id + '&type=' + type,
 		success: function(data) {
 			$('#' + elem_id).text(data);
-			$('#fancybox-content #' + elem_id).text(data);
 		}
 	});
 }
@@ -244,16 +243,10 @@ function get_sla_values() {
 
 function toggle_state(the_id)
 {
-	var fancy_str = '';
-
-	if ($('#fancybox-content').is(':visible')) {
-		fancy_str = '#fancybox-content ';
-	}
-
-	if ($(fancy_str + '#' + the_id).attr('checked') ) {
-		$(fancy_str + '#' + the_id).attr('checked', false);
+	if ($('#' + the_id).attr('checked') ) {
+		$('#' + the_id).attr('checked', false);
 	} else {
-		$(fancy_str + '#' + the_id).attr('checked', true);
+		$('#' + the_id).attr('checked', true);
 	}
 }
 

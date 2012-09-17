@@ -16,10 +16,6 @@ class Summary_Controller extends Base_reports_Controller
 	const RECENT_ALERTS = 1;
 	const ALERT_TOTALS = 2;
 	const TOP_ALERT_PRODUCERS = 3;
-	const ALERT_TOTALS_HG = 4;
-	const ALERT_TOTALS_HOST = 5;
-	const ALERT_TOTALS_SERVICE = 6;
-	const ALERT_TOTALS_SG = 7;
 
 	public $type = 'summary';
 	public $reports_model = false;
@@ -70,6 +66,7 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('summary/setup');
+		$this->template->content->report_options = $this->add_view('summary/options');
 		$template = $this->template->content;
 
 		# get all saved reports for user
@@ -156,27 +153,6 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	 * @param int $report_type
-	 * @return string
-	 * @throws InvalidArgumentException
-	 */
-	private function _get_summary_variant_by_report_type($report_type) {
-		$types = array(
-			self::RECENT_ALERTS => _("Most recent hard alerts"),
-			self::ALERT_TOTALS => _("Most recent hard host alerts"),
-			self::TOP_ALERT_PRODUCERS => _("Top hard alert producers"),
-			self::ALERT_TOTALS_HG => _('Overall totals'),
-			self::ALERT_TOTALS_HOST => _('Overall totals'),
-			self::ALERT_TOTALS_SERVICE => _('Overall totals'),
-			self::ALERT_TOTALS_SG => _('Overall totals')
-		);
-		if(!array_key_exists($report_type, $types)) {
-			throw new InvalidArgumentException("Invalid report type");
-		}
-		return $types[$report_type];
-	}
-
-	/**
 	 * Generates an alert summary report
 	 */
 	public function generate($input=false)
@@ -199,14 +175,6 @@ class Summary_Controller extends Base_reports_Controller
 			break;
 
 		 case self::ALERT_TOTALS:
-		 case self::ALERT_TOTALS_HG:
-		 case self::ALERT_TOTALS_SG:
-		 case self::ALERT_TOTALS_HOST:
-			$result = $this->reports_model->alert_totals();
-			break;
-
-		case self::ALERT_TOTALS_SERVICE:
-			$this->options['service_description'] = $this->_populate_services();
 			$result = $this->reports_model->alert_totals();
 			break;
 
@@ -215,12 +183,17 @@ class Summary_Controller extends Base_reports_Controller
 			exit(1);
 		}
 
+
 		if ($this->options['output_format'] == 'csv') {
 			csv::csv_http_headers($this->type, $this->options);
-			$this->template =
-				$this->add_view('summary/csv');
+			$this->template = $this->add_view('summary/csv');
+			$this->template->options = $this->options;
 			$this->template->summary_type = $this->options['summary_type'];
 			$this->template->result = $result;
+			$this->template->date_format = nagstat::date_format();
+			$this->template->host_state_names = $this->host_state_names;
+			$this->template->service_state_names = $this->service_state_names;
+
 			return;
 		}
 
@@ -245,19 +218,32 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= "var report_id = ".(int)$this->options['report_id'].";\n";
 
+		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
+			$report_time_formatted  = $this->options->get_value('report_period');
+		else
+			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
+
+		if($this->options['rpttimeperiod'] != '')
+			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
+
 		$views = array(
 			self::TOP_ALERT_PRODUCERS => 'toplist',
 			self::RECENT_ALERTS => 'latest',
-			self::ALERT_TOTALS_HG => 'alert_totals',
-			self::ALERT_TOTALS_HOST => 'alert_totals',
-			self::ALERT_TOTALS_SERVICE => 'alert_totals',
-			self::ALERT_TOTALS_SG => 'alert_totals',
+			self::ALERT_TOTALS => 'alert_totals',
 		);
 
-		$this->template->content =
+		$this->template->set_global('type', $this->type);
+
+		$this->template->content = $this->add_view('reports/index');
+		$this->template->content->header = $this->add_view('summary/header');
+		$this->template->content->header->standard_header = $this->add_view('reports/header');
+		$header = $this->template->content->header->standard_header;
+		$this->template->content->report_options = $this->add_view('summary/options');
+		$header->report_time_formatted = $report_time_formatted;
+		$this->template->content->content =
 			$this->add_view("summary/" . $views[$this->options['summary_type']]);
 
-		$content = $this->template->content;
+		$content = $this->template->content->content;
 
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
@@ -277,8 +263,8 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->js_strings = $this->js_strings;
 
 		$content->result = $result;
-		$content->completion_time = $this->reports_model->completion_time;
 		$this->template->title = _("Reporting » Alert summary » Report");
+		$header->title = $this->options->get_value('summary_type');
 	}
 
 	/**

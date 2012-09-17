@@ -234,10 +234,10 @@ class Reports_Controller extends Base_reports_Controller
 
 		$sub_type = false;
 
-		if('custom' == $this->options['report_period'])
-			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
-		else
+		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = $this->options->get_value('report_period');
+		else
+			$report_time_formatted  = sprintf(_("%s to %s"), date(nagstat::date_format(), $this->options['start_time']), date(nagstat::date_format(), $this->options['end_time']));
 
 		if($this->options['rpttimeperiod'] != '')
 			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
@@ -338,9 +338,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _reports_name_empty = '"._("Please give your report a meaningful name.")."';\n";
 
-		$csv_link = $this->_get_csv_link();
-		$pdf_link = $this->_get_pdf_link();
-
 		$host_graph_items = array('TOTAL_TIME_UP' => _('Up'),
 				'TOTAL_TIME_DOWN' => _('Down'),
 				'TOTAL_TIME_UNREACHABLE' => _('Unreachable'),
@@ -356,8 +353,6 @@ class Reports_Controller extends Base_reports_Controller
 		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
 			$template->header = $this->add_view('reports/header');
 			$template->header->report_time_formatted = $report_time_formatted;
-			$template->header->csv_link = $csv_link;
-			$template->header->pdf_link = $pdf_link;
 
 			if ($is_group) {
 				foreach ($data_arr as $data) {
@@ -492,8 +487,6 @@ class Reports_Controller extends Base_reports_Controller
 
 				$template->header = $this->add_view('reports/header');
 				$template->header->report_time_formatted = $report_time_formatted;
-				$template->header->csv_link = $csv_link;
-				$template->header->pdf_link = $pdf_link;
 
 				if ($this->type == 'avail') {
 					$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
@@ -868,40 +861,6 @@ class Reports_Controller extends Base_reports_Controller
 			$retval = array_search($val, $arr);
 			return (string)($retval !== false ? $retval : $val);
 		}
-	}
-
-
-	public function _get_csv_link()
-	{
-		$opts = Report_options::setup_options_obj($this->type, $this->options);
-		$opts['filename'] = ($opts['report_name'] ? $opts['report_name'] : $this->type).'.csv';
-		$return = form::open($this->type.'/generate');
-		$return .= $opts->as_form();
-		$label = _('Download report as CSV');
-		$return .= "<input type='image' src='".$this->add_path('icons/32x32/page-csv.png').
-			"' alt='".$label."' title='".$label."'/></form>\n";
-		return $return;
-	}
-
-	/**
-	 * Generate "show as pdf" link with icon, as a small html form.
-	 *
-	 * @return string Complete HTML for the resulting link
-	 */
-	public function _get_pdf_link()
-	{
-		$pdf_img_src = $this->add_path('icons/32x32/page-pdf.png');
-		$pdf_img_alt = _('Show as pdf');
-		$opts = Report_options::setup_options_obj($this->type, $this->options);
-		$opts['filename'] = ($opts['report_name'] ? $opts['report_name'] : $this->type).'.pdf';
-
-		$form = form::open($this->type.'/generate');
-		$form .= $opts->as_form();
-		$form .= '<input type="image" src="'.$pdf_img_src.'" title="'.$pdf_img_alt.'" '
-			.'value="'.$pdf_img_alt.'"  alt="'.$pdf_img_alt.'" />';
-		$form .= "</form>";
-
-		return $form;
 	}
 
 	/**

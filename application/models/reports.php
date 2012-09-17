@@ -624,9 +624,9 @@ class Reports_Model extends Model
 			case self::HOSTCHECK:
 				return _('Host alert');
 			case self::DOWNTIME_START:
-				return _($obj_type . ' has entered a period of scheduled downtime');
+				return _($object_type . ' has entered a period of scheduled downtime');
 			case self::DOWNTIME_STOP:
-				return _($obj_type . ' has exited a period of scheduled downtime');
+				return _($object_type . ' has exited a period of scheduled downtime');
 			default:
 				throw new InvalidArgumentException("Invalid event type '$event_type' in ".__METHOD__.":".__LINE__);
 		}
@@ -1277,7 +1277,7 @@ class Reports_Model extends Model
 	 *
 	 * @param $fields Database fields the caller needs
 	 */
-	private function build_alert_summary_query($fields = false, $auth = false)
+	private function build_alert_summary_query($fields = false)
 	{
 		# default to the most commonly used fields
 		if (!$fields) {
@@ -1321,7 +1321,7 @@ class Reports_Model extends Model
 			$this->host_hostgroup = $hosts;
 		} elseif ($this->options['service_description']) {
 			$services = false;
-			foreach ($this->options['service_description ']as $srv) {
+			foreach ($this->options['service_description'] as $srv) {
 				$services[$srv] = $srv;
 			}
 		} elseif ($this->options['host_name']) {
@@ -1334,38 +1334,6 @@ class Reports_Model extends Model
 			}
 		}
 
-		if (!$auth)
-			$auth = Nagios_auth_Model::instance();
-		if (empty($hosts) && $this->options['alert_types'] & 1) {
-			if (!$auth->view_hosts_root) {
-				$hosts = array();
-				$host_list = $auth->get_authorized_hosts_r();
-				if (!empty($host_list)) {
-					foreach ($host_list as $h => $v) {
-						$hosts[$h] = $h;
-					}
-				}
-			}
-			else {
-				$hosts = true;
-			}
-		}
-		if (empty($services) && $this->options['alert_types'] & 2) {
-			if (!$auth->view_hosts_root && !$auth->view_services_root) {
-				$services = array();
-				$svc_list = $auth->get_authorized_services_r();
-				if (!empty($svc_list)) {
-					foreach ($svc_list as $s => $v) {
-						$services[$s] = $s;
-					}
-				}
-			}
-			else {
-				$services = true;
-			}
-		}
-
-		# still empty?
 		if (empty($hosts) && empty($services)) {
 			return false;
 		}
@@ -1407,9 +1375,6 @@ class Reports_Model extends Model
 			$object_selection = "\nAND host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
 		}
-
-		if (empty($fields))
-			$fields = '*';
 
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
 			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
@@ -1488,8 +1453,9 @@ class Reports_Model extends Model
 	/**
 	 * Used by summary model to generate debug information for queries
 	 */
-	public function test_summary_queries($auth = false)
+	public function test_summary_queries()
 	{
+		$this->options['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
 		$result = array();
 		for ($host_state = 1; $host_state <= 7; $host_state++) {
 			$this->options['host_states'] = $host_state;
@@ -1499,7 +1465,7 @@ class Reports_Model extends Model
 					$this->options['state_types'] = $state_types;
 					for ($alert_types = 1; $alert_types <= 3; $alert_types++) {
 						$this->options['alert_types'] = $alert_types;
-						$query = $this->build_alert_summary_query(false, $auth);
+						$query = $this->build_alert_summary_query(false);
 						if (!$query)
 							return "FAIL: host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types;";
 						$result[$query] = $this->test_summary_query($query);
@@ -1761,14 +1727,19 @@ class Reports_Model extends Model
 		$result = false;
 		# groups must be first here, since the other variables
 		# are expanded in the build_alert_summary_query() method
-		if ($this->options['servicegroup']) {
+		switch ($this->options['report_type']) {
+		 case 'servicegroups':
 			$result = $this->alert_totals_by_servicegroup($dbr);
-		} elseif ($this->options['hostgroup']) {
+			break;
+		 case 'hostgroups':
 			$result = $this->alert_totals_by_hostgroup($dbr);
-		} elseif ($this->options['service_description']) {
+			break;
+		 case 'services':
 			$result = $this->alert_totals_by_service($dbr);
-		} elseif ($this->options['host_name']) {
+			break;
+		 case 'hosts':
 			$result = $this->alert_totals_by_host($dbr);
+			break;
 		}
 
 		$this->set_alert_total_totals($result);
@@ -1866,150 +1837,6 @@ class Reports_Model extends Model
 	}
 
 	/**
-	*	Build alert history query based
-	* 	on supplied options
-	*/
-	public function build_alert_history_query($fields='*', $report_type=false)
-	{
-		$hosts = false;
-		$services = false;
-		if ($this->options['servicegroup']) {
-			$servicegroup = $this->options['servicegroup'];
-			$services = array();
-			$smod = new Service_Model();
-
-			foreach ($servicegroup as $sg) {
-				$res = $smod->get_services_for_group($sg);
-				foreach ($res as $o) {
-					$name = $o->options['host_name'] . ';' . $o->options['service_description'];
-					if (empty($services[$name])) {
-						$services[$name] = array();
-					}
-					$services[$name][$sg] = $sg;
-				}
-			}
-			$this->service_servicegroup = $services;
-		} elseif ($this->options['hostgroup']) {
-			$hostgroup = $this->options['hostgroup'];
-			$hosts = array();
-			$hmod = new Hostgroup_Model();
-			foreach ($hostgroup as $hg) {
-				$res = $hmod->get_hosts_for_group($hg);
-				foreach ($res as $o) {
-					$name = $o->host_name;
-					if (empty($hosts[$name])) {
-						$hosts[$name] = array();
-					}
-					$hosts[$name][$hg] = $hg;
-				}
-			}
-			$this->host_hostgroup = $hosts;
-		} elseif ($this->options['service_description']) {
-			$services = false;
-			if (is_array($this->options['service_description']) && $this->options['service_description']) {
-				foreach ($this->options['service_description'] as $srv) {
-					$services[$srv] = $srv;
-				}
-			} else {
-				$services[$this->options['host_name'].';'.$this->options['service_description']] = $this->options['host_name'].';'.$this->options['service_description'];
-			}
-		} elseif ($this->options['host_name']) {
-			$hosts = false;
-			if (is_array($this->options['host_name']) && $this->options['host_name']) {
-				foreach ($this->options['host_name'] as $hn) {
-					$hosts[$hn] = $hn;
-				}
-			} else {
-				$hosts[$this->host_name] = $this->options['host_name'];
-			}
-		}
-
-		$object_selection = false;
-		if ($hosts) {
-			$object_selection = "AND host_name IN('" .
-				join("', '", array_keys($hosts)) . "')";
-		} elseif ($services) {
-			$orstr = '';
-			# Must do this the hard way to allow host_name indices to
-			# take effect when running the query, since the construct
-			# "concat(host_name, ';', service_description)" isn't
-			# indexable
-			foreach ($services as $srv => $discard) {
-				$ary = explode(';', $srv);
-				$h = $ary[0];
-				$s = $ary[1];
-				$object_selection .= $orstr . "(host_name = '" . $h . "' ";
-				if (!$s)
-					$object_selection .= "AND (service_description = '' OR service_description IS NULL))";
-				else
-					$object_selection .= "AND service_description = '{$s}')";
-				$orstr = " OR ";
-			}
-			if ($object_selection)
-				$object_selection = 'AND ('.$object_selection.')';
-		}
-
-		if (empty($fields))
-			$fields = '*';
-
-		$query = "SELECT " . $fields . " FROM " . $this->db_table . " " .
-			"WHERE timestamp >= " . $this->options['start_time'] . " " .
-			"AND timestamp <= " . $this->options['end_time'] . " ";
-		if (!empty($object_selection)) {
-			$query .= $object_selection . " ";
-		}
-
-		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
-			$this->options['host_states'] = self::HOST_ALL;
-			$host_states_sql = 'event_type = ' . self::HOSTCHECK . ' ';
-		} else {
-			$x = array();
-			$host_states_sql = '(event_type = ' . self::HOSTCHECK . ' ' .
-				'AND state IN(';
-			for ($i = 0; $i < 7; $i++) {
-				if (1 << $i & $this->options['host_states']) {
-					$x[$i] = $i;
-				}
-			}
-			$host_states_sql .= join(',', $x) . ')) ';
-		}
-
-		if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
-			$this->options['service_states'] = self::SERVICE_ALL;
-			$service_states_sql = 'event_type = ' . self::SERVICECHECK . ' ';
-		} else {
-			$x = array();
-			$service_states_sql = '(event_type = ' . self::SERVICECHECK . ' ' .
-				'AND state IN(';
-			for ($i = 0; $i < 15; $i++) {
-				if (1 << $i & $this->options['service_states']) {
-					$x[$i] = $i;
-				}
-			}
-			$service_states_sql .= join(',', $x) . ')) ';
-		}
-
-		switch ($report_type) {
-			case 'hosts': case 'hostgroups': $query .= 'AND ' . $host_states_sql; break;
-			case 'services': case 'servicegroups': $query .= 'AND ' . $service_states_sql; break;
-		}
-
-		switch ($this->options['state_types']) {
-		 case 0: case 3: default:
-			break;
-		 case 1:
-			$query .= "AND hard = 0 ";
-			break;
-		 case 2:
-			$query .= "AND hard = 1 ";
-			break;
-		}
-
-		$this->summary_query = $query;
-		return $query;
-	}
-
-	/**
 	*	Fetch alert history for histogram report
 	* 	@param $slots array with slots to fill with data
 	* 	@return array with keys: min, max, avg, data
@@ -2060,7 +1887,7 @@ class Reports_Model extends Model
 
 		# fields to fetch from db
 		$fields = 'timestamp, event_type, host_name, service_description, state, hard, retry';
-		$query = $this->build_alert_history_query($fields, $report_type);
+		$query = $this->build_alert_summary_query($fields);
 
 		$data = false;
 

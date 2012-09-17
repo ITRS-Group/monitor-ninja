@@ -1,6 +1,5 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <div class="left w98">
-	<h1><?php echo _('Overall Totals') ?></h1>
 	<p style="margin-top:-10px"><?php date::duration($options['start_time'], $options['end_time']); ?></p>
 	<?php
 	foreach ($result as $name => $ary) {
