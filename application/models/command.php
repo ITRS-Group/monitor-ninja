@@ -152,7 +152,7 @@ class Command_Model extends Model
 
 			switch ($param_name) {
 			 case 'author':
-				$ary = array('type' => 'immutable', 'default' => $this->auth->user);
+				$ary = array('type' => 'immutable', 'default' => Auth::instance()->get_user()->username);
 				break;
 			 case 'check_attempts':
 				$ary = array('type' => 'int', 'default' => $this->get_setting('check_attempts'));
