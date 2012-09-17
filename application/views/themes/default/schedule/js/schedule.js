@@ -84,6 +84,7 @@ $(document).ready(function() {
 					options.appendChild(option);
 				}
 				saved_reports.appendChild(options);
+				create_filename();
 			}
 		);
 	});
