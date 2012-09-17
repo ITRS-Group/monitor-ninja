@@ -41,7 +41,7 @@ class Config_Model extends Model {
 		$db = Database::instance();
 		$result_mod = array();
 
-		if (Auth::instance()->authorized_for('host_view_all')) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			return false;
 		}
 
