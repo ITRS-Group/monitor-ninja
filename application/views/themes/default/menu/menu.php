@@ -83,8 +83,7 @@ $menu = array(
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
-$section_reporting = array(
-	$menu_items['trends'] => array('/trends', 'trends',0));
+$section_reporting = array();
 if(Kohana::config('config.pnp4nagios_path') !== false) {
 	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&srv=runtime', 'pnp',0);
 }
