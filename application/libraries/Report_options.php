@@ -30,8 +30,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
-		'host_name' => array('type' => 'array', 'default' => false), /**< Hosts to include (note: array) */
-		'service_description' => array('type' => 'array', 'default' => false), /**< Services to include (note: array) */
+		'host_name' => array('type' => 'array', 'default' => array()), /**< Hosts to include (note: array) */
+		'service_description' => array('type' => 'array', 'default' => array()), /**< Services to include (note: array) */
 		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
 		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include (note: array) */
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
