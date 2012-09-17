@@ -27,7 +27,7 @@ class Outages_Controller extends Authenticated_Controller
 	*/
 	public function display_network_outages()
 	{
-		if(!Auth::instance()->authorized_for('all_hosts')) {
+		if(!Auth::instance()->authorized_for('host_view_all')) {
 			$this->template->content = $this->add_view('unauthorized');
 			$this->template->content->error_message = _('It appears as though you do not have permission to view information you requested...');
 			$this->template->content->error_description = _('If you believe this is an error, check the HTTP server authentication requirements for accessing this page
