@@ -592,16 +592,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 		return $report_info;
 	}
 
-	protected static function create_options_obj($type, $report_info = false) {
-		$class = ucfirst($type) . '_options';
-		if (!class_exists($class))
-			$class = 'Report_options';
-		$options = new $class($report_info);
-		if (isset($report_info['report_id'])) {
-			# now that report_type is set, ship off objects to the correct var
-			if (!$options[$options->get_value('report_type')] && isset($report_info['objects']))
-				$options[$options->get_value('report_type')] = $report_info['objects'];
-		}
+	protected static function create_options_obj($report_info = false) {
+		$options = new static($report_info);
+		# now that report_type is set, ship off objects to the correct var
+		if (isset($report_info['objects']))
+			$options[$options->get_value('report_type')] = array_merge($report_info['objects'], $options[$options->get_value('report_type')]);
 		return $options;
 	}
 
@@ -611,8 +606,12 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$class = get_class($input);
 			return new $class($input);
 		}
-		$report_info = static::discover_options($type, $input);
-		$options = static::create_options_obj($type, $report_info);
+		$class = ucfirst($type) . '_options';
+		if (!class_exists($class))
+			$class = 'Report_options';
+
+		$report_info = $class::discover_options($type, $input);
+		$options = $class::create_options_obj($report_info);
 		return $options;
 	}
 }
