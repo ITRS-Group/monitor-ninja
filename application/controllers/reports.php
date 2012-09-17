@@ -100,7 +100,7 @@ class Reports_Controller extends Base_reports_Controller
 			}
 		}
 
-		$this->template->content->report_options = $this->add_view('reports/options');
+		$template->report_options = $this->add_view('reports/options');
 
 		$scheduled_info = false;
 		if ($this->options['report_id']) {
@@ -300,9 +300,9 @@ class Reports_Controller extends Base_reports_Controller
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
-		$this->template->content->report_options = $this->add_view('reports/options');
+		$template->report_options = $this->add_view('reports/options');
 
-		$tpl_options = $this->template->content->report_options;
+		$tpl_options = $template->report_options;
 		$tpl_options->reporting_periods = $this->_get_reporting_periods();
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$tpl_options->saved_reports = $saved_reports;
