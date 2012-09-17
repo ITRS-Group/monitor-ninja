@@ -19,7 +19,7 @@ class Upload_Controller extends Authenticated_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		if (!Auth::instance()->authorized_for('all_hosts')) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			# redirect to default start page if not
 			# properly authorized
 			url::redirect(Kohana::config('routes.logged_in_default'));
