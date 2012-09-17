@@ -989,62 +989,6 @@ function format_date_str(date) {
 	return ret_val;
 }
 
-function create_new_schedule_rows(id, root)
-{
-	var return_str = '';
-	var rep_type = $('#type', root).attr('value');
-
-	var saved_report_id = $('#saved_report_id', root).attr('value');
-	if (saved_report_id == '')
-		saved_report_id = $('#saved_report_id').attr('value');
-
-	var period = $('#period', root).attr('value');
-	if (period == '')
-		period = $('#period').attr('value');
-
-	var period_str = $('#period option:selected', root).text();
-	if (period_str == '')
-		period_str = $('#period option:selected').text();
-
-	var recipients = $('#recipients', root).attr('value');
-	if (recipients == '')
-		recipients = $('#recipients').attr('value');
-
-	var filename = $('#filename', root).attr('value');
-	if (filename == '')
-		filename = $('#filename').attr('value');
-
-	var local_persistent_filepath = $('#local_persistent_filepath', root).attr('value');
-	if (local_persistent_filepath == '')
-		local_persistent_filepath = $('#local_persistent_filepath').attr('value');
-
-	var description = $('#description', root).attr('value');
-	if (description == '')
-		description = $('#description').attr('value');
-	if (description == '')
-		description = '&nbsp;';
-
-	var report_type_id = -1;
-	for (var i in _report_types_json) {
-		if (_report_types_json[i] == rep_type) {
-			report_type_id = i;
-		}
-	}
-
-	var reportname = $('#saved_report_id', root).find(':selected').text();
-
-	return_str += '<tr id="report-' + id + '" class="odd">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
-	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
-	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
-	return return_str;
-}
-
 jQuery.extend(
 	jQuery.expr[':'], {
 		regex: function(a, i, m, r) {
