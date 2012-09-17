@@ -1343,7 +1343,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$sq_model->sort_order = $this->input->get('sort_order', $sort_order);
 		$sq_model->sort_field = $this->input->get('sort_field', $sort_field);
 
-		if (!Auth::instance()->authorized_for('all_hosts')) {
+		if (!Auth::instance()->authorized_for('host_view_all')) {
 			url::redirect('extinfo/unauthorized/scheduling_queue');
 		}
 
