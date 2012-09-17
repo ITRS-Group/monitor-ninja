@@ -18,7 +18,7 @@
 		)
 	);
 
-	echo form::open($this->type.'/generate');
+	echo form::open($type.'/generate');
 	echo $options->as_form();
 	echo '<input type="hidden" name="output_format" value="csv" />';
 	$csv_alt = _('Download report as CSV');
@@ -35,7 +35,7 @@
 	<a href="#" id="save_report"><?php echo html::image($this->add_path('/icons/32x32/square-save.png'), array('alt' => _('Save report'), 'title' => _('Save report'))); ?></a>
 	<a href="#options" class="fancybox"><?php echo html::image($this->add_path('/icons/32x32/square-edit.png'), array('alt' => _('edit settings'), 'title' => _('edit settings'))); ?></a>
 	<?php if ($options['report_id']) { ?>
-	<a id="show_schedule" href="<?php echo url::base() ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
+	<a id="show_schedule" href="<?php echo url::base(true) ?>schedule/show"><?php echo html::image($this->add_path('/icons/32x32/square-view-schedule.png'), array('alt' => _('View schedule'), 'title' => _('View schedule'))); ?></a>
 	<?php }
 	if (Session::instance()->get('main_report_params', false)
 		!= Session::instance()->get('current_report_params', false) && Session::instance()->get('main_report_params', false)) {
