@@ -347,11 +347,11 @@ class Reports_Controller extends Base_reports_Controller
 				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
 		$graph_filter = ${$sub_type.'_graph_items'};
 
-		# more than one object
-		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
-			$template->header = $this->add_view('reports/header');
-			$template->header->report_time_formatted = $report_time_formatted;
+		$template->header = $this->add_view('reports/header');
+		$template->header->report_time_formatted = $report_time_formatted;
 
+		# avail, more than one object
+		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
 			if ($is_group) {
 				foreach ($data_arr as $data) {
 					if (empty($data))
@@ -474,16 +474,12 @@ class Reports_Controller extends Base_reports_Controller
 				$template->pie->data_str = $data_str;
 				$template->pie->image_data = $image_data;
 			}
-		} else { # host/services
+		} else { # single avail host/service, or any sla
 			$image_data = false;
 			$data_str = '';
 			if (!empty($data_arr)) {
 				$data = $data_arr[0];
 				$template->content = $this->add_view('reports/'.$this->type);
-				$template->content->options = $this->options;
-
-				$template->header = $this->add_view('reports/header');
-				$template->header->report_time_formatted = $report_time_formatted;
 
 				if ($this->type == 'avail') {
 					$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
@@ -618,7 +614,7 @@ class Reports_Controller extends Base_reports_Controller
 								$template->content->service = $service;
 							}
 
-							$trends_params = "host=$host".
+							$trends_params = "service_description=$host;$service".
 								"&amp;t1=$t1".
 								"&amp;t2=$t2".
 								"&amp;includesoftstates=".$soft_states.
@@ -649,7 +645,7 @@ class Reports_Controller extends Base_reports_Controller
 							$notifications_params = "host=$host&amp;service=$service";
 
 
-							$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
+							$links[$this->trend_link . "?" . $trends_params] = _('Trends');
 							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
 							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
 							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
