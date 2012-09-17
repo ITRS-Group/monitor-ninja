@@ -7,11 +7,51 @@ class LivestatusException extends Exception {}
 
 /*
  * Livestatus Class
+ *
+ * usage:
+ *
+ * access nagios data by various get<Table> methods.
+ *
+ * options is an hash array which provides filtering and other query options:
+ *
+ * example:
+ *  $ls    = Livestatus::instance();
+ *  $hosts = getHosts($options)
+ *
+ *  options = array(
+ *      'auth'      => <bool>,              # authentication is enabled by default.
+ *                                          # use this switch to disable it
+ *
+ *      'limit'     => <nr of records>,     # limit result set
+ *
+ *      'paging'    => $this,               # use paging. $this is a reference to
+ *                                          # a kohana object to access the input
+ *                                          # and template reference
+ *
+ *      'order'     => $order,              # sorting / order by structure, ex.:
+ *                                          # array('name' => 'DESC')
+ *                                          # array('host_name' => 'DESC', 'description' => 'DESC')
+ *
+ *      'filter'    => $filter,             # filter structure used to filter the
+ *                                          # resulting objects
+ *                                          # simple filter:
+ *                                          #   array('name' => 'value')
+ *                                          # simple filter with operator:
+ *                                          #   array('name' => array('!=' => 'value'))
+ *                                          # logical operator:
+ *                                          #   array('-or' => array('name' => 'value', 'address' => 'othervalue'))
+ *                                          # nested filter:
+ *                                          #   array('-or' => array('name' => 'value', 'address' => array('~~' => 'othervalue')))
+ *                                          #
+ *                                          # see livestatus docs for details about available operators
+ *  );
+ *
  */
 class Livestatus {
     private $auth            = false;
     private $connection      = null;
     private $config          = false;
+    private $program_start   = false;
     private static $instance = false;
 
     /* constructor */
@@ -54,6 +94,10 @@ class Livestatus {
                 'parents', 'percent_state_change', 'perf_data', 'plugin_output', 'process_performance_data',
                 'retry_interval', 'scheduled_downtime_depth', 'state', 'state_type', 'modified_attributes_list',
                 'pnpgraph_present'
+            );
+            $now = time();
+            $options['callbacks'] = array(
+                'duration' => function($row) use ($now) { return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start); }
             );
         }
         return $this->getTable('hosts', $options);
@@ -102,6 +146,10 @@ class Livestatus {
                 'notifications_enabled', 'obsess_over_service', 'percent_state_change', 'perf_data',
                 'plugin_output', 'process_performance_data', 'retry_interval', 'scheduled_downtime_depth',
                 'state', 'state_type', 'modified_attributes_list', 'pnpgraph_present'
+            );
+            $now = time();
+            $options['callbacks'] = array(
+                'duration' => function($row) use ($now) { return $row['last_state_change'] ? ($now - $row['last_state_change']) : ($now - $this->program_start); }
             );
         }
         return $this->getTable('services', $options);
@@ -207,6 +255,7 @@ class Livestatus {
             );
         }
         $objects = $this->getTable('status', $options);
+        $this->program_start = $objects[0]['program_start'];
         return (object) $objects[0];
     }
 
@@ -404,7 +453,9 @@ TODO: implement
         $query .= $filter;
         $objects = $this->query($table, $query, $options['columns']);
         $objects = $this->page_step2($objects, $options);
-        return $this->objects2Assoc($objects, $options['columns']);
+        $objects = $this->objects2Assoc($objects, $options['columns'], isset($options['callbacks']) ? $options['callbacks'] : null);
+        $objects = $this->sort($objects, $table, $options);
+        return $objects;
     }
 
     private function getStats($table, $stats, $options = null) {
@@ -474,6 +525,48 @@ TODO: implement
         return $result;
     }
 
+    private function sort($objects, $table, $options = null) {
+        if($options == null || !isset($options['order'])) {
+            return $objects;
+        }
+
+        $orderby = array();
+        foreach($options['order'] as $field => $order) {
+            $orderby[] = $field;
+            $orderby[] = $order;
+        }
+
+        # don't sort when using the default order already
+        if(count($orderby) == 2) {
+            switch($table) {
+                case 'hosts':    if($orderby[0] == 'name' && $orderby[1] == 'ASC') { return $objects; }
+                                 break;
+                case 'services': if($orderby[0] == 'description' && $orderby[1] == 'ASC') { return $objects; }
+                                 break;
+                default:         throw new LivestatusException("unsupported table $table in sort()");
+                                 break;
+            }
+        }
+
+        usort($objects, $this->build_sorter($orderby));
+        return $objects;
+    }
+
+    function build_sorter($orderby) {
+/* TODO: support multiple sort fields */
+        $key   = $orderby[0];
+        $order = $orderby[1];
+        if($order == 'DESC') {
+            return function ($a, $b) use ($key) {
+                return -1*strnatcmp($a[$key], $b[$key]);
+            };
+
+        }
+        return function ($a, $b) use ($key) {
+            return strnatcmp($a[$key], $b[$key]);
+        };
+    }
+
     private function get_query_size($table, $options = null) {
         if(!isset($options['paging'])) { return; }
 /* TODO: use paging only when using default sorting */
@@ -524,7 +617,7 @@ TODO: implement
 
     private function getQueryFilter($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
         if($filter === null) { return ""; }
-
+/* TODO: implement proper escaping */
         $query = "";
         if($this->is_assoc($filter)) {
             $iter = 0;
@@ -586,7 +679,7 @@ TODO: implement
         return (is_array($array) && (count($array)==0 || 0 !== count(array_diff_key($array, array_keys(array_keys($array))) )));
     }
 
-    private function objects2Assoc($objects, $columns) {
+    private function objects2Assoc($objects, $columns, $callbacks = null) {
         $cols = $columns;
         if(!is_array($cols)) {
             $cols = array($columns);
@@ -598,6 +691,11 @@ TODO: implement
             foreach($cols as $c) {
                 $n[$c] = $o[$i];
                 $i++;
+            }
+            if($callbacks != null) {
+                foreach($callbacks as $key => $cb) {
+                    $n[$key] = $cb($n);
+                }
             }
             array_push($result, $n);
         }

@@ -145,7 +145,7 @@ foreach ($result as $row) {
 					?>
 				</td>
 				<td style="white-space: normal; width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : _('N/A') ?></td>
-				<td style="width: 110px"><?php echo $row->last_state_change > 0 ? time::to_string(time() - $row->last_state_change) : _('N/A') ?></td>
+				<td style="width: 110px"><?php echo $row->last_state_change > 0 ? time::to_string($row->duration) : _('N/A') ?></td>
 				<td style="white-space: normal">
 					<?php
 					if ($row->state == Current_status_Model::HOST_PENDING)

@@ -189,12 +189,7 @@ $action_url_target = config::get('nagdefault.action_url_target', '*');?>
 			?>
 		</td>
 		<td style="width: 110px"><?php echo $row->last_check ? date($date_format_str,$row->last_check) : _('N/A') ?></td>
-<?php	if (isset($is_svc_details) && $is_svc_details !== false) {
-			# make sure we print service duration and not host since we have a special query result here, i.e displaying servicegroup result ?>
-		<td style="width: 110px"><?php echo $row->service_duration != $row->service_cur_time ? time::to_string($row->service_duration) : _('N/A') ?></td>
-<?php	} else { ?>
-		<td style="width: 110px"><?php echo $row->last_state_change > 0 ? time::to_string(time() - $row->last_state_change) : _('N/A') ?></td>
-<?php	} ?>
+		<td style="width: 110px"><?php echo $row->last_state_change > 0 ? time::to_string($row->duration) : _('N/A') ?></td>
 		<td style="text-align: center; width: 60px"><?php echo $row->current_attempt;?>/<?php echo $row->max_check_attempts ?></td>
 		<td style="white-space: normal">
 		<?php

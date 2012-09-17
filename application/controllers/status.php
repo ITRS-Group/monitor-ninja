@@ -55,7 +55,7 @@ class Status_Controller extends Authenticated_Controller {
 	 * @param $sort_field
 	 * @param $show_services
 	 */
-	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='host_name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
+	public function host($host='all', $hoststatustypes=false, $sort_order='ASC', $sort_field='name', $show_services=false, $group_type=false, $serviceprops=false, $hostprops=false)
 	{
 		$host = $this->input->get('host', $host);
 		$hoststatustypes = $this->input->get('hoststatustypes', $hoststatustypes);
@@ -109,11 +109,11 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => _('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'host status'),
-			array('title' => _('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
-			array('title' => _('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
-			array('title' => _('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => _('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
+			array('title' => _('Status'),     	  'sort_field_db' => 'state', 		'sort_field_str' => 'host status'),
+			array('title' => _('Host'),      	  'sort_field_db' => 'name', 		'sort_field_str' => 'host name'),
+			array('title' => _('Last Check'),         'sort_field_db' => 'last_check', 	'sort_field_str' => 'last check time'),
+			array('title' => _('Duration'),           'sort_field_db' => 'duration', 	'sort_field_str' => 'state duration'),
+			array('title' => _('Status Information'), 'sort_field_db' => 'plugin_output',	'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
@@ -144,45 +144,8 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->sub_title = $sub_title;
 		$this->template->content->pending_output = _('Host check scheduled for %s');
 
-/* TODO: implement */
-/*
-		# here we should fetch members of group if group_type is set and pass to get_host_status()
-		$host_model = new Host_Model();
-		$host_model->show_services = $show_services;
-		$host_model->state_filter = $hoststatustypes;
-		$host_model->set_sort_field($sort_field);
-		$host_model->set_sort_order($sort_order);
-		$host_model->serviceprops = $serviceprops;
-		$host_model->hostprops = $hostprops;
-		$host_model->count = true;
-
-		if (!empty($group_type)) {
-			# we ned to remove the 'group' part of the group_type variable value
-			# since the method we are about to call expects 'host' or 'service'
-			$grouptype = str_replace('group', '', $group_type);
-			$group_info_res = Group_Model::get_group_info($grouptype, $host);
-			if ($group_info_res) {
-				$group_members = false;
-				foreach ($group_info_res as $row) {
-					$group_members[] = $row->host_name;
-				}
-			}
-
-			$host_model->set_host_list($group_members);
-
-		} else {
-			if (strstr($host, ',')) {
-				$host = explode(',', $host);
-			}
-
-			$host_model->set_host_list($host);
-		}
-
-		$result_cnt = $host_model->get_host_status();
-*/
-
 		$ls         = Livestatus::instance();
-		$result     = $ls->getHosts(array('paging' => $this));
+		$result     = $ls->getHosts(array('paging' => $this, 'order' => array($sort_field => $sort_order)));
 
 		$this->template->content->date_format_str = nagstat::date_format();
 		$this->template->content->result = $result;
@@ -296,32 +259,13 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->template->title = $title;
 
-/* TODO: implement */
-/*
-		$sort_order = $sort_order == 'false' || empty($sort_order) ? 'ASC' : $sort_order;
-		$sort_field = $sort_field == 'false' || empty($sort_field) ? 'host_name' : $sort_field;
-
-		$this->hoststatustypes = $hoststatustypes;
-		$this->hostprops = $hostprops;
-		$this->servicestatustypes = $servicestatustypes;
-		$this->serviceprops = $service_props;
-		$filters = $this->_show_filters();
-*/
-
 		$this->template->content = $this->add_view('status/service');
 		$this->template->content->noheader = $noheader;
-#		$this->template->content->filters = $filters;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 
 		$widget = widget::get(Ninja_widget_Model::get(Router::$controller, 'status_totals'), $this);
-/*
-		$widget->set_host($name);
-		$widget->set_hoststatus($hoststatustypes);
-		$widget->set_servicestatus($servicestatustypes);
-		$widget->set_grouptype($group_type);
-*/
 		$this->template->content->widgets = array($widget->render());
 		widget::set_resources($widget, $this);
 		$this->template->js_header->js = $this->xtra_js;
@@ -336,13 +280,13 @@ class Status_Controller extends Authenticated_Controller {
 
 		# assign specific header fields and values for current method
 		$header_link_fields = array(
-			array('title' => _('Host'), 'sort_field_db' => 'host_name', 'sort_field_str' => 'host name'),
-			array('title' => _('Status'), 'sort_field_db' => 'current_state', 'sort_field_str' => 'service status'),
-			array('title' => _('Service'), 'sort_field_db' => 'service_description', 'sort_field_str' => 'service name'),
-			array('title' => _('Last Check'), 'sort_field_db' => 'last_check', 'sort_field_str' => 'last check time'),
-			array('title' => _('Duration'), 'sort_field_db' => 'duration', 'sort_field_str' => 'state duration'),
-			array('title' => _('Attempt'), 'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
-			array('title' => _('Status Information'), 'sort_field_db' => 'output', 'sort_field_str' => 'status information')
+			array('title' => _('Host'), 		  'sort_field_db' => 'host_name', 	'sort_field_str' => 'host name'),
+			array('title' => _('Status'), 		  'sort_field_db' => 'state', 		'sort_field_str' => 'service status'),
+			array('title' => _('Service'), 	  	  'sort_field_db' => 'description', 	'sort_field_str' => 'service name'),
+			array('title' => _('Last Check'), 	  'sort_field_db' => 'last_check', 	'sort_field_str' => 'last check time'),
+			array('title' => _('Duration'), 	  'sort_field_db' => 'duration', 	'sort_field_str' => 'state duration'),
+			array('title' => _('Attempt'), 		  'sort_field_db' => 'current_attempt', 'sort_field_str' => 'attempt'),
+			array('title' => _('Status Information'), 'sort_field_db' => 'plugin_output', 	'sort_field_str' => 'status information')
 		);
 
 		$show_display_name = config::get('config.show_display_name', '*');
@@ -371,21 +315,8 @@ class Status_Controller extends Authenticated_Controller {
 
 		$shown = strtolower($name) == 'all' ? _('All hosts') : _('Host')." '".$name."'";
 
-/* TODO: implement */
-/*
-		# handle host- or servicegroup details
-		$host_model = new Host_Model();
-		$host_model->show_services = true;
-		$host_model->state_filter = $hoststatustypes;
-		$host_model->service_filter = $servicestatustypes;
-		$host_model->set_sort_field($sort_field);
-		$host_model->set_sort_order($sort_order);
-		$host_model->serviceprops = $service_props;
-		$host_model->hostprops = $hostprops;
-*/
-
 		$ls         = Livestatus::instance();
-		$result     = $ls->getServices(array('paging' => $this));
+		$result     = $ls->getServices(array('paging' => $this, 'order' => array($sort_field => $sort_order)));
 
 		$this->template->content->is_svc_details = false;
 
