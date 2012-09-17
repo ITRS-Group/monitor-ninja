@@ -574,11 +574,11 @@ class Command_Controller extends Authenticated_Controller
 		# we can bypass fetching all the objects we're authorized
 		# to see
 		if (strstr($cmd, '_HOST_') !== false) {
-			if (Auth::instance()->authorized_for('all_host_commands')) {
+			if (Auth::instance()->authorized_for('host_edit_all')) {
 				return true;
 			}
 		} elseif (strstr($cmd, '_SVC_') !== false || $cmd == 'PROCESS_SERVICE_CHECK_RESULT') {
-			if (Auth::instance()->authorized_for('all_service_commands')) {
+			if (Auth::instance()->authorized_for('service_edit_all')) {
 				return true;
 			}
 		} else {
