@@ -295,8 +295,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
-		$template->report_time_formatted = $report_time_formatted;
-
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
@@ -400,7 +398,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
 			$template->content->service_filter_status_show = true;
-			$template->content->report_time_formatted = $report_time_formatted;
 
 			$template->pie = $this->add_view('reports/pie_chart');
 
@@ -495,7 +492,6 @@ class Reports_Controller extends Base_reports_Controller
 
 					$avail->avail_data = $avail_data;
 					$avail->source = $data['source'];
-					$avail->report_time_formatted = $report_time_formatted;
 
 					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
@@ -510,12 +506,10 @@ class Reports_Controller extends Base_reports_Controller
 							$this->options['end_time'],
 							$template->title
 						);
-						$template->trends_graph->report_time_formatted = $report_time_formatted;
 						$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 					}
 
 					$avail->pie = $this->add_view('reports/pie_chart');
-					$avail->pie->report_time_formatted = $report_time_formatted;
 
 					// ===== SETUP PIECHART VALUES =====
 					if (is_array($data['states'])) {
@@ -544,7 +538,6 @@ class Reports_Controller extends Base_reports_Controller
 							$content->hide_host = true;
 							$content->service_filter_status_show = false;
 							$content->source = $data['source'];
-							$content->report_time_formatted = $report_time_formatted;
 						}
 					}
 
@@ -556,7 +549,6 @@ class Reports_Controller extends Base_reports_Controller
 						$log_template->log = array_shift($log);
 						$log_template->type = $sub_type;
 						$log_template->source = $data['source'];
-						$log_template->report_time_formatted = $report_time_formatted;
 						$log_template->date_format_str = nagstat::date_format();
 					}
 
