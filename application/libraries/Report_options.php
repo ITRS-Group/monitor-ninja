@@ -63,6 +63,13 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'description' => array('type' => 'string', 'default' => false),
 	);
 
+	/**
+	 * Placeholder used instead of fetching all objects the user is
+	 * authorized to see, to be able to fetch lazily and avoid large
+	 * queries or filtering large result sets.
+	 */
+	const ALL_AUTHORIZED = '*';
+
 	public $options = array();
 
 	public function __construct($options=false) {

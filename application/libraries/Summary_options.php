@@ -32,22 +32,24 @@ class Summary_options_Core extends Report_options
 				else
 					$this['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
 				switch ($value) {
+					// By utilizing Report_options::ALL_AUTHORIZED, we pass on the
+					// explicit selection to the report model
 					case 1: case 4:
 						$this['alert_types'] = 3;
 						$this['state_types'] = 2;
-						$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
+						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 2: case 5:
 						$this['alert_types'] = 1;
 						$this['state_types'] = 2;
-						$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
+						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					case 3: case 6:
 						$this['alert_types'] = 2;
 						$this['state_types'] = 2;
-						$this['service_description'] = Nagios_auth_Model::instance()->get_authorized_services();
+						$this->options['service_description'] = Report_options::ALL_AUTHORIZED;
 						break;
 
 					default:
