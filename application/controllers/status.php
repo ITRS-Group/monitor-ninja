@@ -250,7 +250,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/service');
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter($name);
 		#$this->template->content->filters = $this->_show_filters($hostprops, $hoststatustypes, $service_props, $servicestatustypes);
 		$this->template->content->noheader = $noheader;
 		$this->template->content->group_type = $group_type;
@@ -1502,73 +1502,14 @@ class Status_Controller extends Authenticated_Controller {
 		$servicegroupfilter = Livestatus::combineFilter( '-or',  $servicegroupfilter );
 
 	    # fill the host/service totals box
+	    /* TODO: implement */
 	    #unless($errors or $c->stash->{'minimal'}) {
 		#Thruk::Utils::Status::fill_totals_box( $c, $hostfilter, $servicefilter ) if defined $c->{'stash'};
 	    #}
 
-
 	    list( $show_filter_table, $hostfilter, $servicefilter, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue )
 		= $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 
-/*
-print "<pre>"; print_r($hostfilter); print "</pre>";
-print "<pre>"; print_r($host_statustype_filtername); print "</pre>";
-print "<pre>"; print_r($host_prop_filtername); print "</pre>";
-print "<pre>"; print_r($service_statustype_filtername); print "</pre>";
-print "<pre>"; print_r($service_prop_filtername); print "</pre>";
-print "<pre>"; print_r($host_statustype_filtervalue); print "</pre>";
-print "<pre>"; print_r($host_prop_filtervalue); print "</pre>";
-print "<pre>"; print_r($service_statustype_filtervalue); print "</pre>";
-print "<pre>"; print_r($service_prop_filtervalue); print "</pre>";
-*/
-
-/*
-	    # create a new style search hash
-	    my $search = {
-		'hoststatustypes'               => $host_statustype_filtervalue,
-		'hostprops'                     => $host_prop_filtervalue,
-		'servicestatustypes'            => $service_statustype_filtervalue,
-		'serviceprops'                  => $service_prop_filtervalue,
-		'host_statustype_filtername'    => $host_statustype_filtername,
-		'host_prop_filtername'          => $host_prop_filtername,
-		'service_statustype_filtername' => $service_statustype_filtername,
-		'service_prop_filtername'       => $service_prop_filtername,
-		'text_filter'                   => [],
-	    };
-
-	    if( $host ne '' ) {
-		push @{ $search->{'text_filter'} },
-		    {
-		    'val_pre' => '',
-		    'type'    => 'host',
-		    'value'   => $host,
-		    'op'      => '=',
-		    };
-	    }
-	    if ( $hostgroup ne '' ) {
-		push @{ $search->{'text_filter'} },
-		    {
-		    'val_pre' => '',
-		    'type'    => 'hostgroup',
-		    'value'   => $hostgroup,
-		    'op'      => '=',
-		    };
-	    }
-	    if ( $servicegroup ne '' ) {
-		push @{ $search->{'text_filter'} },
-		    {
-		    'val_pre' => '',
-		    'type'    => 'servicegroup',
-		    'value'   => $servicegroup,
-		    'op'      => '=',
-		    };
-	    }
-
-	    if($errors) {
-		$c->stash->{'has_error'} = 1 if defined $c->{'stash'};
-	    }
-
-*/
 	    return (array( $hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter ));
 	}
 

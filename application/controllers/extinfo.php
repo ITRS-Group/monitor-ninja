@@ -53,23 +53,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 			return false;
 		}
 
-		# is user authenticated to view details on current object?
-		$auth = Nagios_auth_Model::instance();
-		$is_authenticated = false;
-		switch ($type) {
-			case 'host':
-				$is_authenticated = $auth->is_authorized_for_host($host);
-				break;
-			case 'service':
-				$is_authenticated = $auth->is_authorized_for_service($host);
-				break;
-			case 'servicegroup': case 'hostgroup':
-				return $this->group_details($type, $host);
-		}
-		if ($is_authenticated === false) {
-			return url::redirect('extinfo/unauthorized/'.$type);
-		}
-
 		$this->template->content = $this->add_view('extinfo/index');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -82,14 +65,20 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content = $this->template->content;
 
 		$result_data = Host_Model::object_status($host, $service);
-		$result = $result_data[0];
+		if (count($result_data) === 0) {
+			return url::redirect('extinfo/unauthorized/'.$type);
+		}
+		$result = (object)$result_data[0];
+		/* TODO: implement */
 		switch($type) {
+		/*
 			case 'host':
 				$content->custom_variables = Custom_variable_Model::get_for($type, $result->id);
 				break;
 			case 'service':
 				$content->custom_variables = Custom_variable_Model::get_for($type, $result->service_id);
 				break;
+		*/
 			default:
 				$content->custom_variables = array();
 
@@ -118,30 +107,30 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->parents = false;
 
 		if ($type == 'host') {
-			$group_info = Group_Model::get_groups_for_object($type, $result->id);
+			#$group_info = Group_Model::get_groups_for_object($type, $result->id);
 			$content->title = _('Host State Information');
 			$content->no_group_lable = _('No hostgroups');
 			$check_compare_value = Current_status_Model::HOST_CHECK_ACTIVE;
-			$last_notification = $result->last_host_notification;
+			$last_notification = $result->last_notification;
 			$content->lable_next_scheduled_check = _('Next scheduled active check');
 			$content->lable_flapping = _('Is this host flapping?');
 			$obsessing = $result->obsess_over_host;
 			$content->notes = $result->notes !='' ? nagstat::process_macros($result->notes, $result) : false;
 
 			# check for parents
-			$host_obj = new Host_Model();
-			$parents = $host_obj->get_parents($host);
-			if (count($parents)) {
-				$content->parents = $parents;
-			}
+			#$host_obj = new Host_Model();
+			#$parents = $host_obj->get_parents($host);
+			#if (count($parents)) {
+		#		$content->parents = $parents;
+		#	}
 
 			$back_link = '/extinfo/details/?host='.urlencode($host);
-			if ($result->current_state == Current_status_Model::HOST_PENDING ) {
+			if ($result->state == Current_status_Model::HOST_PENDING ) {
 				$is_pending = true;
 				$message_str = _('This host has not yet been checked, so status information is not available.');
 			}
 		} else {
-			$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
+			#$group_info = Group_Model::get_groups_for_object($type, $result->service_id);
 			$content->title = _('Service State Information');
 			$content->no_group_lable = _('No servicegroups');
 			$content->lable_next_scheduled_check = _('Next scheduled check');
@@ -151,15 +140,15 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$last_notification = $result->last_notification;
 			$content->lable_flapping = _('Is this service flapping?');
 			$obsessing = $result->obsess_over_service;
-			$content->notes = $result->service_notes !='' ? nagstat::process_macros($result->service_notes, $result) : false;
-			if ($result->current_state == Current_status_Model::SERVICE_PENDING ) {
+			$content->notes = $result->notes_expanded;
+			if ($result->state == Current_status_Model::SERVICE_PENDING ) {
 				$is_pending = true;
 				$message_str = _('This service has not yet been checked, so status information is not available.');
 			}
 		}
 
-		$content->notes_url = $result->notes_url !='' ? nagstat::process_macros($result->notes_url, $result) : false;
-		$content->action_url = $result->action_url !='' ? nagstat::process_macros($result->action_url, $result) : false;
+		$content->notes_url = $result->notes_url_expanded;
+		$content->action_url = $result->action_url_expanded;
 
 		$xaction = array();
 		if (nacoma::link()===true) {
@@ -197,10 +186,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->extra_action_links = $xaction;
 
 		$groups = false;
-		if ($group_info !== false && count($group_info) > 0) {
-			foreach ($group_info as $group_row) {
-				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group_row->{$type.'group_name'})),
-					html::specialchars($group_row->{$type.'group_name'}));
+		if(count($result->groups) > 0) {
+			foreach ($result->groups as $group) {
+				$groups[] = html::anchor(sprintf("status/%sgroup/%s", $type, urlencode($group)),
+					html::specialchars($group));
 			}
 		}
 
@@ -219,21 +208,21 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->host = $host;
 		$content->lable_current_status = _('Current status');
 		$content->lable_status_information = _('Status information');
-		$content->current_status_str = $this->current->status_text($result->current_state, $type);
+		$content->current_status_str = $this->current->status_text($result->state, $type);
 		$content->duration = $result->duration;
 		$content->groups = $groups;
-		$content->host_address = $result->address;
+		$content->host_address = $type == 'host' ? $result->address : $result->host_address;
 		$content->icon_image = $result->icon_image;
 		$content->icon_image_alt = $result->icon_image_alt;
-		$content->status_info = htmlspecialchars($result->output).'<br />'.nl2br(htmlspecialchars($result->long_output));
+		$content->status_info = htmlspecialchars($result->plugin_output).'<br />'.nl2br(htmlspecialchars($result->long_plugin_output));
 		$content->lable_perf_data = _('Performance data');
 		$content->perf_data = $result->perf_data;
 		$content->lable_current_attempt = _('Current attempt');
 		$content->current_attempt = $result->current_attempt;
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
 		$content->main_object_alias = $type=='host' ? $result->alias : false;
-		$content->max_attempts = $result->max_attempts;
-		$content->last_update = $result->last_update;
+		$content->max_attempts = $result->max_check_attempts;
+		$content->last_update = time();
 		$content->last_check = $result->last_check;
 		$content->lable_last_check = _('Last check time');
 		$content->lable_check_type = _('Check type');
@@ -267,7 +256,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$content->lable_in_scheduled_dt = _('In scheduled downtime?');
 		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		$last_update_ago_arr = date::timespan(time(), $result->last_update, 'days,hours,minutes,seconds');
+		/* TODO: remove, its useless now */
+		$last_update_ago_arr = date::timespan(time(), time(), 'days,hours,minutes,seconds');
 		$ago = _('ago');
 		$last_update_ago = false;
 		$last_update_ago_str = '';
@@ -288,7 +278,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$str_disabled = _('DISABLED');
 		$content->active_checks_enabled = $result->active_checks_enabled ? $str_enabled : $str_disabled;
 		$content->active_checks_enabled_val = $result->active_checks_enabled ? true : false;
-		$content->passive_checks_enabled = $result->passive_checks_enabled ? $str_enabled : $str_disabled;
+		$content->passive_checks_enabled = $result->accept_passive_checks ? $str_enabled : $str_disabled;
 		$content->obsessing = $obsessing ? $str_enabled : $str_disabled;
 		$content->notifications_enabled = $result->notifications_enabled ? $str_enabled : $str_disabled;
 		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
@@ -324,7 +314,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$cmd = $type == 'host' ? nagioscmd::command_id('SCHEDULE_HOST_CHECK') : nagioscmd::command_id('SCHEDULE_SVC_CHECK');
 		$commands->link_reschedule_check = $this->command_link($cmd, $host, $service, $commands->lable_link_reschedule_check);
 
-		if ($result->passive_checks_enabled) {
+		if ($result->accept_passive_checks) {
 			$commands->lable_submit_passive_checks = $type == 'host' ? _('Submit passive check result for this host') : _('Submit passive check result for this service');
 			$cmd = $type == 'host' ? nagioscmd::command_id('PROCESS_HOST_CHECK_RESULT') : nagioscmd::command_id('PROCESS_SERVICE_CHECK_RESULT');
 			$commands->link_submit_passive_check = $this->command_link($cmd, $host, $service, $commands->lable_submit_passive_checks);
@@ -350,10 +340,10 @@ class Extinfo_Controller extends Authenticated_Controller {
 		# acknowledgements
 		$commands->show_ackinfo = false;
 		if ($type == 'host') {
-			if ($result->current_state == Current_status_Model::HOST_DOWN || $result->current_state == Current_status_Model::HOST_UNREACHABLE) {
+			if ($result->state == Current_status_Model::HOST_DOWN || $result->state == Current_status_Model::HOST_UNREACHABLE) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
-				if (!$result->problem_has_been_acknowledged) {
+				if (!$result->acknowledged) {
 					$commands->lable_acknowledge_problem = _('Acknowledge this host problem');
 					$commands->link_acknowledge_problem = $this->command_link(nagioscmd::command_id('ACKNOWLEDGE_HOST_PROBLEM'),
 						$host, false, $commands->lable_acknowledge_problem);
@@ -364,7 +354,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 				}
 			}
 		} else {
-			if (($result->current_state == Current_status_Model::SERVICE_WARNING || $result->current_state == Current_status_Model::SERVICE_UNKNOWN || $result->current_state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
+			if (($result->state == Current_status_Model::SERVICE_WARNING || $result->state == Current_status_Model::SERVICE_UNKNOWN || $result->state == Current_status_Model::SERVICE_CRITICAL) && $result->state_type) {
 				$commands->show_ackinfo = true;
 				# show acknowledge info
 				if (!$result->problem_has_been_acknowledged) {
@@ -397,14 +387,14 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		$commands->show_delay = false;
 		if ($type == 'host') {
-			if ($result->current_state != Current_status_Model::HOST_UP) {
+			if ($result->state != Current_status_Model::HOST_UP) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = _('Delay next host notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_HOST_NOTIFICATION'),
 				$host, false, $commands->lable_delay_notification);
 			}
 		} else {
-			if ($result->notifications_enabled && $result->current_state != Current_status_Model::SERVICE_OK) {
+			if ($result->notifications_enabled && $result->state != Current_status_Model::SERVICE_OK) {
 				$commands->show_delay = true;
 				$commands->lable_delay_notification = _('Delay next service notification');
 				$commands->link_delay_notifications = $this->command_link(nagioscmd::command_id('DELAY_SVC_NOTIFICATION'),

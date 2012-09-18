@@ -702,6 +702,8 @@ TODO: implement
             return $query;
         }
 
+        if($filter === "") { return ""; }
+
         throw new LivestatusException("broken filter");
     }
 
