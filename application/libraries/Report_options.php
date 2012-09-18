@@ -602,8 +602,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 	protected static function create_options_obj($report_info = false) {
 		$options = new static($report_info);
 		# now that report_type is set, ship off objects to the correct var
-		if (isset($report_info['objects']))
-			$options[$options->get_value('report_type')] = array_merge($report_info['objects'], $options[$options->get_value('report_type')]);
+		if (isset($report_info['objects']) && empty($options[$options->get_value('report_type')]))
+			$options[$options->get_value('report_type')] = $report_info['objects'];
 		return $options;
 	}
 
