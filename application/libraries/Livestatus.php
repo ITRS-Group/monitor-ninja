@@ -273,7 +273,7 @@ TODO: implement
 		}
 */
         $stats = array(
-            'total'                             => array( 'name' => array( '!=' => '' )),
+            'total'                             => array( 'state' => array( '!=' => 999 )),
             'total_active'                      => array( 'check_type' => 0 ),
             'total_passive'                     => array( 'check_type' => 1 ),
             'pending'                           => array( 'has_been_checked' => 0 ),
@@ -434,6 +434,28 @@ TODO: implement
         return (object) $result;
     }
 
+    /* combineFilter */
+    public function combineFilter($operator, $filter) {
+
+        if(!isset($operator) and $operator != '-or' and $operator != '-and') {
+            throw new LivestatusException("unknown operator in combine_filter(): ".$operator);
+        }
+
+        if(!isset($filter)) { return ""; }
+
+        if(!is_array($filter)) {
+            throw new LivestatusException("expected array in combine_filter(): ");
+        }
+
+        if(count($filter) == 0) { return ""; }
+
+        if(count($filter) == 1) {
+            return($filter[0]);
+        }
+
+        return array($operator => $filter );
+    }
+
 
     /********************************************************
      * INTERNAL FUNCTIONS
@@ -552,7 +574,7 @@ TODO: implement
         return $objects;
     }
 
-    function build_sorter($orderby) {
+    private function build_sorter($orderby) {
 /* TODO: support multiple sort fields */
         $key   = $orderby[0];
         $order = $orderby[1];
@@ -611,11 +633,10 @@ TODO: implement
         if ($objects === null) {
             throw new LivestatusException("Invalid output");
         }
-
         return $objects;
     }
 
-    private function getQueryFilter($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
+    public function getQueryFilter($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
         if($filter === null) { return ""; }
 /* TODO: implement proper escaping */
         $query = "";
@@ -651,10 +672,15 @@ TODO: implement
                                  break;
                 }
             }
+            if($iter > 1 && $listop === null) { $listop = 'And'; }
             if($iter > 1 && $listop !== null) {
                 $query .= ($stats ? 'Stats' : '').$listop.": ".$iter."\n";
             }
             return $query;
+        }
+
+        if($op === null and $listop !== null) {
+            $op = "=";
         }
 
         if($op !== null) {
@@ -663,9 +689,13 @@ TODO: implement
             }
             else {
                 foreach($filter as $val) {
-                    $query .= ($stats ? 'Stats' : 'Filter').": $name $op $val\n";
+                    if(is_array($val)) {
+                        $query .= $this->getQueryFilter($stats, $val, $op, $name);
+                    } else {
+                        $query .= ($stats ? 'Stats' : 'Filter').": $name $op $val\n";
+                    }
                 }
-                if(count($filter) > 0) {
+                if(count($filter) > 1) {
                     $query .= ($stats ? 'Stats' : '').$listop.": ".count($filter)."\n";
                 }
             }
