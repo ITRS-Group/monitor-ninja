@@ -135,10 +135,19 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			<?php echo help::render('skin') ?>
 			<label for="skin" id="skin_lbl"><?php echo _('Skin') ?></label>
 		</td>
+		<td></td>
+		<td>
+			<?php echo help::render('description') ?>
+			<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
+		</td>
 	</tr>
 	<tr>
 		<td>
 			<?php echo form::dropdown(array('name' => 'skin'), ninja::get_skins(), $options['skin']); ?>
+		</td>
+		<td></td>
+		<td>
+			<?php echo form::textarea('description', $options['description']); ?>
 		</td>
 	</tr>
 </table>

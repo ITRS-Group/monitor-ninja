@@ -1321,16 +1321,24 @@ class Reports_Model extends Model
 			$this->host_hostgroup = $hosts;
 		} elseif ($this->options['service_description']) {
 			$services = false;
-			foreach ($this->options['service_description'] as $srv) {
-				$services[$srv] = $srv;
+			if($this->options['service_description'] === Report_options::ALL_AUTHORIZED) {
+				$services = Report_options::ALL_AUTHORIZED;
+			} else {
+				foreach ($this->options['service_description'] as $srv) {
+					$services[$srv] = $srv;
+				}
 			}
 		} elseif ($this->options['host_name']) {
 			$hosts = false;
-			if (is_array($this->options['host_name'])) {
-				foreach ($this->options['host_name'] as $hn)
-					$hosts[$hn] = $hn;
+			if($this->options['host_name'] === Report_options::ALL_AUTHORIZED) {
+				$hosts = Report_options::ALL_AUTHORIZED;
 			} else {
-				$hosts[$this->options['host_name']] = $this->options['host_name'];
+				if (is_array($this->options['host_name'])) {
+					foreach ($this->options['host_name'] as $hn)
+						$hosts[$hn] = $hn;
+				} else {
+					$hosts[$this->options['host_name']] = $this->options['host_name'];
+				}
 			}
 		}
 
@@ -1339,7 +1347,9 @@ class Reports_Model extends Model
 		}
 
 		$object_selection = false;
-		if ($services) {
+		if(($hosts === Report_options::ALL_AUTHORIZED) || ($services === Report_options::ALL_AUTHORIZED)) {
+			// screw filters, we're almighty
+		} elseif ($services) {
 			$hosts_too = false;
 			if ($hosts && $hosts !== true) {
 				$object_selection = "\nAND (host_name IN(\n '" .
@@ -1379,7 +1389,7 @@ class Reports_Model extends Model
 		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
 			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
 			"AND timestamp <= " . $this->options['end_time'] . " ";
-		if (!empty($object_selection)) {
+		if ($object_selection) {
 			$query .= $object_selection . " ";
 		}
 

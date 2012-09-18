@@ -60,9 +60,7 @@ $(document).ready(function() {
 	});
 
 	// delete the report (and all the schedules if any)
-	$("#delete_report").click(function() {
-		confirm_delete_report(this, $("#report_id").attr('value'));
-	});
+	$("#delete_report").click(confirm_delete_report);
 });
 
 function populate_saved_sla_data(json_data) {
@@ -118,15 +116,7 @@ function expand_and_populate(data)
 			moveAndSort(tmp_fields.map[field_str], field_obj.map[field_str]);
 		}
 	});
-	set_initial_state('scheduleddowntimeasuptime', reportObj.scheduleddowntimeasuptime);
-	set_initial_state('report_type', reportObj.report_type);
-	set_initial_state('report_period', reportObj.report_period);
 	show_calendar(reportObj.report_period);
-	set_initial_state('rpttimeperiod', reportObj.rpttimeperiod);
-	if (reportObj.report_name != undefined) {
-		set_initial_state('report_name', reportObj.report_name);
-	}
-	set_initial_state('includesoftstates', reportObj.includesoftstates);
 	if (reportObj.report_period == 'custom') {
 		if ($('input[name=type]').attr('value') == 'sla') {
 			js_print_date_ranges(reportObj.start_time, 'start', 'month');
@@ -177,9 +167,6 @@ function set_initial_state(what, val)
 					$('input[name=' + what + ']').attr('checked', false);
 				}
 			}
-			break;
-		case 'report_name':
-			f.elements.report_name.value = val;
 			break;
 		case 'rpttimeperiod':
 			item = 'rpttimeperiod';
@@ -250,9 +237,10 @@ function toggle_state(the_id)
 	}
 }
 
-function confirm_delete_report(btn, id)
+function confirm_delete_report()
 {
-	var btn = $(btn);
+	var btn = $(this);
+	var id = $("#report_id").attr('value')
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = _reports_confirm_delete + "\n";

@@ -4,7 +4,7 @@
 <div class="report-page">
 <?php
 	echo isset($error) ? $error : '';
-	echo !empty($header) ? $header : '';
+	echo $header;
 ?>
 <div style="display: none">
 <div id="options">

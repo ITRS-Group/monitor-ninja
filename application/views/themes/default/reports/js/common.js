@@ -108,46 +108,10 @@ $(document).ready(function() {
 		return false;
 	});
 
-
-	$('body').on('click', '.send_report_now', function() {
-		var elem = $(this);
-		send_report_now.call(this, elem.data('type'), elem.data('schedule'), elem.data('report_id'));
-	});
-
 	$("#report_id").bind('change', function() {
 		if (check_and_submit($("#saved_report_form"))) {
 			$("#saved_report_form").trigger('submit');
 		}
-	});
-
-	$('.save_report_btn').bind('click', function() {
-		loopElements();
-		if (!(check_form_values(this.form))) {
-			return;
-		}
-		var btn = $(this);
-		btn.after(loadimg);
-		$.ajax({
-			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
-			type: 'POST',
-			data: $(this.form).serialize(),
-			success: function(data) {
-				if (!data.error) {
-					jgrowl_message(data.result.status_msg, _reports_success);
-					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
-					if (!btn[0].form.report_id)
-						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
-				} else {
-					jgrowl_message(data.error, _reports_error);
-				}
-				btn.parent().find('img:last').remove();
-			},
-			error: function(data) {
-				jgrowl_message(_reports_error, _reports_error);
-				btn.parent().find('img:last').remove();
-			},
-			dataType: 'json'
-		});
 	});
 });
 
@@ -805,8 +769,6 @@ function init_timepicker()
 
 function disable_sla_fields(report_period)
 {
-	if (!$("#enter_sla").is(":visible"))
-		return;
 	$('#csv_cell').hide();
 	var now = new Date();
 	var this_month = now.getMonth()+1;
@@ -989,62 +951,6 @@ function format_date_str(date) {
 	mm = mm<10 ? '0' + mm : mm;
 	var ret_val = YY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm;
 	return ret_val;
-}
-
-function create_new_schedule_rows(id, root)
-{
-	var return_str = '';
-	var rep_type = $('#type', root).attr('value');
-
-	var saved_report_id = $('#saved_report_id', root).attr('value');
-	if (saved_report_id == '')
-		saved_report_id = $('#saved_report_id').attr('value');
-
-	var period = $('#period', root).attr('value');
-	if (period == '')
-		period = $('#period').attr('value');
-
-	var period_str = $('#period option:selected', root).text();
-	if (period_str == '')
-		period_str = $('#period option:selected').text();
-
-	var recipients = $('#recipients', root).attr('value');
-	if (recipients == '')
-		recipients = $('#recipients').attr('value');
-
-	var filename = $('#filename', root).attr('value');
-	if (filename == '')
-		filename = $('#filename').attr('value');
-
-	var local_persistent_filepath = $('#local_persistent_filepath', root).attr('value');
-	if (local_persistent_filepath == '')
-		local_persistent_filepath = $('#local_persistent_filepath').attr('value');
-
-	var description = $('#description', root).attr('value');
-	if (description == '')
-		description = $('#description').attr('value');
-	if (description == '')
-		description = '&nbsp;';
-
-	var report_type_id = -1;
-	for (var i in _report_types_json) {
-		if (_report_types_json[i] == rep_type) {
-			report_type_id = i;
-		}
-	}
-
-	var reportname = $('#saved_report_id', root).find(':selected').text();
-
-	return_str += '<tr id="report-' + id + '" class="odd">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
-	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;"></form>';
-	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
-	return return_str;
 }
 
 jQuery.extend(

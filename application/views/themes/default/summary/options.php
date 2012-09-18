@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<form action="<?php echo url::base(true) ?>/summary/generate" method="post" class="to_check">
+<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check">
 	<table class="setup-tbl standard">
 		<tr>
 			<td>
@@ -26,7 +26,7 @@
 		</tr>
 	</table>
 </form>
-<form action="<?php echo url::base(true) ?>/summary/generate" method="post" class="to_check">
+<form action="<?php echo url::base(true) ?>summary/generate" method="post" class="to_check">
 	<table class="setup-tbl custom">
 		<tr>
 			<td colspan="3">
@@ -175,6 +175,17 @@
 			<td></td>
 			<td>
 				<?php echo form::input(array('name' => 'summary_items', 'size' => 3, 'maxlength' => 3), $options['summary_items']) ?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo help::render('description') ?>
+				<label for="description" id="descr_lbl"><?php echo _('Description') ?></label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php echo form::textarea('description', $options['description']); ?>
 			</td>
 		</tr>
 		<tr>

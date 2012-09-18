@@ -92,7 +92,6 @@ class Summary_Controller extends Base_reports_Controller
 		$this->template->css_header->css = $this->xtra_css;
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
@@ -251,7 +250,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";

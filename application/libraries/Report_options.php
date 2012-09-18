@@ -30,8 +30,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
-		'host_name' => array('type' => 'array', 'default' => false), /**< Hosts to include (note: array) */
-		'service_description' => array('type' => 'array', 'default' => false), /**< Services to include (note: array) */
+		'host_name' => array('type' => 'array', 'default' => array()), /**< Hosts to include (note: array) */
+		'service_description' => array('type' => 'array', 'default' => array()), /**< Services to include (note: array) */
 		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
 		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include (note: array) */
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
@@ -59,8 +59,16 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'recipients' => array('type' => 'string', 'default' => ''), /**< Comma separated email addresses to report recipients */
 		'filename' => array('type' => 'string', 'default' => ''), /**< Filename to use for saving the report, used to set output_format */
 		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
-		'use_alias' => array('type' => 'bool', 'default' => false)
+		'use_alias' => array('type' => 'bool', 'default' => false),
+		'description' => array('type' => 'string', 'default' => false),
 	);
+
+	/**
+	 * Placeholder used instead of fetching all objects the user is
+	 * authorized to see, to be able to fetch lazily and avoid large
+	 * queries or filtering large result sets.
+	 */
+	const ALL_AUTHORIZED = '*';
 
 	public $options = array();
 
@@ -591,16 +599,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 		return $report_info;
 	}
 
-	protected static function create_options_obj($type, $report_info = false) {
-		$class = ucfirst($type) . '_options';
-		if (!class_exists($class))
-			$class = 'Report_options';
-		$options = new $class($report_info);
-		if (isset($report_info['report_id'])) {
-			# now that report_type is set, ship off objects to the correct var
-			if (!$options[$options->get_value('report_type')] && isset($report_info['objects']))
-				$options[$options->get_value('report_type')] = $report_info['objects'];
-		}
+	protected static function create_options_obj($report_info = false) {
+		$options = new static($report_info);
+		# now that report_type is set, ship off objects to the correct var
+		if (isset($report_info['objects']) && empty($options[$options->get_value('report_type')]))
+			$options[$options->get_value('report_type')] = $report_info['objects'];
 		return $options;
 	}
 
@@ -610,8 +613,12 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$class = get_class($input);
 			return new $class($input);
 		}
-		$report_info = static::discover_options($type, $input);
-		$options = static::create_options_obj($type, $report_info);
+		$class = ucfirst($type) . '_options';
+		if (!class_exists($class))
+			$class = 'Report_options';
+
+		$report_info = $class::discover_options($type, $input);
+		$options = $class::create_options_obj($report_info);
 		return $options;
 	}
 }

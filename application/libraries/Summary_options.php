@@ -23,40 +23,40 @@ class Summary_options_Core extends Report_options
 	protected function update_value($name, $value)
 	{
 		switch ($name) {
-		 case 'standardreport':
-			if (!$value)
-				return false;
-			$this['report_period'] = 'last7days';
-			if ($value < 4)
-				$this['summary_type'] = Summary_Controller::RECENT_ALERTS;
-			else
-				$this['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
-			switch ($value) {
-			 case 1: case 4:
-				$this['alert_types'] = 3;
-				$this['state_types'] = 2;
-				$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
-				break;
+			case 'standardreport':
+				if (!$value)
+					return false;
+				$this['report_period'] = 'last7days';
+				if ($value < 4)
+					$this['summary_type'] = Summary_Controller::RECENT_ALERTS;
+				else
+					$this['summary_type'] = Summary_Controller::TOP_ALERT_PRODUCERS;
+				switch ($value) {
+					// By utilizing Report_options::ALL_AUTHORIZED, we pass on the
+					// explicit selection to the report model
+					case 1: case 4:
+						$this['alert_types'] = 3;
+						$this['state_types'] = 2;
+						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
+						break;
 
-			 case 2: case 5:
-				$this['alert_types'] = 1;
-				$this['state_types'] = 2;
-				$this['host_name'] = Nagios_auth_Model::instance()->get_authorized_hosts();
-				break;
+					case 2: case 5:
+						$this['alert_types'] = 1;
+						$this['state_types'] = 2;
+						$this->options['host_name'] = Report_options::ALL_AUTHORIZED;
+						break;
 
-			 case 3: case 6:
-				$this['alert_types'] = 2;
-				$this['state_types'] = 2;
-				$this['service_description'] = Nagios_auth_Model::instance()->get_authorized_services();
-				break;
+					case 3: case 6:
+						$this['alert_types'] = 2;
+						$this['state_types'] = 2;
+						$this->options['service_description'] = Report_options::ALL_AUTHORIZED;
+						break;
 
-			 default:
-				Kohana::debug("Unknown standard report: $value");
-				die;
+					default:
+						Kohana::debug("Unknown standard report: $value");
+						die;
+				}
 				break;
-			}
-
-			break;
 		}
 		return parent::update_value($name, $value);
 	}

@@ -135,10 +135,3 @@ input.send_report_now {
 	float: left;
 	cursor: pointer;
 }
-
-img.deleteimg {
-	float: left;
-	margin-left: 5px;
-	margin-top: 2px;
-	cursor: pointer;
-}

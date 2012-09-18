@@ -89,14 +89,6 @@ textarea {
 	border: 1px solid #cccccc;
 }
 
-button,
-input[type=reset],
-input[type=submit],
-input[type=button] {
-	background: #cdcdcd url(images/bg.png) repeat-x;
-	border: 1px solid #cccccc;
-}
-
 input.wide,
 input.sla_month,
 input#cal_end,

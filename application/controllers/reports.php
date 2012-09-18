@@ -100,7 +100,7 @@ class Reports_Controller extends Base_reports_Controller
 			}
 		}
 
-		$this->template->content->report_options = $this->add_view('reports/options');
+		$template->report_options = $this->add_view('reports/options');
 
 		$scheduled_info = false;
 		if ($this->options['report_id']) {
@@ -136,7 +136,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _label_switch_to = '".$label_switch_to."';\n";
 		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 		$this->js_strings .= "var _schedule_change_filename = \""._('Would you like to change the filename based on your selections?')."\";\n";
@@ -295,14 +294,12 @@ class Reports_Controller extends Base_reports_Controller
 
 		$template->title = $this->type == 'avail' ? _('Availability Report') : _('SLA Report');
 
-		$template->report_time_formatted = $report_time_formatted;
-
 		# ==========================================
 		# ========= REPORT STARTS HERE =============
 		# ==========================================
-		$this->template->content->report_options = $this->add_view('reports/options');
+		$template->report_options = $this->add_view('reports/options');
 
-		$tpl_options = $this->template->content->report_options;
+		$tpl_options = $template->report_options;
 		$tpl_options->reporting_periods = $this->_get_reporting_periods();
 		$saved_reports = Saved_reports_Model::get_saved_reports($this->type);
 		$tpl_options->saved_reports = $saved_reports;
@@ -330,7 +327,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
 		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
 
@@ -349,11 +345,11 @@ class Reports_Controller extends Base_reports_Controller
 				'TOTAL_TIME_UNDETERMINED' => _('Undetermined'));
 		$graph_filter = ${$sub_type.'_graph_items'};
 
-		# more than one object
-		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
-			$template->header = $this->add_view('reports/header');
-			$template->header->report_time_formatted = $report_time_formatted;
+		$template->header = $this->add_view('reports/header');
+		$template->header->report_time_formatted = $report_time_formatted;
 
+		# avail, more than one object
+		if ($this->type == 'avail' && ($is_group || count($this->options[$this->options->get_value('report_type')]) > 1)) {
 			if ($is_group) {
 				foreach ($data_arr as $data) {
 					if (empty($data))
@@ -400,7 +396,6 @@ class Reports_Controller extends Base_reports_Controller
 			$template->content->multiple_states = $template_values;
 			$template->content->hide_host = false;
 			$template->content->service_filter_status_show = true;
-			$template->content->report_time_formatted = $report_time_formatted;
 
 			$template->pie = $this->add_view('reports/pie_chart');
 
@@ -477,16 +472,12 @@ class Reports_Controller extends Base_reports_Controller
 				$template->pie->data_str = $data_str;
 				$template->pie->image_data = $image_data;
 			}
-		} else { # host/services
+		} else { # single avail host/service, or any sla
 			$image_data = false;
 			$data_str = '';
 			if (!empty($data_arr)) {
 				$data = $data_arr[0];
 				$template->content = $this->add_view('reports/'.$this->type);
-				$template->content->options = $this->options;
-
-				$template->header = $this->add_view('reports/header');
-				$template->header->report_time_formatted = $report_time_formatted;
 
 				if ($this->type == 'avail') {
 					$avail_data = $this->_print_state_breakdowns($data['source'], $data['states'], $this->options['report_type']);
@@ -495,7 +486,6 @@ class Reports_Controller extends Base_reports_Controller
 
 					$avail->avail_data = $avail_data;
 					$avail->source = $data['source'];
-					$avail->report_time_formatted = $report_time_formatted;
 
 					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
@@ -510,12 +500,10 @@ class Reports_Controller extends Base_reports_Controller
 							$this->options['end_time'],
 							$template->title
 						);
-						$template->trends_graph->report_time_formatted = $report_time_formatted;
 						$this->xtra_js[] = $this->add_path('trends/js/trends.js');
 					}
 
 					$avail->pie = $this->add_view('reports/pie_chart');
-					$avail->pie->report_time_formatted = $report_time_formatted;
 
 					// ===== SETUP PIECHART VALUES =====
 					if (is_array($data['states'])) {
@@ -544,7 +532,6 @@ class Reports_Controller extends Base_reports_Controller
 							$content->hide_host = true;
 							$content->service_filter_status_show = false;
 							$content->source = $data['source'];
-							$content->report_time_formatted = $report_time_formatted;
 						}
 					}
 
@@ -556,7 +543,6 @@ class Reports_Controller extends Base_reports_Controller
 						$log_template->log = array_shift($log);
 						$log_template->type = $sub_type;
 						$log_template->source = $data['source'];
-						$log_template->report_time_formatted = $report_time_formatted;
 						$log_template->date_format_str = nagstat::date_format();
 					}
 
@@ -626,7 +612,7 @@ class Reports_Controller extends Base_reports_Controller
 								$template->content->service = $service;
 							}
 
-							$trends_params = "host=$host".
+							$trends_params = "service_description=$host;$service".
 								"&amp;t1=$t1".
 								"&amp;t2=$t2".
 								"&amp;includesoftstates=".$soft_states.
@@ -657,7 +643,7 @@ class Reports_Controller extends Base_reports_Controller
 							$notifications_params = "host=$host&amp;service=$service";
 
 
-							$links[$this->trend_link . "?" . $trends_params . "&amp;service_description=".$host.';'.$service] = _('Trends');
+							$links[$this->trend_link . "?" . $trends_params] = _('Trends');
 							$links[$this->histogram_link . "?" . $histogram_params] 		= _('Alert histogram');
 							$links[$this->history_link . "?" . $history_params] 			= _('Alert history');
 							$links[$this->notifications_link . "?" . $notifications_params] = _('Notifications');
