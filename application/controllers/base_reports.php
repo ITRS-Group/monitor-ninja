@@ -134,6 +134,21 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 		return json::fail(_('Unable to save this report.'));
 	}
 
+	public function delete() {
+		if(!request::is_ajax()) {
+			$msg = _('Only Ajax calls are supported here');
+			die($msg);
+		}
+
+		$id = $this->input->post('id');
+		if (!$id)
+			return json::fail(_('No id supplied'));
+
+		if (Saved_reports_Model::delete_report($this->type, $id))
+			return json::ok(_('Report deleted'));
+		return json::fail(_("Couldn't delete report: unknown error"));
+	}
+
 	protected function setup_options_obj($input = false, $type = false)
 	{
 		if ($this->options) // If a child class has already set this, leave it alone
