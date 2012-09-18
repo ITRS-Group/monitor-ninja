@@ -82,9 +82,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/host');
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter($host);
-		#$filters = $this->_show_filters($hostprops, $hoststatustypes, $serviceprops, $servicestatustypes);
-		#$this->template->content->filters = $filters;
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('host', $host, false, false, $hoststatustypes, $hostprops, false, $serviceprops);
 		$this->template->content->noheader = $noheader;
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -250,8 +248,7 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->title = $title;
 
 		$this->template->content = $this->add_view('status/service');
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter($name);
-		#$this->template->content->filters = $this->_show_filters($hostprops, $hoststatustypes, $service_props, $servicestatustypes);
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('service', $name, false, false, $hoststatustypes, $hostprops, $servicestatustypes, $service_props);
 		$this->template->content->noheader = $noheader;
 		$this->template->content->group_type = $group_type;
 		$this->template->js_header = $this->add_view('js_header');
@@ -575,14 +572,12 @@ class Status_Controller extends Authenticated_Controller {
 		$this->hostprops = $hostprops;
 		$this->servicestatustypes = $servicestatustypes;
 		$this->serviceprops = $serviceprops;
-		$filters = $this->_show_filters();
 
 		switch ($style) {
 			case 'overview':
 				$this->template->title = _('Monitoring » ').$grouptype._('group overview');
 				$this->template->header = _('Monitoring » ').$grouptype._('group overview');
 				$this->template->content = $this->add_view('status/group_overview');
-				$this->template->content->filters = $filters;
 				$this->template->content->noheader = $noheader;
 				break;
 			case 'detail': case 'details':
@@ -743,8 +738,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->hostprops = $hostprops;
 		$this->servicestatustypes = $servicestatustypes;
 		$this->serviceprops = $serviceprops;
-		$filters = $this->_show_filters();
-		$this->template->content->filters = $filters;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -877,8 +870,6 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->servicestatustypes = $servicestatustypes;
-		$filters = $this->_show_filters();
-		$this->template->content->filters = $filters;
 
 		$this->template->title = _('Monitoring » ')._('servicegroup grid');
 
@@ -1004,8 +995,6 @@ class Status_Controller extends Authenticated_Controller {
 
 		$this->hoststatustypes = $hoststatustypes;
 		$this->servicestatustypes = $servicestatustypes;
-		$filters = $this->_show_filters();
-		$this->template->content->filters = $filters;
 
 		$this->template->title = _('Monitoring » ')._('servicegroup grid');
 
@@ -1149,281 +1138,19 @@ class Status_Controller extends Authenticated_Controller {
 	/**
 	*	shows service and host filters in use
 	*/
-	public function _show_filters($hostprops, $hoststatustypes, $serviceprops, $servicestatustypes)
+	public function _show_filters($type, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername)
 	{
-		$all_host_status_types =
-			nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|
-			nagstat::HOST_UNREACHABLE;
-
-		$all_service_status_types =
-			nagstat::SERVICE_PENDING|nagstat::SERVICE_OK|
-			nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL;
-
-		$hoststatustypes = $hoststatustypes ? $all_host_status_types : $hoststatustypes;
-
-		$servicestatustypes = $servicestatustypes ? $all_service_status_types : $servicestatustypes;
-
-		/* Don't show filters box if not necessary */
-		if (empty($hostprops) && empty($serviceprops) &&
-			$hoststatustypes == $all_host_status_types &&
-			$servicestatustypes == $all_service_status_types) {
-			return false;
-		}
-
-		$service_status_types =
-			nagstat::SERVICE_PENDING|nagstat::SERVICE_OK|
-			nagstat::SERVICE_UNKNOWN|nagstat::SERVICE_WARNING|
-			nagstat::SERVICE_CRITICAL;
-
-		$host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|
-			nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
-
-		$all_service_problems = nagstat::SERVICE_UNKNOWN|
-			nagstat::SERVICE_WARNING|nagstat::SERVICE_CRITICAL;
-
-		$all_host_problems = nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
-
 		$filters = $this->add_view('status/filters');
 		$filters->header_title = _('Display Filters');
 		$filters->lable_host_status_types = _('Host Status Types');
 		$filters->lable_host_properties = _('Host Properties');
 		$filters->lable_service_status_types = _('Service Status Types');
 		$filters->lable_service_properties = _('Service Properties');
-		$host_status_type_val = '';
-		$hostprop_val = '';
-		$service_status_type_val = '';
-		$serviceprop_val = '';
-		$found = 0;
-
-		# Host status types
-		if ($hoststatustypes == $all_host_status_types)
-			$host_status_type_val = _("All");
-		elseif ($hoststatustypes == $all_host_problems)
-			$host_status_type_val = _("All problems");
-		else {
-			$found = 0;
-			if ($hoststatustypes & nagstat::HOST_PENDING) {
-				$host_status_type_val .= _(" Pending");
-				$found = 1;
-			}
-			if ($hoststatustypes & nagstat::HOST_UP) {
-				$host_status_type_val .= sprintf(_("%s Up"), ($found == 1) ? " |" : '');
-				$found = 1;
-		                }
-			if ($hoststatustypes & nagstat::HOST_DOWN) {
-				$host_status_type_val .= sprintf(_("%s Down"), ($found == 1) ? " |" : '');
-				$found = 1;
-			}
-			if ($hoststatustypes & nagstat::HOST_UNREACHABLE)
-				$host_status_type_val .= sprintf(_("%s Unreachable"), ($found == 1) ? " |" : '');
-		}
-		$filters->host_status_type_val = $host_status_type_val;
-
-		# Host properties
-		if (!$hostprops)
-			$hostprop_val = _("Any");
-		else {
-			$found = 0;
-			if ($hostprops & nagstat::HOST_SCHEDULED_DOWNTIME) {
-				$hostprop_val .= ' ' . _('In Scheduled Downtime');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_NO_SCHEDULED_DOWNTIME) {
-				$hostprop_val .= sprintf(_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_STATE_ACKNOWLEDGED) {
-				$hostprop_val .= sprintf(_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_STATE_UNACKNOWLEDGED) {
-				$hostprop_val .= sprintf(_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_CHECKS_DISABLED) {
-				$hostprop_val .= sprintf(_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_CHECKS_ENABLED) {
-				$hostprop_val .= sprintf(_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_EVENT_HANDLER_DISABLED) {
-				$hostprop_val .= sprintf(_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-		                }
-			if ($hostprops & nagstat::HOST_EVENT_HANDLER_ENABLED) {
-				$hostprop_val .= sprintf(_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_FLAP_DETECTION_DISABLED) {
-				$hostprop_val .= sprintf(_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_FLAP_DETECTION_ENABLED) {
-				$hostprop_val .= sprintf(_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_IS_FLAPPING) {
-				$hostprop_val .= sprintf(_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_IS_NOT_FLAPPING) {
-				$hostprop_val .= sprintf(_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_NOTIFICATIONS_DISABLED) {
-				$hostprop_val .= sprintf(_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_NOTIFICATIONS_ENABLED) {
-				$hostprop_val .= sprintf(_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_DISABLED) {
-				$hostprop_val .= sprintf(_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_PASSIVE_CHECKS_ENABLED) {
-				$hostprop_val .= sprintf(_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_PASSIVE_CHECK) {
-				$hostprop_val .= sprintf(_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_ACTIVE_CHECK) {
-				$hostprop_val .= sprintf(_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_HARD_STATE) {
-				$hostprop_val .= sprintf(_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($hostprops & nagstat::HOST_SOFT_STATE) {
-				$hostprop_val .= sprintf(_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-		}
-		$filters->hostprop_val = $hostprop_val;
-
-		# Service Status Types
-		if ($servicestatustypes == $all_service_status_types)
-			$service_status_type_val = _("All");
-		elseif ($servicestatustypes == $all_service_problems)
-			$service_status_type_val = _("All Problems");
-		else {
-			$found = 0;
-			if ($servicestatustypes & nagstat::SERVICE_PENDING) {
-				$service_status_type_val = ' ' . _("Pending");
-				$found = 1;
-			}
-			if ($servicestatustypes & nagstat::SERVICE_OK) {
-				$service_status_type_val .= sprintf(_("%s OK"), ($found == 1) ? ' |' : '');
-				$found = 1;
-			}
-			if ($servicestatustypes & nagstat::SERVICE_UNKNOWN) {
-				$service_status_type_val .= sprintf(_("%s Unknown"), ($found == 1) ? ' |' : '');
-				$found = 1;
-			}
-			if ($servicestatustypes & nagstat::SERVICE_WARNING) {
-				$service_status_type_val .= sprintf(_("%s Warning"), ($found == 1) ? ' |' : '');
-				$found = 1;
-			}
-			if ($servicestatustypes & nagstat::SERVICE_CRITICAL) {
-				$service_status_type_val .= sprintf(_("%s Critical"), ($found == 1) ? ' |' : '');
-				$found = 1;
-			}
-		}
-		$filters->service_status_type_val = $service_status_type_val;
-
-		# Service Properties
-		if ($serviceprops == 0)
-			$serviceprop_val = _("Any");
-		else {
-			$found = 0;
-			if ($serviceprops & nagstat::SERVICE_SCHEDULED_DOWNTIME){
-				$serviceprop_val .= ' ' .  _("In Scheduled Downtime");
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_NO_SCHEDULED_DOWNTIME) {
-				$serviceprop_val .= sprintf(_("%s Not In Scheduled Downtime"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_STATE_ACKNOWLEDGED) {
-				$serviceprop_val .= sprintf(_("%s Has Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_STATE_UNACKNOWLEDGED) {
-				$serviceprop_val .= sprintf(_("%s Has Not Been Acknowledged"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf(_("%s Checks Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf(_("%s Checks Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_DISABLED) {
-				$serviceprop_val .= sprintf(_("%s Event Handler Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_EVENT_HANDLER_ENABLED) {
-				$serviceprop_val .= sprintf(_("%s Event Handler Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_DISABLED) {
-				$serviceprop_val .= sprintf(_("%s Flap Detection Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_FLAP_DETECTION_ENABLED) {
-				$serviceprop_val .= sprintf(_("%s Flap Detection Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_IS_FLAPPING) {
-				$serviceprop_val .= sprintf(_("%s Is Flapping"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_IS_NOT_FLAPPING) {
-				$serviceprop_val .= sprintf(_("%s Is Not Flapping"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_DISABLED) {
-				$serviceprop_val .= sprintf(_("%s Notifications Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_NOTIFICATIONS_ENABLED) {
-				$serviceprop_val .= sprintf(_("%s Notifications Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_DISABLED) {
-				$serviceprop_val .= sprintf(_("%s Passive Checks Disabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECKS_ENABLED) {
-				$serviceprop_val .= sprintf(_("%s Passive Checks Enabled"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_PASSIVE_CHECK) {
-				$serviceprop_val .= sprintf(_("%s Passive Checks"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_ACTIVE_CHECK) {
-				$serviceprop_val .= sprintf(_("%s Active Checks"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_HARD_STATE) {
-				$serviceprop_val .= sprintf(_("%s In Hard State"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-			if ($serviceprops & nagstat::SERVICE_SOFT_STATE) {
-				$serviceprop_val .= sprintf(_("%s In Soft State"), ($found == 1) ? ' &amp;' : '');
-				$found = 1;
-			}
-		}
-		$filters->serviceprop_val = $serviceprop_val;
+		$filters->host_status_type_val = $host_statustype_filtername;
+		$filters->hostprop_val = $host_prop_filtername;
+		$filters->service_status_type_val = $service_statustype_filtername;
+		$filters->serviceprop_val = $service_prop_filtername;
+		$filters->type = $type;
 		return $filters;
 	}
 
@@ -1446,16 +1173,7 @@ class Status_Controller extends Authenticated_Controller {
 	}
 
 
-
-
-
-
-
-
-
-
-
-	private function classic_filter($host = false, $hostgroup = false, $servicegroup = false, $hoststatustypes = false, $hostprops = false, $servicestatustypes = false, $serviceprops = false) {
+	private function classic_filter($type, $host = false, $hostgroup = false, $servicegroup = false, $hoststatustypes = false, $hostprops = false, $servicestatustypes = false, $serviceprops = false) {
 		# classic search
 		$errors       = 0;
 		$host         = $this->input->get('host', $host);
@@ -1501,14 +1219,12 @@ class Status_Controller extends Authenticated_Controller {
 		$servicefilter      = Livestatus::combineFilter( '-and', $servicefilter );
 		$servicegroupfilter = Livestatus::combineFilter( '-or',  $servicegroupfilter );
 
-	    # fill the host/service totals box
-	    /* TODO: implement */
-	    #unless($errors or $c->stash->{'minimal'}) {
-		#Thruk::Utils::Status::fill_totals_box( $c, $hostfilter, $servicefilter ) if defined $c->{'stash'};
-	    #}
+		list( $show_filter_table, $hostfilter, $servicefilter, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue )
+			= $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
 
-	    list( $show_filter_table, $hostfilter, $servicefilter, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername, $host_statustype_filtervalue, $host_prop_filtervalue, $service_statustype_filtervalue, $service_prop_filtervalue )
-		= $this->extend_filter( $hostfilter, $servicefilter, $hoststatustypes, $hostprops, $servicestatustypes, $serviceprops );
+		if($show_filter_table) {
+			$this->template->content->filters = $this->_show_filters($type, $host_statustype_filtername, $host_prop_filtername, $service_statustype_filtername, $service_prop_filtername);
+		}
 
 	    return (array( $hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter ));
 	}
@@ -1562,12 +1278,12 @@ class Status_Controller extends Authenticated_Controller {
 	private function get_host_statustype_filter($number) {
 	    $hoststatusfilter    = array();
 	    $servicestatusfilter = array();
-	    if(!isset($number) or !is_numeric($number)) { return; }
-
-	    define('HOST_ALL', (nagstat::HOST_UP | nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE | nagstat::HOST_PENDING));
-	    define('HOST_PROBLEM', ( nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE ));
 
 	    $hoststatusfiltername = 'All';
+	    define('HOST_ALL', (nagstat::HOST_UP | nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE | nagstat::HOST_PENDING));
+	    define('HOST_PROBLEM', ( nagstat::HOST_DOWN | nagstat::HOST_UNREACHABLE ));
+	    if(!isset($number) or !is_numeric($number)) { return ( array(HOST_ALL, $hoststatusfiltername, "", "" )); }
+
 	    if( $number and $number != HOST_ALL ) {
 		$hoststatusfiltername_list = array();
 
@@ -1605,9 +1321,9 @@ class Status_Controller extends Authenticated_Controller {
 	private function get_host_prop_filter($number) {
 	    $host_prop_filter = array();
 	    $host_prop_filter_service = array();
-
-	    if(!isset($number) or !is_numeric($number)) { return; }
 	    $host_prop_filtername = 'Any';
+	    if(!isset($number) or !is_numeric($number)) { return ( array( 0, $host_prop_filtername, "", "" )); }
+
 	    if( $number > 0 ) {
 		$host_prop_filtername_list = array();
 
@@ -1627,8 +1343,8 @@ class Status_Controller extends Authenticated_Controller {
 		    $host_prop_filtername_list[] = 'Has Been Acknowledged';
 		}
 		if( $number & nagstat::HOST_STATE_UNACKNOWLEDGED ) {    # 8 - Has Not Been Acknowledged
-		    $host_prop_filter[] =           array( acknowledged      => 0 );
-		    $host_prop_filter_service[] =   array( host_acknowledged => 0 );
+		    $host_prop_filter[] =           array( 'acknowledged'      => 0 );
+		    $host_prop_filter_service[] =   array( 'host_acknowledged' => 0 );
 		    $host_prop_filtername_list[] = 'Has Not Been Acknowledged';
 		}
 		if( $number & nagstat::HOST_CHECKS_DISABLED ) {    # 16 - Checks Disabled
@@ -1728,9 +1444,9 @@ class Status_Controller extends Authenticated_Controller {
 
 	    define('SERVICE_ALL', (nagstat::SERVICE_OK | nagstat::SERVICE_WARNING | nagstat::SERVICE_CRITICAL | nagstat::SERVICE_UNKNOWN | nagstat::SERVICE_PENDING));
 	    define('SERVICE_PROBLEM', ( nagstat::SERVICE_WARNING | nagstat::SERVICE_CRITICAL | nagstat::SERVICE_UNKNOWN ));
-
-	    if(!isset($number) or !is_numeric($number)) { return; }
 	    $servicestatusfiltername = 'All';
+	    if(!isset($number) or !is_numeric($number)) { return(array( SERVICE_ALL, $servicestatusfiltername, "" )); }
+
 	    if( $number and $number != SERVICE_ALL ) {
 
 		if( $number & nagstat::SERVICE_PENDING ) {    # 1 - pending
@@ -1765,9 +1481,9 @@ class Status_Controller extends Authenticated_Controller {
 	private function get_service_prop_filter($number) {
 	    $service_prop_filter = array();
 	    $service_prop_filtername_list = array();
-
-	    if(!isset($number) or !is_numeric($number)) { return; }
 	    $service_prop_filtername = 'Any';
+	    if(!isset($number) or !is_numeric($number)) { return (array( 0, $service_prop_filtername, "" )); }
+
 	    if( $number > 0 ) {
 		if( $number & nagstat::SERVICE_SCHEDULED_DOWNTIME ) {    # 1 - In Scheduled Downtime
 		    $service_prop_filter[] = array( 'scheduled_downtime_depth' => array( '>' => 0 ) );
