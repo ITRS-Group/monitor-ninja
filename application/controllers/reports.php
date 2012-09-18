@@ -136,7 +136,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _label_switch_to = '".$label_switch_to."';\n";
 		$this->js_strings .= "var _label_report = '".$label_report."';\n";
 		$this->js_strings .= "var nr_of_scheduled_instances = ". (!empty($scheduled_info) ? sizeof($scheduled_info) : 0).";\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_propagate = '"._('Would you like to propagate this value to all months')."';\n";
 		$this->js_strings .= "var _reports_propagate_remove = '"._("Would you like to remove all values from all months")."';\n";
 		$this->js_strings .= "var _schedule_change_filename = \""._('Would you like to change the filename based on your selections?')."\";\n";
@@ -328,7 +327,6 @@ class Reports_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_update_ok = '"._('Your schedule has been successfully updated')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_view_schedule = '"._('View schedule')."';\n";
-		$this->js_strings .= "var _reports_edit_information = '"._('Double click to edit')."';\n";
 		$this->js_strings .= "var _reports_errors_found = '"._('Found the following error(s)')."';\n";
 		$this->js_strings .= "var _reports_please_correct = '"._('Please correct this and try again')."';\n";
 

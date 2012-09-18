@@ -86,7 +86,7 @@ class Scheduled_reports_Model extends Model
 				reportname";
 
 		$res = $db->query($sql);
-		return $res ? $res : false;
+		return $res;
 	}
 
 	/**

@@ -108,46 +108,10 @@ $(document).ready(function() {
 		return false;
 	});
 
-
-	$('body').on('click', '.send_report_now', function() {
-		var elem = $(this);
-		send_report_now.call(this, elem.data('type'), elem.data('schedule'), elem.data('report_id'));
-	});
-
 	$("#report_id").bind('change', function() {
 		if (check_and_submit($("#saved_report_form"))) {
 			$("#saved_report_form").trigger('submit');
 		}
-	});
-
-	$('.save_report_btn').bind('click', function() {
-		loopElements();
-		if (!(check_form_values(this.form))) {
-			return;
-		}
-		var btn = $(this);
-		btn.after(loadimg);
-		$.ajax({
-			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
-			type: 'POST',
-			data: $(this.form).serialize(),
-			success: function(data) {
-				if (!data.error) {
-					jgrowl_message(data.result.status_msg, _reports_success);
-					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
-					if (!btn[0].form.report_id)
-						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
-				} else {
-					jgrowl_message(data.error, _reports_error);
-				}
-				btn.parent().find('img:last').remove();
-			},
-			error: function(data) {
-				jgrowl_message(_reports_error, _reports_error);
-				btn.parent().find('img:last').remove();
-			},
-			dataType: 'json'
-		});
 	});
 });
 

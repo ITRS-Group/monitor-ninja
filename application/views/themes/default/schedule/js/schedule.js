@@ -29,6 +29,7 @@ $(document).ready(function() {
 	$("#saved_report_id").change(function() {
 		create_filename();
 	});
+	fill_scheduled();
 	setup_editable();
 	$("#period").change(function() {
 		var sel_report = $("#saved_report_id").fieldValue();
@@ -37,26 +38,38 @@ $(document).ready(function() {
 	});
 
 		// delete single schedule
-	$(".delete_schedule").each(function() {
-		$(this).click(function() {
-			if ($(this).attr('class').indexOf('avail_del') > -1) {
-				_schedule_remove = 'avail';
-			} else {
-				if ($(this).attr('class').indexOf('sla_del') > -1) {
-					_schedule_remove = 'sla';
-				}
-				if ($(this).attr('class').indexOf('summary_del') > -1) {
-					_schedule_remove = 'summary';
-				}
-			}
-			if (!_schedule_remove) {
-				_schedule_remove = $('input[name=type]').attr('value');
-			}
-			schedule_delete($(this).attr('id'), _schedule_remove);
-		})
-	});
+	$('body').on('click', '.delete_schedule', schedule_delete);
+	$('body').on('click', '.send_report_now', send_report_now);
 
-	$(".deleteimg").css('cursor', 'pointer');
+	$('.save_report_btn').bind('click', function() {
+		loopElements();
+		if (!(check_form_values(this.form))) {
+			return;
+		}
+		var btn = $(this);
+		btn.after(loadimg);
+		$.ajax({
+			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
+			type: 'POST',
+			data: $(this.form).serialize(),
+			success: function(data) {
+				if (!data.error) {
+					jgrowl_message(data.result.status_msg, _reports_success);
+					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
+					if (!btn[0].form.report_id)
+						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
+				} else {
+					jgrowl_message(data.error, _reports_error);
+				}
+				btn.parent().find('img:last').remove();
+			},
+			error: function(data) {
+				jgrowl_message(_reports_error, _reports_error);
+				btn.parent().find('img:last').remove();
+			},
+			dataType: 'json'
+		});
+	});
 
 	$("#type").change(function() {
 		var report_type = $(this).fieldValue()[0];
@@ -128,8 +141,17 @@ $(document).ready(function() {
 					jgrowl_message(data.error, _reports_error);
 					return;
 				}
-				str = create_new_schedule_rows(data.result.id);
-				$('#' + rep_type_str + '_scheduled_reports_table').append(str);
+				var rep_type = $('#type').attr('value');
+				var saved_report_id = $('#saved_report_id').attr('value');
+				var report_name = $('#saved_report_id option:selected').text();
+				var period_str = $('#period option:selected').text();
+				var recipients = $('#recipients').attr('value');
+				var filename = $('#filename').attr('value');
+				var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
+				var description = $('#description').attr('value');
+				if (description == '')
+					description = '&nbsp;';
+				create_new_schedule_rows(data.result.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description)
 				setup_editable();
 				$('#new_schedule_report_form').clearForm();
 
@@ -140,52 +162,54 @@ $(document).ready(function() {
 	});
 });
 
-function schedule_delete(id, remove_type)
+function schedule_delete()
 {
 	if (!confirm(_reports_confirm_delete_schedule)) {
 		return false;
 	}
 
-	var img_src = $('#' + id + " img").attr('src');
-	var in_id = id;
+	var elem = $(this);
+	var type = elem.data('type');
+	var schedule_id = elem.data('schedule');
+	var report_id = elem.data('report_id');
 
-	$('#' + in_id + ' img').attr('src', loadimg.src);
-
-	// clean input id from prefix (from setup template)
-	if (isNaN(id)) {
-		id = id.replace('delid_', '');  // from single report listing
-		id = id.replace('alldel_', ''); // from all schedules list
-	}
+	var img = $('img', elem);
+	var img_src = img.attr('src');
+	img.attr('src', loadimg.src);
 
 	$.ajax({
 		url:_site_domain + _index_page + '/schedule/delete_schedule',
-		data: {'id': id},
+		data: {'id': schedule_id},
 		success: function(data) {
 			if (data.error) {
 				jgrowl_message(data.error, _reports_error);
 			} else {
-				// item deleted
-				remove_schedule(id, remove_type, data.result);
+				jgrowl_message(data.result, _reports_success);
+				var table = $('#'+type+'_scheduled_reports_table tbody');
+				$('tr#report-'+schedule_id, table).detach();
+				if (!$(':visible', table).length)
+					$('.no-result', table).show();
 			}
-			restore_delimg(in_id, img_src);
+			img.attr('src', img_src);
 		},
 		error: function(data) {
-				jgrowl_message(data, _reports_error);
-				restore_delimg(in_id, img_src);
+			jgrowl_message(data, _reports_error);
+			img.attr('src', img_src);
 		},
 		type: 'POST',
 		dataType: 'json'
 	});
 }
 
-function send_report_now(type, sched_id, report_id)
+function send_report_now()
 {
 	var elem = $(this);
-	$(this)
-		.css('background', 'url(' + loadimg.src + ') no-repeat scroll 0 0 transparent')
-		.css('height', '16px')
-		.css('width', '16px')
-		.css('float', 'left');
+	var type = elem.data('type');
+	var sched_id = elem.data('schedule');
+	var report_id = elem.data('report_id');
+	var img = $('img', elem);
+	var img_src = img.attr('src');
+	img.attr('src', loadimg.src);
 
 	$.ajax({
 		url: _site_domain + _index_page + '/schedule/send_now/' + sched_id,
@@ -200,67 +224,14 @@ function send_report_now(type, sched_id, report_id)
 			} else {
 				jgrowl_message(data.result, _reports_success);
 			}
-			restore_sendimg(elem);
+			img.attr('src', img_src);
 		},
 		error: function() {
 			jgrowl_message(_reports_schedule_send_error, _reports_error);
-			restore_sendimg(elem);
+			img.attr('src', img_src);
 		},
 		dataType: 'json'
 	});
-}
-
-function restore_sendimg(id)
-{
-	var old_icon = _site_domain + _theme_path + "icons/16x16/send-report.png";
-	id
-		.css('background', 'url(' + old_icon + ') no-repeat scroll 0 0 transparent')
-		.css('height', '16px')
-		.css('width', '16px').css('float', 'left');
-
-}
-
-function restore_delimg(id, src)
-{
-	$('#' + id + ' img').attr('src', src);
-}
-
-function remove_schedule(id, remove_type, msg)
-{
-	var time = 3000;
-
-	// remove row for deleted ID (both in fancybox and in original table)
-	$('#report-' + id).remove();
-	$('#fancybox-content #report-' + id).remove();
-
-	// fancybox workaound
-	if (remove_type == 'summary' && $('#fancybox-content #schedule_report_table').is(':visible')) {
-		nr_of_scheduled_instances = $('#fancybox-content #schedule_report_table tr').not('#schedule_header').length;
-	}
-	if (nr_of_scheduled_instances == 0) {
-		// last item deleted
-		$('#schedule_report').hide(); // hide entire table/div
-		$('#show_schedule').hide(); // remove 'View schedules' button
-		$('#is_scheduled').remove();
-		if ($('#report_id')) {
-			var chk_text = '';
-			chk_text = $('#report_id option:selected').text();
-			chk_text = chk_text.replace(" ( *" + _scheduled_label + "* )", '');
-			$('#report_id option:selected').text(chk_text);
-		}
-		if ($(".fancybox").is(':visible')) {
-			$.fancybox.close();
-		}
-	}
-
-	if (remove_type!='' && remove_type != 'undefined') {
-		if ($('#' + remove_type + '_scheduled_reports_table tbody').not('.no-result').length == 0) {
-			$('#' + remove_type + '_headers').hide();
-			$('#' + remove_type + '_no_result').show();
-		}
-	}
-
-	jgrowl_message(msg, _reports_success);
 }
 
 function setup_editable()
@@ -326,19 +297,9 @@ function setup_editable()
 	});
 }
 
-function create_new_schedule_rows(id)
+function create_new_schedule_rows(schedule_id, rep_type, report_name, report_id, report_period, recipients, filename, local_persistent_filepath, description)
 {
-	var return_str = '';
-	var rep_type = $('#type').attr('value');
-	var saved_report_id = $('#saved_report_id').attr('value');
-	var period = $('#period').attr('value');
-	var period_str = $('#period option:selected').text();
-	var recipients = $('#recipients').attr('value');
-	var filename = $('#filename').attr('value');
-	var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
-	var description = $('#description').attr('value');
-	if (description == '')
-		description = '&nbsp;';
+	var template_row = $('#schedule_template tr');
 
 	var report_type_id = -1;
 	for (var i in _report_types_json) {
@@ -347,18 +308,35 @@ function create_new_schedule_rows(id)
 		}
 	}
 
-	var reportname = $('#saved_report_id').find(':selected').text();
-
-	return_str += '<tr id="report-' + id + '" class="odd">';
-	return_str += '<td class="period_select" title="' + _reports_edit_information + '" id="period_id-' + id + '">' + period_str + '</td>';
-	return_str += '<td class="report_name" id="' + report_type_id + '.report_id-' + id + '">' + reportname + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="recipients-' + id + '">' + recipients + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="filename-' + id + '">' + filename + '</td>';
-	return_str += '<td class="iseditable_txtarea" title="' + _reports_edit_information + '" id="description-' + id + '">' + description + '</td>';
-	return_str += '<td class="iseditable" title="' + _reports_edit_information + '" id="local_persistent_filepath-' + id + '">' + local_persistent_filepath + '</td>';
-	return_str += '<td><form><input type="button" class="send_report_now" id="send_now_' + rep_type + '_' + id + '" title="' + _reports_send_now + '" value="&nbsp;" data-report_id="'+saved_report_id+'" data-type="'+rep_type+'" data-schedule="'+id+'"></form>';
-	return_str += '<div class="delete_schedule" onclick="schedule_delete(' + id + ', \'' + rep_type + '\');" id="delid_' + id + '"><img src="' + _site_domain + _theme_path + 'icons/16x16/delete-schedule.png" class="deleteimg" /></div></td></tr>';
-	return return_str;
+	template_row = template_row.clone()
+	$('#' + rep_type + '_scheduled_reports_table .no-result').hide();
+	template_row.attr('id', 'report-'+schedule_id);
+	$('.report_name', template_row).text(report_name);
+	$('.description', template_row).text(description);
+	$('.period_select', template_row).text(report_period);
+	$('.recipients', template_row).text(recipients);
+	$('.filename', template_row).text(filename);
+	$('.local-path', template_row).text(local_persistent_filepath);
+	var actions = $('.action', template_row);
+	$('.direct_link', actions).attr('href', _site_domain + _index_page + '/' + rep_type + '/generate?report_id=' + report_id);
+	$('.send_report_now, .delete_schedule', actions).data('schedule', schedule_id).data('report_id', report_id).data('type', rep_type);
+	var par = $('#' + rep_type + '_scheduled_reports_table tbody');
+	if (par.children().last().hasClass('odd'))
+		template_row.attr('class', 'even');
+	else
+		template_row.attr('class', 'odd');
+	par.append(template_row);
 }
 
-
+function fill_scheduled() {
+	for (var type in _scheduled_reports) {
+		if (!_scheduled_reports[type].length) {
+			$('#' + type + '_scheduled_reports_table .no-result').show();
+			continue;
+		}
+		for (var i = 0; i < _scheduled_reports[type].length; i++) {
+			var report = _scheduled_reports[type][i];
+			create_new_schedule_rows(report.id, type, report.reportname, report.report_id, report.periodname, report.recipients, report.filename, report.local_persistent_filepath, report.description);
+		}
+	}
+}

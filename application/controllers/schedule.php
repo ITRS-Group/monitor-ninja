@@ -57,14 +57,11 @@ class Schedule_Controller extends Authenticated_Controller
 
 
 		# fetch ALL schedules (avail + SLA + Alert Summary)
-		$avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail');
-		$available_schedules->avail_schedules = $avail_schedules;
-		$available_schedules->sla_schedules = Scheduled_reports_Model::get_scheduled_reports('sla');
-		$available_schedules->summary_schedules = Scheduled_reports_Model::get_scheduled_reports('summary');
+		$avail_schedules = Scheduled_reports_Model::get_scheduled_reports('avail')->result_array(false);
 
 		foreach ($avail_reports as $idx => $report) {
 			foreach ($avail_schedules as $schedule) {
-				if ($schedule->report_id == $report->id) {
+				if ($schedule['report_id'] == $report->id) {
 					$avail_reports[$idx]->report_name .= ' ( *'._('Scheduled').'* )';
 					continue 2;
 				}
@@ -74,10 +71,6 @@ class Schedule_Controller extends Authenticated_Controller
 
 		# add new schedule template to available_schedules template
 		$available_schedules->new_schedule = $new_schedule;
-
-		$available_schedules->avail_reports = $avail_reports;
-		$available_schedules->sla_reports = $sla_reports;
-		$available_schedules->summary_reports = $summary_reports;
 
 		# we need some data available as json for javascript
 		$avail_reports_arr = false;
@@ -100,6 +93,7 @@ class Schedule_Controller extends Authenticated_Controller
 		$this->js_strings .= "var _saved_avail_reports = ".json_encode($avail_reports_arr).";\n";
 		$this->js_strings .= "var _saved_sla_reports = ".json_encode($sla_reports_arr).";\n";
 		$this->js_strings .= "var _saved_summary_reports = ".json_encode($summary_reports_arr).";\n";
+		$this->js_strings .= "var _scheduled_reports = ".json_encode(array('avail' => $avail_schedules, 'sla' => Scheduled_reports_Model::get_scheduled_reports('sla')->result_array(false), 'summary' => Scheduled_reports_Model::get_scheduled_reports('summary')->result_array(false))).";\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$this->js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$this->js_strings .= "var _reports_schedule_error = '"._('An error occurred when saving scheduled report')."';\n";
