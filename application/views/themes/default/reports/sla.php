@@ -1,5 +1,7 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');?>
-<?php
+<?php defined('SYSPATH') OR die('No direct access allowed.');
+
+echo reports::get_included_states($options['report_type'], $options);
+
 $nr = 0;
 foreach($report_data as $i =>  $report) {
 	$nr++;
@@ -8,6 +10,8 @@ foreach($report_data as $i =>  $report) {
 			$str_source = 'SLA breakdown for Custom group';
 		}
 		else {
+			if(is_array($report['name']))
+				$report['name'] = implode(', ', $report['name']);
 			if (!$options['use_alias'] || count($report['source']) > 1)
 				$str_source = _('SLA breakdown for').': '.$report['name'];
 			else

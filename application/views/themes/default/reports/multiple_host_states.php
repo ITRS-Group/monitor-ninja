@@ -1,15 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
+<?php echo reports::get_included_states('hosts', $options); ?>
 <div class="host_breakdown wide" style="margin-top: 0px;">
-<?php echo _('Showing hosts in state: ');
-		$j = 0; foreach($options['host_filter_status'] as $key => $value) {
-		if ($value) {
-			echo ($j > 0) ? ', ' : '';
-			echo '<strong>'.Reports_Model::$host_states[$key].'</strong>';
-			$j++;
 
-		}
-	}
-	?>
 <?php foreach ($multiple_states as $data) { ?>
 		<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host">
 			<tr>
@@ -20,10 +12,10 @@
 				<th class="headerNone" style="width: 80px"><?php echo _('Undetermined') ?></th>
 			</tr>
 			<?php $no = 0; for ($i=0;$i<$data['nr_of_items'];$i++):
-			if (($data['undetermined'][$i] != 0 && $options['host_filter_status'][Reports_Model::HOST_PENDING]) ||
-						 ($data['up'][$i] != 0 && $options['host_filter_status'][Reports_Model::HOST_UP]) ||
-						 ($data['down'][$i] != 0 && $options['host_filter_status'][Reports_Model::HOST_DOWN]) ||
-						 ($data['unreachable'][$i] != 0 && $options['host_filter_status'][Reports_Model::HOST_UNREACHABLE])) { $no++;?>
+			if ($data['undetermined'][$i] != 0 ||
+				$data['up'][$i] != 0 ||
+				$data['down'][$i] != 0 ||
+				$data['unreachable'][$i] != 0) { $no++;?>
 			<tr class="<?php echo ($i%2 == 0) ? 'even' : 'odd'?>">
 			<?php if (!$options['use_alias']) { ?>
 				<td><?php echo '<a href="'.str_replace('&','&amp;',$data['host_link'][$i]).'">' . $data['HOST_NAME'][$i] . '</a>' ?></td>
@@ -70,16 +62,7 @@
 			<?php } if ($no == 0) { ?>
 			<tr class="even">
 				<td colspan="5">
-					<?php echo _('No hosts in this group in state ');
-						$j = 0; foreach($options['host_filter_status'] as $key => $value) {
-						if ($value) {
-							echo ($j > 0) ? _(' or ') : '';
-							echo '<strong>'.Reports_Model::$host_states[$key].'</strong>';
-							$j++;
-
-						}
-					}
-					?>
+					<?php echo _('No data for any of these hosts');?>
 				</td>
 			</tr>
 

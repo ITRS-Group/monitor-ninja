@@ -68,15 +68,15 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			</select>
 		</td>
 		<td>&nbsp;</td>
-		<td<?php echo ($type == 'sla') ? ' style="display:none"' : ''?>>
+		<td>
 			<?php echo help::render('status_to_display') ?>
-			<?php echo _('Status to display'); ?><br>
+			<?php echo _('States to hide'); ?><br>
 			<div id="display_host_status">
 			<?php
 			foreach (Reports_Model::$host_states as $id => $name) {
 				if ($name === 'excluded')
 					continue;
-				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"1\" ".($options['host_filter_status'][$id]?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
+				echo "<input type=\"checkbox\" name=\"host_filter_status[$id]\" id=\"host_filter_status[$id]\" value=\"".($type == 'sla'?0:-2).'" '.(isset($options['host_filter_status'][$id])?'checked="checked"':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"host_filter_status[$id]\">".ucfirst($name)."</label>\n";
 			} ?>
 			</div>
 			<div id="display_service_status">
@@ -84,7 +84,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 			foreach (Reports_Model::$service_states as $id => $name) {
 				if ($name === 'excluded')
 					continue;
-				echo "<input type=\"checkbox\" name=\"service_filter_status[$id]\" id=\"service_filter_status[$id]\" value=\"1\" ".($options['service_filter_status'][$id]?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_filter_status[$id]\">".ucfirst($name)."</label>\n";
+				echo "<input type=\"checkbox\" name=\"service_filter_status[$id]\" id=\"service_filter_status[$id]\" value=\"".($type == 'sla'?0:-2).'" '.(isset($options['service_filter_status'][$id])?'checked="checked" ':'')." style=\"margin-top: 4px; margin-left: 14px\"> <label for=\"service_filter_status[$id]\">".ucfirst($name)."</label>\n";
 			} ?>
 			</div>
 		</td>

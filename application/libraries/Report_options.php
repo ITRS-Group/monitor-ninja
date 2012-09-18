@@ -37,12 +37,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
 		'end_time' => array('type' => 'timestamp', 'default' => 0), /**< End time for report, timestamp or date-like string */
 		'use_average' => array('type' => 'enum', 'default' => 0), /**< Whether to hide any SLA values and stick to averages */
-		'host_filter_status' => array('type' => 'array', 'default' => array( /**< Only include these host states in results */
-			Reports_Model::HOST_UP => 1,
-			Reports_Model::HOST_DOWN => 1,
-			Reports_Model::HOST_UNREACHABLE => 1,
-			Reports_Model::HOST_PENDING => 1)),
-		'service_filter_status' => array('type' => 'array', 'default' => array( /**< Only include these service states in results */
+		'host_filter_status' => array('type' => 'array', 'default' => array(), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
+		'service_filter_status' => array('type' => 'array', 'default' => array(), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
 			Reports_Model::SERVICE_OK => 1,
 			Reports_Model::SERVICE_WARNING => 1,
 			Reports_Model::SERVICE_CRITICAL => 1,

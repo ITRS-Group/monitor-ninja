@@ -1,18 +1,7 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php
-	if ($service_filter_status_show !== false) {
-		echo _('Showing services in state: ');
-			$j = 0; foreach($options['service_filter_status'] as $key => $value) {
-			if ($value == 1) {
-				echo ($j > 0) ? ', ' : '';
-				echo '<strong>'.Reports_Model::$service_states[$key].'</strong>';
-				$j++;
+<?php defined('SYSPATH') OR die('No direct access allowed.');
 
-			}
-		}
-	}
-	?>
-<?php
+echo reports::get_included_states('services', $options);
+
 	$sg_no = 0;
 	$prev_host = false;
 	$prev_group = false;
@@ -70,11 +59,11 @@
 			<?php $prev_hostname = $data['HOST_NAME'][$i]; $prev_groupname = $data['groupname'];
 				}
 				$no = 0;
-				if (($data['ok'][$i] != 0 && $options['service_filter_status'][Reports_Model::SERVICE_OK] == true) ||
-					 ($data['warning'][$i] != 0 && $options['service_filter_status'][Reports_Model::SERVICE_WARNING] == true) ||
-					 ($data['unknown'][$i] != 0 && $options['service_filter_status'][Reports_Model::SERVICE_UNKNOWN] == true) ||
-					 ($data['critical'][$i] != 0 && $options['service_filter_status'][Reports_Model::SERVICE_CRITICAL] == true) ||
-					 ($data['undetermined'][$i] != 0 && $options['service_filter_status'][Reports_Model::SERVICE_PENDING] == true)) {
+				if ($data['ok'][$i] != 0 ||
+					$data['warning'][$i] != 0 ||
+					$data['unknown'][$i] != 0 ||
+					$data['critical'][$i] != 0 ||
+					$data['undetermined'][$i] != 0) {
 					$no++;?>
 			<tr class="<?php echo ($i%2==0 ? 'even' : 'odd') ?>">
 				<td class="label">
@@ -137,16 +126,7 @@
 		if ($sg_no > 0 && $no == 0) { ?>
 			<tr class="even">
 				<td colspan="6">
-				<?php echo _('No service in this group in state: ');
-					$j = 0;
-					foreach($options['service_filter_status'] as $key => $value) {
-						if ($value == 1) {
-							echo ($j > 0) ? _(', ') : '';
-							echo '<strong>'.$key.'</strong>';
-							$j++;
-
-						}
-					} ?>
+					<?php echo _('No data for any of these services');?>
 				</td>
 			</tr>
 <?php } ?>
