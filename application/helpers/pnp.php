@@ -11,6 +11,7 @@ class pnp_Core
 	*/
 	public static function has_graph($host=false, $service=false)
 	{
+throw new Exception('deprecated');
 /* TODO: integrate in normal query instead calling it for every host / service */
 		try {
 			$ls = Livestatus::instance();

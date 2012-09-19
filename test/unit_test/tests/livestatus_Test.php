@@ -29,6 +29,13 @@ class Livestatus_Test extends TapUnit {
         $expect = '';
         $filter = chop($this->ls->getQueryFilter(false, $filter));
         $this->ok($filter === $expect, "basic filter 3: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+
+        # basic filter 4
+        $filter = array('', 'num_hosts' => array('>' => 0));
+        $expect = 'Filter: num_hosts > 0';
+        $filter = chop($this->ls->getQueryFilter(false, $filter));
+        $this->ok($filter === $expect, "basic filter 4: \nexpect:\n".$expect."\n\ngot:\n".$filter);
+
     }
 
     public function test_and_filter() {

@@ -107,7 +107,7 @@ class Livestatus {
     public function getHostgroups($options = null) {
         if(!isset($options['columns'])) {
             $options['columns'] = array(
-                'name', 'alias', 'members', 'action_url', 'notes notes_url',
+                'name', 'alias', 'members', 'action_url', 'notes', 'notes_url',
             );
         }
         return $this->getTable('hostgroups', $options);
@@ -467,10 +467,11 @@ TODO: implement
         }
         $this->page_step1($table, $options);
 
-        $columns = $options['columns'];
-        if(is_array($options['columns'])) {
-            $columns = join(" ", $options['columns']);
+        if(isset($options['extracolumns']) and is_array($options['extracolumns'])) {
+            $options['columns'] = array_merge($options['columns'], $options['extracolumns']);
         }
+        $columns = join(" ", $options['columns']);
+
         $query  = "Columns: ".$columns."\n";
         $query .= $filter;
         $objects = $this->query($table, $query, $options['columns']);
@@ -510,15 +511,19 @@ TODO: implement
     }
 
     private function page_step1($table, $options = null) {
-        if(!isset($options['paging'])) {
+        if(isset($options['paging'])) {
+            $page = $options['paging'];
+            $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
+        }
+        elseif(isset($options['paginggroup'])) {
+            $page = $options['paginggroup'];
+            $items_per_page = $page->input->get('items_per_page', config::get('pagination.group_items_per_page', '*'));
+        } else {
             return;
         }
-        $page           = $options['paging'];
-        $current_page   = $page->input->get('page', false);
-        $items_per_page = $page->input->get('items_per_page', config::get('pagination.default.items_per_page', '*'));
         $items_per_page = $page->input->get('custom_pagination_field', $items_per_page);
-
-        $total = $this->get_query_size($table, $options);
+        $current_page   = $page->input->get('page', 1);
+        $total          = $this->get_query_size($table, $options);
         if(isset($total)) {
             # then set the limit for the real query
             $options['options']['limit'] = $current_page * $items_per_page + 1;
@@ -536,10 +541,14 @@ TODO: implement
     }
 
     private function page_step2($result, $options = null) {
-        if(!isset($options['paging'])) {
+        if(isset($options['paging'])) {
+            $page = $options['paging'];
+        }
+        elseif(isset($options['paginggroup'])) {
+            $page = $options['paginggroup'];
+        } else {
             return $result;
         }
-        $page           = $options['paging'];
         $items_per_page = $page->template->content->items_per_page;
         $current_page   = $page->template->content->page;
         $offset         = ($current_page-1) * $items_per_page;
@@ -590,20 +599,21 @@ TODO: implement
     }
 
     private function get_query_size($table, $options = null) {
-        if(!isset($options['paging'])) { return; }
+        if(!isset($options['paging']) and !isset($options['paginggroup'])) { return; }
 /* TODO: use paging only when using default sorting */
 
         switch($table) {
             case 'services':
-            case 'hosts':    $key = 'state';
-                             break;
-            default:         throw new LivestatusException("table $table not implemented in get_query_size()");
+            case 'hosts':           $filter = array('state' => array('!=' => 999));
+                                    break;
+            case 'servicegroups':
+            case 'hostgroups':      $filter = array('name' => array('!=' => ""));
+                                    break;
+            default:                throw new LivestatusException("table $table not implemented in get_query_size()");
 
         }
-        $stats = array(
-            'total' => array($key => array('!=' => 999))
-        );
-        $data = $this->getStats($table, $stats, $options);
+        $stats = array( 'total' => $filter );
+        $data  = $this->getStats($table, $stats, $options);
         return $data['total'];
     }
 
@@ -639,6 +649,10 @@ TODO: implement
     public function getQueryFilter($stats = false, $filter = null, $op = null, $name = null, $listop = null) {
         if($filter === null) { return ""; }
 /* TODO: implement proper escaping */
+
+        # remove empty elements
+        while(is_array($filter) and isset($filter[0]) and $filter[0] === '') { array_shift($filter); }
+
         $query = "";
         if($this->is_assoc($filter)) {
             $iter = 0;
