@@ -214,6 +214,7 @@ class Default_Controller extends Ninja_Controller  {
 	*/
 	public function get_a_user()
 	{
+		ob_end_clean();
 		if (PHP_SAPI !== "cli") {
 			url::redirect('default/index');
 		} else {

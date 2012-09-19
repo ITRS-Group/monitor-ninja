@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="state_breakdown" style="margin-top: 15px">
+	<?php echo reports::get_included_states('services', $options); ?>
 	<table summary="<?php echo _('Result table') ?>">
 		<!--<caption><?php echo str_replace(': ', ' '._('for').' '.$source.': ', $header_string); ?></caption>-->
 		<tr>

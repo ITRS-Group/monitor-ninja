@@ -249,4 +249,37 @@ class reports_Core
 
 		return $js_strings;
 	}
+
+	/**
+	 * Return a text string representing the included host or service states
+	 */
+	public static function get_included_states($report_type, $options)
+	{
+		switch ($report_type) {
+		 case 'hosts':
+		 case 'hostgroups':
+			$subtype = 'host';
+			break;
+		 case 'services':
+		 case 'servicegroups':
+			$subtype = 'service';
+			break;
+		 default:
+			return _("Unknown states included: '$report_type' is not a recognized object type");
+		}
+
+		$res = $subtype === 'host' ? _('Showing hosts in state: ') : _('Showing services in state: ');
+
+		$j = 0;
+		foreach(Reports_Model::${$subtype.'_states'} as $key => $value) {
+			if ($value === 'excluded')
+				continue;
+			if (!isset($options[$subtype.'_filter_status'][$key])) {
+				$res .= ($j > 0) ? ', ' : '';
+				$res .= '<strong>'.$value.'</strong>';
+				$j++;
+			}
+		}
+		return $res;
+	}
 }

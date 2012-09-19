@@ -12,10 +12,11 @@ class Saved_reports_Model extends Model
 	/**
 	 * Return all saved reports for a given report type
 	 *
+	 * Note: you get the exact same info from get_all_report_names
+	 *
 	 * @param $type The report type ('avail', 'sla' or 'summary')
-	 * @param $user If set, the user to use to filter reports. If not set or false, the session will be used instead.
 	 */
-	public static function get_saved_reports($type='avail', $user=false)
+	public static function get_saved_reports($type='avail')
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -25,7 +26,7 @@ class Saved_reports_Model extends Model
 
 		$sql = "SELECT id, report_name FROM ".$type."_config ";
 		if (!$auth->view_hosts_root) {
-			$user = $user !== false ? $user : Auth::instance()->get_user()->username;
+			$user = Auth::instance()->get_user()->username;
 			$sql .= "WHERE ".self::USERFIELD."=".$db->escape($user)." OR ".self::USERFIELD."=''";
 		}
 
@@ -46,7 +47,7 @@ class Saved_reports_Model extends Model
 	 *        types only the options that are set will be overwritten.
 	 * @return false on error, or the id of the saved report
 	 */
-	public function edit_report_info($type, $id, Report_options $options)
+	public static function edit_report_info($type, $id, Report_options $options)
 	{
 		$update = false;
 		$type = strtolower($type);
@@ -235,7 +236,7 @@ class Saved_reports_Model extends Model
 	 * @param $objects Objects this scheduled report concerns
 	 * @return true on success, false on errors.
 	 */
-	public function save_config_objects($type = 'avail', $id=false, $objects=false)
+	public static function save_config_objects($type = 'avail', $id=false, $objects=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -313,6 +314,8 @@ class Saved_reports_Model extends Model
 	/**
 	 * Fetches all info names from {avail,sla}_config
 	 *
+	 * Note: you get the exact same info from get_saved_reports
+	 *
 	 * @param $type string: Report type. { avail, sla }
 	 * @return false on errors. Array of all names on success
 	 */
@@ -345,7 +348,7 @@ class Saved_reports_Model extends Model
 	 * @param $id Id of the report.
 	 * @return false on error. Report info as array on success.
 	 */
-	public function get_report_info($type='avail', $id=false)
+	public static function get_report_info($type='avail', $id=false)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
@@ -494,7 +497,7 @@ class Saved_reports_Model extends Model
 	 * @param $id int: Report id
 	 * @return false on errors, database result array on success.
 	 */
-	public function get_config_objects($type='avail', $id=false)
+	public static function get_config_objects($type='avail', $id=false)
 	{
 		$type = strtolower($type);
 		if (($type != 'avail' && $type != 'sla') || empty($id))
