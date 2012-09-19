@@ -1,16 +1,3 @@
-CREATE TABLE ninja_saved_searches (
- id NUMBER(10,0) NOT NULL,
- username VARCHAR2(255 CHAR) DEFAULT NULL,
- search_name VARCHAR2(255 CHAR) NOT NULL,
- search_query VARCHAR2(255 CHAR) NOT NULL,
- search_description VARCHAR2(255 CHAR) NOT NULL
-);
-
-ALTER TABLE ninja_saved_searches
-ADD CONSTRAINT ninja_saved_searches_pk PRIMARY KEY(id) ENABLE;
-
-CREATE INDEX n_s_s_username ON ninja_saved_searches(username);
-
 ALTER TABLE scheduled_reports ADD local_persistent_filepath VARCHAR2(200 CHAR) DEFAULT NULL;
 
 UPDATE ninja_db_version SET version=2;
