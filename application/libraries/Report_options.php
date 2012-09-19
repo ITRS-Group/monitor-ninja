@@ -37,13 +37,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
 		'end_time' => array('type' => 'timestamp', 'default' => 0), /**< End time for report, timestamp or date-like string */
 		'use_average' => array('type' => 'enum', 'default' => 0), /**< Whether to hide any SLA values and stick to averages */
-		'host_filter_status' => array('type' => 'array', 'default' => array(), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
-		'service_filter_status' => array('type' => 'array', 'default' => array(), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
-			Reports_Model::SERVICE_OK => 1,
-			Reports_Model::SERVICE_WARNING => 1,
-			Reports_Model::SERVICE_CRITICAL => 1,
-			Reports_Model::SERVICE_UNKNOWN => 1,
-			Reports_Model::SERVICE_PENDING => 1)),
+		'host_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
+		'service_filter_status' => array('type' => 'array', 'default' => array()), /**< Key: hide these. Value: map them to this instead (-2 means "secret") */
 		'include_trends' => array('type' => 'bool', 'default' => false), /**< Include trends graph (if possible for this report type) */
 		'master' => array('type' => 'object', 'default' => false, 'generated' => true), /**< The master report, if one */
 		'schedule_id' => array('type' => 'int', 'default' => false), /**< A schedule id we're currently running as, not to be confused with report_id. This cannot be calculated, so it must be included */
@@ -415,7 +410,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'host_filter_status':
 		 case 'service_filter_status':
 			if ($value === null)
-				$value = false;
+				$value = array();
 			else if (!is_array($value))
 				$value = i18n::unserialize($value);
 			break;
