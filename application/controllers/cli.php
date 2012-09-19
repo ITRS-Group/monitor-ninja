@@ -420,4 +420,68 @@ class Cli_Controller extends Authenticated_Controller {
 
 		Ninja_widget_Model::rename_widget($params['from'], $params['to']);
 	}
+
+	public function upgrade_excluded()
+	{
+		if (PHP_SAPI !== 'cli') {
+			die("illegal call\n");
+		}
+		$this->auto_render=false;
+		$cli_access = Kohana::config('config.cli_access');
+
+		if (empty($cli_access)) {
+			# CLI access is turned off in config/config.php
+			echo "no cli access\n";
+			return false;
+		}
+		$auth = Nagios_auth_Model::instance();
+		$auth->view_hosts_root = true;
+
+		$db = Database::instance();
+		$res = $db->query('SELECT version FROM avail_db_version');
+		if ($res->current()->version >= 10)
+			return; // already upgraded
+
+		$reports = Saved_reports_Model::get_saved_reports('avail');
+		if (!is_array($reports))
+			return;
+
+		foreach ($reports as $report) {
+			$report_info = Saved_reports_Model::get_report_info('avail', $report->id);
+			$report_info['host_filter_status'] = @unserialize($report_info['host_filter_status']);
+			$report_info['service_filter_status'] = @unserialize($report_info['service_filter_status']);
+
+			if (!is_array($report_info['host_filter_status'])) {
+				// wooooha, duuuude
+				$report_info['host_filter_status'] = array();
+			} else {
+				$new_filter_status = array();
+				foreach (Reports_Model::$host_states as $id => $name) {
+					if ($name == 'pending')
+						$name = 'undetermined';
+					# we need to replace the name with the id, and invert which ones areset
+					if ($id == -2 || isset($report_info['host_filter_status'][$name]))
+						continue;
+					$new_filter_status[$id] = 0;
+				}
+				$report_info['host_filter_status'] = $new_filter_status;
+			}
+
+			if (!is_array($report_info['service_filter_status'])) {
+				$report_info['service_filter_status'] = array();
+			} else {
+				$new_filter_status = array();
+				foreach (Reports_Model::$service_states as $id => $name) {
+					# we need to replace the name with the id, and invert which ones areset
+					if ($id == -2 || isset($report_info['service_filter_status'][$name]))
+						continue;
+					$new_filter_status[$id] = 0;
+				}
+				$report_info['service_filter_status'] = $new_filter_status;
+			}
+			$opts = new Avail_options($report_info);
+
+			Saved_reports_Model::edit_report_info('avail', $report->id, $opts);
+		}
+	}
 }
