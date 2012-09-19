@@ -423,6 +423,7 @@ class Cli_Controller extends Authenticated_Controller {
 
 	public function upgrade_excluded()
 	{
+		ob_end_clean();
 		if (PHP_SAPI !== 'cli') {
 			die("illegal call\n");
 		}
