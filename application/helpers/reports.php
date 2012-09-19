@@ -275,10 +275,11 @@ class reports_Core
 			if ($value === 'excluded')
 				continue;
 			if (!isset($options[$subtype.'_filter_status'][$key])) {
-				echo ($j > 0) ? ', ' : '';
-				echo '<strong>'.$value.'</strong>';
+				$res .= ($j > 0) ? ', ' : '';
+				$res .= '<strong>'.$value.'</strong>';
 				$j++;
 			}
 		}
+		return $res;
 	}
 }
