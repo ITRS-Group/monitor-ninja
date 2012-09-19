@@ -15,7 +15,6 @@ class Saved_reports_Model extends Model
 	 * Note: you get the exact same info from get_all_report_names
 	 *
 	 * @param $type The report type ('avail', 'sla' or 'summary')
-	 * @param $user If set, the user to use to filter reports. If not set or false, the session will be used instead.
 	 */
 	public static function get_saved_reports($type='avail')
 	{
