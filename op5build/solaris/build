@@ -43,9 +43,6 @@ $ninja_dir
 # to use it *for* packaging, not include it *in* the package.
 cp -r op5build $builddir
 
-/opt/csw/bin/gsed -i -e "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
-        $ninja_dir/index.php
-
 /opt/csw/bin/gsed -i \
         -e 's,^\(.config..site_domain.. = .\)/ninja/,\1/monitor/,' \
         -e 's/^\(.config..product_name.. = .\)Nagios/\1op5 Monitor/' \
