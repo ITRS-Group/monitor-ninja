@@ -109,10 +109,6 @@ class Tac_Controller extends Authenticated_Controller {
 	public function ajax_host_lookup()
 	{
 		if(request::is_ajax()) {
-			# the profiler seems to interfere with ajax calls
-			# so we disable it here if enabled
-			if ($this->profiler)
-				$this->profiler->disable();
 			$this->auto_render=false;
 			$host_info = $this->input->post('host_info', false);
 			if (!empty($host_info)) {

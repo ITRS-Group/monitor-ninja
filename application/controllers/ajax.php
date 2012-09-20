@@ -24,8 +24,6 @@ class Ajax_Controller extends Authenticated_Controller {
 			url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 
-		if ($this->profiler)
-			$this->profiler->disable();
 		$this->auto_render=false;
 	}
 
