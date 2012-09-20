@@ -46,4 +46,36 @@ class ninja_Core {
 		$path = str_replace('//', '/', $path);
 		return $url_base . $path;
 	}
+
+	/**
+	 * Return array of all installed skins
+	 */
+	public static function get_skins() {
+		$available_skins = array();
+		$required_css = array('common.css', 'status.css', 'reports.css');
+		$skins = glob(APPPATH.'views/'.self::get_theme_path().'css/*', GLOB_ONLYDIR);
+		if (count($skins) > 1) {
+			foreach ($skins as $skin) {
+
+				# make sure we have all requred css
+				$missing_css = false;
+				foreach ($required_css as $css) {
+					if (glob($skin.'/'.$css) == false) {
+						$missing_css = true;
+						continue;
+					}
+				}
+				if ($missing_css !== false) {
+					continue;
+				}
+
+				# all required css files seems to be exist
+				$skinparts = explode('/', $skin);
+				if (is_array($skinparts) && !empty($skinparts)) {
+					$available_skins[$skinparts[sizeof($skinparts)-1].'/'] = $skinparts[sizeof($skinparts)-1];
+				}
+			}
+		}
+		return $available_skins;
+	}
 }

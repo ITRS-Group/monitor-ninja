@@ -224,6 +224,8 @@ class Session_Core {
 	 */
 	public function regenerate()
 	{
+		if (PHP_SAPI == 'cli')
+			return;
 		if (self::$config['driver'] === 'native')
 		{
 			// Generate a new session id

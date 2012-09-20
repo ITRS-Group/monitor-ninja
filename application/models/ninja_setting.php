@@ -82,7 +82,7 @@ class Ninja_setting_Model extends Model
 			$sql = $sql_base." WHERE (".self::USERFIELD."='' OR ".self::USERFIELD." IS NULL) AND page=".
 				$db->escape($page)." AND type=".$db->escape($type);
 		} else {
-			$user = Auth::instance()->get_user()->username;
+			$user = @Auth::instance()->get_user()->username;
 			# first, try user setting
 			$sql = $sql_base." WHERE ".self::USERFIELD."=".$db->escape($user)." AND page=".$db->escape($page).
 				" AND type=".$db->escape($type);

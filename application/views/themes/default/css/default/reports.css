@@ -52,8 +52,7 @@
 
 /* id:s *********************************************************************/
 
-#display_service_status,
-#autoreport_periods {
+#display_service_status {
 	display: none;
 }
 
@@ -64,12 +63,6 @@
 #log_entries {
 	padding-bottom: 15px;
 }
-
-#report-tabs {
-	padding: 0px;
-	padding-top: 2px;
-}
-/* #report-tabs { padding: 0px; } trends */
 
 #header {
 	position: relative;
@@ -106,11 +99,15 @@ a.fancybox {
 	margin-left: 4px;
 }
 
-img.deleteimg {
-	float: left;
+.action img {
 	margin-left: 5px;
 	margin-top: 2px;
-	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+.action a {
+	border: 0 !important;
 }
 
 .report-page-setup,
@@ -399,11 +396,16 @@ input[type=button] {
 	margin-bottom: 5px;
 }
 
-form.directlink {
-	display: inline;
+.form-dropdown {
 	padding: 10px;
 	background: #cdcdcd url(images/bg.png) repeat-x;
 	border: 1px solid #dcdcdc;
+	display: none;
+}
+
+.form-dropdown input,
+.form-dropdown form {
+	margin: 0;
 }
 
 input.wide,
@@ -459,15 +461,6 @@ input.datepick-start,
 input#time_start,
 input#time_end {
 	width: 100px;
-}
-
-input.send_report_now {
-	border: 0px;
-	background: url(../../icons/16x16/send-report.png) no-repeat;
-	width: 16px;
-	height: 16px;
-	float: left;
-	cursor: pointer;
 }
 
 select#period.popup {
@@ -547,10 +540,6 @@ input#summary_items{
 #std_report_table tr td  {
 	padding: 0px 5px 0px 0px;
 	background: none;
-}
-
-tr.none td#scheduled_btn_ctrl {
-	padding-top: 7px;
 }
 
 .iseditable_txtarea {

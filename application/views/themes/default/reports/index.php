@@ -1,19 +1,22 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
-
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
-
+<?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="response"></div>
 <div id="progress"></div>
 <div class="report-page">
 <?php
 	echo isset($error) ? $error : '';
-	echo !empty($header) ? $header : '';
-	echo !empty($report_options) ? $report_options : '';
+	echo $header;
+?>
+<div style="display: none">
+<div id="options">
+<?php echo form::open($type.'/generate', array('id' => 'report_form', 'onsubmit' => 'return check_form_values(this);'));?>
+<?php
+	echo $report_options;
+	echo $options->as_form(false, true);
+?>
+</form>
+</div>
+</div>
+<?php
 	if (isset($links)) {
 		echo '<br /><br />'._('View').': ';
 		$html_links = array();
@@ -27,9 +30,11 @@ if (!empty($widgets)) {
 		echo '<strong style="margin-top: 25px;display: block">'.help::render('trends').' '._('Trends').'</strong>';
 		echo $trends_graph;
 	}
-	echo !empty($content) ? $content : '';
-	echo !empty($svc_content) ? $svc_content : '';
-	echo isset($pie) ? $pie : '';
-	echo !empty($log_content) ? $log_content : '';
+	if (!empty($content)) {
+		echo $content;
+		echo !empty($svc_content) ? $svc_content : '';
+		echo isset($pie) ? $pie : '';
+		echo !empty($log_content) ? $log_content : '';
+	}
 ?>
 </div>

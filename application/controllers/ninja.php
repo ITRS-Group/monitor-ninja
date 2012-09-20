@@ -21,7 +21,7 @@ class Ninja_Controller extends Template_Controller {
 	public $locale = false;
 	public $registry = false;
 	public $defaultlanguage = 'en';
-	public $template = "template";
+	public $template;
 	public $user = false;
 	public $profiler = false;
 	public $xtra_js = array();
@@ -42,7 +42,6 @@ class Ninja_Controller extends Template_Controller {
 
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
-		# set base template file to current theme
 		$this->template = $this->add_view('template');
 
 		if (!$this->run_tests) {
@@ -114,11 +113,13 @@ class Ninja_Controller extends Template_Controller {
 		$this->registry = zend::instance('Registry');
 		$this->registry->set('Zend_Locale', $this->locale);
 
-		$locales = $this->locale->getOrder();
-		foreach ($locales as $locale) {
-			putenv('LC_ALL='.$locale);
-			setlocale(LC_ALL, $locale);
-			break;
+		if (PHP_SAPI != 'cli') {
+			$locales = $this->locale->getOrder();
+			foreach ($locales as $locale) {
+				putenv('LC_ALL='.$locale);
+				setlocale(LC_ALL, $locale);
+				break;
+			}
 		}
 		bindtextdomain('ninja', APPPATH.'/languages');
 		textdomain('ninja');
@@ -174,6 +175,16 @@ class Ninja_Controller extends Template_Controller {
 				parse_str($params[1], $_REQUEST);
 			}
 		}
+
+		# user might not be logged in due to CLI scripts, be quiet
+		$current_skin = @config::get('config.current_skin', '*', true);
+		if (!$current_skin) {
+			$current_skin = 'default/';
+		}
+		else if (substr($current_skin, -1, 1) != '/') {
+			$current_skin .= '/';
+		}
+		$this->template->current_skin = $current_skin;
 	}
 
 

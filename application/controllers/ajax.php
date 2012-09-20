@@ -24,8 +24,6 @@ class Ajax_Controller extends Authenticated_Controller {
 			url::redirect(Kohana::config('routes.logged_in_default'));
 		}
 
-		if ($this->profiler)
-			$this->profiler->disable();
 		$this->auto_render=false;
 	}
 
@@ -578,9 +576,17 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function get_saved_reports()
 	{
-		$type = $this->input->post('type', 'avail');
+		$type = $this->input->get('type');
 		if (empty($type))
 			return false;
+		switch ($type) {
+			case 'avail':
+			case 'summary':
+			case 'sla':
+				break;
+			default:
+				return false;
+		}
 
 		$saved_reports = Saved_reports_Model::get_saved_reports($type);
 		if (count($saved_reports) == 0) {
@@ -601,19 +607,6 @@ class Ajax_Controller extends Authenticated_Controller {
 
 		$return = false;
 		$return[] = array('optionValue' => '', 'optionText' => ' - '._('Select saved report') . ' - ');
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$field_name = 'report_name';
-				break;
-			case 'sla':
-				$field_name = 'sla_name';
-				break;
-		}
-
-		if (!isset($field_name)) {
-			return false;
-		}
 
 		foreach ($saved_reports as $info) {
 			$sched_str = in_array($info->id, $scheduled_ids) ? " ( *".$scheduled_label."* )" : "";
@@ -622,7 +615,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			} else {
 				$sched_str = "";
 			}
-			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->{$field_name}.$sched_str);
+			$return[] = array('optionValue' => $info->id, 'optionText' =>$info->report_name.$sched_str);
 		}
 
 		echo json::encode($return);
@@ -636,7 +629,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		if (empty($sla_id))
 			return false;
 
-		$saved_sla = Saved_reports_Model::get_sla_from_saved_reports($sla_id);
+		$saved_sla = Saved_reports_Model::get_period_info($sla_id);
 		if (count($saved_sla) == 0) {
 			echo '';
 			return false;
@@ -647,7 +640,7 @@ class Ajax_Controller extends Authenticated_Controller {
 			$return[] = array('name' => $info->name, 'value' => $info->value);
 		}
 
-		echo json::encode($return);
+		echo json::ok($return);
 		return true;
 	}
 
@@ -659,7 +652,7 @@ class Ajax_Controller extends Authenticated_Controller {
 		$the_year = $this->input->post('the_year', false);
 		$type = $this->input->post('type', 'start');
 		$item = $this->input->post('item', 'year');
-		$date_ranges = Reports_Model::get_date_ranges();
+		$date_ranges = reports::get_date_ranges();
 
 		if (empty($date_ranges)) return false;
 

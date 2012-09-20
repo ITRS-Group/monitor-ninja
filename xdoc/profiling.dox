@@ -15,6 +15,7 @@ If this does not work, upgrade PEAR. Related discussion: https://bugs.php.net/bu
 @code
 # cat > /etc/php.d/xhprof.ini
 extension=xhprof.so
+xhprof.output_dir = /tmp
 ^C
 @endcode
 

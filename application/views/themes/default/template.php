@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$current_skin = 'default/';
 $authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
@@ -7,12 +6,6 @@ if (Auth::instance()->logged_in()) {
 	$auth = Nagios_auth_Model::instance();
 	if ($auth->view_hosts_root) {
 		$authorized = true;
-	}
-
-	# fetch info on current skin
-	$current_skin = config::get('config.current_skin', '*', true);
-	if (substr($current_skin, -1, 1) != '/') {
-		$current_skin .= '/';
 	}
 }
 
@@ -77,6 +70,7 @@ if (isset($this) && isset($this->template->js_header))
 				var _site_domain = '<?php echo Kohana::config('config.site_domain') ?>';
 				var _index_page = '<?php echo Kohana::config('config.index_page') ?>';
 				var _current_uri = '<?php echo Router::$controller.'/'.Router::$method ?>';
+				var _controller_name = '<?php echo Router::$controller ?>';
 				var _theme_path = '<?php echo 'application/views/themes/default/'; ?>';
 				var _widget_refresh_msg = '<?php echo _('Refresh rate for all widgets has been updated to %s sec'); ?>';
 				var _widget_refresh_error = '<?php echo _('Unable to update refresh rate for all widgets.'); ?>';
@@ -100,7 +94,6 @@ if (isset($this) && isset($this->template->js_header))
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 				var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
 				var _search_string_field = '<?php echo _('Search string') ?>';
 				var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';
@@ -164,7 +157,7 @@ if (isset($this) && isset($this->template->js_header))
 					}
 					?>
 					</ul>
-					<p><?php echo help::render('search_help', 'search') ?></p>
+					<p><?php try { echo help::render('search_help', 'search'); } catch (Zend_Exception $ex) {} ?></p>
 					<form action="<?php echo Kohana::config('config.site_domain') ?><?php echo Kohana::config('config.index_page') ?>/search/lookup" id="global_search" method="get">
 					<?php
 					$query = arr::search($_REQUEST, 'query');

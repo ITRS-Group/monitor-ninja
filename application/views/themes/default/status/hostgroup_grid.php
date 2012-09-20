@@ -47,15 +47,16 @@ $state_map = array(
 <?php echo form::open('command/multi_action'); ?>
 <?php echo html::image($this->add_path('icons/16x16/check-boxes.png'),array('style' => 'margin-bottom: -3px'));?> <a href="#" id="select_multiple_items" style="font-weight: normal"><?php echo _('Select Multiple Items') ?></a>
 
-<?php if (count($group_details) && !empty($group_details))
+<?php if (count($group_details) && !empty($group_details)) {
+	$nacoma_link = nacoma::link()===true;
 	foreach ($group_details as $hostgroup) { ?>
 	<table class="group_grid_table">
 		<caption>
 			<?php
-				if (nacoma::link()===true)
+				if ($nacoma_link)
 					echo nacoma::link('configuration/configure/hostgroup/'.urlencode($hostgroup->hostgroup_name), 'icons/16x16/nacoma.png', _('Configure this hostgroup')).' &nbsp;';
 				echo html::anchor('status/hostgroup/'.$hostgroup->hostgroup_name.'?style=detail', html::specialchars($hostgroup->alias));
-				echo '<span>('.html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), html::specialchars($hostgroup->hostgroup_name)).')</span>';
+				echo ' <span>('.html::anchor('extinfo/details/?type=hostgroup&host='.urlencode($hostgroup->hostgroup_name), html::specialchars($hostgroup->hostgroup_name)).')</span>';
 			?>
 		</caption>
 		<tr>
@@ -80,7 +81,7 @@ $state_map = array(
 			<td class="icon bl">
 				<?php
 					if (!empty($host['icon_image'])) {
-						echo html::anchor('extinfo/details/?type=host&host='.$host['name'], html::image('application/media/images/logos/'.$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
+						echo html::anchor('extinfo/details/?type=host&host='.$host['name'], html::image(Kohana::config('config.logos_path').$host['icon_image'], array('style' => 'height: 16px; width: 16px', 'alt' => $host['icon_image_alt'], 'title' => $host['icon_image_alt'])),array('style' => 'border: 0px'));
 					} ?>
 			</td>
 			<td class="item_select"><?php echo form::checkbox(array('name' => 'object_select[]'), $host['name']); ?></td>
@@ -137,9 +138,8 @@ $state_map = array(
 		</tbody>
 	</table>
 
-<?php
-}	# end each group
-else { ?>
+<?php }
+} else { ?>
 	<table class="group_grid_table">
 		<thead>
 		<tr>

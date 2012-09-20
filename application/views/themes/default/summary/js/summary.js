@@ -1,63 +1,38 @@
-var startDate;
-var endDate;
 var DEBUG = false;
 var host_tmp = false;
 var host = false;
 var service_tmp = false;
 var service = false;
 var current_obj_type = false; // keep track of what we are viewing
-var is_populated = false; // flag list population when done
 
 // to keep last valid value. Enables restore of value when an invalid value is set.
 var start_time_bkup = '';
 var end_time_bkup = '';
 
 $(document).ready(function() {
-	$("#report_mode_standard").click(function() {
-		set_report_mode('standard');
+	$('#report_mode_form input').on('change', function() {
+		set_report_mode(this.value);
 	});
-	$("#report_mode_custom")
-		.click(function() {
-			set_report_mode('custom');
-		})
-		.map(function() {
-			if(this.checked) {
-				// detect on load as well, e.g. when going
-				// back from a generated report
-				set_report_mode('custom');
-			}
-		});
+	set_report_mode($('#report_mode_form input:checked').val());
 
 	$("#report_period").bind('change', function() {
-		show_calendar($(this).attr('value'));
+		show_calendar($(this).val());
 	});
+	show_calendar($('#report_period').val());
 
-	$("#summary_form").bind('submit', function() {
+	$(".to_check").bind('submit', function() {
 		loopElements();
-		return check_form_values();
+		return check_form_values(this.form);
 	});
 
 	$("#saved_report_form").bind('submit', function() {
 		return check_and_submit($(this));
 	});
 
-	$("#report_id").bind('change', function() {
-		if (check_and_submit($("#saved_report_form"))) {
-			$("#saved_report_form").trigger('submit');
-		}
-	});
 	// reset options and reload page
 	$('#new_report').click(function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
 		self.location.href = base_uri;
-	});
-
-	$("#show_scheduled").click(function() {
-		self.location.href = _site_domain + _index_page + '/reports?show_schedules#summary_schedules';
-	});
-
-	$('.fancybox').click(function() {
-		setup_editable('fancy');
 	});
 });
 
@@ -68,11 +43,6 @@ $(document).ready(function() {
 */
 function expand_and_populate(data)
 {
-	set_initial_state('report_type', data['obj_type']);
-	if (!is_populated && data['obj_type']) {
-		setTimeout(function() {expand_and_populate(data);}, 1000);
-		return;
-	}
 	var reportObj = data;
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
@@ -87,53 +57,23 @@ function expand_and_populate(data)
 		// move selected options from left -> right
 		moveAndSort(from_id, to_id);
 	}
-
-	if (data['standardreport']) {
-		var val = data['standardreport'][0];
-		if ($('#standardreport').is(':visible')) {
-			$('#standardreport option').each(function() {
-				if ($(this).val() == val) {
-					$(this).attr('selected', true);
-				}
-			});
-		}
-	}
-
-	set_initial_state('report_type', reportObj['report_type']);
-	show_calendar(reportObj['report_period']);
-
-	if (reportObj['report_name'] != undefined) {
-		set_initial_state('report_name', reportObj['report_name']);
-	}
-
-	if (reportObj['report_period'] == 'custom') {
-		startDate = epoch_to_human(reportObj['start_time']);
-		document.forms['summary_form'].cal_start.value = reportObj['cal_start'];
-		document.forms['summary_form'].time_start.value = reportObj['time_start'];
-		document.forms['summary_form'].start_time.value = format_date_str(startDate);
-
-		endDate = epoch_to_human(reportObj['end_time']);
-		document.forms['summary_form'].cal_end.value = reportObj['cal_end'];
-		document.forms['summary_form'].time_end.value = reportObj['time_end'];
-		document.forms['summary_form'].end_time.value = format_date_str(endDate);
-	}
-
-	// wait for lists to populate
-	setTimeout("remove_duplicates();", 500);
 }
 
 function set_report_mode(type)
 {
 	switch (type) {
 		case 'standard':
-			$("#std_report_table").show();
-			$("#custom_report").hide();
+			$('.standard').show();
+			$('.custom').hide();
+			$.fancybox.resize();
 			break;
 		case 'custom':
-			$("#std_report_table").hide();
-			if (!is_populated && !report_id)
+			$('.standard').hide();
+			$('.custom').show();
+			if (!report_id)
 				set_selection($('#report_type').val());
-			$("#custom_report").show();
+			$('#standardreport').val(''); // FIXME: this is broken
+			$.fancybox.center();
 			break;
 	}
 }

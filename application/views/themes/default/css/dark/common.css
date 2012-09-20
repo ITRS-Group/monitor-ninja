@@ -2,9 +2,6 @@
 
 
 /**************************************************************************************************/
-html, body {
-	color: #ff9922;
-}
 body {
 	background-color: #333;
 }
@@ -74,20 +71,6 @@ input.textbox {
 	border-left:1px solid #855e36;
 	border-right:1px solid #855e36;
 }
-#navigation ul li {
-	background: url(images/menu-arrow.png) no-repeat;
-}
-#navigation a {
-	color: #ff9600;
-text-decoration: none;
-}
-#navigation p {
-	color: #ff9600;
-}
-#navigation p a {
-	color: #ff9600;
-	border-bottom:1px solid #777777;
-}
 
 #navigation input {
 	background: transparent url(images/input-270.png) no-repeat;
@@ -103,42 +86,8 @@ text-decoration: none;
 	background: url(../../icons/16x16/shield-warning.png) no-repeat;
 	font-weight: bold;
 }
-#icons {
-	background: #333 /*url(images/bg.png) repeat-x*/;
-	border-bottom:1px solid #855e36;
-}
-#icons ul li {
-	background: url(images/menu-divider.png) 0px 0px no-repeat;
-}
 #status {
 	color: #555555;
-}
-#menu {
-	background-color: #333;
-	border-left:1px solid #855e36;
-	border-right:1px solid #855e36;
-}
-#menu ul li em {
-	border: 1px solid #855e36;
-	background:#333;
-	color:#ccc;
-}
-#menu ul li {
-	border-bottom: 1px solid #855e36;
-}
-#menu ul li.hr {
-	background: #333;
-	border-bottom: 1px solid #855e36;
-}
-#menu ul li a:hover{
-	color:#ffc333;
-	/*background-color:#e2edf9;*/
-}
-#close-menu {
-	background: transparent url(images/menu_hide.png) no-repeat;
-}
-#show-menu {
-	background: transparent url(images/menu_show.png) no-repeat;
 }
 
 #version_info,
@@ -271,6 +220,7 @@ td.white:first-child table tr td:first-child {
 	border-left:#855e36 1px solid !important;
 }
 .w-table tr td {
+	background: black url(images/bg.png) repeat;
 	border-right:1px solid #855e36;
 	border-bottom:1px solid #855e36;
 }
@@ -283,6 +233,9 @@ th.enabled_monfeat em {
 }
 table.ext {
 	background-color: #855e36;
+}
+table.ext tr td {
+	background: black url(images/bg.png) repeat;
 }
 table.showlog tr td input[type=text] {
 	background-color: #333;
@@ -431,84 +384,6 @@ div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
 /***************************************************************************************************
 *	COLOURS!
 ***************************************************************************************************/
-td.white table tr td,
-td.white:first-child table tr td:first-child,
-#widget-tac_hosts table tr th,
-#widget-tac_services table tr th,
-#widget-tac_monfeat table tr th,
-#widget-tac_hosts table tr th:first-child,
-#widget-tac_services table tr th:first-child,
-#widget-tac_monfeat table tr th:first-child,
-#top-bar,
-#menu,
-#menu ul,
-#page_settings ul li,
-#menu ul li,
-#page_settings,
-.widget-editbox {
-	border-color: #855e36;
-}
-
-.group_grid_table th.headerSortUp:first-child,
-.group_overview_table th.headerSortUp:first-child,
-.comments_table th.headerSortUp:first-child,
-#group_summary_table th.headerSortUp:first-child,
-#service_table th.headerSortUp:first-child,
-#host_table th.headerSortUp:first-child,
-th.headerSortUp:first-child,
-.group_grid_table th.headerSortDown:first-child,
-.group_overview_table th.headerSortDown:first-child,
-.comments_table th.headerSortDown:first-child,
-#group_summary_table th.headerSortDown:first-child,
-#service_table th.headerSortDown:first-child,
-#host_table th.headerSortDown:first-child,
-th.headerSortDown:first-child,
-.group_grid_table th:first-child,
-.group_overview_table th:first-child,
-.comments_table th:first-child,
-th.headerNone:first-child,
-#group_summary_table th:first-child,
-#service_table th:first-child,
-#host_table th:first-child,
-#host_table th.no-sort:first-child,
-.group_grid_table th,
-.group_overview_table th,
-.comments_table th,
-#group_summary_table th,
-#service_table th,
-#service_table th.headerNone,
-th.headerNone,
-#host_table th,
-#host_table th.no-sort,
-.group_grid_table th.header:first-child,
-.group_overview_table th.header:first-child,
-.comments_table th.header:first-child,
-#group_summary_table th.header:first-child,
-#service_table th.header:first-child,
-#host_table th.header:first-child,
-th.header:first-child,
-.group_grid_table th.header,
-.group_overview_table th.header,
-.comments_table th.header,
-#group_summary_table th.header,
-#service_table th.header,
-#host_table th.header,
-th.header,
-.autocomplete,
-tr.odd td:first-child,
-tr.even td:first-child,
-tr.even td,
-tr.odd td,
-tr.odd td.bl,
-tr.even td.bl,
-tr.odd td.bt,
-tr.even td.bt,
-.widget-placeholder,
-.widget-header,
-table.health,
-#quickbar{
-	border-color: #855e36;
-}
 #host_table th.header:first-child {
 	border-left: #855e36;
 }
@@ -557,8 +432,11 @@ table.extinfo {
 background: #333;
 }
 
-tr.even td 	{ background: #333; }
-tr.odd td,
+tr.even {
+	background: #333;
+}
+
+tr.odd,
 #menu,
 #page_settings,
 .autocomplete .selected { background-color: #333; }

@@ -2,9 +2,9 @@
 
 # setup the db tables required for Ninja
 
-target_db_version=5
-target_sla_version=8
-target_avail_version=9
+target_db_version=6
+target_sla_version=9
+target_avail_version=10
 target_sched_version=8
 
 db_user=merlin
@@ -198,6 +198,11 @@ do
 	[6-7])
 		new_ver=8
 		upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
+		;;
+	9)
+		php $prefix/index.php cli/upgrade_excluded
+		new_ver=10
+		upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
 		;;
 	*)
 		new_ver=`expr $avail_ver + 1 `

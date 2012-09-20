@@ -511,32 +511,4 @@ class Service_Model extends Model
 		$this->performance_data(1);	# generate active check performance data
 		$this->performance_data(0);	# generate passive check performance data
 	}
-
-	/**
-	*	Fetch info from regexp query
-	*/
-	public function regexp_where($field=false, $regexp=false, $limit=false)
-	{
-		if (empty($field) || empty($regexp)) {
-			return false;
-		}
-		if ($field == 'service_name') {
-			$field = 'service_description';
-		}
-		$auth = Nagios_auth_Model::instance();
-		$auth_str = '';
-		if (!$auth->view_hosts_root && !$auth->view_services_root)
-			$auth_str = " INNER JOIN contact_access ca ON ca.service = s.id AND ca.contact = ".$auth->id;
-		$limit_str = sql::limit_parse($limit);
-		if (!isset($this->db) || !is_object($this->db)) {
-			$db = Database::instance();
-		} else {
-			$db = $this->db;
-		}
-
-		$sql = "SELECT *, ".sql::concat('host_name', ';', 'service_description')." AS service_name FROM service s ".$auth_str." WHERE ".
-			$field." REGEXP ".$db->escape($regexp)." ".$limit_str;
-		$obj_info = self::query($db,$sql);
-		return count($obj_info)>0 ? $obj_info : false;
-	}
 }

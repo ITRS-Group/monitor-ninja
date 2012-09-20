@@ -13,7 +13,6 @@
 class Status_Controller extends Authenticated_Controller {
 	public $img_sort_up = false;
 	public $img_sort_down = false;
-	public $logos_path = '';
 	public $hoststatustypes = false;
 	public $servicestatustypes = false;
 	public $hostprops = false;
@@ -28,8 +27,6 @@ class Status_Controller extends Authenticated_Controller {
 
 		# load current status for host/service status totals
 		$this->xtra_js[] = $this->add_path('/js/widgets.js');
-
-		$this->logos_path = Kohana::config('config.logos_path');
 
 		# decide what kind of commands
 		# that the current user is authorized for
@@ -202,7 +199,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->result = $result;
 		$this->template->content->pagination = $pagination;
 		$this->template->content->total_items = $tot;
-		$this->template->content->logos_path = $this->logos_path;
 
 		if (empty($group_type)) {
 			if ($host == 'all') {
@@ -487,7 +483,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->content->pending_output = _('Service check scheduled for %s');
 		$this->template->content->result = $result;
 		$this->template->content->pagination = isset($pagination) ? $pagination : false;
-		$this->template->content->logos_path = $this->logos_path;
 		$this->template->content->style = 'detail';
 		if (empty($group_type)) {
 			if ($name == 'all') {
@@ -1015,7 +1010,6 @@ class Status_Controller extends Authenticated_Controller {
 		$content->group_details = $group_info_res;
 		$content->error_message = _('No hostgroup data found');
 		$content->grouptype = 'host';
-		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('icons/16x16/');
 		$content->label_host_extinfo = _('View Extended Information For This Host');
 		$content->label_service_status = _('View Service Details For This Host');
@@ -1139,7 +1133,6 @@ class Status_Controller extends Authenticated_Controller {
 		$content->group_details = $group_info_res;
 		$content->error_message = _('No servicegroup data found');
 		$content->grouptype = 'service';
-		$content->logos_path = $this->logos_path;
 		$content->icon_path	= $this->img_path('icons/16x16/');
 		$nacoma_link = false;
 		/**

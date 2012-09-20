@@ -1,33 +1,6 @@
 var NS4 = (navigator.appName == "Netscape" && parseInt(navigator.appVersion) < 5);
 
 /**
-*	Loop through all elements of a form
-*	Verify that all multiselect fields (right hand side)
-*	are set to selected
-*/
-function loopElements(f) {
-	// Specify which form fields (select) we are NOT interested in
-	var nosave_suffix = "_tmp";
-
-	for(i=0; i<f.elements.length; i++){
-		if (f.elements[i].type=="select-multiple"){
-			// set all options selected if we can't find
-			//the nosave_suffix in element name
-			if (f.elements[i].name.search(nosave_suffix)<0){
-				for (a=0;a<f.elements[i].length;a++){
-					f.elements[i].options[a].selected=true;
-				}
-			} else {
-				// Unselect all other options
-				for (a=0;a<f.elements[i].length;a++){
-					f.elements[i].options[a].selected=false;
-				}
-			}
-		}
-	}
-}
-
-/**
 *	Disable a form element, change the className and
 *	display a new value
 *	Primarily for use on submit buttons where return values

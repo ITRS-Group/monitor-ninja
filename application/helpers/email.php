@@ -162,103 +162,21 @@ class email_Core {
 	}
 
 	/**
-	 * Send an email message.
-	 *
-	 * @param $to  recipient email (and name), or an array of To, Cc, Bcc names
-	 * @param $from  sender email (and name)
-	 * @param $subject message subject
-	 * @param $plain message body
-	 * @param $html send email as HTML
-	 * @param $attachments Attachments(?)
-	 * @return number of emails sent
+	 * Send out a report
 	 */
-	public static function send_multipart($to, $from, $subject, $plain='', $html='', $attachments=array())
+	public static function send_report($to, $from, $subject, $content, $mime, $filename, $data)
 	{
 		// Connect to SwiftMailer
 		(email::$mail === NULL) and email::connect();
 
 		// Create the message
 		$message = Swift_Message::newInstance($subject);
+		$message->setBody($content, 'text/plain');
+		$message->attach(Swift_Attachment::newInstance($data, $filename, $mime));
 		
-		//Add some "parts"
-		switch(true)
-		{
-			case (strlen($html) AND strlen($plain)):
-				$message->setBody($html, 'text/html');
-				$message->addPart($plain, 'text/plain');
-				break;
-				
-			case (strlen($html)):
-				$message->setBody($html, 'text/html');
-				break;
-				
-			case (strlen($plain)):
-				$message->setBody($plain, 'text/plain');
-				break;
-				
-			default:
-				$message->setBody('', 'text/plain');
-		}
-
-		if(!empty($attachments))
-		{
-			foreach( $attachments AS $file => $mime )
-			{
-				$filename = basename( $file );
-				
-				//Use the Swift_File class
-				$message->attach(Swift_Attachment::fromPath( $file )->setFilename( $filename ));
-			}
-		}
-
-		if (is_string($to))
-		{
-			// Single recipient
-			$recipients = $message->setTo($to);
-		}
-		elseif (is_array($to))
-		{
-			if (isset($to[0]) AND isset($to[1]))
-			{
-				// Create To: address set
-				$to = array('to' => $to);
-			}
-
-			foreach ($to as $method => $set)
-			{
-				if ( ! in_array($method, array('to', 'cc', 'bcc')))
-				{
-					// Use To: by default
-					$method = 'to';
-				}
-
-				// Create method name
-				$method = 'add'.ucfirst($method);
-
-				if (is_array($set))
-				{
-					// Add a recipient with name
-					$message->$method($set[0], $set[1]);
-				}
-				else
-				{
-					// Add a recipient without name
-					$message->$method($set);
-				}
-			}
-		}
-
-		if (is_string($from))
-		{
-			// From without a name
-			$from = $message->setFrom($from);
-		}
-		elseif (is_array($from))
-		{
-			// From with a name
-			$from = $message->setFrom( array($from[0] => $from[1]) );
-		}
+		$message->setTo($to);
+		$message->setFrom($from);
 
 		return email::$mail->send($message);
 	}
-} // End email
+}

@@ -4,9 +4,10 @@ logfile = softstates_service.log
 Include service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 1
-	host_name = testhost
-	service_description = PING
+	includesoftstates = 1
+	service_description {
+		testhost;PING
+	}
 	correct {
 		TIME_OK_UNSCHEDULED = 82800
 		TIME_WARNING_UNSCHEDULED = 3600
@@ -16,9 +17,10 @@ Include service soft states {
 Exclude service soft states {
 	start_time = 1202684400
 	end_time = 1202770800
-	include_soft_states = 0
-	host_name = testhost
-	service_description = PING
+	includesoftstates = 0
+	service_description {
+		testhost;PING
+	}
 	correct {
 		TIME_OK_UNSCHEDULED = 83400
 		TIME_WARNING_UNSCHEDULED = 3000

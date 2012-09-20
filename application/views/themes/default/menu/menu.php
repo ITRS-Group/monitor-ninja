@@ -83,8 +83,7 @@ $menu = array(
 $all_host_status_types = nagstat::HOST_PENDING|nagstat::HOST_UP|nagstat::HOST_DOWN|nagstat::HOST_UNREACHABLE;
 
 // Preparing the reporting section on beforehand since it might or might not include the pnp link
-$section_reporting = array(
-	$menu_items['trends'] => array('/trends', 'trends',0));
+$section_reporting = array();
 if(Kohana::config('config.pnp4nagios_path') !== false) {
 	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&srv=runtime', 'pnp',0);
 }
@@ -92,9 +91,9 @@ $section_reporting[$menu_items['alert_history']] = array('/showlog/alert_history
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
 $section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);
-$section_reporting[$menu_items['availability']] = array('/'.Kohana::config('reports.reports_link').'?type=avail', 'availability',0);
-$section_reporting[$menu_items['sla']] = array('/'.Kohana::config('reports.reports_link').'?type=sla', 'sla',0);
-$section_reporting[$menu_items['schedule_reports']]= array('/'.Kohana::config('reports.reports_link').'?show_schedules', 'schedulereports',0);
+$section_reporting[$menu_items['availability']] = array('/avail/index', 'availability',0);
+$section_reporting[$menu_items['sla']] = array('/sla/index', 'sla',0);
+$section_reporting[$menu_items['schedule_reports']]= array('/schedule/show', 'schedulereports',0);
 
 # base menu (all)
 $menu_base = array(

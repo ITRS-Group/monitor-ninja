@@ -18,7 +18,6 @@ class Authenticated_Controller extends Ninja_Controller {
 
 	public function __construct()
 	{
-		parent::__construct();
 		# make sure user is authenticated
 
 		# Check if user is accessing through PHP CLI
@@ -29,7 +28,6 @@ class Authenticated_Controller extends Ninja_Controller {
 				if (!empty($_SERVER['argc']) && isset($_SERVER['argv'][2])) {
 					Auth::instance()->force_login($_SERVER['argv'][2]);
 				}
-
 			} else if ($cli_access !== false) {
 				Auth::instance()->force_login($cli_access);
 			} else {
@@ -47,7 +45,8 @@ class Authenticated_Controller extends Ninja_Controller {
 						die('The provided authentication is invalid');
 				} else {
 					# store requested uri in session for later redirect
-					$this->session->set('requested_uri', url::current(true));
+					if ($this->session)
+						$this->session->set('requested_uri', url::current(true));
 
 					if (Router::$controller != 'default') {
 						url::redirect(Kohana::config('routes.log_in_form'));
@@ -69,18 +68,12 @@ class Authenticated_Controller extends Ninja_Controller {
 				$this->user = Auth::instance()->get_user();
 			}
 		}
+		parent::__construct();
 	}
 
 	public function is_authenticated()
 	{
 		return !Auth::instance()->logged_in();
-	}
-
-	public function __call($name, $args)
-	{
-		# don't allow direct access
-		# redirect to logged_in_default route as set in routes config
-		url::redirect(Kohana::config('routes.logged_in_default'));
 	}
 
 	public function to_template(array $content)

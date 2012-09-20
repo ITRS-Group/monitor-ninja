@@ -61,10 +61,10 @@ if (!empty($notes)) {?>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => _(Enable).' '._('notifications for all hosts in this').' '.$label_grouptype, 'title' => _(Enable).' '._('notifications for all hosts in this').' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => _('Enable').' '._('notifications for all hosts in this').' '.$label_grouptype, 'title' => _('Enable').' '._('notifications for all hosts in this').' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_hosts.'&'.strtolower($label_grouptype).'='.$groupname, _(Enable)." "._('notifications for all hosts in this')." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_hosts.'&'.strtolower($label_grouptype).'='.$groupname, _('Enable')." "._('notifications for all hosts in this')." ".$label_grouptype); ?>
 		</td>
 	</tr>
 	<tr>
@@ -77,10 +77,10 @@ if (!empty($notes)) {?>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => _(Enable).' '._('notifications for all services in this').' '.$label_grouptype, 'title' => _(Enable).' '._('notifications for all services in this').' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/notify.png'), array('alt' => _('Enable').' '._('notifications for all services in this').' '.$label_grouptype, 'title' => _('Enable').' '._('notifications for all services in this').' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_services.'&'.strtolower($label_grouptype).'='.$groupname, _(Enable)." "._('notifications for all services in this')." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_notifications_services.'&'.strtolower($label_grouptype).'='.$groupname, _('Enable')." "._('notifications for all services in this')." ".$label_grouptype); ?>
 		</td>
 	</tr>
 	<tr>
@@ -93,10 +93,10 @@ if (!empty($notes)) {?>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => _(Enable).' '._('active checks of all hosts in this').' '.$label_grouptype, 'title' => _(Enable).' '._('active checks of all hosts in this').' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => _('Enable').' '._('active checks of all hosts in this').' '.$label_grouptype, 'title' => _('Enable').' '._('active checks of all hosts in this').' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_host_checks.'&'.strtolower($label_grouptype).'='.$groupname, _(Enable)." "._('active checks of all hosts in this')." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_host_checks.'&'.strtolower($label_grouptype).'='.$groupname, _('Enable')." "._('active checks of all hosts in this')." ".$label_grouptype); ?>
 	</td>
 	</tr>
 	<tr>
@@ -109,10 +109,10 @@ if (!empty($notes)) {?>
 	</tr>
 	<tr>
 		<td class="status icon">
-			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => _(Enable).' '._('active checks of all services in this').' '.$label_grouptype, 'title' => _(Enable).' '._('active checks of all services in this').' '.$label_grouptype)); ?>
+			<?php echo html::image($this->add_path('icons/16x16/enabled.png'), array('alt' => _('Enable').' '._('active checks of all services in this').' '.$label_grouptype, 'title' => _('Enable').' '._('active checks of all services in this').' '.$label_grouptype)); ?>
 		</td>
 		<td>
-			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_svc_checks.'&'.strtolower($label_grouptype).'='.$groupname, _(Enable)." "._('active checks of all services in this')." ".$label_grouptype); ?>
+			<?php echo html::anchor('command/submit?cmd_typ='.$cmd_enable_active_svc_checks.'&'.strtolower($label_grouptype).'='.$groupname, _('Enable')." "._('active checks of all services in this')." ".$label_grouptype); ?>
 	</td>
 	</tr>
 	<tr>

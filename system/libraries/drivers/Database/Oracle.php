@@ -1,7 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-require_once( dirname(__FILE__)."/merlin_get_kohana_db_field_metadata.php" );
-
 class Database_Oracle_Driver extends Database_Driver {
 	protected $link;
 
@@ -134,9 +132,7 @@ class Database_Oracle_Driver extends Database_Driver {
 
 	public function field_data($table)
 	{
-		# UGLY FUGLY HACK: return pre-generated field data.
-		$columns = merlin_get_kohana_db_field_metadata();
-		return $columns[$table];
+		throw Exception("You're not supposed to be here");
 	}
 
 	# unimplemented an unused

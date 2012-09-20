@@ -383,7 +383,7 @@ a > img { border: 0px; }
 	font-style: italic;
 	margin-left: 5px;
 }
-tr.even td {
+tr.even {
 	border: 1px solid #ccc;
 	border-left: 0px;
 	border-top: 0px;
@@ -391,7 +391,7 @@ tr.even td {
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
-tr.odd td {
+tr.odd {
 	border: 1px solid #ccc;
 	border-left: 0px;
 	background: #fafafa;
@@ -412,6 +412,7 @@ td.white:first-child table tr td:first-child {
 	border-left: 1px solid #ccc;
 }
 .w-table tr td {
+	background: #e9e9e9 url(images/bg.png) repeat;
 	border-right: 1px solid #ccc;
 	border-bottom:1px solid #ccc;
 }
@@ -458,6 +459,7 @@ table.ext tr td.dark {
 }
 
 table.ext tr td {
+	background: #e9e9e9 url(images/bg.png) repeat;
 	padding: 3px 5px;
 	white-space: normal;
 }
@@ -690,15 +692,9 @@ div.jGrowl div.jGrowl-closer {
 /*.ui-widget-content a { color: #222222; }*/
 .ui-widget-header { border: 1px solid #ccc; background: #f6f6f6 50% 50% repeat-x;/* color: #222222; */font-weight: bold; }
 /*.ui-widget-header a { color: #222222; }*/
-.ui-corner-all { -moz-border-radius: 4px/; -webkit-border-radius: 4px; }
+.ui-corner-all { -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 .ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #ccc; background: #f6f6f6 50% 50% repeat-x; /*font-weight: normal; color: #c3c3c3; */outline: none; }
 #tac_problems_slider{width:200px}
-#availability_toolbox {
-	position: relative;
-	margin-top: -30px;
-	right: 118px;
-	float: right
-}
 .headerNone.left a {
 	vertical-align: top;
 }
@@ -809,7 +805,6 @@ input.i160 { border: 0px; outline: 0px; }
 	background:#e0e0e0 url(images/bg.png) repeat-x;
 }
 
-tr td,
 table.health tr td div.border {
 	background:#ccc url(images/bg.png) repeat;
 }
@@ -931,11 +926,11 @@ div.setup-table tr.odd td:first-child {
 	border-left: 1px solid #ccc;
 }
 
-div.setup-table tr.odd td {
+div.setup-table tr.odd {
 	background: #f1f1f1;
 }
 
-div#schedule_report tr.odd td {
+div#schedule_report tr.odd {
 	padding-left: 7px;
 }
 div.setup-table {
@@ -955,9 +950,7 @@ div.setup-table table tr td, div.setup-table table tr th {
 #host_row_3{display:none;}
 #service_row_1{display:none;}
 #service_row_2{display:none;}
-#settings_table{display:none;}
 #submit_button{display:none;}
-#enter_sla{display:none;}
 #sla_setup{display:none;}
 
 tr#hostgroup_row td {

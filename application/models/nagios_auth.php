@@ -122,22 +122,6 @@ class Nagios_auth_Model extends Model
 		if ($this->command_hosts_root) {
 			$this->command_services_root = true;
 		}
-
-		/* Allow * in cgi.cfg, which mean everybody should get 'rootness' */
-		/*
-		#@@@FIXME: We should handle this when importing data from cgi.cfg
-		$tot_access = System_Model::nagios_access('*');
-		if (is_array($tot_access) && !empty($tot_access)) {
-			$all_access = array_values($tot_access);
-			if (in_array('authorized_for_all_hosts', $all_access)) {
-				$this->view_hosts_root = true;
-			}
-
-			if (in_array('authorized_for_all_services', $all_access)) {
-				$this->view_services_root = true;
-			}
-		}
-		*/
 	}
 
 	/**
@@ -165,9 +149,6 @@ class Nagios_auth_Model extends Model
 	 */
 	public function get_authorized_hosts()
 	{
-		#$this->hosts = Session::instance()->get('auth_hosts', false);
-		#$this->hosts_r = Session::instance()->get('auth_hosts_r', false);
-
 		if (!empty($this->hosts))
 			return $this->hosts;
 
@@ -187,9 +168,6 @@ class Nagios_auth_Model extends Model
 			$this->hosts_r[$name] = $id;
 		}
 		unset($result);
-		#Session::instance()->set('auth_hosts', $this->hosts);
-		#Session::instance()->set('auth_hosts_r', $this->hosts_r);
-
 		return $this->hosts;
 	}
 
@@ -241,8 +219,6 @@ class Nagios_auth_Model extends Model
 		if (empty($this->id) && !$this->view_services_root && !$this->view_hosts_root)
 			return array();
 
-		#$this->services = Session::instance()->get('auth_services', false);
-		#$this->services_r = Session::instance()->get('auth_services_r', false);
 		if (!empty($this->services))
 			return $this->services;
 
@@ -259,9 +235,6 @@ class Nagios_auth_Model extends Model
 			$this->services_r[$name] = $id;
 		}
                 unset($result);
-		#Session::instance()->set('auth_services', $this->services);
-		#Session::instance()->set('auth_services_r', $this->services_r);
-
 		return $this->services;
 	}
 

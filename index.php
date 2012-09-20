@@ -83,9 +83,9 @@ define('KOHANA',  $kohana_pathinfo['basename']);
 is_link(KOHANA) and chdir(dirname(realpath(__FILE__)));
 
 // If kohana folders are relative paths, make them absolute.
-$kohana_application = file_exists($kohana_application) ? $kohana_application : DOCROOT.$kohana_application;
-$kohana_modules = file_exists($kohana_modules) ? $kohana_modules : DOCROOT.$kohana_modules;
-$kohana_system = file_exists($kohana_system) ? $kohana_system : DOCROOT.$kohana_system;
+$kohana_application = DOCROOT.$kohana_application;
+$kohana_modules = DOCROOT.$kohana_modules;
+$kohana_system = DOCROOT.$kohana_system;
 
 // Define application and system paths
 define('APPPATH', str_replace('\\', '/', realpath($kohana_application)).'/');

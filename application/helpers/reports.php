@@ -110,8 +110,18 @@ class reports_Core
 	 */
 	public function get_date_ranges()
 	{
-		$reports = new Reports_Model();
-		return $reports->get_date_ranges();
+		$sql = "SELECT MIN(timestamp) AS min_date, ".
+				"MAX(timestamp) AS max_date ".
+			"FROM ".self::db_table;
+		$db = Database::instance();
+		$res = $db->query($sql);
+
+		if (!$res)
+			return false;
+		$row = $res->current();
+		$min_date = $row->min_date;
+		$max_date = $row->max_date;
+		return array($min_date, $max_date);
 	}
 
 	/**
@@ -142,37 +152,34 @@ class reports_Core
 		return false;
 	}
 
-	/// used for automatic test cases
-	public function print_test_settings($test=false)
+	/**
+	 * Return array of shortened month names
+	 */
+	public static function abbr_month_names()
 	{
-		# report uses reports model default settings
-		if (!isset($test['start_time']) || !isset($test['end_time'])) {
-			echo _('Empty report settings. We need start_time and end_time')."\n";
-			print_r($test);
-			exit(1);
-		}
-
-		foreach ($test as $k => $v) {
-			if (is_array($v) && count($v) === 1)
-				$v = array_pop($v);
-
-			if (is_array($v)) {
-				echo "\t$k {\n";
-				foreach ($v as $v2) {
-					echo "\t\t$v2\n";
-				}
-				echo "\t}\n";
-				continue;
-			}
-			echo "\t$k = $v\n";
-		}
+		return array(
+			_('Jan'),
+			_('Feb'),
+			_('Mar'),
+			_('Apr'),
+			_('May'),
+			_('Jun'),
+			_('Jul'),
+			_('Aug'),
+			_('Sep'),
+			_('Oct'),
+			_('Nov'),
+			_('Dec')
+		);
 	}
-
 	/**
 	*	Create common translated javascript strings
 	*/
 	public static function js_strings()
 	{
+		$first_day_of_week = 1;
+
+
 		$js_strings = false;
 		$js_strings .= "var _ok_str = '"._('OK')."';\n";
 		$js_strings .= "var _cancel_str = '"._('Cancel')."';\n";
@@ -191,7 +198,88 @@ class reports_Core
 		$js_strings .= "var _reports_schedule_recipient_error = '"._(' -Please enter at least one recipient')."';\n";
 		$js_strings .= "var _reports_invalid_email = '"._('You have entered an invalid email address')."';\n";
 		$js_strings .= "var _label_direct_link = '"._('Direct link')."';\n";
+		$js_strings .= "var _reports_confirm_delete = '"._("Are you really sure that you would like to remove this saved report?")."';\n";
+		$js_strings .= "var _reports_confirm_delete_schedule = \""._("Do you really want to delete this schedule?\\nThis action can't be undone.")."\";\n";
+		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
+			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
+		$js_strings .= "var _reports_error_name_exists_replace = \""._("The entered name already exists. Press 'Ok' to replace the entry with this name")."\";\n";
+
+		$month_names = array(
+			_('January'),
+			_('February'),
+			_('March'),
+			_('April'),
+			_('May'),
+			_('June'),
+			_('July'),
+			_('August'),
+			_('September'),
+			_('October'),
+			_('November'),
+			_('December')
+		);
+
+		$day_names = array(
+			_('Sunday'),
+			_('Monday'),
+			_('Tuesday'),
+			_('Wednesday'),
+			_('Thursday'),
+			_('Friday'),
+			_('Saturday')
+		);
+
+		$abbr_day_names = array(
+			_('Sun'),
+			_('Mon'),
+			_('Tue'),
+			_('Wed'),
+			_('Thu'),
+			_('Fri'),
+			_('Sat')
+		);
+
+		$js_strings .= "Date.monthNames = ".json::encode($month_names).";\n";
+		$js_strings .= 'Date.abbrMonthNames = '.json::encode(self::abbr_month_names()).";\n";
+		$js_strings .= 'Date.dayNames = '.json::encode($day_names).";\n";
+		$js_strings .= 'Date.abbrDayNames = '.json::encode($abbr_day_names).";\n";
+		$js_strings .= 'Date.firstDayOfWeek = '.$first_day_of_week.";\n";
+		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
+		$js_strings .= "_start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
 
 		return $js_strings;
+	}
+
+	/**
+	 * Return a text string representing the included host or service states
+	 */
+	public static function get_included_states($report_type, $options)
+	{
+		switch ($report_type) {
+		 case 'hosts':
+		 case 'hostgroups':
+			$subtype = 'host';
+			break;
+		 case 'services':
+		 case 'servicegroups':
+			$subtype = 'service';
+			break;
+		 default:
+			return _("Unknown states included: '$report_type' is not a recognized object type");
+		}
+
+		$res = $subtype === 'host' ? _('Showing hosts in state: ') : _('Showing services in state: ');
+
+		$j = 0;
+		foreach(Reports_Model::${$subtype.'_states'} as $key => $value) {
+			if ($value === 'excluded')
+				continue;
+			if (!isset($options[$subtype.'_filter_status'][$key])) {
+				$res .= ($j > 0) ? ', ' : '';
+				$res .= '<strong>'.$value.'</strong>';
+				$j++;
+			}
+		}
+		return $res;
 	}
 }

@@ -51,28 +51,14 @@ class Scheduled_reports_Model extends Model
 	/**
 	 * Fetches all scheduled reports of current report type (avail/sla)
 	 *
-	 * @param $type string: {avail, sla}
+	 * @param $type string: {avail, sla, summary}
 	 * @return res
 	 */
-	public static function get_scheduled_reports($type='avail')
+	public static function get_scheduled_reports($type)
 	{
 		$type = strtolower($type);
 		if ($type != 'avail' && $type != 'sla' && $type != 'summary')
 			return false;
-
-		$fieldname = false;
-		switch ($type) {
-			case 'avail':
-			case 'summary':
-				$fieldname = 'report_name';
-				break;
-			case 'sla':
-				$fieldname = 'sla_name';
-				break;
-		}
-		if (empty($fieldname)) {
-			return false;
-		}
 
 		$db = Database::instance();
 
@@ -85,7 +71,7 @@ class Scheduled_reports_Model extends Model
 		$sql = "SELECT
 				sr.*,
 				rp.periodname,
-				r.".$fieldname." AS reportname
+				r.report_name AS reportname
 			FROM
 				scheduled_reports sr,
 				scheduled_report_types rt,
@@ -100,7 +86,7 @@ class Scheduled_reports_Model extends Model
 				reportname";
 
 		$res = $db->query($sql);
-		return $res ? $res : false;
+		return $res;
 	}
 
 	/**
@@ -134,14 +120,22 @@ class Scheduled_reports_Model extends Model
 
 	/**
 	 * Get available report periods
-	 * @return Database result object on success. False on errors.
+	 * @return array [id] => string. False on errors.
 	 */
 	public static function get_available_report_periods()
 	{
 		$sql = "SELECT * from scheduled_report_periods";
 		$db = Database::instance();
 		$res = $db->query($sql);
-		return (!$res || count($res)==0) ? false : $res;
+		if(!$res || count($res)==0) {
+			return false;
+		}
+
+		$periods = array();
+		foreach ($res as $period_row) {
+			$periods[$period_row->id] = $period_row->periodname;
+		}
+		return $periods;
 	}
 
 	/**
@@ -347,7 +341,7 @@ class Scheduled_reports_Model extends Model
 	 * and the report.
 	 *
 	 * @param $schedule_id The id of the schedule we're interested in.
-	 * @return False on errors. Array with schedule-info on success.
+	 * @return False on errors. Options object on success.
 	 */
 	public function get_scheduled_data($schedule_id=false)
 	{
@@ -358,64 +352,16 @@ class Scheduled_reports_Model extends Model
 
 		$type = self::get_typeof_report($schedule_id);
 
-		switch ($type) {
-			case 'avail':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
-					"scheduled_reports sr, avail_config c ".
-					"WHERE sr.id=".$schedule_id." AND ".
-					"c.id=sr.report_id";
-				break;
-			case 'sla':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
-					"scheduled_reports sr, sla_config c ".
-					"WHERE sr.id=".$schedule_id." AND ".
-					"c.id=sr.report_id";
-				break;
-			case 'summary':
-				$sql = "SELECT sr.".self::USERFIELD.", sr.recipients, sr.filename, sr.local_persistent_filepath, c.* FROM ".
-					"scheduled_reports sr, summary_config c ".
-					"WHERE sr.id=".$schedule_id." AND ".
-					"c.id=sr.report_id";
-				break;
-			default: return false;
-		}
-
+		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM ".
+			"scheduled_reports sr ".
+			"WHERE sr.id=".$schedule_id;
 		$db = Database::instance();
-		$res = $db->query($sql);
-		$return = false;
-		if (count($res) != 0) {
-			$return = $res->result(false)->current();
-			$id = $return['id'];
-			$object_info = Saved_reports_Model::get_config_objects($type, $id);
-			$objects = false;
-			if ($object_info !== false && count($object_info) != 0) {
-				foreach ($object_info as $row) {
-					$objects[] = $row->name;
-				}
-			}
-			$return['objects'] = $objects;
-			if ($type == 'sla') {
-				$period_info = Saved_reports_Model::get_period_info($id);
-				if ($period_info !== false) {
-					foreach ($period_info as $row) {
-						$month_key =  $row->name;
-						if (isset($return['report_period']) && $return['report_period'] == 'lastmonth') {
-							# special case lastmonth report period to work as expected,
-							# i.e to use the entered SLA value for every month
-							# no matter what month it was scheduled
-							$month = date('n');
-							$month = $month == 1 ? 12 : ($month-1);
-							$month_key = 'month_'.$month;
-						}
-						$return['month'][$month_key] = $row->value;
-					}
-				}
-			}
-
-		} else {
+		$res = $db->query($sql)->result_array(false);
+		if (!$res)
 			return false;
-		}
-		return $return;
+		$res = $res[0];
+		$opts = Report_options::setup_options_obj($type, $res);
+		return $opts;
 	}
 
 	/**
@@ -430,8 +376,10 @@ class Scheduled_reports_Model extends Model
 		$period_str = trim(ucfirst($period_str));
 		$db = Database::instance();
 
-		$sql = "SELECT rt.identifier, r.id FROm scheduled_report_types rt, scheduled_reports r, scheduled_report_periods p ".
-			"WHERE p.periodname=".$db->escape($period_str)." AND r.period_id=p.id AND rt.id=r.report_type_id";
+		$sql = "SELECT rt.identifier, r.id FROM scheduled_report_types rt " .
+			"INNER JOIN scheduled_reports r ON rt.id=r.report_type_id " .
+			"INNER JOIN scheduled_report_periods p ON r.period_id=p.id ".
+			"WHERE p.periodname=".$db->escape($period_str);
 		$res = $db->query($sql);
 		return count($res) != 0 ? $res : false;
 	}

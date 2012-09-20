@@ -45,4 +45,5 @@ $links = $menu_base;
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	$disable_refresh = true;
 
+$current_skin = 'default/';
 require('themes/default/template.php');

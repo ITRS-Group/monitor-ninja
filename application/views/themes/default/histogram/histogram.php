@@ -1,15 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-
-<?php
-if (!empty($widgets)) {
-	foreach ($widgets as $widget) {
-		echo $widget;
-	}
-}
-?>
-
 <div class="w98 left">
-<h1><?php echo $title ?>
+<h1><?php echo $title ?></h1>
 <?php
 $print_limit = 3;
 if (sizeof($objects) > $print_limit) {

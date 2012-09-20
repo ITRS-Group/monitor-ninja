@@ -12,14 +12,6 @@
  */
 class Extinfo_Controller extends Authenticated_Controller {
 	public $current = false;
-	public $logos_path = '';
-
-	public function __construct()
-	{
-		parent::__construct();
-
-		$this->logos_path = Kohana::config('config.logos_path');
-	}
 
 	/**
 	 * Default controller method
@@ -483,8 +475,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'showlog/alert_history/'.$host,
 					 _('Trends') => 'trends/host/'.$host,
-					 _('Alert histogram') => 'histogram/host/'.$host,
-					 _('Availability report') => Kohana::config('reports.reports_link').'/generate/?type=avail&host_name[]='.$host,
+					 _('Alert histogram') => 'histogram/generate?host='.$host,
+					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
 					 _('Notifications') => '/notifications/host/'.$host
 				);
 				break;
@@ -495,8 +487,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail for this host') => 'status/service/'.$host,
 					_('Alert history') => 'showlog/alert_history/'.$host.'?service='.urlencode($service),
 					_('Trends') => 'trends/host/'.$host.'?service='.urlencode($service),
-					_('Alert histogram') => 'histogram/host/'.$host.'?service='.urlencode($service),
-					_('Availability report') => Kohana::config('reports.reports_link').'/generate/?type=avail&service_description[]='.$host.';'.urlencode($service).'&report_type=services',
+					_('Alert histogram') => 'histogram/generate?host='.$host.'&service='.urlencode($service),
+					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => '/notifications/host/'.$host.'?service='.urlencode($service)
 				);
 
@@ -510,7 +502,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# show comments for hosts and services
 		if ($type == 'host' || $type == 'service')
-			$comments = $this->_comments($host, $service, $type);
+			$comments = $this->_comments($host, $service);
 	}
 
 	/**
@@ -891,7 +883,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
-					_('Availability') => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;
@@ -901,7 +893,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Status detail') => 'status/service/'.$group.'?group_type='.$grouptype,
 					_('Status overview') => 'status/'.$grouptype.'/'.$group,
 					_('Status grid') => 'status/'.$grouptype.'_grid/'.$group,
-					_('Availability') => Kohana::config('reports.reports_link').'/generate/?type=avail&report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
+					_('Availability') => 'avail/generate/?report_type='.$grouptype.'s&'.$grouptype.'[]='.$group,
 					_('Alert history') => 'showlog/alert_history?'.$grouptype.'='.$group
 				);
 				break;
@@ -916,12 +908,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 	/**
 	*	Print comments for host or service
 	*/
-	public function _comments($host=false, $service=false, $type=false, $all=false, $items_per_page=false)
+	private function _comments($host=false, $service=false, $all=false, $items_per_page=false)
 	{
 		$items_per_page = !empty($items_per_page) ? $items_per_page : config::get('pagination.default.items_per_page', '*');
 		$host = trim($host);
 		$service = trim($service);
-		$type = trim($type);
+		$type = $service ? 'service' : 'host';
 		if (empty($all) && empty($host)) {
 			return false;
 		}
@@ -1024,7 +1016,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$command_success = $this->session->get('error_msg', $command_success);
 
 		if ($all === true) {
-			$tot = Comment_Model::count_comments_by_user($service != false, false, false, true);
+			$tot = Comment_Model::count_comments_by_user($host, $service);
 		} else {
 			$tot = 0;
 		}
@@ -1039,7 +1031,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		);
 		$offset = $pagination->sql_offset;
 
-		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
+		$comment_data = $all ? Comment_Model::fetch_comments_by_user($service, $items_per_page, $offset) :Comment_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 		$schedule_downtime_comments = $all ? Downtime_Model::fetch_comments_by_user($service != false, $items_per_page, $offset) : Downtime_Model::fetch_comments_by_object($host, $service, $items_per_page, $offset);
 
 		$comment = false;
@@ -1049,8 +1041,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 		if (!empty($comment_data)) {
 			foreach ($comment_data as $row) {
 				$comment[$i]['host_name'] = $row->host_name;
-				if (isset($row->service_description))
-					$comment[$i]['service_description'] = $row->service_description;
+				$comment[$i]['service_description'] = $row->service_description;
 				$comment[$i]['entry_time'] = $row->entry_time;
 				$comment[$i]['author_name'] = $row->author_name;
 				$comment[$i]['entry_time'] = $row->entry_time;
@@ -1075,8 +1066,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 					continue;
 				}
 				$comment[$i]['host_name'] = $row->host_name;
-				if (isset($row->service_description))
-					$comment[$i]['service_description'] = $row->service_description;
+				$comment[$i]['service_description'] = $row->service_description;
 				$comment[$i]['entry_time'] = $row->entry_time;
 				$comment[$i]['author_name'] = $row->author_name;
 				$comment[$i]['entry_time'] = $row->entry_time;
@@ -1150,8 +1140,8 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->content = $this->add_view('extinfo/all_comments');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
-		$this->template->content->host_comments = $this->_comments(true, false, 'host', true, $items_per_page);
-		$this->template->content->service_comments = $this->_comments(true, true, 'service', true, $items_per_page);
+		$this->template->content->host_comments = $this->_comments(true, false, true, $items_per_page);
+		$this->template->content->service_comments = $this->_comments(true, true, true, $items_per_page);
 		$this->template->title = _('Monitoring » All comments');
 	}
 

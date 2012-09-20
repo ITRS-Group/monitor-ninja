@@ -1286,12 +1286,6 @@ div.jGrowl div.jGrowl-closer {
 .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; }
 .ui-state-default, .ui-widget-content .ui-state-default { border: 1px solid #855e36/*{borderColorDefault}*/; background: #444444/*{bgColorDefault}*/ /*url(images/ui-bg_glass_75_e6e6e6_1x400.png)*//*{bgImgUrlDefault}*/ 50%/*{bgDefaultXPos}*/ 50%/*{bgDefaultYPos}*/ repeat-x/*{bgDefaultRepeat}*/; font-weight: normal/*{fwDefault}*/; color: #ff9922/*{fcDefault}*/; outline: none; }
 #tac_problems_slider{width:200px}
-#availability_toolbox {
-	position: relative;
-	margin-top: -30px;
-	right: 118px;
-	float: right
-}
 .headerNone.left a {
 	vertical-align: top;
 }
@@ -1554,9 +1548,7 @@ div.setup-table table tr td, div.setup-table table tr th {
 #host_row_3{display:none;}
 #service_row_1{display:none;}
 #service_row_2{display:none;}
-#settings_table{display:none;}
 #submit_button{display:none;}
-#enter_sla{display:none;}
 #sla_setup{display:none;}
 
 tr#hostgroup_row td {

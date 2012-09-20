@@ -19,16 +19,6 @@ test 1: using SLA - Group availability {
 	}
 }
 
-test 2: using average {
-	use_average = 1
-
-	correct {
-		TOTAL_TIME_UP   = 25000
-		TOTAL_TIME_DOWN = 5000
-	}
-}
-
-
 # hela testperiodens klocktid: 30000s (2st = 60000s sammanslagen tid)
 # 10000 sekunder är båda hostarna uppe (avg 100% up)
 # 10000 sekunder ena hosten nere, 10000 sekunder uppe på andra hosten (avg 50% up)

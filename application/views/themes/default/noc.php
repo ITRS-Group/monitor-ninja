@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-$current_skin = false;
 $authorized = false;
 if (Auth::instance()->logged_in()) {
 	$ninja_menu_setting = Ninja_setting_Model::fetch_page_setting('ninja_menu_state', '/');
@@ -7,12 +6,6 @@ if (Auth::instance()->logged_in()) {
 	$auth = Nagios_auth_Model::instance();
 	if ($auth->view_hosts_root) {
 		$authorized = true;
-	}
-
-	# fetch info on current skin
-	$current_skin = config::get('config.current_skin', '*', true);
-	if (!substr($current_skin, -1, 1) != '/') {
-		$current_skin .= '/';
 	}
 	$this->session->set('use_noc', true);
 }
@@ -132,7 +125,6 @@ if (isset($this->template->js_header))
 				var _wait_str='<?php echo _('Please wait') ?>';
 				var _refresh_paused_msg='<?php echo _('Page refresh has been paused.') ?>';
 				var _refresh_unpaused_msg='<?php echo _('Page refresh has been restored.') ?>';
-				var _reports_link='<?php echo Kohana::config('reports.reports_link') ?>';
 				var _search_save_error = '<?php echo _("Length of \'%s\' must be between %s and %s characters.") ?>';
 				var _search_string_field = '<?php echo _('Search string') ?>';
 				var _search_remove_confirm = '<?php echo _('Are you sure that you wish to remove this saved search?') ?>';

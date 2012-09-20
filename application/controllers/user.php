@@ -116,42 +116,12 @@ class User_Controller extends Authenticated_Controller {
 			_('Duration (hours)') => array('nagdefault.duration', self::$var_types['nagdefault.duration']),
 			_('Comment') => array('nagdefault.comment', self::$var_types['nagdefault.comment']));
 
-		$skins = glob(APPPATH.'views/'.$this->theme_path.'css/*', GLOB_ONLYDIR);
 
 		$settings['config'] = false;
-		$available_skins = false;
-		$required_css = array('common.css', 'status.css', 'reports.css');
-		if (count($skins) > 1) {
-			foreach ($skins as $skin) {
-
-				# make sure we have all requred css
-				$missing_css = false;
-				foreach ($required_css as $css) {
-					if (glob($skin.'/'.$css) == false) {
-						$missing_css = true;
-						continue;
-					}
-				}
-				if ($missing_css !== false) {
-					continue;
-				}
-
-				# all required css files seems to be exist
-				$skinparts = explode('/', $skin);
-				if (is_array($skinparts) && !empty($skinparts)) {
-					$available_skins[$skinparts[sizeof($skinparts)-1].'/'] = $skinparts[sizeof($skinparts)-1];
-				}
-			}
-			if (count($available_skins) > 1) {
-				$settings['config'] = array(
-					_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
-				);
-			} else {
-				unset($available_setting_sections[_('Config')]);
-			}
-		} else {
-			unset($available_setting_sections[_('Config')]);
-		}
+		$available_skins = ninja::get_skins();
+		$settings['config'] = array(
+			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
+		);
 
 		$current_values = false;
 		if (!empty($available_setting_sections)) {

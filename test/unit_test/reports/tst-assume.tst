@@ -2,13 +2,33 @@ description = Assume states during program downtime
 logfile = assumed_states_during_program_downtime.log
 
 assumed states during program downtime #1 {
-	assume_states_during_not_running = true
+	assumestatesduringnotrunning = true
 	start_time = 1202684400
 	end_time = 1202770800
-	host_name = testhost
+	host_name {
+		testhost
+	}
 	correct {
 		TIME_UP_SCHEDULED = 0
 		TIME_UP_UNSCHEDULED = 86400
 		TIME_UNDETERMINED_NOT_RUNNING = 0
+	}
+}
+
+first state is undetermined {
+	start_time = 1202690000
+	end_time = 1202699000
+	host_name {
+		testhost
+	}
+	correct {
+		TIME_UP_UNSCHEDULED = 3800
+		TIME_UNDETERMINED_NOT_RUNNING = 5200
+		subs {
+			testhost {
+				TIME_UP_UNSCHEDULED = 3800
+				TIME_UNDETERMINED_NOT_RUNNING = 5200
+			}
+		}
 	}
 }
