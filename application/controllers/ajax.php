@@ -410,11 +410,12 @@ class Ajax_Controller extends Authenticated_Controller {
 	*/
 	public function is_alive()
 	{
-		if(Program_status_Model::last_alive()) {
+		try {
+			Current_status_Model::instance()->program_status();
 			echo json::ok(date(nagstat::date_format()));
-		} else {
-			echo json::fail(date(nagstat::date_format()));
-		}
+			return;
+		} catch (LivestatusException $ex) {}
+		echo json::fail(date(nagstat::date_format()));
 	}
 
 	/**

@@ -574,7 +574,7 @@ class Extinfo_Controller extends Authenticated_Controller {
 
 		# fetch program status from program_status_model
 		# uses ORM
-		$status= Program_status_Model::get_local();
+		$status = Current_status_Model::instance()->program_status();
 
 		$content->program_status = $status;
 		$content->run_time = time::to_string(time() - $status->program_start);
@@ -1074,170 +1074,136 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$this->template->title = _('Monitoring').' » '._('Performance info');
 		$this->template->js_header = $this->add_view('js_header');
 		$content = $this->template->content;
-		$service_model = new Service_Model();
-		$host_model = new Host_Model();
 
 		$content->title = _("Program-wide performance information");
 
 		# Values
-		$service_model->get_performance_data();
-		$host_model->get_performance_data();
+		$program_status = Current_status_Model::instance()->program_status();
+		$ls = Livestatus::instance();
+		$hoststats    = $ls->getHostPerformance($program_status->program_start);
+		$servicestats = $ls->getServicePerformance($program_status->program_start);
+
+		$content->program_status = $program_status;
 
 		# active service checks
-		$content->svc_active_1min = $service_model->active_service_checks_1min;
-		$content->svc_active_5min = $service_model->active_service_checks_5min;
-		$content->svc_active_15min = $service_model->active_service_checks_15min;
-		$content->svc_active_1hour = $service_model->active_service_checks_1hour;
-		$content->svc_active_start = $service_model->active_service_checks_start;
-		$content->svc_active_ever = $service_model->active_service_checks_ever;
+		$content->svc_active_1min  = $servicestats->active_1_sum;
+		$content->svc_active_5min  = $servicestats->active_5_sum;
+		$content->svc_active_15min = $servicestats->active_15_sum;
+		$content->svc_active_1hour = $servicestats->active_60_sum;
+		$content->svc_active_start = $servicestats->active_all_sum;
+		$content->svc_active_ever  = $servicestats->active_sum;
 
 		# active service checks, percentages
-		$content->svc_active_1min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_1min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_5min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_5min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_15min_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_15min*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_1hour_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_1hour*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		$content->svc_active_start_perc = $service_model->total_active_service_checks > 0 ?
-			 number_format(($service_model->active_service_checks_start*100)/$service_model->total_active_service_checks, 1) : '0.0';
-		#$content->svc_active_ever_perc = $service_model->total_active_service_checks > 0 ?
-		#	 number_format(($service_model->active_service_checks_ever*100)/$service_model->total_active_service_checks, 1) : '0.0';
+		$content->svc_active_1min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_1_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_5min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_5_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_15min_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_15_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_1hour_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_60_sum*100)/$servicestats->active_sum, 1) : '0.0';
+		$content->svc_active_start_perc = $servicestats->active_sum > 0 ?
+			 number_format(($servicestats->active_all_sum*100)/$servicestats->active_sum, 1) : '0.0';
 
 		# passive service checks
-		$content->svc_passive_1min = $service_model->passive_service_checks_1min;
-		$content->svc_passive_5min = $service_model->passive_service_checks_5min;
-		$content->svc_passive_15min = $service_model->passive_service_checks_15min;
-		$content->svc_passive_1hour = $service_model->passive_service_checks_1hour;
-		$content->svc_passive_start = $service_model->passive_service_checks_start;
-		$content->svc_passive_ever = $service_model->passive_service_checks_ever;
+		$content->svc_passive_1min = $servicestats->passive_1_sum;
+		$content->svc_passive_5min = $servicestats->passive_5_sum;
+		$content->svc_passive_15min = $servicestats->passive_15_sum;
+		$content->svc_passive_1hour = $servicestats->passive_60_sum;
+		$content->svc_passive_start = $servicestats->passive_all_sum;
+		$content->svc_passive_ever = $servicestats->passive_sum;
 
 		# passive service checks, percentages
-		$content->svc_passive_1min_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_1min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_5min_perc =  $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_5min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_15min_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_15min*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_1hour_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_1hour*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_start_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_start*100)/$service_model->total_passive_service_checks, 1) : '0.0';
-		$content->svc_passive_ever_perc = $service_model->total_passive_service_checks > 0 ?
-			number_format(($service_model->passive_service_checks_ever*100)/$service_model->total_passive_service_checks, 1) : '0.0';
+		$content->svc_passive_1min_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_1_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_5min_perc =  $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_5_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_15min_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_15_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_1hour_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_60_sum*100)/$servicestats->passive_sum, 1) : '0.0';
+		$content->svc_passive_start_perc = $servicestats->passive_sum > 0 ?
+			number_format(($servicestats->passive_all_sum*100)/$servicestats->passive_sum, 1) : '0.0';
 
 		# service execution time
-		$content->min_service_execution_time = number_format($service_model->min_service_execution_time, 2);
-		$content->max_service_execution_time = number_format($service_model->max_service_execution_time, 2);
-		$content->svc_average_execution_time = $service_model->total_active_service_checks > 0 ?
-			number_format(($service_model->total_service_execution_time/$service_model->total_active_service_checks), 3) : 0;
+		$content->min_service_execution_time = number_format($servicestats->execution_time_min, 2);
+		$content->max_service_execution_time = number_format($servicestats->execution_time_max, 2);
+		$content->svc_average_execution_time = number_format($servicestats->execution_time_avg, 3);
 
 		# service latency
-		$content->min_service_latency = number_format($service_model->min_service_latency, 2);
-		$content->max_service_latency = number_format($service_model->max_service_latency, 2);
-		$content->average_service_latency = $service_model->total_active_service_checks > 0 ?
-			number_format($service_model->total_service_latency/$service_model->total_active_service_checks, 3) : 0;
+		$content->min_service_latency = number_format($servicestats->latency_min, 2);
+		$content->max_service_latency = number_format($servicestats->latency_max, 2);
+		$content->average_service_latency = number_format($servicestats->latency_avg, 3);
 
 		# service state change - active
-		$content->min_service_percent_change_a = number_format($service_model->min_service_percent_change_a, 2);
-		$content->max_service_percent_change_a = number_format($service_model->max_service_percent_change_a, 2);
-		$content->average_service_percent_change = $service_model->total_active_service_checks > 0 ?
-			number_format($service_model->total_service_percent_change_a/$service_model->total_active_service_checks, 3) : '0.00';
+		$content->min_service_percent_change_a = number_format($servicestats->active_state_change_min, 2);
+		$content->max_service_percent_change_a = number_format($servicestats->active_state_change_max, 2);
+		$content->average_service_percent_change = number_format($servicestats->active_state_change_avg, 3);
 
 		# service state change - passive
-		$content->min_service_percent_change_b = number_format($service_model->min_service_percent_change_b, 2);
-		$content->max_service_percent_change_b = number_format($service_model->max_service_percent_change_b, 2);
-		$content->average_service_percent_change = $service_model->total_passive_service_checks > 0 ?
-			number_format($service_model->total_service_percent_change_b/$service_model->total_passive_service_checks, 3) : '0.00';
+		$content->min_service_percent_change_b = number_format($servicestats->passive_state_change_min, 2);
+		$content->max_service_percent_change_b = number_format($servicestats->passive_state_change_max, 2);
+		$content->average_service_percent_change = number_format($servicestats->passive_state_change_avg, 3);
 
 		# active host checks
-		$content->hst_active_1min = $host_model->active_host_checks_1min;
-		$content->hst_active_5min = $host_model->active_host_checks_5min;
-		$content->hst_active_15min = $host_model->active_host_checks_15min;
-		$content->hst_active_1hour = $host_model->active_host_checks_1hour;
-		$content->hst_active_start = $host_model->active_host_checks_start;
-		$content->hst_active_ever = $host_model->active_host_checks_ever;
+		$content->hst_active_1min = $hoststats->active_1_sum;
+		$content->hst_active_5min = $hoststats->active_5_sum;
+		$content->hst_active_15min = $hoststats->active_15_sum;
+		$content->hst_active_1hour = $hoststats->active_60_sum;
+		$content->hst_active_start = $hoststats->active_all_sum;
+		$content->hst_active_ever = $hoststats->active_sum;
 
 		# active host checks, percentages
-		$content->hst_active_1min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_1min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_5min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_5min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_15min_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_15min*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_1hour_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_1hour*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_start_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_start*100)/$host_model->total_active_host_checks, 1) : '0.0';
-		$content->hst_active_ever_perc = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->active_host_checks_ever*100)/$host_model->total_active_host_checks, 1) : '0.0';
+		$content->hst_active_1min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_1_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_5min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_5_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_15min_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_15_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_1hour_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_60_sum*100)/$hoststats->active_sum, 1) : '0.0';
+		$content->hst_active_start_perc = $hoststats->active_sum > 0 ?
+			number_format(($hoststats->active_all_sum*100)/$hoststats->active_sum, 1) : '0.0';
 
 		# passive host checks
-		$content->hst_passive_1min = $host_model->passive_host_checks_1min;
-		$content->hst_passive_5min = $host_model->passive_host_checks_5min;
-		$content->hst_passive_15min = $host_model->passive_host_checks_15min;
-		$content->hst_passive_1hour = $host_model->passive_host_checks_1hour;
-		$content->hst_passive_start = $host_model->passive_host_checks_start;
-		$content->hst_passive_ever = $host_model->passive_host_checks_ever;
+		$content->hst_passive_1min = $hoststats->passive_1_sum;
+		$content->hst_passive_5min = $hoststats->passive_5_sum;
+		$content->hst_passive_15min = $hoststats->passive_15_sum;
+		$content->hst_passive_1hour = $hoststats->passive_60_sum;
+		$content->hst_passive_start = $hoststats->passive_all_sum;
+		$content->hst_passive_ever = $hoststats->passive_sum;
 
 		# passive host checks, percentages
-		$content->hst_passive_1min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_1min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_5min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_5min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_15min_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_15min*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_1hour_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_1hour*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_start_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_start*100)/$host_model->total_passive_host_checks, 1) : '0.0';
-		$content->hst_passive_ever_perc = $host_model->total_passive_host_checks > 0 ?
-			number_format(($host_model->passive_host_checks_ever*100)/$host_model->total_passive_host_checks, 1) : '0.0';
+		$content->hst_passive_1min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_1_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_5min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_5_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_15min_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_15_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_1hour_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_60_sum*100)/$hoststats->passive_sum, 1) : '0.0';
+		$content->hst_passive_start_perc = $hoststats->passive_sum > 0 ?
+			number_format(($hoststats->passive_all_sum*100)/$hoststats->passive_sum, 1) : '0.0';
 
 		# host execution time
-		$content->min_host_execution_time = number_format($host_model->min_host_execution_time, 2);
-		$content->max_host_execution_time = number_format($host_model->max_host_execution_time, 2);
-		$content->average_host_execution_time = $host_model->total_active_host_checks > 0 ?
-			number_format(($host_model->total_host_execution_time/$host_model->total_active_host_checks), 3) : 0;
+		$content->min_host_execution_time = number_format($hoststats->execution_time_min, 2);
+		$content->max_host_execution_time = number_format($hoststats->execution_time_max, 2);
+		$content->average_host_execution_time = number_format($hoststats->execution_time_avg, 3);
 
 		# host latency
-		$content->min_host_latency = number_format($host_model->min_host_latency, 2);
-		$content->max_host_latency = number_format($host_model->max_host_latency, 2);
-		$content->average_host_latency = $host_model->total_active_host_checks > 0 ?
-			number_format($host_model->total_host_latency/$host_model->total_active_host_checks, 3) : 0;
+		$content->min_host_latency = number_format($hoststats->latency_min, 2);
+		$content->max_host_latency = number_format($hoststats->latency_max, 2);
+		$content->average_host_latency = number_format($hoststats->latency_avg, 3);
 
 		# host state change - active
-		$content->min_host_percent_change_a = number_format($host_model->min_host_percent_change_a, 2);
-		$content->max_host_percent_change_a = number_format($host_model->max_host_percent_change_a, 2);
-		$content->average_host_percent_change = $host_model->total_active_host_checks > 0 ?
-			number_format($host_model->total_host_percent_change_a/$host_model->total_active_host_checks, 3) : '0.00';
+		$content->min_host_percent_change_a = number_format($hoststats->active_state_change_min, 2);
+		$content->max_host_percent_change_a = number_format($hoststats->active_state_change_max, 2);
+		$content->average_host_percent_change = number_format($hoststats->active_state_change_avg, 3);
 
 		# host state change - passive
-		$content->min_host_percent_change_b = number_format($host_model->min_host_percent_change_b, 2);
-		$content->max_host_percent_change_b = number_format($host_model->max_host_percent_change_b, 2);
-		$content->average_host_percent_change = $host_model->total_passive_host_checks > 0 ?
-			number_format($host_model->total_host_percent_change_b/$host_model->total_passive_host_checks, 3) : '0.00';
-
-		$stats_key = 'programstatus';
-		$check_stats = System_Model::get_status_info('status.log', $stats_key);
-		if ($check_stats !== false && isset($check_stats[$stats_key])) {
-			$stats = $check_stats[$stats_key];
-			$content->active_scheduled_host_check_stats = System_Model::extract_stat_key('active_scheduled_host_check_stats', $stats);
-			$content->active_ondemand_host_check_stats = System_Model::extract_stat_key('active_ondemand_host_check_stats', $stats);
-			$content->parallel_host_check_stats = System_Model::extract_stat_key('parallel_host_check_stats', $stats);
-			$content->serial_host_check_stats = System_Model::extract_stat_key('serial_host_check_stats', $stats);
-			$content->cached_host_check_stats = System_Model::extract_stat_key('cached_host_check_stats', $stats);
-			$content->passive_host_check_stats = System_Model::extract_stat_key('passive_host_check_stats', $stats);
-			$content->active_scheduled_service_check_stats = System_Model::extract_stat_key('active_scheduled_service_check_stats', $stats);
-			$content->active_ondemand_service_check_stats = System_Model::extract_stat_key('active_ondemand_service_check_stats', $stats);
-			$content->cached_service_check_stats = System_Model::extract_stat_key('cached_service_check_stats', $stats);
-			$content->passive_service_check_stats = System_Model::extract_stat_key('passive_service_check_stats', $stats);
-			$content->external_command_stats = System_Model::extract_stat_key('external_command_stats', $stats);
-			$content->total_external_command_buffer_slots = System_Model::extract_stat_key('total_external_command_buffer_slots', $stats);
-			$content->used_external_command_buffer_slots = System_Model::extract_stat_key('used_external_command_buffer_slots', $stats);
-			$content->high_external_command_buffer_slots = System_Model::extract_stat_key('high_external_command_buffer_slots', $stats);
-		}
+		$content->min_host_percent_change_b = number_format($hoststats->passive_state_change_min, 2);
+		$content->max_host_percent_change_b = number_format($hoststats->passive_state_change_max, 2);
+		$content->average_host_percent_change = number_format($hoststats->passive_state_change_avg, 3);
 	}
 
 	/**

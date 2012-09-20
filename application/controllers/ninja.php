@@ -156,7 +156,6 @@ class Ninja_Controller extends Template_Controller {
 			foreach ($this->xlinks as $link)
 				$this->template->links[$link['category']][$link['title']] = $link['contents'];
 
-			$this->_is_alive();
 			$this->_global_notification_checks();
 
 			# fetch info on saved searches and assign to master template
@@ -252,31 +251,13 @@ class Ninja_Controller extends Template_Controller {
 	}
 
 	/**
-	*	Check that we are still getting data from merlin.
-	*	If not, user should be alerted
-	*/
-	public function _is_alive()
-	{
-/* TODO: check if still needed */
-		return true;
-		$last_alive = Program_status_Model::last_alive();
-		$stale_data_limit = Kohana::config('config.stale_data_limit');
-		$diff = time() - $last_alive;;
-		if ($diff  > $stale_data_limit) {
-			$this->stale_data = $diff;
-			$this->inline_js .= "$('#infobar-sml').show();";
-			$this->template->inline_js = "$('#infobar-sml').show();";
-		}
-	}
-
-	/**
 	*	Check for notifications to be displayed to user
 	* 	Each notification should be an array with (text, link)
 	*/
 	public function _global_notification_checks()
 	{
 		$notifications = false;
-		$status = Program_status_Model::get_local();
+		$status = Current_status_Model::instance()->program_status();
 		if ($status->enable_notifications !== 1) {
 			$notifications[] = array(_('Notifications are disabled'), false);
 		}

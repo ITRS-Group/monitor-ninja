@@ -37,7 +37,7 @@ class Tac_monfeat_Widget extends widget_Base {
 
 		# fetch global nagios config data
 		# try with the database first but we may use the nagios.cfg file as fallback
-		$status = Program_status_Model::get_local();
+		$status = Current_status_Model::instance()->program_status();
 		$enable_notifications = $status->enable_notifications;
 		$enable_flap_detection = $status->enable_flap_detection;
 		$enable_event_handlers = $status->enable_event_handlers;

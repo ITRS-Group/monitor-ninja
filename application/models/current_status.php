@@ -17,8 +17,8 @@ class Current_status_Model extends Model
 	const SERVICE_CRITICAL = 2; /**< Nagios' service critical code */
 	const SERVICE_UNKNOWN =  3; /**< Nagios' service unknown code */
 	const SERVICE_PENDING = 6; /**< Our magical "service pending" code for unchecked services */
-	const HOST_CHECK_ACTIVE = 0;	/**< Nagios performed the host check */
-	const HOST_CHECK_PASSIVE = 1;	/**< the host check result was submitted by an external source */
+	const HOST_CHECK_ACTIVE = 0;    /**< Nagios performed the host check */
+	const HOST_CHECK_PASSIVE = 1;   /**< the host check result was submitted by an external source */
 	const SERVICE_CHECK_ACTIVE = 0; /**< Nagios performed the service check */
 	const SERVICE_CHECK_PASSIVE = 1; /**< the service check result was submitted by an external source */
 
@@ -47,12 +47,12 @@ class Current_status_Model extends Model
 	public function program_status()
 	{
 		if ($this->program_data_present)
-			return;
+			return $this->ps;
 
-		$stats = new Program_status_Model();
-		$this->ps = $stats->get_local();
+		$ls       = Livestatus::instance();
+		$this->ps = $ls->getProcessInfo();
 		$this->program_data_present = true;
-		return;
+		return $this->ps;
 	}
 
 	/**
@@ -114,86 +114,6 @@ class Current_status_Model extends Model
 		$this->host_status();
 		$this->service_status();
 		return empty($errors) ? true : false;
-	}
-
-	/**
-	 * 	determine what hosts are causing network outages
-	 * 	and the severity for each one found
-	 */
-	public function find_hosts_causing_outages()
-	{
-throw new Exception('implement');
-/*
-TODO: implement
-		if ($this->outage_data_present)
-			return true;
-		try {
-			$ls = Livestatus::instance();
-
-			$result = $ls->query(<<<EOQ
-GET hosts
-Filter: state = 1
-Columns: name services childs
-EOQ
-);
-
-			foreach ($result as $res){
-				$this->unreachable_hosts[$res[0]] = count($res[2]);
-				$this->affected_hosts[$res[0]] = count($res[2]) + 1;
-				$this->affected_services[$res[0]] = count($res[1]);
-				# check if each host has any affected child hosts
-				foreach ($res[2] as $sub) {
-					if (!($children = $this->get_child_hosts($sub)))
-						$this->total_nonblocking_outages++;
-					else
-						$this->total_blocking_outages++;
-					$this->affected_hosts[$res[0]] += $children['hosts'];
-					$this->unreachable_hosts[$res[0]] += $children['hosts'];
-					$this->affected_services[$res[0]]+= $children['services'];
-				}
-			}
-		} catch (LivestatusException $ex) {
-			return false;
-		}
-
-		$this->outage_data_present = true;
-		return true;
-*/
-	}
-
-	/**
-	 * Fetch child hosts for a host
-	 * @param $host_id Id of the host to fetch children for
-	 * @return True on success, false on errors
-	 */
-	private function get_child_hosts($host_name=false)
-	{
-throw new Exception('implement');
-return false;
-/*
-TODO: implement
-		$ls = Livestatus::instance();
-
-		$result = $ls->query(<<<EOQ
-GET hosts
-Filter: name = $host_name
-Columns: services childs
-EOQ
-);
-
-		$children = 0;
-		$children_services = 0;
-		foreach ($result as $res) {
-			$children_services += count($res[0]);
-			foreach ($res[1] as $sub_host) {
-				$children++;
-				$out = $this->get_child_hosts($sub_host);
-				$children += $out['hosts'];
-				$children_services += $out['services'];
-			}
-		}
-		return array('hosts' => $children, 'services' => $children_services);
-*/
 	}
 
 	/**
