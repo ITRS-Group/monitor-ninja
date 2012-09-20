@@ -5,6 +5,8 @@
  */
 class config_Core
 {
+	const CONFIG_NOT_FOUND = null;
+	
 	/**
         *       Fetch config item from db or config file
         *       If $page is set it will fetch for a page-specific
@@ -18,22 +20,22 @@ class config_Core
 		}
 		# first check for cached session value
 		$page_val = empty($page) ? '' : '.'.$page;
-		$setting = false;
+		$setting = self::CONFIG_NOT_FOUND;
 		if ($skip_session) {
 			Session::instance()->delete($config_str.$page_val);
 		} else {
-			$setting = Session::instance()->get($config_str.$page_val, null);
+			$setting = Session::instance()->get($config_str.$page_val, self::CONFIG_NOT_FOUND);
 		}
 
 		# then check for database value
-		if ($setting === false) {
+		if ($setting === self::CONFIG_NOT_FOUND) {
 			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
 			if ($cfg!==false) {
 				$setting = $cfg->setting;
 			}
 		}
 
-		if ($setting === false) {
+		if ($setting === self::CONFIG_NOT_FOUND) {
 			# if nothing was found - try the config file
 			$setting = Kohana::config($config_str, false, false);
 			if (is_array($setting) && empty($setting)) {
