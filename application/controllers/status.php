@@ -1069,8 +1069,6 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		$content->group_details = $groups;
-
 		$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 		$content->group_details = $groups;
 
