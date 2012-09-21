@@ -48,8 +48,8 @@
 		<tr class="<?php echo $i%2 == 0 ? 'odd' : 'even'; ?>">
 			<td><?php echo html::anchor('extinfo/details/host/'.$row->host_name, $row->host_name); ?></td>
 			<td style="white-space: normal"><?php if ($row->service_description) {echo html::anchor('extinfo/details/service/'.$row->host_name.'/?service='.$row->service_description, $row->service_description);} ?>&nbsp;</td>
-			<td><?php echo date($date_format_str,$row->last_check); ?></td>
-			<td><?php echo date($date_format_str,$row->next_check); ?></td>
+			<td><?php echo $row->last_check ? date($date_format_str,$row->last_check) : _('Never checked'); ?></td>
+			<td><?php echo $row->next_check ? date($date_format_str,$row->next_check) : _('No check scheduled'); ?></td>
 			<td>
 				<?php
 					if($row->check_type == nagstat::CHECK_OPTION_NONE)
