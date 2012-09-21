@@ -23,7 +23,6 @@ class Summary_options_Core extends Report_options
 		$this->vtypes['oldest_first'] = array('type' => 'bool', 'default' => false);
 
 		static::$rename_options['displaytype'] = 'summary_type';
-		$this->vtypes['report_period']['options']['forever'] = _('Forever');
 		parent::__construct($options);
 		$this->vtypes['report_period']['options']['forever'] = _('Forever');
 	}

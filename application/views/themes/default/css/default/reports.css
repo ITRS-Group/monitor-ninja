@@ -506,3 +506,22 @@ td.period_select select {
 	display: block;
 	margin-bottom: 5px;
 }
+
+.regular-output {
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+}
+
+.comments {
+	display: table-cell;
+	text-align: right;
+}
+.comments .author {
+	font-style: italic;
+}
+
+
+.editing-comments {
+	min-width: 40%;
+}

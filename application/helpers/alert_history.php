@@ -11,7 +11,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class alertlog_Core {
+class alert_history_Core {
 	/**
 	 * Convert all sorts of constants to user-readable strings, add html, and generally make things pretty
 	 * @param $entry A database row
@@ -23,28 +23,27 @@ class alertlog_Core {
 			'obj_name' => '',
 			'state' => '',
 			'image' => '',
-			'softorhard' => '',
-			'retry' => ''
+			'softorhard' => ''
 		);
-		switch ($entry->event_type) {
+		switch ($entry['event_type']) {
 		 case 100:
-			$ret['type'] = 'PROCESS START';
+			$ret['type'] = 'Process Start';
 			$ret['state'] = "Start";
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 102:
-			$ret['type'] = 'PROCESS RESTART';
+			$ret['type'] = 'Process Restart';
 			$ret['state'] = "Restart";
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.gif'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 103:
-			$ret['type'] = 'PROCESS SHUTDOWN';
+			$ret['type'] = 'Process Shutdown';
 			$ret['state'] = 'Stop';
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
 			break;
 		 case 701:
-			$ret['type'] = 'SERVICE ALERT';
-			switch ($entry->state) {
+			$ret['type'] = 'Service Alert';
+			switch ($entry['state']) {
 			 case 0:
 				$ret['state'] = 'OK';
 				break;
@@ -63,11 +62,11 @@ class alertlog_Core {
 				break;
 			}
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
-			$ret['softorhard'] = $entry->hard ? 'HARD' : 'SOFT';
+			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
 		 case 801:
-			$ret['type'] = 'HOST ALERT';
-			switch ($entry->state) {
+			$ret['type'] = 'Host Alert';
+			switch ($entry['state']) {
 			 case 0:
 				$ret['state'] = 'Up';
 				break;
@@ -82,31 +81,21 @@ class alertlog_Core {
 				break;
 			}
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/shield-'.strtolower($ret['state']).'.png'), array('alt' => _($ret['state']), 'title' => _($ret['state'])));
-			$ret['softorhard'] = $entry->hard ? 'HARD' : 'SOFT';
+			$ret['softorhard'] = $entry['hard'] ? 'Hard' : 'Soft';
 			break;
 		 case 1103:
 		 case 1104:
 			if ($entry->service_description)
-				$ret['type'] = 'SERVICE DOWNTIME ALERT';
+				$ret['type'] = 'Service Downtime Alert';
 			else
-				$ret['type'] = 'HOST DOWNTIME ALERT';
+				$ret['type'] = 'Host Downtime Alert';
 			$ret['state'] = $entry->event_type == 1103 ? 'Started' : 'Stopped';
 			$ret['image'] = html::image(ninja::add_path('icons/16x16/scheduled-downtime.png'), array('alt' => _('Scheduled downtime'), 'title' => _('Scheduled downtime')));
 			break;
 		 default:
-			$ret['type'] = "UNKNOWN EVENT #$event->entry_type";
+			$ret['type'] = "Unknown Event #{$entry['entry_type']}";
 			break;
 		}
-
-		$ret['obj_name'] = $entry->host_name;
-		if ($entry->service_description)
-			$ret['obj_name'] = html::anchor('extinfo/details/service/'.urlencode($ret['obj_name']).'?service='.urlencode($entry->service_description), $ret['obj_name'].';'.$entry->service_description);
-		elseif ($entry->host_name)
-			$ret['obj_name'] = html::anchor('extinfo/details/host/'.urlencode($ret['obj_name']), $ret['obj_name']);
-		else
-			$ret['obj_name'] = false;
-
-		$ret['retry'] = $entry->retry == '0' ? '' : $entry->retry;
 
 		return $ret;
 	}
