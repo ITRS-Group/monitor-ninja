@@ -430,9 +430,11 @@ class Report_options_core implements ArrayAccess, Iterator {
 		 case 'service_description':
 			if (!$value)
 				return false;
-			foreach ($value as $svc) {
-				if (strpos($svc, ';') === false)
-					return false;
+			if($value != self::ALL_AUTHORIZED) {
+				foreach ($value as $svc) {
+					if (strpos($svc, ';') === false)
+						return false;
+				}
 			}
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = array();
