@@ -263,20 +263,6 @@ function set_selection(val, cb) {
 		$('#enter_sla').show();
 }
 
-/**
-*	cache the progress indicator image to show faster...
-*/
-var Image1 = new Image(16,16);
-Image1.src = _site_domain + 'application/media/images/loading.gif';
-
-/**
-*	Show a progress indicator to inform user that something
-*	is happening...
-*/
-function show_progress(the_id, info_str) {
-	$("#" + the_id).html('<img id="progress_image_id" src="' + Image1.src + '"> <em>' + info_str +'</em>').show();
-}
-
 function get_members(filter, type, cb) {
 	if (type=='') return;
 	var ajax_url = _site_domain + _index_page + '/ajax/';
@@ -738,7 +724,7 @@ function validate_form(formData, jqForm, options) {
 
 	recipients = recipients.replace(/;/g, ',');
 	// @@@FIXME: split multiple addresses on ',' and check each one using regexp
-	if (trim(recipients) == '') {
+	if ($.trim(recipients) == '') {
 		err_str += _reports_schedule_recipient_error + "<br />";
 		errors++;
 	}
