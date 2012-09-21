@@ -231,13 +231,6 @@ function restore_widgets()
 	});
 }
 
-/**
-*	Remove whitespace from string
-*/
-function trim(str) {
-	return str.replace(/^\s+|\s+$/g,"");
-}
-
 var loaded_widgets = {};
 
 /**
@@ -463,7 +456,7 @@ widget.prototype.init_title_edit = function() {
 	var self = this;
 	$("." + this.id + "_editable").editable(function(value, settings) {
 		var data = {page: self.current_uri, widget:self.name, instance_id:self.instance_id, widget_title:value};
-		value = trim(value);
+		value = $.trim(value);
 		// don't save an empty title
 		if (value.length) {
 			self.save_settings(data);

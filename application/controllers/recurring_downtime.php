@@ -118,7 +118,6 @@ class recurring_downtime_Controller extends Authenticated_Controller {
 
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
-		$this->xtra_js[] = 'application/media/js/move_options.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('recurring_downtime/js/recurring_downtime.js');
 
