@@ -552,6 +552,7 @@ TODO: implement
         $items_per_page = $page->template->content->items_per_page;
         $current_page   = $page->template->content->page;
         $offset         = ($current_page-1) * $items_per_page;
+        if($offset >= $page->template->content->total_items) { $offset = 0; }
         $result         = array_splice($result, $offset, $items_per_page);
         return $result;
     }
@@ -583,7 +584,7 @@ TODO: implement
         return $objects;
     }
 
-    private function build_sorter($orderby) {
+    public function build_sorter($orderby) {
 /* TODO: support multiple sort fields */
         $key   = $orderby[0];
         $order = $orderby[1];

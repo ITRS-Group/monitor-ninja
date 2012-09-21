@@ -984,31 +984,43 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_services = _('Services');
 		$content->label_actions = _('Actions');
 
+		$ls = Livestatus::instance();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
+		$groups   = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
+		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
+		$services = $ls->getServices(array('filter' => $servicefilter));
+
+		$groupshash = array();
+		foreach($groups as &$gr) {
+			$groupshash[$gr['name']] =& $gr;
+		}
+
+		$hostshash = array();
+		foreach($hosts as &$host) {
+			$hostshash[$host['name']] =& $host;
+			foreach($host['groups'] as $g) {
+				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
+				$groupshash[$g]['hosts'][$host['name']] =& $host;
+			}
+		}
+
+		foreach($services as &$svc) {
+			if(!isset($hostshash[$svc['host_name']]['services'])) { $hostshash[$svc['host_name']]['services'] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
+			if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
+			$hostshash[$svc['host_name']]['services'][$state][$svc['description']] =& $svc;
+		}
+
 		$group_details = false;
 		if (strtolower($group) == 'all') {
-			$auth = Nagios_auth_Model::instance();
-			$auth_groups = $auth->get_authorized_hostgroups();
-
-			$tot = count($auth_groups);
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$content->pagination = $pagination;
-
 			$content->label_header = _('Status Grid For All Host Groups');
-			$group_info_res = Hostgroup_Model::get_all($items_per_page, $offset);
 		} else {
-			# make sure we have the correct servicegroup
+			# make sure we have the correct hostgroup
 			$group_info_res = Hostgroup_Model::get($group);
 			$label_header = _('Status Grid For Host Group ');
 			$content->label_header = $label_header."'".$group."'";
 		}
 
-		$content->group_details = $group_info_res;
+		$content->group_details = $groups;
 		$content->error_message = _('No hostgroup data found');
 		$content->grouptype = 'host';
 		$content->icon_path	= $this->img_path('icons/16x16/');
