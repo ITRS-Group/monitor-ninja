@@ -1283,6 +1283,13 @@ class Reports_Model extends Model
 			$fields = 'host_name, service_description, state, hard';
 		}
 
+		$softorhard = false;
+		$alert_types = false;
+		$downtime = false;
+		$process = false;
+		$time_first = false;
+		$time_last = false;
+
 		$hosts = false;
 		$services = false;
 		if ($this->options['servicegroup']) {
@@ -1351,16 +1358,16 @@ class Reports_Model extends Model
 		} elseif ($services) {
 			$hosts_too = false;
 			if ($hosts && $hosts !== true) {
-				$object_selection = "\nAND (host_name IN(\n '" .
+				$object_selection = "(host_name IN('" .
 					join("',\n '", array_keys($hosts)) . "')";
 				$hosts_too = true;
 			}
 
 			if ($services !== true) {
 				if ($hosts_too === false)
-					$object_selection .= "\nAND (";
+					$object_selection .= "(";
 				else
-					$object_selection .= "\nOR ";
+					$object_selection .= " OR ";
 				$orstr = '';
 				# Must do this the hard way to allow host_name indices to
 				# take effect when running the query, since the construct
@@ -1381,19 +1388,22 @@ class Reports_Model extends Model
 			if (!empty($object_selection))
 				$object_selection .= ')';
 		} elseif ($hosts && $hosts !== true) {
-			$object_selection = "\nAND host_name IN(\n '" .
+			$object_selection = "host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
 		}
 
-		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
-			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
-			"AND timestamp <= " . $this->options['end_time'] . " ";
-		if ($object_selection) {
-			$query .= $object_selection . " ";
+		switch ($this->options['state_types']) {
+		 case 0: case 3: default:
+			break;
+		 case 1:
+			$softorhard = 'hard = 0';
+			break;
+		 case 2:
+			$softorhard = 'hard = 1';
+			break;
 		}
 
 		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
-			$this->options['host_states'] = self::HOST_ALL;
 			$host_states_sql = 'event_type = ' . self::HOSTCHECK;
 		} else {
 			$x = array();
@@ -1408,7 +1418,6 @@ class Reports_Model extends Model
 		}
 
 		if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
-			$this->options['service_states'] = self::SERVICE_ALL;
 			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
@@ -1423,23 +1432,40 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->options['alert_types']) {
-		 case 1: $query .= "\nAND " . $host_states_sql . ' '; break;
-		 case 2: $query .= "\nAND " . $service_states_sql . ' '; break;
+		case 1:
+			$alert_types = $host_states_sql;
+			break;
+		case 2:
+			$alert_types = $service_states_sql;
+			break;
 		 case 3:
-			$query .= "\nAND (" . $host_states_sql .
-				" OR " . $service_states_sql . ') '; break;
+			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
+			break;
 		}
 
-		switch ($this->options['state_types']) {
-		 case 0: case 3: default:
-			break;
-		 case 1:
-			$query .= "\nAND hard = 0 ";
-			break;
-		 case 2:
-			$query .= "\nAND hard = 1 ";
-			break;
-		}
+		if ($this->options['include_downtime'])
+			$downtime = 'event_type < 1200 AND event_type > 1100';
+
+		if ($this->options['include_process'])
+			$process = 'event_type < 200';
+
+		$time_first = 'timestamp >= ' . $this->options['start_time'];
+		$time_last = 'timestamp <= ' . $this->options['end_time'];
+
+		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
+		$query .= ' WHERE '.
+			sql::combine('and',
+				$time_first,
+				$time_last,
+				sql::combine('or',
+					$process,
+					sql::combine('and',
+						$object_selection,
+						sql::combine('or',
+							$downtime,
+							sql::combine('and',
+								$softorhard,
+								$alert_types)))));
 
 		return $query;
 	}
@@ -1500,8 +1526,6 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$host_states = $this->options['host_states'];
 		$service_states = $this->options['service_states'];
-		$this->options['host_states '] = self::HOST_ALL;
-		$this->options['service_states'] = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
@@ -1769,10 +1793,14 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$query .= " ORDER BY timestamp DESC";
+		$query .= ' ORDER BY timestamp '.($this->options['oldest_first']?'ASC':'DESC');
 		if ($this->options['summary_items'] > 0) {
 			$query .= " LIMIT " . $this->options['summary_items'];
+			if ($this->options['page'])
+				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
 		}
+
+		$query = 'SELECT data.*, comments.username, comments.user_comment FROM ('.$query.') data LEFT JOIN ninja_report_comments comments ON data.timestamp = comments.timestamp AND data.host_name = comments.host_name AND data.service_description = comments.service_description AND data.event_type = comments.event_type';
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
