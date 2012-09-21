@@ -160,7 +160,7 @@ class Histogram_Controller extends Base_reports_Controller
 				for ($i=0;$i<=24;$i++) $breakdown_keys[] = substr('00'.$i, -2);
 				break;
 		}
-		$histogram_data = $rpt->alert_history($breakdown_keys);
+		$histogram_data = $rpt->histogram($breakdown_keys);
 
 		$min = false;
 		$max = false;

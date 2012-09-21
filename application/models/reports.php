@@ -63,7 +63,6 @@ class Reports_Model extends Model
 
 	# alert summary options
 	private $summary_result = array();
-	private $summary_query = '';
 	private $host_hostgroup; /**< array(host => array(hgroup1, hgroupx...)) */
 	private $service_servicegroup; /**< array(service => array(sgroup1, sgroupx...))*/
 
@@ -1442,7 +1441,6 @@ class Reports_Model extends Model
 			break;
 		}
 
-		$this->summary_query = $query;
 		return $query;
 	}
 
@@ -1775,7 +1773,6 @@ class Reports_Model extends Model
 		if ($this->options['summary_items'] > 0) {
 			$query .= " LIMIT " . $this->options['summary_items'];
 		}
-		$this->summary_query = $query;
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
@@ -1851,7 +1848,7 @@ class Reports_Model extends Model
 	* 	@param $slots array with slots to fill with data
 	* 	@return array with keys: min, max, avg, data
 	*/
-	public function alert_history($slots=false)
+	public function histogram($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))
 			return false;
@@ -1901,7 +1898,7 @@ class Reports_Model extends Model
 
 		$data = false;
 
-		# tell alert_history_data() how to treat timestamp
+		# tell histogram_data() how to treat timestamp
 		$date_str = false;
 		switch ($breakdown) {
 			case 'monthly':
@@ -1918,7 +1915,7 @@ class Reports_Model extends Model
 				break;
 		}
 
-		$data = $this->alert_history_data($date_str, $fixed_slots, $newstatesonly);
+		$data = $this->histogram_data($query, $date_str, $fixed_slots, $newstatesonly);
 
 		$min = $events;
 		$max = $events;
@@ -1950,13 +1947,13 @@ class Reports_Model extends Model
 	* 	@param $newstatesonly bool Used to decide if to ignore repated events or not
 	* 	@return array Populated slots array with found data
 	*/
-	public function alert_history_data($date_str='j' , $slots=false, $newstatesonly=false)
+	public function histogram_data($query, $date_str='j' , $slots=false, $newstatesonly=false)
 	{
-		if (empty($this->summary_query) || empty($slots)) {
+		if (empty($slots)) {
 			return false;
 		}
 
-		$res = $this->db->query($this->summary_query)->result(false);
+		$res = $this->db->query($query)->result(false);
 		if (!$res) {
 			return false;
 		}
@@ -1974,5 +1971,4 @@ class Reports_Model extends Model
 		}
 		return $slots;
 	}
-
 }
