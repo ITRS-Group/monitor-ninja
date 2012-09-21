@@ -1010,7 +1010,8 @@ class Status_Controller extends Authenticated_Controller {
 			$hostshash[$svc['host_name']]['services'][$state][$svc['description']] =& $svc;
 		}
 
-		$group_details = false;
+		$content->group_details = $groups;
+
 		if (strtolower($group) == 'all') {
 			$content->label_header = _('Status Grid For All Host Groups');
 		} else {
@@ -1020,7 +1021,6 @@ class Status_Controller extends Authenticated_Controller {
 			$content->label_header = $label_header."'".$group."'";
 		}
 
-		$content->group_details = $groups;
 		$content->error_message = _('No hostgroup data found');
 		$content->grouptype = 'host';
 		$content->icon_path	= $this->img_path('icons/16x16/');
@@ -1117,31 +1117,42 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		$group_details = false;
+		$ls = Livestatus::instance();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
+		$groups   = $ls->getServicegroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
+		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
+		$services = $ls->getServices(array('filter' => $servicefilter));
+
+		$groupshash = array();
+		foreach($groups as &$gr) {
+			$groupshash[$gr['name']] =& $gr;
+		}
+
+		$hostshash = array();
+		foreach($hosts as &$host) {
+			$hostshash[$host['name']] =& $host;
+		}
+
+		foreach($services as &$svc) {
+			foreach($svc['groups'] as $g) {
+				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
+				$groupshash[$g]['hosts'][$svc['host_name']] =& $hostshash[$svc['host_name']];
+
+				if(!isset($groupshash[$g]['services'][$svc['host_name']])) { $groupshash[$g]['services'][$svc['host_name']] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
+				if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
+				$groupshash[$g]['services'][$svc['host_name']][$state][$svc['description']] =& $svc;
+			}
+		}
+		$content->group_details = $groups;
+
 		if (strtolower($group) == 'all') {
-			$auth = Nagios_auth_Model::instance();
-			$auth_groups = $auth->get_authorized_servicegroups();
-
-			$tot = count($auth_groups);
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$content->pagination = $pagination;
-
 			$content->label_header = _('Status Grid For All Service Groups');
-			$group_info_res = Servicegroup_Model::get_all($items_per_page, $offset);
 		} else {
 			# make sure we have the correct servicegroup
-			$group_info_res = Servicegroup_Model::get($group);
 			$label_header = _('Status Grid For Service Group ');
 			$content->label_header = $label_header."'".$group."'";
 		}
 
-		$content->group_details = $group_info_res;
 		$content->error_message = _('No servicegroup data found');
 		$content->grouptype = 'service';
 		$content->icon_path	= $this->img_path('icons/16x16/');
