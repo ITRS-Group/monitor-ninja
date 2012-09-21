@@ -50,10 +50,10 @@ class Config_Model extends Model {
 		$num_per_page = (int)$num_per_page;
 
 		# only use LIMIT when NOT counting
-		if ($offset !== false)
+		$offset_limit = '';
+		if (false !== $offset && $num_per_page) {
 			$offset_limit = $count!==false ? "" : " LIMIT " . $num_per_page." OFFSET ".$offset;
-		else
-			$offset_limit = '';
+		}
 
 		switch($type) {
 			case 'hosts':
