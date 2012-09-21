@@ -17,7 +17,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			'services' => 'service_description',
 			'hostgroups' => 'hostgroup',
 			'servicegroups' => 'servicegroup')),
-		'report_period' => array('type' => 'enum', 'default' => false), /**< A report period to generate the report over, may automatically set {start,end}_time */
+		'report_period' => array('type' => 'enum', 'default' => 'last7days'), /**< A report period to generate the report over, may automatically set {start,end}_time */
 		'alert_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of alerts to include (host, service, both) */
 		'state_types' => array('type' => 'enum', 'default' => 3), /**< Bitmap of the types of states to include (soft, hard, both) */
 		'host_states' => array('type' => 'enum', 'default' => 7), /**< Bitmap of the host states to include (up, down, unreachable, etc) */
