@@ -586,32 +586,6 @@ class Status_Controller extends Authenticated_Controller {
 			case 'summary':
 				return $this->_group_summary($grouptype, $group, $hoststatustypes, $servicestatustypes, $serviceprops, $hostprops);
 		}
-		$group_details = false;
-		$groupname_tmp = false;
-		if ($group == 'all') {
-			$auth = Nagios_auth_Model::instance();
-			if ($grouptype == 'host') {
-				$auth_groups = $auth->get_authorized_hostgroups();
-			} else {
-				$auth_groups = $auth->get_authorized_servicegroups();
-			}
-			$tot = count($auth_groups);
-			$pagination = new Pagination(
-				array(
-					'total_items'=> $tot,
-					'items_per_page' => $items_per_page
-				)
-			);
-			$offset = $pagination->sql_offset;
-			$this->template->content->pagination = $pagination;
-			$group_details = $grouptype == 'service' ? Servicegroup_Model::get_all($items_per_page, $offset) : Hostgroup_Model::get_all($items_per_page, $offset);
-		} else {
-			$group_details = $grouptype == 'service' ?
-				Servicegroup_Model::get($group) :
-				Hostgroup_Model::get($group);
-		}
-
-		$this->template->content->group_details = $group_details;
 
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
@@ -620,9 +594,12 @@ class Status_Controller extends Authenticated_Controller {
 
 		if ($grouptype == 'service') {
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Service Groups") : _("Service Overview For Service Group");
+			$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 		} else {
+			$groups = $this->_hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 			$content->lable_header = strtolower($group) == 'all' ? _("Service Overview For All Host Groups") : _("Service Overview For Host Group");
 		}
+		$content->group_details = $groups;
 		$content->lable_host = _('Host');
 		$content->lable_status = _('Status');
 		$content->lable_services = _('Services');
@@ -984,32 +961,7 @@ class Status_Controller extends Authenticated_Controller {
 		$content->label_services = _('Services');
 		$content->label_actions = _('Actions');
 
-		$ls = Livestatus::instance();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
-		$groups   = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
-		$services = $ls->getServices(array('filter' => $servicefilter));
-
-		$groupshash = array();
-		foreach($groups as &$gr) {
-			$groupshash[$gr['name']] =& $gr;
-		}
-
-		$hostshash = array();
-		foreach($hosts as &$host) {
-			$hostshash[$host['name']] =& $host;
-			foreach($host['groups'] as $g) {
-				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
-				$groupshash[$g]['hosts'][$host['name']] =& $host;
-			}
-		}
-
-		foreach($services as &$svc) {
-			if(!isset($hostshash[$svc['host_name']]['services'])) { $hostshash[$svc['host_name']]['services'] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
-			if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
-			$hostshash[$svc['host_name']]['services'][$state][$svc['description']] =& $svc;
-		}
-
+		$groups = $this->_hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 		$content->group_details = $groups;
 
 		if (strtolower($group) == 'all') {
@@ -1117,32 +1069,9 @@ class Status_Controller extends Authenticated_Controller {
 		$this->template->css_header->css = $this->xtra_css;
 		$this->template->inline_js = $this->inline_js;
 
-		$ls = Livestatus::instance();
-		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
-		$groups   = $ls->getServicegroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
-		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
-		$services = $ls->getServices(array('filter' => $servicefilter));
+		$content->group_details = $groups;
 
-		$groupshash = array();
-		foreach($groups as &$gr) {
-			$groupshash[$gr['name']] =& $gr;
-		}
-
-		$hostshash = array();
-		foreach($hosts as &$host) {
-			$hostshash[$host['name']] =& $host;
-		}
-
-		foreach($services as &$svc) {
-			foreach($svc['groups'] as $g) {
-				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
-				$groupshash[$g]['hosts'][$svc['host_name']] =& $hostshash[$svc['host_name']];
-
-				if(!isset($groupshash[$g]['services'][$svc['host_name']])) { $groupshash[$g]['services'][$svc['host_name']] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
-				if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
-				$groupshash[$g]['services'][$svc['host_name']][$state][$svc['description']] =& $svc;
-			}
-		}
+		$groups = $this->_servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes);
 		$content->group_details = $groups;
 
 		if (strtolower($group) == 'all') {
@@ -1713,5 +1642,65 @@ class Status_Controller extends Authenticated_Controller {
 		if( $host[$prefix.'state'] == 2 and $host[$prefix.'checks_enabled'] == 1 and $host[$prefix.'acknowledged'] == 0 and $host[$prefix.'scheduled_downtime_depth'] == 0 ) { $group['hosts_unreachable_unhandled']++; }
 
 		return 1;
+	}
+
+	private function _hostgroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
+		$ls = Livestatus::instance();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('host', false, $group, false, $hoststatustypes, false, $servicestatustypes, false);
+		$groups   = $ls->getHostgroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
+		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
+		$services = $ls->getServices(array('filter' => $servicefilter));
+
+		$groupshash = array();
+		foreach($groups as &$gr) {
+			$groupshash[$gr['name']] =& $gr;
+		}
+
+		$hostshash = array();
+		foreach($hosts as &$host) {
+			$hostshash[$host['name']] =& $host;
+			foreach($host['groups'] as $g) {
+				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
+				$groupshash[$g]['hosts'][$host['name']] =& $host;
+			}
+		}
+
+		foreach($services as &$svc) {
+			if(!isset($hostshash[$svc['host_name']]['services'])) { $hostshash[$svc['host_name']]['services'] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
+			if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
+			$hostshash[$svc['host_name']]['services'][$state][$svc['description']] =& $svc;
+		}
+
+		return $groups;
+	}
+
+	private function _servicegroup_grid_data($group, $hoststatustypes, $servicestatustypes) {
+		$ls = Livestatus::instance();
+		list($hostfilter, $servicefilter, $hostgroupfilter, $servicegroupfilter) = $this->classic_filter('service', false, false, $group, $hoststatustypes, false, $servicestatustypes, false);
+		$groups   = $ls->getServicegroups(array('filter' => $hostgroupfilter, 'paginggroup' => $this ) );
+		$hosts    = $ls->getHosts(array('filter' => $hostfilter));
+		$services = $ls->getServices(array('filter' => $servicefilter));
+
+		$groupshash = array();
+		foreach($groups as &$gr) {
+			$groupshash[$gr['name']] =& $gr;
+		}
+
+		$hostshash = array();
+		foreach($hosts as &$host) {
+			$hostshash[$host['name']] =& $host;
+		}
+
+		foreach($services as &$svc) {
+			foreach($svc['groups'] as $g) {
+				if(!isset($groupshash[$g]['hosts'])) { $groupshash[$g]['hosts'] = array(); }
+				$groupshash[$g]['hosts'][$svc['host_name']] =& $hostshash[$svc['host_name']];
+
+				if(!isset($groupshash[$g]['services'][$svc['host_name']])) { $groupshash[$g]['services'][$svc['host_name']] = array(4 => array(), 0 => array(), 1 => array(), 2 => array(), 3 => array()); }
+				if($svc['has_been_checked'] == 0) { $state = 4; } { $state = $svc['state']; }
+				$groupshash[$g]['services'][$svc['host_name']][$state][$svc['description']] =& $svc;
+			}
+		}
+		return $groups;
 	}
 }
