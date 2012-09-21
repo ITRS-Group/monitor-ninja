@@ -194,8 +194,15 @@ class Ninja_Controller extends Template_Controller {
 			}
 		}
 
-		# Load default current_skin, can be replaced by Authenticated_Controller if user is logged in.
-		$this->template->current_skin = Kohana::config('config.current_skin');
+		# user might not be logged in due to CLI scripts, be quiet
+		$current_skin = @config::get('config.current_skin', '*', true);
+		if (!$current_skin) {
+			$current_skin = 'default/';
+		}
+		else if (substr($current_skin, -1, 1) != '/') {
+			$current_skin .= '/';
+		}
+		$this->template->current_skin = $current_skin;
 	}
 
 

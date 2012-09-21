@@ -18,7 +18,6 @@ class Authenticated_Controller extends Ninja_Controller {
 
 	public function __construct()
 	{
-		parent::__construct();
 		# make sure user is authenticated
 
 		# Check if user is accessing through PHP CLI
@@ -71,16 +70,7 @@ class Authenticated_Controller extends Ninja_Controller {
 				$this->user = Auth::instance()->get_user();
 			}
 		}
-		
-		# user might not be logged in due to CLI scripts, be quiet
-		$current_skin = config::get('config.current_skin', '*', true);
-		if (!$current_skin) {
-			$current_skin = 'default/';
-		}
-		else if (substr($current_skin, -1, 1) != '/') {
-			$current_skin .= '/';
-		}
-		$this->template->current_skin = $current_skin;
+		parent::__construct();
 	}
 
 	public function is_authenticated()
