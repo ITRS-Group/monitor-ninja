@@ -52,6 +52,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
 		'use_alias' => array('type' => 'bool', 'default' => false),
 		'description' => array('type' => 'string', 'default' => false),
+		'include_alerts' => array('type' => 'bool', 'default' => false),
 	);
 
 	/**

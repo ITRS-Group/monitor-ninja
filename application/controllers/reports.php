@@ -212,8 +212,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->current_skin = $this->options['skin'];
 		}
 
-		$this->template->js_header->js = $this->xtra_js;
-
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
@@ -643,6 +641,19 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
+
+		if ($this->options['include_alerts']) {
+			$this->xtra_js[] = $this->add_path('summary/js/summary.js');
+			$alerts = new Alert_history_Controller();
+			$alrt_opts = new Alert_history_options($this->options);
+			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
+			$alerts->options = $alrt_opts;
+			$alerts->auto_render = false;
+			$alerts->generate();
+			$this->template->content->log_content = $alerts->template->content->content;
+		}
+		$this->template->js_header->js = $this->xtra_js;
+
 		return $template;
 	}
 
