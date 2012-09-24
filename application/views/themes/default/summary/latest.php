@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
+<div class="clearservice"></div>
 <?php echo isset($pagination)?$pagination:'' ?>
 <p><?php date::duration($options['start_time'], $options['end_time']); ?></p>
 <table>
