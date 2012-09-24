@@ -615,17 +615,6 @@ class Reports_Controller extends Base_reports_Controller
 			} # end if not empty. Display message to user?
 		}
 
-		// fetch and display log messages
-		$log = arr::search($data, 'log');
-		if ($log !== false) {
-			$template->log_content = $this->add_view('reports/log');
-			$log_template = $template->log_content;
-			$log_template->log = array_shift($log);
-			$log_template->type = $sub_type;
-			$log_template->source = $data['source'];
-			$log_template->date_format_str = nagstat::date_format();
-		}
-
 		if($this->options['include_trends']) {
 			$graph_data = array();
 			if($is_group) {
