@@ -7,11 +7,13 @@ class Alert_history_Controller extends Summary_Controller
 {
 	public $type = 'alert_history';
 
-	public function index($input = false) {
+	public function index($input = false)
+	{
 		url::redirect('alert_history/generate');
 	}
 
-	public function generate($input = false) {
+	public function generate($input = false)
+	{
 		$this->setup_options_obj($input);
 		if ($this->options['output_format'] == 'pdf') {
 			return $this->generate_pdf($input);
@@ -23,7 +25,9 @@ class Alert_history_Controller extends Summary_Controller
 		$this->template->content->report_options = $this->add_view('alert_history/options');
 		$this->template->title = _('Alert history');
 		$this->template->content->header->standard_header->title = _('Alert history');
-		$this->template->content->content->pagination = new CountlessPagination(array('style' => 'digg-pageless'));
+		if ($this->options['summary_items']) {
+			$this->template->content->content->pagination = new CountlessPagination(array('style' => 'digg-pageless'));
+		}
 	}
 	
 	public function add_comment()
