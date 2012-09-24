@@ -230,8 +230,6 @@ class Summary_Controller extends Base_reports_Controller
 			self::ALERT_TOTALS => 'alert_totals',
 		);
 
-		$this->template->set_global('type', $this->type);
-
 		$this->template->content = $this->add_view('reports/index');
 		$this->template->content->header = $this->add_view('summary/header');
 		$this->template->content->header->standard_header = $this->add_view('reports/header');

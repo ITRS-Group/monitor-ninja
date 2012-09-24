@@ -148,7 +148,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->set_global('type', $this->type);
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
 		$template->report_options->reporting_periods = $this->_get_reporting_periods();
@@ -263,7 +262,6 @@ class Reports_Controller extends Base_reports_Controller
 			default:
 				url::redirect(Router::$controller.'/index');
 		}
-		$this->template->set_global('type', $this->type);
 		$var = $this->options->get_value('report_type');
 		$objects = false;
 		$mon_auth = Nagios_auth_Model::instance();
