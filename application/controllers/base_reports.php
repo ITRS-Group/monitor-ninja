@@ -155,6 +155,7 @@ abstract class Base_reports_Controller extends Authenticated_Controller
 			return;
 		$this->options = Report_options::setup_options_obj($type ? $type : $this->type, $input);
 		$this->template->set_global('options', $this->options);
+		$this->template->set_global('type', $this->type);
 	}
 
 	/**

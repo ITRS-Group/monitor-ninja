@@ -63,7 +63,6 @@ class Reports_Model extends Model
 
 	# alert summary options
 	private $summary_result = array();
-	private $summary_query = '';
 	private $host_hostgroup; /**< array(host => array(hgroup1, hgroupx...)) */
 	private $service_servicegroup; /**< array(service => array(sgroup1, sgroupx...))*/
 
@@ -1284,6 +1283,13 @@ class Reports_Model extends Model
 			$fields = 'host_name, service_description, state, hard';
 		}
 
+		$softorhard = false;
+		$alert_types = false;
+		$downtime = false;
+		$process = false;
+		$time_first = false;
+		$time_last = false;
+
 		$hosts = false;
 		$services = false;
 		if ($this->options['servicegroup']) {
@@ -1305,6 +1311,7 @@ class Reports_Model extends Model
 			}
 			$this->service_servicegroup['host'] = $hosts;
 			$this->service_servicegroup['service'] = $services;
+			$services = false;
 		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
 			$hmod = new Host_Model();
@@ -1350,18 +1357,8 @@ class Reports_Model extends Model
 		if(($hosts === Report_options::ALL_AUTHORIZED) || ($services === Report_options::ALL_AUTHORIZED)) {
 			// screw filters, we're almighty
 		} elseif ($services) {
-			$hosts_too = false;
-			if ($hosts && $hosts !== true) {
-				$object_selection = "\nAND (host_name IN(\n '" .
-					join("',\n '", array_keys($hosts)) . "')";
-				$hosts_too = true;
-			}
-
 			if ($services !== true) {
-				if ($hosts_too === false)
-					$object_selection .= "\nAND (";
-				else
-					$object_selection .= "\nOR ";
+				$object_selection .= "(";
 				$orstr = '';
 				# Must do this the hard way to allow host_name indices to
 				# take effect when running the query, since the construct
@@ -1382,19 +1379,22 @@ class Reports_Model extends Model
 			if (!empty($object_selection))
 				$object_selection .= ')';
 		} elseif ($hosts && $hosts !== true) {
-			$object_selection = "\nAND host_name IN(\n '" .
+			$object_selection = "host_name IN(\n '" .
 				join("',\n '", array_keys($hosts)) . "')";
 		}
 
-		$query = "SELECT " . $fields . "\nFROM " . $this->db_table .
-			"\nWHERE timestamp >= " . $this->options['start_time'] . " " .
-			"AND timestamp <= " . $this->options['end_time'] . " ";
-		if ($object_selection) {
-			$query .= $object_selection . " ";
+		switch ($this->options['state_types']) {
+		 case 0: case 3: default:
+			break;
+		 case 1:
+			$softorhard = 'hard = 0';
+			break;
+		 case 2:
+			$softorhard = 'hard = 1';
+			break;
 		}
 
 		if (!$this->options['host_states'] || $this->options['host_states'] == self::HOST_ALL) {
-			$this->options['host_states'] = self::HOST_ALL;
 			$host_states_sql = 'event_type = ' . self::HOSTCHECK;
 		} else {
 			$x = array();
@@ -1409,7 +1409,6 @@ class Reports_Model extends Model
 		}
 
 		if (!$this->options['service_states'] || $this->options['service_states'] == self::SERVICE_ALL) {
-			$this->options['service_states'] = self::SERVICE_ALL;
 			$service_states_sql = 'event_type = ' . self::SERVICECHECK;
 		} else {
 			$x = array();
@@ -1424,25 +1423,41 @@ class Reports_Model extends Model
 		}
 
 		switch ($this->options['alert_types']) {
-		 case 1: $query .= "\nAND " . $host_states_sql . ' '; break;
-		 case 2: $query .= "\nAND " . $service_states_sql . ' '; break;
+		case 1:
+			$alert_types = $host_states_sql;
+			break;
+		case 2:
+			$alert_types = $service_states_sql;
+			break;
 		 case 3:
-			$query .= "\nAND (" . $host_states_sql .
-				" OR " . $service_states_sql . ') '; break;
-		}
-
-		switch ($this->options['state_types']) {
-		 case 0: case 3: default:
-			break;
-		 case 1:
-			$query .= "\nAND hard = 0 ";
-			break;
-		 case 2:
-			$query .= "\nAND hard = 1 ";
+			$alert_types = sql::combine('or', $host_states_sql, $service_states_sql);
 			break;
 		}
 
-		$this->summary_query = $query;
+		if ($this->options['include_downtime'])
+			$downtime = 'event_type < 1200 AND event_type > 1100';
+
+		if ($this->options['include_process'])
+			$process = 'event_type < 200';
+
+		$time_first = 'timestamp >= ' . $this->options['start_time'];
+		$time_last = 'timestamp <= ' . $this->options['end_time'];
+
+		$query = "SELECT " . $fields . "\nFROM " . $this->db_table;
+		$query .= ' WHERE '.
+			sql::combine('and',
+				$time_first,
+				$time_last,
+				sql::combine('or',
+					$process,
+					sql::combine('and',
+						$object_selection,
+						sql::combine('or',
+							$downtime,
+							sql::combine('and',
+								$softorhard,
+								$alert_types)))));
+
 		return $query;
 	}
 
@@ -1502,8 +1517,6 @@ class Reports_Model extends Model
 		$start = microtime(true);
 		$host_states = $this->options['host_states'];
 		$service_states = $this->options['service_states'];
-		$this->options['host_states '] = self::HOST_ALL;
-		$this->options['service_states'] = self::SERVICE_ALL;
 		$query = $this->build_alert_summary_query();
 
 		$dbr = $this->db->query($query);
@@ -1692,6 +1705,8 @@ class Reports_Model extends Model
 			} else {
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
+				if (!isset($this->service_servicegroup[$type][$name]))
+					continue;
 			}
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
@@ -1771,11 +1786,14 @@ class Reports_Model extends Model
 			return false;
 		}
 
-		$query .= " ORDER BY timestamp DESC";
+		$query .= ' ORDER BY timestamp '.($this->options['oldest_first']?'ASC':'DESC');
 		if ($this->options['summary_items'] > 0) {
 			$query .= " LIMIT " . $this->options['summary_items'];
+			if ($this->options['page'])
+				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
 		}
-		$this->summary_query = $query;
+
+		$query = 'SELECT data.*, comments.username, comments.user_comment FROM ('.$query.') data LEFT JOIN ninja_report_comments comments ON data.timestamp = comments.timestamp AND data.host_name = comments.host_name AND data.service_description = comments.service_description AND data.event_type = comments.event_type';
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
@@ -1790,6 +1808,16 @@ class Reports_Model extends Model
 
 		$this->completion_time = microtime(true) - $this->completion_time;
 		return $this->summary_result;
+	}
+
+	/**
+	 * Add a new comment to the event pointed to by the timestamp/event_type/host_name/service
+	 */
+	public static function add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username) {
+		$db = Database::instance();
+		$db->query('DELETE FROM ninja_report_comments WHERE timestamp='.$db->escape($timestamp).' AND event_type = '.$db->escape($event_type).' AND host_name = '.$db->escape($host_name).' AND service_description = '.$db->escape($service));
+		$db->query('INSERT INTO ninja_report_comments(timestamp, event_type, host_name, service_description, comment_timestamp, username, user_comment) VALUES ('.$db->escape($timestamp).', '.$db->escape($event_type).', '.$db->escape($host_name).', '.$db->escape($service).', UNIX_TIMESTAMP(), '.$db->escape($username).', '.$db->escape($comment).')');
+		return true;
 	}
 
 	/**
@@ -1851,7 +1879,7 @@ class Reports_Model extends Model
 	* 	@param $slots array with slots to fill with data
 	* 	@return array with keys: min, max, avg, data
 	*/
-	public function alert_history($slots=false)
+	public function histogram($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))
 			return false;
@@ -1901,7 +1929,7 @@ class Reports_Model extends Model
 
 		$data = false;
 
-		# tell alert_history_data() how to treat timestamp
+		# tell histogram_data() how to treat timestamp
 		$date_str = false;
 		switch ($breakdown) {
 			case 'monthly':
@@ -1918,7 +1946,7 @@ class Reports_Model extends Model
 				break;
 		}
 
-		$data = $this->alert_history_data($date_str, $fixed_slots, $newstatesonly);
+		$data = $this->histogram_data($query, $date_str, $fixed_slots, $newstatesonly);
 
 		$min = $events;
 		$max = $events;
@@ -1945,18 +1973,19 @@ class Reports_Model extends Model
 	/**
 	*	Populate slots for histogram
 	*
+	* 	@param $query sql
 	* 	@param $date_str string for use in PHP date()
 	* 	@param $slots array with slots to fill with data
 	* 	@param $newstatesonly bool Used to decide if to ignore repated events or not
 	* 	@return array Populated slots array with found data
 	*/
-	public function alert_history_data($date_str='j' , $slots=false, $newstatesonly=false)
+	public function histogram_data($query, $date_str='j' , $slots=false, $newstatesonly=false)
 	{
-		if (empty($this->summary_query) || empty($slots)) {
+		if (empty($slots)) {
 			return false;
 		}
 
-		$res = $this->db->query($this->summary_query)->result(false);
+		$res = $this->db->query($query)->result(false);
 		if (!$res) {
 			return false;
 		}
@@ -1974,5 +2003,4 @@ class Reports_Model extends Model
 		}
 		return $slots;
 	}
-
 }

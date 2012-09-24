@@ -87,7 +87,7 @@ $section_reporting = array();
 if(Kohana::config('config.pnp4nagios_path') !== false) {
 	$section_reporting[$menu_items['pnp']] = array('/pnp?host=.pnp-internal&srv=runtime', 'pnp',0);
 }
-$section_reporting[$menu_items['alert_history']] = array('/showlog/alert_history', 'alerthistory',0);
+$section_reporting[$menu_items['alert_history']] = array('/alert_history/generate', 'alerthistory',0);
 $section_reporting[$menu_items['alert_summary']]= array('/summary', 'alertsummary',0);
 $section_reporting[$menu_items['notifications']]  = array('/notifications', 'notifications',0);
 $section_reporting[$menu_items['event_log']] = array('/showlog/showlog', 'eventlog',0);

@@ -1,7 +1,3 @@
-// to keep last valid value. Enables restore of value when an invalid value is set.
-var start_time_bkup = '';
-var end_time_bkup = '';
-
 $(document).ready(function() {
 	$("#histogram_form").bind('submit', function() {
 		loopElements();

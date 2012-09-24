@@ -148,7 +148,6 @@ class Reports_Controller extends Base_reports_Controller
 
 		$this->template->inline_js = $this->inline_js;
 
-		$this->template->set_global('type', $this->type);
 		$template->new_saved_title = sprintf(_('Create new saved %s report'), $type_str);
 		$template->label_create_new = $this->type == 'avail' ? _('Availability report') : _('SLA report');
 		$template->report_options->reporting_periods = $this->_get_reporting_periods();
@@ -213,8 +212,6 @@ class Reports_Controller extends Base_reports_Controller
 			$this->template->current_skin = $this->options['skin'];
 		}
 
-		$this->template->js_header->js = $this->xtra_js;
-
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
@@ -263,7 +260,6 @@ class Reports_Controller extends Base_reports_Controller
 			default:
 				url::redirect(Router::$controller.'/index');
 		}
-		$this->template->set_global('type', $this->type);
 		$var = $this->options->get_value('report_type');
 		$objects = false;
 		$mon_auth = Nagios_auth_Model::instance();
@@ -365,30 +361,6 @@ class Reports_Controller extends Base_reports_Controller
 					$this->_reorder_by_host_and_service($template_values[$i], $this->options['report_type']);
 				}
 
-			if($this->options['include_trends']) {
-				$graph_data = array();
-				if($is_group) {
-					foreach ($data_arr as $key => $data) {
-						# $data is the outer array (with, source, log,
-						# states etc)
-						if (isset($data['log'])) {
-							$graph_data = array_merge($data['log'], $graph_data);
-						}
-					}
-				} else {
-					// We are not checking groups
-					$graph_data = $data_arr['log'];
-				}
-
-				$template->trends_graph = $this->add_view('trends/new_report');
-				$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-					$graph_data,
-					$this->options['start_time'],
-					$this->options['end_time'],
-					$template->title
-				);
-				$template->trends_graph->is_avail = true;
-			}
 
 			$template->content = $this->add_view('reports/multiple_'.$sub_type.'_states');
 			$template->content->multiple_states = $template_values;
@@ -487,20 +459,6 @@ class Reports_Controller extends Base_reports_Controller
 
 					$avail->header_string = ucfirst($this->options['report_type'])." "._('state breakdown');
 
-					$this->xtra_css[] = $this->add_path('css/default/reports.css');
-					if($this->options['include_trends']) {
-						$graph_data = $data_arr['log'];
-
-						$template->trends_graph = $this->add_view('trends/new_report');
-						$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-							$graph_data,
-							$this->options['start_time'],
-							$this->options['end_time'],
-							$template->title
-						);
-						$this->xtra_js[] = $this->add_path('trends/js/trends.js');
-					}
-
 					$avail->pie = $this->add_view('reports/pie_chart');
 
 					// ===== SETUP PIECHART VALUES =====
@@ -531,17 +489,6 @@ class Reports_Controller extends Base_reports_Controller
 							$content->service_filter_status_show = false;
 							$content->source = $data['source'];
 						}
-					}
-
-					// fetch and display log messages
-					$log = arr::search($data, 'log');
-					if ($log !== false) {
-						$template->log_content = $this->add_view('reports/log');
-						$log_template = $template->log_content;
-						$log_template->log = array_shift($log);
-						$log_template->type = $sub_type;
-						$log_template->source = $data['source'];
-						$log_template->date_format_str = nagstat::date_format();
 					}
 
 					$t1 = $this->options['start_time'];
@@ -664,11 +611,49 @@ class Reports_Controller extends Base_reports_Controller
 			} # end if not empty. Display message to user?
 		}
 
+		if($this->options['include_trends']) {
+			$graph_data = array();
+			if($is_group) {
+				foreach ($data_arr as $key => $data) {
+					# $data is the outer array (with, source, log,
+					# states etc)
+					if (isset($data['log'])) {
+						$graph_data = array_merge($data['log'], $graph_data);
+					}
+				}
+			} else {
+				// We are not checking groups
+				$graph_data = $data_arr['log'];
+			}
+
+			$template->trends_graph = $this->add_view('trends/new_report');
+			$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
+				$graph_data,
+				$this->options['start_time'],
+				$this->options['end_time'],
+				$template->title
+			);
+			$template->trends_graph->is_avail = true;
+		}
+
 		$this->template->inline_js = $this->inline_js;
 		$this->template->js_strings = $this->js_strings;
 		$this->template->css_header->css = $this->xtra_css;
 
 		$this->template->title = _('Reporting » ').($this->type == 'avail' ? _('Availability Report') : _('SLA Report')).(' » Report');
+
+		if ($this->options['include_alerts']) {
+			$this->xtra_js[] = $this->add_path('summary/js/summary.js');
+			$alerts = new Alert_history_Controller();
+			$alrt_opts = new Alert_history_options($this->options);
+			$alrt_opts['summary_items'] = 0; // we want *every* line in this time range
+			$alerts->options = $alrt_opts;
+			$alerts->auto_render = false;
+			$alerts->generate();
+			$this->template->content->log_content = $alerts->template->content->content;
+		}
+		$this->template->js_header->js = $this->xtra_js;
+
 		return $template;
 	}
 
@@ -1120,7 +1105,7 @@ class Reports_Controller extends Base_reports_Controller
 			'interval' => _("Select how often the report is to be produced and delivered"),
 			'recipents' => _("Enter the email addresses of the recipients of the report. To enter multiple addresses, separate them by commas"),
 			'filename' => _("This field lets you select a custom filename for the report. If the name ends in <strong>.csv</strong>, a CSV file will be generated - otherwise a PDF will be generated."),
-			'description' => _("Add a description to this schedule. This may be any information that could be of interest when editing the report at a later time. (optional)"),
+			'description' => _("Add a description to this report, such as an explanation of what the report conveys. Plain text only."),
 			'start-date' => _("Enter the start date for the report (or use the pop-up calendar)."),
 			'end-date' => _("Enter the end date for the report (or use the pop-up calendar)."),
 			'local_persistent_filepath' => _("Specify an absolute path on the local disk, where you want the report to be saved in PDF format.").'<br />'._("This should be the location of a folder, for example /tmp"),

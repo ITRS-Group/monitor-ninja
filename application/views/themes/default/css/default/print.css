@@ -33,7 +33,9 @@ h1 {
 .report-links,
 .testcase,
 .helptext_target,
-#version_info
+#version_info,
+.pagination,
+.comments img
 {
 	display: none;
 }
@@ -53,18 +55,6 @@ h1 {
 	line-height: 17px;
 	background: url(images/arrow.gif) 0px 7px no-repeat;
 	padding-left: 10px;
-}
-/* pagination *************************************************************************************/
-#content p.pagination {
-	float: right;
-	margin-top: 3px;
-	margin-right: 10px;
-}
-#status_count_summary {
-	float: left;
-}
-#content form.pagination_form {
-	float: right;
 }
 
 .setup-table,

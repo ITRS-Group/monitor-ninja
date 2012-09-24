@@ -1,8 +1,3 @@
-// to keep last valid value. Enables restore of value when an invalid value is set.
-var start_time_bkup = '';
-var end_time_bkup = '';
-var _schedule_remove = false;
-
 $(document).ready(function() {
 
 	$("#saved_report_form").bind('submit', function() {
@@ -102,7 +97,8 @@ function expand_and_populate(data)
 	var field_obj = new field_maps();
 	var tmp_fields = new field_maps3();
 	var field_str = reportObj.report_type;
-	set_selection(reportObj.report_type, function() {
+	$('#report_type').val(field_str);
+	set_selection(field_str, function() {
 		var mo = new missing_objects();
 		if (reportObj.objects) {
 			for (var prop in reportObj.objects) {

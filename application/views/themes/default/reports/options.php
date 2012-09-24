@@ -118,13 +118,18 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		</td>
 	</tr>
 	<tr>
+		<td>
+			<?php echo help::render('include_alerts') ?>
+			<input type="checkbox" class="checkbox" value="1" id="include_alerts" name="include_alerts"
+					onchange="toggle_label_weight(this.checked, 'include_alerts');" <?php print $options['include_alerts']?'checked="checked"':''; ?> />
+			<label for="include_alerts"><?php echo _('Include alerts log') ?></label>
+		</td>
+		<td></td>
 		<td class="avail_display">
-			<?php if('avail' == $type) { ?>
 			<?php echo help::render('include_trends') ?>
 			<input type="checkbox" class="checkbox" value="1" id="include_trends" name="include_trends"
 					onchange="toggle_label_weight(this.checked, 'include_trends');" <?php print $options['include_trends']?'checked="checked"':''; ?> />
 			<label for="include_trends"><?php echo _('Include trends graph') ?></label>
-			<?php } ?>
 		</td>
 	</tr>
 	<?php if (isset($extra_options)) {

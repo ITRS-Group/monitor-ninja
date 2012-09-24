@@ -383,7 +383,6 @@ input.textbox {
 #content p.pagination {
 	float: right;
 	margin-top: 3px;
-	margin-bottom: -15px;
 }
 #content p.pagination strong,
 #content p.pagination a {

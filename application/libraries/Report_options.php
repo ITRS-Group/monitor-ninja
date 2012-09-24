@@ -30,8 +30,8 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'scheduleddowntimeasuptime' => array('type' => 'enum', 'default' => 0), /**< Schedule downtime as uptime: yes, no, "yes, but tell me when you cheated" */
 		'assumestatesduringnotrunning' => array('type' => 'bool', 'default' => false), /**< Whether to assume states during not running */
 		'includesoftstates' => array('type' => 'bool', 'default' => true), /**< Include soft states, yes/no? */
-		'host_name' => array('type' => 'array', 'default' => array()), /**< Hosts to include (note: array) */
-		'service_description' => array('type' => 'array', 'default' => array()), /**< Services to include (note: array) */
+		'host_name' => array('type' => 'objsel', 'default' => array()), /**< Hosts to include (note: array) */
+		'service_description' => array('type' => 'objsel', 'default' => array()), /**< Services to include (note: array) */
 		'hostgroup' => array('type' => 'array', 'default' => array()), /**< Hostgroups to include (note: array) */
 		'servicegroup' => array('type' => 'array', 'default' => array()), /**< Servicegroups to include (note: array) */
 		'start_time' => array('type' => 'timestamp', 'default' => 0), /**< Start time for report, timestamp or date-like string */
@@ -52,6 +52,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 		'local_persistent_filepath' => array('type' => 'string', 'default' => ''), /**< Directory (not filename) to store the filename in locally */
 		'use_alias' => array('type' => 'bool', 'default' => false),
 		'description' => array('type' => 'string', 'default' => false),
+		'include_alerts' => array('type' => 'bool', 'default' => false),
 	);
 
 	/**
@@ -152,13 +153,13 @@ class Report_options_core implements ArrayAccess, Iterator {
 	}
 
 	public function get_value($key) {
-		if (!isset($this->options[$key]) || !isset($this->vtypes[$key]))
+		if (!$this[$key] || !isset($this->vtypes[$key]))
 			return false;
 		if ($this->vtypes[$key]['type'] !== 'enum')
 			return false;
-		if (!isset($this->vtypes[$key]['options'][$this->options[$key]]))
+		if (!isset($this->vtypes[$key]['options'][$this[$key]]))
 			return $key;
-		return $this->vtypes[$key]['options'][$this->options[$key]];
+		return $this->vtypes[$key]['options'][$this[$key]];
 	}
 
 	public function get_report_members() {
@@ -350,12 +351,9 @@ class Report_options_core implements ArrayAccess, Iterator {
 			if (!is_string($value))
 				return false;
 			break;
-		 case 'list':
-			if (is_array($value) && count($value) === 1)
-				$value = array_pop($value);
-			if (is_string($value))
-				break;
-			/* fallthrough */
+		 case 'objsel':
+			if ($value == self::ALL_AUTHORIZED)
+				return true;
 		 case 'array':
 			if (!is_array($value))
 				return false;
@@ -427,21 +425,23 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['servicegroup'] = array();
 			$this->options['service_description'] = array();
 			$this->options['host_name'] = $value;
-			$this->options['report_type'] = 'hosts';
+			$this['report_type'] = 'hosts';
 			$this->hosts = array();
 			return true;
 		 case 'service_description':
 			if (!$value)
 				return false;
-			foreach ($value as $svc) {
-				if (strpos($svc, ';') === false)
-					return false;
+			if($value != self::ALL_AUTHORIZED) {
+				foreach ($value as $svc) {
+					if (strpos($svc, ';') === false)
+						return false;
+				}
 			}
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = array();
 			$this->options['host_name'] = array();
 			$this->options['service_description'] = $value;
-			$this->options['report_type'] = 'services';
+			$this['report_type'] = 'services';
 			$this->services = array();
 			return true;
 		 case 'hostgroup':
@@ -451,7 +451,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['service_description'] = array();
 			$this->options['servicegroup'] = array();
 			$this->options['hostgroup'] = $value;
-			$this->options['report_type'] = 'hostgroups';
+			$this['report_type'] = 'hostgroups';
 			$this->hosts = array();
 			return true;
 		 case 'servicegroup':
@@ -461,7 +461,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['service_description'] = array();
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = $value;
-			$this->options['report_type'] = 'servicegroups';
+			$this['report_type'] = 'servicegroups';
 			$this->services = array();
 			return true;
 		 case 'start_time':

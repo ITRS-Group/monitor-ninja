@@ -89,6 +89,7 @@ class Summary_Controller extends Base_reports_Controller
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
+
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
@@ -99,6 +100,14 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		$this->inline_js .= "var invalid_report_names = ".$old_config_names_js .";\n";
+
+		if (!$this->options['standardreport']) {
+			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
+		}
+
+		$this->template->inline_js = $this->inline_js;
+		$this->template->js_strings = $this->js_strings;
 
 		$template->type = $this->type;
 		$template->old_config_names_js = $old_config_names_js;
@@ -110,18 +119,6 @@ class Summary_Controller extends Base_reports_Controller
 
 		$template->saved_reports = $saved_reports;
 
-		$this->inline_js .= "invalid_report_names = ".$old_config_names_js .";\n";
-
-		if ($this->options['report_id']!==false) {
-			if ($this->options['standardreport'])
-				$this->inline_js .= "$('#report_mode_custom').attr('checked', false);\n";
-			if ($this->options['report_type'])
-				$this->inline_js .= "set_selection('".$this->options['report_type']."');\n";
-			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
-		}
-
-		$this->template->inline_js = $this->inline_js;
-		$this->template->js_strings = $this->js_strings;
 		$this->template->title = _("Reporting » Alert summary » Setup");
 	}
 
@@ -197,12 +194,15 @@ class Summary_Controller extends Base_reports_Controller
 
 		$this->template->disable_refresh = true;
 		$this->xtra_js[] = 'application/media/js/date.js';
+		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
+		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
 		$this->xtra_js[] = $this->add_path('summary/js/summary.js');
 		$this->template->js_header = $this->add_view('js_header');
 		$this->template->css_header = $this->add_view('css_header');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
+		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->template->css_header->css = $this->xtra_css;
 
@@ -230,8 +230,6 @@ class Summary_Controller extends Base_reports_Controller
 			self::ALERT_TOTALS => 'alert_totals',
 		);
 
-		$this->template->set_global('type', $this->type);
-
 		$this->template->content = $this->add_view('reports/index');
 		$this->template->content->header = $this->add_view('summary/header');
 		$this->template->content->header->standard_header = $this->add_view('reports/header');
@@ -246,7 +244,6 @@ class Summary_Controller extends Base_reports_Controller
 		$content->host_state_names = $this->host_state_names;
 		$content->service_state_names = $this->service_state_names;
 
-
 		$this->js_strings .= reports::js_strings();
 		$this->js_strings .= "var _scheduled_label = '"._('Scheduled')."';\n";
 		$this->js_strings .= "var _reports_success = '"._('Success')."';\n";
@@ -257,7 +254,11 @@ class Summary_Controller extends Base_reports_Controller
 		$this->js_strings .= "var _reports_schedule_send_ok = '"._('Your report was successfully sent')."';\n";
 		$this->js_strings .= "var _reports_schedule_create_ok = '"._('Your schedule has been successfully created')."';\n";
 		$this->js_strings .= "var _reports_fatal_err_str = '"._('It is not possible to schedule this report since some vital information is missing.')."';\n";
+		if (!$this->options['standardreport']) {
+			$this->inline_js .= "expand_and_populate(" . $this->options->as_json() . ");\n";
+		}
 		$this->template->js_strings = $this->js_strings;
+		$this->template->inline_js = $this->inline_js;
 
 		$content->result = $result;
 		$this->template->title = _("Reporting » Alert summary » Report");

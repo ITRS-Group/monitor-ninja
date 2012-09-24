@@ -1,4 +1,3 @@
-var DEBUG = false;
 var host_tmp = false;
 var host = false;
 var service_tmp = false;
@@ -233,7 +232,7 @@ function show_calendar(val, update) {
 }
 
 function set_selection(val, cb) {
-	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #submit_button, #enter_sla, #display_service_status, #display_host_status').hide();
+	$('#hostgroup_row, #servicegroup_row, #host_row_2, #service_row_2, #submit_button, #display_service_status, #display_host_status').hide();
 	show_progress('progress', _wait_str);
 	switch (val) {
 		case 'servicegroups':
@@ -248,7 +247,7 @@ function set_selection(val, cb) {
 			break;
 		case 'services':
 			get_members('', 'service', cb);
-			$('#service_row_2, #block_service_states, #display_serviec_status').show();
+			$('#service_row_2, #block_service_states, #display_service_status').show();
 			$('#block_host_states').hide();
 			break;
 		case 'hostgroups':
@@ -259,8 +258,6 @@ function set_selection(val, cb) {
 			break;
 	}
 	$('#submit_button').show();
-	if ($('input[name=type]').val() == 'sla')
-		$('#enter_sla').show();
 }
 
 function get_members(filter, type, cb) {
@@ -534,7 +531,7 @@ function check_form_values(form)
 		}
 	}
 
-	if ($('input[name=report_mode]:checked', form).val() != 'standard' && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
+	if ($('input[name=report_mode]:checked', form).val() != 'standard' && !$('#show_all').is(':checked') && $("#" + field_obj.map[rpt_type]).is('select') && $("#" + field_obj.map[rpt_type] + ' option', form).length == 0) {
 		errors++;
 		err_str += "<li>" + _reports_err_str_noobjects + ".</li>";
 	}
@@ -755,7 +752,8 @@ function init_timepicker()
 
 function disable_sla_fields(report_period)
 {
-	$('#csv_cell').hide();
+	if (!$('#month_1').length)
+		return;
 	var now = new Date();
 	var this_month = now.getMonth()+1;
 	switch (report_period) {
