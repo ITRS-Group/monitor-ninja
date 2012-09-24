@@ -40,8 +40,8 @@
 						if ( Kohana::config('config.nagvis_path') ) {
 							echo html::anchor('statusmap/host/'.$host, html::image($this->add_path('icons/16x16/locate-host-on-map.png'),array('alt' => _('View status map for this host and its children'), 'title' => _('View status map for this host and its children'))),array('style' => 'border: 0px')).'&nbsp;'; 
 						}
-						echo html::anchor('trends/host/'.$host, html::image($this->add_path('icons/16x16/trends.png'),array('alt' => _('View trends for this host'), 'title' => _('View trends for this host'))),array('style' => 'border: 0px')).'&nbsp;';
-						echo html::anchor('showlog/alert_history/'.$host, html::image($this->add_path('icons/16x16/alert-history.png'),array('alt' => _('View alert history for this host'), 'title' => _('View alert history for this host'))),array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('trends/generate?host_name[]='.$host, html::image($this->add_path('icons/16x16/trends.png'),array('alt' => _('View trends for this host'), 'title' => _('View trends for this host'))),array('style' => 'border: 0px')).'&nbsp;';
+						echo html::anchor('alert_history/generate?host_name[]='.$host, html::image($this->add_path('icons/16x16/alert-history.png'),array('alt' => _('View alert history for this host'), 'title' => _('View alert history for this host'))),array('style' => 'border: 0px')).'&nbsp;';
 						echo html::anchor('notifications/host/'.$host, html::image($this->add_path('icons/16x16/notify.png'),array('alt' => _('View notifications for this host'), 'title' => _('View notifications for this host'))),array('style' => 'border: 0px'))
 					?>
 				</td>

@@ -212,7 +212,7 @@ class Status_Controller extends Authenticated_Controller {
 			} else {
 				$label_view_for = _('for this host');
 				$page_links = array(
-					 _('Alert history') => 'showlog/alert_history/'.$host,
+					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
 					 _('Notifications') => 'notifications/host/'.$host,
 					 _('Service status detail for all hosts') => Router::$controller.'/service/all'
 				);
@@ -488,14 +488,14 @@ class Status_Controller extends Authenticated_Controller {
 			if ($name == 'all') {
 				$label_view_for = _('for all hosts');
 				$page_links = array(
-					 _('Alert history') => 'showlog/alert_history/',
+					 _('Alert history') => 'alert_history/generate',
 					 _('Notifications') => 'notifications/host/'.$name,
 					 _('Host status detail') => Router::$controller.'/host/all'
 				);
 			} else {
 				$label_view_for = _('for this host');
 				$page_links = array(
-					 _('Alert history') => 'showlog/alert_history/'.$name,
+					 _('Alert history') => 'alert_history/generate?host_name[]='.$name,
 					 _('Notifications') => 'notifications/host/'.$name,
 					 _('Service status detail for all hosts') => Router::$controller.'/service/all',
 				);
