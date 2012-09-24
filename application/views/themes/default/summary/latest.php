@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
 <?php echo isset($pagination)?$pagination:'' ?>
-<p style="margin-top:50px; margin-bottom: 14px"><?php date::duration($options['start_time'], $options['end_time']); ?></p>
+<p><?php date::duration($options['start_time'], $options['end_time']); ?></p>
 <table>
 	<tr>
 		<th class="headerNone left"><?php //echo _('State'); ?></th>
