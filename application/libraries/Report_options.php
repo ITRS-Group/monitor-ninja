@@ -425,7 +425,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['servicegroup'] = array();
 			$this->options['service_description'] = array();
 			$this->options['host_name'] = $value;
-			$this->options['report_type'] = 'hosts';
+			$this['report_type'] = 'hosts';
 			$this->hosts = array();
 			return true;
 		 case 'service_description':
@@ -441,7 +441,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['servicegroup'] = array();
 			$this->options['host_name'] = array();
 			$this->options['service_description'] = $value;
-			$this->options['report_type'] = 'services';
+			$this['report_type'] = 'services';
 			$this->services = array();
 			return true;
 		 case 'hostgroup':
@@ -451,7 +451,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['service_description'] = array();
 			$this->options['servicegroup'] = array();
 			$this->options['hostgroup'] = $value;
-			$this->options['report_type'] = 'hostgroups';
+			$this['report_type'] = 'hostgroups';
 			$this->hosts = array();
 			return true;
 		 case 'servicegroup':
@@ -461,7 +461,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$this->options['service_description'] = array();
 			$this->options['hostgroup'] = array();
 			$this->options['servicegroup'] = $value;
-			$this->options['report_type'] = 'servicegroups';
+			$this['report_type'] = 'servicegroups';
 			$this->services = array();
 			return true;
 		 case 'start_time':

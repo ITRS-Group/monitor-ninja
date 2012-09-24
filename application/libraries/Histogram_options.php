@@ -4,7 +4,7 @@ class Histogram_options_Core extends Report_options
 {
 	public function __construct($options=false)
 	{
-		$this->vtypes['breakdown'] = array('type' => 'enum', 'default' => false, 'options' => array(
+		$this->vtypes['breakdown'] = array('type' => 'enum', 'default' => 'hourly', 'options' => array(
 			"monthly" => _('Monthly'),
 			"dayofmonth" => _('Day of month'),
 			"dayofweek" => _('Day of week'),
@@ -16,7 +16,7 @@ class Histogram_options_Core extends Report_options
 	{
 		parent::update_value($name, $value);
 		switch ($name) {
-		 case 'report_period':
+		 case 'report_type':
 			$this['alert_types'] = 1 + ($value == 'services' || $value == 'servicegroups');
 			break;
 		}

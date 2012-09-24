@@ -14,7 +14,7 @@
 class Histogram_Controller extends Base_reports_Controller
 {
 	public $data = false;
-	private $labels = false;
+	private $labels = array();
 	public $type = 'histogram';
 
 	/**
