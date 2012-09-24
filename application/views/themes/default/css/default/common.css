@@ -285,9 +285,8 @@ table.extinfo tr td.status.icon img {
 	margin-left: 1%;
 	width: 32%;
 	float: left;
-	min-height: 5px;
+	min-height: 25px;
 	height: auto !important;
-	height: 5px;
 }
 .widget-place.w98{
 	width: 98%;
