@@ -1970,6 +1970,7 @@ class Reports_Model extends Model
 	/**
 	*	Populate slots for histogram
 	*
+	* 	@param $query sql
 	* 	@param $date_str string for use in PHP date()
 	* 	@param $slots array with slots to fill with data
 	* 	@param $newstatesonly bool Used to decide if to ignore repated events or not

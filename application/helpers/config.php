@@ -5,6 +5,9 @@
  */
 class config_Core
 {
+	/**
+	 * Dummy value to compare to when ... no config was found!
+	 */
 	const CONFIG_NOT_FOUND = null;
 	
 	/**
