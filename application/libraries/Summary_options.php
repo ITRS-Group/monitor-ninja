@@ -67,4 +67,13 @@ class Summary_options_Core extends Report_options
 		}
 		return parent::update_value($name, $value);
 	}
+
+	protected function calculate_time($report_period) {
+		if ($report_period === 'forever') {
+			$this->options['start_time'] = 0;
+			$this->options['end_time'] = time();
+			return true;
+		}
+		return parent::calculate_time($report_period);
+	}
 }
