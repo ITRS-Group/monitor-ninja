@@ -1817,6 +1817,9 @@ class Reports_Model extends Model
 		return $this->summary_result;
 	}
 
+	/**
+	 * Add a new comment to the event pointed to by the timestamp/event_type/host_name/service
+	 */
 	public static function add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username) {
 		$db = Database::instance();
 		$db->query('DELETE FROM ninja_report_comments WHERE timestamp='.$db->escape($timestamp).' AND event_type = '.$db->escape($event_type).' AND host_name = '.$db->escape($host_name).' AND service_description = '.$db->escape($service));
