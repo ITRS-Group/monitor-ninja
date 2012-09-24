@@ -577,24 +577,24 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$report_info = $_GET;
 		}
 
-		if (isset($report_info['report_id'])) {
-			$saved_report_info = Saved_reports_Model::get_report_info($type, $report_info['report_id']);
-			if ($saved_report_info) {
-				foreach ($saved_report_info as $key => $sri) {
-					if (!isset($report_info->options[$key]) || $report_info->options[$key] === $report_info->vtypes[$key]['default']) {
-						$report_info[$key] = $sri;
-					}
-				}
-			}
-		}
 		return $report_info;
 	}
 
-	protected static function create_options_obj($report_info = false) {
+	protected static function create_options_obj($type, $report_info = false) {
 		$options = new static($report_info);
-		# now that report_type is set, ship off objects to the correct var
-		if (isset($report_info['objects']) && empty($options[$options->get_value('report_type')]))
-			$options[$options->get_value('report_type')] = $report_info['objects'];
+
+		if (isset($options['report_id'])) {
+			$saved_report_info = Saved_reports_Model::get_report_info($type, $options['report_id']);
+			if ($saved_report_info) {
+				foreach ($saved_report_info as $key => $sri) {
+					if (isset($options->vtypes[$key]) && $options->vtypes[$key]['type'] !== 'bool' && (!isset($options->options[$key]) || $options->options[$key] === $options->vtypes[$key]['default'])) {
+						$options[$key] = $sri;
+					}
+				}
+				if (isset($saved_report_info['objects']) && empty($options[$options->get_value('report_type')]))
+					$options[$options->get_value('report_type')] = $saved_report_info['objects'];
+			}
+		}
 		return $options;
 	}
 
@@ -609,7 +609,7 @@ class Report_options_core implements ArrayAccess, Iterator {
 			$class = 'Report_options';
 
 		$report_info = $class::discover_options($type, $input);
-		$options = $class::create_options_obj($report_info);
+		$options = $class::create_options_obj($type, $report_info);
 		return $options;
 	}
 }
