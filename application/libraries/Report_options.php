@@ -152,13 +152,13 @@ class Report_options_core implements ArrayAccess, Iterator {
 	}
 
 	public function get_value($key) {
-		if (!isset($this->options[$key]) || !isset($this->vtypes[$key]))
+		if (!$this[$key] || !isset($this->vtypes[$key]))
 			return false;
 		if ($this->vtypes[$key]['type'] !== 'enum')
 			return false;
-		if (!isset($this->vtypes[$key]['options'][$this->options[$key]]))
+		if (!isset($this->vtypes[$key]['options'][$this[$key]]))
 			return $key;
-		return $this->vtypes[$key]['options'][$this->options[$key]];
+		return $this->vtypes[$key]['options'][$this[$key]];
 	}
 
 	public function get_report_members() {
