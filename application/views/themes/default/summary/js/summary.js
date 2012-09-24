@@ -5,6 +5,9 @@ var service = false;
 var current_obj_type = false; // keep track of what we are viewing
 
 $(document).ready(function() {
+	$('#report_mode_form input').on('change', function() {
+		set_report_mode(this.value);
+	});
 	set_report_mode($('#report_mode_form input:checked').val());
 
 	$("#report_period").bind('change', function() {
