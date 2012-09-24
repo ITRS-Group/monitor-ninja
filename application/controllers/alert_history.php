@@ -36,9 +36,7 @@ class Alert_history_Controller extends Summary_Controller
 		$comment = $this->input->post('comment');
 		$username = Auth::instance()->get_user()->username;
 
-		$db = Database::instance();
-		$db->query('DELETE FROM ninja_report_comments WHERE timestamp='.$db->escape($timestamp).' AND event_type = '.$db->escape($event_type).' AND host_name = '.$db->escape($host_name).' AND service_description = '.$db->escape($service));
-		$db->query('INSERT INTO ninja_report_comments(timestamp, event_type, host_name, service_description, comment_timestamp, username, user_comment) VALUES ('.$db->escape($timestamp).', '.$db->escape($event_type).', '.$db->escape($host_name).', '.$db->escape($service).', UNIX_TIMESTAMP(), '.$db->escape($username).', '.$db->escape($comment).')');
-		echo '<div class="content">'.$comment.'</div><div class="author">/'.$username.'</div>';
+		if (Reports_Model::add_event_comment($timestamp, $event_type, $host_name, $service, $comment, $username))
+			echo '<div class="content">'.$comment.'</div><div class="author">/'.$username.'</div>';
 	}
 }
