@@ -1311,6 +1311,7 @@ class Reports_Model extends Model
 			}
 			$this->service_servicegroup['host'] = $hosts;
 			$this->service_servicegroup['service'] = $services;
+			$services = false;
 		} elseif ($this->options['hostgroup']) {
 			$hosts = array();
 			$hmod = new Host_Model();
@@ -1356,18 +1357,8 @@ class Reports_Model extends Model
 		if(($hosts === Report_options::ALL_AUTHORIZED) || ($services === Report_options::ALL_AUTHORIZED)) {
 			// screw filters, we're almighty
 		} elseif ($services) {
-			$hosts_too = false;
-			if ($hosts && $hosts !== true) {
-				$object_selection = "(host_name IN('" .
-					join("',\n '", array_keys($hosts)) . "')";
-				$hosts_too = true;
-			}
-
 			if ($services !== true) {
-				if ($hosts_too === false)
-					$object_selection .= "(";
-				else
-					$object_selection .= " OR ";
+				$object_selection .= "(";
 				$orstr = '';
 				# Must do this the hard way to allow host_name indices to
 				# take effect when running the query, since the construct
@@ -1714,6 +1705,8 @@ class Reports_Model extends Model
 			} else {
 				$type = 'service';
 				$name = $row['host_name'] . ';' . $row['service_description'];
+				if (!isset($this->service_servicegroup[$type][$name]))
+					continue;
 			}
 			$state = $this->comparable_state($row);
 			if (isset($pstate[$name]) && $pstate[$name] === $state) {
