@@ -675,21 +675,25 @@ $(document).ready(function() {
 		description.val('');
 
 		// ... unless there's already a saved search for the same query
-		$.get(
-			_site_domain + _index_page + '/' + '/ajax/fetch_saved_search_by_query',
-			{query: old_query},
-			function(data) {
-				if (data.error == 'Error') {
-					jgrowl_message(data.error);
-				} else {
-					data = data.result;
-					// set fetched values to edit dialog
-					$('#search_name').attr('value', data['search_name'])
-					$('#search_description').attr('value', data['search_description'])
-					$('#search_id').attr('value', data['search_id']);
-				}
-			},
-			'json'
+		$.ajax(
+			_site_domain + _index_page + '/ajax/fetch_saved_search_by_query',
+			{
+				data: {
+					query: old_query
+				},
+				complete: function(data) {
+					if (data.error == 'Error') {
+						jgrowl_message(data.error);
+					} else {
+						data = data.result;
+						// set fetched values to edit dialog
+						$('#search_name').attr('value', data['search_name'])
+						$('#search_description').attr('value', data['search_description'])
+						$('#search_id').attr('value', data['search_id']);
+					}
+				},
+				dataType: 'json'
+			}
 		);
 	});
 
@@ -970,6 +974,7 @@ function multi_action_select(action, type)
 
 function create_slider(the_id)
 {
+	var last_update_request = false;
 	$("#" + the_id + "_slider").slider({
 		value: current_interval,
 		min: 0,
@@ -978,29 +983,31 @@ function create_slider(the_id)
 		slide: function(event, ui) {
 			$("#" + the_id + "_value").val(ui.value);
 			current_interval = ui.value;
-			control_save_refreshInterval();
+			if(last_update_request !== false) {
+				last_update_request.abort();
+			}
+			last_update_request = $.ajax(
+				_site_domain + _index_page + "/ajax/save_page_setting/",
+				{
+					data: {
+						page: '*',
+						setting: current_interval,
+						type: _refresh_key
+					},
+					complete: function() {
+						$.jGrowl(sprintf(_page_refresh_msg, current_interval), { header: _success_header });
+						last_update_request = false;
+						// set slider position according to current_interval
+						$("#" + the_id + "_slider").slider("value", current_interval);
+						$('input[name=' + the_id + '_value]').val(current_interval);
+					},
+					type: 'POST'
+				}
+			);
 			ninja_refresh(ui.value);
 		}
 	});
-	// set slider position according to current_interval
-	$("#" + the_id + "_slider").slider("value", current_interval);
-	$('input[name=' + the_id + '_value]').val(current_interval);
 
-}
-
-function control_save_refreshInterval() {
-	if (_save_page_interval) {
-		clearTimeout(_save_page_interval);
-	}
-	_save_page_interval = setTimeout("save_refreshInterval()", 5000);
-}
-
-function save_refreshInterval()
-{
-	var url = _site_domain + _index_page + "/ajax/save_page_setting/";
-	var data = {page: '*', setting: current_interval, type: _refresh_key};
-	$.post(url, data);
-	$.jGrowl(sprintf(_page_refresh_msg, current_interval), { header: _success_header });
 }
 
 function ninja_refresh(val)

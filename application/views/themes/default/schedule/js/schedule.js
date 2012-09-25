@@ -43,31 +43,33 @@ $(document).ready(function() {
 
 	$("#type").change(function() {
 		var report_type = $(this).fieldValue()[0];
-		$.getJSON(
+		$.ajax(
 			_site_domain + _index_page + "/schedule/list_by_type/"+report_type,
-			function(response) {
-				if(response.error) {
-					alert(response.error);
-					return;
-				}
-				var saved_reports = document.getElementById("saved_report_id");
-				var child;
-				while(child = saved_reports.firstChild) {
-					saved_reports.removeChild(child);
-				}
-				if(!response.result.length) {
-					return;
-				}
-				var options = document.createDocumentFragment();
-				for(var i = 0; i < response.result.length; i++) {
-					var option = document.createElement("option");
-					var result = response.result[i];
-					option.appendChild(document.createTextNode(result.report_name));
-					option.setAttribute("value", result.id);
-					options.appendChild(option);
-				}
-				saved_reports.appendChild(options);
-				create_filename();
+			{
+				error: function(xhr) {
+					alert(xhr.responseText);
+				},
+				success: function(response) {
+					var saved_reports = document.getElementById("saved_report_id");
+					var child;
+					while(child = saved_reports.firstChild) {
+						saved_reports.removeChild(child);
+					}
+					if(!response.length) {
+						return;
+					}
+					var options = document.createDocumentFragment();
+					for(var i = 0; i < response.length; i++) {
+						var option = document.createElement("option");
+						var result = response[i];
+						option.appendChild(document.createTextNode(result.report_name));
+						option.setAttribute("value", result.id);
+						options.appendChild(option);
+					}
+					saved_reports.appendChild(options);
+					create_filename();
+				},
+				dataType: 'json'
 			}
 		);
 	});

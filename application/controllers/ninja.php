@@ -39,6 +39,9 @@ class Ninja_Controller extends Template_Controller {
 	{
 		parent::__construct();
 		$this->theme_path = ninja::get_theme_path();
+		if(request::is_ajax()) {
+			$this->auto_render = FALSE;
+		}
 
 		$this->run_tests = $this->input->get('run_tests', false) !== false;
 
