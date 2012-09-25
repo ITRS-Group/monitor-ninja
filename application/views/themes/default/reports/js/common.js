@@ -997,7 +997,7 @@ function init_regexpfilter() {
 			//add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
 			//if(o.text.toLowerCase().indexOf(filter.toLowerCase()) >= 0) list.add(o, null);
-			if(r.test(o.text)) list.add(o, null);
+			if(!o.parentNode && r.test(o.text)) list.add(o, null);
 		}
 	}
 	MyRegexp.resetFilter = function(selectId) {
