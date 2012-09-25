@@ -296,8 +296,9 @@ table.extinfo tr td.status.icon img {
 	clear: none;
 }
 .widget-placeholder {
+	background: #cdcdcd;
+	border: 1px dashed #ccc;
 	margin-top: 11px;
-  border: 1px dashed #ccc;
 }
 .widget-editbox{
 	z-index: 9999;

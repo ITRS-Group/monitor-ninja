@@ -186,7 +186,8 @@ table.extinfo {
 	border: 1px solid #dcdccd;
 }
 .widget-placeholder {
-  border: 1px dashed #cdcdbc;
+	background: #fcf;
+	border: 1px dashed #cdcdbc;
 }
 .widget-editbox{
 	background-color: #ffccff;
