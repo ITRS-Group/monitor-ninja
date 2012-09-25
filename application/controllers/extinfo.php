@@ -461,7 +461,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 				$page_links = array(
 					 _('Status detail') => 'status/service/?name='.urlencode($host),
 					 _('Alert history') => 'alert_history/generate?host_name[]='.$host,
-					 _('Trends') => 'trends/generate?host_name[]='.$host,
 					 _('Alert histogram') => 'histogram/generate?host_name[]='.$host,
 					 _('Availability report') => 'avail/generate/?host_name[]='.$host,
 					 _('Notifications') => '/notifications/host/'.$host
@@ -473,7 +472,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 					_('Information for this host') => 'extinfo/details/host/'.$host,
 					_('Status detail for this host') => 'status/service/'.$host,
 					_('Alert history') => 'alert_history/generate?service_description[]='.$host.';'.urlencode($service),
-					_('Trends') => 'trends/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Alert histogram') => 'histogram/generate?service_description[]='.$host.';'.urlencode($service),
 					_('Availability report') => 'avail/generate/?service_description[]='.$host.';'.urlencode($service).'&report_type=services',
 					_('Notifications') => '/notifications/host/'.$host.'?service='.urlencode($service)
