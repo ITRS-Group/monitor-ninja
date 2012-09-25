@@ -103,7 +103,7 @@ if (isset($host_result) ) {
 		</td>
 		<td style="white-space: normal"><?php echo $host->alias ?></td>
 		<td><?php echo $host->address ?></td>
-		<td style="white-space	: normal"><?php echo str_replace('','', $output) ?></td>
+		<td style="white-space: normal"><?php echo htmlspecialchars($output) ?></td>
 	<?php if ($show_display_name) { ?>
 		<td><?php echo $host->display_name ?></td>
 	<?php }
@@ -182,7 +182,7 @@ if (isset($service_result) ) {
 		<td class="item_select_service"><?php echo form::checkbox(array('name' => 'object_select[]'), $service->host_name.';'.$service->service_description); ?></td>
 		<td><span style="float: left">
 			<?php echo html::anchor('/extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description), $service->service_description) ?></span>
-			<?php	if ($comments !== false && array_key_exists($service->host_name.';'.$service->service_description, $comments)) { ?>
+			<?php	if (is_array($comments) && array_key_exists($service->host_name.';'.$service->service_description, $comments)) { ?>
 					<span style="float: right">
 						<?php echo html::anchor('extinfo/details/?type=service&host='.urlencode($service->host_name).'&service='.urlencode($service->service_description).'#comments',
 								html::image($this->add_path('icons/16x16/add-comment.png'),
