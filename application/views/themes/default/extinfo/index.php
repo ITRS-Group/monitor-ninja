@@ -205,10 +205,6 @@ if (!empty($widgets)) {
 			</td>
 		</tr>
 		<tr>
-			<td class="dark"><?php echo $lable_last_update ?></td>
-			<td><?php echo $last_update ? date($date_format_str, $last_update) : _('N/A') ?> <?php echo $last_update_ago ?></td>
-		</tr>
-		<tr>
 			<td  class="dark" style="width: 160px"><?php echo $lable_active_checks ?></td>
 			<td>
 				<span class="<?php echo strtolower($active_checks_enabled); ?>"><?php echo ucfirst(strtolower($active_checks_enabled)) ?></span>

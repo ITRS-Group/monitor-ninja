@@ -233,11 +233,9 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->state_type = $result->state_type ? _('HARD state') : _('SOFT state');
 		$content->main_object_alias = $type=='host' ? $result->alias : false;
 		$content->max_attempts = $result->max_attempts;
-		$content->last_update = $result->last_update;
 		$content->last_check = $result->last_check;
 		$content->lable_last_check = _('Last check time');
 		$content->lable_check_type = _('Check type');
-		$content->lable_last_update = _('Last update');
 
 		$str_active = _('ACTIVE');
 		$str_passive = _('PASSIVE');
@@ -267,17 +265,6 @@ class Extinfo_Controller extends Authenticated_Controller {
 		}
 		$content->lable_in_scheduled_dt = _('In scheduled downtime?');
 		$content->scheduled_downtime_depth = $result->scheduled_downtime_depth ? $yes : $no;
-		$last_update_ago_arr = date::timespan(time(), $result->last_update, 'days,hours,minutes,seconds');
-		$ago = _('ago');
-		$last_update_ago = false;
-		$last_update_ago_str = '';
-		if (is_array($last_update_ago_arr) && !empty($last_update_ago_arr)) {
-			foreach ($last_update_ago_arr as $key => $val) {
-				$last_update_ago[] = $val.substr($key, 0, 1);
-			}
-			$last_update_ago_str = '('.implode(' ', $last_update_ago) . ' ' . $ago . ')';
-		}
-		$content->last_update_ago = $last_update_ago_str !='' ? $last_update_ago_str : $na_str;
 		$content->lable_active_checks = _('Active checks');
 		$content->lable_passive_checks = _('Passive checks');
 		$content->lable_obsessing = _('Obsessing');
