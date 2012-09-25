@@ -985,23 +985,28 @@ function init_regexpfilter() {
 	MyRegexp.selectFilterData = new Object();
 	MyRegexp.selectFilter = function(selectId, filter) {
 		var list = document.getElementById(selectId);
-		if(!MyRegexp.selectFilterData[selectId]) { //if we don't have a list of all the options, cache them now'
+		if(!MyRegexp.selectFilterData[selectId]) {
+			//if we don't have a list of all the options, cache them now'
 			MyRegexp.selectFilterData[selectId] = new Array();
-			for(var i = 0; i < list.options.length; i++) MyRegexp.selectFilterData[selectId][i] = list.options[i];
+			for(var i = 0; i < list.options.length; i++)
+				MyRegexp.selectFilterData[selectId][i] = list.options[i];
 		}
 		list.options.length = 0;   //remove all elements from the list
 		var r = new RegExp(filter, 'i');
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
+			//add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
 			//if(o.text.toLowerCase().indexOf(filter.toLowerCase()) >= 0) list.add(o, null);
 			if(r.test(o.text)) list.add(o, null);
 		}
 	}
 	MyRegexp.resetFilter = function(selectId) {
-		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length) return;
+		if (typeof MyRegexp.selectFilterData[selectId] == 'undefined' || !MyRegexp.selectFilterData[selectId].length)
+			return;
 		var list = document.getElementById(selectId);
 		list.options.length = 0;   //remove all elements from the list
-		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) { //add elements from cache if they match filter
+		for(var i = 0; i < MyRegexp.selectFilterData[selectId].length; i++) {
+			//add elements from cache if they match filter
 			var o = MyRegexp.selectFilterData[selectId][i];
 			if (!o.parentNode)
 				list.add(o, null);
