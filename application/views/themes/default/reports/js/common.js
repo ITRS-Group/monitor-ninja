@@ -124,19 +124,17 @@ $(document).ready(function() {
 			url: _site_domain + _index_page + '/' + _controller_name + '/save/',
 			type: 'POST',
 			data: $(this.form).serialize(),
-			success: function(data) {
-				if (!data.error) {
-					jgrowl_message(data.result.status_msg, _reports_success);
-					// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
-					if (!btn[0].form.report_id)
-						document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.result.report_id
-				} else {
-					jgrowl_message(data.error, _reports_error);
-				}
+			complete: function() {
 				btn.parent().find('img:last').remove();
 			},
+			success: function(data) {
+				jgrowl_message(data.status_msg, _reports_success);
+				// this is ugly, but makes sure we look at a saved report, so we can edit it rather than duplicating it
+				if (!btn[0].form.report_id)
+					document.location = _site_domain + _index_page + '/' + _controller_name + '/generate?report_id=' + data.report_id
+			},
 			error: function(data) {
-				jgrowl_message(_reports_error, _reports_error);
+				jgrowl_message(data.responseText, _reports_error);
 				btn.parent().find('img:last').remove();
 			},
 			dataType: 'json'
@@ -316,13 +314,12 @@ function get_members(filter, type, cb) {
 		url: url,
 		type: 'POST',
 		data: {input: filter, type: type},
+		error: function(data) {
+			jgrowl_message('Unable to fetch objects: ' + data.responseText, _reports_error);
+		},
 		success: function(data) {
-			if (data.error) {
-				jgrowl_message('Unable to fetch objects: ' + data.error, _reports_error);
-				return;
-			}
 			empty_list(field_name);
-			populate_options(field_name, empty_field, data.result);
+			populate_options(field_name, empty_field, data);
 			empty_list(empty_field);
 			if(typeof cb == 'function')
 				cb();

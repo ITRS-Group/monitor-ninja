@@ -108,11 +108,10 @@ $(document).ready(function() {
 				$('#' + rep_type_str + '_no_result').hide();
 				$('#' + rep_type_str + '_headers').show();
 			},
+			error: function(data) {
+				jgrowl_message(data.responseText, _reports_error);
+			},
 			success: function(data) {
-				if (data.error) {
-					jgrowl_message(data.error, _reports_error);
-					return;
-				}
 				var rep_type = $('#type').attr('value');
 				var saved_report_id = $('#saved_report_id').attr('value');
 				var report_name = $('#saved_report_id option:selected').text();
@@ -123,7 +122,7 @@ $(document).ready(function() {
 				var description = $('#description').attr('value');
 				if (description == '')
 					description = '&nbsp;';
-				create_new_schedule_rows(data.result.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description)
+				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description)
 				setup_editable();
 				$('#new_schedule_report_form').clearForm();
 
@@ -152,21 +151,18 @@ function schedule_delete()
 	$.ajax({
 		url:_site_domain + _index_page + '/schedule/delete_schedule',
 		data: {'id': schedule_id},
-		success: function(data) {
-			if (data.error) {
-				jgrowl_message(data.error, _reports_error);
-			} else {
-				jgrowl_message(data.result, _reports_success);
-				var table = $('#'+type+'_scheduled_reports_table tbody');
-				$('tr#report-'+schedule_id, table).detach();
-				if (!$(':visible', table).length)
-					$('.no-result', table).show();
-			}
+		complete: function() {
 			img.attr('src', img_src);
+		},
+		success: function(data) {
+			jgrowl_message(data, _reports_success);
+			var table = $('#'+type+'_scheduled_reports_table tbody');
+			$('tr#report-'+schedule_id, table).detach();
+			if (!$(':visible', table).length)
+				$('.no-result', table).show();
 		},
 		error: function(data) {
 			jgrowl_message(data, _reports_error);
-			img.attr('src', img_src);
 		},
 		type: 'POST',
 		dataType: 'json'
@@ -186,20 +182,18 @@ function send_report_now()
 	$.ajax({
 		url: _site_domain + _index_page + '/schedule/send_now/' + sched_id,
 		type: 'POST',
-		success: function(data) {
-			if (data.error) {
-				if(data.error) {
-					jgrowl_message(_reports_schedule_send_error + ': ' + data.error, _reports_error);
-				} else {
-					jgrowl_message(_reports_schedule_send_error, _reports_error);
-				}
-			} else {
-				jgrowl_message(data.result, _reports_success);
-			}
+		complete: function() {
 			img.attr('src', img_src);
 		},
-		error: function() {
-			jgrowl_message(_reports_schedule_send_error, _reports_error);
+		success: function(data) {
+			jgrowl_message(data, _reports_success);
+		},
+		error: function(data) {
+			if(data.responseText) {
+				jgrowl_message(_reports_schedule_send_error + ': ' + data.responseText, _reports_error);
+			} else {
+				jgrowl_message(_reports_schedule_send_error, _reports_error);
+			}
 			img.attr('src', img_src);
 		},
 		dataType: 'json'

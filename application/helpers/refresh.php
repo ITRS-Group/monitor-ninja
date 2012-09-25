@@ -18,31 +18,27 @@ class refresh_Core {
 		$refresh_key = 'config.page_refresh_rate';
 		$refresh = (int)config::get($refresh_key, '*', true, true);
 		?>
-		<script type="text/javascript" language="JavaScript">
-		<!--
+		<script>
 		var _refresh_key = '<?php echo $refresh_key ?>';
 		var _refresh = '<?php echo $refresh ?>';
 		$(document).ready(function() {
 			ninja_refresh(<?php echo $refresh ?>);
 		});
 
-		function refresh() {window.location.href = sURL;}
-		//-->
+		function refresh() {window.location.replace(sURL);}
 		</script>
-		<script type="text/javascript" language="JavaScript1.1"><!-- function refresh() {window.location.replace( sURL );} //--></script>
 		<?php
 	}
 
 	/**
 	*	Add ajax checks for freshness to be ued when page
-	* 	refresh is disabled.
+	*	refresh is disabled.
 	*/
 	public static function is_alive()
 	{
 		$interval = Kohana::config('config.stale_data_limit');
 		?>
-			<script type="text/javascript" language="JavaScript">
-			<!--
+			<script>
 				var _stale_check_interval = <?php echo $interval ?>;
 				$(document).ready(function() {
 					setTimeout('check_alive()', 1200);
@@ -60,26 +56,19 @@ class refresh_Core {
 						type: 'GET',
 						dataType: 'json',
 						success: function(data) {
-							if (data.result) {
-								$('#page_last_updated').html(data.result);
-								$('#infobar-sml').hide();
-							} else {
-								$('#infobar-sml').show();
-								$('#page_last_updated').html(data.error);
-							}
+							$('#page_last_updated').html(data);
+							$('#infobar-sml').hide();
 						},
-						error: function() {
+						error: function(data) {
 							$('#infobar-sml').show();
+							$('#page_last_updated').html(data.responseText);
 						}
 					});
 
- 					setTimeout('check_alive()', _stale_check_interval * 1000);
+					setTimeout('check_alive()', _stale_check_interval * 1000);
 				}
-			//-->
 			</script>
 
 		<?php
 	}
 }
-
-?>

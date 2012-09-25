@@ -212,13 +212,12 @@ function get_sla_values() {
 		url: url,
 		type: 'POST',
 		data: data,
+		complete: function() {
+			jgrowl_message('Unable to fetch saved sla values...', _reports_error);
+		},
 		success: function(data) {
-			if (data.error) {
-				jgrowl_message('Unable to fetch saved sla values...', _reports_error);
-			} else {
-				populate_saved_sla_data(data.result);
-				$('.sla_values').show();
-			}
+			populate_saved_sla_data(data);
+			$('.sla_values').show();
 		},
 		dataType: 'json'
 	});
@@ -253,20 +252,17 @@ function confirm_delete_report()
 			url: _site_domain + _index_page + '/' + _controller_name + '/delete/',
 			type: 'POST',
 			data: {'id': id},
-			success: function(data) {
-				if (!data.error) {
-					jgrowl_message(data.result, _reports_success);
-					var input = $('#report_id');
-					$(':selected', input).remove();
-					$('[value=\'\']', input).selected();
-				} else {
-					jgrowl_message(data.error, _reports_error);
-				}
+			complete: function() {
 				btn.parent().find('img:last').remove();
 			},
-			error: function(data) {
+			success: function(data) {
+				jgrowl_message(data, _reports_success);
+				var input = $('#report_id');
+				$(':selected', input).remove();
+				$('[value=\'\']', input).selected();
+			},
+			error: function() {
 				jgrowl_message(_reports_error, _reports_error);
-				btn.parent().find('img:last').remove();
 			},
 			dataType: 'json'
 		});

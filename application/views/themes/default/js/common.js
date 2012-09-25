@@ -351,11 +351,7 @@ $(document).ready(function() {
 			}
 		}
 
-		if ($('.item_select').is(':hidden'))
-			$(	'.item_select').show();
-		else
-			$(	'.item_select').hide();
-
+		$('.item_select').toggle();
 		return false;
 	});
 
@@ -380,11 +376,7 @@ $(document).ready(function() {
 			}
 		}
 
-		if ($('.item_select_service').is(':hidden'))
-			$('.item_select_service').show();
-		else
-			$('.item_select_service').hide();
-
+		$('.item_select_service').toggle();
 		return false;
 	});
 
@@ -681,16 +673,14 @@ $(document).ready(function() {
 				data: {
 					query: old_query
 				},
+				error: function(data) {
+					jgrowl_message(data.responseText);
+				},
 				complete: function(data) {
-					if (data.error == 'Error') {
-						jgrowl_message(data.error);
-					} else {
-						data = data.result;
-						// set fetched values to edit dialog
-						$('#search_name').attr('value', data['search_name'])
-						$('#search_description').attr('value', data['search_description'])
-						$('#search_id').attr('value', data['search_id']);
-					}
+					// set fetched values to edit dialog
+					$('#search_name').attr('value', data['search_name'])
+					$('#search_description').attr('value', data['search_description'])
+					$('#search_id').attr('value', data['search_id']);
 				},
 				dataType: 'json'
 			}
