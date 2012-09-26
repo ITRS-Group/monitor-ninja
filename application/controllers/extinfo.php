@@ -288,8 +288,11 @@ class Extinfo_Controller extends Authenticated_Controller {
 			$this->template->content->commands = $this->add_view('extinfo/not_running');
 			$this->template->content->commands->info_message = sprintf(_('It appears as though %s is not running, so commands are temporarily unavailable...'), Kohana::config('config.product_name'));
 			$this->template->content->commands->info_message_extra = sprintf(_('Click %s to view %s process information'), html::anchor('extinfo/show_process_info', html::specialchars(_('here'))), Kohana::config('config.product_name'));
-		} else {
+		} else if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
 			$this->template->content->commands = $this->add_view('extinfo/commands');
+		} else {
+			$this->template->content->commands = $this->add_view('extinfo/not_running');
+			$this->template->content->commands->info_message = _("You're not authorized to run commands");
 		}
 
 		$commands = $this->template->content->commands;
