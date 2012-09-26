@@ -1,9 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<?php echo reports::get_included_states('hosts', $options); ?>
-<div class="host_breakdown wide" style="margin-top: 0px;">
-
 <?php foreach ($multiple_states as $data) { ?>
-		<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host">
+		<table summary="<?php echo _('Host state breakdown') ?>" id="multiple_host" class="report-block">
 			<tr>
 				<th class="headerNone left"><?php echo help::render('hostgroup_breakdown').' '.(!empty($data['groupname']) ? str_replace('Hostgroup:','',$data['groupname']) : 'Selected hosts'); ?></th>
 				<th class="headerNone" style="width: 80px"><?php echo _('Up') ?></th>
@@ -69,4 +66,3 @@
 			<?php } ?>
 		</table>
 <?php } ?>
-</div>

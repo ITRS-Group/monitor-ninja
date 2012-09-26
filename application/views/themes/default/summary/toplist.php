@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
+<div class="report-block">
 <p style="margin-top:-10px; margin-bottom: 14px"><?php date::duration($options['start_time'], $options['end_time']); ?></p>
 <table>
 	<tr>
@@ -31,5 +32,4 @@ if (count($result)>0 && !empty($result)) {
 	<?php }
 }?>
 </table>
-
-<?php // printf("Report completed in %.3f seconds<br />\n", $completion_time); ?>
+</div>

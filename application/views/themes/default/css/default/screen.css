@@ -594,6 +594,10 @@ hr {
 	margin-top: 1em;
 }
 
+.report-links {
+	float: right;
+}
+
 .report-links * {
 	display: block;
 	float: right;

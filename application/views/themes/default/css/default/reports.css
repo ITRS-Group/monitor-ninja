@@ -64,20 +64,6 @@
 	padding-bottom: 15px;
 }
 
-#header {
-	position: relative;
-	top: 0px;
-	padding-top: 14px; /* reports only*/
-}
-
-#header p {
-	margin-top: -12px;
-}
-
-#header form input {
-	margin-top: -1px;
-}
-
 a#optiontoggle {
 	margin: 5px;
 }
@@ -143,8 +129,6 @@ a.fancybox {
 .headerNone.left {
 	text-align:left;
 }
-
-h1 { margin: 7px 0px 15px 0px; }
 
 /* tables ***********************************************************************/
 
@@ -524,4 +508,12 @@ td.period_select select {
 
 .editing-comments {
 	min-width: 40%;
+}
+
+/* a report block is a logical unit that contains information */
+.report-block {
+	width: 100%;
+	float: none;
+	clear: both;
+	padding-top: 2em;
 }

@@ -1,7 +1,6 @@
 <?php defined('SYSPATH') OR die("No direct access allowed"); ?>
-<div class="clearservice"></div>
+<div class="report-block">
 <?php echo isset($pagination)?$pagination:'' ?>
-<p><?php date::duration($options['start_time'], $options['end_time']); ?></p>
 <table>
 	<tr>
 		<th class="headerNone left"><?php //echo _('State'); ?></th>
@@ -42,3 +41,4 @@
 	} ?>
 </table>
 <?php echo isset($pagination)?$pagination:'' ?>
+</div>
