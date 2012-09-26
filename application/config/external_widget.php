@@ -4,7 +4,13 @@
 * 	Set up a specific user to be authorized for
 * 	viewing a ninja widget on an external web.
 * 	Please note that this user will ONLY be able to
-* 	view the external widget.
+* 	view the external widget. Set this user by editing the line at
+* 	the bottom of this script to
+*
+* 	$config['username'] = 'your-user-here';
+*
+* 	(yes, the quotes are necessary :))
+*
 *
 * 	Specifying the 'widget_name' below is not necessary
 * 	but will make it possible to call the external_widget
