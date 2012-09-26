@@ -57,8 +57,21 @@ h1 {
 	padding-left: 10px;
 }
 
+.even {
+	background: #fff !important;
+}
+
+td {
+	border: 0 !important;
+}
+
 .setup-table,
 .pie-chart,
 .sla_table {
 	page-break-inside: avoid;
+}
+
+#content a {
+	color: #000;
+	border: 0;
 }
