@@ -105,7 +105,7 @@ $state_map = array(
 				?>
 				<img src="<?php echo ninja::add_path('icons/12x12/shield-'.$service_state.'.png') ?>" alt="<?php echo $service_state ?>" title="<?php echo $service_state ?>" class="status=<?php echo $service_state ?>" />
 				<?php foreach ($services as $service) { ?>
-					<a href="extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service)?>" class="status-<?php echo $service_state ?>"><?php echo $service ?></a>
+					<a href="<?php echo url::base() ?>extinfo/details/?type=service&host=<?php echo urlencode($host['name']) ?>&service=<?php echo urlencode($service)?>" class="status-<?php echo $service_state ?>"><?php echo $service ?></a>
 				<?php } ?>
 				<br />
 			<?php } ?>
