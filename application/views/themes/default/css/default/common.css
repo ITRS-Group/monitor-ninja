@@ -383,18 +383,9 @@ a > img { border: 0px; }
 	font-style: italic;
 	margin-left: 5px;
 }
-tr.even {
+tr td {
 	border: 1px solid #ccc;
 	border-left: 0px;
-	border-top: 0px;
-	background: #fafafa;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-tr.odd {
-	border: 1px solid #ccc;
-	border-left: 0px;
-	background: #fafafa;
 	border-top: 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
