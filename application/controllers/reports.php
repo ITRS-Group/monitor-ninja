@@ -64,7 +64,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js_header = $this->add_view('js_header');
 		$this->xtra_js[] = 'application/media/js/date.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
-
+		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
@@ -81,6 +81,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->template->js_header->js = $this->xtra_js;
 
 		$this->template->css_header = $this->add_view('css_header');
+		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->xtra_css[] = $this->add_path('css/default/jquery-ui-custom.css');
@@ -201,6 +202,7 @@ class Reports_Controller extends Base_reports_Controller
 		$this->xtra_js[] = 'application/media/js/jquery.datePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.timePicker.js';
 		$this->xtra_js[] = 'application/media/js/jquery.fancybox.min.js';
+		$this->xtra_js[] = $this->add_path('reports/js/tgraph.js');
 		$this->xtra_js[] = $this->add_path('reports/js/common.js');
 		$this->xtra_js[] = $this->add_path('reports/js/reports.js');
 
@@ -212,6 +214,7 @@ class Reports_Controller extends Base_reports_Controller
 		}
 
 		$this->xtra_css[] = $this->add_path('reports/css/datePicker.css');
+		$this->xtra_css[] = $this->add_path('reports/css/tgraph.css');
 		$this->xtra_css[] = $this->add_path('css/default/reports.css');
 		$this->xtra_css[] = 'application/media/css/jquery.fancybox.css';
 		$this->template->css_header = $this->add_view('css_header');
@@ -566,13 +569,14 @@ class Reports_Controller extends Base_reports_Controller
 			}
 
 			$template->trends_graph = $this->add_view('trends/new_report');
-			$template->trends_graph->graph_image_source = $this->trends_graph_model->get_graph_src_for_data(
-				$graph_data,
-				$this->options['start_time'],
-				$this->options['end_time'],
-				$template->title
+
+			/* New JS trend graph */
+			
+			$template->trends_graph->graph_start_date = $this->options['start_time'];
+			$template->trends_graph->graph_end_date = $this->options['end_time'];
+			$template->trends_graph->graph_pure_data = $this->trends_graph_model->format_graph_data(
+				$graph_data
 			);
-			$template->trends_graph->is_avail = true;
 		}
 
 		$this->template->inline_js = $this->inline_js;
