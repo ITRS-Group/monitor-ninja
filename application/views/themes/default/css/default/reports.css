@@ -198,15 +198,13 @@ table#multiple_hosts tr.even td.data {
 	white-space: nowrap;
 }
 
-.data_red
-{
+.data_red {
 	text-align: right;
 	white-space: nowrap;
 	background: url(../../reports/images/redbgimg.png) #FFE8E8 repeat-x;
 }
 
-.data_green
-{
+.data_green {
 	text-align: right;
 	white-space: nowrap;
 	background: url(../../reports/images/greenbgimg.png) #e3f8dc repeat-x;
@@ -491,14 +489,16 @@ td.period_select select {
 	margin-bottom: 5px;
 }
 
-.regular-output {
-	display: table-cell;
-	width: 100%;
-	vertical-align: middle;
+.output,
+.output tr,
+.output td {
+	white-space: normal;
+	border: 0 !important;
+	margin: 0;
+	padding: 0;
 }
 
 .comments {
-	display: table-cell;
 	text-align: right;
 }
 .comments .author {

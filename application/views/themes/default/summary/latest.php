@@ -27,14 +27,15 @@
 		<td><?php echo $ary['host_name']?html::anchor(base_url::get().'extinfo/details/?type=host&host='.urlencode($ary['host_name']), $ary['host_name']):'' ?></td>
 		<td><?php echo $ary['service_description']?html::anchor(base_url::get().'extinfo/details/?type=service&host='.urlencode($ary['host_name']).'&service='.$ary['service_description'], $ary['service_description']):'' ?></td>
 		<td><?php echo $row['softorhard']; ?></td>
-		<td><div class="regular-output"><?php echo htmlspecialchars($ary['output']); ?></div>
-		<div class="comments">
+		<td>
+<table class="output">
+<tr><td><?php echo htmlspecialchars($ary['output']); ?></td><td style="border:0" class="comments">
 		<?php if (isset($ary['user_comment']))
-			echo '<span class="content">'.$ary['user_comment'].'</span><br /><span class="author">/'.$ary['username'].'</span>';
+			echo $ary['user_comment'].'<br /><span class="author">/'.$ary['username'].'</span>';
 		else
 			echo '<img src="'.ninja::add_path('icons/16x16/add-comment.png').'"/>'
 		?>
-		</div>
+</td></tr></table>
 		</td>
 	</tr>
 	<?php }
