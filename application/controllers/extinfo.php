@@ -276,7 +276,12 @@ class Extinfo_Controller extends Authenticated_Controller {
 		$content->event_handler_enabled = $result->event_handler_enabled ? $str_enabled : $str_disabled;
 		$content->flap_detection_enabled = $result->flap_detection_enabled ? $str_enabled : $str_disabled;
 
-		$this->template->content->commands = $this->add_view('extinfo/commands');
+		if (Command_Controller::_is_authorized_for_command(array('host_name' => $host, 'service' => $service)) === true) {
+			$this->template->content->commands = $this->add_view('extinfo/commands');
+		} else {
+			$this->template->content->commands = $this->add_view('extinfo/not_running');
+			$this->template->content->commands->info_message = _("You're not authorized to run commands");
+		}
 
 		$commands = $this->template->content->commands;
 		if ($type == 'host') {
