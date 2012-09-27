@@ -95,25 +95,7 @@ function get_ninja_menu_state()
 	if (typeof _ninja_menu_state != 'undefined') {
 		return _ninja_menu_state;
 	}
-
-	var url = _site_domain + _index_page + "/ajax/get_setting/";
-	var page_name = '/';
-	var data = {page: escape(page_name), type: 'ninja_menu_state'};
-	var ret_val;
-
-	$.ajax({
-		url: url,
-		dataType:'json',
-		type: 'POST',
-		data: data,
-		success: function(data) {
-			if (data.ninja_menu_state != false) {
-				ret_val = data.ninja_menu_state;
-			}
-			return ret_val;
-		},
-		error: function(obj, msg){/*alert(msg)*/}
-	});
+	return false;
 }
 
 window.onload = function() {
