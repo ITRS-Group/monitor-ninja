@@ -87,19 +87,3 @@ function collapse_section(section, save){
 		);
 	}
 }
-
-function get_ninja_menu_state()
-{
-	// don't use ajax call if already
-	// defined in master template
-	if (typeof _ninja_menu_state != 'undefined') {
-		return _ninja_menu_state;
-	}
-	return false;
-}
-
-window.onload = function() {
-	var state = get_ninja_menu_state();
-	action = state != false ? state : default_menu_state;
-	collapse_menu(action);
-}
