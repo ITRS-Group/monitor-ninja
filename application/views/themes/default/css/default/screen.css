@@ -49,6 +49,7 @@ input.textbox {
 #login-table table tr td {
 	background: none;
 	padding: 5px;
+	border: 0;
 }
 #login-table hr {
 	height: 1px;
