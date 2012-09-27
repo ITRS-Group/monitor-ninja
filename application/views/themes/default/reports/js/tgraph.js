@@ -10,7 +10,7 @@ TGraphEventBinder = function (node, event, callback) {
 	}
 }
 
-var TGraph = function (stops, type, name, width, max) {
+var TGraph = function (stops, type, name, max) {
 		
 		/**
 		* @param object stops
@@ -19,40 +19,37 @@ var TGraph = function (stops, type, name, width, max) {
 		* @param number max = 400
 		*/
 		
+		var w = document.getElementById('tgraph').clientWidth;
+		
+		console.log(Math.floor(w / 50) * 50);
+		
 		this.name = name || 'Graph';
 		this.stops = stops;
 		this.type = type || 'bar';
-		this.width = width || 500;
+		this.width = w * 0.8;
 		this.max = max || 400;
 		this.blocks = [];
 		
-		this.graph = document.createElement('div');
 		this.hoverbox = document.createElement('div');
 		this.container = document.createElement('div');
 		
-		this.graph.className = 'tgraph';
 		this.container.className = 'tgraph-container';
 		this.hoverbox.className = 'tgraph-hoverbox';
 		this.label = document.createElement('label');
 		
 		this.label.innerHTML = name;
-		
-		this.label.style.cssFloat = 'left';
-		this.label.style.styleFloat = 'left';
-		this.label.style.width = '75px';
-		this.label.style.paddingTop = '10px';
-		this.label.style.textAlign = 'right';
-		this.label.style.paddingRight = '10px';
+		this.label.className = 'tgraph-label';
 		
 		this.container.style.overflow = 'auto';
-		this.container.appendChild(this.label);
+		this.container.style.width = '100%';
 		this.create();
 		this.hookMouseMove();
 		
 		document.body.appendChild(this.hoverbox);
 		
-		this.container.appendChild(this.graph);
-		return this.container;
+		document.getElementById('tgraph').appendChild(this.container);
+	
+	 //console.log(this.graph.offsetWidth);
 	
 };
 
@@ -105,20 +102,6 @@ TGraph.prototype = {
 		
 	},
 	
-	create: function () {
-		
-		this.graph.style.width = this.width + 'px';
-		this.container.style.width = (this.width + 100) + 'px';
-		
-		this.createTimeline();
-		
-	},
-	
-	phpDateToTime: function (date) {
-		date = date.split(/[- :]/)
-		return new Date(date[0], date[1] -1 , date[2], date[3], date[4], date[5]);
-	},
-	
 	formatNumber: function (n) {
 		if (n < 10) {
 			return '0' + n;
@@ -130,8 +113,19 @@ TGraph.prototype = {
 	parseNiceTime: function (date) {
 		return this.formatNumber(date.getHours()) + ':' + 
 			this.formatNumber(date.getMinutes()) + ' ' + 
-			date.getFullYear() +'/'+ 
-			this.formatNumber((date.getMonth() + 1)) + '/' + 
+			date.getFullYear() +'-'+ 
+			this.formatNumber((date.getMonth() + 1)) + '-' + 
+			this.formatNumber(date.getDate());
+	},
+	
+	parseNiceTimeHigh: function (date) {
+		return date.getFullYear() +'-'+ 
+			this.formatNumber((date.getMonth() + 1)) + '-' + 
+			this.formatNumber(date.getDate());
+	},
+	
+	parseNiceTimeSuperHigh: function (date) {
+		return this.formatNumber((date.getMonth() + 1)) + '-' + 
 			this.formatNumber(date.getDate());
 	},
 	
@@ -154,108 +148,151 @@ TGraph.prototype = {
 		stop.block.appendChild(note);
 	},
 	
-	createTimeline: function () {
+	drawScale: function () {
+	
+		var line = null, 
+			graph = document.createElement('div'),
+			el = null,
+			shigh = ((new Date(this.start)).getFullYear() == (new Date(this.start + this.max)).getFullYear());
+			
+		graph.className = 'tgraph';
+		//graph.style.width = this.width + 'px';
+		graph.style.height = '40px';
+		graph.style.border = 'none';
+		
+		clone = this.label.cloneNode();
+		clone.innerHTML = "";
+		
+		for (var i = 0; i <= 6; i += 1) {
+			
+			line = document.createElement('div');
+			line.className = 'tgraph-time-line';
+			line.style.height = (this.height) + 'px';
+			line.style.marginTop = '-' + (this.height + 0) + 'px';
+			
+			el = document.createElement('div');
+			el.style.width = ((1 / 7) * 100) + '%';
+			el.className = 'tgraph-time';
+			
+			if (shigh) {
+				el.innerHTML = '&nbsp;&nbsp;' + this.parseNiceTimeSuperHigh(new Date(this.start + ((this.max / 7) * i)));
+			} else {
+				el.innerHTML = '&nbsp;&nbsp;' + this.parseNiceTimeHigh(new Date(this.start + ((this.max / 7) * i)));
+			}
+			
+			el.appendChild(line);
+			
+			graph.appendChild(el);
+		}
+		
+		this.container.appendChild(clone);
+		this.container.appendChild(graph);
+		
+	},
+	
+	create: function () {
 	
 		var time = null,
 			note = null,
-			line = document.createElement('div'),
+			line = null,
+			graph = null,
+			lclone = null,
 			subline = document.createElement('div'),
 			skew = 0,
 			i = 0;
-		
-		subline.className = 'tgraph-subline';
-		line.className = 'tgraph-block-line';
-		
-		this.graph.style.height = '40px';
-		this.start = this.phpDateToTime(this.max).getTime();
+			
+		this.start = this.max * 1000;
+		this.height = 0;
+
 		this.max = 0;
-		time = this.start;
-		
-		for (i; i < this.stops.length; i += 1) {
-			this.stops[i].duration = this.stops[i].duration * 1000;
-			this.max += this.stops[i].duration;
+		for (i; i < this.stops[0].length; i += 1) {
+			this.max += this.stops[0][i].duration * 1000;
 		}
 		
-		i = 0;
-		
-		laststate = '';
-		
-		for (i; i < this.stops.length; i += 1) {
+		for (var y = 0; y < this.stops.length; y += 1) {
 			
-			this.stops[i].index = i;
-			this.stops[i].block = this.createBlock(this.stops[i]);
+			graph = document.createElement('div');
+			line = document.createElement('div');
+			i = 0;	
 			
-			if (((this.stops[i].duration / this.max) * parseInt(this.graph.style.width, 10)) < 5 &&
-				laststate != this.stops[i]['label']) {
+			graph.className = 'tgraph';
+			subline.className = 'tgraph-subline';
+			line.className = 'tgraph-block-line';
+			
+			lclone = this.label.cloneNode();
+			lclone.innerHTML = this.name[y];
+			time = this.start;
+			laststate = '';
+			
+			this.height += 40;
+			for (i; i < this.stops[y].length; i += 1) {
+			
+				this.stops[y][i].duration = this.stops[y][i].duration * 1000;	
+				this.stops[y][i].index = i;
 				
+				this.stops[y][i].block = this.createBlock(this.stops[y][i]);
 				
-				clone = this.stops[i].block.cloneNode(true);
-				swidth = (parseFloat(this.stops[i].block.style.width) * 100);
-				if (swidth < 2) swidth = 2;
-				
-				clone.style.width =  swidth + '%';
-				subline.appendChild(clone);
-				
-				this.stops[i].block.style.background = '#fff';
-				this.stops[i].block.style.outline = '1px dotted #fff';
-				
-				//skew += 3;
-				//this.addNote(this.stops[i], skew);
-				/*
-				if (skew > 9) {
-					this.graph.style.height = (parseInt(this.graph.style.height, 10) + ((skew - 9) / 4)) + 'px';
-					line.style.marginTop = (12 + ((skew * 1.5) - 6)) + 'px';
-					this.label.style.paddingTop = (20 + skew) + 'px';
-					this.container.style.width = (this.width + 100 + skew) + 'px'
-				}*/
-				
-				this.addHover(this.stops[i], clone, time);
-				
-			} else {
-
-				if (subline.children.length > 0) {
+				if ((this.stops[y][i].duration / this.max) < 0.05) {
 					
-					nwidth = 0;
+					clone = this.stops[y][i].block.cloneNode(true);
+					swidth = (parseFloat(this.stops[y][i].block.style.width) * 100);
+					if (swidth < 2) swidth = 2;
 					
-					if (this.stops[i - 1]) {
+					clone.style.width =  swidth + '%';
+					subline.appendChild(clone);
 	
-						this.stops[i - 1].block.appendChild(subline);
-						children = this.stops[i - 1].block.children[0].children;
+					this.stops[y][i].block.style.background = "#333";
+
+					this.addHover(this.stops[y][i], clone, time);
+					
+				} else {
+	
+					if (subline.children.length > 0) {
 						
-						for (var x = 0; x < children.length; x += 1) {
-							child = children[x]
-							if (child.className) {
-								nwidth += parseFloat(child.style.width);
-								child.style.width = parseFloat(child.style.width).toFixed(0) + 'px';
+						nwidth = 0;
+						
+						if (this.stops[y][i - 1]) {
+		
+							this.stops[y][i - 1].block.appendChild(subline);
+							children = this.stops[y][i - 1].block.children[0].children;
+							
+							for (var x = 0; x < children.length; x += 1) {
+								child = children[x]
+								if (child.className) {
+									nwidth += parseFloat(child.style.width);
+									child.style.width = Math.floor(parseFloat(child.style.width)) + 'px';
+								}
 							}
+							
+							subline.style.width = Math.ceil(nwidth) + 'px';
+							subline.style.marginLeft = '-' + ((nwidth / 2) + 1) + 'px'; 
 						}
 						
-						subline.style.width = nwidth + 'px';
-						subline.style.marginLeft = '-' + (nwidth / 2) + 'px'; 
+						subline = document.createElement('div');
+						subline.className = 'tgraph-subline';
 					}
 					
-					subline = document.createElement('div');
-					subline.className = 'tgraph-subline';
+					this.addHover(this.stops[y][i], this.stops[y][i].block, time);
 				}
 				
-				this.addHover(this.stops[i], this.stops[i].block, time);
+				line.appendChild(this.stops[y][i].block);
+				
+				time += this.stops[y][i].duration;
+				
 			}
 			
+			if (!document.addEventListener) {
+				var clear = document.createElement('div');
+				clear.style.clear = 'both';
+				line.appendChild(clear);
+			}
 			
-			line.appendChild(this.stops[i].block);
-			
-			time += this.stops[i].duration;
-			laststate = this.stops[i]['label'];
-			
+			graph.appendChild(line);
+			this.container.appendChild(lclone);
+			this.container.appendChild(graph);
 		}
 		
-		if (!document.addEventListener) {
-			var clear = document.createElement('div');
-			clear.style.clear = 'both';
-			line.appendChild(clear);
-		}
-		
-		this.graph.appendChild(line);
+		this.drawScale();
 		
 	}
 	
