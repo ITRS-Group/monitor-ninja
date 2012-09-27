@@ -13,7 +13,7 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 		<div class="setup-table">
 			<h1 id="report_type_label"><?php echo $label_create_new ?></h1>
 
-			<div id="switcher" style="margin-top: -7gpx; padding-bottom: 15px;">
+			<div id="switcher" class="report-block">
 				<a id="switch_report_type" href="<?php echo url::base(true) . ($type == 'avail' ? 'sla' : 'avail') ?>/index" style="border: 0px; float: left; margin-right: 5px">
 				<?php
 					echo $type == 'avail' ?
@@ -24,9 +24,9 @@ if (isset($saved_reports) && count($saved_reports)>0 && !empty($saved_reports)) 
 				<?php echo $type == 'avail' ? _('Switch to SLA report') :_('Switch to Availability report'); ?>
 				</span>
 				</a>
-			</div><br />
+			</div>
 
-			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'style' => 'margin-top: 7px;')); ?>
+			<?php echo form::open($type.'/index', array('id' => 'saved_report_form', 'class' => 'report-block')); ?>
 				<div id="saved_reports_display" style="width: 100%; padding-left: 0px;<?php if (!$saved_reports_exists) { ?>display:none;<?php } ?>">
 					<?php echo help::render('saved_reports') ?> <?php echo _('Saved reports') ?><br />
 					<select name="report_id" id="report_id">
