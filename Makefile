@@ -16,7 +16,7 @@ test-unittest: test-ci-prepare
 
 test-ci-cleanup:
 	git checkout test/configs/all-host_service-states/var/status.sav || :
-	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); rm test/configs/all-host_service-states/var/merlin.pid; fi
+	if [ -f test/configs/all-host_service-states/var/merlin.pid ]; then kill $$(cat test/configs/all-host_service-states/var/merlin.pid); fi
 	if [ -f /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; fi
 	/bin/sleep 5 # give nagios some time to read
 	rm -rf /tmp/ninja-test # 'pparently, sockets can't always be created otherwise. Weird.
